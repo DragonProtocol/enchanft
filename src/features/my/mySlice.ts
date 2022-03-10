@@ -3,7 +3,7 @@ import { Connection, PublicKey } from '@solana/web3.js'
 
 import { RootState } from '../../store/store'
 
-import { getMySPLToken, getSPLTokenMetadata } from './myData'
+import { getMySPLToken, getMetadataFromMint } from './myData'
 
 type Token = {
   mint: PublicKey
@@ -55,8 +55,8 @@ export const getMyNFTMetadata = createAsyncThunk(
     const data = await Promise.all(
       nfts.map(async (item) => {
         try {
-          const data = await getSPLTokenMetadata(connection, item.mint)
-          return data
+          const metadata = await getMetadataFromMint(connection, item.mint)
+          return metadata
         } catch (error) {
           return null
         }
@@ -77,7 +77,7 @@ export const myNFTSlice = createSlice({
       state.metadataStatus = action.payload.status
     },
     incrMetadata: (state, action) => {
-      //- TODO: check item exist
+      // TODO: check item exist
       state.metadata.push(action.payload.data)
     },
     incrMetadataWithArr: (state, action) => {

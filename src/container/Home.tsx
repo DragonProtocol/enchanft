@@ -1,5 +1,4 @@
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useRef, useState } from 'react'
 
 import NFTShower from '../components/NFTShower'
@@ -18,7 +17,7 @@ function Home() {
   const walletRef = useRef('')
   const { connection } = useConnection()
 
-  //- TODO: hard code
+  // TODO: hard code
   const [tab, setTab] = useState(localStorage.getItem('tab') || 'explore') // explore | mynft
   const [exploreNFT] = useState([
     {
@@ -88,9 +87,9 @@ function Home() {
       ) : (
         <div>
           <h1>Explore</h1>
-          {exploreNFT.map((item) => {
-            return <div key={item.uri}>{item.uri}</div>
-          })}
+          {exploreNFT.map((item) => (
+            <div key={item.uri}>{item.uri}</div>
+          ))}
         </div>
       )}
     </div>
