@@ -1,11 +1,13 @@
 import React from 'react'
 import { WalletDisconnectButton, WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import styled from 'styled-components'
+import LogoImg from './imgs/logo.svg'
 export default function Header() {
+  const navigate = useNavigate()
   const { connection } = useConnection()
   const wallet = useWallet()
   const [balance, setBalance] = useState(0)
@@ -27,12 +29,12 @@ export default function Header() {
       <WalletDisconnectButton /> */}
 
       <div className="left">
-        <div className="logo"></div>
+        <img src={LogoImg} className="logo" onClick={()=>navigate('/')}></img>
       </div>
       <div className="right">
         <input type="text" className="search" />
         {/* TODO  这个链接钱包按钮提取为公共组件*/}
-        <WalletMultiButton className="connect-wallet">Connect Wallet</WalletMultiButton>
+        <WalletMultiButton className="connect-wallet">{!wallet.publicKey && 'Connect Wallet'}</WalletMultiButton>
       </div>
     </HeaderWrapper>
   )
@@ -43,12 +45,11 @@ const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-
   .left {
     .logo {
       width: 128px;
       height: 32px;
-      background: #3dd606;
+      cursor: pointer;
     }
   }
   .right {
@@ -83,6 +84,7 @@ const HeaderWrapper = styled.div`
       color: #ffffff;
       border-radius: 0px;
       justify-content: center;
+      font-family: 'PressStart2P-Regular';
     }
   }
 `

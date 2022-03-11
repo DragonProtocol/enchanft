@@ -27,7 +27,8 @@ const Layout: React.FC = () => {
 export default Layout
 const LayoutWrapper = styled.div`
   width: 100%;
-  min-height: 100%;
+  min-height: calc(100% - 72px);
+  box-sizing: border-box;
   .layout-inner {
     max-width: 1024px;
     margin: 0 auto;
@@ -38,6 +39,7 @@ const LayoutWrapper = styled.div`
     width: 100%;
     background: #ffffff;
     box-sizing: border-box;
+    z-index: 2000;
     .header-inner {
       height: 72px;
     }
@@ -46,6 +48,7 @@ const LayoutWrapper = styled.div`
     width: 100%;
     margin-top: 72px;
     padding: 24px;
+    min-height: calc(100vh - 72px)
   }
   .footer {
     padding-bottom: 35px;

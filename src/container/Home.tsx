@@ -2,11 +2,8 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import NFTList, { NftDataItem } from '../components/NFTList'
-
-import NFTShower from '../components/NFTShower'
 import {
   getMyNFTData,
   getMyNFTMetadata,
@@ -20,8 +17,6 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 const formatNftDataAry = (metadataArr: any[], nfts: any[]): NftDataItem[] => {
   return metadataArr.map((item, idx) => {
     const jsonData = item.toJSON()
-    console.log('jsonData',jsonData)
-    
     return {
       addr: nfts[idx].address.toString(),
       mint: jsonData.data.mint,
@@ -33,7 +28,7 @@ function Home() {
   const wallet = useWallet()
   const walletRef = useRef('')
   const { connection } = useConnection()
-  const [tab, setTab] = useState(localStorage.getItem('tab') || 'explore') // explore | mynft
+  const [tab, setTab] = useState(localStorage.getItem('tab') || 'explore') // explore | my
   const switchList = (name: string) => {
     setTab(name)
     localStorage.setItem('tab', name)
@@ -89,11 +84,13 @@ function Home() {
           <NFTList data={nftList}></NFTList>
         </div>
       </div>
-      <div className="bottom">
-        <span className="connect-desc">connect your NFT</span>
-        {/* TODO  这个链接钱包按钮提取为公共组件*/}
-        <WalletMultiButton className="connect-wallet">Connect Wallet</WalletMultiButton>
-      </div>
+      {!wallet.publicKey && (
+        <div className="bottom">
+          <span className="connect-desc">connect your NFT</span>
+          {/* TODO  这个链接钱包按钮提取为公共组件*/}
+          <WalletMultiButton className="connect-wallet">Connect Wallet</WalletMultiButton>
+        </div>
+      )}
     </HomeWrapper>
   )
 }
@@ -120,11 +117,8 @@ const HomeWrapper = styled.div`
         border-right: none;
       }
       .guide-desc {
-        font-family: 'Press Start 2P';
         font-size: 24px;
         line-height: 40px;
-        /* or 167% */
-
         text-transform: uppercase;
       }
       .guide-btn {
@@ -141,6 +135,7 @@ const HomeWrapper = styled.div`
         font-size: 12px;
         color: #ffffff;
         cursor: pointer;
+        font-family: 'PressStart2P-Regular';
       }
     }
     .guide-explore {
@@ -209,6 +204,7 @@ const HomeWrapper = styled.div`
       color: #ffffff;
       border-radius: 0px;
       justify-content: center;
+      font-family: 'PressStart2P-Regular';
     }
   }
 `

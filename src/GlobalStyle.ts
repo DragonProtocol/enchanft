@@ -1,24 +1,27 @@
 import { createGlobalStyle } from 'styled-components'
 const GlobalStyle = createGlobalStyle`
-  html,body {
+  @font-face {
+    font-family:'PressStart2P-Regular';
+    src:url('/fonts/PressStart2P-Regular.ttf');
+    font-style: normal;
+    font-weight: normal;
+    font-display: fallback; /* <- this can be added to each @font-face definition */
+  }
+  html,body,#root {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: #E5E5E5;
     margin:0;
+    padding:0;
+    width:100%;
+    height:100vh;
+    font-family:'PressStart2P-Regular'
   }
   code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
       monospace;
-  }
-  body,
-  html,
-  #root {
-    height: 100vh;
   }
 `
 export default GlobalStyle
