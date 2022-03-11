@@ -15,16 +15,15 @@ import {
   selectMyNFTs,
   setWalletAddr,
 } from '../features/my/mySlice'
-import { getExploreData, selectExploreData } from '../features/explore/exploreSlice'
+import { getExploreData, selectExploreData, selectExploreStatus } from '../features/explore/exploreSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
-const formatNftDataAry = (metadataArr: any[], nfts: any[]): NftDataItem[] =>
-  metadataArr.map((item, idx) => {
-    const jsonData = item.toJSON()
-    console.log('jsonData', jsonData)
+import { collections } from '../utils'
 
+const formatNftDataAry = (metadataArr: any[]): NftDataItem[] =>
+  metadataArr.map((item) => {
+    const jsonData = item.toJSON()
     return {
-      addr: nfts[idx].address.toString(),
       mint: jsonData.data.mint,
       uri: jsonData.data.data.uri,
     }
@@ -42,31 +41,28 @@ function Home() {
     localStorage.setItem('tab', name)
   }
   const dispatch = useAppDispatch()
+
+  const exploreNFTStatus = useAppSelector(selectExploreStatus)
   const exploreNFTData = useAppSelector(selectExploreData)
-  //------
-  const nfts = useAppSelector(selectMyNFTs) // nfts count 可用于分页或作为显示
-  const metadataArr = useAppSelector(selectMyNFTMetadataArr)
-  const metadataStatus = useAppSelector(selectMyNFTMetadataStatus)
+
+  const myNFTData = useAppSelector(selectMyNFTMetadataArr)
+  const myNFTDataStatus = useAppSelector(selectMyNFTMetadataStatus)
+
   useEffect(() => {
-    log.info('wallet.publicKey', wallet.publicKey)
     if (!wallet.publicKey) return
-    if (walletRef.current !== wallet.publicKey.toString()) {
-      walletRef.current = wallet.publicKey.toString()
-      dispatch(setWalletAddr(walletRef.current))
-      // const owner = wallet.publicKey
-      const owner = new PublicKey('AEahaRpDFzg74t7NtWoruabo2fPJQjKFM9kQJNjH7obK')
-      dispatch(getMyNFTData({ connection, owner }))
-      dispatch(getExploreData({ collectionID: 'Hkunn4hct84zSPNpyQygThUKn8RUBVf5b4r975NRaHPb' }))
-    }
+    if (walletRef.current === wallet.publicKey.toString()) return
+
+    walletRef.current = wallet.publicKey.toString()
+    const owner = wallet.publicKey
+    // const owner = new PublicKey('AEahaRpDFzg74t7NtWoruabo2fPJQjKFM9kQJNjH7obK')
+    dispatch(setWalletAddr(walletRef.current))
+    dispatch(getMyNFTData({ connection, owner }))
+    dispatch(getExploreData({ collectionIds: collections }))
   }, [wallet])
 
-  useEffect(() => {
-    if (nfts.length < 1) return
-    if (metadataStatus === 'init') dispatch(getMyNFTMetadata({ connection, nfts }))
-  }, [nfts, metadataStatus])
+  const nftList = formatNftDataAry(myNFTData)
+  log.info({ exploreNFTData }) // TODO: @xuewen explore
 
-  const nftList = formatNftDataAry(metadataArr, nfts)
-  log.info(exploreNFTData, nftList)
   return (
     <HomeWrapper>
       <div className="top">
