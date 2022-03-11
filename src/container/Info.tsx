@@ -4,11 +4,13 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import styled from 'styled-components'
+import NFTHandler from '../components/NFTHandler'
 // import { utils } from '@project-serum/anchor'
 
 import NFTShower from '../components/NFTShower'
 
-export default function MyMint() {
+export default function Info() {
   const params = useParams()
   const wallet = useWallet()
   const { connection } = useConnection()
@@ -70,11 +72,26 @@ export default function MyMint() {
   //- TODO:
   /** check which action (create | view | burn | enchant) can be ops */
 
+  const showerData = { addr: '', mint: params.mint || '', uri: metadata.data?.uri || '' }
+  const handlerData = { addr: '', mint: params.mint || '', uri: metadata.data?.uri || '' }
   return (
-    <div>
-      <h2>Info: {params.mint}</h2>
+    <InfoWrapper>
+      {/* <h2>Info: {params.mint}</h2>
       {params.mint && <NFTShower addr="" mint={params.mint} uri={metadata.data?.uri || ''} />}
-      <button> create | view | burn | enchant </button>
-    </div>
+      <button> create | view | burn | enchant </button> */}
+      <div className="left">
+        <NFTShower data={showerData}></NFTShower>
+      </div>
+      <div className="right">
+        <NFTHandler data={handlerData}></NFTHandler>
+      </div>
+    </InfoWrapper>
   )
 }
+
+const InfoWrapper = styled.div`
+  display:flex;
+  .left,.right{
+    width: 50%;
+  }
+`

@@ -1,0 +1,73 @@
+import React, { useEffect, useRef, useState } from 'react'
+import styled from 'styled-components'
+import { NftDataItem } from './NFTList'
+interface Props {
+  data: NftDataItem
+}
+const NFTCard: React.FC<Props> = (props: Props) => {
+  const {
+    data: { uri },
+  } = props
+  const [info, setInfo] = useState<any>({})
+  const aliveRef = useRef(true)
+  useEffect(() => {
+    if (!uri) return
+    ;(async () => {
+      try {
+        const response = await fetch(uri)
+        const jsonData = await response.json()
+        if (aliveRef.current) setInfo(jsonData)
+      } catch (error) {
+        if (aliveRef.current) console.error(error)
+      }
+    })()
+  }, [uri])
+  useEffect(() => {
+    return () => {
+      aliveRef.current = false
+    }
+  }, [])
+  return (
+    <NFTCardWrapper>
+      <div className="img-box">
+        <span className="tag">syn thesized</span>
+        <img src={info.image} alt={info.image} className="img" />
+      </div>
+      <div className="name">{info.name}</div>
+    </NFTCardWrapper>
+  )
+}
+export default NFTCard
+const NFTCardWrapper = styled.div`
+  .img-box {
+    width: 250px;
+    height: 250px;
+    border: 2px solid #222222;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    margin-bottom: 15px;
+    position: relative;
+    cursor: pointer;
+    .tag {
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 8px;
+      background: #e4ffdb;
+      border: 2px solid #222222;
+      border-top: none;
+      border-left: none;
+      box-sizing: border-box;
+    }
+    .img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .name {
+    font-size: 14px;
+    line-height: 14px;
+    color: #222222;
+    cursor: pointer;
+  }
+`
