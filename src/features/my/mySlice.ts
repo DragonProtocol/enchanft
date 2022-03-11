@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Connection, PublicKey } from '@solana/web3.js'
+import log from 'loglevel'
 
 import { RootState } from '../../store/store'
 
-import { getMySPLToken, getSPLTokenMetadata } from './myData'
+import { getMySPLToken, getMetadataFromMint } from './myData'
 
 type Token = {
   mint: PublicKey
@@ -32,8 +33,10 @@ const initialState: MyNFT = {
 
 export const getMyNFTData = createAsyncThunk(
   'my/nftdata',
-  async ({ connection, owner }: { connection: Connection; owner: PublicKey }) => {
+  async ({ connection, owner }: { connection: Connection; owner: PublicKey }, thunkAPI) => {
+    log.info('init myNFTData with wallet.publicKey', owner.toString())
     const data = await getMySPLToken(connection, owner)
+    thunkAPI.dispatch(getMyNFTMetadata({ connection, nfts: data }))
     return data
   },
 )
@@ -42,21 +45,11 @@ export const getMyNFTMetadata = createAsyncThunk(
   'my/nftmetadata',
   async ({ connection, nfts }: { connection: Connection; nfts: Token[] }, thunkAPI) => {
     thunkAPI.dispatch(myNFTSlice.actions.changeMetadataStatus({ status: 'loading' }))
-    // for (const item of nfts) {
-    //   // console.log(item.mint.toString())
-    //   try {
-    //     const data = await getSPLTokenMetadata(connection, item.mint)
-    //     thunkAPI.dispatch(myNFTSlice.actions.incrementMetadata({ data }))
-    //   } catch (error) {
-    //     console.error(error)
-    //   }
-    //   await new Promise((resolve) => setTimeout(resolve, 10))
-    // }
     const data = await Promise.all(
       nfts.map(async (item) => {
         try {
-          const data = await getSPLTokenMetadata(connection, item.mint)
-          return data
+          const metadata = await getMetadataFromMint(connection, item.mint)
+          return metadata
         } catch (error) {
           return null
         }
@@ -77,7 +70,7 @@ export const myNFTSlice = createSlice({
       state.metadataStatus = action.payload.status
     },
     incrMetadata: (state, action) => {
-      //- TODO: check item exist
+      // TODO: check item exist
       state.metadata.push(action.payload.data)
     },
     incrMetadataWithArr: (state, action) => {

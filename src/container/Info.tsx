@@ -1,76 +1,48 @@
-import { Metadata, MetadataProgram } from '@metaplex-foundation/mpl-token-metadata'
-import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { PublicKey } from '@solana/web3.js'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { BN, Program, Provider, web3, Idl, Address } from '@project-serum/anchor'
+import {
+  TOKEN_PROGRAM_ID,
+  getOrCreateAssociatedTokenAccount,
+  getAccount,
+  getAssociatedTokenAddress,
+} from '@solana/spl-token'
+import { useConnection, useWallet, WalletContextState } from '@solana/wallet-adapter-react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import NFTHandler from '../components/NFTHandler'
-// import { utils } from '@project-serum/anchor'
+import log from 'loglevel'
+import { Signer, PublicKey, SystemProgram, Transaction, Keypair } from '@solana/web3.js'
 
+import NFTHandler from '../components/NFTHandler'
+
+import { getMetadataFromMint } from '../features/my/myData'
 import NFTShower from '../components/NFTShower'
+
+import idl from '../synftIdl.json'
+import { Synft } from '../synft'
+
+const programId = new PublicKey(idl.metadata.address)
 
 export default function Info() {
   const params = useParams()
-  const wallet = useWallet()
   const { connection } = useConnection()
 
   const [metadata, setMetadata] = useState<any>({})
 
-  const getMetadata = async () => {
-    if (!params.mint) return
-    try {
-      //- TODO: could filter from redux store first
-      const mintKey = new PublicKey(params.mint)
-      const metadataPubkey = await Metadata.getPDA(mintKey)
-      const metadata = await Metadata.load(connection, metadataPubkey)
-      // console.log(metadata.toJSON())
-      setMetadata(metadata.toJSON().data)
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const checkOps = async () => {
-    if (!wallet.publicKey) return
-    const encoder = new TextEncoder()
-    const data = encoder.encode('children-of')
-    console.log('checkOps', data)
-    const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
-      [data, wallet.publicKey.toBuffer()],
-      TOKEN_PROGRAM_ID,
-    )
-    console.log({ metadataPDA }, metadataPDA.toString())
-    // await PublicKey.findProgramAddress(
-    //   [
-    //     tokenAccount2.address.toBuffer(),
-    //   ],
-    //   program.programId
-    // );
-  }
-
-  const getOwner = async () => {
-    if (!params.mint || !params.address) return
-    const [key, number] = await MetadataProgram.findMetadataAccount(new PublicKey(params.mint))
-    console.log('-=-=', key.toString())
-
-    // console.log('getOwner', params.mint, params.address)
-    // const data = await connection.getAccountInfo(new PublicKey(params.address))
-    // console.log('getOwner', { data }, data?.owner.toString())
-  }
-
   useEffect(() => {
     getMetadata()
-    getOwner()
-  }, [])
+  }, [connection])
 
-  useEffect(() => {
-    if (!wallet.publicKey) return
-    checkOps()
-  }, [wallet])
-
-  //- TODO:
-  /** check which action (create | view | burn | enchant) can be ops */
+  async function getMetadata() {
+    if (!params.mint) return
+    const mintKey = new PublicKey(params.mint)
+    try {
+      // TODO: could filter from redux store first
+      const data = await getMetadataFromMint(connection, mintKey)
+      setMetadata(data.toJSON().data)
+    } catch (error) {
+      log.warn('getMetadata', error)
+    }
+  }
 
   const showerData = { addr: '', mint: params.mint || '', uri: metadata.data?.uri || '' }
   const handlerData = { addr: '', mint: params.mint || '', uri: metadata.data?.uri || '' }
@@ -80,18 +52,19 @@ export default function Info() {
       {params.mint && <NFTShower addr="" mint={params.mint} uri={metadata.data?.uri || ''} />}
       <button> create | view | burn | enchant </button> */}
       <div className="left">
-        <NFTShower data={showerData}></NFTShower>
+        <NFTShower data={showerData} />
       </div>
       <div className="right">
-        <NFTHandler data={handlerData}></NFTHandler>
+        <NFTHandler data={handlerData} metadata={metadata} />
       </div>
     </InfoWrapper>
   )
 }
 
 const InfoWrapper = styled.div`
-  display:flex;
-  .left,.right{
+  display: flex;
+  .left,
+  .right {
     width: 50%;
   }
 `

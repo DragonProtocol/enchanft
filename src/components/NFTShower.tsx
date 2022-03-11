@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
-import Typography from '@mui/material/Typography'
+
 interface NFTShowerData {
   uri: string
   mint: string
@@ -88,12 +87,11 @@ const NFTShowerWrapper = styled.div`
   .info-box {
     width: 500px;
     .info-item {
-      
     }
     .info-title {
-      background: #F0F0F0;
+      background: #f0f0f0;
     }
-    .info-content{
+    .info-content {
       background: #ffffff;
       border: 2px solid #222222;
       box-sizing: border-box;
