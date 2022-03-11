@@ -2,9 +2,9 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { PublicKey } from '@solana/web3.js'
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import NFTList from '../components/NFTList'
+import NFTList, { NftDataItem } from '../components/NFTList'
 
 import NFTShower from '../components/NFTShower'
 import {
@@ -17,29 +17,33 @@ import {
 } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
+const formatNftDataAry = (metadataArr: any[], nfts: any[]): NftDataItem[] => {
+  return metadataArr.map((item, idx) => {
+    const jsonData = item.toJSON()
+    console.log('jsonData',jsonData)
+    
+    return {
+      addr: nfts[idx].address.toString(),
+      mint: jsonData.data.mint,
+      uri: jsonData.data.data.uri,
+    }
+  })
+}
 function Home() {
   const wallet = useWallet()
   const walletRef = useRef('')
   const { connection } = useConnection()
-
-  //- TODO: hard code
   const [tab, setTab] = useState(localStorage.getItem('tab') || 'explore') // explore | mynft
-  const [exploreNFT] = useState([
-    {
-      uri: 'a',
-    },
-    {
-      uri: 'b',
-    },
-  ])
-
+  const switchList = (name: string) => {
+    setTab(name)
+    localStorage.setItem('tab', name)
+  }
   const dispatch = useAppDispatch()
   const nfts = useAppSelector(selectMyNFTs) // nfts count 可用于分页或作为显示
   const metadataArr = useAppSelector(selectMyNFTMetadataArr)
   const metadataStatus = useAppSelector(selectMyNFTMetadataStatus)
-
   useEffect(() => {
-    if (tab !== 'mynft') return
+    if (tab !== 'my') return
     if (!wallet.publicKey) return
     if (walletRef.current !== wallet.publicKey.toString()) {
       walletRef.current = wallet.publicKey.toString()
@@ -55,27 +59,35 @@ function Home() {
     if (metadataStatus === 'init') dispatch(getMyNFTMetadata({ connection, nfts }))
   }, [nfts, metadataStatus])
 
+  const nftList = formatNftDataAry(metadataArr, nfts)
   return (
     <HomeWrapper>
       <div className="top">
         <div className="guide-item guide-explore">
           <span className="guide-desc">🔥 View Popular NFTs and create synthetic NFTs</span>
-          {/* <button className="guide-btn"></button> */}
-          <Link className="guide-btn" to={`/`}>
+          <button className="guide-btn" onClick={() => switchList('explore')}>
             {'> Explore NFT <'}
-          </Link>
+          </button>
         </div>
         <div className="guide-item guide-view-my">
           <span className="guide-desc">🔗 Connect your NFTs and Enchant it value</span>
-          {/* <button className="guide-btn"> {'> View My NFT <'}</button> */}
-          <Link className="guide-btn" to={`/nft-my`}>
+          <button className="guide-btn" onClick={() => switchList('my')}>
             {'> View My NFT <'}
-          </Link>
+          </button>
         </div>
       </div>
       <div className="center">
-        <div className="list-tile">Popular NFTs</div>
-        <NFTList></NFTList>
+        {tab === 'my' ? (
+          <>
+            <div className="list-title">My collection</div>
+            <div className="list-desc">What does this tell the user to do</div>
+          </>
+        ) : (
+          <div className="list-title">Popular NFTs</div>
+        )}
+        <div className="list">
+          <NFTList data={nftList}></NFTList>
+        </div>
       </div>
       <div className="bottom">
         <span className="connect-desc">connect your NFT</span>
@@ -83,48 +95,6 @@ function Home() {
         <WalletMultiButton className="connect-wallet">Connect Wallet</WalletMultiButton>
       </div>
     </HomeWrapper>
-    // <div className="">
-    //   <button
-    //     onClick={() => {
-    //       localStorage.setItem('tab', 'explore')
-    //       setTab('explore')
-    //     }}
-    //   >
-    //     Explore
-    //   </button>{' '}
-    //   |{' '}
-    //   <button
-    //     onClick={() => {
-    //       localStorage.setItem('tab', 'mynft')
-    //       setTab('mynft')
-    //     }}
-    //   >
-    //     View My NFT
-    //   </button>
-    //   {tab === 'mynft' ? (
-    //     <>
-    //       <h1>My Collection: {nfts.length}</h1>
-    //       {metadataArr.map((item, idx) => {
-    //         const jsonData = item.toJSON()
-    //         return (
-    //           <NFTShower
-    //             addr={nfts[idx].address.toString()}
-    //             key={jsonData.data.mint}
-    //             mint={jsonData.data.mint}
-    //             uri={jsonData.data.data.uri}
-    //           />
-    //         )
-    //       })}
-    //     </>
-    //   ) : (
-    //     <div>
-    //       <h1>Explore</h1>
-    //       {exploreNFT.map((item) => {
-    //         return <div key={item.uri}>{item.uri}</div>
-    //       })}
-    //     </div>
-    //   )}
-    // </div>
   )
 }
 
@@ -159,7 +129,7 @@ const HomeWrapper = styled.div`
       }
       .guide-btn {
         // 重置Link默认样式 - start
-        text-decoration:none;
+        text-decoration: none;
         // 重置Link默认样式 - end
 
         width: 216px;
@@ -185,12 +155,23 @@ const HomeWrapper = styled.div`
     }
   }
   .center {
-    .list-tile {
+    margin-top: 36px;
+    .list-title {
       font-size: 24px;
       color: #333333;
       text-align: center;
-      margin: 36px 0 24px;
+      margin: 0 auto;
       text-transform: uppercase;
+      line-height: 40px;
+    }
+    .list-desc {
+      font-size: 12px;
+      color: #333333;
+      text-align: center;
+      margin-top: 4px;
+    }
+    .list {
+      margin-top: 24px;
     }
   }
   .bottom {

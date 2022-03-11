@@ -1,36 +1,27 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import NFTCard from './NFTCard'
-const NFTList: React.FC = () => {
+export interface NftDataItem {
+  addr: string
+  mint: string
+  uri: string
+}
+interface Props {
+  data: NftDataItem[]
+}
+const NFTList: React.FC<Props> = (props: Props) => {
+  const { data } = props
+  const navigate = useNavigate()
   return (
     <NFTListWrapper>
-      <div className="list-item">
-        <NFTCard></NFTCard>
-      </div>
-      <div className="list-item">
-        <NFTCard></NFTCard>
-      </div>
-      <div className="list-item">
-        <NFTCard></NFTCard>
-      </div>
-      <div className="list-item">
-        <NFTCard></NFTCard>
-      </div>
-      <div className="list-item">
-        <NFTCard></NFTCard>
-      </div>
-      <div className="list-item">
-        <NFTCard></NFTCard>
-      </div>
-      <div className="list-item">
-        <NFTCard></NFTCard>
-      </div>
-      <div className="list-item">
-        <NFTCard></NFTCard>
-      </div>
-      <div className="list-item">
-        <NFTCard></NFTCard>
-      </div>
+      {data.map((item) => {
+        return (
+          <div className="list-item" key={item.addr} onClick={() => navigate(`/info/${item.mint}/${item.addr}`)}>
+            <NFTCard data={item}></NFTCard>
+          </div>
+        )
+      })}
     </NFTListWrapper>
   )
 }

@@ -6,7 +6,7 @@ const Layout: React.FC = () => {
   return (
     <LayoutWrapper>
       <div className="header">
-        <div className="header-inner layout-inner">
+        <div className="layout-inner header-inner">
           <Header></Header>
         </div>
       </div>
@@ -44,6 +44,8 @@ const LayoutWrapper = styled.div`
   }
   .main {
     width: 100%;
+    margin-top: 72px;
+    padding: 24px;
   }
   .footer {
     padding-bottom: 35px;
