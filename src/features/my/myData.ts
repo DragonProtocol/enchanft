@@ -14,7 +14,6 @@ export async function getMySPLToken(connection: Connection, owner: PublicKey) {
       return amount.decimals === 0 && amount.uiAmount === 1
     })
     .map((t) => ({
-      owner,
       address: new PublicKey(t.pubkey),
       mint: new PublicKey(t.account.data.parsed.info.mint),
     }))

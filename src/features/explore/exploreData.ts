@@ -16,8 +16,8 @@ export type NFT = {
   name: string
 }
 
-export async function loadExploreNFT(collectionId: String, first: number = 20): Promise<NFT[]> {
-  log.info(`Fetching NFTs by candy machine with ID: ${collectionId}`)
+export async function loadExploreNFT(collectionId: String, first: number = 10): Promise<NFT[]> {
+  log.info(`Fetching NFTs by collectionID: ${collectionId}`)
   const collectionID = new PublicKey(collectionId)
   const fetchNFTsByCandyMachineQuery = gql`
     {

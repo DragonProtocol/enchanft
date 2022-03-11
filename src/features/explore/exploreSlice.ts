@@ -18,8 +18,14 @@ const initialState: ExploreNFT = {
 
 export const getExploreData = createAsyncThunk(
   'explore/nftdata',
-  async ({ collectionID }: { collectionID: string }) => {
-    const data: NFT[] = await loadExploreNFT(collectionID)
+  async ({ collectionIds }: { collectionIds: string[] }) => {
+    const dataArr = await Promise.all(
+      collectionIds.map(async (collectionID) => {
+        const d: NFT[] = await loadExploreNFT(collectionID)
+        return d
+      }),
+    )
+    const data = dataArr.reduce((a, b) => a.concat(b), [])
     return data
   },
 )

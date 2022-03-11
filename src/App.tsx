@@ -22,6 +22,8 @@ import Layout from './components/Layout'
 import { isProd } from './utils'
 import { store } from './store/store'
 
+require('@solana/wallet-adapter-react-ui/styles.css')
+
 log.setLevel(isProd ? 'info' : 'trace')
 log.info({ isProd })
 
@@ -30,8 +32,8 @@ const App: FC = () => {
 
   // You can also provide a custom RPC endpoint.
   const endpoint = isProd
-    ? useMemo(() => clusterApiUrl(network), [network])
-    : 'https://solana-api.syndica.io/access-token/R8uWm5ciuUVXmFaO2RpNooRI4rH41y7B1XIaJogiDNqJLvGwKbO1hgJdgbAckXHG/rpc'
+    ? 'https://solana-api.syndica.io/access-token/R8uWm5ciuUVXmFaO2RpNooRI4rH41y7B1XIaJogiDNqJLvGwKbO1hgJdgbAckXHG/rpc'
+    : useMemo(() => clusterApiUrl(network), [network])
 
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --
   // Only the wallets you configure here will be compiled into your application, and only the dependencies
