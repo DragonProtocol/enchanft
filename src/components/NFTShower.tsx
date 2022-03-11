@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-export default function NFTShower({ uri, mint, addr }: { uri: string; mint: string; addr: string }) {
+export default function NFTShower({ uri, mint }: { uri: string; mint: string }) {
   const [info, setInfo] = useState<any>({})
   const aliveRef = useRef(true)
   useEffect(() => {
@@ -29,8 +29,7 @@ export default function NFTShower({ uri, mint, addr }: { uri: string; mint: stri
         <p>description: {info.description}</p>
         <p>uri: {uri}</p>
         <p>collection: {JSON.stringify(info.collection)}</p>
-        <p>addr: {addr}</p>
-        <Link style={{ display: 'block', margin: '1rem 0' }} to={`/info/${mint}/${addr}`}>
+        <Link style={{ display: 'block', margin: '1rem 0' }} to={`/info/${mint}`}>
           {mint}
         </Link>
       </div>
