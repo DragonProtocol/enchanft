@@ -6,18 +6,22 @@ import styled from 'styled-components'
 import log from 'loglevel'
 import { PublicKey } from '@solana/web3.js'
 
-import {
-  getMyNFTData,
-  getMyNFTMetadata,
-  selectMyNFTMetadataArr,
-  selectMyNFTMetadataStatus,
-  setWalletAddr,
-} from '../features/my/mySlice'
+import { getMyNFTData, selectMyNFTMetadataArr, selectMyNFTMetadataStatus, setWalletAddr } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
-import { checkBelongToMe, getInject, injectSol, extractSol, injectNFT, extractNFT } from '../features/info/infoOps'
-import idl from '../synftIdl.json'
-import { Synft } from '../synft'
+import {
+  checkBelongToMe,
+  getInject,
+  injectSol,
+  extractSol,
+  injectNFT,
+  extractNFT,
+  nftCopy,
+  loadChildrenInject,
+  burnWithdrawSOL,
+  burnWithdrawSPL,
+} from '../features/info/infoOps'
+import idl, { Synft } from '../synft'
 
 const programId = new PublicKey(idl.metadata.address)
 
@@ -27,17 +31,26 @@ interface Props {
   data: NftDataItem
   metadata: any
 }
+type InjectType = 'sol' | 'nft' | ''
+
 const NFTHandler: React.FC<Props> = (props: Props) => {
+  const metadata = props.metadata
   const params = useParams()
   const wallet: WalletContextState = useWallet()
   const { connection } = useConnection()
 
   const programRef = useRef<Program<Synft> | null>(null)
-  const [metadata, setMetadata] = useState<any>({})
-  const [belongToMe, setBelongToMe] = useState(false)
+  const [belongLoading, setBelongLoading] = useState(true)
+  const [belongTo, setBelongTo] = useState({
+    me: false,
+    program: false,
+  })
   const [hasInject, setHasInject] = useState(false)
-  const [injectType, setInjectType] = useState<'sol' | 'nft' | ''>('')
+  const [injectType, setInjectType] = useState<InjectType>('')
   const [childMint, setChildMint] = useState('')
+
+  // TODO: any
+  const [mintMetadataArr, setMintMetadataArr] = useState<any[]>([])
 
   const dispatch = useAppDispatch()
   const myNFTData = useAppSelector(selectMyNFTMetadataArr)
@@ -60,26 +73,49 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     checkHasInject()
-  }, [belongToMe])
+  }, [belongTo])
 
   async function viewOrOps() {
-    const r = await checkBelongToMe(params.mint, wallet, connection)
-    setBelongToMe(r)
+    if (!params.mint) return
+    try {
+      const mintKey = new PublicKey(params.mint)
+      const belong = await checkBelongToMe(mintKey, wallet, connection)
+      setBelongTo(belong)
+    } catch (error) {
+      log.warn('viewOrOps', error)
+    }
   }
 
   async function checkHasInject() {
     const program = programRef.current
     if (!program) return
-    const data = await getInject(params.mint, wallet.publicKey, connection, program)
-    log.info('hasInject', data)
-    if (!data || !data.childrenMetadata) {
+    const inject = await getInject(params.mint, wallet.publicKey, connection, program)
+    log.info('inject', inject)
+
+    if (!inject || !inject.childrenMetadata) {
       setHasInject(false)
       return
     }
-    const { childrenMetadata, childrenMeta } = data
+    const { childrenMetadata, childrenMeta } = inject
     setHasInject(true)
-    if (childrenMeta?.childType.sol) setInjectType('sol')
-    if (childrenMeta?.childType.nft) setInjectType('nft')
+    log.info(`${params.mint} hasInject`, inject)
+
+    if (childrenMeta?.childType.nft || childrenMeta?.childType.sol) {
+      const injectType = childrenMeta?.childType.nft ? 'nft' : 'sol'
+      setInjectType(injectType)
+      if (injectType === 'nft') {
+        const metadataArr = await loadChildrenInject(childrenMeta.child, { connection, wallet, program })
+        log.info('metadataArr', { metadataArr })
+        setMintMetadataArr(metadataArr)
+      } else {
+        setMintMetadataArr([
+          {
+            injectType,
+            lamports: childrenMetadata.lamports,
+          },
+        ])
+      }
+    }
   }
 
   function initProgram() {
@@ -92,11 +128,26 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     window.location.reload()
   }
 
+  // TODO loading
   return (
     <NFTHandlerWrapper>
-      {!belongToMe ? (
-        <div>OnlyView</div>
-      ) : (
+      {(!belongTo.me && (
+        <div>
+          {(belongTo.program && <p>OnlyView </p>) || (
+            <button
+              onClick={async () => {
+                const { name, symbol, uri } = metadata.data
+                const program = programRef.current
+                if (!program) return
+                const newMint = await nftCopy(params.mint, { name, uri, symbol }, { connection, wallet, program })
+                window.location.href = `/info/${newMint}`
+              }}
+            >
+              copyTheNFT
+            </button>
+          )}
+        </div>
+      )) || (
         <div>
           {hasInject ? (
             <div>
@@ -111,6 +162,17 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                     }}
                   >
                     extractSOL
+                  </button>
+                  |
+                  <button
+                    onClick={async () => {
+                      const program = programRef.current
+                      if (!program) return
+                      await burnWithdrawSOL(params.mint, { wallet, program, connection })
+                      reloadWindow()
+                    }}
+                  >
+                    burnWithdrawSOL
                   </button>
                 </div>
               )}
@@ -127,8 +189,22 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                   >
                     extractNFT
                   </button>
+                  |
+                  <button
+                    onClick={async () => {
+                      const program = programRef.current
+                      if (!program) return
+                      await burnWithdrawSPL(params.mint, { wallet, program, connection })
+                      reloadWindow()
+                    }}
+                  >
+                    burnWithdrawSPL
+                  </button>
                 </div>
               )}
+              {mintMetadataArr.map((item) => {
+                return <p key={item.data?.mint || 'sol'}>{item.data?.mint || item.lamports}</p>
+              })}
             </div>
           ) : (
             <div>
@@ -153,7 +229,6 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                   .map((item) => {
                     return <p key={item.data.mint}>{item.data.mint}</p>
                   })}
-
                 <input
                   type="text"
                   value={childMint}

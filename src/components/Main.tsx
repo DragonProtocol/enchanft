@@ -8,6 +8,7 @@ const Main: React.FC = () => {
   const routes = useRoutes([
     { path: '/', element: <Home /> },
     { path: '/info/:mint', element: <Info /> },
+    { path: '*', element: <div>404</div> },
   ])
   return <MainWrapper>{routes}</MainWrapper>
 }

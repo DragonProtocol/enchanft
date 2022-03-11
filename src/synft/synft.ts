@@ -21,6 +21,11 @@ export type Synft = {
           isSigner: false
         },
         {
+          name: 'parentMintAccount'
+          isMut: false
+          isSigner: false
+        },
+        {
           name: 'childrenMeta'
           isMut: true
           isSigner: false
@@ -67,6 +72,11 @@ export type Synft = {
         },
         {
           name: 'parentTokenAccount'
+          isMut: false
+          isSigner: false
+        },
+        {
+          name: 'parentMintAccount'
           isMut: false
           isSigner: false
         },
@@ -130,6 +140,11 @@ export type Synft = {
           isSigner: false
         },
         {
+          name: 'parentMintAccount'
+          isMut: false
+          isSigner: false
+        },
+        {
           name: 'childrenMeta'
           isMut: true
           isSigner: false
@@ -179,6 +194,11 @@ export type Synft = {
           isSigner: false
         },
         {
+          name: 'parentMintAccount'
+          isMut: false
+          isSigner: false
+        },
+        {
           name: 'childrenMeta'
           isMut: true
           isSigner: false
@@ -217,6 +237,11 @@ export type Synft = {
         {
           name: 'parentTokenAccount'
           isMut: true
+          isSigner: false
+        },
+        {
+          name: 'parentMintAccount'
+          isMut: false
           isSigner: false
         },
         {
@@ -315,7 +340,7 @@ export type Synft = {
           isSigner: true
         },
         {
-          name: 'parentTokenMint'
+          name: 'parentMintAccount'
           isMut: true
           isSigner: false
         },
@@ -356,7 +381,7 @@ export type Synft = {
           isSigner: true
         },
         {
-          name: 'parentTokenMint'
+          name: 'parentMintAccount'
           isMut: true
           isSigner: false
         },
@@ -452,25 +477,27 @@ export type Synft = {
         ]
       }
     },
+  ]
+  errors: [
     {
-      name: 'ErrorCode'
-      type: {
-        kind: 'enum'
-        variants: [
-          {
-            name: 'InvalidMetadataBump'
-          },
-          {
-            name: 'InvalidAuthority'
-          },
-          {
-            name: 'InvalidExtractAttempt'
-          },
-          {
-            name: 'InvalidBurnType'
-          },
-        ]
-      }
+      code: 6000
+      name: 'InvalidMetadataBump'
+      msg: 'The bump passed in does not match the bump in the PDA'
+    },
+    {
+      code: 6001
+      name: 'InvalidAuthority'
+      msg: 'Current owner is not the authority of the parent token'
+    },
+    {
+      code: 6002
+      name: 'InvalidExtractAttempt'
+      msg: 'Only Reversible Synthetic Tokens can be extracted'
+    },
+    {
+      code: 6003
+      name: 'InvalidBurnType'
+      msg: 'Wrong type of burn instruction for the token'
     },
   ]
 }
@@ -494,6 +521,11 @@ export const IDL: Synft = {
         },
         {
           name: 'parentTokenAccount',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'parentMintAccount',
           isMut: false,
           isSigner: false,
         },
@@ -544,6 +576,11 @@ export const IDL: Synft = {
         },
         {
           name: 'parentTokenAccount',
+          isMut: false,
+          isSigner: false,
+        },
+        {
+          name: 'parentMintAccount',
           isMut: false,
           isSigner: false,
         },
@@ -607,6 +644,11 @@ export const IDL: Synft = {
           isSigner: false,
         },
         {
+          name: 'parentMintAccount',
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: 'childrenMeta',
           isMut: true,
           isSigner: false,
@@ -656,6 +698,11 @@ export const IDL: Synft = {
           isSigner: false,
         },
         {
+          name: 'parentMintAccount',
+          isMut: false,
+          isSigner: false,
+        },
+        {
           name: 'childrenMeta',
           isMut: true,
           isSigner: false,
@@ -694,6 +741,11 @@ export const IDL: Synft = {
         {
           name: 'parentTokenAccount',
           isMut: true,
+          isSigner: false,
+        },
+        {
+          name: 'parentMintAccount',
+          isMut: false,
           isSigner: false,
         },
         {
@@ -792,7 +844,7 @@ export const IDL: Synft = {
           isSigner: true,
         },
         {
-          name: 'parentTokenMint',
+          name: 'parentMintAccount',
           isMut: true,
           isSigner: false,
         },
@@ -833,7 +885,7 @@ export const IDL: Synft = {
           isSigner: true,
         },
         {
-          name: 'parentTokenMint',
+          name: 'parentMintAccount',
           isMut: true,
           isSigner: false,
         },
@@ -929,25 +981,27 @@ export const IDL: Synft = {
         ],
       },
     },
+  ],
+  errors: [
     {
-      name: 'ErrorCode',
-      type: {
-        kind: 'enum',
-        variants: [
-          {
-            name: 'InvalidMetadataBump',
-          },
-          {
-            name: 'InvalidAuthority',
-          },
-          {
-            name: 'InvalidExtractAttempt',
-          },
-          {
-            name: 'InvalidBurnType',
-          },
-        ],
-      },
+      code: 6000,
+      name: 'InvalidMetadataBump',
+      msg: 'The bump passed in does not match the bump in the PDA',
+    },
+    {
+      code: 6001,
+      name: 'InvalidAuthority',
+      msg: 'Current owner is not the authority of the parent token',
+    },
+    {
+      code: 6002,
+      name: 'InvalidExtractAttempt',
+      msg: 'Only Reversible Synthetic Tokens can be extracted',
+    },
+    {
+      code: 6003,
+      name: 'InvalidBurnType',
+      msg: 'Wrong type of burn instruction for the token',
     },
   ],
 }

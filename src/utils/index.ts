@@ -1,3 +1,6 @@
+import log from 'loglevel'
+
+log.info({ env: process.env.NODE_ENV })
 export const isProd = process.env.NODE_ENV === 'production'
 
 // explore 数据源
