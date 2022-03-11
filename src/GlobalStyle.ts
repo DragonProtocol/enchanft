@@ -1,4 +1,5 @@
 import { createGlobalStyle } from 'styled-components'
+
 const GlobalStyle = createGlobalStyle`
   html,body {
     -moz-osx-font-smoothing: grayscale;

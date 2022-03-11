@@ -1,12 +1,12 @@
+import React, { useEffect, useRef, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { PublicKey } from '@solana/web3.js'
-import React, { useEffect, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import log from 'loglevel'
+
 import NFTList, { NftDataItem } from '../components/NFTList'
 
-import NFTShower from '../components/NFTShower'
 import {
   getMyNFTData,
   getMyNFTMetadata,
@@ -15,35 +15,40 @@ import {
   selectMyNFTs,
   setWalletAddr,
 } from '../features/my/mySlice'
+import { getExploreData, selectExploreData } from '../features/explore/exploreSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
-const formatNftDataAry = (metadataArr: any[], nfts: any[]): NftDataItem[] => {
-  return metadataArr.map((item, idx) => {
+const formatNftDataAry = (metadataArr: any[], nfts: any[]): NftDataItem[] =>
+  metadataArr.map((item, idx) => {
     const jsonData = item.toJSON()
-    console.log('jsonData',jsonData)
-    
+    console.log('jsonData', jsonData)
+
     return {
       addr: nfts[idx].address.toString(),
       mint: jsonData.data.mint,
       uri: jsonData.data.data.uri,
     }
   })
-}
+
 function Home() {
   const wallet = useWallet()
   const walletRef = useRef('')
   const { connection } = useConnection()
+
+  // TODO: hard code
   const [tab, setTab] = useState(localStorage.getItem('tab') || 'explore') // explore | mynft
   const switchList = (name: string) => {
     setTab(name)
     localStorage.setItem('tab', name)
   }
   const dispatch = useAppDispatch()
+  const exploreNFTData = useAppSelector(selectExploreData)
+  //------
   const nfts = useAppSelector(selectMyNFTs) // nfts count 可用于分页或作为显示
   const metadataArr = useAppSelector(selectMyNFTMetadataArr)
   const metadataStatus = useAppSelector(selectMyNFTMetadataStatus)
   useEffect(() => {
-    if (tab !== 'my') return
+    log.info('wallet.publicKey', wallet.publicKey)
     if (!wallet.publicKey) return
     if (walletRef.current !== wallet.publicKey.toString()) {
       walletRef.current = wallet.publicKey.toString()
@@ -51,8 +56,9 @@ function Home() {
       // const owner = wallet.publicKey
       const owner = new PublicKey('AEahaRpDFzg74t7NtWoruabo2fPJQjKFM9kQJNjH7obK')
       dispatch(getMyNFTData({ connection, owner }))
+      dispatch(getExploreData({ collectionID: 'Hkunn4hct84zSPNpyQygThUKn8RUBVf5b4r975NRaHPb' }))
     }
-  }, [wallet, tab])
+  }, [wallet])
 
   useEffect(() => {
     if (nfts.length < 1) return
@@ -60,6 +66,7 @@ function Home() {
   }, [nfts, metadataStatus])
 
   const nftList = formatNftDataAry(metadataArr, nfts)
+  log.info(exploreNFTData, nftList)
   return (
     <HomeWrapper>
       <div className="top">
@@ -86,12 +93,12 @@ function Home() {
           <div className="list-title">Popular NFTs</div>
         )}
         <div className="list">
-          <NFTList data={nftList}></NFTList>
+          <NFTList data={nftList} />
         </div>
       </div>
       <div className="bottom">
         <span className="connect-desc">connect your NFT</span>
-        {/* TODO  这个链接钱包按钮提取为公共组件*/}
+        {/* TODO  这个链接钱包按钮提取为公共组件 */}
         <WalletMultiButton className="connect-wallet">Connect Wallet</WalletMultiButton>
       </div>
     </HomeWrapper>
