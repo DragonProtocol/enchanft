@@ -4,11 +4,9 @@ import { NftDataItem } from './NFTList'
 interface Props {
   data: NftDataItem
 }
-const NFTCard: React.FC<Props> = (props: Props) => {
-  const {
-    data: { uri },
-  } = props
-  const [info, setInfo] = useState<any>({})
+const NFTCard: React.FC<Props> = ({ data }: Props) => {
+  const { uri } = data
+  const [info, setInfo] = useState<any>(data)
   const aliveRef = useRef(true)
   useEffect(() => {
     if (!uri) return
@@ -47,7 +45,6 @@ const NFTCardWrapper = styled.div`
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
     margin-bottom: 15px;
     position: relative;
-    cursor: pointer;
     .tag {
       position: absolute;
       top: 0;
@@ -68,6 +65,5 @@ const NFTCardWrapper = styled.div`
     font-size: 14px;
     line-height: 14px;
     color: #222222;
-    cursor: pointer;
   }
 `
