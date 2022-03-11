@@ -18,15 +18,7 @@ import { getExploreData, selectExploreData, selectExploreStatus } from '../featu
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
 import { collections } from '../utils'
-
-const formatNftDataAry = (metadataArr: any[]): NftDataItem[] =>
-  metadataArr.map((item) => {
-    const jsonData = item.toJSON()
-    return {
-      mint: jsonData.data.mint,
-      uri: jsonData.data.data.uri,
-    }
-  })
+import { CursorPointerUpCss, FontFamilyCss } from '../GlobalStyle'
 
 function Home() {
   const wallet = useWallet()
@@ -56,9 +48,18 @@ function Home() {
     dispatch(getMyNFTData({ connection, owner }))
     dispatch(getExploreData({ collectionIds: collections }))
   }, [wallet])
-
-  const nftList = formatNftDataAry(myNFTData)
-  log.info({ exploreNFTData }) // TODO: @xuewen explore
+  let nftList: NftDataItem[] = []
+  if (tab === 'my') {
+    nftList = myNFTData.map(item=>{
+      const jsonData = item.toJSON()
+      return {
+        mint: jsonData.data.mint,
+        uri: jsonData.data.data.uri,
+      }
+    })
+  } else {
+    nftList = exploreNFTData
+  }
 
   return (
     <HomeWrapper>
@@ -139,8 +140,8 @@ const HomeWrapper = styled.div`
         box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
         font-size: 12px;
         color: #ffffff;
-        cursor: pointer;
-        font-family: 'PressStart2P-Regular';
+        ${FontFamilyCss}
+        ${CursorPointerUpCss}
       }
     }
     .guide-explore {
@@ -204,12 +205,12 @@ const HomeWrapper = styled.div`
       background: #3dd606;
       box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
       margin-left: 20px;
-      cursor: pointer;
       font-size: 12px;
       color: #ffffff;
       border-radius: 0px;
       justify-content: center;
-      font-family: 'PressStart2P-Regular';
+      ${FontFamilyCss}
+      ${CursorPointerUpCss}
     }
   }
 `

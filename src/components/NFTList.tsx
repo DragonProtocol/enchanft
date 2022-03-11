@@ -1,10 +1,13 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { CursorPointerUpCss } from '../GlobalStyle'
 import NFTCard from './NFTCard'
 export interface NftDataItem {
-  mint: string
-  uri: string
+  mint?: string
+  image?: string
+  name?: string
+  uri?: string
 }
 interface Props {
   data: NftDataItem[]
@@ -35,5 +38,6 @@ const NFTListWrapper = styled.div`
     width: calc((100% - 32px) / 4); // 这里的32px = (分布个数3-1)*间隙4px, 可以根据实际的分布个数和间隙区调整
     min-width: calc((100% - 32px) / 4); // 加入这两个后每个item的宽度就生效了
     max-width: calc((100% - 32px) / 4); // 加入这两个后每个item的宽度就生效了
+    ${CursorPointerUpCss}
   }
 `

@@ -6,6 +6,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import styled from 'styled-components'
 import LogoImg from './imgs/logo.svg'
+import { CursorPointerUpCss, FontFamilyCss } from '../GlobalStyle'
 export default function Header() {
   const navigate = useNavigate()
   const { connection } = useConnection()
@@ -32,7 +33,7 @@ export default function Header() {
         <img src={LogoImg} className="logo" onClick={()=>navigate('/')}></img>
       </div>
       <div className="right">
-        <input type="text" className="search" />
+        {/* <input type="text" className="search" /> */}
         {/* TODO  这个链接钱包按钮提取为公共组件*/}
         <WalletMultiButton className="connect-wallet">{!wallet.publicKey && 'Connect Wallet'}</WalletMultiButton>
       </div>
@@ -49,7 +50,6 @@ const HeaderWrapper = styled.div`
     .logo {
       width: 128px;
       height: 32px;
-      cursor: pointer;
     }
   }
   .right {
@@ -79,12 +79,12 @@ const HeaderWrapper = styled.div`
       background: #3dd606;
       box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
       margin-left: 20px;
-      cursor: pointer;
       font-size: 12px;
       color: #ffffff;
       border-radius: 0px;
       justify-content: center;
-      font-family: 'PressStart2P-Regular';
+      ${FontFamilyCss}
+      ${CursorPointerUpCss}
     }
   }
 `

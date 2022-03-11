@@ -45,7 +45,6 @@ const LayoutWrapper = styled.div`
     }
   }
   .main {
-    width: 100%;
     margin-top: 72px;
     padding: 24px;
     min-height: calc(100vh - 72px)

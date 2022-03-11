@@ -4,6 +4,7 @@ import Accordion from '@mui/material/Accordion'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import expandMoreIcon from './icons/expandMore.svg'
+import { CursorPointerUpCss } from '../GlobalStyle'
 interface NFTShowerData {
   uri: string
   mint: string
@@ -129,6 +130,7 @@ const NFTShowerWrapper = styled.div`
       background: #f0f0f0;
       box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.25), inset 0px 4px 0px rgba(255, 255, 255, 0.25);
       text-transform: uppercase;
+      ${CursorPointerUpCss}
     }
     .info-content {
       background: #ffffff;
