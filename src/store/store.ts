@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 
+import ExploreReducer from '../features/explore/exploreSlice'
 import MyNFTReducer from '../features/my/mySlice'
 
 export const store = configureStore({
   reducer: {
+    explore: ExploreReducer,
     mynft: MyNFTReducer,
   },
   middleware: (getDefaultMiddleware) =>

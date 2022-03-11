@@ -14,7 +14,6 @@ export async function getMySPLToken(connection: Connection, owner: PublicKey) {
       return amount.decimals === 0 && amount.uiAmount === 1
     })
     .map((t) => ({
-      owner,
       address: new PublicKey(t.pubkey),
       mint: new PublicKey(t.account.data.parsed.info.mint),
     }))
@@ -22,7 +21,7 @@ export async function getMySPLToken(connection: Connection, owner: PublicKey) {
   return filteredToken
 }
 
-export async function getSPLTokenMetadata(connection: Connection, mintKey: PublicKey) {
+export async function getMetadataFromMint(connection: Connection, mintKey: PublicKey) {
   const pubkey = await Metadata.getPDA(mintKey)
   const metadata = await Metadata.load(connection, pubkey)
   return metadata
