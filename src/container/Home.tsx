@@ -6,7 +6,6 @@ import styled from 'styled-components'
 import log from 'loglevel'
 
 import NFTList, { NftDataItem } from '../components/NFTList'
-
 import {
   getMyNFTData,
   getMyNFTMetadata,
@@ -19,23 +18,13 @@ import { getExploreData, selectExploreData, selectExploreStatus } from '../featu
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
 import { collections } from '../utils'
-
-const formatNftDataAry = (metadataArr: any[]): NftDataItem[] =>
-  metadataArr.map((item) => {
-    const jsonData = item.toJSON()
-    return {
-      mint: jsonData.data.mint,
-      uri: jsonData.data.data.uri,
-    }
-  })
+import { CursorPointerUpCss, FontFamilyCss } from '../GlobalStyle'
 
 function Home() {
   const wallet = useWallet()
   const walletRef = useRef('')
   const { connection } = useConnection()
-
-  // TODO: hard code
-  const [tab, setTab] = useState(localStorage.getItem('tab') || 'explore') // explore | mynft
+  const [tab, setTab] = useState(localStorage.getItem('tab') || 'explore') // explore | my
   const switchList = (name: string) => {
     setTab(name)
     localStorage.setItem('tab', name)
@@ -59,9 +48,18 @@ function Home() {
     dispatch(getMyNFTData({ connection, owner }))
     dispatch(getExploreData({ collectionIds: collections }))
   }, [wallet])
-
-  const nftList = formatNftDataAry(myNFTData)
-  log.info({ exploreNFTData }) // TODO: @xuewen explore
+  let nftList: NftDataItem[] = []
+  if (tab === 'my') {
+    nftList = myNFTData.map(item=>{
+      const jsonData = item.toJSON()
+      return {
+        mint: jsonData.data.mint,
+        uri: jsonData.data.data.uri,
+      }
+    })
+  } else {
+    nftList = exploreNFTData
+  }
 
   return (
     <HomeWrapper>
@@ -92,11 +90,13 @@ function Home() {
           <NFTList data={nftList} />
         </div>
       </div>
-      <div className="bottom">
-        <span className="connect-desc">connect your NFT</span>
-        {/* TODO  这个链接钱包按钮提取为公共组件 */}
-        <WalletMultiButton className="connect-wallet">Connect Wallet</WalletMultiButton>
-      </div>
+      {!wallet.publicKey && (
+        <div className="bottom">
+          <span className="connect-desc">connect your NFT</span>
+          {/* TODO  这个链接钱包按钮提取为公共组件 */}
+          <WalletMultiButton className="connect-wallet">Connect Wallet</WalletMultiButton>
+        </div>
+      )}
     </HomeWrapper>
   )
 }
@@ -123,11 +123,8 @@ const HomeWrapper = styled.div`
         border-right: none;
       }
       .guide-desc {
-        font-family: 'Press Start 2P';
         font-size: 24px;
         line-height: 40px;
-        /* or 167% */
-
         text-transform: uppercase;
       }
       .guide-btn {
@@ -143,7 +140,8 @@ const HomeWrapper = styled.div`
         box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
         font-size: 12px;
         color: #ffffff;
-        cursor: pointer;
+        ${FontFamilyCss}
+        ${CursorPointerUpCss}
       }
     }
     .guide-explore {
@@ -207,11 +205,12 @@ const HomeWrapper = styled.div`
       background: #3dd606;
       box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
       margin-left: 20px;
-      cursor: pointer;
       font-size: 12px;
       color: #ffffff;
       border-radius: 0px;
       justify-content: center;
+      ${FontFamilyCss}
+      ${CursorPointerUpCss}
     }
   }
 `
