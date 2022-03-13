@@ -1,81 +1,109 @@
 import { BN, Program, Provider, web3, Idl, Address } from '@project-serum/anchor'
-import {
-  TOKEN_PROGRAM_ID,
-  getOrCreateAssociatedTokenAccount,
-  getAccount,
-  getAssociatedTokenAddress,
-} from '@solana/spl-token'
+import { TOKEN_PROGRAM_ID, getAccount, Account } from '@solana/spl-token'
 import { useConnection, useWallet, WalletContextState } from '@solana/wallet-adapter-react'
 import log from 'loglevel'
-import { Signer, PublicKey, SystemProgram, Transaction, Keypair } from '@solana/web3.js'
+import { Signer, PublicKey, SystemProgram, Transaction, Connection, AccountInfo } from '@solana/web3.js'
+import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 
-import idl from '../../synftIdl.json'
-import { Synft } from '../../synft'
+import idl, { Synft } from '../../synft'
 
 const metadataProgramId = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 const MPL_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
 const programId = new PublicKey(idl.metadata.address)
 
-export async function checkBelongToMe(
-  mint: string | undefined,
+export async function checkValidNFT(
+  mintKey: PublicKey,
   wallet: WalletContextState,
   connection: web3.Connection,
 ): Promise<boolean> {
-  if (!wallet.publicKey || !mint) return false
-  const mintKey = new PublicKey(mint)
+  if (!wallet.publicKey) return false
   try {
-    const data = await getAssociatedTokenAddress(mintKey, wallet.publicKey)
-    const mintTokenAccount = await getAccount(connection, data)
-    const belong = mintTokenAccount?.owner.toString() === wallet.publicKey.toString()
-    return belong
+    const data = await connection.getTokenLargestAccounts(mintKey)
+    const result = data.value.some((item) => item.uiAmount === 1 && item.decimals === 0)
+    return result
   } catch (error) {
-    log.warn('checkBelongToMe', error)
+    log.warn('checkValidNFT', error)
+    return false
   }
-  return false
 }
 
+export async function checkBelongToMe(
+  mintKey: PublicKey,
+  wallet: WalletContextState,
+  connection: web3.Connection,
+): Promise<{
+  me: boolean
+  program: boolean
+}> {
+  if (!wallet.publicKey) return { me: false, program: false }
+  try {
+    const data = await connection.getTokenLargestAccounts(mintKey)
+    const dataValue = data.value[0]
+    log.debug('checkBelongToMe', dataValue)
+    if (dataValue.uiAmount !== 1) return { me: false, program: false }
+    const mintTokenAccount: Account = await getAccount(connection, dataValue.address)
+    if (!mintTokenAccount?.owner) return { me: false, program: false }
+    const belong = mintTokenAccount.owner.toString() === wallet.publicKey.toString()
+    let belongToProgram = false
+    if (!belong) {
+      // mintTokenAccount?.owner maybe a pda, check belong program
+      log.debug('checkBelongToMe BelongTo:', mintTokenAccount.owner.toString())
+      const accountAndCtx: AccountInfo<Buffer> | null = await connection.getAccountInfo(mintTokenAccount.owner)
+      belongToProgram = accountAndCtx?.owner.toString() === programId.toString()
+      log.debug('belongToProgram: ', belongToProgram)
+    }
+    return { me: belong, program: belongToProgram }
+  } catch (error) {
+    log.error(error)
+    return { me: false, program: false }
+  }
+}
+
+// TODO: return any
 export async function getInject(
   mint: string | undefined,
   walletPubKey: PublicKey | null,
   connection: web3.Connection,
   program: Program<Synft>,
 ): Promise<any | null> {
-  // TODO: any
   if (!walletPubKey || !mint) return null
-  log.info('begin getInject')
+  log.debug('begin getInject')
 
-  const mintKey = new PublicKey(mint)
-  const mintTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    Keypair.generate(),
-    mintKey,
-    walletPubKey,
-    true,
-  )
+  try {
+    const mintKey = new PublicKey(mint)
+    // const data = await connection.getTokenLargestAccounts(mintKey)
+    // const mintTokenAccount = await getAccount(connection, data.value[0].address)
 
-  const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
-    [Buffer.from('children-of'), mintTokenAccount.address.toBuffer()],
-    programId,
-  )
+    const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+      [Buffer.from('children-of'), mintKey.toBuffer()],
+      programId,
+    )
 
-  const childrenMetadata = await connection.getAccountInfo(metadataPDA)
-  let childrenMeta = null
-  if (childrenMetadata) {
-    childrenMeta = await program.account.childrenMetadata.fetch(metadataPDA)
+    const childrenMetadata = await connection.getAccountInfo(metadataPDA)
+    if (!childrenMetadata) {
+      return null
+    }
+    let childrenMeta = null
+    if (childrenMetadata) {
+      childrenMeta = await program.account.childrenMetadata.fetch(metadataPDA)
+    }
+
+    log.debug('getInject', { childrenMetadata, childrenMeta })
+
+    return { childrenMetadata, childrenMeta }
+  } catch (error) {
+    log.warn(error)
+    return null
   }
-
-  log.info('getInject', { childrenMetadata, childrenMeta })
-
-  return { childrenMetadata, childrenMeta }
 }
 
 export async function nftCopy(
-  mint: string,
+  mint: string | undefined,
   { name, symbol, uri }: { name: string; symbol: string; uri: string },
   { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
-) {
-  if (!wallet.publicKey) return
-  log.info('begin nftCopy')
+): Promise<string> {
+  if (!wallet.publicKey || !mint) return ''
+  log.debug('begin nftCopy')
   const mintKey = new PublicKey(mint)
 
   const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
@@ -109,7 +137,8 @@ export async function nftCopy(
   })
   const signature = await wallet.sendTransaction(tx, connection)
   const result = await connection.confirmTransaction(signature, 'processed')
-  log.info('nftCopy result', result)
+  log.debug('nftCopy result', result, nftTokenAccountPDA.toString(), nftMintPDA.toString())
+  return nftMintPDA.toString()
 }
 
 export async function injectSol(
@@ -118,35 +147,24 @@ export async function injectSol(
   { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
 ) {
   if (!wallet.publicKey || !mint) return
-  log.info('begin injectSol')
+  log.debug('begin injectSol')
   const injectSolAmount = new BN(solAmount)
   const mintKey = new PublicKey(mint)
 
-  const mintTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    Keypair.generate(),
-    mintKey,
-    wallet.publicKey,
-    true,
-  )
+  const mintTokenAccount = await connection.getTokenLargestAccounts(mintKey)
+  const mintTokenAccountAddress = mintTokenAccount.value[0].address
 
   const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
-    [Buffer.from('children-of'), mintTokenAccount.address.toBuffer()],
+    [Buffer.from('children-of'), mintKey.toBuffer()],
     programId,
   )
-
-  // const childrenMetadata = await connection.getAccountInfo(metadataPDA)
-  // log.info('injectSol', { childrenMetadata })
-  // if (childrenMetadata) {
-  //   log.warn('connot injectSol')
-  //   return
-  // }
 
   // Inject
   const tx: Transaction = await program.transaction.initializeSolInject(...[true, metadataBump, injectSolAmount], {
     accounts: {
       currentOwner: wallet.publicKey,
-      parentTokenAccount: mintTokenAccount.address,
+      parentTokenAccount: mintTokenAccountAddress,
+      parentMintAccount: mintKey,
       childrenMeta: metadataPDA,
       systemProgram: SystemProgram.programId,
       rent: web3.SYSVAR_RENT_PUBKEY,
@@ -155,7 +173,7 @@ export async function injectSol(
   })
   const signature = await wallet.sendTransaction(tx, connection)
   const result = await connection.confirmTransaction(signature, 'processed')
-  log.info('injectSol result', result)
+  log.debug('injectSol result', result)
 }
 
 export async function extractSol(
@@ -163,26 +181,23 @@ export async function extractSol(
   { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
 ) {
   if (!wallet.publicKey || !mint) return
-  log.info('begin extractSol')
+  log.debug('begin extractSol')
   const mintKey = new PublicKey(mint)
-  const mintTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    Keypair.generate(),
-    mintKey,
-    wallet.publicKey,
-    true,
-  )
+  const mintTokenAccount = await connection.getTokenLargestAccounts(mintKey)
+  const mintTokenAccountAddress = mintTokenAccount.value[0].address
+
+  // const tokenAccount = await getAccount(connection, mintTokenAccountAddress)
 
   const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
-    [Buffer.from('children-of'), mintTokenAccount.address.toBuffer()],
+    [Buffer.from('children-of'), mintKey.toBuffer()],
     programId,
   )
 
-  // getAccount(connection, _metadata_pda); // account exists
   const extractTx = await program.transaction.extractSol(metadataBump, {
     accounts: {
       currentOwner: wallet.publicKey,
-      parentTokenAccount: mintTokenAccount.address,
+      parentTokenAccount: mintTokenAccountAddress,
+      parentMintAccount: mintKey,
       childrenMeta: metadataPDA,
 
       systemProgram: SystemProgram.programId,
@@ -192,17 +207,7 @@ export async function extractSol(
   })
   const signature = await wallet.sendTransaction(extractTx, connection)
   const result = await connection.confirmTransaction(signature, 'processed')
-  log.info('extractSol result', result)
-
-  // console.log("extractTx :", extractTx);
-  // const solAccountUser2 = await anchor
-  //   .getProvider()
-  //   .connection.getAccountInfo(user2.publicKey);
-  // console.log("solAccountUser2.lamports ", solAccountUser2.lamports);
-  // assert.ok(solAccountUser2.lamports > 1500000000);
-
-  // let metaDataAfter = await program.account.childrenMetadata.fetchNullable(_metadata_pda);
-  // assert.ok(metaDataAfter === null);
+  log.debug('extractSol result', result)
 }
 
 export async function injectNFT(
@@ -211,39 +216,31 @@ export async function injectNFT(
   { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
 ) {
   if (!wallet.publicKey || !mint || !childMint) return
-  log.info('begin injectNFT', { childMint, mint })
-  const kp = Keypair.generate()
+  log.debug('begin injectNFT', { childMint, mint })
+
   const parentMintKey = new PublicKey(mint)
-  const parentMintTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    kp,
-    parentMintKey,
-    wallet.publicKey,
-    true,
-  )
+  const parentMintTokenAccounts = await connection.getTokenLargestAccounts(parentMintKey)
+  const parentMintTokenAccountAddr = parentMintTokenAccounts.value[0].address
+
   const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
-    [Buffer.from('children-of'), parentMintTokenAccount.address.toBuffer()],
+    [Buffer.from('children-of'), parentMintKey.toBuffer()],
     programId,
   )
 
   const childMintKey = new PublicKey(childMint)
 
-  const childMintTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    kp,
-    childMintKey,
-    wallet.publicKey,
-    true,
-  )
+  const childMintTokenAccounts = await connection.getTokenLargestAccounts(childMintKey)
+  const childMintTokenAccountsAddr = childMintTokenAccounts.value[0].address
 
-  // console.log({ mintTokenAccount, parentMintTokenAccount })
-  // console.log(mintTokenAccount.owner.toBase58(), wallet.publicKey.toBase58(), parentMintTokenAccount.owner.toString())
+  // const parentTokenAccount = await getAccount(connection, parentMintTokenAccountAddr)
+  // const childTokenAccount = await getAccount(connection, childMintTokenAccountsAddr)
 
   const tx = await program.transaction.initializeInject(true, metadataBump, {
     accounts: {
       currentOwner: wallet.publicKey,
-      childTokenAccount: childMintTokenAccount.address,
-      parentTokenAccount: parentMintTokenAccount.address,
+      childTokenAccount: childMintTokenAccountsAddr,
+      parentTokenAccount: parentMintTokenAccountAddr,
+      parentMintAccount: parentMintKey,
       childrenMeta: metadataPDA,
 
       systemProgram: SystemProgram.programId,
@@ -254,10 +251,9 @@ export async function injectNFT(
   })
   const signature = await wallet.sendTransaction(tx, connection)
   const result = await connection.confirmTransaction(signature, 'processed')
-  log.info('injectNFT result', result)
-  // console.log("initTx :", initTx);
-  // const childrenMeta = await program.account.childrenMetadata.fetch(metadataPDA)
-  // console.log({ childrenMeta })
+  log.debug('injectNFT result', result)
+  const childrenMeta = await program.account.childrenMetadata.fetch(metadataPDA)
+  log.debug('injectNFT', { childrenMeta })
 }
 
 export async function extractNFT(
@@ -265,33 +261,26 @@ export async function extractNFT(
   { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
 ) {
   if (!wallet.publicKey || !mint) return
-  log.info('begin extractNFT')
+  log.debug('begin extractNFT')
 
-  const kp = Keypair.generate()
   const parentMintKey = new PublicKey(mint)
-  const parentMintTokenAccount = await getOrCreateAssociatedTokenAccount(
-    connection,
-    kp,
-    parentMintKey,
-    wallet.publicKey,
-    true,
-  )
+  const parentMintTokenAccounts = await connection.getTokenLargestAccounts(parentMintKey)
+  const parentMintTokenAccountAddr = parentMintTokenAccounts.value[0].address
 
   const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
-    [Buffer.from('children-of'), parentMintTokenAccount.address.toBuffer()],
+    [Buffer.from('children-of'), parentMintKey.toBuffer()],
     programId,
   )
-  //   console.log('_metadata_pda is ', metadataPDA.toString())
 
   const childrenMeta = await program.account.childrenMetadata.fetch(metadataPDA)
   const childTokenAccount = childrenMeta.child
 
-  // getAccount(connection, _metadata_pda); // account exists
   const tx = await program.transaction.extract(metadataBump, {
     accounts: {
       currentOwner: wallet.publicKey,
       childTokenAccount,
-      parentTokenAccount: parentMintTokenAccount.address,
+      parentTokenAccount: parentMintTokenAccountAddr,
+      parentMintAccount: parentMintKey,
       childrenMeta: metadataPDA,
 
       systemProgram: SystemProgram.programId,
@@ -302,17 +291,129 @@ export async function extractNFT(
   })
   const signature = await wallet.sendTransaction(tx, connection)
   const result = await connection.confirmTransaction(signature, 'processed')
-  log.info('extractNFT result :', result)
-  // try {
-  //   getAccount(connection, _metadata_pda);
-  // } catch (error: any) {
-  //   assert.ok(error.message == "TokenAccountNotFoundError");
-  // }
+  log.debug('extractNFT result :', result)
 }
 
-// TODO: burn
-export async function burnWithdrawSPL() {
-  log.error('TODO')
+export async function burnWithdrawSOL(
+  mint: string | undefined,
+  { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
+) {
+  if (!wallet.publicKey || !mint) return
+  log.debug('begin burnWithdrawSOL')
+  const mintKey = new PublicKey(mint)
+  const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+    [Buffer.from('children-of'), mintKey.toBuffer()],
+    program.programId,
+  )
+  const parentMintTokenAccounts = await connection.getTokenLargestAccounts(mintKey)
+  const parentMintTokenAccountAddr = parentMintTokenAccounts.value[0].address
+
+  const tx = await program.transaction.burnForSol({
+    accounts: {
+      currentOwner: wallet.publicKey,
+      parentMintAccount: mintKey,
+      parentTokenAccount: parentMintTokenAccountAddr,
+      childrenMeta: metadataPDA,
+
+      systemProgram: SystemProgram.programId,
+      rent: web3.SYSVAR_RENT_PUBKEY,
+      tokenProgram: TOKEN_PROGRAM_ID,
+    },
+    signers: [],
+  })
+  const signature = await wallet.sendTransaction(tx, connection)
+  const result = await connection.confirmTransaction(signature, 'processed')
+  log.debug('extractNFT result :', result)
 }
 
-export default {}
+export async function burnWithdrawSPL(
+  mint: string | undefined,
+  { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
+) {
+  if (!wallet.publicKey || !mint) return
+  log.debug('begin burnWithdrawSPL')
+  const mintKey = new PublicKey(mint)
+
+  const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+    [Buffer.from('children-of'), mintKey.toBuffer()],
+    programId,
+  )
+  const parentMintTokenAccounts = await connection.getTokenLargestAccounts(mintKey)
+  const parentMintTokenAccountAddr = parentMintTokenAccounts.value[0].address
+  const childrenMeta = await program.account.childrenMetadata.fetch(metadataPDA)
+  const childTokenAccount = childrenMeta.child
+
+  const tx = await program.transaction.burnForToken({
+    accounts: {
+      currentOwner: wallet.publicKey,
+      parentMintAccount: mintKey,
+      parentTokenAccount: parentMintTokenAccountAddr,
+      childTokenAccount,
+      childrenMeta: metadataPDA,
+
+      systemProgram: SystemProgram.programId,
+      rent: web3.SYSVAR_RENT_PUBKEY,
+      tokenProgram: TOKEN_PROGRAM_ID,
+    },
+    signers: [],
+  })
+
+  const signature = await wallet.sendTransaction(tx, connection)
+  const result = await connection.confirmTransaction(signature, 'processed')
+  log.debug('burnWithdrawSPL result :', result)
+}
+
+export async function loadNFTInject(
+  address: PublicKey,
+  { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
+) {
+  const childTokenAccount = await getTokenAccount(address, connection)
+  const metadata = await getMetadataFromMint(connection, childTokenAccount.mint)
+  const inject = await getInject(childTokenAccount.mint.toString(), wallet.publicKey, connection, program)
+  return { inject, metadata, childTokenAccount }
+}
+
+export async function loadChildrenInject(
+  address: PublicKey,
+  { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
+) {
+  const metadataArr: any[] = []
+
+  let { inject, childTokenAccount, metadata } = await loadNFTInject(address, { wallet, program, connection })
+  metadataArr.push(metadata)
+
+  // TODO: redux
+  while (inject) {
+    log.debug(`${childTokenAccount.mint.toString()} hasInject`, inject)
+    if (inject.childrenMeta?.childType.nft) {
+      // eslint-disable-next-line no-await-in-loop
+      const data = await loadNFTInject(inject.childrenMeta.child, { wallet, program, connection })
+      childTokenAccount = data.childTokenAccount
+      metadata = data.metadata
+      metadataArr.push(metadata)
+      inject = data.inject
+    } else if (inject.childrenMeta?.childType.sol) {
+      // TODO: get sol count
+      metadataArr.push({
+        injectType: 'sol',
+        lamports: inject.childrenMetadata.lamports,
+      })
+      inject = null
+    } else {
+      inject = null
+    }
+  }
+
+  return metadataArr
+}
+
+export async function getTokenAccount(address: PublicKey, connection: Connection) {
+  const account = await getAccount(connection, address)
+  return account
+}
+
+export async function getMetadataFromMint(connection: Connection, mintKey: PublicKey) {
+  const pubkey = await Metadata.getPDA(mintKey)
+  const metadata = await Metadata.load(connection, pubkey)
+  return metadata
+}

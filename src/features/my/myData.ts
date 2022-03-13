@@ -2,6 +2,8 @@ import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import { TOKEN_PROGRAM_ID } from '@solana/spl-token'
 import { Connection, PublicKey } from '@solana/web3.js'
 
+export { getMetadataFromMint } from '../info/infoOps'
+
 export async function getMySPLToken(connection: Connection, owner: PublicKey) {
   const tokens = await connection.getParsedTokenAccountsByOwner(owner, {
     programId: TOKEN_PROGRAM_ID,
@@ -19,10 +21,4 @@ export async function getMySPLToken(connection: Connection, owner: PublicKey) {
     }))
 
   return filteredToken
-}
-
-export async function getMetadataFromMint(connection: Connection, mintKey: PublicKey) {
-  const pubkey = await Metadata.getPDA(mintKey)
-  const metadata = await Metadata.load(connection, pubkey)
-  return metadata
 }

@@ -24,8 +24,7 @@ import { store } from './store/store'
 
 require('@solana/wallet-adapter-react-ui/styles.css')
 
-log.setLevel(isProd ? 'info' : 'trace')
-log.info({ isProd })
+log.setLevel(isProd ? 'warn' : 'trace')
 
 const App: FC = () => {
   const network = isProd ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet
