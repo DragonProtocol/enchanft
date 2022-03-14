@@ -1,9 +1,11 @@
+import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Connection, PublicKey } from '@solana/web3.js'
 import log from 'loglevel'
 
 import { RootState } from '../../store/store'
 
+import { programId } from '../../synft'
 import { getMySPLToken, getMetadataFromMint } from './myData'
 
 type Token = {
@@ -48,8 +50,13 @@ export const getMyNFTMetadata = createAsyncThunk(
     const data = await Promise.all(
       nfts.map(async (item) => {
         try {
+          const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+            [Buffer.from('children-of'), item.mint.toBuffer()],
+            programId,
+          )
+          const hasInjected = await connection.getAccountInfo(metadataPDA)
           const metadata = await getMetadataFromMint(connection, item.mint)
-          return metadata
+          return { metadata, hasInjected: !!hasInjected }
         } catch (error) {
           return null
         }

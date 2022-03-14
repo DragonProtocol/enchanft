@@ -8,6 +8,8 @@ export interface NftDataItem {
   image?: string
   name?: string
   uri?: string
+  hasCopied?: boolean
+  hasInjected?: boolean
 }
 interface Props {
   data: NftDataItem[]
