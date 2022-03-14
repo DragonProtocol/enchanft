@@ -13,7 +13,7 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import { clusterApiUrl } from '@solana/web3.js'
 import { Provider } from 'react-redux'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, HashRouter } from 'react-router-dom'
 import log from 'loglevel'
 
 import GlobalStyle from './GlobalStyle'
@@ -56,9 +56,9 @@ const App: FC = () => {
         <WalletModalProvider>
           <Provider store={store}>
             <GlobalStyle />
-            <BrowserRouter>
+            <HashRouter>
               <Layout />
-            </BrowserRouter>
+            </HashRouter>
           </Provider>
         </WalletModalProvider>
       </WalletProvider>
