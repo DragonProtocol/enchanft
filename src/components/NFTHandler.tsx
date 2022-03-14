@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import log from 'loglevel'
 import { PublicKey } from '@solana/web3.js'
+import { useNavigate } from 'react-router-dom'
 
 import { getMyNFTData, selectMyNFTMetadataArr, selectMyNFTMetadataStatus, setWalletAddr } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
@@ -39,6 +40,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const params = useParams()
   const wallet: WalletContextState = useWallet()
   const { connection } = useConnection()
+  const navigate = useNavigate()
 
   const programRef = useRef<Program<Synft> | null>(null)
   const [belongLoading, setBelongLoading] = useState(true)
@@ -145,7 +147,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                   const program = programRef.current
                   if (!program) return
                   const newMint = await nftCopy(params.mint, { name, uri, symbol }, { connection, wallet, program })
-                  window.location.href = `/info/${newMint}`
+                  navigate(`/info/${newMint}`)
+                  reloadWindow()
                 }}
               >
                 copyTheNFT
