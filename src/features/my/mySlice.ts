@@ -66,6 +66,11 @@ export const myNFTSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    clearMyNFT: (state) => {
+      state.metadataStatus = 'init'
+      state.nfts = []
+      state.metadata = []
+    },
     changeMetadataStatus: (state, action) => {
       state.metadataStatus = action.payload.status
     },
@@ -102,6 +107,6 @@ export const selectMyNFTMetadataArr = (state: RootState) => state.mynft.metadata
 export const selectMyNFTMetadataStatus = (state: RootState) => state.mynft.metadataStatus
 export const selectMyWalletAddr = (state: RootState) => state.mynft.walletAddr
 
-export const { setWalletAddr } = myNFTSlice.actions
+export const { setWalletAddr, clearMyNFT } = myNFTSlice.actions
 
 export default myNFTSlice.reducer

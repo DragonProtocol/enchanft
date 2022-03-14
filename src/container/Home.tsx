@@ -13,6 +13,7 @@ import {
   selectMyNFTMetadataStatus,
   selectMyNFTs,
   setWalletAddr,
+  clearMyNFT,
 } from '../features/my/mySlice'
 import { getExploreData, selectExploreData, selectExploreStatus } from '../features/explore/exploreSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
@@ -38,7 +39,11 @@ function Home() {
   const myNFTDataStatus = useAppSelector(selectMyNFTMetadataStatus)
 
   useEffect(() => {
-    if (!wallet.publicKey) return
+    if (!wallet.publicKey) {
+      walletRef.current = ''
+      dispatch(clearMyNFT())
+      return
+    }
     if (walletRef.current === wallet.publicKey.toString()) return
 
     walletRef.current = wallet.publicKey.toString()
@@ -46,11 +51,15 @@ function Home() {
     // const owner = new PublicKey('AEahaRpDFzg74t7NtWoruabo2fPJQjKFM9kQJNjH7obK')
     dispatch(setWalletAddr(walletRef.current))
     dispatch(getMyNFTData({ connection, owner }))
-    dispatch(getExploreData({ collectionIds: collections }))
   }, [wallet])
+
+  useEffect(() => {
+    dispatch(getExploreData({ collectionIds: collections }))
+  }, [])
+
   let nftList: NftDataItem[] = []
   if (tab === 'my') {
-    nftList = myNFTData.map(item=>{
+    nftList = myNFTData.map((item) => {
       const jsonData = item.toJSON()
       return {
         mint: jsonData.data.mint,

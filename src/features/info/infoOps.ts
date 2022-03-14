@@ -11,12 +11,8 @@ const metadataProgramId = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 const MPL_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
 const programId = new PublicKey(idl.metadata.address)
 
-export async function checkValidNFT(
-  mintKey: PublicKey,
-  wallet: WalletContextState,
-  connection: web3.Connection,
-): Promise<boolean> {
-  if (!wallet.publicKey) return false
+export async function checkValidNFT(mintKey: PublicKey, connection: web3.Connection): Promise<boolean> {
+  // if (!wallet.publicKey) return false
   try {
     const data = await connection.getTokenLargestAccounts(mintKey)
     const result = data.value.some((item) => item.uiAmount === 1 && item.decimals === 0)
