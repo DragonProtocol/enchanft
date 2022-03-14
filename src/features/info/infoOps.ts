@@ -36,19 +36,24 @@ export async function checkBelongToMe(
     const data = await connection.getTokenLargestAccounts(mintKey)
     const dataValue = data.value[0]
     log.debug('checkBelongToMe', dataValue)
+
     if (dataValue.uiAmount !== 1) return { me: false, program: false }
+
     const mintTokenAccount: Account = await getAccount(connection, dataValue.address)
     if (!mintTokenAccount?.owner) return { me: false, program: false }
+
     const belong = mintTokenAccount.owner.toString() === wallet.publicKey.toString()
-    let belongToProgram = false
+
+    let hanCopied = false
     if (!belong) {
-      // mintTokenAccount?.owner maybe a pda, check belong program
-      log.debug('checkBelongToMe BelongTo:', mintTokenAccount.owner.toString())
-      const accountAndCtx: AccountInfo<Buffer> | null = await connection.getAccountInfo(mintTokenAccount.owner)
-      belongToProgram = accountAndCtx?.owner.toString() === programId.toString()
-      log.debug('belongToProgram: ', belongToProgram)
+      const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
+        [Buffer.from('synthetic-nft-mint-seed'), mintKey.toBuffer()],
+        programId,
+      )
+      const accountAndCtx: AccountInfo<Buffer> | null = await connection.getAccountInfo(nftMintPDA)
+      hanCopied = !!accountAndCtx
     }
-    return { me: belong, program: belongToProgram }
+    return { me: belong, program: hanCopied }
   } catch (error) {
     log.error(error)
     return { me: false, program: false }
