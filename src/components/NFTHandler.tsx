@@ -8,6 +8,7 @@ import { PublicKey } from '@solana/web3.js'
 
 import { getMyNFTData, selectMyNFTMetadataArr, selectMyNFTMetadataStatus, setWalletAddr } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { clearMyNFT } from '../features/my/mySlice'
 
 import {
   checkBelongToMe,
@@ -57,7 +58,10 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const myNFTDataStatus = useAppSelector(selectMyNFTMetadataStatus)
 
   useEffect(() => {
-    if (!wallet.publicKey) return
+    if (!wallet.publicKey) {
+      dispatch(clearMyNFT())
+      return
+    }
     const owner = wallet.publicKey
     dispatch(setWalletAddr(owner.toString()))
     dispatch(getMyNFTData({ connection, owner }))
