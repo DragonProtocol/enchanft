@@ -233,8 +233,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                 <hr />
                 <div>
                   {myNFTData
-                    .filter((item) => item.data.mint != params.mint)
-                    .map((item) => {
+                    .filter(({ metadata: item }) => item.data.mint != params.mint)
+                    .map(({ metadata: item }) => {
                       return <p key={item.data.mint}>{item.data.mint}</p>
                     })}
                   <input

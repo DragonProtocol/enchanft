@@ -54,14 +54,15 @@ function Home() {
   }, [wallet])
 
   useEffect(() => {
-    dispatch(getExploreData({ collectionIds: collections }))
+    dispatch(getExploreData({ collectionIds: collections, connection }))
   }, [])
 
   let nftList: NftDataItem[] = []
   if (tab === 'my') {
-    nftList = myNFTData.map((item) => {
-      const jsonData = item.toJSON()
+    nftList = myNFTData.map(({ metadata, hasInjected }) => {
+      const jsonData = metadata.toJSON()
       return {
+        hasInjected,
         mint: jsonData.data.mint,
         uri: jsonData.data.data.uri,
       }
