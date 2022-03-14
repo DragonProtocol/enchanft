@@ -130,132 +130,134 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 
   // TODO loading
   return (
-    <NFTHandlerWrapper>
-      {(!belongTo.me && (
-        <div>
-          {(belongTo.program && <p>OnlyView </p>) || (
-            <button
-              onClick={async () => {
-                const { name, symbol, uri } = metadata.data
-                const program = programRef.current
-                if (!program) return
-                const newMint = await nftCopy(params.mint, { name, uri, symbol }, { connection, wallet, program })
-                window.location.href = `/info/${newMint}`
-              }}
-            >
-              copyTheNFT
-            </button>
-          )}
-        </div>
-      )) || (
-        <div>
-          {hasInject ? (
-            <div>
-              {injectType === 'sol' && (
-                <div>
-                  <button
-                    onClick={async () => {
-                      const program = programRef.current
-                      if (!program) return
-                      await extractSol(params.mint, { wallet, program, connection })
-                      reloadWindow()
-                    }}
-                  >
-                    extractSOL
-                  </button>
-                  |
-                  <button
-                    onClick={async () => {
-                      const program = programRef.current
-                      if (!program) return
-                      await burnWithdrawSOL(params.mint, { wallet, program, connection })
-                      reloadWindow()
-                    }}
-                  >
-                    burnWithdrawSOL
-                  </button>
-                </div>
-              )}
-              <hr />
-              {injectType === 'nft' && (
-                <div>
-                  <button
-                    onClick={async () => {
-                      const program = programRef.current
-                      if (!program) return
-                      await extractNFT(params.mint, { program, connection, wallet })
-                      reloadWindow()
-                    }}
-                  >
-                    extractNFT
-                  </button>
-                  |
-                  <button
-                    onClick={async () => {
-                      const program = programRef.current
-                      if (!program) return
-                      await burnWithdrawSPL(params.mint, { wallet, program, connection })
-                      reloadWindow()
-                    }}
-                  >
-                    burnWithdrawSPL
-                  </button>
-                </div>
-              )}
-              {mintMetadataArr.map((item) => {
-                return <p key={item.data?.mint || 'sol'}>{item.data?.mint || item.lamports}</p>
-              })}
-            </div>
-          ) : (
-            <div>
+    (!wallet.publicKey && <div>Connect wallet first</div>) || (
+      <NFTHandlerWrapper>
+        {(!belongTo.me && (
+          <div>
+            {(belongTo.program && <p>OnlyView </p>) || (
+              <button
+                onClick={async () => {
+                  const { name, symbol, uri } = metadata.data
+                  const program = programRef.current
+                  if (!program) return
+                  const newMint = await nftCopy(params.mint, { name, uri, symbol }, { connection, wallet, program })
+                  window.location.href = `/info/${newMint}`
+                }}
+              >
+                copyTheNFT
+              </button>
+            )}
+          </div>
+        )) || (
+          <div>
+            {hasInject ? (
               <div>
-                <input type="text" placeholder="sol amount" />
-                <button
-                  onClick={async () => {
-                    const program = programRef.current
-                    if (!program) return
-                    // 500000000 = 0.5 sol
-                    await injectSol(params.mint, 500000000, { wallet, program, connection })
-                    reloadWindow()
-                  }}
-                >
-                  injectSOL
-                </button>
-              </div>{' '}
-              <hr />
-              <div>
-                {myNFTData
-                  .filter((item) => item.data.mint != params.mint)
-                  .map((item) => {
-                    return <p key={item.data.mint}>{item.data.mint}</p>
-                  })}
-                <input
-                  type="text"
-                  value={childMint}
-                  onChange={(event) => {
-                    setChildMint(event.target.value || '')
-                  }}
-                />
-                <button
-                  onClick={async () => {
-                    const program = programRef.current
-                    if (!program) return
-                    await injectNFT(params.mint, childMint, {
-                      wallet,
-                      connection,
-                      program,
-                    })
-                    reloadWindow()
-                  }}
-                >
-                  injectNFT
-                </button>
+                {injectType === 'sol' && (
+                  <div>
+                    <button
+                      onClick={async () => {
+                        const program = programRef.current
+                        if (!program) return
+                        await extractSol(params.mint, { wallet, program, connection })
+                        reloadWindow()
+                      }}
+                    >
+                      extractSOL
+                    </button>
+                    |
+                    <button
+                      onClick={async () => {
+                        const program = programRef.current
+                        if (!program) return
+                        await burnWithdrawSOL(params.mint, { wallet, program, connection })
+                        reloadWindow()
+                      }}
+                    >
+                      burnWithdrawSOL
+                    </button>
+                  </div>
+                )}
+                <hr />
+                {injectType === 'nft' && (
+                  <div>
+                    <button
+                      onClick={async () => {
+                        const program = programRef.current
+                        if (!program) return
+                        await extractNFT(params.mint, { program, connection, wallet })
+                        reloadWindow()
+                      }}
+                    >
+                      extractNFT
+                    </button>
+                    |
+                    <button
+                      onClick={async () => {
+                        const program = programRef.current
+                        if (!program) return
+                        await burnWithdrawSPL(params.mint, { wallet, program, connection })
+                        reloadWindow()
+                      }}
+                    >
+                      burnWithdrawSPL
+                    </button>
+                  </div>
+                )}
+                {mintMetadataArr.map((item) => {
+                  return <p key={item.data?.mint || 'sol'}>{item.data?.mint || item.lamports}</p>
+                })}
               </div>
-            </div>
-          )}
-        </div>
-      )}
-    </NFTHandlerWrapper>
+            ) : (
+              <div>
+                <div>
+                  <input type="text" placeholder="sol amount" />
+                  <button
+                    onClick={async () => {
+                      const program = programRef.current
+                      if (!program) return
+                      // 500000000 = 0.5 sol
+                      await injectSol(params.mint, 500000000, { wallet, program, connection })
+                      reloadWindow()
+                    }}
+                  >
+                    injectSOL
+                  </button>
+                </div>{' '}
+                <hr />
+                <div>
+                  {myNFTData
+                    .filter((item) => item.data.mint != params.mint)
+                    .map((item) => {
+                      return <p key={item.data.mint}>{item.data.mint}</p>
+                    })}
+                  <input
+                    type="text"
+                    value={childMint}
+                    onChange={(event) => {
+                      setChildMint(event.target.value || '')
+                    }}
+                  />
+                  <button
+                    onClick={async () => {
+                      const program = programRef.current
+                      if (!program) return
+                      await injectNFT(params.mint, childMint, {
+                        wallet,
+                        connection,
+                        program,
+                      })
+                      reloadWindow()
+                    }}
+                  >
+                    injectNFT
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </NFTHandlerWrapper>
+    )
   )
 }
 export default NFTHandler

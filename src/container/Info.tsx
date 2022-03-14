@@ -24,16 +24,16 @@ export default function Info() {
 
   useEffect(() => {
     getMetadata()
-  }, [connection, wallet])
+  }, [connection])
 
   async function getMetadata() {
-    if (!params.mint || !wallet.publicKey) {
+    if (!params.mint) {
       return
     }
     log.info('getMetadata')
     try {
       const mintKey = new PublicKey(params.mint)
-      const valid = await checkValidNFT(mintKey, wallet, connection)
+      const valid = await checkValidNFT(mintKey, connection)
       setValidNFT(valid)
 
       if (!valid) {
