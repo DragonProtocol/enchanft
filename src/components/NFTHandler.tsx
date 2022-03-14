@@ -5,9 +5,11 @@ import { useParams } from 'react-router-dom'
 import styled, { css } from 'styled-components'
 import log from 'loglevel'
 import { PublicKey } from '@solana/web3.js'
+import { useNavigate } from 'react-router-dom'
 
 import { getMyNFTData, selectMyNFTMetadataArr, selectMyNFTMetadataStatus, setWalletAddr } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { clearMyNFT } from '../features/my/mySlice'
 
 import {
   checkBelongToMe,
@@ -42,6 +44,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const params = useParams()
   const wallet: WalletContextState = useWallet()
   const { connection } = useConnection()
+  const navigate = useNavigate()
 
   const programRef = useRef<Program<Synft> | null>(null)
   const [belongLoading, setBelongLoading] = useState(true)
@@ -62,7 +65,10 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const myNFTData = useAppSelector(selectMyNFTMetadataArr)
   const myNFTDataStatus = useAppSelector(selectMyNFTMetadataStatus)
   useEffect(() => {
-    if (!wallet.publicKey) return
+    if (!wallet.publicKey) {
+      dispatch(clearMyNFT())
+      return
+    }
     const owner = wallet.publicKey
     dispatch(setWalletAddr(owner.toString()))
     dispatch(getMyNFTData({ connection, owner }))
@@ -184,61 +190,64 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   console.log('mintMetadataArr', mintMetadataArr)
   // TODO loading
   return (
-    <NFTHandlerWrapper>
-      <div className="top">
-        <div className="nft-title">{metadata.data.name}</div>
-        <div className="nft-creator">
-          <span className="creator-label">creator</span>
-          <span className="creator-value">{metadata.data.creators[0].address}</span>
+    (!wallet.publicKey && <div>Connect wallet first</div>) || (
+      <NFTHandlerWrapper>
+        <div className="top">
+          <div className="nft-title">{metadata.data.name}</div>
+          <div className="nft-creator">
+            <span className="creator-label">creator</span>
+            <span className="creator-value">{metadata.data.creators[0].address}</span>
+          </div>
+          <div className="dividing-line"></div>
         </div>
-        <div className="dividing-line"></div>
-      </div>
-      {(!belongTo.me && (
-        <div className="not-belongto-me">
-          {(belongTo.program && (
-            <div className="only-view">
-              <span className="expression">😯</span> <span className="description">This NFT has been synthesized</span>
-            </div>
-          )) || (
-            <button
-              className="nft-copy-btn"
-              onClick={async () => {
-                const { name, symbol, uri } = metadata.data
-                const program = programRef.current
-                if (!program) return
-                const newMint = await nftCopy(params.mint, { name, uri, symbol }, { connection, wallet, program })
-                window.location.href = `/info/${newMint}`
-              }}
-            >
-              Copy The Nft
-            </button>
-          )}
-        </div>
-      )) || (
-        <div className="belongto-me">
-          {hasInject ? (
-            <NftBurn
-              data={mintMetadataArr}
-              injectType={injectType}
-              injectMode={injectMode}
-              onExtract={onExtract}
-              onWithdraw={onWithdraw}
-            ></NftBurn>
-          ) : (
-            //   {mintMetadataArr.map((item) => {
-            //     return <p key={item.data?.mint || InjectType.Token}>{item.data?.mint || item.lamports}</p>
-            //   })}
-            // </div>
-            <NftInject
-              nftOptions={myNFTData
-                .filter((item) => item.data.mint != params.mint)
-                .map((item) => ({ ...item.data, ...item.data.data }))}
-              onInject={onInject}
-            ></NftInject>
-          )}
-        </div>
-      )}
-    </NFTHandlerWrapper>
+        {(!belongTo.me && (
+          <div className="not-belongto-me">
+            {(belongTo.program && (
+              <div className="only-view">
+                <span className="expression">😯</span>{' '}
+                <span className="description">This NFT has been synthesized</span>
+              </div>
+            )) || (
+              <button
+                className="nft-copy-btn"
+                onClick={async () => {
+                  const { name, symbol, uri } = metadata.data
+                  const program = programRef.current
+                  if (!program) return
+                  const newMint = await nftCopy(params.mint, { name, uri, symbol }, { connection, wallet, program })
+                  window.location.href = `/info/${newMint}`
+                }}
+              >
+                Copy The Nft
+              </button>
+            )}
+          </div>
+        )) || (
+          <div className="belongto-me">
+            {hasInject ? (
+              <NftBurn
+                data={mintMetadataArr}
+                injectType={injectType}
+                injectMode={injectMode}
+                onExtract={onExtract}
+                onWithdraw={onWithdraw}
+              ></NftBurn>
+            ) : (
+              //   {mintMetadataArr.map((item) => {
+              //     return <p key={item.data?.mint || InjectType.Token}>{item.data?.mint || item.lamports}</p>
+              //   })}
+              // </div>
+              <NftInject
+                nftOptions={myNFTData
+                  .filter((item) => item?.data?.mint != params.mint)
+                  .map((item) => ({ ...item?.data, ...item?.data?.data }))}
+                onInject={onInject}
+              ></NftInject>
+            )}
+          </div>
+        )}
+      </NFTHandlerWrapper>
+    )
   )
 }
 export default NFTHandler
@@ -272,6 +281,9 @@ const NFTHandlerWrapper = styled.div`
       }
       .creator-value {
         color: #222222;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
     .dividing-line {
@@ -300,6 +312,8 @@ const NFTHandlerWrapper = styled.div`
     }
     .description {
       font-size: 18px;
+      text-align: center;
+      line-height: 24px;
     }
   }
   .nft-copy-btn {

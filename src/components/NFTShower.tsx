@@ -87,8 +87,8 @@ export default function NFTShower({ data }: Props) {
             properties
           </AccordionSummary>
           <AccordionDetails className="info-content properties-content">
-            {info?.attributes?.map((item: any) => (
-              <div className="properties-item">
+            {info?.attributes?.map((item: any, idx: number) => (
+              <div key={idx} className="properties-item">
                 <div className="properties-key">{item.trait_type}</div>
                 <div className="properties-value">{item.value}</div>
               </div>

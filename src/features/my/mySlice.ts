@@ -1,9 +1,11 @@
+import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Connection, PublicKey } from '@solana/web3.js'
 import log from 'loglevel'
 
 import { RootState } from '../../store/store'
 
+import { programId } from '../../synft'
 import { getMySPLToken, getMetadataFromMint } from './myData'
 
 type Token = {
@@ -48,8 +50,13 @@ export const getMyNFTMetadata = createAsyncThunk(
     const data = await Promise.all(
       nfts.map(async (item) => {
         try {
+          const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+            [Buffer.from('children-of'), item.mint.toBuffer()],
+            programId,
+          )
+          const hasInjected = await connection.getAccountInfo(metadataPDA)
           const metadata = await getMetadataFromMint(connection, item.mint)
-          return metadata
+          return { metadata, hasInjected: !!hasInjected }
         } catch (error) {
           return null
         }
@@ -66,6 +73,11 @@ export const myNFTSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
+    clearMyNFT: (state) => {
+      state.metadataStatus = 'init'
+      state.nfts = []
+      state.metadata = []
+    },
     changeMetadataStatus: (state, action) => {
       state.metadataStatus = action.payload.status
     },
@@ -102,6 +114,6 @@ export const selectMyNFTMetadataArr = (state: RootState) => state.mynft.metadata
 export const selectMyNFTMetadataStatus = (state: RootState) => state.mynft.metadataStatus
 export const selectMyWalletAddr = (state: RootState) => state.mynft.walletAddr
 
-export const { setWalletAddr } = myNFTSlice.actions
+export const { setWalletAddr, clearMyNFT } = myNFTSlice.actions
 
 export default myNFTSlice.reducer

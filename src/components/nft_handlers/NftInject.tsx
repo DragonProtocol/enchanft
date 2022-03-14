@@ -91,7 +91,7 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
         <div className="form-label">Select Mode</div>
         <div className="form-value mode-selector">
           {INJECT_MODES.map((item) => (
-            <div className={`mode-item ${injectMode === item ? 'mode-checked' : ''}`} onClick={() => setInjectMode(item)}>
+            <div key={item} className={`mode-item ${injectMode === item ? 'mode-checked' : ''}`} onClick={() => setInjectMode(item)}>
               {injectMode === item && <img className="mode-checked-icon" src={CheckedIcon} alt="" />}
               <span>{item}</span>
             </div>
@@ -112,9 +112,9 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
         </DialogTitle>
         <DialogContent>
           <div className="nft-list-content">
-            {nftOptions.map((item) => {
+            {nftOptions.map((item,idx) => {
               return (
-                <div className="nft-item" onClick={() => handleCheckedNft(item)}>
+                <div className="nft-item" key={idx} onClick={() => handleCheckedNft(item)}>
                   <NFTCard data={item}></NFTCard>
                 </div>
               )

@@ -14,6 +14,8 @@ export type NFT = {
   image: string
   mint: string
   name: string
+  hasCopied?: boolean
+  hasInjected?: boolean
 }
 
 export async function loadExploreNFT(collectionId: String, first: number = 10): Promise<NFT[]> {

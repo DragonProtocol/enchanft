@@ -13,18 +13,18 @@ import {
 } from '@solana/wallet-adapter-wallets'
 import { clusterApiUrl } from '@solana/web3.js'
 import { Provider } from 'react-redux'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter, HashRouter } from 'react-router-dom'
 import log from 'loglevel'
 
 import GlobalStyle from './GlobalStyle'
 import Layout from './components/Layout'
 
-import { isProd } from './utils'
+import { isProd, logIsProd } from './utils'
 import { store } from './store/store'
 
 require('@solana/wallet-adapter-react-ui/styles.css')
 
-log.setLevel(isProd ? 'warn' : 'trace')
+log.setLevel(logIsProd ? 'warn' : 'trace')
 
 const App: FC = () => {
   const network = isProd ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet
@@ -56,9 +56,9 @@ const App: FC = () => {
         <WalletModalProvider>
           <Provider store={store}>
             <GlobalStyle />
-            <BrowserRouter>
+            <HashRouter>
               <Layout />
-            </BrowserRouter>
+            </HashRouter>
           </Provider>
         </WalletModalProvider>
       </WalletProvider>

@@ -1,7 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { Connection, PublicKey } from '@solana/web3.js'
+import log from 'loglevel'
 
 import { RootState } from '../../store/store'
 
+import idl, { Synft, programId } from '../../synft'
 import { loadExploreNFT, NFT } from './exploreData'
 
 interface ExploreNFT {
@@ -18,10 +21,26 @@ const initialState: ExploreNFT = {
 
 export const getExploreData = createAsyncThunk(
   'explore/nftdata',
-  async ({ collectionIds }: { collectionIds: string[] }) => {
+  async ({ collectionIds, connection }: { collectionIds: string[]; connection: Connection }) => {
     const dataArr = await Promise.all(
       collectionIds.map(async (collectionID) => {
         const d: NFT[] = await loadExploreNFT(collectionID)
+        await Promise.all(
+          d.map(async (item) => {
+            const mintKey = new PublicKey(item.mint)
+            try {
+              const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
+                [Buffer.from('synthetic-nft-mint-seed'), mintKey.toBuffer()],
+                programId,
+              )
+              const hasCopied = await connection.getAccountInfo(nftMintPDA)
+              log.info(item.mint, hasCopied)
+              item.hasCopied = !!hasCopied
+            } catch (error) {
+              log.error(error)
+            }
+          }),
+        )
         return d
       }),
     )
