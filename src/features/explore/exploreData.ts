@@ -40,11 +40,13 @@ export async function loadExploreNFT(collectionId: String, first: number = 10): 
       }
     }`
   const results = await request(endpoint, fetchNFTsByCandyMachineQuery)
-  const nfts = results.nftsByCollection.edges.map((edge: any) => ({
-    name: edge.node.name,
-    mint: edge.node.metaplex_metadata.mint,
-    image: edge.node.image.orig,
-  }))
+  const nfts = results.nftsByCollection.edges
+    .map((edge: any) => ({
+      name: edge.node.name,
+      mint: edge.node.metaplex_metadata.mint,
+      image: edge.node.image?.orig,
+    }))
+    .filter((item: any) => !!item.image)
   return nfts
 }
 
