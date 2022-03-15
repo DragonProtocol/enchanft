@@ -48,8 +48,8 @@ const HeaderWrapper = styled.div`
   align-items: center;
   .left {
     .logo {
-      width: 128px;
-      height: 32px;
+      width: 274px;
+      height: 36px;
     }
   }
   .right {
