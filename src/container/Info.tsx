@@ -13,7 +13,7 @@ import NFTHandler from '../components/NFTHandler'
 import { getMetadataFromMint } from '../features/my/myData'
 import NFTShower from '../components/NFTShower'
 
-export default function Info() {
+const Info:React.FC=(props) =>{
   const params = useParams()
   const { connection } = useConnection()
   const wallet: WalletContextState = useWallet()
@@ -21,12 +21,12 @@ export default function Info() {
   const [loading, setLoading] = useState(true)
   const [validNFT, setValidNFT] = useState(false)
   const [metadata, setMetadata] = useState<any>({})
-
   useEffect(() => {
     getMetadata()
-  }, [connection])
+  }, [connection,params.mint])
 
   async function getMetadata() {
+    setLoading(true)
     if (!params.mint) {
       return
     }
@@ -55,24 +55,30 @@ export default function Info() {
   const handlerData = { addr: '', mint: params.mint || '', uri: metadata.data?.uri || '' }
 
   return (
-    (loading && <div>loading</div>) ||
-    (validNFT && (
-      <InfoWrapper>
-        <div className="left">
-          <NFTShower data={showerData} />
-        </div>
-        <div className="right">
-          <NFTHandler data={handlerData} metadata={metadata} />
-        </div>
-      </InfoWrapper>
-    )) || <div>invalid NFT</div>
+    <InfoWrapper>
+      {(loading && <div className="tip">loading...</div>) ||
+        (validNFT && (
+          <>
+            <div className="left">
+              <NFTShower data={showerData} />
+            </div>
+            <div className="right">
+              <NFTHandler data={handlerData} metadata={metadata} />
+            </div>
+          </>
+        )) || <div className="tip">invalid NFT</div>}
+    </InfoWrapper>
   )
 }
-
+export default Info
 const InfoWrapper = styled.div`
   display: flex;
   .left,
   .right {
     width: 50%;
+  }
+  .tip {
+    margin: 0 auto;
+    margin-top: 40%;
   }
 `

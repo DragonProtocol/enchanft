@@ -50,51 +50,44 @@ export default function NFTShower({ data }: Props) {
     }
   }, [])
   return (
-    // <div style={{ display: 'flex', margin: '10px' }}>
-    //   <img style={{ width: '200px' }} src={info.image} alt={info.name} />
-    //   <div>
-    //     <p>name: {info.name}</p>
-    //     <p>description: {info.description}</p>
-    //     <p>uri: {uri}</p>
-    //     <p>collection: {JSON.stringify(info.collection)}</p>
-    //     <p>addr: {addr}</p>
-    //     <Link style={{ display: 'block', margin: '1rem 0' }} to={`/info/${mint}/${addr}`}>
-    //       {mint}
-    //     </Link>
-    //   </div>
-    // </div>
     <NFTShowerWrapper>
       <div className="img-box">
         <img src={info.image} alt={info.image} />
       </div>
       <div className="info-box">
-        <Accordion
-          className="info-item"
-          expanded={currentAccordion === 'description'}
-          onChange={(event, isExpanded) => handleAccordionChange('description', isExpanded)}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
-            description
-          </AccordionSummary>
-          <AccordionDetails className="info-content">{info.description}</AccordionDetails>
-        </Accordion>
-        <Accordion
-          className="info-item"
-          expanded={currentAccordion === 'properties'}
-          onChange={(event, isExpanded) => handleAccordionChange('properties', isExpanded)}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
-            properties
-          </AccordionSummary>
-          <AccordionDetails className="info-content properties-content">
-            {info?.attributes?.map((item: any, idx: number) => (
-              <div key={idx} className="properties-item">
-                <div className="properties-key">{item.trait_type}</div>
-                <div className="properties-value">{item.value}</div>
-              </div>
-            ))}
-          </AccordionDetails>
-        </Accordion>
+        {info.description && (
+          <Accordion
+            className="info-item"
+            expanded={currentAccordion === 'description'}
+            onChange={(event, isExpanded) => handleAccordionChange('description', isExpanded)}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
+              description
+            </AccordionSummary>
+            <AccordionDetails className="info-content">{info.description}</AccordionDetails>
+          </Accordion>
+        )}
+
+        {info?.attributes && (
+          <Accordion
+            className="info-item"
+            expanded={currentAccordion === 'properties'}
+            onChange={(event, isExpanded) => handleAccordionChange('properties', isExpanded)}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
+              properties
+            </AccordionSummary>
+            <AccordionDetails className="info-content properties-content">
+              {info?.attributes?.map((item: any, idx: number) => (
+                <div key={idx} className="properties-item">
+                  <div className="properties-key">{item.trait_type}</div>
+                  <div className="properties-value">{item.value}</div>
+                </div>
+              ))}
+            </AccordionDetails>
+          </Accordion>
+        )}
+
         {/* <Accordion
           className="info-item"
           expanded={currentAccordion === 'details'}
@@ -123,6 +116,7 @@ const NFTShowerWrapper = styled.div`
   }
   .info-box {
     width: 500px;
+    font-size: 12px;
     .info-item {
       margin: 0;
     }
@@ -144,19 +138,16 @@ const NFTShowerWrapper = styled.div`
       display: flex;
       flex-direction: column;
       gap: 12px;
+      max-height: 300px;
+      overflow-y: scroll;
     }
     .properties-item {
-      display: flex;
       .properties-key {
         color: rgba(34, 34, 34, 0.5);
+        margin-bottom: 3px;
       }
       .properties-value {
         color: #222222;
-        flex: 1;
-        text-align: right;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
       }
     }
   }
