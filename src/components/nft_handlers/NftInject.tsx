@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogTitle} from '@mui/material'
+import { Dialog, DialogContent, DialogTitle } from '@mui/material'
 import React, { useState } from 'react'
 import styled, { css } from 'styled-components'
 import { NftDataItem } from '../NFTList'
@@ -6,6 +6,7 @@ import DialogCloseIcon from '../icons/dialogClose.svg'
 import CheckedIcon from '../icons/checked.svg'
 import NFTCard from '../NFTCard'
 import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
+
 export type Token = {
   name: string
   address: string
@@ -35,11 +36,14 @@ export interface OnInjectProps {
   nft: NftDataItem
 }
 interface Props {
+  withCopyInit: boolean
   nftOptions: NftDataItem[]
   onInject?: (props: OnInjectProps) => void
+  onCopyWithInject?: (props: OnInjectProps) => void
 }
 const INJECT_MODES = [InjectMode.Reversible, InjectMode.Irreversible]
-const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
+
+const NftInject: React.FC<Props> = ({ nftOptions, onInject, withCopyInit, onCopyWithInject }: Props) => {
   const [injectMode, setInjectMode] = useState<InjectMode>(InjectMode.Reversible)
   const [token, setToken] = useState<Token>(TOKEN_DEFAULT)
   const [nft, setNft] = useState<NftDataItem>({ mint: '', image: '', name: '' })
@@ -58,11 +62,9 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
     setVisibleNftList(false)
   }
   const handleDeleteNft = () => setNft({ mint: '', image: '', name: '' })
-  console.log('nft', nft)
 
   return (
     <NftInjectWrapper>
-
       <div className="form-item">
         <div className="form-label">Create synthetic NFTs</div>
         <div className="form-value">
@@ -91,7 +93,11 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
         <div className="form-label">Select Mode</div>
         <div className="form-value mode-selector">
           {INJECT_MODES.map((item) => (
-            <div key={item} className={`mode-item ${injectMode === item ? 'mode-checked' : ''}`} onClick={() => setInjectMode(item)}>
+            <div
+              key={item}
+              className={`mode-item ${injectMode === item ? 'mode-checked' : ''}`}
+              onClick={() => setInjectMode(item)}
+            >
               {injectMode === item && <img className="mode-checked-icon" src={CheckedIcon} alt="" />}
               <span>{item}</span>
             </div>
@@ -99,9 +105,19 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
         </div>
       </div>
 
-      <button className="form-submit" onClick={() => onInject && onInject({ injectMode, injectType, token, nft })}>
-        {'> Create synthetic NFTs <'}
-      </button>
+      {(withCopyInit && (
+        <button
+          className="nft-copy-btn"
+          onClick={() => onCopyWithInject && onCopyWithInject({ injectMode, injectType, token, nft })}
+        >
+          {' '}
+          Copy The Nft
+        </button>
+      )) || (
+        <button className="form-submit" onClick={() => onInject && onInject({ injectMode, injectType, token, nft })}>
+          {'> Create synthetic NFTs <'}
+        </button>
+      )}
 
       <Dialog fullWidth={true} maxWidth="sm" onClose={handleCloseNftList} open={visibleNftList}>
         <DialogTitle>
@@ -112,7 +128,7 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
         </DialogTitle>
         <DialogContent>
           <div className="nft-list-content">
-            {nftOptions.map((item,idx) => {
+            {nftOptions.map((item, idx) => {
               return (
                 <div className="nft-item" key={idx} onClick={() => handleCheckedNft(item)}>
                   <NFTCard data={item}></NFTCard>
@@ -122,7 +138,6 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
           </div>
         </DialogContent>
       </Dialog>
-
     </NftInjectWrapper>
   )
 }
@@ -221,8 +236,8 @@ const NftInjectWrapper = styled.div`
     }
   }
   .form-submit {
-      ${ButtonBaseCss}
-      height: 60px;
-      background: #EBB700;
+    ${ButtonBaseCss}
+    height: 60px;
+    background: #ebb700;
   }
 `

@@ -34,7 +34,6 @@ export const getExploreData = createAsyncThunk(
                 programId,
               )
               const hasCopied = await connection.getAccountInfo(nftMintPDA)
-              log.info(item.mint, hasCopied)
               item.hasCopied = !!hasCopied
             } catch (error) {
               log.error(error)
@@ -56,7 +55,7 @@ export const exploreSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getExploreData.pending, (state) => {
-        state.status = 'loading'
+        if (state.status === 'init') state.status = 'loading'
       })
       .addCase(getExploreData.fulfilled, (state, action) => {
         state.status = 'done'

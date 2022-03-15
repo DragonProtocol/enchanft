@@ -94,7 +94,10 @@ function Home() {
             <div className="list-desc">What does this tell the user to do</div>
           </>
         ) : (
-          <div className="list-title">Popular NFTs</div>
+          <>
+            <div className="list-title">Popular NFTs</div>
+            {exploreNFTStatus === 'loading' && <div>Loading</div>}
+          </>
         )}
         <div className="list">
           <NFTList data={nftList} />
