@@ -37,11 +37,14 @@ export interface OnInjectProps {
   nft: NftDataItem
 }
 interface Props {
+  withCopyInit: boolean
   nftOptions: NftDataItem[]
   onInject?: (props: OnInjectProps) => void
+  onCopyWithInject?: (props: OnInjectProps) => void
 }
 const INJECT_MODES = [InjectMode.Reversible, InjectMode.Irreversible]
-const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
+
+const NftInject: React.FC<Props> = ({ nftOptions, onInject, withCopyInit, onCopyWithInject }: Props) => {
   const { connection } = useConnection()
   const wallet = useWallet()
   const [balance, setBalance] = useState(0)
@@ -84,9 +87,9 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
   useEffect(() => {
     validateVolume()
   }, [token.volume])
-  const onSubmit = () => {
+  const handleInject = () => {
     if (!onInject) return
-    // 验证是否选择了资产
+    // 验证是否输入金额或选择其它nft
     if (!Number(token.volume) && !nft.mint) {
       showValidate('Please enter an asset or select an NFT')
       return
@@ -94,7 +97,11 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
     if (!validateVolume()) return
     onInject({ injectMode, injectType, token, nft })
   }
-
+  const handleCopyWithInject = () => {
+    if (!onCopyWithInject) return
+    if (!validateVolume()) return
+    onCopyWithInject({ injectMode, injectType, token, nft })
+  }
   // 获取nft列表
   useEffect(() => {
     ;(async () => {
@@ -168,9 +175,16 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
         </Alert>
       )}
 
-      <button className="form-submit" onClick={() => onSubmit()}>
-        {'> Create synthetic NFTs <'}
-      </button>
+      {(withCopyInit && (
+        <button className="nft-copy-btn" onClick={handleCopyWithInject}>
+          {' '}
+          Copy The Nft
+        </button>
+      )) || (
+        <button className="form-submit" onClick={handleInject}>
+          {'> Create synthetic NFTs <'}
+        </button>
+      )}
 
       <Dialog fullWidth={true} maxWidth="md" onClose={handleCloseNftList} open={visibleNftList}>
         <DialogTitle>

@@ -39,7 +39,6 @@ const NftBurn: React.FC<Props> = ({ injectMode, data, onExtract, onWithdraw }: P
       setNFTJsonData(jsonData)
     })()
   }, [data])
-  
   return (
     <NftBurnWrapper>
       <div className="nft-list">
