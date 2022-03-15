@@ -145,6 +145,7 @@ export async function nftCopy(
 export async function injectSol(
   mint: string | undefined,
   solAmount: number,
+  reversible: boolean,
   { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
 ) {
   if (!wallet.publicKey || !mint) return
@@ -161,7 +162,7 @@ export async function injectSol(
   )
 
   // Inject
-  const tx: Transaction = await program.transaction.initializeSolInject(...[true, metadataBump, injectSolAmount], {
+  const tx: Transaction = await program.transaction.initializeSolInject(...[reversible, metadataBump, injectSolAmount], {
     accounts: {
       currentOwner: wallet.publicKey,
       parentTokenAccount: mintTokenAccountAddress,
@@ -214,6 +215,7 @@ export async function extractSol(
 export async function injectNFT(
   mint: string | undefined,
   childMint: string,
+  reversible: boolean,
   { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
 ) {
   if (!wallet.publicKey || !mint || !childMint) return
@@ -236,7 +238,7 @@ export async function injectNFT(
   // const parentTokenAccount = await getAccount(connection, parentMintTokenAccountAddr)
   // const childTokenAccount = await getAccount(connection, childMintTokenAccountsAddr)
 
-  const tx = await program.transaction.initializeInject(true, metadataBump, {
+  const tx = await program.transaction.initializeInject(reversible, metadataBump, {
     accounts: {
       currentOwner: wallet.publicKey,
       childTokenAccount: childMintTokenAccountsAddr,
