@@ -1,6 +1,9 @@
+import { useConnection } from '@solana/wallet-adapter-react'
+import log from 'loglevel'
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
+import useInfoFromMint from '../../hooks/useInfoFromMint'
 import { NftDataItem } from '../NFTList'
 import { InjectMode, InjectType, Token } from './NftInject'
 interface Props {
@@ -10,45 +13,48 @@ interface Props {
   onExtract?: () => void
   onWithdraw?: () => void
 }
-const NftBurn: React.FC<Props> = ({ injectType, injectMode, data, onExtract, onWithdraw }: Props) => {
-  console.log('data-1', data)
+const NftBurn: React.FC<Props> = ({ injectMode, data, onExtract, onWithdraw }: Props) => {
+  const dataLen = data.length
+  const existsSOL = data[dataLen - 1]?.injectType == 'sol'
+
+  const [nftJsonData, setNFTJsonData] = useState<any[]>([])
+
   useEffect(() => {
     ;(async () => {
-      // if (injectType !== InjectType.Nft || !data.length) return
-      // const promises = []
-      // console.log('data-2', data)
-      // for (const item of data) {
-      //   if(!item.injectType) continue
-      //   console.log('item.data.data.uri',item.data.data.uri);
-        
-      //   const response = await fetch(item.data.data.uri)
-      //   const jsonData = await response.json()
-      //   promises.push(jsonData)
-      // }
-      // const res: any[] = await Promise.allSettled(promises)
+      const promises = data
+        .filter((item) => item.injectType !== 'sol')
+        .map(async (item) => {
+          const response = await fetch(item.data.data.uri)
+          const jsonData = await response.json()
+          return jsonData
+        })
+      const res = await Promise.allSettled(promises)
+      const jsonData = res
+        .filter((item) => item.status === 'fulfilled')
+        .map((item: any) => {
+          return item.value
+        })
+      setNFTJsonData(jsonData)
     })()
   }, [data])
-  // TODO 获取nft列表数据
-  const nftList = data.filter(v=>v.injectType!=='sol').map(item=>({mint:item?.data?.mint,image:''}))
-  console.log('nftList', nftList)
+
+  console.log('data[length]', data, dataLen, data[dataLen])
   return (
     <NftBurnWrapper>
-      {injectType === InjectType.Token &&
-        data?.map((item) => (
-          <div className="token-list">
-            <div className="token-item">
-              <img className="token-img" src={item.image} alt="" />
-              <span className="token-symbol">{item.symbol}</span>
-              <span className="token-address">{item.lamports}</span>
-            </div>
+      {nftJsonData.map((item) => (
+        <div key={item.name} className="nft-list">
+          <img className="nft-item" src={item.image} />
+        </div>
+      ))}
+      {existsSOL && (
+        <div className="token-list">
+          <div className="token-item">
+            {/* <img className="token-img" src={item.image} alt="" /> */}
+            {/* <span className="token-symbol">{item.symbol}</span> */}
+            <span className="token-address">{data[dataLen - 1].lamports}</span>
           </div>
-        ))}
-      {injectType === InjectType.Nft &&
-        nftList?.map((item) => (
-          <div className="nft-list">
-            <img className="nft-item" src={item.image} alt={item.mint} />
-          </div>
-        ))}
+        </div>
+      )}
       {injectMode === InjectMode.Reversible && (
         <button className="burn-btn" onClick={onExtract}>
           {'> extract <'}
