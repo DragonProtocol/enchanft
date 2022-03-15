@@ -122,7 +122,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       } else {
         setMintMetadataArr([
           {
-            injectType,
+            injectType: 'sol',
             lamports: childrenMetadata.lamports,
           },
         ])
@@ -186,8 +186,6 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     }
     reloadWindow()
   }
-  // console.log('myNFTData', myNFTData)
-  console.log('mintMetadataArr', mintMetadataArr)
   // TODO loading
   return (
     (!wallet.publicKey && <div>Connect wallet first</div>) || (
@@ -196,7 +194,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           <div className="nft-title">{metadata.data.name}</div>
           <div className="nft-creator">
             <span className="creator-label">creator</span>
-            <span className="creator-value">{metadata.data.creators[0].address}</span>
+            <span className="creator-value">{metadata.data.creators && metadata.data.creators[0]?.address}</span>
           </div>
           <div className="dividing-line"></div>
         </div>

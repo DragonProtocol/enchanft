@@ -66,7 +66,7 @@ export async function getInject(
   walletPubKey: PublicKey | null,
   connection: web3.Connection,
   program: Program<Synft>,
-): Promise<any | null> {
+): Promise<{ childrenMetadata: web3.AccountInfo<Buffer>; childrenMeta: any } | null> {
   if (!walletPubKey || !mint) return null
   log.debug('begin getInject')
 
@@ -96,6 +96,81 @@ export async function getInject(
     log.warn(error)
     return null
   }
+}
+
+export async function nftCopyWithInjectSOL(
+  mint: string | undefined,
+  solAmount: number,
+  { name, symbol, uri }: { name: string; symbol: string; uri: string },
+  { wallet, program, connection }: { wallet: WalletContextState; program: Program<Synft>; connection: web3.Connection },
+) {
+  log.info('nftCopyWithInject')
+  if (!wallet.publicKey || !mint) return ''
+  log.debug('begin nftCopy')
+  const mintKey = new PublicKey(mint)
+
+  const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
+    [Buffer.from('synthetic-nft-mint-seed'), mintKey.toBuffer()],
+    programId,
+  )
+
+  const [nftTokenAccountPDA, nftTokenAccountBump] = await PublicKey.findProgramAddress(
+    [Buffer.from('synthetic-nft-account-seed'), mintKey.toBuffer()],
+    programId,
+  )
+
+  const [nftMetadataPDA, nftMetadataBump] = await PublicKey.findProgramAddress(
+    [Buffer.from('metadata'), new PublicKey(metadataProgramId).toBuffer(), nftMintPDA.toBuffer()],
+    new PublicKey(metadataProgramId),
+  )
+
+  const txCopy: Transaction = program.transaction.nftCopy(...[name, symbol, uri], {
+    accounts: {
+      currentOwner: wallet.publicKey,
+      fromNftMint: mintKey,
+      nftMetaDataAccount: nftMetadataPDA,
+      nftMintAccount: nftMintPDA,
+      nftTokenAccount: nftTokenAccountPDA,
+      systemProgram: SystemProgram.programId,
+      rent: web3.SYSVAR_RENT_PUBKEY,
+      tokenProgram: TOKEN_PROGRAM_ID,
+      mplProgram: MPL_PROGRAM_ID,
+    },
+    signers: [],
+  })
+
+  const injectSolAmount = new BN(solAmount)
+
+  const mintTokenAccount = await connection.getTokenLargestAccounts(mintKey)
+  const mintTokenAccountAddress = mintTokenAccount.value[0].address
+
+  const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+    [Buffer.from('children-of'), mintKey.toBuffer()],
+    programId,
+  )
+
+  const txInject: Transaction = await program.transaction.initializeSolInject(
+    ...[true, metadataBump, injectSolAmount],
+    {
+      accounts: {
+        currentOwner: wallet.publicKey,
+        parentTokenAccount: mintTokenAccountAddress,
+        parentMintAccount: mintKey,
+        childrenMeta: metadataPDA,
+        systemProgram: SystemProgram.programId,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+      },
+      signers: [],
+    },
+  )
+
+  const tx = new Transaction().add(txCopy, txInject)
+
+  const signature = await wallet.sendTransaction(tx, connection)
+  const result = await connection.confirmTransaction(signature, 'processed')
+  log.info('nftCopyWithInject', result)
+
+  return nftMintPDA.toString()
 }
 
 export async function nftCopy(
