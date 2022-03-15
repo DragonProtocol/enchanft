@@ -6,6 +6,8 @@ import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
 import useInfoFromMint from '../../hooks/useInfoFromMint'
 import { NftDataItem } from '../NFTList'
 import { InjectMode, InjectType, Token } from './NftInject'
+import SolanaSolLogo from '../imgs/solanaSolLogo.svg'
+import { useNavigate } from 'react-router-dom'
 interface Props {
   injectType: InjectType
   injectMode: InjectMode
@@ -14,11 +16,11 @@ interface Props {
   onWithdraw?: () => void
 }
 const NftBurn: React.FC<Props> = ({ injectMode, data, onExtract, onWithdraw }: Props) => {
+  const navigate = useNavigate()
   const dataLen = data.length
   const existsSOL = data[dataLen - 1]?.injectType == 'sol'
-
   const [nftJsonData, setNFTJsonData] = useState<any[]>([])
-
+  
   useEffect(() => {
     ;(async () => {
       const promises = data
@@ -26,35 +28,38 @@ const NftBurn: React.FC<Props> = ({ injectMode, data, onExtract, onWithdraw }: P
         .map(async (item) => {
           const response = await fetch(item.data.data.uri)
           const jsonData = await response.json()
-          return jsonData
+          return { ...item.data, ...jsonData }
         })
       const res = await Promise.allSettled(promises)
       const jsonData = res
         .filter((item) => item.status === 'fulfilled')
         .map((item: any) => {
-          return item.value
+          return { ...item, ...item.value }
         })
       setNFTJsonData(jsonData)
     })()
   }, [data])
-
-  console.log('data[length]', data, dataLen, data[dataLen])
+  
   return (
     <NftBurnWrapper>
-      {nftJsonData.map((item) => (
-        <div key={item.name} className="nft-list">
-          <img className="nft-item" src={item.image} />
-        </div>
-      ))}
+      <div className="nft-list">
+        {nftJsonData.map((item) => (
+          <div key={item.name} className="nft-item" onClick={() => navigate(`/info/${item.mint}`)}>
+            <img className="nft-item" src={item.image} />
+          </div>
+        ))}
+      </div>
+
       {existsSOL && (
         <div className="token-list">
           <div className="token-item">
-            {/* <img className="token-img" src={item.image} alt="" /> */}
-            {/* <span className="token-symbol">{item.symbol}</span> */}
-            <span className="token-address">{data[dataLen - 1].lamports}</span>
+            <img className="token-img" src={SolanaSolLogo} alt="" />
+            <span className="token-symbol">SOL</span>
+            <span className="token-volume">{data[dataLen - 1].lamports / 1000000000}</span>
           </div>
         </div>
       )}
+
       {injectMode === InjectMode.Reversible && (
         <button className="burn-btn" onClick={onExtract}>
           {'> extract <'}
@@ -86,6 +91,12 @@ const NftBurnWrapper = styled.div`
       align-items: center;
       margin-top: 16px;
       gap: 16px;
+      font-size: 14px;
+      color: #222222;
+      .token-img {
+        width: 36px;
+        height: 36px;
+      }
     }
   }
   .nft-list {
@@ -93,11 +104,9 @@ const NftBurnWrapper = styled.div`
     flex-wrap: wrap;
     justify-content: flex-start;
     .nft-item {
-      flex: 1;
-      margin: 0 8px 8px 0; // 间隙为8px
-      width: calc((100% - 32px) / 4); // 这里的32px = (分布个数3-1)*间隙4px, 可以根据实际的分布个数和间隙区调整
-      min-width: calc((100% - 32px) / 4); // 加入这两个后每个item的宽度就生效了
-      max-width: calc((100% - 32px) / 4); // 加入这两个后每个item的宽度就生效了
+      width: 120px;
+      height: 120px;
+      margin-right: 8px;
     }
   }
 

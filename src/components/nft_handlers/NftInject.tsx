@@ -1,11 +1,13 @@
-import { Dialog, DialogContent, DialogTitle} from '@mui/material'
-import React, { useState } from 'react'
+import { Alert, AlertTitle, Dialog, DialogContent, DialogTitle, ImageList, ImageListItem } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { NftDataItem } from '../NFTList'
 import DialogCloseIcon from '../icons/dialogClose.svg'
 import CheckedIcon from '../icons/checked.svg'
+import AddIcon from '../icons/add.svg'
 import NFTCard from '../NFTCard'
 import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 export type Token = {
   name: string
   address: string
@@ -40,10 +42,15 @@ interface Props {
 }
 const INJECT_MODES = [InjectMode.Reversible, InjectMode.Irreversible]
 const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
+  const { connection } = useConnection()
+  const wallet = useWallet()
+  const [balance, setBalance] = useState(0)
   const [injectMode, setInjectMode] = useState<InjectMode>(InjectMode.Reversible)
   const [token, setToken] = useState<Token>(TOKEN_DEFAULT)
   const [nft, setNft] = useState<NftDataItem>({ mint: '', image: '', name: '' })
   const [visibleNftList, setVisibleNftList] = useState(false)
+  const [nftJsonData, setNftJsonData] = useState<any[]>([])
+  const [checkTip, setCheckTip] = useState({ visible: false, msg: '' })
   const disabledToken = nft?.name ? true : false
   const disabledNft = token?.volume ? true : false
   const injectType = disabledToken ? InjectType.Nft : InjectType.Token
@@ -58,11 +65,60 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
     setVisibleNftList(false)
   }
   const handleDeleteNft = () => setNft({ mint: '', image: '', name: '' })
-  console.log('nft', nft)
+  const showValidate = (msg: string) => {
+    setCheckTip({ visible: true, msg })
+    setTimeout(() => {
+      setCheckTip({ visible: false, msg: '' })
+    }, 5000)
+  }
+  const validateVolume = (): boolean => {
+    setCheckTip({ visible: false, msg: '' })
+    // 如果是金额判断余额是否足够
+    if (Number(token.volume) && Number(token.volume) * Math.pow(10, 9) > balance) {
+      showValidate('Insufficient balance')
+      return false
+    } else {
+      return true
+    }
+  }
+  useEffect(() => {
+    validateVolume()
+  }, [token.volume])
+  const onSubmit = () => {
+    if (!onInject) return
+    // 验证是否选择了资产
+    if (!Number(token.volume) && !nft.mint) {
+      showValidate('Please enter an asset or select an NFT')
+      return
+    }
+    if (!validateVolume()) return
+    onInject({ injectMode, injectType, token, nft })
+  }
+
+  // 获取nft列表
+  useEffect(() => {
+    ;(async () => {
+      const promises = nftOptions.map(async (item) => {
+        const response = await fetch(item.uri || '')
+        const jsonData = await response.json()
+        return { ...item, ...jsonData }
+      })
+      const res = await Promise.allSettled(promises)
+      const jsonData = res.filter((item) => item.status === 'fulfilled').map((item: any) => item.value)
+      setNftJsonData(jsonData)
+    })()
+  }, [nftOptions])
+  // 获取当前账户余额
+  useEffect(() => {
+    if (!wallet.publicKey) return
+    ;(async (publicKey) => {
+      const _balance = await connection.getBalance(publicKey)
+      setBalance(_balance)
+    })(wallet.publicKey)
+  }, [wallet])
 
   return (
     <NftInjectWrapper>
-
       <div className="form-item">
         <div className="form-label">Create synthetic NFTs</div>
         <div className="form-value">
@@ -78,51 +134,64 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject }: Props) => {
       <div className="form-item">
         <div className="form-label">Injection of NFT</div>
         <div className={`form-value select-nft-btn ${disabledNft ? 'disabled' : ''}`} onClick={handleOpenNftList}>
-          {nft?.name && (
-            <div className="delete-btn" onClickCapture={handleDeleteNft}>
-              x
-            </div>
+          {nft?.image ? (
+            <>
+              <div className="delete-btn" onClickCapture={handleDeleteNft}>
+                x
+              </div>
+              <img src={nft.image} alt="" className="nft-img" />
+            </>
+          ) : (
+            <img src={AddIcon} alt="" />
           )}
-          <img src={nft.image} alt="" />
-          {nft.name}
         </div>
       </div>
       <div className="form-item">
         <div className="form-label">Select Mode</div>
         <div className="form-value mode-selector">
           {INJECT_MODES.map((item) => (
-            <div key={item} className={`mode-item ${injectMode === item ? 'mode-checked' : ''}`} onClick={() => setInjectMode(item)}>
-              {injectMode === item && <img className="mode-checked-icon" src={CheckedIcon} alt="" />}
+            <div
+              key={item}
+              className={`mode-item ${injectMode === item ? 'mode-checked' : ''}`}
+              onClick={() => setInjectMode(item)}
+            >
+              <div className="mode-checked-icon">{injectMode === item && <img src={CheckedIcon} alt="" />}</div>
               <span>{item}</span>
             </div>
           ))}
         </div>
       </div>
+      {checkTip.visible && (
+        <Alert severity="warning">
+          <AlertTitle>Warning</AlertTitle>
+          {checkTip.msg}
+        </Alert>
+      )}
 
-      <button className="form-submit" onClick={() => onInject && onInject({ injectMode, injectType, token, nft })}>
+      <button className="form-submit" onClick={() => onSubmit()}>
         {'> Create synthetic NFTs <'}
       </button>
 
-      <Dialog fullWidth={true} maxWidth="sm" onClose={handleCloseNftList} open={visibleNftList}>
+      <Dialog fullWidth={true} maxWidth="md" onClose={handleCloseNftList} open={visibleNftList}>
         <DialogTitle>
-          <div className="nft-list-title">
-            <span>Select NFT</span>
-            <img className="close-btn" src={DialogCloseIcon} alt="" />
-          </div>
+          <span>Select NFT</span>
+          <img
+            className="close-btn"
+            src={DialogCloseIcon}
+            style={{ position: 'absolute', top: '16px', right: '24px' }}
+            onClick={() => setVisibleNftList(false)}
+          />
         </DialogTitle>
-        <DialogContent>
-          <div className="nft-list-content">
-            {nftOptions.map((item,idx) => {
-              return (
-                <div className="nft-item" key={idx} onClick={() => handleCheckedNft(item)}>
-                  <NFTCard data={item}></NFTCard>
-                </div>
-              )
-            })}
-          </div>
+        <DialogContent className="nft-list-content">
+          <ImageList sx={{ height: 600 }} cols={3} rowHeight={300}>
+            {nftJsonData.map((item, idx) => (
+              <ImageListItem className="nft-item" key={idx} onClick={() => handleCheckedNft(item)}>
+                <NFTCard data={item}></NFTCard>
+              </ImageListItem>
+            ))}
+          </ImageList>
         </DialogContent>
       </Dialog>
-
     </NftInjectWrapper>
   )
 }
@@ -166,7 +235,14 @@ const NftInjectWrapper = styled.div`
     border: 2px solid #222222;
     box-sizing: border-box;
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     position: relative;
+    .nft-img {
+      width: 100%;
+      height: 100%;
+    }
     .delete-btn {
       position: absolute;
       top: 0;
@@ -192,6 +268,7 @@ const NftInjectWrapper = styled.div`
     justify-content: space-around;
     align-items: center;
     .mode-item {
+      display: flex;
       padding: 18px 0;
       ${CursorPointerUpCss}
     }
@@ -199,30 +276,25 @@ const NftInjectWrapper = styled.div`
       color: #222222;
     }
     .mode-checked-icon {
+      width: 10px;
+      height: 15px;
       margin-right: 16px;
     }
   }
-  .nft-list-title {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
+  .close-btn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
   }
   .nft-list-content {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
     .nft-item {
-      flex: 1;
-      margin: 0 8px 8px 0; // 间隙为8px
-      width: calc((100% - 32px) / 4); // 这里的32px = (分布个数3-1)*间隙4px, 可以根据实际的分布个数和间隙区调整
-      min-width: calc((100% - 32px) / 4); // 加入这两个后每个item的宽度就生效了
-      max-width: calc((100% - 32px) / 4); // 加入这两个后每个item的宽度就生效了
       ${CursorPointerUpCss}
     }
   }
   .form-submit {
-      ${ButtonBaseCss}
-      height: 60px;
-      background: #EBB700;
+    ${ButtonBaseCss}
+    height: 60px;
+    background: #ebb700;
   }
 `

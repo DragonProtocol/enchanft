@@ -53,6 +53,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     program: false,
   })
   const [hasInject, setHasInject] = useState(false)
+  const [hasInjectLoading, setHasInjectLoading] = useState(true)
   const [injectType, setInjectType] = useState<InjectType>(InjectType.Token)
   const [childMint, setChildMint] = useState('')
   const injectMode = InjectMode.Reversible
@@ -64,6 +65,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const dispatch = useAppDispatch()
   const myNFTData = useAppSelector(selectMyNFTMetadataArr)
   const myNFTDataStatus = useAppSelector(selectMyNFTMetadataStatus)
+  // console.log('myNFTData', myNFTData)
+
   useEffect(() => {
     if (!wallet.publicKey) {
       dispatch(clearMyNFT())
@@ -85,19 +88,21 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   useEffect(() => {
     checkHasInject()
   }, [belongTo])
-
   async function viewOrOps() {
     if (!params.mint) return
     try {
+      setBelongLoading(true)
       const mintKey = new PublicKey(params.mint)
       const belong = await checkBelongToMe(mintKey, wallet, connection)
       setBelongTo(belong)
+      setBelongLoading(false)
     } catch (error) {
       log.warn('viewOrOps', error)
     }
   }
 
   async function checkHasInject() {
+    setHasInjectLoading(true)
     const program = programRef.current
     if (!program) return
     const inject = await getInject(params.mint, wallet.publicKey, connection, program)
@@ -105,10 +110,12 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 
     if (!inject || !inject.childrenMetadata) {
       setHasInject(false)
+      setHasInjectLoading(false)
       return
     }
     const { childrenMetadata, childrenMeta } = inject
     setHasInject(true)
+
     log.info(`${params.mint} hasInject`, inject)
 
     if (childrenMeta?.childType.nft || childrenMeta?.childType.sol) {
@@ -128,6 +135,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         ])
       }
     }
+    setHasInjectLoading(false)
   }
 
   function initProgram() {
@@ -198,52 +206,54 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           </div>
           <div className="dividing-line"></div>
         </div>
-        {(!belongTo.me && (
-          <div className="not-belongto-me">
-            {(belongTo.program && (
-              <div className="only-view">
-                <span className="expression">😯</span>{' '}
-                <span className="description">This NFT has been synthesized</span>
+        {belongLoading || hasInjectLoading
+          ? null
+          : (!belongTo.me && (
+              <div className="not-belongto-me">
+                {(belongTo.program && (
+                  <div className="only-view">
+                    <span className="expression">😯</span>{' '}
+                    <span className="description">This NFT has been synthesized</span>
+                  </div>
+                )) || (
+                  <button
+                    className="nft-copy-btn"
+                    onClick={async () => {
+                      const { name, symbol, uri } = metadata.data
+                      const program = programRef.current
+                      if (!program) return
+                      const newMint = await nftCopy(params.mint, { name, uri, symbol }, { connection, wallet, program })
+                      window.location.href = `/info/${newMint}`
+                    }}
+                  >
+                    Copy The Nft
+                  </button>
+                )}
               </div>
             )) || (
-              <button
-                className="nft-copy-btn"
-                onClick={async () => {
-                  const { name, symbol, uri } = metadata.data
-                  const program = programRef.current
-                  if (!program) return
-                  const newMint = await nftCopy(params.mint, { name, uri, symbol }, { connection, wallet, program })
-                  window.location.href = `/info/${newMint}`
-                }}
-              >
-                Copy The Nft
-              </button>
+              <div className="belongto-me">
+                {hasInject ? (
+                  <NftBurn
+                    data={mintMetadataArr}
+                    injectType={injectType}
+                    injectMode={injectMode}
+                    onExtract={onExtract}
+                    onWithdraw={onWithdraw}
+                  ></NftBurn>
+                ) : (
+                  //   {mintMetadataArr.map((item) => {
+                  //     return <p key={item.data?.mint || InjectType.Token}>{item.data?.mint || item.lamports}</p>
+                  //   })}
+                  // </div>
+                  <NftInject
+                    nftOptions={myNFTData
+                      .filter((item) => item?.metadata?.data.mint != params.mint)
+                      .map((item) => ({ ...item?.metadata?.data, ...item?.metadata?.data.data }))}
+                    onInject={onInject}
+                  ></NftInject>
+                )}
+              </div>
             )}
-          </div>
-        )) || (
-          <div className="belongto-me">
-            {hasInject ? (
-              <NftBurn
-                data={mintMetadataArr}
-                injectType={injectType}
-                injectMode={injectMode}
-                onExtract={onExtract}
-                onWithdraw={onWithdraw}
-              ></NftBurn>
-            ) : (
-              //   {mintMetadataArr.map((item) => {
-              //     return <p key={item.data?.mint || InjectType.Token}>{item.data?.mint || item.lamports}</p>
-              //   })}
-              // </div>
-              <NftInject
-                nftOptions={myNFTData
-                  .filter((item) => item?.data?.mint != params.mint)
-                  .map((item) => ({ ...item?.data, ...item?.data?.data }))}
-                onInject={onInject}
-              ></NftInject>
-            )}
-          </div>
-        )}
       </NFTHandlerWrapper>
     )
   )
