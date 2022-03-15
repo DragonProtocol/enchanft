@@ -9,6 +9,6 @@ export const logIsProd = process.env.NODE_ENV === 'production'
 // explore 数据源
 export const collections = isProd
   ? []
-  : ['Hkunn4hct84zSPNpyQygThUKn8RUBVf5b4r975NRaHPb', 'HEBHYYx7qj9sveZKJLx3i3d9Tev2taWvErWGFsm7425n']
+  : ['D6ZQMLTJAa14XhzCFBJ2uuPjYDbYfewrVDVSyFZSuBYe', '7YNKWyPW5iqu1QHqnQ5Csj9yWpEEnqAzLcuzudMMHqbk']
 
 export default {}
