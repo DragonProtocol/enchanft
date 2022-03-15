@@ -22,6 +22,8 @@ import {
   loadChildrenInject,
   burnWithdrawSOL,
   burnWithdrawSPL,
+  nftCopyWithInjectSOL,
+  nftCopyWithInjectNFT,
 } from '../features/info/infoOps'
 import idl, { Synft } from '../synft'
 
@@ -55,9 +57,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const [hasInject, setHasInject] = useState(false)
   const [injectType, setInjectType] = useState<InjectType>(InjectType.Token)
   const [childMint, setChildMint] = useState('')
-  const injectMode = InjectMode.Reversible
-  // TODO @ttang 确定拿到 reversible 后开启下面一行，删除上面一行
-  // const injectMode = reversible ? InjectMode.Reversible: InjectMode.Irreversible
+  const [injectMode, setInjectMode] = useState<InjectMode>(InjectMode.Reversible)
 
   // TODO: any
   const [mintMetadataArr, setMintMetadataArr] = useState<any[]>([])
@@ -101,7 +101,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     const program = programRef.current
     if (!program) return
     const inject = await getInject(params.mint, wallet.publicKey, connection, program)
-    log.info('inject', inject)
+    log.info('checkHasInject', inject)
 
     if (!inject || !inject.childrenMetadata) {
       setHasInject(false)
@@ -109,6 +109,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     }
     const { childrenMetadata, childrenMeta } = inject
     setHasInject(true)
+    setInjectMode(childrenMeta.reversible === true ? InjectMode.Reversible : InjectMode.Irreversible)
     log.info(`${params.mint} hasInject`, inject)
 
     if (childrenMeta?.childType.nft || childrenMeta?.childType.sol) {
@@ -156,7 +157,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         await injectNFT(params.mint, childMint, reversible, { wallet, program, connection })
         break
     }
-    reloadWindow()
+    // reloadWindow()
   }
   // 执行提取
   const onExtract = async () => {
@@ -184,6 +185,36 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         await burnWithdrawSPL(params.mint, { wallet, program, connection })
         break
     }
+    navigate('/')
+    reloadWindow()
+  }
+
+  const onCopyWithInject = async ({ injectType, injectMode, token, nft }: OnInjectProps) => {
+    const { name, symbol, uri } = metadata.data
+    const program = programRef.current
+    if (!program) return
+
+    let newMint = ''
+    const reversible = injectMode === InjectMode.Reversible
+    switch (injectType) {
+      case InjectType.Token:
+        // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
+        const { volume } = token
+        const formatVolume = Number(volume) * 1000000000
+        newMint = await nftCopyWithInjectSOL(
+          params.mint,
+          formatVolume,
+          reversible,
+          { name, uri, symbol },
+          { connection, wallet, program },
+        )
+        break
+      case InjectType.Nft:
+        const childMint = nft.mint || ''
+        nftCopyWithInjectNFT(params.mint, childMint, reversible, { name, uri, symbol }, { connection, wallet, program })
+        break
+    }
+    navigate(`/info/${newMint}`)
     reloadWindow()
   }
   // TODO loading
@@ -206,18 +237,13 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                 <span className="description">This NFT has been synthesized</span>
               </div>
             )) || (
-              <button
-                className="nft-copy-btn"
-                onClick={async () => {
-                  const { name, symbol, uri } = metadata.data
-                  const program = programRef.current
-                  if (!program) return
-                  const newMint = await nftCopy(params.mint, { name, uri, symbol }, { connection, wallet, program })
-                  window.location.href = `/info/${newMint}`
-                }}
-              >
-                Copy The Nft
-              </button>
+              <NftInject
+                withCopyInit={true}
+                nftOptions={myNFTData
+                  .filter((item) => item?.data?.mint != params.mint)
+                  .map((item) => ({ ...item?.data, ...item?.data?.data }))}
+                onCopyWithInject={onCopyWithInject}
+              ></NftInject>
             )}
           </div>
         )) || (
@@ -231,11 +257,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                 onWithdraw={onWithdraw}
               ></NftBurn>
             ) : (
-              //   {mintMetadataArr.map((item) => {
-              //     return <p key={item.data?.mint || InjectType.Token}>{item.data?.mint || item.lamports}</p>
-              //   })}
-              // </div>
               <NftInject
+                withCopyInit={false}
                 nftOptions={myNFTData
                   .filter((item) => item?.data?.mint != params.mint)
                   .map((item) => ({ ...item?.data, ...item?.data?.data }))}

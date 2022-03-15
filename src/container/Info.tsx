@@ -58,9 +58,6 @@ export default function Info() {
     (loading && <div>loading</div>) ||
     (validNFT && (
       <InfoWrapper>
-        {/* <h2>Info: {params.mint}</h2>
-      {params.mint && <NFTShower addr="" mint={params.mint} uri={metadata.data?.uri || ''} />}
-      <button> create | view | burn | enchant </button> */}
         <div className="left">
           <NFTShower data={showerData} />
         </div>
