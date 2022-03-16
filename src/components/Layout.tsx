@@ -18,7 +18,7 @@ const Layout: React.FC = () => {
       <div className="footer">
         <div className="layout-inner">
           <div className="line"></div>
-          <div className="copyright">Copyright 2022 Dragon By NFT people, for NFT people</div>
+          <div className="copyright">Composable NFTs, Endless Possibilities</div>
         </div>
       </div>
     </LayoutWrapper>

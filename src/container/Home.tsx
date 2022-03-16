@@ -75,11 +75,11 @@ function Home() {
     <HomeWrapper>
       <div className="top">
         <div className="guide-item guide-explore">
-          <span className="guide-desc">🔥 View Popular NFTs and create synthetic NFTs</span>
+          <div className="guide-desc">🔥 View Popular NFTs and create synthetic NFTs</div>
           <ButtonWarning className="guide-btn" onClick={() => switchList('explore')}>{'> Explore NFT <'}</ButtonWarning>
         </div>
         <div className="guide-item guide-view-my">
-          <span className="guide-desc">🔗 Connect your NFTs and Enchant it value</span>
+          <div className="guide-desc">🔗 EMBED NFTs AND SOL INTO YOUR OWN NFTs</div>
           <ButtonPrimary className="guide-btn" onClick={() => switchList('my')}>{'> View My NFT <'}</ButtonPrimary>
         </div>
       </div>
@@ -87,11 +87,11 @@ function Home() {
         {tab === 'my' ? (
           <>
             <div className="list-title">My collection</div>
-            <div className="list-desc">What does this tell the user to do</div>
+            <div className="list-desc">EnchaNFT your own NFTs</div>
           </>
         ) : (
           <>
-            <div className="list-title">Popular NFTs</div>
+            <div className="list-title">Choose and Create Synthetic NFTs</div>
             {exploreNFTStatus === 'loading' && <div>Loading</div>}
           </>
         )}

@@ -140,7 +140,7 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject, withCopyInit, onCopy
         </div>
       </div>
       <div className="form-item">
-        <div className="form-label">Injection of NFT</div>
+        <div className="form-label">Embed other NFTs</div>
         <div className={`form-value select-nft-btn ${disabledNft ? 'disabled' : ''}`} onClick={handleOpenNftList}>
           {nft?.image ? (
             <>
@@ -179,11 +179,11 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject, withCopyInit, onCopy
       {(withCopyInit && (
         <ButtonPrimary className="form-submit" onClick={handleCopyWithInject}>
           {' '}
-          Copy The Nft
+          EnchaNFT!
         </ButtonPrimary>
       )) || (
         <ButtonPrimary className="form-submit" onClick={handleInject}>
-          {'> Create synthetic NFTs <'}
+          {'> Embed SOL <'}
         </ButtonPrimary>
       )}
 
