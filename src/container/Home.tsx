@@ -51,7 +51,7 @@ function Home() {
       }
     }
     setTab(name)
-
+    
     localStorage.setItem('tab', name)
   }
   const dispatch = useAppDispatch()
