@@ -1,6 +1,12 @@
-import React, { FC, useMemo } from 'react'
+import React, { FC, useEffect, useMemo, useState } from 'react'
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base'
-import { ConnectionProvider, WalletProvider } from '@solana/wallet-adapter-react'
+import {
+  ConnectionProvider,
+  useConnection,
+  useWallet,
+  WalletContextState,
+  WalletProvider,
+} from '@solana/wallet-adapter-react'
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui'
 import {
   LedgerWalletAdapter,
@@ -21,10 +27,31 @@ import Layout from './components/Layout'
 
 import { isProd, logIsProd } from './utils'
 import { store } from './store/store'
+import { Contract } from './synft'
 
 require('@solana/wallet-adapter-react-ui/styles.css')
 
 log.setLevel(logIsProd ? 'warn' : 'trace')
+
+function AppLayout() {
+  const wallet: WalletContextState = useWallet()
+  const { connection } = useConnection()
+
+  const [prepared, setPrepared] = useState(false)
+  const contractInstance = Contract.getInstance()
+
+  useEffect(() => {
+    setPrepared(false)
+    contractInstance.setConnection(connection)
+    setPrepared(true)
+  }, [connection])
+
+  useEffect(() => {
+    contractInstance.setWallet(wallet)
+  }, [wallet])
+
+  return <HashRouter>{(prepared && <Layout />) || null}</HashRouter>
+}
 
 const App: FC = () => {
   const network = isProd ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet
@@ -56,9 +83,7 @@ const App: FC = () => {
         <WalletModalProvider>
           <Provider store={store}>
             <GlobalStyle />
-            <HashRouter>
-              <Layout />
-            </HashRouter>
+            <AppLayout />
           </Provider>
         </WalletModalProvider>
       </WalletProvider>
