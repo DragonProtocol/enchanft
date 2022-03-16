@@ -218,8 +218,18 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         break
       case InjectType.Nft:
         const childMint = nft.mint || ''
-        nftCopyWithInjectNFT(params.mint, childMint, reversible, { name, uri, symbol }, { connection, wallet, program })
+        newMint = await nftCopyWithInjectNFT(
+          params.mint,
+          childMint,
+          reversible,
+          { name, uri, symbol },
+          { connection, wallet, program },
+        )
         break
+    }
+    if (!newMint) {
+      // TODO: alert something wrong
+      return
     }
     navigate(`/info/${newMint}`)
     reloadWindow()
