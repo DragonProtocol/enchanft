@@ -20,14 +20,38 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { collections } from '../utils'
 import { ButtonPrimary, ButtonWarning } from '../components/common/ButtonBase'
 import ButtonConnectWallect from '../components/common/ButtonConnectWallet'
+import SplitTextOpacity, { SplitTextOpacityFuns } from '../components/common/animate/SplitTextOpacity'
 
 function Home() {
   const wallet = useWallet()
   const walletRef = useRef('')
   const { connection } = useConnection()
   const [tab, setTab] = useState(localStorage.getItem('tab') || 'explore') // explore | my
+  const titleRefExplore = useRef<SplitTextOpacityFuns>(null)
+  const titleRefMy = useRef<SplitTextOpacityFuns>(null)
+  const titleRefMy2 = useRef<SplitTextOpacityFuns>(null)
   const switchList = (name: string) => {
+    if (name === tab) {
+      switch (name) {
+        case 'explore':
+          if (titleRefExplore?.current) {
+            titleRefExplore.current.restart()
+          }
+          break
+        case 'my':
+          if (titleRefMy?.current) {
+            titleRefMy.current.restart()
+          }
+          if (titleRefMy2?.current) {
+            titleRefMy2.current.restart()
+          }
+          break
+        default:
+          break
+      }
+    }
     setTab(name)
+
     localStorage.setItem('tab', name)
   }
   const dispatch = useAppDispatch()
@@ -70,28 +94,37 @@ function Home() {
   } else {
     nftList = exploreNFTData
   }
-
   return (
     <HomeWrapper>
       <div className="top">
         <div className="guide-item guide-explore">
           <div className="guide-desc">🔥 View Popular NFTs and create synthetic NFTs</div>
-          <ButtonWarning className="guide-btn" onClick={() => switchList('explore')}>{'> Explore NFT <'}</ButtonWarning>
+          <ButtonWarning className="guide-btn" onClick={() => switchList('explore')}>
+            {'> Explore NFT <'}
+          </ButtonWarning>
         </div>
         <div className="guide-item guide-view-my">
           <div className="guide-desc">🔗 EMBED NFTs AND SOL INTO YOUR OWN NFTs</div>
-          <ButtonPrimary className="guide-btn" onClick={() => switchList('my')}>{'> View My NFT <'}</ButtonPrimary>
+          <ButtonPrimary className="guide-btn" onClick={() => switchList('my')}>
+            {'> View My NFT <'}
+          </ButtonPrimary>
         </div>
       </div>
       <div className="center">
         {tab === 'my' ? (
           <>
-            <div className="list-title">My collection</div>
-            <div className="list-desc">EnchaNFT your own NFTs</div>
+            <div className="list-title">
+              <SplitTextOpacity ref={titleRefMy}>My collection</SplitTextOpacity>
+            </div>
+            <div className="list-desc">
+              <SplitTextOpacity ref={titleRefMy2}>EnchaNFT your own NFTs</SplitTextOpacity>
+            </div>
           </>
         ) : (
           <>
-            <div className="list-title">Choose and Create Synthetic NFTs</div>
+            <div className="list-title">
+              <SplitTextOpacity ref={titleRefExplore}>Choose and Create Synthetic NFTs</SplitTextOpacity>
+            </div>
             {exploreNFTStatus === 'loading' && <div>Loading</div>}
           </>
         )}
@@ -102,7 +135,7 @@ function Home() {
       {!wallet.publicKey && (
         <div className="bottom">
           <span className="connect-desc">connect your NFT</span>
-          <ButtonConnectWallect/>
+          <ButtonConnectWallect />
         </div>
       )}
     </HomeWrapper>
