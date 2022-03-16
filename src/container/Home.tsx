@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { PublicKey } from '@solana/web3.js'
 import styled from 'styled-components'
 import log from 'loglevel'
@@ -19,15 +18,40 @@ import { getExploreData, selectExploreData, selectExploreStatus } from '../featu
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
 import { collections } from '../utils'
-import { CursorPointerUpCss, FontFamilyCss } from '../GlobalStyle'
+import { ButtonPrimary, ButtonWarning } from '../components/common/ButtonBase'
+import ButtonConnectWallect from '../components/common/ButtonConnectWallet'
+import SplitTextOpacity, { SplitTextOpacityFuns } from '../components/common/animate/SplitTextOpacity'
 
 function Home() {
   const wallet = useWallet()
   const walletRef = useRef('')
   const { connection } = useConnection()
   const [tab, setTab] = useState(localStorage.getItem('tab') || 'explore') // explore | my
+  const titleRefExplore = useRef<SplitTextOpacityFuns>(null)
+  const titleRefMy = useRef<SplitTextOpacityFuns>(null)
+  const titleRefMy2 = useRef<SplitTextOpacityFuns>(null)
   const switchList = (name: string) => {
+    if (name === tab) {
+      switch (name) {
+        case 'explore':
+          if (titleRefExplore?.current) {
+            titleRefExplore.current.restart()
+          }
+          break
+        case 'my':
+          if (titleRefMy?.current) {
+            titleRefMy.current.restart()
+          }
+          if (titleRefMy2?.current) {
+            titleRefMy2.current.restart()
+          }
+          break
+        default:
+          break
+      }
+    }
     setTab(name)
+
     localStorage.setItem('tab', name)
   }
   const dispatch = useAppDispatch()
@@ -70,33 +94,38 @@ function Home() {
   } else {
     nftList = exploreNFTData
   }
-
   return (
     <HomeWrapper>
       <div className="top">
         <div className="guide-item guide-explore">
-          <span className="guide-desc">🔥 View Popular NFTs and create synthetic NFTs</span>
-          <button className="guide-btn" onClick={() => switchList('explore')}>
+          <div className="guide-desc">🔥 View Popular NFTs and create synthetic NFTs</div>
+          <ButtonWarning className="guide-btn" onClick={() => switchList('explore')}>
             {'> Explore NFT <'}
-          </button>
+          </ButtonWarning>
         </div>
         <div className="guide-item guide-view-my">
-          <span className="guide-desc">🔗 Connect your NFTs and Enchant it value</span>
-          <button className="guide-btn" onClick={() => switchList('my')}>
+          <div className="guide-desc">🔗 EMBED NFTs AND SOL INTO YOUR OWN NFTs</div>
+          <ButtonPrimary className="guide-btn" onClick={() => switchList('my')}>
             {'> View My NFT <'}
-          </button>
+          </ButtonPrimary>
         </div>
       </div>
       <div className="center">
         {tab === 'my' ? (
           <>
-            <div className="list-title">My collection</div>
-            <div className="list-desc">What does this tell the user to do</div>
+            <div className="list-title">
+              <SplitTextOpacity ref={titleRefMy}>My collection</SplitTextOpacity>
+            </div>
+            <div className="list-desc">
+              <SplitTextOpacity ref={titleRefMy2}>EnchaNFT your own NFTs</SplitTextOpacity>
+            </div>
           </>
         ) : (
           <>
-            <div className="list-title">Popular NFTs</div>
-            {exploreNFTStatus === 'loading' && <div>Loading</div>}
+            <div className="list-title">
+              <SplitTextOpacity ref={titleRefExplore}>Choose and Create Synthetic NFTs</SplitTextOpacity>
+            </div>
+            {exploreNFTStatus === 'loading' && <div className="loading">Loading...</div>}
           </>
         )}
         <div className="list">
@@ -106,8 +135,7 @@ function Home() {
       {!wallet.publicKey && (
         <div className="bottom">
           <span className="connect-desc">connect your NFT</span>
-          {/* TODO  这个链接钱包按钮提取为公共组件 */}
-          <WalletMultiButton className="connect-wallet">Connect Wallet</WalletMultiButton>
+          <ButtonConnectWallect />
         </div>
       )}
     </HomeWrapper>
@@ -118,6 +146,10 @@ export default Home
 
 const HomeWrapper = styled.div`
   padding: 24px 0;
+  .loading {
+    text-align: center;
+    margin-top: 100px;
+  }
   .top {
     width: 100%;
     height: 280px;
@@ -141,20 +173,7 @@ const HomeWrapper = styled.div`
         text-transform: uppercase;
       }
       .guide-btn {
-        // 重置Link默认样式 - start
-        text-decoration: none;
-        // 重置Link默认样式 - end
-
         width: 216px;
-        height: 48px;
-        text-align: center;
-        line-height: 48px;
-        background: #ebb700;
-        box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-        font-size: 12px;
-        color: #ffffff;
-        ${FontFamilyCss}
-        ${CursorPointerUpCss}
       }
     }
     .guide-explore {
@@ -162,14 +181,11 @@ const HomeWrapper = styled.div`
     }
     .guide-view-my {
       background-color: #e4ffdb;
-      .guide-btn {
-        background: #3dd606;
-        box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-      }
     }
   }
   .center {
     margin-top: 36px;
+
     .list-title {
       font-size: 24px;
       color: #333333;
@@ -204,26 +220,6 @@ const HomeWrapper = styled.div`
       line-height: 40px;
       color: #222222;
       text-transform: uppercase;
-    }
-    .connect-wallet {
-      // 重置按钮默认样式 - start
-      margin: 0;
-      padding: 0;
-      border: none;
-      outline: none;
-      // 重置按钮默认样式 - end
-
-      width: 204px;
-      height: 48px;
-      background: #3dd606;
-      box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-      margin-left: 20px;
-      font-size: 12px;
-      color: #ffffff;
-      border-radius: 0px;
-      justify-content: center;
-      ${FontFamilyCss}
-      ${CursorPointerUpCss}
     }
   }
 `
