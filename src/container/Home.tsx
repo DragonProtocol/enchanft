@@ -51,7 +51,7 @@ function Home() {
       }
     }
     setTab(name)
-    
+
     localStorage.setItem('tab', name)
   }
   const dispatch = useAppDispatch()
@@ -125,7 +125,7 @@ function Home() {
             <div className="list-title">
               <SplitTextOpacity ref={titleRefExplore}>Choose and Create Synthetic NFTs</SplitTextOpacity>
             </div>
-            {exploreNFTStatus === 'loading' && <div>Loading</div>}
+            {exploreNFTStatus === 'loading' && <div className="loading">Loading...</div>}
           </>
         )}
         <div className="list">
@@ -146,6 +146,10 @@ export default Home
 
 const HomeWrapper = styled.div`
   padding: 24px 0;
+  .loading {
+    text-align: center;
+    margin-top: 100px;
+  }
   .top {
     width: 100%;
     height: 280px;
@@ -181,6 +185,7 @@ const HomeWrapper = styled.div`
   }
   .center {
     margin-top: 36px;
+
     .list-title {
       font-size: 24px;
       color: #333333;
