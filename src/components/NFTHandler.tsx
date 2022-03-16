@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Program, Provider } from '@project-serum/anchor'
 import { useConnection, useWallet, WalletContextState } from '@solana/wallet-adapter-react'
 import { useParams } from 'react-router-dom'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 import log from 'loglevel'
 import { PublicKey } from '@solana/web3.js'
 import { useNavigate } from 'react-router-dom'
@@ -30,8 +30,6 @@ import idl, { Synft } from '../synft'
 const programId = new PublicKey(idl.metadata.address)
 
 import { NftDataItem } from './NFTList'
-import ButtonBase from './common/ButtonBase'
-import { CursorPointerUpCss, FontFamilyCss } from '../GlobalStyle'
 import NftInject, { InjectMode, InjectType, OnInjectProps } from './nft_handlers/NftInject'
 import NftBurn from './nft_handlers/NftBurn'
 
@@ -292,17 +290,6 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 }
 export default NFTHandler
 
-const ButtonBaseCss = css`
-  width: 100%;
-  height: 48px;
-  text-align: center;
-  line-height: 48px;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-  font-size: 12px;
-  color: #ffffff;
-  ${FontFamilyCss}
-  ${CursorPointerUpCss}
-`
 const NFTHandlerWrapper = styled.div`
   .top {
     text-transform: uppercase;
@@ -355,9 +342,5 @@ const NFTHandlerWrapper = styled.div`
       text-align: center;
       line-height: 24px;
     }
-  }
-  .nft-copy-btn {
-    ${ButtonBaseCss}
-    background: #3DD606;
   }
 `

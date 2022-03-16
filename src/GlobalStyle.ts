@@ -14,6 +14,13 @@ export const CursorPointerUpCss = css`
     auto;
 `
 const GlobalStyle = createGlobalStyle`
+  @font-face {
+    font-family: 'PressStart2P-Regular';
+    src: url('fonts/PressStart2P-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+    font-display: block; // 缩短字体切换闪烁时间(较长的阻塞周期)
+  }
   html,body,#root {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;
@@ -26,10 +33,6 @@ const GlobalStyle = createGlobalStyle`
     height:100vh;
     ${FontFamilyCss}
     ${CursorPointerCss}
-  }
-  code {
-    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-      monospace;
   }
 `
 export default GlobalStyle
