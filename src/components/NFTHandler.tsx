@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import log from 'loglevel'
 import { PublicKey } from '@solana/web3.js'
 import { useNavigate } from 'react-router-dom'
+import ReactJson from 'react-json-view'
 
 import { getMyNFTData, selectMyNFTMetadataArr, selectMyNFTMetadataStatus, setWalletAddr } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
@@ -25,13 +26,14 @@ import {
   nftCopyWithInjectSOL,
   nftCopyWithInjectNFT,
 } from '../features/info/infoOps'
-import idl, { Synft } from '../synft'
+import idl, { Contract, Synft } from '../synft'
 
 const programId = new PublicKey(idl.metadata.address)
 
 import { NftDataItem } from './NFTList'
 import NftInject, { InjectMode, InjectType, OnInjectProps } from './nft_handlers/NftInject'
 import NftBurn from './nft_handlers/NftBurn'
+import useInjectTree from '../hooks/useInjectTree'
 
 interface Props {
   data: NftDataItem
@@ -40,6 +42,7 @@ interface Props {
 
 const NFTHandler: React.FC<Props> = (props: Props) => {
   const metadata = props.metadata
+  const contract = Contract.getInstance()
 
   const params = useParams()
   const wallet: WalletContextState = useWallet()
@@ -64,6 +67,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const myNFTData = useAppSelector(selectMyNFTMetadataArr)
   const myNFTDataStatus = useAppSelector(selectMyNFTMetadataStatus)
   // console.log('myNFTData', myNFTData)
+
+  const { injectTree, loading: injectTreeLoading } = useInjectTree(params.mint, contract)
 
   useEffect(() => {
     if (!wallet.publicKey) {
@@ -284,6 +289,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                 )}
               </div>
             )}
+        {!injectTreeLoading && <ReactJson src={injectTree} />}
       </NFTHandlerWrapper>
     )
   )
