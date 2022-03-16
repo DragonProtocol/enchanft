@@ -8,6 +8,7 @@ import { NftDataItem } from '../NFTList'
 import { InjectMode, InjectType, Token } from './NftInject'
 import SolanaSolLogo from '../imgs/solanaSolLogo.svg'
 import { useNavigate } from 'react-router-dom'
+import { ButtonDanger, ButtonPrimary } from '../common/ButtonBase'
 interface Props {
   injectType: InjectType
   injectMode: InjectMode
@@ -20,7 +21,7 @@ const NftBurn: React.FC<Props> = ({ injectMode, data, onExtract, onWithdraw }: P
   const dataLen = data.length
   const existsSOL = data[dataLen - 1]?.injectType == 'sol'
   const [nftJsonData, setNFTJsonData] = useState<any[]>([])
-  
+
   useEffect(() => {
     ;(async () => {
       const promises = data
@@ -60,28 +61,19 @@ const NftBurn: React.FC<Props> = ({ injectMode, data, onExtract, onWithdraw }: P
       )}
 
       {injectMode === InjectMode.Reversible && (
-        <button className="burn-btn" onClick={onExtract}>
-          {'> extract <'}
-        </button>
+        <ButtonDanger className="burn-btn" onClick={onExtract}>
+          {' '}
+          {'> extract <'}{' '}
+        </ButtonDanger>
       )}
-      <button className="burn-btn" onClick={onWithdraw}>
-        {'> burnWithdraw <'}
-      </button>
+      <ButtonDanger className="burn-btn" onClick={onWithdraw}>
+        {' '}
+        {'> burnWithdraw <'}{' '}
+      </ButtonDanger>
     </NftBurnWrapper>
   )
 }
 export default NftBurn
-const ButtonBaseCss = css`
-  width: 100%;
-  height: 48px;
-  text-align: center;
-  line-height: 48px;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-  font-size: 12px;
-  color: #ffffff;
-  ${FontFamilyCss}
-  ${CursorPointerUpCss}
-`
 const NftBurnWrapper = styled.div`
   .token-list {
     .token-item {
@@ -110,8 +102,6 @@ const NftBurnWrapper = styled.div`
   }
 
   .burn-btn {
-    ${ButtonBaseCss}
-    background: #D60606;
     margin-top: 24px;
   }
 `

@@ -8,6 +8,7 @@ import AddIcon from '../icons/add.svg'
 import NFTCard from '../NFTCard'
 import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import { ButtonPrimary } from '../common/ButtonBase'
 export type Token = {
   name: string
   address: string
@@ -176,14 +177,14 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject, withCopyInit, onCopy
       )}
 
       {(withCopyInit && (
-        <button className="nft-copy-btn" onClick={handleCopyWithInject}>
+        <ButtonPrimary className="form-submit" onClick={handleCopyWithInject}>
           {' '}
           Copy The Nft
-        </button>
+        </ButtonPrimary>
       )) || (
-        <button className="form-submit" onClick={handleInject}>
+        <ButtonPrimary className="form-submit" onClick={handleInject}>
           {'> Create synthetic NFTs <'}
-        </button>
+        </ButtonPrimary>
       )}
 
       <Dialog fullWidth={true} maxWidth="md" onClose={handleCloseNftList} open={visibleNftList}>
@@ -210,17 +211,6 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject, withCopyInit, onCopy
   )
 }
 export default NftInject
-const ButtonBaseCss = css`
-  width: 100%;
-  height: 48px;
-  text-align: center;
-  line-height: 48px;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-  font-size: 12px;
-  color: #ffffff;
-  ${FontFamilyCss}
-  ${CursorPointerUpCss}
-`
 const NftInjectWrapper = styled.div`
   .disabled {
     pointer-events: none;
@@ -307,8 +297,6 @@ const NftInjectWrapper = styled.div`
     }
   }
   .form-submit {
-    ${ButtonBaseCss}
     height: 60px;
-    background: #ebb700;
   }
 `

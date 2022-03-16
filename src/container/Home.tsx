@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import { PublicKey } from '@solana/web3.js'
 import styled from 'styled-components'
 import log from 'loglevel'
@@ -19,7 +18,8 @@ import { getExploreData, selectExploreData, selectExploreStatus } from '../featu
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
 import { collections } from '../utils'
-import { CursorPointerUpCss, FontFamilyCss } from '../GlobalStyle'
+import { ButtonPrimary, ButtonWarning } from '../components/common/ButtonBase'
+import ButtonConnectWallect from '../components/common/ButtonConnectWallet'
 
 function Home() {
   const wallet = useWallet()
@@ -76,15 +76,11 @@ function Home() {
       <div className="top">
         <div className="guide-item guide-explore">
           <span className="guide-desc">🔥 View Popular NFTs and create synthetic NFTs</span>
-          <button className="guide-btn" onClick={() => switchList('explore')}>
-            {'> Explore NFT <'}
-          </button>
+          <ButtonWarning className="guide-btn" onClick={() => switchList('explore')}>{'> Explore NFT <'}</ButtonWarning>
         </div>
         <div className="guide-item guide-view-my">
           <span className="guide-desc">🔗 Connect your NFTs and Enchant it value</span>
-          <button className="guide-btn" onClick={() => switchList('my')}>
-            {'> View My NFT <'}
-          </button>
+          <ButtonPrimary className="guide-btn" onClick={() => switchList('my')}>{'> View My NFT <'}</ButtonPrimary>
         </div>
       </div>
       <div className="center">
@@ -106,8 +102,7 @@ function Home() {
       {!wallet.publicKey && (
         <div className="bottom">
           <span className="connect-desc">connect your NFT</span>
-          {/* TODO  这个链接钱包按钮提取为公共组件 */}
-          <WalletMultiButton className="connect-wallet">Connect Wallet</WalletMultiButton>
+          <ButtonConnectWallect/>
         </div>
       )}
     </HomeWrapper>
@@ -141,20 +136,7 @@ const HomeWrapper = styled.div`
         text-transform: uppercase;
       }
       .guide-btn {
-        // 重置Link默认样式 - start
-        text-decoration: none;
-        // 重置Link默认样式 - end
-
         width: 216px;
-        height: 48px;
-        text-align: center;
-        line-height: 48px;
-        background: #ebb700;
-        box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-        font-size: 12px;
-        color: #ffffff;
-        ${FontFamilyCss}
-        ${CursorPointerUpCss}
       }
     }
     .guide-explore {
@@ -162,10 +144,6 @@ const HomeWrapper = styled.div`
     }
     .guide-view-my {
       background-color: #e4ffdb;
-      .guide-btn {
-        background: #3dd606;
-        box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-      }
     }
   }
   .center {
@@ -204,26 +182,6 @@ const HomeWrapper = styled.div`
       line-height: 40px;
       color: #222222;
       text-transform: uppercase;
-    }
-    .connect-wallet {
-      // 重置按钮默认样式 - start
-      margin: 0;
-      padding: 0;
-      border: none;
-      outline: none;
-      // 重置按钮默认样式 - end
-
-      width: 204px;
-      height: 48px;
-      background: #3dd606;
-      box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-      margin-left: 20px;
-      font-size: 12px;
-      color: #ffffff;
-      border-radius: 0px;
-      justify-content: center;
-      ${FontFamilyCss}
-      ${CursorPointerUpCss}
     }
   }
 `

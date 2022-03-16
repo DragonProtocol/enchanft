@@ -1,18 +1,34 @@
-import styled from 'styled-components'
+import { ButtonHTMLAttributes } from 'react'
+import styled, { css } from 'styled-components'
 import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
-const ButtonBase: React.FC = ({ children, ...otherProps }) => {
+export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>{}
+
+const ButtonBase: React.FC<ButtonProps> = ({ children, ...otherProps }:ButtonProps) => {
   return <ButtonBaseWrapper {...otherProps}>{children}</ButtonBaseWrapper>
 }
 export default ButtonBase
-const ButtonBaseWrapper = styled.button`
-  width: 216px;
+export const ButtonPrimary = styled(ButtonBase)`
+  background-color: #3dd606;
+`
+export const ButtonWarning = styled(ButtonBase)`
+  background-color: #ebb700;
+`
+export const ButtonDanger = styled(ButtonBase)`
+  background-color: #D60606;
+`
+export const ButtonBaseCss = css`
+  width: 100%;
   height: 48px;
-  text-align: center;
-  line-height: 48px;
-  background: #ebb700;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
   font-size: 12px;
   color: #ffffff;
+  border: none;
   ${FontFamilyCss}
   ${CursorPointerUpCss}
+`
+const ButtonBaseWrapper = styled.button`
+  ${ButtonBaseCss}
 `
