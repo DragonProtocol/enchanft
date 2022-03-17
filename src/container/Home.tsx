@@ -21,6 +21,7 @@ import { collections } from '../utils'
 import { ButtonPrimary, ButtonWarning } from '../components/common/ButtonBase'
 import ButtonConnectWallect from '../components/common/ButtonConnectWallet'
 import SplitTextOpacity, { SplitTextOpacityFuns } from '../components/common/animate/SplitTextOpacity'
+import LoadingIcon from '../components/imgs/Loading.gif'
 
 function Home() {
   const wallet = useWallet()
@@ -125,7 +126,11 @@ function Home() {
             <div className="list-title">
               <SplitTextOpacity ref={titleRefExplore}>Choose and Create Synthetic NFTs</SplitTextOpacity>
             </div>
-            {exploreNFTStatus === 'loading' && <div className="loading">Loading...</div>}
+            {exploreNFTStatus === 'loading' && (
+              <div className="loading">
+                <img src={LoadingIcon} alt="" />
+              </div>
+            )}
           </>
         )}
         <div className="list">
