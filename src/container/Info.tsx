@@ -14,6 +14,7 @@ import { getMetadataFromMint } from '../features/my/myData'
 import NFTShower from '../components/NFTShower'
 import { Contract } from '../synft'
 import useInjectTree from '../hooks/useInjectTree'
+import LoadingIcon from '../components/imgs/Loading.gif'
 
 const Info: React.FC = (props) => {
   const params = useParams()
@@ -67,7 +68,11 @@ const Info: React.FC = (props) => {
 
   return (
     <InfoWrapper>
-      {(loading && <div className="tip">loading...</div>) ||
+      {(loading && (
+        <div className="tip">
+          <img src={LoadingIcon} alt="" />
+        </div>
+      )) ||
         (validNFT && (
           <>
             <div className="left">
