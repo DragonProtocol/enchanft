@@ -23,10 +23,7 @@ interface GraphinDagreTree extends GraphinData {
   nodes: TreeNode[]
   edges: IUserEdge[]
 }
-const data = Utils.mock(8).tree().graphin()
 const injectTreeToGraphinDagreTree = (injectTree: Node): GraphinDagreTree => {
-  console.log('data', data)
-
   const nodes: TreeNode[] = []
   const edges: IUserEdge[] = []
   const pushNodeEdge = (injectNode: any) => {
@@ -40,7 +37,10 @@ const injectTreeToGraphinDagreTree = (injectTree: Node): GraphinDagreTree => {
       id: mint,
       label: mint,
       type: 'image',
-      size: 50,
+      size: 60,
+      // style: {
+      //   stroke: "#000",
+      // },
       labelCfg: {
         position: 'bottom',
       },
@@ -48,7 +48,6 @@ const injectTreeToGraphinDagreTree = (injectTree: Node): GraphinDagreTree => {
       clipCfg: {
         show: true,
         type: 'circle',
-        r: 100,
       },
     })
     // 如果有子集，追加连线数据
@@ -95,6 +94,7 @@ const NFTTree: React.FC<Props> = (props: Props) => {
         label: v.value.customData.curr.name,
         img: v.value.customData.curr.image,
       }))
+      newNodes[0].type = 'circle'
       setTreeData({ nodes: newNodes, edges })
     })()
   }, [injectTree])
@@ -118,7 +118,14 @@ const NFTTree: React.FC<Props> = (props: Props) => {
   }, [treeData])
   return (
     <NFTTreeWrapper>
-      <Graphin data={treeData} layout={{ type: 'dagre' }} ref={graphinRef}>
+      <Graphin
+        data={treeData}
+        layout={{
+          type: 'dagre',
+          ranksep: 20
+        }}
+        ref={graphinRef}
+      >
         {/** 树图的FitView 有BUG，网图的可以 */}
         {/* <FitView /> */}
       </Graphin>
