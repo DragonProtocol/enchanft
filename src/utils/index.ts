@@ -12,8 +12,8 @@ export const collections = isProd
   : [
       'D6ZQMLTJAa14XhzCFBJ2uuPjYDbYfewrVDVSyFZSuBYe',
       '7YNKWyPW5iqu1QHqnQ5Csj9yWpEEnqAzLcuzudMMHqbk',
-      'HEBHYYx7qj9sveZKJLx3i3d9Tev2taWvErWGFsm7425n',
-      // 'U1nbABQKyPmrrgsqAPiDG2yxwGCkSV9TYRLW8gCDaiA',
+      'U1nbABQKyPmrrgsqAPiDG2yxwGCkSV9TYRLW8gCDaiA',
+      'AhY7v1fSv4c7P9ouhkfWHDzv7okRNo2TUfwDxwxHZXfb',
     ]
 
 export default {}
