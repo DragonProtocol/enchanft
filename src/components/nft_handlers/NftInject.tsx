@@ -105,7 +105,7 @@ const NftInject: React.FC<Props> = ({
       showValidate('Please enter an asset or select an NFT')
       return
     }
-    if (!validateVolume()) return
+    // if (!validateVolume()) return
     onInject({ injectMode, injectType, token, nft })
   }
   const handleCopyWithInject = () => {
