@@ -12,8 +12,9 @@ import NFTHandler from '../components/NFTHandler'
 
 import { getMetadataFromMint } from '../features/my/myData'
 import NFTShower from '../components/NFTShower'
+import LoadingIcon from '../components/imgs/Loading.gif'
 
-const Info:React.FC=(props) =>{
+const Info: React.FC = (props) => {
   const params = useParams()
   const { connection } = useConnection()
   const wallet: WalletContextState = useWallet()
@@ -23,7 +24,7 @@ const Info:React.FC=(props) =>{
   const [metadata, setMetadata] = useState<any>({})
   useEffect(() => {
     getMetadata()
-  }, [connection,params.mint])
+  }, [connection, params.mint])
 
   async function getMetadata() {
     setLoading(true)
@@ -56,7 +57,11 @@ const Info:React.FC=(props) =>{
 
   return (
     <InfoWrapper>
-      {(loading && <div className="tip">loading...</div>) ||
+      {(loading && (
+        <div className="tip">
+          <img src={LoadingIcon} alt="" />
+        </div>
+      )) ||
         (validNFT && (
           <>
             <div className="left">
