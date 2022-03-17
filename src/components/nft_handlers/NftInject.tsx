@@ -8,7 +8,7 @@ import AddIcon from '../icons/add.svg'
 import NFTCard from '../NFTCard'
 import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { ButtonDanger, ButtonPrimary } from '../common/ButtonBase'
+import { ButtonDanger, ButtonPrimary, ButtonWarning } from '../common/ButtonBase'
 export type Token = {
   name: string
   address: string
@@ -191,10 +191,10 @@ const NftInject: React.FC<Props> = ({
       )}
 
       {(withCopyInit && (
-        <ButtonPrimary className="form-submit" onClick={handleCopyWithInject}>
+        <ButtonWarning className="form-submit" onClick={handleCopyWithInject}>
           {' '}
           EnchaNFT!
-        </ButtonPrimary>
+        </ButtonWarning>
       )) || (
         <ButtonPrimary className="form-submit" onClick={handleInject}>
           {/* {'> Embed SOL <'} */}
