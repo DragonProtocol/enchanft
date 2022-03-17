@@ -12,8 +12,10 @@ import NFTHandler from '../components/NFTHandler'
 
 import { getMetadataFromMint } from '../features/my/myData'
 import NFTShower from '../components/NFTShower'
+import { Contract } from '../synft'
+import useInjectTree from '../hooks/useInjectTree'
 
-const Info:React.FC=(props) =>{
+const Info: React.FC = (props) => {
   const params = useParams()
   const { connection } = useConnection()
   const wallet: WalletContextState = useWallet()
@@ -23,7 +25,7 @@ const Info:React.FC=(props) =>{
   const [metadata, setMetadata] = useState<any>({})
   useEffect(() => {
     getMetadata()
-  }, [connection,params.mint])
+  }, [connection, params.mint])
 
   async function getMetadata() {
     setLoading(true)
@@ -51,7 +53,17 @@ const Info:React.FC=(props) =>{
     }
   }
 
-  const showerData = { addr: '', mint: params.mint || '', uri: metadata.data?.uri || '' }
+  const contract = Contract.getInstance()
+  const { injectTree, loading: injectTreeLoading } = useInjectTree(params.mint, contract)
+  const showerData = {
+    addr: '',
+    mint: params.mint || '',
+    uri: metadata.data?.uri || '',
+    injectTree: {
+      data: injectTree,
+      loading: injectTreeLoading,
+    },
+  }
   const handlerData = { addr: '', mint: params.mint || '', uri: metadata.data?.uri || '' }
 
   return (
