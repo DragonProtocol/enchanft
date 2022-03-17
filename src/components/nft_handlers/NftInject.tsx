@@ -202,7 +202,7 @@ const NftInject: React.FC<Props> = ({
         </ButtonPrimary>
       )}
       {mintMetadata && (
-        <ButtonDanger className="burn-btn" onClick={onExtract}>
+        <ButtonDanger className="form-submit" onClick={onExtract}>
           {' '}
           {`> extract (${mintMetadata.lamports / 1000000000} SOL) <`}{' '}
         </ButtonDanger>
@@ -319,5 +319,6 @@ const NftInjectWrapper = styled.div`
   }
   .form-submit {
     height: 60px;
+    margin-bottom: 20px;
   }
 `

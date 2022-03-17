@@ -284,7 +284,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
             )}
           </>
         )}
-        {!injectTreeLoading && <ReactJson src={injectTree} />}
+        {/* {!injectTreeLoading && <ReactJson src={injectTree} />} */}
       </NFTHandlerWrapper>
     )
   )

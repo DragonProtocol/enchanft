@@ -28,7 +28,7 @@ export default function NFTShower({ data }: Props) {
   const { uri, mint, addr, injectTree } = data
   const [info, setInfo] = useState<any>({})
   const aliveRef = useRef(true)
-  const [currentAccordion, setCurrentAccordion] = useState('')
+  const [currentAccordion, setCurrentAccordion] = useState('enchantment')
   const handleAccordionChange = (accordion: string, isExpanded: boolean) => {
     if (isExpanded) {
       setCurrentAccordion(accordion)
