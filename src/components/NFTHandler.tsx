@@ -11,7 +11,7 @@ import ReactJson from 'react-json-view'
 import { getMyNFTData, selectMyNFTMetadataArr, selectMyNFTMetadataStatus, setWalletAddr } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { clearMyNFT } from '../features/my/mySlice'
-
+import LoadingIcon from '../components/imgs/Loading.gif'
 import {
   checkBelongToMe,
   getInject,
@@ -252,7 +252,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           <div className="dividing-line"></div>
         </div>
         {belongLoading || injectTreeLoading || hasInjectLoading ? (
-          <p>Loading</p>
+          <p><img src={LoadingIcon} alt="" /></p>
         ) : (
           <>
             {showViewOnly && (

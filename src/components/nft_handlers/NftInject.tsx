@@ -219,13 +219,17 @@ const NftInject: React.FC<Props> = ({
           />
         </DialogTitle>
         <DialogContent className="nft-list-content">
-          <ImageList sx={{ height: 600 }} cols={3} rowHeight={300}>
-            {nftJsonData.map((item, idx) => (
-              <ImageListItem className="nft-item" key={idx} onClick={() => handleCheckedNft(item)}>
-                <NFTCard data={item}></NFTCard>
-              </ImageListItem>
-            ))}
-          </ImageList>
+          {nftJsonData.length > 0 ? (
+            <ImageList sx={{ height: 600 }} cols={3} rowHeight={300}>
+              {nftJsonData.map((item, idx) => (
+                <ImageListItem className="nft-item" key={idx} onClick={() => handleCheckedNft(item)}>
+                  <NFTCard data={item}></NFTCard>
+                </ImageListItem>
+              ))}
+            </ImageList>
+          ) : (
+            <div style={{ textAlign: 'center',height:'50px',lineHeight:'50px'}}>You have no NFT!</div>
+          )}
         </DialogContent>
       </Dialog>
     </NftInjectWrapper>
