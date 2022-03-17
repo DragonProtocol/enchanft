@@ -11,7 +11,7 @@ export type ChildMeta = {
   }
 }
 
-export type Node = {
+export interface Node {
   curr: {
     mint: string | undefined
     sol: {

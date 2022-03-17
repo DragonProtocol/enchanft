@@ -5,10 +5,16 @@ import AccordionSummary from '@mui/material/AccordionSummary'
 import AccordionDetails from '@mui/material/AccordionDetails'
 import expandMoreIcon from './icons/expandMore.svg'
 import { CursorPointerUpCss } from '../GlobalStyle'
+import NFTTree from './NFTTree'
+import { Node } from '../synft'
 interface NFTShowerData {
   uri: string
   mint: string
   addr: string
+  injectTree: {
+    data: Node
+    loading: boolean
+  }
 }
 interface Props {
   data: NFTShowerData
@@ -19,7 +25,7 @@ const ExpandMoreIcon = () => (
   </>
 )
 export default function NFTShower({ data }: Props) {
-  const { uri, mint, addr } = data
+  const { uri, mint, addr, injectTree } = data
   const [info, setInfo] = useState<any>({})
   const aliveRef = useRef(true)
   const [currentAccordion, setCurrentAccordion] = useState('')
@@ -55,6 +61,19 @@ export default function NFTShower({ data }: Props) {
         <img src={info.image} alt={info.image} />
       </div>
       <div className="info-box">
+        <Accordion
+          className="info-item"
+          expanded={currentAccordion === 'enchantment'}
+          onChange={(event, isExpanded) => handleAccordionChange('enchantment', isExpanded)}
+        >
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
+            enchantment
+          </AccordionSummary>
+          <AccordionDetails className="info-content">
+            {injectTree.loading ? <div>loading...</div> : <NFTTree data={injectTree.data} />}
+          </AccordionDetails>
+        </Accordion>
+
         {info.description && (
           <Accordion
             className="info-item"
