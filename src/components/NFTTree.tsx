@@ -13,75 +13,20 @@ interface TreeNode {
   id: string
   label?: any
   style?: any
+  size?: any
   type: string
+  labelCfg: any
+  clipCfg: any
   customData: TreeNodeCustomData
 }
-
-// 注册自定义元素
-Graphin.registerNode(
-  'nft-node',
-  {
-    options: {
-      style: {},
-      stateStyles: {
-        hover: {},
-        selected: {},
-      },
-    },
-    draw(
-      cfg: any,
-      group: {
-        addShape: (
-          arg0: string,
-          arg1: {
-            attrs: {
-              x?: number
-              y?: number
-              width?: number
-              height?: number
-              fill?: string
-              img?: string
-              fontSize?: number
-              text?: any
-            }
-            name: string
-          },
-        ) => void
-      },
-    ) {
-      console.log('cfg', cfg)
-      const keyshape = group.addShape('image', {
-        attrs: {
-          x: 0,
-          y: 0,
-          width: 50,
-          height: 50,
-          fill: '#ccc',
-          img: cfg.customData?.curr?.image,
-        },
-        // must be assigned in G6 3.3 and later versions. it can be any value you want
-        name: 'image-shape',
-      })
-      group.addShape('text', {
-        attrs: {
-          fontSize: 12,
-          x: 0,
-          y: 0,
-          text: cfg.customData.curr?.name,
-          fill: '#ddd',
-        },
-        name: 'text',
-      })
-      return keyshape
-    },
-  },
-  'single-node',
-)
 interface GraphinDagreTree extends GraphinData {
   nodes: TreeNode[]
   edges: IUserEdge[]
 }
+const data = Utils.mock(8).tree().graphin()
 const injectTreeToGraphinDagreTree = (injectTree: Node): GraphinDagreTree => {
+  console.log('data', data)
+
   const nodes: TreeNode[] = []
   const edges: IUserEdge[] = []
   const pushNodeEdge = (injectNode: any) => {
@@ -94,7 +39,17 @@ const injectTreeToGraphinDagreTree = (injectTree: Node): GraphinDagreTree => {
       customData: injectNode,
       id: mint,
       label: mint,
-      type: 'nft-node',
+      type: 'image',
+      size: 50,
+      labelCfg: {
+        position: 'bottom',
+      },
+      // 裁剪图片配置
+      clipCfg: {
+        show: true,
+        type: 'circle',
+        r: 100,
+      },
     })
     // 如果有子集，追加连线数据
     if (children.length) {
@@ -107,6 +62,7 @@ const injectTreeToGraphinDagreTree = (injectTree: Node): GraphinDagreTree => {
         pushNodeEdge(child)
       }
     }
+    return
   }
   pushNodeEdge(injectTree)
   return { nodes, edges }
@@ -129,19 +85,21 @@ const NFTTree: React.FC<Props> = (props: Props) => {
         const { mint } = item.customData.curr
         const mintKey = new PublicKey(mint as string)
         const data = await contract.getMetadataWithMint(mintKey)
+        // 将元信息添加到节点的自定义数据中
         const customData = { ...item.customData, curr: { ...item.customData.curr, ...data?.externalMetadata } }
         return { ...item, customData }
       })
       const nodesRes = await Promise.allSettled(promises)
-      const newNodes = nodesRes.map((v: any) => ({...v.value,label:v.value.customData.curr.name}))
-      console.log('nodesRes',nodesRes);
-      
+      const newNodes = nodesRes.map((v: any) => ({
+        ...v.value,
+        label: v.value.customData.curr.name,
+        img: v.value.customData.curr.image,
+      }))
       setTreeData({ nodes: newNodes, edges })
     })()
-  }, [])
+  }, [injectTree])
   console.log('treeData', treeData)
 
-  // 节点数据变化
   useEffect(() => {
     const handleClick = (evt: IG6GraphEvent) => {
       const node = evt.item
