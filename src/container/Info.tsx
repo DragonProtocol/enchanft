@@ -53,8 +53,7 @@ const Info: React.FC = (props) => {
     }
   }
 
-  const contract = Contract.getInstance()
-  const { injectTree, loading: injectTreeLoading } = useInjectTree(params.mint, contract)
+  const { injectTree, loading: injectTreeLoading } = useInjectTree(params.mint)
   const showerData = {
     addr: '',
     mint: params.mint || '',
