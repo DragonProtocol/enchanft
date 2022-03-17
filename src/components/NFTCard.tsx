@@ -30,7 +30,7 @@ const NFTCard: React.FC<Props> = ({ data }: Props) => {
       <div className="img-box">
         {data.hasCopied && <span className="tag tag-synthesized">Synthesized</span>}
         {/* {data.hasInjected && <span className="tag tag-enchanted">Enchanted</span>} */}
-        <img src={info.image} alt={info.image} className="img" />
+        <img src={info.image} className="img" />
       </div>
       <div className="name">{info.name}</div>
     </NFTCardWrapper>
@@ -56,6 +56,7 @@ const NFTCardWrapper = styled.div`
       border-top: none;
       border-left: none;
       box-sizing: border-box;
+      font-size: 12px;
     }
     .tag-synthesized {
       background: #fffbdb;

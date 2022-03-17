@@ -83,6 +83,7 @@ const Info: React.FC = (props) => {
 }
 export default Info
 const InfoWrapper = styled.div`
+  margin-top: 24px;
   display: flex;
   .left,
   .right {

@@ -62,18 +62,18 @@ export default function NFTShower({ data }: Props) {
       </div>
       <div className="info-box">
         <Accordion
-          className="info-item"
-          expanded={currentAccordion === 'enchantment'}
-          onChange={(event, isExpanded) => handleAccordionChange('enchantment', isExpanded)}
-        >
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
-            enchantment
-          </AccordionSummary>
-          <AccordionDetails className="info-content">
-            {injectTree.loading ? <div>loading...</div> : <NFTTree data={injectTree.data} />}
-          </AccordionDetails>
-        </Accordion>
-
+            className="info-item"
+            style={{display:injectTree.data.curr.children.length > 0 ?'block':'none'}}
+            expanded={currentAccordion === 'enchantment'}
+            onChange={(event, isExpanded) => handleAccordionChange('enchantment', isExpanded)}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
+              enchantment
+            </AccordionSummary>
+            <AccordionDetails className="info-content">
+              {injectTree.loading ? <div>loading...</div> : <NFTTree data={injectTree.data} />}
+            </AccordionDetails>
+          </Accordion>
         {info.description && (
           <Accordion
             className="info-item"

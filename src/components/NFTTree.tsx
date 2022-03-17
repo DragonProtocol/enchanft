@@ -5,6 +5,7 @@ import { Contract, Node } from '../synft'
 import { useNavigate } from 'react-router-dom'
 import { NftDataItem } from './NFTList'
 import { PublicKey } from '@solana/web3.js'
+import LoadingIcon from './imgs/Loading.gif'
 interface TreeNodeCustomData extends Node, NftDataItem {
   image: string
   name: string
@@ -17,6 +18,7 @@ interface TreeNode {
   type: string
   labelCfg: any
   clipCfg: any
+  img?: any
   customData: TreeNodeCustomData
 }
 interface GraphinDagreTree extends GraphinData {
@@ -35,8 +37,8 @@ const injectTreeToGraphinDagreTree = (injectTree: Node): GraphinDagreTree => {
     nodes.push({
       customData: injectNode,
       id: mint,
-      label: mint,
       type: 'image',
+      img: LoadingIcon,
       size: 60,
       // style: {
       //   stroke: "#000",
@@ -95,6 +97,7 @@ const NFTTree: React.FC<Props> = (props: Props) => {
         img: v.value.customData.curr.image,
       }))
       newNodes[0].type = 'circle'
+      newNodes[0].img = LoadingIcon
       setTreeData({ nodes: newNodes, edges })
     })()
   }, [injectTree])
@@ -122,9 +125,10 @@ const NFTTree: React.FC<Props> = (props: Props) => {
         data={treeData}
         layout={{
           type: 'dagre',
-          ranksep: 20
+          ranksep: 20,
         }}
         ref={graphinRef}
+        defaultNode={{ type: 'image' }}
       >
         {/** 树图的FitView 有BUG，网图的可以 */}
         {/* <FitView /> */}
