@@ -8,7 +8,7 @@ import AddIcon from '../icons/add.svg'
 import NFTCard from '../NFTCard'
 import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { ButtonPrimary } from '../common/ButtonBase'
+import { ButtonDanger, ButtonPrimary } from '../common/ButtonBase'
 export type Token = {
   name: string
   address: string
@@ -42,10 +42,20 @@ interface Props {
   nftOptions: NftDataItem[]
   onInject?: (props: OnInjectProps) => void
   onCopyWithInject?: (props: OnInjectProps) => void
+  canExtract?: boolean
+  onExtract?: () => void
+  mintMetadata?: any
 }
 const INJECT_MODES = [InjectMode.Reversible, InjectMode.Irreversible]
 
-const NftInject: React.FC<Props> = ({ nftOptions, onInject, withCopyInit, onCopyWithInject }: Props) => {
+const NftInject: React.FC<Props> = ({
+  nftOptions,
+  onInject,
+  withCopyInit,
+  onCopyWithInject,
+  mintMetadata,
+  onExtract,
+}: Props) => {
   const { connection } = useConnection()
   const wallet = useWallet()
   const [balance, setBalance] = useState(0)
@@ -127,33 +137,37 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject, withCopyInit, onCopy
 
   return (
     <NftInjectWrapper>
-      <div className="form-item">
-        <div className="form-label">Create synthetic NFTs</div>
-        <div className="form-value">
-          <input
-            type="number"
-            className={`token-value ${disabledToken ? 'disabled' : ''}`}
-            placeholder="0.00"
-            value={token.volume}
-            onChange={(e) => setToken({ ...token, volume: e.target.value })}
-          />
+      {withCopyInit && (
+        <div className="form-item">
+          <div className="form-label">Create synthetic NFTs</div>
+          <div className="form-value">
+            <input
+              type="number"
+              className={`token-value ${disabledToken ? 'disabled' : ''}`}
+              placeholder="0.00"
+              value={token.volume}
+              onChange={(e) => setToken({ ...token, volume: e.target.value })}
+            />
+          </div>
         </div>
-      </div>
-      <div className="form-item">
-        <div className="form-label">Embed other NFTs</div>
-        <div className={`form-value select-nft-btn ${disabledNft ? 'disabled' : ''}`} onClick={handleOpenNftList}>
-          {nft?.image ? (
-            <>
-              <div className="delete-btn" onClickCapture={handleDeleteNft}>
-                x
-              </div>
-              <img src={nft.image} alt="" className="nft-img" />
-            </>
-          ) : (
-            <img src={AddIcon} alt="" />
-          )}
+      )}
+      {!withCopyInit && (
+        <div className="form-item">
+          <div className="form-label">Embed other NFTs</div>
+          <div className={`form-value select-nft-btn ${disabledNft ? 'disabled' : ''}`} onClick={handleOpenNftList}>
+            {nft?.image ? (
+              <>
+                <div className="delete-btn" onClickCapture={handleDeleteNft}>
+                  x
+                </div>
+                <img src={nft.image} alt="" className="nft-img" />
+              </>
+            ) : (
+              <img src={AddIcon} alt="" />
+            )}
+          </div>
         </div>
-      </div>
+      )}
       <div className="form-item">
         <div className="form-label">Select Mode</div>
         <div className="form-value mode-selector">
@@ -183,8 +197,15 @@ const NftInject: React.FC<Props> = ({ nftOptions, onInject, withCopyInit, onCopy
         </ButtonPrimary>
       )) || (
         <ButtonPrimary className="form-submit" onClick={handleInject}>
-          {'> Embed SOL <'}
+          {/* {'> Embed SOL <'} */}
+          {'> Embed NFT<'}
         </ButtonPrimary>
+      )}
+      {mintMetadata && (
+        <ButtonDanger className="burn-btn" onClick={onExtract}>
+          {' '}
+          {`> extract (${mintMetadata.lamports / 1000000000} SOL) <`}{' '}
+        </ButtonDanger>
       )}
 
       <Dialog fullWidth={true} maxWidth="md" onClose={handleCloseNftList} open={visibleNftList}>

@@ -1,12 +1,13 @@
-import { Connection, PublicKey } from '@solana/web3.js'
+import { PublicKey } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
 
 import { Contract, MetaInfo } from '../synft'
-import { getMetadataFromMint } from '../features/info/infoOps'
+import { useContract } from '../provider/ContractProvider'
 
-export default (mint: string | undefined, contract: Contract) => {
+export default (mint: string | undefined) => {
+  const { contract } = useContract()
+
   const [loading, setLoading] = useState(true)
-  // TODO: any 解决
   const [info, setInfo] = useState<MetaInfo | null>(null)
 
   useEffect(() => {

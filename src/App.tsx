@@ -22,6 +22,7 @@ import { Provider } from 'react-redux'
 import { BrowserRouter, HashRouter } from 'react-router-dom'
 import log from 'loglevel'
 
+import ContractProvider, { useContract } from './provider/ContractProvider'
 import GlobalStyle from './GlobalStyle'
 import Layout from './components/Layout'
 
@@ -35,22 +36,17 @@ log.setLevel(logIsProd ? 'warn' : 'trace')
 
 function AppLayout() {
   const wallet: WalletContextState = useWallet()
-  const { connection } = useConnection()
-
-  const [prepared, setPrepared] = useState(false)
-  const contractInstance = Contract.getInstance()
+  const { contract } = useContract()
 
   useEffect(() => {
-    setPrepared(false)
-    contractInstance.setConnection(connection)
-    setPrepared(true)
-  }, [connection])
-
-  useEffect(() => {
-    contractInstance.setWallet(wallet)
+    contract.setWallet(wallet)
   }, [wallet])
 
-  return <HashRouter>{(prepared && <Layout />) || null}</HashRouter>
+  return (
+    <HashRouter>
+      <Layout />
+    </HashRouter>
+  )
 }
 
 const App: FC = () => {
@@ -82,8 +78,10 @@ const App: FC = () => {
       <WalletProvider autoConnect wallets={wallets}>
         <WalletModalProvider>
           <Provider store={store}>
-            <GlobalStyle />
-            <AppLayout />
+            <ContractProvider>
+              <GlobalStyle />
+              <AppLayout />
+            </ContractProvider>
           </Provider>
         </WalletModalProvider>
       </WalletProvider>

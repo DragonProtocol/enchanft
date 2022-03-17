@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { Program, Provider } from '@project-serum/anchor'
 import { useConnection, useWallet, WalletContextState } from '@solana/wallet-adapter-react'
 import { useParams } from 'react-router-dom'
@@ -26,14 +26,17 @@ import {
   nftCopyWithInjectSOL,
   nftCopyWithInjectNFT,
 } from '../features/info/infoOps'
+
 import idl, { Contract, Synft } from '../synft'
+import type { Node as TreeNode } from '../synft'
 
 const programId = new PublicKey(idl.metadata.address)
 
 import { NftDataItem } from './NFTList'
 import NftInject, { InjectMode, InjectType, OnInjectProps } from './nft_handlers/NftInject'
 import NftBurn from './nft_handlers/NftBurn'
-import useInjectTree from '../hooks/useInjectTree'
+import { useInjectTree, useBelongTo } from '../hooks'
+import { useContract } from '../provider/ContractProvider'
 
 interface Props {
   data: NftDataItem
@@ -42,19 +45,19 @@ interface Props {
 
 const NFTHandler: React.FC<Props> = (props: Props) => {
   const metadata = props.metadata
-  const contract = Contract.getInstance()
 
   const params = useParams()
   const wallet: WalletContextState = useWallet()
   const { connection } = useConnection()
   const navigate = useNavigate()
+  const { contract } = useContract()
 
   const programRef = useRef<Program<Synft> | null>(null)
-  const [belongLoading, setBelongLoading] = useState(true)
-  const [belongTo, setBelongTo] = useState({
-    me: false,
-    program: false,
-  })
+  // const [belongLoading, setBelongLoading] = useState(true)
+  // const [belongTo, setBelongTo] = useState({
+  //   me: false,
+  //   program: false,
+  // })
   const [hasInject, setHasInject] = useState(false)
   const [hasInjectLoading, setHasInjectLoading] = useState(true)
   const [injectType, setInjectType] = useState<InjectType>(InjectType.Token)
@@ -62,13 +65,14 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const [injectMode, setInjectMode] = useState<InjectMode>(InjectMode.Reversible)
 
   // TODO: any
-  const [mintMetadataArr, setMintMetadataArr] = useState<any[]>([])
+  const [mintMetadata, setMintMetadata] = useState<any>(null)
   const dispatch = useAppDispatch()
   const myNFTData = useAppSelector(selectMyNFTMetadataArr)
   const myNFTDataStatus = useAppSelector(selectMyNFTMetadataStatus)
   // console.log('myNFTData', myNFTData)
 
-  const { injectTree, loading: injectTreeLoading } = useInjectTree(params.mint, contract)
+  const { injectTree, loading: injectTreeLoading } = useInjectTree(params.mint)
+  const { belong, loading: belongLoading } = useBelongTo(params.mint, injectTree)
 
   useEffect(() => {
     if (!wallet.publicKey) {
@@ -82,26 +86,14 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 
   useEffect(() => {
     initProgram()
+    checkHasInject()
   }, [connection])
 
-  useEffect(() => {
-    viewOrOps()
-  }, [connection, wallet])
-
-  useEffect(() => {
-    checkHasInject()
-  }, [belongTo])
-  async function viewOrOps() {
-    if (!params.mint) return
-    try {
-      setBelongLoading(true)
-      const mintKey = new PublicKey(params.mint)
-      const belong = await checkBelongToMe(mintKey, wallet, connection)
-      setBelongTo(belong)
-      setBelongLoading(false)
-    } catch (error) {
-      log.warn('viewOrOps', error)
-    }
+  // TODO v2 后 Program 不再暴露
+  function initProgram() {
+    const provider = new Provider(connection, (window as any).solana, Provider.defaultOptions())
+    const program = new Program(idl as any, programId, provider) as Program<Synft>
+    programRef.current = program
   }
 
   async function checkHasInject() {
@@ -120,55 +112,57 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     setHasInject(true)
     setInjectMode(childrenMeta.reversible === true ? InjectMode.Reversible : InjectMode.Irreversible)
     log.info(`${params.mint} hasInject`, inject)
-
-    if (childrenMeta?.childType.nft || childrenMeta?.childType.sol) {
-      const injectType = childrenMeta?.childType.nft ? InjectType.Nft : InjectType.Token
-      setInjectType(injectType)
-
-      if (injectType === InjectType.Nft) {
-        const metadataArr = await loadChildrenInject(childrenMeta.child, { connection, wallet, program })
-        log.info('metadataArr', { metadataArr })
-        setMintMetadataArr(metadataArr)
-      } else {
-        setMintMetadataArr([
-          {
-            injectType: 'sol',
-            lamports: childrenMetadata.lamports,
-          },
-        ])
-      }
+    // 只可能注入 sol
+    if (childrenMeta?.childType.sol) {
+      setMintMetadata({
+        injectType: 'sol',
+        lamports: childrenMetadata.lamports,
+      })
     }
     setHasInjectLoading(false)
-  }
-
-  function initProgram() {
-    const provider = new Provider(connection, (window as any).solana, Provider.defaultOptions())
-    const program = new Program(idl as any, programId, provider) as Program<Synft>
-    programRef.current = program
   }
 
   function reloadWindow() {
     window.location.reload()
   }
   // 执行注入
-  const onInject = async ({ injectType, injectMode, token, nft }: OnInjectProps) => {
-    const program = programRef.current
-    if (!program) return
-    const reversible = injectMode === InjectMode.Reversible
-    switch (injectType) {
-      case InjectType.Token:
-        // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
-        const { volume } = token
-        const formatVolume = Number(volume) * 1000000000
-        await injectSol(params.mint, formatVolume, reversible, { wallet, program, connection })
-        break
-      case InjectType.Nft:
-        const childMint = nft.mint || ''
-        await injectNFT(params.mint, childMint, reversible, { wallet, program, connection })
-        break
-    }
-    // reloadWindow()
-  }
+  const onInject = useCallback(
+    ({ injectType, injectMode, token, nft }: OnInjectProps) => {
+      ;(async () => {
+        const mint = params.mint
+        log.info({ injectType, injectMode, token, nft }, injectTree)
+        // async ({ injectType, injectMode, token, nft }: OnInjectProps) => {
+        const program = programRef.current
+        if (!program || !mint) return
+        const reversible = injectMode === InjectMode.Reversible
+        switch (injectType) {
+          //   case InjectType.Token:
+          //     // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
+          //     const { volume } = token
+          //     const formatVolume = Number(volume) * 1000000000
+          //     await injectSol(params.mint, formatVolume, reversible, { wallet, program, connection })
+          //     break
+          case InjectType.Nft:
+            const childMint = nft.mint || ''
+            if (!childMint) return
+            const mintKey = new PublicKey(mint)
+            const childMintKey = new PublicKey(childMint)
+            log.info({ childMint })
+            if (injectTree.parent) {
+              await contract.injectNFTToNonRoot(mintKey, [childMintKey], {
+                rootPDA: new PublicKey(injectTree.parent.rootPDA),
+                parentMintKey: new PublicKey(injectTree.parent.mint),
+              })
+            } else {
+              await contract.injectNFTToRoot(mintKey, [childMintKey])
+            }
+            break
+        }
+        reloadWindow()
+      })()
+    },
+    [injectTree],
+  )
   // 执行提取
   const onExtract = async () => {
     const program = programRef.current
@@ -202,15 +196,17 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const onCopyWithInject = async ({ injectType, injectMode, token, nft }: OnInjectProps) => {
     const { name, symbol, uri } = metadata.data
     const program = programRef.current
-    if (!program) return
+    if (!program || !params.mint) return
 
     let newMint = ''
+    const mintKey = new PublicKey(params.mint)
     const reversible = injectMode === InjectMode.Reversible
     switch (injectType) {
       case InjectType.Token:
         // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
         const { volume } = token
         const formatVolume = Number(volume) * 1000000000
+        // newMint = await contract.copyWithInjectSOL(mintKey, formatVolume, { name, uri, symbol })
         newMint = await nftCopyWithInjectSOL(
           params.mint,
           formatVolume,
@@ -219,16 +215,16 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           { connection, wallet, program },
         )
         break
-      case InjectType.Nft:
-        const childMint = nft.mint || ''
-        newMint = await nftCopyWithInjectNFT(
-          params.mint,
-          childMint,
-          reversible,
-          { name, uri, symbol },
-          { connection, wallet, program },
-        )
-        break
+      // case InjectType.Nft:
+      //   const childMint = nft.mint || ''
+      //   newMint = await nftCopyWithInjectNFT(
+      //     params.mint,
+      //     childMint,
+      //     reversible,
+      //     { name, uri, symbol },
+      //     { connection, wallet, program },
+      //   )
+      //   break
     }
     if (!newMint) {
       // TODO: alert something wrong
@@ -238,6 +234,12 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     reloadWindow()
   }
   // TODO loading
+  const showBelongToMe = belong.me
+  const showViewOnly = !belong.me && belong.program
+  const showCopy = !belong.me && !belong.program
+
+  const canExtract = injectTree?.curr.children.length === 0 && injectTree.parent === null
+
   return (
     (!wallet.publicKey && <div>Connect wallet first</div>) || (
       <NFTHandlerWrapper>
@@ -249,46 +251,39 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           </div>
           <div className="dividing-line"></div>
         </div>
-        {belongLoading || hasInjectLoading
-          ? null
-          : (!belongTo.me && (
-              <div className="not-belongto-me">
-                {(belongTo.program && (
-                  <div className="only-view">
-                    <span className="expression">😯</span>{' '}
-                    <span className="description">This NFT has been synthesized</span>
-                  </div>
-                )) || (
-                  <NftInject
-                    withCopyInit={true}
-                    nftOptions={myNFTData
-                      .filter((item) => item?.metadata?.data.mint != params.mint)
-                      .map((item) => ({ ...item?.metadata?.data, ...item?.metadata?.data.data }))}
-                    onCopyWithInject={onCopyWithInject}
-                  ></NftInject>
-                )}
-              </div>
-            )) || (
-              <div className="belongto-me">
-                {hasInject ? (
-                  <NftBurn
-                    data={mintMetadataArr}
-                    injectType={injectType}
-                    injectMode={injectMode}
-                    onExtract={onExtract}
-                    onWithdraw={onWithdraw}
-                  ></NftBurn>
-                ) : (
-                  <NftInject
-                    withCopyInit={false}
-                    nftOptions={myNFTData
-                      .filter((item) => item?.metadata?.data.mint != params.mint)
-                      .map((item) => ({ ...item?.metadata?.data, ...item?.metadata?.data.data }))}
-                    onInject={onInject}
-                  ></NftInject>
-                )}
+        {belongLoading || injectTreeLoading || hasInjectLoading ? (
+          <p>Loading</p>
+        ) : (
+          <>
+            {showViewOnly && (
+              <div className="only-view">
+                <span className="expression">😯</span>{' '}
+                <span className="description">This NFT has been synthesized</span>
               </div>
             )}
+            {showBelongToMe && (
+              <NftInject
+                withCopyInit={false}
+                nftOptions={myNFTData
+                  .filter((item) => item?.metadata?.data.mint != params.mint)
+                  .map((item) => ({ ...item?.metadata?.data, ...item?.metadata?.data.data }))}
+                onInject={onInject}
+                // canExtract={canExtract}
+                mintMetadata={mintMetadata}
+                onExtract={onExtract}
+              ></NftInject>
+            )}
+            {showCopy && (
+              <NftInject
+                withCopyInit={true}
+                nftOptions={myNFTData
+                  .filter((item) => item?.metadata?.data.mint != params.mint)
+                  .map((item) => ({ ...item?.metadata?.data, ...item?.metadata?.data.data }))}
+                onCopyWithInject={onCopyWithInject}
+              ></NftInject>
+            )}
+          </>
+        )}
         {!injectTreeLoading && <ReactJson src={injectTree} />}
       </NFTHandlerWrapper>
     )
