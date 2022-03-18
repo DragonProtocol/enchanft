@@ -11,14 +11,16 @@ const Layout: React.FC = () => {
         </div>
       </div>
       <div className="main">
-        <div className="layout-inner">
-          <Main></Main>
+        <div className="main-route">
+          <div className="layout-inner">
+            <Main></Main>
+          </div>
         </div>
-      </div>
-      <div className="footer">
-        <div className="layout-inner">
-          <div className="line"></div>
-          <div className="copyright">Composable NFTs, Endless Possibilities</div>
+        <div className="main-footer">
+          <div className="layout-inner footer-inner">
+            <div className="line"></div>
+            <div className="copyright">Composable NFTs, Endless Possibilities</div>
+          </div>
         </div>
       </div>
     </LayoutWrapper>
@@ -27,39 +29,45 @@ const Layout: React.FC = () => {
 export default Layout
 const LayoutWrapper = styled.div`
   width: 100%;
-  min-height: calc(100% - 72px);
   box-sizing: border-box;
   .layout-inner {
     max-width: 1024px;
     margin: 0 auto;
   }
   .header {
-    position: fixed;
-    top: 0;
     width: 100%;
+    height: 72px;
     background: #ffffff;
     box-sizing: border-box;
-    z-index: 2000;
     .header-inner {
-      height: 72px;
+      height: 100%;
     }
   }
   .main {
-    margin-top: 72px;
-    padding: 24px;
-    min-height: calc(100vh - 72px)
-  }
-  .footer {
-    padding-bottom: 35px;
-    .line {
-      width: 40px;
-      height: 2px;
-      background: #222222;
-      margin: 0 auto;
-      margin-bottom: 35px;
+    height: calc(100vh - 72px);
+    overflow: overlay;
+    .main-route {
+      padding:24px 0;
+      box-sizing: border-box;
+      min-height: calc(100vh - 72px - 60px - 35px);
     }
-    .copyright {
-      text-align: center;
+    .main-footer {
+      height: 60px;
+      margin-bottom: 35px;
+      .footer-inner {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        .line {
+          width: 40px;
+          height: 2px;
+          background: #222222;
+        }
+        .copyright {
+        }
+      }
     }
   }
 `
