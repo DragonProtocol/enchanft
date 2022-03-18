@@ -72,10 +72,7 @@ function Home() {
     }
   }, [])
 
-  let nftList: NftDataItem[] = exploreNFTData
-  if (tab === 'my') {
-    nftList = myNFTData
-  }
+  const nftList: NftDataItem[] = tab === 'my' ? myNFTData : exploreNFTData
   return (
     <HomeWrapper>
       <div className="top">
