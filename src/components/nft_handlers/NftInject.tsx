@@ -29,8 +29,9 @@ export enum InjectMode {
   Irreversible = 'Irreversible',
 }
 export enum InjectType {
-  Token = 'Token',
-  Nft = 'Nft',
+  SOL = 'sol',
+  SPL = 'spl',
+  NFT = 'nft',
 }
 export interface OnInjectProps {
   injectMode: InjectMode
@@ -43,7 +44,6 @@ interface Props {
   nftOptions: NftDataItem[]
   onInject?: (props: OnInjectProps) => void
   onCopyWithInject?: (props: OnInjectProps) => void
-  canExtract?: boolean
   onExtract?: () => void
   mintMetadata?: any
 }
@@ -64,11 +64,11 @@ const NftInject: React.FC<Props> = ({
   const [token, setToken] = useState<Token>(TOKEN_DEFAULT)
   const [nft, setNft] = useState<NftDataItem>({ mint: '', image: '', name: '' })
   const [visibleNftList, setVisibleNftList] = useState(false)
-  const [nftJsonData, setNftJsonData] = useState<any[]>([])
+  // const [nftJsonData, setNftJsonData] = useState<any[]>([])
   const [checkTip, setCheckTip] = useState({ visible: false, msg: '' })
   const disabledToken = nft?.name ? true : false
   const disabledNft = token?.volume ? true : false
-  const injectType = disabledToken ? InjectType.Nft : InjectType.Token
+  const injectType = disabledToken ? InjectType.NFT : InjectType.SOL
   const handleOpenNftList = () => {
     setVisibleNftList(true)
   }
@@ -115,18 +115,18 @@ const NftInject: React.FC<Props> = ({
     onCopyWithInject({ injectMode, injectType, token, nft })
   }
   // 获取nft列表
-  useEffect(() => {
-    ;(async () => {
-      const promises = nftOptions.map(async (item) => {
-        const response = await fetch(item.uri || '')
-        const jsonData = await response.json()
-        return { ...item, ...jsonData }
-      })
-      const res = await Promise.allSettled(promises)
-      const jsonData = res.filter((item) => item.status === 'fulfilled').map((item: any) => item.value)
-      setNftJsonData(jsonData)
-    })()
-  }, [nftOptions])
+  // useEffect(() => {
+  //   ;(async () => {
+  //     const promises = nftOptions.map(async (item) => {
+  //       const response = await fetch(item.uri || '')
+  //       const jsonData = await response.json()
+  //       return { ...item, ...jsonData }
+  //     })
+  //     const res = await Promise.allSettled(promises)
+  //     const jsonData = res.filter((item) => item.status === 'fulfilled').map((item: any) => item.value)
+  //     setNftJsonData(jsonData)
+  //   })()
+  // }, [nftOptions])
   // 获取当前账户余额
   useEffect(() => {
     if (!wallet.publicKey) return
@@ -220,9 +220,9 @@ const NftInject: React.FC<Props> = ({
           />
         </DialogTitle>
         <DialogContent className="nft-list-content">
-          {nftJsonData.length > 0 ? (
+          {nftOptions.length > 0 ? (
             <NFTListWrapper>
-              {nftJsonData.map((item, idx) => (
+              {nftOptions.map((item, idx) => (
                 <div className="list-item nft-item" key={idx} onClick={() => handleCheckedNft(item)}>
                   <NFTCard data={item}></NFTCard>
                 </div>

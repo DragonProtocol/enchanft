@@ -15,9 +15,9 @@ export default (mint: string | undefined) => {
       setLoading(true)
       if (!mint) return
       const mintKey = new PublicKey(mint)
-      const data = await contract.getMetadataWithMint(mintKey)
-      setLoading(false)
+      const data = await contract.getMetadataInfoWithMint(mintKey)
       setInfo(data)
+      setLoading(false)
     })()
   }, [mint])
 

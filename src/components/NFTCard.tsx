@@ -5,34 +5,14 @@ interface Props {
   data: NftDataItem
 }
 const NFTCard: React.FC<Props> = ({ data }: Props) => {
-  const { uri } = data
-  const [info, setInfo] = useState<any>(data)
-  const aliveRef = useRef(true)
-  useEffect(() => {
-    if (!uri) return
-    ;(async () => {
-      try {
-        const response = await fetch(uri)
-        const jsonData = await response.json()
-        if (aliveRef.current) setInfo(jsonData)
-      } catch (error) {
-        if (aliveRef.current) console.error(error)
-      }
-    })()
-  }, [uri])
-  useEffect(() => {
-    return () => {
-      aliveRef.current = false
-    }
-  }, [])
   return (
     <NFTCardWrapper>
       <div className="img-box">
         {data.hasCopied && <span className="tag tag-synthesized">Synthesized</span>}
         {/* {data.hasInjected && <span className="tag tag-enchanted">Enchanted</span>} */}
-        <img src={info.image} className="img" />
+        <img src={data.image} className="img" />
       </div>
-      <div className="name">{info.name}</div>
+      <div className="name">{data.name}</div>
     </NFTCardWrapper>
   )
 }

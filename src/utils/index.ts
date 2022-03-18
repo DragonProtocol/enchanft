@@ -11,4 +11,10 @@ export const collections = isProd
   ? []
   : ['DaFBQUghKeSuuAjgZWLkZfHzVs5K8ELf1oGXKkkupwDX', 'U7KxNoZ3rNbtG5DgRYQQsjs2dWoSSLLRLjit6VXRyzR']
 
-export default {}
+export function lamportsToSol(lamportsAmount: number) {
+  return lamportsAmount / 10 ** 9
+}
+
+export function solToLamports(solAmount: number) {
+  return solAmount * 10 ** 9
+}

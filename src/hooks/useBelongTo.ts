@@ -1,17 +1,17 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
 
-import type { Node as TreeNode } from '../synft'
-import { Contract, BelongTo } from '../synft'
+import { BelongTo } from '../synft'
 import { useContract } from '../provider/ContractProvider'
 
-export default (mint: string | undefined, injectTree: TreeNode) => {
+export default (mint: string | undefined) => {
   const { contract } = useContract()
 
   const [loading, setLoading] = useState(true)
   const [belong, setBelong] = useState<BelongTo>({
     me: false,
     program: false,
+    parent: null,
   })
 
   useEffect(() => {
@@ -20,11 +20,11 @@ export default (mint: string | undefined, injectTree: TreeNode) => {
         return
       }
       const mintKey = new PublicKey(mint)
-      const data = await contract.checkBelongTo(mintKey, injectTree)
+      const data = await contract.checkBelongTo(mintKey)
       setLoading(false)
       setBelong(data)
     })()
-  }, [mint, injectTree])
+  }, [mint])
 
   return { belong, loading }
 }

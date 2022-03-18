@@ -85,7 +85,7 @@ const NFTTree: React.FC<Props> = (props: Props) => {
       const promises = nodes.map(async (item: TreeNode) => {
         const { mint } = item.customData.curr
         const mintKey = new PublicKey(mint as string)
-        const data = await contract.getMetadataWithMint(mintKey)
+        const data = await contract.getMetadataInfoWithMint(mintKey)
         // 将元信息添加到节点的自定义数据中
         const customData = { ...item.customData, curr: { ...item.customData.curr, ...data?.externalMetadata } }
         return { ...item, customData }

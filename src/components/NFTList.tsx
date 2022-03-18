@@ -5,14 +5,10 @@ import styled from 'styled-components'
 import { CursorPointerUpCss } from '../GlobalStyle'
 import { MEDIA_BREAK_POINTS } from '../utils/constants'
 import NFTCard from './NFTCard'
-export interface NftDataItem {
-  mint?: string
-  image?: string
-  name?: string
-  uri?: string
-  hasCopied?: boolean
-  hasInjected?: boolean
-}
+
+import type { NFTDataItem } from '../synft'
+
+export type NftDataItem = NFTDataItem
 interface Props {
   data: NftDataItem[]
 }

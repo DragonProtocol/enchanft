@@ -1,9 +1,8 @@
-/* eslint-disable no-unreachable */
 /* eslint-disable lines-between-class-members */
 /* eslint-disable no-underscore-dangle */
 
 import { PublicKey, Connection, AccountInfo, SystemProgram, Transaction } from '@solana/web3.js'
-import { Metadata, MetadataData } from '@metaplex-foundation/mpl-token-metadata'
+import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import { BN, Program, Provider, web3 } from '@project-serum/anchor'
 import { TOKEN_PROGRAM_ID, getAccount, Account } from '@solana/spl-token'
 import { WalletContextState } from '@solana/wallet-adapter-react'
@@ -11,11 +10,11 @@ import axios from 'axios'
 import log from 'loglevel'
 
 import idl, { Synft } from './v2'
-import type { Node, MetaInfo, BelongTo } from './v2/types'
+import type { Node, MetaInfo, BelongTo, ChildMeta, InjectInfoV1 } from './v2/types'
 
+const PROGRAM_ID = new PublicKey(idl.metadata.address)
 const METADATA_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
 const MPL_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')
-const PROGRAM_ID = new PublicKey(idl.metadata.address)
 
 // eslint-disable-next-line no-shadow
 enum SynftSeed {
@@ -48,6 +47,7 @@ export default class Contract {
   }
 
   private initProgram(connection: Connection) {
+    log.info('Contract initProgram')
     const provider = new Provider(connection, (window as any).solana, Provider.defaultOptions())
     const program = new Program(idl as any, PROGRAM_ID, provider) as Program<Synft>
     this._program = program
@@ -60,7 +60,6 @@ export default class Contract {
   public setConnection(conn: Connection) {
     this._connection = conn
     this.initProgram(conn)
-    log.info('Contract initProgram')
   }
 
   public async checkValidNFT(mintKey: PublicKey): Promise<boolean> {
@@ -80,10 +79,10 @@ export default class Contract {
     }
   }
 
-  public async checkBelongTo(mintKey: PublicKey, injectTree: Node): Promise<BelongTo> {
+  public async checkBelongTo(mintKey: PublicKey): Promise<BelongTo> {
     log.info('checkBelongTo')
 
-    const result = { me: false, program: false }
+    const result: BelongTo = { me: false, program: false, parent: null }
     if (!this._connection) {
       log.error('Contract connect invalid')
       return result
@@ -96,8 +95,10 @@ export default class Contract {
       if (lastTokenAccountBalancePair.uiAmount !== 1) return result
 
       let rootMintKey = lastTokenAccountBalancePair.address
-      if (injectTree.parent) {
-        const { rootPDA } = injectTree.parent
+      const parentNFT = await this.getParentNFT(mintKey)
+      if (parentNFT) {
+        result.parent = parentNFT
+        const { rootPDA } = parentNFT
         const rootMeta = await program.account.childrenMetadataV2.fetch(rootPDA)
         rootMintKey = rootMeta.parent
 
@@ -152,20 +153,10 @@ export default class Contract {
 
       // 只需要第一次的时候获取 parent
       if (first) {
-        const parentNFT = await this._program.account.childrenMetadataV2.all([
-          {
-            memcmp: {
-              offset: CHILD_OFFSET,
-              bytes: mintKey.toBase58(),
-            },
-          },
-        ])
+        const parentNFT = await this.getParentNFT(mintKey)
         // if parentNFT 证明当前是个子节点，有父节点
-        if (parentNFT[0]) {
-          treeObj.parent = {
-            mint: parentNFT[0]?.account.parent.toString(),
-            rootPDA: parentNFT[0]?.account.root.toString(),
-          }
+        if (parentNFT) {
+          treeObj.parent = parentNFT
         }
       }
 
@@ -194,17 +185,71 @@ export default class Contract {
     }
   }
 
+  private async getParentNFT(mintKey: PublicKey) {
+    if (!this._program) {
+      log.error('Contract connect invalid')
+      return null
+    }
+    const parentNFT = await this._program.account.childrenMetadataV2.all([
+      {
+        memcmp: {
+          offset: CHILD_OFFSET,
+          bytes: mintKey.toBase58(),
+        },
+      },
+    ])
+
+    if (parentNFT && parentNFT[0]) {
+      return {
+        mint: parentNFT[0]?.account.parent.toString(),
+        rootPDA: parentNFT[0]?.account.root.toString(),
+      }
+    }
+    return null
+  }
+
+  public async getValidNFTokensWithOwner(owner: PublicKey) {
+    if (!this._connection) {
+      return []
+    }
+    const tokens = await this._connection.getParsedTokenAccountsByOwner(owner, {
+      programId: TOKEN_PROGRAM_ID,
+    })
+
+    // initial filter - only tokens with 0 decimals & of which 1 is present in the wallet
+    const filteredToken = tokens.value
+      .filter((t) => {
+        const amount = t.account.data.parsed.info.tokenAmount
+        return amount.decimals === 0 && amount.uiAmount === 1
+      })
+      .map((t) => ({
+        address: new PublicKey(t.pubkey),
+        mint: new PublicKey(t.account.data.parsed.info.mint),
+      }))
+    return filteredToken
+  }
+
+  public async getMetadataFromMint(mintKey: PublicKey) {
+    if (!this._connection) {
+      log.error('Contract connect invalid')
+      return null
+    }
+    const pubkey = await Metadata.getPDA(mintKey)
+    const metadata = await Metadata.load(this._connection, pubkey)
+    return metadata
+  }
   /**
    * externalMetadata any, json data
    */
-  public async getMetadataWithMint(mintKey: PublicKey): Promise<MetaInfo | null> {
+  public async getMetadataInfoWithMint(mintKey: PublicKey): Promise<MetaInfo | null> {
     if (!this._connection || !this._program) {
       log.error('Contract connect invalid')
       return null
     }
     try {
-      const pubkey = await Metadata.getPDA(mintKey)
-      const metadata = (await Metadata.load(this._connection, pubkey)).data
+      const tmp = await this.getMetadataFromMint(mintKey)
+      if (!tmp) return null
+      const metadata = tmp.data
       const externalMetadata = (await axios.get(metadata.data.uri)).data
       return {
         mint: mintKey,
@@ -212,7 +257,6 @@ export default class Contract {
         externalMetadata,
       }
     } catch (error) {
-      log.error(error)
       return null
     }
   }
@@ -483,4 +527,167 @@ export default class Contract {
     const info = await this._connection.getAccountInfo(nftMintPDA)
     return info
   }
+
+  // v1 --------------------------------------
+  public async getInjectV1(mintKey: PublicKey): Promise<InjectInfoV1 | null> {
+    if (!this._connection || !this._program) {
+      log.error('Contract connect invalid')
+      return null
+    }
+    try {
+      const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+        [Buffer.from('children-of'), mintKey.toBuffer()],
+        PROGRAM_ID,
+      )
+
+      const childrenMetadata = await this._connection.getAccountInfo(metadataPDA)
+      if (!childrenMetadata) {
+        return null
+      }
+      let childrenMeta = null
+      if (childrenMetadata) {
+        childrenMeta = (await this._program.account.childrenMetadata.fetch(metadataPDA)) as ChildMeta
+      }
+
+      log.debug('getInject', { childrenMetadata, childrenMeta })
+
+      return { childrenMetadata, childrenMeta }
+    } catch (error) {
+      log.warn(error)
+      return null
+    }
+  }
+
+  public async copyWithInjectSOLv1(
+    mintKey: PublicKey,
+    lamportAmount: number,
+    { name, symbol, uri }: { name: string; symbol: string; uri: string },
+  ): Promise<string> {
+    log.info('copyWithInjectSOLv1')
+    if (!this._connection || !this._program || !this._wallet?.publicKey) {
+      log.error('Contract connect invalid')
+      return ''
+    }
+    const program = this._program
+    const walletPubKey = this._wallet.publicKey
+    const connection = this._connection
+
+    // 1. 使用 mint 进行 copy
+    const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.MINT_SEED), mintKey.toBuffer()],
+      PROGRAM_ID,
+    )
+
+    const [nftTokenAccountPDA, nftTokenAccountBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.ACCOUNT_SEED), mintKey.toBuffer()],
+      PROGRAM_ID,
+    )
+
+    const [nftMetadataPDA, nftMetadataBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.METADATA), METADATA_PROGRAM_ID.toBuffer(), nftMintPDA.toBuffer()],
+      METADATA_PROGRAM_ID,
+    )
+
+    const instructionCopy = program.instruction.nftCopy(...[name, symbol, uri], {
+      accounts: {
+        currentOwner: walletPubKey,
+        fromNftMint: mintKey,
+        nftMetaDataAccount: nftMetadataPDA,
+        nftMintAccount: nftMintPDA,
+        nftTokenAccount: nftTokenAccountPDA,
+        systemProgram: SystemProgram.programId,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+        tokenProgram: TOKEN_PROGRAM_ID,
+        mplProgram: MPL_PROGRAM_ID,
+      },
+    })
+
+    // 2. 使用 1 中的数据进行注入
+    const injectAmount = new BN(lamportAmount)
+    const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.CHILDREN_OF), nftMintPDA.toBuffer()],
+      PROGRAM_ID,
+    )
+
+    const instructionInject = await this._program.transaction.initializeSolInject(
+      ...[true, metadataBump, injectAmount],
+      {
+        accounts: {
+          currentOwner: walletPubKey,
+          parentTokenAccount: nftTokenAccountPDA,
+          parentMintAccount: nftMintPDA,
+          childrenMeta: metadataPDA,
+          systemProgram: SystemProgram.programId,
+          rent: web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [],
+      },
+    )
+
+    const tx = new Transaction().add(instructionCopy, instructionInject)
+
+    const signature = await this._wallet.sendTransaction(tx, connection)
+    const result = await connection.confirmTransaction(signature, 'processed')
+    log.info('copyWithInjectSOLv1', result, {
+      nftMintPDA: nftMintPDA.toString(),
+      nftTokenAccountPDA: nftTokenAccountPDA.toString(),
+    })
+
+    return nftMintPDA.toString()
+  }
+
+  public async extractSolV1(mintKey: PublicKey) {
+    if (!this._connection || !this._wallet || !this._program) {
+      log.error('Contract invalid')
+      return
+    }
+    log.info('begin extractSol')
+
+    const connection = this._connection
+    const walletPubKey = this._wallet.publicKey
+    const program = this._program
+
+    if (!walletPubKey) {
+      log.error('walletPubKey invalid: ', { walletPubKey })
+      return
+    }
+
+    const mintTokenAccount = await connection.getTokenLargestAccounts(mintKey)
+    const mintTokenAccountAddress = mintTokenAccount.value[0].address
+
+    const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.CHILDREN_OF), mintKey.toBuffer()],
+      PROGRAM_ID,
+    )
+
+    const extractTx = await program.transaction.extractSol(metadataBump, {
+      accounts: {
+        currentOwner: walletPubKey,
+        parentTokenAccount: mintTokenAccountAddress,
+        parentMintAccount: mintKey,
+        childrenMeta: metadataPDA,
+
+        systemProgram: SystemProgram.programId,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+      },
+      signers: [],
+    })
+    const signature = await this._wallet.sendTransaction(extractTx, connection)
+    const result = await connection.confirmTransaction(signature, 'processed')
+    log.debug('extractSol result', result)
+  }
+
+  public async checkHasInjectV1(mintKey: PublicKey) {
+    if (!this._connection) {
+      log.error('Contract connect invalid')
+      return null
+    }
+    const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+      [Buffer.from('children-of'), mintKey.toBuffer()],
+      PROGRAM_ID,
+    )
+    const hasInjected = await this._connection.getAccountInfo(metadataPDA)
+    return !!hasInjected
+  }
+  // v1 end ----------------------------------
 }
