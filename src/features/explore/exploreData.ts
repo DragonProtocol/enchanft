@@ -2,6 +2,7 @@ import { request, gql } from 'graphql-request'
 import { PublicKey } from '@solana/web3.js'
 import log from 'loglevel'
 
+import { NFT } from '../../synft'
 import { isProd } from '../../utils'
 
 const endpoint = isProd
@@ -10,15 +11,7 @@ const endpoint = isProd
 
 log.log('WONKALABS_ENDPORINT', endpoint)
 
-export type NFT = {
-  image: string
-  mint: string
-  name: string
-  hasCopied?: boolean
-  hasInjected?: boolean
-}
-
-export async function loadExploreNFT(collectionId: String, first: number = 20): Promise<NFT[]> {
+export async function loadExploreNFT(collectionId: String, first: number = 50): Promise<NFT[]> {
   log.info(`Fetching NFTs by collectionID: ${collectionId}`)
   const collectionID = new PublicKey(collectionId)
   const fetchNFTsByCandyMachineQuery = gql`

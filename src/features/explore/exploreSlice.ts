@@ -4,8 +4,8 @@ import log from 'loglevel'
 
 import { RootState } from '../../store/store'
 
-import idl, { Synft, programId } from '../../synft'
-import { loadExploreNFT, NFT } from './exploreData'
+import { Contract, NFT } from '../../synft'
+import { loadExploreNFT } from './exploreData'
 
 interface ExploreNFT {
   data: NFT[]
@@ -22,18 +22,15 @@ const initialState: ExploreNFT = {
 export const getExploreData = createAsyncThunk(
   'explore/nftdata',
   async ({ collectionIds, connection }: { collectionIds: string[]; connection: Connection }) => {
+    const contract = Contract.getInstance()
     const dataArr = await Promise.all(
       collectionIds.map(async (collectionID) => {
         const d: NFT[] = await loadExploreNFT(collectionID)
         await Promise.all(
           d.map(async (item) => {
-            const mintKey = new PublicKey(item.mint)
             try {
-              const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
-                [Buffer.from('synthetic-nft-mint-seed'), mintKey.toBuffer()],
-                programId,
-              )
-              const hasCopied = await connection.getAccountInfo(nftMintPDA)
+              const mintKey = new PublicKey(item.mint)
+              const hasCopied = await contract.getMintAccountInfo(mintKey)
               item.hasCopied = !!hasCopied
             } catch (error) {
               log.error(error)

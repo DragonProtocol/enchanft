@@ -1,7 +1,3 @@
-import { PublicKey } from '@solana/web3.js'
-import idl from './idl.json'
-
-export type { Synft } from './synft'
-
-export const programId = new PublicKey(idl.metadata.address)
-export default idl
+export { default as Contract } from './Contract'
+export type { Node, MetaInfo, BelongTo, NFT, NFTDataItem } from './v2/types'
+export type { Synft } from './v2'

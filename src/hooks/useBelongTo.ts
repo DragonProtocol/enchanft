@@ -1,25 +1,30 @@
-import { PublicKey } from '@solana/web3.js'
+import { Connection, PublicKey } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
 
-import { Contract, MetaInfo } from '../synft'
+import { BelongTo } from '../synft'
 import { useContract } from '../provider/ContractProvider'
 
 export default (mint: string | undefined) => {
   const { contract } = useContract()
 
   const [loading, setLoading] = useState(true)
-  const [info, setInfo] = useState<MetaInfo | null>(null)
+  const [belong, setBelong] = useState<BelongTo>({
+    me: false,
+    program: false,
+    parent: null,
+  })
 
   useEffect(() => {
     ;(async () => {
-      setLoading(true)
-      if (!mint) return
+      if (!mint) {
+        return
+      }
       const mintKey = new PublicKey(mint)
-      const data = await contract.getMetadataInfoWithMint(mintKey)
-      setInfo(data)
+      const data = await contract.checkBelongTo(mintKey)
       setLoading(false)
+      setBelong(data)
     })()
   }, [mint])
 
-  return { info, loading }
+  return { belong, loading }
 }

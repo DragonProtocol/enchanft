@@ -9,10 +9,12 @@ export const logIsProd = process.env.NODE_ENV === 'production'
 // explore 数据源
 export const collections = isProd
   ? []
-  : [
-      'DaFBQUghKeSuuAjgZWLkZfHzVs5K8ELf1oGXKkkupwDX',
-      '4j4SqfJv4Qf4yJbLxQxLKvT2TV4eqMo5A5AuNxqr1AuL',
-      'U7KxNoZ3rNbtG5DgRYQQsjs2dWoSSLLRLjit6VXRyzR',
-    ]
+  : ['DaFBQUghKeSuuAjgZWLkZfHzVs5K8ELf1oGXKkkupwDX', 'U7KxNoZ3rNbtG5DgRYQQsjs2dWoSSLLRLjit6VXRyzR']
 
-export default {}
+export function lamportsToSol(lamportsAmount: number) {
+  return lamportsAmount / 10 ** 9
+}
+
+export function solToLamports(solAmount: number) {
+  return solAmount * 10 ** 9
+}
