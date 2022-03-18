@@ -2,6 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import Main from './Main'
 import Header from './Header'
+import { MEDIA_BREAK_POINTS } from '../utils/constants'
 const Layout: React.FC = () => {
   return (
     <LayoutWrapper>
@@ -10,7 +11,7 @@ const Layout: React.FC = () => {
           <Header></Header>
         </div>
       </div>
-      <div className="main">
+      <div className="main" id="layoutMainScroll">
         <div className="main-route">
           <div className="layout-inner">
             <Main></Main>
@@ -39,21 +40,30 @@ const LayoutWrapper = styled.div`
     height: 72px;
     background: #ffffff;
     box-sizing: border-box;
+    @media (max-width: ${MEDIA_BREAK_POINTS.md}px) {
+      padding: 0 12px;
+    }
     .header-inner {
       height: 100%;
     }
   }
   .main {
-    height: calc(100vh - 72px);
-    overflow: overlay;
+    height: calc(100vh - 72px - 48px);
+    overflow-y: overlay;
+    overflow-x: hidden;
+    padding-top: 48px;
+    @media (max-width: ${MEDIA_BREAK_POINTS.md}px) {
+      padding: 12px;
+      padding-bottom: 0;
+      height: calc(100vh - 72px - 12px);
+    }
     .main-route {
-      padding:24px 0;
       box-sizing: border-box;
-      min-height: calc(100vh - 72px - 60px - 35px);
+      min-height: calc(100vh - 72px - 48px - 60px - 70px);
     }
     .main-footer {
       height: 60px;
-      margin-bottom: 35px;
+      margin: 35px 0;
       .footer-inner {
         height: 100%;
         display: flex;
@@ -66,6 +76,11 @@ const LayoutWrapper = styled.div`
           background: #222222;
         }
         .copyright {
+          @media (max-width: ${MEDIA_BREAK_POINTS.md}px) {
+            font-size: 12px;
+            text-align: center;
+            line-height: 20px;
+          }
         }
       }
     }

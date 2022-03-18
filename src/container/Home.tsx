@@ -22,6 +22,8 @@ import { ButtonPrimary, ButtonWarning } from '../components/common/ButtonBase'
 import ButtonConnectWallect from '../components/common/ButtonConnectWallet'
 import SplitTextOpacity, { SplitTextOpacityFuns } from '../components/common/animate/SplitTextOpacity'
 import LoadingIcon from '../components/imgs/Loading.gif'
+import { MOBILE_BREAK_POINT } from '../utils/constants'
+import { backToTop } from '../utils/tools'
 
 function Home() {
   const wallet = useWallet()
@@ -80,7 +82,14 @@ function Home() {
 
   useEffect(() => {
     dispatch(getExploreData({ collectionIds: collections, connection }))
+    
+    
   }, [])
+
+  useEffect(() => {
+    // 滚动条滚动到顶部(为了移动端更友好些)
+    backToTop()
+  }, [tab])
 
   let nftList: NftDataItem[] = []
   if (tab === 'my') {
@@ -97,7 +106,7 @@ function Home() {
   }
   return (
     <HomeWrapper>
-      <div className="top">
+      <div className="tab">
         <div className="guide-item guide-explore">
           <div className="guide-desc">🔥 View Popular NFTs and create synthetic NFTs</div>
           <ButtonWarning className="guide-btn" onClick={() => switchList('explore')}>
@@ -110,6 +119,14 @@ function Home() {
             {'> View My NFT <'}
           </ButtonPrimary>
         </div>
+      </div>
+      <div className="mobile-tab">
+        <ButtonWarning className="guide-btn" onClick={() => switchList('explore')}>
+          {'> Explore <'}
+        </ButtonWarning>
+        <ButtonPrimary className="guide-btn" onClick={() => switchList('my')}>
+          {'> View My <'}
+        </ButtonPrimary>
       </div>
       <div className="center">
         {tab === 'my' ? (
@@ -150,16 +167,27 @@ function Home() {
 export default Home
 
 const HomeWrapper = styled.div`
-  padding: 24px 0;
   .loading {
     text-align: center;
     margin-top: 100px;
   }
-  .top {
+  .mobile-tab {
+    position: sticky;
+    top: -12px;
+    z-index: 1;
+    display: flex;
+    @media (min-width: ${MOBILE_BREAK_POINT}px) {
+      display: none;
+    }
+  }
+  .tab {
     width: 100%;
     height: 280px;
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
     display: flex;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      display: none;
+    }
     .guide-item {
       width: 50%;
       height: 100%;
@@ -190,7 +218,9 @@ const HomeWrapper = styled.div`
   }
   .center {
     margin-top: 36px;
-
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      margin-top: 12px;
+    }
     .list-title {
       font-size: 24px;
       color: #333333;
@@ -198,6 +228,9 @@ const HomeWrapper = styled.div`
       margin: 0 auto;
       text-transform: uppercase;
       line-height: 40px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 16px;
+      }
     }
     .list-desc {
       font-size: 12px;
