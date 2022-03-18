@@ -28,7 +28,6 @@ import Layout from './components/Layout'
 
 import { isProd, logIsProd } from './utils'
 import { store } from './store/store'
-import { Contract } from './synft'
 
 require('@solana/wallet-adapter-react-ui/styles.css')
 

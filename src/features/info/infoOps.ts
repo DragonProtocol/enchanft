@@ -5,7 +5,7 @@ import log from 'loglevel'
 import { Signer, PublicKey, SystemProgram, Transaction, Connection, AccountInfo } from '@solana/web3.js'
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 
-import idl, { Synft } from '../../synft'
+import idl, { Synft } from '../../synft/v2'
 
 const metadataProgramId = 'metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s'
 const MPL_PROGRAM_ID = new PublicKey('metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s')

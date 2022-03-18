@@ -8,9 +8,7 @@ import { CursorPointerUpCss } from '../GlobalStyle'
 import NFTTree from './NFTTree'
 import { Node } from '../synft'
 interface NFTShowerData {
-  uri: string
-  mint: string
-  addr: string
+  jsonData: any
   injectTree: {
     data: Node
     loading: boolean
@@ -25,9 +23,7 @@ const ExpandMoreIcon = () => (
   </>
 )
 export default function NFTShower({ data }: Props) {
-  const { uri, mint, addr, injectTree } = data
-  const [info, setInfo] = useState<any>({})
-  const aliveRef = useRef(true)
+  const { injectTree, jsonData: info } = data
   const [currentAccordion, setCurrentAccordion] = useState('enchantment')
   const handleAccordionChange = (accordion: string, isExpanded: boolean) => {
     if (isExpanded) {
@@ -36,25 +32,10 @@ export default function NFTShower({ data }: Props) {
       setCurrentAccordion('')
     }
   }
-  useEffect(() => {
-    if (!uri) return
-    ;(async () => {
-      try {
-        const response = await fetch(uri)
-        const jsonData = await response.json()
-        console.log('jsonData', jsonData)
 
-        if (aliveRef.current) setInfo(jsonData)
-      } catch (error) {
-        if (aliveRef.current) console.error(error)
-      }
-    })()
-  }, [uri])
-  useEffect(() => {
-    return () => {
-      aliveRef.current = false
-    }
-  }, [])
+  if (!info) {
+    return null
+  }
   return (
     <NFTShowerWrapper>
       <div className="img-box">
@@ -62,18 +43,18 @@ export default function NFTShower({ data }: Props) {
       </div>
       <div className="info-box">
         <Accordion
-            className="info-item"
-            style={{display:injectTree.data.curr.children.length > 0 ?'block':'none'}}
-            expanded={currentAccordion === 'enchantment'}
-            onChange={(event, isExpanded) => handleAccordionChange('enchantment', isExpanded)}
-          >
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
-              enchantment
-            </AccordionSummary>
-            <AccordionDetails className="info-content">
-              {injectTree.loading ? <div>loading...</div> : <NFTTree data={injectTree.data} />}
-            </AccordionDetails>
-          </Accordion>
+          className="info-item"
+          style={{ display: injectTree.data.curr.children.length > 0 ? 'block' : 'none' }}
+          expanded={currentAccordion === 'enchantment'}
+          onChange={(event, isExpanded) => handleAccordionChange('enchantment', isExpanded)}
+        >
+          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
+            enchantment
+          </AccordionSummary>
+          <AccordionDetails className="info-content">
+            {injectTree.loading ? <div>loading...</div> : <NFTTree data={injectTree.data} />}
+          </AccordionDetails>
+        </Accordion>
         {info.description && (
           <Accordion
             className="info-item"

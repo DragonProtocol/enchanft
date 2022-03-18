@@ -1,19 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { PublicKey } from '@solana/web3.js'
 import styled from 'styled-components'
-import log from 'loglevel'
 
 import NFTList, { NftDataItem } from '../components/NFTList'
-import {
-  getMyNFTData,
-  getMyNFTMetadata,
-  selectMyNFTMetadataArr,
-  selectMyNFTMetadataStatus,
-  selectMyNFTs,
-  setWalletAddr,
-  clearMyNFT,
-} from '../features/my/mySlice'
+import { getMyNFTokens, clearMyNFT, selectMyNFTData, selectMyNFTDataStatus } from '../features/my/mySlice'
 import { getExploreData, selectExploreData, selectExploreStatus } from '../features/explore/exploreSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
@@ -60,8 +50,8 @@ function Home() {
   const exploreNFTStatus = useAppSelector(selectExploreStatus)
   const exploreNFTData = useAppSelector(selectExploreData)
 
-  const myNFTData = useAppSelector(selectMyNFTMetadataArr)
-  const myNFTDataStatus = useAppSelector(selectMyNFTMetadataStatus)
+  const myNFTData = useAppSelector(selectMyNFTData)
+  const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus)
 
   useEffect(() => {
     if (!wallet.publicKey) {
@@ -73,27 +63,18 @@ function Home() {
 
     walletRef.current = wallet.publicKey.toString()
     const owner = wallet.publicKey
-    // const owner = new PublicKey('AEahaRpDFzg74t7NtWoruabo2fPJQjKFM9kQJNjH7obK')
-    dispatch(setWalletAddr(walletRef.current))
-    dispatch(getMyNFTData({ connection, owner }))
+    dispatch(getMyNFTokens({ owner }))
   }, [wallet])
 
   useEffect(() => {
-    dispatch(getExploreData({ collectionIds: collections, connection }))
+    if (exploreNFTStatus === 'init') {
+      dispatch(getExploreData({ collectionIds: collections, connection }))
+    }
   }, [])
 
-  let nftList: NftDataItem[] = []
+  let nftList: NftDataItem[] = exploreNFTData
   if (tab === 'my') {
-    nftList = myNFTData.map(({ metadata, hasInjected }) => {
-      const jsonData = metadata.toJSON()
-      return {
-        hasInjected,
-        mint: jsonData.data.mint,
-        uri: jsonData.data.data.uri,
-      }
-    })
-  } else {
-    nftList = exploreNFTData
+    nftList = myNFTData
   }
   return (
     <HomeWrapper>

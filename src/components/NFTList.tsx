@@ -3,14 +3,10 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { CursorPointerUpCss } from '../GlobalStyle'
 import NFTCard from './NFTCard'
-export interface NftDataItem {
-  mint?: string
-  image?: string
-  name?: string
-  uri?: string
-  hasCopied?: boolean
-  hasInjected?: boolean
-}
+
+import type { NFTDataItem } from '../synft'
+
+export type NftDataItem = NFTDataItem
 interface Props {
   data: NftDataItem[]
 }

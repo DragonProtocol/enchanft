@@ -1,71 +1,25 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { BN, Program, Provider, web3, Idl, Address } from '@project-serum/anchor'
-import { TOKEN_PROGRAM_ID, getOrCreateAssociatedTokenAccount, getAccount } from '@solana/spl-token'
-import { useConnection, useWallet, WalletContextState } from '@solana/wallet-adapter-react'
+import React from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import log from 'loglevel'
-import { Signer, PublicKey, SystemProgram, Transaction, Keypair } from '@solana/web3.js'
+import ReactJson from 'react-json-view'
 
-import { checkValidNFT } from '../features/info/infoOps'
 import NFTHandler from '../components/NFTHandler'
 
-import { getMetadataFromMint } from '../features/my/myData'
 import NFTShower from '../components/NFTShower'
-import { Contract } from '../synft'
 import useInjectTree from '../hooks/useInjectTree'
 import LoadingIcon from '../components/imgs/Loading.gif'
 
-const Info: React.FC = (props) => {
+import { useInfoFromMint, useValidNFT } from '../hooks'
+
+const Info: React.FC = () => {
   const params = useParams()
-  const { connection } = useConnection()
-  const wallet: WalletContextState = useWallet()
 
-  const [loading, setLoading] = useState(true)
-  const [validNFT, setValidNFT] = useState(false)
-  const [metadata, setMetadata] = useState<any>({})
-  useEffect(() => {
-    getMetadata()
-  }, [connection, params.mint])
-
-  async function getMetadata() {
-    setLoading(true)
-    if (!params.mint) {
-      return
-    }
-    log.info('getMetadata')
-    try {
-      const mintKey = new PublicKey(params.mint)
-      const valid = await checkValidNFT(mintKey, connection)
-      setValidNFT(valid)
-
-      if (!valid) {
-        setLoading(false)
-        return
-      }
-
-      // TODO: could filter from redux store first
-      const data = await getMetadataFromMint(connection, mintKey)
-      setMetadata(data.toJSON().data)
-      setLoading(false)
-    } catch (error) {
-      log.warn('getMetadata', error)
-      setLoading(false)
-    }
-  }
-
+  const { info, loading: infoLoading } = useInfoFromMint(params.mint)
+  const { valid: validNFT, checking: validChecking } = useValidNFT(params.mint)
   const { injectTree, loading: injectTreeLoading } = useInjectTree(params.mint)
-  const showerData = {
-    addr: '',
-    mint: params.mint || '',
-    uri: metadata.data?.uri || '',
-    injectTree: {
-      data: injectTree,
-      loading: injectTreeLoading,
-    },
-  }
-  const handlerData = { addr: '', mint: params.mint || '', uri: metadata.data?.uri || '' }
 
+  const metadata = info?.metadata
+  const loading = validChecking || infoLoading
   return (
     <InfoWrapper>
       {(loading && (
@@ -76,13 +30,20 @@ const Info: React.FC = (props) => {
         (validNFT && (
           <>
             <div className="left">
-              <NFTShower data={showerData} />
+              <NFTShower
+                data={{
+                  jsonData: info?.externalMetadata,
+                  injectTree: {
+                    data: injectTree,
+                    loading: injectTreeLoading,
+                  },
+                }}
+              />
             </div>
-            <div className="right">
-              <NFTHandler data={handlerData} metadata={metadata} />
-            </div>
+            <div className="right">{metadata && <NFTHandler metadata={metadata} />}</div>
           </>
         )) || <div className="tip">invalid NFT</div>}
+      {/* {!injectTreeLoading && <ReactJson src={injectTree} />} */}
     </InfoWrapper>
   )
 }

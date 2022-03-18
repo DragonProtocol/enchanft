@@ -4,8 +4,8 @@ import log from 'loglevel'
 
 import { RootState } from '../../store/store'
 
-import idl, { Synft, programId, Contract } from '../../synft'
-import { loadExploreNFT, NFT } from './exploreData'
+import { Contract, NFT } from '../../synft'
+import { loadExploreNFT } from './exploreData'
 
 interface ExploreNFT {
   data: NFT[]
