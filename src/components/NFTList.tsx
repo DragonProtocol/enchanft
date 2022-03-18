@@ -1,5 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
+import { animated, useSprings } from 'react-spring'
 import styled from 'styled-components'
 import { CursorPointerUpCss } from '../GlobalStyle'
 import NFTCard from './NFTCard'
@@ -17,13 +18,53 @@ interface Props {
 const NFTList: React.FC<Props> = (props: Props) => {
   const { data } = props
   const navigate = useNavigate()
+  // 卡片交互动画
+  const [cardAnimateds, cardAnimatedApi] = useSprings(data.length, (i) => ({
+    transform: 'translateY(0px)',
+    scale: 1,
+    from: {
+      scale: 0.9,
+      transform: 'translateY(0px)',
+    },
+  }))
+  const cardTo = (cardIndex: number, eventType: string) => {
+    let style = {}
+    switch (eventType) {
+      case 'onMouseOverCapture':
+        style = { transform: 'translateY(-4px)' }
+        break
+      case 'onMouseOutCapture':
+        style = { transform: 'translateY(0px)' }
+        break
+      case 'onMouseDownCapture':
+        style = { scale: 0.9 }
+        break
+      case 'onMouseUpCapture':
+        style = { scale: 1 }
+        break
+      case 'onMouseLeave':
+        style = { scale: 1 }
+        break
+    }
+    cardAnimatedApi.start((i) => (cardIndex === i ? style : {}))
+  }
   return (
     <NFTListWrapper>
-      {data.map((item) => {
+      {data.map((item, idx) => {
         return (
-          <div key={item.mint} className="list-item" onClick={() => navigate(`/info/${item.mint}`)}>
+          <animated.div
+            key={item.mint}
+            className="list-item"
+            onClick={() => navigate(`/info/${item.mint}`)}
+            style={{ ...(cardAnimateds[idx] || {}) }}
+            onMouseOverCapture={() => cardTo(idx, 'onMouseOverCapture')}
+            onMouseOutCapture={() => cardTo(idx, 'onMouseOutCapture')}
+            onMouseDownCapture={() => cardTo(idx, 'onMouseDownCapture')}
+            onMouseUpCapture={() => cardTo(idx, 'onMouseUpCapture')}
+            onMouseLeave={() => cardTo(idx, 'onMouseLeave')}
+          >
             <NFTCard data={item}></NFTCard>
-          </div>
+          </animated.div>
         )
       })}
     </NFTListWrapper>
