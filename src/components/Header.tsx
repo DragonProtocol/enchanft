@@ -4,8 +4,8 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import styled from 'styled-components'
-import LogoImg from './imgs/logo.svg'
 import ButtonConnectWallect from './common/ButtonConnectWallet'
+import { MOBILE_BREAK_POINT } from '../utils/constants'
 export default function Header() {
   const navigate = useNavigate()
   const { connection } = useConnection()
@@ -21,15 +21,8 @@ export default function Header() {
 
   return (
     <HeaderWrapper>
-      {/* <Link style={{ display: 'block', margin: '1rem 0' }} to={`/`}>
-        SYNFT
-      </Link>
-      <span>{balance}</span>
-      <WalletMultiButton />
-      <WalletDisconnectButton /> */}
-
       <div className="left">
-        <img src={LogoImg} className="logo" onClick={()=>navigate('/')}></img>
+        <div className="logo" onClick={() => navigate('/')}></div>
       </div>
       <div className="right">
         {/* <input type="text" className="search" /> */}
@@ -48,11 +41,20 @@ const HeaderWrapper = styled.div`
     .logo {
       width: 274px;
       height: 36px;
+      background-image: url('/logo.svg');
+      background-repeat:no-repeat;
+      background-size:100% 100%;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-image: url('/logo192.png');
+      }
     }
   }
   .right {
     display: flex;
-    .search {
+    /* .search {
       // 重置input默认样式 - start
       background: none;
       outline: none;
@@ -63,6 +65,6 @@ const HeaderWrapper = styled.div`
       height: 48px;
       background: #f8f8f8;
       box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-    }
+    } */
   }
 `

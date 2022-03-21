@@ -1,14 +1,15 @@
 import { Alert, AlertTitle, Dialog, DialogContent, DialogTitle, ImageList, ImageListItem } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import styled, { css } from 'styled-components'
-import { NftDataItem } from '../NFTList'
+import { NftDataItem, NFTListWrapper } from '../NFTList'
 import DialogCloseIcon from '../icons/dialogClose.svg'
 import CheckedIcon from '../icons/checked.svg'
 import AddIcon from '../icons/add.svg'
 import NFTCard from '../NFTCard'
-import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
+import { CursorPointerUpCss } from '../../GlobalStyle'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { ButtonDanger, ButtonPrimary, ButtonWarning } from '../common/ButtonBase'
+import { MOBILE_BREAK_POINT } from '../../utils/constants'
 export type Token = {
   name: string
   address: string
@@ -220,13 +221,13 @@ const NftInject: React.FC<Props> = ({
         </DialogTitle>
         <DialogContent className="nft-list-content">
           {nftOptions.length > 0 ? (
-            <ImageList sx={{ height: 600 }} cols={3} rowHeight={300}>
+            <NFTListWrapper>
               {nftOptions.map((item, idx) => (
-                <ImageListItem className="nft-item" key={idx} onClick={() => handleCheckedNft(item)}>
+                <div className="list-item nft-item" key={idx} onClick={() => handleCheckedNft(item)}>
                   <NFTCard data={item}></NFTCard>
-                </ImageListItem>
+                </div>
               ))}
-            </ImageList>
+            </NFTListWrapper>
           ) : (
             <div style={{ textAlign: 'center', height: '50px', lineHeight: '50px' }}>You have no NFT!</div>
           )}
@@ -247,6 +248,9 @@ const NftInjectWrapper = styled.div`
       text-transform: uppercase;
       color: rgba(34, 34, 34, 0.5);
       margin-bottom: 12px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 14px;
+      }
     }
   }
   .token-value {
@@ -300,6 +304,9 @@ const NftInjectWrapper = styled.div`
       display: flex;
       padding: 18px 0;
       ${CursorPointerUpCss}
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 12px;
+      }
     }
     .mode-checked {
       color: #222222;
@@ -308,6 +315,9 @@ const NftInjectWrapper = styled.div`
       width: 10px;
       height: 15px;
       margin-right: 16px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        margin-right: 5px;
+      }
     }
   }
   .close-btn {

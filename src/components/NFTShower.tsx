@@ -110,12 +110,10 @@ const NFTShowerWrapper = styled.div`
   gap: 24px;
   .img-box {
     img {
-      width: 500px;
-      height: 500px;
+      width: 100%;
     }
   }
   .info-box {
-    width: 500px;
     font-size: 12px;
     .info-item {
       margin: 0;
@@ -133,6 +131,8 @@ const NFTShowerWrapper = styled.div`
       border-top: none;
       padding: 24px;
       color: rgba(34, 34, 34, 0.5);
+      overflow: hidden;
+      max-height: 300px;
     }
     .properties-content {
       display: flex;

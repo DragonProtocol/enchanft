@@ -13,6 +13,7 @@ import LoadingIcon from '../components/imgs/Loading.gif'
 import NftInject, { InjectMode, InjectType, OnInjectProps } from './nft_handlers/NftInject'
 import { useBelongTo, useHasInjectV1 } from '../hooks'
 import { useContract } from '../provider/ContractProvider'
+import { MOBILE_BREAK_POINT } from '../utils/constants'
 import { solToLamports } from '../utils'
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
 
@@ -189,11 +190,15 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 export default NFTHandler
 
 const NFTHandlerWrapper = styled.div`
+  width: 100%;
   .top {
     text-transform: uppercase;
     .nft-title {
       font-size: 30px;
       color: #222222;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 20px;
+      }
     }
     .nft-creator {
       margin-top: 24px;
@@ -201,6 +206,9 @@ const NFTHandlerWrapper = styled.div`
       flex-direction: column;
       gap: 12px;
       font-size: 16px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 14px;
+      }
       .creator-label {
         color: rgba(34, 34, 34, 0.5);
       }
@@ -209,6 +217,9 @@ const NFTHandlerWrapper = styled.div`
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        @media (max-width: ${MOBILE_BREAK_POINT}px) {
+          font-size: 12px;
+        }
       }
     }
     .dividing-line {
@@ -216,6 +227,9 @@ const NFTHandlerWrapper = styled.div`
       height: 4px;
       background: #222222;
       margin: 40px 0;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        margin: 20px 0;
+      }
     }
   }
   .only-view {
@@ -232,6 +246,10 @@ const NFTHandlerWrapper = styled.div`
     gap: 16px;
     text-transform: uppercase;
     color: rgba(34, 34, 34, 0.5);
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      height: auto;
+      padding:20px 8px;
+    }
     .expression {
       font-size: 40px;
     }
