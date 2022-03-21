@@ -16,8 +16,8 @@ interface TreeNode {
   style?: any
   size?: any
   type: string
-  labelCfg: any
-  clipCfg: any
+  labelCfg?: any
+  clipCfg?: any
   img?: any
   customData: TreeNodeCustomData
 }
@@ -96,13 +96,9 @@ const NFTTree: React.FC<Props> = (props: Props) => {
         label: v.value.customData.curr.name,
         img: v.value.customData.curr.image,
       }))
-      newNodes[0].type = 'circle'
-      newNodes[0].img = LoadingIcon
       setTreeData({ nodes: newNodes, edges })
     })()
   }, [injectTree])
-  console.log('treeData', treeData)
-
   useEffect(() => {
     const handleClick = (evt: IG6GraphEvent) => {
       const node = evt.item
@@ -111,6 +107,8 @@ const NFTTree: React.FC<Props> = (props: Props) => {
     }
     // 监听节点点击事件
     if (graphinRef.current) {
+      // 调用render强制执行一次渲染 （不加这个的话图片有时候会渲染不出来，可能是graphin内部数据检查机制的问题）
+      graphinRef.current.graph.render()
       graphinRef.current.graph.on('node:click', handleClick)
     }
     return () => {
@@ -128,7 +126,6 @@ const NFTTree: React.FC<Props> = (props: Props) => {
           ranksep: 20,
         }}
         ref={graphinRef}
-        defaultNode={{ type: 'image' }}
       >
         {/** 树图的FitView 有BUG，网图的可以 */}
         {/* <FitView /> */}
