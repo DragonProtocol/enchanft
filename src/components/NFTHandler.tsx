@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef, createRef } from 'react'
 import { useWallet, WalletContextState } from '@solana/wallet-adapter-react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -19,18 +19,25 @@ import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
 
 interface Props {
   metadata: MetadataData
+  refreshInject: () => void
 }
 
 const NFTHandler: React.FC<Props> = (props: Props) => {
-  const metadata = props.metadata
+  const { metadata, refreshInject } = props
 
+  const injectRef = useRef<{ resetSelect: Function }>()
   const params = useParams()
   const wallet: WalletContextState = useWallet()
   const navigate = useNavigate()
 
   const { contract } = useContract()
   const { belong, loading: belongLoading } = useBelongTo(params.mint)
-  const { checkLoading: hasInjectLoading, hasInject, injectData: mintMetadata } = useHasInjectV1(params.mint)
+  const {
+    checkLoading: hasInjectLoading,
+    hasInject,
+    injectData: mintMetadata,
+    refresh: refreshInjectV1,
+  } = useHasInjectV1(params.mint)
 
   const [injectType] = useState<InjectType>(InjectType.SOL)
 
@@ -56,6 +63,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       ;(async () => {
         const mint = params.mint
         if (!mint) return
+
+        // TODO: could add UI loading status in here
         const reversible = injectMode === InjectMode.Reversible
         switch (injectType) {
           case InjectType.SOL:
@@ -79,7 +88,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
             }
             break
         }
-        reloadWindow()
+        injectRef.current && injectRef.current.resetSelect({ mint: '', image: '', name: '' })
+        refreshInject()
       })()
     },
     [belong],
@@ -87,6 +97,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   // 执行提取
   const onExtract = async () => {
     if (!params.mint) return
+    // TODO: could add UI loading status in here
     const mintKey = new PublicKey(params.mint)
     switch (injectType) {
       case InjectType.SOL:
@@ -96,7 +107,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       //   await extractNFT(params.mint, { wallet, program, connection })
       //   break
     }
-    reloadWindow()
+    refreshInjectV1()
   }
 
   const onCopyWithInject = async ({ injectType, injectMode, token, nft }: OnInjectProps) => {
@@ -104,6 +115,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     console.log(metadata)
     if (!params.mint) return
 
+    // TODO: could add UI loading status in here
     let newMint = ''
     const mintKey = new PublicKey(params.mint)
     const reversible = injectMode === InjectMode.Reversible
@@ -130,6 +142,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       return
     }
     navigate(`/info/${newMint}`)
+    reloadWindow()
   }
 
   const showBelongToMe = belong.me
@@ -162,22 +175,17 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
             {showBelongToMe && (
               <NftInject
                 withCopyInit={false}
-                nftOptions={
-                  myNFTData.filter((item) => item?.mint != params.mint)
-                  // .map((item) => ({ ...item?.metadata?.data, ...item?.metadata?.data.data }))
-                }
+                nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
                 onInject={onInject}
                 mintMetadata={mintMetadata}
                 onExtract={onExtract}
+                ref={injectRef}
               ></NftInject>
             )}
             {showCopy && (
               <NftInject
                 withCopyInit={true}
-                nftOptions={
-                  myNFTData.filter((item) => item?.mint != params.mint)
-                  // .map((item) => ({ ...item?.metadata?.data, ...item?.metadata?.data.data }))
-                }
+                nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
                 onCopyWithInject={onCopyWithInject}
               ></NftInject>
             )}
@@ -248,7 +256,7 @@ const NFTHandlerWrapper = styled.div`
     color: rgba(34, 34, 34, 0.5);
     @media (max-width: ${MOBILE_BREAK_POINT}px) {
       height: auto;
-      padding:20px 8px;
+      padding: 20px 8px;
     }
     .expression {
       font-size: 40px;

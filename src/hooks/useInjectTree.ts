@@ -17,16 +17,18 @@ export default (mint: string | undefined) => {
     parent: null,
   })
   useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      if (!mint) return
-      const mintKey = new PublicKey(mint)
-      const tree = await contract.getInjectTree(mintKey)
-      log.info('getInjectTree', tree)
-      setInjectTree(tree)
-      setLoading(false)
-    })()
+    refresh()
   }, [mint])
 
-  return { injectTree, loading }
+  const refresh = async () => {
+    setLoading(true)
+    if (!mint) return
+    const mintKey = new PublicKey(mint)
+    const tree = await contract.getInjectTree(mintKey)
+    log.info('getInjectTree', tree)
+    setInjectTree(tree)
+    setLoading(false)
+  }
+
+  return { injectTree, loading, refresh }
 }

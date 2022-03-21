@@ -11,36 +11,39 @@ export default (mint: string | undefined) => {
   const [checkLoading, setCheckLoading] = useState(true)
   const [injectData, setInjectData] = useState<any | null>(null)
 
-  useEffect(() => {
-    ;(async () => {
-      if (!mint) {
-        return
-      }
-      setCheckLoading(true)
-      const mintKey = new PublicKey(mint)
-      //   const result = await contract.checkValidNFT(mintKey)
-      const inject = await contract.getInjectV1(mintKey)
-      log.info('checkHasInject', inject)
+  const refetch = async () => {
+    if (!mint) {
+      return
+    }
+    setCheckLoading(true)
+    const mintKey = new PublicKey(mint)
+    //   const result = await contract.checkValidNFT(mintKey)
+    const inject = await contract.getInjectV1(mintKey)
+    log.info('checkHasInject', inject)
 
-      if (!inject || !inject.childrenMetadata) {
-        setHasInject(false)
-        setCheckLoading(false)
-        return
-      }
-      const { childrenMetadata, childrenMeta } = inject
-      setHasInject(true)
-      // setInjectMode(childrenMeta.reversible === true ? InjectMode.Reversible : InjectMode.Irreversible)
-      log.info(`${mint} hasInject`, inject)
-      // 只可能注入 sol
-      if (childrenMeta?.childType.sol) {
-        setInjectData({
-          injectType: 'sol',
-          lamports: childrenMetadata.lamports,
-        })
-      }
+    if (!inject || !inject.childrenMetadata) {
+      setInjectData(null)
+      setHasInject(false)
       setCheckLoading(false)
-    })()
+      return
+    }
+    const { childrenMetadata, childrenMeta } = inject
+    // setInjectMode(childrenMeta.reversible === true ? InjectMode.Reversible : InjectMode.Irreversible)
+    log.info(`${mint} hasInject`, inject)
+    // 只可能注入 sol
+    if (childrenMeta?.childType.sol) {
+      setInjectData({
+        injectType: 'sol',
+        lamports: childrenMetadata.lamports,
+      })
+    }
+    setHasInject(true)
+    setCheckLoading(false)
+  }
+
+  useEffect(() => {
+    refetch()
   }, [mint])
 
-  return { hasInject, injectData, checkLoading }
+  return { hasInject, injectData, checkLoading, refresh: refetch }
 }
