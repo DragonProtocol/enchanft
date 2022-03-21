@@ -94,11 +94,12 @@ const NFTTree: React.FC<Props> = (props: Props) => {
       const newNodes = nodesRes.map((v: any) => ({
         ...v.value,
         label: v.value.customData.curr.name,
-        img: v.value.customData.curr.image,
+        img: v.value.customData.curr?.image || v.value.img,
       }))
       setTreeData({ nodes: newNodes, edges })
     })()
   }, [injectTree])
+  console.info('treeData', treeData)
   useEffect(() => {
     const handleClick = (evt: IG6GraphEvent) => {
       const node = evt.item
