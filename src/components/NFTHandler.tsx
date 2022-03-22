@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useRef, createRef } from 'react'
 import { useWallet, WalletContextState } from '@solana/wallet-adapter-react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -16,23 +16,33 @@ import { useContract } from '../provider/ContractProvider'
 import { MOBILE_BREAK_POINT } from '../utils/constants'
 import { solToLamports } from '../utils'
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
+import log from 'loglevel'
 
 interface Props {
   metadata: MetadataData
+  refreshInject: () => void
 }
 
 const NFTHandler: React.FC<Props> = (props: Props) => {
-  const metadata = props.metadata
+  const { metadata, refreshInject } = props
 
+  const injectRef = useRef<{ resetSelect: Function }>()
   const params = useParams()
   const wallet: WalletContextState = useWallet()
   const navigate = useNavigate()
 
   const { contract } = useContract()
   const { belong, loading: belongLoading } = useBelongTo(params.mint)
-  const { checkLoading: hasInjectLoading, hasInject, injectData: mintMetadata } = useHasInjectV1(params.mint)
+  const {
+    checkLoading: hasInjectLoading,
+    hasInject,
+    injectData: mintMetadata,
+    refresh: refreshInjectV1,
+  } = useHasInjectV1(params.mint)
 
   const [injectType] = useState<InjectType>(InjectType.SOL)
+  // 写合约交互状态。modal or toast
+  const [writing, setWriting] = useState(false)
 
   const dispatch = useAppDispatch()
   const myNFTData = useAppSelector(selectMyNFTData)
@@ -56,30 +66,46 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       ;(async () => {
         const mint = params.mint
         if (!mint) return
-        const reversible = injectMode === InjectMode.Reversible
-        switch (injectType) {
-          case InjectType.SOL:
-            // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
-            // const { volume } = token
-            // const formatVolume = Number(volume) * 1000000000
-            // await injectSol(params.mint, formatVolume, reversible, { wallet, program, connection })
-            break
-          case InjectType.NFT:
-            const childMint = nft.mint || ''
-            if (!childMint) return
-            const mintKey = new PublicKey(mint)
-            const childMintKey = new PublicKey(childMint)
-            if (belong.parent) {
-              await contract.injectNFTToNonRoot(mintKey, [childMintKey], {
-                rootPDA: new PublicKey(belong.parent.rootPDA),
-                parentMintKey: new PublicKey(belong.parent.mint),
-              })
-            } else {
-              await contract.injectNFTToRoot(mintKey, [childMintKey])
-            }
-            break
+
+        try {
+          setWriting(true)
+          const reversible = injectMode === InjectMode.Reversible
+          switch (injectType) {
+            case InjectType.SOL:
+              // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
+              // const { volume } = token
+              // const formatVolume = Number(volume) * 1000000000
+              // await injectSol(params.mint, formatVolume, reversible, { wallet, program, connection })
+              break
+            case InjectType.NFT:
+              const childMint = nft.mint || ''
+              if (!childMint) return
+              const mintKey = new PublicKey(mint)
+              const childMintKey = new PublicKey(childMint)
+              if (belong.parent) {
+                await contract.injectNFTToNonRoot(mintKey, [childMintKey], {
+                  rootPDA: new PublicKey(belong.parent.rootPDA),
+                  parentMintKey: new PublicKey(belong.parent.mint),
+                })
+              } else {
+                await contract.injectNFTToRoot(mintKey, [childMintKey])
+              }
+              break
+          }
+          setWriting(false)
+          wallet.publicKey && dispatch(getMyNFTokens({ owner: wallet.publicKey }))
+          injectRef.current && injectRef.current.resetSelect({ mint: '', image: '', name: '' })
+          refreshInject()
+        } catch (error) {
+          log.error(error)
+          // 可以用来显示错误
+          if ((error as any).code === 4001) {
+            // 用户取消交易
+          } else {
+            // -32003 "Transaction creation failed."
+          }
+          setWriting(false)
         }
-        reloadWindow()
       })()
     },
     [belong],
@@ -87,16 +113,22 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   // 执行提取
   const onExtract = async () => {
     if (!params.mint) return
-    const mintKey = new PublicKey(params.mint)
-    switch (injectType) {
-      case InjectType.SOL:
-        await contract.extractSolV1(mintKey)
-        break
-      // case InjectType.NFT:
-      //   await extractNFT(params.mint, { wallet, program, connection })
-      //   break
+    try {
+      setWriting(true)
+      const mintKey = new PublicKey(params.mint)
+      switch (injectType) {
+        case InjectType.SOL:
+          await contract.extractSolV1(mintKey)
+          break
+        // case InjectType.NFT:
+        //   await extractNFT(params.mint, { wallet, program, connection })
+        //   break
+      }
+      refreshInjectV1()
+    } catch (error) {
+      log.error(error)
+      setWriting(false)
     }
-    reloadWindow()
   }
 
   const onCopyWithInject = async ({ injectType, injectMode, token, nft }: OnInjectProps) => {
@@ -104,6 +136,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     console.log(metadata)
     if (!params.mint) return
 
+    // TODO: could add UI loading status in here
     let newMint = ''
     const mintKey = new PublicKey(params.mint)
     const reversible = injectMode === InjectMode.Reversible
@@ -130,6 +163,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       return
     }
     navigate(`/info/${newMint}`)
+    reloadWindow()
   }
 
   const showBelongToMe = belong.me
@@ -162,22 +196,17 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
             {showBelongToMe && (
               <NftInject
                 withCopyInit={false}
-                nftOptions={
-                  myNFTData.filter((item) => item?.mint != params.mint)
-                  // .map((item) => ({ ...item?.metadata?.data, ...item?.metadata?.data.data }))
-                }
+                nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
                 onInject={onInject}
                 mintMetadata={mintMetadata}
                 onExtract={onExtract}
+                ref={injectRef}
               ></NftInject>
             )}
             {showCopy && (
               <NftInject
                 withCopyInit={true}
-                nftOptions={
-                  myNFTData.filter((item) => item?.mint != params.mint)
-                  // .map((item) => ({ ...item?.metadata?.data, ...item?.metadata?.data.data }))
-                }
+                nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
                 onCopyWithInject={onCopyWithInject}
               ></NftInject>
             )}
@@ -248,7 +277,7 @@ const NFTHandlerWrapper = styled.div`
     color: rgba(34, 34, 34, 0.5);
     @media (max-width: ${MOBILE_BREAK_POINT}px) {
       height: auto;
-      padding:20px 8px;
+      padding: 20px 8px;
     }
     .expression {
       font-size: 40px;
