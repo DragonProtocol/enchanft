@@ -17,12 +17,26 @@ import { MOBILE_BREAK_POINT } from '../utils/constants'
 import { solToLamports } from '../utils'
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
 import log from 'loglevel'
+import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
 
 interface Props {
   metadata: MetadataData
   refreshInject: () => void
 }
-
+const transactionMsg = {
+  enchanft: {
+    inProgress: 'enchanft transaction in progress ......',
+    successful: 'enchanft successful!',
+    failed: 'enchanft failed!',
+    cancel: 'enchanft transaction was canceled by user',
+  },
+  extract: {
+    inProgress: 'extract transaction in progress ......',
+    successful: 'extract successful!',
+    failed: 'extract failed!',
+    cancel: 'extract transaction was canceled by user',
+  },
+}
 const NFTHandler: React.FC<Props> = (props: Props) => {
   const { metadata, refreshInject } = props
 
@@ -41,9 +55,17 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   } = useHasInjectV1(params.mint)
 
   const [injectType] = useState<InjectType>(InjectType.SOL)
-  // 写合约交互状态。modal or toast
-  const [writing, setWriting] = useState(false)
-
+  // 交易状态
+  const [transactionState, setTransactionState] = useState({
+    inProgress: false,
+    msg: '',
+  })
+  // 提示状态
+  const [snackbarState, setSnackbarState] = useState<{ open: boolean; alertColor: AlertColor; alertMsg: string }>({
+    open: false,
+    alertColor: 'info',
+    alertMsg: '',
+  })
   const dispatch = useAppDispatch()
   const myNFTData = useAppSelector(selectMyNFTData)
   const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus)
@@ -68,7 +90,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         if (!mint) return
 
         try {
-          setWriting(true)
+          setTransactionState({ inProgress: true, msg: transactionMsg.enchanft.inProgress })
           const reversible = injectMode === InjectMode.Reversible
           switch (injectType) {
             case InjectType.SOL:
@@ -92,19 +114,22 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
               }
               break
           }
-          setWriting(false)
+          setSnackbarState({ open: true, alertColor: 'success', alertMsg: transactionMsg.enchanft.successful })
           wallet.publicKey && dispatch(getMyNFTokens({ owner: wallet.publicKey }))
           injectRef.current && injectRef.current.resetSelect({ mint: '', image: '', name: '' })
           refreshInject()
         } catch (error) {
-          log.error(error)
           // 可以用来显示错误
           if ((error as any).code === 4001) {
             // 用户取消交易
+            setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.enchanft.cancel })
           } else {
             // -32003 "Transaction creation failed."
+            // setWriting(false)
+            setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.enchanft.failed })
           }
-          setWriting(false)
+        } finally {
+          setTransactionState({ ...transactionState, inProgress: false })
         }
       })()
     },
@@ -114,7 +139,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const onExtract = async () => {
     if (!params.mint) return
     try {
-      setWriting(true)
+      setTransactionState({ inProgress: true, msg: transactionMsg.extract.inProgress })
       const mintKey = new PublicKey(params.mint)
       switch (injectType) {
         case InjectType.SOL:
@@ -126,8 +151,17 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       }
       refreshInjectV1()
     } catch (error) {
-      log.error(error)
-      setWriting(false)
+      // 可以用来显示错误
+      if ((error as any).code === 4001) {
+        // 用户取消交易
+        setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.extract.cancel })
+      } else {
+        // -32003 "Transaction creation failed."
+        // setWriting(false)
+        setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.extract.failed })
+      }
+    } finally {
+      setTransactionState({ ...transactionState, inProgress: false })
     }
   }
 
@@ -140,24 +174,40 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     let newMint = ''
     const mintKey = new PublicKey(params.mint)
     const reversible = injectMode === InjectMode.Reversible
-    switch (injectType) {
-      case InjectType.SOL:
-        // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
-        const { volume } = token
-        const lamportsVolume = solToLamports(Number(volume))
-        newMint = await contract.copyWithInjectSOLv1(mintKey, lamportsVolume, { name, uri, symbol })
-        break
-      // case InjectType.Nft:
-      //   const childMint = nft.mint || ''
-      //   newMint = await nftCopyWithInjectNFT(
-      //     params.mint,
-      //     childMint,
-      //     reversible,
-      //     { name, uri, symbol },
-      //     { connection, wallet, program },
-      //   )
-      //   break
+    setTransactionState({ inProgress: true, msg: transactionMsg.enchanft.inProgress })
+    try {
+      switch (injectType) {
+        case InjectType.SOL:
+          // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
+          const { volume } = token
+          const lamportsVolume = solToLamports(Number(volume))
+          newMint = await contract.copyWithInjectSOLv1(mintKey, lamportsVolume, { name, uri, symbol })
+          break
+        // case InjectType.Nft:
+        //   const childMint = nft.mint || ''
+        //   newMint = await nftCopyWithInjectNFT(
+        //     params.mint,
+        //     childMint,
+        //     reversible,
+        //     { name, uri, symbol },
+        //     { connection, wallet, program },
+        //   )
+        //   break
+      }
+    } catch (error) {
+      // 可以用来显示错误
+      if ((error as any).code === 4001) {
+        // 用户取消交易
+        setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.extract.cancel })
+      } else {
+        // -32003 "Transaction creation failed."
+        // setWriting(false)
+        setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.enchanft.failed })
+      }
+    } finally {
+      setTransactionState({ ...transactionState, inProgress: false })
     }
+
     if (!newMint) {
       // TODO: alert something wrong
       return
@@ -212,6 +262,20 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
             )}
           </>
         )}
+        <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={transactionState.inProgress}>
+          <div style={{ textAlign: 'center' }}>
+            <CircularProgress color="inherit" />
+            <div style={{ marginTop: '20px' }}>{transactionState.msg}</div>
+          </div>
+        </Backdrop>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={snackbarState.open}
+          autoHideDuration={6000}
+          onClose={() => setSnackbarState((v) => ({ ...v, open: false }))}
+        >
+          <Alert severity={snackbarState.alertColor}>{snackbarState.alertMsg}</Alert>
+        </Snackbar>
       </NFTHandlerWrapper>
     )
   )
