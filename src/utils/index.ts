@@ -1,3 +1,4 @@
+import { LAMPORTS_PER_SOL } from '@solana/web3.js'
 import log from 'loglevel'
 
 log.info({ env: process.env.NODE_ENV })
@@ -12,9 +13,9 @@ export const collections = isProd
   : ['DaFBQUghKeSuuAjgZWLkZfHzVs5K8ELf1oGXKkkupwDX', 'U7KxNoZ3rNbtG5DgRYQQsjs2dWoSSLLRLjit6VXRyzR']
 
 export function lamportsToSol(lamportsAmount: number) {
-  return lamportsAmount / 10 ** 9
+  return lamportsAmount / LAMPORTS_PER_SOL
 }
 
 export function solToLamports(solAmount: number) {
-  return solAmount * 10 ** 9
+  return solAmount * LAMPORTS_PER_SOL
 }

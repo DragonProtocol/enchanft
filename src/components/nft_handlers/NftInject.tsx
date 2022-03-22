@@ -1,5 +1,5 @@
 import { Alert, AlertTitle, Dialog, DialogContent, DialogTitle, ImageList, ImageListItem } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
 import styled, { css } from 'styled-components'
 import { NftDataItem, NFTListWrapper } from '../NFTList'
 import DialogCloseIcon from '../icons/dialogClose.svg'
@@ -39,6 +39,8 @@ export interface OnInjectProps {
   token: Token
   nft: NftDataItem
 }
+
+type Nft = { mint: string; image: string; name: string }
 interface Props {
   withCopyInit: boolean
   nftOptions: NftDataItem[]
@@ -47,22 +49,28 @@ interface Props {
   onExtract?: () => void
   mintMetadata?: any
 }
+
+interface RefProps extends Props {
+  nft: Nft
+  setNft: (n: Nft) => void
+}
 const INJECT_MODES = [InjectMode.Reversible, InjectMode.Irreversible]
 
-const NftInject: React.FC<Props> = ({
+const NftInject: React.FC<RefProps> = ({
   nftOptions,
   onInject,
   withCopyInit,
   onCopyWithInject,
   mintMetadata,
   onExtract,
-}: Props) => {
+  nft,
+  setNft,
+}: RefProps) => {
   const { connection } = useConnection()
   const wallet = useWallet()
   const [balance, setBalance] = useState(0)
   const [injectMode, setInjectMode] = useState<InjectMode>(InjectMode.Reversible)
   const [token, setToken] = useState<Token>(TOKEN_DEFAULT)
-  const [nft, setNft] = useState<NftDataItem>({ mint: '', image: '', name: '' })
   const [visibleNftList, setVisibleNftList] = useState(false)
   // const [nftJsonData, setNftJsonData] = useState<any[]>([])
   const [checkTip, setCheckTip] = useState({ visible: false, msg: '' })
@@ -236,7 +244,18 @@ const NftInject: React.FC<Props> = ({
     </NftInjectWrapper>
   )
 }
-export default NftInject
+export default React.forwardRef((props: Props, ref: any) => {
+  const init = { mint: '', image: '', name: '' }
+  const [nft, setNft] = useState<NftDataItem>(init)
+
+  useImperativeHandle(ref, () => ({
+    resetSelect: () => {
+      setNft(init)
+    },
+  }))
+  return <NftInject {...props} nft={nft} setNft={setNft} />
+})
+
 const NftInjectWrapper = styled.div`
   .disabled {
     pointer-events: none;
