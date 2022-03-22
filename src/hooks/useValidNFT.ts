@@ -1,8 +1,6 @@
 import { PublicKey } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
 
-import type { Node as TreeNode } from '../synft'
-import { Contract, BelongTo } from '../synft'
 import { useContract } from '../provider/ContractProvider'
 
 export default (mint: string | undefined) => {

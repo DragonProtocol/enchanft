@@ -1,9 +1,12 @@
 import { PublicKey } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
 
-import { Contract, MetaInfo } from '../synft'
+import { MetaInfo } from '../synft'
 import { useContract } from '../provider/ContractProvider'
 
+/**
+ * 获取 MetaInfo
+ */
 export default (mint: string | undefined) => {
   const { contract } = useContract()
 
@@ -15,7 +18,7 @@ export default (mint: string | undefined) => {
       setLoading(true)
       if (!mint) return
       const mintKey = new PublicKey(mint)
-      const data = await contract.getMetadataInfoWithMint(mintKey)
+      const data: MetaInfo | null = await contract.getMetadataInfoWithMint(mintKey)
       setInfo(data)
       setLoading(false)
     })()
