@@ -16,6 +16,7 @@ import { useContract } from '../provider/ContractProvider'
 import { MOBILE_BREAK_POINT } from '../utils/constants'
 import { solToLamports } from '../utils'
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
+import log from 'loglevel'
 
 interface Props {
   metadata: MetadataData
@@ -40,6 +41,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   } = useHasInjectV1(params.mint)
 
   const [injectType] = useState<InjectType>(InjectType.SOL)
+  // 写合约交互状态。modal or toast
+  const [writing, setWriting] = useState(false)
 
   const dispatch = useAppDispatch()
   const myNFTData = useAppSelector(selectMyNFTData)
@@ -64,32 +67,45 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         const mint = params.mint
         if (!mint) return
 
-        // TODO: could add UI loading status in here
-        const reversible = injectMode === InjectMode.Reversible
-        switch (injectType) {
-          case InjectType.SOL:
-            // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
-            // const { volume } = token
-            // const formatVolume = Number(volume) * 1000000000
-            // await injectSol(params.mint, formatVolume, reversible, { wallet, program, connection })
-            break
-          case InjectType.NFT:
-            const childMint = nft.mint || ''
-            if (!childMint) return
-            const mintKey = new PublicKey(mint)
-            const childMintKey = new PublicKey(childMint)
-            if (belong.parent) {
-              await contract.injectNFTToNonRoot(mintKey, [childMintKey], {
-                rootPDA: new PublicKey(belong.parent.rootPDA),
-                parentMintKey: new PublicKey(belong.parent.mint),
-              })
-            } else {
-              await contract.injectNFTToRoot(mintKey, [childMintKey])
-            }
-            break
+        try {
+          setWriting(true)
+          const reversible = injectMode === InjectMode.Reversible
+          switch (injectType) {
+            case InjectType.SOL:
+              // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
+              // const { volume } = token
+              // const formatVolume = Number(volume) * 1000000000
+              // await injectSol(params.mint, formatVolume, reversible, { wallet, program, connection })
+              break
+            case InjectType.NFT:
+              const childMint = nft.mint || ''
+              if (!childMint) return
+              const mintKey = new PublicKey(mint)
+              const childMintKey = new PublicKey(childMint)
+              if (belong.parent) {
+                await contract.injectNFTToNonRoot(mintKey, [childMintKey], {
+                  rootPDA: new PublicKey(belong.parent.rootPDA),
+                  parentMintKey: new PublicKey(belong.parent.mint),
+                })
+              } else {
+                await contract.injectNFTToRoot(mintKey, [childMintKey])
+              }
+              break
+          }
+          setWriting(false)
+          wallet.publicKey && dispatch(getMyNFTokens({ owner: wallet.publicKey }))
+          injectRef.current && injectRef.current.resetSelect({ mint: '', image: '', name: '' })
+          refreshInject()
+        } catch (error) {
+          log.error(error)
+          // 可以用来显示错误
+          if ((error as any).code === 4001) {
+            // 用户取消交易
+          } else {
+            // -32003 "Transaction creation failed."
+          }
+          setWriting(false)
         }
-        injectRef.current && injectRef.current.resetSelect({ mint: '', image: '', name: '' })
-        refreshInject()
       })()
     },
     [belong],
@@ -97,17 +113,22 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   // 执行提取
   const onExtract = async () => {
     if (!params.mint) return
-    // TODO: could add UI loading status in here
-    const mintKey = new PublicKey(params.mint)
-    switch (injectType) {
-      case InjectType.SOL:
-        await contract.extractSolV1(mintKey)
-        break
-      // case InjectType.NFT:
-      //   await extractNFT(params.mint, { wallet, program, connection })
-      //   break
+    try {
+      setWriting(true)
+      const mintKey = new PublicKey(params.mint)
+      switch (injectType) {
+        case InjectType.SOL:
+          await contract.extractSolV1(mintKey)
+          break
+        // case InjectType.NFT:
+        //   await extractNFT(params.mint, { wallet, program, connection })
+        //   break
+      }
+      refreshInjectV1()
+    } catch (error) {
+      log.error(error)
+      setWriting(false)
     }
-    refreshInjectV1()
   }
 
   const onCopyWithInject = async ({ injectType, injectMode, token, nft }: OnInjectProps) => {
