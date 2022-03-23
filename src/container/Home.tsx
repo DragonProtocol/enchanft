@@ -4,7 +4,13 @@ import styled from 'styled-components'
 
 import NFTList, { NftDataItem } from '../components/NFTList'
 import { getMyNFTokens, clearMyNFT, selectMyNFTData, selectMyNFTDataStatus } from '../features/my/mySlice'
-import { getExploreData, selectExploreData, selectExploreStatus } from '../features/explore/exploreSlice'
+import {
+  getExploreData,
+  getExploreDataWithCollectionId,
+  selectExploreData,
+  selectExploreStatus,
+  selectExploreDataHasGetCollectionIds,
+} from '../features/explore/exploreSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
 import { collections } from '../utils'
@@ -70,7 +76,11 @@ function Home() {
 
   useEffect(() => {
     if (exploreNFTStatus === 'init') {
-      dispatch(getExploreData({ collectionIds: collections, connection }))
+      dispatch(getExploreDataWithCollectionId({ collectionId: collections[0] }))
+      // 分步取数据的 DEMO，collections 可与 selectExploreDataHasGetCollectionIds 做 diff
+      setTimeout(() => {
+        dispatch(getExploreDataWithCollectionId({ collectionId: collections[1] }))
+      }, 15000)
     }
   }, [])
 
