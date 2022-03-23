@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import log from 'loglevel'
 
 import { useContract } from '../provider/ContractProvider'
+import { InjectType } from '../synft'
 
 export default (mint: string | undefined) => {
   const { contract } = useContract()
@@ -17,7 +18,6 @@ export default (mint: string | undefined) => {
     }
     setCheckLoading(true)
     const mintKey = new PublicKey(mint)
-    //   const result = await contract.checkValidNFT(mintKey)
     const inject = await contract.getInjectV1(mintKey)
     log.info('checkHasInject', inject)
 
@@ -29,11 +29,11 @@ export default (mint: string | undefined) => {
     }
     const { childrenMetadata, childrenMeta } = inject
     // setInjectMode(childrenMeta.reversible === true ? InjectMode.Reversible : InjectMode.Irreversible)
-    log.info(`${mint} hasInject`, inject)
+    log.info(`${mint} hasInject: `, inject)
     // 只可能注入 sol
     if (childrenMeta?.childType.sol) {
       setInjectData({
-        injectType: 'sol',
+        injectType: InjectType.SOL,
         lamports: childrenMetadata.lamports,
       })
     }

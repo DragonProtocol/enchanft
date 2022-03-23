@@ -1,3 +1,6 @@
+/**
+ * will be deprecated
+ */
 import { BN, Program, Provider, web3, Idl, Address } from '@project-serum/anchor'
 import { TOKEN_PROGRAM_ID, getAccount, Account } from '@solana/spl-token'
 import { useConnection, useWallet, WalletContextState } from '@solana/wallet-adapter-react'
