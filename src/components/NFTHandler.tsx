@@ -18,6 +18,8 @@ import { solToLamports } from '../utils'
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
 import log from 'loglevel'
 import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
+import ButtonConnectWallect from './common/ButtonConnectWallet'
+import RemindConnectWallet from './RemindConnectWallet'
 
 interface Props {
   metadata: MetadataData
@@ -169,8 +171,6 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     const { name, symbol, uri } = metadata.data
     console.log(metadata)
     if (!params.mint) return
-
-    // TODO: could add UI loading status in here
     let newMint = ''
     const mintKey = new PublicKey(params.mint)
     const reversible = injectMode === InjectMode.Reversible
@@ -221,63 +221,70 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const showCopy = !belong.me && !belong.program
 
   return (
-    (!wallet.publicKey && <div>Connect wallet first</div>) || (
-      <NFTHandlerWrapper>
-        <div className="top">
-          <div className="nft-title">{metadata.data.name}</div>
-          <div className="nft-creator">
-            <span className="creator-label">creator</span>
-            <span className="creator-value">{metadata.data.creators && metadata.data.creators[0]?.address}</span>
-          </div>
-          <div className="dividing-line"></div>
+    <NFTHandlerWrapper>
+      <div className="top">
+        <div className="nft-title">{metadata.data.name}</div>
+        <div className="nft-creator">
+          <span className="creator-label">creator</span>
+          <span className="creator-value">{metadata.data.creators && metadata.data.creators[0]?.address}</span>
         </div>
-        {belongLoading || hasInjectLoading ? (
-          <p>
-            <img src={LoadingIcon} alt="" />
-          </p>
-        ) : (
-          <>
-            {showViewOnly && (
-              <div className="only-view">
-                <span className="expression">😯</span>{' '}
-                <span className="description">This NFT has been synthesized</span>
-              </div>
-            )}
-            {showBelongToMe && (
-              <NftInject
-                withCopyInit={false}
-                nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
-                onInject={onInject}
-                mintMetadata={mintMetadata}
-                onExtract={onExtract}
-                ref={injectRef}
-              ></NftInject>
-            )}
-            {showCopy && (
-              <NftInject
-                withCopyInit={true}
-                nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
-                onCopyWithInject={onCopyWithInject}
-              ></NftInject>
-            )}
-          </>
-        )}
-        <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={transactionState.inProgress}>
-          <div style={{ textAlign: 'center' }}>
-            <CircularProgress color="inherit" />
-            <div style={{ marginTop: '20px' }}>{transactionState.msg}</div>
-          </div>
-        </Backdrop>
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={snackbarState.open}
-          autoHideDuration={6000}
-          onClose={() => setSnackbarState((v) => ({ ...v, open: false }))}
-        >
-          <Alert severity={snackbarState.alertColor}>{snackbarState.alertMsg}</Alert>
-        </Snackbar>
-      </NFTHandlerWrapper>
-    )
+        <div className="dividing-line"></div>
+      </div>
+      {(!wallet.publicKey && <RemindConnectWallet />) || (
+        <>
+          {belongLoading || hasInjectLoading ? (
+            <p>
+              <img src={LoadingIcon} alt="" />
+            </p>
+          ) : (
+            <>
+              {showViewOnly && (
+                <div className="only-view">
+                  <span className="expression">😯</span>{' '}
+                  <span className="description">This NFT has been synthesized</span>
+                </div>
+              )}
+              {showBelongToMe && (
+                <NftInject
+                  withCopyInit={false}
+                  nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
+                  onInject={onInject}
+                  mintMetadata={mintMetadata}
+                  onExtract={onExtract}
+                  ref={injectRef}
+                ></NftInject>
+              )}
+              {showCopy && (
+                <NftInject
+                  withCopyInit={true}
+                  nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
+                  onCopyWithInject={onCopyWithInject}
+                ></NftInject>
+              )}
+            </>
+          )}
+          {/* 交易触发时页面进入的loading状态 */}
+          <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={transactionState.inProgress}
+          >
+            <div style={{ textAlign: 'center' }}>
+              <CircularProgress color="inherit" />
+              <div style={{ marginTop: '20px' }}>{transactionState.msg}</div>
+            </div>
+          </Backdrop>
+          {/* 交易结束后提示交易结果 */}
+          <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            open={snackbarState.open}
+            autoHideDuration={6000}
+            onClose={() => setSnackbarState((v) => ({ ...v, open: false }))}
+          >
+            <Alert severity={snackbarState.alertColor}>{snackbarState.alertMsg}</Alert>
+          </Snackbar>
+        </>
+      )}
+    </NFTHandlerWrapper>
   )
 }
 export default NFTHandler

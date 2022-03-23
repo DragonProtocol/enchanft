@@ -18,9 +18,12 @@ const NFTCard: React.FC<Props> = ({ data }: Props) => {
 }
 export default NFTCard
 const NFTCardWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   .img-box {
-    width: 100%;
-    height: 100%;
+    flex: 1;
     min-width: 250px;
     min-height: 250px;
     border: 2px solid #222222;

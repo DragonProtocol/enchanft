@@ -13,7 +13,8 @@ import ButtonConnectWallect from '../components/common/ButtonConnectWallet'
 import SplitTextOpacity, { SplitTextOpacityFuns } from '../components/common/animate/SplitTextOpacity'
 import LoadingIcon from '../components/imgs/Loading.gif'
 import { MOBILE_BREAK_POINT } from '../utils/constants'
-import { backToTop } from '../utils/tools'
+import { backToTop, getLayoutMainScrollBox } from '../utils/tools'
+import RemindConnectWallet from '../components/RemindConnectWallet'
 
 function Home() {
   const wallet = useWallet()
@@ -78,8 +79,9 @@ function Home() {
     // 滚动条滚动到顶部(为了移动端更友好些)
     backToTop()
   }, [tab])
-
   const nftList: NftDataItem[] = tab === 'my' ? myNFTData : exploreNFTData
+  // TODO 列表滚动加载实现
+
   return (
     <HomeWrapper>
       <div className="tab">
@@ -113,6 +115,11 @@ function Home() {
             <div className="list-desc">
               <SplitTextOpacity ref={titleRefMy2}>EnchaNFT your own NFTs</SplitTextOpacity>
             </div>
+            {myNFTDataStatus === 'loading' && (
+              <div className="loading">
+                <img src={LoadingIcon} alt="" />
+              </div>
+            )}
           </>
         ) : (
           <>
@@ -132,8 +139,7 @@ function Home() {
       </div>
       {!wallet.publicKey && (
         <div className="bottom">
-          <span className="connect-desc">connect your NFT</span>
-          <ButtonConnectWallect />
+          <RemindConnectWallet />
         </div>
       )}
     </HomeWrapper>
@@ -216,24 +222,6 @@ const HomeWrapper = styled.div`
     }
     .list {
       margin-top: 24px;
-    }
-  }
-  .bottom {
-    display: flex;
-    background: #fffbdb;
-    border: 4px solid #222222;
-    box-sizing: border-box;
-    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-    border-radius: 2px;
-    padding: 26px 24px;
-    margin: 35px 0;
-    justify-content: space-between;
-    align-items: center;
-    .connect-desc {
-      font-size: 18px;
-      line-height: 40px;
-      color: #222222;
-      text-transform: uppercase;
     }
   }
 `
