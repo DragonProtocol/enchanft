@@ -5,10 +5,11 @@ import styled, { css } from 'styled-components'
 import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
 import useInfoFromMint from '../../hooks/useInfoFromMint'
 import { NftDataItem } from '../NFTList'
-import { InjectMode, InjectType, Token } from './NftInject'
+import { InjectMode, Token } from './NftInject'
 import SolanaSolLogo from '../imgs/solanaSolLogo.svg'
 import { useNavigate } from 'react-router-dom'
 import { ButtonDanger, ButtonPrimary } from '../common/ButtonBase'
+import { InjectType } from '../../synft'
 interface Props {
   injectType: InjectType
   injectMode: InjectMode

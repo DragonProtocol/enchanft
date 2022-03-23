@@ -17,7 +17,7 @@ const Info: React.FC = () => {
 
   const { info, loading: infoLoading } = useInfoFromMint(params.mint)
   const { valid: validNFT, checking: validChecking } = useValidNFT(params.mint)
-  const { injectTree, loading: injectTreeLoading, refresh: reloadInjecTree } = useInjectTree(params.mint)
+  const { injectTree, loading: injectTreeLoading, refresh: reloadInjectTree } = useInjectTree(params.mint)
 
   const metadata = info?.metadata
   const loading = validChecking || infoLoading
@@ -42,7 +42,7 @@ const Info: React.FC = () => {
               />
             </div>
             <div className="right">
-              {metadata && <NFTHandler metadata={metadata} refreshInject={reloadInjecTree} />}
+              {metadata && <NFTHandler metadata={metadata} refreshInject={reloadInjectTree} />}
             </div>
           </>
         )) || <div className="tip">invalid NFT</div>}

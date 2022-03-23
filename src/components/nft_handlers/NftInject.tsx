@@ -10,6 +10,8 @@ import { CursorPointerUpCss } from '../../GlobalStyle'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { ButtonDanger, ButtonPrimary, ButtonWarning } from '../common/ButtonBase'
 import { MOBILE_BREAK_POINT } from '../../utils/constants'
+import { InjectType } from '../../synft'
+
 export type Token = {
   name: string
   address: string
@@ -28,11 +30,7 @@ export enum InjectMode {
   Reversible = 'Reversible',
   Irreversible = 'Irreversible',
 }
-export enum InjectType {
-  SOL = 'sol',
-  SPL = 'spl',
-  NFT = 'nft',
-}
+
 export interface OnInjectProps {
   injectMode: InjectMode
   injectType: InjectType

@@ -4,7 +4,7 @@
 import { PublicKey, Connection, AccountInfo, SystemProgram, Transaction } from '@solana/web3.js'
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import { BN, Program, Provider, web3 } from '@project-serum/anchor'
-import { TOKEN_PROGRAM_ID, getAccount, Account } from '@solana/spl-token'
+import { TOKEN_PROGRAM_ID, getAccount } from '@solana/spl-token'
 import { WalletContextState } from '@solana/wallet-adapter-react'
 import axios from 'axios'
 import log from 'loglevel'
@@ -62,6 +62,11 @@ export default class Contract {
     this.initProgram(conn)
   }
 
+  /**
+   * 检查 mint 是不是一个有效的 NFT
+   * @param mintKey
+   * @returns
+   */
   public async checkValidNFT(mintKey: PublicKey): Promise<boolean> {
     log.info('checkValidNFT')
 
@@ -70,15 +75,22 @@ export default class Contract {
       return false
     }
     try {
-      const data = await this._connection.getTokenLargestAccounts(mintKey)
-      const result = data.value[0].uiAmount === 1 && data.value[0].decimals === 0
-      return result
+      // 获取有效的 tokenAccount
+      const tokenAccountBalancePair = await this._connection.getTokenLargestAccounts(mintKey)
+      // 满足该条件，才是有效的 NFT
+      const valid = tokenAccountBalancePair.value[0].uiAmount === 1 && tokenAccountBalancePair.value[0].decimals === 0
+      return valid
     } catch (error) {
       log.warn('checkValidNFT', error)
       return false
     }
   }
 
+  /**
+   * 检查 mint 的所属关系
+   * @param mintKey
+   * @returns
+   */
   public async checkBelongTo(mintKey: PublicKey): Promise<BelongTo> {
     log.info('checkBelongTo')
 
@@ -90,6 +102,7 @@ export default class Contract {
     const program = this._program
     if (!program) return result
     try {
+      // 获取有效的 tokenAccount
       let tokenAccountBalancePair = await this._connection.getTokenLargestAccounts(mintKey)
       let lastTokenAccountBalancePair = tokenAccountBalancePair.value[0]
       if (lastTokenAccountBalancePair.uiAmount !== 1) return result
@@ -113,7 +126,7 @@ export default class Contract {
 
       if (!result.me) {
         const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
-          [Buffer.from('synthetic-nft-mint-seed'), mintKey.toBuffer()],
+          [Buffer.from(SynftSeed.MINT_SEED), mintKey.toBuffer()],
           PROGRAM_ID,
         )
         const accountAndCtx: AccountInfo<Buffer> | null = await this._connection.getAccountInfo(nftMintPDA)
@@ -121,13 +134,18 @@ export default class Contract {
       }
       return result
     } catch (error) {
-      log.warn(error)
+      log.warn(error, { mintKey: mintKey.toString() })
       return result
     }
   }
 
-  // 获取 mint 的上下 tree
-  public async getInjectTree(mintKey: PublicKey, first: boolean = true): Promise<any | null> {
+  /**
+   * 获取 mint 的上注入的 nft-tree
+   * @param mintKey
+   * @param withParent 是否获取 parent，默认值 true，只在初始调用为 true，
+   * @returns
+   */
+  public async getInjectTree(mintKey: PublicKey, withParent: boolean = true): Promise<any | null> {
     if (!this._connection || !this._program) {
       log.error('Contract connect invalid')
       return null
@@ -152,7 +170,7 @@ export default class Contract {
       }
 
       // 只需要第一次的时候获取 parent
-      if (first) {
+      if (withParent) {
         const parentNFT = await this.getParentNFT(mintKey)
         // if parentNFT 证明当前是个子节点，有父节点
         if (parentNFT) {
@@ -185,6 +203,11 @@ export default class Contract {
     }
   }
 
+  /**
+   * 获取 mint 的 parent，由我们合约提供
+   * @param mintKey
+   * @returns
+   */
   private async getParentNFT(mintKey: PublicKey) {
     if (!this._program) {
       log.error('Contract connect invalid')
@@ -201,13 +224,18 @@ export default class Contract {
 
     if (parentNFT && parentNFT[0]) {
       return {
-        mint: parentNFT[0]?.account.parent.toString(),
-        rootPDA: parentNFT[0]?.account.root.toString(),
+        mint: parentNFT[0].account.parent.toString(),
+        rootPDA: parentNFT[0].account.root.toString(),
       }
     }
     return null
   }
 
+  /**
+   * 获取用户有效的 NFT
+   * @param owner
+   * @returns
+   */
   public async getValidNFTokensWithOwner(owner: PublicKey) {
     if (!this._connection) {
       return []
@@ -229,6 +257,11 @@ export default class Contract {
     return filteredToken
   }
 
+  /**
+   * 获取 metaplex 的 metadata
+   * @param mintKey
+   * @returns
+   */
   public async getMetadataFromMint(mintKey: PublicKey) {
     if (!this._connection) {
       log.error('Contract connect invalid')
@@ -238,8 +271,11 @@ export default class Contract {
     const metadata = await Metadata.load(this._connection, pubkey)
     return metadata
   }
+
   /**
-   * externalMetadata any, json data
+   * 获取 metadata 信息
+   * @param mintKey
+   * @returns
    */
   public async getMetadataInfoWithMint(mintKey: PublicKey): Promise<MetaInfo | null> {
     if (!this._connection || !this._program) {
@@ -261,6 +297,12 @@ export default class Contract {
     }
   }
 
+  /**
+   * 给 NFT 注入 sol
+   * @param mintKey
+   * @param solAmount
+   * @returns
+   */
   public async injectSOL(mintKey: PublicKey, solAmount: number): Promise<void> {
     log.info('injectSOL')
     if (!this._connection || !this._program || !this._wallet?.publicKey) {
@@ -292,6 +334,12 @@ export default class Contract {
     log.info('injectSol result', result)
   }
 
+  /**
+   * 将一个 NFT 注入到另一个 NFT
+   * @param rootMintKey 被注入的 NFT
+   * @param children 注入的 NFT，数组。协议支持一下子注入多个
+   * @returns
+   */
   public async injectNFTToRoot(rootMintKey: PublicKey, children: PublicKey[]) {
     log.info('injectNFTToRoot: ', rootMintKey.toString())
     if (!this._connection || !this._program || !this._wallet?.publicKey) {
@@ -314,6 +362,7 @@ export default class Contract {
         PROGRAM_ID,
       )
 
+      // 获取 NFT 有效的 tokenAccount
       const childMintTokenAccounts = await connection.getTokenLargestAccounts(item)
       const childMintTokenAccountsAddr = childMintTokenAccounts.value[0].address
 
@@ -342,6 +391,13 @@ export default class Contract {
     log.info('injectNFTToRoot result', result)
   }
 
+  /**
+   * 将 children NFT 注入到 mint NFT
+   * @param mintKey 被注入的 NFT 的 mint
+   * @param childrenMint 注入的 NFT，数组。协议支持一下注入多个
+   * @param { parentMintKey, rootPDA } 注入非 root NFT需要提供被注入的 root 信息
+   * @returns
+   */
   public async injectNFTToNonRoot(
     mintKey: PublicKey, // mint4
     childrenMint: PublicKey[], // mint5
@@ -440,6 +496,13 @@ export default class Contract {
     log.info('injectNFTToNonRoot result', result)
   }
 
+  /**
+   * copy 出来一个新的 NFT
+   * @param mintKey 被 copy 的 mint，被 copy 过不能再不被 copy
+   * @param solAmount 将要注入的 sol 的数量，lamports 单位
+   * @param { name, symbol, uri } 成 NFT 的要素
+   * @returns
+   */
   public async copyWithInjectSOL(
     mintKey: PublicKey,
     solAmount: number,
@@ -503,6 +566,7 @@ export default class Contract {
       signers: [],
     })
 
+    // 打包交易
     const tx = new Transaction().add(instructionCopy, instructionInject)
 
     const signature = await this._wallet.sendTransaction(tx, connection)
@@ -515,13 +579,18 @@ export default class Contract {
     return nftMintPDA.toString()
   }
 
+  /**
+   * 获取 mint 的 AccountInfo
+   * @param mintKey
+   * @returns
+   */
   public async getMintAccountInfo(mintKey: PublicKey): Promise<AccountInfo<Buffer> | null> {
     if (!this._connection) {
       log.error('Contract connect invalid')
       return null
     }
     const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
-      [Buffer.from('synthetic-nft-mint-seed'), mintKey.toBuffer()],
+      [Buffer.from(SynftSeed.MINT_SEED), mintKey.toBuffer()],
       PROGRAM_ID,
     )
     const info = await this._connection.getAccountInfo(nftMintPDA)

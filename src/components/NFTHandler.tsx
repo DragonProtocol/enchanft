@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { clearMyNFT } from '../features/my/mySlice'
 import LoadingIcon from '../components/imgs/Loading.gif'
 
-import NftInject, { InjectMode, InjectType, OnInjectProps } from './nft_handlers/NftInject'
+import NftInject, { InjectMode, OnInjectProps } from './nft_handlers/NftInject'
 import { useBelongTo, useHasInjectV1 } from '../hooks'
 import { useContract } from '../provider/ContractProvider'
 import { MOBILE_BREAK_POINT } from '../utils/constants'
@@ -18,8 +18,8 @@ import { solToLamports } from '../utils'
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
 import log from 'loglevel'
 import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
-import ButtonConnectWallect from './common/ButtonConnectWallet'
 import RemindConnectWallet from './RemindConnectWallet'
+import { InjectType } from '../synft'
 
 interface Props {
   metadata: MetadataData
