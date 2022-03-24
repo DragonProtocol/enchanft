@@ -63,11 +63,11 @@ const injectTreeToGraphinDagreTree = (injectTree: Node): GraphinDagreTree => {
 }
 interface Props {
   data: Node
-  height: number
+  height?: number // 画布高度 (最好是根据上层盒子进行调整)
 }
 const NFTTree: React.FC<Props> = (props: Props) => {
   const navigate = useNavigate()
-  const { data: injectTree, height } = props
+  const { data: injectTree, height = 500 } = props
   const { nodes, edges } = injectTreeToGraphinDagreTree(injectTree)
   const graphinRef = React.createRef<Graphin>()
   const [treeData, setTreeData] = useState({ nodes, edges })
@@ -115,7 +115,7 @@ const NFTTree: React.FC<Props> = (props: Props) => {
     <NFTTreeWrapper>
       <Graphin
         re
-        height={height || 500}
+        height={height}
         data={treeData}
         layout={{
           type: 'dagre',
