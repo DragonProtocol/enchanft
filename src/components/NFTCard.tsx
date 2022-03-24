@@ -1,5 +1,14 @@
+/*
+ * @Author: shixuewen
+ * @Date: 2022-03-11 18:48:03
+ * @LastEditTime: 2022-03-24 15:47:16
+ * @LastEditors: Please set LastEditors
+ * @Description: nft卡片视图组件
+ * @FilePath: \synft-app\src\components\NFTCard.tsx
+ */
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { MEDIA_BREAK_POINTS } from '../utils/constants'
 import { NftDataItem } from './NFTList'
 interface Props {
   data: NftDataItem
@@ -20,17 +29,17 @@ export default NFTCard
 const NFTCardWrapper = styled.div`
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-direction: column;
   .img-box {
-    flex: 1;
-    min-width: 250px;
-    min-height: 250px;
+    width: 100%;
+    height: 250px;
     border: 2px solid #222222;
     box-sizing: border-box;
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
     margin-bottom: 15px;
     position: relative;
+    @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
+      height: auto;
+    }
     .tag {
       position: absolute;
       top: 0;
