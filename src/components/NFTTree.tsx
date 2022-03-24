@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import Graphin, { Behaviors, Utils, GraphinData, IG6GraphEvent, IUserNode, IUserEdge } from '@antv/graphin'
+import Graphin, { GraphinData, IG6GraphEvent, IUserEdge } from '@antv/graphin'
 import { Contract, Node } from '../synft'
 import { useNavigate } from 'react-router-dom'
 import { NftDataItem } from './NFTList'
@@ -39,17 +39,10 @@ const injectTreeToGraphinDagreTree = (injectTree: Node): GraphinDagreTree => {
       id: mint,
       type: 'image',
       img: LoadingIcon,
+      label: '',
       size: 60,
-      // style: {
-      //   stroke: "#000",
-      // },
       labelCfg: {
         position: 'bottom',
-      },
-      // 裁剪图片配置
-      clipCfg: {
-        show: true,
-        type: 'circle',
       },
     })
     // 如果有子集，追加连线数据
@@ -70,10 +63,11 @@ const injectTreeToGraphinDagreTree = (injectTree: Node): GraphinDagreTree => {
 }
 interface Props {
   data: Node
+  height?: number // 画布高度 (最好是根据上层盒子进行调整)
 }
 const NFTTree: React.FC<Props> = (props: Props) => {
   const navigate = useNavigate()
-  const { data: injectTree } = props
+  const { data: injectTree, height = 500 } = props
   const { nodes, edges } = injectTreeToGraphinDagreTree(injectTree)
   const graphinRef = React.createRef<Graphin>()
   const [treeData, setTreeData] = useState({ nodes, edges })
@@ -99,7 +93,6 @@ const NFTTree: React.FC<Props> = (props: Props) => {
       setTreeData({ nodes: newNodes, edges })
     })()
   }, [injectTree])
-  console.info('treeData', treeData)
   useEffect(() => {
     const handleClick = (evt: IG6GraphEvent) => {
       const node = evt.item
@@ -117,20 +110,20 @@ const NFTTree: React.FC<Props> = (props: Props) => {
         graphinRef.current.graph.off('node:click', handleClick)
       }
     }
-  }, [treeData])
+  }, [graphinRef.current, treeData])
   return (
     <NFTTreeWrapper>
       <Graphin
+        re
+        height={height}
         data={treeData}
         layout={{
           type: 'dagre',
           ranksep: 20,
         }}
         ref={graphinRef}
-      >
-        {/** 树图的FitView 有BUG，网图的可以 */}
-        {/* <FitView /> */}
-      </Graphin>
+        fitView={true}
+      ></Graphin>
     </NFTTreeWrapper>
   )
 }

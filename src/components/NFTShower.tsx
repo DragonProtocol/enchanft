@@ -52,7 +52,7 @@ export default function NFTShower({ data }: Props) {
             enchantment
           </AccordionSummary>
           <AccordionDetails className="info-content">
-            {injectTree.loading ? <div>loading...</div> : <NFTTree data={injectTree.data} />}
+            {injectTree.loading ? <div>loading...</div> : <NFTTree data={injectTree.data} height={252} />}
           </AccordionDetails>
         </Accordion>
         {info.description && (
