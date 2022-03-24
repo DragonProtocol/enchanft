@@ -1,3 +1,12 @@
+/**
+ *Author: ttang
+ *Date: 2022-03-23 13:38:27
+ *LastEditTime: 2022-03-23 13:59:41
+ *LastEditors: ttang
+ *Description: 获取当前 NFT 的所属情况
+ *FilePath: /app/src/hooks/useBelongTo.ts
+ */
+
 import { Connection, PublicKey } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
 
@@ -6,9 +15,6 @@ import { useWallet } from '@solana/wallet-adapter-react'
 import { BelongTo } from '../synft'
 import { useContract } from '../provider/ContractProvider'
 
-/**
- * 获取 mint 的所属情况
- */
 export default (mint: string | undefined) => {
   const { contract } = useContract()
   const wallet = useWallet()

@@ -110,10 +110,10 @@ export default class Contract {
       let rootMintKey = lastTokenAccountBalancePair.address
       const parentNFT = await this.getParentNFT(mintKey)
       if (parentNFT) {
-        result.parent = parentNFT
         const { rootPDA } = parentNFT
         const rootMeta = await program.account.childrenMetadataV2.fetch(rootPDA)
         rootMintKey = rootMeta.parent
+        result.parent = { ...parentNFT, rootMint: rootMintKey.toString() }
 
         tokenAccountBalancePair = await this._connection.getTokenLargestAccounts(rootMintKey)
         // eslint-disable-next-line prefer-destructuring

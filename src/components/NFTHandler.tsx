@@ -247,7 +247,9 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
               {showBelongToMe && (
                 <NftInject
                   withCopyInit={false}
-                  nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
+                  nftOptions={myNFTData.filter(
+                    (item) => item.mint != params.mint && item.mint != belong.parent?.rootMint,
+                  )}
                   onInject={onInject}
                   mintMetadata={mintMetadata}
                   onExtract={onExtract}
