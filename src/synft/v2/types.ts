@@ -41,6 +41,7 @@ export type BelongTo = {
   parent: null | {
     mint: string
     rootPDA: string
+    rootMint: string
   }
 }
 
