@@ -78,9 +78,9 @@ function Home() {
     if (exploreNFTStatus === 'init') {
       dispatch(getExploreDataWithCollectionId({ collectionId: collections[0] }))
       // 分步取数据的 DEMO，collections 可与 selectExploreDataHasGetCollectionIds 做 diff
-      setTimeout(() => {
-        dispatch(getExploreDataWithCollectionId({ collectionId: collections[1] }))
-      }, 15000)
+      // setTimeout(() => {
+      //   dispatch(getExploreDataWithCollectionId({ collectionId: collections[1] }))
+      // }, 15000)
     }
   }, [])
 

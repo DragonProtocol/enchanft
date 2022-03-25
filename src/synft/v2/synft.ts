@@ -452,6 +452,16 @@ export type Synft = {
           "isSigner": false
         },
         {
+          "name": "parentMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetaOfChild",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -473,7 +483,15 @@ export type Synft = {
           "type": "bool"
         },
         {
-          "name": "bump",
+          "name": "childMetaBump",
+          "type": "u8"
+        },
+        {
+          "name": "parentMataBump",
+          "type": "u8"
+        },
+        {
+          "name": "parentMataOfChildBump",
           "type": "u8"
         }
       ]
@@ -522,13 +540,23 @@ export type Synft = {
           "isSigner": false
         },
         {
-          "name": "parentMeta",
+          "name": "childrenMetaOfParent",
           "isMut": false,
           "isSigner": false
         },
         {
           "name": "rootMeta",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "parentMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetaOfChild",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -553,11 +581,11 @@ export type Synft = {
           "type": "bool"
         },
         {
-          "name": "isMutated",
-          "type": "bool"
+          "name": "childBump",
+          "type": "u8"
         },
         {
-          "name": "bump",
+          "name": "parentBump",
           "type": "u8"
         }
       ]
@@ -606,6 +634,264 @@ export type Synft = {
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "transferChildNftV2",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rootMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rootTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rootMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetaOfParent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "childTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "receiverAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "extractSolV2",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "solAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "burnV2",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentMintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solAccountBump",
+          "type": "u8"
+        },
+        {
+          "name": "parentMetadataBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "transferCrankV2",
+      "accounts": [
+        {
+          "name": "operator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "parentTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "parentMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rootTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rootMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetaOfParent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rootMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetaOfParent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetaOfRoot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "crankMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -657,11 +943,11 @@ export type Synft = {
             "type": "bool"
           },
           {
-            "name": "isMutated",
+            "name": "isBurnt",
             "type": "bool"
           },
           {
-            "name": "isBurnt",
+            "name": "isMutated",
             "type": "bool"
           },
           {
@@ -678,13 +964,59 @@ export type Synft = {
       }
     },
     {
+      "name": "crankMetadata",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tranferedNft",
+            "type": "publicKey"
+          },
+          {
+            "name": "oldRootMetaData",
+            "type": "publicKey"
+          },
+          {
+            "name": "newRootMetaData",
+            "type": "publicKey"
+          },
+          {
+            "name": "notProcessedChildren",
+            "type": {
+              "array": [
+                "publicKey",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "parentMetadata",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "parent",
-            "type": "publicKey"
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "isBurnt",
+            "type": "bool"
+          },
+          {
+            "name": "height",
+            "type": "u8"
+          },
+          {
+            "name": "immediateChildren",
+            "type": {
+              "array": [
+                "publicKey",
+                3
+              ]
+            }
           }
         ]
       }
@@ -693,7 +1025,12 @@ export type Synft = {
       "name": "solAccount",
       "type": {
         "kind": "struct",
-        "fields": []
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
       }
     }
   ],
@@ -736,6 +1073,11 @@ export type Synft = {
       "code": 6003,
       "name": "InvalidBurnType",
       "msg": "Wrong type of burn instruction for the token"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidTransferCrank",
+      "msg": "Wrong opration of crank instruction for the token"
     }
   ]
 };
@@ -1194,6 +1536,16 @@ export const IDL: Synft = {
           "isSigner": false
         },
         {
+          "name": "parentMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetaOfChild",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
           "name": "systemProgram",
           "isMut": false,
           "isSigner": false
@@ -1215,7 +1567,15 @@ export const IDL: Synft = {
           "type": "bool"
         },
         {
-          "name": "bump",
+          "name": "childMetaBump",
+          "type": "u8"
+        },
+        {
+          "name": "parentMataBump",
+          "type": "u8"
+        },
+        {
+          "name": "parentMataOfChildBump",
           "type": "u8"
         }
       ]
@@ -1264,13 +1624,23 @@ export const IDL: Synft = {
           "isSigner": false
         },
         {
-          "name": "parentMeta",
+          "name": "childrenMetaOfParent",
           "isMut": false,
           "isSigner": false
         },
         {
           "name": "rootMeta",
           "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "parentMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetaOfChild",
+          "isMut": true,
           "isSigner": false
         },
         {
@@ -1295,11 +1665,11 @@ export const IDL: Synft = {
           "type": "bool"
         },
         {
-          "name": "isMutated",
-          "type": "bool"
+          "name": "childBump",
+          "type": "u8"
         },
         {
-          "name": "bump",
+          "name": "parentBump",
           "type": "u8"
         }
       ]
@@ -1348,6 +1718,264 @@ export const IDL: Synft = {
           "type": "u64"
         }
       ]
+    },
+    {
+      "name": "transferChildNftV2",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "rootMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rootTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rootMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetaOfParent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "childTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "receiverAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "extractSolV2",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "solAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "bump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "burnV2",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentMintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": [
+        {
+          "name": "solAccountBump",
+          "type": "u8"
+        },
+        {
+          "name": "parentMetadataBump",
+          "type": "u8"
+        }
+      ]
+    },
+    {
+      "name": "transferCrankV2",
+      "accounts": [
+        {
+          "name": "operator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "parentTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "parentMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rootTokenAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rootMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetaOfParent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rootMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetaOfParent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetaOfRoot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "crankMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
@@ -1399,11 +2027,11 @@ export const IDL: Synft = {
             "type": "bool"
           },
           {
-            "name": "isMutated",
+            "name": "isBurnt",
             "type": "bool"
           },
           {
-            "name": "isBurnt",
+            "name": "isMutated",
             "type": "bool"
           },
           {
@@ -1420,13 +2048,59 @@ export const IDL: Synft = {
       }
     },
     {
+      "name": "crankMetadata",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "tranferedNft",
+            "type": "publicKey"
+          },
+          {
+            "name": "oldRootMetaData",
+            "type": "publicKey"
+          },
+          {
+            "name": "newRootMetaData",
+            "type": "publicKey"
+          },
+          {
+            "name": "notProcessedChildren",
+            "type": {
+              "array": [
+                "publicKey",
+                32
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
       "name": "parentMetadata",
       "type": {
         "kind": "struct",
         "fields": [
           {
-            "name": "parent",
-            "type": "publicKey"
+            "name": "bump",
+            "type": "u8"
+          },
+          {
+            "name": "isBurnt",
+            "type": "bool"
+          },
+          {
+            "name": "height",
+            "type": "u8"
+          },
+          {
+            "name": "immediateChildren",
+            "type": {
+              "array": [
+                "publicKey",
+                3
+              ]
+            }
           }
         ]
       }
@@ -1435,7 +2109,12 @@ export const IDL: Synft = {
       "name": "solAccount",
       "type": {
         "kind": "struct",
-        "fields": []
+        "fields": [
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
       }
     }
   ],
@@ -1478,6 +2157,11 @@ export const IDL: Synft = {
       "code": 6003,
       "name": "InvalidBurnType",
       "msg": "Wrong type of burn instruction for the token"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidTransferCrank",
+      "msg": "Wrong opration of crank instruction for the token"
     }
   ]
 };

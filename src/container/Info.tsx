@@ -42,11 +42,20 @@ const Info: React.FC = () => {
               />
             </div>
             <div className="right">
-              {metadata && <NFTHandler metadata={metadata} refreshInject={reloadInjectTree} />}
+              {metadata && (
+                <NFTHandler
+                  metadata={metadata}
+                  injectTree={{
+                    data: injectTree,
+                    loading: injectTreeLoading,
+                  }}
+                  refreshInject={reloadInjectTree}
+                />
+              )}
             </div>
           </>
         )) || <div className="tip">invalid NFT</div>}
-      {/* {!injectTreeLoading && <ReactJson src={injectTree} />} */}
+      {!injectTreeLoading && <ReactJson src={injectTree} />}
     </InfoWrapper>
   )
 }
