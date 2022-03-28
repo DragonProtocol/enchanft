@@ -42,6 +42,7 @@ export type BelongTo = {
     mint: string
     rootPDA: string
     rootMint: string
+    isMutated: boolean
   }
 }
 

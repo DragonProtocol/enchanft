@@ -162,7 +162,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     }
     if (!params.mint) return
     const mintKey = new PublicKey(params.mint)
-    await contract.burnForSOL(mintKey)
+    await contract.burnV2(mintKey)
     // TODO
     alert('burned')
     navigate(`/`)
@@ -193,7 +193,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     refreshInject()
   }
 
-  const transferToOther = async () => {
+  const transferToOther = useCallback(async () => {
     // TODO other
     const other = new PublicKey('3VBhW51tUBzZfWpSv5fcZww3sMtcPoYq55k38rWPFsvi')
     if (!params.mint) return
@@ -206,7 +206,21 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       rootPDA: new PublicKey(belong.parent.rootPDA),
       parentMintKey: new PublicKey(belong.parent.mint),
     })
-  }
+  }, [belong])
+
+  const transferToSelf = useCallback(async () => {
+    const self = wallet.publicKey
+    if (!params.mint || !self) return
+
+    const mintKey = new PublicKey(params.mint)
+    if (!belong.parent) return
+
+    await contract.transferChildNFTToUser(self, mintKey, {
+      rootMintKey: new PublicKey(belong.parent.rootMint),
+      rootPDA: new PublicKey(belong.parent.rootPDA),
+      parentMintKey: new PublicKey(belong.parent.mint),
+    })
+  }, [wallet, belong])
 
   const showBelongToMe = belong.me
   const showViewOnly = !belong.me && belong.program
@@ -256,12 +270,14 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
             )}
           </>
         )}
+        {belong.parent?.isMutated && <p>no ops allowed，because the NFT is in the cooling off period</p>}
         {(props.injectTree.loading && <div>checking</div>) || (
           <>
             <button onClick={burnForSOL}>BurnForSOL</button>
             <button onClick={extractSOL}>ExtractSOL</button>
             <button onClick={injectSOL}>InjectSOL</button>
             {belong.parent && <button onClick={transferToOther}>transferToOther</button>}
+            {belong.parent && <button onClick={transferToSelf}>extractNFT</button>}
           </>
         )}
         {belong && <ReactJson src={belong} />}

@@ -234,6 +234,7 @@ export default class Contract {
       return {
         mint: parentNFT[0].account.parent.toString(),
         rootPDA: parentNFT[0].account.root.toString(),
+        isMutated: parentNFT[0].account.isMutated,
       }
     }
     return null
@@ -383,7 +384,7 @@ export default class Contract {
   /**
    * burnForSOL
    */
-  public async burnForSOL(mintKey: PublicKey) {
+  public async burnV2(mintKey: PublicKey) {
     if (!this._connection || !this._program || !this._wallet?.publicKey) {
       log.error('Contract connect invalid')
       return
