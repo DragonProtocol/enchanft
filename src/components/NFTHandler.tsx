@@ -30,7 +30,7 @@ interface Props {
 }
 
 const NFTHandler: React.FC<Props> = (props: Props) => {
-  const { metadata, refreshInject } = props
+  const { metadata, refreshInject, injectTree } = props
 
   const injectRef = useRef<{ resetSelect: Function }>()
   const params = useParams()
@@ -69,6 +69,14 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   // 执行注入
   const onInject = useCallback(
     ({ injectType, injectMode, token, nft }: OnInjectProps) => {
+      if (belong.parent && belong.parent.mint !== belong.parent.rootMint) {
+        alert('cannot inject NFT for this nft, because third deep not allowed')
+        return
+      }
+      if (injectTree.data.curr.children.length > 2) {
+        alert('cannot inject NFT for this nft, because children len has eq 3')
+        return
+      }
       ;(async () => {
         const mint = params.mint
         if (!mint) return
@@ -114,7 +122,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         }
       })()
     },
-    [belong],
+    [belong, injectTree.data],
   )
   // 执行提取
   const onExtract = async () => {
@@ -195,7 +203,9 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 
   const transferToOther = useCallback(async () => {
     // TODO other
-    const other = new PublicKey('3VBhW51tUBzZfWpSv5fcZww3sMtcPoYq55k38rWPFsvi')
+    const otherKeyStr = window.prompt('Other wallet:')
+    if (!otherKeyStr) return
+    const other = new PublicKey(otherKeyStr)
     if (!params.mint) return
 
     const mintKey = new PublicKey(params.mint)
@@ -250,16 +260,28 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
               </div>
             )}
             {showBelongToMe && (
-              <NftInject
-                withCopyInit={false}
-                nftOptions={myNFTData.filter(
-                  (item) => item.mint != params.mint && item.mint != belong.parent?.rootMint,
+              <>
+                <NftInject
+                  withCopyInit={false}
+                  nftOptions={myNFTData.filter(
+                    (item) => item.mint != params.mint && item.mint != belong.parent?.rootMint,
+                  )}
+                  onInject={onInject}
+                  mintMetadata={mintMetadata}
+                  onExtract={onExtract}
+                  ref={injectRef}
+                ></NftInject>
+                {belong.parent?.isMutated && <p>no ops allowed，because the NFT is in the cooling off period</p>}
+                {(props.injectTree.loading && <div>checking</div>) || (
+                  <>
+                    <button onClick={burnForSOL}>BurnForSOL</button>
+                    <button onClick={extractSOL}>ExtractSOL</button>
+                    <button onClick={injectSOL}>InjectSOL</button>
+                    {belong.parent && <button onClick={transferToOther}>transferToOther</button>}
+                    {belong.parent && <button onClick={transferToSelf}>extractNFT</button>}
+                  </>
                 )}
-                onInject={onInject}
-                mintMetadata={mintMetadata}
-                onExtract={onExtract}
-                ref={injectRef}
-              ></NftInject>
+              </>
             )}
             {showCopy && (
               <NftInject
@@ -270,16 +292,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
             )}
           </>
         )}
-        {belong.parent?.isMutated && <p>no ops allowed，because the NFT is in the cooling off period</p>}
-        {(props.injectTree.loading && <div>checking</div>) || (
-          <>
-            <button onClick={burnForSOL}>BurnForSOL</button>
-            <button onClick={extractSOL}>ExtractSOL</button>
-            <button onClick={injectSOL}>InjectSOL</button>
-            {belong.parent && <button onClick={transferToOther}>transferToOther</button>}
-            {belong.parent && <button onClick={transferToSelf}>extractNFT</button>}
-          </>
-        )}
+
         {belong && <ReactJson src={belong} />}
       </NFTHandlerWrapper>
     )
