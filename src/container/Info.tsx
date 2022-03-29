@@ -55,7 +55,7 @@ const Info: React.FC = () => {
             </div>
           </>
         )) || <div className="tip">invalid NFT</div>}
-      {!injectTreeLoading && <ReactJson src={injectTree} />}
+      {/* {!injectTreeLoading && <ReactJson src={injectTree} />} */}
     </InfoWrapper>
   )
 }

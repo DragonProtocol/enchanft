@@ -18,7 +18,7 @@ import { solToLamports } from '../utils'
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
 import log from 'loglevel'
 import { InjectType, Node } from '../synft'
-import ReactJson from 'react-json-view'
+// import ReactJson from 'react-json-view'
 
 interface Props {
   metadata: MetadataData
@@ -293,7 +293,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           </>
         )}
 
-        {belong && <ReactJson src={belong} />}
+        {/* {belong && <ReactJson src={belong} />} */}
       </NFTHandlerWrapper>
     )
   )
