@@ -144,20 +144,18 @@ const NftInject: React.FC<RefProps> = ({
 
   return (
     <NftInjectWrapper>
-      {withCopyInit && (
-        <div className="form-item">
-          <div className="form-label">Create synthetic NFTs</div>
-          <div className="form-value">
-            <input
-              type="number"
-              className={`token-value ${disabledToken ? 'disabled' : ''}`}
-              placeholder="0.00"
-              value={token.volume}
-              onChange={(e) => setToken({ ...token, volume: e.target.value })}
-            />
-          </div>
+      <div className="form-item">
+        {withCopyInit && <div className="form-label">Create synthetic NFTs</div>}
+        <div className="form-value">
+          <input
+            type="number"
+            className={`token-value ${disabledToken ? 'disabled' : ''}`}
+            placeholder="0.00"
+            value={token.volume}
+            onChange={(e) => setToken({ ...token, volume: e.target.value })}
+          />
         </div>
-      )}
+      </div>
       {!withCopyInit && (
         <div className="form-item">
           <div className="form-label">Embed other NFTs</div>

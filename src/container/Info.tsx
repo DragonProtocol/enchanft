@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import ReactJson from 'react-json-view'
+// import ReactJson from 'react-json-view'
 
 import NFTHandler from '../components/NFTHandler'
 
@@ -21,6 +21,7 @@ const Info: React.FC = () => {
 
   const metadata = info?.metadata
   const loading = validChecking || infoLoading
+
   return (
     <InfoWrapper>
       {(loading && (

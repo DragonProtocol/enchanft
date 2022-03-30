@@ -803,7 +803,7 @@ export type Synft = {
       ]
     },
     {
-      "name": "transferCrankV2",
+      "name": "transferCrankInitV2",
       "accounts": [
         {
           "name": "operator",
@@ -811,43 +811,8 @@ export type Synft = {
           "isSigner": true
         },
         {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "childTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "childMintAccount",
           "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rootTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rootMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
           "isSigner": false
         },
         {
@@ -856,7 +821,7 @@ export type Synft = {
           "isSigner": false
         },
         {
-          "name": "rootMeta",
+          "name": "childrenMetaOfRoot",
           "isMut": true,
           "isSigner": false
         },
@@ -867,11 +832,6 @@ export type Synft = {
         },
         {
           "name": "parentMetaOfParent",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentMetaOfRoot",
           "isMut": true,
           "isSigner": false
         },
@@ -892,9 +852,450 @@ export type Synft = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "transferCrankProcessV2",
+      "accounts": [
+        {
+          "name": "operator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "childMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetaOfParent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "crankMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "transferCrankEndV2",
+      "accounts": [
+        {
+          "name": "operator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "childrenMetaOfRoot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetaOfClose",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "crankMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "startBurn",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentMintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "startBranch",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "grandsonMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "grandsonMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "grandsonChildrenMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "crankMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newRootInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "branchInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "updateBranch",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newRootMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newRootToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newRootMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rootChildrenMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "grandsonMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "crankMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newRootInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "branchInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "dealSingleNewRoot",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
+    {
+      "name": "newRootInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "branchFinished",
+            "type": "u32"
+          },
+          {
+            "name": "root",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "branchInfo",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    },
+    {
+      "name": "rootOwner",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
     {
       "name": "childrenMetadata",
       "type": {
@@ -973,11 +1374,11 @@ export type Synft = {
             "type": "publicKey"
           },
           {
-            "name": "oldRootMetaData",
+            "name": "oldChildrenRootMetaData",
             "type": "publicKey"
           },
           {
-            "name": "newRootMetaData",
+            "name": "closedChildrenMetaData",
             "type": "publicKey"
           },
           {
@@ -985,7 +1386,7 @@ export type Synft = {
             "type": {
               "array": [
                 "publicKey",
-                32
+                8
               ]
             }
           }
@@ -1008,6 +1409,10 @@ export type Synft = {
           {
             "name": "height",
             "type": "u8"
+          },
+          {
+            "name": "selfMint",
+            "type": "publicKey"
           },
           {
             "name": "immediateChildren",
@@ -1076,8 +1481,13 @@ export type Synft = {
     },
     {
       "code": 6004,
-      "name": "InvalidTransferCrank",
-      "msg": "Wrong opration of crank instruction for the token"
+      "name": "InvalidTransferCrankProcess",
+      "msg": "Wrong opration of crank process instruction for the token"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidTransferCrankEnd",
+      "msg": "Wrong opration of crank end instruction for the token"
     }
   ]
 };
@@ -1887,7 +2297,7 @@ export const IDL: Synft = {
       ]
     },
     {
-      "name": "transferCrankV2",
+      "name": "transferCrankInitV2",
       "accounts": [
         {
           "name": "operator",
@@ -1895,43 +2305,8 @@ export const IDL: Synft = {
           "isSigner": true
         },
         {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "childTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
           "name": "childMintAccount",
           "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rootTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rootMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
           "isSigner": false
         },
         {
@@ -1940,7 +2315,7 @@ export const IDL: Synft = {
           "isSigner": false
         },
         {
-          "name": "rootMeta",
+          "name": "childrenMetaOfRoot",
           "isMut": true,
           "isSigner": false
         },
@@ -1951,11 +2326,6 @@ export const IDL: Synft = {
         },
         {
           "name": "parentMetaOfParent",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentMetaOfRoot",
           "isMut": true,
           "isSigner": false
         },
@@ -1976,9 +2346,450 @@ export const IDL: Synft = {
         }
       ],
       "args": []
+    },
+    {
+      "name": "transferCrankProcessV2",
+      "accounts": [
+        {
+          "name": "operator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "childMintAccount",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetaOfParent",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "crankMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "transferCrankEndV2",
+      "accounts": [
+        {
+          "name": "operator",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "childrenMetaOfRoot",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetaOfClose",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "crankMeta",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "startBurn",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentMintAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentTokenAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "solAccount",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "startBranch",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "grandsonMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "grandsonMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "grandsonChildrenMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "crankMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newRootInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "branchInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "updateBranch",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newRootMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newRootToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newRootMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "rootChildrenMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "grandsonMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "crankMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "newRootInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "branchInfo",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "dealSingleNewRoot",
+      "accounts": [
+        {
+          "name": "currentOwner",
+          "isMut": true,
+          "isSigner": true
+        },
+        {
+          "name": "parentToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childToken",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMint",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "parentMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "childrenMetadata",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "oldRootOwner",
+          "isMut": true,
+          "isSigner": false
+        },
+        {
+          "name": "systemProgram",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "rent",
+          "isMut": false,
+          "isSigner": false
+        },
+        {
+          "name": "tokenProgram",
+          "isMut": false,
+          "isSigner": false
+        }
+      ],
+      "args": []
     }
   ],
   "accounts": [
+    {
+      "name": "newRootInfo",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "branchFinished",
+            "type": "u32"
+          },
+          {
+            "name": "root",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
+    {
+      "name": "branchInfo",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    },
+    {
+      "name": "rootOwner",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "publicKey"
+          }
+        ]
+      }
+    },
     {
       "name": "childrenMetadata",
       "type": {
@@ -2057,11 +2868,11 @@ export const IDL: Synft = {
             "type": "publicKey"
           },
           {
-            "name": "oldRootMetaData",
+            "name": "oldChildrenRootMetaData",
             "type": "publicKey"
           },
           {
-            "name": "newRootMetaData",
+            "name": "closedChildrenMetaData",
             "type": "publicKey"
           },
           {
@@ -2069,7 +2880,7 @@ export const IDL: Synft = {
             "type": {
               "array": [
                 "publicKey",
-                32
+                8
               ]
             }
           }
@@ -2092,6 +2903,10 @@ export const IDL: Synft = {
           {
             "name": "height",
             "type": "u8"
+          },
+          {
+            "name": "selfMint",
+            "type": "publicKey"
           },
           {
             "name": "immediateChildren",
@@ -2160,8 +2975,13 @@ export const IDL: Synft = {
     },
     {
       "code": 6004,
-      "name": "InvalidTransferCrank",
-      "msg": "Wrong opration of crank instruction for the token"
+      "name": "InvalidTransferCrankProcess",
+      "msg": "Wrong opration of crank process instruction for the token"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidTransferCrankEnd",
+      "msg": "Wrong opration of crank end instruction for the token"
     }
   ]
 };

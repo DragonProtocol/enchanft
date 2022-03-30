@@ -114,14 +114,10 @@ export default class Contract {
       result.me = belongToSelf
       log.info('mintBelongMe', result.me)
 
-      let rootMintKey = lastTokenAccountBalancePair.address
       const parentNFT = await this.getParentNFT(mintKey)
       if (parentNFT) {
-        const { rootPDA } = parentNFT
-        const rootMeta = await program.account.childrenMetadataV2.fetch(rootPDA)
-        rootMintKey = rootMeta.parent
-        result.parent = { ...parentNFT, rootMint: rootMintKey.toString() }
-
+        result.parent = parentNFT
+        const rootMintKey = new PublicKey(result.parent.rootMint)
         tokenAccountBalancePair = await this._connection.getTokenLargestAccounts(rootMintKey)
         // eslint-disable-next-line prefer-destructuring
         lastTokenAccountBalancePair = tokenAccountBalancePair.value[0]
@@ -142,9 +138,48 @@ export default class Contract {
       }
       return result
     } catch (error) {
-      log.warn(error, { mintKey: mintKey.toString() })
+      log.error(error, { mintKey: mintKey.toString() })
       return result
     }
+  }
+
+  public async checkHasInject(mintKey: PublicKey) {
+    if (!this._connection || !this._program) {
+      log.error('Contract connect invalid')
+      return false
+    }
+    const solChildrenMetadata = await this.getInjectSOL(mintKey)
+    const childrenNFT = await this.getInjectChildren(mintKey)
+
+    return !!solChildrenMetadata || childrenNFT.length > 0
+  }
+
+  public async getInjectSOL(mintKey: PublicKey) {
+    if (!this._connection || !this._program) {
+      log.error('Contract connect invalid')
+      return null
+    }
+    const [solPDA] = await PublicKey.findProgramAddress([Buffer.from(SynftSeed.SOL), mintKey.toBuffer()], PROGRAM_ID)
+    const solChildrenMetadata = await this._connection.getAccountInfo(solPDA)
+    return solChildrenMetadata
+  }
+
+  public async getInjectChildren(mintKey: PublicKey) {
+    if (!this._connection || !this._program) {
+      log.error('Contract connect invalid')
+      return []
+    }
+    const filter = [
+      {
+        memcmp: {
+          offset: PARENT_OFFSET,
+          bytes: mintKey.toBase58(),
+        },
+      },
+    ]
+
+    const childrenNFT = await this._program.account.childrenMetadataV2.all(filter)
+    return childrenNFT
   }
 
   /**
@@ -153,7 +188,7 @@ export default class Contract {
    * @param withParent 是否获取 parent，默认值 true，只在初始调用为 true，
    * @returns
    */
-  public async getInjectTree(mintKey: PublicKey, withParent: boolean = true): Promise<any | null> {
+  public async getInjectTree(mintKey: PublicKey, withParent: boolean = true): Promise<Node | null> {
     if (!this._connection || !this._program) {
       log.error('Contract connect invalid')
       return null
@@ -161,14 +196,14 @@ export default class Contract {
     const treeObj: Node = {
       curr: {
         mint: mintKey.toString(),
+        rootPDA: undefined,
         sol: null,
         children: [],
       },
       parent: null,
     }
     try {
-      const [solPDA] = await PublicKey.findProgramAddress([Buffer.from(SynftSeed.SOL), mintKey.toBuffer()], PROGRAM_ID)
-      const solChildrenMetadata = await this._connection.getAccountInfo(solPDA)
+      const solChildrenMetadata = await this.getInjectSOL(mintKey)
       // log.info('inject solChildrenMetadata', solChildrenMetadata)
       if (solChildrenMetadata) {
         treeObj.curr.sol = {
@@ -186,24 +221,19 @@ export default class Contract {
         }
       }
 
-      const filter = [
-        {
-          memcmp: {
-            offset: PARENT_OFFSET,
-            bytes: mintKey.toBase58(),
-          },
-        },
-      ]
-
-      const childrenNFT = await this._program.account.childrenMetadataV2.all(filter)
+      const childrenNFT = await this.getInjectChildren(mintKey)
       const children = await Promise.all(
         childrenNFT.map(async (item) => {
+          const root = item.account.root.toString()
           const childMint = item.account.child
           const tree = await this.getInjectTree(childMint, false)
+          if (tree) {
+            tree.curr.rootPDA = root
+          }
           return tree
         }),
       )
-      treeObj.curr.children = children
+      treeObj.curr.children = children.filter((item) => item !== null) as Node[]
       return treeObj
     } catch (error) {
       log.warn(error)
@@ -231,13 +261,26 @@ export default class Contract {
     ])
 
     if (parentNFT && parentNFT[0]) {
+      const rootPDA = parentNFT[0].account.root.toString()
+      const rootMintKey = await this.getRootMintFromRootPDA(rootPDA)
       return {
         mint: parentNFT[0].account.parent.toString(),
         rootPDA: parentNFT[0].account.root.toString(),
         isMutated: parentNFT[0].account.isMutated,
+        rootMint: rootMintKey!.toString(),
       }
     }
     return null
+  }
+
+  public async getRootMintFromRootPDA(pda: string) {
+    if (!this._program) {
+      log.error('Contract connect invalid')
+      return null
+    }
+    const rootMeta = await this._program.account.childrenMetadataV2.fetch(pda)
+    const rootMintKey = rootMeta.parent
+    return rootMintKey
   }
 
   /**
@@ -296,11 +339,12 @@ export default class Contract {
       if (!tmp) return null
       const metadata = tmp.data
       const externalMetadata = (await axios.get(metadata.data.uri)).data
-      return {
+      const result = {
         mint: mintKey,
         metadata,
         externalMetadata,
       }
+      return result
     } catch (error) {
       return null
     }
@@ -425,13 +469,59 @@ export default class Contract {
     log.info('burnForSOL result: ', result)
   }
 
+  public async startBurn(mintKey: PublicKey) {
+    if (!this._connection || !this._program || !this._wallet?.publicKey) {
+      log.error('Contract connect invalid')
+      return
+    }
+    log.info('burnForSOL begin')
+    const program = this._program
+    const connection = this._connection
+    const walletPubKey = this._wallet.publicKey
+
+    const [solPDA, solBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.SOL), mintKey.toBuffer()],
+      program.programId,
+    )
+    const [parentPDA, parentBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.PARENT_METADATA), mintKey.toBuffer()],
+      program.programId,
+    )
+    const [oldRootOwner] = await PublicKey.findProgramAddress(
+      [Buffer.from(anchor.utils.bytes.utf8.encode('root-owner-seed')), mintKey.toBuffer()],
+      program.programId,
+    )
+
+    const mintTokenAccount = await this._connection.getTokenLargestAccounts(mintKey)
+    const mintTokenAccountAddress = mintTokenAccount.value[0].address
+
+    const burnTx = await program.transaction.startBurn({
+      accounts: {
+        currentOwner: walletPubKey,
+        parentMintAccount: mintKey,
+        parentTokenAccount: mintTokenAccountAddress,
+        parentMetadata: parentPDA,
+        solAccount: solPDA,
+        oldRootOwner,
+
+        systemProgram: SystemProgram.programId,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      },
+      signers: [],
+    })
+    const signature = await this._wallet.sendTransaction(burnTx, connection)
+    const result = await connection.confirmTransaction(signature, 'processed')
+    log.info('burnForSOL result: ', result)
+  }
+
   /**
    * 将一个 NFT 注入到另一个 NFT
    * @param rootMintKey 被注入的 NFT
    * @param children 注入的 NFT，数组。协议支持一下子注入多个
    * @returns
    */
-  public async injectNFTToRoot(rootMintKey: PublicKey, children: PublicKey[]) {
+  public async injectNFTToRoot(rootMintKey: PublicKey, children: PublicKey[], reversible = true) {
     log.info('injectNFTToRoot: ', rootMintKey.toString())
     if (!this._connection || !this._program || !this._wallet?.publicKey) {
       log.error('Contract connect invalid')
@@ -467,23 +557,29 @@ export default class Contract {
       const childMintTokenAccounts = await connection.getTokenLargestAccounts(item)
       const childMintTokenAccountsAddr = childMintTokenAccounts.value[0].address
 
-      const instruction = await program.instruction.injectToRootV2(true, metadataBump, parentBump, parentOfChildBump, {
-        accounts: {
-          currentOwner: walletPubKey,
-          childTokenAccount: childMintTokenAccountsAddr,
-          childMintAccount: item,
-          parentTokenAccount: parentMintTokenAccountAddr,
-          parentMintAccount: rootMintKey,
-          childrenMeta: metadataPDA,
-          parentMeta: parentPDA,
-          parentMetaOfChild: parentOfChildPDA,
+      const instruction = await program.instruction.injectToRootV2(
+        reversible,
+        metadataBump,
+        parentBump,
+        parentOfChildBump,
+        {
+          accounts: {
+            currentOwner: walletPubKey,
+            childTokenAccount: childMintTokenAccountsAddr,
+            childMintAccount: item,
+            parentTokenAccount: parentMintTokenAccountAddr,
+            parentMintAccount: rootMintKey,
+            childrenMeta: metadataPDA,
+            parentMeta: parentPDA,
+            parentMetaOfChild: parentOfChildPDA,
 
-          systemProgram: SystemProgram.programId,
-          rent: web3.SYSVAR_RENT_PUBKEY,
-          tokenProgram: TOKEN_PROGRAM_ID,
+            systemProgram: SystemProgram.programId,
+            rent: web3.SYSVAR_RENT_PUBKEY,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          },
+          signers: [],
         },
-        signers: [],
-      })
+      )
       return instruction
     })
     const instructionTx = await Promise.all(instructions)
@@ -511,6 +607,7 @@ export default class Contract {
       parentMintKey: PublicKey
       rootPDA: PublicKey
     },
+    reversible = true,
   ) {
     if (!this._connection || !this._program || !this._wallet?.publicKey) {
       log.error('Contract connect invalid')
@@ -560,7 +657,7 @@ export default class Contract {
       const childMintTokenAccounts = await connection.getTokenLargestAccounts(item)
       const childMintTokenAccountAddr = childMintTokenAccounts.value[0].address
 
-      const instruction = await program.instruction.injectToNonRootV2(true, childMetadataBump, metadataBump, {
+      const instruction = await program.instruction.injectToNonRootV2(reversible, childMetadataBump, metadataBump, {
         accounts: {
           currentOwner: walletPubKey,
           childTokenAccount: childMintTokenAccountAddr,
@@ -863,6 +960,9 @@ export default class Contract {
     }
   }
 
+  /**
+   * @deprecated
+   */
   public async copyWithInjectSOLv1(
     mintKey: PublicKey,
     lamportAmount: number,

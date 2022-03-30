@@ -15,6 +15,7 @@ export type ChildMeta = {
 export interface Node {
   curr: {
     mint: string | undefined
+    rootPDA: string | undefined
     sol: {
       lamports: number
       // owner: string

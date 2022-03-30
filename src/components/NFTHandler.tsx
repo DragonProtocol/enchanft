@@ -162,7 +162,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     reloadWindow()
   }
 
-  const burnForSOL = async () => {
+  const burnNFT = async () => {
     if (props.injectTree.data.parent) {
       // TODO
       alert('support rootNFT burn only')
@@ -170,7 +170,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     }
     if (!params.mint) return
     const mintKey = new PublicKey(params.mint)
-    await contract.burnV2(mintKey)
+    await contract.startBurn(mintKey)
     // TODO
     alert('burned')
     navigate(`/`)
@@ -232,9 +232,39 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     })
   }, [wallet, belong])
 
+  const extractNFT = useCallback(async () => {
+    const self = wallet.publicKey
+    if (!params.mint || !self) return
+    // TODO 如果有两个及以上节点，应该弹选择框
+    const mintKey = injectTree.data.curr.children[0]?.curr.mint
+    const rootPDA = injectTree.data.curr.children[0]?.curr.rootPDA
+    if (!mintKey || !rootPDA) return
+
+    const rootMint = await contract.getRootMintFromRootPDA(rootPDA)
+    if (!rootMint) return
+
+    await contract.transferChildNFTToUser(self, new PublicKey(mintKey), {
+      rootMintKey: rootMint,
+      rootPDA: new PublicKey(rootPDA),
+      parentMintKey: new PublicKey(params.mint),
+    })
+    refreshInject()
+  }, [wallet, injectTree.data])
+
   const showBelongToMe = belong.me
   const showViewOnly = !belong.me && belong.program
   const showCopy = !belong.me && !belong.program
+
+  // 当前 NFT solAmount，
+  const solAmount = injectTree.data.curr.sol?.lamports
+  const couldExtractSOL = solAmount === 0
+
+  // 可不可以被操作
+  const couldOps = !belong.parent?.isMutated
+  // 可不可以执行注入
+  const couldInject = !belong.parent
+    ? true
+    : belong.parent.mint === belong.parent.rootMint && injectTree.data.curr.children.length < 2
 
   return (
     (!wallet.publicKey && <div>Connect wallet first</div>) || (
@@ -244,6 +274,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           <div className="nft-creator">
             <span className="creator-label">creator</span>
             <span className="creator-value">{metadata.data.creators && metadata.data.creators[0]?.address}</span>
+            {solAmount && <span>{`${solAmount / LAMPORTS_PER_SOL} SOL`}</span>}
           </div>
           <div className="dividing-line"></div>
         </div>
@@ -274,11 +305,12 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                 {belong.parent?.isMutated && <p>no ops allowed，because the NFT is in the cooling off period</p>}
                 {(props.injectTree.loading && <div>checking</div>) || (
                   <>
-                    <button onClick={burnForSOL}>BurnForSOL</button>
-                    <button onClick={extractSOL}>ExtractSOL</button>
+                    <button onClick={burnNFT}>Burn</button>
+                    {couldExtractSOL && <button onClick={extractSOL}>ExtractSOL</button>}
                     <button onClick={injectSOL}>InjectSOL</button>
                     {belong.parent && <button onClick={transferToOther}>transferToOther</button>}
-                    {belong.parent && <button onClick={transferToSelf}>extractNFT</button>}
+                    {belong.parent && <button onClick={transferToSelf}>ExtractNFTFromParent</button>}
+                    <button onClick={extractNFT}>ExtractChildNFT</button>
                   </>
                 )}
               </>
