@@ -1,7 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-// import ReactJson from 'react-json-view'
+import ReactJson from 'react-json-view'
 
 import NFTHandler from '../components/NFTHandler'
 
@@ -56,7 +56,7 @@ const Info: React.FC = () => {
             </div>
           </>
         )) || <div className="tip">invalid NFT</div>}
-      {/* {!injectTreeLoading && <ReactJson src={injectTree} />} */}
+      {!injectTreeLoading && <ReactJson src={injectTree} />}
     </InfoWrapper>
   )
 }
