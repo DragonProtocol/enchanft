@@ -19,6 +19,8 @@ import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
 import log from 'loglevel'
 import { InjectType, Node } from '../synft'
 // import ReactJson from 'react-json-view'
+import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
+import RemindConnectWallet from './RemindConnectWallet'
 
 interface Props {
   metadata: MetadataData
@@ -28,7 +30,20 @@ interface Props {
   }
   refreshInject: () => void
 }
-
+const transactionMsg = {
+  enchanft: {
+    inProgress: 'enchanft transaction in progress ......',
+    successful: 'enchanft successful!',
+    failed: 'enchanft failed!',
+    cancel: 'enchanft transaction was canceled by user',
+  },
+  extract: {
+    inProgress: 'extract transaction in progress ......',
+    successful: 'extract successful!',
+    failed: 'extract failed!',
+    cancel: 'extract transaction was canceled by user',
+  },
+}
 const NFTHandler: React.FC<Props> = (props: Props) => {
   const { metadata, refreshInject, injectTree } = props
 
@@ -47,9 +62,17 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   } = useHasInjectV1(params.mint)
 
   const [injectType] = useState<InjectType>(InjectType.SOL)
-  // 写合约交互状态。modal or toast
-  const [writing, setWriting] = useState(false)
-
+  // 交易状态
+  const [transactionState, setTransactionState] = useState({
+    inProgress: false,
+    msg: '',
+  })
+  // 提示状态
+  const [snackbarState, setSnackbarState] = useState<{ open: boolean; alertColor: AlertColor; alertMsg: string }>({
+    open: false,
+    alertColor: 'info',
+    alertMsg: '',
+  })
   const dispatch = useAppDispatch()
   const myNFTData = useAppSelector(selectMyNFTData)
   const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus)
@@ -82,7 +105,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         if (!mint) return
 
         try {
-          setWriting(true)
+          setTransactionState({ inProgress: true, msg: transactionMsg.enchanft.inProgress })
           const reversible = injectMode === InjectMode.Reversible
           switch (injectType) {
             case InjectType.SOL:
@@ -106,19 +129,22 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
               }
               break
           }
-          setWriting(false)
+          setSnackbarState({ open: true, alertColor: 'success', alertMsg: transactionMsg.enchanft.successful })
           wallet.publicKey && dispatch(getMyNFTokens({ owner: wallet.publicKey }))
           injectRef.current && injectRef.current.resetSelect({ mint: '', image: '', name: '' })
           refreshInject()
         } catch (error) {
-          log.error(error)
           // 可以用来显示错误
           if ((error as any).code === 4001) {
             // 用户取消交易
+            setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.enchanft.cancel })
           } else {
             // -32003 "Transaction creation failed."
+            // setWriting(false)
+            setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.enchanft.failed })
           }
-          setWriting(false)
+        } finally {
+          setTransactionState({ ...transactionState, inProgress: false })
         }
       })()
     },
@@ -128,7 +154,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const onExtract = async () => {
     if (!params.mint) return
     try {
-      setWriting(true)
+      setTransactionState({ inProgress: true, msg: transactionMsg.extract.inProgress })
       const mintKey = new PublicKey(params.mint)
       switch (injectType) {
         case InjectType.SOL:
@@ -140,20 +166,60 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       }
       refreshInject()
     } catch (error) {
-      log.error(error)
-      setWriting(false)
+      // 可以用来显示错误
+      if ((error as any).code === 4001) {
+        // 用户取消交易
+        setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.extract.cancel })
+      } else {
+        // -32003 "Transaction creation failed."
+        // setWriting(false)
+        setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.extract.failed })
+      }
+    } finally {
+      setTransactionState({ ...transactionState, inProgress: false })
     }
   }
 
   const onCopyWithInject = async ({ injectType, injectMode, token, nft }: OnInjectProps) => {
     const { name, symbol, uri } = metadata.data
     if (!params.mint) return
-
+    let newMint = ''
     const mintKey = new PublicKey(params.mint)
-    // const reversible = injectMode === InjectMode.Reversible
-    const { volume } = token
-    const lamportsVolume = solToLamports(Number(volume))
-    const newMint = await contract.copyWithInjectSOL(mintKey, lamportsVolume, { name, uri, symbol })
+    const reversible = injectMode === InjectMode.Reversible
+    setTransactionState({ inProgress: true, msg: transactionMsg.enchanft.inProgress })
+    try {
+      switch (injectType) {
+        case InjectType.SOL:
+          // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
+          const { volume } = token
+          const lamportsVolume = solToLamports(Number(volume))
+          newMint = await contract.copyWithInjectSOL(mintKey, lamportsVolume, { name, uri, symbol })
+          break
+        // case InjectType.Nft:
+        //   const childMint = nft.mint || ''
+        //   newMint = await nftCopyWithInjectNFT(
+        //     params.mint,
+        //     childMint,
+        //     reversible,
+        //     { name, uri, symbol },
+        //     { connection, wallet, program },
+        //   )
+        //   break
+      }
+    } catch (error) {
+      // 可以用来显示错误
+      if ((error as any).code === 4001) {
+        // 用户取消交易
+        setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.extract.cancel })
+      } else {
+        // -32003 "Transaction creation failed."
+        // setWriting(false)
+        setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.enchanft.failed })
+      }
+    } finally {
+      setTransactionState({ ...transactionState, inProgress: false })
+    }
+
     if (!newMint) {
       // TODO: alert something wrong
       return
@@ -266,68 +332,88 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     ? true
     : belong.parent.mint === belong.parent.rootMint && injectTree.data.curr.children.length < 2
 
-  return (
-    (!wallet.publicKey && <div>Connect wallet first</div>) || (
-      <NFTHandlerWrapper>
-        <div className="top">
-          <div className="nft-title">{metadata.data.name}</div>
-          <div className="nft-creator">
-            <span className="creator-label">creator</span>
-            <span className="creator-value">{metadata.data.creators && metadata.data.creators[0]?.address}</span>
-            {solAmount && <span>{`${solAmount / LAMPORTS_PER_SOL} SOL`}</span>}
-          </div>
-          <div className="dividing-line"></div>
-        </div>
-        {belongLoading || hasInjectLoading ? (
-          <p>
-            <img src={LoadingIcon} alt="" />
-          </p>
-        ) : (
-          <>
-            {showViewOnly && (
-              <div className="only-view">
-                <span className="expression">😯</span>{' '}
-                <span className="description">This NFT has been synthesized</span>
-              </div>
-            )}
-            {showBelongToMe && (
-              <>
-                <NftInject
-                  withCopyInit={false}
-                  nftOptions={myNFTData.filter(
-                    (item) => item.mint != params.mint && item.mint != belong.parent?.rootMint,
-                  )}
-                  onInject={onInject}
-                  mintMetadata={mintMetadata}
-                  onExtract={onExtract}
-                  ref={injectRef}
-                ></NftInject>
-                {belong.parent?.isMutated && <p>no ops allowed，because the NFT is in the cooling off period</p>}
-                {(props.injectTree.loading && <div>checking</div>) || (
-                  <>
-                    <button onClick={burnNFT}>Burn</button>
-                    {couldExtractSOL && <button onClick={extractSOL}>ExtractSOL</button>}
-                    <button onClick={injectSOL}>InjectSOL</button>
-                    {belong.parent && <button onClick={transferToOther}>transferToOther</button>}
-                    {belong.parent && <button onClick={transferToSelf}>ExtractNFTFromParent</button>}
-                    <button onClick={extractNFT}>ExtractChildNFT</button>
-                  </>
-                )}
-              </>
-            )}
-            {showCopy && (
-              <NftInject
-                withCopyInit={true}
-                nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
-                onCopyWithInject={onCopyWithInject}
-              ></NftInject>
-            )}
-          </>
-        )}
+  const couldExtractChildNFT = injectTree.data.curr.children.length > 0
 
-        {/* {belong && <ReactJson src={belong} />} */}
-      </NFTHandlerWrapper>
-    )
+  return (
+    <NFTHandlerWrapper>
+      <div className="top">
+        <div className="nft-title">{metadata.data.name}</div>
+        <div className="nft-creator">
+          <span className="creator-label">creator</span>
+          <span className="creator-value">{metadata.data.creators && metadata.data.creators[0]?.address}</span>
+        </div>
+        <div className="dividing-line"></div>
+      </div>
+      {(!wallet.publicKey && <RemindConnectWallet />) || (
+        <>
+          {belongLoading || hasInjectLoading ? (
+            <p>
+              <img src={LoadingIcon} alt="" />
+            </p>
+          ) : (
+            <>
+              {showViewOnly && (
+                <div className="only-view">
+                  <span className="expression">😯</span>{' '}
+                  <span className="description">This NFT has been synthesized</span>
+                </div>
+              )}
+              {showBelongToMe && (
+                <>
+                  <NftInject
+                    withCopyInit={false}
+                    nftOptions={myNFTData.filter(
+                      (item) => item.mint != params.mint && item.mint != belong.parent?.rootMint,
+                    )}
+                    onInject={onInject}
+                    mintMetadata={mintMetadata}
+                    onExtract={onExtract}
+                    ref={injectRef}
+                  ></NftInject>
+                  {belong.parent?.isMutated && <p>no ops allowed，because the NFT is in the cooling off period</p>}
+                  {(props.injectTree.loading && <div>checking</div>) || (
+                    <>
+                      <button onClick={burnNFT}>Burn</button>
+                      {couldExtractSOL && <button onClick={extractSOL}>ExtractSOL</button>}
+                      <button onClick={injectSOL}>InjectSOL</button>
+                      {belong.parent && <button onClick={transferToOther}>transferToOther</button>}
+                      {belong.parent && <button onClick={transferToSelf}>ExtractNFTFromParent</button>}
+                      {couldExtractChildNFT && <button onClick={extractNFT}>ExtractChildNFT</button>}
+                    </>
+                  )}
+                </>
+              )}
+              {showCopy && (
+                <NftInject
+                  withCopyInit={true}
+                  nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
+                  onCopyWithInject={onCopyWithInject}
+                ></NftInject>
+              )}
+            </>
+          )}
+          {/* 交易触发时页面进入的loading状态 */}
+          <Backdrop
+            sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+            open={transactionState.inProgress}
+          >
+            <div style={{ textAlign: 'center' }}>
+              <CircularProgress color="inherit" />
+              <div style={{ marginTop: '20px' }}>{transactionState.msg}</div>
+            </div>
+          </Backdrop>
+          {/* 交易结束后提示交易结果 */}
+          <Snackbar
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+            open={snackbarState.open}
+            autoHideDuration={6000}
+            onClose={() => setSnackbarState((v) => ({ ...v, open: false }))}
+          >
+            <Alert severity={snackbarState.alertColor}>{snackbarState.alertMsg}</Alert>
+          </Snackbar>
+        </>
+      )}
+    </NFTHandlerWrapper>
   )
 }
 export default NFTHandler
