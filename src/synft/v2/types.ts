@@ -15,6 +15,7 @@ export type ChildMeta = {
 export interface Node {
   curr: {
     mint: string | undefined
+    rootPDA: string | undefined
     sol: {
       lamports: number
       // owner: string
@@ -42,6 +43,7 @@ export type BelongTo = {
     mint: string
     rootPDA: string
     rootMint: string
+    isMutated: boolean
   }
 }
 

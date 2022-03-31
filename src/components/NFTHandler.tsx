@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useRef, createRef } from 'reac
 import { useWallet, WalletContextState } from '@solana/wallet-adapter-react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { PublicKey } from '@solana/web3.js'
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js'
 import { useNavigate } from 'react-router-dom'
 
 import { getMyNFTokens, selectMyNFTData, selectMyNFTDataStatus } from '../features/my/mySlice'
@@ -17,12 +17,17 @@ import { MOBILE_BREAK_POINT } from '../utils/constants'
 import { solToLamports } from '../utils'
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
 import log from 'loglevel'
+import { InjectType, Node } from '../synft'
+// import ReactJson from 'react-json-view'
 import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
 import RemindConnectWallet from './RemindConnectWallet'
-import { InjectType } from '../synft'
 
 interface Props {
   metadata: MetadataData
+  injectTree: {
+    data: Node
+    loading: boolean
+  }
   refreshInject: () => void
 }
 const transactionMsg = {
@@ -40,7 +45,7 @@ const transactionMsg = {
   },
 }
 const NFTHandler: React.FC<Props> = (props: Props) => {
-  const { metadata, refreshInject } = props
+  const { metadata, refreshInject, injectTree } = props
 
   const injectRef = useRef<{ resetSelect: Function }>()
   const params = useParams()
@@ -87,6 +92,14 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   // 执行注入
   const onInject = useCallback(
     ({ injectType, injectMode, token, nft }: OnInjectProps) => {
+      if (belong.parent && belong.parent.mint !== belong.parent.rootMint) {
+        alert('cannot inject NFT for this nft, because third deep not allowed')
+        return
+      }
+      if (injectTree.data.curr.children.length > 2) {
+        alert('cannot inject NFT for this nft, because children len has eq 3')
+        return
+      }
       ;(async () => {
         const mint = params.mint
         if (!mint) return
@@ -135,7 +148,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         }
       })()
     },
-    [belong],
+    [belong, injectTree.data],
   )
   // 执行提取
   const onExtract = async () => {
@@ -145,13 +158,13 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       const mintKey = new PublicKey(params.mint)
       switch (injectType) {
         case InjectType.SOL:
-          await contract.extractSolV1(mintKey)
+          // await contract.extractSOL(mintKey)
           break
         // case InjectType.NFT:
         //   await extractNFT(params.mint, { wallet, program, connection })
         //   break
       }
-      refreshInjectV1()
+      refreshInject()
     } catch (error) {
       // 可以用来显示错误
       if ((error as any).code === 4001) {
@@ -169,7 +182,6 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 
   const onCopyWithInject = async ({ injectType, injectMode, token, nft }: OnInjectProps) => {
     const { name, symbol, uri } = metadata.data
-    console.log(metadata)
     if (!params.mint) return
     let newMint = ''
     const mintKey = new PublicKey(params.mint)
@@ -181,7 +193,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           // TODO 目前固定代币输入输出的转换 500000000 = 0.5 sol , 后面要调整
           const { volume } = token
           const lamportsVolume = solToLamports(Number(volume))
-          newMint = await contract.copyWithInjectSOLv1(mintKey, lamportsVolume, { name, uri, symbol })
+          newMint = await contract.copyWithInjectSOL(mintKey, lamportsVolume, { name, uri, symbol })
           break
         // case InjectType.Nft:
         //   const childMint = nft.mint || ''
@@ -216,9 +228,111 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     reloadWindow()
   }
 
+  const burnNFT = async () => {
+    if (props.injectTree.data.parent) {
+      // TODO
+      alert('support rootNFT burn only')
+      return
+    }
+    if (!params.mint) return
+    const mintKey = new PublicKey(params.mint)
+    await contract.startBurn(mintKey)
+    // TODO
+    alert('burned')
+    navigate(`/`)
+  }
+
+  const extractSOL = async () => {
+    if (!params.mint) return
+    if (props.injectTree.data.parent) {
+      // TODO
+      alert('support rootNFT extract only')
+      return
+    }
+    const mintKey = new PublicKey(params.mint)
+    await contract.extractSOL(mintKey)
+    refreshInject()
+  }
+
+  const injectSOL = async () => {
+    if (!params.mint) return
+    if (props.injectTree.data.parent) {
+      // TODO
+      alert('support rootNFT extract only')
+      return
+    }
+    const mintKey = new PublicKey(params.mint)
+    // TODO
+    await contract.injectSOL(mintKey, 0.1 * LAMPORTS_PER_SOL)
+    refreshInject()
+  }
+
+  const transferToOther = useCallback(async () => {
+    // TODO other
+    const otherKeyStr = window.prompt('Other wallet:')
+    if (!otherKeyStr) return
+    const other = new PublicKey(otherKeyStr)
+    if (!params.mint) return
+
+    const mintKey = new PublicKey(params.mint)
+    if (!belong.parent) return
+
+    await contract.transferChildNFTToUser(other, mintKey, {
+      rootMintKey: new PublicKey(belong.parent.rootMint),
+      rootPDA: new PublicKey(belong.parent.rootPDA),
+      parentMintKey: new PublicKey(belong.parent.mint),
+    })
+  }, [belong])
+
+  const transferToSelf = useCallback(async () => {
+    const self = wallet.publicKey
+    if (!params.mint || !self) return
+
+    const mintKey = new PublicKey(params.mint)
+    if (!belong.parent) return
+
+    await contract.transferChildNFTToUser(self, mintKey, {
+      rootMintKey: new PublicKey(belong.parent.rootMint),
+      rootPDA: new PublicKey(belong.parent.rootPDA),
+      parentMintKey: new PublicKey(belong.parent.mint),
+    })
+  }, [wallet, belong])
+
+  const extractNFT = useCallback(async () => {
+    const self = wallet.publicKey
+    if (!params.mint || !self) return
+    // TODO 如果有两个及以上节点，应该弹选择框
+    const mintKey = injectTree.data.curr.children[0]?.curr.mint
+    const rootPDA = injectTree.data.curr.children[0]?.curr.rootPDA
+    if (!mintKey || !rootPDA) return
+
+    const rootMint = await contract.getRootMintFromRootPDA(rootPDA)
+    if (!rootMint) return
+
+    await contract.transferChildNFTToUser(self, new PublicKey(mintKey), {
+      rootMintKey: rootMint,
+      rootPDA: new PublicKey(rootPDA),
+      parentMintKey: new PublicKey(params.mint),
+    })
+    refreshInject()
+  }, [wallet, injectTree.data])
+
   const showBelongToMe = belong.me
   const showViewOnly = !belong.me && belong.program
   const showCopy = !belong.me && !belong.program
+
+  // 当前 NFT solAmount，
+  const solAmount = injectTree.data.curr.sol?.lamports
+  const couldExtractSOL = solAmount === 0
+
+  // 可不可以被操作
+  const couldOps = !belong.parent?.isMutated
+  // 可不可以执行注入
+  const couldInject = !belong.parent
+    ? true
+    : belong.parent.mint === belong.parent.rootMint && injectTree.data.curr.children.length < 2
+
+  const couldExtractChildNFT = injectTree.data.curr.children.length > 0
 
   return (
     <NFTHandlerWrapper>
@@ -245,16 +359,29 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                 </div>
               )}
               {showBelongToMe && (
-                <NftInject
-                  withCopyInit={false}
-                  nftOptions={myNFTData.filter(
-                    (item) => item.mint != params.mint && item.mint != belong.parent?.rootMint,
+                <>
+                  <NftInject
+                    withCopyInit={false}
+                    nftOptions={myNFTData.filter(
+                      (item) => item.mint != params.mint && item.mint != belong.parent?.rootMint,
+                    )}
+                    onInject={onInject}
+                    mintMetadata={mintMetadata}
+                    onExtract={onExtract}
+                    ref={injectRef}
+                  ></NftInject>
+                  {belong.parent?.isMutated && <p>no ops allowed，because the NFT is in the cooling off period</p>}
+                  {(props.injectTree.loading && <div>checking</div>) || (
+                    <>
+                      <button onClick={burnNFT}>Burn</button>
+                      {couldExtractSOL && <button onClick={extractSOL}>ExtractSOL</button>}
+                      <button onClick={injectSOL}>InjectSOL</button>
+                      {belong.parent && <button onClick={transferToOther}>transferToOther</button>}
+                      {belong.parent && <button onClick={transferToSelf}>ExtractNFTFromParent</button>}
+                      {couldExtractChildNFT && <button onClick={extractNFT}>ExtractChildNFT</button>}
+                    </>
                   )}
-                  onInject={onInject}
-                  mintMetadata={mintMetadata}
-                  onExtract={onExtract}
-                  ref={injectRef}
-                ></NftInject>
+                </>
               )}
               {showCopy && (
                 <NftInject

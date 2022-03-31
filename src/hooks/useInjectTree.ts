@@ -14,6 +14,7 @@ export default (mint: string | undefined) => {
   const [injectTree, setInjectTree] = useState<Node>({
     curr: {
       mint,
+      rootPDA: undefined,
       sol: null,
       children: [],
     },
@@ -29,7 +30,7 @@ export default (mint: string | undefined) => {
     const mintKey = new PublicKey(mint)
     const tree = await contract.getInjectTree(mintKey)
     log.info('getInjectTree', tree)
-    setInjectTree(tree)
+    if (tree) setInjectTree(tree)
     setLoading(false)
   }
 
