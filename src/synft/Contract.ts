@@ -688,6 +688,233 @@ export default class Contract {
   }
 
   /**
+   * 将一个 NFT 注入到另一个 NFT
+   * @param rootMintKey 被注入的 NFT
+   * @param children 注入的 NFT，数组。协议支持一下子注入多个
+   * @returns
+   */
+  public async injectNFTToRootWithSOL(
+    rootMintKey: PublicKey,
+    children: PublicKey[],
+    lamportsAmount: number,
+    reversible = true,
+  ) {
+    log.info('injectNFTToRoot: ', rootMintKey.toString())
+    if (!this._connection || !this._program || !this._wallet?.publicKey) {
+      log.error('Contract connect invalid')
+      return
+    }
+    if (children.length === 0) {
+      return
+    }
+    const program = this._program
+    const walletPubKey = this._wallet.publicKey
+    const connection = this._connection
+
+    const parentMintTokenAccounts = await connection.getTokenLargestAccounts(rootMintKey)
+    const parentMintTokenAccountAddr = parentMintTokenAccounts.value[0].address
+
+    const [parentPDA, parentBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.PARENT_METADATA), rootMintKey.toBuffer()],
+      program.programId,
+    )
+
+    const instructions = children.map(async (item) => {
+      const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+        [Buffer.from(SynftSeed.CHILDREN_OF), rootMintKey.toBuffer(), item.toBuffer()],
+        program.programId,
+      )
+
+      const [parentOfChildPDA, parentOfChildBump] = await PublicKey.findProgramAddress(
+        [Buffer.from(SynftSeed.PARENT_METADATA), item.toBuffer()],
+        program.programId,
+      )
+
+      // 获取 NFT 有效的 tokenAccount
+      const childMintTokenAccounts = await connection.getTokenLargestAccounts(item)
+      const childMintTokenAccountsAddr = childMintTokenAccounts.value[0].address
+
+      const instruction = await program.instruction.injectToRootV2(
+        reversible,
+        metadataBump,
+        parentBump,
+        parentOfChildBump,
+        {
+          accounts: {
+            currentOwner: walletPubKey,
+            childTokenAccount: childMintTokenAccountsAddr,
+            childMintAccount: item,
+            parentTokenAccount: parentMintTokenAccountAddr,
+            parentMintAccount: rootMintKey,
+            childrenMeta: metadataPDA,
+            parentMeta: parentPDA,
+            parentMetaOfChild: parentOfChildPDA,
+
+            systemProgram: SystemProgram.programId,
+            rent: web3.SYSVAR_RENT_PUBKEY,
+            tokenProgram: TOKEN_PROGRAM_ID,
+          },
+          signers: [],
+        },
+      )
+      return instruction
+    })
+    const instructionTx = await Promise.all(instructions)
+
+    const tx = new Transaction().add(...instructionTx)
+    // injectSOL
+    if (lamportsAmount) {
+      const injectSolAmount = new BN(lamportsAmount)
+      const mintTokenAccount = await this._connection.getTokenLargestAccounts(rootMintKey)
+      const mintTokenAccountAddress = mintTokenAccount.value[0].address
+
+      const [solPDA, solBump] = await PublicKey.findProgramAddress(
+        [Buffer.from(SynftSeed.SOL), rootMintKey.toBuffer()],
+        PROGRAM_ID,
+      )
+      const solInstruction = await this._program.instruction.injectToSolV2(solBump, injectSolAmount, {
+        accounts: {
+          currentOwner: this._wallet.publicKey,
+          parentTokenAccount: mintTokenAccountAddress,
+          parentMintAccount: rootMintKey,
+          solAccount: solPDA,
+          systemProgram: SystemProgram.programId,
+          rent: web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [],
+      })
+      tx.add(solInstruction)
+    }
+
+    const signature = await this._wallet.sendTransaction(tx, connection)
+    const result = await connection.confirmTransaction(signature, 'processed')
+    log.info('injectNFTToRoot result', result)
+  }
+
+  /**
+   * 将 children NFT 注入到 mint NFT
+   * @param mintKey 被注入的 NFT 的 mint
+   * @param childrenMint 注入的 NFT，数组。协议支持一下注入多个
+   * @param lamportsAmount 注入的 lamports
+   * @param { parentMintKey, rootPDA } 注入非 root NFT需要提供被注入的 root 信息
+   * @returns
+   */
+  public async injectNFTToNonRootWithSOL(
+    mintKey: PublicKey, // mint4
+    childrenMint: PublicKey[], // mint5
+    lamportsAmount: number,
+    {
+      parentMintKey, // mint3
+      rootPDA,
+    }: {
+      parentMintKey: PublicKey
+      rootPDA: PublicKey
+    },
+    reversible = true,
+  ) {
+    if (!this._connection || !this._program || !this._wallet?.publicKey) {
+      log.error('Contract connect invalid')
+      return
+    }
+    if (childrenMint.length === 0) {
+      return
+    }
+    log.info('injectNFTToNonRoot: ', {
+      mintKey: mintKey.toString(),
+      parentMintKey: parentMintKey.toString(),
+    })
+    const program = this._program
+    const walletPubKey = this._wallet.publicKey
+    const connection = this._connection
+
+    const rootMeta = await program.account.childrenMetadataV2.fetch(rootPDA)
+    const rootMintKey = rootMeta.parent
+    const rootMintTokenAccounts = await connection.getTokenLargestAccounts(rootMintKey)
+    const rootMintTokenAccountAddr = rootMintTokenAccounts.value[0].address
+
+    const [rootMetadataPDA] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.CHILDREN_OF), rootMintKey.toBuffer(), mintKey.toBuffer()],
+      PROGRAM_ID,
+    )
+    log.info({ rootMint: rootMintKey.toString(), rootMetadataPDA: rootMetadataPDA.toString() })
+
+    const [metadataPDA, metadataBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.PARENT_METADATA), mintKey.toBuffer()],
+      PROGRAM_ID,
+    )
+
+    const mintTokenAccounts = await connection.getTokenLargestAccounts(mintKey)
+    const mintTokenAccountAddr = mintTokenAccounts.value[0].address
+
+    const instructions = childrenMint.map(async (item) => {
+      const [childMetadataPDA, childMetadataBump] = await PublicKey.findProgramAddress(
+        [Buffer.from(SynftSeed.CHILDREN_OF), mintKey.toBuffer(), item.toBuffer()],
+        PROGRAM_ID,
+      )
+
+      const [itemParentMetadataPDA, itemParentMetadataBump] = await PublicKey.findProgramAddress(
+        [Buffer.from(anchor.utils.bytes.utf8.encode(SynftSeed.PARENT_METADATA)), item.toBuffer()],
+        program.programId,
+      )
+
+      const childMintTokenAccounts = await connection.getTokenLargestAccounts(item)
+      const childMintTokenAccountAddr = childMintTokenAccounts.value[0].address
+
+      const instruction = await program.instruction.injectToNonRootV2(reversible, childMetadataBump, metadataBump, {
+        accounts: {
+          currentOwner: walletPubKey,
+          childTokenAccount: childMintTokenAccountAddr,
+          childMintAccount: item,
+          parentTokenAccount: mintTokenAccountAddr,
+          parentMintAccount: mintKey,
+          rootTokenAccount: rootMintTokenAccountAddr,
+          rootMintAccount: rootMintKey,
+          childrenMeta: childMetadataPDA,
+          childrenMetaOfParent: rootMetadataPDA,
+          parentMeta: metadataPDA,
+          rootMeta: rootPDA,
+          parentMetaOfChild: itemParentMetadataPDA,
+
+          systemProgram: SystemProgram.programId,
+          rent: web3.SYSVAR_RENT_PUBKEY,
+          tokenProgram: TOKEN_PROGRAM_ID,
+        },
+        signers: [],
+      })
+      return instruction
+    })
+    const instructionTx = await Promise.all(instructions)
+    const tx = new Transaction().add(...instructionTx)
+    // injectSOL
+    if (lamportsAmount) {
+      const injectSolAmount = new BN(lamportsAmount)
+      const mintTokenAccount = await this._connection.getTokenLargestAccounts(rootMintKey)
+      const mintTokenAccountAddress = mintTokenAccount.value[0].address
+
+      const [solPDA, solBump] = await PublicKey.findProgramAddress(
+        [Buffer.from(SynftSeed.SOL), rootMintKey.toBuffer()],
+        PROGRAM_ID,
+      )
+      const solInstruction = await this._program.instruction.injectToSolV2(solBump, injectSolAmount, {
+        accounts: {
+          currentOwner: this._wallet.publicKey,
+          parentTokenAccount: mintTokenAccountAddress,
+          parentMintAccount: rootMintKey,
+          solAccount: solPDA,
+          systemProgram: SystemProgram.programId,
+          rent: web3.SYSVAR_RENT_PUBKEY,
+        },
+        signers: [],
+      })
+      tx.add(solInstruction)
+    }
+
+    const signature = await this._wallet.sendTransaction(tx, connection)
+    const result = await connection.confirmTransaction(signature, 'processed')
+    log.info('injectNFTToNonRoot result', result)
+  }
+
+  /**
    * copy 出来一个新的 NFT
    * @param mintKey 被 copy 的 mint，被 copy 过不能再不被 copy
    * @param solAmount 将要注入的 sol 的数量，lamports 单位

@@ -124,8 +124,12 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                   rootPDA: new PublicKey(belong.parent.rootPDA),
                   parentMintKey: new PublicKey(belong.parent.mint),
                 })
+                // TODO
+                // contract.injectNFTToNonRootWithSOL()
               } else {
                 await contract.injectNFTToRoot(mintKey, [childMintKey])
+                // TODO
+                // contract.injectNFTToRootWithSOL()
               }
               break
           }
