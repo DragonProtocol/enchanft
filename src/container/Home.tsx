@@ -219,6 +219,9 @@ const HomeWrapper = styled.div`
     top: -12px;
     z-index: 1;
     display: flex;
+    & > * {
+      flex: 1;
+    }
     @media (min-width: ${MOBILE_BREAK_POINT}px) {
       display: none;
     }
