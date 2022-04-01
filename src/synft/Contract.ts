@@ -557,16 +557,6 @@ export default class Contract {
       const childMintTokenAccounts = await connection.getTokenLargestAccounts(item)
       const childMintTokenAccountsAddr = childMintTokenAccounts.value[0].address
 
-      console.log({
-        childTokenAccount: childMintTokenAccountsAddr.toString(),
-        childMintAccount: item.toString(),
-        parentTokenAccount: parentMintTokenAccountAddr.toString(),
-        parentMintAccount: rootMintKey.toString(),
-        childrenMeta: metadataPDA.toString(),
-        parentMeta: parentPDA.toString(),
-        parentMetaOfChild: parentOfChildPDA.toString(),
-      })
-
       const instruction = await program.instruction.injectToRootV2(
         reversible,
         metadataBump,
