@@ -1,16 +1,24 @@
-import { Alert, AlertTitle, Dialog, DialogContent, DialogTitle, ImageList, ImageListItem } from '@mui/material'
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react'
-import styled, { css } from 'styled-components'
-import { NftDataItem, NFTListWrapper } from '../NFTList'
-import DialogCloseIcon from '../icons/dialogClose.svg'
+/*
+ * @Author: shixuewen
+ * @Date: 2022-03-15 11:15:41
+ * @LastEditTime: 2022-04-02 15:39:10
+ * @LastEditors: Please set LastEditors
+ * @Description: NFT 注入资产的表单组件，只收集注入时的相关数据和提交此次注入事件，跟注入无关的操作请在其它组件中执行
+ * @FilePath: \synft-app\src\components\nft_handlers\NftInject.tsx
+ */
+
+import { Alert, AlertTitle } from '@mui/material'
+import React, { useEffect, useImperativeHandle, useState } from 'react'
+import styled from 'styled-components'
+import { NftDataItem } from '../NFTList'
 import CheckedIcon from '../icons/checked.svg'
-import AddIcon from '../icons/add.svg'
-import NFTCard from '../NFTCard'
-import { CursorPointerUpCss } from '../../GlobalStyle'
+import { CursorPointerUpCss, DisabledMaskCss, FontFamilyCss } from '../../GlobalStyle'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { ButtonDanger, ButtonPrimary, ButtonWarning } from '../common/ButtonBase'
 import { MOBILE_BREAK_POINT } from '../../utils/constants'
-import { InjectType } from '../../synft'
+import NftAdder from './NftAdder'
+import { setuid } from 'process'
+import { FormCouldOpsTooltipWrapper } from '../NFTHandler'
 
 export type Token = {
   name: string
@@ -31,108 +39,149 @@ export enum InjectMode {
   Irreversible = 'Irreversible',
 }
 
+// 可选的提交按钮类型
+type SubmitBtnType = 'primary' | 'warning' | 'danger'
+
+// 表单视图显示可选配置
+interface FormOption {
+  // 显示nft表单项
+  displayNftForm?: boolean
+  // 显示sol表单项
+  displaySolForm?: boolean
+  // 显示mode表单项
+  displayModeForm?: boolean
+  // 显示nft表单项的标题
+  displayNftLabel?: boolean
+  // 显示sol表单项的标题
+  displaySolLabel?: boolean
+  // 显示mode表单项的标题
+  displayModeLabel?: boolean
+  // nft表单项的标题
+  nftLabel?: string
+  // sol表单项的标题
+  solLabel?: string
+  // mode表单项的标题
+  modeLabel?: string
+  // 提交按钮的标题
+  submitBtnLabel?: string
+  // 提交按钮的类型
+  submitBtnType?: SubmitBtnType
+  // 是否允许操作
+  couldOps?: boolean
+}
+// 表单默认配置
+const FormOptionDefault: FormOption = {
+  displayNftForm: true,
+  displaySolForm: true,
+  displayModeForm: true,
+  displayNftLabel: true,
+  displaySolLabel: true,
+  displayModeLabel: true,
+  nftLabel: 'Embed other NFTs',
+  solLabel: 'Create synthetic NFTs',
+  modeLabel: 'Select Mode',
+  submitBtnLabel: '> Embed NFT <',
+  submitBtnType: 'primary',
+  couldOps: false,
+}
 export interface OnInjectProps {
   injectMode: InjectMode
-  injectType: InjectType
   token: Token
-  nft: NftDataItem
+  nfts: NftDataItem[]
 }
-
-type Nft = { mint: string; image: string; name: string }
 interface Props {
-  withCopyInit: boolean
+  // 显示的表单配置
+  formOption?: FormOption
+  // NFT 可选项
   nftOptions: NftDataItem[]
+  // 最多还可注入多少个nft
+  nftInjectMaxNum?: number
+  // 执行注入的回调
   onInject?: (props: OnInjectProps) => void
-  onCopyWithInject?: (props: OnInjectProps) => void
-  onExtract?: () => void
-  mintMetadata?: any
 }
 
-interface RefProps extends Props {
-  nft: Nft
-  setNft: (n: Nft) => void
-}
 const INJECT_MODES = [InjectMode.Reversible, InjectMode.Irreversible]
 
-const NftInject: React.FC<RefProps> = ({
-  nftOptions,
-  onInject,
-  withCopyInit,
-  onCopyWithInject,
-  mintMetadata,
-  onExtract,
-  nft,
-  setNft,
-}: RefProps) => {
+// 提交按钮类型对应的按钮组件
+const submitBtns = {
+  primary: ButtonPrimary,
+  warning: ButtonWarning,
+  danger: ButtonDanger,
+}
+
+export default React.forwardRef(({ formOption, nftOptions, nftInjectMaxNum, onInject }: Props, ref: any) => {
+  useImperativeHandle(ref, () => ({
+    resetForm: () => {
+      setNfts([])
+      setToken(TOKEN_DEFAULT)
+      setInjectMode(InjectMode.Reversible)
+    },
+  }))
+  const {
+    displayNftForm,
+    displaySolForm,
+    displayModeForm,
+    displayNftLabel,
+    displaySolLabel,
+    displayModeLabel,
+    nftLabel,
+    solLabel,
+    modeLabel,
+    submitBtnLabel,
+    submitBtnType,
+    couldOps,
+  } = { ...FormOptionDefault, ...(formOption || {}) }
   const { connection } = useConnection()
   const wallet = useWallet()
   const [balance, setBalance] = useState(0)
   const [injectMode, setInjectMode] = useState<InjectMode>(InjectMode.Reversible)
   const [token, setToken] = useState<Token>(TOKEN_DEFAULT)
-  const [visibleNftList, setVisibleNftList] = useState(false)
-  // const [nftJsonData, setNftJsonData] = useState<any[]>([])
+  const [nfts, setNfts] = useState<NftDataItem[]>([])
   const [checkTip, setCheckTip] = useState({ visible: false, msg: '' })
-  const disabledToken = nft?.name ? true : false
-  const disabledNft = token?.volume ? true : false
-  const injectType = disabledToken ? InjectType.NFT : InjectType.SOL
-  const handleOpenNftList = () => {
-    setVisibleNftList(true)
-  }
-  const handleCloseNftList = () => {
-    setVisibleNftList(false)
-  }
-  const handleCheckedNft = (nft: NftDataItem) => {
-    setNft(nft)
-    setVisibleNftList(false)
-  }
-  const handleDeleteNft = () => setNft({ mint: '', image: '', name: '' })
+
+  // 显示验证提示
   const showValidate = (msg: string) => {
     setCheckTip({ visible: true, msg })
     setTimeout(() => {
       setCheckTip({ visible: false, msg: '' })
     }, 5000)
   }
-  const validateVolume = (): boolean => {
+  // 验证余额是否足够
+  const validateBalance = (): boolean => {
     setCheckTip({ visible: false, msg: '' })
-    // 如果是金额判断余额是否足够
-    if (!Number(token.volume) || Number(token.volume) * Math.pow(10, 9) > balance) {
+    if (Number(token.volume) && Number(token.volume) * Math.pow(10, 9) > balance) {
       showValidate('Insufficient balance')
       return false
     } else {
       return true
     }
   }
-  useEffect(() => {
-    if (token.volume) validateVolume()
-  }, [token.volume])
-  const handleInject = () => {
+  // 提交表单
+  const handleSubmit = () => {
     if (!onInject) return
-    // 验证是否输入金额或选择其它nft
-    if (!Number(token.volume) && !nft.mint) {
-      showValidate('Please enter an asset or select an NFT')
-      return
+    // 如果可能需要验证填入的金额和选择的NFT
+    if (displaySolForm && displayNftForm) {
+      // 验证是否输入金额或选择其它nft
+      if (!Number(token.volume) && nfts.length === 0) {
+        showValidate('Please enter an asset or select an NFT')
+        return
+      }
+    } else if (displaySolForm) {
+      // 如果只需要验证填入的金额
+      if (!Number(token.volume)) {
+        showValidate('Please enter an asset')
+        return
+      }
+      if (!validateBalance()) return
+    } else if (displayNftForm) {
+      // 如果只需要验证选择的NFT
+      if (nfts.length === 0) {
+        showValidate('Please select NFT')
+        return
+      }
     }
-    // if (!validateVolume()) return
-    onInject({ injectMode, injectType, token, nft })
+    onInject({ injectMode, token, nfts })
   }
-  const handleCopyWithInject = () => {
-    if (!onCopyWithInject) return
-    if (!validateVolume()) return
-    onCopyWithInject({ injectMode, injectType, token, nft })
-  }
-  // 获取nft列表
-  // useEffect(() => {
-  //   ;(async () => {
-  //     const promises = nftOptions.map(async (item) => {
-  //       const response = await fetch(item.uri || '')
-  //       const jsonData = await response.json()
-  //       return { ...item, ...jsonData }
-  //     })
-  //     const res = await Promise.allSettled(promises)
-  //     const jsonData = res.filter((item) => item.status === 'fulfilled').map((item: any) => item.value)
-  //     setNftJsonData(jsonData)
-  //   })()
-  // }, [nftOptions])
   // 获取当前账户余额
   useEffect(() => {
     if (!wallet.publicKey) return
@@ -142,119 +191,100 @@ const NftInject: React.FC<RefProps> = ({
     })(wallet.publicKey)
   }, [wallet])
 
+  // 输入金额时验证余额是否足够
+  useEffect(() => {
+    if (token.volume) validateBalance()
+  }, [token.volume])
+
+  // 提交按钮
+  const SubmitBtn = submitBtns[submitBtnType as SubmitBtnType]
+
   return (
     <NftInjectWrapper>
-      <div className="form-item">
-        {withCopyInit && <div className="form-label">Create synthetic NFTs</div>}
-        <div className="form-value">
-          <input
-            type="number"
-            className={`token-value ${disabledToken ? 'disabled' : ''}`}
-            placeholder="0.00"
-            value={token.volume}
-            onChange={(e) => setToken({ ...token, volume: e.target.value })}
-          />
-        </div>
-      </div>
-      {!withCopyInit && (
+      {displaySolForm && (
         <div className="form-item">
-          <div className="form-label">Embed other NFTs</div>
-          <div className={`form-value select-nft-btn ${disabledNft ? 'disabled' : ''}`} onClick={handleOpenNftList}>
-            {nft?.image ? (
-              <>
-                <div className="delete-btn" onClickCapture={handleDeleteNft}>
-                  x
-                </div>
-                <img src={nft.image} alt="" className="nft-img" />
-              </>
-            ) : (
-              <img src={AddIcon} alt="" />
-            )}
+          {displaySolLabel && <div className="form-label">{solLabel}</div>}
+          <div className={`form-value`}>
+            <FormCouldOpsTooltipWrapper enable={!couldOps}>
+              <input
+                type="number"
+                className={`token-value`}
+                style={{
+                  opacity: !couldOps ? 0.5 : 1,
+                  pointerEvents: !couldOps ? 'none' : 'auto',
+                }}
+                disabled={!couldOps}
+                placeholder="0.00"
+                min="0"
+                value={token.volume}
+                onChange={(e) => setToken({ ...token, volume: e.target.value })}
+              />
+            </FormCouldOpsTooltipWrapper>
           </div>
         </div>
       )}
-      <div className="form-item">
-        <div className="form-label">Select Mode</div>
-        <div className="form-value mode-selector">
-          {INJECT_MODES.map((item) => (
-            <div
-              key={item}
-              className={`mode-item ${injectMode === item ? 'mode-checked' : ''}`}
-              onClick={() => setInjectMode(item)}
-            >
-              <div className="mode-checked-icon">{injectMode === item && <img src={CheckedIcon} alt="" />}</div>
-              <span>{item}</span>
-            </div>
-          ))}
+
+      {displayNftForm && (
+        <div className="form-item">
+          {displayNftLabel && <div className="form-label">{nftLabel}</div>}
+          <div className={`form-value`}>
+            <FormCouldOpsTooltipWrapper enable={!couldOps}>
+              <NftAdder
+                disabled={!couldOps}
+                options={nftOptions}
+                selectedList={nfts}
+                onChange={(nfts) => setNfts(nfts)}
+                maxSelectNum={nftInjectMaxNum}
+              />
+            </FormCouldOpsTooltipWrapper>
+          </div>
         </div>
-      </div>
+      )}
+
+      {/* {displayModeForm && (
+        <div className="form-item">
+          {displayModeLabel && <div className="form-label">{modeLabel}</div>}
+          <FormCouldOpsTooltipWrapper enable={!couldOps}>
+            <div className={`form-value mode-selector ${!couldOps ? 'disabled' : ''}`}>
+              {INJECT_MODES.map((item) => (
+                <div
+                  key={item}
+                  className={`mode-item ${injectMode === item ? 'mode-checked' : ''}`}
+                  onClick={() => setInjectMode(item)}
+                >
+                  <div className="mode-checked-icon">{injectMode === item && <img src={CheckedIcon} alt="" />}</div>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </FormCouldOpsTooltipWrapper>
+        </div>
+      )} */}
+
       {checkTip.visible && (
-        <Alert severity="warning">
-          <AlertTitle>Warning</AlertTitle>
+        <Alert severity="warning" className="form-check-tip form-check-tip-text">
+          <AlertTitle className="form-check-tip form-check-tip-title">Warning</AlertTitle>
           {checkTip.msg}
         </Alert>
       )}
-
-      {(withCopyInit && (
-        <ButtonWarning className="form-submit" onClick={handleCopyWithInject}>
-          {' '}
-          EnchaNFT!
-        </ButtonWarning>
-      )) || (
-        <ButtonPrimary className="form-submit" onClick={handleInject}>
-          {/* {'> Embed SOL <'} */}
-          {'> Embed NFT<'}
-        </ButtonPrimary>
-      )}
-      {mintMetadata && (
-        <ButtonDanger className="form-submit" onClick={onExtract}>
-          {' '}
-          {`> extract (${mintMetadata.lamports / 1000000000} SOL) <`}{' '}
-        </ButtonDanger>
-      )}
-
-      <Dialog fullWidth={true} maxWidth="md" onClose={handleCloseNftList} open={visibleNftList}>
-        <DialogTitle>
-          <span>Select NFT</span>
-          <img
-            className="close-btn"
-            src={DialogCloseIcon}
-            style={{ position: 'absolute', top: '16px', right: '24px' }}
-            onClick={() => setVisibleNftList(false)}
-          />
-        </DialogTitle>
-        <DialogContent className="nft-list-content">
-          {nftOptions.length > 0 ? (
-            <NFTListWrapper>
-              {nftOptions.map((item, idx) => (
-                <div className="list-item nft-item" key={idx} onClick={() => handleCheckedNft(item)}>
-                  <NFTCard data={item}></NFTCard>
-                </div>
-              ))}
-            </NFTListWrapper>
-          ) : (
-            <div style={{ textAlign: 'center', height: '50px', lineHeight: '50px' }}>You have no NFT!</div>
-          )}
-        </DialogContent>
-      </Dialog>
+      <FormCouldOpsTooltipWrapper enable={!couldOps}>
+        <SubmitBtn
+          style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+          disabled={!couldOps}
+          className={`form-submit`}
+          onClick={handleSubmit}
+        >
+          {submitBtnLabel}
+        </SubmitBtn>
+      </FormCouldOpsTooltipWrapper>
     </NftInjectWrapper>
   )
-}
-export default React.forwardRef((props: Props, ref: any) => {
-  const init = { mint: '', image: '', name: '' }
-  const [nft, setNft] = useState<NftDataItem>(init)
-
-  useImperativeHandle(ref, () => ({
-    resetSelect: () => {
-      setNft(init)
-    },
-  }))
-  return <NftInject {...props} nft={nft} setNft={setNft} />
 })
-
 const NftInjectWrapper = styled.div`
   .disabled {
+    cursor: not-allowed;
     pointer-events: none;
+    opacity: 0.5;
   }
   .form-item {
     margin-bottom: 24px;
@@ -275,37 +305,7 @@ const NftInjectWrapper = styled.div`
     border: 2px solid #222222;
     box-sizing: border-box;
     padding: 12px 16px;
-  }
-  .select-nft-btn {
-    width: 120px;
-    height: 120px;
-    background: #ffffff;
-    border: 2px solid #222222;
-    box-sizing: border-box;
-    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    .nft-img {
-      width: 100%;
-      height: 100%;
-    }
-    .delete-btn {
-      position: absolute;
-      top: 0;
-      right: 0;
-      transform: translate(50%, -50%);
-      background: red;
-      text-align: center;
-      color: #ffffff;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      line-height: 30px;
-      text-align: center;
-      ${CursorPointerUpCss}
-    }
+    ${CursorPointerUpCss}
   }
   .mode-selector {
     background: #ffffff;
@@ -335,18 +335,14 @@ const NftInjectWrapper = styled.div`
       }
     }
   }
-  .close-btn {
-    position: absolute;
-    top: 8px;
-    right: 8px;
+  .form-check-tip {
+    ${FontFamilyCss}
   }
-  .nft-list-content {
-    display: flex;
-    .nft-item {
-      ${CursorPointerUpCss}
-    }
+  .form-check-tip-text {
+    font-size: 10px;
   }
   .form-submit {
+    width: 100%;
     height: 60px;
     margin-bottom: 20px;
   }
