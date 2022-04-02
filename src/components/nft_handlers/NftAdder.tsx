@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2022-04-01 12:29:48
- * @LastEditTime: 2022-04-01 16:38:50
+ * @LastEditTime: 2022-04-02 12:28:44
  * @LastEditors: Please set LastEditors
  * @Description: NFT 选择添加器
  * @FilePath: \synft-app\src\components\nft_handlers\NftAdder.tsx
@@ -76,14 +76,9 @@ const NftAdder: React.FC<Props> = ({ options, selectedList = [], maxSelectNum, o
 export default NftAdder
 const NftAdderWrapper = styled.div`
   .disabled {
+    cursor: not-allowed;
     pointer-events: none;
-    ::before {
-      content: '';
-      width: 100%;
-      height: 100%;
-      opacity: 0.5;
-      background: #ccc;
-    }
+    opacity: 0.5;
   }
   .nft-box {
     width: 120px;

@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useCallback, useRef, createRef } from 'react'
+import React, { useEffect, useState, useCallback, useRef, createRef, Children, ReactChildren, useMemo } from 'react'
 import { useWallet, WalletContextState } from '@solana/wallet-adapter-react'
-import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import { PublicKey } from '@solana/web3.js'
 import { useNavigate } from 'react-router-dom'
@@ -17,14 +16,15 @@ import { MAX_CHILDREN_PER_LEVEL, MOBILE_BREAK_POINT } from '../utils/constants'
 import { lamportsToSol, solToLamports } from '../utils'
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
 import log from 'loglevel'
-import { BelongTo, InjectType, Node } from '../synft'
+import { Node } from '../synft'
 // import ReactJson from 'react-json-view'
 import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
 import RemindConnectWallet from './RemindConnectWallet'
 import { ButtonDanger, ButtonPrimary } from './common/ButtonBase'
 import { NftDataItem } from './NFTList'
-import { DisabledMaskCss } from '../GlobalStyle'
 import ModalNftSelector from './nft_handlers/ModalNftSelector'
+import TooltipWrapper from './common/TooltipWrapper'
+import { FontFamilyCss } from '../GlobalStyle'
 
 interface Props {
   metadata: MetadataData
@@ -34,44 +34,81 @@ interface Props {
   }
   refreshInject: () => void
 }
+enum TransctionType {
+  INJECT = 'inject',
+  EXTRACT = 'extract',
+  TRANSFER = 'transfer',
+  BURN = 'burn',
+}
 const transactionMsg = {
-  enchanft: {
+  [TransctionType.INJECT]: {
     inProgress: 'enchanft transaction in progress ......',
     successful: 'enchanft successful!',
     failed: 'enchanft failed!',
     cancel: 'enchanft transaction was canceled by user',
   },
-  extract: {
+  [TransctionType.EXTRACT]: {
     inProgress: 'extract transaction in progress ......',
     successful: 'extract successful!',
     failed: 'extract failed!',
     cancel: 'extract transaction was canceled by user',
   },
-  burn: {
+  [TransctionType.TRANSFER]: {
+    inProgress: 'transfer transaction in progress ......',
+    successful: 'transfer successful!',
+    failed: 'transfer failed!',
+    cancel: 'transfer transaction was canceled by user',
+  },
+  [TransctionType.BURN]: {
     inProgress: 'burn transaction in progress ......',
     successful: 'burn successful!',
     failed: 'burn failed!',
     cancel: 'burn transaction was canceled by user',
   },
 }
+type NftNodeDataItem = NftDataItem & { rootPDA: string }
+function reloadWindow() {
+  window.location.reload()
+}
+
+/**
+ * @description: 表单是否可以操作的提示包装盒子
+ */
+export const FormCouldOpsTooltipWrapper = ({ children, enable }: { children: any; enable: boolean }) => {
+  return (
+    <TooltipWrapper title="no ops allowed，because the NFT is in the cooling off period" enable={enable}>
+      {children}
+    </TooltipWrapper>
+  )
+}
 const NFTHandler: React.FC<Props> = (props: Props) => {
+  const { publicKey } = useWallet()
   const { metadata, refreshInject, injectTree } = props
-
+  const { mint } = metadata
+  const mintKey = new PublicKey(mint)
   const injectRef = useRef<{ resetForm: Function }>()
-  const params = useParams()
-  const wallet: WalletContextState = useWallet()
   const navigate = useNavigate()
-
   const { contract } = useContract()
-  const { belong, loading: belongLoading } = useBelongTo(params.mint)
+  const { belong, loading: belongLoading } = useBelongTo(mint)
   const {
     checkLoading: hasInjectLoading,
     hasInject,
     injectData: mintMetadata,
     refresh: refreshInjectV1,
-  } = useHasInjectV1(params.mint)
+  } = useHasInjectV1(mint)
 
-  const [injectType] = useState<InjectType>(InjectType.SOL)
+  const dispatch = useAppDispatch()
+  const myNFTData = useAppSelector(selectMyNFTData)
+  const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus)
+  useEffect(() => {
+    if (!publicKey) {
+      dispatch(clearMyNFT())
+      return
+    }
+    const owner = publicKey
+    if (belong.me) dispatch(getMyNFTokens({ owner }))
+  }, [publicKey, belong])
+
   // 交易状态
   const [transactionState, setTransactionState] = useState({
     inProgress: false,
@@ -83,22 +120,10 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     alertColor: 'info',
     alertMsg: '',
   })
-  const dispatch = useAppDispatch()
-  const myNFTData = useAppSelector(selectMyNFTData)
-  const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus)
-
-  useEffect(() => {
-    if (!wallet.publicKey) {
-      dispatch(clearMyNFT())
-      return
-    }
-    const owner = wallet.publicKey
-    if (belong.me) dispatch(getMyNFTokens({ owner }))
-  }, [wallet, belong])
-
-  function reloadWindow() {
-    window.location.reload()
-  }
+  // 是否打开模态框选择要提取的NFT
+  const [openExtractNftModal, setOpenExtractNftModal] = useState(false)
+  // NFT子集可选项
+  const [nftChildOptions, setNftChildOptions] = useState<NftNodeDataItem[]>([])
 
   const showBelongToMe = belong.me
   const showViewOnly = !belong.me && belong.program
@@ -117,10 +142,10 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const hasInjected = solAmount > 0 || injectTree.data.curr.children.length > 0
 
   // 是否可以注入NFT
-  // TODO 是否超出宽度限制条件待调整
-  const couldInjectNFT = !belong.parent
-    ? true
-    : belong.parent.mint === belong.parent.rootMint && injectTree.data.curr.children.length < MAX_CHILDREN_PER_LEVEL
+  // TODO 是否超出高度限制条件待调整
+  const couldInjectNFT =
+    injectTree.data.curr.children.length < MAX_CHILDREN_PER_LEVEL &&
+    (!belong.parent || belong.parent.mint === belong.parent.rootMint)
 
   // 还可以注入几个NFT
   const couldInjectNFTNum = couldInjectNFT ? MAX_CHILDREN_PER_LEVEL - injectTree.data.curr.children.length : 0
@@ -136,101 +161,67 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 
   // 可不可以被操作
   const couldOps = !belong.parent?.isMutated
+  // const couldOps = false
 
   // 执行注入
   const onInject = useCallback(
     ({ injectMode, token, nfts }: OnInjectProps) => {
-      ;(async () => {
-        if (!couldOps) return
-        const mint = params.mint
-        if (!mint) return
-        try {
-          setTransactionState({ inProgress: true, msg: transactionMsg.enchanft.inProgress })
-          const formatVolume = solToLamports(Number(token.volume))
-          const mintKey = new PublicKey(mint)
-          const childMintKeys = nfts.map((nft) => new PublicKey(nft.mint))
-          const reversible = injectMode === InjectMode.Reversible
-          if (formatVolume && childMintKeys.length > 0) {
-            // 如果注入了SOL，又注入了nft
-            // 如果有父级
-            if (belong.parent) {
-              await contract.injectNFTToNonRootWithSOL(
-                mintKey,
-                childMintKeys,
-                formatVolume,
-                { rootPDA: new PublicKey(belong.parent.rootPDA), parentMintKey: new PublicKey(belong.parent.mint) },
-                reversible,
-              )
-            } else {
-              await contract.injectNFTToRootWithSOL(mintKey, childMintKeys, formatVolume, reversible)
-            }
-          } else if (formatVolume) {
-            // 如果只注入SOL
-            await contract.injectSOL(mintKey, formatVolume)
-          } else if (childMintKeys.length > 0) {
-            // 如果只注入nft
-            // 如果有父级
-            if (belong.parent) {
-              await contract.injectNFTToNonRoot(
-                mintKey,
-                childMintKeys,
-                { rootPDA: new PublicKey(belong.parent.rootPDA), parentMintKey: new PublicKey(belong.parent.mint) },
-                reversible,
-              )
-            } else {
-              await contract.injectNFTToRoot(mintKey, childMintKeys, reversible)
-            }
-          }
-          setSnackbarState({ open: true, alertColor: 'success', alertMsg: transactionMsg.enchanft.successful })
-          wallet.publicKey && dispatch(getMyNFTokens({ owner: wallet.publicKey }))
-          injectRef.current && injectRef.current.resetForm()
-          refreshInject()
-        } catch (error) {
-          // 可以用来提示异常
-          if ((error as any).code === 4001) {
-            // 用户取消交易
-            setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.enchanft.cancel })
+      const formatVolume = solToLamports(Number(token.volume))
+      const childMintKeys = nfts.map((nft) => new PublicKey(nft.mint))
+      const reversible = injectMode === InjectMode.Reversible
+      transactionPublic(async () => {
+        if (formatVolume && childMintKeys.length > 0) {
+          // 如果注入了SOL，又注入了nft
+          // 如果有父级
+          if (belong.parent) {
+            await contract.injectNFTToNonRootWithSOL(
+              mintKey,
+              childMintKeys,
+              formatVolume,
+              { rootPDA: new PublicKey(belong.parent.rootPDA), parentMintKey: new PublicKey(belong.parent.mint) },
+              reversible,
+            )
           } else {
-            setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.enchanft.failed })
+            await contract.injectNFTToRootWithSOL(mintKey, childMintKeys, formatVolume, reversible)
           }
-        } finally {
-          setTransactionState({ ...transactionState, inProgress: false })
+        } else if (formatVolume) {
+          // 如果只注入SOL
+          await contract.injectSOL(mintKey, formatVolume)
+        } else if (childMintKeys.length > 0) {
+          // 如果只注入nft
+          // 如果有父级
+          if (belong.parent) {
+            await contract.injectNFTToNonRoot(
+              mintKey,
+              childMintKeys,
+              { rootPDA: new PublicKey(belong.parent.rootPDA), parentMintKey: new PublicKey(belong.parent.mint) },
+              reversible,
+            )
+          } else {
+            await contract.injectNFTToRoot(mintKey, childMintKeys, reversible)
+          }
         }
-      })()
+        publicKey && dispatch(getMyNFTokens({ owner: publicKey }))
+        injectRef.current && injectRef.current.resetForm()
+      }, TransctionType.INJECT)
     },
     [belong, injectTree.data],
   )
   // 执行提取sol
   const onExtractSol = async () => {
-    if (!couldOps) return
-    if (!params.mint) return
-    try {
-      setTransactionState({ inProgress: true, msg: transactionMsg.extract.inProgress })
-      const mintKey = new PublicKey(params.mint)
+    transactionPublic(async () => {
       await contract.extractSOL(mintKey)
-      refreshInject()
-    } catch (error) {
-      // 可以用来显示错误
-      if ((error as any).code === 4001) {
-        // 用户取消交易
-        setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.extract.cancel })
-      } else {
-        setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.extract.failed })
-      }
-    } finally {
-      setTransactionState({ ...transactionState, inProgress: false })
-    }
+    }, TransctionType.EXTRACT)
   }
-  // NFT子集可选项
-  const [nftChildOptions, setNftChildOptions] = useState<NftDataItem[]>([])
-  // 执行提取nft源数据
+
+  // 获取子NFT详细信息
   useEffect(() => {
     ;(async () => {
       const promises = injectTree.data.curr.children.map(async (item: Node) => {
         const { mint } = item.curr
         const mintKey = new PublicKey(mint as string)
         const data = await contract.getMetadataInfoWithMint(mintKey)
-        // 将元信息添加到节点的自定义数据中
+        // 组合图片信息数据
         return { ...item.curr, ...data?.externalMetadata }
       })
       const newNftData = await Promise.allSettled(promises)
@@ -241,152 +232,119 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       )
     })()
   }, [injectTree])
-  // 提取时打开模态框选择要提取的NFT
-  const [openExtractNftModal, setOpenExtractNftModal] = useState(false)
+
   // 执行提取nft
   const onExtractNFT = async () => {
-    if (!couldOps) return
-    if (!params.mint) return
     // 如果有两个及以上节点，应该弹选择框
     if (injectTree.data.curr.children.length > 1) {
       setOpenExtractNftModal(true)
     } else {
-      // 一个默认提取出那一个
+      // 只有一个默认直接提取处理，不用弹窗
       const nft = injectTree.data.curr.children[0].curr
-      // TODO 注意这里的类型要统一
-      onSubmitExtractNFT([nft as unknown as NftDataItem & { rootPDA: string }])
+      onSubmitExtractNFT([nft as unknown as NftNodeDataItem])
     }
   }
   const onSubmitExtractNFT = useCallback(
-    // TODO 注意这里的类型要统一
-    async (nfts: (NftDataItem & { rootPDA: string })[]) => {
-      extractTransactionPublic(async () => {
-        // 先关闭模态框
-        setOpenExtractNftModal(false)
-        const self = wallet.publicKey
-        if (!params.mint || !self) return
-        // TODO 目前接口只能提取一个nft, 要更换为提取多个nft的接口
-        const mintKey = nfts[0]?.mint
-        const rootPDA = nfts[0]?.rootPDA
-        if (!mintKey || !rootPDA) return
-        const rootMint = await contract.getRootMintFromRootPDA(rootPDA)
-        if (!rootMint) return
-        await contract.transferChildNFTToUser(self, new PublicKey(mintKey), {
+    async (nfts: NftNodeDataItem[]) => {
+      if (!publicKey) return
+      // 先关闭列表选择模态框
+      setOpenExtractNftModal(false)
+      // TODO 目前接口只能提取一个nft, 要更换为提取多个nft的接口
+      const mintKey = nfts[0]?.mint
+      const rootPDA = nfts[0]?.rootPDA
+      if (!mintKey || !rootPDA) return
+      const rootMint = await contract.getRootMintFromRootPDA(rootPDA)
+      if (!rootMint) return
+      transactionPublic(async () => {
+        await contract.transferChildNFTToUser(publicKey, new PublicKey(mintKey), {
           rootMintKey: rootMint,
           rootPDA: new PublicKey(rootPDA),
-          parentMintKey: new PublicKey(params.mint),
+          parentMintKey: new PublicKey(mint),
         })
-      })
+        reloadWindow()
+      }, TransctionType.EXTRACT)
     },
-    [wallet],
+    [publicKey],
   )
 
   // 执行复制
   const onCopyWithInject = async ({ injectMode, token }: OnInjectProps) => {
-    if (!couldOps) return
     const { name, symbol, uri } = metadata.data
-    if (!params.mint) return
+    if (!mint) return
     let newMint = ''
-    const mintKey = new PublicKey(params.mint)
     const reversible = injectMode === InjectMode.Reversible
-    setTransactionState({ inProgress: true, msg: transactionMsg.enchanft.inProgress })
-    try {
-      const { volume } = token
-      const lamportsVolume = solToLamports(Number(volume))
+    const { volume } = token
+    const lamportsVolume = solToLamports(Number(volume))
+    transactionPublic(async () => {
       newMint = await contract.copyWithInjectSOL(mintKey, lamportsVolume, { name, uri, symbol })
-    } catch (error) {
-      // 可以用来显示错误
-      if ((error as any).code === 4001) {
-        // 用户取消交易
-        setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.extract.cancel })
-      } else {
-        // -32003 "Transaction creation failed."
-        // setWriting(false)
-        setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.enchanft.failed })
-      }
-    } finally {
-      setTransactionState({ ...transactionState, inProgress: false })
-    }
-
-    if (!newMint) {
-      // TODO: alert something wrong
-      return
-    }
-    navigate(`/info/${newMint}`)
-    reloadWindow()
+      navigate(`/info/${newMint}`)
+      reloadWindow()
+    }, TransctionType.INJECT)
   }
 
   // 执行燃烧销毁
   const onBurn = async () => {
-    if (!couldOps) return
-    if (!params.mint) return
-    try {
-      setTransactionState({ inProgress: true, msg: transactionMsg.burn.inProgress })
-      const mintKey = new PublicKey(params.mint)
+    transactionPublic(async () => {
       await contract.startBurn(mintKey)
       navigate(`/`)
-    } catch (error) {
-      // 可以用来显示错误
-      if ((error as any).code === 4001) {
-        // 用户取消交易
-        setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.burn.cancel })
-      } else {
-        setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.burn.failed })
-      }
-    } finally {
-      setTransactionState({ ...transactionState, inProgress: false })
-    }
+    }, TransctionType.BURN)
   }
 
+  // 从其它钱包中转移
   const transferToOther = useCallback(async () => {
-    // TODO other
-    const otherKeyStr = window.prompt('Other wallet:')
-    if (!otherKeyStr) return
-    const other = new PublicKey(otherKeyStr)
-    if (!params.mint) return
-
-    const mintKey = new PublicKey(params.mint)
-    if (!belong.parent) return
-
-    await contract.transferChildNFTToUser(other, mintKey, {
-      rootMintKey: new PublicKey(belong.parent.rootMint),
-      rootPDA: new PublicKey(belong.parent.rootPDA),
-      parentMintKey: new PublicKey(belong.parent.mint),
-    })
-  }, [belong])
-
-  const transferToSelf = useCallback(async () => {
-    extractTransactionPublic(async () => {
-      const self = wallet.publicKey
-      if (!params.mint || !self) return
-      const mintKey = new PublicKey(params.mint)
+    transactionPublic(async () => {
+      // TODO other
+      const otherKeyStr = window.prompt('Other wallet:')
+      if (!otherKeyStr) return
+      const other = new PublicKey(otherKeyStr)
       if (!belong.parent) return
-      await contract.transferChildNFTToUser(self, mintKey, {
+      await contract.transferChildNFTToUser(other, mintKey, {
         rootMintKey: new PublicKey(belong.parent.rootMint),
         rootPDA: new PublicKey(belong.parent.rootPDA),
         parentMintKey: new PublicKey(belong.parent.mint),
       })
-    })
-  }, [wallet, belong])
+    }, TransctionType.TRANSFER)
+  }, [belong])
 
-  // 提取交易的通用逻辑
-  const extractTransactionPublic = useCallback(async (fn) => {
+  // 从父级提取nft
+  const transferToSelf = useCallback(async () => {
+    transactionPublic(async () => {
+      if (!publicKey) return
+      if (!belong.parent) return
+      await contract.transferChildNFTToUser(publicKey, mintKey, {
+        rootMintKey: new PublicKey(belong.parent.rootMint),
+        rootPDA: new PublicKey(belong.parent.rootPDA),
+        parentMintKey: new PublicKey(belong.parent.mint),
+      })
+    }, TransctionType.EXTRACT)
+  }, [publicKey, belong])
+
+  /**
+   * @description: 合约交易的通用处理逻辑, 包括交易前置条件处理, 交易结果状态提示，及交易后置操作
+   * @param {*} fn 交易执行过程的异步函数
+   * @param {*} type 交易的类型
+   * @return {*}
+   */
+  const transactionPublic = useCallback(async (fn: Function, type: TransctionType) => {
+    if (!couldOps) return
+    setTransactionState({ inProgress: true, msg: transactionMsg[type].inProgress })
     try {
-      setTransactionState({ inProgress: true, msg: transactionMsg.extract.inProgress })
       await fn()
+      setSnackbarState({ open: true, alertColor: 'success', alertMsg: transactionMsg[type].successful })
       refreshInject()
     } catch (error) {
       // 可以用来显示错误
       if ((error as any).code === 4001) {
         // 用户取消交易
-        setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg.extract.cancel })
+        setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg[type].cancel })
       } else {
-        setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg.extract.failed })
+        setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg[type].failed })
       }
     } finally {
       setTransactionState({ ...transactionState, inProgress: false })
     }
   }, [])
+
   return (
     <NFTHandlerWrapper>
       <div className="top">
@@ -397,8 +355,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         </div>
         <div className="dividing-line"></div>
       </div>
-      <div className="container">
-        {(!wallet.publicKey && <RemindConnectWallet />) || (
+      <div className="handler-form">
+        {(!publicKey && <RemindConnectWallet />) || (
           <>
             {belongLoading || hasInjectLoading ? (
               <p>
@@ -406,13 +364,6 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
               </p>
             ) : (
               <>
-                {/* {!couldOps && (
-                  <div className="no-could-ops-mask">
-                    no ops allowed
-                    <br />
-                    because the NFT is in the cooling off period
-                  </div>
-                )} */}
                 {showViewOnly && (
                   <div className="only-view">
                     <span className="expression">😯</span>{' '}
@@ -424,58 +375,82 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                     <NftInject
                       ref={injectRef}
                       formOption={{
-                        disabled: !couldOps,
+                        couldOps: couldOps,
                         displayNftForm: couldInjectNFT,
                       }}
                       nftOptions={
                         couldInjectNFT
-                          ? myNFTData.filter((item) => item.mint != params.mint && item.mint != belong.parent?.rootMint)
+                          ? myNFTData.filter((item) => item.mint != mint && item.mint != belong.parent?.rootMint)
                           : []
                       }
                       nftInjectMaxNum={couldInjectNFTNum}
                       onInject={onInject}
                     ></NftInject>
-                    {(injectTree.loading && <div>checking</div>) || (
+                    {(injectTree.loading && (
+                      <p>
+                        <img src={LoadingIcon} alt="" />
+                      </p>
+                    )) || (
                       <>
                         {couldExtractSOL && (
-                          <ButtonDanger
-                            className={`handle-btn ${!couldOps ? 'btn-disabled-mask' : ''}`}
-                            onClick={onExtractSol}
-                          >
-                            {`> extract (${lamportsToSol(solAmount)} SOL) <`}
-                          </ButtonDanger>
+                          <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                            <ButtonDanger
+                              style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+                              className={`handle-btn`}
+                              disabled={!couldOps}
+                              onClick={onExtractSol}
+                            >
+                              {`> Extract (${lamportsToSol(solAmount)} SOL) <`}
+                            </ButtonDanger>
+                          </FormCouldOpsTooltipWrapper>
                         )}
                         {couldExtractNFT && (
-                          <ButtonDanger
-                            className={`handle-btn ${!couldOps ? 'btn-disabled-mask' : ''}`}
-                            onClick={onExtractNFT}
-                          >
-                            {`> Extract Child NFT <`}
-                          </ButtonDanger>
+                          <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                            <ButtonDanger
+                              style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+                              className={`handle-btn`}
+                              disabled={!couldOps}
+                              onClick={onExtractNFT}
+                            >
+                              {`> Extract Child NFT <`}
+                            </ButtonDanger>
+                          </FormCouldOpsTooltipWrapper>
                         )}
                         {belong.parent && (
-                          <ButtonDanger
-                            className={`handle-btn ${!couldOps ? 'btn-disabled-mask' : ''}`}
-                            onClick={transferToOther}
-                          >
-                            {`> Transfer To Other <`}
-                          </ButtonDanger>
+                          <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                            <ButtonDanger
+                              style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+                              className={`handle-btn`}
+                              disabled={!couldOps}
+                              onClick={transferToOther}
+                            >
+                              {`> Transfer To Other <`}
+                            </ButtonDanger>
+                          </FormCouldOpsTooltipWrapper>
                         )}
                         {belong.parent && (
-                          <ButtonDanger
-                            className={`handle-btn ${!couldOps ? 'btn-disabled-mask' : ''}`}
-                            onClick={transferToSelf}
-                          >
-                            {`> Extract NFT From Parent <`}
-                          </ButtonDanger>
+                          <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                            <ButtonDanger
+                              style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+                              className={`handle-btn`}
+                              disabled={!couldOps}
+                              onClick={transferToSelf}
+                            >
+                              {`> Extract NFT From Parent <`}
+                            </ButtonDanger>
+                          </FormCouldOpsTooltipWrapper>
                         )}
                         {couldBurn && (
-                          <ButtonDanger
-                            className={`handle-btn ${!couldOps ? 'btn-disabled-mask' : ''}`}
-                            onClick={onBurn}
-                          >
-                            {`> Burn <`}
-                          </ButtonDanger>
+                          <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                            <ButtonDanger
+                              style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+                              className={`handle-btn`}
+                              disabled={!couldOps}
+                              onClick={onBurn}
+                            >
+                              {`> Burn <`}
+                            </ButtonDanger>
+                          </FormCouldOpsTooltipWrapper>
                         )}
                       </>
                     )}
@@ -484,12 +459,12 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                 {showCopy && (
                   <NftInject
                     formOption={{
-                      disabled: !couldOps,
+                      couldOps: couldOps,
                       displayNftForm: false,
                       submitBtnType: 'warning',
                       submitBtnLabel: '> Encha NFT! <',
                     }}
-                    nftOptions={myNFTData.filter((item) => item?.mint != params.mint)}
+                    nftOptions={myNFTData.filter((item) => item?.mint != mint)}
                     onInject={onCopyWithInject}
                   ></NftInject>
                 )}
@@ -516,12 +491,14 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
             </Backdrop>
             {/* 交易结束后提示交易结果 */}
             <Snackbar
-              anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
               open={snackbarState.open}
-              autoHideDuration={6000}
+              autoHideDuration={6500}
               onClose={() => setSnackbarState((v) => ({ ...v, open: false }))}
             >
-              <Alert severity={snackbarState.alertColor}>{snackbarState.alertMsg}</Alert>
+              <Alert severity={snackbarState.alertColor} className="alert-msg">
+                {snackbarState.alertMsg}
+              </Alert>
             </Snackbar>
           </>
         )}
@@ -575,18 +552,6 @@ const NFTHandlerWrapper = styled.div`
       }
     }
   }
-  .container {
-    position: relative;
-    .no-could-ops-mask {
-      ${DisabledMaskCss}
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: #fff;
-      text-align: center;
-      line-height: 1.5;
-    }
-  }
   .only-view {
     width: 100%;
     height: 308px;
@@ -619,11 +584,8 @@ const NFTHandlerWrapper = styled.div`
     height: 60px;
     margin-bottom: 20px;
   }
-  .btn-disabled-mask {
-    position: relative;
-    &::before {
-      content: '';
-      ${DisabledMaskCss}/* background: none; */
-    }
+  .alert-msg {
+    ${FontFamilyCss}
+    font-size: 12px;
   }
 `

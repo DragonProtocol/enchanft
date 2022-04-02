@@ -1,7 +1,7 @@
 /*
  * @Author: shixuewen
  * @Date: 2022-03-15 11:15:41
- * @LastEditTime: 2022-04-01 18:33:35
+ * @LastEditTime: 2022-04-02 15:39:10
  * @LastEditors: Please set LastEditors
  * @Description: NFT 注入资产的表单组件，只收集注入时的相关数据和提交此次注入事件，跟注入无关的操作请在其它组件中执行
  * @FilePath: \synft-app\src\components\nft_handlers\NftInject.tsx
@@ -12,12 +12,13 @@ import React, { useEffect, useImperativeHandle, useState } from 'react'
 import styled from 'styled-components'
 import { NftDataItem } from '../NFTList'
 import CheckedIcon from '../icons/checked.svg'
-import { CursorPointerUpCss, DisabledMaskCss } from '../../GlobalStyle'
+import { CursorPointerUpCss, DisabledMaskCss, FontFamilyCss } from '../../GlobalStyle'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { ButtonDanger, ButtonPrimary, ButtonWarning } from '../common/ButtonBase'
 import { MOBILE_BREAK_POINT } from '../../utils/constants'
 import NftAdder from './NftAdder'
 import { setuid } from 'process'
+import { FormCouldOpsTooltipWrapper } from '../NFTHandler'
 
 export type Token = {
   name: string
@@ -65,8 +66,8 @@ interface FormOption {
   submitBtnLabel?: string
   // 提交按钮的类型
   submitBtnType?: SubmitBtnType
-  // 禁用
-  disabled?: boolean
+  // 是否允许操作
+  couldOps?: boolean
 }
 // 表单默认配置
 const FormOptionDefault: FormOption = {
@@ -81,7 +82,7 @@ const FormOptionDefault: FormOption = {
   modeLabel: 'Select Mode',
   submitBtnLabel: '> Embed NFT <',
   submitBtnType: 'primary',
-  disabled: false,
+  couldOps: false,
 }
 export interface OnInjectProps {
   injectMode: InjectMode
@@ -128,7 +129,7 @@ export default React.forwardRef(({ formOption, nftOptions, nftInjectMaxNum, onIn
     modeLabel,
     submitBtnLabel,
     submitBtnType,
-    disabled,
+    couldOps,
   } = { ...FormOptionDefault, ...(formOption || {}) }
   const { connection } = useConnection()
   const wallet = useWallet()
@@ -203,14 +204,22 @@ export default React.forwardRef(({ formOption, nftOptions, nftInjectMaxNum, onIn
       {displaySolForm && (
         <div className="form-item">
           {displaySolLabel && <div className="form-label">{solLabel}</div>}
-          <div className={`form-value ${disabled ? 'disabled-mask' : ''}`}>
-            <input
-              type="number"
-              className={`token-value ${disabled ? 'disabled-mask' : ''}`}
-              placeholder="0.00"
-              value={token.volume}
-              onChange={(e) => setToken({ ...token, volume: e.target.value })}
-            />
+          <div className={`form-value`}>
+            <FormCouldOpsTooltipWrapper enable={!couldOps}>
+              <input
+                type="number"
+                className={`token-value`}
+                style={{
+                  opacity: !couldOps ? 0.5 : 1,
+                  pointerEvents: !couldOps ? 'none' : 'auto',
+                }}
+                disabled={!couldOps}
+                placeholder="0.00"
+                min="0"
+                value={token.volume}
+                onChange={(e) => setToken({ ...token, volume: e.target.value })}
+              />
+            </FormCouldOpsTooltipWrapper>
           </div>
         </div>
       )}
@@ -218,13 +227,16 @@ export default React.forwardRef(({ formOption, nftOptions, nftInjectMaxNum, onIn
       {displayNftForm && (
         <div className="form-item">
           {displayNftLabel && <div className="form-label">{nftLabel}</div>}
-          <div className={`form-value ${disabled ? 'disabled-mask' : ''}`}>
-            <NftAdder
-              options={nftOptions}
-              selectedList={nfts}
-              onChange={(nfts) => setNfts(nfts)}
-              maxSelectNum={nftInjectMaxNum}
-            />
+          <div className={`form-value`}>
+            <FormCouldOpsTooltipWrapper enable={!couldOps}>
+              <NftAdder
+                disabled={!couldOps}
+                options={nftOptions}
+                selectedList={nfts}
+                onChange={(nfts) => setNfts(nfts)}
+                maxSelectNum={nftInjectMaxNum}
+              />
+            </FormCouldOpsTooltipWrapper>
           </div>
         </div>
       )}
@@ -232,40 +244,47 @@ export default React.forwardRef(({ formOption, nftOptions, nftInjectMaxNum, onIn
       {/* {displayModeForm && (
         <div className="form-item">
           {displayModeLabel && <div className="form-label">{modeLabel}</div>}
-          <div className={`form-value mode-selector ${disabled ? 'disabled-mask' : ''}`}>
-            {INJECT_MODES.map((item) => (
-              <div
-                key={item}
-                className={`mode-item ${injectMode === item ? 'mode-checked' : ''}`}
-                onClick={() => setInjectMode(item)}
-              >
-                <div className="mode-checked-icon">{injectMode === item && <img src={CheckedIcon} alt="" />}</div>
-                <span>{item}</span>
-              </div>
-            ))}
-          </div>
+          <FormCouldOpsTooltipWrapper enable={!couldOps}>
+            <div className={`form-value mode-selector ${!couldOps ? 'disabled' : ''}`}>
+              {INJECT_MODES.map((item) => (
+                <div
+                  key={item}
+                  className={`mode-item ${injectMode === item ? 'mode-checked' : ''}`}
+                  onClick={() => setInjectMode(item)}
+                >
+                  <div className="mode-checked-icon">{injectMode === item && <img src={CheckedIcon} alt="" />}</div>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+          </FormCouldOpsTooltipWrapper>
         </div>
       )} */}
 
       {checkTip.visible && (
-        <Alert severity="warning">
-          <AlertTitle>Warning</AlertTitle>
+        <Alert severity="warning" className="form-check-tip form-check-tip-text">
+          <AlertTitle className="form-check-tip form-check-tip-title">Warning</AlertTitle>
           {checkTip.msg}
         </Alert>
       )}
-      <SubmitBtn className={`form-submit ${disabled ? 'disabled-mask' : ''}`} onClick={handleSubmit}>
-        {submitBtnLabel}
-      </SubmitBtn>
+      <FormCouldOpsTooltipWrapper enable={!couldOps}>
+        <SubmitBtn
+          style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+          disabled={!couldOps}
+          className={`form-submit`}
+          onClick={handleSubmit}
+        >
+          {submitBtnLabel}
+        </SubmitBtn>
+      </FormCouldOpsTooltipWrapper>
     </NftInjectWrapper>
   )
 })
 const NftInjectWrapper = styled.div`
-  .disabled-mask {
-    position: relative;
-    &::before {
-      content: '';
-      ${DisabledMaskCss}/* background: none; */
-    }
+  .disabled {
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.5;
   }
   .form-item {
     margin-bottom: 24px;
@@ -286,6 +305,7 @@ const NftInjectWrapper = styled.div`
     border: 2px solid #222222;
     box-sizing: border-box;
     padding: 12px 16px;
+    ${CursorPointerUpCss}
   }
   .mode-selector {
     background: #ffffff;
@@ -314,6 +334,12 @@ const NftInjectWrapper = styled.div`
         margin-right: 5px;
       }
     }
+  }
+  .form-check-tip {
+    ${FontFamilyCss}
+  }
+  .form-check-tip-text {
+    font-size: 10px;
   }
   .form-submit {
     width: 100%;
