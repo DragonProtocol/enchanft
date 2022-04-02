@@ -12,7 +12,7 @@ import LoadingIcon from '../components/imgs/Loading.gif'
 import NftInject, { InjectMode, OnInjectProps } from './nft_handlers/NftInject'
 import { useBelongTo, useHasInjectV1 } from '../hooks'
 import { useContract } from '../provider/ContractProvider'
-import { MAX_CHILDREN_PER_LEVEL, MOBILE_BREAK_POINT } from '../utils/constants'
+import { MAX_CHILDREN_PER_LEVEL, MOBILE_BREAK_POINT, VIEW_LAMPORTS_DECIMAL } from '../utils/constants'
 import { lamportsToSol, solToLamports } from '../utils'
 import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
 import log from 'loglevel'
@@ -140,6 +140,9 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 
   // 是否被注入过
   const hasInjected = solAmount > 0 || injectTree.data.curr.children.length > 0
+
+  // 是否可以注入SOL
+  const couldInjectSOL = !injectTree.data.parent
 
   // 是否可以注入NFT
   // TODO 是否超出高度限制条件待调整
@@ -372,20 +375,24 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                 )}
                 {showBelongToMe && (
                   <>
-                    <NftInject
-                      ref={injectRef}
-                      formOption={{
-                        couldOps: couldOps,
-                        displayNftForm: couldInjectNFT,
-                      }}
-                      nftOptions={
-                        couldInjectNFT
-                          ? myNFTData.filter((item) => item.mint != mint && item.mint != belong.parent?.rootMint)
-                          : []
-                      }
-                      nftInjectMaxNum={couldInjectNFTNum}
-                      onInject={onInject}
-                    ></NftInject>
+                    {(couldInjectSOL || couldExtractNFT) && (
+                      <NftInject
+                        ref={injectRef}
+                        formOption={{
+                          couldOps: couldOps,
+                          displayNftForm: couldInjectNFT,
+                          displaySolForm: couldInjectSOL,
+                        }}
+                        nftOptions={
+                          couldInjectNFT
+                            ? myNFTData.filter((item) => item.mint != mint && item.mint != belong.parent?.rootMint)
+                            : []
+                        }
+                        nftInjectMaxNum={couldInjectNFTNum}
+                        onInject={onInject}
+                      ></NftInject>
+                    )}
+
                     {(injectTree.loading && (
                       <p>
                         <img src={LoadingIcon} alt="" />
@@ -400,7 +407,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                               disabled={!couldOps}
                               onClick={onExtractSol}
                             >
-                              {`> Extract (${lamportsToSol(solAmount)} SOL) <`}
+                              {`> Extract (${lamportsToSol(solAmount).toFixed(VIEW_LAMPORTS_DECIMAL)} SOL) <`}
                             </ButtonDanger>
                           </FormCouldOpsTooltipWrapper>
                         )}
@@ -472,6 +479,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
             )}
             {/* NFT 列表选择模态框 */}
             <ModalNftSelector
+              subTitle="Select the NFT you want to extract"
               options={nftChildOptions}
               open={openExtractNftModal}
               maxSelectNum={1}

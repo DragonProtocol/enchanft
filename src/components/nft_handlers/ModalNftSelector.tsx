@@ -1,7 +1,7 @@
 /*
  * @Author: shixuewen
  * @Date: 2022-03-31 18:38:56
- * @LastEditTime: 2022-04-02 14:49:32
+ * @LastEditTime: 2022-04-02 18:25:07
  * @LastEditors: Please set LastEditors
  * @Description: NFT 列表选择模态框
  * @FilePath: \synft-app\src\components\nft_handlers\ModalNftSelector.tsx
@@ -16,6 +16,8 @@ import { ButtonPrimary, ButtonWarning } from '../common/ButtonBase'
 import { CursorPointerUpCss, FontFamilyCss } from '../../GlobalStyle'
 import TooltipWrapper from '../common/TooltipWrapper'
 interface Props {
+  /** 子标题描述 */
+  subTitle?: string
   /** 列表可选项 */
   options: NftDataItem[]
   /** 选中的列表 */
@@ -32,6 +34,7 @@ interface Props {
   onSubmit?: (data: NftDataItem[]) => void
 }
 const ModalNftSelector: React.FC<Props> = ({
+  subTitle = '',
   options,
   selectedList = [],
   maxSelectNum,
@@ -47,7 +50,7 @@ const ModalNftSelector: React.FC<Props> = ({
       if (maxSelectNum === undefined || selectedListCache.length < maxSelectNum) {
         setSelectedListCache([...selectedListCache, data])
       } else {
-        alert('本次最多只能选择' + maxSelectNum + '个')
+        alert(`You can only choose at most ${maxSelectNum} this time`)
       }
     } else {
       setSelectedListCache(selectedListCache.filter((item) => item.mint !== data.mint))
@@ -65,7 +68,11 @@ const ModalNftSelector: React.FC<Props> = ({
   return (
     <ModalNftSelectorWrapper fullWidth={true} maxWidth="md" onClose={onClose} open={open}>
       <DialogTitle className="nft-list-title">
-        <div>Select NFT</div>
+        <div>
+          Select NFT
+          <div className="sub-title">{subTitle}</div>
+        </div>
+
         <img className="close-btn" src={DialogCloseIcon} onClick={onClose} />
       </DialogTitle>
       <DialogContent className="nft-list-content" dividers>
@@ -74,7 +81,11 @@ const ModalNftSelector: React.FC<Props> = ({
             const checked = selectedListCache.findIndex((v) => v.mint === item.mint) !== -1
             const disabled = !checked && maxSelectNum !== undefined && selectedListCache.length >= maxSelectNum
             return (
-              <TooltipWrapper key={item.mint} title={`本次最多只能选择 ${maxSelectNum} 个`} enable={disabled}>
+              <TooltipWrapper
+                key={item.mint}
+                title={`You can only choose at most ${maxSelectNum} this time`}
+                enable={disabled}
+              >
                 <div className={`list-item ${disabled ? 'disabled' : ''}`} onClick={() => handleSelect(item)}>
                   <Checkbox className="item-checkbox" disabled={disabled} checked={checked} />
                   <NFTCard data={item as NftDataItem}></NFTCard>
@@ -106,9 +117,14 @@ const ModalNftSelectorWrapper = styled(Dialog)`
   }
   .nft-list-title {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     ${FontFamilyCss}
+    .sub-title {
+      font-size: 12px;
+      opacity: 0.5;
+      margin-top: 10px;
+    }
   }
   .close-btn {
     ${CursorPointerUpCss}
