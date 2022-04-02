@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2022-04-01 12:29:48
- * @LastEditTime: 2022-04-02 12:28:44
+ * @LastEditTime: 2022-04-02 18:14:04
  * @LastEditors: Please set LastEditors
  * @Description: NFT 选择添加器
  * @FilePath: \synft-app\src\components\nft_handlers\NftAdder.tsx
@@ -14,6 +14,8 @@ import ModalNftSelector from './ModalNftSelector'
 import AddIcon from '../icons/add.svg'
 import { CursorPointerUpCss } from '../../GlobalStyle'
 interface Props {
+  /** 对选择添加nft的一些描述 */
+  description?: string
   /** 列表可选项 */
   options: NftDataItem[]
   /** 选中的列表 */
@@ -25,7 +27,14 @@ interface Props {
   /**禁用 */
   disabled?: boolean
 }
-const NftAdder: React.FC<Props> = ({ options, selectedList = [], maxSelectNum, onChange, disabled }: Props) => {
+const NftAdder: React.FC<Props> = ({
+  description,
+  options,
+  selectedList = [],
+  maxSelectNum,
+  onChange,
+  disabled,
+}: Props) => {
   const [open, setOpen] = useState(false)
   const handleAdd = () => {
     if (maxSelectNum === undefined || selectedList.length < maxSelectNum) {
@@ -62,6 +71,7 @@ const NftAdder: React.FC<Props> = ({ options, selectedList = [], maxSelectNum, o
 
       {/* NFT 列表选择模态框 */}
       <ModalNftSelector
+        subTitle={description}
         options={options}
         selectedList={selectedList}
         maxSelectNum={maxSelectNum}

@@ -1,7 +1,7 @@
 /*
  * @Author: shixuewen
  * @Date: 2022-03-15 11:15:41
- * @LastEditTime: 2022-04-02 15:39:10
+ * @LastEditTime: 2022-04-02 18:22:36
  * @LastEditors: Please set LastEditors
  * @Description: NFT 注入资产的表单组件，只收集注入时的相关数据和提交此次注入事件，跟注入无关的操作请在其它组件中执行
  * @FilePath: \synft-app\src\components\nft_handlers\NftInject.tsx
@@ -15,7 +15,7 @@ import CheckedIcon from '../icons/checked.svg'
 import { CursorPointerUpCss, DisabledMaskCss, FontFamilyCss } from '../../GlobalStyle'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { ButtonDanger, ButtonPrimary, ButtonWarning } from '../common/ButtonBase'
-import { MOBILE_BREAK_POINT } from '../../utils/constants'
+import { MAX_CHILDREN_PER_LEVEL, MOBILE_BREAK_POINT } from '../../utils/constants'
 import NftAdder from './NftAdder'
 import { setuid } from 'process'
 import { FormCouldOpsTooltipWrapper } from '../NFTHandler'
@@ -199,6 +199,9 @@ export default React.forwardRef(({ formOption, nftOptions, nftInjectMaxNum, onIn
   // 提交按钮
   const SubmitBtn = submitBtns[submitBtnType as SubmitBtnType]
 
+  const nftAdderDescription = `Each NFT can inject up to ${MAX_CHILDREN_PER_LEVEL} NFTs, you have already injected ${
+    MAX_CHILDREN_PER_LEVEL - (nftInjectMaxNum || 0)
+  }, and you can select ${nftInjectMaxNum || 0} more `
   return (
     <NftInjectWrapper>
       {displaySolForm && (
@@ -230,6 +233,7 @@ export default React.forwardRef(({ formOption, nftOptions, nftInjectMaxNum, onIn
           <div className={`form-value`}>
             <FormCouldOpsTooltipWrapper enable={!couldOps}>
               <NftAdder
+                description={nftAdderDescription}
                 disabled={!couldOps}
                 options={nftOptions}
                 selectedList={nfts}
