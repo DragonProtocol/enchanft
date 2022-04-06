@@ -18,11 +18,7 @@ export const logIsProd = process.env.NODE_ENV === 'production'
 // explore 数据源
 export const collections = isProd
   ? []
-  : [
-      'AhY7v1fSv4c7P9ouhkfWHDzv7okRNo2TUfwDxwxHZXfb',
-      'DaFBQUghKeSuuAjgZWLkZfHzVs5K8ELf1oGXKkkupwDX',
-      'U7KxNoZ3rNbtG5DgRYQQsjs2dWoSSLLRLjit6VXRyzR',
-    ]
+  : ['DaFBQUghKeSuuAjgZWLkZfHzVs5K8ELf1oGXKkkupwDX', 'U7KxNoZ3rNbtG5DgRYQQsjs2dWoSSLLRLjit6VXRyzR']
 
 export function lamportsToSol(lamportsAmount: number) {
   return lamportsAmount / LAMPORTS_PER_SOL
