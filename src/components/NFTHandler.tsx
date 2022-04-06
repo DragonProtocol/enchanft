@@ -375,7 +375,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                 )}
                 {showBelongToMe && (
                   <>
-                    {(couldInjectSOL || couldExtractNFT) && (
+                    {(couldInjectSOL || couldInjectNFT) && (
                       <NftInject
                         ref={injectRef}
                         formOption={{
