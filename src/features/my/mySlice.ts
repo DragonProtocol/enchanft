@@ -45,12 +45,13 @@ export const getMyNFTData = createAsyncThunk('my/nftmetadata', async ({ nfts }: 
       try {
         const metadataInfo = await contract.getMetadataInfoWithMint(item.mint)
         if (!metadataInfo) return null
-        const hasInjected = await contract.checkHasInject(item.mint)
+        const {hasInjected,hasInjectedNFT} = await contract.checkHasInject(item.mint)
         return {
           image: metadataInfo.externalMetadata.image,
           mint: metadataInfo.metadata.mint,
           name: metadataInfo.externalMetadata.name,
           hasInjected,
+          hasInjectedNFT
         }
       } catch (error) {
         return null

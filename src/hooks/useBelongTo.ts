@@ -12,10 +12,10 @@ import { useEffect, useState } from 'react'
 
 import { useWallet } from '@solana/wallet-adapter-react'
 
-import { BelongTo } from '../synft'
+import { BelongTo, Node as TreeNode } from '../synft'
 import { useContract } from '../provider/ContractProvider'
 
-export default (mint: string | undefined) => {
+export default (mint: string | undefined, injectTree: TreeNode) => {
   const { contract } = useContract()
   const wallet = useWallet()
 
@@ -36,7 +36,7 @@ export default (mint: string | undefined) => {
       setLoading(false)
       setBelong(data)
     })()
-  }, [mint, wallet])
+  }, [mint, wallet, injectTree])
 
   return { belong, loading }
 }

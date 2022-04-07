@@ -25,6 +25,8 @@ export interface Node {
   parent: null | {
     mint: string
     rootPDA: string
+    rootMint: string
+    isMutated: boolean
   }
 }
 
@@ -58,6 +60,7 @@ export type NFT = {
   name: string
   hasCopied?: boolean
   hasInjected?: boolean
+  hasInjectedNFT?: boolean
 }
 
 export type NFTDataItem = NFT & {

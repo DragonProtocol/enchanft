@@ -143,15 +143,28 @@ export default class Contract {
     }
   }
 
-  public async checkHasInject(mintKey: PublicKey) {
+  public async checkHasInject(mintKey: PublicKey) : Promise<{
+    hasInjected: boolean
+    hasInjectedSOL: boolean,
+    hasInjectedNFT: boolean
+  }> {
     if (!this._connection || !this._program) {
       log.error('Contract connect invalid')
-      return false
+      return {
+        hasInjected: false,
+        hasInjectedSOL: false,
+        hasInjectedNFT: false
+      }
     }
     const solChildrenMetadata = await this.getInjectSOL(mintKey)
     const childrenNFT = await this.getInjectChildren(mintKey)
 
-    return !!solChildrenMetadata || childrenNFT.length > 0
+    return {
+      hasInjected: !!solChildrenMetadata || childrenNFT.length > 0,
+      hasInjectedNFT: childrenNFT.length > 0,
+      hasInjectedSOL: !!solChildrenMetadata
+    }
+
   }
 
   public async getInjectSOL(mintKey: PublicKey) {
