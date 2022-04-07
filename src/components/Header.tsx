@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2022-03-11 18:48:03
+ * @LastEditTime: 2022-04-07 14:34:33
+ * @LastEditors: Please set LastEditors
+ * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @FilePath: \synft-app\src\components\Header.tsx
+ */
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
@@ -6,6 +14,7 @@ import { useState } from 'react'
 import styled from 'styled-components'
 import ButtonConnectWallect from './common/ButtonConnectWallet'
 import { MOBILE_BREAK_POINT } from '../utils/constants'
+import { ButtonPrimary } from './common/ButtonBase'
 export default function Header() {
   const navigate = useNavigate()
   const { connection } = useConnection()
@@ -26,7 +35,8 @@ export default function Header() {
       </div>
       <div className="right">
         {/* <input type="text" className="search" /> */}
-        <ButtonConnectWallect />
+        <ButtonPrimary onClick={() => window.open('https://solfaucet.com/')}>{'Get SOL'}</ButtonPrimary>
+        <ButtonConnectWallect className="btn-connect-wallect" />
       </div>
     </HeaderWrapper>
   )
@@ -42,8 +52,8 @@ const HeaderWrapper = styled.div`
       width: 274px;
       height: 36px;
       background-image: url('/logo.svg');
-      background-repeat:no-repeat;
-      background-size:100% 100%;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
       @media (max-width: ${MOBILE_BREAK_POINT}px) {
         width: 48px;
         height: 48px;
@@ -53,7 +63,15 @@ const HeaderWrapper = styled.div`
     }
   }
   .right {
+    margin-left: 16px;
     display: flex;
+    gap: 16px;
+    .btn-connect-wallect {
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        width: 100px;
+        overflow: hidden;
+      }
+    }
     /* .search {
       // 重置input默认样式 - start
       background: none;
