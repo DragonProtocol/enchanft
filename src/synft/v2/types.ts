@@ -60,6 +60,7 @@ export type NFT = {
   name: string
   hasCopied?: boolean
   hasInjected?: boolean
+  hasInjectedNFT?: boolean
 }
 
 export type NFTDataItem = NFT & {

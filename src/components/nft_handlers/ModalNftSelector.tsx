@@ -77,7 +77,7 @@ const ModalNftSelector: React.FC<Props> = ({
       </DialogTitle>
       <DialogContent className="nft-list-content" dividers>
         {options.length > 0 ? (
-          options.filter(item => !item.hasInjected).map((item) => {
+          options.filter(item => !item.hasInjectedNFT).map((item) => {
             const checked = selectedListCache.findIndex((v) => v.mint === item.mint) !== -1
             const disabled = !checked && maxSelectNum !== undefined && selectedListCache.length >= maxSelectNum
             return (
