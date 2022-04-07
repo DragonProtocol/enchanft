@@ -25,6 +25,8 @@ export interface Node {
   parent: null | {
     mint: string
     rootPDA: string
+    rootMint: string
+    isMutated: boolean
   }
 }
 

@@ -89,7 +89,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const injectRef = useRef<{ resetForm: Function }>()
   const navigate = useNavigate()
   const { contract } = useContract()
-  const { belong, loading: belongLoading } = useBelongTo(mint)
+  const { belong, loading: belongLoading } = useBelongTo(mint, injectTree.data)
   const {
     checkLoading: hasInjectLoading,
     hasInject,
@@ -163,7 +163,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const couldBurn = !injectTree.data.parent && hasInjected
 
   // 可不可以被操作
-  const couldOps = !belong.parent?.isMutated
+  const couldOps = !injectTree.data.parent?.isMutated
   // const couldOps = false
 
   // 执行注入
@@ -346,7 +346,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     } finally {
       setTransactionState({ ...transactionState, inProgress: false })
     }
-  }, [])
+  }, [couldOps])
 
   return (
     <NFTHandlerWrapper>
