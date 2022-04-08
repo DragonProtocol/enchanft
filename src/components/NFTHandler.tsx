@@ -3,22 +3,21 @@ import { useWallet, WalletContextState } from '@solana/wallet-adapter-react'
 import styled from 'styled-components'
 import { PublicKey } from '@solana/web3.js'
 import { useNavigate } from 'react-router-dom'
+import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
+import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
+// import ReactJson from 'react-json-view'
+import log from 'loglevel'
 
 import { getMyNFTokens, selectMyNFTData, selectMyNFTDataStatus } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { clearMyNFT } from '../features/my/mySlice'
 import LoadingIcon from '../components/imgs/Loading.gif'
-
 import NftInject, { InjectMode, OnInjectProps } from './nft_handlers/NftInject'
-import { useBelongTo, useHasInjectV1 } from '../hooks'
+import { useBelongTo, useHasInjectV1, useGAEvent } from '../hooks'
 import { useContract } from '../provider/ContractProvider'
 import { MAX_CHILDREN_PER_LEVEL, MOBILE_BREAK_POINT, VIEW_LAMPORTS_DECIMAL } from '../utils/constants'
 import { lamportsToSol, solToLamports } from '../utils'
-import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
-import log from 'loglevel'
 import { Node } from '../synft'
-// import ReactJson from 'react-json-view'
-import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
 import RemindConnectWallet from './RemindConnectWallet'
 import { ButtonDanger, ButtonPrimary } from './common/ButtonBase'
 import { NftDataItem } from './NFTList'
@@ -71,6 +70,20 @@ function reloadWindow() {
   window.location.reload()
 }
 
+enum ContractActionGA {
+  COPY_WITH_INJECT_SOL = 'COPY_WITH_INJECT_SOL',
+  BURN = 'BURN',
+  INJECT_SOL = 'INJECT_SOL',
+  EXTRACT_SOL = 'EXTRACT_SOL',
+  INJECT_NFT_TO_ROOT = 'INJECT_NFT_TO_ROOT',
+  INJECT_NFT_TO_NON_ROOT = 'INJECT_NFT_TO_NON_ROOT',
+  INJECT_NFT_TO_ROOT_WITH_SOL = 'INJECT_NFT_TO_ROOT_WITH_SOL',
+  INJECT_NFT_TO_NON_ROOT_WITH_SOL = 'INJECT_NFT_TO_NON_ROOT_WITH_SOL',
+  EXTRACT_NFT = 'EXTRACT_NFT',
+  EXTRACT_NFT_FROM_PARENT = 'EXTRACT_NFT_FROM_PARENT',
+  TRANSFER_CHILD_NFT_TO_OTHER = 'TRANSFER_CHILD_NFT_TO_OTHER',
+}
+
 /**
  * @description: 表单是否可以操作的提示包装盒子
  */
@@ -96,6 +109,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     injectData: mintMetadata,
     refresh: refreshInjectV1,
   } = useHasInjectV1(mint)
+  const gaEvent = useGAEvent()
 
   const dispatch = useAppDispatch()
   const myNFTData = useAppSelector(selectMyNFTData)
@@ -177,6 +191,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           // 如果注入了SOL，又注入了nft
           // 如果有父级
           if (belong.parent) {
+            gaEvent(ContractActionGA.INJECT_NFT_TO_NON_ROOT_WITH_SOL)
             await contract.injectNFTToNonRootWithSOL(
               mintKey,
               childMintKeys,
@@ -185,15 +200,18 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
               reversible,
             )
           } else {
+            gaEvent(ContractActionGA.INJECT_NFT_TO_ROOT_WITH_SOL)
             await contract.injectNFTToRootWithSOL(mintKey, childMintKeys, formatVolume, reversible)
           }
         } else if (formatVolume) {
           // 如果只注入SOL
+          gaEvent(ContractActionGA.INJECT_SOL)
           await contract.injectSOL(mintKey, formatVolume)
         } else if (childMintKeys.length > 0) {
           // 如果只注入nft
           // 如果有父级
           if (belong.parent) {
+            gaEvent(ContractActionGA.INJECT_NFT_TO_NON_ROOT)
             await contract.injectNFTToNonRoot(
               mintKey,
               childMintKeys,
@@ -201,6 +219,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
               reversible,
             )
           } else {
+            gaEvent(ContractActionGA.INJECT_NFT_TO_ROOT)
             await contract.injectNFTToRoot(mintKey, childMintKeys, reversible)
           }
         }
@@ -213,6 +232,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   // 执行提取sol
   const onExtractSol = async () => {
     transactionPublic(async () => {
+      gaEvent(ContractActionGA.EXTRACT_SOL)
       await contract.extractSOL(mintKey)
     }, TransctionType.EXTRACT)
   }
@@ -259,6 +279,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       const rootMint = await contract.getRootMintFromRootPDA(rootPDA)
       if (!rootMint) return
       transactionPublic(async () => {
+        gaEvent(ContractActionGA.EXTRACT_NFT)
         await contract.transferChildNFTToUser(publicKey, new PublicKey(mintKey), {
           rootMintKey: rootMint,
           rootPDA: new PublicKey(rootPDA),
@@ -279,6 +300,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     const { volume } = token
     const lamportsVolume = solToLamports(Number(volume))
     transactionPublic(async () => {
+      gaEvent(ContractActionGA.COPY_WITH_INJECT_SOL)
       newMint = await contract.copyWithInjectSOL(mintKey, lamportsVolume, { name, uri, symbol })
       navigate(`/info/${newMint}`)
       reloadWindow()
@@ -288,6 +310,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   // 执行燃烧销毁
   const onBurn = async () => {
     transactionPublic(async () => {
+      gaEvent(ContractActionGA.BURN)
       await contract.startBurn(mintKey)
       navigate(`/`)
     }, TransctionType.BURN)
@@ -301,6 +324,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       if (!otherKeyStr) return
       const other = new PublicKey(otherKeyStr)
       if (!belong.parent) return
+      gaEvent(ContractActionGA.TRANSFER_CHILD_NFT_TO_OTHER)
       await contract.transferChildNFTToUser(other, mintKey, {
         rootMintKey: new PublicKey(belong.parent.rootMint),
         rootPDA: new PublicKey(belong.parent.rootPDA),
@@ -314,6 +338,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     transactionPublic(async () => {
       if (!publicKey) return
       if (!belong.parent) return
+      gaEvent(ContractActionGA.EXTRACT_NFT_FROM_PARENT)
       await contract.transferChildNFTToUser(publicKey, mintKey, {
         rootMintKey: new PublicKey(belong.parent.rootMint),
         rootPDA: new PublicKey(belong.parent.rootPDA),

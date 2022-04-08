@@ -28,6 +28,7 @@ import Layout from './components/Layout'
 
 import { isProd, logIsProd } from './utils'
 import { store } from './store/store'
+import { useGAPageView } from './hooks'
 
 require('@solana/wallet-adapter-react-ui/styles.css')
 
@@ -36,15 +37,14 @@ log.setLevel(logIsProd ? 'warn' : 'trace')
 function AppLayout() {
   const wallet: WalletContextState = useWallet()
   const { contract } = useContract()
+  useGAPageView()
 
   useEffect(() => {
     contract.setWallet(wallet)
   }, [wallet])
 
   return (
-    <HashRouter>
-      <Layout />
-    </HashRouter>
+    <Layout />
   )
 }
 
@@ -79,7 +79,9 @@ const App: FC = () => {
           <Provider store={store}>
             <ContractProvider>
               <GlobalStyle />
-              <AppLayout />
+              <HashRouter>
+                <AppLayout />
+              </HashRouter>
             </ContractProvider>
           </Provider>
         </WalletModalProvider>
