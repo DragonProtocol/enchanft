@@ -51,7 +51,11 @@ export default class SynftContract {
   public async copyNFTInstruction(
     owner: PublicKey,
     mint: PublicKey,
-    { name, symbol, uri }: { name: string; symbol: string; uri: string }
+    {
+      name,
+      symbol,
+      metadataUri,
+    }: { name: string; symbol: string; metadataUri: string }
   ): Promise<TransactionInstruction> {
     if (!this._program) {
       throw new Error("Init Contract with connect first");
@@ -82,7 +86,7 @@ export default class SynftContract {
       );
 
     const instructionCopy = program.methods
-      .nftCopy(...[name, symbol, uri])
+      .nftCopy(...[name, symbol, metadataUri])
       .accounts({
         currentOwner: owner,
         fromNftMint: mintKey,
@@ -133,6 +137,7 @@ export default class SynftContract {
 
   /**
    * 将一个 NFT 注入到另一个 NFT
+   * @param owner 所属
    * @param rootMintKey 被注入的 NFT
    * @param children 注入的 NFT，数组。协议支持一下子注入多个
    * @returns
@@ -212,6 +217,7 @@ export default class SynftContract {
 
   /**
    * 将 children NFT 注入到 mint NFT
+   * @param owner 所属
    * @param mintKey 被注入的 NFT 的 mint
    * @param childrenMint 注入的 NFT，数组。协议支持一下注入多个
    * @param { parentMintKey, rootPDA } 注入非 root NFT需要提供被注入的 root 信息
