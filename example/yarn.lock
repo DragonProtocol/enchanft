@@ -1539,6 +1539,27 @@
     "@json-rpc-tools/types" "^1.7.6"
     "@pedrouid/environment" "^1.0.1"
 
+"@jsrsc/synft-js-core@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/@jsrsc/synft-js-core/-/synft-js-core-0.1.4.tgz#9daca2e27f82047f876a803f5870572ab33032c5"
+  integrity sha512-Z3mOwkw/ErAucQUUg87V1ag8NiSI8SHijTdr4bo+O4t1BZKS5PIDLZGrzl1DJMQTfQ0yMGSPu71pNdlTn5PMAQ==
+  dependencies:
+    "@project-serum/anchor" "^0.25.0-beta.1"
+    "@solana/spl-token" "^0.2.0"
+    "@solana/web3.js" "^1.43.4"
+
+"@jsrsc/synft-js-react@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.npmjs.org/@jsrsc/synft-js-react/-/synft-js-react-0.1.4.tgz#f68a7270e161d620d23c249cc9b38461f241c829"
+  integrity sha512-vmCb4irY/XdF87fQY2skgIky6zdk9PMtmiPOhZxBRTWAa5d54VfVNz5AOuZplE1m1JMzVdPAUKG0+18FOwWaYQ==
+  dependencies:
+    "@jsrsc/synft-js" "0.1.2"
+    "@jsrsc/synft-js-core" "^0.1.4"
+    "@solana/wallet-adapter-react" "^0.15.5"
+    "@types/react" "^18.0.10"
+    react "^18.1.0"
+    react-dom "^18.1.0"
+
 "@jsrsc/synft-js@0.1.2":
   version "0.1.2"
   resolved "https://registry.npmjs.org/@jsrsc/synft-js/-/synft-js-0.1.2.tgz#3a4fb5ac014dcfaabfc3df165753b5bb6c376cce"
@@ -2562,6 +2583,15 @@
   version "18.0.10"
   resolved "https://registry.npmmirror.com/@types/react/-/react-18.0.10.tgz#5692944d4a45e204fb7a981eb1388afe919cf4d0"
   integrity sha512-dIugadZuIPrRzvIEevIu7A1smqOAjkSMv8qOfwPt9Ve6i6JT/FQcCHyk2qIAxwsQNKZt5/oGR0T4z9h2dXRAkg==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^18.0.10":
+  version "18.0.12"
+  resolved "https://registry.npmjs.org/@types/react/-/react-18.0.12.tgz#cdaa209d0a542b3fcf69cf31a03976ec4cdd8840"
+  integrity sha512-duF1OTASSBQtcigUvhuiTB1Ya3OvSy+xORCiEf20H0P0lzx+/KeVsA99U5UjLXSbyo1DRJDlLKqTeM1ngosqtg==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"

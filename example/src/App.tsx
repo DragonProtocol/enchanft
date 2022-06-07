@@ -20,10 +20,18 @@ import {
   WalletDisconnectButton,
   WalletMultiButton,
 } from "@solana/wallet-adapter-react-ui";
-import { clusterApiUrl, PublicKey, Transaction } from "@solana/web3.js";
+import {
+  clusterApiUrl,
+  Connection,
+  PublicKey,
+  Transaction,
+} from "@solana/web3.js";
 
-// import SynftContract from "@jsrsc/synft-js";
-import SynftContract from "../..";
+import SynftContract from "@jsrsc/synft-js";
+import {
+  Provider as SynftProvider,
+  useSynftContract,
+} from "@jsrsc/synft-js-react";
 
 // Default styles that can be overridden by your app
 require("@solana/wallet-adapter-react-ui/styles.css");
@@ -47,6 +55,10 @@ function App() {
     ],
     [network]
   );
+  const connection = useMemo(
+    () => new Connection(endpoint, { commitment: "confirmed" }),
+    [endpoint]
+  );
 
   return (
     <ConnectionProvider endpoint={endpoint}>
@@ -54,7 +66,9 @@ function App() {
         <WalletModalProvider>
           <WalletMultiButton />
           <WalletDisconnectButton />
-          <Demo />
+          <SynftProvider>
+            <Demo />
+          </SynftProvider>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
@@ -64,15 +78,17 @@ function App() {
 function Demo() {
   const { connection } = useConnection();
   const wallet = useWallet();
-  const [synftContract, setSynftContract] = useState<SynftContract>();
+  // const [synftContract, setSynftContract] = useState<SynftContract>();
 
-  useEffect(() => {
-    const instance = new SynftContract(connection);
-    setSynftContract(instance);
-  }, [connection]);
+  // useEffect(() => {
+  //   const instance = new SynftContract(connection);
+  //   setSynftContract(instance);
+  // }, [connection]);
+  const { synftContract } = useSynftContract();
 
   const copyNFT = useCallback(async () => {
     const owner = wallet.publicKey;
+    console.log(owner);
     if (!owner || !synftContract) return;
     const mint = new PublicKey("4ujSR37Xwqck7goo5Uv8rBokAJXiD7beYktjH59PzN5H");
     const copyNFTInstruction = await synftContract.copyNFTInstruction(
@@ -85,7 +101,6 @@ function Demo() {
           "https://www.arweave.net/10MIAEz-HeHmOjrcy8j8ATrUX78rsTzpiddLn9GLSNo?ext=png",
       }
     );
-
     const tx = new Transaction().add(copyNFTInstruction);
     const signature = await wallet.sendTransaction(tx, connection);
     const latestBlockHash = await connection.getLatestBlockhash();
@@ -96,7 +111,7 @@ function Demo() {
       signature: signature,
     });
     console.log(result);
-  }, [synftContract, wallet, connection]);
+  }, [wallet, connection, synftContract]);
 
   return (
     <div>

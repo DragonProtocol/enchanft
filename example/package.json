@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@jsrsc/synft-js": "0.1.2",
+    "@jsrsc/synft-js-react": "^0.1.4",
     "@solana/wallet-adapter-base": "^0.9.5",
     "@solana/wallet-adapter-react": "^0.15.5",
     "@solana/wallet-adapter-react-ui": "^0.9.7",
