@@ -28,17 +28,12 @@ export const getExploreData = createAsyncThunk(
     const dataArr = await Promise.all(
       collectionIds.map(async (collectionID) => {
         const d: NFT[] = await loadExploreNFT(collectionID)
-        await Promise.all(
-          d.map(async (item) => {
-            try {
-              const mintKey = new PublicKey(item.mint)
-              const hasCopied = await contract.getMintAccountInfo(mintKey)
-              item.hasCopied = !!hasCopied
-            } catch (error) {
-              log.error(error)
-            }
-          }),
-        )
+        const dMints = d.map(item => new PublicKey(item.mint))
+        const infos = await contract.getMintsAccountInfo(dMints)
+        if (infos)
+          d.forEach((item, index) => {
+            item.hasCopied = !!infos[index]
+          })
         return d
       }),
     )
@@ -52,17 +47,12 @@ export const getExploreDataWithCollectionId = createAsyncThunk(
   async ({ collectionId }: { collectionId: string }, thunkAPI) => {
     const contract = Contract.getInstance()
     const d: NFT[] = await loadExploreNFT(collectionId)
-    await Promise.all(
-      d.map(async (item) => {
-        try {
-          const mintKey = new PublicKey(item.mint)
-          const hasCopied = await contract.getMintAccountInfo(mintKey)
-          item.hasCopied = !!hasCopied
-        } catch (error) {
-          log.error(error)
-        }
-      }),
-    )
+    const dMints = d.map(item => new PublicKey(item.mint))
+    const infos = await contract.getMintsAccountInfo(dMints)
+    if (infos)
+      d.forEach((item, index) => {
+        item.hasCopied = !!infos[index]
+      })
     thunkAPI.dispatch(exploreSlice.actions.incrData({ data: d, collectionId }))
   },
 )
@@ -98,7 +88,7 @@ export const exploreSlice = createSlice({
         state.status = 'done'
       })
       .addCase(getExploreDataWithCollectionId.rejected, (state, action) => {
-        log.error(action.error)
+        log.error(action.error.stack)
         state.status = 'done'
       })
   },

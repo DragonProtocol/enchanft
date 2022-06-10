@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { PublicKey } from '@solana/web3.js'
+import axios from 'axios'
 import log from 'loglevel'
 
 import { RootState } from '../../store/store'
@@ -40,24 +41,23 @@ export const getMyNFTokens = createAsyncThunk('my/nftdata', async ({ owner }: { 
 export const getMyNFTData = createAsyncThunk('my/nftmetadata', async ({ nfts }: { nfts: Token[] }, thunkAPI) => {
   const contract = Contract.getInstance()
   thunkAPI.dispatch(myNFTSlice.actions.changeStatus({ status: 'loading' }))
-  const data = await Promise.all(
-    nfts.map(async (item) => {
-      try {
-        const metadataInfo = await contract.getMetadataInfoWithMint(item.mint)
-        if (!metadataInfo) return null
-        const {hasInjected,hasInjectedNFT} = await contract.checkHasInject(item.mint)
-        return {
-          image: metadataInfo.externalMetadata.image,
-          mint: metadataInfo.metadata.mint,
-          name: metadataInfo.externalMetadata.name,
-          hasInjected,
-          hasInjectedNFT
-        }
-      } catch (error) {
+  const mints = nfts.map(item => item.mint)
+  const metadatas = await contract.getMetadataFormMints(mints)
+  const data = await Promise.all(metadatas.map(async (metadata) => {
+    try {
+      const externalMetadata = (await axios.get(metadata.data.uri)).data
+      const {hasInjected,hasInjectedNFT} = await contract.checkHasInject(metadata.mint)
+      return {
+        image: externalMetadata.image,
+        mint: metadata.mint,
+        name: externalMetadata.name,
+        hasInjected,
+        hasInjectedNFT
+      }}catch(err) {
         return null
       }
-    }),
-  )
+  }))
+
   const validData = data.filter((item) => item !== null)
   thunkAPI.dispatch(myNFTSlice.actions.incrDataWithArr({ data: validData }))
   thunkAPI.dispatch(myNFTSlice.actions.changeStatus({ status: 'done' }))

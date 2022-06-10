@@ -3,7 +3,7 @@
 
 import * as anchor from '@project-serum/anchor'
 import { PublicKey, Connection, AccountInfo, SystemProgram, Transaction } from '@solana/web3.js'
-import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
+import { Metadata , PROGRAM_ID as MetadataProgramId } from '@metaplex-foundation/mpl-token-metadata'
 import { BN, Program, Provider, web3 } from '@project-serum/anchor'
 import { TOKEN_PROGRAM_ID, getAccount } from '@solana/spl-token'
 import { WalletContextState } from '@solana/wallet-adapter-react'
@@ -332,9 +332,31 @@ export default class Contract {
       log.error('Contract connect invalid')
       return null
     }
-    const pubkey = await Metadata.getPDA(mintKey)
-    const metadata = await Metadata.load(this._connection, pubkey)
-    return metadata
+    
+    const [pubkey,] = await getMetadataPDA(mintKey)
+    const info = await this._connection.getAccountInfo(pubkey)
+    if (!info) return null
+    const data = Metadata.fromAccountInfo(info)
+    return data[0]
+  }
+
+  public async getMetadataFormMints(mints: PublicKey[]) {
+    if (!this._connection) {
+      log.error('Contract connect invalid')
+      return []
+    }
+    const pdas = await Promise.all( mints.map(async (item) => {
+      const [pubkey,] = await getMetadataPDA(item)
+      return pubkey
+    }))
+    const infos = await this._connection.getMultipleAccountsInfo(pdas)
+    const datas = await Promise.all( infos.map(async (item, index) => {
+      if (item === null) return null
+      const data = Metadata.fromAccountInfo(item)
+      return data[0]
+    }))
+
+    return datas.filter((item): item is Metadata  => item!== null)
   }
 
   /**
@@ -348,9 +370,8 @@ export default class Contract {
       return null
     }
     try {
-      const tmp = await this.getMetadataFromMint(mintKey)
-      if (!tmp) return null
-      const metadata = tmp.data
+      const metadata = await this.getMetadataFromMint(mintKey)
+      if (!metadata) return null
       const externalMetadata = (await axios.get(metadata.data.uri)).data
       const result = {
         mint: mintKey,
@@ -1170,6 +1191,23 @@ export default class Contract {
     return info
   }
 
+  public async getMintsAccountInfo(mints: PublicKey[]) {
+    if (!this._connection) {
+      log.error('Contract connect invalid')
+      return null
+    }
+    const pdas = await Promise.all(mints.map(async (item) => {
+      const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
+        [Buffer.from(SynftSeed.MINT_SEED), item.toBuffer()],
+        PROGRAM_ID,
+      )
+      return nftMintPDA
+    }))
+    
+    const info = await this._connection.getMultipleAccountsInfo(pdas)
+    return info
+  }
+
   // v1 --------------------------------------
   public async getInjectV1(mintKey: PublicKey): Promise<InjectInfoV1 | null> {
     if (!this._connection || !this._program) {
@@ -1335,4 +1373,12 @@ export default class Contract {
     return !!hasInjected
   }
   // v1 end ----------------------------------
+}
+
+async function getMetadataPDA(mint: PublicKey) {
+  const key = await PublicKey.findProgramAddress(
+    [Buffer.from('metadata'), MetadataProgramId.toBuffer(), mint.toBuffer()],
+    MetadataProgramId
+  )
+  return key
 }

@@ -3,7 +3,7 @@ import { useWallet, WalletContextState } from '@solana/wallet-adapter-react'
 import styled from 'styled-components'
 import { PublicKey } from '@solana/web3.js'
 import { useNavigate } from 'react-router-dom'
-import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
+import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
 // import ReactJson from 'react-json-view'
 import log from 'loglevel'
@@ -26,7 +26,7 @@ import TooltipWrapper from './common/TooltipWrapper'
 import { FontFamilyCss } from '../GlobalStyle'
 
 interface Props {
-  metadata: MetadataData
+  metadata: Metadata
   injectTree: {
     data: Node
     loading: boolean
@@ -102,13 +102,13 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const injectRef = useRef<{ resetForm: Function }>()
   const navigate = useNavigate()
   const { contract } = useContract()
-  const { belong, loading: belongLoading } = useBelongTo(mint, injectTree.data)
+  const { belong, loading: belongLoading } = useBelongTo(mint.toString(), injectTree.data)
   const {
     checkLoading: hasInjectLoading,
     hasInject,
     injectData: mintMetadata,
     refresh: refreshInjectV1,
-  } = useHasInjectV1(mint)
+  } = useHasInjectV1(mint.toString())
   const gaEvent = useGAEvent()
 
   const dispatch = useAppDispatch()
@@ -410,7 +410,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                         }}
                         nftOptions={
                           couldInjectNFT
-                            ? myNFTData.filter((item) => item.mint != mint && item.mint != belong.parent?.rootMint)
+                            ? myNFTData.filter((item) => item.mint != mint.toString() && item.mint != belong.parent?.rootMint)
                             : []
                         }
                         nftInjectMaxNum={couldInjectNFTNum}
@@ -496,7 +496,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                       submitBtnType: 'warning',
                       submitBtnLabel: '> Encha NFT! <',
                     }}
-                    nftOptions={myNFTData.filter((item) => item?.mint != mint)}
+                    nftOptions={myNFTData.filter((item) => item?.mint != mint.toString())}
                     onInject={onCopyWithInject}
                   ></NftInject>
                 )}
