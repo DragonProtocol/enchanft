@@ -68,7 +68,6 @@ export default class SynftContract {
       [Buffer.from(SynftSeed.MINT_SEED), mintKey.toBuffer()],
       PROGRAM_ID
     );
-
     const [nftTokenAccountPDA, _nftTokenAccountBump] =
       await PublicKey.findProgramAddress(
         [Buffer.from(SynftSeed.ACCOUNT_SEED), mintKey.toBuffer()],
@@ -314,5 +313,164 @@ export default class SynftContract {
     });
     const instructionTx = await Promise.all(instructions);
     return instructionTx;
+  }
+
+  /**
+   * 将注入的 SOL 提取出来
+   * @param mintKey 被注入的 NFT 的 mint
+   * @param walletPubKey 钱包的 PubKey
+   * @returns Promise<TransactionInstruction>
+   */
+  public async extractSOL(
+    mintKey: PublicKey,
+    walletPubKey: PublicKey
+  ): Promise<TransactionInstruction> {
+    if (!this._connection || !this._program) {
+      throw new Error("Init Contract with connect first");
+    }
+
+    const program = this._program;
+    const connection = this._connection;
+    const [solPDA, solBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.SOL), mintKey.toBuffer()],
+      program.programId
+    );
+
+    const parentMintTokenAccountBalancePairs =
+      await connection.getTokenLargestAccounts(mintKey);
+    const parentMintTokenAccountAddr =
+      parentMintTokenAccountBalancePairs.value[0].address;
+
+    const extractTx = await program.methods
+      .extractSolV2(solBump)
+      .accounts({
+        currentOwner: walletPubKey,
+        parentTokenAccount: parentMintTokenAccountAddr,
+        parentMintAccount: mintKey,
+        solAccount: solPDA,
+
+        systemProgram: SystemProgram.programId,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+      })
+      .signers([])
+      .instruction();
+
+    return extractTx;
+  }
+
+  public async extractChildNFTToUser(
+    walletPubKey: PublicKey,
+    receiver: PublicKey,
+    mintKey: PublicKey, // mint4
+    {
+      parentMintKey, // mint3
+      rootMintKey,
+    }: {
+      parentMintKey: PublicKey;
+      rootMintKey: PublicKey;
+    }
+  ) {
+    if (!this._connection || !this._program) {
+      throw new Error("Init Contract with connect first");
+    }
+    const program = this._program;
+    const connection = this._connection;
+
+    const isRootChild = rootMintKey.toString() === parentMintKey.toString();
+    // const rootMeta = await program.account.childrenMetadataV2.fetch(rootPDA)
+    // const rootMintKey = rootMeta.parent
+    const rootMintTokenAccounts = await connection.getTokenLargestAccounts(
+      rootMintKey
+    );
+    const rootMintTokenAccountAddr = rootMintTokenAccounts.value[0].address;
+
+    const [rootMetaPDA, _rootMetadataBump] = await PublicKey.findProgramAddress(
+      [
+        Buffer.from(SynftSeed.CHILDREN_OF),
+        rootMintKey.toBuffer(),
+        parentMintKey.toBuffer(),
+      ],
+      PROGRAM_ID
+    );
+
+    const [parentMetaPDA, parentMetadataBump] =
+      await PublicKey.findProgramAddress(
+        [
+          Buffer.from(SynftSeed.CHILDREN_OF),
+          parentMintKey.toBuffer(),
+          mintKey.toBuffer(),
+        ],
+        PROGRAM_ID
+      );
+
+    // const parentMintTokenAccounts = await connection.getTokenLargestAccounts(parentMintKey)
+    // const parentMintTokenAccountAddr = parentMintTokenAccounts.value[0].address
+
+    const mintTokenAccounts = await connection.getTokenLargestAccounts(mintKey);
+    const mintTokenAccountAddr = mintTokenAccounts.value[0].address;
+
+    const tx = await program.methods
+      .transferChildNftV2(parentMetadataBump)
+      .accounts({
+        currentOwner: walletPubKey,
+        childTokenAccount: mintTokenAccountAddr,
+        childMintAccount: mintKey,
+        rootTokenAccount: rootMintTokenAccountAddr,
+        rootMintAccount: rootMintKey,
+        childrenMetaOfParent: parentMetaPDA,
+        parentMintAccount: parentMintKey,
+        rootMeta: isRootChild ? parentMetaPDA : rootMetaPDA,
+        receiverAccount: receiver,
+
+        systemProgram: SystemProgram.programId,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .signers([])
+      .instruction();
+    return tx;
+  }
+
+  public async burn(walletPubKey: PublicKey, mintKey: PublicKey) {
+    if (!this._connection || !this._program) {
+      throw new Error("Init Contract with connect first");
+    }
+    const program = this._program;
+
+    const [solPDA, _solBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.SOL), mintKey.toBuffer()],
+      program.programId
+    );
+    const [parentPDA, _parentBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.PARENT_METADATA), mintKey.toBuffer()],
+      program.programId
+    );
+    const [oldRootOwner] = await PublicKey.findProgramAddress(
+      [Buffer.from("root-owner-seed"), mintKey.toBuffer()],
+      program.programId
+    );
+
+    const mintTokenAccount = await this._connection.getTokenLargestAccounts(
+      mintKey
+    );
+    const mintTokenAccountAddress = mintTokenAccount.value[0].address;
+
+    const burnTx = await program.methods
+      .startBurn()
+      .accounts({
+        currentOwner: walletPubKey,
+        parentMintAccount: mintKey,
+        parentTokenAccount: mintTokenAccountAddress,
+        parentMetadata: parentPDA,
+        solAccount: solPDA,
+        oldRootOwner,
+
+        systemProgram: SystemProgram.programId,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+        tokenProgram: TOKEN_PROGRAM_ID,
+      })
+      .signers([])
+      .instruction();
+    return burnTx;
   }
 }

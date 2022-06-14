@@ -19,5 +19,10 @@
   "bugs": {
     "url": "https://github.com/DragonProtocol/synft-js-sdk/issues"
   },
-  "homepage": "https://github.com/DragonProtocol/synft-js-sdk#readme"
+  "homepage": "https://github.com/DragonProtocol/synft-js-sdk#readme",
+  "dependencies": {
+    "@solana/wallet-adapter-react": "^0.15.5",
+    "@types/react": "^18.0.12",
+    "react": "^18.1.0"
+  }
 }

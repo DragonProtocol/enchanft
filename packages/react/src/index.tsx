@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { useConnection } from "@solana/wallet-adapter-react";
-import { Connection } from "@solana/web3.js";
 import SynftContract from "@jsrsc/synft-js-core";
 
 export interface SynftContextData {
@@ -13,14 +12,15 @@ export const SynftContractContext = createContext<SynftContextData | null>(
 
 type Props = {
   children: React.ReactNode;
-  connection?: Connection;
 };
 
-export const Provider = ({ children, connection }: Props) => {
+export const Provider = ({ children }: Props) => {
   const connectionCtx = useConnection();
-  const conn = connection || connectionCtx.connection;
+  const conn = connectionCtx.connection;
   const synftContract = useMemo(() => {
-    return new SynftContract(conn);
+    const instance = new SynftContract(conn);
+    console.log("synft instance", instance, conn);
+    return instance;
   }, [conn]);
 
   return (
