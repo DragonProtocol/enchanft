@@ -4,7 +4,7 @@
 import * as anchor from '@project-serum/anchor'
 import { PublicKey, Connection, AccountInfo, SystemProgram, Transaction } from '@solana/web3.js'
 import { Metadata , PROGRAM_ID as MetadataProgramId } from '@metaplex-foundation/mpl-token-metadata'
-import { BN, Program, Provider, web3 } from '@project-serum/anchor'
+import { BN, Program, AnchorProvider, web3 } from '@project-serum/anchor'
 import { TOKEN_PROGRAM_ID, getAccount } from '@solana/spl-token'
 import { WalletContextState } from '@solana/wallet-adapter-react'
 import axios from 'axios'
@@ -50,7 +50,7 @@ export default class Contract {
 
   private initProgram(connection: Connection) {
     log.info('Contract initProgram')
-    const provider = new Provider(connection, (window as any).solana, Provider.defaultOptions())
+    const provider = new AnchorProvider(connection, {} as any, AnchorProvider.defaultOptions())
     const program = new Program(idl as any, PROGRAM_ID, provider) as Program<Synft>
     this._program = program
   }

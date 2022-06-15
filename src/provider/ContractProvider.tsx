@@ -23,6 +23,7 @@ type Props = {
 export default ({ children }: Props) => {
   const { connection } = useConnection()
 
+  console.log(connection)
   const memoizedValue = useMemo(() => {
     instance.setConnection(connection)
     return { contract: instance }
