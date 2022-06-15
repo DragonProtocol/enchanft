@@ -1,6 +1,6 @@
 {
   "name": "@jsrsc/synft-js-react",
-  "version": "0.2.4",
+  "version": "0.2.7",
   "description": "",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
@@ -37,6 +37,6 @@
     "react-dom": "^18.1.0"
   },
   "dependencies": {
-    "@jsrsc/synft-js-core": "^0.2.1"
+    "@jsrsc/synft-js-core": "^0.2.4"
   }
 }

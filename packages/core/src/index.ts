@@ -20,7 +20,7 @@ const MPL_PROGRAM_ID = new PublicKey(
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
 );
 const PROGRAM_ID = new PublicKey(idl.metadata.address);
-enum SynftSeed {
+export enum SynftSeed {
   SOL = "sol-seed",
   CHILDREN_OF = "children-of",
   METADATA = "metadata",
@@ -31,7 +31,7 @@ enum SynftSeed {
 
 export default class SynftContract {
   private _connection: Connection | null = null;
-  private _program: Program<Synft> | null = null;
+  public program: Program<Synft> | null = null;
 
   constructor(connection: Connection) {
     const provider = new AnchorProvider(
@@ -45,7 +45,7 @@ export default class SynftContract {
       provider
     ) as Program<Synft>;
     this._connection = connection;
-    this._program = program;
+    this.program = program;
   }
 
   public async copyNFTInstruction(
@@ -57,13 +57,12 @@ export default class SynftContract {
       metadataUri,
     }: { name: string; symbol: string; metadataUri: string }
   ): Promise<TransactionInstruction> {
-    if (!this._program) {
+    if (!this.program) {
       throw new Error("Init Contract with connect first");
     }
     const mintKey = mint;
-    const program = this._program;
+    const program = this.program;
 
-    // 1. 使用 mint 进行 copy
     const [nftMintPDA, _nftMintBump] = await PublicKey.findProgramAddress(
       [Buffer.from(SynftSeed.MINT_SEED), mintKey.toBuffer()],
       PROGRAM_ID
@@ -106,7 +105,7 @@ export default class SynftContract {
     mintKey: PublicKey,
     solAmount: number
   ): Promise<TransactionInstruction> {
-    if (!this._program || !this._connection) {
+    if (!this.program || !this._connection) {
       throw new Error("Init Contract with connect first");
     }
     const injectSolAmount = new BN(solAmount);
@@ -119,11 +118,41 @@ export default class SynftContract {
       [Buffer.from(SynftSeed.SOL), mintKey.toBuffer()],
       PROGRAM_ID
     );
-    const instruction = await this._program.methods
+    const instruction = await this.program.methods
       .injectToSolV2(solBump, injectSolAmount)
       .accounts({
         currentOwner: owner,
         parentTokenAccount: mintTokenAccountAddress,
+        parentMintAccount: mintKey,
+        solAccount: solPDA,
+        systemProgram: SystemProgram.programId,
+        rent: web3.SYSVAR_RENT_PUBKEY,
+      })
+      .instruction();
+
+    return instruction;
+  }
+
+  public async injectSOLWithTokenAccountInstruction(
+    owner: PublicKey,
+    mintKey: PublicKey,
+    tokenAccount: PublicKey,
+    solAmount: number
+  ): Promise<TransactionInstruction> {
+    if (!this.program || !this._connection) {
+      throw new Error("Init Contract with connect first");
+    }
+    const injectSolAmount = new BN(solAmount);
+
+    const [solPDA, solBump] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.SOL), mintKey.toBuffer()],
+      PROGRAM_ID
+    );
+    const instruction = await this.program.methods
+      .injectToSolV2(solBump, injectSolAmount)
+      .accounts({
+        currentOwner: owner,
+        parentTokenAccount: tokenAccount,
         parentMintAccount: mintKey,
         solAccount: solPDA,
         systemProgram: SystemProgram.programId,
@@ -147,13 +176,13 @@ export default class SynftContract {
     children: PublicKey[],
     reversible = true
   ): Promise<TransactionInstruction[]> {
-    if (!this._connection || !this._program) {
+    if (!this._connection || !this.program) {
       throw new Error("Init Contract with connect first");
     }
     if (children.length === 0) {
       throw new Error("children must has one item");
     }
-    const program = this._program;
+    const program = this.program;
     const connection = this._connection;
 
     const parentMintTokenAccounts = await connection.getTokenLargestAccounts(
@@ -229,14 +258,14 @@ export default class SynftContract {
     rootPDA: PublicKey,
     reversible = true
   ) {
-    if (!this._connection || !this._program) {
+    if (!this._connection || !this.program) {
       throw new Error("Init Contract with connect first");
     }
     if (childrenMint.length === 0) {
       throw new Error("childrenMint must has one item");
     }
 
-    const program = this._program;
+    const program = this.program;
     const connection = this._connection;
 
     const rootMeta = await program.account.childrenMetadataV2.fetch(rootPDA);
@@ -325,11 +354,11 @@ export default class SynftContract {
     mintKey: PublicKey,
     walletPubKey: PublicKey
   ): Promise<TransactionInstruction> {
-    if (!this._connection || !this._program) {
+    if (!this._connection || !this.program) {
       throw new Error("Init Contract with connect first");
     }
 
-    const program = this._program;
+    const program = this.program;
     const connection = this._connection;
     const [solPDA, solBump] = await PublicKey.findProgramAddress(
       [Buffer.from(SynftSeed.SOL), mintKey.toBuffer()],
@@ -370,10 +399,10 @@ export default class SynftContract {
       rootMintKey: PublicKey;
     }
   ) {
-    if (!this._connection || !this._program) {
+    if (!this._connection || !this.program) {
       throw new Error("Init Contract with connect first");
     }
-    const program = this._program;
+    const program = this.program;
     const connection = this._connection;
 
     const isRootChild = rootMintKey.toString() === parentMintKey.toString();
@@ -432,10 +461,10 @@ export default class SynftContract {
   }
 
   public async burn(walletPubKey: PublicKey, mintKey: PublicKey) {
-    if (!this._connection || !this._program) {
+    if (!this._connection || !this.program) {
       throw new Error("Init Contract with connect first");
     }
-    const program = this._program;
+    const program = this.program;
 
     const [solPDA, _solBump] = await PublicKey.findProgramAddress(
       [Buffer.from(SynftSeed.SOL), mintKey.toBuffer()],
@@ -472,5 +501,14 @@ export default class SynftContract {
       .signers([])
       .instruction();
     return burnTx;
+  }
+
+  public async getRootMintFromRootPDA(pda: string) {
+    if (!this._connection || !this.program) {
+      throw new Error("Init Contract with connect first");
+    }
+    const rootMeta = await this.program.account.childrenMetadataV2.fetch(pda);
+    const rootMintKey = rootMeta.parent;
+    return rootMintKey;
   }
 }
