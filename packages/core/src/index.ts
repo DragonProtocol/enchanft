@@ -12,14 +12,18 @@ import {
   utils,
 } from "@project-serum/anchor";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
 import idl from "./idl.json";
 import type { Synft } from "./synft";
-
+// import axios from "axios";
+const PARENT_OFFSET = 40; // 8(anchor) + 32(pubkey)
+const CHILD_OFFSET = 8; // 8(anchor)
 const MPL_PROGRAM_ID = new PublicKey(
   "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
 );
-const PROGRAM_ID = new PublicKey(idl.metadata.address);
+
+export const PROGRAM_ID = new PublicKey(idl.metadata.address);
 export enum SynftSeed {
   SOL = "sol-seed",
   CHILDREN_OF = "children-of",
@@ -28,6 +32,11 @@ export enum SynftSeed {
   MINT_SEED = "synthetic-nft-mint-seed",
   PARENT_METADATA = "parent-metadata-seed",
 }
+export type MetaInfo = {
+  mint: PublicKey;
+  metadata: Metadata; // metaplex metadata
+  externalMetadata: any; // metaplex uri 指向的 json 数据
+};
 
 export default class SynftContract {
   private _connection: Connection | null = null;
@@ -510,5 +519,80 @@ export default class SynftContract {
     const rootMeta = await this.program.account.childrenMetadataV2.fetch(pda);
     const rootMintKey = rootMeta.parent;
     return rootMintKey;
+  }
+
+  public async getParentNFT(mintKey: PublicKey) {
+    if (!this._connection || !this.program) {
+      throw new Error("Init Contract with connect first");
+    }
+    const parentNFT = await this.program.account.childrenMetadataV2.all([
+      {
+        memcmp: {
+          offset: CHILD_OFFSET,
+          bytes: mintKey.toBase58(),
+        },
+      },
+    ]);
+
+    if (parentNFT && parentNFT[0]) {
+      const rootPDA = parentNFT[0].account.root.toString();
+      const rootMintKey = await this.getRootMintFromRootPDA(rootPDA);
+      return {
+        mint: parentNFT[0].account.parent.toString(),
+        rootPDA: parentNFT[0].account.root.toString(),
+        isMutated: parentNFT[0].account.isMutated,
+        rootMint: rootMintKey!.toString(),
+      };
+    }
+    return null;
+  }
+
+  public async getInjectChildren(mintKey: PublicKey) {
+    if (!this._connection || !this.program) {
+      throw new Error("Init Contract with connect first");
+    }
+    const filter = [
+      {
+        memcmp: {
+          offset: PARENT_OFFSET,
+          bytes: mintKey.toBase58(),
+        },
+      },
+    ];
+
+    const childrenNFT = await this.program.account.childrenMetadataV2.all(
+      filter
+    );
+    return childrenNFT;
+  }
+
+  public async getInjectSOL(mintKey: PublicKey) {
+    if (!this._connection || !this.program) {
+      throw new Error("Init Contract with connect first");
+    }
+    const [solPDA] = await PublicKey.findProgramAddress(
+      [Buffer.from(SynftSeed.SOL), mintKey.toBuffer()],
+      PROGRAM_ID
+    );
+    const solChildrenMetadata = await this._connection.getAccountInfo(solPDA);
+    return solChildrenMetadata;
+  }
+
+  public async checkHasInject(mintKey: PublicKey): Promise<{
+    hasInjected: boolean;
+    hasInjectedSOL: boolean;
+    hasInjectedNFT: boolean;
+  }> {
+    if (!this._connection || !this.program) {
+      throw new Error("Init Contract with connect first");
+    }
+    const solChildrenMetadata = await this.getInjectSOL(mintKey);
+    const childrenNFT = await this.getInjectChildren(mintKey);
+
+    return {
+      hasInjected: !!solChildrenMetadata || childrenNFT.length > 0,
+      hasInjectedNFT: childrenNFT.length > 0,
+      hasInjectedSOL: !!solChildrenMetadata,
+    };
   }
 }
