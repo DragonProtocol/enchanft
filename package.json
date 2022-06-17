@@ -5,8 +5,8 @@
   "dependencies": {
     "@antv/graphin": "^2.5.0",
     "@antv/graphin-components": "^2.4.0",
-    "@jsrsc/synft-js-core": "^0.2.0",
-    "@jsrsc/synft-js-react": "^0.2.7",
+    "@jsrsc/synft-js-core": "^0.2.6",
+    "@jsrsc/synft-js-react": "^0.2.9",
     "@metaplex-foundation/mpl-token-metadata": "^2.1.2",
     "@mui/material": "^5.5.0",
     "@mui/styled-engine-sc": "^5.4.2",

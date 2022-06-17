@@ -117,8 +117,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       return
     }
     const owner = publicKey
-    if (belong.me) dispatch(getMyNFTokens({ owner }))
-  }, [publicKey, belong])
+    if (belong.me) dispatch(getMyNFTokens({ owner, connection, synftContract }))
+  }, [publicKey, belong, connection, synftContract])
 
   // 交易状态
   const [transactionState, setTransactionState] = useState({
@@ -232,11 +232,11 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         }
         
         await sendWalletTrans(tx, connection, wallet)
-        publicKey && dispatch(getMyNFTokens({ owner: publicKey }))
+        publicKey && dispatch(getMyNFTokens({ owner: publicKey , connection, synftContract}))
         injectRef.current && injectRef.current.resetForm()
       }, TransctionType.INJECT)
     },
-    [belong, injectTree.data, publicKey],
+    [belong, injectTree.data, publicKey, connection, synftContract],
   )
   // 执行提取sol
   const onExtractSol = useCallback(async () => {

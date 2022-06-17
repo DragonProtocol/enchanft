@@ -4,7 +4,8 @@ import log from 'loglevel'
 
 import { RootState } from '../../store/store'
 
-import { Contract, NFT } from '../../synft'
+import { NFT } from '../../synft'
+import { getMintsAccountInfo } from '../../utils'
 import { loadExploreNFT } from './exploreData'
 
 interface ExploreNFT {
@@ -24,12 +25,11 @@ const initialState: ExploreNFT = {
 export const getExploreData = createAsyncThunk(
   'explore/nftdata',
   async ({ collectionIds, connection }: { collectionIds: string[]; connection: Connection }) => {
-    const contract = Contract.getInstance()
     const dataArr = await Promise.all(
       collectionIds.map(async (collectionID) => {
         const d: NFT[] = await loadExploreNFT(collectionID)
         const dMints = d.map(item => new PublicKey(item.mint))
-        const infos = await contract.getMintsAccountInfo(dMints)
+        const infos = await getMintsAccountInfo(dMints, connection)
         if (infos)
           d.forEach((item, index) => {
             item.hasCopied = !!infos[index]
@@ -44,11 +44,10 @@ export const getExploreData = createAsyncThunk(
 
 export const getExploreDataWithCollectionId = createAsyncThunk(
   'explore/nftDataWithCollectionId',
-  async ({ collectionId }: { collectionId: string }, thunkAPI) => {
-    const contract = Contract.getInstance()
+  async ({ collectionId, connection }: { collectionId: string, connection: Connection }, thunkAPI) => {
     const d: NFT[] = await loadExploreNFT(collectionId)
     const dMints = d.map(item => new PublicKey(item.mint))
-    const infos = await contract.getMintsAccountInfo(dMints)
+    const infos = await getMintsAccountInfo(dMints, connection)
     if (infos)
       d.forEach((item, index) => {
         item.hasCopied = !!infos[index]

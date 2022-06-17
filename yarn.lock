@@ -2144,30 +2144,23 @@
     "@json-rpc-tools/types" "^1.7.6"
     "@pedrouid/environment" "^1.0.1"
 
-"@jsrsc/synft-js-core@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.npmjs.org/@jsrsc/synft-js-core/-/synft-js-core-0.2.0.tgz#4f189ab5f4d8e5d5009487da8a5c00a8f3e1e605"
-  integrity sha512-HmqOS6Ow+7pQi/ih0U7tiB6T+WkfsIfphuRsIiyodeqJV0lhkpWrfg8nca4aRxI+ZAoMsR6vIwsDUyQS02Iw0Q==
+"@jsrsc/synft-js-core@^0.2.6":
+  version "0.2.6"
+  resolved "https://registry.npmjs.org/@jsrsc/synft-js-core/-/synft-js-core-0.2.6.tgz#41e73b421db8eb1d5d20223cacfae74186b1d74b"
+  integrity sha512-E19Qfz0Jwxa899c8BOOq3IRiFJtQ4NjrkdVWh0JRXxYDeXJ8FERv2IQW9b8hUo0j0Lu2BU/sjN27vYz0XNnzxQ==
   dependencies:
+    "@metaplex-foundation/mpl-token-metadata" "^2.1.2"
     "@project-serum/anchor" "^0.25.0-beta.1"
     "@solana/spl-token" "^0.2.0"
     "@solana/web3.js" "^1.43.4"
+    axios "^0.27.2"
 
-"@jsrsc/synft-js-core@^0.2.4":
-  version "0.2.4"
-  resolved "https://registry.npmjs.org/@jsrsc/synft-js-core/-/synft-js-core-0.2.4.tgz#532a04d1bd88171a61b801ba06d853c868fa982e"
-  integrity sha512-PeTmoJEcsXHGUPR3obYWu+ISnvmaTWnY/NfWN/L2kTmd9tCr9KT/el1x5Ldyn0tgL2MZSUtMv5/XT0akzYERCQ==
+"@jsrsc/synft-js-react@^0.2.9":
+  version "0.2.9"
+  resolved "https://registry.npmjs.org/@jsrsc/synft-js-react/-/synft-js-react-0.2.9.tgz#3915aad4979132a629f83d692938b480fcfe17e2"
+  integrity sha512-gOos0xlpGXIEjXnd0Z/34tY+MqfW/rrx4MTcUqNGM1truvY3YI6a9C5R2QlPaAQp9VoynLvti/kuEs+oBhqCLQ==
   dependencies:
-    "@project-serum/anchor" "^0.25.0-beta.1"
-    "@solana/spl-token" "^0.2.0"
-    "@solana/web3.js" "^1.43.4"
-
-"@jsrsc/synft-js-react@^0.2.7":
-  version "0.2.7"
-  resolved "https://registry.npmjs.org/@jsrsc/synft-js-react/-/synft-js-react-0.2.7.tgz#49aee48aff701a04eea570ec8d9bf6cc56f5e1ac"
-  integrity sha512-cZ7oKCTVdSaFNomNwKXAzvzy6WjlS9HFeIFAJAs9aSjyvqFGtTCHNdWxZnupnwku3UEizTZD89hTCEUjUdoJxw==
-  dependencies:
-    "@jsrsc/synft-js-core" "^0.2.4"
+    "@jsrsc/synft-js-core" "^0.2.6"
 
 "@ledgerhq/devices@^6.24.1":
   version "6.24.1"
@@ -4224,6 +4217,14 @@ axios@^0.21.0, axios@^0.21.1:
   integrity sha512-ut5vewkiu8jjGBdqpM44XxjuCjq9LAKeHVmoVfHVzy8eHgxxq8SbAVQNovDA8mVi05kP0Ea/n/UzcSHcTJQfNg==
   dependencies:
     follow-redirects "^1.14.0"
+
+axios@^0.27.2:
+  version "0.27.2"
+  resolved "https://registry.npmjs.org/axios/-/axios-0.27.2.tgz#207658cc8621606e586c85db4b41a750e756d972"
+  integrity sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==
+  dependencies:
+    follow-redirects "^1.14.9"
+    form-data "^4.0.0"
 
 axobject-query@^2.2.0:
   version "2.2.0"
@@ -6814,6 +6815,11 @@ follow-redirects@^1.0.0, follow-redirects@^1.14.0, follow-redirects@^1.14.8:
   resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.14.9.tgz#dd4ea157de7bfaf9ea9b3fbd85aa16951f78d8d7"
   integrity sha512-MQDfihBQYMcyy5dhRDJUHcw7lb2Pv/TuE6xP1vyraLukNDHKbDxDNaOE3NbCAdKQApno+GPRyo1YAp89yCjK4w==
 
+follow-redirects@^1.14.9:
+  version "1.15.1"
+  resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.1.tgz#0ca6a452306c9b276e4d3127483e29575e207ad5"
+  integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
+
 foreach@^2.0.5:
   version "2.0.5"
   resolved "https://registry.npmjs.org/foreach/-/foreach-2.0.5.tgz#0bee005018aeb260d0a3af3ae658dd0136ec1b99"
@@ -6842,6 +6848,15 @@ form-data@^3.0.0:
   version "3.0.1"
   resolved "https://registry.npmjs.org/form-data/-/form-data-3.0.1.tgz#ebd53791b78356a99af9a300d4282c4d5eb9755f"
   integrity sha512-RHkBKtLWUVwd7SqRIvCZMEvAMoGUp0XU+seQiZejj0COz3RI3hWP4sCv3gZWWLjJTd7rGwcsF5eKZGii0r/hbg==
+  dependencies:
+    asynckit "^0.4.0"
+    combined-stream "^1.0.8"
+    mime-types "^2.1.12"
+
+form-data@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.npmjs.org/form-data/-/form-data-4.0.0.tgz#93919daeaf361ee529584b9b31664dc12c9fa452"
+  integrity sha512-ETEklSGi5t0QMZuiXoA/Q6vcnxcLQP5vdugSpuAyi6SVGi2clPPp+xgEhuMaHC+zGgn31Kd235W35f7Hykkaww==
   dependencies:
     asynckit "^0.4.0"
     combined-stream "^1.0.8"

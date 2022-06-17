@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import styled from 'styled-components'
+import { useSynftContract } from '@jsrsc/synft-js-react'
 
 import { useInView } from 'react-intersection-observer'
 import NFTList, { NftDataItem } from '../components/NFTList'
@@ -22,10 +23,12 @@ import { MOBILE_BREAK_POINT } from '../utils/constants'
 import { backToTop, getLayoutMainScrollBox } from '../utils/tools'
 import RemindConnectWallet from '../components/RemindConnectWallet'
 
+
 function Home() {
   const wallet = useWallet()
   const walletRef = useRef('')
   const { connection } = useConnection()
+  const { synftContract } = useSynftContract()
   const [tab, setTab] = useState(localStorage.getItem('tab') || 'explore') // explore | my
   const titleRefExplore = useRef<SplitTextOpacityFuns>(null)
   const titleRefMy = useRef<SplitTextOpacityFuns>(null)
@@ -72,8 +75,8 @@ function Home() {
 
     walletRef.current = wallet.publicKey.toString()
     const owner = wallet.publicKey
-    dispatch(getMyNFTokens({ owner }))
-  }, [wallet])
+    dispatch(getMyNFTokens({ owner, connection, synftContract }))
+  }, [wallet, connection, synftContract])
 
   useEffect(() => {
     // 滚动条滚动到顶部(为了移动端更友好些)
@@ -94,7 +97,7 @@ function Home() {
     // 如果还没请求过数据, 并且有可用的数据
     if (exploreNFTStatus === 'init' && collections.length > 0) {
       // 发出初始化缓存请求：去请求第一页数据
-      dispatch(getExploreDataWithCollectionId({ collectionId: collections[0] }))
+      dispatch(getExploreDataWithCollectionId({ collectionId: collections[0], connection }))
     } else if (exploreNFTStatus === 'done') {
       // 刚结束了一次请求
       // 每次结束请求后，都设定当前显示的数据为上次一缓存的数据
@@ -112,14 +115,14 @@ function Home() {
         if (exploreDataCache.current.pageIndex < collections.length - 1) {
           // 再次发出初始化缓存请求：去请求第二页数据
           dispatch(
-            getExploreDataWithCollectionId({ collectionId: collections[exploreDataCache.current.pageIndex + 1] }),
+            getExploreDataWithCollectionId({ collectionId: collections[exploreDataCache.current.pageIndex + 1], connection }),
           )
         }
         // 同时设置说明下一次请求的结果是在所有初始话缓存请求发出之后
         exploreDataCache.current.initRequsetAfter = true
       }
     }
-  }, [exploreNFTStatus])
+  }, [exploreNFTStatus, connection])
 
   // 监听视口位置阀值，滚动到指定位置显示下一页数据，请求下下页数据
   useEffect(() => {
@@ -127,13 +130,13 @@ function Home() {
     if (tab === 'explore' && showExplorePageIndex < exploreDataCache.current.pageIndex && inView) {
       // 如果还有下一页，通知去请求下下一页的内容
       if (exploreDataCache.current.pageIndex < collections.length - 1) {
-        dispatch(getExploreDataWithCollectionId({ collectionId: collections[exploreDataCache.current.pageIndex + 1] }))
+        dispatch(getExploreDataWithCollectionId({ collectionId: collections[exploreDataCache.current.pageIndex + 1], connection }))
       } else {
         setShowExploreData(exploreDataCache.current.data)
         setShowExplorePageIndex(exploreDataCache.current.pageIndex)
       }
     }
-  }, [inView])
+  }, [inView, connection])
   const nftList: NftDataItem[] = tab === 'my' ? myNFTData : showExploreData
   let nftListLoading = false
   switch (tab) {

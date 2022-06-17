@@ -27,8 +27,6 @@ import {
 } from "@jsrsc/synft-js-react"
 
 
-
-import ContractProvider, { useContract } from './provider/ContractProvider'
 import GlobalStyle from './GlobalStyle'
 import Layout from './components/Layout'
 
@@ -42,12 +40,7 @@ log.setLevel(logIsProd ? 'warn' : 'trace')
 
 function AppLayout() {
   const wallet: WalletContextState = useWallet()
-  const { contract } = useContract()
   useGAPageView()
-
-  useEffect(() => {
-    contract.setWallet(wallet)
-  }, [wallet])
 
   return (
     <Layout />
@@ -83,14 +76,12 @@ const App: FC = () => {
       <WalletProvider autoConnect wallets={wallets}>
         <WalletModalProvider>
           <ReduxProvider store={store}>
-            <ContractProvider>
-              <SynftProvider>
-                <GlobalStyle />
-                <HashRouter>
-                  <AppLayout />
-                </HashRouter>
-                </SynftProvider>
-            </ContractProvider>
+            <SynftProvider>
+              <GlobalStyle />
+              <HashRouter>
+                <AppLayout />
+              </HashRouter>
+              </SynftProvider>
           </ReduxProvider>
         </WalletModalProvider>
       </WalletProvider>
