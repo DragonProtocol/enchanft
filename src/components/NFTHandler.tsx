@@ -191,7 +191,6 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           // 如果注入了SOL，又注入了nft
           // 如果有父级
           if (belong.parent) {
-            // TODO 0
             gaEvent(ContractActionGA.INJECT_NFT_TO_NON_ROOT_WITH_SOL)
             const injectTx = await synftContract.injectNFTToNonRoot(
               publicKey,mintKey, childMintKeys, new PublicKey(belong.parent.rootPDA), reversible
@@ -216,7 +215,6 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           // 如果只注入nft
           // 如果有父级
           if (belong.parent) {
-            // TODO 0
             gaEvent(ContractActionGA.INJECT_NFT_TO_NON_ROOT)
             const injectTx = await synftContract.injectNFTToNonRoot(
               publicKey,mintKey, childMintKeys, new PublicKey(belong.parent.rootPDA), reversible
