@@ -5,7 +5,7 @@ import { SynftSeed, SYNFT_PROGRAM_ID } from '@jsrsc/synft-js-react'
 import SynftContract from "@jsrsc/synft-js-core"
 import { TOKEN_PROGRAM_ID, getAccount } from '@solana/spl-token'
 
-import type { BelongTo, MetaInfo, Node } from '../synft/v2/types'
+import type { BelongTo, MetaInfo, Node } from '../synft'
 
 
 export async function getMetadataFromMint(mintKey: PublicKey, connection: Connection) {
