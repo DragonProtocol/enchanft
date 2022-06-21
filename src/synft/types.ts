@@ -1,4 +1,4 @@
-import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
+import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import { PublicKey, AccountInfo } from '@solana/web3.js'
 
 // 合约持有的注入的信息
@@ -33,7 +33,7 @@ export interface Node {
 // externalMetadata 是 metadata 的 uri 指向的 json data
 export type MetaInfo = {
   mint: PublicKey
-  metadata: MetadataData // metaplex metadata
+  metadata: Metadata // metaplex metadata
   externalMetadata: any // metaplex uri 指向的 json 数据
 }
 

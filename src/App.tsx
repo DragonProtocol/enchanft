@@ -18,11 +18,15 @@ import {
   TorusWalletAdapter,
 } from '@solana/wallet-adapter-wallets'
 import { clusterApiUrl } from '@solana/web3.js'
-import { Provider } from 'react-redux'
+import { Provider as ReduxProvider } from 'react-redux'
 import { BrowserRouter, HashRouter } from 'react-router-dom'
 import log from 'loglevel'
 
-import ContractProvider, { useContract } from './provider/ContractProvider'
+import {
+  Provider as SynftProvider,
+} from "@jsrsc/synft-js-react"
+
+
 import GlobalStyle from './GlobalStyle'
 import Layout from './components/Layout'
 
@@ -36,12 +40,7 @@ log.setLevel(logIsProd ? 'warn' : 'trace')
 
 function AppLayout() {
   const wallet: WalletContextState = useWallet()
-  const { contract } = useContract()
   useGAPageView()
-
-  useEffect(() => {
-    contract.setWallet(wallet)
-  }, [wallet])
 
   return (
     <Layout />
@@ -76,14 +75,14 @@ const App: FC = () => {
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider autoConnect wallets={wallets}>
         <WalletModalProvider>
-          <Provider store={store}>
-            <ContractProvider>
+          <ReduxProvider store={store}>
+            <SynftProvider>
               <GlobalStyle />
               <HashRouter>
                 <AppLayout />
               </HashRouter>
-            </ContractProvider>
-          </Provider>
+              </SynftProvider>
+          </ReduxProvider>
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>

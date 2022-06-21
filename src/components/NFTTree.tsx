@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import Graphin, { GraphinData, IG6GraphEvent, IUserEdge } from '@antv/graphin'
-import { Contract, Node } from '../synft'
+import { Node } from '../synft'
 import { useNavigate } from 'react-router-dom'
 import { NftDataItem } from './NFTList'
 import { PublicKey } from '@solana/web3.js'
 import LoadingIcon from './imgs/Loading.gif'
-import { lamportsToSol } from '../utils'
+import { getMetadataInfoWithMint, lamportsToSol } from '../utils'
 import { VIEW_LAMPORTS_DECIMAL } from '../utils/constants'
+import { useConnection } from '@solana/wallet-adapter-react'
 interface TreeNodeCustomData extends Node, NftDataItem {
   image: string
   name: string
@@ -110,7 +111,7 @@ const NFTTree: React.FC<Props> = (props: Props) => {
 
   const graphinRef = React.createRef<Graphin>()
   const [treeData, setTreeData] = useState({ nodes, edges })
-  const contract = Contract.getInstance()
+  const { connection } = useConnection()
 
   // 通过节点中源数据获取nft数据
   useEffect(() => {
@@ -118,7 +119,7 @@ const NFTTree: React.FC<Props> = (props: Props) => {
       const promises = nodes.map(async (item: TreeNode) => {
         const { mint } = item.customData.curr
         const mintKey = new PublicKey(mint as string)
-        const data = await contract.getMetadataInfoWithMint(mintKey)
+        const data = await getMetadataInfoWithMint(mintKey, connection)
         // 将元信息添加到节点的自定义数据中
         const customData = { ...item.customData, curr: { ...item.customData.curr, ...data?.externalMetadata } }
         return { ...item, customData }
@@ -137,7 +138,7 @@ const NFTTree: React.FC<Props> = (props: Props) => {
       })
       setTreeData({ nodes: newNodes, edges })
     })()
-  }, [injectTree])
+  }, [injectTree, connection])
   const treeDataJson = JSON.stringify(treeData)
   useEffect(() => {
     const handleClick = (evt: IG6GraphEvent) => {

@@ -1,22 +1,23 @@
 import React, { useEffect, useState, useCallback, useRef, createRef, Children, ReactChildren, useMemo } from 'react'
-import { useWallet, WalletContextState } from '@solana/wallet-adapter-react'
+import { useConnection, useWallet, WalletContextState } from '@solana/wallet-adapter-react'
 import styled from 'styled-components'
-import { PublicKey } from '@solana/web3.js'
+import { PublicKey, Transaction } from '@solana/web3.js'
 import { useNavigate } from 'react-router-dom'
-import { MetadataData } from '@metaplex-foundation/mpl-token-metadata'
+import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
 // import ReactJson from 'react-json-view'
-import log from 'loglevel'
 
 import { getMyNFTokens, selectMyNFTData, selectMyNFTDataStatus } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { clearMyNFT } from '../features/my/mySlice'
 import LoadingIcon from '../components/imgs/Loading.gif'
 import NftInject, { InjectMode, OnInjectProps } from './nft_handlers/NftInject'
-import { useBelongTo, useHasInjectV1, useGAEvent } from '../hooks'
-import { useContract } from '../provider/ContractProvider'
+import { useBelongTo, useGAEvent } from '../hooks'
+import {
+  useSynftContract,
+} from "@jsrsc/synft-js-react"
 import { MAX_CHILDREN_PER_LEVEL, MOBILE_BREAK_POINT, VIEW_LAMPORTS_DECIMAL } from '../utils/constants'
-import { lamportsToSol, solToLamports } from '../utils'
+import { lamportsToSol, solToLamports, sendWalletTrans, getMetadataInfoWithMint } from '../utils'
 import { Node } from '../synft'
 import RemindConnectWallet from './RemindConnectWallet'
 import { ButtonDanger, ButtonPrimary } from './common/ButtonBase'
@@ -26,7 +27,7 @@ import TooltipWrapper from './common/TooltipWrapper'
 import { FontFamilyCss } from '../GlobalStyle'
 
 interface Props {
-  metadata: MetadataData
+  metadata: Metadata
   injectTree: {
     data: Node
     loading: boolean
@@ -95,20 +96,16 @@ export const FormCouldOpsTooltipWrapper = ({ children, enable }: { children: any
   )
 }
 const NFTHandler: React.FC<Props> = (props: Props) => {
-  const { publicKey } = useWallet()
+  const wallet: WalletContextState = useWallet()
+  const { publicKey } = wallet;
+  const { connection } = useConnection()
   const { metadata, refreshInject, injectTree } = props
   const { mint } = metadata
   const mintKey = new PublicKey(mint)
   const injectRef = useRef<{ resetForm: Function }>()
   const navigate = useNavigate()
-  const { contract } = useContract()
-  const { belong, loading: belongLoading } = useBelongTo(mint, injectTree.data)
-  const {
-    checkLoading: hasInjectLoading,
-    hasInject,
-    injectData: mintMetadata,
-    refresh: refreshInjectV1,
-  } = useHasInjectV1(mint)
+  const { synftContract } = useSynftContract();
+  const { belong, loading: belongLoading } = useBelongTo(mint.toString(), injectTree.data)
   const gaEvent = useGAEvent()
 
   const dispatch = useAppDispatch()
@@ -120,8 +117,8 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       return
     }
     const owner = publicKey
-    if (belong.me) dispatch(getMyNFTokens({ owner }))
-  }, [publicKey, belong])
+    if (belong.me) dispatch(getMyNFTokens({ owner, connection, synftContract }))
+  }, [publicKey, belong, connection, synftContract])
 
   // 交易状态
   const [transactionState, setTransactionState] = useState({
@@ -186,56 +183,70 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       const formatVolume = solToLamports(Number(token.volume))
       const childMintKeys = nfts.map((nft) => new PublicKey(nft.mint))
       const reversible = injectMode === InjectMode.Reversible
+      console.log('onInject')
       transactionPublic(async () => {
+        if (!publicKey) return;
+        const tx = new Transaction()
         if (formatVolume && childMintKeys.length > 0) {
           // 如果注入了SOL，又注入了nft
           // 如果有父级
           if (belong.parent) {
             gaEvent(ContractActionGA.INJECT_NFT_TO_NON_ROOT_WITH_SOL)
-            await contract.injectNFTToNonRootWithSOL(
-              mintKey,
-              childMintKeys,
-              formatVolume,
-              { rootPDA: new PublicKey(belong.parent.rootPDA), parentMintKey: new PublicKey(belong.parent.mint) },
-              reversible,
+            const injectTx = await synftContract.injectNFTToNonRoot(
+              publicKey,mintKey, childMintKeys, new PublicKey(belong.parent.rootPDA), reversible
             )
+            tx.add(...injectTx)
+            if (formatVolume) {
+              const injectSolTx = await synftContract.injectSOLInstruction(publicKey, mintKey, formatVolume)
+              tx.add(injectSolTx)
+            }
           } else {
             gaEvent(ContractActionGA.INJECT_NFT_TO_ROOT_WITH_SOL)
-            await contract.injectNFTToRootWithSOL(mintKey, childMintKeys, formatVolume, reversible)
+            const injectInstruction = await synftContract.injectNFTToRoot(publicKey, mintKey, childMintKeys, reversible)
+            const injectSolInstruction = await synftContract.injectSOLInstruction(publicKey, mintKey, formatVolume);
+            tx.add(...injectInstruction, injectSolInstruction)
           }
         } else if (formatVolume) {
           // 如果只注入SOL
           gaEvent(ContractActionGA.INJECT_SOL)
-          await contract.injectSOL(mintKey, formatVolume)
+          const injectSolTx = await synftContract.injectSOLInstruction(publicKey, mintKey, formatVolume)
+          tx.add(injectSolTx)  
         } else if (childMintKeys.length > 0) {
           // 如果只注入nft
           // 如果有父级
           if (belong.parent) {
             gaEvent(ContractActionGA.INJECT_NFT_TO_NON_ROOT)
-            await contract.injectNFTToNonRoot(
-              mintKey,
-              childMintKeys,
-              { rootPDA: new PublicKey(belong.parent.rootPDA), parentMintKey: new PublicKey(belong.parent.mint) },
-              reversible,
+            const injectTx = await synftContract.injectNFTToNonRoot(
+              publicKey,mintKey, childMintKeys, new PublicKey(belong.parent.rootPDA), reversible
             )
+            tx.add(...injectTx)
           } else {
             gaEvent(ContractActionGA.INJECT_NFT_TO_ROOT)
-            await contract.injectNFTToRoot(mintKey, childMintKeys, reversible)
+            const injectTx = await synftContract.injectNFTToRoot(
+              publicKey,mintKey, childMintKeys, reversible
+            )
+            tx.add(...injectTx)
           }
         }
-        publicKey && dispatch(getMyNFTokens({ owner: publicKey }))
+        
+        await sendWalletTrans(tx, connection, wallet)
+        publicKey && dispatch(getMyNFTokens({ owner: publicKey , connection, synftContract}))
         injectRef.current && injectRef.current.resetForm()
       }, TransctionType.INJECT)
     },
-    [belong, injectTree.data],
+    [belong, injectTree.data, publicKey, connection, synftContract],
   )
   // 执行提取sol
-  const onExtractSol = async () => {
+  const onExtractSol = useCallback(async () => {
     transactionPublic(async () => {
+      if (!publicKey) return;
       gaEvent(ContractActionGA.EXTRACT_SOL)
-      await contract.extractSOL(mintKey)
+      const tx = new Transaction();
+      const inst = await synftContract.extractSOL(mintKey, publicKey)
+      tx.add(inst)
+      await sendWalletTrans(tx, connection, wallet)
     }, TransctionType.EXTRACT)
-  }
+  }, [publicKey])
 
   // 获取子NFT详细信息
   useEffect(() => {
@@ -243,7 +254,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       const promises = injectTree.data.curr.children.map(async (item: Node) => {
         const { mint } = item.curr
         const mintKey = new PublicKey(mint as string)
-        const data = await contract.getMetadataInfoWithMint(mintKey)
+        const data = await getMetadataInfoWithMint(mintKey, connection)
         // 组合图片信息数据
         return { ...item.curr, ...data?.externalMetadata }
       })
@@ -269,6 +280,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   }
   const onSubmitExtractNFT = useCallback(
     async (nfts: NftNodeDataItem[]) => {
+      console.log('onSubmitExtractNFT')
       if (!publicKey) return
       // 先关闭列表选择模态框
       setOpenExtractNftModal(false)
@@ -276,15 +288,17 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       const mintKey = nfts[0]?.mint
       const rootPDA = nfts[0]?.rootPDA
       if (!mintKey || !rootPDA) return
-      const rootMint = await contract.getRootMintFromRootPDA(rootPDA)
+      const rootMint = await synftContract.getRootMintFromRootPDA(rootPDA)
       if (!rootMint) return
       transactionPublic(async () => {
         gaEvent(ContractActionGA.EXTRACT_NFT)
-        await contract.transferChildNFTToUser(publicKey, new PublicKey(mintKey), {
+        const tx = new Transaction()
+        const instruction = await synftContract.extractChildNFTToUser(publicKey, publicKey, new PublicKey(mintKey), {
           rootMintKey: rootMint,
-          rootPDA: new PublicKey(rootPDA),
           parentMintKey: new PublicKey(mint),
         })
+        tx.add(instruction)
+        await sendWalletTrans(tx, connection, wallet)
         reloadWindow()
       }, TransctionType.EXTRACT)
     },
@@ -292,7 +306,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   )
 
   // 执行复制
-  const onCopyWithInject = async ({ injectMode, token }: OnInjectProps) => {
+  const onCopyWithInject = useCallback(  async ({ injectMode, token }: OnInjectProps) => {
     const { name, symbol, uri } = metadata.data
     if (!mint) return
     let newMint = ''
@@ -300,50 +314,80 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
     const { volume } = token
     const lamportsVolume = solToLamports(Number(volume))
     transactionPublic(async () => {
+      if (!synftContract.program || !publicKey) return;
+      console.log('onCopyWithInject')
       gaEvent(ContractActionGA.COPY_WITH_INJECT_SOL)
-      newMint = await contract.copyWithInjectSOL(mintKey, lamportsVolume, { name, uri, symbol })
+
+      const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
+        [Buffer.from('synthetic-nft-mint-seed'), mintKey.toBuffer()],
+        synftContract.program.programId,
+      )
+      const [nftTokenAccountPDA, nftTokenAccountBump] = await PublicKey.findProgramAddress(
+        [Buffer.from('synthetic-nft-account-seed'), mintKey.toBuffer()],
+        synftContract.program.programId,
+      )
+      const tx = new Transaction()
+      const copyInstruction = await synftContract.copyNFTInstruction(publicKey, mintKey, {
+        name, metadataUri: uri, symbol
+      })
+      const injectInstruction = await synftContract.injectSOLWithTokenAccountInstruction(publicKey, nftMintPDA, nftTokenAccountPDA, lamportsVolume)
+      tx.add(copyInstruction, injectInstruction)
+      await sendWalletTrans(tx, connection, wallet)
+      newMint = nftMintPDA.toString()
+
       navigate(`/info/${newMint}`)
       reloadWindow()
     }, TransctionType.INJECT)
-  }
+  }, [publicKey])
 
   // 执行燃烧销毁
-  const onBurn = async () => {
+  const onBurn = useCallback(async () => {
     transactionPublic(async () => {
       gaEvent(ContractActionGA.BURN)
-      await contract.startBurn(mintKey)
+      if (!publicKey) return
+      const tx = new Transaction()
+      const instruction = await synftContract.burn(publicKey, mintKey)
+      tx.add(instruction)
+      await sendWalletTrans(tx, connection, wallet)
       navigate(`/`)
     }, TransctionType.BURN)
-  }
+  }, [publicKey])
 
   // 从其它钱包中转移
   const transferToOther = useCallback(async () => {
+    console.log('transferToOther')
     transactionPublic(async () => {
       // TODO other
       const otherKeyStr = window.prompt('Other wallet:')
       if (!otherKeyStr) return
       const other = new PublicKey(otherKeyStr)
       if (!belong.parent) return
+      if (!publicKey) return
       gaEvent(ContractActionGA.TRANSFER_CHILD_NFT_TO_OTHER)
-      await contract.transferChildNFTToUser(other, mintKey, {
+      const tx = new Transaction()
+      const instruction = await synftContract.extractChildNFTToUser(publicKey, other, new PublicKey(mintKey), {
         rootMintKey: new PublicKey(belong.parent.rootMint),
-        rootPDA: new PublicKey(belong.parent.rootPDA),
-        parentMintKey: new PublicKey(belong.parent.mint),
+        parentMintKey:  new PublicKey(belong.parent.mint),
       })
+      tx.add(instruction)
+      await sendWalletTrans(tx, connection, wallet)
     }, TransctionType.TRANSFER)
-  }, [belong])
+  }, [belong, publicKey])
 
   // 从父级提取nft
   const transferToSelf = useCallback(async () => {
+    console.log('transferToSelf')
     transactionPublic(async () => {
       if (!publicKey) return
       if (!belong.parent) return
       gaEvent(ContractActionGA.EXTRACT_NFT_FROM_PARENT)
-      await contract.transferChildNFTToUser(publicKey, mintKey, {
+      const tx = new Transaction()
+      const instruction = await synftContract.extractChildNFTToUser(publicKey, publicKey, mintKey, {
         rootMintKey: new PublicKey(belong.parent.rootMint),
-        rootPDA: new PublicKey(belong.parent.rootPDA),
-        parentMintKey: new PublicKey(belong.parent.mint),
+        parentMintKey: new PublicKey(belong.parent.mint)
       })
+      tx.add(instruction)
+      await sendWalletTrans(tx, connection, wallet)
     }, TransctionType.EXTRACT)
   }, [publicKey, belong])
 
@@ -379,14 +423,14 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         <div className="nft-title">{metadata.data.name}</div>
         <div className="nft-creator">
           <span className="creator-label">creator</span>
-          <span className="creator-value">{metadata.data.creators && metadata.data.creators[0]?.address}</span>
+          <span className="creator-value">{metadata.data.creators && metadata.data.creators[0]?.address?.toString()}</span>
         </div>
         <div className="dividing-line"></div>
       </div>
       <div className="handler-form">
         {(!publicKey && <RemindConnectWallet />) || (
           <>
-            {belongLoading || hasInjectLoading ? (
+            {belongLoading ? (
               <p>
                 <img src={LoadingIcon} alt="" />
               </p>
@@ -410,7 +454,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                         }}
                         nftOptions={
                           couldInjectNFT
-                            ? myNFTData.filter((item) => item.mint != mint && item.mint != belong.parent?.rootMint)
+                            ? myNFTData.filter((item) => item.mint != mint.toString() && item.mint != belong.parent?.rootMint)
                             : []
                         }
                         nftInjectMaxNum={couldInjectNFTNum}
@@ -496,7 +540,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                       submitBtnType: 'warning',
                       submitBtnLabel: '> Encha NFT! <',
                     }}
-                    nftOptions={myNFTData.filter((item) => item?.mint != mint)}
+                    nftOptions={myNFTData.filter((item) => item?.mint != mint.toString())}
                     onInject={onCopyWithInject}
                   ></NftInject>
                 )}
