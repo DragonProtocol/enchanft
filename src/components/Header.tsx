@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2022-03-11 18:48:03
- * @LastEditTime: 2022-04-07 14:34:33
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-21 17:41:27
+ * @LastEditors: shixuewen friendlysxw@163.com
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \synft-app\src\components\Header.tsx
  */
@@ -15,6 +15,7 @@ import styled from 'styled-components'
 import ButtonConnectWallect from './common/ButtonConnectWallet'
 import { MOBILE_BREAK_POINT } from '../utils/constants'
 import { ButtonPrimary } from './common/ButtonBase'
+import { CursorPointerUpCss } from '../GlobalStyle'
 export default function Header() {
   const navigate = useNavigate()
   const { connection } = useConnection()
@@ -28,10 +29,31 @@ export default function Header() {
     })(wallet.publicKey)
   }, [wallet])
 
+  const navs = [
+    {
+      name: 'ABOUT EHCHANFT',
+      link: '/',
+    },
+    {
+      name: 'LAUNCHPAD',
+      link: '/launchpad',
+    },
+    {
+      name: 'MY ENCHANFTED',
+      link: '/myenchanft',
+    },
+  ]
   return (
     <HeaderWrapper>
       <div className="left">
         <div className="logo" onClick={() => navigate('/')}></div>
+      </div>
+      <div className="center">
+        {navs.map((item) => (
+          <div className="nav" onClick={() => navigate(item.link)}>
+            {item.name}
+          </div>
+        ))}
       </div>
       <div className="right">
         {/* <input type="text" className="search" /> */}
@@ -49,8 +71,8 @@ const HeaderWrapper = styled.div`
   align-items: center;
   .left {
     .logo {
-      width: 274px;
-      height: 36px;
+      width: 190px;
+      height: 24px;
       background-image: url('/logo.svg');
       background-repeat: no-repeat;
       background-size: 100% 100%;
@@ -60,6 +82,20 @@ const HeaderWrapper = styled.div`
         border-radius: 50%;
         background-image: url('/logo192.png');
       }
+    }
+  }
+  .center {
+    height: 100%;
+    flex: 1;
+    display: flex;
+    justify-content: space-around;
+    .nav {
+      height: 100%;
+      font-size: 12px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      ${CursorPointerUpCss}
     }
   }
   .right {
