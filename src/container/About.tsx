@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-06-22 18:51:56
+ * @LastEditTime: 2022-06-23 10:28:16
  * @FilePath: \synft-app\src\container\AboutEnchaNFT.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -136,6 +136,11 @@ function About() {
 export default About
 
 const AboutWrapper = styled.div`
+  .banner {
+    img {
+      width: 100%;
+    }
+  }
   .about-title {
     text-transform: uppercase;
     font-size: 24px;
@@ -167,6 +172,9 @@ const AboutWrapper = styled.div`
     }
   }
   .enchanft-solves-this {
+    img {
+      width: 100%;
+    }
   }
   .roadmap-enchanft-ecosystem {
     margin-top: 60px;
