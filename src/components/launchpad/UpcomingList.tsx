@@ -1,19 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import 'swiper/css'
-
-import InternetIcon from '../icons/internet.svg'
-import TwitterIcon from '../icons/twitter.svg'
-import ProjectItemsIcon from '../icons/projectItems.svg'
-import ProjectPriceIcon from '../icons/projectPrice.svg'
-import ProjectEnchanftedIcon from '../icons/projectEnchanfted.svg'
-import SolanaIcon from '../icons/solana.png'
-import { CursorPointerUpCss } from '../../GlobalStyle'
 import { MEDIA_BREAK_POINTS } from '../../utils/constants'
 export type LaunchpadUpcomingItemDataType = {
   img: string
   name: string
-  projectPartyName: string
   homeUrl: string
   twitterUrl: string
   discordUrl: string
@@ -21,6 +11,9 @@ export type LaunchpadUpcomingItemDataType = {
   itemsNum: number
   price: number
   enchanfted: number
+  projectParty: {
+    name: string
+  }
 }
 interface UpcomingListProps {
   data: LaunchpadUpcomingItemDataType[]
@@ -64,7 +57,7 @@ interface UpcomingListItemProps {
   data: LaunchpadUpcomingItemDataType
 }
 const UpcomingListItem = ({ data }: UpcomingListItemProps) => {
-  const { img, name, projectPartyName, homeUrl, twitterUrl, discordUrl, desc, itemsNum, price, enchanfted } = data
+  const { img, name, projectParty, homeUrl, twitterUrl, discordUrl, desc, itemsNum, price, enchanfted } = data
   return (
     <UpcomingListItemWrapper>
       {/* top */}
@@ -76,7 +69,7 @@ const UpcomingListItem = ({ data }: UpcomingListItemProps) => {
       {/* center */}
       <UpcomingListItemCenter>
         <ProjectName>{name}</ProjectName>
-        <ProjectPartyName>{projectPartyName}</ProjectPartyName>
+        <ProjectPartyName>{projectParty.name}</ProjectPartyName>
       </UpcomingListItemCenter>
       {/* bottom */}
       <UpcomingListItemBottom>

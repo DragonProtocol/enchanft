@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-23 13:34:41
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-06-23 20:14:21
+ * @LastEditTime: 2022-06-24 14:00:52
  * @FilePath: \synft-app\src\components\launchpad\UnderwayList.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%A
  */
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import { Navigation, Autoplay } from 'swiper'
 import { Swiper, SwiperSlide, useSwiper } from 'swiper/react'
 import 'swiper/css'
 
@@ -20,10 +21,10 @@ import ProjectPriceIcon from '../icons/projectPrice.svg'
 import ProjectEnchanftedIcon from '../icons/projectEnchanfted.svg'
 import SolanaIcon from '../icons/solana.png'
 import { CursorPointerUpCss } from '../../GlobalStyle'
+
 export type LaunchpadUnderwayItemDataType = {
   img: string
   name: string
-  projectPartyName: string
   homeUrl: string
   twitterUrl: string
   discordUrl: string
@@ -31,18 +32,36 @@ export type LaunchpadUnderwayItemDataType = {
   itemsNum: number
   price: number
   enchanfted: number
+  projectParty: {
+    name: string
+  }
 }
 interface UnderwayListProps {
   data: LaunchpadUnderwayItemDataType[]
 }
 const UnderwayList: React.FC<UnderwayListProps> = ({ data }: UnderwayListProps) => {
-  const swiper = useSwiper()
   return (
     <UnderwayListWrapper>
       <UnderwayListSwiperLeft>
-        <img src={SwiperLeftIcon} alt="" onClick={() => swiper.slidePrev()} />
+        <img src={SwiperLeftIcon} alt="" className="launchpad-underway-list-swiper-prev" />
       </UnderwayListSwiperLeft>
-      <Swiper spaceBetween={50} slidesPerView={1} className="launchpad-underway-list-swiper">
+      <Swiper
+        className="launchpad-underway-list-swiper"
+        spaceBetween={50}
+        slidesPerView={1}
+        loop={true}
+        modules={[Navigation, Autoplay]}
+        navigation={{
+          nextEl: '.launchpad-underway-list-swiper-next',
+          prevEl: '.launchpad-underway-list-swiper-prev',
+        }}
+        autoplay={{
+          delay: 6000,
+        }}
+        pagination={{
+          clickable: true,
+        }}
+      >
         {data.map((item) => (
           <SwiperSlide>
             <UnderwayListItem data={item} />
@@ -50,7 +69,7 @@ const UnderwayList: React.FC<UnderwayListProps> = ({ data }: UnderwayListProps) 
         ))}
       </Swiper>
       <UnderwayListSwiperRight>
-        <img src={SwiperRightIcon} alt="" onClick={() => swiper.slideNext()} />
+        <img src={SwiperRightIcon} alt="" className="launchpad-underway-list-swiper-next" />
       </UnderwayListSwiperRight>
     </UnderwayListWrapper>
   )
@@ -86,7 +105,7 @@ interface UnderwayListItemProps {
   data: LaunchpadUnderwayItemDataType
 }
 const UnderwayListItem = ({ data }: UnderwayListItemProps) => {
-  const { img, name, projectPartyName, homeUrl, twitterUrl, discordUrl, desc, itemsNum, price, enchanfted } = data
+  const { img, name, projectParty, homeUrl, twitterUrl, discordUrl, desc, itemsNum, price, enchanfted } = data
   return (
     <UnderwayListItemWrapper>
       {/* left */}
@@ -102,7 +121,7 @@ const UnderwayListItem = ({ data }: UnderwayListItemProps) => {
           <ProjectName>{name}</ProjectName>
           <ProjectPartyBox>
             <ProjectPartyName href={discordUrl} target="_blank" rel="noopener noreferrer">
-              {projectPartyName}
+              {projectParty.name}
             </ProjectPartyName>
             <ProjectPartyLinks>
               <a href={homeUrl} target="_blank" rel="noopener noreferrer">
