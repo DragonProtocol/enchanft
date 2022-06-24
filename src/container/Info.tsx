@@ -32,7 +32,10 @@ const Info: React.FC = () => {
         (validNFT && (
           <>
             <div className="left">
-              <NFTShower
+              <div className="img-box">
+                <img src={info?.externalMetadata?.image} alt={info?.externalMetadata?.image || ''} />
+              </div>
+              {/* <NFTShower
                 data={{
                   jsonData: info?.externalMetadata,
                   injectTree: {
@@ -40,7 +43,7 @@ const Info: React.FC = () => {
                     loading: injectTreeLoading,
                   },
                 }}
-              />
+              /> */}
             </div>
             <div className="right">
               {metadata && (
@@ -53,6 +56,15 @@ const Info: React.FC = () => {
                   refreshInject={reloadInjectTree}
                 />
               )}
+              <NFTShower
+                data={{
+                  jsonData: info?.externalMetadata,
+                  injectTree: {
+                    data: injectTree,
+                    loading: injectTreeLoading,
+                  },
+                }}
+              />
             </div>
           </>
         )) || <div className="tip">invalid NFT</div>}
@@ -72,6 +84,15 @@ const InfoWrapper = styled.div`
     width: 50%;
     @media (max-width: ${MOBILE_BREAK_POINT}px) {
       width: 100%;
+    }
+  }
+  .left {
+    .img-box {
+      box-sizing: border-box;
+      border: 4px solid #222222;
+      img {
+        width: 100%;
+      }
     }
   }
   .right {

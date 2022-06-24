@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2022-03-15 11:15:41
- * @LastEditTime: 2022-04-02 11:04:02
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-24 17:27:24
+ * @LastEditors: shixuewen friendlysxw@163.com
  * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  * @FilePath: \synft-app\src\components\common\ButtonBase.tsx
  */
@@ -24,6 +24,7 @@ export const ButtonWarning = styled(ButtonBase)`
 export const ButtonDanger = styled(ButtonBase)`
   background-color: #d60606;
 `
+
 export const ButtonBaseCss = css`
   height: 48px;
   display: flex;
@@ -43,4 +44,10 @@ const ButtonBaseWrapper = styled.button`
     pointer-events: auto;
     opacity: 0.5;
   }
+`
+export const ButtonInfo = styled(ButtonBaseWrapper)`
+  background: #ffffff;
+  border: 4px solid #222222;
+  color: #222222;
+  box-shadow: none;
 `

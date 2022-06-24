@@ -1,3 +1,11 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-06-22 11:02:06
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-06-24 18:37:40
+ * @FilePath: \synft-app\src\components\NFTList.tsx
+ * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { animated, useSprings } from 'react-spring'
@@ -71,15 +79,15 @@ export default NFTList
 export const NFTListWrapper = styled.div`
   width: 100%;
   display: grid;
-  grid-gap: 8px;
+  grid-gap: 26px;
   justify-content: space-between;
   list-style-type: none;
-  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, minmax(250px, 1fr));
   @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
-    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    grid-template-columns: repeat(2, minmax(250px, 1fr));
   }
   @media (min-width: ${MEDIA_BREAK_POINTS.sm}px) and (max-width: ${MEDIA_BREAK_POINTS.md}px) {
-    grid-template-columns: repeat(2, minmax(250px, 1fr));
+    grid-template-columns: repeat(1, minmax(250px, 1fr));
   }
   @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
     display: flex;
