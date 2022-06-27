@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-06-24 15:02:20
+ * @LastEditTime: 2022-06-27 11:30:55
  * @FilePath: \synft-app\src\container\MyEnchaNFTEnchaNFT.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -47,21 +47,22 @@ function MyEnchaNFT() {
   const nftListLoading = myNFTDataStatus === 'loading'
   return (
     <MyEnchaNFTWrapper>
-      <div className="center">
-        <div className="list-title">
-          <SplitTextOpacity ref={titleRefMy}>My enchanfted</SplitTextOpacity>
+      {wallet.publicKey ? (
+        <div className="center">
+          <div className="list-title">
+            <SplitTextOpacity ref={titleRefMy}>My enchanfted</SplitTextOpacity>
+          </div>
+          <div className="list">
+            <NFTList data={nftList} />
+            {nftListLoading && (
+              <div className="loading">
+                <img src={LoadingIcon} alt="" />
+              </div>
+            )}
+          </div>
         </div>
-        <div className="list">
-          <NFTList data={nftList} />
-          {nftListLoading && (
-            <div className="loading">
-              <img src={LoadingIcon} alt="" />
-            </div>
-          )}
-        </div>
-      </div>
-      {!wallet.publicKey && (
-        <div className="bottom">
+      ) : (
+        <div className="remind-connect-wallet-box">
           <RemindConnectWallet />
         </div>
       )}
@@ -72,6 +73,7 @@ function MyEnchaNFT() {
 export default MyEnchaNFT
 
 const MyEnchaNFTWrapper = styled.div`
+  height: 100%;
   .loading {
     text-align: center;
     margin-top: 100px;
@@ -95,5 +97,11 @@ const MyEnchaNFTWrapper = styled.div`
     .list {
       margin-top: 24px;
     }
+  }
+  .remind-connect-wallet-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 `

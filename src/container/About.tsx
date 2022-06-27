@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-06-23 10:28:16
+ * @LastEditTime: 2022-06-27 11:05:31
  * @FilePath: \synft-app\src\container\AboutEnchaNFT.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,6 +18,7 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CursorPointerUpCss, FontFamilyCss } from '../GlobalStyle'
+import { CONTACT_US_EMAIL } from '../utils/constants'
 import BannerImg from './images/banner.svg'
 import CombineNftWithTokensImg from './images/combine_nft_with_tokens.svg'
 
@@ -44,6 +45,10 @@ function About() {
       status: false,
     },
   ]
+  const openEmail = () => {
+    // eslint-disable-next-line no-restricted-globals
+    parent.location.href = `mailto:${CONTACT_US_EMAIL}`
+  }
   return (
     <AboutWrapper>
       <div className="about-row banner">
@@ -116,7 +121,7 @@ function About() {
       </div>
       <div className="about-title">remember defi lego?</div>
       <div className="about-row remember-defi-lego">Composability Unlocks Power</div>
-      <div className="about-row lets-enchnft">
+      <div className="about-row lets-enchnft" aria-hidden onClick={() => openEmail()}>
         <span className="text-icon">✉️</span>
         <div>
           <span className="text-icon">👉</span>
@@ -124,7 +129,7 @@ function About() {
           <span className="text-icon">👈</span>
         </div>
       </div>
-      <div className="contact-us">
+      <div className="contact-us" aria-hidden onClick={() => openEmail()}>
         <span>✉️</span>
         <span>contact</span>
         <span>us</span>

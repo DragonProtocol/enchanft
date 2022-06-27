@@ -464,7 +464,11 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         <div className="nft-project">TODO: project name</div>
       </div>
       <div className="handler-form">
-        {(!publicKey && <RemindConnectWallet />) || (
+        {(!publicKey && (
+          <RemindConnectWalletBox>
+            <RemindConnectWallet />
+          </RemindConnectWalletBox>
+        )) || (
           <>
             {belongLoading ? (
               <p>
@@ -793,4 +797,14 @@ const BurnConfirmTitle = styled.div`
   align-items: flex-start;
   font-size: 14px;
   line-height: 24px;
+`
+
+const RemindConnectWalletBox = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #222222;
+  padding: 16px;
+  margin-top: 48px;
+  margin-bottom: 12px;
 `
