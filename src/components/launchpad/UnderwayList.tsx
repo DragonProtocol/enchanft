@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-23 13:34:41
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-06-24 14:00:52
+ * @LastEditTime: 2022-06-27 16:07:05
  * @FilePath: \synft-app\src\components\launchpad\UnderwayList.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%A
  */
@@ -21,6 +21,7 @@ import ProjectPriceIcon from '../icons/projectPrice.svg'
 import ProjectEnchanftedIcon from '../icons/projectEnchanfted.svg'
 import SolanaIcon from '../icons/solana.png'
 import { CursorPointerUpCss } from '../../GlobalStyle'
+import { MOBILE_BREAK_POINT } from '../../utils/constants'
 
 export type LaunchpadUnderwayItemDataType = {
   img: string
@@ -185,6 +186,10 @@ const UnderwayListItemWrapper = styled.div`
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   box-sizing: border-box;
   display: flex;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+    height: auto;
+  }
 `
 
 // left
@@ -196,11 +201,21 @@ const UnderwayListItemLeft = styled.div`
     width: 100%;
     height: 100%;
   }
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex: 0;
+    height: auto;
+    img {
+      height: auto;
+    }
+  }
 `
 const VerticalDividingLine = styled.div`
   width: 4px;
   height: 100%;
   background-color: #222222;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    display: none;
+  }
 `
 
 // right
@@ -211,6 +226,10 @@ const UnderwayListItemRight = styled.div`
   padding: 24px;
   display: flex;
   flex-direction: column;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex: 0;
+    height: auto;
+  }
 `
 // top
 const ProjectTopBox = styled.div`
@@ -220,6 +239,9 @@ const ProjectName = styled.div`
   font-weight: 400;
   font-size: 24px;
   line-height: 40px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 16px;
+  }
 `
 const ProjectPartyBox = styled.div`
   display: flex;
@@ -273,6 +295,9 @@ const ProjectNumItemBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+  }
 `
 const ProjectNumItemLeft = styled.div`
   display: flex;

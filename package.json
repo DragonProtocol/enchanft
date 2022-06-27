@@ -8,6 +8,7 @@
     "@jsrsc/synft-js-core": "^0.2.6",
     "@jsrsc/synft-js-react": "^0.2.9",
     "@metaplex-foundation/mpl-token-metadata": "^2.1.2",
+    "@mui/icons-material": "^5.8.4",
     "@mui/lab": "^5.0.0-alpha.87",
     "@mui/material": "^5.5.0",
     "@mui/styled-engine-sc": "^5.4.2",

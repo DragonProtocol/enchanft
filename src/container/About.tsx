@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-06-27 11:05:31
+ * @LastEditTime: 2022-06-27 17:43:13
  * @FilePath: \synft-app\src\container\AboutEnchaNFT.tsx
  * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
  */
@@ -18,9 +18,12 @@ import TimelineSeparator from '@mui/lab/TimelineSeparator'
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { CursorPointerUpCss, FontFamilyCss } from '../GlobalStyle'
-import { CONTACT_US_EMAIL } from '../utils/constants'
+import { CONTACT_US_EMAIL, MOBILE_BREAK_POINT } from '../utils/constants'
 import BannerImg from './images/banner.svg'
 import CombineNftWithTokensImg from './images/combine_nft_with_tokens.svg'
+import NftPlusSolImg from './images/nft_plus_sol.png'
+import NftPlusStSolImg from './images/nft_plus_stsol.png'
+import NftPlusOtherImg from './images/nft_plus_other.png'
 
 function About() {
   const roadmap = [
@@ -45,6 +48,23 @@ function About() {
       status: false,
     },
   ]
+  const nnchanftSolvesThisItems = [
+    {
+      apparentTitle: 'nft + sol',
+      minorTitle: 'to fix floor price',
+      nftPlusTokenImg: NftPlusSolImg,
+    },
+    {
+      apparentTitle: 'nft + stsol',
+      minorTitle: 'to create real yield',
+      nftPlusTokenImg: NftPlusStSolImg,
+    },
+    {
+      apparentTitle: 'nft + other utility tokens',
+      minorTitle: '',
+      nftPlusTokenImg: NftPlusOtherImg,
+    },
+  ]
   const openEmail = () => {
     // eslint-disable-next-line no-restricted-globals
     parent.location.href = `mailto:${CONTACT_US_EMAIL}`
@@ -66,9 +86,25 @@ function About() {
         </div>
       </div>
       <div className="about-title">enchanft solves this</div>
-      <div className="about-row enchanft-solves-this">
-        <img src={CombineNftWithTokensImg} alt="" />
-      </div>
+      {/* <EnchanftSolvesThisItemNftPlusTokenImg src={CombineNftWithTokensImg} /> */}
+      <EnchanftSolvesThisBox>
+        <EnchanftSolvesThisDesc>
+          <span>Combine NFT with other Tokens</span>
+          <span>Intrinsic value + Rarity value!</span>
+        </EnchanftSolvesThisDesc>
+        <EnchanftSolvesThisItems>
+          {nnchanftSolvesThisItems.map((item) => (
+            <EnchanftSolvesThisItem>
+              <EnchanftSolvesThisItemTitle>
+                <EnchanftSolvesThisItemTitleIcon>👉</EnchanftSolvesThisItemTitleIcon>
+                <EnchanftSolvesThisItemTitleApparentText>{item.apparentTitle}</EnchanftSolvesThisItemTitleApparentText>
+                <EnchanftSolvesThisItemTitleMinorText>{item.minorTitle}</EnchanftSolvesThisItemTitleMinorText>
+              </EnchanftSolvesThisItemTitle>
+              <EnchanftSolvesThisItemNftPlusTokenImg src={item.nftPlusTokenImg} />
+            </EnchanftSolvesThisItem>
+          ))}
+        </EnchanftSolvesThisItems>
+      </EnchanftSolvesThisBox>
 
       <div className="about-row roadmap-enchanft-ecosystem">
         <div className="about-title">roadmap enchanft ecosystem</div>
@@ -154,11 +190,18 @@ const AboutWrapper = styled.div`
     color: #3dd606;
     margin-top: 60px;
     margin-bottom: 24px;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      font-size: 16px;
+    }
   }
   .the-pfp-problem {
     display: flex;
     justify-content: space-between;
     gap: 80px;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      flex-direction: column;
+      gap: 60px;
+    }
     .the-pfp-problem-item {
       display: flex;
       flex-direction: row;
@@ -177,6 +220,9 @@ const AboutWrapper = styled.div`
     }
   }
   .enchanft-solves-this {
+    background: #fffbdb;
+    border: 4px solid #222222;
+    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
     img {
       width: 100%;
     }
@@ -185,6 +231,9 @@ const AboutWrapper = styled.div`
     margin-top: 60px;
     background: #f8f8f8;
     padding: 40px 126px;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      padding: 40px 0px;
+    }
     .about-title {
       margin: 0;
     }
@@ -207,6 +256,9 @@ const AboutWrapper = styled.div`
   }
   .why-composable-nfts {
     display: flex;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      flex-direction: column;
+    }
     .why-composable-nfts-item {
       flex: 1;
       display: flex;
@@ -225,6 +277,10 @@ const AboutWrapper = styled.div`
           font-size: 18px;
           line-height: 40px;
           text-transform: uppercase;
+          @media (max-width: ${MOBILE_BREAK_POINT}px) {
+            font-size: 14px;
+            line-height: 30px;
+          }
         }
         li {
           font-size: 12px;
@@ -240,6 +296,9 @@ const AboutWrapper = styled.div`
 
     text-align: center;
     text-transform: uppercase;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      font-size: 16px;
+    }
   }
   .lets-enchnft {
     background: #fffbdb;
@@ -262,6 +321,9 @@ const AboutWrapper = styled.div`
       span {
         font-size: 18px;
         line-height: 40px;
+        @media (max-width: ${MOBILE_BREAK_POINT}px) {
+          font-size: 14px;
+        }
       }
     }
     .text-icon {
@@ -274,8 +336,7 @@ const AboutWrapper = styled.div`
     width: 100px;
     height: 100px;
     right: 20px;
-    bottom: 50%;
-    transform: translateY(50%);
+    bottom: 20px;
     background: #fffbdb;
     border: 4px solid #222222;
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
@@ -291,5 +352,78 @@ const AboutWrapper = styled.div`
     span:first-child {
       font-size: 40px;
     }
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      right: 0;
+      bottom: 0;
+      transform: scale(0.6) translateX(20%);
+    }
   }
+`
+const EnchanftSolvesThisBox = styled.div`
+  background: #fffbdb;
+  border: 4px solid #222222;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  padding: 0 72px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding: 0 24px;
+    border-width: 2px;
+  }
+`
+const EnchanftSolvesThisDesc = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-bottom: solid #222222 2px;
+  font-size: 20px;
+  line-height: 40px;
+  text-align: center;
+  color: #333333;
+  padding: 24px 0;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 30px;
+  }
+`
+const EnchanftSolvesThisItems = styled.div`
+  margin-top: 24px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    margin-top: 12px;
+  }
+`
+const EnchanftSolvesThisItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 60px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+`
+const EnchanftSolvesThisItemTitle = styled.div`
+  font-size: 16px;
+  line-height: 24px;
+  text-transform: uppercase;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+  }
+`
+const EnchanftSolvesThisItemTitleIcon = styled.span`
+  font-size: 40px;
+  line-height: 40px;
+  color: #000000;
+  margin-right: 24px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+  }
+`
+const EnchanftSolvesThisItemTitleApparentText = styled.span`
+  color: #3dd606;
+  margin-right: 24px;
+`
+const EnchanftSolvesThisItemTitleMinorText = styled.span`
+  color: #333333;
+`
+const EnchanftSolvesThisItemNftPlusTokenImg = styled.img`
+  width: 100%;
 `

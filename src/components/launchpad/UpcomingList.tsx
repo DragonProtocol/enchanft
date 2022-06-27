@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { MEDIA_BREAK_POINTS } from '../../utils/constants'
+import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../../utils/constants'
 export type LaunchpadUpcomingItemDataType = {
   img: string
   name: string
@@ -102,6 +102,9 @@ const UpcomingListItemWrapper = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    height: auto;
+  }
 `
 
 // top
@@ -162,6 +165,9 @@ const ProjectNumItemBottom = styled.div`
   font-size: 14px;
   line-height: 14px;
   color: #222222;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+  }
 `
 const ProjectNumItemLine = styled.div`
   width: 1px;
