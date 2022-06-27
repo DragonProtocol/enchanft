@@ -63,10 +63,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
-"@jsrsc/synft-js-core@^0.2.6":
-  version "0.2.6"
-  resolved "https://registry.npmjs.org/@jsrsc/synft-js-core/-/synft-js-core-0.2.6.tgz#41e73b421db8eb1d5d20223cacfae74186b1d74b"
-  integrity sha512-E19Qfz0Jwxa899c8BOOq3IRiFJtQ4NjrkdVWh0JRXxYDeXJ8FERv2IQW9b8hUo0j0Lu2BU/sjN27vYz0XNnzxQ==
+"@jsrsc/synft-js-core@^0.2.7":
+  version "0.2.7"
+  resolved "https://registry.npmjs.org/@jsrsc/synft-js-core/-/synft-js-core-0.2.7.tgz#43b1133b41fb8ee951ce14141ad0bae2dd09ac59"
+  integrity sha512-i/YoebQogEZzmARocg/Ds5xLiNZZxv7lZXGnSeeQcj7vFgESfbZqC/5i7oTA582GnW6SdQEzwFOv/6kCkn9sdw==
   dependencies:
     "@metaplex-foundation/mpl-token-metadata" "^2.1.2"
     "@project-serum/anchor" "^0.25.0-beta.1"
