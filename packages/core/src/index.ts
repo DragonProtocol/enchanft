@@ -14,7 +14,7 @@ import {
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import { Metadata } from "@metaplex-foundation/mpl-token-metadata";
 
-import idl from "./idl.json";
+import idl from "./synft.json";
 import type { Synft } from "./synft";
 // import axios from "axios";
 const PARENT_OFFSET = 40; // 8(anchor) + 32(pubkey)
@@ -128,7 +128,7 @@ export default class SynftContract {
       PROGRAM_ID
     );
     const instruction = await this.program.methods
-      .injectToSolV2(solBump, injectSolAmount)
+      .injectToSol(solBump, injectSolAmount)
       .accounts({
         currentOwner: owner,
         parentTokenAccount: mintTokenAccountAddress,
@@ -158,7 +158,7 @@ export default class SynftContract {
       PROGRAM_ID
     );
     const instruction = await this.program.methods
-      .injectToSolV2(solBump, injectSolAmount)
+      .injectToSol(solBump, injectSolAmount)
       .accounts({
         currentOwner: owner,
         parentTokenAccount: tokenAccount,
@@ -228,7 +228,7 @@ export default class SynftContract {
         childMintTokenAccounts.value[0].address;
 
       const instruction = await program.methods
-        .injectToRootV2(reversible, metadataBump, parentBump, parentOfChildBump)
+        .injectToRoot(reversible, metadataBump, parentBump, parentOfChildBump)
         .accounts({
           currentOwner: owner,
           childTokenAccount: childMintTokenAccountsAddr,
@@ -277,7 +277,7 @@ export default class SynftContract {
     const program = this.program;
     const connection = this._connection;
 
-    const rootMeta = await program.account.childrenMetadataV2.fetch(rootPDA);
+    const rootMeta = await program.account.childrenMetadata.fetch(rootPDA);
     const rootMintKey = rootMeta.parent;
     const rootMintTokenAccounts = await connection.getTokenLargestAccounts(
       rootMintKey
@@ -327,7 +327,7 @@ export default class SynftContract {
       const childMintTokenAccountAddr = childMintTokenAccounts.value[0].address;
 
       const instruction = await program.methods
-        .injectToNonRootV2(reversible, childMetadataBump, metadataBump)
+        .injectToNonRoot(reversible, childMetadataBump, metadataBump)
         .accounts({
           currentOwner: owner,
           childTokenAccount: childMintTokenAccountAddr,
@@ -380,7 +380,7 @@ export default class SynftContract {
       parentMintTokenAccountBalancePairs.value[0].address;
 
     const extractTx = await program.methods
-      .extractSolV2(solBump)
+      .extractSol(solBump)
       .accounts({
         currentOwner: walletPubKey,
         parentTokenAccount: parentMintTokenAccountAddr,
@@ -448,7 +448,7 @@ export default class SynftContract {
     const mintTokenAccountAddr = mintTokenAccounts.value[0].address;
 
     const tx = await program.methods
-      .transferChildNftV2(parentMetadataBump)
+      .transferChildNft(parentMetadataBump)
       .accounts({
         currentOwner: walletPubKey,
         childTokenAccount: mintTokenAccountAddr,
@@ -516,7 +516,7 @@ export default class SynftContract {
     if (!this._connection || !this.program) {
       throw new Error("Init Contract with connect first");
     }
-    const rootMeta = await this.program.account.childrenMetadataV2.fetch(pda);
+    const rootMeta = await this.program.account.childrenMetadata.fetch(pda);
     const rootMintKey = rootMeta.parent;
     return rootMintKey;
   }
@@ -525,7 +525,7 @@ export default class SynftContract {
     if (!this._connection || !this.program) {
       throw new Error("Init Contract with connect first");
     }
-    const parentNFT = await this.program.account.childrenMetadataV2.all([
+    const parentNFT = await this.program.account.childrenMetadata.all([
       {
         memcmp: {
           offset: CHILD_OFFSET,
@@ -560,9 +560,7 @@ export default class SynftContract {
       },
     ];
 
-    const childrenNFT = await this.program.account.childrenMetadataV2.all(
-      filter
-    );
+    const childrenNFT = await this.program.account.childrenMetadata.all(filter);
     return childrenNFT;
   }
 

@@ -3,271 +3,6 @@ export type Synft = {
   "name": "synft",
   "instructions": [
     {
-      "name": "initializeInject",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "childTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "reversible",
-          "type": "bool"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
-        }
-      ]
-    },
-    {
-      "name": "initializeFungibleTokenInject",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "ownerTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "mint",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "fungibleTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "reversible",
-          "type": "bool"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
-        },
-        {
-          "name": "injectFungibleTokenAmount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "initializeSolInject",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "reversible",
-          "type": "bool"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
-        },
-        {
-          "name": "injectSolAmount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "extract",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "childTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "bump",
-          "type": "u8"
-        }
-      ]
-    },
-    {
-      "name": "extractSol",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "bump",
-          "type": "u8"
-        }
-      ]
-    },
-    {
       "name": "nftCopy",
       "accounts": [
         {
@@ -332,94 +67,7 @@ export type Synft = {
       ]
     },
     {
-      "name": "burnForSol",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "burnForToken",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "childTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "injectToRootV2",
+      "name": "injectToRoot",
       "accounts": [
         {
           "name": "currentOwner",
@@ -487,17 +135,17 @@ export type Synft = {
           "type": "u8"
         },
         {
-          "name": "parentMataBump",
+          "name": "parentMetaBump",
           "type": "u8"
         },
         {
-          "name": "parentMataOfChildBump",
+          "name": "parentMetaOfChildBump",
           "type": "u8"
         }
       ]
     },
     {
-      "name": "injectToNonRootV2",
+      "name": "injectToNonRoot",
       "accounts": [
         {
           "name": "currentOwner",
@@ -591,7 +239,7 @@ export type Synft = {
       ]
     },
     {
-      "name": "injectToSolV2",
+      "name": "injectToSol",
       "accounts": [
         {
           "name": "currentOwner",
@@ -636,7 +284,7 @@ export type Synft = {
       ]
     },
     {
-      "name": "transferChildNftV2",
+      "name": "transferChildNft",
       "accounts": [
         {
           "name": "currentOwner",
@@ -707,7 +355,7 @@ export type Synft = {
       ]
     },
     {
-      "name": "extractSolV2",
+      "name": "extractSol",
       "accounts": [
         {
           "name": "currentOwner",
@@ -748,62 +396,7 @@ export type Synft = {
       ]
     },
     {
-      "name": "burnV2",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentMetadata",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "solAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "solAccountBump",
-          "type": "u8"
-        },
-        {
-          "name": "parentMetadataBump",
-          "type": "u8"
-        }
-      ]
-    },
-    {
-      "name": "transferCrankInitV2",
+      "name": "transferCrankInit",
       "accounts": [
         {
           "name": "operator",
@@ -854,7 +447,7 @@ export type Synft = {
       "args": []
     },
     {
-      "name": "transferCrankProcessV2",
+      "name": "transferCrankProcess",
       "accounts": [
         {
           "name": "operator",
@@ -900,7 +493,7 @@ export type Synft = {
       "args": []
     },
     {
-      "name": "transferCrankEndV2",
+      "name": "transferCrankEnd",
       "accounts": [
         {
           "name": "operator",
@@ -1267,32 +860,6 @@ export type Synft = {
         "kind": "struct",
         "fields": [
           {
-            "name": "reversible",
-            "type": "bool"
-          },
-          {
-            "name": "child",
-            "type": "publicKey"
-          },
-          {
-            "name": "childType",
-            "type": {
-              "defined": "ChildType"
-            }
-          },
-          {
-            "name": "bump",
-            "type": "u8"
-          }
-        ]
-      }
-    },
-    {
-      "name": "childrenMetadataV2",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
             "name": "child",
             "type": "publicKey"
           },
@@ -1325,6 +892,15 @@ export type Synft = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }
@@ -1352,6 +928,15 @@ export type Synft = {
               "array": [
                 "publicKey",
                 8
+              ]
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
               ]
             }
           }
@@ -1387,6 +972,15 @@ export type Synft = {
                 3
               ]
             }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }
@@ -1399,6 +993,15 @@ export type Synft = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }
@@ -1415,6 +1018,15 @@ export type Synft = {
           {
             "name": "root",
             "type": "publicKey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }
@@ -1423,7 +1035,17 @@ export type Synft = {
       "name": "branchInfo",
       "type": {
         "kind": "struct",
-        "fields": []
+        "fields": [
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
       }
     },
     {
@@ -1434,6 +1056,15 @@ export type Synft = {
           {
             "name": "owner",
             "type": "publicKey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }
@@ -1497,271 +1128,6 @@ export const IDL: Synft = {
   "name": "synft",
   "instructions": [
     {
-      "name": "initializeInject",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "childTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "reversible",
-          "type": "bool"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
-        }
-      ]
-    },
-    {
-      "name": "initializeFungibleTokenInject",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "ownerTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "mint",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "fungibleTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "reversible",
-          "type": "bool"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
-        },
-        {
-          "name": "injectFungibleTokenAmount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "initializeSolInject",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "reversible",
-          "type": "bool"
-        },
-        {
-          "name": "bump",
-          "type": "u8"
-        },
-        {
-          "name": "injectSolAmount",
-          "type": "u64"
-        }
-      ]
-    },
-    {
-      "name": "extract",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "childTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "bump",
-          "type": "u8"
-        }
-      ]
-    },
-    {
-      "name": "extractSol",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "bump",
-          "type": "u8"
-        }
-      ]
-    },
-    {
       "name": "nftCopy",
       "accounts": [
         {
@@ -1826,94 +1192,7 @@ export const IDL: Synft = {
       ]
     },
     {
-      "name": "burnForSol",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "burnForToken",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "childTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "childrenMeta",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": []
-    },
-    {
-      "name": "injectToRootV2",
+      "name": "injectToRoot",
       "accounts": [
         {
           "name": "currentOwner",
@@ -1981,17 +1260,17 @@ export const IDL: Synft = {
           "type": "u8"
         },
         {
-          "name": "parentMataBump",
+          "name": "parentMetaBump",
           "type": "u8"
         },
         {
-          "name": "parentMataOfChildBump",
+          "name": "parentMetaOfChildBump",
           "type": "u8"
         }
       ]
     },
     {
-      "name": "injectToNonRootV2",
+      "name": "injectToNonRoot",
       "accounts": [
         {
           "name": "currentOwner",
@@ -2085,7 +1364,7 @@ export const IDL: Synft = {
       ]
     },
     {
-      "name": "injectToSolV2",
+      "name": "injectToSol",
       "accounts": [
         {
           "name": "currentOwner",
@@ -2130,7 +1409,7 @@ export const IDL: Synft = {
       ]
     },
     {
-      "name": "transferChildNftV2",
+      "name": "transferChildNft",
       "accounts": [
         {
           "name": "currentOwner",
@@ -2201,7 +1480,7 @@ export const IDL: Synft = {
       ]
     },
     {
-      "name": "extractSolV2",
+      "name": "extractSol",
       "accounts": [
         {
           "name": "currentOwner",
@@ -2242,62 +1521,7 @@ export const IDL: Synft = {
       ]
     },
     {
-      "name": "burnV2",
-      "accounts": [
-        {
-          "name": "currentOwner",
-          "isMut": true,
-          "isSigner": true
-        },
-        {
-          "name": "parentMintAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentTokenAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "parentMetadata",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "solAccount",
-          "isMut": true,
-          "isSigner": false
-        },
-        {
-          "name": "systemProgram",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "rent",
-          "isMut": false,
-          "isSigner": false
-        },
-        {
-          "name": "tokenProgram",
-          "isMut": false,
-          "isSigner": false
-        }
-      ],
-      "args": [
-        {
-          "name": "solAccountBump",
-          "type": "u8"
-        },
-        {
-          "name": "parentMetadataBump",
-          "type": "u8"
-        }
-      ]
-    },
-    {
-      "name": "transferCrankInitV2",
+      "name": "transferCrankInit",
       "accounts": [
         {
           "name": "operator",
@@ -2348,7 +1572,7 @@ export const IDL: Synft = {
       "args": []
     },
     {
-      "name": "transferCrankProcessV2",
+      "name": "transferCrankProcess",
       "accounts": [
         {
           "name": "operator",
@@ -2394,7 +1618,7 @@ export const IDL: Synft = {
       "args": []
     },
     {
-      "name": "transferCrankEndV2",
+      "name": "transferCrankEnd",
       "accounts": [
         {
           "name": "operator",
@@ -2761,32 +1985,6 @@ export const IDL: Synft = {
         "kind": "struct",
         "fields": [
           {
-            "name": "reversible",
-            "type": "bool"
-          },
-          {
-            "name": "child",
-            "type": "publicKey"
-          },
-          {
-            "name": "childType",
-            "type": {
-              "defined": "ChildType"
-            }
-          },
-          {
-            "name": "bump",
-            "type": "u8"
-          }
-        ]
-      }
-    },
-    {
-      "name": "childrenMetadataV2",
-      "type": {
-        "kind": "struct",
-        "fields": [
-          {
             "name": "child",
             "type": "publicKey"
           },
@@ -2819,6 +2017,15 @@ export const IDL: Synft = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }
@@ -2846,6 +2053,15 @@ export const IDL: Synft = {
               "array": [
                 "publicKey",
                 8
+              ]
+            }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
               ]
             }
           }
@@ -2881,6 +2097,15 @@ export const IDL: Synft = {
                 3
               ]
             }
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }
@@ -2893,6 +2118,15 @@ export const IDL: Synft = {
           {
             "name": "bump",
             "type": "u8"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }
@@ -2909,6 +2143,15 @@ export const IDL: Synft = {
           {
             "name": "root",
             "type": "publicKey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }
@@ -2917,7 +2160,17 @@ export const IDL: Synft = {
       "name": "branchInfo",
       "type": {
         "kind": "struct",
-        "fields": []
+        "fields": [
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
+          }
+        ]
       }
     },
     {
@@ -2928,6 +2181,15 @@ export const IDL: Synft = {
           {
             "name": "owner",
             "type": "publicKey"
+          },
+          {
+            "name": "reserved",
+            "type": {
+              "array": [
+                "u8",
+                64
+              ]
+            }
           }
         ]
       }
