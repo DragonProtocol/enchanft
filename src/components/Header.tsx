@@ -1,13 +1,12 @@
 /*
  * @Author: your name
  * @Date: 2022-03-11 18:48:03
- * @LastEditTime: 2022-06-27 17:27:13
+ * @LastEditTime: 2022-06-28 14:10:13
  * @LastEditors: shixuewen friendlysxw@163.com
- * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: \synft-app\src\components\Header.tsx
+ * @Description: header component
  */
-import React from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import React, { useCallback } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { useEffect } from 'react'
 import { useState } from 'react'
@@ -28,6 +27,7 @@ export default function Header() {
   const { connection } = useConnection()
   const wallet = useWallet()
   const [balance, setBalance] = useState(0)
+  const location = useLocation()
   useEffect(() => {
     if (!wallet.publicKey) return
     ;(async (publicKey) => {
@@ -51,20 +51,34 @@ export default function Header() {
     },
   ]
   const [openNavDrawer, setOpenNavDrawer] = useState(false)
-  const PcNav = () => {
-    return navs.map((item) => (
-      <div className="nav" onClick={() => navigate(item.link)}>
-        {item.name}
-      </div>
-    ))
-  }
-  const MobileNav = () => {
+  const [curNavLink, setCurNavLink] = useState('/')
+  useEffect(() => {
+    if (navs.findIndex((item) => item.link === location.pathname) !== -1) {
+      setCurNavLink(location.pathname)
+    }
+  }, [location])
+  const PcNav = useCallback(() => {
+    return (
+      <>
+        <PcNavList>
+          {navs.map((item) => (
+            <PcNavItem key={item.link} isActive={item.link === curNavLink} onClick={() => navigate(item.link)}>
+              {item.name}
+            </PcNavItem>
+          ))}
+        </PcNavList>
+      </>
+    )
+  }, [navs, curNavLink])
+  const MobileNav = useCallback(() => {
     return (
       <>
         <Drawer anchor="bottom" open={openNavDrawer} onClose={(e) => setOpenNavDrawer(false)}>
           <MobileNavList>
             {navs.map((item) => (
               <MobileNavItem
+                key={item.link}
+                isActive={item.link === curNavLink}
                 onClick={() => {
                   navigate(item.link)
                   setOpenNavDrawer(false)
@@ -77,7 +91,7 @@ export default function Header() {
         </Drawer>
       </>
     )
-  }
+  }, [navs, curNavLink])
   return (
     <HeaderWrapper>
       <div className="left">
@@ -95,7 +109,7 @@ export default function Header() {
       {isMobile && MobileNav()}
       <div className="right">
         {/* <input type="text" className="search" /> */}
-        <ButtonPrimary onClick={() => window.open('https://solfaucet.com/')}>{'Get SOL'}</ButtonPrimary>
+        {/* <ButtonPrimary onClick={() => window.open('https://solfaucet.com/')}>{'Get SOL'}</ButtonPrimary> */}
         <ButtonConnectWallect className="btn-connect-wallect" />
       </div>
     </HeaderWrapper>
@@ -126,15 +140,7 @@ const HeaderWrapper = styled.div`
     height: 100%;
     flex: 1;
     display: flex;
-    justify-content: space-around;
-    .nav {
-      height: 100%;
-      font-size: 12px;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      ${CursorPointerUpCss}
-    }
+    align-items: center;
   }
   .right {
     margin-left: 16px;
@@ -160,12 +166,28 @@ const HeaderWrapper = styled.div`
     } */
   }
 `
+const PcNavList = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: space-around;
+`
+const PcNavItem = styled.div<{ isActive: boolean }>`
+  height: 100%;
+  font-size: 12px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  ${CursorPointerUpCss}
+  box-shadow: ${(props) => (props.isActive ? 'inset 0 -2px #000' : 'none')};
+`
 const MobileNavList = styled.div`
   display: flex;
   flex-direction: column;
 `
-const MobileNavItem = styled.div`
+const MobileNavItem = styled.div<{ isActive: boolean }>`
   text-align: center;
   padding: 24px;
   border-top: 1px solid #ccc;
+  box-shadow: ${(props) => (props.isActive ? 'inset 0 0 0 2px #000' : 'none')};
 `

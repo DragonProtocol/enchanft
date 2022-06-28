@@ -18,21 +18,21 @@ const NFTCard: React.FC<Props> = ({ data }: Props) => {
   return (
     <NFTCardWrapper>
       <div className="img-box">
-        {data.hasCopied && <span className="tag tag-synthesized">Synthesized</span>}
-        {data.hasInjected && <span className="tag tag-enchanted">Enchanted</span>}
+        {/* {data.hasCopied && <span className="tag tag-synthesized">Synthesized</span>}
+        {data.hasInjected && <span className="tag tag-enchanted">Enchanted</span>} */}
         <img src={data.image} className="img" />
       </div>
       <EnchaNFTedNameBox>
         <EnchaNFTedName>{data.name}</EnchaNFTedName>
-        <EnchaNFTedProjectName>TODO: project name</EnchaNFTedProjectName>
+        {/* <EnchaNFTedProjectName>TODO: project name</EnchaNFTedProjectName> */}
       </EnchaNFTedNameBox>
-      <EnchaNFTedAmountBox>
+      {/* <EnchaNFTedAmountBox>
         <EnchaNFTedAmountTitle>EnchaNFTed</EnchaNFTedAmountTitle>
         <EnchaNFTedAmount>
           <img src={SolanaIcon} alt="" />
           <span>TODOSOL</span>
         </EnchaNFTedAmount>
-      </EnchaNFTedAmountBox>
+      </EnchaNFTedAmountBox> */}
     </NFTCardWrapper>
   )
 }

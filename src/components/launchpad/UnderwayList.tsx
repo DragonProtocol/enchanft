@@ -2,9 +2,9 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-23 13:34:41
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-06-27 16:07:05
+ * @LastEditTime: 2022-06-28 14:16:18
  * @FilePath: \synft-app\src\components\launchpad\UnderwayList.tsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%A
+ * @Description: 正在进行的项目列表组件
  */
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'

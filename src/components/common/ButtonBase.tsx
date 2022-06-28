@@ -1,10 +1,9 @@
 /*
  * @Author: your name
  * @Date: 2022-03-15 11:15:41
- * @LastEditTime: 2022-06-24 17:27:24
+ * @LastEditTime: 2022-06-28 14:18:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @Description: 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- * @FilePath: \synft-app\src\components\common\ButtonBase.tsx
+ * @Description: 基础按钮组件
  */
 import { ButtonHTMLAttributes } from 'react'
 import styled, { css } from 'styled-components'

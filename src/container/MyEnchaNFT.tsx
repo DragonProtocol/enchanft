@@ -2,9 +2,8 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-06-27 11:30:55
- * @FilePath: \synft-app\src\container\MyEnchaNFTEnchaNFT.tsx
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
+ * @LastEditTime: 2022-06-28 13:19:47
+ * @Description: 我的nft列表页
  */
 import React, { useEffect, useRef, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
@@ -45,6 +44,7 @@ function MyEnchaNFT() {
 
   const nftList: NftDataItem[] = myNFTData
   const nftListLoading = myNFTDataStatus === 'loading'
+
   return (
     <MyEnchaNFTWrapper>
       {wallet.publicKey ? (

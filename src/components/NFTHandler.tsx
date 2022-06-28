@@ -450,8 +450,11 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   return (
     <NFTHandlerWrapper>
       <div className="top">
-        {/* TODO 项目编号 */}
-        <div className="nft-title">{metadata.data.name} #5553</div>
+        <div className="nft-title">
+          {metadata.data.name}
+          {/* TODO 项目编号 */}
+          {/* #5553 */}
+        </div>
         {/* <div className="nft-creator">
           <span className="creator-label">creator</span>
           <span className="creator-value">
@@ -461,7 +464,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         <div className="dividing-line"></div> */}
 
         {/* TODO 所属项目 */}
-        <div className="nft-project">TODO: project name</div>
+        {/* <div className="nft-project">TODO: project name</div> */}
       </div>
       <div className="handler-form">
         {(!publicKey && (
@@ -685,6 +688,7 @@ const NFTHandlerWrapper = styled.div`
 
   .top {
     text-transform: capitalize;
+    margin-bottom: 48px;
     .nft-title {
       font-size: 24px;
       line-height: 40px;
@@ -774,7 +778,6 @@ const BurnEnchanftedWrapper = styled.div`
   background: #ffffff;
   border: 2px solid #222222;
   padding: 16px;
-  margin-top: 48px;
   margin-bottom: 12px;
 `
 const BurnEnchanftedTitle = styled.div`

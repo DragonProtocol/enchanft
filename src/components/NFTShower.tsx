@@ -42,7 +42,7 @@ export default function NFTShower({ data }: Props) {
         <img src={info.image} alt={info.image} />
       </div> */}
       <div className="info-box">
-        <Accordion
+        {/* <Accordion
           className="info-item"
           style={{ display: injectTree.data.curr.children.length > 0 ? 'block' : 'none' }}
           expanded={currentAccordion === 'enchantment'}
@@ -54,7 +54,7 @@ export default function NFTShower({ data }: Props) {
           <AccordionDetails className="info-content">
             {injectTree.loading ? <div>loading...</div> : <NFTTree data={injectTree.data} height={252} />}
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
         {info.description && (
           <Accordion
             className="info-item"
@@ -62,7 +62,8 @@ export default function NFTShower({ data }: Props) {
             onChange={(event, isExpanded) => handleAccordionChange('description', isExpanded)}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
-              about TODO project name
+              about
+              {/* TODO project name */}
             </AccordionSummary>
             <AccordionDetails className="info-content">{info.description}</AccordionDetails>
           </Accordion>
