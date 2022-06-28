@@ -110,7 +110,7 @@ const UpcomingListItemWrapper = styled.div`
 // top
 const UpcomingListItemTop = styled.div`
   width: 100%;
-  flex: 1;
+  height: 324px;
   box-sizing: border-box;
   img {
     width: 100%;
