@@ -38,11 +38,11 @@ export default function NFTShower({ data }: Props) {
   }
   return (
     <NFTShowerWrapper>
-      <div className="img-box">
+      {/* <div className="img-box">
         <img src={info.image} alt={info.image} />
-      </div>
+      </div> */}
       <div className="info-box">
-        <Accordion
+        {/* <Accordion
           className="info-item"
           style={{ display: injectTree.data.curr.children.length > 0 ? 'block' : 'none' }}
           expanded={currentAccordion === 'enchantment'}
@@ -54,7 +54,7 @@ export default function NFTShower({ data }: Props) {
           <AccordionDetails className="info-content">
             {injectTree.loading ? <div>loading...</div> : <NFTTree data={injectTree.data} height={252} />}
           </AccordionDetails>
-        </Accordion>
+        </Accordion> */}
         {info.description && (
           <Accordion
             className="info-item"
@@ -62,7 +62,8 @@ export default function NFTShower({ data }: Props) {
             onChange={(event, isExpanded) => handleAccordionChange('description', isExpanded)}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
-              description
+              about
+              {/* TODO project name */}
             </AccordionSummary>
             <AccordionDetails className="info-content">{info.description}</AccordionDetails>
           </Accordion>
@@ -117,22 +118,30 @@ const NFTShowerWrapper = styled.div`
     font-size: 12px;
     .info-item {
       margin: 0;
-    }
-    .info-title {
-      background: #f0f0f0;
-      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.25), inset 0px 4px 0px rgba(255, 255, 255, 0.25);
-      text-transform: uppercase;
-      ${CursorPointerUpCss}
-    }
-    .info-content {
+      margin-bottom: 12px;
       background: #ffffff;
       border: 2px solid #222222;
+    }
+    .info-title {
+      /* background: #f0f0f0; */
+      /* box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.25), inset 0px 4px 0px rgba(255, 255, 255, 0.25); */
+      /* text-transform: uppercase; */
+      text-transform: capitalize;
+      ${CursorPointerUpCss}
+      font-size: 16px;
+      line-height: 16px;
+    }
+    .info-content {
+      background: #f8f8f8;
       box-sizing: border-box;
       border-top: none;
       padding: 24px;
       color: rgba(34, 34, 34, 0.5);
       overflow: hidden;
       max-height: 300px;
+      font-size: 12px;
+      line-height: 24px;
+      color: rgba(34, 34, 34, 0.7);
     }
     .properties-content {
       display: flex;

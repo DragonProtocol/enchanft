@@ -4,7 +4,18 @@ import styled from 'styled-components'
 import { PublicKey, Transaction } from '@solana/web3.js'
 import { useNavigate } from 'react-router-dom'
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
-import { Alert, AlertColor, Backdrop, CircularProgress, Snackbar } from '@mui/material'
+import {
+  Alert,
+  AlertColor,
+  Backdrop,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Snackbar,
+} from '@mui/material'
 // import ReactJson from 'react-json-view'
 
 import { getMyNFTokens, selectMyNFTData, selectMyNFTDataStatus } from '../features/my/mySlice'
@@ -13,19 +24,17 @@ import { clearMyNFT } from '../features/my/mySlice'
 import LoadingIcon from '../components/imgs/Loading.gif'
 import NftInject, { InjectMode, OnInjectProps } from './nft_handlers/NftInject'
 import { useBelongTo, useGAEvent } from '../hooks'
-import {
-  useSynftContract,
-} from "@jsrsc/synft-js-react"
+import { useSynftContract } from '@jsrsc/synft-js-react'
 import { MAX_CHILDREN_PER_LEVEL, MOBILE_BREAK_POINT, VIEW_LAMPORTS_DECIMAL } from '../utils/constants'
 import { lamportsToSol, solToLamports, sendWalletTrans, getMetadataInfoWithMint } from '../utils'
 import { Node } from '../synft'
 import RemindConnectWallet from './RemindConnectWallet'
-import { ButtonDanger, ButtonPrimary } from './common/ButtonBase'
+import { ButtonDanger, ButtonInfo, ButtonPrimary } from './common/ButtonBase'
 import { NftDataItem } from './NFTList'
 import ModalNftSelector from './nft_handlers/ModalNftSelector'
 import TooltipWrapper from './common/TooltipWrapper'
 import { FontFamilyCss } from '../GlobalStyle'
-
+import SolanaIcon from './icons/solana.png'
 interface Props {
   metadata: Metadata
   injectTree: {
@@ -97,14 +106,14 @@ export const FormCouldOpsTooltipWrapper = ({ children, enable }: { children: any
 }
 const NFTHandler: React.FC<Props> = (props: Props) => {
   const wallet: WalletContextState = useWallet()
-  const { publicKey } = wallet;
+  const { publicKey } = wallet
   const { connection } = useConnection()
   const { metadata, refreshInject, injectTree } = props
   const { mint } = metadata
   const mintKey = new PublicKey(mint)
   const injectRef = useRef<{ resetForm: Function }>()
   const navigate = useNavigate()
-  const { synftContract } = useSynftContract();
+  const { synftContract } = useSynftContract()
   const { belong, loading: belongLoading } = useBelongTo(mint.toString(), injectTree.data)
   const gaEvent = useGAEvent()
 
@@ -185,7 +194,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       const reversible = injectMode === InjectMode.Reversible
       console.log('onInject')
       transactionPublic(async () => {
-        if (!publicKey) return;
+        if (!publicKey) return
         const tx = new Transaction()
         if (formatVolume && childMintKeys.length > 0) {
           // 如果注入了SOL，又注入了nft
@@ -193,7 +202,11 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           if (belong.parent) {
             gaEvent(ContractActionGA.INJECT_NFT_TO_NON_ROOT_WITH_SOL)
             const injectTx = await synftContract.injectNFTToNonRoot(
-              publicKey,mintKey, childMintKeys, new PublicKey(belong.parent.rootPDA), reversible
+              publicKey,
+              mintKey,
+              childMintKeys,
+              new PublicKey(belong.parent.rootPDA),
+              reversible,
             )
             tx.add(...injectTx)
             if (formatVolume) {
@@ -203,34 +216,36 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           } else {
             gaEvent(ContractActionGA.INJECT_NFT_TO_ROOT_WITH_SOL)
             const injectInstruction = await synftContract.injectNFTToRoot(publicKey, mintKey, childMintKeys, reversible)
-            const injectSolInstruction = await synftContract.injectSOLInstruction(publicKey, mintKey, formatVolume);
+            const injectSolInstruction = await synftContract.injectSOLInstruction(publicKey, mintKey, formatVolume)
             tx.add(...injectInstruction, injectSolInstruction)
           }
         } else if (formatVolume) {
           // 如果只注入SOL
           gaEvent(ContractActionGA.INJECT_SOL)
           const injectSolTx = await synftContract.injectSOLInstruction(publicKey, mintKey, formatVolume)
-          tx.add(injectSolTx)  
+          tx.add(injectSolTx)
         } else if (childMintKeys.length > 0) {
           // 如果只注入nft
           // 如果有父级
           if (belong.parent) {
             gaEvent(ContractActionGA.INJECT_NFT_TO_NON_ROOT)
             const injectTx = await synftContract.injectNFTToNonRoot(
-              publicKey,mintKey, childMintKeys, new PublicKey(belong.parent.rootPDA), reversible
+              publicKey,
+              mintKey,
+              childMintKeys,
+              new PublicKey(belong.parent.rootPDA),
+              reversible,
             )
             tx.add(...injectTx)
           } else {
             gaEvent(ContractActionGA.INJECT_NFT_TO_ROOT)
-            const injectTx = await synftContract.injectNFTToRoot(
-              publicKey,mintKey, childMintKeys, reversible
-            )
+            const injectTx = await synftContract.injectNFTToRoot(publicKey, mintKey, childMintKeys, reversible)
             tx.add(...injectTx)
           }
         }
-        
+
         await sendWalletTrans(tx, connection, wallet)
-        publicKey && dispatch(getMyNFTokens({ owner: publicKey , connection, synftContract}))
+        publicKey && dispatch(getMyNFTokens({ owner: publicKey, connection, synftContract }))
         injectRef.current && injectRef.current.resetForm()
       }, TransctionType.INJECT)
     },
@@ -239,9 +254,9 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   // 执行提取sol
   const onExtractSol = useCallback(async () => {
     transactionPublic(async () => {
-      if (!publicKey) return;
+      if (!publicKey) return
       gaEvent(ContractActionGA.EXTRACT_SOL)
-      const tx = new Transaction();
+      const tx = new Transaction()
       const inst = await synftContract.extractSOL(mintKey, publicKey)
       tx.add(inst)
       await sendWalletTrans(tx, connection, wallet)
@@ -306,42 +321,54 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   )
 
   // 执行复制
-  const onCopyWithInject = useCallback(  async ({ injectMode, token }: OnInjectProps) => {
-    const { name, symbol, uri } = metadata.data
-    if (!mint) return
-    let newMint = ''
-    const reversible = injectMode === InjectMode.Reversible
-    const { volume } = token
-    const lamportsVolume = solToLamports(Number(volume))
-    transactionPublic(async () => {
-      if (!synftContract.program || !publicKey) return;
-      console.log('onCopyWithInject')
-      gaEvent(ContractActionGA.COPY_WITH_INJECT_SOL)
+  const onCopyWithInject = useCallback(
+    async ({ injectMode, token }: OnInjectProps) => {
+      const { name, symbol, uri } = metadata.data
+      if (!mint) return
+      let newMint = ''
+      const reversible = injectMode === InjectMode.Reversible
+      const { volume } = token
+      const lamportsVolume = solToLamports(Number(volume))
+      transactionPublic(async () => {
+        if (!synftContract.program || !publicKey) return
+        console.log('onCopyWithInject')
+        gaEvent(ContractActionGA.COPY_WITH_INJECT_SOL)
 
-      const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
-        [Buffer.from('synthetic-nft-mint-seed'), mintKey.toBuffer()],
-        synftContract.program.programId,
-      )
-      const [nftTokenAccountPDA, nftTokenAccountBump] = await PublicKey.findProgramAddress(
-        [Buffer.from('synthetic-nft-account-seed'), mintKey.toBuffer()],
-        synftContract.program.programId,
-      )
-      const tx = new Transaction()
-      const copyInstruction = await synftContract.copyNFTInstruction(publicKey, mintKey, {
-        name, metadataUri: uri, symbol
-      })
-      const injectInstruction = await synftContract.injectSOLWithTokenAccountInstruction(publicKey, nftMintPDA, nftTokenAccountPDA, lamportsVolume)
-      tx.add(copyInstruction, injectInstruction)
-      await sendWalletTrans(tx, connection, wallet)
-      newMint = nftMintPDA.toString()
+        const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
+          [Buffer.from('synthetic-nft-mint-seed'), mintKey.toBuffer()],
+          synftContract.program.programId,
+        )
+        const [nftTokenAccountPDA, nftTokenAccountBump] = await PublicKey.findProgramAddress(
+          [Buffer.from('synthetic-nft-account-seed'), mintKey.toBuffer()],
+          synftContract.program.programId,
+        )
+        const tx = new Transaction()
+        const copyInstruction = await synftContract.copyNFTInstruction(publicKey, mintKey, {
+          name,
+          metadataUri: uri,
+          symbol,
+        })
+        const injectInstruction = await synftContract.injectSOLWithTokenAccountInstruction(
+          publicKey,
+          nftMintPDA,
+          nftTokenAccountPDA,
+          lamportsVolume,
+        )
+        tx.add(copyInstruction, injectInstruction)
+        await sendWalletTrans(tx, connection, wallet)
+        newMint = nftMintPDA.toString()
 
-      navigate(`/info/${newMint}`)
-      reloadWindow()
-    }, TransctionType.INJECT)
-  }, [publicKey])
+        navigate(`/info/${newMint}`)
+        reloadWindow()
+      }, TransctionType.INJECT)
+    },
+    [publicKey],
+  )
 
   // 执行燃烧销毁
+  const [openBurnConfirm, setOpenBurnConfirm] = useState(false)
   const onBurn = useCallback(async () => {
+    setOpenBurnConfirm(false)
     transactionPublic(async () => {
       gaEvent(ContractActionGA.BURN)
       if (!publicKey) return
@@ -367,7 +394,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       const tx = new Transaction()
       const instruction = await synftContract.extractChildNFTToUser(publicKey, other, new PublicKey(mintKey), {
         rootMintKey: new PublicKey(belong.parent.rootMint),
-        parentMintKey:  new PublicKey(belong.parent.mint),
+        parentMintKey: new PublicKey(belong.parent.mint),
       })
       tx.add(instruction)
       await sendWalletTrans(tx, connection, wallet)
@@ -384,7 +411,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       const tx = new Transaction()
       const instruction = await synftContract.extractChildNFTToUser(publicKey, publicKey, mintKey, {
         rootMintKey: new PublicKey(belong.parent.rootMint),
-        parentMintKey: new PublicKey(belong.parent.mint)
+        parentMintKey: new PublicKey(belong.parent.mint),
       })
       tx.add(instruction)
       await sendWalletTrans(tx, connection, wallet)
@@ -397,38 +424,54 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
    * @param {*} type 交易的类型
    * @return {*}
    */
-  const transactionPublic = useCallback(async (fn: Function, type: TransctionType) => {
-    if (!couldOps) return
-    setTransactionState({ inProgress: true, msg: transactionMsg[type].inProgress })
-    try {
-      await fn()
-      setSnackbarState({ open: true, alertColor: 'success', alertMsg: transactionMsg[type].successful })
-      refreshInject()
-    } catch (error) {
-      // 可以用来显示错误
-      if ((error as any).code === 4001) {
-        // 用户取消交易
-        setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg[type].cancel })
-      } else {
-        setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg[type].failed })
+  const transactionPublic = useCallback(
+    async (fn: Function, type: TransctionType) => {
+      if (!couldOps) return
+      setTransactionState({ inProgress: true, msg: transactionMsg[type].inProgress })
+      try {
+        await fn()
+        setSnackbarState({ open: true, alertColor: 'success', alertMsg: transactionMsg[type].successful })
+        refreshInject()
+      } catch (error) {
+        // 可以用来显示错误
+        if ((error as any).code === 4001) {
+          // 用户取消交易
+          setSnackbarState({ open: true, alertColor: 'warning', alertMsg: transactionMsg[type].cancel })
+        } else {
+          setSnackbarState({ open: true, alertColor: 'error', alertMsg: transactionMsg[type].failed })
+        }
+      } finally {
+        setTransactionState({ ...transactionState, inProgress: false })
       }
-    } finally {
-      setTransactionState({ ...transactionState, inProgress: false })
-    }
-  }, [couldOps])
+    },
+    [couldOps],
+  )
 
   return (
     <NFTHandlerWrapper>
       <div className="top">
-        <div className="nft-title">{metadata.data.name}</div>
-        <div className="nft-creator">
-          <span className="creator-label">creator</span>
-          <span className="creator-value">{metadata.data.creators && metadata.data.creators[0]?.address?.toString()}</span>
+        <div className="nft-title">
+          {metadata.data.name}
+          {/* TODO 项目编号 */}
+          {/* #5553 */}
         </div>
-        <div className="dividing-line"></div>
+        {/* <div className="nft-creator">
+          <span className="creator-label">creator</span>
+          <span className="creator-value">
+            {metadata.data.creators && metadata.data.creators[0]?.address?.toString()}
+          </span>
+        </div>
+        <div className="dividing-line"></div> */}
+
+        {/* TODO 所属项目 */}
+        {/* <div className="nft-project">TODO: project name</div> */}
       </div>
       <div className="handler-form">
-        {(!publicKey && <RemindConnectWallet />) || (
+        {(!publicKey && (
+          <RemindConnectWalletBox>
+            <RemindConnectWallet />
+          </RemindConnectWalletBox>
+        )) || (
           <>
             {belongLoading ? (
               <p>
@@ -444,7 +487,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                 )}
                 {showBelongToMe && (
                   <>
-                    {(couldInjectSOL || couldInjectNFT) && (
+                    {/* {(couldInjectSOL || couldInjectNFT) && (
                       <NftInject
                         ref={injectRef}
                         formOption={{
@@ -454,13 +497,15 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                         }}
                         nftOptions={
                           couldInjectNFT
-                            ? myNFTData.filter((item) => item.mint != mint.toString() && item.mint != belong.parent?.rootMint)
+                            ? myNFTData.filter(
+                                (item) => item.mint != mint.toString() && item.mint != belong.parent?.rootMint,
+                              )
                             : []
                         }
                         nftInjectMaxNum={couldInjectNFTNum}
                         onInject={onInject}
                       ></NftInject>
-                    )}
+                    )} */}
 
                     {(injectTree.loading && (
                       <p>
@@ -468,7 +513,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                       </p>
                     )) || (
                       <>
-                        {couldExtractSOL && (
+                        {/* {couldExtractSOL && (
                           <FormCouldOpsTooltipWrapper enable={!couldOps}>
                             <ButtonDanger
                               style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
@@ -527,12 +572,65 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                               {`> Burn <`}
                             </ButtonDanger>
                           </FormCouldOpsTooltipWrapper>
+                        )} */}
+                        {couldBurn && (
+                          <BurnEnchanftedWrapper>
+                            <BurnEnchanftedTitle>Enchanfted</BurnEnchanftedTitle>
+                            <BurnEnchanftedAmountBox>
+                              <img src={SolanaIcon} alt="" />
+                              <span>{lamportsToSol(solAmount).toFixed(VIEW_LAMPORTS_DECIMAL)}</span>
+                              <span>SOL</span>
+                            </BurnEnchanftedAmountBox>
+                            <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                              <ButtonDanger
+                                style={{
+                                  pointerEvents: !couldOps ? 'none' : 'auto',
+                                  marginTop: '32px',
+                                  marginBottom: '0px',
+                                }}
+                                className={`handle-btn`}
+                                disabled={!couldOps}
+                                onClick={() => setOpenBurnConfirm(true)}
+                              >
+                                {`> Burn <`}
+                              </ButtonDanger>
+                            </FormCouldOpsTooltipWrapper>
+                            <Dialog
+                              open={openBurnConfirm}
+                              onClose={() => setOpenBurnConfirm(true)}
+                              aria-labelledby="alert-dialog-title"
+                              aria-describedby="alert-dialog-description"
+                            >
+                              <DialogTitle id="alert-dialog-title">
+                                <BurnConfirmTitle>
+                                  <div style={{ fontSize: '40px' }}>⚠️</div>
+                                  <span>{'Burning will destroy the NFT and remove the embedded SOL.'}</span>
+                                </BurnConfirmTitle>
+                              </DialogTitle>
+                              <DialogActions>
+                                <ButtonInfo
+                                  onClick={() => setOpenBurnConfirm(false)}
+                                  style={{
+                                    padding: '18px 40px',
+                                  }}
+                                >
+                                  Cancel
+                                </ButtonInfo>
+                                <ButtonDanger
+                                  onClick={onBurn}
+                                  style={{
+                                    padding: '18px 40px',
+                                  }}
+                                >{`Continue`}</ButtonDanger>
+                              </DialogActions>
+                            </Dialog>
+                          </BurnEnchanftedWrapper>
                         )}
                       </>
                     )}
                   </>
                 )}
-                {showCopy && (
+                {/* {showCopy && (
                   <NftInject
                     formOption={{
                       couldOps: couldOps,
@@ -543,7 +641,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                     nftOptions={myNFTData.filter((item) => item?.mint != mint.toString())}
                     onInject={onCopyWithInject}
                   ></NftInject>
-                )}
+                )} */}
               </>
             )}
             {/* NFT 列表选择模态框 */}
@@ -589,13 +687,21 @@ const NFTHandlerWrapper = styled.div`
   width: 100%;
 
   .top {
-    text-transform: uppercase;
+    text-transform: capitalize;
+    margin-bottom: 48px;
     .nft-title {
-      font-size: 30px;
+      font-size: 24px;
+      line-height: 40px;
       color: #222222;
       @media (max-width: ${MOBILE_BREAK_POINT}px) {
         font-size: 20px;
       }
+    }
+    .nft-project {
+      font-size: 12px;
+      line-height: 12px;
+      color: #3dd606;
+      margin-top: 8px;
     }
     .nft-creator {
       margin-top: 24px;
@@ -665,4 +771,43 @@ const NFTHandlerWrapper = styled.div`
     ${FontFamilyCss}
     font-size: 12px;
   }
+`
+const BurnEnchanftedWrapper = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #222222;
+  padding: 16px;
+  margin-bottom: 12px;
+`
+const BurnEnchanftedTitle = styled.div`
+  font-size: 16px;
+  line-height: 16px;
+  color: #222222;
+`
+const BurnEnchanftedAmountBox = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-top: 38px;
+  font-size: 24px;
+  line-height: 24px;
+  color: #222222;
+`
+const BurnConfirmTitle = styled.div`
+  ${FontFamilyCss}
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  font-size: 14px;
+  line-height: 24px;
+`
+
+const RemindConnectWalletBox = styled.div`
+  box-sizing: border-box;
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid #222222;
+  padding: 16px;
+  margin-top: 48px;
+  margin-bottom: 12px;
 `

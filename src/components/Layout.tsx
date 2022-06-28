@@ -18,10 +18,10 @@ const Layout: React.FC = () => {
           </div>
         </div>
         <div className="main-footer">
-          <div className="layout-inner footer-inner">
+          {/* <div className="layout-inner footer-inner">
             <div className="line"></div>
             <div className="copyright">Composable NFTs, Endless Possibilities</div>
-          </div>
+          </div> */}
         </div>
       </div>
     </LayoutWrapper>

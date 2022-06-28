@@ -1,3 +1,10 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-06-22 11:02:06
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-06-28 14:18:15
+ * @Description: nft 列表组件
+ */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { animated, useSprings } from 'react-spring'
@@ -71,15 +78,15 @@ export default NFTList
 export const NFTListWrapper = styled.div`
   width: 100%;
   display: grid;
-  grid-gap: 8px;
+  grid-gap: 26px;
   justify-content: space-between;
   list-style-type: none;
-  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  grid-template-columns: repeat(3, minmax(250px, 1fr));
   @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
-    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    grid-template-columns: repeat(2, minmax(250px, 1fr));
   }
   @media (min-width: ${MEDIA_BREAK_POINTS.sm}px) and (max-width: ${MEDIA_BREAK_POINTS.md}px) {
-    grid-template-columns: repeat(2, minmax(250px, 1fr));
+    grid-template-columns: repeat(1, minmax(250px, 1fr));
   }
   @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
     display: flex;
