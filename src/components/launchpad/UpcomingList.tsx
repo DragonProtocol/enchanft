@@ -97,6 +97,7 @@ const UpcomingListItem = ({ data }: UpcomingListItemProps) => {
 const UpcomingListItemWrapper = styled.div`
   width: 100%;
   height: 480px;
+  background: #fff;
   border: 2px solid #222222;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   box-sizing: border-box;

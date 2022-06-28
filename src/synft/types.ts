@@ -1,6 +1,23 @@
+/* eslint-disable camelcase */
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import { PublicKey, AccountInfo } from '@solana/web3.js'
 
+// metaplex uri 指向的 json 数据
+export type ExternalMetadata = {
+  name: string
+  symbol: string
+  description: string
+  seller_fee_basis_points: number
+  image: string
+  external_url: string
+  attributes: Array<{ trait_type: string; value: string }>
+  collection: { name: string; family: string }
+  properties: {
+    files: Array<{ uri: string; type: string }>
+    category: string
+    creators: Array<{ address: string; share: number }>
+  }
+}
 // 合约持有的注入的信息
 export type ChildMeta = {
   reversible: boolean
@@ -34,7 +51,7 @@ export interface Node {
 export type MetaInfo = {
   mint: PublicKey
   metadata: Metadata // metaplex metadata
-  externalMetadata: any // metaplex uri 指向的 json 数据
+  externalMetadata: ExternalMetadata
 }
 
 export type BelongTo = {
@@ -61,6 +78,7 @@ export type NFT = {
   hasCopied?: boolean
   hasInjected?: boolean
   hasInjectedNFT?: boolean
+  externalMetadata: ExternalMetadata
 }
 
 export type NFTDataItem = NFT & {

@@ -20,6 +20,11 @@ const Info: React.FC = () => {
   const { injectTree, loading: injectTreeLoading, refresh: reloadInjectTree } = useInjectTree(params.mint)
 
   const metadata = info?.metadata
+  console.log({
+    metadata,
+    injectTree,
+  })
+
   const loading = validChecking || infoLoading
 
   return (
@@ -49,6 +54,7 @@ const Info: React.FC = () => {
               {metadata && (
                 <NFTHandler
                   metadata={metadata}
+                  externalMetadata={info?.externalMetadata}
                   injectTree={{
                     data: injectTree,
                     loading: injectTreeLoading,
@@ -58,7 +64,7 @@ const Info: React.FC = () => {
               )}
               <NFTShower
                 data={{
-                  jsonData: info?.externalMetadata,
+                  externalMetadata: info?.externalMetadata,
                   injectTree: {
                     data: injectTree,
                     loading: injectTreeLoading,
