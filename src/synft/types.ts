@@ -83,6 +83,7 @@ export type NFT = {
 
 export type NFTDataItem = NFT & {
   uri?: string
+  injectSolAmount?: number
 }
 
 // eslint-disable-next-line no-shadow

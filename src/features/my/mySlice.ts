@@ -6,7 +6,7 @@ import log from 'loglevel'
 import { RootState } from '../../store/store'
 
 import { NFT } from '../../synft'
-import { getMetadataFormMints, getValidNFTokensWithOwner } from '../../utils'
+import { getInjectSOLFromMints, getMetadataFormMints, getValidNFTokensWithOwner } from '../../utils'
 
 type Token = {
   mint: PublicKey
@@ -53,17 +53,20 @@ export const getMyNFTData = createAsyncThunk(
     thunkAPI.dispatch(myNFTSlice.actions.changeStatus({ status: 'loading' }))
     const mints = nfts.map((item) => item.mint)
     const metadatas = await getMetadataFormMints(mints, connection)
+    const injectSOls = await getInjectSOLFromMints(mints, connection)
+    log.debug('mints', mints)
+    log.debug('metadatas', metadatas)
+    log.debug('injectSOls', injectSOls)
     const data = await Promise.all(
-      metadatas.map(async (metadata) => {
+      metadatas.map(async (metadata, index) => {
+        if (!metadata) return null
         try {
           const externalMetadata = (await axios.get(metadata.data.uri)).data
-          const { hasInjected, hasInjectedNFT } = await synftContract.checkHasInject(metadata.mint)
           return {
             image: externalMetadata.image,
             mint: metadata.mint,
             name: externalMetadata.name,
-            hasInjected,
-            hasInjectedNFT,
+            injectSolAmount: injectSOls[index]?.lamports || 0,
             externalMetadata,
           }
         } catch (err) {

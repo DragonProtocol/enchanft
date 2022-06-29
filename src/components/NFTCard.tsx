@@ -8,21 +8,22 @@
  */
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { MEDIA_BREAK_POINTS } from '../utils/constants'
+import { MEDIA_BREAK_POINTS, VIEW_LAMPORTS_DECIMAL } from '../utils/constants'
 import { NftDataItem } from './NFTList'
 import SolanaIcon from './icons/solana.png'
+import { lamportsToSol } from '../utils'
 interface Props {
   data: NftDataItem
 }
 const NFTCard: React.FC<Props> = ({ data }: Props) => {
   console.log({ data })
-  const { externalMetadata } = data
+  const { externalMetadata, injectSolAmount = 0 } = data
   return (
     <NFTCardWrapper>
       <div className="img-box">
         {/* {data.hasCopied && <span className="tag tag-synthesized">Synthesized</span>}
         {data.hasInjected && <span className="tag tag-enchanted">Enchanted</span>} */}
-        <img src={data.image} className="img" />
+        <img alt="" src={data.image} className="img" />
       </div>
       <EnchaNFTedNameBox>
         <EnchaNFTedName>{data.name}</EnchaNFTedName>
@@ -34,8 +35,7 @@ const NFTCard: React.FC<Props> = ({ data }: Props) => {
         <EnchaNFTedAmountTitle>EnchaNFTed</EnchaNFTedAmountTitle>
         <EnchaNFTedAmount>
           <img src={SolanaIcon} alt="" />
-          {/* TODO sol */}
-          <span>SOL</span>
+          <span>{lamportsToSol(injectSolAmount).toFixed(VIEW_LAMPORTS_DECIMAL)}SOL</span>
         </EnchaNFTedAmount>
       </EnchaNFTedAmountBox>
     </NFTCardWrapper>
