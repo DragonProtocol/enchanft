@@ -1,8 +1,8 @@
 /*
  * @Author: shixuewen
  * @Date: 2022-03-11 18:48:03
- * @LastEditTime: 2022-04-01 17:24:28
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2022-06-28 15:40:19
+ * @LastEditors: shixuewen friendlysxw@163.com
  * @Description: 一些全局样式
  * @FilePath: \synft-app\src\GlobalStyle.ts
  */
@@ -44,7 +44,7 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    /* background-color: #E5E5E5; */
+    background-color: #E5E5E5;
     margin:0;
     padding:0;
     width:100%;

@@ -3,7 +3,6 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Connection, PublicKey } from '@solana/web3.js'
 import axios from 'axios'
 import log from 'loglevel'
-
 import { RootState } from '../../store/store'
 
 import { NFT } from '../../synft'
@@ -32,36 +31,52 @@ const initialState: MyNFT = {
   err: '',
 }
 
-export const getMyNFTokens = createAsyncThunk('my/nftdata', async ({ owner, connection, synftContract }: { owner: PublicKey, connection: Connection, synftContract: SynftContract  }, thunkAPI) => {
-  log.info('init myNFTData with wallet.publicKey', owner.toString())
-  const filteredTokens = await getValidNFTokensWithOwner(owner, connection)
-  thunkAPI.dispatch(getMyNFTData({ nfts: filteredTokens, connection, synftContract }))
-  return filteredTokens
-})
+export const getMyNFTokens = createAsyncThunk(
+  'my/nftdata',
+  async (
+    { owner, connection, synftContract }: { owner: PublicKey; connection: Connection; synftContract: SynftContract },
+    thunkAPI,
+  ) => {
+    log.info('init myNFTData with wallet.publicKey', owner.toString())
+    const filteredTokens = await getValidNFTokensWithOwner(owner, connection)
+    thunkAPI.dispatch(getMyNFTData({ nfts: filteredTokens, connection, synftContract }))
+    return filteredTokens
+  },
+)
 
-export const getMyNFTData = createAsyncThunk('my/nftmetadata', async ({ nfts, connection, synftContract }: { nfts: Token[], connection: Connection, synftContract: SynftContract }, thunkAPI) => {
-  thunkAPI.dispatch(myNFTSlice.actions.changeStatus({ status: 'loading' }))
-  const mints = nfts.map(item => item.mint)
-  const metadatas = await getMetadataFormMints(mints, connection)
-  const data = await Promise.all(metadatas.map(async (metadata) => {
-    try {
-      const externalMetadata = (await axios.get(metadata.data.uri)).data
-      const {hasInjected,hasInjectedNFT} = await synftContract.checkHasInject(metadata.mint)
-      return {
-        image: externalMetadata.image,
-        mint: metadata.mint,
-        name: externalMetadata.name,
-        hasInjected,
-        hasInjectedNFT
-      }}catch(err) {
-        return null
-      }
-  }))
+export const getMyNFTData = createAsyncThunk(
+  'my/nftmetadata',
+  async (
+    { nfts, connection, synftContract }: { nfts: Token[]; connection: Connection; synftContract: SynftContract },
+    thunkAPI,
+  ) => {
+    thunkAPI.dispatch(myNFTSlice.actions.changeStatus({ status: 'loading' }))
+    const mints = nfts.map((item) => item.mint)
+    const metadatas = await getMetadataFormMints(mints, connection)
+    const data = await Promise.all(
+      metadatas.map(async (metadata) => {
+        try {
+          const externalMetadata = (await axios.get(metadata.data.uri)).data
+          const { hasInjected, hasInjectedNFT } = await synftContract.checkHasInject(metadata.mint)
+          return {
+            image: externalMetadata.image,
+            mint: metadata.mint,
+            name: externalMetadata.name,
+            hasInjected,
+            hasInjectedNFT,
+            externalMetadata,
+          }
+        } catch (err) {
+          return null
+        }
+      }),
+    )
 
-  const validData = data.filter((item) => item !== null)
-  thunkAPI.dispatch(myNFTSlice.actions.incrDataWithArr({ data: validData }))
-  thunkAPI.dispatch(myNFTSlice.actions.changeStatus({ status: 'done' }))
-})
+    const validData = data.filter((item) => item !== null)
+    thunkAPI.dispatch(myNFTSlice.actions.incrDataWithArr({ data: validData }))
+    thunkAPI.dispatch(myNFTSlice.actions.changeStatus({ status: 'done' }))
+  },
+)
 
 export const myNFTSlice = createSlice({
   name: 'my/collection',

@@ -2,11 +2,10 @@ import { Connection, PublicKey } from '@solana/web3.js'
 import { Metadata, PROGRAM_ID as MetadataProgramId } from '@metaplex-foundation/mpl-token-metadata'
 import axios from 'axios'
 import { SynftSeed, SYNFT_PROGRAM_ID } from '@jsrsc/synft-js-react'
-import SynftContract from "@jsrsc/synft-js-core"
+import SynftContract from '@jsrsc/synft-js-core'
 import { TOKEN_PROGRAM_ID, getAccount } from '@solana/spl-token'
 
 import type { BelongTo, MetaInfo, Node } from '../synft'
-
 
 export async function getMetadataFromMint(mintKey: PublicKey, connection: Connection) {
   const [pubkey] = await getMetadataPDA(mintKey)
@@ -23,7 +22,6 @@ export async function getMetadataPDA(mint: PublicKey) {
   )
   return key
 }
-
 
 export async function getMetadataInfoWithMint(mintKey: PublicKey, connection: Connection): Promise<MetaInfo | null> {
   try {
@@ -42,14 +40,16 @@ export async function getMetadataInfoWithMint(mintKey: PublicKey, connection: Co
 }
 
 export async function getMintsAccountInfo(mints: PublicKey[], connection: Connection) {
-  const pdas = await Promise.all(mints.map(async (item) => {
-    const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
-      [Buffer.from(SynftSeed.MINT_SEED), item.toBuffer()],
-      SYNFT_PROGRAM_ID,
-    )
-    return nftMintPDA
-  }))
-  
+  const pdas = await Promise.all(
+    mints.map(async (item) => {
+      const [nftMintPDA, nftMintBump] = await PublicKey.findProgramAddress(
+        [Buffer.from(SynftSeed.MINT_SEED), item.toBuffer()],
+        SYNFT_PROGRAM_ID,
+      )
+      return nftMintPDA
+    }),
+  )
+
   const info = await connection.getMultipleAccountsInfo(pdas)
   return info
 }
@@ -73,22 +73,29 @@ export async function getValidNFTokensWithOwner(owner: PublicKey, connection: Co
 }
 
 export async function getMetadataFormMints(mints: PublicKey[], connection: Connection) {
-  const pdas = await Promise.all( mints.map(async (item) => {
-    const [pubkey,] = await getMetadataPDA(item)
-    return pubkey
-  }))
+  const pdas = await Promise.all(
+    mints.map(async (item) => {
+      const [pubkey] = await getMetadataPDA(item)
+      return pubkey
+    }),
+  )
   const infos = await connection.getMultipleAccountsInfo(pdas)
-  const datas = await Promise.all( infos.map(async (item, index) => {
-    if (item === null) return null
-    const data = Metadata.fromAccountInfo(item)
-    return data[0]
-  }))
+  const datas = await Promise.all(
+    infos.map(async (item, index) => {
+      if (item === null) return null
+      const data = Metadata.fromAccountInfo(item)
+      return data[0]
+    }),
+  )
 
-  return datas.filter((item): item is Metadata  => item!== null)
+  return datas.filter((item): item is Metadata => item !== null)
 }
 
 export async function getInjectSOL(mintKey: PublicKey, connection: Connection) {
-  const [solPDA] = await PublicKey.findProgramAddress([Buffer.from(SynftSeed.SOL), mintKey.toBuffer()], SYNFT_PROGRAM_ID)
+  const [solPDA] = await PublicKey.findProgramAddress(
+    [Buffer.from(SynftSeed.SOL), mintKey.toBuffer()],
+    SYNFT_PROGRAM_ID,
+  )
   const solChildrenMetadata = await connection.getAccountInfo(solPDA)
   return solChildrenMetadata
 }
@@ -105,7 +112,11 @@ export async function checkValidNFT(mintKey: PublicKey, connection: Connection):
   }
 }
 
-export async function getInjectTree(synftContract: SynftContract, mintKey: PublicKey, withParent: boolean = true): Promise<Node | null> {
+export async function getInjectTree(
+  synftContract: SynftContract,
+  mintKey: PublicKey,
+  withParent: boolean = true,
+): Promise<Node | null> {
   const treeObj: Node = {
     curr: {
       mint: mintKey.toString(),
@@ -139,7 +150,7 @@ export async function getInjectTree(synftContract: SynftContract, mintKey: Publi
       childrenNFT.map(async (item) => {
         const root = item.account.root.toString()
         const childMint = item.account.child
-        const tree = await getInjectTree(synftContract,childMint, false)
+        const tree = await getInjectTree(synftContract, childMint, false)
         if (tree) {
           tree.curr.rootPDA = root
         }
@@ -153,7 +164,12 @@ export async function getInjectTree(synftContract: SynftContract, mintKey: Publi
   }
 }
 
-export  async function checkBelongTo(synftContract: SynftContract, mintKey: PublicKey, walletPubkey: PublicKey, connection: Connection): Promise<BelongTo> {
+export async function checkBelongTo(
+  synftContract: SynftContract,
+  mintKey: PublicKey,
+  walletPubkey: PublicKey,
+  connection: Connection,
+): Promise<BelongTo> {
   const result: BelongTo = { me: false, program: false, parent: null }
   try {
     // 获取有效的 tokenAccount
@@ -164,7 +180,6 @@ export  async function checkBelongTo(synftContract: SynftContract, mintKey: Publ
     let mintTokenAccount = await getAccount(connection, lastTokenAccountBalancePair.address)
     let belongToSelf = mintTokenAccount.owner.toString() === walletPubkey.toString()
     result.me = belongToSelf
-
 
     const parentNFT = await synftContract.getParentNFT(mintKey)
     if (parentNFT) {

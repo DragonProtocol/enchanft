@@ -1,7 +1,7 @@
 /*
  * @Author: shixuewen
  * @Date: 2022-03-11 18:48:03
- * @LastEditTime: 2022-06-24 18:46:58
+ * @LastEditTime: 2022-06-28 16:44:53
  * @LastEditors: shixuewen friendlysxw@163.com
  * @Description: nft卡片视图组件
  * @FilePath: \synft-app\src\components\NFTCard.tsx
@@ -15,6 +15,8 @@ interface Props {
   data: NftDataItem
 }
 const NFTCard: React.FC<Props> = ({ data }: Props) => {
+  console.log({ data })
+  const { externalMetadata } = data
   return (
     <NFTCardWrapper>
       <div className="img-box">
@@ -24,15 +26,18 @@ const NFTCard: React.FC<Props> = ({ data }: Props) => {
       </div>
       <EnchaNFTedNameBox>
         <EnchaNFTedName>{data.name}</EnchaNFTedName>
-        {/* <EnchaNFTedProjectName>TODO: project name</EnchaNFTedProjectName> */}
+        <EnchaNFTedProjectName>
+          {externalMetadata?.collection?.family || externalMetadata?.collection?.name || 'unknown collection'}
+        </EnchaNFTedProjectName>
       </EnchaNFTedNameBox>
-      {/* <EnchaNFTedAmountBox>
+      <EnchaNFTedAmountBox>
         <EnchaNFTedAmountTitle>EnchaNFTed</EnchaNFTedAmountTitle>
         <EnchaNFTedAmount>
           <img src={SolanaIcon} alt="" />
-          <span>TODOSOL</span>
+          {/* TODO sol */}
+          <span>SOL</span>
         </EnchaNFTedAmount>
-      </EnchaNFTedAmountBox> */}
+      </EnchaNFTedAmountBox>
     </NFTCardWrapper>
   )
 }
@@ -42,6 +47,8 @@ const NFTCardWrapper = styled.div`
   height: 100%;
   border: 2px solid #222222;
   box-sizing: border-box;
+  background: #fff;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   .img-box {
     width: 100%;
     height: 250px;

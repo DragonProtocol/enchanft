@@ -35,8 +35,10 @@ import ModalNftSelector from './nft_handlers/ModalNftSelector'
 import TooltipWrapper from './common/TooltipWrapper'
 import { FontFamilyCss } from '../GlobalStyle'
 import SolanaIcon from './icons/solana.png'
+import { ExternalMetadata } from '../synft/types'
 interface Props {
   metadata: Metadata
+  externalMetadata: ExternalMetadata
   injectTree: {
     data: Node
     loading: boolean
@@ -108,7 +110,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const wallet: WalletContextState = useWallet()
   const { publicKey } = wallet
   const { connection } = useConnection()
-  const { metadata, refreshInject, injectTree } = props
+  const { metadata, refreshInject, injectTree, externalMetadata } = props
   const { mint } = metadata
   const mintKey = new PublicKey(mint)
   const injectRef = useRef<{ resetForm: Function }>()
@@ -463,8 +465,9 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         </div>
         <div className="dividing-line"></div> */}
 
-        {/* TODO 所属项目 */}
-        {/* <div className="nft-project">TODO: project name</div> */}
+        <div className="nft-project">
+          {externalMetadata?.collection?.family || externalMetadata?.collection?.family || 'unknown collection'}
+        </div>
       </div>
       <div className="handler-form">
         {(!publicKey && (
@@ -600,29 +603,32 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                               onClose={() => setOpenBurnConfirm(true)}
                               aria-labelledby="alert-dialog-title"
                               aria-describedby="alert-dialog-description"
+                              style={{
+                                padding: '24px',
+                              }}
                             >
-                              <DialogTitle id="alert-dialog-title">
+                              <BurnConfirmContent>
                                 <BurnConfirmTitle>
                                   <div style={{ fontSize: '40px' }}>⚠️</div>
                                   <span>{'Burning will destroy the NFT and remove the embedded SOL.'}</span>
                                 </BurnConfirmTitle>
-                              </DialogTitle>
-                              <DialogActions>
-                                <ButtonInfo
-                                  onClick={() => setOpenBurnConfirm(false)}
-                                  style={{
-                                    padding: '18px 40px',
-                                  }}
-                                >
-                                  Cancel
-                                </ButtonInfo>
-                                <ButtonDanger
-                                  onClick={onBurn}
-                                  style={{
-                                    padding: '18px 40px',
-                                  }}
-                                >{`Continue`}</ButtonDanger>
-                              </DialogActions>
+                                <BurnConfirmButtons>
+                                  <ButtonInfo
+                                    onClick={() => setOpenBurnConfirm(false)}
+                                    style={{
+                                      padding: '18px 40px',
+                                    }}
+                                  >
+                                    Cancel
+                                  </ButtonInfo>
+                                  <ButtonDanger
+                                    onClick={onBurn}
+                                    style={{
+                                      padding: '18px 40px',
+                                    }}
+                                  >{`Continue`}</ButtonDanger>
+                                </BurnConfirmButtons>
+                              </BurnConfirmContent>
                             </Dialog>
                           </BurnEnchanftedWrapper>
                         )}
@@ -793,6 +799,9 @@ const BurnEnchanftedAmountBox = styled.div`
   line-height: 24px;
   color: #222222;
 `
+const BurnConfirmContent = styled.div`
+  padding: 24px;
+`
 const BurnConfirmTitle = styled.div`
   ${FontFamilyCss}
   display: flex;
@@ -800,6 +809,12 @@ const BurnConfirmTitle = styled.div`
   align-items: flex-start;
   font-size: 14px;
   line-height: 24px;
+`
+const BurnConfirmButtons = styled.div`
+  display: flex;
+  justify-content: end;
+  gap: 12px;
+  margin-top: 24px;
 `
 
 const RemindConnectWalletBox = styled.div`
