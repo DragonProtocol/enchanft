@@ -16,7 +16,6 @@ import {
   DialogTitle,
   Snackbar,
 } from '@mui/material'
-// import ReactJson from 'react-json-view'
 
 import { getMyNFTokens, selectMyNFTData, selectMyNFTDataStatus } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
