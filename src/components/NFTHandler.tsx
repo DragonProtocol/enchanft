@@ -16,7 +16,6 @@ import {
   DialogTitle,
   Snackbar,
 } from '@mui/material'
-// import ReactJson from 'react-json-view'
 
 import { getMyNFTokens, selectMyNFTData, selectMyNFTDataStatus } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
@@ -466,7 +465,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         <div className="dividing-line"></div> */}
 
         <div className="nft-project">
-          {externalMetadata?.collection?.family || externalMetadata?.collection?.family || 'unknown collection'}
+          {externalMetadata?.collection?.name || externalMetadata?.collection?.family || 'unknown collection'}
         </div>
       </div>
       <div className="handler-form">
