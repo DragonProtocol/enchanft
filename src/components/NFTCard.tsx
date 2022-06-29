@@ -1,7 +1,7 @@
 /*
  * @Author: shixuewen
  * @Date: 2022-03-11 18:48:03
- * @LastEditTime: 2022-06-28 16:44:53
+ * @LastEditTime: 2022-06-29 09:48:03
  * @LastEditors: shixuewen friendlysxw@163.com
  * @Description: nft卡片视图组件
  * @FilePath: \synft-app\src\components\NFTCard.tsx
@@ -27,7 +27,7 @@ const NFTCard: React.FC<Props> = ({ data }: Props) => {
       <EnchaNFTedNameBox>
         <EnchaNFTedName>{data.name}</EnchaNFTedName>
         <EnchaNFTedProjectName>
-          {externalMetadata?.collection?.family || externalMetadata?.collection?.name || 'unknown collection'}
+          {externalMetadata?.collection?.name || externalMetadata?.collection?.family || 'unknown collection'}
         </EnchaNFTedProjectName>
       </EnchaNFTedNameBox>
       <EnchaNFTedAmountBox>

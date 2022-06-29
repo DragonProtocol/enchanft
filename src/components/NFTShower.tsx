@@ -63,8 +63,7 @@ export default function NFTShower({ data }: Props) {
             onChange={(event, isExpanded) => handleAccordionChange('description', isExpanded)}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
-              about
-              {/* TODO project name */}
+              about {info?.collection?.name || info?.collection?.family || ''}
             </AccordionSummary>
             <AccordionDetails className="info-content">{info.description}</AccordionDetails>
           </Accordion>
@@ -131,7 +130,7 @@ const NFTShowerWrapper = styled.div`
       text-transform: capitalize;
       ${CursorPointerUpCss}
       font-size: 16px;
-      line-height: 16px;
+      line-height: 24px;
     }
     .info-content {
       background: #f8f8f8;

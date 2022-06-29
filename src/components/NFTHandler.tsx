@@ -466,7 +466,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
         <div className="dividing-line"></div> */}
 
         <div className="nft-project">
-          {externalMetadata?.collection?.family || externalMetadata?.collection?.family || 'unknown collection'}
+          {externalMetadata?.collection?.name || externalMetadata?.collection?.family || 'unknown collection'}
         </div>
       </div>
       <div className="handler-form">
