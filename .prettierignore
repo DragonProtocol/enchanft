@@ -1,2 +1,4 @@
-src/serviceWorker.ts
-*.d.ts
+# Add files here to ignore them from prettier formatting
+
+/dist
+/coverage
