@@ -5,8 +5,8 @@
   "dependencies": {
     "@antv/graphin": "^2.5.0",
     "@antv/graphin-components": "^2.4.0",
-    "@jsrsc/synft-js-core": "0.2.7",
-    "@jsrsc/synft-js-react": "0.2.10",
+    "@enchanft/js-sdk/core": "0.2.7",
+    "@enchanft/js-sdk/react": "0.2.10",
     "@metaplex-foundation/mpl-token-metadata": "^2.1.2",
     "@mui/icons-material": "^5.8.4",
     "@mui/lab": "^5.0.0-alpha.87",
@@ -50,19 +50,12 @@
     "start": "craco start",
     "build": "BUILD_PATH=../../dist/apps/enchanft-landing-page craco build",
     "test": "craco test",
-    "eject": "react-app-rewired eject",
     "lint:check": "eslint \"./src/**/*.{js,ts,tsx}\"",
     "lint:fix": "yarn lint:check --fix",
     "prettier": "prettier \"./src/**/*.{js,ts,tsx}\"",
     "prettier:check": "yarn prettier --check",
     "prettier:fix": "yarn prettier --write",
     "serve": "npm start"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [

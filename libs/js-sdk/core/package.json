@@ -1,5 +1,5 @@
 {
-  "name": "@jsrsc/synft-js-core",
+  "name": "@enchanft/js-sdk/core",
   "version": "0.2.7",
   "description": "",
   "main": "dist/index.js",
