@@ -1,0 +1,70 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/mini-site/baatarverse/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "outputPath": "dist/apps/mini-site/baatarverse",
+        "compiler": "babel",
+        "index": "apps/mini-site/baatarverse/src/index.html",
+        "baseHref": "/",
+        "main": "apps/mini-site/baatarverse/src/main.ts",
+        "polyfills": "apps/mini-site/baatarverse/src/polyfills.ts",
+        "tsConfig": "apps/mini-site/baatarverse/tsconfig.app.json",
+        "assets": [
+          "apps/mini-site/baatarverse/src/favicon.ico",
+          "apps/mini-site/baatarverse/src/assets"
+        ],
+        "styles": ["apps/mini-site/baatarverse/src/styles.css"],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/mini-site/baatarverse/src/environments/environment.ts",
+              "with": "apps/mini-site/baatarverse/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "options": {
+        "buildTarget": "mini-site-baatarverse:build"
+      },
+      "configurations": {
+        "production": {
+          "buildTarget": "mini-site-baatarverse:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/mini-site/baatarverse/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/mini-site/baatarverse"],
+      "options": {
+        "jestConfig": "apps/mini-site/baatarverse/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}
