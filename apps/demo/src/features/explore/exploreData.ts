@@ -11,7 +11,7 @@ const endpoint = isProd
 
 log.log('WONKALABS_ENDPORINT', endpoint)
 
-export async function loadExploreNFT(collectionId: String, first: number = 50): Promise<NFT[]> {
+export async function loadExploreNFT(collectionId: string, first = 50): Promise<NFT[]> {
   log.info(`Fetching NFTs by collectionID: ${collectionId}`)
   const collectionID = new PublicKey(collectionId)
   const fetchNFTsByCandyMachineQuery = gql`

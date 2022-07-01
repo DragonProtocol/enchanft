@@ -9,9 +9,8 @@
 import { ButtonHTMLAttributes } from 'react'
 import styled, { css } from 'styled-components'
 import { CursorPointerUpCss, DisabledMaskCss, FontFamilyCss } from '../../GlobalStyle'
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
 
-const ButtonBase: React.FC<ButtonProps> = ({ children, ...otherProps }: ButtonProps) => {
+const ButtonBase: React.FC<ButtonHTMLAttributes<HTMLButtonElement>> = ({ children, ...otherProps }: ButtonHTMLAttributes<HTMLButtonElement>) => {
   return <ButtonBaseWrapper {...otherProps}>{children}</ButtonBaseWrapper>
 }
 export default ButtonBase

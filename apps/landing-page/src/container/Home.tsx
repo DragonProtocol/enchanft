@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import styled from 'styled-components'
-import { useSynftContract } from '@jsrsc/synft-js-react'
+import { useSynftContract } from '@enchanft/js-sdk-react'
 
 import { useInView } from 'react-intersection-observer'
 import NFTList, { NftDataItem } from '../components/NFTList'

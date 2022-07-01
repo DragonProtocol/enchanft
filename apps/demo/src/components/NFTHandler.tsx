@@ -14,7 +14,7 @@ import NftInject, { InjectMode, OnInjectProps } from './nft_handlers/NftInject'
 import { useBelongTo, useGAEvent } from '../hooks'
 import {
   useSynftContract,
-} from "@jsrsc/synft-js-react"
+} from "@enchanft/js-sdk-react"
 import { MAX_CHILDREN_PER_LEVEL, MOBILE_BREAK_POINT, VIEW_LAMPORTS_DECIMAL } from '../utils/constants'
 import { lamportsToSol, solToLamports, sendWalletTrans, getMetadataInfoWithMint } from '../utils'
 import { Node } from '../synft'
@@ -101,7 +101,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   const { metadata, refreshInject, injectTree } = props
   const { mint } = metadata
   const mintKey = new PublicKey(mint)
-  const injectRef = useRef<{ resetForm: Function }>()
+  const injectRef = useRef<{ resetForm: () => void }>()
   const navigate = useNavigate()
   const { synftContract } = useSynftContract();
   const { belong, loading: belongLoading } = useBelongTo(mint.toString(), injectTree.data)
@@ -192,7 +192,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           if (belong.parent) {
             gaEvent(ContractActionGA.INJECT_NFT_TO_NON_ROOT_WITH_SOL)
             const injectTx = await synftContract.injectNFTToNonRoot(
-              publicKey,mintKey, childMintKeys, new PublicKey(belong.parent.rootPDA), reversible
+              publicKey, mintKey, childMintKeys, new PublicKey(belong.parent.rootPDA), reversible
             )
             tx.add(...injectTx)
             if (formatVolume) {
@@ -209,27 +209,27 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
           // 如果只注入SOL
           gaEvent(ContractActionGA.INJECT_SOL)
           const injectSolTx = await synftContract.injectSOLInstruction(publicKey, mintKey, formatVolume)
-          tx.add(injectSolTx)  
+          tx.add(injectSolTx)
         } else if (childMintKeys.length > 0) {
           // 如果只注入nft
           // 如果有父级
           if (belong.parent) {
             gaEvent(ContractActionGA.INJECT_NFT_TO_NON_ROOT)
             const injectTx = await synftContract.injectNFTToNonRoot(
-              publicKey,mintKey, childMintKeys, new PublicKey(belong.parent.rootPDA), reversible
+              publicKey, mintKey, childMintKeys, new PublicKey(belong.parent.rootPDA), reversible
             )
             tx.add(...injectTx)
           } else {
             gaEvent(ContractActionGA.INJECT_NFT_TO_ROOT)
             const injectTx = await synftContract.injectNFTToRoot(
-              publicKey,mintKey, childMintKeys, reversible
+              publicKey, mintKey, childMintKeys, reversible
             )
             tx.add(...injectTx)
           }
         }
-        
+
         await sendWalletTrans(tx, connection, wallet)
-        publicKey && dispatch(getMyNFTokens({ owner: publicKey , connection, synftContract}))
+        publicKey && dispatch(getMyNFTokens({ owner: publicKey, connection, synftContract }))
         injectRef.current && injectRef.current.resetForm()
       }, TransctionType.INJECT)
     },
@@ -249,7 +249,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
 
   // 获取子NFT详细信息
   useEffect(() => {
-    ;(async () => {
+    ; (async () => {
       const promises = injectTree.data.curr.children.map(async (item: Node) => {
         const { mint } = item.curr
         const mintKey = new PublicKey(mint as string)
@@ -305,7 +305,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
   )
 
   // 执行复制
-  const onCopyWithInject = useCallback(  async ({ injectMode, token }: OnInjectProps) => {
+  const onCopyWithInject = useCallback(async ({ injectMode, token }: OnInjectProps) => {
     const { name, symbol, uri } = metadata.data
     if (!mint) return
     let newMint = ''
@@ -366,7 +366,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
       const tx = new Transaction()
       const instruction = await synftContract.extractChildNFTToUser(publicKey, other, new PublicKey(mintKey), {
         rootMintKey: new PublicKey(belong.parent.rootMint),
-        parentMintKey:  new PublicKey(belong.parent.mint),
+        parentMintKey: new PublicKey(belong.parent.mint),
       })
       tx.add(instruction)
       await sendWalletTrans(tx, connection, wallet)
@@ -396,7 +396,7 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
    * @param {*} type 交易的类型
    * @return {*}
    */
-  const transactionPublic = useCallback(async (fn: Function, type: TransctionType) => {
+  const transactionPublic = useCallback(async (fn: () => void, type: TransctionType) => {
     if (!couldOps) return
     setTransactionState({ inProgress: true, msg: transactionMsg[type].inProgress })
     try {
@@ -466,69 +466,69 @@ const NFTHandler: React.FC<Props> = (props: Props) => {
                         <img src={LoadingIcon} alt="" />
                       </p>
                     )) || (
-                      <>
-                        {couldExtractSOL && (
-                          <FormCouldOpsTooltipWrapper enable={!couldOps}>
-                            <ButtonDanger
-                              style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
-                              className={`handle-btn`}
-                              disabled={!couldOps}
-                              onClick={onExtractSol}
-                            >
-                              {`> Extract (${lamportsToSol(solAmount).toFixed(VIEW_LAMPORTS_DECIMAL)} SOL) <`}
-                            </ButtonDanger>
-                          </FormCouldOpsTooltipWrapper>
-                        )}
-                        {couldExtractNFT && (
-                          <FormCouldOpsTooltipWrapper enable={!couldOps}>
-                            <ButtonDanger
-                              style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
-                              className={`handle-btn`}
-                              disabled={!couldOps}
-                              onClick={onExtractNFT}
-                            >
-                              {`> Extract Child NFT <`}
-                            </ButtonDanger>
-                          </FormCouldOpsTooltipWrapper>
-                        )}
-                        {belong.parent && (
-                          <FormCouldOpsTooltipWrapper enable={!couldOps}>
-                            <ButtonDanger
-                              style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
-                              className={`handle-btn`}
-                              disabled={!couldOps}
-                              onClick={transferToOther}
-                            >
-                              {`> Transfer To Other <`}
-                            </ButtonDanger>
-                          </FormCouldOpsTooltipWrapper>
-                        )}
-                        {belong.parent && (
-                          <FormCouldOpsTooltipWrapper enable={!couldOps}>
-                            <ButtonDanger
-                              style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
-                              className={`handle-btn`}
-                              disabled={!couldOps}
-                              onClick={transferToSelf}
-                            >
-                              {`> Extract NFT From Parent <`}
-                            </ButtonDanger>
-                          </FormCouldOpsTooltipWrapper>
-                        )}
-                        {couldBurn && (
-                          <FormCouldOpsTooltipWrapper enable={!couldOps}>
-                            <ButtonDanger
-                              style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
-                              className={`handle-btn`}
-                              disabled={!couldOps}
-                              onClick={onBurn}
-                            >
-                              {`> Burn <`}
-                            </ButtonDanger>
-                          </FormCouldOpsTooltipWrapper>
-                        )}
-                      </>
-                    )}
+                        <>
+                          {couldExtractSOL && (
+                            <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                              <ButtonDanger
+                                style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+                                className={`handle-btn`}
+                                disabled={!couldOps}
+                                onClick={onExtractSol}
+                              >
+                                {`> Extract (${lamportsToSol(solAmount).toFixed(VIEW_LAMPORTS_DECIMAL)} SOL) <`}
+                              </ButtonDanger>
+                            </FormCouldOpsTooltipWrapper>
+                          )}
+                          {couldExtractNFT && (
+                            <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                              <ButtonDanger
+                                style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+                                className={`handle-btn`}
+                                disabled={!couldOps}
+                                onClick={onExtractNFT}
+                              >
+                                {`> Extract Child NFT <`}
+                              </ButtonDanger>
+                            </FormCouldOpsTooltipWrapper>
+                          )}
+                          {belong.parent && (
+                            <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                              <ButtonDanger
+                                style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+                                className={`handle-btn`}
+                                disabled={!couldOps}
+                                onClick={transferToOther}
+                              >
+                                {`> Transfer To Other <`}
+                              </ButtonDanger>
+                            </FormCouldOpsTooltipWrapper>
+                          )}
+                          {belong.parent && (
+                            <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                              <ButtonDanger
+                                style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+                                className={`handle-btn`}
+                                disabled={!couldOps}
+                                onClick={transferToSelf}
+                              >
+                                {`> Extract NFT From Parent <`}
+                              </ButtonDanger>
+                            </FormCouldOpsTooltipWrapper>
+                          )}
+                          {couldBurn && (
+                            <FormCouldOpsTooltipWrapper enable={!couldOps}>
+                              <ButtonDanger
+                                style={{ pointerEvents: !couldOps ? 'none' : 'auto' }}
+                                className={`handle-btn`}
+                                disabled={!couldOps}
+                                onClick={onBurn}
+                              >
+                                {`> Burn <`}
+                              </ButtonDanger>
+                            </FormCouldOpsTooltipWrapper>
+                          )}
+                        </>
+                      )}
                   </>
                 )}
                 {showCopy && (

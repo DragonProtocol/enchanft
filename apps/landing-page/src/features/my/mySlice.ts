@@ -1,4 +1,4 @@
-import SynftContract from '@jsrsc/synft-js-core'
+import SynftContract from '@enchanft/js-sdk-core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Connection, PublicKey } from '@solana/web3.js'
 import axios from 'axios'

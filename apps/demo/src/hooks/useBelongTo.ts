@@ -11,7 +11,7 @@ import { Connection, PublicKey } from '@solana/web3.js'
 import { useEffect, useState } from 'react'
 
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { useSynftContract } from '@jsrsc/synft-js-react'
+import { useSynftContract } from '@enchanft/js-sdk-react'
 
 import { BelongTo, Node as TreeNode } from '../synft'
 import { checkBelongTo } from '../utils'

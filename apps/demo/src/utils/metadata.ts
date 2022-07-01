@@ -1,8 +1,8 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import { Metadata, PROGRAM_ID as MetadataProgramId } from '@metaplex-foundation/mpl-token-metadata'
 import axios from 'axios'
-import { SynftSeed, SYNFT_PROGRAM_ID } from '@jsrsc/synft-js-react'
-import SynftContract from "@jsrsc/synft-js-core"
+import { SynftSeed, SYNFT_PROGRAM_ID } from '@enchanft/js-sdk-react'
+import SynftContract from "@enchanft/js-sdk-core"
 import { TOKEN_PROGRAM_ID, getAccount } from '@solana/spl-token'
 
 import type { BelongTo, MetaInfo, Node } from '../synft'
@@ -105,7 +105,7 @@ export async function checkValidNFT(mintKey: PublicKey, connection: Connection):
   }
 }
 
-export async function getInjectTree(synftContract: SynftContract, mintKey: PublicKey, withParent: boolean = true): Promise<Node | null> {
+export async function getInjectTree(synftContract: SynftContract, mintKey: PublicKey, withParent = true): Promise<Node | null> {
   const treeObj: Node = {
     curr: {
       mint: mintKey.toString(),

@@ -5,7 +5,8 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "nx test"
+    "test": "nx test",
+    "nx": "nx"
   },
   "private": true,
   "dependencies": {
@@ -45,6 +46,7 @@
     "eslint-plugin-jsx-a11y": "6.5.1",
     "eslint-plugin-react": "7.30.0",
     "eslint-plugin-react-hooks": "4.6.0",
+    "eslint-plugin-sort-destructure-keys": "^1.4.0",
     "jest": "27.5.1",
     "jest-watch-typeahead": "^1.1.0",
     "nx": "14.3.6",

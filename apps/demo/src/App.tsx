@@ -24,7 +24,7 @@ import log from 'loglevel'
 
 import {
   Provider as SynftProvider,
-} from "@jsrsc/synft-js-react"
+} from "@enchanft/js-sdk-react"
 
 
 import GlobalStyle from './GlobalStyle'
@@ -51,9 +51,10 @@ const App: FC = () => {
   const network = isProd ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet
 
   // You can also provide a custom RPC endpoint.
+  const devRpcEndpoint = useMemo(() => clusterApiUrl(network), [network])
   const endpoint = isProd
     ? 'https://solana-api.syndica.io/access-token/R8uWm5ciuUVXmFaO2RpNooRI4rH41y7B1XIaJogiDNqJLvGwKbO1hgJdgbAckXHG/rpc'
-    : useMemo(() => clusterApiUrl(network), [network])
+    : devRpcEndpoint
 
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --
   // Only the wallets you configure here will be compiled into your application, and only the dependencies

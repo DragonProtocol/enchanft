@@ -1,4 +1,4 @@
-import { useSynftContract } from '@jsrsc/synft-js-react'
+import { useSynftContract } from '@enchanft/js-sdk-react'
 import { PublicKey } from '@solana/web3.js'
 import log from 'loglevel'
 import { useEffect, useState } from 'react'
