@@ -16,12 +16,8 @@
     "baseUrl": ".",
     "jsx": "react-jsx",
     "paths": {
-      "@enchanft/js-sdk/core": [
-        "libs/js-sdk/core/src/index.ts"
-      ],
-      "@enchanft/js-sdk/react": [
-        "libs/js-sdk/react/src/index.ts"
-      ]
+      "@enchanft/js-sdk/core": ["libs/js-sdk/core/src/index.ts"],
+      "@enchanft/js-sdk/react": ["libs/js-sdk/react/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
