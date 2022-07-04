@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "engines": {
+    "node": ">=v14.17.1"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "export:prod": "cross-env NODE_ENV=production next build && next export",
+    "export": "next build && next export",
+    "start": "next start"
+  },
+  "dependencies": {
+    "react-tooltip": "^3.11.1",
+    "next-videos": "1.4.0"
+  }
+}
