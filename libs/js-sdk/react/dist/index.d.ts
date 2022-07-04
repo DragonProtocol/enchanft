@@ -1,6 +1,6 @@
 import React from 'react';
-import SynftContract from '@enchanft/js-sdk-core';
-export { PROGRAM_ID as SYNFT_PROGRAM_ID, SynftSeed } from '@enchanft/js-sdk-core';
+import SynftContract from '@ecnft/js-sdk-core';
+export { PROGRAM_ID as SYNFT_PROGRAM_ID, SynftSeed } from '@ecnft/js-sdk-core';
 
 interface SynftContextData {
     synftContract: SynftContract;

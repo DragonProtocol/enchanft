@@ -8,7 +8,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import styled from 'styled-components'
-import { useSynftContract } from '@enchanft/js-sdk-react'
+import { useSynftContract } from '@ecnft/js-sdk-react'
 import NFTList, { NftDataItem } from '../components/NFTList'
 import { getMyNFTokens, clearMyNFT, selectMyNFTData, selectMyNFTDataStatus } from '../features/my/mySlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'

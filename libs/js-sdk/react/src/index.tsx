@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { useConnection } from "@solana/wallet-adapter-react";
-import SynftContract from "@enchanft/js-sdk-core";
+import SynftContract from "@ecnft/js-sdk-core";
 
 export {
   SynftSeed,
   PROGRAM_ID as SYNFT_PROGRAM_ID,
-} from "@enchanft/js-sdk-core";
+} from "@ecnft/js-sdk-core";
 
 export interface SynftContextData {
   synftContract: SynftContract;

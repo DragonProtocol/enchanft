@@ -4,7 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var React = require('react');
 var walletAdapterReact = require('@solana/wallet-adapter-react');
-var SynftContract = require('@enchanft/js-sdk-core');
+var SynftContract = require('@ecnft/js-sdk-core');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 

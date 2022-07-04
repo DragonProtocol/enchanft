@@ -117,8 +117,8 @@ importers:
     specifiers:
       '@antv/graphin': ^2.5.0
       '@antv/graphin-components': ^2.4.0
-      '@enchanft/js-sdk-core': '*'
-      '@enchanft/js-sdk-react': '*'
+      '@ecnft/js-sdk-core': '*'
+      '@ecnft/js-sdk-react': '*'
       '@metaplex-foundation/mpl-token-metadata': ^2.1.2
       '@mui/material': ^5.5.0
       '@mui/styled-engine-sc': ^5.4.2
@@ -158,8 +158,8 @@ importers:
     dependencies:
       '@antv/graphin': 2.6.7
       '@antv/graphin-components': 2.4.0_@antv+graphin@2.6.7
-      '@enchanft/js-sdk-core': link:../../libs/js-sdk/core
-      '@enchanft/js-sdk-react': link:../../libs/js-sdk/react
+      '@ecnft/js-sdk-core': link:../../libs/js-sdk/core
+      '@ecnft/js-sdk-react': link:../../libs/js-sdk/react
       '@metaplex-foundation/mpl-token-metadata': 2.2.1
       '@mui/material': 5.8.6
       '@mui/styled-engine-sc': 5.8.0_iuerkafropdnyslhga2zpn3if4
@@ -202,8 +202,8 @@ importers:
     specifiers:
       '@antv/graphin': ^2.5.0
       '@antv/graphin-components': ^2.4.0
-      '@enchanft/js-sdk-core': '*'
-      '@enchanft/js-sdk-react': '*'
+      '@ecnft/js-sdk-core': '*'
+      '@ecnft/js-sdk-react': '*'
       '@metaplex-foundation/mpl-token-metadata': ^2.1.2
       '@mui/icons-material': ^5.8.4
       '@mui/lab': ^5.0.0-alpha.87
@@ -246,8 +246,8 @@ importers:
     dependencies:
       '@antv/graphin': 2.6.7
       '@antv/graphin-components': 2.4.0_@antv+graphin@2.6.7
-      '@enchanft/js-sdk-core': link:../../libs/js-sdk/core
-      '@enchanft/js-sdk-react': link:../../libs/js-sdk/react
+      '@ecnft/js-sdk-core': link:../../libs/js-sdk/core
+      '@ecnft/js-sdk-react': link:../../libs/js-sdk/react
       '@metaplex-foundation/mpl-token-metadata': 2.2.1
       '@mui/icons-material': 5.8.4_@mui+material@5.8.6
       '@mui/lab': 5.0.0-alpha.88_@mui+material@5.8.6
@@ -338,7 +338,7 @@ importers:
 
   libs/js-sdk/react:
     specifiers:
-      '@enchanft/js-sdk-core': '*'
+      '@ecnft/js-sdk-core': '*'
       '@rollup/plugin-commonjs': ^22.0.0
       '@rollup/plugin-typescript': ^8.3.2
       '@solana/wallet-adapter-react': ^0.15.5
@@ -351,7 +351,7 @@ importers:
       rollup-watch: ^4.3.1
       typings: ^2.1.1
     dependencies:
-      '@enchanft/js-sdk-core': link:../core
+      '@ecnft/js-sdk-core': link:../core
     devDependencies:
       '@rollup/plugin-commonjs': 22.0.1_rollup@2.75.7
       '@rollup/plugin-typescript': 8.3.3_rollup@2.75.7

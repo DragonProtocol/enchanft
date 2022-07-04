@@ -1,5 +1,5 @@
 {
-  "name": "@enchanft/js-sdk-react",
+  "name": "@ecnft/js-sdk-react",
   "version": "0.2.10",
   "description": "",
   "main": "dist/cjs/index.js",
@@ -12,6 +12,7 @@
   ],
   "scripts": {
     "build": "rollup -c",
+    "publish":"npm build & npm publish --access public",    
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -31,6 +32,6 @@
     "typings": "^2.1.1"
   },
   "dependencies": {
-    "@enchanft/js-sdk-core": "*"
+    "@ecnft/js-sdk-core": "*"
   }
 }

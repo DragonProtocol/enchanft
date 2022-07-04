@@ -1,7 +1,8 @@
 {
-  "name": "@enchanft/js-sdk-core",
+  "name": "@ecnft/js-sdk-core",
   "version": "0.2.7",
   "description": "",
+  "private": false,
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "jsnext:main": "dist/index.es.js",
@@ -12,6 +13,7 @@
   ],
   "scripts": {
     "build": "rollup -c",
+    "publish":"npm build & npm publish --access public",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

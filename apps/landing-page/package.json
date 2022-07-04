@@ -5,8 +5,8 @@
   "dependencies": {
     "@antv/graphin": "^2.5.0",
     "@antv/graphin-components": "^2.4.0",
-    "@enchanft/js-sdk-core": "*",
-    "@enchanft/js-sdk-react": "*",
+    "@ecnft/js-sdk-core": "*",
+    "@ecnft/js-sdk-react": "*",
     "@metaplex-foundation/mpl-token-metadata": "^2.1.2",
     "@mui/icons-material": "^5.8.4",
     "@mui/lab": "^5.0.0-alpha.87",
