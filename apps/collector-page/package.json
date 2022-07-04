@@ -1,0 +1,52 @@
+{
+  "name": "enchanft-collector-page",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@enchanft/js-sdk-core": "^0.2.7",
+    "@enchanft/js-sdk-react": "^0.2.10",
+    "@metaplex-foundation/mpl-token-metadata": "^2.2.1",
+    "@reduxjs/toolkit": "^1.8.3",
+    "@solana/spl-token": "^0.2.0",
+    "@solana/wallet-adapter-base": "^0.9.7",
+    "@solana/wallet-adapter-react": "^0.15.6",
+    "@solana/wallet-adapter-react-ui": "^0.9.8",
+    "@solana/wallet-adapter-wallets": "^0.16.6",
+    "@solana/web3.js": "^1.47.1",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/mockjs": "^1.0.6",
+    "@types/styled-components": "^5.1.25",
+    "assert": "^2.0.0",
+    "axios": "^0.27.2",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "loglevel": "^1.8.0",
+    "mockjs": "^1.1.0",
+    "process": "^0.11.10",
+    "qs": "^6.11.0",
+    "react-intersection-observer": "^9.3.4",
+    "react-redux": "^8.0.2",
+    "styled-components": "^5.3.5"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "BUILD_PATH=../../dist/apps/enchanft-collector-page craco build",
+    "test": "craco test",
+    "lint:check": "eslint \"./src/**/*.{js,ts,tsx}\"",
+    "lint:fix": "yarn lint:check --fix",
+    "prettier": "prettier \"./src/**/*.{js,ts,tsx}\"",
+    "prettier:check": "yarn prettier --check",
+    "prettier:fix": "yarn prettier --write",
+    "lintstaged": "lint-staged",
+    "prepare": "cd ../../ && husky install apps/collector-page/.husky",
+    "serve": "npm start"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-import-resolver-typescript": "^3.1.1",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.0",
+    "lint-staged": "^13.0.3",
+    "stream-browserify": "^3.0.0"
+  }
+}
