@@ -1,0 +1,74 @@
+version: 1
+applications:
+  - appRoot: apps/demo
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - cd ../..
+            - npm i pnpm -g
+            - pnpm i --no-frozen-lockfile
+        build:
+          commands:
+            - pnpm nx build demo
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+  - appRoot: apps/landing-page
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - cd ../..
+            - npm i pnpm -g
+            - pnpm i --no-frozen-lockfile
+        build:
+          commands:
+            - pnpm nx build landing=page
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+  - appRoot: apps/collector-page
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - cd ../..
+            - npm i pnpm -g
+            - pnpm i --no-frozen-lockfile
+        build:
+          commands:
+            - pnpm nx build collector-page
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+  - appRoot: apps/mini-site/baatarverse
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - cd ../..
+            - npm i pnpm -g
+            - pnpm i --no-frozen-lockfile
+        build:
+          commands:
+            - pnpm nx export mini-site-baatarverse
+      artifacts:
+        baseDirectory: out
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
