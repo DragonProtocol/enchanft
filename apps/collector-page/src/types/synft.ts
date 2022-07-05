@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 17:44:27
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-04 10:23:36
+ * @LastEditTime: 2022-07-05 12:11:29
  * @Description: synft 相关定义
  */
 /* eslint-disable camelcase */
@@ -31,8 +31,8 @@ export type ChildMeta = {
   bump: number
   child: PublicKey
   childType: {
-    sol?: {}
-    nft?: {}
+    sol?: Record<string, unknown>
+    nft?: Record<string, unknown>
   }
 }
 

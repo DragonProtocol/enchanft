@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-07-01 16:32:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-04 10:22:11
+ * @LastEditTime: 2022-07-05 12:10:20
  * @Description: solana provider
  */
 import React, { FC, useMemo } from 'react'
@@ -32,9 +32,10 @@ const SolanaProvider: FC<SolanaProviderProps> = ({ children }: SolanaProviderPro
   const network = IS_PROD ? WalletAdapterNetwork.Mainnet : WalletAdapterNetwork.Devnet
 
   // You can also provide a custom RPC endpoint.
+  const apiUrl = useMemo(() => clusterApiUrl(network), [network])
   const endpoint = IS_PROD
     ? 'https://solana-api.syndica.io/access-token/R8uWm5ciuUVXmFaO2RpNooRI4rH41y7B1XIaJogiDNqJLvGwKbO1hgJdgbAckXHG/rpc'
-    : useMemo(() => clusterApiUrl(network), [network])
+    : apiUrl
 
   // @solana/wallet-adapter-wallets includes all the adapters but supports tree shaking and lazy loading --
   // Only the wallets you configure here will be compiled into your application, and only the dependencies
