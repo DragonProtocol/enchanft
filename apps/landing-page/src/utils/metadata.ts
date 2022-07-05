@@ -1,8 +1,8 @@
 import { Connection, PublicKey } from '@solana/web3.js'
 import { Metadata, PROGRAM_ID as MetadataProgramId } from '@metaplex-foundation/mpl-token-metadata'
 import axios from 'axios'
-import { SynftSeed, SYNFT_PROGRAM_ID } from '@enchanft/js-sdk-react'
-import SynftContract from '@enchanft/js-sdk-core'
+import { SynftSeed, SYNFT_PROGRAM_ID } from '@ecnft/js-sdk-react'
+import SynftContract from '@ecnft/js-sdk-core'
 import { TOKEN_PROGRAM_ID, getAccount } from '@solana/spl-token'
 
 import type { BelongTo, MetaInfo, Node } from '../synft'

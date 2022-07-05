@@ -14,7 +14,7 @@ import NftInject, { InjectMode, OnInjectProps } from './nft_handlers/NftInject'
 import { useBelongTo, useGAEvent } from '../hooks'
 import {
   useSynftContract,
-} from "@enchanft/js-sdk-react"
+} from "@ecnft/js-sdk-react"
 import { MAX_CHILDREN_PER_LEVEL, MOBILE_BREAK_POINT, VIEW_LAMPORTS_DECIMAL } from '../utils/constants'
 import { lamportsToSol, solToLamports, sendWalletTrans, getMetadataInfoWithMint } from '../utils'
 import { Node } from '../synft'

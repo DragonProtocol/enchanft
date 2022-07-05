@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import Header from '../components/header';
 
 export function Index() {
-  const [isMute, setIsMute] = useState(false);
+  const [isMute, setIsMute] = useState(true);
 
   return (
     <>
@@ -29,14 +29,12 @@ export function Index() {
           <MuteIcon
             onClick={() => {
               setIsMute(false);
-              console.log('------');
             }}
           />
         ) : (
           <VolIcon
             onClick={() => {
               setIsMute(true);
-              console.log('------');
             }}
           />
         )}

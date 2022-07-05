@@ -1,4 +1,4 @@
-# @enchanft/js-sdk/
+# @ecnft/js-sdk/
 
 ## usage
 
