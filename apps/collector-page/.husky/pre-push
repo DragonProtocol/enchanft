@@ -1,6 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
-. "$(dirname -- "$0")/common.sh"
 
-yarn lint:check
-yarn prettier:check
+pnpm nx lint:check collector-page
+pnpm nx prettier:check collector-page
