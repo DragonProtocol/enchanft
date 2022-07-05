@@ -32,7 +32,7 @@
   },
   "scripts": {
     "start": "craco start",
-    "build": "BUILD_PATH=../../dist/apps/synft-interface craco build",
+    "build": "craco build",
     "test": "craco test",
     "lint:check": "eslint \"./src/**/*.{js,ts,tsx}\"",
     "lint:fix": "yarn lint:check --fix",
