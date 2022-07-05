@@ -19,4 +19,4 @@ export const MAX_CHILDREN_PER_LEVEL = 3
 export const MAX_LEVELS = 3
 export const VIEW_LAMPORTS_DECIMAL = 3
 
-export const CONTACT_US_EMAIL = 'liang@enchanft.xyz'
+export const CONTACT_US_EMAIL = 'liang@ecnft.xyz'

@@ -24,7 +24,7 @@ import log from 'loglevel'
 
 import {
   Provider as SynftProvider,
-} from "@enchanft/js-sdk-react"
+} from "@ecnft/js-sdk-react"
 
 
 import GlobalStyle from './GlobalStyle'
