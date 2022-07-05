@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-01 15:29:36
+ * @LastEditTime: 2022-07-05 12:14:52
  * @Description: 基础按钮
  */
 import React, { ButtonHTMLAttributes } from 'react'
 import styled, { css } from 'styled-components'
 
-export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {}
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
 
 const ButtonBase: React.FC<ButtonProps> = ({ children, ...otherProps }: ButtonProps) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
