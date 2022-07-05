@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:15:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-04 15:06:14
+ * @LastEditTime: 2022-07-05 12:12:49
  * @Description: metadata 相关工具方法
  */
 import { Connection, PublicKey } from '@solana/web3.js'
@@ -122,7 +122,7 @@ export async function checkValidNFT(mintKey: PublicKey, connection: Connection):
 export async function getInjectTree(
   synftContract: SynftContract,
   mintKey: PublicKey,
-  withParent: boolean = true,
+  withParent = true,
 ): Promise<Node | null> {
   const treeObj: Node = {
     curr: {
