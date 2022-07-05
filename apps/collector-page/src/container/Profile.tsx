@@ -5,7 +5,7 @@
  * @LastEditTime: 2022-07-04 15:06:00
  * @Description: 个人信息
  */
-import { useSynftContract } from '@enchanft/js-sdk-react'
+import { useSynftContract } from '@ecnft/js-sdk-react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { clearMyNFT, getMyNFTokens, selectMyNFTData, selectMyNFTDataStatus } from 'features/user/myEnchanftedSlice'
 import React, { useEffect, useRef } from 'react'

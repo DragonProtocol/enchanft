@@ -7,7 +7,7 @@
  */
 import { Provider as ReduxProvider } from 'react-redux'
 import SolanaProvider from 'providers/SolanaProvider'
-import { Provider as SynftProvider } from '@enchanft/js-sdk-react'
+import { Provider as SynftProvider } from '@ecnft/js-sdk-react'
 import { BrowserRouter } from 'react-router-dom'
 import Layout from 'components/layout/Index'
 import { store } from './store/store'

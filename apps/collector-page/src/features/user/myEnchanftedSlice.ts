@@ -5,7 +5,7 @@
  * @LastEditTime: 2022-07-04 10:20:53
  * @Description: 用户注入过token的nft列表数据
  */
-import SynftContract from '@enchanft/js-sdk-core'
+import SynftContract from '@ecnft/js-sdk-core'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Connection, PublicKey } from '@solana/web3.js'
 import axios from 'axios'
