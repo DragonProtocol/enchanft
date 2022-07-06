@@ -2,13 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-06 15:36:12
+ * @LastEditTime: 2022-07-06 18:29:55
  * @Description: axios 封装：凭证，参数序列化
  */
 import { RootState, store } from '../store/store'
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
 import qs from 'qs'
-
 export type AxiosCustomHeaderType = {
   // 当前接口是否需要传递token
   needToken?: boolean

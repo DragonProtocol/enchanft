@@ -6,6 +6,9 @@
     "@ecnft/js-sdk-core": "^0.2.7",
     "@ecnft/js-sdk-react": "^0.2.10",
     "@metaplex-foundation/mpl-token-metadata": "^2.2.1",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.5.0",
+    "@mui/styled-engine-sc": "^5.4.2",
     "@reduxjs/toolkit": "^1.8.3",
     "@solana/spl-token": "^0.2.0",
     "@solana/wallet-adapter-base": "^0.9.7",
@@ -27,8 +30,7 @@
     "react-intersection-observer": "^9.3.4",
     "react-redux": "^8.0.2",
     "styled-components": "^5.3.5",
-    "@mui/material": "^5.5.0",
-    "@mui/styled-engine-sc": "^5.4.2"
+    "swiper": "^8.2.4"
   },
   "scripts": {
     "start": "craco start",
