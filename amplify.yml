@@ -1,0 +1,66 @@
+version: 1
+applications:
+  - appRoot: apps/demo
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm i
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+  - appRoot: apps/landing-page
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm i
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+  - appRoot: apps/collector-page
+    frontend:
+      phases:
+        preBuild:
+          commands:
+             - npm i
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+  - appRoot: apps/mini-site/baatarverse
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm i
+        build:
+          commands:
+            - npm run export
+      artifacts:
+        baseDirectory: out
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*

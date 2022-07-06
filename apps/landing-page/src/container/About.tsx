@@ -1,5 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable jsx-a11y/alt-text */
 /*
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
