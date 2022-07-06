@@ -62,7 +62,7 @@ applications:
             - npm i
         build:
           commands:
-            - pnpm export mini-site-baatarverse
+            - npm run export
       artifacts:
         baseDirectory: out
         files:
