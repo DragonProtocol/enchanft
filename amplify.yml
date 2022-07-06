@@ -5,12 +5,10 @@ applications:
       phases:
         preBuild:
           commands:
-            - cd ../..
-            - npm i pnpm -g
-            - pnpm i --no-frozen-lockfile
+            - npm i
         build:
           commands:
-            - pnpm nx build demo
+            - npm run build
       artifacts:
         baseDirectory: build
         files:
@@ -23,12 +21,10 @@ applications:
       phases:
         preBuild:
           commands:
-            - cd ../..
-            - npm i pnpm -g
-            - pnpm i --no-frozen-lockfile
+            - npm i
         build:
           commands:
-            - pnpm nx build landing-page
+            - npm run build
       artifacts:
         baseDirectory: build
         files:
@@ -41,12 +37,10 @@ applications:
       phases:
         preBuild:
           commands:
-            - cd ../..
-            - npm i pnpm -g
-            - pnpm i --no-frozen-lockfile
+             - npm i
         build:
           commands:
-            - pnpm nx build collector-page
+            - npm run build
       artifacts:
         baseDirectory: build
         files:
