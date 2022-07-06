@@ -28,7 +28,7 @@ applications:
             - pnpm i --no-frozen-lockfile
         build:
           commands:
-            - pnpm nx build landing=page
+            - pnpm nx build landing-page
       artifacts:
         baseDirectory: build
         files:
@@ -64,7 +64,7 @@ applications:
             - pnpm i --no-frozen-lockfile
         build:
           commands:
-            - pnpm nx export mini-site-baatarverse
+            - pnpm export mini-site-baatarverse
       artifacts:
         baseDirectory: out
         files:
