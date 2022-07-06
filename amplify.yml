@@ -59,9 +59,7 @@ applications:
       phases:
         preBuild:
           commands:
-            - cd ../..
-            - npm i pnpm -g
-            - pnpm i --no-frozen-lockfile
+            - npm i
         build:
           commands:
             - pnpm export mini-site-baatarverse
