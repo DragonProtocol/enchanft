@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable no-shadow */
 /*
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-24 11:34:22
