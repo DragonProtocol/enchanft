@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-01 14:37:56
+ * @LastEditTime: 2022-07-06 15:36:12
  * @Description: axios 封装：凭证，参数序列化
  */
-import { store } from 'store/store'
+import { RootState, store } from '../store/store'
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
 import qs from 'qs'
 
@@ -30,14 +30,14 @@ axios.defaults.withCredentials = true
 // 添加请求拦截器
 axios.interceptors.request.use(
   (config: AxiosCustomConfigType) => {
-    // 凭证
+    // 1、凭证
     const { needToken, token } = config.headers || {}
     if (needToken && token) {
-      const { token } = store.getState().account // token从store中获取
+      const { token } = (store.getState() as RootState).account // token从store中获取
       if (!config.headers) config.headers = {}
       config.headers.Authorization = token
     }
-    // get请求，params参数序列化
+    // 2、get请求，params参数序列化
     if (config.method === 'get') {
       config.paramsSerializer = (params) => qs.stringify(params, { arrayFormat: 'repeat' })
     }
