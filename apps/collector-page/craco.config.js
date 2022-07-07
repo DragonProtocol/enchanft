@@ -49,6 +49,7 @@ module.exports = {
           Buffer: ['buffer', 'Buffer'],
         }),
       )
+
       config.ignoreWarnings = [/Failed to parse source map/]
       return config
     },
@@ -57,6 +58,17 @@ module.exports = {
     configure: (config) => {
       config.resolver = '@nrwl/jest/plugins/resolver'
       return config
+    },
+  },
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'https://test-enchanft-backend.onrender.com',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/api': '',
+        },
+      },
     },
   },
 }
