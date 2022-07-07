@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-04 11:59:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-04 14:43:45
+ * @LastEditTime: 2022-07-07 14:45:53
  * @Description: 覆盖 cra 内部 webpack 配置
  */
 
@@ -60,15 +60,15 @@ module.exports = {
       return config
     },
   },
-  devServer: {
-    proxy: {
-      '/api': {
-        target: 'https://test-enchanft-backend.onrender.com',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/api': '',
-        },
-      },
-    },
-  },
+  // devServer: {
+  //   proxy: {
+  //     '/': {
+  //       target: process.env.REACT_APP_API_BASE_URL,
+  //       changeOrigin: true,
+  //       pathRewrite: {
+  //         '^/': '/',
+  //       },
+  //     },
+  //   },
+  // },
 }

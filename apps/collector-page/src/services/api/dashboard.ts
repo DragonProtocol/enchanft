@@ -2,11 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-06 13:45:43
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-06 18:39:32
+ * @LastEditTime: 2022-07-07 20:38:01
  * @Description: 公开的推荐项目和任务接口
  */
 import { AxiosPromise } from 'axios'
+import { ProjectFilterStatusType } from '../../components/business/dashboard/ProjectFilter'
+import { API_BASE_URL } from '../../constants'
 import request from '../../request/axios'
+import { ApiResp } from '../../types'
 import { ProjectStatus, TaskStatus, TaskType } from '../../types/api'
 
 export type TaskItemForDashboardRecommend = {
@@ -21,14 +24,15 @@ export type TaskItemForDashboardRecommend = {
     id: number
     name: string
     image: string
-    actions: {
-      id: number
-      name: string
-    }
+    status: ProjectStatus
   }
+  actions: Array<{
+    id: number
+    name: string
+  }>
 }
 export const fetchListForRecommendTasksUrl = '/api/task/listForRecommendTasks'
-export function fetchListForRecommendTasks(): AxiosPromise<TaskItemForDashboardRecommend[]> {
+export function fetchListForRecommendTasks(): AxiosPromise<ApiResp<TaskItemForDashboardRecommend[]>> {
   return request({
     url: fetchListForRecommendTasksUrl,
     method: 'get',
@@ -54,18 +58,21 @@ export type ProjectItemForDashboard = {
     name: string
     image: string
   }
-  tasks: {
+  tasks: Array<{
     type: TaskType
     startTime: number
     endTime: number
-  }
+  }>
 }
+
 export type fetchListForProjectParams = {
-  status: ProjectStatus | ''
+  status?: ProjectFilterStatusType
   keyword?: string
 }
 export const fetchListForProjectUrl = '/api/project/listForProject'
-export function fetchListForProject(params: fetchListForProjectParams): AxiosPromise<ProjectItemForDashboard[]> {
+export function fetchListForProject(
+  params: fetchListForProjectParams,
+): AxiosPromise<ApiResp<ProjectItemForDashboard[]>> {
   return request({
     url: fetchListForProjectUrl,
     method: 'get',

@@ -36,7 +36,7 @@ export const fetchRecommendTasks = createAsyncThunk<
   async (params, { rejectWithValue }) => {
     try {
       const resp = await fetchListForRecommendTasks()
-      return { data: resp.data || [] }
+      return { data: resp.data.data || [] }
     } catch (error: any) {
       if (!error.response) {
         throw error

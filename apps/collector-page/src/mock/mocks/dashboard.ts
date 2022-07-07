@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-06 15:38:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-06 17:12:54
+ * @LastEditTime: 2022-07-07 14:42:28
  * @Description: file description
  */
 import { fetchListForProjectUrl, fetchListForRecommendTasksUrl } from '../../services/api/dashboard'
 import { ProjectStatus, TaskStatus, TaskType } from '../../types/api'
 export default [
   {
-    url: fetchListForRecommendTasksUrl,
+    url: '/api/task/listForRecommendTasks',
     method: 'get',
     resp: {
       code: 0,
@@ -38,7 +38,7 @@ export default [
     },
   },
   {
-    url: fetchListForProjectUrl,
+    url: '/api/project/listForProject',
     method: 'get',
     resp: {
       code: 0,

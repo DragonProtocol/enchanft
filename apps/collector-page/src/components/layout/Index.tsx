@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-04 10:19:07
+ * @LastEditTime: 2022-07-07 21:12:14
  * @Description: 站点布局入口
  */
 import React from 'react'
@@ -36,6 +36,8 @@ const LayoutWrapper = styled.div`
 const HeaderBox = styled.div`
   width: 100%;
   background: #fff;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 2;
 `
 const HeaderInner = styled.div`
   width: 100%;
@@ -49,11 +51,13 @@ const HeaderInner = styled.div`
 const MainBox = styled.div`
   flex: 1;
   width: 100%;
+  overflow: hidden;
+  z-index: 1;
 `
 const MainInner = styled.div`
   width: 100%;
   height: 100%;
-  padding: 24px 48px;
+  padding: 48px;
   background: #fff;
   box-sizing: border-box;
   overflow-y: auto;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:25:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-06 18:21:07
+ * @LastEditTime: 2022-07-07 19:50:45
  * @Description: file description
  */
 import React from 'react'
@@ -18,7 +18,6 @@ import TaskSwiperItem, { TaskSwiperItemDataViewType, TaskSwiperItemHandlesType }
 import IconButton from '@mui/material/IconButton'
 export type TaskSwiperViewConfigType = {
   loading?: boolean
-  loadingMore?: boolean
   loadingMsg?: string
   emptyMsg?: string
 }
@@ -52,8 +51,8 @@ const TaskSwiper: React.FC<TaskSwiperProps> = ({ items, loading, loadingMsg, emp
       }}
     >
       {items.map((item) => (
-        <SwiperSlide>
-          <TaskSwiperItem key={item.data.id} data={item.data} viewConfig={item.viewConfig} onTake={onTake} />
+        <SwiperSlide key={item.data.id}>
+          <TaskSwiperItem data={item.data} viewConfig={item.viewConfig} onTake={onTake} />
         </SwiperSlide>
       ))}
     </Swiper>
