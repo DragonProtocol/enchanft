@@ -16,6 +16,8 @@ export function Index() {
         loop
         autoPlay
         muted={isMute}
+        onTimeUpdate={() => {
+        }}
       >
         <source
           src={require('../public/static/preview.mp4')}
