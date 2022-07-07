@@ -1,4 +1,11 @@
+###
+ # @Author: shixuewen friendlysxw@163.com
+ # @Date: 2022-07-05 14:37:01
+ # @LastEditors: shixuewen friendlysxw@163.com
+ # @LastEditTime: 2022-07-07 10:16:07
+ # @Description: file description
+### 
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm nx lintstaged collector-page
+# pnpm nx lintstaged collector-page

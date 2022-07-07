@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-06 18:56:54
+ * @LastEditTime: 2022-07-07 10:13:28
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -17,9 +17,9 @@ const Dashboard: React.FC = () => {
 
   // 获取推荐的任务
   const recommendTasks = useAppSelector(selectAllForRecommendTasks)
-  useEffect(() => {
-    dispatch(fetchRecommendTasks())
-  }, [])
+  // useEffect(() => {
+  //   dispatch(fetchRecommendTasks())
+  // }, [])
 
   // 获取项目列表
   const projects = useAppSelector(selectAllForProjects)
@@ -27,16 +27,16 @@ const Dashboard: React.FC = () => {
     status: '',
     keyword: '',
   })
-  useEffect(() => {
-    dispatch(fetchProjects(projectsFilter))
-  }, [projectsFilter])
+  // useEffect(() => {
+  //   dispatch(fetchProjects(projectsFilter))
+  // }, [projectsFilter])
 
-  useEffect(() => {
-    console.log({
-      recommendTasks,
-      projects,
-    })
-  }, [recommendTasks, projects])
+  // useEffect(() => {
+  //   console.log({
+  //     recommendTasks,
+  //     projects,
+  //   })
+  // }, [recommendTasks, projects])
   console.log('111')
 
   return <DashboardWrapper>Dashboard</DashboardWrapper>

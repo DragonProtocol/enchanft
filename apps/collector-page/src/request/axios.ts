@@ -2,10 +2,9 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-06 18:29:55
+ * @LastEditTime: 2022-07-07 10:11:22
  * @Description: axios 封装：凭证，参数序列化
  */
-import { RootState, store } from '../store/store'
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
 import qs from 'qs'
 export type AxiosCustomHeaderType = {
@@ -17,6 +16,10 @@ export type AxiosCustomHeaderType = {
 
 export type AxiosCustomConfigType = AxiosRequestConfig & { headers?: AxiosRequestHeaders & AxiosCustomHeaderType }
 
+let store
+export const injectStore = (storeInstance: any) => {
+  store = storeInstance
+}
 // 请求超时的毫秒数(0 表示无超时时间)
 axios.defaults.timeout = 30000
 
@@ -32,7 +35,7 @@ axios.interceptors.request.use(
     // 1、凭证
     const { needToken, token } = config.headers || {}
     if (needToken && token) {
-      const { token } = (store.getState() as RootState).account // token从store中获取
+      const { token } = store.getState().account // token从store中获取
       if (!config.headers) config.headers = {}
       config.headers.Authorization = token
     }

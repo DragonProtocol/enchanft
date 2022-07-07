@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-pnpm nx lint:check collector-page
+# pnpm nx lint:check collector-page
 pnpm nx prettier:check collector-page
