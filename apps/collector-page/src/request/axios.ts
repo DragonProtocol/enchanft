@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-07 14:39:18
+ * @LastEditTime: 2022-07-08 16:57:39
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
 import qs from 'qs'
+import { API_BASE_URL } from '../constants'
 export type AxiosCustomHeaderType = {
   // 当前接口是否需要传递token
   needToken?: boolean
@@ -29,15 +30,17 @@ axios.defaults.validateStatus = (status) => status >= 200 && status <= 500 // �
 // 跨域请求，允许保存cookie
 axios.defaults.withCredentials = true
 
+axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '' : API_BASE_URL
+
 // 添加请求拦截器
 axios.interceptors.request.use(
   (config: AxiosCustomConfigType) => {
     // 1、凭证
-    const { needToken, token } = config.headers || {}
-    if (needToken && token) {
-      const { token } = store.getState().account // token从store中获取
+    const { needToken } = config.headers || {}
+    if (needToken) {
+      const token = config.headers?.token || store.getState().account.token // token从store中获取
       if (!config.headers) config.headers = {}
-      config.headers.Authorization = token
+      config.headers.Authorization = `Bearer ${token}`
     }
     // 2、get请求，params参数序列化
     if (config.method === 'get') {

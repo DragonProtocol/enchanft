@@ -5,17 +5,51 @@
  * @LastEditTime: 2022-07-06 15:12:39
  * @Description: 用户的账户信息
  */
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
+import { login, updateProfile } from '../../services/api/login'
+import { AsyncRequestStatus } from '../../types'
 
 export type AccountState = {
+  loadStatus: AsyncRequestStatus
+  errorMsg?: string
   token: string
+  avatar: string
+  name: string
 }
 
 // 用户账户信息
 const initialState: AccountState = {
+  loadStatus: AsyncRequestStatus.IDLE,
   token: '',
+  avatar: '',
+  name: '',
 }
+
+export const userLogin = createAsyncThunk(
+  'user/login',
+  async ({ signature, payload, pubkey }: { signature: string; payload: string; pubkey: string }) => {
+    const resp = await login({
+      signature,
+      payload,
+      pubkey,
+    })
+    return resp.data
+  },
+)
+
+export const userUpdateProfile = createAsyncThunk(
+  'user/updateProfile',
+  async ({ avatar, name, pubkey }: { avatar: string; name: string; pubkey: string }, thunkAPI) => {
+    const resp = await updateProfile({
+      userAvatar: avatar,
+      userName: name,
+      pubkey,
+    })
+    thunkAPI.dispatch(setName(name))
+    return resp.data
+  },
+)
 
 export const accountSlice = createSlice({
   name: 'account',
@@ -27,10 +61,40 @@ export const accountSlice = createSlice({
     removeToken: (state) => {
       state.token = ''
     },
+    setName: (state, action) => {
+      state.name = action.payload
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(userLogin.pending, (state) => {
+        state.loadStatus = AsyncRequestStatus.PENDING
+      })
+      .addCase(userLogin.fulfilled, (state, action) => {
+        state.loadStatus = AsyncRequestStatus.FULFILLED
+        state.token = action.payload.token
+        state.avatar = action.payload.avatar
+        state.name = action.payload.name
+      })
+      .addCase(userLogin.rejected, (state, action) => {
+        state.loadStatus = AsyncRequestStatus.REJECTED
+        state.errorMsg = action.error.message || 'failed'
+      })
+      ///////
+      .addCase(userUpdateProfile.pending, (state) => {
+        state.loadStatus = AsyncRequestStatus.PENDING
+      })
+      .addCase(userUpdateProfile.fulfilled, (state, action) => {
+        state.loadStatus = AsyncRequestStatus.FULFILLED
+      })
+      .addCase(userUpdateProfile.rejected, (state, action) => {
+        state.loadStatus = AsyncRequestStatus.REJECTED
+        state.errorMsg = action.error.message || 'failed'
+      })
   },
 })
 
 const { actions, reducer } = accountSlice
-export const { setToken, removeToken } = actions
+export const { setToken, removeToken, setName } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer

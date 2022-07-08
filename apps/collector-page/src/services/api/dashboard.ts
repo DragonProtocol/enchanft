@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-06 13:45:43
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-07 20:38:01
+ * @LastEditTime: 2022-07-08 16:48:49
  * @Description: 公开的推荐项目和任务接口
  */
 import { AxiosPromise } from 'axios'
@@ -31,7 +31,7 @@ export type TaskItemForDashboardRecommend = {
     name: string
   }>
 }
-export const fetchListForRecommendTasksUrl = '/api/task/listForRecommendTasks'
+export const fetchListForRecommendTasksUrl = '/task/listForRecommendTasks'
 export function fetchListForRecommendTasks(): AxiosPromise<ApiResp<TaskItemForDashboardRecommend[]>> {
   return request({
     url: fetchListForRecommendTasksUrl,
@@ -69,7 +69,7 @@ export type fetchListForProjectParams = {
   status?: ProjectFilterStatusType
   keyword?: string
 }
-export const fetchListForProjectUrl = '/api/project/listForProject'
+export const fetchListForProjectUrl = '/project/listForProject'
 export function fetchListForProject(
   params: fetchListForProjectParams,
 ): AxiosPromise<ApiResp<ProjectItemForDashboard[]>> {

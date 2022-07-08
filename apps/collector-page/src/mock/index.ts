@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 11:18:16
+ * @LastEditTime: 2022-07-08 16:58:15
  * @Description: mock 请求拦截入口
  */
 
@@ -31,7 +31,7 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
     // }
 
     // TODO 上面的方式没有代理成功，这里先手动代理
-    Mock.mock('/api/task/listForRecommendTasks', 'get', {
+    Mock.mock('/task/listForRecommendTasks', 'get', {
       code: 0,
       msg: 'success',
       'data|10': [
@@ -59,7 +59,7 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
         },
       ],
     })
-    Mock.mock(/\/api\/project\/listForProject(\\?.*|)/, 'get', {
+    Mock.mock(/\/project\/listForProject(\\?.*|)/, 'get', {
       code: 0,
       msg: 'success',
       'data|10': [
