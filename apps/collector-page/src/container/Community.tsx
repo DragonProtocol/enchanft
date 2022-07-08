@@ -21,6 +21,7 @@ import ProjectFilter, {
 } from '../components/business/dashboard/ProjectFilter'
 import MainContentBox from '../components/layout/MainContentBox'
 import { TaskStatus } from '../types/api'
+import { useParams } from 'react-router-dom'
 const formatStoreDataToComponentDataByRecommendTasks = (
   tasks: TaskItemForEntity[],
   token: string,
@@ -52,15 +53,21 @@ const formatStoreDataToComponentDataByProjects = (projects: ProjectItemForEntity
   })
 }
 const Community: React.FC = () => {
+  const { communityId, projectId } = useParams()
+  console.log({
+    communityId,
+    projectId,
+  })
+
   const dispatch = useAppDispatch()
 
-  // 获取推荐的任务
+  // 获取社区信息
   const recommendTasks = useAppSelector(selectAllForRecommendTasks)
   useEffect(() => {
     dispatch(fetchRecommendTasks())
   }, [])
 
-  // 获取项目列表
+  // 获取社区贡献等级
   const projects = useAppSelector(selectAllForProjects)
   const [projectsFilter, setProjectsFilter] = useState<ProjectFilterDataType>({
     status: ProjectStatusOther.All,

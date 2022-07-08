@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-06 17:06:29
+ * @LastEditTime: 2022-07-08 20:03:09
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
@@ -12,6 +12,8 @@ import accountReducer from '../features/user/accountSlice'
 import myEnchanftedReducer from '../features/user/myEnchanftedSlice'
 import dashboardRecommendTasksReducer from '../features/dashboard/recommendTasksSlice'
 import dashboardProjectsReducer from '../features/dashboard/projectsSlice'
+import communityCollectionDetailReducer from '../features/community/collectionDetailSlice'
+import communityContributionRanksReducer from '../features/community/contributionRanksSlice'
 
 export const store = configureStore({
   reducer: {
@@ -20,6 +22,8 @@ export const store = configureStore({
     myEnchanfted: myEnchanftedReducer,
     dashboardRecommendTasks: dashboardRecommendTasksReducer,
     dashboardProjects: dashboardProjectsReducer,
+    communityCollectionDetail: communityCollectionDetailReducer,
+    communityContributionRanks: communityContributionRanksReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

@@ -2,10 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 17:23:47
+ * @LastEditTime: 2022-07-08 18:53:48
  * @Description: file description
  */
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { ProjectStatus, TaskType } from '../../../types/api'
@@ -53,11 +54,12 @@ const TaskTypeLabels = {
   [TaskType.WHITELIST_LUCK_DRAW]: 'Raffle',
 }
 const ProjectItem: React.FC<ProjectItemProps> = ({ data, viewConfig }: ProjectItemProps) => {
-  const { name, image, status, taskNum, floorPrice, itemsNum, mintPrice, tasks } = data
-  const {} = {
-    ...defaultViewConfig,
-    ...viewConfig,
-  }
+  const navigate = useNavigate()
+  const { id, name, image, status, taskNum, floorPrice, itemsNum, mintPrice, community, tasks } = data
+  // const {} = {
+  //   ...defaultViewConfig,
+  //   ...viewConfig,
+  // }
 
   const statusLabel = ProjectStatusLabels[status] || 'Unknown Project Status'
   let projectDescBottomText = ''
@@ -78,7 +80,7 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ data, viewConfig }: ProjectIt
       projectDescBottomText = `items ${itemsNum} . Mint Price ${floorPrice} SOL ${mintStartDate}`
   }
   return (
-    <ProjectItemWrapper>
+    <ProjectItemWrapper onClick={() => navigate(`/community/${community.id}/${id}`)}>
       <ProjectImage src={image} />
       <ProjectDescBox>
         <ProjectDescTopBox>
@@ -105,6 +107,7 @@ const ProjectItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer;
 `
 const ProjectImage = styled.img`
   width: 100%;
