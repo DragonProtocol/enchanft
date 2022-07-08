@@ -62,12 +62,9 @@ module.exports = {
   },
   devServer: {
     proxy: {
-      '/api': {
+      '/': {
         target: 'https://test-enchanft-backend.onrender.com',
         changeOrigin: true,
-        pathRewrite: {
-          '^/api': '',
-        },
       },
     },
   },
