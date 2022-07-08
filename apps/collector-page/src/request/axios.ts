@@ -22,13 +22,13 @@ export const injectStore = (storeInstance: any) => {
   store = storeInstance
 }
 // 请求超时的毫秒数(0 表示无超时时间)
-axios.defaults.timeout = 30000
+// axios.defaults.timeout = 30000
 
 // 定义一个自定义HTTP状态码的错误范围，返回 `true`，promise 将被 resolve; 否则，promise 将被 rejecte
-axios.defaults.validateStatus = (status) => status >= 200 && status <= 500 // 默认的
+// axios.defaults.validateStatus = (status) => status >= 200 && status <= 500 // 默认的
 
 // 跨域请求，允许保存cookie
-axios.defaults.withCredentials = true
+// axios.defaults.withCredentials = true
 
 axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '' : API_BASE_URL
 
