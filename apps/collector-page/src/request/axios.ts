@@ -33,11 +33,11 @@ axios.defaults.withCredentials = true
 axios.interceptors.request.use(
   (config: AxiosCustomConfigType) => {
     // 1、凭证
-    const { needToken, token } = config.headers || {}
-    if (needToken && token) {
-      const { token } = store.getState().account // token从store中获取
+    const { needToken } = config.headers || {}
+    if (needToken) {
+      const token = config.headers?.token || store.getState().account.token // token从store中获取
       if (!config.headers) config.headers = {}
-      config.headers.Authorization = token
+      config.headers.Authorization = `Bearer ${token}`
     }
     // 2、get请求，params参数序列化
     if (config.method === 'get') {
