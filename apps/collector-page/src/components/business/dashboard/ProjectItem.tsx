@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 14:22:43
+ * @LastEditTime: 2022-07-08 17:23:47
  * @Description: file description
  */
 import React from 'react'
@@ -54,10 +54,6 @@ const TaskTypeLabels = {
 }
 const ProjectItem: React.FC<ProjectItemProps> = ({ data, viewConfig }: ProjectItemProps) => {
   const { name, image, status, taskNum, floorPrice, itemsNum, mintPrice, tasks } = data
-  console.log({
-    tasks,
-  })
-
   const {} = {
     ...defaultViewConfig,
     ...viewConfig,
