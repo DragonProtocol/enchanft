@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-07 19:09:02
+ * @LastEditTime: 2022-07-08 12:14:52
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -26,20 +26,26 @@ import ProjectFilter, {
   ProjectFilterDataType,
   ProjectStatusOther,
 } from '../components/business/dashboard/ProjectFilter'
+import MainContentBox from '../components/layout/MainContentBox'
+import { TaskStatus } from '../types/api'
 const formatStoreDataToComponentDataByRecommendTasks = (
   tasks: TaskItemForEntity[],
   token: string,
 ): TaskSwiperItemsType => {
   return tasks.map((task) => {
-    const displayTake = token ? true : false
+    const displayConnectWalletTip = token ? false : true
+    const displayAccept = token && task.acceptedStatus === TaskStatus.DONE ? true : false
+    const displayTake = token && task.acceptedStatus === TaskStatus.CANDO ? true : false
     const disabledTake = token ? false : true
     const loadingTake = false
     return {
       data: task,
       viewConfig: {
-        displayTake: displayTake,
-        disabledTake: disabledTake,
-        loadingTake: loadingTake,
+        displayConnectWalletTip,
+        displayAccept,
+        displayTake,
+        disabledTake,
+        loadingTake,
       },
     }
   })
@@ -78,15 +84,17 @@ const Dashboard: React.FC = () => {
   return (
     <DashboardWrapper>
       <ScrollBox>
-        <TaskSwiperBox>
-          <TaskSwiper items={taskSwiperItems} />
-        </TaskSwiperBox>
-        <ProjectFilterBox>
-          <ProjectFilter data={projectsFilter} onChange={setProjectsFilter} />
-        </ProjectFilterBox>
-        <ProjectListBox>
-          <ProjectList items={projectListItems} />
-        </ProjectListBox>
+        <MainContentBox>
+          <TaskSwiperBox>
+            <TaskSwiper items={taskSwiperItems} />
+          </TaskSwiperBox>
+          <ProjectFilterBox>
+            <ProjectFilter data={projectsFilter} onChange={setProjectsFilter} />
+          </ProjectFilterBox>
+          <ProjectListBox>
+            <ProjectList items={projectListItems} />
+          </ProjectListBox>
+        </MainContentBox>
       </ScrollBox>
     </DashboardWrapper>
   )

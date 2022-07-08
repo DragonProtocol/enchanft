@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-07 21:12:14
+ * @LastEditTime: 2022-07-08 10:07:41
  * @Description: 站点布局入口
  */
 import React from 'react'
@@ -57,7 +57,6 @@ const MainBox = styled.div`
 const MainInner = styled.div`
   width: 100%;
   height: 100%;
-  padding: 48px;
   background: #fff;
   box-sizing: border-box;
   overflow-y: auto;

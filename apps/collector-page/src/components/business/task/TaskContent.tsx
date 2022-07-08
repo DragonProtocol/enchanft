@@ -2,12 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:39:25
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-07 20:47:42
+ * @LastEditTime: 2022-07-08 12:18:01
  * @Description:（公开面板上的）任务内容
  */
 import React from 'react'
 import styled from 'styled-components'
+import { ScrollBarCss } from '../../../GlobalStyle'
 import { TaskStatus, TaskType } from '../../../types/api'
+import ButtonBase from '../../common/button/ButtonBase'
+import SolanaConnectWalletButton from '../connect/SolanaConnectWalletButton'
 
 export type TaskContentDataType = {
   id: number
@@ -24,6 +27,8 @@ export type TaskContentDataType = {
 }
 
 export type TaskContentViewConfigType = {
+  displayConnectWalletTip?: boolean
+  displayAccept?: boolean
   displayTake?: boolean
   disabledTake?: boolean
   loadingTake?: boolean
@@ -35,7 +40,7 @@ export type TaskContentDataViewType = {
 }
 
 export type TaskContentHandlesType = {
-  onTake?: (TaskSwiper: TaskContentDataType) => void
+  onTake?: (task: TaskContentDataType) => void
 }
 
 export type TaskContentProps = TaskContentDataViewType & TaskContentHandlesType
@@ -51,14 +56,19 @@ const TaskTypeLabels = {
 }
 
 const TaskContent: React.FC<TaskContentProps> = ({ data, viewConfig, onTake }: TaskContentProps) => {
-  const { id, name, type, startTime, endTime, winnersNum, acceptedStatus, actions } = data
-  const { disabledTake, displayTake } = {
+  const { name, type, startTime, endTime, winnersNum, actions } = data
+  const { displayConnectWalletTip, displayAccept, disabledTake, displayTake, loadingTake } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
   const typeLabel = TaskTypeLabels[type] || 'Unknown Task Type'
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
+  const handleTake = () => {
+    if (onTake) {
+      onTake(data)
+    }
+  }
   return (
     <TaskContentWrapper>
       <TaskName>{name}</TaskName>
@@ -67,7 +77,7 @@ const TaskContent: React.FC<TaskContentProps> = ({ data, viewConfig, onTake }: T
         <span>winners {winnersNum}</span>
       </TaskContentRow>
       <TaskContentRow>
-        {startDate} ———— {endDate}
+        {startDate} —— {endDate}
       </TaskContentRow>
       <TaskContentRow>task statements</TaskContentRow>
       <TaskActionsBox>
@@ -78,6 +88,14 @@ const TaskContent: React.FC<TaskContentProps> = ({ data, viewConfig, onTake }: T
           </TaskActionsItem>
         ))}
       </TaskActionsBox>
+      {displayTake && (
+        <TaskTakeBtn disabled={disabledTake} onClick={handleTake}>
+          Take the task
+          {loadingTake && 'loading...'}
+        </TaskTakeBtn>
+      )}
+      {displayAccept && <TaskAcceptedSeal>accept</TaskAcceptedSeal>}
+      {displayConnectWalletTip && <SolanaConnectWalletButton />}
     </TaskContentWrapper>
   )
 }
@@ -88,6 +106,7 @@ const TaskContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  position: relative;
 `
 const TaskName = styled.div`
   color: rgba(16, 16, 16, 100);
@@ -106,6 +125,7 @@ const TaskActionsBox = styled.div`
   flex-direction: column;
   gap: 15px;
   overflow-y: auto;
+  ${ScrollBarCss}
 `
 const TaskActionsItem = styled.div`
   display: flex;
@@ -119,4 +139,26 @@ const TaskActionsItemLeft = styled.div`
   height: 12px;
   border-radius: 50%;
   background-color: rgba(21, 21, 21, 100);
+`
+const TaskTakeBtn = styled(ButtonBase)`
+  height: 47px;
+  border-radius: 4px;
+  background-color: rgba(21, 21, 21, 100);
+  color: rgba(255, 255, 255, 100);
+`
+const TaskAcceptedSeal = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-30deg);
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  border: 5px solid rgba(240, 76, 71, 100);
+  line-height: 240px;
+  text-align: center;
+  color: rgba(240, 76, 71, 100);
+  font-size: 48px;
+  font-weight: 500;
+  text-transform: uppercase;
 `

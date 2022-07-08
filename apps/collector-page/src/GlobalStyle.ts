@@ -26,7 +26,7 @@ export const ScrollBarCss = css`
     box-shadow: rgba(0, 0, 0, 0.5);
   }
   ::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(211, 173, 209, 0.4);
+    background: #ccc;
   }
 `
 const GlobalStyle = createGlobalStyle`

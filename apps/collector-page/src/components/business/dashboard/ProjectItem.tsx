@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-07 17:48:13
+ * @LastEditTime: 2022-07-08 14:22:43
  * @Description: file description
  */
 import React from 'react'
@@ -54,6 +54,10 @@ const TaskTypeLabels = {
 }
 const ProjectItem: React.FC<ProjectItemProps> = ({ data, viewConfig }: ProjectItemProps) => {
   const { name, image, status, taskNum, floorPrice, itemsNum, mintPrice, tasks } = data
+  console.log({
+    tasks,
+  })
+
   const {} = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -74,8 +78,8 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ data, viewConfig }: ProjectIt
       break
     case ProjectStatus.FUTURE:
       // 预发售日期
-      const mintStartDate = new Date(data.mintStartTime)
-      projectDescBottomText = `items ${itemsNum} . Floor Price ${floorPrice} SOL ${mintStartDate}`
+      const mintStartDate = new Date(data.mintStartTime).toLocaleDateString()
+      projectDescBottomText = `items ${itemsNum} . Mint Price ${floorPrice} SOL ${mintStartDate}`
   }
   return (
     <ProjectItemWrapper>
@@ -105,7 +109,6 @@ const ProjectItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 22px;
 `
 const ProjectImage = styled.img`
   width: 100%;
@@ -113,6 +116,7 @@ const ProjectImage = styled.img`
 `
 const ProjectDescBox = styled.div`
   flex: 1;
+  padding-top: 22px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
