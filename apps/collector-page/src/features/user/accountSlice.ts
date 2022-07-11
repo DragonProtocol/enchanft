@@ -7,7 +7,7 @@
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
-import { login, updateProfile } from '../../services/api/login'
+import { login, updateProfile, link } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
 
 export type AccountState = {
@@ -16,6 +16,7 @@ export type AccountState = {
   token: string
   avatar: string
   name: string
+  twitter: string
 }
 
 // 用户账户信息
@@ -24,6 +25,7 @@ const initialState: AccountState = {
   token: '',
   avatar: '',
   name: '',
+  twitter: '',
 }
 
 export const userLogin = createAsyncThunk(
@@ -51,6 +53,27 @@ export const userUpdateProfile = createAsyncThunk(
   },
 )
 
+export const userLink = createAsyncThunk('user/userLink', async ({ code }: { code: string }, thunkAPI) => {
+  const resp = await link({
+    code,
+  })
+  // 暂时未区分账号类型
+  thunkAPI.dispatch(setTwitter(resp.data.twitter))
+  return resp.data
+},{
+  condition: (params, { getState }) => {
+    const state = getState() as RootState
+    const {
+      account: { loadStatus },
+    } = state
+    // 之前的请求正在进行中,则阻止新的请求
+    if (loadStatus === AsyncRequestStatus.PENDING) {
+      return false
+    }
+    return true
+  },
+},)
+
 export const accountSlice = createSlice({
   name: 'account',
   initialState,
@@ -64,6 +87,9 @@ export const accountSlice = createSlice({
     setName: (state, action) => {
       state.name = action.payload
     },
+    setTwitter: (state, action) => {
+      state.twitter = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -75,8 +101,18 @@ export const accountSlice = createSlice({
         state.token = action.payload.token
         state.avatar = action.payload.avatar
         state.name = action.payload.name
+        state.twitter = action.payload.twitter
+
       })
       .addCase(userLogin.rejected, (state, action) => {
+        state.loadStatus = AsyncRequestStatus.REJECTED
+        state.errorMsg = action.error.message || 'failed'
+      })
+      ///////
+      .addCase(userLink.pending, (state) => {
+        state.loadStatus = AsyncRequestStatus.PENDING
+      })
+      .addCase(userLink.rejected, (state, action) => {
         state.loadStatus = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
       })
@@ -95,6 +131,6 @@ export const accountSlice = createSlice({
 })
 
 const { actions, reducer } = accountSlice
-export const { setToken, removeToken, setName } = actions
+export const { setToken, removeToken, setName, setTwitter } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer

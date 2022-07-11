@@ -14,7 +14,6 @@ export function Header() {
         <MoreIcon
           onClick={() => {
             setIsExpanded(true);
-            console.log('----------------------');
           }}
           data-tip="more"
         />
