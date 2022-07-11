@@ -63,8 +63,8 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000', //dev
-        // target: 'https://test-enchanft-backend.onrender.com',
+        // target: 'http://localhost:8000', //dev
+        target: 'https://test-enchanft-backend.onrender.com',
         changeOrigin: true,
         pathRewrite: {
           '^/api': '/',
