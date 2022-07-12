@@ -31,13 +31,23 @@ const CallBack: React.FC = (props) => {
     }
   }, [])
 
+  const handleOpener = (path = '/') => {
+    if (window) {
+      window.close();
+      if (window.opener) {
+        window.opener.location.href = path;
+      }
+    }
+  }
+
   useEffect(() => {
     if (twitter) {
       console.log('link scuccess')
-      navigate('/profile')
+      // navigate('/profile')
+      handleOpener('/profile')
     } else if (errorMsg) {
       console.log('link failed: no twitter found')
-      navigate('/profile')
+      handleOpener('/profile')
     }
   }, [twitter])
 

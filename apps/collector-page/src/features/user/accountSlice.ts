@@ -25,7 +25,7 @@ const initialState: AccountState = {
   token: '',
   avatar: '',
   name: '',
-  twitter: '',
+  twitter: localStorage.getItem('twitter') || '',
 }
 
 export const userLogin = createAsyncThunk(
@@ -89,6 +89,7 @@ export const accountSlice = createSlice({
     },
     setTwitter: (state, action) => {
       state.twitter = action.payload
+      localStorage.setItem('twitter', action.payload)
     },
   },
   extraReducers: (builder) => {
@@ -102,7 +103,6 @@ export const accountSlice = createSlice({
         state.avatar = action.payload.avatar
         state.name = action.payload.name
         state.twitter = action.payload.twitter
-
       })
       .addCase(userLogin.rejected, (state, action) => {
         state.loadStatus = AsyncRequestStatus.REJECTED
