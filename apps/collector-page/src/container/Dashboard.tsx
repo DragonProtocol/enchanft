@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 12:14:52
+ * @LastEditTime: 2022-07-12 18:07:51
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -28,6 +28,7 @@ import ProjectFilter, {
 } from '../components/business/dashboard/ProjectFilter'
 import MainContentBox from '../components/layout/MainContentBox'
 import { TaskStatus } from '../types/api'
+import { take } from '../features/user/taskHandlesSlice'
 const formatStoreDataToComponentDataByRecommendTasks = (
   tasks: TaskItemForEntity[],
   token: string,
@@ -71,12 +72,16 @@ const Dashboard: React.FC = () => {
   const projects = useAppSelector(selectAllForProjects)
   const [projectsFilter, setProjectsFilter] = useState<ProjectFilterDataType>({
     status: ProjectStatusOther.All,
-    keyword: '',
+    keywords: '',
   })
   useEffect(() => {
     dispatch(fetchProjects(projectsFilter))
   }, [projectsFilter])
 
+  // 接受任务
+  const handleTakeTask = (id) => {
+    dispatch(take({ id }))
+  }
   // 展示数据
   const { token } = useAppSelector(selectAccount)
   const taskSwiperItems = formatStoreDataToComponentDataByRecommendTasks(recommendTasks, token)
@@ -86,7 +91,7 @@ const Dashboard: React.FC = () => {
       <ScrollBox>
         <MainContentBox>
           <TaskSwiperBox>
-            <TaskSwiper items={taskSwiperItems} />
+            <TaskSwiper items={taskSwiperItems} onTake={(task) => handleTakeTask(task.id)} />
           </TaskSwiperBox>
           <ProjectFilterBox>
             <ProjectFilter data={projectsFilter} onChange={setProjectsFilter} />

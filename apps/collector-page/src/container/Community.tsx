@@ -1,99 +1,204 @@
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
-import {
-  fetchRecommendTasks,
-  selectAll as selectAllForRecommendTasks,
-  TaskItemForEntity,
-} from '../features/dashboard/recommendTasksSlice'
-import {
-  fetchProjects,
-  ProjectItemForEntity,
-  selectAll as selectAllForProjects,
-} from '../features/dashboard/projectsSlice'
-import TaskSwiper, { TaskSwiperItemsType } from '../components/business/dashboard/TaskSwiper'
 import { selectAccount } from '../features/user/accountSlice'
-import ProjectList, { ProjectListItemsType } from '../components/business/dashboard/ProjectList'
 import ScrollBox from '../components/common/ScrollBox'
-import ProjectFilter, {
-  ProjectFilterDataType,
-  ProjectStatusOther,
-} from '../components/business/dashboard/ProjectFilter'
 import MainContentBox from '../components/layout/MainContentBox'
 import { TaskStatus } from '../types/api'
 import { useParams } from 'react-router-dom'
-const formatStoreDataToComponentDataByRecommendTasks = (
-  tasks: TaskItemForEntity[],
-  token: string,
-): TaskSwiperItemsType => {
-  return tasks.map((task) => {
-    const displayConnectWalletTip = token ? false : true
-    const displayAccept = token && task.acceptedStatus === TaskStatus.DONE ? true : false
-    const displayTake = token && task.acceptedStatus === TaskStatus.CANDO ? true : false
-    const disabledTake = token ? false : true
-    const loadingTake = false
+import {
+  CommunityBasicInfoForEntity,
+  CommunityCollectionProjectItemForEntity,
+  fetchCommunityCollectionDetail,
+  selectCommunityCollectionDetail,
+} from '../features/community/collectionDetailSlice'
+import {
+  fetchCommunityContributionRanks,
+  selectAll as selectAllForCommunityContributionranks,
+} from '../features/community/contributionRanksSlice'
+import CommunityBasicInfo, { CommunityBasicInfoDataType } from '../components/business/community/CommunityBasicInfo'
+import CommunityProjectTabs, {
+  CommunityProjectTabsOptions,
+} from '../components/business/community/CommunityProjectTabs'
+import ProjectDetail, { ProjectDetailDataViewType } from '../components/business/project/ProjectDetail'
+import CommunityContribution from '../components/business/community/CommunityContribution'
+import { take } from '../features/user/taskHandlesSlice'
+
+// 处理社区基本信息
+const formatStoreDataToComponentDataByCommunityBasicInfo = (
+  data: CommunityBasicInfoForEntity,
+): CommunityBasicInfoDataType => {
+  return {
+    id: data.id,
+    name: data.name,
+    icon: data.icon,
+    description: data.description,
+    communityFollowerNum: data.communityFollowerNum,
+    isOpenNotification: data.isOpenNotification,
+  }
+}
+
+// 处理社区项目切换可选项
+const formatStoreDataToComponentDataByCommunityProjectTabs = (
+  projects: CommunityCollectionProjectItemForEntity[],
+): CommunityProjectTabsOptions => {
+  return projects.map((project) => {
     return {
-      data: task,
+      label: project.name,
+      value: project.id,
+    }
+  })
+}
+
+// 处理项目详情
+const formatStoreDataToComponentDataByProjectDetail = (
+  projects: CommunityCollectionProjectItemForEntity[],
+  token: string,
+): ProjectDetailDataViewType[] => {
+  return projects.map((project) => {
+    const displayMintInfo = true
+    const displayTasks = true
+    // format tasks
+    const tasks =
+      displayTasks &&
+      project.tasks.map((task) => {
+        const displayConnectWalletTip = token ? false : true
+        const displayAccept = token && task.acceptedStatus === TaskStatus.DONE ? true : false
+        const displayTake = token && task.acceptedStatus === TaskStatus.CANDO ? true : false
+        const disabledTake = token ? false : true
+        const loadingTake = false
+        return {
+          data: task,
+          viewConfig: {
+            displayConnectWalletTip,
+            displayAccept,
+            displayTake,
+            disabledTake,
+            loadingTake,
+          },
+        }
+      })
+    // format team members
+    const teamMembers = project.teamMembers.map((member) => ({
+      data: member,
+      viewConfig: {},
+    }))
+    // format roadmap
+    const roadmap = project.roadmap.map((item) => ({ ...item }))
+    return {
+      data: {
+        ...project,
+        tasks,
+        teamMembers,
+        roadmap,
+      },
       viewConfig: {
-        displayConnectWalletTip,
-        displayAccept,
-        displayTake,
-        disabledTake,
-        loadingTake,
+        displayMintInfo: displayMintInfo,
+        displayTasks: displayTasks,
       },
     }
   })
 }
 
-const formatStoreDataToComponentDataByProjects = (projects: ProjectItemForEntity[]): ProjectListItemsType => {
-  return projects.map((project) => {
-    return {
-      data: project,
-    }
-  })
-}
 const Community: React.FC = () => {
   const { communityId, projectId } = useParams()
-  console.log({
-    communityId,
-    projectId,
-  })
-
   const dispatch = useAppDispatch()
 
   // 获取社区信息
-  const recommendTasks = useAppSelector(selectAllForRecommendTasks)
+  const collectionDetail = useAppSelector(selectCommunityCollectionDetail)
+  const { data, loadStatus, errorMsg } = collectionDetail
   useEffect(() => {
-    dispatch(fetchRecommendTasks())
-  }, [])
+    if (communityId) {
+      dispatch(
+        fetchCommunityCollectionDetail({
+          communityId: Number(communityId),
+        }),
+      )
+    }
+  }, [communityId])
 
   // 获取社区贡献等级
-  const projects = useAppSelector(selectAllForProjects)
-  const [projectsFilter, setProjectsFilter] = useState<ProjectFilterDataType>({
-    status: ProjectStatusOther.All,
-    keyword: '',
-  })
+  const contributionranks = useAppSelector(selectAllForCommunityContributionranks)
   useEffect(() => {
-    dispatch(fetchProjects(projectsFilter))
-  }, [projectsFilter])
+    dispatch(
+      fetchCommunityContributionRanks({
+        communityId: Number(communityId),
+      }),
+    )
+  }, [communityId])
+
+  // 接受任务
+  const handleTakeTask = (id) => {
+    dispatch(take({ id }))
+  }
+
+  // 社区展示信息切换
+  const CommunityTabOptions = [
+    {
+      label: 'Collection',
+      value: 'collection',
+    },
+    {
+      label: 'Contribution',
+      value: 'contribution',
+    },
+  ]
+  const [curCommunityTab, setCurCommunityTab] = useState(CommunityTabOptions[0].value)
+
+  // 项目展示信息切换
+  const [curProjectId, setCurProjectId] = useState<number>(Number(projectId))
+  useEffect(() => {
+    if (!data) return
+    const findProject = data.projects.find((project) => project.id === Number(projectId))
+    // const findProject = data.projects[0]
+    const findProjectId = (findProject && findProject.id) || data.projects[0].id
+    setCurProjectId(findProjectId)
+  }, [projectId, data])
 
   // 展示数据
   const { token } = useAppSelector(selectAccount)
-  const taskSwiperItems = formatStoreDataToComponentDataByRecommendTasks(recommendTasks, token)
-  const projectListItems = formatStoreDataToComponentDataByProjects(projects)
+  if (!data) return null
+  const communityBasicInfo = formatStoreDataToComponentDataByCommunityBasicInfo(data.community)
+  const communityProjectTabs = formatStoreDataToComponentDataByCommunityProjectTabs(data.projects)
+  const projects = formatStoreDataToComponentDataByProjectDetail(data.projects, token)
+
+  const curProjectDetail = projects.find((project) => project.data.id === curProjectId)
+
+  const renderCollection = () => {
+    if (!curProjectDetail) return <span>No Project</span>
+    return (
+      <>
+        <CommunityProjectTabsBox>
+          <CommunityProjectTabs options={communityProjectTabs} value={curProjectId} onChange={setCurProjectId} />
+        </CommunityProjectTabsBox>
+        <ProjectDetail
+          data={curProjectDetail.data}
+          viewConfig={curProjectDetail.viewConfig}
+          onTake={(task) => handleTakeTask(task.id)}
+        ></ProjectDetail>
+      </>
+    )
+  }
   return (
     <CommunityWrapper>
       <ScrollBox>
         <MainContentBox>
-          <TaskSwiperBox>
-            <TaskSwiper items={taskSwiperItems} />
-          </TaskSwiperBox>
-          <ProjectFilterBox>
-            <ProjectFilter data={projectsFilter} onChange={setProjectsFilter} />
-          </ProjectFilterBox>
-          <ProjectListBox>
-            <ProjectList items={projectListItems} />
-          </ProjectListBox>
+          <CommunityBasicInfo data={communityBasicInfo} />
+          <CommunityTabs>
+            {CommunityTabOptions.map((item) => (
+              <CommunityTab
+                key={item.value}
+                onClick={() => setCurCommunityTab(item.value)}
+                isActive={item.value === curCommunityTab}
+              >
+                {item.label}
+              </CommunityTab>
+            ))}
+          </CommunityTabs>
+          <CommunityTabContentBox>
+            {curCommunityTab === 'collection' && renderCollection()}
+            {curCommunityTab === 'contribution' && <CommunityContribution items={contributionranks} />}
+          </CommunityTabContentBox>
         </MainContentBox>
       </ScrollBox>
     </CommunityWrapper>
@@ -104,10 +209,30 @@ const CommunityWrapper = styled.div`
   width: 100%;
   height: 100%;
 `
-const TaskSwiperBox = styled.div`
-  margin-bottom: 100px;
+const CommunityTabs = styled.div`
+  width: 700px;
+  height: 32px;
+  display: flex;
+  border: 1px solid rgba(0, 0, 0, 1);
+  margin-top: 40px;
 `
-const ProjectFilterBox = styled.div`
-  margin-bottom: 37px;
+const CommunityTab = styled.div<{ isActive?: boolean }>`
+  width: 350px;
+  height: 100%;
+  cursor: pointer;
+  border-left: 2px solid rgba(21, 21, 21, 100);
+  &:first-child {
+    border-left: none;
+  }
+  background: ${(props) => (props.isActive ? '#000' : '#fff')};
+  color: ${(props) => (props.isActive ? '#fff' : '#000')};
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
-const ProjectListBox = styled.div``
+const CommunityTabContentBox = styled.div`
+  margin-top: 40px;
+`
+const CommunityProjectTabsBox = styled.div`
+  margin-bottom: 40px;
+`

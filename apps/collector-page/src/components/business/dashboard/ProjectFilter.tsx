@@ -36,12 +36,12 @@ export const ProjectFilterStatusOptions = [
 
 export type ProjectFilterDataType = {
   status: ProjectFilterStatusType
-  keyword?: string
+  keywords?: string
 }
 
 export type ProjectFilterViewConfigType = {
   displayStatus?: boolean
-  displayKeyword?: boolean
+  displayKeywords?: boolean
 }
 
 export type ProjectFilterDataViewType = {
@@ -55,11 +55,11 @@ export type ProjectFilterProps = ProjectFilterDataViewType & ProjectFilterHandle
 
 const defaultViewConfig = {
   displayStatus: true,
-  displayKeyword: true,
+  displayKeywords: true,
 }
 const ProjectFilter: React.FC<ProjectFilterProps> = ({ data, viewConfig, onChange }: ProjectFilterProps) => {
   const { status } = data
-  const { displayStatus, displayKeyword } = {
+  const { displayStatus, displayKeywords } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
@@ -71,11 +71,11 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({ data, viewConfig, onChang
       })
     }
   }
-  const handleKeywordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleKeywordsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChange) {
       onChange({
         ...data,
-        keyword: e.target.value,
+        keywords: e.target.value,
       })
     }
   }
@@ -94,16 +94,16 @@ const ProjectFilter: React.FC<ProjectFilterProps> = ({ data, viewConfig, onChang
           ))}
         </ProjectStatusSelector>
       )}
-      {displayKeyword && (
-        <ProjectKeywordBox>
+      {displayKeywords && (
+        <ProjectKeywordsBox>
           <SearchIcon />
           <InputBase
             sx={{ ml: 1, flex: 1, height: 'auto' }}
-            placeholder="Search keywords, communities or collections"
-            inputProps={{ 'aria-label': 'Search keywords, communities or collections' }}
-            onChange={handleKeywordChange}
+            placeholder="Search keywordss, communities or collections"
+            inputProps={{ 'aria-label': 'Search keywordss, communities or collections' }}
+            onChange={handleKeywordsChange}
           />
-        </ProjectKeywordBox>
+        </ProjectKeywordsBox>
       )}
     </ProjectFilterWrapper>
   )
@@ -136,7 +136,7 @@ const ProjectStatusSelectorItem = styled.div<{ isActive?: boolean }>`
   justify-content: center;
   align-items: center;
 `
-const ProjectKeywordBox = styled.div`
+const ProjectKeywordsBox = styled.div`
   flex: 1;
   height: 50px;
   padding: 13px;

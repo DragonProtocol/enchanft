@@ -52,7 +52,7 @@ export default [
           taskNum: 100,
           floorPrice: '3+1',
           injectedCoins: '',
-          itemsNum: 9999,
+          itemTotalNum: 9999,
           mintPrice: '3+1',
           mintStartTime: '@date(unix)',
           community: {

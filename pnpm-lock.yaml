@@ -81,6 +81,7 @@ importers:
       '@ecnft/js-sdk-react': ^0.2.10
       '@metaplex-foundation/mpl-token-metadata': ^2.2.1
       '@mui/icons-material': ^5.8.4
+      '@mui/lab': ^5.0.0-alpha.87
       '@mui/material': ^5.5.0
       '@mui/styled-engine-sc': ^5.4.2
       '@reduxjs/toolkit': ^1.8.3
@@ -98,17 +99,25 @@ importers:
       '@types/styled-components': ^5.1.25
       assert: ^2.0.0
       axios: ^0.27.2
+      babel-jest: 27.5.1
+      babel-plugin-styled-components: 1.10.7
       bs58: ^5.0.0
       buffer: ^6.0.3
+      cross-env: ^7.0.2
       crypto-browserify: ^3.12.0
       eslint-config-airbnb: ^19.0.4
       eslint-import-resolver-typescript: ^3.1.1
       eslint-plugin-prettier: ^4.2.1
+      fs: ^0.0.1-security
       http-proxy-middleware: ^2.0.6
+      https-browserify: ^1.0.0
       husky: ^8.0.0
       lint-staged: ^13.0.3
       loglevel: ^1.8.0
       mockjs: ^1.1.0
+      os: ^0.1.2
+      os-browserify: ^0.3.0
+      path-browserify: ^1.0.1
       process: ^0.11.10
       qs: ^6.11.0
       react: 18.2.0
@@ -117,14 +126,22 @@ importers:
       react-redux: ^8.0.2
       react-router-dom: 6.3.0
       react-scripts: 5.0.1
+      react-test-renderer: 18.2.0
       stream-browserify: ^3.0.0
+      stream-http: ^3.2.0
       styled-components: ^5.3.5
       swiper: ^8.2.4
+      tsconfig-paths-webpack-plugin: ^3.5.2
+      typescript: ~4.7.2
+      url: ^0.11.0
+      web-vitals: ^2.1.4
+      webpack: ^5.73.0
     dependencies:
       '@ecnft/js-sdk-core': link:../../libs/js-sdk/core
       '@ecnft/js-sdk-react': link:../../libs/js-sdk/react
       '@metaplex-foundation/mpl-token-metadata': 2.2.1
       '@mui/icons-material': 5.8.4_gx2y6rrnkwxk6hedravj4cgp6u
+      '@mui/lab': 5.0.0-alpha.88_pu5yg3z66btofxjf73yfofpnbe
       '@mui/material': 5.8.6_ocvlaah2275pzedeuxsmtxxp2y
       '@mui/styled-engine-sc': 5.8.0_iuerkafropdnyslhga2zpn3if4
       '@reduxjs/toolkit': 1.8.3_kkwg4cbsojnjnupd3btipussee
@@ -160,12 +177,27 @@ importers:
       swiper: 8.2.6
     devDependencies:
       '@craco/craco': 7.0.0-alpha.6_prtkp5mcu3oefm5bd5fkr764iy
+      babel-jest: 27.5.1_@babel+core@7.18.6
+      babel-plugin-styled-components: 1.10.7_styled-components@5.3.5
+      cross-env: 7.0.3
       eslint-config-airbnb: 19.0.4_ii6xg3dnqouui2ayfg7hcp2mha
       eslint-import-resolver-typescript: 3.2.2_gwd37gqv3vjv3xlpl7ju3ag2qu
       eslint-plugin-prettier: 4.2.1_77lhabluskhrl7lb2fnt56ybhi
+      fs: 0.0.1-security
+      https-browserify: 1.0.0
       husky: 8.0.1
       lint-staged: 13.0.3
+      os: 0.1.2
+      os-browserify: 0.3.0
+      path-browserify: 1.0.1
+      react-test-renderer: 18.2.0_react@18.2.0
       stream-browserify: 3.0.0
+      stream-http: 3.2.0
+      tsconfig-paths-webpack-plugin: 3.5.2
+      typescript: 4.7.4
+      url: 0.11.0
+      web-vitals: 2.1.4
+      webpack: 5.73.0
 
   apps/demo:
     specifiers:
@@ -6513,7 +6545,7 @@ packages:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
       '@types/eslint': 8.4.3
-      '@types/estree': 0.0.51
+      '@types/estree': 0.0.52
 
   /@types/eslint/8.4.3:
     resolution: {integrity: sha512-YP1S7YJRMPs+7KZKDb9G63n8YejIwW9BALq7a5j2+H4yl6iOv9CB29edho+cuFRrvmJbbaH2yiVChKLJVysDGw==}

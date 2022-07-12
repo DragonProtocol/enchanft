@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 18:53:48
+ * @LastEditTime: 2022-07-12 17:48:10
  * @Description: file description
  */
 import React from 'react'
@@ -16,17 +16,14 @@ export type ProjectItemDataType = {
   name: string
   image: string
   status: ProjectStatus
-  taskNum: number
   floorPrice: string
-  injectedCoins: string
-  itemsNum: number
+  injectedCoins: number
+  itemTotalNum: number
   mintPrice: string
   mintStartTime: number
-  community: {
-    id: number
-    name: string
-    image: string
-  }
+  publicSaleTime: number
+  publicSalePrice: string
+  communityId: number
   tasks: Array<{
     type: TaskType
     startTime: number
@@ -55,7 +52,7 @@ const TaskTypeLabels = {
 }
 const ProjectItem: React.FC<ProjectItemProps> = ({ data, viewConfig }: ProjectItemProps) => {
   const navigate = useNavigate()
-  const { id, name, image, status, taskNum, floorPrice, itemsNum, mintPrice, community, tasks } = data
+  const { id, name, image, status, floorPrice, itemTotalNum, communityId, tasks, publicSaleTime } = data
   // const {} = {
   //   ...defaultViewConfig,
   //   ...viewConfig,
@@ -69,18 +66,18 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ data, viewConfig }: ProjectIt
       const task = tasks[0]
       const days = task ? Math.floor((task.endTime - Date.now()) / (1000 * 60 * 60 * 24)) : 0
       const taskTypeLabel = TaskTypeLabels[task?.type] || 'Unknown Task Type'
-      projectDescBottomText = `${taskNum} task . ${days} days . ${taskTypeLabel}`
+      projectDescBottomText = `${tasks.length} task . ${days} days . ${taskTypeLabel}`
       break
     case ProjectStatus.LIVE:
-      projectDescBottomText = `items ${itemsNum} . Floor Price ${floorPrice} SOL`
+      projectDescBottomText = `items ${itemTotalNum} . Floor Price ${floorPrice} SOL`
       break
     case ProjectStatus.FUTURE:
       // 预发售日期
-      const mintStartDate = new Date(data.mintStartTime).toLocaleDateString()
-      projectDescBottomText = `items ${itemsNum} . Mint Price ${floorPrice} SOL ${mintStartDate}`
+      const publicMintStartDate = new Date(publicSaleTime).toLocaleDateString()
+      projectDescBottomText = `items ${itemTotalNum} . Mint Price ${floorPrice} SOL ${publicMintStartDate}`
   }
   return (
-    <ProjectItemWrapper onClick={() => navigate(`/community/${community.id}/${id}`)}>
+    <ProjectItemWrapper onClick={() => navigate(`/community/${communityId}/${id}`)}>
       <ProjectImage src={image} />
       <ProjectDescBox>
         <ProjectDescTopBox>

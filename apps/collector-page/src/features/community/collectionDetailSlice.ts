@@ -5,9 +5,12 @@ import {
 } from '../../services/api/community'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { CommunityCollectionResponse } from '../../types/api'
-
-export type CommunityCollectionForEntity = CommunityCollectionResponse | null
+import { Community, CommunityCollectionResponse, CommunityCollectionProjectItem } from '../../types/api'
+export type CommunityBasicInfoForEntity = Community
+export type CommunityCollectionProjectItemForEntity = CommunityCollectionProjectItem
+export type CommunityCollectionForEntity =
+  | (CommunityCollectionResponse & { community: CommunityBasicInfoForEntity })
+  | null
 type CommunityCollectionState = {
   data: CommunityCollectionForEntity
   loadStatus: AsyncRequestStatus
@@ -64,7 +67,9 @@ export const fetchCommunityCollectionDetail = createAsyncThunk<
 export const communityCollectionDetailSlice = createSlice({
   name: 'communityCollectionDetail',
   initialState: initCommunityCollectionState,
-  reducers: {},
+  reducers: {
+    updateOneForProjectTask: (state, action) => {},
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCommunityCollectionDetail.pending, (state, action) => {

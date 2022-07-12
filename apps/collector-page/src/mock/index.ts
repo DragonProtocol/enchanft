@@ -2,14 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 16:58:15
+ * @LastEditTime: 2022-07-12 18:04:47
  * @Description: mock 请求拦截入口
  */
 
-import { ProjectStatus, TaskStatus, TaskType } from '../types/api'
+import { ProjectStatus, RoadmapStatus, TaskStatus, TaskType } from '../types/api'
 import Mock from 'mockjs'
 const task_type = [TaskType.WHITELIST_ORIENTED, TaskType.WHITELIST_LUCK_DRAW]
 const task_status = [TaskStatus.CANDO, TaskStatus.CANNOT, TaskStatus.DONE]
+const roadmap_status = [RoadmapStatus.DONE, RoadmapStatus.UNDO]
 const project_status = [ProjectStatus.ACTIVE, ProjectStatus.LIVE, ProjectStatus.FUTURE]
 const start_tinme = () => new Date().getTime() + Mock.Random.integer(0, 1000 * 60 * 60 * 24)
 const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60 * 24 * 2, 1000 * 60 * 60 * 24 * 10)
@@ -31,7 +32,9 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
     // }
 
     // TODO 上面的方式没有代理成功，这里先手动代理
-    Mock.mock('/task/listForRecommendTasks', 'get', {
+
+    // 任务推荐
+    Mock.mock('/tasks/recommendation', 'get', {
       code: 0,
       msg: 'success',
       'data|10': [
@@ -42,7 +45,6 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
           startTime: start_tinme,
           endTime: end_time,
           winnersNum: 100,
-          'isAccepted|1': false,
           'acceptedStatus|1': task_status,
           project: {
             id: '@increment',
@@ -53,13 +55,20 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
           'actions|10': [
             {
               id: '@increment',
-              name: '@title(3, 5)',
+              name: '@title(3, 15)',
             },
           ],
         },
       ],
     })
-    Mock.mock(/\/project\/listForProject(\\?.*|)/, 'get', {
+    // 接任务
+    Mock.mock(/\/tasks\/(\d*)\/takers/, 'post', {
+      code: 0,
+      msg: 'success',
+      data: 'take task mock data',
+    })
+    // 项目列表
+    Mock.mock(/\/projects(\\?.*|)/, 'get', {
       code: 0,
       msg: 'success',
       'data|10': [
@@ -71,9 +80,12 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
           taskNum: 100,
           floorPrice: '3+1',
           injectedCoins: '',
-          itemsNum: 9999,
+          itemTotalNum: 9999,
           mintPrice: '3+1',
           mintStartTime: start_tinme,
+          publicSaleTime: start_tinme,
+          publicSalePrice: '@integer(1, 100)',
+          communityId: '@increment',
           community: {
             id: '@increment',
             name: '@title(1, 5)',
@@ -86,6 +98,99 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
               endTime: end_time,
             },
           ],
+        },
+      ],
+    })
+    // 社区详情
+    Mock.mock(/\/community\/detail(\\?.*|)/, 'get', {
+      code: 0,
+      msg: 'success',
+      data: {
+        community: {
+          id: '@increment',
+          name: '@title(1, 5)',
+          icon: "@dataImage('160x160', 'Community Image')",
+          description: '@paragraph(10, 30)',
+          communityFollowerNum: '@integer(1, 10000)',
+        },
+        'projects|6': [
+          {
+            id: '@increment',
+            name: '@title(1, 5)',
+            image: "@dataImage('260x200', 'Project Image')",
+            description: '@paragraph(10, 30)',
+            story: '@paragraph(20, 100)',
+            'status|1': project_status,
+            taskNum: 100,
+            floorPrice: '3+1',
+            injectedCoins: '@integer(1, 10)',
+            itemTotalNum: 9999,
+            mintPrice: '3+1',
+            mintMaxToken: '@integer(1, 100)',
+            'taskType|1': task_type,
+            mintStartTime: start_tinme,
+            publicSaleTime: start_tinme,
+            publicSalePrice: '@integer(1, 100)',
+            'teamMembers|10': [
+              {
+                id: '@increment',
+                partner: '@title(1, 5)',
+                role: 'CO-FOUNDER',
+                avatar: "@dataImage('200x200', 'Tema Member Avatar')",
+                description: '@paragraph(10, 50)',
+                projectId: '@increment',
+              },
+            ],
+            'roadmap|10': [
+              {
+                id: '@increment',
+                description: '@title(5, 15)',
+                'status|1': roadmap_status,
+              },
+            ],
+            'tasks|10': [
+              {
+                name: '@title(1, 5)',
+                'type|1': task_type,
+                'acceptedStatus|1': task_status,
+                winnersNum: 100,
+                startTime: start_tinme,
+                endTime: end_time,
+                'actions|10': [
+                  {
+                    id: '@increment',
+                    name: '@title(3, 15)',
+                  },
+                ],
+              },
+            ],
+            'whitelists|10': [
+              {
+                id: '@increment',
+                mintPrice: '3+1',
+                mintStartTime: start_tinme,
+                mintMaxNum: '@integer(1, 100)',
+                totalNum: '@integer(1, 100)',
+                projectId: '@increment',
+                taskId: '@increment',
+              },
+            ],
+          },
+        ],
+      },
+    })
+
+    // 贡献值排名
+    Mock.mock(/\/community\/contributionrank(\\?.*|)/, 'get', {
+      code: 0,
+      msg: 'success',
+      'data|10': [
+        {
+          ranking: '@increment',
+          avatar: "@dataImage('40x40', 'Avatar')",
+          userName: '@title(1, 3)',
+          pubkey: '@uuid',
+          score: '@integer(1, 100)',
         },
       ],
     })

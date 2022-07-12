@@ -1,9 +1,10 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { fetchListForRecommendTasks, TaskItemForDashboardRecommend } from '../../services/api/dashboard'
+import { fetchListForRecommendTasks } from '../../services/api/dashboard'
+import { DashboardTaskItem } from '../../types/api'
 
-export type TaskItemForEntity = TaskItemForDashboardRecommend
+export type TaskItemForEntity = DashboardTaskItem
 type RecommendTasksState = EntityState<TaskItemForEntity> & {
   loadStatus: AsyncRequestStatus
   errorMsg: string
@@ -62,7 +63,12 @@ export const fetchRecommendTasks = createAsyncThunk<
 export const dashboardRecommendTasksSlice = createSlice({
   name: 'dashboardRecommendTasks',
   initialState: RecommendTasksState,
-  reducers: {},
+  reducers: {
+    updateOne: (state, action) => {
+      const one = action.payload
+      dashboardRecommendTasksEntity.upsertOne(state, one)
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchRecommendTasks.pending, (state, action) => {
@@ -98,5 +104,6 @@ export const dashboardRecommendTasksSlice = createSlice({
 export const { selectAll } = dashboardRecommendTasksEntity.getSelectors(
   (state: RootState) => state.dashboardRecommendTasks,
 )
-const { reducer } = dashboardRecommendTasksSlice
+const { actions, reducer } = dashboardRecommendTasksSlice
+export const { updateOne } = actions
 export default reducer

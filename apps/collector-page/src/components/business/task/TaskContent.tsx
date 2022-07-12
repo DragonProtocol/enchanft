@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:39:25
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 12:18:01
+ * @LastEditTime: 2022-07-12 10:32:12
  * @Description:（公开面板上的）任务内容
  */
 import React from 'react'
@@ -84,7 +84,7 @@ const TaskContent: React.FC<TaskContentProps> = ({ data, viewConfig, onTake }: T
         {actions.map((item) => (
           <TaskActionsItem key={item.id}>
             <TaskActionsItemLeft></TaskActionsItemLeft>
-            <span>{item.name}</span>
+            <TaskActionsItemRight>{item.name}</TaskActionsItemRight>
           </TaskActionsItem>
         ))}
       </TaskActionsBox>
@@ -139,6 +139,9 @@ const TaskActionsItemLeft = styled.div`
   height: 12px;
   border-radius: 50%;
   background-color: rgba(21, 21, 21, 100);
+`
+const TaskActionsItemRight = styled.div`
+  flex: 1;
 `
 const TaskTakeBtn = styled(ButtonBase)`
   height: 47px;

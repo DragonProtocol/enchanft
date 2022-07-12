@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 19:53:07
+ * @LastEditTime: 2022-07-12 17:49:20
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -23,10 +23,9 @@ export type Task = {
   name: string
   whitelistTotalNum: string
   type: TaskType
-  project_id: number
+  projectId: number
   startTime: number
   endTime: number
-  actions: Action[]
 }
 
 /** community types */
@@ -39,12 +38,18 @@ export type Community = {
   discord: string
   twitter: string
   communityFollowerNum: number
+  isOpenNotification: boolean
 }
 
 /** roadmap types */
+export enum RoadmapStatus {
+  DONE = 'DONE',
+  UNDO = 'UNDO',
+}
+
 export type Roadmap = {
   id: number
-  status: string
+  status: RoadmapStatus
   description: string
   projectId: number
 }
@@ -82,37 +87,66 @@ export type Project = {
   id: number
   name: string
   description: string
+  story: string
   status: ProjectStatus
   image: string
   communityId: number
-  itemTotalNum: string
-  mintType: string
+  itemTotalNum: number
   mintPrice: string
+  floorPrice: string
   mintStartTime: number
-  whitelistTotalNum: string
+  whitelistTotalNum: number
   publicSaleTime: number
+  publicSalePrice: string
   injectedCoins: number
   discord: string
   twitter: string
 }
 
-/** api response types */
-
-export type CommunityCollectionResponse = {
-  community: Community
-  projects: Array<
-    Project & {
-      tasks: Task[]
-      teamMembers: Team[]
-      roadmap: Roadmap[]
-    }
-  >
-}
-
-export type CommunityContributionRankResponseItem = {
+export type ContributionRank = {
   ranking: number
   avatar: string
   userName: string
   pubkey: string
   score: number
 }
+/** whitelist types */
+export type Whitelist = {
+  id: number
+  mintPrice: string
+  mintStartTime: number
+  mintMaxNum: number
+  totalNum: number
+  projectId: number
+  taskId: number
+}
+
+/** api response types */
+
+export type TaskItem = Task & {
+  winnersNum: number
+  acceptedStatus: TaskStatus
+  actions: Action[]
+}
+
+export type DashboardTaskItem = TaskItem & {
+  project: Project
+}
+
+export type DashboardProjectItem = Project & {
+  community: Community
+  tasks: TaskItem[]
+}
+export type CommunityCollectionProjectItem = Project & {
+  tasks: TaskItem[]
+  teamMembers: Team[]
+  roadmap: Roadmap[]
+  whitelists: Whitelist[]
+}
+
+export type CommunityCollectionResponse = {
+  community: Community
+  projects: CommunityCollectionProjectItem[]
+}
+
+export type CommunityContributionRankResponseItem = ContributionRank

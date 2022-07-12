@@ -1,9 +1,10 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { fetchListForProject, fetchListForProjectParams, ProjectItemForDashboard } from '../../services/api/dashboard'
+import { fetchListForProject, fetchListForProjectParams } from '../../services/api/dashboard'
+import { DashboardProjectItem } from '../../types/api'
 
-export type ProjectItemForEntity = ProjectItemForDashboard
+export type ProjectItemForEntity = DashboardProjectItem
 type ProjectsState = EntityState<ProjectItemForEntity> & {
   loadStatus: AsyncRequestStatus
   errorMsg: string

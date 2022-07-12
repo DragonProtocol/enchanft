@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-06 13:45:43
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 16:48:49
+ * @LastEditTime: 2022-07-12 17:31:21
  * @Description: 公开的推荐项目和任务接口
  */
 import { AxiosPromise } from 'axios'
@@ -10,29 +10,10 @@ import { ProjectFilterStatusType } from '../../components/business/dashboard/Pro
 import { API_BASE_URL } from '../../constants'
 import request from '../../request/axios'
 import { ApiResp } from '../../types'
-import { ProjectStatus, TaskStatus, TaskType } from '../../types/api'
+import { DashboardProjectItem, DashboardTaskItem, ProjectStatus, TaskStatus, TaskType } from '../../types/api'
 
-export type TaskItemForDashboardRecommend = {
-  id: number
-  name: string
-  type: TaskType
-  startTime: number
-  endTime: number
-  winnersNum: number
-  acceptedStatus: TaskStatus
-  project: {
-    id: number
-    name: string
-    image: string
-    status: ProjectStatus
-  }
-  actions: Array<{
-    id: number
-    name: string
-  }>
-}
-export const fetchListForRecommendTasksUrl = '/task/listForRecommendTasks'
-export function fetchListForRecommendTasks(): AxiosPromise<ApiResp<TaskItemForDashboardRecommend[]>> {
+export const fetchListForRecommendTasksUrl = '/tasks/recommendation'
+export function fetchListForRecommendTasks(): AxiosPromise<ApiResp<DashboardTaskItem[]>> {
   return request({
     url: fetchListForRecommendTasksUrl,
     method: 'get',
@@ -42,37 +23,12 @@ export function fetchListForRecommendTasks(): AxiosPromise<ApiResp<TaskItemForDa
   })
 }
 
-export type ProjectItemForDashboard = {
-  id: number
-  name: string
-  image: string
-  status: ProjectStatus
-  taskNum: number
-  floorPrice: string
-  injectedCoins: string
-  itemsNum: number
-  mintPrice: string
-  mintStartTime: number
-  community: {
-    id: number
-    name: string
-    image: string
-  }
-  tasks: Array<{
-    type: TaskType
-    startTime: number
-    endTime: number
-  }>
-}
-
 export type fetchListForProjectParams = {
   status?: ProjectFilterStatusType
-  keyword?: string
+  keywords?: string
 }
-export const fetchListForProjectUrl = '/project/listForProject'
-export function fetchListForProject(
-  params: fetchListForProjectParams,
-): AxiosPromise<ApiResp<ProjectItemForDashboard[]>> {
+export const fetchListForProjectUrl = '/projects'
+export function fetchListForProject(params: fetchListForProjectParams): AxiosPromise<ApiResp<DashboardProjectItem[]>> {
   return request({
     url: fetchListForProjectUrl,
     method: 'get',
