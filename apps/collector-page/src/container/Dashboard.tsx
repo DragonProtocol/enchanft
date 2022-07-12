@@ -61,7 +61,6 @@ const formatStoreDataToComponentDataByProjects = (projects: ProjectItemForEntity
 }
 const Dashboard: React.FC = () => {
   const dispatch = useAppDispatch()
-
   // 获取推荐的任务
   const recommendTasks = useAppSelector(selectAllForRecommendTasks)
   useEffect(() => {

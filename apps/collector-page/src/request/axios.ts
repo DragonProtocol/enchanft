@@ -30,7 +30,8 @@ export const injectStore = (storeInstance: any) => {
 // 跨域请求，允许保存cookie
 // axios.defaults.withCredentials = true
 
-axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '' : API_BASE_URL
+// 由于代理导致前端路由解析不到 先加上`/api` 前缀的接口
+axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '/api' : API_BASE_URL
 
 // 添加请求拦截器
 axios.interceptors.request.use(
