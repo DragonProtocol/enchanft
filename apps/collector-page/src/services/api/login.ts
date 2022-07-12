@@ -36,3 +36,16 @@ export const logout = () => {
     method: 'delete',
   })
 }
+
+// 绑定社交账号
+export function link(params: any) {
+  const data = qs.stringify(params)
+  return request({
+    url: '/users/link',
+    method: 'post',
+    data: data,
+    headers: {
+      needToken: true,
+    },
+  })
+}

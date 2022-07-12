@@ -8,6 +8,7 @@
 import Profile from '../../container/Profile'
 import Dashboard from '../../container/Dashboard'
 import Community from '../../container/Community'
+import CallBack from '../../container/CallBack'
 import React from 'react'
 import { useRoutes } from 'react-router-dom'
 import styled from 'styled-components'
@@ -19,6 +20,7 @@ const Main: React.FC = () => {
     { path: '/', element: <Dashboard /> },
     { path: '/community/:communityId/:projectId', element: <Community /> },
     { path: '/calendar', element: <div>Calendar Page</div> },
+    { path: '/callback', element: <CallBack/> },
     ...permissionRoutes,
     { path: '*', element: <div>404</div> },
   ])
