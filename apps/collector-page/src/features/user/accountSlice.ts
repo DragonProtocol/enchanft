@@ -53,26 +53,30 @@ export const userUpdateProfile = createAsyncThunk(
   },
 )
 
-export const userLink = createAsyncThunk('user/userLink', async ({ code }: { code: string }, thunkAPI) => {
-  const resp = await link({
-    code,
-  })
-  // 暂时未区分账号类型
-  thunkAPI.dispatch(setTwitter(resp.data.twitter))
-  return resp.data
-},{
-  condition: (params, { getState }) => {
-    const state = getState() as RootState
-    const {
-      account: { loadStatus },
-    } = state
-    // 之前的请求正在进行中,则阻止新的请求
-    if (loadStatus === AsyncRequestStatus.PENDING) {
-      return false
-    }
-    return true
+export const userLink = createAsyncThunk(
+  'user/userLink',
+  async ({ code }: { code: string }, thunkAPI) => {
+    const resp = await link({
+      code,
+    })
+    // 暂时未区分账号类型
+    thunkAPI.dispatch(setTwitter(resp.data.twitter))
+    return resp.data
   },
-},)
+  {
+    condition: (params, { getState }) => {
+      const state = getState() as RootState
+      const {
+        account: { loadStatus },
+      } = state
+      // 之前的请求正在进行中,则阻止新的请求
+      if (loadStatus === AsyncRequestStatus.PENDING) {
+        return false
+      }
+      return true
+    },
+  },
+)
 
 export const accountSlice = createSlice({
   name: 'account',

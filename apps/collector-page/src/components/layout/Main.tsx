@@ -20,7 +20,7 @@ const Main: React.FC = () => {
     { path: '/', element: <Dashboard /> },
     { path: '/community/:communityId/:projectId', element: <Community /> },
     { path: '/calendar', element: <div>Calendar Page</div> },
-    { path: '/callback', element: <CallBack/> },
+    { path: '/callback', element: <CallBack /> },
     ...permissionRoutes,
     { path: '*', element: <div>404</div> },
   ])

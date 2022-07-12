@@ -33,9 +33,9 @@ const CallBack: React.FC = (props) => {
 
   const handleOpener = (path = '/') => {
     if (window) {
-      window.close();
+      window.close()
       if (window.opener) {
-        window.opener.location.href = path;
+        window.opener.location.href = path
       }
     }
   }
