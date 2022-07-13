@@ -2,28 +2,43 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-04 10:22:28
- * @Description: 登录相关接口
+ * @LastEditTime: 2022-07-13 11:36:54
+ * @Description: 登录授权相关接口
  */
 
 import qs from 'qs'
-import request from 'request/axios'
+import request from '../../request/axios'
 
 export function login(params: any) {
-  const dataObj = qs.stringify(params)
+  const data = qs.stringify(params)
   return request({
-    url: '/auth/oauth/token',
+    url: '/users/login',
     method: 'post',
-    headers: {
-      isToken: false,
-      'TENANT-ID': 1,
-      Authorization: 'Basic cGlnOnBpZw==',
-    },
-    data: dataObj,
+    data: data,
   })
 }
-export const logout = () =>
-  request({
-    url: '/auth/token/logout',
-    method: 'delete',
+
+export function updateProfile(params: any) {
+  const data = qs.stringify(params)
+  return request({
+    url: '/users/profile',
+    method: 'post',
+    data: data,
+    headers: {
+      needToken: true,
+    },
   })
+}
+
+// 绑定社交账号
+export function link(params: any) {
+  const data = qs.stringify(params)
+  return request({
+    url: '/users/link',
+    method: 'post',
+    data: data,
+    headers: {
+      needToken: true,
+    },
+  })
+}
