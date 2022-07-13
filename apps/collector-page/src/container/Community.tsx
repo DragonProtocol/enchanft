@@ -181,9 +181,12 @@ const Community: React.FC = () => {
     if (!curProjectDetail) return <span>No Project</span>
     return (
       <>
-        <CommunityProjectTabsBox>
-          <CommunityProjectTabs options={communityProjectTabs} value={curProjectId} onChange={setCurProjectId} />
-        </CommunityProjectTabsBox>
+        {communityProjectTabs.length > 1 && (
+          <CommunityProjectTabsBox>
+            <CommunityProjectTabs options={communityProjectTabs} value={curProjectId} onChange={setCurProjectId} />
+          </CommunityProjectTabsBox>
+        )}
+
         <ProjectDetail
           data={curProjectDetail.data}
           viewConfig={curProjectDetail.viewConfig}
