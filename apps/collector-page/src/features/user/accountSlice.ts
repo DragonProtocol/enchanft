@@ -9,6 +9,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
 import { login, updateProfile, link } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
+import { setLoginToken, getLoginToken } from '../../utils/token'
 
 export type AccountState = {
   status: AsyncRequestStatus
@@ -22,7 +23,7 @@ export type AccountState = {
 // 用户账户信息
 const initialState: AccountState = {
   status: AsyncRequestStatus.IDLE,
-  token: '',
+  token: getLoginToken() || '',
   avatar: '',
   name: '',
   twitter: localStorage.getItem('twitter') || '',
@@ -102,6 +103,7 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.PENDING
       })
       .addCase(userLogin.fulfilled, (state, action) => {
+        setLoginToken(action.payload.token)
         state.status = AsyncRequestStatus.FULFILLED
         state.token = action.payload.token
         state.avatar = action.payload.avatar
