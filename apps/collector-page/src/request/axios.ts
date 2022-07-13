@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 16:57:39
+ * @LastEditTime: 2022-07-13 15:22:29
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
@@ -31,16 +31,18 @@ export const injectStore = (storeInstance: any) => {
 // axios.defaults.withCredentials = true
 
 // 由于代理导致前端路由解析不到 先加上`/api` 前缀的接口
-axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '/api' : API_BASE_URL
+axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '' : API_BASE_URL
 
 // 添加请求拦截器
 axios.interceptors.request.use(
   (config: AxiosCustomConfigType) => {
     // 1、凭证
     const { needToken } = config.headers || {}
+    // TODO 这里先默认加Authorization，后续优化
+    if (!config.headers) config.headers = {}
+    config.headers.Authorization = `Bearer `
     if (needToken) {
       const token = config.headers?.token || store.getState().account.token // token从store中获取
-      if (!config.headers) config.headers = {}
       config.headers.Authorization = `Bearer ${token}`
     }
     // 2、get请求，params参数序列化
