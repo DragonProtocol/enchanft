@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-08 19:10:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 19:54:56
+ * @LastEditTime: 2022-07-13 14:24:39
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -14,17 +14,15 @@ import { CommunityCollectionResponse, CommunityContributionRankResponseItem } fr
 export type fetchDetailForCommunityCollectionParams = {
   communityId: number
 }
-export const fetchDetailForCommunityCollectionUrl = '/community/detail'
 export function fetchDetailForCommunityCollection(
   params: fetchDetailForCommunityCollectionParams,
 ): AxiosPromise<ApiResp<CommunityCollectionResponse>> {
   return request({
-    url: fetchDetailForCommunityCollectionUrl,
+    url: `/communities/${params.communityId}`,
     method: 'get',
     headers: {
       needToken: true,
     },
-    params,
   })
 }
 
@@ -32,13 +30,11 @@ export function fetchDetailForCommunityCollection(
 export type fetchListForCommunityContributionRankParams = {
   communityId: number
 }
-export const fetchListForCommunityContributionRankUrl = '/community/contributionrank'
 export function fetchListForCommunityContributionRank(
   params: fetchListForCommunityContributionRankParams,
 ): AxiosPromise<ApiResp<CommunityContributionRankResponseItem[]>> {
   return request({
-    url: fetchListForCommunityContributionRankUrl,
+    url: `/communities/${params.communityId}/contribution-rank`,
     method: 'get',
-    params,
   })
 }

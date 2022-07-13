@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-12 18:04:47
+ * @LastEditTime: 2022-07-13 14:37:50
  * @Description: mock 请求拦截入口
  */
 
@@ -33,8 +33,12 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
 
     // TODO 上面的方式没有代理成功，这里先手动代理
 
+    // 设定响应时间
+    Mock.setup({
+      timeout: 3000,
+    })
     // 任务推荐
-    Mock.mock('/tasks/recommendation', 'get', {
+    Mock.mock(/\/tasks\/recommendation/, 'get', {
       code: 0,
       msg: 'success',
       'data|10': [
@@ -102,7 +106,7 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
       ],
     })
     // 社区详情
-    Mock.mock(/\/community\/detail(\\?.*|)/, 'get', {
+    Mock.mock(/\/communities\/(\d*)(\\?.*|)/, 'get', {
       code: 0,
       msg: 'success',
       data: {
@@ -150,6 +154,7 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
             ],
             'tasks|10': [
               {
+                id: '@increment',
                 name: '@title(1, 5)',
                 'type|1': task_type,
                 'acceptedStatus|1': task_status,
@@ -181,7 +186,7 @@ const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60
     })
 
     // 贡献值排名
-    Mock.mock(/\/community\/contributionrank(\\?.*|)/, 'get', {
+    Mock.mock(/\/communities\/(\d*0)\/contribution-rank(\\?.*|)/, 'get', {
       code: 0,
       msg: 'success',
       'data|10': [

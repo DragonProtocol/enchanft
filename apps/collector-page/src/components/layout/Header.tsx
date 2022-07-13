@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-04 10:33:34
+ * @LastEditTime: 2022-07-13 10:30:53
  * @Description: 站点头部
  */
 import SolanaConnectWalletButton from 'components/business/connect/SolanaConnectWalletButton'
@@ -24,13 +24,13 @@ const Header: React.FC = () => {
   const account = useAppSelector(selectAccount)
   const navs = [
     {
-      name: 'task dashboard',
+      name: 'launchpad',
       link: '/',
     },
-    {
-      name: 'calendar',
-      link: '/calendar',
-    },
+    // {
+    //   name: 'calendar',
+    //   link: '/calendar',
+    // },
     {
       name: 'profile',
       link: '/profile',
@@ -131,7 +131,8 @@ const PcNavList = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 40px;
 `
 const PcNavItem = styled.div<{ isActive: boolean }>`
   height: 100%;

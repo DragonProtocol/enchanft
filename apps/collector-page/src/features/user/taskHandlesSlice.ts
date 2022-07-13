@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-12 18:09:48
+ * @LastEditTime: 2022-07-13 13:38:44
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
@@ -10,6 +10,7 @@ import { takeTask } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { TaskStatus } from '../../types/api'
+import { updateOneForProjectTask } from '../community/collectionDetailSlice'
 import { updateOne as updateOneForDashboardRecommendTasksSlice } from '../dashboard/recommendTasksSlice'
 // 每一种操作单独存储当前的数据状态
 export type TaskHandle<T> = {
@@ -17,7 +18,7 @@ export type TaskHandle<T> = {
   status: AsyncRequestStatus
   errorMsg: string
 }
-type TakeTaskParams = {
+export type TakeTaskParams = {
   id: number
 }
 const initTaskHandlestate = {
@@ -36,7 +37,9 @@ export const take = createAsyncThunk('taskHandles/take', async (params: TakeTask
   try {
     const resp = await takeTask(params)
     if (resp.data.code === 0) {
-      dispatch(updateOneForDashboardRecommendTasksSlice({ id: params.id, acceptedStatus: TaskStatus.DONE }))
+      const updateTask = { id: params.id, acceptedStatus: TaskStatus.DONE }
+      dispatch(updateOneForDashboardRecommendTasksSlice(updateTask))
+      dispatch(updateOneForProjectTask(updateTask))
     } else {
       throw new Error(resp.data.msg)
     }

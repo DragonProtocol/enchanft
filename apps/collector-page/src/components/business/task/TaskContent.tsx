@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:39:25
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-12 10:32:12
+ * @LastEditTime: 2022-07-13 11:15:20
  * @Description:（公开面板上的）任务内容
  */
 import React from 'react'
@@ -90,8 +90,7 @@ const TaskContent: React.FC<TaskContentProps> = ({ data, viewConfig, onTake }: T
       </TaskActionsBox>
       {displayTake && (
         <TaskTakeBtn disabled={disabledTake} onClick={handleTake}>
-          Take the task
-          {loadingTake && 'loading...'}
+          {loadingTake ? 'loading...' : 'Take the task'}
         </TaskTakeBtn>
       )}
       {displayAccept && <TaskAcceptedSeal>accept</TaskAcceptedSeal>}

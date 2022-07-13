@@ -13,7 +13,7 @@ export type CommunityCollectionForEntity =
   | null
 type CommunityCollectionState = {
   data: CommunityCollectionForEntity
-  loadStatus: AsyncRequestStatus
+  status: AsyncRequestStatus
   errorMsg: string
   currentRequestId: string | undefined // 当前正在请求的id(由createAsyncThunk生成的唯一id)
 }
@@ -25,7 +25,7 @@ type FetchDetailResp = {
 // 初始化数据
 const initCommunityCollectionState: CommunityCollectionState = {
   data: null,
-  loadStatus: AsyncRequestStatus.IDLE,
+  status: AsyncRequestStatus.IDLE,
   errorMsg: '',
   currentRequestId: undefined,
 }
@@ -53,10 +53,10 @@ export const fetchCommunityCollectionDetail = createAsyncThunk<
     condition: (params, { getState }) => {
       const state = getState() as RootState
       const {
-        communityCollectionDetail: { loadStatus },
+        communityCollectionDetail: { status },
       } = state
       // 之前的请求正在进行中,则阻止新的请求
-      if (loadStatus === AsyncRequestStatus.PENDING) {
+      if (status === AsyncRequestStatus.PENDING) {
         return false
       }
       return true
@@ -68,13 +68,27 @@ export const communityCollectionDetailSlice = createSlice({
   name: 'communityCollectionDetail',
   initialState: initCommunityCollectionState,
   reducers: {
-    updateOneForProjectTask: (state, action) => {},
+    updateOneForProjectTask: (state, action) => {
+      const one = action.payload
+      if (state.data) {
+        const projects = state.data.projects.map((item) => {
+          const tasks = item.tasks.map((v) => {
+            if (v.id === one.id) {
+              return { ...v, ...one }
+            }
+            return v
+          })
+          return { ...item, tasks }
+        })
+        state.data = { ...state.data, projects }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchCommunityCollectionDetail.pending, (state, action) => {
         console.log('fetchCommunityCollectionDetail.pending', action)
-        state.loadStatus = AsyncRequestStatus.PENDING
+        state.status = AsyncRequestStatus.PENDING
         state.errorMsg = ''
         state.currentRequestId = action.meta.requestId
       })
@@ -82,16 +96,16 @@ export const communityCollectionDetailSlice = createSlice({
         console.log('fetchCommunityCollectionDetail.fulfilled', action)
         const { requestId } = action.meta
         // 前后两次不同的请求，使用最后一次请求返回的数据
-        if (state.currentRequestId !== requestId || state.loadStatus !== AsyncRequestStatus.PENDING) return
-        state.loadStatus = AsyncRequestStatus.FULFILLED
+        if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
+        state.status = AsyncRequestStatus.FULFILLED
         state.data = action.payload.data
       })
       .addCase(fetchCommunityCollectionDetail.rejected, (state, action) => {
         console.log('fetchCommunityCollectionDetail.rejected', action)
         const { requestId } = action.meta
         // 前后两次不同的请求，使用最后一次请求返回的数据
-        if (state.currentRequestId !== requestId || state.loadStatus !== AsyncRequestStatus.PENDING) return
-        state.loadStatus = AsyncRequestStatus.REJECTED
+        if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
+        state.status = AsyncRequestStatus.REJECTED
         state.data = null
         if (action.payload) {
           state.errorMsg = action.payload.errorMsg || ''
@@ -104,4 +118,5 @@ export const communityCollectionDetailSlice = createSlice({
 
 const { actions, reducer } = communityCollectionDetailSlice
 export const selectCommunityCollectionDetail = (state: RootState) => state.communityCollectionDetail
+export const { updateOneForProjectTask } = actions
 export default reducer

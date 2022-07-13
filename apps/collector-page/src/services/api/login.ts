@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-07 10:15:01
+ * @LastEditTime: 2022-07-13 11:36:54
  * @Description: 登录授权相关接口
  */
 
@@ -27,13 +27,6 @@ export function updateProfile(params: any) {
     headers: {
       needToken: true,
     },
-  })
-}
-
-export const logout = () => {
-  request({
-    url: '/logout',
-    method: 'delete',
   })
 }
 

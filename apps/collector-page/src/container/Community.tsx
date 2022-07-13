@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
@@ -22,7 +22,8 @@ import CommunityProjectTabs, {
 } from '../components/business/community/CommunityProjectTabs'
 import ProjectDetail, { ProjectDetailDataViewType } from '../components/business/project/ProjectDetail'
 import CommunityContribution from '../components/business/community/CommunityContribution'
-import { take } from '../features/user/taskHandlesSlice'
+import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
+import { AsyncRequestStatus } from '../types'
 
 // 处理社区基本信息
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
@@ -54,6 +55,7 @@ const formatStoreDataToComponentDataByCommunityProjectTabs = (
 const formatStoreDataToComponentDataByProjectDetail = (
   projects: CommunityCollectionProjectItemForEntity[],
   token: string,
+  takeTaskState: TaskHandle<TakeTaskParams>,
 ): ProjectDetailDataViewType[] => {
   return projects.map((project) => {
     const displayMintInfo = true
@@ -65,8 +67,9 @@ const formatStoreDataToComponentDataByProjectDetail = (
         const displayConnectWalletTip = token ? false : true
         const displayAccept = token && task.acceptedStatus === TaskStatus.DONE ? true : false
         const displayTake = token && task.acceptedStatus === TaskStatus.CANDO ? true : false
-        const disabledTake = token ? false : true
-        const loadingTake = false
+        const loadingTake = takeTaskState.params?.id === task.id && takeTaskState.status === AsyncRequestStatus.PENDING
+        const disabledTake = !token || loadingTake ? true : false
+
         return {
           data: task,
           viewConfig: {
@@ -103,10 +106,10 @@ const formatStoreDataToComponentDataByProjectDetail = (
 const Community: React.FC = () => {
   const { communityId, projectId } = useParams()
   const dispatch = useAppDispatch()
-
+  const { token } = useAppSelector(selectAccount)
   // 获取社区信息
   const collectionDetail = useAppSelector(selectCommunityCollectionDetail)
-  const { data, loadStatus, errorMsg } = collectionDetail
+  const { data, status, errorMsg } = collectionDetail
   useEffect(() => {
     if (communityId) {
       dispatch(
@@ -115,22 +118,32 @@ const Community: React.FC = () => {
         }),
       )
     }
-  }, [communityId])
+  }, [communityId, token])
 
   // 获取社区贡献等级
   const contributionranks = useAppSelector(selectAllForCommunityContributionranks)
+  const fetchContributionranksIntervalRef = useRef<any>(null)
   useEffect(() => {
-    dispatch(
-      fetchCommunityContributionRanks({
-        communityId: Number(communityId),
-      }),
-    )
+    fetchContributionranksIntervalRef.current = setInterval(() => {
+      dispatch(
+        fetchCommunityContributionRanks({
+          communityId: Number(communityId),
+        }),
+      )
+    }, 1000)
+    return () => {
+      clearInterval(fetchContributionranksIntervalRef.current)
+    }
   }, [communityId])
 
   // 接受任务
   const handleTakeTask = (id) => {
+    console.log({ id })
+
     dispatch(take({ id }))
   }
+  // 接任务的状态
+  const { take: takeTaskState } = useAppSelector(selectUserTaskHandlesState)
 
   // 社区展示信息切换
   const CommunityTabOptions = [
@@ -156,13 +169,13 @@ const Community: React.FC = () => {
   }, [projectId, data])
 
   // 展示数据
-  const { token } = useAppSelector(selectAccount)
   if (!data) return null
   const communityBasicInfo = formatStoreDataToComponentDataByCommunityBasicInfo(data.community)
   const communityProjectTabs = formatStoreDataToComponentDataByCommunityProjectTabs(data.projects)
-  const projects = formatStoreDataToComponentDataByProjectDetail(data.projects, token)
+  const projects = formatStoreDataToComponentDataByProjectDetail(data.projects, token, takeTaskState)
 
   const curProjectDetail = projects.find((project) => project.data.id === curProjectId)
+  const loading = status === AsyncRequestStatus.PENDING
 
   const renderCollection = () => {
     if (!curProjectDetail) return <span>No Project</span>
@@ -183,22 +196,28 @@ const Community: React.FC = () => {
     <CommunityWrapper>
       <ScrollBox>
         <MainContentBox>
-          <CommunityBasicInfo data={communityBasicInfo} />
-          <CommunityTabs>
-            {CommunityTabOptions.map((item) => (
-              <CommunityTab
-                key={item.value}
-                onClick={() => setCurCommunityTab(item.value)}
-                isActive={item.value === curCommunityTab}
-              >
-                {item.label}
-              </CommunityTab>
-            ))}
-          </CommunityTabs>
-          <CommunityTabContentBox>
-            {curCommunityTab === 'collection' && renderCollection()}
-            {curCommunityTab === 'contribution' && <CommunityContribution items={contributionranks} />}
-          </CommunityTabContentBox>
+          {loading ? (
+            <CommunityLoading>loading...</CommunityLoading>
+          ) : (
+            <>
+              <CommunityBasicInfo data={communityBasicInfo} />
+              <CommunityTabs>
+                {CommunityTabOptions.map((item) => (
+                  <CommunityTab
+                    key={item.value}
+                    onClick={() => setCurCommunityTab(item.value)}
+                    isActive={item.value === curCommunityTab}
+                  >
+                    {item.label}
+                  </CommunityTab>
+                ))}
+              </CommunityTabs>
+              <CommunityTabContentBox>
+                {curCommunityTab === 'collection' && renderCollection()}
+                {curCommunityTab === 'contribution' && <CommunityContribution items={contributionranks} />}
+              </CommunityTabContentBox>
+            </>
+          )}
         </MainContentBox>
       </ScrollBox>
     </CommunityWrapper>
@@ -235,4 +254,11 @@ const CommunityTabContentBox = styled.div`
 `
 const CommunityProjectTabsBox = styled.div`
   margin-bottom: 40px;
+`
+const CommunityLoading = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-06 15:12:39
+ * @LastEditTime: 2022-07-13 11:48:36
  * @Description: 用户的账户信息
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
@@ -11,7 +11,7 @@ import { login, updateProfile, link } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
 
 export type AccountState = {
-  loadStatus: AsyncRequestStatus
+  status: AsyncRequestStatus
   errorMsg?: string
   token: string
   avatar: string
@@ -21,7 +21,7 @@ export type AccountState = {
 
 // 用户账户信息
 const initialState: AccountState = {
-  loadStatus: AsyncRequestStatus.IDLE,
+  status: AsyncRequestStatus.IDLE,
   token: '',
   avatar: '',
   name: '',
@@ -67,10 +67,10 @@ export const userLink = createAsyncThunk(
     condition: (params, { getState }) => {
       const state = getState() as RootState
       const {
-        account: { loadStatus },
+        account: { status },
       } = state
       // 之前的请求正在进行中,则阻止新的请求
-      if (loadStatus === AsyncRequestStatus.PENDING) {
+      if (status === AsyncRequestStatus.PENDING) {
         return false
       }
       return true
@@ -99,36 +99,36 @@ export const accountSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(userLogin.pending, (state) => {
-        state.loadStatus = AsyncRequestStatus.PENDING
+        state.status = AsyncRequestStatus.PENDING
       })
       .addCase(userLogin.fulfilled, (state, action) => {
-        state.loadStatus = AsyncRequestStatus.FULFILLED
+        state.status = AsyncRequestStatus.FULFILLED
         state.token = action.payload.token
         state.avatar = action.payload.avatar
         state.name = action.payload.name
         state.twitter = action.payload.twitter
       })
       .addCase(userLogin.rejected, (state, action) => {
-        state.loadStatus = AsyncRequestStatus.REJECTED
+        state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
       })
       ///////
       .addCase(userLink.pending, (state) => {
-        state.loadStatus = AsyncRequestStatus.PENDING
+        state.status = AsyncRequestStatus.PENDING
       })
       .addCase(userLink.rejected, (state, action) => {
-        state.loadStatus = AsyncRequestStatus.REJECTED
+        state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
       })
       ///////
       .addCase(userUpdateProfile.pending, (state) => {
-        state.loadStatus = AsyncRequestStatus.PENDING
+        state.status = AsyncRequestStatus.PENDING
       })
       .addCase(userUpdateProfile.fulfilled, (state, action) => {
-        state.loadStatus = AsyncRequestStatus.FULFILLED
+        state.status = AsyncRequestStatus.FULFILLED
       })
       .addCase(userUpdateProfile.rejected, (state, action) => {
-        state.loadStatus = AsyncRequestStatus.REJECTED
+        state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
       })
   },
