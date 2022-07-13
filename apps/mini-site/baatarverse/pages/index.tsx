@@ -16,8 +16,7 @@ export function Index() {
         loop
         autoPlay
         muted={isMute}
-        onTimeUpdate={() => {
-        }}
+        onTimeUpdate={() => {}}
       >
         <source
           src={require('../public/static/preview.mp4')}
@@ -45,8 +44,15 @@ export function Index() {
         {/* <PauseIcon /> */}
 
         <div className="links">
-          <TwitterIcon />
-          <DiscordIcon />
+          <TwitterIcon
+            onClick={() =>
+              window.open('https://twitter.com/mongols_nft', '__blank')
+            }
+          />
+          <DiscordIcon
+          onClick={() =>
+            window.open('https://discord.gg/qsV323Tf6u', '__blank')
+          } />
           <InstagramIcon />
           <OpenSeaIcon />
           <MagicedenIcon />
