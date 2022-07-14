@@ -1,0 +1,300 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-07-13 16:25:36
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-07-14 19:24:05
+ * @Description: file description
+ */
+import React, { useEffect, useRef, useState } from 'react'
+import styled from 'styled-components'
+import { TaskType, UserActionStatus } from '../../../types/api'
+import ButtonBase from '../../common/button/ButtonBase'
+import { TodoTaskActionItemDataType } from './TodoTaskActionItem'
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
+import MoodIcon from '@mui/icons-material/Mood'
+import MoodBadIcon from '@mui/icons-material/MoodBad'
+import TodoTaskActionList from './TodoTaskActionList'
+export enum TodoTaskCompleteStatus {
+  TODO = 'todo',
+  IN_PRGRESS = 'in_progress',
+  COMPLETED = 'completed',
+  WON = 'won',
+  LOST = 'lost',
+  CLOSED = 'closed',
+}
+export type TodoTaskItemDataType = {
+  id: number
+  name: string
+  whitelistTotalNum: string
+  type: TaskType
+  projectId: number
+  projectImage: string
+  startTime: number
+  endTime: number
+  actions: TodoTaskActionItemDataType[]
+  mintUrl: string
+  mintStartTime: number
+  completeStatus: TodoTaskCompleteStatus
+}
+
+export type TodoTaskItemViewConfigType = {
+  displayMint?: boolean
+  disabledMint?: boolean
+  loadingMint?: boolean
+  allowOpenActions?: boolean
+  openActions?: boolean
+}
+
+export type TodoTaskItemDataViewType = {
+  data: TodoTaskItemDataType
+  viewConfig?: TodoTaskItemViewConfigType
+}
+
+export type TodoTaskItemHandlesType = {
+  onMint?: (task: TodoTaskItemDataType) => void
+}
+
+export type TodoTaskItemProps = TodoTaskItemDataViewType & TodoTaskItemHandlesType
+
+const defaultViewConfig: TodoTaskItemViewConfigType = {
+  displayMint: false,
+  disabledMint: false,
+  loadingMint: false,
+  allowOpenActions: false,
+  openActions: false,
+}
+const TodoTaskCompleteStatusView = {
+  [TodoTaskCompleteStatus.COMPLETED]: {
+    icon: <ThumbUpAltIcon fontSize="small" />,
+    text: 'Completed',
+  },
+  [TodoTaskCompleteStatus.WON]: {
+    icon: <MoodIcon fontSize="small" />,
+    text: 'Congratulations!',
+  },
+  [TodoTaskCompleteStatus.LOST]: {
+    icon: <MoodBadIcon fontSize="small" />,
+    text: 'Sorry',
+  },
+  [TodoTaskCompleteStatus.CLOSED]: {
+    icon: <MoodBadIcon fontSize="small" />,
+    text: 'Sorry',
+  },
+}
+
+const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint }: TodoTaskItemProps) => {
+  const {
+    name,
+    whitelistTotalNum,
+    type,
+    projectId,
+    projectImage,
+    startTime,
+    endTime,
+    actions,
+    mintUrl,
+    mintStartTime,
+    completeStatus,
+  } = data
+  const { disabledMint, displayMint, loadingMint, allowOpenActions, openActions } = {
+    ...defaultViewConfig,
+    ...viewConfig,
+  }
+
+  // 根据任务完成状态视图
+  const renderTaskCompleteStatusContent = () => {
+    switch (completeStatus) {
+      case TodoTaskCompleteStatus.TODO:
+      case TodoTaskCompleteStatus.IN_PRGRESS:
+        // 计算任务剩余天数
+        const remainDays = Math.ceil((endTime - Date.now()) / (1000 * 60 * 60 * 24))
+        // 计算所有action，和正在进行的action数量
+        const allActionNum = actions.length
+        const inProgressActionNum = actions.filter((action) => action.status === UserActionStatus.DOING).length
+        return (
+          <TaskProgressBox>
+            <ExcessTime>{remainDays} days left</ExcessTime>
+            <CompleteNum>
+              ({inProgressActionNum}/{allActionNum})
+            </CompleteNum>
+          </TaskProgressBox>
+        )
+      case TodoTaskCompleteStatus.COMPLETED:
+      case TodoTaskCompleteStatus.WON:
+      case TodoTaskCompleteStatus.LOST:
+      case TodoTaskCompleteStatus.CLOSED:
+        return (
+          <CompleteStatus>
+            <CompleteStatusIcon>{TodoTaskCompleteStatusView[completeStatus].icon}</CompleteStatusIcon>
+            <CompleteStatusText>{TodoTaskCompleteStatusView[completeStatus].text}</CompleteStatusText>
+          </CompleteStatus>
+        )
+      default:
+        return null
+    }
+  }
+
+  // mint倒计时
+  const [mintStartTimeCountdown, setMintStartTimeCountdown] = useState({
+    distance: 0,
+    day: 0,
+    hour: 0,
+    minute: 0,
+    second: 0,
+  })
+  const mintStartTimeCountdownIntervalRef = useRef<any>(null)
+  useEffect(() => {
+    if (!displayMint) {
+      if (mintStartTimeCountdownIntervalRef.current) {
+        clearInterval(mintStartTimeCountdownIntervalRef.current)
+      }
+      return
+    }
+    mintStartTimeCountdownIntervalRef.current = setInterval(() => {
+      const distance = mintStartTime - Date.now()
+      const distanceDay = Math.floor(distance / (1000 * 60 * 60 * 24))
+      const distanceHour = Math.floor((distance / (1000 * 60 * 60)) % 24)
+      const distanceMinute = Math.floor((distance / (1000 * 60)) % 60)
+      const distanceSecond = Math.floor((distance / 1000) % 60)
+      setMintStartTimeCountdown({
+        distance: distance,
+        day: distanceDay,
+        hour: distanceHour,
+        minute: distanceMinute,
+        second: distanceSecond,
+      })
+    }, 1000)
+    return () => {
+      clearInterval(mintStartTimeCountdownIntervalRef.current)
+    }
+  }, [mintStartTime, displayMint])
+
+  // mint按钮显示文本
+  let mintStartTimeCountdownText = 'MINT'
+  if (displayMint) {
+    if (loadingMint) {
+      mintStartTimeCountdownText = 'Loading...'
+    } else if (mintStartTimeCountdown.distance > 0) {
+      mintStartTimeCountdownText = 'You can mint in'
+      if (mintStartTimeCountdown.day > 0) {
+        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.day}d`
+      }
+      if (mintStartTimeCountdown.hour > 0 || mintStartTimeCountdown.day > 0) {
+        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.hour}h`
+      }
+      if (mintStartTimeCountdown.minute > 0 || mintStartTimeCountdown.hour > 0 || mintStartTimeCountdown.day > 0) {
+        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.minute}m`
+      }
+      if (
+        mintStartTimeCountdown.second > 0 ||
+        mintStartTimeCountdown.minute > 0 ||
+        mintStartTimeCountdown.hour > 0 ||
+        mintStartTimeCountdown.day > 0
+      ) {
+        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.second}s`
+      }
+    }
+  }
+  // mint 按钮状态
+  const isDisabledMint = disabledMint || mintStartTimeCountdown.distance > 0
+  // mint按钮点击事件
+  const onMintClick = () => {
+    // if (onMint) {
+    //   onMint(data)
+    // }
+    window.open(mintUrl, '_blank', 'noopener,noreferrer')
+  }
+
+  // 是否展开action
+  const isOpenActionsDefault = allowOpenActions && openActions ? true : false
+  const [isOpenActions, setIsOpenActions] = useState(isOpenActionsDefault)
+  const onTaskClick = () => {
+    if (allowOpenActions) {
+      setIsOpenActions(!isOpenActions)
+    }
+  }
+  return (
+    <TodoTaskItemWrapper>
+      <TaskBasicInfoBox isAllowClick={allowOpenActions} onClick={onTaskClick}>
+        <TaskBasicInfoLeftImg src={projectImage} />
+        <TaskBasicInfoRightBox>
+          <TaskName>{name}</TaskName>
+          {renderTaskCompleteStatusContent()}
+        </TaskBasicInfoRightBox>
+      </TaskBasicInfoBox>
+      {displayMint && (
+        <MintBtn disabled={isDisabledMint} onClick={onMintClick}>
+          {mintStartTimeCountdownText}
+        </MintBtn>
+      )}
+      {isOpenActions && (
+        <TaskActionsBox>
+          <TodoTaskActionList items={actions}></TodoTaskActionList>
+        </TaskActionsBox>
+      )}
+    </TodoTaskItemWrapper>
+  )
+}
+export default TodoTaskItem
+const TodoTaskItemWrapper = styled.div`
+  width: 100%;
+  border: 1px solid rgba(16, 16, 16, 100);
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 100);
+  padding: 10px 15px;
+  box-sizing: border-box;
+`
+const TaskBasicInfoBox = styled.div<{ isAllowClick?: Boolean }>`
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  ${(props) => props.isAllowClick && `cursor: pointer;`}
+`
+const TaskBasicInfoLeftImg = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 4px;
+`
+const TaskBasicInfoRightBox = styled.div`
+  flex: 1;
+`
+const TaskName = styled.div`
+  color: rgba(16, 16, 16, 100);
+  font-size: 14px;
+`
+const TaskProgressBox = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3px;
+  color: rgba(16, 16, 16, 100);
+  font-size: 12px;
+`
+const ExcessTime = styled.div``
+const CompleteNum = styled.div``
+const CompleteStatus = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgba(16, 16, 16, 100);
+  font-size: 12px;
+`
+const CompleteStatusIcon = styled.div``
+const CompleteStatusText = styled.div``
+
+const MintBtn = styled(ButtonBase)`
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  background-color: rgba(16, 16, 16, 100);
+  color: rgba(255, 255, 255, 100);
+  font-size: 14px;
+  margin-top: 10px;
+`
+
+const TaskActionsBox = styled.div`
+  border-top: 1px dashed rgba(16, 16, 16, 100);
+  padding-top: 12px;
+  margin-top: 10px;
+`

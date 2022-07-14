@@ -6,7 +6,7 @@
  * @Description: file description
  */
 import { fetchListForProjectUrl, fetchListForRecommendTasksUrl } from '../../services/api/dashboard'
-import { ProjectStatus, TaskStatus, TaskType } from '../../types/api'
+import { ProjectStatus, TaskAcceptedStatus, TaskType } from '../../types/api'
 export default [
   {
     url: '/api/task/listForRecommendTasks',
@@ -23,7 +23,7 @@ export default [
           endTime: '@date(unix)',
           winnersNum: 100,
           'isAccepted|1': false,
-          'acceptedStatus|1': [TaskStatus.CANDO, TaskStatus.CANNOT, TaskStatus.DONE],
+          'acceptedStatus|1': [TaskAcceptedStatus.CANDO, TaskAcceptedStatus.CANNOT, TaskAcceptedStatus.DONE],
           project: {
             id: '@increment',
             name: '@title(3, 5)',

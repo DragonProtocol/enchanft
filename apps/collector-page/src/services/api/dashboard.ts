@@ -10,7 +10,7 @@ import { ProjectFilterStatusType } from '../../components/business/dashboard/Pro
 import { API_BASE_URL } from '../../constants'
 import request from '../../request/axios'
 import { ApiResp } from '../../types'
-import { DashboardProjectItem, DashboardTaskItem, ProjectStatus, TaskStatus, TaskType } from '../../types/api'
+import { DashboardProjectItem, DashboardTaskItem, ProjectStatus, TaskAcceptedStatus, TaskType } from '../../types/api'
 
 export const fetchListForRecommendTasksUrl = '/tasks/recommendation'
 export function fetchListForRecommendTasks(): AxiosPromise<ApiResp<DashboardTaskItem[]>> {
