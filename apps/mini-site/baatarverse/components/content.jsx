@@ -1,14 +1,26 @@
 import { useState } from 'react';
+import Image from 'next/image'
 
 import styled from 'styled-components';
 
-export function Content({ title, content }) {
+export function Content({ title, content,renderContent }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <Warpper>
       <header>{title}</header>
-      <content dangerouslySetInnerHTML={{ __html: content }} />
+      <content >
+      <div className='img-box'>
+      <Image
+          src={'/static/images/basic.jpg'}
+          width={800}
+          height={364}
+          layout='responsive'
+          objectFit='cover'
+          alt={'basic'}
+        /></div>
+        {renderContent ? renderContent() :<div dangerouslySetInnerHTML={{ __html: content }}/>}
+      </content>
     </Warpper>
   );
 }
@@ -22,7 +34,8 @@ const Warpper = styled.div`
   color: white;
   text-align: center;
   word-break: break-all;
-  padding-bottom: 50px;
+  padding-bottom: 30px;
+  white-space: pre-wrap;
   header {
     border-bottom: 1px solid white;
     padding: 20px;
@@ -45,6 +58,10 @@ const Warpper = styled.div`
     display: block;
     white-space: pre-wrap;
     text-align: left;
+    .img-box{
+  margin-bottom: 30px;
+
+    }
     .question {
       font-family: 'Avenir';
       font-style: normal;

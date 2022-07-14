@@ -2,57 +2,75 @@ import { useState } from 'react';
 import Router from 'next/router';
 import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
+import Image from 'next/image';
 
 export function Header() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <Wrapper>
-      {isExpanded ? (
-        <CloseIcon onClick={() => setIsExpanded(false)} data-tip="close" />
-      ) : (
-        <MoreIcon
-          onClick={() => {
-            setIsExpanded(true);
-          }}
-          data-tip="more"
+      <div
+        className="logo"
+        onClick={() => {
+          Router.push('/');
+        }}
+      >
+        <Image
+          src={'/static/images/logo.png'}
+          width={92}
+          height={52}
+          layout="fixed"
+          // objectFit='cover'
+          alt={'basic'}
         />
-      )}
-      {isExpanded ? (
-        <>
-          <AboutIcon
-            data-tip="about"
+      </div>
+      <div className='icon-box'>
+        {isExpanded ? (
+          <CloseIcon onClick={() => setIsExpanded(false)} data-tip="close" />
+        ) : (
+          <MoreIcon
             onClick={() => {
-              Router.push('/about');
+              setIsExpanded(true);
             }}
+            data-tip="more"
           />
-          <RoadmapIcon
-            data-tip="roadmap"
-            onClick={() => {
-              Router.push('/roadmap');
-            }}
-          />
-          <StoryIcon
-            data-tip="story"
-            onClick={() => {
-              Router.push('/story');
-            }}
-          />
-          <TeamIcon
-            data-tip="team"
-            onClick={() => {
-              Router.push('/team');
-            }}
-          />
-          <FAQIcon
-            data-tip="FAQ"
-            onClick={() => {
-              Router.push('/faq');
-            }}
-          />
-          <ReactTooltip place="bottom" />
-        </>
-      ) : null}
+        )}
+        {isExpanded ? (
+          <>
+            <AboutIcon
+              data-tip="about"
+              onClick={() => {
+                Router.push('/about');
+              }}
+            />
+            <RoadmapIcon
+              data-tip="roadmap"
+              onClick={() => {
+                Router.push('/roadmap');
+              }}
+            />
+            <StoryIcon
+              data-tip="story"
+              onClick={() => {
+                Router.push('/story');
+              }}
+            />
+            <TeamIcon
+              data-tip="team"
+              onClick={() => {
+                Router.push('/team');
+              }}
+            />
+            <FAQIcon
+              data-tip="FAQ"
+              onClick={() => {
+                Router.push('/faq');
+              }}
+            />
+            <ReactTooltip place="bottom" />
+          </>
+        ) : null}
+      </div>
     </Wrapper>
   );
 }
@@ -61,17 +79,30 @@ export default Header;
 
 const Wrapper = styled.header`
   position: absolute;
-  right: 30px;
-  top: 30px;
+  /* right: 30px; */
+  width: 100%;
+  right: 0;
+  /* top: 30px; */
   z-index: 1;
   color: #561c30;
   font-size: 12px;
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right: 30px;
+  .logo{
+    margin-top: 10px;
+  }
+  .icon-box{
+    display: flex;
+  /* justify-content: space-between; */
   align-items: center;
   & > * {
     margin-right: 14px;
     cursor: pointer;
   }
+  }
+  
   svg {
     color: white;
   }
@@ -145,15 +176,17 @@ const RoadmapIcon = (props) => (
 const StoryIcon = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    xmlnsXlink="http://www.w3.org/1999/xlink"
+    aria-hidden="true"
+    role="img"
     width="20"
     height="20"
+    preserveAspectRatio="xMidYMid meet"
     viewBox="0 0 24 24"
     {...props}
   >
     <path
       fill="currentColor"
-      d="M2 21V6h6V2h8v4h6v6.275q-.875-.625-1.9-.95Q19.075 11 18 11q-2.9 0-4.95 2.05Q11 15.1 11 18q0 .775.163 1.538q.162.762.512 1.462Zm8-15h4V4h-4Zm8 17q-2.075 0-3.537-1.462Q13 20.075 13 18q0-2.075 1.463-3.538Q15.925 13 18 13t3.538 1.462Q23 15.925 23 18q0 2.075-1.462 3.538Q20.075 23 18 23Zm1.65-2.65l.7-.7l-1.85-1.85V15h-1v3.2Z"
+      d="M6 22q-.825 0-1.412-.587Q4 20.825 4 20V4q0-.825.588-1.413Q5.175 2 6 2h12q.825 0 1.413.587Q20 3.175 20 4v16q0 .825-.587 1.413Q18.825 22 18 22Zm5.75-11.45L13.5 9.5l1.75 1.05q.25.15.5 0t.25-.425V4h-5v6.125q0 .275.25.425q.25.15.5 0Z"
     ></path>
   </svg>
 );
