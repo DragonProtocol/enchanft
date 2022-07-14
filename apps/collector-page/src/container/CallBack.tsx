@@ -21,8 +21,7 @@ const CallBack: React.FC = (props) => {
   const { twitter, errorMsg } = useAppSelector(selectAccount)
 
   useEffect(() => {
-    // const urlParams = new URLSearchParams(location.search)
-    const code = location.hash.match(/code=([^&]*)/)?.[1]
+    [feat] update hash params fun    const code = location.hash.match(/code=([^&]*)/)?.[1]
     // const urlParams = new URLSearchParams(location.search)
     // const code = urlParams.get('code')
     if (code) {
