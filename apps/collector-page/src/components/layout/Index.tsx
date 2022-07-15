@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 10:07:41
+ * @LastEditTime: 2022-07-14 15:32:55
  * @Description: 站点布局入口
  */
 import React from 'react'
@@ -10,6 +10,7 @@ import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from 'constants/index'
 import Main from './Main'
 import Header from './Header'
+import TodoFloatingWindow from './TodoFloatingWindow'
 
 const Layout: React.FC = () => (
   <LayoutWrapper>
@@ -21,6 +22,7 @@ const Layout: React.FC = () => (
     <MainBox>
       <MainInner>
         <Main />
+        <TodoFloatingWindow />
       </MainInner>
     </MainBox>
   </LayoutWrapper>
@@ -55,6 +57,7 @@ const MainBox = styled.div`
   z-index: 1;
 `
 const MainInner = styled.div`
+  position: relative;
   width: 100%;
   height: 100%;
   background: #fff;

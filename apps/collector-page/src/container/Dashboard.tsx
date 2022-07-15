@@ -29,7 +29,7 @@ import ProjectFilter, {
   ProjectStatusOther,
 } from '../components/business/dashboard/ProjectFilter'
 import MainContentBox from '../components/layout/MainContentBox'
-import { TaskStatus } from '../types/api'
+import { TaskAcceptedStatus } from '../types/api'
 import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
 import { AsyncRequestStatus } from '../types'
 const formatStoreDataToComponentDataByRecommendTasks = (
@@ -39,8 +39,8 @@ const formatStoreDataToComponentDataByRecommendTasks = (
 ): TaskSwiperItemsType => {
   return tasks.map((task) => {
     const displayConnectWalletTip = token ? false : true
-    const displayAccept = token && task.acceptedStatus === TaskStatus.DONE ? true : false
-    const displayTake = token && task.acceptedStatus === TaskStatus.CANDO ? true : false
+    const displayAccept = token && task.acceptedStatus === TaskAcceptedStatus.DONE ? true : false
+    const displayTake = token && task.acceptedStatus === TaskAcceptedStatus.CANDO ? true : false
     const loadingTake = takeTaskState.params?.id === task.id && takeTaskState.status === AsyncRequestStatus.PENDING
     const disabledTake = !token || loadingTake ? true : false
     return {

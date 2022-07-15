@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-12 17:49:20
+ * @LastEditTime: 2022-07-14 11:16:18
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -12,7 +12,7 @@ export enum TaskType {
   WHITELIST_ORIENTED = 'WHITELIST_ORIENTED',
   WHITELIST_LUCK_DRAW = 'WHITELIST_LUCK_DRAW',
 }
-export enum TaskStatus {
+export enum TaskAcceptedStatus {
   CANDO = 'CANDO',
   CANNOT = 'CANNOT',
   DONE = 'DONE',
@@ -55,14 +55,28 @@ export type Roadmap = {
 }
 
 /** action types */
+export enum ActionType {
+  FOLLOW_TWITTER = 'FOLLOW_TWITTER',
+  INVITE_PEOPLE = 'INVITE_PEOPLE',
+  JOIN_DISCORD = 'JOIN_DISCORD',
+  RETWEET = 'RETWEET',
+  LIKE_TWEET = 'LIKE_TWEET',
+  UPDATE_BIO_OF_TWITTER = 'UPDATE_BIO_OF_TWITTER',
+  MEET_CONTRIBUTION_SCORE = 'MET_CONTRIBUTION_SCORE',
+  TURN_ON_NOTIFICATION = 'TURN_ON_NOTIFICATION',
+}
+export type ActionData = {
+  url: string
+}
 export type Action = {
   id: number
   name: string
   orderNum: number
-  type: string
+  type: ActionType
   taskId: number
   projectId: number
   communityId: number
+  data: ActionData
 }
 
 /** team types */
@@ -125,7 +139,7 @@ export type Whitelist = {
 
 export type TaskItem = Task & {
   winnersNum: number
-  acceptedStatus: TaskStatus
+  acceptedStatus: TaskAcceptedStatus
   actions: Action[]
 }
 
@@ -150,3 +164,30 @@ export type CommunityCollectionResponse = {
 }
 
 export type CommunityContributionRankResponseItem = ContributionRank
+
+export enum UserActionStatus {
+  TODO = 'TODO',
+  DOING = 'DOING',
+  DONE = 'DONE',
+}
+
+export type TodoTaskActionItem = Action & {
+  status: UserActionStatus
+  progress: string
+}
+
+export type TodoTaskItem = Task & {
+  actions: TodoTaskActionItem[]
+  mintUrl: string
+  mintStartTime: number
+  projectImage: string
+}
+
+export type TodoTaskResponse = {
+  todoList: TodoTaskItem[]
+  inProgressList: TodoTaskItem[]
+  completedList: TodoTaskItem[]
+  wonList: TodoTaskItem[]
+  lostList: TodoTaskItem[]
+  closedList: TodoTaskItem[]
+}

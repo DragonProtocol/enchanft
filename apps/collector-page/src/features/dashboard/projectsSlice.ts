@@ -20,7 +20,7 @@ export const dashboardProjectsEntity = createEntityAdapter<ProjectItemForEntity>
   selectId: (item) => item.id,
 })
 // 初始化列表信息
-const ProjectsState: ProjectsState = dashboardProjectsEntity.getInitialState({
+const projectsState: ProjectsState = dashboardProjectsEntity.getInitialState({
   status: AsyncRequestStatus.IDLE,
   errorMsg: '',
   currentRequestId: undefined,
@@ -62,7 +62,7 @@ export const fetchProjects = createAsyncThunk<
 
 export const dashboardProjectsSlice = createSlice({
   name: 'dashboardProjects',
-  initialState: ProjectsState,
+  initialState: projectsState,
   reducers: {},
   extraReducers: (builder) => {
     builder

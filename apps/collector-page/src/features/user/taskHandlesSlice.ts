@@ -9,7 +9,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { takeTask } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { TaskStatus } from '../../types/api'
+import { TaskAcceptedStatus } from '../../types/api'
 import { updateOneForProjectTask } from '../community/collectionDetailSlice'
 import { updateOne as updateOneForDashboardRecommendTasksSlice } from '../dashboard/recommendTasksSlice'
 // 每一种操作单独存储当前的数据状态
@@ -37,7 +37,7 @@ export const take = createAsyncThunk('taskHandles/take', async (params: TakeTask
   try {
     const resp = await takeTask(params)
     if (resp.data.code === 0) {
-      const updateTask = { id: params.id, acceptedStatus: TaskStatus.DONE }
+      const updateTask = { id: params.id, acceptedStatus: TaskAcceptedStatus.DONE }
       dispatch(updateOneForDashboardRecommendTasksSlice(updateTask))
       dispatch(updateOneForProjectTask(updateTask))
     } else {

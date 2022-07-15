@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
-import { TaskStatus } from '../types/api'
+import { TaskAcceptedStatus } from '../types/api'
 import { useParams } from 'react-router-dom'
 import {
   CommunityBasicInfoForEntity,
@@ -65,8 +65,8 @@ const formatStoreDataToComponentDataByProjectDetail = (
       displayTasks &&
       project.tasks.map((task) => {
         const displayConnectWalletTip = token ? false : true
-        const displayAccept = token && task.acceptedStatus === TaskStatus.DONE ? true : false
-        const displayTake = token && task.acceptedStatus === TaskStatus.CANDO ? true : false
+        const displayAccept = token && task.acceptedStatus === TaskAcceptedStatus.DONE ? true : false
+        const displayTake = token && task.acceptedStatus === TaskAcceptedStatus.CANDO ? true : false
         const loadingTake = takeTaskState.params?.id === task.id && takeTaskState.status === AsyncRequestStatus.PENDING
         const disabledTake = !token || loadingTake ? true : false
 
@@ -130,7 +130,7 @@ const Community: React.FC = () => {
           communityId: Number(communityId),
         }),
       )
-    }, 1000)
+    }, 60 * 1000)
     return () => {
       clearInterval(fetchContributionranksIntervalRef.current)
     }
