@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-12 17:48:10
+ * @LastEditTime: 2022-07-15 18:26:40
  * @Description: file description
  */
 import React from 'react'
@@ -69,15 +69,15 @@ const ProjectItem: React.FC<ProjectItemProps> = ({ data, viewConfig }: ProjectIt
       projectDescBottomText = `${tasks.length} task . ${days} days . ${taskTypeLabel}`
       break
     case ProjectStatus.LIVE:
-      projectDescBottomText = `items ${itemTotalNum} . Floor Price ${floorPrice} SOL`
+      projectDescBottomText = `items ${itemTotalNum} . Floor Price ${floorPrice}`
       break
     case ProjectStatus.FUTURE:
       // 预发售日期
       const publicMintStartDate = new Date(publicSaleTime).toLocaleDateString()
-      projectDescBottomText = `items ${itemTotalNum} . Mint Price ${floorPrice} SOL ${publicMintStartDate}`
+      projectDescBottomText = `items ${itemTotalNum} . Mint Price ${floorPrice} ${publicMintStartDate}`
   }
   return (
-    <ProjectItemWrapper onClick={() => navigate(`/community/${communityId}/${id}`)}>
+    <ProjectItemWrapper onClick={() => navigate(`/community/${communityId}?projectId=${id}`)}>
       <ProjectImage src={image} />
       <ProjectDescBox>
         <ProjectDescTopBox>

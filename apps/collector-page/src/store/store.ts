@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 17:20:28
+ * @LastEditTime: 2022-07-15 16:05:17
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
@@ -16,6 +16,8 @@ import communityCollectionDetailReducer from '../features/community/collectionDe
 import communityContributionRanksReducer from '../features/community/contributionRanksSlice'
 import userTaskHandlesReducer from '../features/user/taskHandlesSlice'
 import userTodoTasksReducer from '../features/user/todoTasksSlice'
+import userFollowedCommunitiesReducer from '../features/user/followedCommunitiesSlice'
+import userCommunityHandlesReducer from '../features/user/communityHandlesSlice'
 
 export const store = configureStore({
   reducer: {
@@ -28,6 +30,8 @@ export const store = configureStore({
     communityContributionRanks: communityContributionRanksReducer,
     userTaskHandles: userTaskHandlesReducer,
     userTodoTasks: userTodoTasksReducer,
+    userFollowedCommunities: userFollowedCommunitiesReducer,
+    userCommunityHandles: userCommunityHandlesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

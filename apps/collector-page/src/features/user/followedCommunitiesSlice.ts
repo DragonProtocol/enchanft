@@ -1,40 +1,40 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { fetchListForUserTodoTask, fetchOneForUserTodoTask, FetchOneParams } from '../../services/api/task'
+import { fetchListForUserFollowedCommunity } from '../../services/api/community'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { TodoTaskItem, TodoTaskResponse } from '../../types/api'
+import { FollowedCommunityItem } from '../../types/api'
 
-export type TodoTaskItemForEntity = TodoTaskItem
-type TodoTaskListState = EntityState<TodoTaskItemForEntity> & {
+export type FollowedCommunitityForEntity = FollowedCommunityItem
+type FollowedCommunityListState = EntityState<FollowedCommunitityForEntity> & {
   status: AsyncRequestStatus
   errorMsg: string
   currentRequestId: string | undefined // 当前正在请求的id(由createAsyncThunk生成的唯一id)
 }
-export const todoTasksEntity = createEntityAdapter<TodoTaskItemForEntity>({
+export const todoTasksEntity = createEntityAdapter<FollowedCommunitityForEntity>({
   selectId: (item) => item.id,
 })
-const initTodoTasksState: TodoTaskListState = todoTasksEntity.getInitialState({
+const initTodoTasksState: FollowedCommunityListState = todoTasksEntity.getInitialState({
   status: AsyncRequestStatus.IDLE,
   errorMsg: '',
   currentRequestId: undefined,
 })
 
-type FetchTodoTasksResp = {
-  data: TodoTaskItem[]
+type FetchFollowedCommunitiesResp = {
+  data: FollowedCommunityItem[]
   errorMsg?: string
 }
 
-export const fetchTodoTasks = createAsyncThunk<
-  FetchTodoTasksResp,
+export const fetchFollowedCommunities = createAsyncThunk<
+  FetchFollowedCommunitiesResp,
   undefined,
   {
-    rejectValue: FetchTodoTasksResp
+    rejectValue: FetchFollowedCommunitiesResp
   }
 >(
-  'user/todoTasks/fetchList',
+  'user/followedCommunities/fetchList',
   async (params, { rejectWithValue }) => {
     try {
-      const resp = await fetchListForUserTodoTask()
+      const resp = await fetchListForUserFollowedCommunity()
       return { data: resp.data.data || [] }
     } catch (error: any) {
       if (!error.response) {
@@ -50,7 +50,7 @@ export const fetchTodoTasks = createAsyncThunk<
     condition: (params, { getState }) => {
       const state = getState() as RootState
       const {
-        userTodoTasks: { status },
+        userFollowedCommunities: { status },
       } = state
       // 之前的请求正在进行中,则阻止新的请求
       if (status === AsyncRequestStatus.PENDING) {
@@ -61,31 +61,18 @@ export const fetchTodoTasks = createAsyncThunk<
   },
 )
 
-type refreshOneResp = void
-
-export const refreshTodoTasksOne = createAsyncThunk<
-  refreshOneResp,
-  FetchOneParams,
-  {
-    rejectValue: refreshOneResp
-  }
->('user/todoTasks/refreshOne', async (params, { dispatch }) => {
-  try {
-    const resp = await fetchOneForUserTodoTask(params)
-    if (resp.data.code === 0 && resp.data.data) {
-      dispatch(updateOne(resp.data.data))
-    }
-  } catch (error: any) {
-    if (!error.response) {
-      throw error
-    }
-  }
-})
-
-export const userTodoTasksSlice = createSlice({
-  name: 'UserTodoTasks',
+export const userFollowedCommunitiesSlice = createSlice({
+  name: 'userFollowedCommunities',
   initialState: initTodoTasksState,
   reducers: {
+    addOne: (state, action) => {
+      const one = action.payload
+      todoTasksEntity.addOne(state, one)
+    },
+    removeOne: (state, action) => {
+      const id = action.payload
+      todoTasksEntity.removeOne(state, id)
+    },
     updateOne: (state, action) => {
       const one = action.payload
       todoTasksEntity.upsertOne(state, one)
@@ -93,14 +80,14 @@ export const userTodoTasksSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTodoTasks.pending, (state, action) => {
-        console.log('fetchTodoTasks.pending', action)
+      .addCase(fetchFollowedCommunities.pending, (state, action) => {
+        console.log('fetchFollowedCommunities.pending', action)
         state.status = AsyncRequestStatus.PENDING
         state.errorMsg = ''
         state.currentRequestId = action.meta.requestId
       })
-      .addCase(fetchTodoTasks.fulfilled, (state, action) => {
-        console.log('fetchTodoTasks.fulfilled', action)
+      .addCase(fetchFollowedCommunities.fulfilled, (state, action) => {
+        console.log('fetchFollowedCommunities.fulfilled', action)
         const { requestId } = action.meta
         // 前后两次不同的请求，使用最后一次请求返回的数据
         if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
@@ -108,8 +95,8 @@ export const userTodoTasksSlice = createSlice({
         // set data
         todoTasksEntity.setAll(state, action.payload.data)
       })
-      .addCase(fetchTodoTasks.rejected, (state, action) => {
-        console.log('fetchTodoTasks.rejected', action)
+      .addCase(fetchFollowedCommunities.rejected, (state, action) => {
+        console.log('fetchFollowedCommunities.rejected', action)
         const { requestId } = action.meta
         // 前后两次不同的请求，使用最后一次请求返回的数据
         if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
@@ -124,8 +111,10 @@ export const userTodoTasksSlice = createSlice({
   },
 })
 
-const { actions, reducer } = userTodoTasksSlice
-export const selectUserTodoTasksState = (state: RootState) => state.userTodoTasks
-export const { selectAll } = todoTasksEntity.getSelectors((state: RootState) => state.userTodoTasks)
-export const { updateOne } = actions
+const { actions, reducer } = userFollowedCommunitiesSlice
+export const selectuserFollowedCommunitiesState = (state: RootState) => state.userFollowedCommunities
+export const { selectAll, selectIds } = todoTasksEntity.getSelectors(
+  (state: RootState) => state.userFollowedCommunities,
+)
+export const { addOne, removeOne, updateOne } = actions
 export default reducer

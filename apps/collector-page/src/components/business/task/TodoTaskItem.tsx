@@ -2,26 +2,19 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-14 19:24:05
+ * @LastEditTime: 2022-07-15 14:40:25
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { TaskType, UserActionStatus } from '../../../types/api'
+import { TaskTodoCompleteStatus, TaskType, UserActionStatus } from '../../../types/api'
 import ButtonBase from '../../common/button/ButtonBase'
 import { TodoTaskActionItemDataType } from './TodoTaskActionItem'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import MoodIcon from '@mui/icons-material/Mood'
 import MoodBadIcon from '@mui/icons-material/MoodBad'
 import TodoTaskActionList from './TodoTaskActionList'
-export enum TodoTaskCompleteStatus {
-  TODO = 'todo',
-  IN_PRGRESS = 'in_progress',
-  COMPLETED = 'completed',
-  WON = 'won',
-  LOST = 'lost',
-  CLOSED = 'closed',
-}
+
 export type TodoTaskItemDataType = {
   id: number
   name: string
@@ -34,7 +27,7 @@ export type TodoTaskItemDataType = {
   actions: TodoTaskActionItemDataType[]
   mintUrl: string
   mintStartTime: number
-  completeStatus: TodoTaskCompleteStatus
+  status: TaskTodoCompleteStatus
 }
 
 export type TodoTaskItemViewConfigType = {
@@ -52,6 +45,7 @@ export type TodoTaskItemDataViewType = {
 
 export type TodoTaskItemHandlesType = {
   onMint?: (task: TodoTaskItemDataType) => void
+  onRefreshTask?: (task: TodoTaskItemDataType) => void
 }
 
 export type TodoTaskItemProps = TodoTaskItemDataViewType & TodoTaskItemHandlesType
@@ -63,26 +57,26 @@ const defaultViewConfig: TodoTaskItemViewConfigType = {
   allowOpenActions: false,
   openActions: false,
 }
-const TodoTaskCompleteStatusView = {
-  [TodoTaskCompleteStatus.COMPLETED]: {
+const TaskTodoCompleteStatusView = {
+  [TaskTodoCompleteStatus.COMPLETED]: {
     icon: <ThumbUpAltIcon fontSize="small" />,
     text: 'Completed',
   },
-  [TodoTaskCompleteStatus.WON]: {
+  [TaskTodoCompleteStatus.WON]: {
     icon: <MoodIcon fontSize="small" />,
     text: 'Congratulations!',
   },
-  [TodoTaskCompleteStatus.LOST]: {
+  [TaskTodoCompleteStatus.LOST]: {
     icon: <MoodBadIcon fontSize="small" />,
     text: 'Sorry',
   },
-  [TodoTaskCompleteStatus.CLOSED]: {
+  [TaskTodoCompleteStatus.CLOSED]: {
     icon: <MoodBadIcon fontSize="small" />,
     text: 'Sorry',
   },
 }
 
-const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint }: TodoTaskItemProps) => {
+const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint, onRefreshTask }: TodoTaskItemProps) => {
   const {
     name,
     whitelistTotalNum,
@@ -94,7 +88,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint }:
     actions,
     mintUrl,
     mintStartTime,
-    completeStatus,
+    status,
   } = data
   const { disabledMint, displayMint, loadingMint, allowOpenActions, openActions } = {
     ...defaultViewConfig,
@@ -102,10 +96,10 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint }:
   }
 
   // 根据任务完成状态视图
-  const renderTaskCompleteStatusContent = () => {
-    switch (completeStatus) {
-      case TodoTaskCompleteStatus.TODO:
-      case TodoTaskCompleteStatus.IN_PRGRESS:
+  const renderTaskStatusContent = () => {
+    switch (status) {
+      case TaskTodoCompleteStatus.TODO:
+      case TaskTodoCompleteStatus.IN_PRGRESS:
         // 计算任务剩余天数
         const remainDays = Math.ceil((endTime - Date.now()) / (1000 * 60 * 60 * 24))
         // 计算所有action，和正在进行的action数量
@@ -119,15 +113,15 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint }:
             </CompleteNum>
           </TaskProgressBox>
         )
-      case TodoTaskCompleteStatus.COMPLETED:
-      case TodoTaskCompleteStatus.WON:
-      case TodoTaskCompleteStatus.LOST:
-      case TodoTaskCompleteStatus.CLOSED:
+      case TaskTodoCompleteStatus.COMPLETED:
+      case TaskTodoCompleteStatus.WON:
+      case TaskTodoCompleteStatus.LOST:
+      case TaskTodoCompleteStatus.CLOSED:
         return (
-          <CompleteStatus>
-            <CompleteStatusIcon>{TodoTaskCompleteStatusView[completeStatus].icon}</CompleteStatusIcon>
-            <CompleteStatusText>{TodoTaskCompleteStatusView[completeStatus].text}</CompleteStatusText>
-          </CompleteStatus>
+          <Status>
+            <StatusIcon>{TaskTodoCompleteStatusView[status].icon}</StatusIcon>
+            <StatusText>{TaskTodoCompleteStatusView[status].text}</StatusText>
+          </Status>
         )
       default:
         return null
@@ -209,6 +203,9 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint }:
   const isOpenActionsDefault = allowOpenActions && openActions ? true : false
   const [isOpenActions, setIsOpenActions] = useState(isOpenActionsDefault)
   const onTaskClick = () => {
+    if (onRefreshTask) {
+      onRefreshTask(data)
+    }
     if (allowOpenActions) {
       setIsOpenActions(!isOpenActions)
     }
@@ -219,7 +216,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint }:
         <TaskBasicInfoLeftImg src={projectImage} />
         <TaskBasicInfoRightBox>
           <TaskName>{name}</TaskName>
-          {renderTaskCompleteStatusContent()}
+          {renderTaskStatusContent()}
         </TaskBasicInfoRightBox>
       </TaskBasicInfoBox>
       {displayMint && (
@@ -273,15 +270,15 @@ const TaskProgressBox = styled.div`
 `
 const ExcessTime = styled.div``
 const CompleteNum = styled.div``
-const CompleteStatus = styled.div`
+const Status = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
   color: rgba(16, 16, 16, 100);
   font-size: 12px;
 `
-const CompleteStatusIcon = styled.div``
-const CompleteStatusText = styled.div``
+const StatusIcon = styled.div``
+const StatusText = styled.div``
 
 const MintBtn = styled(ButtonBase)`
   width: 100%;
