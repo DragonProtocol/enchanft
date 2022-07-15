@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-14 17:22:56
+ * @LastEditTime: 2022-07-15 14:40:11
  * @Description: file description
  */
 import React from 'react'
@@ -28,6 +28,7 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
   loadingMsg = 'loading...',
   emptyMsg,
   onMint,
+  onRefreshTask,
 }: TodoTaskListProps) => {
   const itemLen = items.length
   return (
@@ -39,7 +40,15 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
         {loading ? (
           <TodoTaskListLoading>{loadingMsg}</TodoTaskListLoading>
         ) : (
-          items.map((item) => <TodoTaskItem data={item.data} viewConfig={item.viewConfig} onMint={onMint} />)
+          items.map((item) => (
+            <TodoTaskItem
+              key={item.data.id}
+              data={item.data}
+              viewConfig={item.viewConfig}
+              onMint={onMint}
+              onRefreshTask={onRefreshTask}
+            />
+          ))
         )}
 
         {!loading && itemLen === 0 && emptyMsg && <TodoTaskListEmpty>{emptyMsg}</TodoTaskListEmpty>}

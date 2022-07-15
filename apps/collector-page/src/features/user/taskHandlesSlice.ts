@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 13:38:44
+ * @LastEditTime: 2022-07-15 15:17:29
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
@@ -33,7 +33,7 @@ export type UserTaskHandlesStateType = {
 const initUserTaskHandlesState: UserTaskHandlesStateType = {
   take: initTaskHandlestate,
 }
-export const take = createAsyncThunk('taskHandles/take', async (params: TakeTaskParams, { dispatch }) => {
+export const take = createAsyncThunk('user/taskHandles/take', async (params: TakeTaskParams, { dispatch }) => {
   try {
     const resp = await takeTask(params)
     if (resp.data.code === 0) {

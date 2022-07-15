@@ -10,6 +10,7 @@ import ProjectTeamMemberList from './ProjectTeamMemberList'
 import WebsiteIcon from '../../imgs/internet.svg'
 import TwitterIcon from '../../imgs/twitter.svg'
 import ProjectTaskSwiper from './ProjectTaskSwiper'
+import RichTextBox from '../../common/text/RichTextBox'
 export type ProjectDetailDataType = {
   id: number
   name: string
@@ -96,7 +97,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
   const [activeTab, setActiveTab] = useState(ProjectInfoTabs[0])
   const whitelist = whitelists[0]
   const whitelistStartTimeText = new Date(whitelist.mintStartTime).toLocaleString()
-  const whitelistMintPriceText = whitelist.mintPrice ? `Mint Price ${whitelist.mintPrice} SOL` : 'Free Mint'
+  const whitelistMintPriceText = whitelist.mintPrice ? `Mint Price ${whitelist.mintPrice}` : 'Free Mint'
   const publicSaleTimeText = new Date(publicSaleTime).toLocaleString()
   return (
     <ProjectDetailWrapper>
@@ -115,9 +116,11 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
               <ProjectLinkIcon src={TwitterIcon} />
             </a>
             <ProjectItems>items {itemTotalNum || 0}</ProjectItems>
-            <ProjectEnchaNftSol>EnchaNFT {injectedCoins} SOL</ProjectEnchaNftSol>
+            <ProjectEnchaNftSol>EnchaNFT {injectedCoins}</ProjectEnchaNftSol>
           </PorjectLinksBox>
-          <ProjectDescription number={3}>{description}</ProjectDescription>
+          <ProjectDescription>
+            <RichTextBox>{description}</RichTextBox>
+          </ProjectDescription>
           {displayMintInfo && (
             <>
               <ProjectMintInfoBox>
@@ -136,7 +139,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
                   <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
                   <ProjectMintInfoStartsInTime>{publicSaleTimeText}</ProjectMintInfoStartsInTime>
                 </ProjectMintInfoTopBox>
-                <PrjectMintInfoBottomBox>MAX 1 Tokens . Mint Price {publicSalePrice} SOL</PrjectMintInfoBottomBox>
+                <PrjectMintInfoBottomBox>MAX 1 Tokens . Mint Price {publicSalePrice}</PrjectMintInfoBottomBox>
               </ProjectMintInfoBox>
             </>
           )}
@@ -231,10 +234,12 @@ const ProjectEnchaNftSol = styled.div`
   font-size: 14px;
   text-align: center;
 `
-const ProjectDescription = styled(OverflowEllipsisBox)`
+const ProjectDescription = styled(RichTextBox)`
+  flex: 1;
   color: rgba(16, 16, 16, 100);
   font-size: 16px;
-  line-height: 2;
+  overflow-y: auto;
+  ${ScrollBarCss}
 `
 const ProjectMintInfoBox = styled.div`
   display: flex;
@@ -242,7 +247,7 @@ const ProjectMintInfoBox = styled.div`
   gap: 10px;
   border-top: dashed 1px rgba(16, 16, 16, 100);
   padding-top: 20px;
-  margin-top: 20px;
+  margin-top: 10px;
 `
 const ProjectMintInfoTopBox = styled.div`
   display: flex;
@@ -295,7 +300,7 @@ const ProjectStoryLabel = styled.div`
   font-weight: bold;
   margin-bottom: 20px;
 `
-const ProjectStoryContent = styled.div`
+const ProjectStoryContent = styled(RichTextBox)`
   color: rgba(16, 16, 16, 100);
   font-size: 16px;
 `

@@ -2,11 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-14 11:16:18
+ * @LastEditTime: 2022-07-15 16:11:39
  * @Description: api 接口相关的数据类型定义
  */
 
-/* task types */
+/** entity data types ================= */
+
+/* task */
 
 export enum TaskType {
   WHITELIST_ORIENTED = 'WHITELIST_ORIENTED',
@@ -17,7 +19,14 @@ export enum TaskAcceptedStatus {
   CANNOT = 'CANNOT',
   DONE = 'DONE',
 }
-
+export enum TaskTodoCompleteStatus {
+  TODO = 'TODO',
+  IN_PRGRESS = 'IN_PRGRESS',
+  COMPLETED = 'COMPLETED',
+  WON = 'WON',
+  LOST = 'LOST',
+  CLOSED = 'CLOSED',
+}
 export type Task = {
   id: number
   name: string
@@ -28,7 +37,7 @@ export type Task = {
   endTime: number
 }
 
-/** community types */
+/** community */
 export type Community = {
   id: number
   name: string
@@ -37,11 +46,9 @@ export type Community = {
   description: string
   discord: string
   twitter: string
-  communityFollowerNum: number
-  isOpenNotification: boolean
 }
 
-/** roadmap types */
+/** roadmap */
 export enum RoadmapStatus {
   DONE = 'DONE',
   UNDO = 'UNDO',
@@ -54,7 +61,7 @@ export type Roadmap = {
   projectId: number
 }
 
-/** action types */
+/** action */
 export enum ActionType {
   FOLLOW_TWITTER = 'FOLLOW_TWITTER',
   INVITE_PEOPLE = 'INVITE_PEOPLE',
@@ -79,7 +86,7 @@ export type Action = {
   data: ActionData
 }
 
-/** team types */
+/** team */
 export type Team = {
   id: number
   partner: string
@@ -89,7 +96,7 @@ export type Team = {
   projectId: number
 }
 
-/* project types */
+/* project */
 
 export enum ProjectStatus {
   ACTIVE = 'ACTIVE',
@@ -124,7 +131,8 @@ export type ContributionRank = {
   pubkey: string
   score: number
 }
-/** whitelist types */
+
+/** whitelist */
 export type Whitelist = {
   id: number
   mintPrice: string
@@ -135,7 +143,9 @@ export type Whitelist = {
   taskId: number
 }
 
-/** api response types */
+/** api response types ============================ */
+
+/** dashboard api */
 
 export type TaskItem = Task & {
   winnersNum: number
@@ -151,6 +161,11 @@ export type DashboardProjectItem = Project & {
   community: Community
   tasks: TaskItem[]
 }
+
+/** community api */
+export type CommunityDetailBasicInfo = Community & {
+  communityFollowerNum: number
+}
 export type CommunityCollectionProjectItem = Project & {
   tasks: TaskItem[]
   teamMembers: Team[]
@@ -159,12 +174,19 @@ export type CommunityCollectionProjectItem = Project & {
 }
 
 export type CommunityCollectionResponse = {
-  community: Community
+  community: CommunityDetailBasicInfo
   projects: CommunityCollectionProjectItem[]
 }
 
 export type CommunityContributionRankResponseItem = ContributionRank
 
+export type FollowedCommunityItem = Community & {
+  memberNums: number
+  contribution: number
+}
+export type FollowedCommunitiesResponse = FollowedCommunityItem[]
+
+/** todo task api */
 export enum UserActionStatus {
   TODO = 'TODO',
   DOING = 'DOING',
@@ -181,13 +203,7 @@ export type TodoTaskItem = Task & {
   mintUrl: string
   mintStartTime: number
   projectImage: string
+  status: TaskTodoCompleteStatus
 }
 
-export type TodoTaskResponse = {
-  todoList: TodoTaskItem[]
-  inProgressList: TodoTaskItem[]
-  completedList: TodoTaskItem[]
-  wonList: TodoTaskItem[]
-  lostList: TodoTaskItem[]
-  closedList: TodoTaskItem[]
-}
+export type TodoTaskResponse = TodoTaskItem[]
