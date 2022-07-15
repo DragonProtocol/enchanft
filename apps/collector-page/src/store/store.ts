@@ -15,6 +15,7 @@ import dashboardProjectsReducer from '../features/dashboard/projectsSlice'
 import communityCollectionDetailReducer from '../features/community/collectionDetailSlice'
 import communityContributionRanksReducer from '../features/community/contributionRanksSlice'
 import userTaskHandlesReducer from '../features/user/taskHandlesSlice'
+import creatorReducer from '../features/creator'
 
 export const store = configureStore({
   reducer: {
@@ -26,6 +27,7 @@ export const store = configureStore({
     communityCollectionDetail: communityCollectionDetailReducer,
     communityContributionRanks: communityContributionRanksReducer,
     userTaskHandles: userTaskHandlesReducer,
+    creator: creatorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
