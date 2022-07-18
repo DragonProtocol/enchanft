@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:33:18
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-11 18:18:16
+ * @LastEditTime: 2022-07-15 11:04:14
  * @Description: file description
  */
 import React from 'react'
@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { ProjectStatus, TaskType } from '../../../types/api'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
+import RichTextBox from '../../common/text/RichTextBox'
 
 export type ProjectTeamMemberItemDataType = {
   id: number
@@ -50,7 +51,9 @@ const ProjectTeamMemberItem: React.FC<ProjectTeamMemberItemProps> = ({
           <TeamMemberRole>{role}</TeamMemberRole>
         </TeamMemberInfoBox>
       </TeamMemberTopBox>
-      <TeamMemberDescription number={3}>{description}</TeamMemberDescription>
+      <TeamMemberDescription>
+        <RichTextBox>{description}</RichTextBox>
+      </TeamMemberDescription>
     </ProjectTeamMemberItemWrapper>
   )
 }
@@ -83,7 +86,8 @@ const TeamMemberRole = styled.div`
   font-size: 16px;
   font-weight: bold;
 `
-const TeamMemberDescription = styled(OverflowEllipsisBox)`
+const TeamMemberDescription = styled.div`
+  width: 100%;
   color: rgba(16, 16, 16, 100);
   font-size: 16px;
   margin-top: 25px;

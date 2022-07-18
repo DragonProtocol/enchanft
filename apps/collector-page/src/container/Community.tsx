@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
-import { TaskStatus } from '../types/api'
+import { TaskAcceptedStatus } from '../types/api'
 import { useParams } from 'react-router-dom'
 import {
   CommunityBasicInfoForEntity,
@@ -24,10 +24,14 @@ import ProjectDetail, { ProjectDetailDataViewType } from '../components/business
 import CommunityContribution from '../components/business/community/CommunityContribution'
 import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
 import { AsyncRequestStatus } from '../types'
+import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
+import { follow } from '../features/user/communityHandlesSlice'
+import useUrlQuery from '../hooks/useUrlQuery'
 
 // 处理社区基本信息
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
   data: CommunityBasicInfoForEntity,
+  followedCommunityIds: Array<number | string>,
 ): CommunityBasicInfoDataType => {
   return {
     id: data.id,
@@ -35,7 +39,7 @@ const formatStoreDataToComponentDataByCommunityBasicInfo = (
     icon: data.icon,
     description: data.description,
     communityFollowerNum: data.communityFollowerNum,
-    isOpenNotification: data.isOpenNotification,
+    isFollowed: followedCommunityIds.includes(data.id),
   }
 }
 
@@ -65,8 +69,8 @@ const formatStoreDataToComponentDataByProjectDetail = (
       displayTasks &&
       project.tasks.map((task) => {
         const displayConnectWalletTip = token ? false : true
-        const displayAccept = token && task.acceptedStatus === TaskStatus.DONE ? true : false
-        const displayTake = token && task.acceptedStatus === TaskStatus.CANDO ? true : false
+        const displayAccept = token && task.acceptedStatus === TaskAcceptedStatus.DONE ? true : false
+        const displayTake = token && task.acceptedStatus === TaskAcceptedStatus.CANDO ? true : false
         const loadingTake = takeTaskState.params?.id === task.id && takeTaskState.status === AsyncRequestStatus.PENDING
         const disabledTake = !token || loadingTake ? true : false
 
@@ -104,7 +108,10 @@ const formatStoreDataToComponentDataByProjectDetail = (
 }
 
 const Community: React.FC = () => {
-  const { communityId, projectId } = useParams()
+  const { communityId } = useParams()
+  const query = useUrlQuery()
+  const projectId = query.get('projectId')
+
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
   // 获取社区信息
@@ -130,16 +137,23 @@ const Community: React.FC = () => {
           communityId: Number(communityId),
         }),
       )
-    }, 1000)
+    }, 60 * 1000)
     return () => {
       clearInterval(fetchContributionranksIntervalRef.current)
     }
   }, [communityId])
 
+  // 获取用户关注的社区ID集合
+  const userFollowedCommunityIds = useAppSelector(selectIdsByUserFollowedCommunity)
+
+  // 关注社区
+  const handleFollowChange = (isFollowed: boolean) => {
+    if (communityId && isFollowed) {
+      dispatch(follow({ id: Number(communityId) }))
+    }
+  }
   // 接受任务
   const handleTakeTask = (id) => {
-    console.log({ id })
-
     dispatch(take({ id }))
   }
   // 接任务的状态
@@ -170,8 +184,14 @@ const Community: React.FC = () => {
 
   // 展示数据
   if (!data) return null
-  const communityBasicInfo = formatStoreDataToComponentDataByCommunityBasicInfo(data.community)
+  const communityBasicInfoData = formatStoreDataToComponentDataByCommunityBasicInfo(
+    data.community,
+    userFollowedCommunityIds,
+  )
+  const communityBasicInfoViewConfig = { displayFollow: token ? true : false }
+
   const communityProjectTabs = formatStoreDataToComponentDataByCommunityProjectTabs(data.projects)
+
   const projects = formatStoreDataToComponentDataByProjectDetail(data.projects, token, takeTaskState)
 
   const curProjectDetail = projects.find((project) => project.data.id === curProjectId)
@@ -203,7 +223,11 @@ const Community: React.FC = () => {
             <CommunityLoading>loading...</CommunityLoading>
           ) : (
             <>
-              <CommunityBasicInfo data={communityBasicInfo} />
+              <CommunityBasicInfo
+                data={communityBasicInfoData}
+                viewConfig={communityBasicInfoViewConfig}
+                onFollowChange={handleFollowChange}
+              />
               <CommunityTabs>
                 {CommunityTabOptions.map((item) => (
                   <CommunityTab

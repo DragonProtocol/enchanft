@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 10:11:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-11 17:55:56
+ * @LastEditTime: 2022-07-15 16:36:57
  * @Description: file description
  */
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
@@ -17,11 +17,11 @@ export type CommunityBasicInfoDataType = {
   icon: string
   description: string
   communityFollowerNum: number
-  isOpenNotification: boolean
+  isFollowed: boolean
 }
 
 export type CommunityBasicInfoViewConfigType = {
-  displayNotification?: boolean
+  displayFollow?: boolean
 }
 
 export type CommunityBasicInfoDataViewType = {
@@ -29,26 +29,26 @@ export type CommunityBasicInfoDataViewType = {
   viewConfig?: CommunityBasicInfoViewConfigType
 }
 export type CommunityBasicInfoHandlesType = {
-  onNotificationChange?: (open: boolean) => void
+  onFollowChange?: (open: boolean) => void
 }
 export type CommunityBasicInfoProps = CommunityBasicInfoDataViewType & CommunityBasicInfoHandlesType
 
 const defaultViewConfig = {
-  displayNotification: true,
+  displayFollow: true,
 }
 const CommunityBasicInfo: React.FC<CommunityBasicInfoProps> = ({
   data,
   viewConfig,
-  onNotificationChange,
+  onFollowChange,
 }: CommunityBasicInfoProps) => {
-  const { name, icon, description, communityFollowerNum, isOpenNotification } = data
-  const { displayNotification } = {
+  const { name, icon, description, communityFollowerNum, isFollowed } = data
+  const { displayFollow } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
-  const handleStatusChange = () => {
-    if (onNotificationChange) {
-      onNotificationChange(!isOpenNotification)
+  const handleFollowChange = () => {
+    if (onFollowChange) {
+      onFollowChange(!isFollowed)
     }
   }
   return (
@@ -60,10 +60,10 @@ const CommunityBasicInfo: React.FC<CommunityBasicInfoProps> = ({
         <CommunityDescription number={3}>{description}</CommunityDescription>
       </CommunityCenter>
       <CommunityRightBox>
-        {displayNotification && (
-          <CommunityNotification isOpen={isOpenNotification} onClick={handleStatusChange}>
-            {isOpenNotification ? <NotificationsActiveIcon /> : <NotificationsNoneIcon />}
-          </CommunityNotification>
+        {displayFollow && (
+          <CommunityFollow isOpen={isFollowed} onClick={handleFollowChange}>
+            {isFollowed ? 'Joined' : 'Join'}
+          </CommunityFollow>
         )}
       </CommunityRightBox>
     </CommunityBasicInfoWrapper>
@@ -105,14 +105,13 @@ const CommunityDescription = styled(OverflowEllipsisBox)`
   overflow: hidden;
 `
 const CommunityRightBox = styled.div`
-  width: 40px;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 `
-const CommunityNotification = styled.div<{ isOpen: boolean }>`
-  width: 40px;
+const CommunityFollow = styled.div<{ isOpen: boolean }>`
+  width: 80px;
   height: 40px;
   border: 1px solid rgba(51, 53, 54, 100);
   box-sizing: border-box;

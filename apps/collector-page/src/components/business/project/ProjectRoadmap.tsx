@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:45:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-12 12:11:42
+ * @LastEditTime: 2022-07-14 11:29:56
  * @Description: file description
  */
 import React from 'react'
@@ -27,8 +27,8 @@ const ProjectRoadmap: React.FC<ProjectRoadmapProps> = ({ items }) => {
   return (
     <ProjectRoadmapWrapper>
       <Timeline position="alternate">
-        {items.map((item) => (
-          <TimelineItem>
+        {items.map((item, index) => (
+          <TimelineItem key={index}>
             <TimelineSeparator>
               <TimelineDot
                 variant={item.status === RoadmapStatus.DONE ? 'filled' : 'outlined'}

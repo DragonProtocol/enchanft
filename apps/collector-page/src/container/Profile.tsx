@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 16:34:23
+ * @LastEditTime: 2022-07-15 18:08:50
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -30,7 +30,26 @@ import EditIcon from '@mui/icons-material/Edit'
 
 import { selectAccount, userUpdateProfile, setTwitter, setDiscord } from '../features/user/accountSlice'
 import MainContentBox from '../components/layout/MainContentBox'
+import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
+import {
+  FollowedCommunitityForEntity,
+  selectAll as selectAllForFollowedCommunity,
+  selectuserFollowedCommunitiesState,
+} from '../features/user/followedCommunitiesSlice'
+import { AsyncRequestStatus } from '../types'
 
+const formatStoreDataToComponentDataByFollowedCommunities = (
+  communities: FollowedCommunitityForEntity[],
+): CommunityListItemsType => {
+  return communities.map((community) => {
+    return {
+      data: { ...community, isFollowed: true },
+      viewConfig: {
+        displayFollow: true,
+      },
+    }
+  })
+}
 const Profile: React.FC = () => {
   const wallet = useWallet()
   const walletRef = useRef('')
@@ -81,6 +100,27 @@ const Profile: React.FC = () => {
       window.removeEventListener('message', (e) => {})
     }
   }, [])
+  // profile展示信息切换
+  const ProfileTabOptions = [
+    {
+      label: 'My Communities',
+      value: 'myCommunities',
+    },
+    {
+      label: 'My Whitelist',
+      value: 'myWhitelist',
+    },
+    {
+      label: 'My Enchanfted',
+      value: 'myEnchanfted',
+    },
+  ]
+  const [curProfileTab, setCurProfileTab] = useState(ProfileTabOptions[0].value)
+  // 获取我的社区列表
+  const followedCommunities = useAppSelector(selectAllForFollowedCommunity)
+  const { status: followedCommunitiesStatus } = useAppSelector(selectuserFollowedCommunitiesState)
+  const loadingFollowedCommunities = followedCommunitiesStatus === AsyncRequestStatus.PENDING
+  const followedCommunityItems = formatStoreDataToComponentDataByFollowedCommunities(followedCommunities)
 
   return (
     <>
@@ -196,6 +236,24 @@ const Profile: React.FC = () => {
             </div>
           </div>
           <Divider />
+          <ProfileTabsBox>
+            <ProfileTabs>
+              {ProfileTabOptions.map((item) => (
+                <ProfileTab
+                  key={item.value}
+                  onClick={() => setCurProfileTab(item.value)}
+                  isActive={item.value === curProfileTab}
+                >
+                  {item.label}
+                </ProfileTab>
+              ))}
+            </ProfileTabs>
+            <ProfileTabContentBox>
+              {curProfileTab === 'myCommunities' && (
+                <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
+              )}
+            </ProfileTabContentBox>
+          </ProfileTabsBox>
         </ProfileWrapper>
         <Dialog open={openDialog} fullWidth={true} maxWidth={'lg'}>
           <DialogContent>
@@ -319,4 +377,24 @@ const ProfileWrapper = styled.div`
   hr {
     margin: 10px 0;
   }
+`
+const ProfileTabsBox = styled.div``
+const ProfileTabs = styled.div`
+  display: flex;
+  margin-top: 40px;
+  gap: 60px;
+`
+const ProfileTab = styled.div<{ isActive?: boolean }>`
+  cursor: pointer;
+  border-bottom: ${(props) => (props.isActive ? '3px solid rgba(21, 21, 21, 100);' : 'none')};
+  color: ${(props) => (props.isActive ? '#000' : '#999')};
+  padding-bottom: 10px;
+  text-align: center;
+  font-weight: bold;
+`
+const ProfileTabContentBox = styled.div`
+  margin-top: 40px;
+`
+const ProfileProjectTabsBox = styled.div`
+  margin-bottom: 40px;
 `
