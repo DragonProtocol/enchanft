@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 16:11:39
+ * @LastEditTime: 2022-07-18 13:18:09
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -64,6 +64,7 @@ export type Roadmap = {
 /** action */
 export enum ActionType {
   FOLLOW_TWITTER = 'FOLLOW_TWITTER',
+  FOLLOW_COMMUNITY = 'FOLLOW_COMMUNITY',
   INVITE_PEOPLE = 'INVITE_PEOPLE',
   JOIN_DISCORD = 'JOIN_DISCORD',
   RETWEET = 'RETWEET',
@@ -189,7 +190,6 @@ export type FollowedCommunitiesResponse = FollowedCommunityItem[]
 /** todo task api */
 export enum UserActionStatus {
   TODO = 'TODO',
-  DOING = 'DOING',
   DONE = 'DONE',
 }
 

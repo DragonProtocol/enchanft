@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-14 17:53:33
+ * @LastEditTime: 2022-07-18 13:22:05
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { ActionData, ActionType, TaskType, UserActionStatus } from '../../../types/api'
+import ActionFollowCommunity from './actions/ActionFollowCommunity'
 import ActionFollowTwitter from './actions/ActionFollowTwitter'
 
 export type TodoTaskActionItemDataType = {
@@ -25,6 +26,7 @@ export type TodoTaskActionItemDataType = {
 
 const ActionComponents = {
   [ActionType.FOLLOW_TWITTER]: ActionFollowTwitter,
+  [ActionType.FOLLOW_COMMUNITY]: ActionFollowCommunity,
 }
 
 export type TodoTaskActionItemProps = {

@@ -2,11 +2,19 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-14 18:51:00
+ * @LastEditTime: 2022-07-18 12:11:36
  * @Description: mock 请求拦截入口
  */
 
-import { ActionType, ProjectStatus, RoadmapStatus, TaskAcceptedStatus, TaskType, UserActionStatus } from '../types/api'
+import {
+  ActionType,
+  ProjectStatus,
+  RoadmapStatus,
+  TaskAcceptedStatus,
+  TaskTodoCompleteStatus,
+  TaskType,
+  UserActionStatus,
+} from '../types/api'
 import Mock from 'mockjs'
 ;(async () => {
   // 只在开发环境，且设定启动mock
@@ -29,6 +37,14 @@ import Mock from 'mockjs'
 
     const task_type = [TaskType.WHITELIST_ORIENTED, TaskType.WHITELIST_LUCK_DRAW]
     const task_status = [TaskAcceptedStatus.CANDO, TaskAcceptedStatus.CANNOT, TaskAcceptedStatus.DONE]
+    const task_todo_status = [
+      TaskTodoCompleteStatus.TODO,
+      TaskTodoCompleteStatus.IN_PRGRESS,
+      TaskTodoCompleteStatus.COMPLETED,
+      TaskTodoCompleteStatus.WON,
+      TaskTodoCompleteStatus.LOST,
+      TaskTodoCompleteStatus.CLOSED,
+    ]
     const roadmap_status = [RoadmapStatus.DONE, RoadmapStatus.UNDO]
     const project_status = [ProjectStatus.ACTIVE, ProjectStatus.LIVE, ProjectStatus.FUTURE]
     const action_type = [ActionType.FOLLOW_TWITTER, ActionType.INVITE_PEOPLE]
@@ -42,45 +58,40 @@ import Mock from 'mockjs'
       timeout: 3000,
     })
     // 用户的任务列表
-    const todoTaskItem = () => {
-      return {
-        id: Mock.Random.increment(),
-        name: Mock.Random.cword(5),
-        whitelistTotalNum: Mock.Random.integer(1, 100),
-        type: task_type[Mock.Random.integer(0, task_type.length - 1)],
-        projectId: Mock.Random.integer(1, 100),
-        startTime: start_tinme(),
-        endTime: end_time(),
-        actions: Array.from(new Array(10)).map(() => ({
-          id: Mock.Random.increment(),
-          name: Mock.Random.cword(5),
-          orderNum: Mock.Random.integer(1, 100),
-          type: action_type[Mock.Random.integer(0, action_type.length - 1)],
-          taskId: Mock.Random.increment(),
-          projectId: Mock.Random.increment(),
-          communityId: Mock.Random.increment(),
-          data: {
-            url: 'https://twitter.com/',
-          },
-          status: user_action_status[Mock.Random.integer(0, user_action_status.length - 1)],
-          progress: '',
-        })),
-        mintUrl: 'https://www.baidu.com/',
-        mintStartTime: range_tinme(),
-        projectImage: Mock.Random.dataImage('40x40', 'project img'),
-      }
-    }
     Mock.mock(/\/tasks\/todo/, 'get', {
       code: 0,
       msg: 'success',
-      data: {
-        'todoList|10': [todoTaskItem],
-        'inProgressList|10': [todoTaskItem],
-        'completedList|10': [todoTaskItem],
-        'wonList|10': [todoTaskItem],
-        'lostList|10': [todoTaskItem],
-        'closedList|10': [todoTaskItem],
-      },
+      'data|10': [
+        {
+          id: '@increment',
+          name: Mock.Random.cword(5),
+          whitelistTotalNum: Mock.Random.integer(1, 100),
+          'type|1': task_type,
+          projectId: '@increment',
+          startTime: start_tinme(),
+          endTime: end_time(),
+          'actions|10': [
+            {
+              id: '@increment',
+              name: Mock.Random.cword(5),
+              orderNum: Mock.Random.integer(1, 100),
+              'type|1': action_type,
+              taskId: '@increment',
+              projectId: '@increment',
+              communityId: '@increment',
+              data: {
+                url: 'https://twitter.com/',
+              },
+              'status|1': user_action_status,
+              progress: '',
+            },
+          ],
+          mintUrl: 'https://www.baidu.com/',
+          mintStartTime: range_tinme(),
+          projectImage: Mock.Random.dataImage('40x40', 'project img'),
+          'status|1': task_todo_status,
+        },
+      ],
     })
     // 任务推荐
     Mock.mock(/\/tasks\/recommendation/, 'get', {

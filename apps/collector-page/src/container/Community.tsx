@@ -5,7 +5,7 @@ import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
 import { TaskAcceptedStatus } from '../types/api'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import {
   CommunityBasicInfoForEntity,
   CommunityCollectionProjectItemForEntity,
@@ -26,7 +26,6 @@ import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '..
 import { AsyncRequestStatus } from '../types'
 import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
 import { follow } from '../features/user/communityHandlesSlice'
-import useUrlQuery from '../hooks/useUrlQuery'
 
 // 处理社区基本信息
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
@@ -109,8 +108,8 @@ const formatStoreDataToComponentDataByProjectDetail = (
 
 const Community: React.FC = () => {
   const { communityId } = useParams()
-  const query = useUrlQuery()
-  const projectId = query.get('projectId')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const projectId = searchParams.get('projectId')
 
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
