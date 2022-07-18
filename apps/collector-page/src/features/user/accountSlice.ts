@@ -119,6 +119,7 @@ export const accountSlice = createSlice({
         state.avatar = action.payload.avatar
         state.name = action.payload.name
         state.twitter = action.payload.twitter
+        state.discord = action.payload.discord
       })
       .addCase(userLogin.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
