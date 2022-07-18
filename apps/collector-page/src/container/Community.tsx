@@ -72,12 +72,13 @@ const formatStoreDataToComponentDataByProjectDetail = (
         const displayTake = token && task.acceptedStatus === TaskAcceptedStatus.CANDO ? true : false
         const loadingTake = takeTaskState.params?.id === task.id && takeTaskState.status === AsyncRequestStatus.PENDING
         const disabledTake = !token || loadingTake ? true : false
-
+        const displayGoToTasks = displayAccept
         return {
           data: task,
           viewConfig: {
             displayConnectWalletTip,
             displayAccept,
+            displayGoToTasks,
             displayTake,
             disabledTake,
             loadingTake,

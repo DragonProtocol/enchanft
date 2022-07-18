@@ -2,10 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:39:25
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 11:15:20
+ * @LastEditTime: 2022-07-18 18:26:31
  * @Description:（公开面板上的）任务内容
  */
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { TaskAcceptedStatus, TaskType } from '../../../types/api'
@@ -29,6 +30,7 @@ export type TaskContentDataType = {
 export type TaskContentViewConfigType = {
   displayConnectWalletTip?: boolean
   displayAccept?: boolean
+  displayGoToTasks?: boolean
   displayTake?: boolean
   disabledTake?: boolean
   loadingTake?: boolean
@@ -46,6 +48,7 @@ export type TaskContentHandlesType = {
 export type TaskContentProps = TaskContentDataViewType & TaskContentHandlesType
 
 const defaultViewConfig: TaskContentViewConfigType = {
+  displayGoToTasks: false,
   displayTake: false,
   disabledTake: false,
   loadingTake: false,
@@ -56,8 +59,9 @@ const TaskTypeLabels = {
 }
 
 const TaskContent: React.FC<TaskContentProps> = ({ data, viewConfig, onTake }: TaskContentProps) => {
-  const { name, type, startTime, endTime, winnersNum, actions } = data
-  const { displayConnectWalletTip, displayAccept, disabledTake, displayTake, loadingTake } = {
+  const navigate = useNavigate()
+  const { id, name, type, startTime, endTime, winnersNum, actions } = data
+  const { displayConnectWalletTip, displayAccept, displayGoToTasks, disabledTake, displayTake, loadingTake } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
@@ -93,6 +97,7 @@ const TaskContent: React.FC<TaskContentProps> = ({ data, viewConfig, onTake }: T
           {loadingTake ? 'loading...' : 'Take the task'}
         </TaskTakeBtn>
       )}
+      {displayGoToTasks && <TaskTakeBtn onClick={() => navigate(`/todo?taskId=${id}`)}>Go To Tasks</TaskTakeBtn>}
       {displayAccept && <TaskAcceptedSeal>accept</TaskAcceptedSeal>}
       {displayConnectWalletTip && <SolanaConnectWalletButton />}
     </TaskContentWrapper>
