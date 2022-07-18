@@ -46,17 +46,18 @@ const CallBack: React.FC = (props) => {
   useEffect(() => {
     if (twitter || discord) {
       console.log('link scuccess')
+      window.close()
 
-      window.opener.postMessage(
-        {
-          target: 'third-link',
-          data: {
-            twitter,
-            discord
-          },
-        },
-        'https://launch.enchanft.xyz',
-      ) // pro origin 
+      // window.opener.postMessage(
+      //   {
+      //     target: 'third-link',
+      //     data: {
+      //       twitter,
+      //       discord
+      //     },
+      //   },
+      //   'https://launch.enchanft.xyz',
+      // ) // pro origin 
       handleOpener('/profile')
     } else if (errorMsg) {
       console.log('link failed: no twitter found')
