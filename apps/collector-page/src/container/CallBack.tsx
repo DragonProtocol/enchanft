@@ -22,10 +22,10 @@ const CallBack: React.FC = (props) => {
 
   useEffect(() => {
     const code = location.hash.match(/code=([^&]*)/)?.[1]
-    const type = location.hash.match(/type=([^&]*)/)?.[1]
+    const type = location.hash.match(/type=([^&]*)/)?.[1] || 'TWITTER'
     // const urlParams = new URLSearchParams(location.search)
     // const code = urlParams.get('code')
-    if (code && type) {
+    if (code) {
       dispatch(userLink({ code, type }))
       
     } else {
