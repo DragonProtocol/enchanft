@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 12:13:39
+ * @LastEditTime: 2022-07-18 18:10:35
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -43,11 +43,13 @@ const formatStoreDataToComponentDataByRecommendTasks = (
     const displayTake = token && task.acceptedStatus === TaskAcceptedStatus.CANDO ? true : false
     const loadingTake = takeTaskState.params?.id === task.id && takeTaskState.status === AsyncRequestStatus.PENDING
     const disabledTake = !token || loadingTake ? true : false
+    const displayGoToTasks = displayAccept
     return {
       data: task,
       viewConfig: {
         displayConnectWalletTip,
         displayAccept,
+        displayGoToTasks,
         displayTake,
         disabledTake,
         loadingTake,

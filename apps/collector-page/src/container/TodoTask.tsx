@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 14:43:12
+ * @LastEditTime: 2022-07-18 18:20:43
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -21,23 +21,41 @@ import {
   selectUserTodoTasksState,
   TodoTaskItemForEntity,
 } from '../features/user/todoTasksSlice'
+import { useSearchParams } from 'react-router-dom'
 
-const formatStoreDataToComponentDataByTodoList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
+// TODO 将以下格式化函数合并为一个
+const formatStoreDataToComponentDataByTodoList = (
+  tasks: TodoTaskItemForEntity[],
+  taskId: number,
+): TodoTaskListItemsType => {
   return tasks.map((task) => {
+    const actions = [...task.actions].sort((a, b) => a.orderNum - b.orderNum)
+    const loadingRefresh = task.refreshStatus === AsyncRequestStatus.PENDING
+    const openActions = task.id === taskId
     return {
-      data: { ...task },
+      data: { ...task, actions },
       viewConfig: {
         allowOpenActions: true,
+        loadingRefresh: loadingRefresh,
+        openActions: openActions,
       },
     }
   })
 }
-const formatStoreDataToComponentDataByInProgressList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
+const formatStoreDataToComponentDataByInProgressList = (
+  tasks: TodoTaskItemForEntity[],
+  taskId: number,
+): TodoTaskListItemsType => {
   return tasks.map((task) => {
+    const actions = [...task.actions].sort((a, b) => a.orderNum - b.orderNum)
+    const loadingRefresh = task.refreshStatus === AsyncRequestStatus.PENDING
+    const openActions = task.id === taskId
     return {
-      data: { ...task },
+      data: { ...task, actions },
       viewConfig: {
         allowOpenActions: true,
+        loadingRefresh: loadingRefresh,
+        openActions: openActions,
       },
     }
   })
@@ -79,10 +97,14 @@ const formatStoreDataToComponentDataByClosedList = (tasks: TodoTaskItemForEntity
 }
 
 const TodoTask: React.FC = () => {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const hasTaskId = searchParams.has('taskId')
+  const taskId = hasTaskId ? Number(searchParams.get('taskId')) : -1
   const { token } = useAppSelector(selectAccount)
   const dispatch = useAppDispatch()
   const todoTasks = useAppSelector(selectAll)
   const { status } = useAppSelector(selectUserTodoTasksState)
+  // 单个任务刷新的select
   useEffect(() => {
     if (token) {
       dispatch(fetchTodoTasks())
@@ -98,8 +120,8 @@ const TodoTask: React.FC = () => {
   const closedList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.CLOSED)
 
   // 数据展示
-  const todoItems = formatStoreDataToComponentDataByTodoList(todoList)
-  const inProgressItems = formatStoreDataToComponentDataByInProgressList(inProgressList)
+  const todoItems = formatStoreDataToComponentDataByTodoList(todoList, taskId)
+  const inProgressItems = formatStoreDataToComponentDataByInProgressList(inProgressList, taskId)
   const completedItems = formatStoreDataToComponentDataByCompletedList(completedList)
   const wonItems = formatStoreDataToComponentDataByWonList(wonList)
   const lostItems = formatStoreDataToComponentDataByLostList(lostList)

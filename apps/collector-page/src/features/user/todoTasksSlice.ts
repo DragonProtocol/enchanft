@@ -4,7 +4,9 @@ import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { TodoTaskItem, TodoTaskResponse } from '../../types/api'
 
-export type TodoTaskItemForEntity = TodoTaskItem
+export type TodoTaskItemForEntity = TodoTaskItem & {
+  refreshStatus?: AsyncRequestStatus
+}
 type TodoTaskListState = EntityState<TodoTaskItemForEntity> & {
   status: AsyncRequestStatus
   errorMsg: string
@@ -61,7 +63,10 @@ export const fetchTodoTasks = createAsyncThunk<
   },
 )
 
-type refreshOneResp = void
+type refreshOneResp = {
+  data: TodoTaskItem | null
+  errorMsg?: string
+}
 
 export const refreshTodoTasksOne = createAsyncThunk<
   refreshOneResp,
@@ -69,18 +74,42 @@ export const refreshTodoTasksOne = createAsyncThunk<
   {
     rejectValue: refreshOneResp
   }
->('user/todoTasks/refreshOne', async (params, { dispatch }) => {
-  try {
-    const resp = await fetchOneForUserTodoTask(params)
-    if (resp.data.code === 0 && resp.data.data) {
-      dispatch(updateOne(resp.data.data))
+>(
+  'user/todoTasks/refreshOne',
+  async (params, { rejectWithValue }) => {
+    try {
+      const resp = await fetchOneForUserTodoTask(params)
+      if (resp.data.code === 0 && resp.data.data) {
+        return { data: resp.data.data, errorMsg: '' }
+      } else {
+        return rejectWithValue({
+          data: null,
+          errorMsg: resp.data.msg,
+        })
+      }
+    } catch (error: any) {
+      if (!error.response) {
+        throw error
+      }
+      return rejectWithValue({
+        data: null,
+        errorMsg: error.response.data,
+      })
     }
-  } catch (error: any) {
-    if (!error.response) {
-      throw error
-    }
-  }
-})
+  },
+  {
+    condition: (params, { getState }) => {
+      const state = getState() as RootState
+      const { selectById } = todoTasksEntity.getSelectors()
+      const item = selectById(state.userTodoTasks, params.id)
+      // 之前的请求正在进行中,则阻止新的请求
+      if (item?.refreshStatus === AsyncRequestStatus.PENDING) {
+        return false
+      }
+      return true
+    },
+  },
+)
 
 export const userTodoTasksSlice = createSlice({
   name: 'UserTodoTasks',
@@ -120,6 +149,29 @@ export const userTodoTasksSlice = createSlice({
         } else {
           state.errorMsg = action.error.message || ''
         }
+      })
+      .addCase(refreshTodoTasksOne.pending, (state, action) => {
+        console.log('refreshTodoTasksOne.pending', action)
+        const { id } = action.meta.arg
+        const changes = { refreshStatus: AsyncRequestStatus.PENDING }
+        todoTasksEntity.updateOne(state, { id, changes })
+      })
+      .addCase(refreshTodoTasksOne.fulfilled, (state, action) => {
+        console.log('refreshTodoTasksOne.fulfilled', action)
+        const { data } = action.payload
+        if (data) {
+          todoTasksEntity.setOne(state, { ...data, refreshStatus: AsyncRequestStatus.FULFILLED })
+        } else {
+          const { id } = action.meta.arg
+          const changes = { refreshStatus: AsyncRequestStatus.FULFILLED }
+          todoTasksEntity.updateOne(state, { id, changes })
+        }
+      })
+      .addCase(refreshTodoTasksOne.rejected, (state, action) => {
+        console.log('refreshTodoTasksOne.rejected', action)
+        const { id } = action.meta.arg
+        const changes = { refreshStatus: AsyncRequestStatus.REJECTED }
+        todoTasksEntity.updateOne(state, { id, changes })
       })
   },
 })
