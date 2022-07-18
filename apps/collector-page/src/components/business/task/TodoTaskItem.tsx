@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 14:40:25
+ * @LastEditTime: 2022-07-18 12:43:31
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -102,14 +102,14 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint, o
       case TaskTodoCompleteStatus.IN_PRGRESS:
         // 计算任务剩余天数
         const remainDays = Math.ceil((endTime - Date.now()) / (1000 * 60 * 60 * 24))
-        // 计算所有action，和正在进行的action数量
+        // 计算所有action，和已完成的action数量
         const allActionNum = actions.length
-        const inProgressActionNum = actions.filter((action) => action.status === UserActionStatus.DOING).length
+        const actionDoneNum = actions.filter((action) => action.status === UserActionStatus.DONE).length
         return (
           <TaskProgressBox>
             <ExcessTime>{remainDays} days left</ExcessTime>
             <CompleteNum>
-              ({inProgressActionNum}/{allActionNum})
+              ({actionDoneNum}/{allActionNum})
             </CompleteNum>
           </TaskProgressBox>
         )
