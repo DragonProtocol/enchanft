@@ -61,6 +61,7 @@ export const userLink = createAsyncThunk(
   async ({ code,type }: { code: string,type: string }, thunkAPI) => {
     const resp = await link({
       code,
+      type
     })
     const { twitter,discord } = resp.data
     if(discord){
