@@ -8,7 +8,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { TaskStatus, TaskType } from '../../../types/api'
+import { TaskAcceptedStatus, TaskType } from '../../../types/api'
 import ButtonBase from '../../common/button/ButtonBase'
 import SolanaConnectWalletButton from '../connect/SolanaConnectWalletButton'
 
@@ -19,7 +19,7 @@ export type TaskContentDataType = {
   startTime: number
   endTime: number
   winnersNum: number
-  acceptedStatus: TaskStatus
+  acceptedStatus: TaskAcceptedStatus
   actions: Array<{
     id: number
     name: string
