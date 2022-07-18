@@ -151,8 +151,7 @@ const Profile: React.FC = () => {
                       onClick={() => {
                         // TODO 跳转回原页面
                         window.open(
-                          'http://localhost:8000/#/callback',
-                          // 'https://discord.com/oauth2/authorize?response_type=code&client_id=991279625395241014&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=http://localhost:8000/#/callback?type=DISCORD&prompt=consent',
+                          'https://discord.com/oauth2/authorize?response_type=code&client_id=991279625395241014&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https://launch.enchanft.xyz/callback?type=DISCORD&prompt=consent',
                           '__blank',
                           'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
                         )
