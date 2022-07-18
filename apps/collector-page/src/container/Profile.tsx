@@ -10,6 +10,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react'
 import { clearMyNFT, getMyNFTokens, selectMyNFTData, selectMyNFTDataStatus } from 'features/user/myEnchanftedSlice'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCallback } from 'react'
+import useInterval from '../hooks/useInterval'
 import { useAppDispatch, useAppSelector } from 'store/hooks'
 import styled from 'styled-components'
 import {
@@ -53,6 +54,7 @@ const formatStoreDataToComponentDataByFollowedCommunities = (
 const Profile: React.FC = () => {
   const wallet = useWallet()
   const walletRef = useRef('')
+  const accountWindowRef = useRef<Window | null>(null)
   const { connection } = useConnection()
   const { synftContract } = useSynftContract()
   const dispatch = useAppDispatch()
@@ -63,6 +65,8 @@ const Profile: React.FC = () => {
   const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus)
 
   const [openDialog, setOpenDialog] = useState(false)
+
+  const [isTracking, setIsTracking] = useState(false)
 
   useEffect(() => {
     if (!wallet.publicKey) {
@@ -100,6 +104,33 @@ const Profile: React.FC = () => {
       window.removeEventListener('message', (e) => {})
     }
   }, [])
+
+  useInterval(
+    () => {
+      // TODO timeout
+
+      const twitter = localStorage.getItem('twitter')
+      const discord = localStorage.getItem('discord')
+      const accountWindow = localStorage.getItem('account-window')
+
+      if (twitter || discord || accountWindow) {
+        dispatch(setTwitter(twitter || ''))
+        dispatch(setDiscord(discord || ''))
+        localStorage.removeItem('account-window')
+        setIsTracking(false)
+      }
+      
+      // console.log('accountWindowRef.current', accountWindowRef.current?.closed,accountWindowRef.current)
+    },
+    isTracking ? 3000 : null,
+  )
+
+  const handleTrackAccountBind = (window) => {
+    setIsTracking(true)
+    localStorage.removeItem('twitter')
+    localStorage.removeItem('discord')
+    localStorage.removeItem('account-window')
+  }
   // profile展示信息切换
   const ProfileTabOptions = [
     {
@@ -143,11 +174,20 @@ const Profile: React.FC = () => {
                       className="thirdparty-inner"
                       onClick={() => {
                         // TODO 跳转回原页面
-                        window.open(
-                          'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=bzBLMWs0NnBHejQ4a3dXYkROTHk6MTpjaQ&redirect_uri=https://launch.enchanft.xyz/callback&scope=tweet.read+users.read+offline.access&state=3063390848298.8647&code_challenge=challenge&code_challenge_method=plain',
+                        let mywindow = window.open(
+                          'http://localhost:3000/#/callback',
+                          // 'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=bzBLMWs0NnBHejQ4a3dXYkROTHk6MTpjaQ&redirect_uri=https://launch.enchanft.xyz/callback&scope=tweet.read+users.read+offline.access&state=3063390848298.8647&code_challenge=challenge&code_challenge_method=plain',
                           '__blank',
                           'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
                         )
+
+                        if(mywindow){
+                          mywindow.onclose = function()
+                        {
+                          alert('yes');
+                        }
+                        }
+                        // setIsTracking(true)
                       }}
                     >
                       <svg
@@ -190,11 +230,12 @@ const Profile: React.FC = () => {
                       className="thirdparty-inner"
                       onClick={() => {
                         // TODO 跳转回原页面
-                        window.open(
+                        accountWindowRef.current = window.open(
                           'https://discord.com/oauth2/authorize?response_type=code&client_id=991279625395241014&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https://launch.enchanft.xyz/callback?type=DISCORD&prompt=consent',
                           '__blank',
                           'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
                         )
+                        setIsTracking(true)
                       }}
                     >
                       <svg

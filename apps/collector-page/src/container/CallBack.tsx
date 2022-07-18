@@ -46,7 +46,11 @@ const CallBack: React.FC = (props) => {
   useEffect(() => {
     if (twitter || discord) {
       console.log('link scuccess')
+      window.onclose()
+      alert('onclose')
       window.close()
+      localStorage.setItem('account-window','close')
+
 
       // window.opener.postMessage(
       //   {
