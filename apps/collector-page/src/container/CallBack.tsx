@@ -18,14 +18,16 @@ import { useNavigate } from 'react-router-dom'
 const CallBack: React.FC = (props) => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const { twitter, errorMsg } = useAppSelector(selectAccount)
+  const { twitter, discord, errorMsg } = useAppSelector(selectAccount)
 
   useEffect(() => {
     const code = location.hash.match(/code=([^&]*)/)?.[1]
+    const type = location.hash.match(/type=([^&]*)/)?.[1]
     // const urlParams = new URLSearchParams(location.search)
     // const code = urlParams.get('code')
-    if (code) {
-      dispatch(userLink({ code }))
+    if (code && type) {
+      dispatch(userLink({ code, type }))
+      
     } else {
       navigate('/profile')
       console.log('link failed: no code found')
@@ -35,22 +37,32 @@ const CallBack: React.FC = (props) => {
   const handleOpener = (path = '/') => {
     if (window) {
       window.close()
-      if (window.opener) {
-        window.opener.location.href = path
-      }
+      // if (window.opener) {
+      //   window.opener.location.href = '/#' + path
+      // }
     }
   }
 
   useEffect(() => {
-    if (twitter) {
+    if (twitter || discord) {
       console.log('link scuccess')
-      // navigate('/profile')
+
+      window.opener.postMessage(
+        {
+          target: 'third-link',
+          data: {
+            twitter,
+            discord
+          },
+        },
+        'https://launch.enchanft.xyz',
+      ) // pro origin 
       handleOpener('/profile')
     } else if (errorMsg) {
       console.log('link failed: no twitter found')
       handleOpener('/profile')
     }
-  }, [twitter])
+  }, [twitter, discord])
 
   return (
     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%', height: '100%' }}>

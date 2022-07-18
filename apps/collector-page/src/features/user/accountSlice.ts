@@ -17,6 +17,7 @@ export type AccountState = {
   avatar: string
   name: string
   twitter: string
+  discord: string
 }
 
 // 用户账户信息
@@ -26,6 +27,7 @@ const initialState: AccountState = {
   avatar: '',
   name: '',
   twitter: localStorage.getItem('twitter') || '',
+  discord: localStorage.getItem('discord') || '',
 }
 
 export const userLogin = createAsyncThunk(
@@ -55,12 +57,18 @@ export const userUpdateProfile = createAsyncThunk(
 
 export const userLink = createAsyncThunk(
   'user/userLink',
-  async ({ code }: { code: string }, thunkAPI) => {
+  async ({ code,type }: { code: string,type: string }, thunkAPI) => {
     const resp = await link({
       code,
     })
-    // 暂时未区分账号类型
-    thunkAPI.dispatch(setTwitter(resp.data.twitter))
+    const { twitter,discord } = resp.data
+    if(discord){
+      thunkAPI.dispatch(setDiscord(discord))
+    }
+    if(twitter){
+      thunkAPI.dispatch(setTwitter(twitter))
+    }
+
     return resp.data
   },
   {
@@ -94,6 +102,10 @@ export const accountSlice = createSlice({
     setTwitter: (state, action) => {
       state.twitter = action.payload
       localStorage.setItem('twitter', action.payload)
+    },
+    setDiscord: (state, action) => {
+      state.discord = action.payload
+      localStorage.setItem('discord', action.payload)
     },
   },
   extraReducers: (builder) => {
@@ -135,6 +147,6 @@ export const accountSlice = createSlice({
 })
 
 const { actions, reducer } = accountSlice
-export const { setToken, removeToken, setName, setTwitter } = actions
+export const { setToken, removeToken, setName, setTwitter,setDiscord } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer
