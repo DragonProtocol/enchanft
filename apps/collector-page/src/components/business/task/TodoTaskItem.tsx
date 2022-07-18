@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-18 12:43:31
+ * @LastEditTime: 2022-07-18 15:59:05
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -36,6 +36,7 @@ export type TodoTaskItemViewConfigType = {
   loadingMint?: boolean
   allowOpenActions?: boolean
   openActions?: boolean
+  loadingRefresh?: boolean
 }
 
 export type TodoTaskItemDataViewType = {
@@ -56,6 +57,7 @@ const defaultViewConfig: TodoTaskItemViewConfigType = {
   loadingMint: false,
   allowOpenActions: false,
   openActions: false,
+  loadingRefresh: false,
 }
 const TaskTodoCompleteStatusView = {
   [TaskTodoCompleteStatus.COMPLETED]: {
@@ -90,7 +92,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint, o
     mintStartTime,
     status,
   } = data
-  const { disabledMint, displayMint, loadingMint, allowOpenActions, openActions } = {
+  const { disabledMint, displayMint, loadingMint, allowOpenActions, openActions, loadingRefresh } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
@@ -108,9 +110,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint, o
         return (
           <TaskProgressBox>
             <ExcessTime>{remainDays} days left</ExcessTime>
-            <CompleteNum>
-              ({actionDoneNum}/{allActionNum})
-            </CompleteNum>
+            <CompleteNum>{loadingRefresh ? 'Loading...' : `${actionDoneNum}/${allActionNum}`}</CompleteNum>
           </TaskProgressBox>
         )
       case TaskTodoCompleteStatus.COMPLETED:

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 14:43:12
+ * @LastEditTime: 2022-07-18 17:51:00
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -24,20 +24,26 @@ import {
 
 const formatStoreDataToComponentDataByTodoList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
   return tasks.map((task) => {
+    const actions = [...task.actions].sort((a, b) => a.orderNum - b.orderNum)
+    const loadingRefresh = task.refreshStatus === AsyncRequestStatus.PENDING
     return {
-      data: { ...task },
+      data: { ...task, actions },
       viewConfig: {
         allowOpenActions: true,
+        loadingRefresh: loadingRefresh,
       },
     }
   })
 }
 const formatStoreDataToComponentDataByInProgressList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
   return tasks.map((task) => {
+    const actions = [...task.actions].sort((a, b) => a.orderNum - b.orderNum)
+    const loadingRefresh = task.refreshStatus === AsyncRequestStatus.PENDING
     return {
-      data: { ...task },
+      data: { ...task, actions },
       viewConfig: {
         allowOpenActions: true,
+        loadingRefresh: loadingRefresh,
       },
     }
   })
@@ -83,6 +89,7 @@ const TodoTask: React.FC = () => {
   const dispatch = useAppDispatch()
   const todoTasks = useAppSelector(selectAll)
   const { status } = useAppSelector(selectUserTodoTasksState)
+  // 单个任务刷新的select
   useEffect(() => {
     if (token) {
       dispatch(fetchTodoTasks())
