@@ -10,10 +10,12 @@ import { RootState } from '../../store/store'
 import { login, updateProfile, link } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
 import { setLoginToken, getLoginToken } from '../../utils/token'
+import { PublicKey } from '@solana/web3.js'
 
 export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
+  pubkey: string
   token: string
   avatar: string
   name: string
@@ -24,7 +26,8 @@ export type AccountState = {
 // 用户账户信息
 const initialState: AccountState = {
   status: AsyncRequestStatus.IDLE,
-  token: getLoginToken() || '',
+  pubkey: '',
+  token: '',
   avatar: '',
   name: '',
   twitter: localStorage.getItem('twitter') || '',
@@ -39,7 +42,10 @@ export const userLogin = createAsyncThunk(
       payload,
       pubkey,
     })
-    return resp.data
+    return {
+      ...resp.data,
+      pubkey,
+    }
   },
 )
 
@@ -51,6 +57,7 @@ export const userUpdateProfile = createAsyncThunk(
       userName: name,
       pubkey,
     })
+    thunkAPI.dispatch(setAvatar(avatar))
     thunkAPI.dispatch(setName(name))
     return resp.data
   },
@@ -95,6 +102,12 @@ export const accountSlice = createSlice({
     setToken: (state, action) => {
       state.token = action.payload
     },
+    setAvatar: (state, action) => {
+      state.avatar = action.payload
+    },
+    setPubkey: (state, action) => {
+      state.pubkey = action.payload
+    },
     removeToken: (state) => {
       state.token = ''
     },
@@ -116,8 +129,9 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.PENDING
       })
       .addCase(userLogin.fulfilled, (state, action) => {
-        setLoginToken(action.payload.token)
+        setLoginToken(action.payload.token, action.payload.pubkey)
         state.status = AsyncRequestStatus.FULFILLED
+        state.pubkey = action.payload.pubkey
         state.token = action.payload.token
         state.avatar = action.payload.avatar
         state.name = action.payload.name
@@ -151,6 +165,6 @@ export const accountSlice = createSlice({
 })
 
 const { actions, reducer } = accountSlice
-export const { setToken, removeToken, setName, setTwitter,setDiscord } = actions
+export const { setToken, setPubkey,setAvatar,removeToken, setName, setTwitter, setDiscord } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer

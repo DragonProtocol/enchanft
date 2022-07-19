@@ -38,6 +38,7 @@ import {
   selectuserFollowedCommunitiesState,
 } from '../features/user/followedCommunitiesSlice'
 import { AsyncRequestStatus } from '../types'
+import { uploadAvatar } from '../services/api/login'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -61,6 +62,7 @@ const Profile: React.FC = () => {
 
   const account = useAppSelector(selectAccount)
   const [name, setName] = useState('')
+  const [avatar, setAvatar] = useState('')
   const myNFTData = useAppSelector(selectMyNFTData)
   const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus)
 
@@ -85,12 +87,13 @@ const Profile: React.FC = () => {
     if (!wallet.publicKey) return
     dispatch(
       userUpdateProfile({
-        avatar: 'avatar-test',
+        avatar: avatar,
         name: name,
         pubkey: wallet.publicKey.toString(),
       }),
     )
-  }, [wallet, name])
+    setOpenDialog(false)
+  }, [wallet, name, avatar])
 
   useEffect(() => {
     window.addEventListener('message', (e) => {
@@ -158,7 +161,7 @@ const Profile: React.FC = () => {
       <MainContentBox>
         <ProfileWrapper>
           <div className="profile">
-            <img src={'https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk?ext=jpeg'} alt="" />
+            <img src={account.avatar} alt="" />
             <div>
               <div className="name">
                 <h3>{account.name}</h3>{' '}
@@ -303,13 +306,25 @@ const Profile: React.FC = () => {
             >
               <h4>Profile picture</h4>
               <img
-                src={'https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk?ext=jpeg'}
+                src={avatar}
                 alt=""
                 style={{
                   width: '100px',
                   height: '100px',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  document.getElementById('uploadinput')?.click()
                 }}
               />
+              <input id='uploadinput' style={{display: 'none'}} type="file" onChange={async (e) => {
+                const file = e.target.files && e.target.files[0]
+                console.log(file)
+                if (!file) return
+                const {data} = await uploadAvatar(file)
+                console.log('uploadinput', data)
+                setAvatar(data.url)
+              }}/>
 
               <FormControl variant="standard">
                 <h4>name</h4>
