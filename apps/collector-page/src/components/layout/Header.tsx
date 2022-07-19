@@ -12,7 +12,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import bs58 from 'bs58'
 import styled from 'styled-components'
 import { PublicKey } from '@solana/web3.js'
-import { setToken, selectAccount, userLogin, setPubkey } from '../../features/user/accountSlice'
+import { setToken, selectAccount, userLogin, setPubkey, userGetProfile } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { SIGN_MSG } from 'constants/solana'
 import LogoImg from '../imgs/logo.svg'
@@ -46,9 +46,9 @@ const Header: React.FC = () => {
     const pubkey = publicKey.toString()
     const existToken = getLoginToken(pubkey)
     if (existToken) {
-      console.log('---', existToken)
       dispatch(setToken(existToken))
       dispatch(setPubkey(pubkey))
+      dispatch(userGetProfile())
       return
     }
     try {

@@ -122,7 +122,7 @@ const Profile: React.FC = () => {
         localStorage.removeItem('account-window')
         setIsTracking(false)
       }
-      
+
       // console.log('accountWindowRef.current', accountWindowRef.current?.closed,accountWindowRef.current)
     },
     isTracking ? 3000 : null,
@@ -232,7 +232,6 @@ const Profile: React.FC = () => {
                           'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
                         )
                         handleTrackAccountBind()
-
                       }}
                     >
                       <svg
@@ -317,14 +316,19 @@ const Profile: React.FC = () => {
                   document.getElementById('uploadinput')?.click()
                 }}
               />
-              <input id='uploadinput' style={{display: 'none'}} type="file" onChange={async (e) => {
-                const file = e.target.files && e.target.files[0]
-                console.log(file)
-                if (!file) return
-                const {data} = await uploadAvatar(file)
-                console.log('uploadinput', data)
-                setAvatar(data.url)
-              }}/>
+              <input
+                id="uploadinput"
+                style={{ display: 'none' }}
+                type="file"
+                onChange={async (e) => {
+                  const file = e.target.files && e.target.files[0]
+                  console.log(file)
+                  if (!file) return
+                  const { data } = await uploadAvatar(file)
+                  console.log('uploadinput', data)
+                  setAvatar(data.url)
+                }}
+              />
 
               <FormControl variant="standard">
                 <h4>name</h4>

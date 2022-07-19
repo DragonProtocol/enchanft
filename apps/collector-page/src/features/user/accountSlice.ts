@@ -7,7 +7,7 @@
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
-import { login, updateProfile, link } from '../../services/api/login'
+import { login, updateProfile, link, getProfile } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
 import { setLoginToken, getLoginToken } from '../../utils/token'
 import { PublicKey } from '@solana/web3.js'
@@ -46,6 +46,14 @@ export const userLogin = createAsyncThunk(
       ...resp.data,
       pubkey,
     }
+  },
+)
+
+export const userGetProfile = createAsyncThunk(
+  'user/getProfile',
+  async () => {
+    const resp = await getProfile()
+    return resp.data
   },
 )
 
@@ -161,6 +169,20 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
       })
+      ///
+      .addCase(userGetProfile.pending, (state) => {
+        state.status = AsyncRequestStatus.PENDING
+      })
+      .addCase(userGetProfile.fulfilled, (state, action) => {
+        state.status = AsyncRequestStatus.FULFILLED
+        state.avatar = action.payload.data.avatar;
+        state.name = action.payload.data.name;
+      })
+      .addCase(userGetProfile.rejected, (state, action) => {
+        state.status = AsyncRequestStatus.REJECTED
+        state.errorMsg = action.error.message || 'failed'
+      })
+      
   },
 })
 
