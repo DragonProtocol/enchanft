@@ -27,31 +27,19 @@ const CallBack: React.FC = (props) => {
     // const code = urlParams.get('code')
     if (code) {
       dispatch(userLink({ code, type }))
-      
     } else {
-      navigate('/profile')
-      console.log('link failed: no code found')
+      handleClose()
     }
   }, [])
 
-  const handleOpener = (path = '/') => {
-    if (window) {
-      window.close()
-      // if (window.opener) {
-      //   window.opener.location.href = '/#' + path
-      // }
-    }
+  const handleClose = () => {
+    window.close()
+    localStorage.setItem('account-window','close')
   }
 
   useEffect(() => {
     if (twitter || discord) {
-      console.log('link scuccess')
-      window.onclose()
-      alert('onclose')
-      window.close()
-      localStorage.setItem('account-window','close')
-
-
+      handleClose()
       // window.opener.postMessage(
       //   {
       //     target: 'third-link',
@@ -62,10 +50,9 @@ const CallBack: React.FC = (props) => {
       //   },
       //   'https://launch.enchanft.xyz',
       // ) // pro origin 
-      handleOpener('/profile')
     } else if (errorMsg) {
       console.log('link failed: no twitter found')
-      handleOpener('/profile')
+      handleClose()
     }
   }, [twitter, discord])
 

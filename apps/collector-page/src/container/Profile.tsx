@@ -125,11 +125,11 @@ const Profile: React.FC = () => {
     isTracking ? 3000 : null,
   )
 
-  const handleTrackAccountBind = (window) => {
-    setIsTracking(true)
+  const handleTrackAccountBind = () => {
     localStorage.removeItem('twitter')
     localStorage.removeItem('discord')
     localStorage.removeItem('account-window')
+    setIsTracking(true)
   }
   // profile展示信息切换
   const ProfileTabOptions = [
@@ -174,20 +174,13 @@ const Profile: React.FC = () => {
                       className="thirdparty-inner"
                       onClick={() => {
                         // TODO 跳转回原页面
-                        let mywindow = window.open(
+                        window.open(
                           // 'http://localhost:3000/#/callback',
                           'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=bzBLMWs0NnBHejQ4a3dXYkROTHk6MTpjaQ&redirect_uri=https://launch.enchanft.xyz/callback&scope=tweet.read+users.read+offline.access&state=3063390848298.8647&code_challenge=challenge&code_challenge_method=plain',
                           '__blank',
                           'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
                         )
-
-                        if(mywindow){
-                          mywindow.onclose = function()
-                        {
-                          alert('yes');
-                        }
-                        }
-                        // setIsTracking(true)
+                        handleTrackAccountBind()
                       }}
                     >
                       <svg
@@ -230,12 +223,13 @@ const Profile: React.FC = () => {
                       className="thirdparty-inner"
                       onClick={() => {
                         // TODO 跳转回原页面
-                        accountWindowRef.current = window.open(
+                        window.open(
                           'https://discord.com/oauth2/authorize?response_type=code&client_id=991279625395241014&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https://launch.enchanft.xyz/callback?type=DISCORD&prompt=consent',
                           '__blank',
                           'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
                         )
-                        setIsTracking(true)
+                        handleTrackAccountBind()
+
                       }}
                     >
                       <svg
