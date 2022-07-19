@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-19 13:15:58
+ * @LastEditTime: 2022-07-19 17:01:18
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -15,7 +15,8 @@ import {
 } from '../features/user/myEnchanftedSlice'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCallback } from 'react'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
+import useInterval from '../hooks/useInterval'
+import { useAppDispatch, useAppSelector } from 'store/hooks'
 import styled from 'styled-components'
 import {
   Box,
@@ -33,7 +34,7 @@ import {
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 
-import { selectAccount, userUpdateProfile } from '../features/user/accountSlice'
+import { selectAccount, userUpdateProfile, setTwitter, setDiscord } from '../features/user/accountSlice'
 import MainContentBox from '../components/layout/MainContentBox'
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
 import {
@@ -44,6 +45,7 @@ import {
 import { AsyncRequestStatus } from '../types'
 import EnchanftedList, { EnchanftedListItemsType } from '../components/business/nft/EnchanftedList'
 import { EnchanftedForEntity } from '../features/user/myEnchanftedSlice'
+import { uploadAvatar } from '../services/api/login'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -83,6 +85,7 @@ const Profile: React.FC = () => {
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
   const walletRef = useRef('')
+  const accountWindowRef = useRef<Window | null>(null)
   const { connection } = useConnection()
 
   // 请求获取我的nft
@@ -101,19 +104,62 @@ const Profile: React.FC = () => {
   }, [wallet, connection, synftContract])
 
   // profile 基本信息
+  const [avatar, setAvatar] = useState('')
+
+  const [isTracking, setIsTracking] = useState(false)
   const [name, setName] = useState('')
   const [openDialog, setOpenDialog] = useState(false)
   const updateProfile = useCallback(() => {
     if (!wallet.publicKey) return
     dispatch(
       userUpdateProfile({
-        avatar: 'avatar-test',
+        avatar: avatar,
         name: name,
         pubkey: wallet.publicKey.toString(),
       }),
     )
-  }, [wallet, name])
+    setOpenDialog(false)
+  }, [wallet, name, avatar])
 
+  useEffect(() => {
+    window.addEventListener('message', (e) => {
+      if (e.origin === 'https://launch.enchanft.xyz' && e.data.target === 'third-link') {
+        const { twitter, discord } = e.data.data
+        dispatch(setTwitter(twitter || ''))
+        dispatch(setDiscord(discord || ''))
+      }
+    })
+    return () => {
+      window.removeEventListener('message', (e) => {})
+    }
+  }, [])
+
+  useInterval(
+    () => {
+      // TODO timeout
+
+      const twitter = localStorage.getItem('twitter')
+      const discord = localStorage.getItem('discord')
+      const accountWindow = localStorage.getItem('account-window')
+
+      if (twitter || discord || accountWindow) {
+        dispatch(setTwitter(twitter || ''))
+        dispatch(setDiscord(discord || ''))
+        localStorage.removeItem('account-window')
+        setIsTracking(false)
+      }
+
+      // console.log('accountWindowRef.current', accountWindowRef.current?.closed,accountWindowRef.current)
+    },
+    isTracking ? 3000 : null,
+  )
+
+  const handleTrackAccountBind = () => {
+    localStorage.removeItem('twitter')
+    localStorage.removeItem('discord')
+    localStorage.removeItem('account-window')
+    setIsTracking(true)
+  }
   // profile展示信息切换
   const [curProfileTab, setCurProfileTab] = useState(ProfileTabOptions[0].value)
 
@@ -134,7 +180,7 @@ const Profile: React.FC = () => {
       <MainContentBox>
         <ProfileWrapper>
           <div className="profile">
-            <img src={'https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk?ext=jpeg'} alt="" />
+            <img src={account.avatar} alt="" />
             <div>
               <div className="name">
                 <h3>{account.name}</h3>{' '}
@@ -151,10 +197,12 @@ const Profile: React.FC = () => {
                       onClick={() => {
                         // TODO 跳转回原页面
                         window.open(
+                          // 'http://localhost:3000/#/callback',
                           'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=bzBLMWs0NnBHejQ4a3dXYkROTHk6MTpjaQ&redirect_uri=https://launch.enchanft.xyz/callback&scope=tweet.read+users.read+offline.access&state=3063390848298.8647&code_challenge=challenge&code_challenge_method=plain',
                           '__blank',
                           'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
                         )
+                        handleTrackAccountBind()
                       }}
                     >
                       <svg
@@ -193,7 +241,18 @@ const Profile: React.FC = () => {
                     )}
                   </div>
                   <div className="thirdparty-btn thirdparty-discord">
-                    <div className="thirdparty-inner">
+                    <div
+                      className="thirdparty-inner"
+                      onClick={() => {
+                        // TODO 跳转回原页面
+                        window.open(
+                          'https://discord.com/oauth2/authorize?response_type=code&client_id=991279625395241014&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https://launch.enchanft.xyz/callback?type=DISCORD&prompt=consent',
+                          '__blank',
+                          'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
+                        )
+                        handleTrackAccountBind()
+                      }}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         aria-hidden="true"
@@ -208,7 +267,7 @@ const Profile: React.FC = () => {
                           d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"
                         ></path>
                       </svg>
-                      Connect Discord
+                      {account?.discord || 'Connect Discord'}
                     </div>
                     {/* <div className="thirdparty-disconnect">
                       <svg
@@ -268,11 +327,28 @@ const Profile: React.FC = () => {
             >
               <h4>Profile picture</h4>
               <img
-                src={'https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk?ext=jpeg'}
+                src={avatar}
                 alt=""
                 style={{
                   width: '100px',
                   height: '100px',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  document.getElementById('uploadinput')?.click()
+                }}
+              />
+              <input
+                id="uploadinput"
+                style={{ display: 'none' }}
+                type="file"
+                onChange={async (e) => {
+                  const file = e.target.files && e.target.files[0]
+                  console.log(file)
+                  if (!file) return
+                  const { data } = await uploadAvatar(file)
+                  console.log('uploadinput', data)
+                  setAvatar(data.url)
                 }}
               />
 

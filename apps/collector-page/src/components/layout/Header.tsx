@@ -6,22 +6,25 @@
  * @Description: 站点头部
  */
 import SolanaConnectWalletButton from 'components/business/connect/SolanaConnectWalletButton'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import bs58 from 'bs58'
 import styled from 'styled-components'
-import { setToken, selectAccount, userLogin } from '../../features/user/accountSlice'
+import { PublicKey } from '@solana/web3.js'
+import { setToken, selectAccount, userLogin, setPubkey, userGetProfile } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { SIGN_MSG } from 'constants/solana'
 import LogoImg from '../imgs/logo.svg'
+import { clearLoginToken, getLoginToken } from '../../utils/token'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { connected, signMessage, publicKey } = useWallet()
+  const { connected, signMessage, publicKey, disconnecting } = useWallet()
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
+  const prePublicKey = useRef<PublicKey | null>()
   const navs = [
     {
       name: 'launchpad',
@@ -40,7 +43,14 @@ const Header: React.FC = () => {
 
   const authenticate = useCallback(async () => {
     if (!signMessage || !publicKey) return
-    if (account.token) return
+    const pubkey = publicKey.toString()
+    const existToken = getLoginToken(pubkey)
+    if (existToken) {
+      dispatch(setToken(existToken))
+      dispatch(setPubkey(pubkey))
+      dispatch(userGetProfile())
+      return
+    }
     try {
       const msg = SIGN_MSG
       const data = await signMessage(Buffer.from(msg))
@@ -67,9 +77,18 @@ const Header: React.FC = () => {
   }, [location])
 
   useEffect(() => {
-    if (!connected) return
+    if (!connected || !publicKey) {
+      if (prePublicKey.current) {
+        clearLoginToken(prePublicKey.current.toString())
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+        prePublicKey.current = null
+      }
+      return
+    }
+    prePublicKey.current = publicKey
     authenticate()
-  }, [connected])
+  }, [connected, publicKey])
 
   const PcNav = useCallback(
     () => (

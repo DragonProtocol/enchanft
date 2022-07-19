@@ -18,12 +18,35 @@ export function login(params: any) {
   })
 }
 
+export function getProfile() {
+  return request({
+    url: '/users/profile',
+    method: 'get',
+    headers: {
+      needToken: true,
+    },
+  })
+}
+
 export function updateProfile(params: any) {
   const data = qs.stringify(params)
   return request({
     url: '/users/profile',
     method: 'post',
     data: data,
+    headers: {
+      needToken: true,
+    },
+  })
+}
+
+export function uploadAvatar(file: File) {
+  const form = new FormData()
+  form.append('file', file)
+  return request({
+    url: '/medium/upload',
+    method: 'post',
+    data: form,
     headers: {
       needToken: true,
     },

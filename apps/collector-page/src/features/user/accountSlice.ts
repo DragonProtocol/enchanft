@@ -7,26 +7,31 @@
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
-import { login, updateProfile, link } from '../../services/api/login'
+import { login, updateProfile, link, getProfile } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
 import { setLoginToken, getLoginToken } from '../../utils/token'
+import { PublicKey } from '@solana/web3.js'
 
 export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
+  pubkey: string
   token: string
   avatar: string
   name: string
   twitter: string
+  discord: string
 }
 
 // 用户账户信息
 const initialState: AccountState = {
   status: AsyncRequestStatus.IDLE,
-  token: getLoginToken() || '',
+  pubkey: '',
+  token: '',
   avatar: '',
   name: '',
   twitter: localStorage.getItem('twitter') || '',
+  discord: localStorage.getItem('discord') || '',
 }
 
 export const userLogin = createAsyncThunk(
@@ -37,6 +42,17 @@ export const userLogin = createAsyncThunk(
       payload,
       pubkey,
     })
+    return {
+      ...resp.data,
+      pubkey,
+    }
+  },
+)
+
+export const userGetProfile = createAsyncThunk(
+  'user/getProfile',
+  async () => {
+    const resp = await getProfile()
     return resp.data
   },
 )
@@ -49,6 +65,7 @@ export const userUpdateProfile = createAsyncThunk(
       userName: name,
       pubkey,
     })
+    thunkAPI.dispatch(setAvatar(avatar))
     thunkAPI.dispatch(setName(name))
     return resp.data
   },
@@ -56,12 +73,19 @@ export const userUpdateProfile = createAsyncThunk(
 
 export const userLink = createAsyncThunk(
   'user/userLink',
-  async ({ code }: { code: string }, thunkAPI) => {
+  async ({ code,type }: { code: string,type: string }, thunkAPI) => {
     const resp = await link({
       code,
+      type
     })
-    // 暂时未区分账号类型
-    thunkAPI.dispatch(setTwitter(resp.data.twitter))
+    const { twitter,discord } = resp.data
+    if(discord){
+      thunkAPI.dispatch(setDiscord(discord))
+    }
+    if(twitter){
+      thunkAPI.dispatch(setTwitter(twitter))
+    }
+
     return resp.data
   },
   {
@@ -86,6 +110,12 @@ export const accountSlice = createSlice({
     setToken: (state, action) => {
       state.token = action.payload
     },
+    setAvatar: (state, action) => {
+      state.avatar = action.payload
+    },
+    setPubkey: (state, action) => {
+      state.pubkey = action.payload
+    },
     removeToken: (state) => {
       state.token = ''
     },
@@ -96,6 +126,10 @@ export const accountSlice = createSlice({
       state.twitter = action.payload
       localStorage.setItem('twitter', action.payload)
     },
+    setDiscord: (state, action) => {
+      state.discord = action.payload
+      localStorage.setItem('discord', action.payload)
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -103,12 +137,14 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.PENDING
       })
       .addCase(userLogin.fulfilled, (state, action) => {
-        setLoginToken(action.payload.token)
+        setLoginToken(action.payload.token, action.payload.pubkey)
         state.status = AsyncRequestStatus.FULFILLED
+        state.pubkey = action.payload.pubkey
         state.token = action.payload.token
         state.avatar = action.payload.avatar
         state.name = action.payload.name
         state.twitter = action.payload.twitter
+        state.discord = action.payload.discord
       })
       .addCase(userLogin.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -133,10 +169,24 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
       })
+      ///
+      .addCase(userGetProfile.pending, (state) => {
+        state.status = AsyncRequestStatus.PENDING
+      })
+      .addCase(userGetProfile.fulfilled, (state, action) => {
+        state.status = AsyncRequestStatus.FULFILLED
+        state.avatar = action.payload.data.avatar;
+        state.name = action.payload.data.name;
+      })
+      .addCase(userGetProfile.rejected, (state, action) => {
+        state.status = AsyncRequestStatus.REJECTED
+        state.errorMsg = action.error.message || 'failed'
+      })
+      
   },
 })
 
 const { actions, reducer } = accountSlice
-export const { setToken, removeToken, setName, setTwitter } = actions
+export const { setToken, setPubkey,setAvatar,removeToken, setName, setTwitter, setDiscord } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer
