@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 15:22:29
+ * @LastEditTime: 2022-07-19 12:38:04
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
@@ -21,20 +21,22 @@ let store
 export const injectStore = (storeInstance: any) => {
   store = storeInstance
 }
+// axios 实例
+const axiosInstance = axios.create()
 // 请求超时的毫秒数(0 表示无超时时间)
-// axios.defaults.timeout = 30000
+// axiosInstance.defaults.timeout = 30000
 
 // 定义一个自定义HTTP状态码的错误范围，返回 `true`，promise 将被 resolve; 否则，promise 将被 rejecte
-// axios.defaults.validateStatus = (status) => status >= 200 && status <= 500 // 默认的
+// axiosInstance.defaults.validateStatus = (status) => status >= 200 && status <= 500 // 默认的
 
 // 跨域请求，允许保存cookie
-// axios.defaults.withCredentials = true
+// axiosInstance.defaults.withCredentials = true
 
 // 由于代理导致前端路由解析不到 先加上`/api` 前缀的接口
-axios.defaults.baseURL = process.env.NODE_ENV === 'development' ? '' : API_BASE_URL
+axiosInstance.defaults.baseURL = process.env.NODE_ENV === 'development' ? '' : API_BASE_URL
 
 // 添加请求拦截器
-axios.interceptors.request.use(
+axiosInstance.interceptors.request.use(
   (config: AxiosCustomConfigType) => {
     // 1、凭证
     const { needToken } = config.headers || {}
@@ -57,7 +59,7 @@ axios.interceptors.request.use(
 )
 
 // 添加响应拦截器
-axios.interceptors.response.use(
+axiosInstance.interceptors.response.use(
   (response) =>
     // 对响应数据做点什么
     response,
@@ -66,4 +68,4 @@ axios.interceptors.response.use(
     Promise.reject(error),
 )
 
-export default axios
+export default axiosInstance

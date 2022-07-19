@@ -1,10 +1,3 @@
-/*
- * @Author: shixuewen friendlysxw@163.com
- * @Date: 2022-07-01 18:15:57
- * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-05 12:12:49
- * @Description: metadata 相关工具方法
- */
 import { Connection, PublicKey } from '@solana/web3.js'
 import { Metadata, PROGRAM_ID as MetadataProgramId } from '@metaplex-foundation/mpl-token-metadata'
 import axios from 'axios'
@@ -12,7 +5,7 @@ import { SynftSeed, SYNFT_PROGRAM_ID } from '@ecnft/js-sdk-react'
 import SynftContract from '@ecnft/js-sdk-core'
 import { TOKEN_PROGRAM_ID, getAccount } from '@solana/spl-token'
 
-import type { BelongTo, MetaInfo, Node } from 'types/synft'
+import type { BelongTo, MetaInfo, Node } from '../synft'
 
 export async function getMetadataFromMint(mintKey: PublicKey, connection: Connection) {
   const [pubkey] = await getMetadataPDA(mintKey)
@@ -79,6 +72,17 @@ export async function getValidNFTokensWithOwner(owner: PublicKey, connection: Co
   return filteredToken
 }
 
+export async function getInjectSOLFromMints(mints: PublicKey[], connection: Connection) {
+  const pdas = await Promise.all(
+    mints.map(async (item) => {
+      const solPda = await getEnchaSOLPda(item)
+      return solPda
+    }),
+  )
+  const infos = await connection.getMultipleAccountsInfo(pdas)
+  return infos
+}
+
 export async function getMetadataFormMints(mints: PublicKey[], connection: Connection) {
   const pdas = await Promise.all(
     mints.map(async (item) => {
@@ -95,14 +99,20 @@ export async function getMetadataFormMints(mints: PublicKey[], connection: Conne
     }),
   )
 
-  return datas.filter((item): item is Metadata => item !== null)
+  return datas
 }
 
-export async function getInjectSOL(mintKey: PublicKey, connection: Connection) {
+export async function getEnchaSOLPda(mintKey: PublicKey) {
   const [solPDA] = await PublicKey.findProgramAddress(
     [Buffer.from(SynftSeed.SOL), mintKey.toBuffer()],
     SYNFT_PROGRAM_ID,
   )
+
+  return solPDA
+}
+
+export async function getInjectSOL(mintKey: PublicKey, connection: Connection) {
+  const solPDA = await getEnchaSOLPda(mintKey)
   const solChildrenMetadata = await connection.getAccountInfo(solPDA)
   return solChildrenMetadata
 }
@@ -122,7 +132,7 @@ export async function checkValidNFT(mintKey: PublicKey, connection: Connection):
 export async function getInjectTree(
   synftContract: SynftContract,
   mintKey: PublicKey,
-  withParent = true,
+  withParent: boolean = true,
 ): Promise<Node | null> {
   const treeObj: Node = {
     curr: {
