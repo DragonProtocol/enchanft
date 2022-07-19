@@ -34,7 +34,7 @@ const CallBack: React.FC = (props) => {
 
   const handleClose = () => {
     window.close()
-    localStorage.setItem('account-window','close')
+    localStorage.setItem('account-window', 'close')
   }
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const CallBack: React.FC = (props) => {
       //     },
       //   },
       //   'https://launch.enchanft.xyz',
-      // ) // pro origin 
+      // ) // pro origin
     } else if (errorMsg) {
       console.log('link failed: no twitter found')
       handleClose()
