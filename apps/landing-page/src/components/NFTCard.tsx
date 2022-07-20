@@ -6,18 +6,18 @@
  * @Description: nft卡片视图组件
  * @FilePath: \synft-app\src\components\NFTCard.tsx
  */
-import React, { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import { MEDIA_BREAK_POINTS, VIEW_LAMPORTS_DECIMAL } from '../utils/constants'
-import { NftDataItem } from './NFTList'
-import SolanaIcon from './icons/solana.png'
-import { lamportsToSol } from '../utils'
+import React, { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
+import { MEDIA_BREAK_POINTS, VIEW_LAMPORTS_DECIMAL } from '../utils/constants';
+import { NftDataItem } from './NFTList';
+import SolanaIcon from './icons/solana.png';
+import { lamportsToSol } from '../utils';
 interface Props {
-  data: NftDataItem
+  data: NftDataItem;
 }
 const NFTCard: React.FC<Props> = ({ data }: Props) => {
-  console.log({ data })
-  const { externalMetadata, injectSolAmount = 0 } = data
+  console.log({ data });
+  const { externalMetadata, injectSolAmount = 0 } = data;
   return (
     <NFTCardWrapper>
       <div className="img-box">
@@ -28,20 +28,24 @@ const NFTCard: React.FC<Props> = ({ data }: Props) => {
       <EnchaNFTedNameBox>
         <EnchaNFTedName>{data.name}</EnchaNFTedName>
         <EnchaNFTedProjectName>
-          {externalMetadata?.collection?.name || externalMetadata?.collection?.family || 'unknown collection'}
+          {externalMetadata?.collection?.name ||
+            externalMetadata?.collection?.family ||
+            'unknown collection'}
         </EnchaNFTedProjectName>
       </EnchaNFTedNameBox>
       <EnchaNFTedAmountBox>
         <EnchaNFTedAmountTitle>EnchaNFTed</EnchaNFTedAmountTitle>
         <EnchaNFTedAmount>
           <img src={SolanaIcon} alt="" />
-          <span>{lamportsToSol(injectSolAmount).toFixed(VIEW_LAMPORTS_DECIMAL)}SOL</span>
+          <span>
+            {lamportsToSol(injectSolAmount).toFixed(VIEW_LAMPORTS_DECIMAL)}SOL
+          </span>
         </EnchaNFTedAmount>
       </EnchaNFTedAmountBox>
     </NFTCardWrapper>
-  )
-}
-export default NFTCard
+  );
+};
+export default NFTCard;
 const NFTCardWrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -85,21 +89,21 @@ const NFTCardWrapper = styled.div`
     line-height: 14px;
     color: #222222;
   }
-`
+`;
 const EnchaNFTedNameBox = styled.div`
   padding: 16px;
-`
+`;
 const EnchaNFTedName = styled.div`
   font-size: 16px;
   line-height: 16px;
-`
+`;
 
 const EnchaNFTedProjectName = styled.div`
   font-size: 12px;
   line-height: 12px;
   color: #3dd606;
   margin-top: 12px;
-`
+`;
 
 const EnchaNFTedAmountBox = styled.div`
   padding: 28px 16px;
@@ -107,12 +111,12 @@ const EnchaNFTedAmountBox = styled.div`
   justify-content: space-between;
   align-items: center;
   background: rgba(34, 34, 34, 0.05);
-`
+`;
 
 const EnchaNFTedAmountTitle = styled.div`
   font-size: 12px;
   line-height: 12px;
-`
+`;
 const EnchaNFTedAmount = styled.div`
   display: flex;
   gap: 12px;
@@ -123,4 +127,4 @@ const EnchaNFTedAmount = styled.div`
     width: 24px;
     height: 24px;
   }
-`
+`;

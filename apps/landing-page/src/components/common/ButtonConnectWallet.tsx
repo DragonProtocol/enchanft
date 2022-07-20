@@ -1,17 +1,20 @@
-import { useWallet } from '@solana/wallet-adapter-react'
-import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
-import styled from 'styled-components'
-import { ButtonBaseCss, ButtonProps } from './ButtonBase'
+import { useWallet } from '@solana/wallet-adapter-react';
+import { WalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import styled from 'styled-components';
+import { ButtonBaseCss, ButtonProps } from './ButtonBase';
 
-const ButtonConnectWallect: React.FC<ButtonProps> = ({ children, ...otherProps }: ButtonProps) => {
-  const wallet = useWallet()
+const ButtonConnectWallect: React.FC<ButtonProps> = ({
+  children,
+  ...otherProps
+}: ButtonProps) => {
+  const wallet = useWallet();
   return (
     <ButtonConnectWallectWrapper {...otherProps}>
       {children || (!wallet.publicKey && 'Connect Wallet')}
     </ButtonConnectWallectWrapper>
-  )
-}
-export default ButtonConnectWallect
+  );
+};
+export default ButtonConnectWallect;
 const ButtonConnectWallectWrapper = styled(WalletMultiButton)`
   // 重置solana按钮默认样式 - start
   margin: 0;
@@ -27,4 +30,4 @@ const ButtonConnectWallectWrapper = styled(WalletMultiButton)`
   ${ButtonBaseCss}
   background: #3dd606 !important;
   border-radius: 0;
-`
+`;

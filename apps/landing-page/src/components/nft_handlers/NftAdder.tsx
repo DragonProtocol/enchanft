@@ -6,26 +6,32 @@
  * @Description: NFT 选择添加器
  * @FilePath: \synft-app\src\components\nft_handlers\NftAdder.tsx
  */
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { Checkbox, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { NftDataItem, NFTListWrapper } from '../NFTList'
-import ModalNftSelector from './ModalNftSelector'
-import AddIcon from '../icons/add.svg'
-import { CursorPointerUpCss } from '../../GlobalStyle'
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import {
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from '@mui/material';
+import { NftDataItem, NFTListWrapper } from '../NFTList';
+import ModalNftSelector from './ModalNftSelector';
+import AddIcon from '../icons/add.svg';
+import { CursorPointerUpCss } from '../../GlobalStyle';
 interface Props {
   /** 对选择添加nft的一些描述 */
-  description?: string
+  description?: string;
   /** 列表可选项 */
-  options: NftDataItem[]
+  options: NftDataItem[];
   /** 选中的列表 */
-  selectedList?: NftDataItem[]
+  selectedList?: NftDataItem[];
   /** 最多可选择的数量 */
-  maxSelectNum?: number
+  maxSelectNum?: number;
   /** 选中的列表发生改变 */
-  onChange: (data: NftDataItem[]) => void
+  onChange: (data: NftDataItem[]) => void;
   /**禁用 */
-  disabled?: boolean
+  disabled?: boolean;
 }
 const NftAdder: React.FC<Props> = ({
   description,
@@ -35,24 +41,24 @@ const NftAdder: React.FC<Props> = ({
   onChange,
   disabled,
 }: Props) => {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const handleAdd = () => {
     if (maxSelectNum === undefined || selectedList.length < maxSelectNum) {
-      setOpen(true)
+      setOpen(true);
     } else {
-      alert('最多只能选择' + maxSelectNum + '个')
+      alert('最多只能选择' + maxSelectNum + '个');
     }
-  }
+  };
   const handleDel = (data: NftDataItem) => {
-    onChange(selectedList.filter((item) => item.mint !== data.mint))
-  }
+    onChange(selectedList.filter((item) => item.mint !== data.mint));
+  };
   const handleSubmit = (data: NftDataItem[]) => {
-    onChange(data)
-    handleClose()
-  }
+    onChange(data);
+    handleClose();
+  };
   const handleClose = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
   return (
     <NftAdderWrapper>
       <div className={`nft-list ${disabled ? 'disabled' : ''}`}>
@@ -81,9 +87,9 @@ const NftAdder: React.FC<Props> = ({
         onSubmit={handleSubmit}
       ></ModalNftSelector>
     </NftAdderWrapper>
-  )
-}
-export default NftAdder
+  );
+};
+export default NftAdder;
 const NftAdderWrapper = styled.div`
   .disabled {
     cursor: not-allowed;
@@ -132,4 +138,4 @@ const NftAdderWrapper = styled.div`
       }
     }
   }
-`
+`;

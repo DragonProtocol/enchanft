@@ -5,14 +5,14 @@
  * @LastEditTime: 2022-06-28 15:48:46
  * @Description: 整体结构布局
  */
-import React, { useEffect } from 'react'
-import styled from 'styled-components'
-import Main from './Main'
-import Header from './Header'
-import { MEDIA_BREAK_POINTS } from '../utils/constants'
-import { useLocation } from 'react-router-dom'
+import React, { useEffect } from 'react';
+import styled from 'styled-components';
+import Main from './Main';
+import Header from './Header';
+import { MEDIA_BREAK_POINTS } from '../utils/constants';
+import { useLocation } from 'react-router-dom';
 const Layout: React.FC = () => {
-  const location = useLocation()
+  const location = useLocation();
   return (
     <LayoutWrapper isAbortPage={location.pathname === '/'}>
       <div className="header">
@@ -34,9 +34,9 @@ const Layout: React.FC = () => {
         </div>
       </div>
     </LayoutWrapper>
-  )
-}
-export default Layout
+  );
+};
+export default Layout;
 const LayoutWrapper = styled.div<{ isAbortPage: boolean }>`
   width: 100%;
   box-sizing: border-box;
@@ -95,4 +95,4 @@ const LayoutWrapper = styled.div<{ isAbortPage: boolean }>`
       }
     }
   }
-`
+`;

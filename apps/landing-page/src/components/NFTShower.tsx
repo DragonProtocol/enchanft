@@ -1,41 +1,41 @@
-import { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import Accordion from '@mui/material/Accordion'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import expandMoreIcon from './icons/expandMore.svg'
-import { CursorPointerUpCss } from '../GlobalStyle'
-import NFTTree from './NFTTree'
-import { Node } from '../synft'
-import { ExternalMetadata } from '../synft/types'
+import { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import expandMoreIcon from './icons/expandMore.svg';
+import { CursorPointerUpCss } from '../GlobalStyle';
+import NFTTree from './NFTTree';
+import { Node } from '../synft';
+import { ExternalMetadata } from '../synft/types';
 interface NFTShowerData {
-  externalMetadata?: ExternalMetadata
+  externalMetadata?: ExternalMetadata;
   injectTree: {
-    data: Node
-    loading: boolean
-  }
+    data: Node;
+    loading: boolean;
+  };
 }
 interface Props {
-  data: NFTShowerData
+  data: NFTShowerData;
 }
 const ExpandMoreIcon = () => (
   <>
     <img src={expandMoreIcon}></img>
   </>
-)
+);
 export default function NFTShower({ data }: Props) {
-  const { injectTree, externalMetadata: info } = data
-  const [currentAccordion, setCurrentAccordion] = useState('enchantment')
+  const { injectTree, externalMetadata: info } = data;
+  const [currentAccordion, setCurrentAccordion] = useState('enchantment');
   const handleAccordionChange = (accordion: string, isExpanded: boolean) => {
     if (isExpanded) {
-      setCurrentAccordion(accordion)
+      setCurrentAccordion(accordion);
     } else {
-      setCurrentAccordion('')
+      setCurrentAccordion('');
     }
-  }
+  };
 
   if (!info) {
-    return null
+    return null;
   }
   return (
     <NFTShowerWrapper>
@@ -60,12 +60,20 @@ export default function NFTShower({ data }: Props) {
           <Accordion
             className="info-item"
             expanded={currentAccordion === 'description'}
-            onChange={(event, isExpanded) => handleAccordionChange('description', isExpanded)}
+            onChange={(event, isExpanded) =>
+              handleAccordionChange('description', isExpanded)
+            }
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              className="info-title"
+            >
               about {info?.collection?.name || info?.collection?.family || ''}
             </AccordionSummary>
-            <AccordionDetails className="info-content">{info.description}</AccordionDetails>
+            <AccordionDetails className="info-content">
+              {info.description}
+            </AccordionDetails>
           </Accordion>
         )}
 
@@ -73,9 +81,15 @@ export default function NFTShower({ data }: Props) {
           <Accordion
             className="info-item"
             expanded={currentAccordion === 'properties'}
-            onChange={(event, isExpanded) => handleAccordionChange('properties', isExpanded)}
+            onChange={(event, isExpanded) =>
+              handleAccordionChange('properties', isExpanded)
+            }
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-controls="panel1a-content" className="info-title">
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              className="info-title"
+            >
               properties
             </AccordionSummary>
             <AccordionDetails className="info-content properties-content">
@@ -103,7 +117,7 @@ export default function NFTShower({ data }: Props) {
         </Accordion> */}
       </div>
     </NFTShowerWrapper>
-  )
+  );
 }
 const NFTShowerWrapper = styled.div`
   display: flex;
@@ -161,4 +175,4 @@ const NFTShowerWrapper = styled.div`
       }
     }
   }
-`
+`;

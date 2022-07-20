@@ -6,26 +6,34 @@
  * @FilePath: \synft-app\src\service\api\launchpad.ts
  * @Description: launchpad api
  */
-import axios from 'axios'
-import { ProjectItem } from '../../types/api/launchpad'
+import axios from 'axios';
+import { ProjectItem } from '../../types/api/launchpad';
 
 export type FetchListParams = {
-  page?: number
-  size?: number
-}
+  page?: number;
+  size?: number;
+};
 const defaultFetchListParmas = {
   page: 1,
   size: 20,
-}
-export const fetchListByUnderway = async (params?: FetchListParams): Promise<ProjectItem[]> => {
-  const page = params?.page || defaultFetchListParmas.page
-  const size = params?.size || defaultFetchListParmas.size
-  const resp = await axios.get(`/data/launchpad/underway.json?page=${page}&size=${size}`)
-  return resp.data
-}
-export const fetchListByUpcoming = async (params?: FetchListParams): Promise<ProjectItem[]> => {
-  const page = params?.page || defaultFetchListParmas.page
-  const size = params?.size || defaultFetchListParmas.size
-  const resp = await axios.get(`/data/launchpad/upcoming.json?page=${page}&size=${size}`)
-  return resp.data
-}
+};
+export const fetchListByUnderway = async (
+  params?: FetchListParams
+): Promise<ProjectItem[]> => {
+  const page = params?.page || defaultFetchListParmas.page;
+  const size = params?.size || defaultFetchListParmas.size;
+  const resp = await axios.get(
+    `/data/launchpad/underway.json?page=${page}&size=${size}`
+  );
+  return resp.data;
+};
+export const fetchListByUpcoming = async (
+  params?: FetchListParams
+): Promise<ProjectItem[]> => {
+  const page = params?.page || defaultFetchListParmas.page;
+  const size = params?.size || defaultFetchListParmas.size;
+  const resp = await axios.get(
+    `/data/launchpad/upcoming.json?page=${page}&size=${size}`
+  );
+  return resp.data;
+};
