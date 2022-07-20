@@ -9,12 +9,12 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
 import { login, updateProfile, link, getProfile } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
-import { setLoginToken, getLoginToken } from '../../utils/token'
-import { PublicKey } from '@solana/web3.js'
+import { setLoginToken, TokenType } from '../../utils/token'
 
 export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
+  defaultWallet: TokenType
   pubkey: string
   token: string
   avatar: string
@@ -26,6 +26,7 @@ export type AccountState = {
 // 用户账户信息
 const initialState: AccountState = {
   status: AsyncRequestStatus.IDLE,
+  defaultWallet: (localStorage.getItem('defaultWallet') as TokenType) || '',
   pubkey: '',
   token: '',
   avatar: '',
@@ -36,26 +37,35 @@ const initialState: AccountState = {
 
 export const userLogin = createAsyncThunk(
   'user/login',
-  async ({ signature, payload, pubkey }: { signature: string; payload: string; pubkey: string }) => {
+  async ({
+    signature,
+    payload,
+    pubkey,
+    walletType,
+  }: {
+    signature: string
+    payload: string
+    pubkey: string
+    walletType: TokenType
+  }) => {
     const resp = await login({
       signature,
       payload,
       pubkey,
+      walletType,
     })
     return {
       ...resp.data,
       pubkey,
+      walletType,
     }
   },
 )
 
-export const userGetProfile = createAsyncThunk(
-  'user/getProfile',
-  async () => {
-    const resp = await getProfile()
-    return resp.data
-  },
-)
+export const userGetProfile = createAsyncThunk('user/getProfile', async () => {
+  const resp = await getProfile()
+  return resp.data
+})
 
 export const userUpdateProfile = createAsyncThunk(
   'user/updateProfile',
@@ -73,16 +83,16 @@ export const userUpdateProfile = createAsyncThunk(
 
 export const userLink = createAsyncThunk(
   'user/userLink',
-  async ({ code,type }: { code: string,type: string }, thunkAPI) => {
+  async ({ code, type }: { code: string; type: string }, thunkAPI) => {
     const resp = await link({
       code,
-      type
+      type,
     })
-    const { twitter,discord } = resp.data
-    if(discord){
+    const { twitter, discord } = resp.data
+    if (discord) {
       thunkAPI.dispatch(setDiscord(discord))
     }
-    if(twitter){
+    if (twitter) {
       thunkAPI.dispatch(setTwitter(twitter))
     }
 
@@ -107,6 +117,10 @@ export const accountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {
+    setDefaultWallet: (state, action) => {
+      state.defaultWallet = action.payload
+      localStorage.setItem('defaultWallet', action.payload)
+    },
     setToken: (state, action) => {
       state.token = action.payload
     },
@@ -137,7 +151,7 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.PENDING
       })
       .addCase(userLogin.fulfilled, (state, action) => {
-        setLoginToken(action.payload.token, action.payload.pubkey)
+        setLoginToken(action.payload.token, action.payload.pubkey, action.payload.walletType)
         state.status = AsyncRequestStatus.FULFILLED
         state.pubkey = action.payload.pubkey
         state.token = action.payload.token
@@ -145,6 +159,7 @@ export const accountSlice = createSlice({
         state.name = action.payload.name
         state.twitter = action.payload.twitter
         state.discord = action.payload.discord
+        state.errorMsg = ''
       })
       .addCase(userLogin.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -175,18 +190,19 @@ export const accountSlice = createSlice({
       })
       .addCase(userGetProfile.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED
-        state.avatar = action.payload.data.avatar;
-        state.name = action.payload.data.name;
+        state.avatar = action.payload.data.avatar
+        state.name = action.payload.data.name
+        state.errorMsg = ''
       })
       .addCase(userGetProfile.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
       })
-      
   },
 })
 
 const { actions, reducer } = accountSlice
-export const { setToken, setPubkey,setAvatar,removeToken, setName, setTwitter, setDiscord } = actions
+export const { setDefaultWallet, setToken, setPubkey, setAvatar, removeToken, setName, setTwitter, setDiscord } =
+  actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer

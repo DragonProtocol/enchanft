@@ -16,14 +16,16 @@ import TodoTask from '../../container/TodoTask'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { selectAccount } from '../../features/user/accountSlice'
 import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
+import Guide from '../../container/Guide'
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
-  const isLogin = true
+  const isLogin = !!token
   const permissionRoutes = isLogin
     ? [
         { path: '/profile', element: <Profile /> },
+        { path: '/guide', element: <Guide /> },
         { path: '/todo', element: <TodoTask /> },
       ]
     : []
