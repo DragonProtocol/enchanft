@@ -34,7 +34,7 @@ import {
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 
-import { selectAccount, userUpdateProfile, setTwitter, setDiscord } from '../features/user/accountSlice'
+import { selectAccount, userUpdateProfile, setTwitter, setDiscord, userLink } from '../features/user/accountSlice'
 import MainContentBox from '../components/layout/MainContentBox'
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
 import {
@@ -137,15 +137,10 @@ const Profile: React.FC = () => {
   useInterval(
     () => {
       // TODO timeout
-
-      const twitter = localStorage.getItem('twitter')
-      const discord = localStorage.getItem('discord')
-      const accountWindow = localStorage.getItem('account-window')
-
-      if (twitter || discord || accountWindow) {
-        dispatch(setTwitter(twitter || ''))
-        dispatch(setDiscord(discord || ''))
-        localStorage.removeItem('account-window')
+      const accountInfo = localStorage.getItem('account-verify-data')
+      if (accountInfo) {
+        linkUser(JSON.parse(accountInfo))
+        localStorage.removeItem('account-verify-data')
         setIsTracking(false)
       }
 
@@ -153,6 +148,16 @@ const Profile: React.FC = () => {
     },
     isTracking ? 3000 : null,
   )
+
+  const linkUser = (accountInfo) => {
+    const code = accountInfo.code
+    const type = accountInfo.type || 'TWITTER'
+    if (code && type) {
+      dispatch(userLink({ code, type }))
+    } else {
+      alert('account bind failed!')
+    }
+  }
 
   const handleTrackAccountBind = () => {
     localStorage.removeItem('twitter')
