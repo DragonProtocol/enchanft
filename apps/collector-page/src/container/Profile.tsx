@@ -2,9 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 18:08:50
+ * @LastEditTime: 2022-07-19 17:01:18
  * @Description: 个人信息
  */
+import { useSynftContract } from '@ecnft/js-sdk-react'
+import { useConnection, useWallet } from '@solana/wallet-adapter-react'
+import {
+  clearMyNFT,
+  fetchMyEnchanfted,
+  selectAll as selectAllForMyEnchanfted,
+  selectMyEnchanftedState,
+} from '../features/user/myEnchanftedSlice'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCallback } from 'react'
 import useInterval from '../hooks/useInterval'
@@ -26,7 +34,7 @@ import {
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 
-import { selectAccount, userUpdateProfile, setTwitter, setDiscord } from '../features/user/accountSlice'
+import { selectAccount, userUpdateProfile, setTwitter, setDiscord, userLink } from '../features/user/accountSlice'
 import MainContentBox from '../components/layout/MainContentBox'
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
 import {
@@ -35,6 +43,8 @@ import {
   selectuserFollowedCommunitiesState,
 } from '../features/user/followedCommunitiesSlice'
 import { AsyncRequestStatus } from '../types'
+import EnchanftedList, { EnchanftedListItemsType } from '../components/business/nft/EnchanftedList'
+import { EnchanftedForEntity } from '../features/user/myEnchanftedSlice'
 import { uploadAvatar } from '../services/api/login'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
@@ -49,6 +59,27 @@ const formatStoreDataToComponentDataByFollowedCommunities = (
     }
   })
 }
+const formatStoreDataToComponentDataByMyEnchanfted = (nfts: EnchanftedForEntity[]): EnchanftedListItemsType => {
+  return nfts.map((nft) => {
+    return {
+      data: { ...nft },
+    }
+  })
+}
+const ProfileTabOptions = [
+  {
+    label: 'My Communities',
+    value: 'myCommunities',
+  },
+  {
+    label: 'My Whitelist',
+    value: 'myWhitelist',
+  },
+  {
+    label: 'My Enchanfted',
+    value: 'myEnchanfted',
+  },
+]
 const Profile: React.FC = () => {
   const dispatch = useAppDispatch()
 
@@ -88,15 +119,10 @@ const Profile: React.FC = () => {
   useInterval(
     () => {
       // TODO timeout
-
-      const twitter = localStorage.getItem('twitter')
-      const discord = localStorage.getItem('discord')
-      const accountWindow = localStorage.getItem('account-window')
-
-      if (twitter || discord || accountWindow) {
-        dispatch(setTwitter(twitter || ''))
-        dispatch(setDiscord(discord || ''))
-        localStorage.removeItem('account-window')
+      const accountInfo = localStorage.getItem('account-verify-data')
+      if (accountInfo) {
+        linkUser(JSON.parse(accountInfo))
+        localStorage.removeItem('account-verify-data')
         setIsTracking(false)
       }
 
@@ -105,6 +131,16 @@ const Profile: React.FC = () => {
     isTracking ? 3000 : null,
   )
 
+  const linkUser = (accountInfo) => {
+    const code = accountInfo.code
+    const type = accountInfo.type || 'TWITTER'
+    if (code && type) {
+      dispatch(userLink({ code, type }))
+    } else {
+      alert('account bind failed!')
+    }
+  }
+
   const handleTrackAccountBind = () => {
     localStorage.removeItem('twitter')
     localStorage.removeItem('discord')
@@ -112,26 +148,19 @@ const Profile: React.FC = () => {
     setIsTracking(true)
   }
   // profile展示信息切换
-  const ProfileTabOptions = [
-    {
-      label: 'My Communities',
-      value: 'myCommunities',
-    },
-    {
-      label: 'My Whitelist',
-      value: 'myWhitelist',
-    },
-    {
-      label: 'My Enchanfted',
-      value: 'myEnchanfted',
-    },
-  ]
   const [curProfileTab, setCurProfileTab] = useState(ProfileTabOptions[0].value)
-  // 获取我的社区列表
+
+  // 我的社区列表
   const followedCommunities = useAppSelector(selectAllForFollowedCommunity)
   const { status: followedCommunitiesStatus } = useAppSelector(selectuserFollowedCommunitiesState)
   const loadingFollowedCommunities = followedCommunitiesStatus === AsyncRequestStatus.PENDING
   const followedCommunityItems = formatStoreDataToComponentDataByFollowedCommunities(followedCommunities)
+
+  // 我的NFT列表
+  const myEnchanftedList = useAppSelector(selectAllForMyEnchanfted)
+  const { status: myEnchanftedStatus } = useAppSelector(selectMyEnchanftedState)
+  const loadingEnchanftedList = myEnchanftedStatus === AsyncRequestStatus.PENDING
+  const myEnchanftedItems = formatStoreDataToComponentDataByMyEnchanfted(myEnchanftedList)
 
   return (
     <>
@@ -267,6 +296,9 @@ const Profile: React.FC = () => {
             <ProfileTabContentBox>
               {curProfileTab === 'myCommunities' && (
                 <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
+              )}
+              {curProfileTab === 'myEnchanfted' && (
+                <EnchanftedList items={myEnchanftedItems} loading={loadingEnchanftedList} />
               )}
             </ProfileTabContentBox>
           </ProfileTabsBox>

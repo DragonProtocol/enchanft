@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 18:33:50
+ * @LastEditTime: 2022-07-19 12:54:43
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
@@ -17,6 +17,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { selectAccount } from '../../features/user/accountSlice'
 import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
 import Guide from '../../container/Guide'
+import EnchanftedDetail from '../../container/EnchanftedDetail'
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -27,6 +28,7 @@ const Main: React.FC = () => {
         { path: '/profile', element: <Profile /> },
         { path: '/guide', element: <Guide /> },
         { path: '/todo', element: <TodoTask /> },
+        { path: '/enchanfted/:mint', element: <EnchanftedDetail /> },
       ]
     : []
   const routes = useRoutes([
