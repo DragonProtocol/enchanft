@@ -5,7 +5,9 @@ import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
 
 import {
   selectAccount,
+  setAvatar,
   setDefaultWallet,
+  setName,
   setPubkey,
   setToken,
   userGetProfile,
@@ -22,6 +24,26 @@ const ConnectedBtn = styled(Button)`
     width: 25px;
     margin-right: 10px;
     font-size: 15px;
+  }
+`
+
+const ConnectBox = styled(Box)`
+  display: flex;
+  border-radius: 10px;
+  & > div {
+    width: 50%;
+    margin: 10px 20px;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    cursor: pointer;
+    & img {
+      width: 50px;
+    }
+    & p {
+      margin: 10px;
+    }
   }
 `
 
@@ -91,6 +113,15 @@ export default function ConnectBtn() {
     )
     navigateToGuide()
   }
+  const handleLogout = useCallback(async () => {
+    if (account.pubkey) {
+      clearLoginToken(account.pubkey, account.defaultWallet)
+      dispatch(setToken(''))
+      dispatch(setPubkey(''))
+      dispatch(setAvatar(''))
+      dispatch(setName(''))
+    }
+  }, [account])
 
   const connectMetamask = useCallback(async () => {
     dispatch(setDefaultWallet(TokenType.Ethereum))
@@ -112,13 +143,6 @@ export default function ConnectBtn() {
     handleClose()
     navigateToGuide()
   }, [])
-  const logout = useCallback(async () => {
-    if (account.pubkey) {
-      clearLoginToken(account.pubkey, account.defaultWallet)
-      dispatch(setToken(''))
-      dispatch(setPubkey(''))
-    }
-  }, [account])
 
   const shortPubkey = useMemo(() => {
     if (account.pubkey) {
@@ -129,6 +153,10 @@ export default function ConnectBtn() {
 
   const Icon = account.defaultWallet === TokenType.Solana ? PhantomIcon : MetamaskIcon
 
+  console.log({
+    phantomValid,
+    metamaskValid,
+  })
   return (
     <>
       {(shortPubkey && account.token && (
@@ -151,7 +179,7 @@ export default function ConnectBtn() {
                 <MenuItem
                   onClick={() => {
                     popupState.close()
-                    logout()
+                    handleLogout()
                   }}
                 >
                   Logout
@@ -174,7 +202,7 @@ export default function ConnectBtn() {
           zIndex: 100,
         }}
       >
-        <Box
+        <ConnectBox
           sx={{
             position: 'absolute' as 'absolute',
             top: '30%',
@@ -186,9 +214,16 @@ export default function ConnectBtn() {
             p: 4,
           }}
         >
-          <Button onClick={connectMetamask}>Metamask:{metamaskValid + ''}</Button>
-          <Button onClick={connectPhantom}>Phantom:{phantomValid + ''}</Button>
-        </Box>
+          <div onClick={connectMetamask}>
+            <MetamaskIcon />
+            <p>Metamask</p>
+          </div>
+
+          <div onClick={connectPhantom}>
+            <PhantomIcon />
+            <p>Phantom</p>
+          </div>
+        </ConnectBox>
       </Modal>
     </>
   )
