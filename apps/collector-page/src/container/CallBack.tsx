@@ -12,8 +12,7 @@ const CallBack: React.FC = () => {
   useEffect(() => {
     const code = location.hash.match(/code=([^&]*)/)?.[1]
     const type = location.hash.match(/type=([^&]*)/)?.[1] || 'TWITTER'
-    const verifyData = { code: code, type: type }
-    localStorage.setItem('account-verify-data',verifyData.toString())
+    localStorage.setItem('account-verify-data', JSON.stringify({ code: code, type: type }))
     window.close()
   }, [])
 
