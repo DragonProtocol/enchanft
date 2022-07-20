@@ -51,7 +51,13 @@ export const fetchFollowedCommunities = createAsyncThunk<
       const state = getState() as RootState
       const {
         userFollowedCommunities: { status },
+        account: { token },
       } = state
+      // 没有token ,则阻止新的请求
+      if (!token) {
+        todoTasksEntity.removeAll(state.userFollowedCommunities)
+        return false
+      }
       // 之前的请求正在进行中,则阻止新的请求
       if (status === AsyncRequestStatus.PENDING) {
         return false
@@ -76,6 +82,9 @@ export const userFollowedCommunitiesSlice = createSlice({
     updateOne: (state, action) => {
       const one = action.payload
       todoTasksEntity.upsertOne(state, one)
+    },
+    removeAll: (state) => {
+      todoTasksEntity.removeAll(state)
     },
   },
   extraReducers: (builder) => {
@@ -116,5 +125,5 @@ export const selectuserFollowedCommunitiesState = (state: RootState) => state.us
 export const { selectAll, selectIds } = todoTasksEntity.getSelectors(
   (state: RootState) => state.userFollowedCommunities,
 )
-export const { addOne, removeOne, updateOne } = actions
+export const { addOne, removeOne, updateOne, removeAll } = actions
 export default reducer
