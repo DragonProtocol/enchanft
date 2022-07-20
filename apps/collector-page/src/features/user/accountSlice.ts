@@ -49,13 +49,10 @@ export const userLogin = createAsyncThunk(
   },
 )
 
-export const userGetProfile = createAsyncThunk(
-  'user/getProfile',
-  async () => {
-    const resp = await getProfile()
-    return resp.data
-  },
-)
+export const userGetProfile = createAsyncThunk('user/getProfile', async () => {
+  const resp = await getProfile()
+  return resp.data
+})
 
 export const userUpdateProfile = createAsyncThunk(
   'user/updateProfile',
@@ -73,16 +70,16 @@ export const userUpdateProfile = createAsyncThunk(
 
 export const userLink = createAsyncThunk(
   'user/userLink',
-  async ({ code,type }: { code: string,type: string }, thunkAPI) => {
+  async ({ code, type }: { code: string; type: string }, thunkAPI) => {
     const resp = await link({
       code,
-      type
+      type,
     })
-    const { twitter,discord } = resp.data
-    if(discord){
+    const { twitter, discord } = resp.data
+    if (discord) {
       thunkAPI.dispatch(setDiscord(discord))
     }
-    if(twitter){
+    if (twitter) {
       thunkAPI.dispatch(setTwitter(twitter))
     }
 
@@ -175,18 +172,17 @@ export const accountSlice = createSlice({
       })
       .addCase(userGetProfile.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED
-        state.avatar = action.payload.data.avatar;
-        state.name = action.payload.data.name;
+        state.avatar = action.payload.data.avatar
+        state.name = action.payload.data.name
       })
       .addCase(userGetProfile.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
       })
-      
   },
 })
 
 const { actions, reducer } = accountSlice
-export const { setToken, setPubkey,setAvatar,removeToken, setName, setTwitter, setDiscord } = actions
+export const { setToken, setPubkey, setAvatar, removeToken, setName, setTwitter, setDiscord } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer

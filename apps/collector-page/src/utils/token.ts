@@ -1,5 +1,3 @@
-
-
 const LOCAL_STORAGE_TOKEN = 'token'
 type TOKEN_TYPE = 'solana' | 'ethereum'
 

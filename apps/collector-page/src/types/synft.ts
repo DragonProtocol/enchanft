@@ -2,13 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 17:44:27
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-05 12:11:29
+ * @LastEditTime: 2022-07-19 13:51:53
  * @Description: synft 相关定义
  */
 /* eslint-disable camelcase */
 import { Metadata } from '@metaplex-foundation/mpl-token-metadata'
 import { PublicKey, AccountInfo } from '@solana/web3.js'
-
+export type Token = {
+  mint: PublicKey
+  address: PublicKey
+}
 // metaplex uri 指向的 json 数据
 export type ExternalMetadata = {
   name: string
@@ -85,11 +88,12 @@ export type NFT = {
   hasCopied?: boolean
   hasInjected?: boolean
   hasInjectedNFT?: boolean
-  externalMetadata: ExternalMetadata
+  externalMetadata?: ExternalMetadata
 }
 
 export type NFTDataItem = NFT & {
   uri?: string
+  injectSolAmount?: number
 }
 
 // eslint-disable-next-line no-shadow
@@ -99,3 +103,5 @@ export enum InjectType {
   // eslint-disable-next-line no-shadow
   NFT = 'nft',
 }
+
+export type NFTNodeDataItem = NFTDataItem & { rootPDA: string }

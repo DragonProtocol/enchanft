@@ -2,12 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 18:08:50
+ * @LastEditTime: 2022-07-19 17:01:18
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
 import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { clearMyNFT, getMyNFTokens, selectMyNFTData, selectMyNFTDataStatus } from 'features/user/myEnchanftedSlice'
+import {
+  clearMyNFT,
+  fetchMyEnchanfted,
+  selectAll as selectAllForMyEnchanfted,
+  selectMyEnchanftedState,
+} from '../features/user/myEnchanftedSlice'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCallback } from 'react'
 import useInterval from '../hooks/useInterval'
@@ -38,6 +43,8 @@ import {
   selectuserFollowedCommunitiesState,
 } from '../features/user/followedCommunitiesSlice'
 import { AsyncRequestStatus } from '../types'
+import EnchanftedList, { EnchanftedListItemsType } from '../components/business/nft/EnchanftedList'
+import { EnchanftedForEntity } from '../features/user/myEnchanftedSlice'
 import { uploadAvatar } from '../services/api/login'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
@@ -52,24 +59,37 @@ const formatStoreDataToComponentDataByFollowedCommunities = (
     }
   })
 }
+const formatStoreDataToComponentDataByMyEnchanfted = (nfts: EnchanftedForEntity[]): EnchanftedListItemsType => {
+  return nfts.map((nft) => {
+    return {
+      data: { ...nft },
+    }
+  })
+}
+const ProfileTabOptions = [
+  {
+    label: 'My Communities',
+    value: 'myCommunities',
+  },
+  {
+    label: 'My Whitelist',
+    value: 'myWhitelist',
+  },
+  {
+    label: 'My Enchanfted',
+    value: 'myEnchanfted',
+  },
+]
 const Profile: React.FC = () => {
   const wallet = useWallet()
+  const dispatch = useAppDispatch()
+  const account = useAppSelector(selectAccount)
   const walletRef = useRef('')
   const accountWindowRef = useRef<Window | null>(null)
   const { connection } = useConnection()
+
+  // 请求获取我的nft
   const { synftContract } = useSynftContract()
-  const dispatch = useAppDispatch()
-
-  const account = useAppSelector(selectAccount)
-  const [name, setName] = useState('')
-  const [avatar, setAvatar] = useState('')
-  const myNFTData = useAppSelector(selectMyNFTData)
-  const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus)
-
-  const [openDialog, setOpenDialog] = useState(false)
-
-  const [isTracking, setIsTracking] = useState(false)
-
   useEffect(() => {
     if (!wallet.publicKey) {
       walletRef.current = ''
@@ -80,9 +100,15 @@ const Profile: React.FC = () => {
 
     walletRef.current = wallet.publicKey.toString()
     const owner = wallet.publicKey
-    dispatch(getMyNFTokens({ owner, connection, synftContract }))
+    dispatch(fetchMyEnchanfted({ owner, connection, synftContract }))
   }, [wallet, connection, synftContract])
 
+  // profile 基本信息
+  const [avatar, setAvatar] = useState('')
+
+  const [isTracking, setIsTracking] = useState(false)
+  const [name, setName] = useState('')
+  const [openDialog, setOpenDialog] = useState(false)
   const updateProfile = useCallback(() => {
     if (!wallet.publicKey) return
     dispatch(
@@ -140,26 +166,19 @@ const Profile: React.FC = () => {
     setIsTracking(true)
   }
   // profile展示信息切换
-  const ProfileTabOptions = [
-    {
-      label: 'My Communities',
-      value: 'myCommunities',
-    },
-    {
-      label: 'My Whitelist',
-      value: 'myWhitelist',
-    },
-    {
-      label: 'My Enchanfted',
-      value: 'myEnchanfted',
-    },
-  ]
   const [curProfileTab, setCurProfileTab] = useState(ProfileTabOptions[0].value)
-  // 获取我的社区列表
+
+  // 我的社区列表
   const followedCommunities = useAppSelector(selectAllForFollowedCommunity)
   const { status: followedCommunitiesStatus } = useAppSelector(selectuserFollowedCommunitiesState)
   const loadingFollowedCommunities = followedCommunitiesStatus === AsyncRequestStatus.PENDING
   const followedCommunityItems = formatStoreDataToComponentDataByFollowedCommunities(followedCommunities)
+
+  // 我的NFT列表
+  const myEnchanftedList = useAppSelector(selectAllForMyEnchanfted)
+  const { status: myEnchanftedStatus } = useAppSelector(selectMyEnchanftedState)
+  const loadingEnchanftedList = myEnchanftedStatus === AsyncRequestStatus.PENDING
+  const myEnchanftedItems = formatStoreDataToComponentDataByMyEnchanfted(myEnchanftedList)
 
   return (
     <>
@@ -293,6 +312,9 @@ const Profile: React.FC = () => {
             <ProfileTabContentBox>
               {curProfileTab === 'myCommunities' && (
                 <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
+              )}
+              {curProfileTab === 'myEnchanfted' && (
+                <EnchanftedList items={myEnchanftedItems} loading={loadingEnchanftedList} />
               )}
             </ProfileTabContentBox>
           </ProfileTabsBox>
