@@ -5,45 +5,52 @@
  * @LastEditTime: 2022-06-28 13:19:47
  * @Description: 我的nft列表页
  */
-import React, { useEffect, useRef, useState } from 'react'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import styled from 'styled-components'
-import { useSynftContract } from '@ecnft/js-sdk-react'
-import NFTList, { NftDataItem } from '../components/NFTList'
-import { getMyNFTokens, clearMyNFT, selectMyNFTData, selectMyNFTDataStatus } from '../features/my/mySlice'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
+import React, { useEffect, useRef, useState } from 'react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import styled from 'styled-components';
+import { useSynftContract } from '@ecnft/js-sdk-react';
+import NFTList, { NftDataItem } from '../components/NFTList';
+import {
+  getMyNFTokens,
+  clearMyNFT,
+  selectMyNFTData,
+  selectMyNFTDataStatus,
+} from '../features/my/mySlice';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 
-import SplitTextOpacity, { SplitTextOpacityFuns } from '../components/common/animate/SplitTextOpacity'
-import LoadingIcon from '../components/imgs/Loading.gif'
-import { MOBILE_BREAK_POINT } from '../utils/constants'
-import RemindConnectWallet from '../components/RemindConnectWallet'
+import SplitTextOpacity, {
+  SplitTextOpacityFuns,
+} from '../components/common/animate/SplitTextOpacity';
+import LoadingIcon from '../components/imgs/Loading.gif';
+import { MOBILE_BREAK_POINT } from '../utils/constants';
+import RemindConnectWallet from '../components/RemindConnectWallet';
 
 function MyEnchaNFT() {
-  const wallet = useWallet()
-  const walletRef = useRef('')
-  const { connection } = useConnection()
-  const { synftContract } = useSynftContract()
-  const titleRefMy = useRef<SplitTextOpacityFuns>(null)
-  const dispatch = useAppDispatch()
+  const wallet = useWallet();
+  const walletRef = useRef('');
+  const { connection } = useConnection();
+  const { synftContract } = useSynftContract();
+  const titleRefMy = useRef<SplitTextOpacityFuns>(null);
+  const dispatch = useAppDispatch();
 
-  const myNFTData = useAppSelector(selectMyNFTData)
-  const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus)
+  const myNFTData = useAppSelector(selectMyNFTData);
+  const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus);
 
   useEffect(() => {
     if (!wallet.publicKey) {
-      walletRef.current = ''
-      dispatch(clearMyNFT())
-      return
+      walletRef.current = '';
+      dispatch(clearMyNFT());
+      return;
     }
-    if (walletRef.current === wallet.publicKey.toString()) return
+    if (walletRef.current === wallet.publicKey.toString()) return;
 
-    walletRef.current = wallet.publicKey.toString()
-    const owner = wallet.publicKey
-    dispatch(getMyNFTokens({ owner, connection, synftContract }))
-  }, [wallet, connection, synftContract])
+    walletRef.current = wallet.publicKey.toString();
+    const owner = wallet.publicKey;
+    dispatch(getMyNFTokens({ owner, connection, synftContract }));
+  }, [wallet, connection, synftContract]);
 
-  const nftList: NftDataItem[] = myNFTData
-  const nftListLoading = myNFTDataStatus === 'loading'
+  const nftList: NftDataItem[] = myNFTData;
+  const nftListLoading = myNFTDataStatus === 'loading';
 
   return (
     <MyEnchaNFTWrapper>
@@ -67,10 +74,10 @@ function MyEnchaNFT() {
         </div>
       )}
     </MyEnchaNFTWrapper>
-  )
+  );
 }
 
-export default MyEnchaNFT
+export default MyEnchaNFT;
 
 const MyEnchaNFTWrapper = styled.div`
   height: 100%;
@@ -104,4 +111,4 @@ const MyEnchaNFTWrapper = styled.div`
     left: 50%;
     transform: translate(-50%, -50%);
   }
-`
+`;

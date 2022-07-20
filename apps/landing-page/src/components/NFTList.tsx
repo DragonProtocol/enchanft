@@ -5,23 +5,23 @@
  * @LastEditTime: 2022-06-28 14:18:15
  * @Description: nft 列表组件
  */
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import { animated, useSprings } from 'react-spring'
-import styled from 'styled-components'
-import { CursorPointerUpCss } from '../GlobalStyle'
-import { MEDIA_BREAK_POINTS } from '../utils/constants'
-import NFTCard from './NFTCard'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { animated, useSprings } from 'react-spring';
+import styled from 'styled-components';
+import { CursorPointerUpCss } from '../GlobalStyle';
+import { MEDIA_BREAK_POINTS } from '../utils/constants';
+import NFTCard from './NFTCard';
 
-import type { NFTDataItem } from '../synft'
+import type { NFTDataItem } from '../synft';
 
-export type NftDataItem = NFTDataItem
+export type NftDataItem = NFTDataItem;
 interface Props {
-  data: NftDataItem[]
+  data: NftDataItem[];
 }
 const NFTList: React.FC<Props> = (props: Props) => {
-  const { data } = props
-  const navigate = useNavigate()
+  const { data } = props;
+  const navigate = useNavigate();
   // 卡片交互动画
   const [cardAnimateds, cardAnimatedApi] = useSprings(data.length, (i) => ({
     transform: 'translateY(0px)',
@@ -30,28 +30,28 @@ const NFTList: React.FC<Props> = (props: Props) => {
       scale: 0.9,
       transform: 'translateY(0px)',
     },
-  }))
+  }));
   const cardTo = (cardIndex: number, eventType: string) => {
-    let style = {}
+    let style = {};
     switch (eventType) {
       case 'onMouseOverCapture':
-        style = { transform: 'translateY(-4px)' }
-        break
+        style = { transform: 'translateY(-4px)' };
+        break;
       case 'onMouseOutCapture':
-        style = { transform: 'translateY(0px)' }
-        break
+        style = { transform: 'translateY(0px)' };
+        break;
       case 'onMouseDownCapture':
-        style = { scale: 0.9 }
-        break
+        style = { scale: 0.9 };
+        break;
       case 'onMouseUpCapture':
-        style = { scale: 1 }
-        break
+        style = { scale: 1 };
+        break;
       case 'onMouseLeave':
-        style = { scale: 1 }
-        break
+        style = { scale: 1 };
+        break;
     }
-    cardAnimatedApi.start((i) => (cardIndex === i ? style : {}))
-  }
+    cardAnimatedApi.start((i) => (cardIndex === i ? style : {}));
+  };
   return (
     <NFTListWrapper>
       {data.map((item, idx) => {
@@ -69,12 +69,12 @@ const NFTList: React.FC<Props> = (props: Props) => {
           >
             <NFTCard data={item}></NFTCard>
           </animated.div>
-        )
+        );
       })}
     </NFTListWrapper>
-  )
-}
-export default NFTList
+  );
+};
+export default NFTList;
 export const NFTListWrapper = styled.div`
   width: 100%;
   display: grid;
@@ -96,4 +96,4 @@ export const NFTListWrapper = styled.div`
   .list-item {
     ${CursorPointerUpCss}
   }
-`
+`;
