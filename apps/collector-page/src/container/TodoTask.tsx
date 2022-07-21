@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-18 18:20:43
+ * @LastEditTime: 2022-07-21 15:08:09
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -166,13 +166,13 @@ const TodoTask: React.FC = () => {
               />
               <TodoTaskList
                 title={'closed'}
-                items={lostItems}
+                items={closedItems}
                 loading={loading}
                 onRefreshTask={(task) => handleRefreshTask(task.id)}
               />
               <TodoTaskList
                 title={'lost'}
-                items={closedItems}
+                items={lostItems}
                 loading={loading}
                 onRefreshTask={(task) => handleRefreshTask(task.id)}
               />

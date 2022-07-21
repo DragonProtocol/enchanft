@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 10:30:53
+ * @LastEditTime: 2022-07-21 15:36:15
  * @Description: 站点头部
  */
 import SolanaConnectWalletButton from 'components/business/connect/SolanaConnectWalletButton'
@@ -27,8 +27,12 @@ const Header: React.FC = () => {
   const prePublicKey = useRef<PublicKey | null>()
   const navs = [
     {
-      name: 'launchpad',
+      name: 'events',
       link: '/',
+    },
+    {
+      name: 'projects',
+      link: '/project',
     },
     // {
     //   name: 'calendar',
@@ -106,7 +110,7 @@ const Header: React.FC = () => {
     <HeaderWrapper>
       <HeaderLeft>
         <HeaderLogoBox>
-          <img src={LogoImg} alt="" />
+          <img src={LogoImg} alt="" onClick={() => navigate('/')} />
         </HeaderLogoBox>
       </HeaderLeft>
       <HeaderCenter>{PcNav()}</HeaderCenter>
@@ -131,7 +135,9 @@ const HeaderWrapper = styled.div`
 const HeaderLeft = styled.div`
   display: flex;
 `
-const HeaderLogoBox = styled.div``
+const HeaderLogoBox = styled.div`
+  cursor: pointer;
+`
 const HeaderCenter = styled.div`
   flex: 1;
   height: 100%;

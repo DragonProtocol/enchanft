@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-18 13:18:09
+ * @LastEditTime: 2022-07-21 18:59:32
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -30,11 +30,13 @@ export enum TaskTodoCompleteStatus {
 export type Task = {
   id: number
   name: string
+  image: string
   whitelistTotalNum: string
   type: TaskType
   projectId: number
   startTime: number
   endTime: number
+  description: string
 }
 
 /** community */
@@ -144,21 +146,48 @@ export type Whitelist = {
   taskId: number
 }
 
-/** api response types ============================ */
+/** api request and response types ============================ */
 
-/** dashboard api */
+/** explore api */
 
+// explore task
+export enum ExploreTaskSortBy {
+  NEW = 'NEW',
+  HOT = 'HOT',
+}
+export type ExploreSearchTasksRequestParams = {
+  sortBy?: ExploreTaskSortBy
+  keywords?: string
+}
+export type ExploreSearchTaskItem = Task & {
+  winnersNum: number
+  acceptedStatus: TaskAcceptedStatus
+  actions: Action[]
+  project: Project
+}
+export type ExploreRecommendTaskItem = Task & {
+  winnersNum: number
+  acceptedStatus: TaskAcceptedStatus
+  actions: Action[]
+  project: Project
+}
+
+// explore project
 export type TaskItem = Task & {
   winnersNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
 }
-
-export type DashboardTaskItem = TaskItem & {
-  project: Project
+export type ExploreSearchProjectsRequestParams = {
+  status?: ProjectStatus | ''
+  keywords?: string
+}
+export type ExploreSearchProjectItem = Project & {
+  community: Community
+  tasks: TaskItem[]
 }
 
-export type DashboardProjectItem = Project & {
+export type ExploreRecommendProjectItem = Project & {
   community: Community
   tasks: TaskItem[]
 }
@@ -205,5 +234,12 @@ export type TodoTaskItem = Task & {
   projectImage: string
   status: TaskTodoCompleteStatus
 }
-
 export type TodoTaskResponse = TodoTaskItem[]
+/** task detail api */
+export type TaskDetailResponse = TaskItem & {
+  actions: TodoTaskActionItem[]
+  mintUrl: string
+  mintStartTime: number
+  status: TaskTodoCompleteStatus
+  project: Project
+}

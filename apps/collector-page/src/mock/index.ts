@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-18 12:11:36
+ * @LastEditTime: 2022-07-21 19:09:30
  * @Description: mock 请求拦截入口
  */
 
@@ -48,7 +48,7 @@ import Mock from 'mockjs'
     const roadmap_status = [RoadmapStatus.DONE, RoadmapStatus.UNDO]
     const project_status = [ProjectStatus.ACTIVE, ProjectStatus.LIVE, ProjectStatus.FUTURE]
     const action_type = [ActionType.FOLLOW_TWITTER, ActionType.INVITE_PEOPLE]
-    const user_action_status = [UserActionStatus.TODO, UserActionStatus.DOING, UserActionStatus.DONE]
+    const user_action_status = [UserActionStatus.TODO, UserActionStatus.DONE]
     const start_tinme = () => new Date().getTime() + Mock.Random.integer(0, 1000 * 60 * 60 * 24)
     const range_tinme = () => new Date().getTime() + Mock.Random.integer(-1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24)
     const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60 * 24 * 2, 1000 * 60 * 60 * 24 * 10)
@@ -56,6 +56,36 @@ import Mock from 'mockjs'
     // 设定响应时间
     Mock.setup({
       timeout: 3000,
+    })
+
+    // explore remmound tasks
+    Mock.mock(/\/tasks\/recommendation/, 'get', {
+      code: 0,
+      msg: 'success',
+      'data|10': [
+        {
+          id: '@increment',
+          name: '@title(1, 5)',
+          image: "@dataImage('820x460', 'Task Image')",
+          description: '@paragraph(10, 30)',
+          'type|1': task_type,
+          startTime: start_tinme,
+          endTime: end_time,
+          winnersNum: 100,
+          project: {
+            id: '@increment',
+            name: '@title(1, 5)',
+            image: "@dataImage('360x360', 'Project Image')",
+            'status|1': project_status,
+          },
+          'actions|10': [
+            {
+              id: '@increment',
+              name: '@title(3, 15)',
+            },
+          ],
+        },
+      ],
     })
     // 用户的任务列表
     Mock.mock(/\/tasks\/todo/, 'get', {
@@ -93,41 +123,104 @@ import Mock from 'mockjs'
         },
       ],
     })
-    // 任务推荐
-    Mock.mock(/\/tasks\/recommendation/, 'get', {
-      code: 0,
-      msg: 'success',
-      'data|10': [
-        {
-          id: '@increment',
-          name: '@title(1, 5)',
-          'type|1': task_type,
-          startTime: start_tinme,
-          endTime: end_time,
-          winnersNum: 100,
-          'acceptedStatus|1': task_status,
-          project: {
-            id: '@increment',
-            name: '@title(1, 5)',
-            image: "@dataImage('360x360', 'Project Image')",
-            'status|1': project_status,
-          },
-          'actions|10': [
-            {
-              id: '@increment',
-              name: '@title(3, 15)',
-            },
-          ],
-        },
-      ],
-    })
+
     // 接任务
     Mock.mock(/\/tasks\/(\d*)\/takers/, 'post', {
       code: 0,
       msg: 'success',
       data: 'take task mock data',
     })
-    // 项目列表
+    // task detail
+    Mock.mock(/\/tasks\/(\d*)/, 'get', {
+      code: 0,
+      msg: 'success',
+      'data|': {
+        id: '@increment',
+        name: Mock.Random.cword(5),
+        image: "@dataImage('820x460', 'Task Image')",
+        description: '@paragraph(10, 30)',
+        whitelistTotalNum: Mock.Random.integer(1, 100),
+        'type|1': task_type,
+        projectId: '@increment',
+        startTime: start_tinme(),
+        endTime: end_time(),
+        project: {
+          name: '@title(1, 5)',
+        },
+        'acceptedStatus|1': task_status,
+        winnersNum: 100,
+        'actions|10': [
+          {
+            id: '@increment',
+            name: Mock.Random.cword(5),
+            orderNum: Mock.Random.integer(1, 100),
+            'type|1': action_type,
+            taskId: '@increment',
+            projectId: '@increment',
+            communityId: '@increment',
+            data: {
+              url: 'https://twitter.com/',
+            },
+            'status|1': user_action_status,
+            progress: '',
+          },
+        ],
+        mintUrl: 'https://www.baidu.com/',
+        mintStartTime: range_tinme(),
+        projectImage: Mock.Random.dataImage('40x40', 'project img'),
+        'status|1': task_todo_status,
+      },
+    })
+    // explore search tasks
+    Mock.mock(/\/tasks(\\?.*|)/, 'get', {
+      code: 0,
+      msg: 'success',
+      'data|10': [
+        {
+          id: '@increment',
+          name: '@title(1, 5)',
+          image: "@dataImage('260x206', 'Project Image')",
+          startTime: start_tinme(),
+          endTime: end_time(),
+        },
+      ],
+    })
+    // explore recommend projects
+    Mock.mock(/\/projects\/recommendation/, 'get', {
+      code: 0,
+      msg: 'success',
+      'data|10': [
+        {
+          id: '@increment',
+          name: '@title(1, 5)',
+          image: "@dataImage('260x200', 'Project Image')",
+          description: '@paragraph(10, 30)',
+          'status|1': project_status,
+          taskNum: 100,
+          floorPrice: '3+1',
+          injectedCoins: '',
+          itemTotalNum: 9999,
+          mintPrice: '3+1',
+          mintStartTime: start_tinme,
+          publicSaleTime: start_tinme,
+          publicSalePrice: '@integer(1, 100)',
+          communityId: '@increment',
+          community: {
+            id: '@increment',
+            name: '@title(1, 5)',
+            image: "@dataImage('160x160', 'Community Image')",
+          },
+          'tasks|10': [
+            {
+              'type|1': task_type,
+              startTime: start_tinme,
+              endTime: end_time,
+            },
+          ],
+        },
+      ],
+    })
+    // explore search projects
     Mock.mock(/\/projects(\\?.*|)/, 'get', {
       code: 0,
       msg: 'success',
@@ -136,6 +229,7 @@ import Mock from 'mockjs'
           id: '@increment',
           name: '@title(1, 5)',
           image: "@dataImage('260x200', 'Project Image')",
+          description: '@paragraph(10, 30)',
           'status|1': project_status,
           taskNum: 100,
           floorPrice: '3+1',

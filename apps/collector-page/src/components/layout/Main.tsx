@@ -2,11 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-19 12:54:43
+ * @LastEditTime: 2022-07-21 16:32:55
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
-import Dashboard from '../../container/Dashboard'
+import Events from '../../container/Events'
 import Community from '../../container/Community'
 import CallBack from '../../container/CallBack'
 import React, { useEffect } from 'react'
@@ -17,6 +17,8 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { selectAccount } from '../../features/user/accountSlice'
 import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
 import EnchanftedDetail from '../../container/EnchanftedDetail'
+import TaskDetail from '../../container/TaskDetail'
+import Projects from '../../container/Projects'
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -30,7 +32,9 @@ const Main: React.FC = () => {
       ]
     : []
   const routes = useRoutes([
-    { path: '/', element: <Dashboard /> },
+    { path: '/', element: <Events /> },
+    { path: '/task/:id', element: <TaskDetail /> },
+    { path: '/project', element: <Projects /> },
     { path: '/community/:communityId', element: <Community /> },
     { path: '/calendar', element: <div>Calendar Page</div> },
     { path: '/callback', element: <CallBack /> },

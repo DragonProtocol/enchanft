@@ -1,0 +1,90 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-07-21 17:08:46
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-07-21 18:58:56
+ * @Description: file description
+ */
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { fetchDetail } from '../../services/api/task'
+import { RootState } from '../../store/store'
+import { AsyncRequestStatus } from '../../types'
+import { TaskDetailResponse } from '../../types/api'
+
+export type TaskDetailEntity = TaskDetailResponse
+type TaskState = {
+  data: TaskDetailEntity | null
+  status: AsyncRequestStatus
+  errorMsg: string
+  currentRequestId: string | undefined // 当前正在请求的id(由createAsyncThunk生成的唯一id)
+}
+type FetchDetailResp = {
+  data: TaskDetailEntity | null
+  errorMsg?: string
+}
+
+// 初始化数据
+const initTaskState: TaskState = {
+  data: null,
+  status: AsyncRequestStatus.IDLE,
+  errorMsg: '',
+  currentRequestId: undefined,
+}
+
+export const fetchTaskDetail = createAsyncThunk<
+  FetchDetailResp,
+  number,
+  {
+    rejectValue: FetchDetailResp
+  }
+>('task/fetchTaskDetail', async (id, { rejectWithValue }) => {
+  try {
+    const resp = await fetchDetail(id)
+    return { data: resp.data.data || null }
+  } catch (error: any) {
+    if (!error.response) {
+      throw error
+    }
+    return rejectWithValue({ data: null, errorMsg: error.response.data })
+  }
+})
+
+export const taskDetailSlice = createSlice({
+  name: 'taskDetail',
+  initialState: initTaskState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchTaskDetail.pending, (state, action) => {
+        console.log('fetchTaskDetail.pending', action)
+        state.status = AsyncRequestStatus.PENDING
+        state.errorMsg = ''
+        state.currentRequestId = action.meta.requestId
+      })
+      .addCase(fetchTaskDetail.fulfilled, (state, action) => {
+        console.log('fetchTaskDetail.fulfilled', action)
+        const { requestId } = action.meta
+        // 前后两次不同的请求，使用最后一次请求返回的数据
+        if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
+        state.status = AsyncRequestStatus.FULFILLED
+        state.data = action.payload.data
+      })
+      .addCase(fetchTaskDetail.rejected, (state, action) => {
+        console.log('fetchTaskDetail.rejected', action)
+        const { requestId } = action.meta
+        // 前后两次不同的请求，使用最后一次请求返回的数据
+        if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
+        state.status = AsyncRequestStatus.REJECTED
+        state.data = null
+        if (action.payload) {
+          state.errorMsg = action.payload.errorMsg || ''
+        } else {
+          state.errorMsg = action.error.message || ''
+        }
+      })
+  },
+})
+
+const { actions, reducer } = taskDetailSlice
+export const selectTaskDetail = (state: RootState) => state.taskDetail
+export default reducer
