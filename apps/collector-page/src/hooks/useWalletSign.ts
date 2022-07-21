@@ -40,11 +40,21 @@ export default function useWalletSign() {
   }
 
   useEffect(() => {
-    if (windowObj.solana && windowObj.solana.isPhantom) {
-      setPhantomValid(true)
-    }
-    if (windowObj.ethereum) {
-      setMetamaskValid(true)
+    const timer = setTimeout(() => {
+      let phantomValid = false
+      let metamaskValid = false
+      if (windowObj.solana && windowObj.solana.isPhantom) {
+        phantomValid = true
+      }
+      if (windowObj.ethereum) {
+        metamaskValid = true
+      }
+      setPhantomValid(phantomValid)
+      setMetamaskValid(metamaskValid)
+      console.log({ phantomValid, metamaskValid })
+    }, 10)
+    return () => {
+      clearTimeout(timer)
     }
   }, [])
 

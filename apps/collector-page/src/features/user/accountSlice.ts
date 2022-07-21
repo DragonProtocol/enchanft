@@ -11,6 +11,13 @@ import { login, updateProfile, link, getProfile } from '../../services/api/login
 import { AsyncRequestStatus } from '../../types'
 import { setLoginToken, TokenType } from '../../utils/token'
 
+export enum ConnectModal {
+  PHANTOM = 'phantom',
+  METAMASK = 'metamask',
+  TWITTER = 'twitter',
+  DISCORD = 'discord',
+  EMAIL = 'email',
+}
 export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
@@ -21,6 +28,7 @@ export type AccountState = {
   name: string
   twitter: string
   discord: string
+  connectModal: ConnectModal | null
 }
 
 // 用户账户信息
@@ -33,6 +41,7 @@ const initialState: AccountState = {
   name: '',
   twitter: localStorage.getItem('twitter') || '',
   discord: localStorage.getItem('discord') || '',
+  connectModal: null,
 }
 
 export const userLogin = createAsyncThunk(
@@ -117,6 +126,9 @@ export const accountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {
+    setConnectModal: (state, action) => {
+      state.connectModal = action.payload
+    },
     setDefaultWallet: (state, action) => {
       state.defaultWallet = action.payload
       localStorage.setItem('defaultWallet', action.payload)
@@ -202,7 +214,16 @@ export const accountSlice = createSlice({
 })
 
 const { actions, reducer } = accountSlice
-export const { setDefaultWallet, setToken, setPubkey, setAvatar, removeToken, setName, setTwitter, setDiscord } =
-  actions
+export const {
+  setConnectModal,
+  setDefaultWallet,
+  setToken,
+  setPubkey,
+  setAvatar,
+  removeToken,
+  setName,
+  setTwitter,
+  setDiscord,
+} = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer
