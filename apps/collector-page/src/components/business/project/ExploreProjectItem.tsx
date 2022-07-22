@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 11:46:44
+ * @LastEditTime: 2022-07-22 20:06:48
  * @Description: file description
  */
 import React from 'react'
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { ProjectStatus, TaskType } from '../../../types/api'
+import ChainTag from '../chain/ChainTag'
 
 export type ExploreProjectItemDataType = {
   id: number
@@ -24,6 +25,7 @@ export type ExploreProjectItemDataType = {
   publicSaleTime: number
   publicSalePrice: string
   communityId: number
+  chainId: number
   tasks: Array<{
     type: TaskType
     startTime: number
@@ -52,7 +54,7 @@ const TaskTypeLabels = {
 }
 const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfig }: ExploreProjectItemProps) => {
   const navigate = useNavigate()
-  const { id, name, image, status, floorPrice, itemTotalNum, communityId, tasks, publicSaleTime } = data
+  const { id, name, image, status, floorPrice, itemTotalNum, communityId, tasks, publicSaleTime, chainId } = data
   // const {} = {
   //   ...defaultViewConfig,
   //   ...viewConfig,
@@ -78,7 +80,11 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
   }
   return (
     <ExploreProjectItemWrapper onClick={() => navigate(`/community/${communityId}?projectId=${id}`)}>
-      <ProjectImage src={image} />
+      <ProjectImageBox>
+        <ChainTag size={1} chainId={chainId} />
+        <ProjectImage src={image} />
+      </ProjectImageBox>
+
       <ProjectInfoBox>
         <ProjectInfoTopBox>
           <ProjectName>{name}</ProjectName>
@@ -105,6 +111,9 @@ const ExploreProjectItemWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+`
+const ProjectImageBox = styled.div`
+  position: relative;
 `
 const ProjectImage = styled.img`
   width: 100%;

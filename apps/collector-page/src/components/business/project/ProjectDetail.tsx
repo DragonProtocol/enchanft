@@ -11,6 +11,7 @@ import WebsiteIcon from '../../imgs/internet.svg'
 import TwitterIcon from '../../imgs/twitter.svg'
 import ProjectTaskSwiper from './ProjectTaskSwiper'
 import RichTextBox from '../../common/text/RichTextBox'
+import ChainTag from '../chain/ChainTag'
 export type ProjectDetailDataType = {
   id: number
   name: string
@@ -28,6 +29,7 @@ export type ProjectDetailDataType = {
   injectedCoins: number
   discord: string
   twitter: string
+  chainId: number
   tasks: TaskContentDataViewType[]
   teamMembers: ProjectTeamMemberItemDataViewType[]
   roadmap: ProjectRoadmapItemDataType[]
@@ -67,6 +69,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
     injectedCoins,
     discord,
     twitter,
+    chainId,
     tasks,
     teamMembers,
     roadmap,
@@ -103,6 +106,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
     <ProjectDetailWrapper>
       <ProjectTopBox>
         <ProjectTopLeftBox>
+          <ChainTag size={1.5} chainId={chainId} />
           <ProjectImage src={image} />
         </ProjectTopLeftBox>
         {/* project basic info */}
@@ -189,11 +193,13 @@ const ProjectTopBox = styled.div`
 `
 const ProjectTopLeftBox = styled.div`
   flex: 1;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
 `
 const ProjectImage = styled.img`
   width: 100%;
   height: 100%;
-  border-radius: 10px;
 `
 const ProjectTopCenterBox = styled.div`
   flex: 1;

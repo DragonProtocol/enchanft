@@ -2,13 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 16:56:55
+ * @LastEditTime: 2022-07-22 18:46:36
  * @Description: file description
  */
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { ProjectStatus } from '../../../types/api'
+import ChainTag from '../chain/ChainTag'
 
 export type ExploreProjectSwiperItemDataType = {
   id: number
@@ -16,6 +18,8 @@ export type ExploreProjectSwiperItemDataType = {
   image: string
   status: ProjectStatus
   description: string
+  chainId: number
+  communityId: number
 }
 export type ExploreProjectSwiperItemViewConfigType = {}
 
@@ -28,7 +32,7 @@ export type ExploreProjectSwiperItemHandlesType = {}
 export type ExploreProjectSwiperItemProps = ExploreProjectSwiperItemDataViewType & ExploreProjectSwiperItemHandlesType
 
 const ProjectStatusLabels = {
-  [ProjectStatus.ACTIVE]: 'Active',
+  // [ProjectStatus.ACTIVE]: 'Active',
   [ProjectStatus.LIVE]: 'Live',
   [ProjectStatus.FUTURE]: 'Future',
 }
@@ -37,11 +41,13 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
   data,
   viewConfig,
 }: ExploreProjectSwiperItemProps) => {
-  const { id, name, image, status, description } = data
+  const navigate = useNavigate()
+  const { id, name, image, status, description, chainId, communityId } = data
   const statusLabel = ProjectStatusLabels[status] || 'Unknown Project Status'
   return (
     <ExploreProjectSwiperItemWrapper>
-      <ProjectImage src={image} />
+      <ChainTag size={2} chainId={chainId} />
+      <ProjectImage src={image} onClick={() => navigate(`/community/${communityId}?projectId=${id}`)} />
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
         <ProjectStatusLabel>{statusLabel}</ProjectStatusLabel>
@@ -60,6 +66,7 @@ const ExploreProjectSwiperItemWrapper = styled.div`
 const ProjectImage = styled.img`
   width: 360px;
   height: 100%;
+  cursor: pointer;
 `
 const ProjectInfoBox = styled.div`
   flex: 1;

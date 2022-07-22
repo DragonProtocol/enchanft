@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:25:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 16:22:48
+ * @LastEditTime: 2022-07-22 18:41:57
  * @Description: file description
  */
 import React from 'react'
@@ -45,20 +45,20 @@ const ExploreProjectSwiper: React.FC<ExploreProjectSwiperProps> = ({
     <ExploreProjectSwiperWrapper>
       {itemLen > 1 && (
         <ProjectSwiperLeft>
-          <IconButton className="explore-project-swiper-prev">
+          <IconButton className="explore-task-swiper-prev">
             <SwiperPrevIcon />
           </IconButton>
         </ProjectSwiperLeft>
       )}
       <Swiper
-        className="explore-project-swiper"
+        className="explore-task-swiper"
         spaceBetween={50}
         slidesPerView={1}
         loop={loop}
         modules={modules}
         navigation={{
-          nextEl: '.explore-project-swiper-next',
-          prevEl: '.explore-project-swiper-prev',
+          nextEl: '.explore-task-swiper-next',
+          prevEl: '.explore-task-swiper-prev',
         }}
         autoplay={{
           delay: 6000,
@@ -79,7 +79,7 @@ const ExploreProjectSwiper: React.FC<ExploreProjectSwiperProps> = ({
       </Swiper>
       {itemLen > 1 && (
         <ProjectSwiperRight>
-          <IconButton className="explore-project-swiper-next">
+          <IconButton className="explore-task-swiper-next">
             <SwiperNextIcon />
           </IconButton>
         </ProjectSwiperRight>
@@ -94,7 +94,7 @@ const ExploreProjectSwiperWrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
-  .explore-project-swiper {
+  .explore-task-swiper {
     flex: 1;
     height: 440px;
     background: #ffffff;

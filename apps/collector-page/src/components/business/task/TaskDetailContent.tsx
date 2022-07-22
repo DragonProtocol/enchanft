@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { TaskAcceptedStatus, TaskType } from '../../../types/api'
 import ButtonBase from '../../common/button/ButtonBase'
+import ChainTag from '../chain/ChainTag'
 import SolanaConnectWalletButton from '../connect/SolanaConnectWalletButton'
 
 export type TaskDetailContentDataType = {
@@ -17,6 +18,7 @@ export type TaskDetailContentDataType = {
   winnersNum: number
   acceptedStatus: TaskAcceptedStatus
   project: {
+    chainId: number
     name: string
   }
 }
@@ -70,7 +72,11 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data, viewConfig,
   return (
     <TaskDetailContentWrapper>
       <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
-      <TaskImage src={image} />
+      <TaskImageBox>
+        <ChainTag size={2} chainId={project.chainId} />
+        <TaskImage src={image} />
+      </TaskImageBox>
+
       <TaskInfoBox>
         <TaskTypeLabel>{taskTypeLabel}</TaskTypeLabel>
         <TaskDateTime>
@@ -98,6 +104,9 @@ const TaskDetailContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+`
+const TaskImageBox = styled.div`
+  position: relative;
 `
 const TaskImage = styled.img`
   width: 100%;

@@ -2,13 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 15:29:19
+ * @LastEditTime: 2022-07-22 17:55:04
  * @Description: file description
  */
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { TaskType } from '../../../types/api'
+import ChainTag from '../chain/ChainTag'
 
 export type ExploreTaskSwiperItemDataType = {
   id: number
@@ -20,6 +22,7 @@ export type ExploreTaskSwiperItemDataType = {
   winnersNum: number
   description: string
   project: {
+    chainId: number
     name: string
   }
 }
@@ -42,13 +45,15 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
   data,
   viewConfig,
 }: ExploreTaskSwiperItemProps) => {
+  const navigate = useNavigate()
   const { id, name, image, type, startTime, endTime, winnersNum, description, project } = data
   const taskTypeLabel = TaskTypeLabels[type] || 'Unknown Task Type'
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
   return (
     <ExploreTaskSwiperItemWrapper>
-      <TaskImage src={image} />
+      <ChainTag size={2} chainId={project.chainId} />
+      <TaskImage src={image} onClick={() => navigate(`/task/${id}`)} />
       <TaskInfoBox>
         <TaskName>{name}</TaskName>
         <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
@@ -74,6 +79,7 @@ const ExploreTaskSwiperItemWrapper = styled.div`
 const TaskImage = styled.img`
   width: 640px;
   height: 100%;
+  cursor: pointer;
 `
 const TaskInfoBox = styled.div`
   flex: 1;

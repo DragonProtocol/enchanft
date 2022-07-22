@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 10:22:01
+ * @LastEditTime: 2022-07-22 20:04:26
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
+import ChainTag from '../chain/ChainTag'
 
 export type ExploreTaskItemDataType = {
   id: number
@@ -16,6 +17,9 @@ export type ExploreTaskItemDataType = {
   name: string
   startTime: number
   endTime: number
+  project: {
+    chainId: number
+  }
 }
 
 export type ExploreTaskItemViewConfigType = {}
@@ -30,7 +34,7 @@ export type ExploreTaskItemProps = ExploreTaskItemDataViewType
 const defaultViewConfig = {}
 const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: ExploreTaskItemProps) => {
   const navigate = useNavigate()
-  const { id, name, image, startTime, endTime } = data
+  const { id, name, image, startTime, endTime, project } = data
   const {} = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -39,7 +43,10 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
   const endDate = new Date(endTime).toLocaleDateString()
   return (
     <ExploreTaskItemWrapper onClick={() => navigate(`/task/${id}`)}>
-      <TaskImage src={image} />
+      <TaskImageBox>
+        <ChainTag size={1} chainId={project.chainId} />
+        <TaskImage src={image} />
+      </TaskImageBox>
       <TaskInfoBox>
         <TaskName>{name}</TaskName>
         <TaskDateTime>
@@ -62,6 +69,9 @@ const ExploreTaskItemWrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+`
+const TaskImageBox = styled.div`
+  position: relative;
 `
 const TaskImage = styled.img`
   width: 100%;

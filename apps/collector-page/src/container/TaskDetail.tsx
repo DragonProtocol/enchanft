@@ -2,16 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 19:12:29
+ * @LastEditTime: 2022-07-22 19:10:14
  * @Description: file description
  */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { AsyncRequestStatus } from '../types'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { fetchTaskDetail, selectTaskDetail, TaskDetailEntity } from '../features/task/taskDetailSlice'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import IconButton from '@mui/material/IconButton'
@@ -47,6 +47,7 @@ const formatStoreDataToComponentDataByTaskActions = (actions: TodoTaskActionItem
   return [...actions].sort((a, b) => a.orderNum - b.orderNum)
 }
 const TaskDetail: React.FC = () => {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
 
@@ -55,7 +56,9 @@ const TaskDetail: React.FC = () => {
   useEffect(() => {
     dispatch(fetchTaskDetail(Number(id)))
   }, [id])
-  console.log({ data })
+  const handleLeave = useCallback(() => {
+    navigate(-1)
+  }, [])
   // 接任务的状态
   const { take: takeTaskState } = useAppSelector(selectUserTaskHandlesState)
   // 展示数据
@@ -73,7 +76,7 @@ const TaskDetail: React.FC = () => {
             ) : (
               <>
                 <DetailHeader>
-                  <IconButton>
+                  <IconButton onClick={handleLeave}>
                     <ArrowBackIosIcon />
                   </IconButton>
                   <TaskName>{data?.name}</TaskName>
