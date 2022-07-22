@@ -5,6 +5,7 @@ import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
 
 import {
   selectAccount,
+  setConnectModal,
   setAvatar,
   setDefaultWallet,
   setName,
@@ -18,6 +19,7 @@ import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils
 import useWalletSign from '../../hooks/useWalletSign'
 import PhantomIcon from './PhantomIcon'
 import MetamaskIcon from './MetamaskIcon'
+import ConnectModal from './ConnectModal'
 
 const ConnectedBtn = styled(Button)`
   & img {
@@ -56,7 +58,8 @@ export default function ConnectBtn() {
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
 
-  const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
+  const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom, getMetamaskAddr, getPhantomAddr } =
+    useWalletSign()
 
   useEffect(() => {
     if (!account.pubkey) {
@@ -124,22 +127,18 @@ export default function ConnectBtn() {
   }, [account])
 
   const connectMetamask = useCallback(async () => {
+    const pubkey = await getMetamaskAddr()
+    if (!pubkey) return
     dispatch(setDefaultWallet(TokenType.Ethereum))
-    const data = await signMsgWithMetamask()
-    if (!data) {
-      return
-    }
-    handleLogin(data)
+    dispatch(setPubkey(pubkey))
     handleClose()
     navigateToGuide()
   }, [])
   const connectPhantom = useCallback(async () => {
+    const pubkey = await getPhantomAddr()
+    if (!pubkey) return
     dispatch(setDefaultWallet(TokenType.Solana))
-    const data = await signMsgWithPhantom()
-    if (!data) {
-      return
-    }
-    handleLogin(data)
+    dispatch(setPubkey(pubkey))
     handleClose()
     navigateToGuide()
   }, [])
@@ -153,10 +152,6 @@ export default function ConnectBtn() {
 
   const Icon = account.defaultWallet === TokenType.Solana ? PhantomIcon : MetamaskIcon
 
-  console.log({
-    phantomValid,
-    metamaskValid,
-  })
   return (
     <>
       {(shortPubkey && account.token && (
@@ -225,6 +220,7 @@ export default function ConnectBtn() {
           </div>
         </ConnectBox>
       </Modal>
+      <ConnectModal />
     </>
   )
 }

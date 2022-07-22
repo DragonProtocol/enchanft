@@ -3,9 +3,9 @@ import React, { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { selectAccount } from '../features/user/accountSlice'
+import { selectAccount, setConnectModal, ConnectModal, userOtherWalletLink } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { TokenType } from '../utils/token'
+import { SIGN_MSG, TokenType } from '../utils/token'
 import DiscordIcon from '../components/ConnectBtn/DiscordIcon'
 import MetamaskIcon from '../components/ConnectBtn/MetamaskIcon'
 import PhatomIcon from '../components/ConnectBtn/PhantomIcon'
@@ -24,12 +24,30 @@ export default function Guide() {
     if (!phantomValid) alert('Install Metamask first')
     const data = await signMsgWithMetamask()
     console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: SIGN_MSG,
+      }),
+    )
   }, [metamaskValid])
 
   const bindPhantom = useCallback(async () => {
     if (!phantomValid) alert('Install Phantom first')
     const data = await signMsgWithPhantom()
     console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: SIGN_MSG,
+      }),
+    )
   }, [phantomValid])
 
   return (
@@ -39,7 +57,12 @@ export default function Guide() {
         <p>To complete the task faster,please connect your account first</p>
       </div>
       <div>
-        <div className="connect-btn">
+        <div
+          className="connect-btn"
+          onClick={() => {
+            dispatch(setConnectModal(ConnectModal.TWITTER))
+          }}
+        >
           <Stack direction="row" spacing={2}>
             <div className="label">Twitter:</div>
             <div className="btn twitter">
@@ -48,7 +71,12 @@ export default function Guide() {
             </div>
           </Stack>
         </div>
-        <div className="connect-btn">
+        <div
+          className="connect-btn"
+          onClick={() => {
+            dispatch(setConnectModal(ConnectModal.DISCORD))
+          }}
+        >
           <Stack direction="row" spacing={2}>
             <div className="label">Discord:</div>
             <div className="btn discord">
@@ -57,7 +85,12 @@ export default function Guide() {
             </div>
           </Stack>
         </div>
-        <div className="connect-btn">
+        <div
+          className="connect-btn"
+          onClick={() => {
+            dispatch(setConnectModal(ConnectModal.EMAIL))
+          }}
+        >
           <Stack direction="row" spacing={2}>
             <div className="label">Email:</div>
             <div className="btn email">
@@ -66,17 +99,22 @@ export default function Guide() {
             </div>
           </Stack>
         </div>
-        <div className="connect-btn">
+        <div
+          className="connect-btn"
+          onClick={() => {
+            dispatch(setConnectModal(ConnectModal.PHANTOM))
+          }}
+        >
           <Stack direction="row" spacing={2}>
             <div className="label">Other Wallet:</div>
             {account.defaultWallet == TokenType.Ethereum && (
-              <div className="btn wallet" onClick={bindPhantom}>
+              <div className="btn wallet">
                 <PhatomIcon />
                 <p>Connect Phantom</p>
               </div>
             )}
             {account.defaultWallet === TokenType.Solana && (
-              <div className="btn wallet" onClick={bindMetamask}>
+              <div className="btn wallet">
                 <MetamaskIcon />
                 <p>Connect Metamask</p>
               </div>

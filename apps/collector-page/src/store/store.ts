@@ -18,6 +18,7 @@ import userTaskHandlesReducer from '../features/user/taskHandlesSlice'
 import userTodoTasksReducer from '../features/user/todoTasksSlice'
 import userFollowedCommunitiesReducer from '../features/user/followedCommunitiesSlice'
 import userCommunityHandlesReducer from '../features/user/communityHandlesSlice'
+import creatorReducer from '../features/creator'
 
 export const store = configureStore({
   reducer: {
@@ -32,6 +33,7 @@ export const store = configureStore({
     userTodoTasks: userTodoTasksReducer,
     userFollowedCommunities: userFollowedCommunitiesReducer,
     userCommunityHandles: userCommunityHandlesReducer,
+    creator: creatorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
