@@ -3,9 +3,9 @@ import React, { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { selectAccount, setConnectModal, ConnectModal } from '../features/user/accountSlice'
+import { selectAccount, setConnectModal, ConnectModal, userOtherWalletLink } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { TokenType } from '../utils/token'
+import { SIGN_MSG, TokenType } from '../utils/token'
 import DiscordIcon from '../components/ConnectBtn/DiscordIcon'
 import MetamaskIcon from '../components/ConnectBtn/MetamaskIcon'
 import PhatomIcon from '../components/ConnectBtn/PhantomIcon'
@@ -24,12 +24,30 @@ export default function Guide() {
     if (!phantomValid) alert('Install Metamask first')
     const data = await signMsgWithMetamask()
     console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: SIGN_MSG,
+      }),
+    )
   }, [metamaskValid])
 
   const bindPhantom = useCallback(async () => {
     if (!phantomValid) alert('Install Phantom first')
     const data = await signMsgWithPhantom()
     console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: SIGN_MSG,
+      }),
+    )
   }, [phantomValid])
 
   return (

@@ -15,6 +15,7 @@ import {
   userGetProfile,
   userLogin,
   ConnectModal as ConnectModalType,
+  userOtherWalletLink,
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
@@ -38,6 +39,15 @@ export default function ConnectModal() {
     if (!metamaskValid) alert('Install Metamask first')
     const data = await signMsgWithMetamask()
     console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: SIGN_MSG,
+      }),
+    )
     handleCloseConnectModal()
   }, [metamaskValid])
 
@@ -45,6 +55,15 @@ export default function ConnectModal() {
     if (!phantomValid) alert('Install Phantom first')
     const data = await signMsgWithPhantom()
     console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: SIGN_MSG,
+      }),
+    )
     handleCloseConnectModal()
   }, [metamaskValid])
 

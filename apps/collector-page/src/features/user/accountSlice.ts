@@ -128,6 +128,29 @@ export const userLink = createAsyncThunk(
   },
 )
 
+export const userOtherWalletLink = createAsyncThunk(
+  'user/otherWalletLink',
+  async ({
+    walletType,
+    signature,
+    payload,
+    pubkey,
+  }: {
+    walletType: TokenType
+    signature: string
+    payload: string
+    pubkey: string
+  }) => {
+    const resp = await link({
+      type: walletType === TokenType.Solana ? ChainType.SOLANA : ChainType.EVM,
+      signature,
+      payload,
+      pubkey,
+    })
+    return resp.data
+  },
+)
+
 export const accountSlice = createSlice({
   name: 'account',
   initialState,
@@ -215,6 +238,17 @@ export const accountSlice = createSlice({
       .addCase(userGetProfile.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
+      })
+      ///
+      .addCase(userOtherWalletLink.pending, (state) => {
+        state.status = AsyncRequestStatus.PENDING
+      })
+      .addCase(userOtherWalletLink.fulfilled, (state, action) => {
+        state.status = AsyncRequestStatus.FULFILLED
+        console.log(action.payload)
+      })
+      .addCase(userOtherWalletLink.rejected, (state, action) => {
+        state.status = AsyncRequestStatus.REJECTED
       })
   },
 })
