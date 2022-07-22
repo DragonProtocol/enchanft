@@ -67,8 +67,18 @@ export default function ConnectModal() {
     handleCloseConnectModal()
   }, [metamaskValid])
 
-  let btn: null | ReactElement = null
+  const bindTwitter = useCallback(async () => {
+    // TODO
+    alert('TODO')
+  }, [])
 
+  const bindDiscord = useCallback(async () => {
+    // TODO
+    alert('TODO')
+  }, [])
+
+  let btn: null | ReactElement = null
+  let msg = ''
   switch (account.connectModal) {
     case ConnectModalType.METAMASK:
       btn = (
@@ -77,6 +87,7 @@ export default function ConnectModal() {
           <p>Connect Metamask</p>
         </div>
       )
+      msg = `Metamask  is not connected. Please connect Metamask.`
       break
     case ConnectModalType.PHANTOM:
       btn = (
@@ -85,22 +96,25 @@ export default function ConnectModal() {
           <p>Connect PhantomIcon</p>
         </div>
       )
+      msg = `Phantom  is not connected. Please connect Phantom.`
       break
     case ConnectModalType.TWITTER:
       btn = (
-        <div className="btn twitter">
+        <div className="btn twitter" onClick={bindTwitter}>
           <TwitterIcon />
           <p>Connect Twitter</p>
         </div>
       )
+      msg = `Twitter account is not connected. Please connect your Twitter account.`
       break
     case ConnectModalType.DISCORD:
       btn = (
-        <div className="btn discord">
+        <div className="btn discord" onClick={bindDiscord}>
           <DiscordIcon />
           <p>Connect Discord</p>
         </div>
       )
+      msg = `Discord account is not connected. Please connect your Discord account.`
       break
     case ConnectModalType.EMAIL:
       btn = (
@@ -109,12 +123,13 @@ export default function ConnectModal() {
           <p>Connect Email</p>
         </div>
       )
+      msg = `Email account is not connected. Please connect your Email account.`
       break
 
     default:
       break
   }
-  console.log(account.connectModal)
+
   return (
     <ConnectModalBox
       open={!!account.connectModal}
@@ -143,7 +158,7 @@ export default function ConnectModal() {
         <div className="title">
           <h1>Connect your account</h1>
         </div>
-        <div className="intro">AccountBindModal: {account.connectModal}</div>
+        <div className="intro">{msg}</div>
         {btn}
       </ConnectBox>
     </ConnectModalBox>

@@ -24,6 +24,10 @@ enum ChainType {
   EVM = 'EVM',
 }
 
+type Account = {
+  accountType: 'SOLANA' | 'EVM' | any
+}
+
 export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
@@ -35,6 +39,7 @@ export type AccountState = {
   twitter: string
   discord: string
   connectModal: ConnectModal | null
+  accounts: Array<Account>
 }
 
 // 用户账户信息
@@ -48,6 +53,7 @@ const initialState: AccountState = {
   twitter: localStorage.getItem('twitter') || '',
   discord: localStorage.getItem('discord') || '',
   connectModal: null,
+  accounts: [],
 }
 
 export const userLogin = createAsyncThunk(
@@ -103,13 +109,6 @@ export const userLink = createAsyncThunk(
       code,
       type,
     })
-    const { twitter, discord } = resp.data
-    if (discord) {
-      thunkAPI.dispatch(setDiscord(discord))
-    }
-    if (twitter) {
-      thunkAPI.dispatch(setTwitter(twitter))
-    }
 
     return resp.data
   },
@@ -198,8 +197,11 @@ export const accountSlice = createSlice({
         state.token = action.payload.token
         state.avatar = action.payload.avatar
         state.name = action.payload.name
-        state.twitter = action.payload.twitter
-        state.discord = action.payload.discord
+        state.accounts = action.payload.accounts
+        const twitter = action.payload.accounts.find((item) => item.accountType === 'TWITTER')
+        state.twitter = twitter?.thirdpartyName || ''
+        const discord = action.payload.accounts.find((item) => item.accountType === 'DISCORD')
+        state.discord = discord?.thirdpartyName || ''
         state.errorMsg = ''
       })
       .addCase(userLogin.rejected, (state, action) => {
@@ -209,6 +211,14 @@ export const accountSlice = createSlice({
       ///////
       .addCase(userLink.pending, (state) => {
         state.status = AsyncRequestStatus.PENDING
+      })
+      .addCase(userLink.fulfilled, (state, action) => {
+        state.status = AsyncRequestStatus.FULFILLED
+        state.accounts = action.payload || []
+        const twitter = action.payload.find((item) => item.accountType === 'TWITTER')
+        state.twitter = twitter?.thirdpartyName || ''
+        const discord = action.payload.find((item) => item.accountType === 'DISCORD')
+        state.discord = discord?.thirdpartyName || ''
       })
       .addCase(userLink.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -233,6 +243,7 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.FULFILLED
         state.avatar = action.payload.data.avatar
         state.name = action.payload.data.name
+        state.accounts = action.payload.data.accounts
         state.errorMsg = ''
       })
       .addCase(userGetProfile.rejected, (state, action) => {
@@ -245,7 +256,12 @@ export const accountSlice = createSlice({
       })
       .addCase(userOtherWalletLink.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED
-        console.log(action.payload)
+        console.log('userOtherWalletLink.fulfilled', action.payload)
+        state.accounts = action.payload || []
+        const twitter = action.payload.find((item) => item.accountType === 'TWITTER')
+        state.twitter = twitter?.thirdpartyName || ''
+        const discord = action.payload.find((item) => item.accountType === 'DISCORD')
+        state.discord = discord?.thirdpartyName || ''
       })
       .addCase(userOtherWalletLink.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED

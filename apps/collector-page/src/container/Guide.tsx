@@ -102,7 +102,7 @@ export default function Guide() {
         <div
           className="connect-btn"
           onClick={() => {
-            dispatch(setConnectModal(ConnectModal.METAMASK))
+            dispatch(setConnectModal(ConnectModal.PHANTOM))
           }}
         >
           <Stack direction="row" spacing={2}>
