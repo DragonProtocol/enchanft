@@ -10,6 +10,7 @@ import Dashboard from '../../container/Dashboard'
 import Community from '../../container/Community'
 import CallBack from '../../container/CallBack'
 import React, { useEffect } from 'react'
+import Creator from '../../container/Creator'
 import { useRoutes } from 'react-router-dom'
 import styled from 'styled-components'
 import TodoTask from '../../container/TodoTask'
@@ -36,6 +37,7 @@ const Main: React.FC = () => {
     { path: '/community/:communityId', element: <Community /> },
     { path: '/calendar', element: <div>Calendar Page</div> },
     { path: '/callback', element: <CallBack /> },
+    { path: '/creator', element: <Creator /> },
     ...permissionRoutes,
     { path: '*', element: <div>404</div> },
   ])
