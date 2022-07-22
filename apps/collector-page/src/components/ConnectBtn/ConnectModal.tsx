@@ -20,18 +20,32 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
 import useWalletSign from '../../hooks/useWalletSign'
 import MetamaskIcon from './MetamaskIcon'
+import PhantomIcon from './PhantomIcon'
+import EmailIcon from './EmailIcon'
+import DiscordIcon from './DiscordIcon'
+import TwitterIcon from './TwitterIcon'
 
 export default function ConnectModal() {
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
+
   const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
   const handleCloseConnectModal = useCallback(() => {
     dispatch(setConnectModal(null))
   }, [])
+
   const bindMetamask = useCallback(async () => {
-    if (!phantomValid) alert('Install Metamask first')
+    if (!metamaskValid) alert('Install Metamask first')
     const data = await signMsgWithMetamask()
     console.log(data)
+    handleCloseConnectModal()
+  }, [metamaskValid])
+
+  const bindPhantom = useCallback(async () => {
+    if (!phantomValid) alert('Install Phantom first')
+    const data = await signMsgWithPhantom()
+    console.log(data)
+    handleCloseConnectModal()
   }, [metamaskValid])
 
   let btn: null | ReactElement = null
@@ -39,40 +53,40 @@ export default function ConnectModal() {
   switch (account.connectModal) {
     case ConnectModalType.METAMASK:
       btn = (
-        <div className="btn wallet">
+        <div className="btn wallet" onClick={bindMetamask}>
           <MetamaskIcon />
           <p>Connect Metamask</p>
         </div>
       )
       break
+    case ConnectModalType.PHANTOM:
+      btn = (
+        <div className="btn wallet" onClick={bindPhantom}>
+          <PhantomIcon />
+          <p>Connect PhantomIcon</p>
+        </div>
+      )
+      break
     case ConnectModalType.TWITTER:
       btn = (
-        <div className="btn wallet">
-          <MetamaskIcon />
+        <div className="btn twitter">
+          <TwitterIcon />
           <p>Connect Twitter</p>
         </div>
       )
       break
     case ConnectModalType.DISCORD:
       btn = (
-        <div className="btn wallet">
-          <MetamaskIcon />
+        <div className="btn discord">
+          <DiscordIcon />
           <p>Connect Discord</p>
-        </div>
-      )
-      break
-    case ConnectModalType.PHANTOM:
-      btn = (
-        <div className="btn wallet">
-          <MetamaskIcon />
-          <p>Connect Phantom</p>
         </div>
       )
       break
     case ConnectModalType.EMAIL:
       btn = (
-        <div className="btn wallet">
-          <MetamaskIcon />
+        <div className="btn email">
+          <EmailIcon />
           <p>Connect Email</p>
         </div>
       )

@@ -59,7 +59,7 @@ export default function useWalletSign() {
   }, [])
 
   useEffect(() => {
-    if (account.defaultWallet === TokenType.Ethereum && phantomValid) {
+    if (account.defaultWallet === TokenType.Ethereum && metamaskValid) {
       getEthProvider()
         .then((ethProvider) => {
           if (!ethProvider) return
@@ -71,7 +71,7 @@ export default function useWalletSign() {
           dispatch(setPubkey(addr))
         })
     }
-    if (account.defaultWallet === TokenType.Solana && metamaskValid) {
+    if (account.defaultWallet === TokenType.Solana && phantomValid) {
       getSolanaProvider()
         .then((provider) => {
           if (!provider) return
@@ -101,10 +101,27 @@ export default function useWalletSign() {
     return { walletType: TokenType.Ethereum, pubkey: walletAddr, signature }
   }
 
+  const getPhantomAddr = async () => {
+    const solanaProvider = await getSolanaProvider()
+    if (!solanaProvider) return
+    const pubkey = solanaProvider.publicKey
+    return pubkey.toString()
+  }
+
+  const getMetamaskAddr = async () => {
+    const ethProvider = await getEthProvider()
+    if (!ethProvider) return
+    const signer = ethProvider.getSigner()
+    const walletAddr = await signer.getAddress()
+    return walletAddr
+  }
+
   return {
     phantomValid,
     metamaskValid,
     signMsgWithPhantom,
     signMsgWithMetamask,
+    getPhantomAddr,
+    getMetamaskAddr,
   }
 }

@@ -18,6 +18,12 @@ export enum ConnectModal {
   DISCORD = 'discord',
   EMAIL = 'email',
 }
+
+enum ChainType {
+  SOLANA = 'SOLANA',
+  EVM = 'EVM',
+}
+
 export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
@@ -61,7 +67,7 @@ export const userLogin = createAsyncThunk(
       signature,
       payload,
       pubkey,
-      walletType,
+      type: walletType === TokenType.Solana ? ChainType.SOLANA : ChainType.EVM,
     })
     return {
       ...resp.data,

@@ -58,7 +58,8 @@ export default function ConnectBtn() {
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
 
-  const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
+  const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom, getMetamaskAddr, getPhantomAddr } =
+    useWalletSign()
 
   useEffect(() => {
     if (!account.pubkey) {
@@ -126,22 +127,18 @@ export default function ConnectBtn() {
   }, [account])
 
   const connectMetamask = useCallback(async () => {
+    const pubkey = await getMetamaskAddr()
+    if (!pubkey) return
     dispatch(setDefaultWallet(TokenType.Ethereum))
-    const data = await signMsgWithMetamask()
-    if (!data) {
-      return
-    }
-    handleLogin(data)
+    dispatch(setPubkey(pubkey))
     handleClose()
     navigateToGuide()
   }, [])
   const connectPhantom = useCallback(async () => {
+    const pubkey = await getPhantomAddr()
+    if (!pubkey) return
     dispatch(setDefaultWallet(TokenType.Solana))
-    const data = await signMsgWithPhantom()
-    if (!data) {
-      return
-    }
-    handleLogin(data)
+    dispatch(setPubkey(pubkey))
     handleClose()
     navigateToGuide()
   }, [])

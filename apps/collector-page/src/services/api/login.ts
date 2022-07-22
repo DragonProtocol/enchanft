@@ -10,6 +10,7 @@ import qs from 'qs'
 import request from '../../request/axios'
 
 export function login(params: any) {
+  // console.log('loginParams', params)
   const data = qs.stringify(params)
   return request({
     url: '/users/login',
