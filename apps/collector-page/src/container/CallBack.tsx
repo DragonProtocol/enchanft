@@ -10,10 +10,12 @@ import { Box, CircularProgress } from '@mui/material'
 
 const CallBack: React.FC = () => {
   useEffect(() => {
-    const code = location.hash.match(/code=([^&]*)/)?.[1]
-    const type = location.hash.match(/type=([^&]*)/)?.[1] || 'TWITTER'
-    localStorage.setItem('account-verify-data', JSON.stringify({ code: code, type: type }))
-    window.close()
+    // TODO: 已加入单页面，可以废弃
+    // localStorage.setItem('social_auth', JSON.stringify({ code: 'asdjhahd', type: 'Twitter' }))
+    // const code = location.hash.match(/code=([^&]*)/)?.[1]
+    // const type = location.hash.match(/type=([^&]*)/)?.[1] || 'TWITTER'
+    // localStorage.setItem('account-verify-data', JSON.stringify({ code: code, type: type }))
+    // window.close()
   }, [])
 
   return (
