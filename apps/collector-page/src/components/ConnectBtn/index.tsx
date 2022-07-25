@@ -13,6 +13,7 @@ import {
   setToken,
   userGetProfile,
   userLogin,
+  ChainType,
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
@@ -91,11 +92,13 @@ export default function ConnectBtn() {
     }
   }, [account.pubkey, account.defaultWallet])
 
-  const navigateToGuide = () => {
-    if (!localStorage.getItem('has-guide')) {
-      navigate('/guide')
-    }
-  }
+  const navigateToGuide = useCallback(() => {
+    if (localStorage.getItem('has-guide')) return
+    const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
+    const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
+    if (accountPhantom && accountMetamask && account.twitter && account.discord) return
+    navigate('/guide')
+  }, [account])
 
   const handleLogin = async ({
     walletType,
