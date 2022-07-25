@@ -138,10 +138,7 @@ const Profile: React.FC = () => {
           <div className="accounts">
             <div className="thirdparty-box">
               <div className="thirdparty-btn">
-                <div
-                  className="thirdparty-inner"
-                  onClick={() => connectionSocialMedia('twitter')}
-                >
+                <div className="thirdparty-inner" onClick={() => connectionSocialMedia('twitter')}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     aria-hidden="true"
@@ -178,10 +175,7 @@ const Profile: React.FC = () => {
                 )}
               </div>
               <div className="thirdparty-btn thirdparty-discord">
-                <div
-                  className="thirdparty-inner"
-                  onClick={() => connectionSocialMedia('discord')}
-                >
+                <div className="thirdparty-inner" onClick={() => connectionSocialMedia('discord')}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     aria-hidden="true"

@@ -14,7 +14,7 @@ import { useRoutes } from 'react-router-dom'
 import styled from 'styled-components'
 import TodoTask from '../../container/TodoTask'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { selectAccount,userLink } from '../../features/user/accountSlice'
+import { selectAccount, userLink } from '../../features/user/accountSlice'
 
 import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
 import Guide from '../../container/Guide'
@@ -51,22 +51,21 @@ const Main: React.FC = () => {
   //社媒账号授权 code 监听
   useEffect(() => {
     localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
-    const handleStorageChange = ({newValue,key,url}) =>{
-      if ("social_auth" === key) {
-        console.log('social_auth change url',url)
-      // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
-        const { code, type } = JSON.parse(newValue || "")
-        if(code && type){
-          linkUser({code,type})
+    const handleStorageChange = ({ newValue, key, url }) => {
+      if ('social_auth' === key) {
+        console.log('social_auth change url', url)
+        // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
+        const { code, type } = JSON.parse(newValue || '')
+        if (code && type) {
+          linkUser({ code, type })
           localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
         }
       }
-    } 
+    }
     window.addEventListener('storage', handleStorageChange)
 
-    return () => window.removeEventListener("storage", handleStorageChange)
-
-  },[])
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
 
   const linkUser = (accountInfo) => {
     const code = accountInfo.code
