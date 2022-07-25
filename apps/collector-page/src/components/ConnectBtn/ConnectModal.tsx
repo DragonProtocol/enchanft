@@ -19,6 +19,8 @@ import {
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
+import { connectionSocialMedia } from '../../utils/socialMedia'
+
 import useWalletSign from '../../hooks/useWalletSign'
 import MetamaskIcon from './MetamaskIcon'
 import PhantomIcon from './PhantomIcon'
@@ -67,14 +69,21 @@ export default function ConnectModal() {
     handleCloseConnectModal()
   }, [metamaskValid])
 
+  useEffect(() => {
+    if (
+      (account.discord && account.connectModal === ConnectModalType.DISCORD) ||
+      (account.twitter && account.connectModal === ConnectModalType.TWITTER)
+    ) {
+      handleCloseConnectModal()
+    }
+  }, [account.discord, account.twitter])
+
   const bindTwitter = useCallback(async () => {
-    // TODO
-    alert('TODO')
+    connectionSocialMedia('twitter')
   }, [])
 
   const bindDiscord = useCallback(async () => {
-    // TODO
-    alert('TODO')
+    connectionSocialMedia('discord')
   }, [])
 
   let btn: null | ReactElement = null
@@ -102,7 +111,7 @@ export default function ConnectModal() {
       btn = (
         <div className="btn twitter" onClick={bindTwitter}>
           <TwitterIcon />
-          <p>Connect Twitter</p>
+          <p>{account.twitter || 'Connect Twitter'}</p>
         </div>
       )
       msg = `Twitter account is not connected. Please connect your Twitter account.`
@@ -111,7 +120,7 @@ export default function ConnectModal() {
       btn = (
         <div className="btn discord" onClick={bindDiscord}>
           <DiscordIcon />
-          <p>Connect Discord</p>
+          <p>{account.discord || 'Connect Discord'}</p>
         </div>
       )
       msg = `Discord account is not connected. Please connect your Discord account.`

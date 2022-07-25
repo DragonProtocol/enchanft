@@ -46,6 +46,7 @@ import { AsyncRequestStatus } from '../types'
 import EnchanftedList, { EnchanftedListItemsType } from '../components/business/nft/EnchanftedList'
 import { EnchanftedForEntity } from '../features/user/myEnchanftedSlice'
 import { uploadAvatar } from '../services/api/login'
+import { connectionSocialMedia } from '../utils/socialMedia'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -89,8 +90,6 @@ const Profile: React.FC = () => {
 
   const [openDialog, setOpenDialog] = useState(false)
 
-  const [isTracking, setIsTracking] = useState(false)
-
   const updateProfile = useCallback(() => {
     if (!account.token) return
     dispatch(
@@ -103,50 +102,6 @@ const Profile: React.FC = () => {
     setOpenDialog(false)
   }, [account.token, account.pubkey, name, avatar])
 
-  useEffect(() => {
-    window.addEventListener('message', (e) => {
-      if (e.origin === 'https://launch.enchanft.xyz' && e.data.target === 'third-link') {
-        const { twitter, discord } = e.data.data
-        dispatch(setTwitter(twitter || ''))
-        dispatch(setDiscord(discord || ''))
-      }
-    })
-    return () => {
-      window.removeEventListener('message', (e) => {})
-    }
-  }, [])
-
-  useInterval(
-    () => {
-      // TODO timeout
-      const accountInfo = localStorage.getItem('account-verify-data')
-      if (accountInfo) {
-        linkUser(JSON.parse(accountInfo))
-        localStorage.removeItem('account-verify-data')
-        setIsTracking(false)
-      }
-
-      // console.log('accountWindowRef.current', accountWindowRef.current?.closed,accountWindowRef.current)
-    },
-    isTracking ? 3000 : null,
-  )
-
-  const linkUser = (accountInfo) => {
-    const code = accountInfo.code
-    const type = accountInfo.type || 'TWITTER'
-    if (code && type) {
-      dispatch(userLink({ code, type }))
-    } else {
-      alert('account bind failed!')
-    }
-  }
-
-  const handleTrackAccountBind = () => {
-    localStorage.removeItem('twitter')
-    localStorage.removeItem('discord')
-    localStorage.removeItem('account-window')
-    setIsTracking(true)
-  }
   // profile展示信息切换
   const [curProfileTab, setCurProfileTab] = useState(ProfileTabOptions[0].value)
 
@@ -185,16 +140,7 @@ const Profile: React.FC = () => {
               <div className="thirdparty-btn">
                 <div
                   className="thirdparty-inner"
-                  onClick={() => {
-                    // TODO 跳转回原页面
-                    window.open(
-                      // 'http://localhost:3000/#/callback',
-                      'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=bzBLMWs0NnBHejQ4a3dXYkROTHk6MTpjaQ&redirect_uri=https://launch.enchanft.xyz/callback&scope=tweet.read+users.read+offline.access&state=3063390848298.8647&code_challenge=challenge&code_challenge_method=plain',
-                      '__blank',
-                      'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
-                    )
-                    handleTrackAccountBind()
-                  }}
+                  onClick={() => connectionSocialMedia('twitter')}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -234,15 +180,7 @@ const Profile: React.FC = () => {
               <div className="thirdparty-btn thirdparty-discord">
                 <div
                   className="thirdparty-inner"
-                  onClick={() => {
-                    // TODO 跳转回原页面
-                    window.open(
-                      'https://discord.com/oauth2/authorize?response_type=code&client_id=991279625395241014&scope=identify%20guilds.join&state=15773059ghq9183habn&redirect_uri=https://launch.enchanft.xyz/callback?type=DISCORD&prompt=consent',
-                      '__blank',
-                      'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
-                    )
-                    handleTrackAccountBind()
-                  }}
+                  onClick={() => connectionSocialMedia('discord')}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
