@@ -105,6 +105,7 @@ importers:
       buffer: ^6.0.3
       cross-env: ^7.0.2
       crypto-browserify: ^3.12.0
+      dompurify: ^2.3.10
       eslint-config-airbnb: ^19.0.4
       eslint-import-resolver-typescript: ^3.1.1
       eslint-plugin-prettier: ^4.2.1
@@ -114,6 +115,7 @@ importers:
       husky: ^8.0.0
       lint-staged: ^13.0.3
       loglevel: ^1.8.0
+      marked: ^4.0.18
       mockjs: ^1.1.0
       os: ^0.1.2
       os-browserify: ^0.3.0
@@ -163,8 +165,10 @@ importers:
       bs58: 5.0.0
       buffer: 6.0.3
       crypto-browserify: 3.12.0
+      dompurify: 2.3.10
       http-proxy-middleware: 2.0.6
       loglevel: 1.8.0
+      marked: 4.0.18
       mockjs: 1.1.0
       process: 0.11.10
       qs: 6.11.0
@@ -10214,6 +10218,10 @@ packages:
     dependencies:
       domelementtype: 2.3.0
 
+  /dompurify/2.3.10:
+    resolution: {integrity: sha512-o7Fg/AgC7p/XpKjf/+RC3Ok6k4St5F7Q6q6+Nnm3p2zGWioAY6dh0CbbuwOhH2UcSzKsdniE/YnE2/92JcsA+g==}
+    dev: false
+
   /domutils/1.7.0:
     resolution: {integrity: sha512-Lgd2XcJ/NjEw+7tFvfKxOzCYKZsdct5lczQ2ZaQY8Djz7pfAD3Gbp8ySJWtreII/vDlMVmxwa6pHmdxIYgttDg==}
     dependencies:
@@ -14534,6 +14542,12 @@ packages:
     dependencies:
       object-visit: 1.0.1
     dev: true
+
+  /marked/4.0.18:
+    resolution: {integrity: sha512-wbLDJ7Zh0sqA0Vdg6aqlbT+yPxqLblpAZh1mK2+AO2twQkPywvvqQNfEPVwSSRjZ7dZcdeVBIAgiO7MMp3Dszw==}
+    engines: {node: '>= 12'}
+    hasBin: true
+    dev: false
 
   /math-random/1.0.4:
     resolution: {integrity: sha512-rUxjysqif/BZQH2yhd5Aaq7vXMSx9NdEsQcyA07uEzIvxgI7zIr33gGsh+RU0/XjmQpCW7RsVof1vlkvQVCK5A==}
