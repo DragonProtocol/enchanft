@@ -164,7 +164,7 @@ const Profile: React.FC = () => {
         payload: SIGN_MSG,
       }),
     )
-  }, [metamaskValid])
+  }, [phantomValid])
 
   return (
     <>
