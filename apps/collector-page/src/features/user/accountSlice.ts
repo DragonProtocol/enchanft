@@ -19,7 +19,7 @@ export enum ConnectModal {
   EMAIL = 'email',
 }
 
-enum ChainType {
+export enum ChainType {
   SOLANA = 'SOLANA',
   EVM = 'EVM',
 }
