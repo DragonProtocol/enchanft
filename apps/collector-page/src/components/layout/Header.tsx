@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 15:36:15
+ * @LastEditTime: 2022-07-25 15:03:34
  * @Description: 站点头部
  */
 import SolanaConnectWalletButton from 'components/business/connect/SolanaConnectWalletButton'
@@ -37,10 +37,6 @@ const Header: React.FC = () => {
     //   name: 'calendar',
     //   link: '/calendar',
     // },
-    {
-      name: 'profile',
-      link: '/profile',
-    },
   ]
   const [curNavLink, setCurNavLink] = useState('/')
 

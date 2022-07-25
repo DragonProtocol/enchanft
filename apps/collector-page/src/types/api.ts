@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-22 10:10:56
+ * @LastEditTime: 2022-07-25 18:13:14
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -66,13 +66,12 @@ export type Roadmap = {
 /** action */
 export enum ActionType {
   FOLLOW_TWITTER = 'FOLLOW_TWITTER',
-  FOLLOW_COMMUNITY = 'FOLLOW_COMMUNITY',
   INVITE_PEOPLE = 'INVITE_PEOPLE',
   JOIN_DISCORD = 'JOIN_DISCORD',
   RETWEET = 'RETWEET',
   LIKE_TWEET = 'LIKE_TWEET',
   UPDATE_BIO_OF_TWITTER = 'UPDATE_BIO_OF_TWITTER',
-  MEET_CONTRIBUTION_SCORE = 'MET_CONTRIBUTION_SCORE',
+  MEET_CONTRIBUTION_SCORE = 'MEET_CONTRIBUTION_SCORE',
   TURN_ON_NOTIFICATION = 'TURN_ON_NOTIFICATION',
 }
 export type ActionData = {
@@ -86,6 +85,7 @@ export type Action = {
   taskId: number
   projectId: number
   communityId: number
+  description: string
   data: ActionData
 }
 
@@ -139,6 +139,7 @@ export type ContributionRank = {
 /** whitelist */
 export type Whitelist = {
   id: number
+  mintUrl: string
   mintPrice: string
   mintStartTime: number
   mintMaxNum: number
@@ -157,7 +158,7 @@ export enum ExploreTaskSortBy {
   HOT = 'HOT',
 }
 export type ExploreSearchTasksRequestParams = {
-  sortBy?: ExploreTaskSortBy
+  orderType?: ExploreTaskSortBy
   keywords?: string
 }
 export type ExploreSearchTaskItem = Task & {
@@ -229,12 +230,12 @@ export type TodoTaskActionItem = Action & {
 }
 
 export type TodoTaskItem = Task & {
-  actions: TodoTaskActionItem[]
-  mintUrl: string
-  mintStartTime: number
-  projectImage: string
   status: TaskTodoCompleteStatus
+  actions: TodoTaskActionItem[]
+  project: Project
+  whitelist: Whitelist
 }
+
 export type TodoTaskResponse = TodoTaskItem[]
 /** task detail api */
 export type TaskDetailResponse = TaskItem & {

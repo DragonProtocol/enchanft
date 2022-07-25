@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:45:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 18:21:18
+ * @LastEditTime: 2022-07-25 18:38:25
  * @Description: file description
  */
 import React from 'react'
@@ -17,12 +17,16 @@ export type TaskActionListViewConfigType = {
 export type TaskActionItemsType = TaskActionItemDataType[]
 export type TaskActionListProps = TaskActionListViewConfigType & {
   items: TaskActionItemsType
+  onTwitter?: (callback: () => void) => void
+  onDiscord?: (callback: () => void) => void
 }
 const TaskActionList: React.FC<TaskActionListProps> = ({
   items,
   loading,
   loadingMsg = 'loading...',
   emptyMsg,
+  onTwitter,
+  onDiscord,
 }: TaskActionListProps) => {
   const itemLen = items.length
   return (
@@ -30,7 +34,7 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
       {loading ? (
         <TaskActionListLoading>{loadingMsg}</TaskActionListLoading>
       ) : (
-        items.map((item) => <TaskActionItem key={item.id} data={item} />)
+        items.map((item) => <TaskActionItem key={item.id} data={item} onDiscord={onDiscord} onTwitter={onTwitter} />)
       )}
 
       {!loading && itemLen === 0 && emptyMsg && <TaskActionListEmpty>{emptyMsg}</TaskActionListEmpty>}

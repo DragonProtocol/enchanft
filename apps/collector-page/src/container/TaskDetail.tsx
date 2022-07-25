@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-22 19:10:14
+ * @LastEditTime: 2022-07-25 19:24:04
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -20,6 +20,7 @@ import { TaskAcceptedStatus, TodoTaskActionItem } from '../types/api'
 import TaskDetailContent, { TaskDetailContentDataViewType } from '../components/business/task/TaskDetailContent'
 import { selectUserTaskHandlesState, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
 import { selectAccount } from '../features/user/accountSlice'
+import useHandleAction from '../hooks/useHandleAction'
 const formatStoreDataToComponentDataByTaskDetailContent = (
   task: TaskDetailEntity,
   token: string,
@@ -66,6 +67,10 @@ const TaskDetail: React.FC = () => {
   if (!loading && !data) return null
   const taskDetailContent = data ? formatStoreDataToComponentDataByTaskDetailContent(data, token, takeTaskState) : null
   const actionItems = formatStoreDataToComponentDataByTaskActions(data?.actions || [])
+
+  // 处理执行action操作
+  const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
+
   return (
     <TaskDetailWrapper>
       <ScrollBox>
@@ -87,7 +92,11 @@ const TaskDetail: React.FC = () => {
                   </TaskDetailContentBox>
                 )}
                 <TaskActionsBox>
-                  <TaskActionList items={actionItems} />
+                  <TaskActionList
+                    items={actionItems}
+                    onDiscord={handleActionToDiscord}
+                    onTwitter={handleActionToTwitter}
+                  />
                 </TaskActionsBox>
               </>
             )}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 14:40:11
+ * @LastEditTime: 2022-07-25 18:45:27
  * @Description: file description
  */
 import React from 'react'
@@ -29,6 +29,8 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
   emptyMsg,
   onMint,
   onRefreshTask,
+  onTwitter,
+  onDiscord,
 }: TodoTaskListProps) => {
   const itemLen = items.length
   return (
@@ -47,6 +49,8 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
               viewConfig={item.viewConfig}
               onMint={onMint}
               onRefreshTask={onRefreshTask}
+              onDiscord={onDiscord}
+              onTwitter={onTwitter}
             />
           ))
         )}
