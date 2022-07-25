@@ -8,14 +8,16 @@
 import Profile from '../../container/Profile'
 import Events from '../../container/Events'
 import Community from '../../container/Community'
-import CallBack from '../../container/CallBack'
 import React, { useEffect } from 'react'
+import Creator from '../../container/Creator'
 import { useRoutes } from 'react-router-dom'
 import styled from 'styled-components'
 import TodoTask from '../../container/TodoTask'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { selectAccount } from '../../features/user/accountSlice'
+import { selectAccount,userLink } from '../../features/user/accountSlice'
+
 import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
+import Guide from '../../container/Guide'
 import EnchanftedDetail from '../../container/EnchanftedDetail'
 import TaskDetail from '../../container/TaskDetail'
 import Projects from '../../container/Projects'
@@ -23,10 +25,11 @@ import Projects from '../../container/Projects'
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
-  const isLogin = true
+  const isLogin = !!token
   const permissionRoutes = isLogin
     ? [
         { path: '/profile', element: <Profile /> },
+        { path: '/guide', element: <Guide /> },
         { path: '/todo', element: <TodoTask /> },
         { path: '/enchanfted/:mint', element: <EnchanftedDetail /> },
       ]
@@ -37,13 +40,44 @@ const Main: React.FC = () => {
     { path: '/project', element: <Projects /> },
     { path: '/community/:communityId', element: <Community /> },
     { path: '/calendar', element: <div>Calendar Page</div> },
-    { path: '/callback', element: <CallBack /> },
+    { path: '/creator', element: <Creator /> },
     ...permissionRoutes,
     { path: '*', element: <div>404</div> },
   ])
   useEffect(() => {
     dispatch(fetchFollowedCommunities())
   }, [token])
+
+  //社媒账号授权 code 监听
+  useEffect(() => {
+    localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
+    const handleStorageChange = ({newValue,key,url}) =>{
+      if ("social_auth" === key) {
+        console.log('social_auth change url',url)
+      // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
+        const { code, type } = JSON.parse(newValue || "")
+        if(code && type){
+          linkUser({code,type})
+          localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
+        }
+      }
+    } 
+    window.addEventListener('storage', handleStorageChange)
+
+    return () => window.removeEventListener("storage", handleStorageChange)
+
+  },[])
+
+  const linkUser = (accountInfo) => {
+    const code = accountInfo.code
+    const type = accountInfo.type || 'TWITTER'
+    if (code && type) {
+      dispatch(userLink({ code, type }))
+    } else {
+      alert('account bind failed!')
+    }
+  }
+
   return <MainWrapper>{routes}</MainWrapper>
 }
 export default Main

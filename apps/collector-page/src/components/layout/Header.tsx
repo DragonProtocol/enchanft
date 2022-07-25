@@ -14,9 +14,8 @@ import styled from 'styled-components'
 import { PublicKey } from '@solana/web3.js'
 import { setToken, selectAccount, userLogin, setPubkey, userGetProfile } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { SIGN_MSG } from 'constants/solana'
 import LogoImg from '../imgs/logo.svg'
-import { clearLoginToken, getLoginToken } from '../../utils/token'
+import ConnectBtn from '../ConnectBtn'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
@@ -45,54 +44,11 @@ const Header: React.FC = () => {
   ]
   const [curNavLink, setCurNavLink] = useState('/')
 
-  const authenticate = useCallback(async () => {
-    if (!signMessage || !publicKey) return
-    const pubkey = publicKey.toString()
-    const existToken = getLoginToken(pubkey)
-    if (existToken) {
-      dispatch(setToken(existToken))
-      dispatch(setPubkey(pubkey))
-      dispatch(userGetProfile())
-      return
-    }
-    try {
-      const msg = SIGN_MSG
-      const data = await signMessage(Buffer.from(msg))
-      const signature = bs58.encode(data)
-      dispatch(
-        userLogin({
-          signature,
-          payload: msg,
-          pubkey: publicKey.toString(),
-        }),
-      )
-    } catch (error) {
-      if (error.message === 'User rejected the request.') {
-        // TODO ui
-        alert('sign in first')
-      }
-    }
-  }, [account, signMessage, publicKey])
-
   useEffect(() => {
     if (navs.findIndex((item) => item.link === location.pathname) !== -1) {
       setCurNavLink(location.pathname)
     }
   }, [location])
-
-  useEffect(() => {
-    if (!connected || !publicKey) {
-      if (prePublicKey.current) {
-        clearLoginToken(prePublicKey.current.toString())
-        dispatch(setToken(''))
-        dispatch(setPubkey(''))
-        prePublicKey.current = null
-      }
-      return
-    }
-    prePublicKey.current = publicKey
-    authenticate()
-  }, [connected, publicKey])
 
   const PcNav = useCallback(
     () => (
@@ -115,9 +71,7 @@ const Header: React.FC = () => {
       </HeaderLeft>
       <HeaderCenter>{PcNav()}</HeaderCenter>
       <HeaderRight>
-        <SolanaConnectWalletButtonBox>
-          <SolanaConnectWalletButton />
-        </SolanaConnectWalletButtonBox>
+        <ConnectBtn />
       </HeaderRight>
     </HeaderWrapper>
   )
