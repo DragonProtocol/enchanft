@@ -1,53 +1,63 @@
 import { Box, Container } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import ScrollBox from '../components/common/ScrollBox'
-import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
 
 import TaskDashboard from '../components/business/creator/TaskDashboard'
 import WinnerList, { TaskStatus } from '../components/business/creator/WinnerList'
 import TaskTitle from '../components/business/creator/TaskTitle'
 import Schedule from '../components/business/creator/Schedule'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { selectCreator, getCreatorData } from '../features/creator'
+import { selectCreator, getCreatorDashboardData, saveWinnersData } from '../features/creator'
+import { useParams } from 'react-router-dom'
+import { downloadWinner } from '../services/api/creator'
 
 export default function Creator() {
+  const { taskId } = useParams()
   const dispatch = useAppDispatch()
-  const { status, taskData, winnerListData, taskTitleData, scheduleData } = useAppSelector(selectCreator)
+  const { status, participants, winners, whitelistSaved, winnerList, taskInfo, scheduleInfo } =
+    useAppSelector(selectCreator)
 
   useEffect(() => {
-    dispatch(getCreatorData())
-  }, [])
+    dispatch(getCreatorDashboardData({ taskId: Number(taskId) }))
+  }, [taskId])
+
+  const saveWinners = useCallback(
+    (list: Array<number>) => {
+      dispatch(saveWinnersData({ taskId: Number(taskId), winners: list }))
+    },
+    [taskId],
+  )
+
+  const downloadWinners = useCallback(() => {
+    if (!taskId) return
+    downloadWinner(taskId)
+  }, [taskId])
 
   return (
     <CommunityWrapper>
       <ScrollBox>
         <ContentBox>
           <LeftBox>
-            <TaskDashboard participants={1234132} winners={431} completionRate={32} />
-            <WinnerList taskStatus={TaskStatus.BEGIN} winnersNum={10} />
+            <TaskDashboard
+              participants={participants}
+              winners={winners}
+              completionRate={participants == 0 ? '0.00' : (winners / participants).toFixed(2)}
+            />
+            <WinnerList
+              winnersNum={taskInfo?.whitelistTotalNum || 0}
+              whitelistSaved={whitelistSaved}
+              winnerList={winnerList}
+              schedules={scheduleInfo}
+              uploadSelected={(ids: Array<number>) => {
+                saveWinners(ids)
+              }}
+              downloadWinners={downloadWinners}
+            />
           </LeftBox>
           <RightBox>
-            <TaskTitle />
-            <Schedule
-              schedules={[
-                {
-                  title: 'Task submit date',
-                  date: '2022-09-01',
-                  done: true,
-                },
-                {
-                  title: 'Task start',
-                  date: '2022-09-01',
-                  done: true,
-                },
-                {
-                  title: 'Task end',
-                  date: '2022-09-09',
-                  done: false,
-                },
-              ]}
-            />
+            <TaskTitle info={taskInfo} />
+            <Schedule schedules={scheduleInfo} />
           </RightBox>
         </ContentBox>
       </ScrollBox>
