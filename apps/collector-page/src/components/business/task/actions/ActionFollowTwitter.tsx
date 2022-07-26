@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 18:32:40
+ * @LastEditTime: 2022-07-26 16:36:16
  * @Description: file description
  */
 import React from 'react'
@@ -18,8 +18,10 @@ export type ActionFollowTwitterProps = {
 
 const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({ data, onTwitter }: ActionFollowTwitterProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
+  const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+  width=1000,height=1000,left=0,top=0`
   const handleAction = () => {
-    window.open(actionData.url)
+    window.open(actionData.url, name, winParams)
   }
   return (
     <ActionFollowTwitterWrapper>
