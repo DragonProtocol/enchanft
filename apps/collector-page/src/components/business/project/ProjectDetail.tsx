@@ -11,6 +11,7 @@ import WebsiteIcon from '../../imgs/internet.svg'
 import TwitterIcon from '../../imgs/twitter.svg'
 import ProjectTaskSwiper from './ProjectTaskSwiper'
 import RichTextBox from '../../common/text/RichTextBox'
+import ChainTag from '../chain/ChainTag'
 export type ProjectDetailDataType = {
   id: number
   name: string
@@ -28,6 +29,7 @@ export type ProjectDetailDataType = {
   injectedCoins: number
   discord: string
   twitter: string
+  chainId: number
   tasks: TaskContentDataViewType[]
   teamMembers: ProjectTeamMemberItemDataViewType[]
   roadmap: ProjectRoadmapItemDataType[]
@@ -67,6 +69,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
     injectedCoins,
     discord,
     twitter,
+    chainId,
     tasks,
     teamMembers,
     roadmap,
@@ -103,6 +106,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
     <ProjectDetailWrapper>
       <ProjectTopBox>
         <ProjectTopLeftBox>
+          <ChainTag size={1.5} chainId={chainId} />
           <ProjectImage src={image} />
         </ProjectTopLeftBox>
         {/* project basic info */}
@@ -118,9 +122,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
             <ProjectItems>items {itemTotalNum || 0}</ProjectItems>
             <ProjectEnchaNftSol>EnchaNFT {injectedCoins}</ProjectEnchaNftSol>
           </PorjectLinksBox>
-          <ProjectDescription>
-            <RichTextBox>{description}</RichTextBox>
-          </ProjectDescription>
+          <ProjectDescription value={description} />
           {displayMintInfo && (
             <>
               <ProjectMintInfoBox>
@@ -145,18 +147,18 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
           )}
         </ProjectTopCenterBox>
         {/* tasks */}
-        <ProjectTopRightBox>
+        {/* <ProjectTopRightBox>
           {displayTasks && (
             <ProjectTasksBox>
               <ProjectTaskSwiper items={tasks} onTake={onTake}></ProjectTaskSwiper>
             </ProjectTasksBox>
           )}
-        </ProjectTopRightBox>
+        </ProjectTopRightBox> */}
       </ProjectTopBox>
       <ProjectBottomBox>
         <ProjectBottomLeftBox>
           <ProjectStoryLabel>Story</ProjectStoryLabel>
-          <ProjectStoryContent>{story}</ProjectStoryContent>
+          <ProjectStoryContent value={story} />
         </ProjectBottomLeftBox>
         <ProjectBottomRightBox>
           <ProjectBottomRightTabs>
@@ -189,11 +191,13 @@ const ProjectTopBox = styled.div`
 `
 const ProjectTopLeftBox = styled.div`
   flex: 1;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
 `
 const ProjectImage = styled.img`
   width: 100%;
   height: 100%;
-  border-radius: 10px;
 `
 const ProjectTopCenterBox = styled.div`
   flex: 1;
@@ -236,8 +240,6 @@ const ProjectEnchaNftSol = styled.div`
 `
 const ProjectDescription = styled(RichTextBox)`
   flex: 1;
-  color: rgba(16, 16, 16, 100);
-  font-size: 16px;
   overflow-y: auto;
   ${ScrollBarCss}
 `
@@ -300,10 +302,7 @@ const ProjectStoryLabel = styled.div`
   font-weight: bold;
   margin-bottom: 20px;
 `
-const ProjectStoryContent = styled(RichTextBox)`
-  color: rgba(16, 16, 16, 100);
-  font-size: 16px;
-`
+const ProjectStoryContent = styled(RichTextBox)``
 const ProjectBottomRightBox = styled.div`
   flex: 1;
 `
