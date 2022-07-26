@@ -226,7 +226,7 @@ const Profile: React.FC = () => {
                   </svg>
                   {account?.twitter || 'Connect Twitter'}
                 </div>
-                {account?.twitter && (
+                {/* {account?.twitter && (
                   <div className="thirdparty-disconnect">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -243,7 +243,7 @@ const Profile: React.FC = () => {
                       ></path>
                     </svg>
                   </div>
-                )}
+                )} */}
               </div>
               <div className="thirdparty-btn thirdparty-discord">
                 <div className="thirdparty-inner" onClick={() => connectionSocialMedia('discord')}>

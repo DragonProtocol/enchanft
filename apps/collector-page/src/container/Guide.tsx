@@ -67,7 +67,7 @@ export default function Guide() {
             <div className="label">Twitter:</div>
             <div className="btn twitter">
               <TwitterIcon />
-              <p>Connect Twitter</p>
+              <p>{account?.twitter || 'Connect Twitter'}</p>
             </div>
           </Stack>
         </div>
@@ -81,7 +81,7 @@ export default function Guide() {
             <div className="label">Discord:</div>
             <div className="btn discord">
               <DiscordIcon />
-              <p>Connect Discord</p>
+              <p>{account?.discord || 'Connect Discord'}</p>
             </div>
           </Stack>
         </div>
