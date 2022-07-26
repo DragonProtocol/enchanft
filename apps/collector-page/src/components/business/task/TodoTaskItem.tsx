@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 14:54:16
+ * @LastEditTime: 2022-07-26 16:39:23
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -203,11 +203,13 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   const isOpenActionsDefault = allowOpenActions && openActions ? true : false
   const [isOpenActions, setIsOpenActions] = useState(isOpenActionsDefault)
   const onTaskClick = () => {
-    if (onRefreshTask) {
-      onRefreshTask(data)
-    }
     if (allowOpenActions) {
       setIsOpenActions(!isOpenActions)
+    }
+  }
+  const onRefreshClick = () => {
+    if (onRefreshTask) {
+      onRefreshTask(data)
     }
   }
   return (
@@ -227,6 +229,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
       {isOpenActions && (
         <TaskActionsBox>
           <TaskActionList items={actions} onDiscord={onDiscord} onTwitter={onTwitter}></TaskActionList>
+          <RefreshBtn onClick={onRefreshClick}>Refresh</RefreshBtn>
         </TaskActionsBox>
       )}
     </TodoTaskItemWrapper>
@@ -281,6 +284,15 @@ const StatusIcon = styled.div``
 const StatusText = styled.div``
 
 const MintBtn = styled(ButtonBase)`
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  background-color: rgba(16, 16, 16, 100);
+  color: rgba(255, 255, 255, 100);
+  font-size: 14px;
+  margin-top: 10px;
+`
+const RefreshBtn = styled(ButtonBase)`
   width: 100%;
   height: 40px;
   border-radius: 4px;

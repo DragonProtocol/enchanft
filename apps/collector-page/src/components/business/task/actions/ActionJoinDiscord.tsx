@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 19:09:06
+ * @LastEditTime: 2022-07-26 16:36:22
  * @Description: file description
  */
 import React from 'react'
@@ -18,8 +18,10 @@ export type ActionJoinDiscordProps = {
 
 const ActionJoinDiscord: React.FC<ActionJoinDiscordProps> = ({ data, onDiscord }: ActionJoinDiscordProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
+  const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+  width=1000,height=1000,left=0,top=0`
   const handleAction = () => {
-    window.open(actionData.url)
+    window.open(actionData.url, name, winParams)
   }
   return (
     <ActionJoinDiscordWrapper>
