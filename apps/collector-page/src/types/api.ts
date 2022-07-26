@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 12:48:22
+ * @LastEditTime: 2022-07-26 17:57:53
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -142,6 +142,7 @@ export type Whitelist = {
   mintUrl: string
   mintPrice: string
   mintStartTime: number
+  mintEndTime: number
   mintMaxNum: number
   totalNum: number
   projectId: number
@@ -212,12 +213,6 @@ export type CommunityCollectionResponse = {
 
 export type CommunityContributionRankResponseItem = ContributionRank
 
-export type FollowedCommunityItem = Community & {
-  memberNums: number
-  contribution: number
-}
-export type FollowedCommunitiesResponse = FollowedCommunityItem[]
-
 /** todo task api */
 export enum UserActionStatus {
   TODO = 'TODO',
@@ -245,3 +240,21 @@ export type TaskDetailResponse = TaskItem & {
   status: TaskTodoCompleteStatus
   project: Project
 }
+
+/**
+ * user other data api
+ */
+
+// user followed community
+export type FollowedCommunityItem = Community & {
+  memberNums: number
+  contribution: number
+}
+export type FollowedCommunitiesResponse = FollowedCommunityItem[]
+
+// user whitelist
+export type UserWhitelistItem = Whitelist & {
+  project: Project
+  community: Community
+}
+export type UserWhitelistsResponse = UserWhitelistItem[]

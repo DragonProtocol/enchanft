@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-19 17:01:18
+ * @LastEditTime: 2022-07-26 19:10:35
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -50,7 +50,7 @@ import CommunityList, { CommunityListItemsType } from '../components/business/co
 import {
   FollowedCommunitityForEntity,
   selectAll as selectAllForFollowedCommunity,
-  selectuserFollowedCommunitiesState,
+  selectUserFollowedCommunitiesState,
 } from '../features/user/followedCommunitiesSlice'
 import { AsyncRequestStatus } from '../types'
 import EnchanftedList, { EnchanftedListItemsType } from '../components/business/nft/EnchanftedList'
@@ -62,26 +62,44 @@ import MetamaskIcon from '../components/ConnectBtn/MetamaskIcon'
 import { sortPubKey } from '../utils/solana'
 import useWalletSign from '../hooks/useWalletSign'
 import { SIGN_MSG } from '../utils/token'
+import {
+  selectUserWhitelistsState,
+  UserWhitelistForEntity,
+  selectAll as selectAllForUserWhitelists,
+} from '../features/user/userWhitelistsSlice'
+import WhitelistList, { WhitelistListItemsType } from '../components/business/whitelist/WhitelistList'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {
-  return communities.map((community) => {
+  return communities.map((item) => {
     return {
-      data: { ...community, isFollowed: true },
+      data: { ...item, isFollowed: true },
       viewConfig: {
         displayFollow: true,
       },
     }
   })
 }
-const formatStoreDataToComponentDataByMyEnchanfted = (nfts: EnchanftedForEntity[]): EnchanftedListItemsType => {
-  return nfts.map((nft) => {
+const formatStoreDataToComponentDataByUserWhitelists = (
+  whitelists: UserWhitelistForEntity[],
+): WhitelistListItemsType => {
+  return whitelists.map((item) => {
     return {
-      data: { ...nft },
+      data: { ...item },
+      viewConfig: {
+        displayMint: true,
+      },
     }
   })
 }
+// const formatStoreDataToComponentDataByMyEnchanfted = (nfts: EnchanftedForEntity[]): EnchanftedListItemsType => {
+//   return nfts.map((nft) => {
+//     return {
+//       data: { ...nft },
+//     }
+//   })
+// }
 const ProfileTabOptions = [
   {
     label: 'My Communities',
@@ -91,10 +109,10 @@ const ProfileTabOptions = [
     label: 'My Whitelist',
     value: 'myWhitelist',
   },
-  {
-    label: 'My Enchanfted',
-    value: 'myEnchanfted',
-  },
+  // {
+  //   label: 'My Enchanfted',
+  //   value: 'myEnchanfted',
+  // },
 ]
 const Profile: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -122,15 +140,19 @@ const Profile: React.FC = () => {
 
   // 我的社区列表
   const followedCommunities = useAppSelector(selectAllForFollowedCommunity)
-  const { status: followedCommunitiesStatus } = useAppSelector(selectuserFollowedCommunitiesState)
+  const { status: followedCommunitiesStatus } = useAppSelector(selectUserFollowedCommunitiesState)
   const loadingFollowedCommunities = followedCommunitiesStatus === AsyncRequestStatus.PENDING
   const followedCommunityItems = formatStoreDataToComponentDataByFollowedCommunities(followedCommunities)
-
+  // 我的whitelist列表
+  const whitelists = useAppSelector(selectAllForUserWhitelists)
+  const { status: whitelistsStatus } = useAppSelector(selectUserWhitelistsState)
+  const loadingUserWhitelists = whitelistsStatus === AsyncRequestStatus.PENDING
+  const whitelistItems = formatStoreDataToComponentDataByUserWhitelists(whitelists)
   // 我的NFT列表
-  const myEnchanftedList = useAppSelector(selectAllForMyEnchanfted)
-  const { status: myEnchanftedStatus } = useAppSelector(selectMyEnchanftedState)
-  const loadingEnchanftedList = myEnchanftedStatus === AsyncRequestStatus.PENDING
-  const myEnchanftedItems = formatStoreDataToComponentDataByMyEnchanfted(myEnchanftedList)
+  // const myEnchanftedList = useAppSelector(selectAllForMyEnchanfted)
+  // const { status: myEnchanftedStatus } = useAppSelector(selectMyEnchanftedState)
+  // const loadingEnchanftedList = myEnchanftedStatus === AsyncRequestStatus.PENDING
+  // const myEnchanftedItems = formatStoreDataToComponentDataByMyEnchanfted(myEnchanftedList)
 
   const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
   const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
@@ -300,9 +322,12 @@ const Profile: React.FC = () => {
               {curProfileTab === 'myCommunities' && (
                 <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
               )}
-              {curProfileTab === 'myEnchanfted' && (
-                <EnchanftedList items={myEnchanftedItems} loading={loadingEnchanftedList} />
+              {curProfileTab === 'myWhitelist' && (
+                <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />
               )}
+              {/* {curProfileTab === 'myEnchanfted' && (
+                <EnchanftedList items={myEnchanftedItems} loading={loadingEnchanftedList} />
+              )} */}
             </ProfileTabContentBox>
           </ProfileTabsBox>
         </ProfileWrapper>

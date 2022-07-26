@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 16:32:55
+ * @LastEditTime: 2022-07-26 18:27:51
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
@@ -21,6 +21,7 @@ import Guide from '../../container/Guide'
 import EnchanftedDetail from '../../container/EnchanftedDetail'
 import TaskDetail from '../../container/TaskDetail'
 import Projects from '../../container/Projects'
+import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -46,6 +47,7 @@ const Main: React.FC = () => {
   ])
   useEffect(() => {
     dispatch(fetchFollowedCommunities())
+    dispatch(fetchUserWhitelists())
   }, [token])
 
   //社媒账号授权 code 监听
