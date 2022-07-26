@@ -98,9 +98,27 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
     },
   ]
   const [activeTab, setActiveTab] = useState(ProjectInfoTabs[0])
-  const whitelist = whitelists[0]
-  const whitelistStartTimeText = new Date(whitelist.mintStartTime).toLocaleString()
-  const whitelistMintPriceText = whitelist.mintPrice ? `Mint Price ${whitelist.mintPrice}` : 'Free Mint'
+
+  const renderWhitelist = () => {
+    const whitelist = whitelists[0]
+    if (!whitelist) {
+      return null
+    }
+    const whitelistStartTimeText = new Date(whitelist.mintStartTime).toLocaleString()
+    const whitelistMintPriceText = whitelist.mintPrice ? `Mint Price ${whitelist.mintPrice}` : 'Free Mint'
+    return (
+      <ProjectMintInfoBox>
+        <ProjectMintInfoTopBox>
+          <ProjectMintInfoLabel>Whitelist</ProjectMintInfoLabel>
+          <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
+          <ProjectMintInfoStartsInTime>{whitelistStartTimeText}</ProjectMintInfoStartsInTime>
+        </ProjectMintInfoTopBox>
+        <PrjectMintInfoBottomBox>
+          MAX {whitelist.mintMaxNum} Tokens . {whitelistMintPriceText}
+        </PrjectMintInfoBottomBox>
+      </ProjectMintInfoBox>
+    )
+  }
   const publicSaleTimeText = new Date(publicSaleTime).toLocaleString()
   return (
     <ProjectDetailWrapper>
@@ -125,16 +143,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
           <ProjectDescription value={description} />
           {displayMintInfo && (
             <>
-              <ProjectMintInfoBox>
-                <ProjectMintInfoTopBox>
-                  <ProjectMintInfoLabel>Whitelist</ProjectMintInfoLabel>
-                  <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
-                  <ProjectMintInfoStartsInTime>{whitelistStartTimeText}</ProjectMintInfoStartsInTime>
-                </ProjectMintInfoTopBox>
-                <PrjectMintInfoBottomBox>
-                  MAX {whitelist.mintMaxNum} Tokens . {whitelistMintPriceText}
-                </PrjectMintInfoBottomBox>
-              </ProjectMintInfoBox>
+              {renderWhitelist()}
               <ProjectMintInfoBox>
                 <ProjectMintInfoTopBox>
                   <ProjectMintInfoLabel>Public</ProjectMintInfoLabel>
