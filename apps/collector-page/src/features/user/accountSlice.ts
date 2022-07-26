@@ -26,6 +26,8 @@ export enum ChainType {
 
 type Account = {
   accountType: 'SOLANA' | 'EVM' | any
+  thirdpartyId: string
+  thirdpartyName: string
 }
 
 export type AccountState = {
