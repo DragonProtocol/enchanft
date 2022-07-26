@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 18:36:38
+ * @LastEditTime: 2022-07-26 16:02:46
  * @Description: file description
  */
 import React from 'react'
@@ -29,11 +29,17 @@ export type TaskActionItemDataType = {
 
 export type TaskActionItemProps = {
   data: TaskActionItemDataType
+  allowHandle?: boolean
   onTwitter?: (callback: () => void) => void
   onDiscord?: (callback: () => void) => void
 }
 
-const TaskActionItem: React.FC<TaskActionItemProps> = ({ data, onTwitter, onDiscord }: TaskActionItemProps) => {
+const TaskActionItem: React.FC<TaskActionItemProps> = ({
+  data,
+  allowHandle,
+  onTwitter,
+  onDiscord,
+}: TaskActionItemProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
   let TaskStatusView = <TaskActionStatusTodo></TaskActionStatusTodo>
   switch (status) {
@@ -42,6 +48,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({ data, onTwitter, onDisc
       break
   }
   const renderAction = () => {
+    if (!allowHandle) return name
     switch (type) {
       case ActionType.FOLLOW_TWITTER:
         // 关注twitter

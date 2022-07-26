@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 14:52:31
+ * @LastEditTime: 2022-07-26 16:06:35
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -27,7 +27,7 @@ const formatStoreDataToComponentDataByTaskDetailContent = (
   task: TaskDetailEntity,
   token: string,
   takeTaskState: TaskHandle<TakeTaskParams>,
-  tokenType: TokenType,
+  accountTypes: string[],
 ): TaskDetailContentDataViewType => {
   // 是否需要链接钱包
   let displayConnectWallet = false
@@ -40,12 +40,12 @@ const formatStoreDataToComponentDataByTaskDetailContent = (
     // TODO 这里的几个type类型考虑是否需要统一下
     switch (taskChainType) {
       case ChainType.EVM:
-        if (tokenType !== TokenType.Ethereum) {
+        if (!accountTypes.includes('EVM')) {
           displayConnectWallet = true
         }
         break
       case ChainType.SOLANA:
-        if (tokenType !== TokenType.Solana) {
+        if (!accountTypes.includes('SOLANA')) {
           displayConnectWallet = true
         }
         break
@@ -83,7 +83,8 @@ const formatStoreDataToComponentDataByTaskActions = (actions: TodoTaskActionItem
 const TaskDetail: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token, defaultWallet } = useAppSelector(selectAccount)
+  const { token, accounts } = useAppSelector(selectAccount)
+  const accountTypes = accounts.map((account) => account.accountType)
 
   const { id } = useParams()
   const { status, data } = useAppSelector(selectTaskDetail)
@@ -110,13 +111,17 @@ const TaskDetail: React.FC = () => {
   const handleOpenConnectWallet = useCallback(() => {
     dispatch(setConnectModal(modalType))
   }, [modalType])
+  // 是否允许操作action
+  const allowHandleAction = Boolean(
+    data?.acceptedStatus === TaskAcceptedStatus.DONE && data?.status !== TaskTodoCompleteStatus.CLOSED,
+  )
 
   // TODO display winner list
   const displayWinnerList = false
 
   if (!loading && !data) return null
   const taskDetailContent = data
-    ? formatStoreDataToComponentDataByTaskDetailContent(data, token, takeTaskState, defaultWallet)
+    ? formatStoreDataToComponentDataByTaskDetailContent(data, token, takeTaskState, accountTypes)
     : null
   const actionItems = formatStoreDataToComponentDataByTaskActions(data?.actions || [])
 
@@ -150,6 +155,7 @@ const TaskDetail: React.FC = () => {
                     items={actionItems}
                     onDiscord={handleActionToDiscord}
                     onTwitter={handleActionToTwitter}
+                    allowHandle={allowHandleAction}
                   />
                 </TaskActionsBox>
               </>
