@@ -8,7 +8,7 @@ import WinnerList, { TaskStatus } from '../components/business/creator/WinnerLis
 import TaskTitle from '../components/business/creator/TaskTitle'
 import Schedule from '../components/business/creator/Schedule'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { selectCreator, getCreatorDashboardData, saveWinnersData } from '../features/creator'
+import { selectCreator, getCreatorDashboardData, saveWinnersData, resetData } from '../features/creator'
 import { useParams } from 'react-router-dom'
 import { downloadWinner } from '../services/api/creator'
 
@@ -20,6 +20,9 @@ export default function Creator() {
 
   useEffect(() => {
     dispatch(getCreatorDashboardData({ taskId: Number(taskId) }))
+    return () => {
+      dispatch(resetData())
+    }
   }, [taskId])
 
   const saveWinners = useCallback(
