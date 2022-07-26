@@ -2,32 +2,33 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-18 15:59:05
+ * @LastEditTime: 2022-07-26 16:48:35
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { TaskTodoCompleteStatus, TaskType, UserActionStatus } from '../../../types/api'
+import { Project, TaskTodoCompleteStatus, TaskType, UserActionStatus, Whitelist } from '../../../types/api'
 import ButtonBase from '../../common/button/ButtonBase'
-import { TodoTaskActionItemDataType } from './TodoTaskActionItem'
+import { TaskActionItemDataType } from './TaskActionItem'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import MoodIcon from '@mui/icons-material/Mood'
 import MoodBadIcon from '@mui/icons-material/MoodBad'
-import TodoTaskActionList from './TodoTaskActionList'
+import TaskActionList from './TaskActionList'
 
 export type TodoTaskItemDataType = {
   id: number
   name: string
-  whitelistTotalNum: string
+  image: string
+  whitelistTotalNum: number
   type: TaskType
   projectId: number
-  projectImage: string
   startTime: number
   endTime: number
-  actions: TodoTaskActionItemDataType[]
-  mintUrl: string
-  mintStartTime: number
+  description: string
   status: TaskTodoCompleteStatus
+  actions: TaskActionItemDataType[]
+  project: Project
+  whitelist: Whitelist
 }
 
 export type TodoTaskItemViewConfigType = {
@@ -47,6 +48,8 @@ export type TodoTaskItemDataViewType = {
 export type TodoTaskItemHandlesType = {
   onMint?: (task: TodoTaskItemDataType) => void
   onRefreshTask?: (task: TodoTaskItemDataType) => void
+  onTwitter?: (callback: () => void) => void
+  onDiscord?: (callback: () => void) => void
 }
 
 export type TodoTaskItemProps = TodoTaskItemDataViewType & TodoTaskItemHandlesType
@@ -78,20 +81,17 @@ const TaskTodoCompleteStatusView = {
   },
 }
 
-const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint, onRefreshTask }: TodoTaskItemProps) => {
-  const {
-    name,
-    whitelistTotalNum,
-    type,
-    projectId,
-    projectImage,
-    startTime,
-    endTime,
-    actions,
-    mintUrl,
-    mintStartTime,
-    status,
-  } = data
+const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
+  data,
+  viewConfig,
+  onMint,
+  onRefreshTask,
+  onTwitter,
+  onDiscord,
+}: TodoTaskItemProps) => {
+  const { name, whitelistTotalNum, type, projectId, startTime, endTime, actions, status, project, whitelist } = data
+  const { name: projectName } = project
+  const { mintUrl, mintStartTime } = whitelist
   const { disabledMint, displayMint, loadingMint, allowOpenActions, openActions, loadingRefresh } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -203,17 +203,19 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint, o
   const isOpenActionsDefault = allowOpenActions && openActions ? true : false
   const [isOpenActions, setIsOpenActions] = useState(isOpenActionsDefault)
   const onTaskClick = () => {
-    if (onRefreshTask) {
-      onRefreshTask(data)
-    }
     if (allowOpenActions) {
       setIsOpenActions(!isOpenActions)
+    }
+  }
+  const onRefreshClick = () => {
+    if (onRefreshTask) {
+      onRefreshTask(data)
     }
   }
   return (
     <TodoTaskItemWrapper>
       <TaskBasicInfoBox isAllowClick={allowOpenActions} onClick={onTaskClick}>
-        <TaskBasicInfoLeftImg src={projectImage} />
+        <TaskBasicInfoLeftImg src={project.image} />
         <TaskBasicInfoRightBox>
           <TaskName>{name}</TaskName>
           {renderTaskStatusContent()}
@@ -226,7 +228,13 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({ data, viewConfig, onMint, o
       )}
       {isOpenActions && (
         <TaskActionsBox>
-          <TodoTaskActionList items={actions}></TodoTaskActionList>
+          <TaskActionList
+            items={actions}
+            onDiscord={onDiscord}
+            onTwitter={onTwitter}
+            allowHandle={true}
+          ></TaskActionList>
+          <RefreshBtn onClick={onRefreshClick}>Refresh</RefreshBtn>
         </TaskActionsBox>
       )}
     </TodoTaskItemWrapper>
@@ -281,6 +289,15 @@ const StatusIcon = styled.div``
 const StatusText = styled.div``
 
 const MintBtn = styled(ButtonBase)`
+  width: 100%;
+  height: 40px;
+  border-radius: 4px;
+  background-color: rgba(16, 16, 16, 100);
+  color: rgba(255, 255, 255, 100);
+  font-size: 14px;
+  margin-top: 10px;
+`
+const RefreshBtn = styled(ButtonBase)`
   width: 100%;
   height: 40px;
   border-radius: 4px;

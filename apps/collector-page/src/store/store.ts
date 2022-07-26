@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 16:05:17
+ * @LastEditTime: 2022-07-21 17:39:50
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
@@ -10,8 +10,13 @@ import { configureStore } from '@reduxjs/toolkit'
 import websiteReducer from '../features/website/index'
 import accountReducer from '../features/user/accountSlice'
 import myEnchanftedReducer from '../features/user/myEnchanftedSlice'
-import dashboardRecommendTasksReducer from '../features/dashboard/recommendTasksSlice'
-import dashboardProjectsReducer from '../features/dashboard/projectsSlice'
+
+import exploreSearchTasksReducer from '../features/explore/searchTasksSlice'
+import exploreSearchProjectsReducer from '../features/explore/searchProjectsSlice'
+import exploreRecommendTasksReducer from '../features/explore/recommendTasksSlice'
+import exploreRecommendProjectsReducer from '../features/explore/recommendProjectsSlice'
+import taskDatailReducer from '../features/task/taskDetailSlice'
+
 import communityCollectionDetailReducer from '../features/community/collectionDetailSlice'
 import communityContributionRanksReducer from '../features/community/contributionRanksSlice'
 import userTaskHandlesReducer from '../features/user/taskHandlesSlice'
@@ -25,8 +30,13 @@ export const store = configureStore({
     website: websiteReducer,
     account: accountReducer,
     myEnchanfted: myEnchanftedReducer,
-    dashboardRecommendTasks: dashboardRecommendTasksReducer,
-    dashboardProjects: dashboardProjectsReducer,
+
+    exploreSearchTasks: exploreSearchTasksReducer,
+    exploreSearchProjects: exploreSearchProjectsReducer,
+    exploreRecommendTasks: exploreRecommendTasksReducer,
+    exploreRecommendProjects: exploreRecommendProjectsReducer,
+    taskDetail: taskDatailReducer,
+
     communityCollectionDetail: communityCollectionDetailReducer,
     communityContributionRanks: communityContributionRanksReducer,
     userTaskHandles: userTaskHandlesReducer,

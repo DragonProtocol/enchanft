@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-05 12:14:52
+ * @LastEditTime: 2022-07-25 10:35:02
  * @Description: 基础按钮
  */
 import React, { ButtonHTMLAttributes } from 'react'
@@ -26,7 +26,6 @@ export const ButtonDanger = styled(ButtonBase)`
 `
 
 export const ButtonBaseCss = css`
-  height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -35,6 +34,8 @@ export const ButtonBaseCss = css`
   color: #ffffff;
   border: none;
   cursor: pointer;
+  padding: 16px 18px;
+  box-sizing: border-box;
 `
 const ButtonBaseWrapper = styled.button`
   ${ButtonBaseCss}

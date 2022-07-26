@@ -5,7 +5,7 @@
  * @LastEditTime: 2022-07-07 14:42:28
  * @Description: file description
  */
-import { fetchListForProjectUrl, fetchListForRecommendTasksUrl } from '../../services/api/dashboard'
+import { fetchListForProjectUrl, fetchListForRecommendTasksUrl } from '../../services/api/explore'
 import { ProjectStatus, TaskAcceptedStatus, TaskType } from '../../types/api'
 export default [
   {

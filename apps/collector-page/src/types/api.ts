@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-18 13:18:09
+ * @LastEditTime: 2022-07-26 12:48:22
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -30,11 +30,13 @@ export enum TaskTodoCompleteStatus {
 export type Task = {
   id: number
   name: string
-  whitelistTotalNum: string
+  image: string
+  whitelistTotalNum: number
   type: TaskType
   projectId: number
   startTime: number
   endTime: number
+  description: string
 }
 
 /** community */
@@ -64,13 +66,12 @@ export type Roadmap = {
 /** action */
 export enum ActionType {
   FOLLOW_TWITTER = 'FOLLOW_TWITTER',
-  FOLLOW_COMMUNITY = 'FOLLOW_COMMUNITY',
   INVITE_PEOPLE = 'INVITE_PEOPLE',
   JOIN_DISCORD = 'JOIN_DISCORD',
   RETWEET = 'RETWEET',
   LIKE_TWEET = 'LIKE_TWEET',
   UPDATE_BIO_OF_TWITTER = 'UPDATE_BIO_OF_TWITTER',
-  MEET_CONTRIBUTION_SCORE = 'MET_CONTRIBUTION_SCORE',
+  MEET_CONTRIBUTION_SCORE = 'MEET_CONTRIBUTION_SCORE',
   TURN_ON_NOTIFICATION = 'TURN_ON_NOTIFICATION',
 }
 export type ActionData = {
@@ -84,6 +85,7 @@ export type Action = {
   taskId: number
   projectId: number
   communityId: number
+  description: string
   data: ActionData
 }
 
@@ -123,6 +125,7 @@ export type Project = {
   injectedCoins: number
   discord: string
   twitter: string
+  chainId: number
 }
 
 export type ContributionRank = {
@@ -136,6 +139,7 @@ export type ContributionRank = {
 /** whitelist */
 export type Whitelist = {
   id: number
+  mintUrl: string
   mintPrice: string
   mintStartTime: number
   mintMaxNum: number
@@ -144,21 +148,48 @@ export type Whitelist = {
   taskId: number
 }
 
-/** api response types ============================ */
+/** api request and response types ============================ */
 
-/** dashboard api */
+/** explore api */
 
+// explore task
+export enum ExploreTaskSortBy {
+  NEW = 'NEW',
+  HOT = 'HOT',
+}
+export type ExploreSearchTasksRequestParams = {
+  orderType?: ExploreTaskSortBy
+  keywords?: string
+}
+export type ExploreSearchTaskItem = Task & {
+  winnersNum: number
+  acceptedStatus: TaskAcceptedStatus
+  actions: Action[]
+  project: Project
+}
+export type ExploreRecommendTaskItem = Task & {
+  winnersNum: number
+  acceptedStatus: TaskAcceptedStatus
+  actions: Action[]
+  project: Project
+}
+
+// explore project
 export type TaskItem = Task & {
   winnersNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
 }
-
-export type DashboardTaskItem = TaskItem & {
-  project: Project
+export type ExploreSearchProjectsRequestParams = {
+  status?: ProjectStatus | ''
+  keywords?: string
+}
+export type ExploreSearchProjectItem = Project & {
+  community: Community
+  tasks: TaskItem[]
 }
 
-export type DashboardProjectItem = Project & {
+export type ExploreRecommendProjectItem = Project & {
   community: Community
   tasks: TaskItem[]
 }
@@ -199,11 +230,18 @@ export type TodoTaskActionItem = Action & {
 }
 
 export type TodoTaskItem = Task & {
-  actions: TodoTaskActionItem[]
-  mintUrl: string
-  mintStartTime: number
-  projectImage: string
   status: TaskTodoCompleteStatus
+  actions: TodoTaskActionItem[]
+  project: Project
+  whitelist: Whitelist
 }
 
 export type TodoTaskResponse = TodoTaskItem[]
+/** task detail api */
+export type TaskDetailResponse = TaskItem & {
+  actions: TodoTaskActionItem[]
+  mintUrl: string
+  mintStartTime: number
+  status: TaskTodoCompleteStatus
+  project: Project
+}

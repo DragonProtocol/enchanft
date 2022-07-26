@@ -1,56 +1,56 @@
 /*
  * @Author: shixuewen friendlysxw@163.com
- * @Date: 2022-07-14 14:09:15
+ * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 16:36:16
+ * @LastEditTime: 2022-07-26 16:36:22
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
-import TwitterIcon from './icons/twitter.svg'
+import DiscordIcon from './icons/discord.svg'
 
-export type ActionFollowTwitterProps = {
+export type ActionJoinDiscordProps = {
   data: TaskActionItemDataType
-  onTwitter?: (callback: () => void) => void
+  onDiscord?: (callback: () => void) => void
 }
 
-const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({ data, onTwitter }: ActionFollowTwitterProps) => {
-  const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
+const ActionJoinDiscord: React.FC<ActionJoinDiscordProps> = ({ data, onDiscord }: ActionJoinDiscordProps) => {
+  const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
   const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
   width=1000,height=1000,left=0,top=0`
   const handleAction = () => {
     window.open(actionData.url, name, winParams)
   }
   return (
-    <ActionFollowTwitterWrapper>
-      <ActionFollowTwitterLeft isDone={status === UserActionStatus.DONE}>{name}</ActionFollowTwitterLeft>
+    <ActionJoinDiscordWrapper>
+      <ActionJoinDiscordLeft isDone={status === UserActionStatus.DONE}>{name}</ActionJoinDiscordLeft>
       {status !== UserActionStatus.DONE && (
-        <ActionFollowTwitterIconBtn
-          src={TwitterIcon}
+        <ActionJoinDiscordIconBtn
+          src={DiscordIcon}
           onClick={(event) => {
             // 阻止冒泡
             event.stopPropagation()
-            onTwitter && onTwitter(handleAction)
+            onDiscord && onDiscord(handleAction)
           }}
-        ></ActionFollowTwitterIconBtn>
+        ></ActionJoinDiscordIconBtn>
       )}
-    </ActionFollowTwitterWrapper>
+    </ActionJoinDiscordWrapper>
   )
 }
-export default ActionFollowTwitter
-const ActionFollowTwitterWrapper = styled.div`
+export default ActionJoinDiscord
+const ActionJoinDiscordWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 10px;
 `
-const ActionFollowTwitterLeft = styled.div<{ isDone?: Boolean }>`
+const ActionJoinDiscordLeft = styled.div<{ isDone?: Boolean }>`
   flex: 1;
   ${({ isDone }) => isDone && `text-decoration: line-through;`}
 `
-const ActionFollowTwitterIconBtn = styled.img`
+const ActionJoinDiscordIconBtn = styled.img`
   cursor: pointer;
 `

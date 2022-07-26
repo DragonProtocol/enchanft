@@ -2,21 +2,42 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 10:53:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 11:15:42
+ * @LastEditTime: 2022-07-26 10:49:46
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
-
-type RichTextBoxProps = {
-  children: any
+import DOMPurify from 'dompurify'
+import { marked } from 'marked'
+export enum RichTextMode {
+  HTML,
+  MARKDOWN,
 }
-const RichTextBox: React.FC<RichTextBoxProps> = ({ children, ...otherProps }: RichTextBoxProps) => {
-  return <RichTextBoxWrapper {...otherProps}>{children}</RichTextBoxWrapper>
+type RichTextBoxProps = {
+  mode?: RichTextMode
+  value: string
+}
+const RichTextBox: React.FC<RichTextBoxProps> = ({
+  mode = RichTextMode.MARKDOWN,
+  value,
+  ...otherProps
+}: RichTextBoxProps) => {
+  let html = value
+  switch (mode) {
+    case RichTextMode.MARKDOWN:
+      html = DOMPurify.sanitize(marked.parse(value))
+      break
+    case RichTextMode.HTML:
+      html = DOMPurify.sanitize(value)
+      break
+  }
+  return <RichTextBoxWrapper {...otherProps} dangerouslySetInnerHTML={{ __html: html }}></RichTextBoxWrapper>
 }
 export default RichTextBox
-const RichTextBoxWrapper = styled.pre`
+const RichTextBoxWrapper = styled.div`
   width: 100%;
-  word-wrap: break-word; /* IE 5.5-7 */
   white-space: pre-wrap; /* current browsers */
+  img {
+    max-width: 100%;
+  }
 `
