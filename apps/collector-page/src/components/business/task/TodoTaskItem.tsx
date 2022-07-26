@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 16:39:23
+ * @LastEditTime: 2022-07-26 16:48:35
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -228,7 +228,12 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
       )}
       {isOpenActions && (
         <TaskActionsBox>
-          <TaskActionList items={actions} onDiscord={onDiscord} onTwitter={onTwitter}></TaskActionList>
+          <TaskActionList
+            items={actions}
+            onDiscord={onDiscord}
+            onTwitter={onTwitter}
+            allowHandle={true}
+          ></TaskActionList>
           <RefreshBtn onClick={onRefreshClick}>Refresh</RefreshBtn>
         </TaskActionsBox>
       )}
