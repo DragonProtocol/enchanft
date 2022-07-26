@@ -147,6 +147,9 @@ const TaskDetail: React.FC = () => {
                       viewConfig={taskDetailContent.viewConfig}
                       onConnectWallet={handleOpenConnectWallet}
                       onTake={(task) => handleTakeTask(task.id)}
+                      navToCreator={(task) => {
+                        navigate(`/creator/${task.id}`)
+                      }}
                     />
                   </TaskDetailContentBox>
                 )}

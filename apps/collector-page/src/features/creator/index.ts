@@ -67,6 +67,15 @@ export const creatorSlice = createSlice({
   initialState: creatorState,
   reducers: {
     some: (state) => {},
+    resetData: (state) => {
+      state.status = AsyncRequestStatus.FULFILLED
+      state.participants = creatorState.participants
+      state.winners = creatorState.winners
+      state.whitelistSaved = creatorState.whitelistSaved
+      state.winnerList = creatorState.winnerList
+      state.scheduleInfo = creatorState.scheduleInfo
+      state.taskInfo = creatorState.taskInfo
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -100,6 +109,6 @@ export const creatorSlice = createSlice({
 })
 
 const { actions, reducer } = creatorSlice
-// export const { switchOpenMenu } = actions
+export const { resetData } = actions
 export const selectCreator = (state: RootState) => state.creator
 export default reducer
