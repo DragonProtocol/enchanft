@@ -1,29 +1,30 @@
 import React from 'react'
 import styled from 'styled-components'
+import { TaskInfo } from '../../../features/creator'
 
-export default function TaskTitle() {
+export default function TaskTitle({ info }: { info: TaskInfo | null }) {
   return (
     <TaskTitleBox className="box">
       <h3>task title</h3>
       <div>
         <p>
-          Whitelist-Oriented Task <span style={{ float: 'right' }}>winners 10</span>
+          {info?.name} <span style={{ float: 'right' }}>winners {info?.whitelistTotalNum}</span>
         </p>
-        <p>2022/6/22——2022/7/22</p>
-        <p>task statements</p>
+        <p>
+          {info?.startTime && new Date(info?.startTime).toLocaleString()}——
+          {info?.endTime && new Date(info?.endTime).toLocaleString()}
+        </p>
         <div>
-          <Item />
-          <Item />
-          <Item />
-          <Item />
-          <Item />
+          {info?.actions.map((item, idx) => {
+            return <Item key={idx} content={item} />
+          })}
         </div>
       </div>
     </TaskTitleBox>
   )
 }
 
-function Item() {
+function Item({ content }: { content: string }) {
   return (
     <p>
       <span
@@ -36,7 +37,7 @@ function Item() {
           marginRight: '10px',
         }}
       ></span>
-      Follow @Trippin'Ape Tribe on twitter
+      {content}
     </p>
   )
 }

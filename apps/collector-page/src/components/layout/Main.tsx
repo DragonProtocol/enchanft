@@ -36,7 +36,7 @@ const Main: React.FC = () => {
     { path: '/', element: <Dashboard /> },
     { path: '/community/:communityId', element: <Community /> },
     { path: '/calendar', element: <div>Calendar Page</div> },
-    { path: '/creator', element: <Creator /> },
+    { path: '/creator/:taskId', element: <Creator /> },
     ...permissionRoutes,
     { path: '*', element: <div>404</div> },
   ])

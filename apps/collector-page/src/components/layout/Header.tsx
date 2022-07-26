@@ -37,6 +37,10 @@ const Header: React.FC = () => {
       name: 'profile',
       link: '/profile',
     },
+    {
+      name: 'creator',
+      link: '/creator/1',
+    },
   ]
   const [curNavLink, setCurNavLink] = useState('/')
 
