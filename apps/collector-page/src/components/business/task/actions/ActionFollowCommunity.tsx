@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-18 13:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 18:15:10
+ * @LastEditTime: 2022-07-26 15:13:24
  * @Description: file description
  */
 import React from 'react'
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
-
+import NotiflyIcon from './icons/notifly.svg'
 export type ActionFollowCommunityProps = {
   data: TaskActionItemDataType
 }
@@ -22,9 +22,7 @@ const ActionFollowCommunity: React.FC<ActionFollowCommunityProps> = ({ data }: A
     <ActionFollowCommunityWrapper>
       <ActionFollowCommunityLeft isDone={status === UserActionStatus.DONE}>{name}</ActionFollowCommunityLeft>
       {status !== UserActionStatus.DONE && (
-        <ActionFollowCommunityBtn onClick={() => navigate(`/community/${communityId}`)}>
-          {'To Join ->'}
-        </ActionFollowCommunityBtn>
+        <ActionFollowCommunityBtn src={NotiflyIcon} onClick={() => navigate(`/community/${communityId}`)} />
       )}
     </ActionFollowCommunityWrapper>
   )
@@ -41,6 +39,6 @@ const ActionFollowCommunityLeft = styled.div<{ isDone?: Boolean }>`
   flex: 1;
   ${({ isDone }) => isDone && `text-decoration: line-through;`}
 `
-const ActionFollowCommunityBtn = styled.div`
+const ActionFollowCommunityBtn = styled.img`
   cursor: pointer;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 18:13:14
+ * @LastEditTime: 2022-07-26 12:48:22
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -31,7 +31,7 @@ export type Task = {
   id: number
   name: string
   image: string
-  whitelistTotalNum: string
+  whitelistTotalNum: number
   type: TaskType
   projectId: number
   startTime: number

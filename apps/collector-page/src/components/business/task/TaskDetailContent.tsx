@@ -1,11 +1,9 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { TaskAcceptedStatus, TaskType } from '../../../types/api'
+import { TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../types/api'
 import ButtonBase from '../../common/button/ButtonBase'
 import ChainTag from '../chain/ChainTag'
-import SolanaConnectWalletButton from '../connect/SolanaConnectWalletButton'
 
 export type TaskDetailContentDataType = {
   id: number
@@ -17,6 +15,7 @@ export type TaskDetailContentDataType = {
   endTime: number
   winnersNum: number
   acceptedStatus: TaskAcceptedStatus
+  status: TaskTodoCompleteStatus
   project: {
     chainId: number
     name: string
@@ -24,12 +23,13 @@ export type TaskDetailContentDataType = {
 }
 
 export type TaskDetailContentViewConfigType = {
-  displayConnectWalletTip?: boolean
+  displayConnectWallet?: boolean
+  connectWalletText?: string
   displayAccept?: boolean
-  displayGoToTasks?: boolean
   displayTake?: boolean
   disabledTake?: boolean
   loadingTake?: boolean
+  displayCompleteStatus?: boolean
 }
 
 export type TaskDetailContentDataViewType = {
@@ -39,25 +39,41 @@ export type TaskDetailContentDataViewType = {
 
 export type TaskDetailContentHandlesType = {
   onTake?: (task: TaskDetailContentDataType) => void
+  onConnectWallet?: () => void
 }
 
 export type TaskDetailContentProps = TaskDetailContentDataViewType & TaskDetailContentHandlesType
 
 const defaultViewConfig: TaskDetailContentViewConfigType = {
-  displayGoToTasks: false,
+  displayConnectWallet: false,
+  connectWalletText: 'Connect Wallet',
+  displayAccept: false,
   displayTake: false,
   disabledTake: false,
   loadingTake: false,
+  displayCompleteStatus: false,
 }
 const TaskTypeLabels = {
   [TaskType.WHITELIST_ORIENTED]: 'Whitelist-Oriented Task',
-  [TaskType.WHITELIST_LUCK_DRAW]: 'Whitelist Luck Draw',
+  [TaskType.WHITELIST_LUCK_DRAW]: 'Whitelist Luck Draw Task',
 }
 
-const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data, viewConfig, onTake }: TaskDetailContentProps) => {
-  const navigate = useNavigate()
+const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
+  data,
+  viewConfig,
+  onTake,
+  onConnectWallet,
+}: TaskDetailContentProps) => {
   const { id, name, type, startTime, endTime, winnersNum, image, description, project } = data
-  const { displayConnectWalletTip, displayAccept, displayGoToTasks, disabledTake, displayTake, loadingTake } = {
+  const {
+    displayConnectWallet,
+    displayAccept,
+    disabledTake,
+    displayTake,
+    loadingTake,
+    displayCompleteStatus,
+    connectWalletText,
+  } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
@@ -69,6 +85,12 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data, viewConfig,
       onTake(data)
     }
   }
+  const handleConnectWallet = () => {
+    if (onConnectWallet) {
+      onConnectWallet()
+    }
+  }
+  const completeStatusLabel = data.status === TaskTodoCompleteStatus.COMPLETED ? 'Completed!' : 'Already Accepted'
   return (
     <TaskDetailContentWrapper>
       <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
@@ -91,9 +113,11 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data, viewConfig,
           {loadingTake ? 'loading...' : 'Take the task'}
         </TaskTakeBtn>
       )}
-      {displayGoToTasks && <TaskTakeBtn onClick={() => navigate(`/todo?taskId=${id}`)}>Go To Tasks</TaskTakeBtn>}
+      {displayCompleteStatus && <TaskTakeBtn disabled={true}>{completeStatusLabel}</TaskTakeBtn>}
 
-      {displayConnectWalletTip && <SolanaConnectWalletButton />}
+      {displayConnectWallet && (
+        <ConnectWalletTipBtn onClick={handleConnectWallet}>{connectWalletText}</ConnectWalletTipBtn>
+      )}
     </TaskDetailContentWrapper>
   )
 }
@@ -163,4 +187,10 @@ const TaskAcceptedSeal = styled.div`
   font-size: 48px;
   font-weight: 500;
   text-transform: uppercase;
+`
+const ConnectWalletTipBtn = styled(ButtonBase)`
+  height: 47px;
+  border-radius: 4px;
+  background-color: rgba(21, 21, 21, 100);
+  color: rgba(255, 255, 255, 100);
 `

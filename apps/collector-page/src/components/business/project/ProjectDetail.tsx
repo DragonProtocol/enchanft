@@ -147,13 +147,13 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
           )}
         </ProjectTopCenterBox>
         {/* tasks */}
-        <ProjectTopRightBox>
+        {/* <ProjectTopRightBox>
           {displayTasks && (
             <ProjectTasksBox>
               <ProjectTaskSwiper items={tasks} onTake={onTake}></ProjectTaskSwiper>
             </ProjectTasksBox>
           )}
-        </ProjectTopRightBox>
+        </ProjectTopRightBox> */}
       </ProjectTopBox>
       <ProjectBottomBox>
         <ProjectBottomLeftBox>

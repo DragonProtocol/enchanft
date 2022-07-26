@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-22 14:19:59
+ * @LastEditTime: 2022-07-26 13:31:44
  * @Description: mock 请求拦截入口
  */
 
@@ -16,7 +16,7 @@ import {
   UserActionStatus,
 } from '../types/api'
 import Mock from 'mockjs'
-import { ChainIds } from '../constants/chain'
+import { ChainIds } from '../utils/chain'
 ;(async () => {
   // 只在开发环境，且设定启动mock
   if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_MOCK === '1') {

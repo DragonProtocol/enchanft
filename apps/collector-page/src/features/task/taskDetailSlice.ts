@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 17:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 18:58:56
+ * @LastEditTime: 2022-07-26 15:02:38
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
@@ -52,7 +52,11 @@ export const fetchTaskDetail = createAsyncThunk<
 export const taskDetailSlice = createSlice({
   name: 'taskDetail',
   initialState: initTaskState,
-  reducers: {},
+  reducers: {
+    updateTaskDetail: (state, action) => {
+      state.data = { ...state.data, ...action.payload }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchTaskDetail.pending, (state, action) => {
@@ -87,4 +91,5 @@ export const taskDetailSlice = createSlice({
 
 const { actions, reducer } = taskDetailSlice
 export const selectTaskDetail = (state: RootState) => state.taskDetail
+export const { updateTaskDetail } = actions
 export default reducer

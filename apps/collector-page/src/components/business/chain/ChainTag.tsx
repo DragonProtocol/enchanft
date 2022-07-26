@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-22 11:34:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-22 20:10:54
+ * @LastEditTime: 2022-07-26 13:31:19
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
-import { ChainIds } from '../../../constants/chain'
+import { ChainIds } from '../../../utils/chain'
 import { IconEthereum } from '../../common/icons/IconEthereum'
 import { IconSolana } from '../../common/icons/IconSolana'
 export type ChainTag = {

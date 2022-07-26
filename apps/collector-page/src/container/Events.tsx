@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 14:41:11
+ * @LastEditTime: 2022-07-26 11:01:33
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -32,8 +32,10 @@ const formatStoreDataToComponentDataByRecommendTasks = (
   tasks: ExploreRecommendTaskItemEntity[],
 ): ExplorTaskSwiperItemsType => {
   return tasks.map((task) => {
+    // TODO 待确认，这里先用task的whiteListTotalNum代替
+    // const winnersNum = task.whitelistTotalNum
     return {
-      data: task,
+      data: { ...task },
     }
   })
 }

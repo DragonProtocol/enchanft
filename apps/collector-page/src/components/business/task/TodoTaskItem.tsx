@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 19:12:35
+ * @LastEditTime: 2022-07-26 14:54:16
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -19,7 +19,7 @@ export type TodoTaskItemDataType = {
   id: number
   name: string
   image: string
-  whitelistTotalNum: string
+  whitelistTotalNum: number
   type: TaskType
   projectId: number
   startTime: number

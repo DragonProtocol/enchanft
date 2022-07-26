@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 19:24:04
+ * @LastEditTime: 2022-07-26 14:52:31
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -16,31 +16,64 @@ import { fetchTaskDetail, selectTaskDetail, TaskDetailEntity } from '../features
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import IconButton from '@mui/material/IconButton'
 import TaskActionList, { TaskActionItemsType } from '../components/business/task/TaskActionList'
-import { TaskAcceptedStatus, TodoTaskActionItem } from '../types/api'
+import { TaskAcceptedStatus, TaskTodoCompleteStatus, TodoTaskActionItem } from '../types/api'
 import TaskDetailContent, { TaskDetailContentDataViewType } from '../components/business/task/TaskDetailContent'
-import { selectUserTaskHandlesState, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
-import { selectAccount } from '../features/user/accountSlice'
+import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
+import { ConnectModal, selectAccount, setConnectModal } from '../features/user/accountSlice'
 import useHandleAction from '../hooks/useHandleAction'
+import { ChainType, getChainType } from '../utils/chain'
+import { TokenType } from '../utils/token'
 const formatStoreDataToComponentDataByTaskDetailContent = (
   task: TaskDetailEntity,
   token: string,
   takeTaskState: TaskHandle<TakeTaskParams>,
+  tokenType: TokenType,
 ): TaskDetailContentDataViewType => {
-  const displayConnectWalletTip = token ? false : true
-  const displayAccept = token && task.acceptedStatus === TaskAcceptedStatus.DONE ? true : false
-  const displayTake = token && task.acceptedStatus === TaskAcceptedStatus.CANDO ? true : false
+  // 是否需要链接钱包
+  let displayConnectWallet = false
+  const taskChainType = getChainType(task.project.chainId)
+  const connectWalletText = taskChainType === ChainType.SOLANA ? 'Connect Phantom' : 'Connect MeatMask'
+  if (!token) {
+    displayConnectWallet = true
+  } else {
+    // 验证当前task对应的链类型 是否和当前登录的链类型一致，不一致的话提示连接正确的钱包
+    // TODO 这里的几个type类型考虑是否需要统一下
+    switch (taskChainType) {
+      case ChainType.EVM:
+        if (tokenType !== TokenType.Ethereum) {
+          displayConnectWallet = true
+        }
+        break
+      case ChainType.SOLANA:
+        if (tokenType !== TokenType.Solana) {
+          displayConnectWallet = true
+        }
+        break
+    }
+  }
+
+  // const displayAccept = token && task.acceptedStatus === TaskAcceptedStatus.DONE ? true : false
+  const displayTake = Boolean(!displayConnectWallet && task.acceptedStatus === TaskAcceptedStatus.CANDO)
   const loadingTake = takeTaskState.params?.id === task.id && takeTaskState.status === AsyncRequestStatus.PENDING
-  const disabledTake = !token || loadingTake ? true : false
-  const displayGoToTasks = displayAccept
+  const disabledTake = loadingTake
+  const displayCompleteStatus = Boolean(
+    !displayConnectWallet &&
+      task.acceptedStatus === TaskAcceptedStatus.DONE &&
+      task.status !== TaskTodoCompleteStatus.CLOSED,
+  )
+
+  // TODO 待确认，这里先用task的whiteListTotalNum代替
+  const winnersNum = task.whitelistTotalNum
   return {
-    data: task,
+    data: { ...task, winnersNum },
     viewConfig: {
-      displayConnectWalletTip,
-      displayAccept,
-      displayGoToTasks,
+      displayConnectWallet,
+      connectWalletText,
+      // displayAccept,
       displayTake,
       disabledTake,
       loadingTake,
+      displayCompleteStatus,
     },
   }
 }
@@ -50,26 +83,42 @@ const formatStoreDataToComponentDataByTaskActions = (actions: TodoTaskActionItem
 const TaskDetail: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token } = useAppSelector(selectAccount)
+  const { token, defaultWallet } = useAppSelector(selectAccount)
 
   const { id } = useParams()
   const { status, data } = useAppSelector(selectTaskDetail)
   useEffect(() => {
     dispatch(fetchTaskDetail(Number(id)))
-  }, [id])
+  }, [id, token])
   const handleLeave = useCallback(() => {
     navigate(-1)
   }, [])
+  // 接受任务
+  const handleTakeTask = (id) => {
+    dispatch(take({ id }))
+  }
   // 接任务的状态
   const { take: takeTaskState } = useAppSelector(selectUserTaskHandlesState)
   // 展示数据
   const loading = status === AsyncRequestStatus.PENDING ? true : false
-  if (!loading && !data) return null
-  const taskDetailContent = data ? formatStoreDataToComponentDataByTaskDetailContent(data, token, takeTaskState) : null
-  const actionItems = formatStoreDataToComponentDataByTaskActions(data?.actions || [])
-
   // 处理执行action操作
   const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
+  // 获取链的类型
+  const chainType = data?.project?.chainId ? getChainType(data?.project?.chainId) : ChainType.UNKNOWN
+  // 打开连接钱包的窗口
+  const modalType = chainType === ChainType.SOLANA ? ConnectModal.PHANTOM : ConnectModal.METAMASK
+  const handleOpenConnectWallet = useCallback(() => {
+    dispatch(setConnectModal(modalType))
+  }, [modalType])
+
+  // TODO display winner list
+  const displayWinnerList = false
+
+  if (!loading && !data) return null
+  const taskDetailContent = data
+    ? formatStoreDataToComponentDataByTaskDetailContent(data, token, takeTaskState, defaultWallet)
+    : null
+  const actionItems = formatStoreDataToComponentDataByTaskActions(data?.actions || [])
 
   return (
     <TaskDetailWrapper>
@@ -88,7 +137,12 @@ const TaskDetail: React.FC = () => {
                 </DetailHeader>
                 {taskDetailContent && (
                   <TaskDetailContentBox>
-                    <TaskDetailContent data={taskDetailContent.data} viewConfig={taskDetailContent.viewConfig} />
+                    <TaskDetailContent
+                      data={taskDetailContent.data}
+                      viewConfig={taskDetailContent.viewConfig}
+                      onConnectWallet={handleOpenConnectWallet}
+                      onTake={(task) => handleTakeTask(task.id)}
+                    />
                   </TaskDetailContentBox>
                 )}
                 <TaskActionsBox>

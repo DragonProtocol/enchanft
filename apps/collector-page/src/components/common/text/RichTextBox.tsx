@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 10:53:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 13:13:23
+ * @LastEditTime: 2022-07-26 10:49:46
  * @Description: file description
  */
 import React from 'react'
@@ -31,10 +31,13 @@ const RichTextBox: React.FC<RichTextBoxProps> = ({
       html = DOMPurify.sanitize(value)
       break
   }
-  return <RichTextBoxWrapper {...otherProps}>{html}</RichTextBoxWrapper>
+  return <RichTextBoxWrapper {...otherProps} dangerouslySetInnerHTML={{ __html: html }}></RichTextBoxWrapper>
 }
 export default RichTextBox
-const RichTextBoxWrapper = styled.pre`
+const RichTextBoxWrapper = styled.div`
   width: 100%;
   white-space: pre-wrap; /* current browsers */
+  img {
+    max-width: 100%;
+  }
 `

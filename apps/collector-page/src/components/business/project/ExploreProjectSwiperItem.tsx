@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-22 18:46:36
+ * @LastEditTime: 2022-07-26 11:24:28
  * @Description: file description
  */
 import React from 'react'
@@ -32,7 +32,7 @@ export type ExploreProjectSwiperItemHandlesType = {}
 export type ExploreProjectSwiperItemProps = ExploreProjectSwiperItemDataViewType & ExploreProjectSwiperItemHandlesType
 
 const ProjectStatusLabels = {
-  // [ProjectStatus.ACTIVE]: 'Active',
+  [ProjectStatus.ACTIVE]: 'Active',
   [ProjectStatus.LIVE]: 'Live',
   [ProjectStatus.FUTURE]: 'Future',
 }
