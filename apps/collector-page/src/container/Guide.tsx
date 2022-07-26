@@ -1,27 +1,39 @@
 import { Button, Stack } from '@mui/material'
-import React, { useCallback } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 
-import { selectAccount, setConnectModal, ConnectModal, userOtherWalletLink } from '../features/user/accountSlice'
+import {
+  selectAccount,
+  setConnectModal,
+  ConnectModal,
+  userOtherWalletLink,
+  ChainType,
+} from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { SIGN_MSG, TokenType } from '../utils/token'
 import DiscordIcon from '../components/ConnectBtn/DiscordIcon'
 import MetamaskIcon from '../components/ConnectBtn/MetamaskIcon'
-import PhatomIcon from '../components/ConnectBtn/PhantomIcon'
+import PhantomIcon from '../components/ConnectBtn/PhantomIcon'
 import TwitterIcon from '../components/ConnectBtn/TwitterIcon'
 import EmailIcon from '../components/ConnectBtn/EmailIcon'
 import useWalletSign from '../hooks/useWalletSign'
+import { sortPubKey } from '../utils/solana'
+import { connectionSocialMedia } from '../utils/socialMedia'
 
 export default function Guide() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
 
+  const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
+  const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
+
   const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
 
   const bindMetamask = useCallback(async () => {
     if (!phantomValid) alert('Install Metamask first')
+    if (accountMetamask) return
     const data = await signMsgWithMetamask()
     console.log(data)
     if (!data) return
@@ -33,10 +45,11 @@ export default function Guide() {
         payload: SIGN_MSG,
       }),
     )
-  }, [metamaskValid])
+  }, [metamaskValid, accountMetamask])
 
   const bindPhantom = useCallback(async () => {
     if (!phantomValid) alert('Install Phantom first')
+    if (accountPhantom) return
     const data = await signMsgWithPhantom()
     console.log(data)
     if (!data) return
@@ -48,7 +61,15 @@ export default function Guide() {
         payload: SIGN_MSG,
       }),
     )
-  }, [phantomValid])
+  }, [phantomValid, accountPhantom])
+
+  const bindTwitter = useCallback(async () => {
+    connectionSocialMedia('twitter')
+  }, [])
+
+  const bindDiscord = useCallback(async () => {
+    connectionSocialMedia('discord')
+  }, [])
 
   return (
     <GuideContainer>
@@ -57,80 +78,72 @@ export default function Guide() {
         <p>To complete the task faster,please connect your account first</p>
       </div>
       <div>
-        <div
-          className="connect-btn"
-          onClick={() => {
-            dispatch(setConnectModal(ConnectModal.TWITTER))
-          }}
-        >
-          <Stack direction="row" spacing={2}>
+        <div className="connect-btn" onClick={bindTwitter}>
+          <Stack direction="row" spacing={1}>
             <div className="label">Twitter:</div>
             <div className="btn twitter">
               <TwitterIcon />
-              <p>Connect Twitter</p>
+              <p>{account?.twitter || 'Connect Twitter'}</p>
             </div>
           </Stack>
         </div>
-        <div
-          className="connect-btn"
-          onClick={() => {
-            dispatch(setConnectModal(ConnectModal.DISCORD))
-          }}
-        >
-          <Stack direction="row" spacing={2}>
+        <div className="connect-btn" onClick={bindDiscord}>
+          <Stack direction="row" spacing={1}>
             <div className="label">Discord:</div>
             <div className="btn discord">
               <DiscordIcon />
-              <p>Connect Discord</p>
+              <p>{account?.discord || 'Connect Discord'}</p>
             </div>
           </Stack>
         </div>
-        <div
+        {/* <div
           className="connect-btn"
           onClick={() => {
             dispatch(setConnectModal(ConnectModal.EMAIL))
           }}
         >
-          <Stack direction="row" spacing={2}>
+          <Stack direction="row" spacing={1}>
             <div className="label">Email:</div>
             <div className="btn email">
               <EmailIcon />
               <p>Connect Email</p>
             </div>
           </Stack>
+        </div> */}
+
+        <div className="connect-btn" onClick={bindMetamask}>
+          <Stack direction="row" spacing={1}>
+            <div className="label">Phantom:</div>
+
+            <div className="btn wallet">
+              <PhantomIcon />
+              <p>{accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}</p>
+            </div>
+          </Stack>
         </div>
-        <div
-          className="connect-btn"
-          onClick={() => {
-            dispatch(setConnectModal(ConnectModal.PHANTOM))
-          }}
-        >
-          <Stack direction="row" spacing={2}>
-            <div className="label">Other Wallet:</div>
-            {account.defaultWallet == TokenType.Ethereum && (
-              <div className="btn wallet">
-                <PhatomIcon />
-                <p>Connect Phantom</p>
-              </div>
-            )}
-            {account.defaultWallet === TokenType.Solana && (
-              <div className="btn wallet">
-                <MetamaskIcon />
-                <p>Connect Metamask</p>
-              </div>
-            )}
+
+        <div className="connect-btn" onClick={bindPhantom}>
+          <Stack direction="row" spacing={1}>
+            <div className="label">Metamask:</div>
+
+            <div className="btn wallet metamask">
+              <MetamaskIcon />
+              <p>{accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}</p>
+            </div>
           </Stack>
         </div>
       </div>
-      <Button
-        variant="contained"
-        onClick={() => {
-          localStorage.setItem('has-guide', 'has-guide')
-          navigate('/')
-        }}
-      >
-        skip
-      </Button>
+      <div className="skip">
+        <Button
+          variant="contained"
+          onClick={() => {
+            localStorage.setItem('has-guide', 'has-guide')
+            navigate('/')
+          }}
+        >
+          skip
+        </Button>
+      </div>
     </GuideContainer>
   )
 }
@@ -181,6 +194,10 @@ const GuideContainer = styled.div`
         background-color: #513ac2;
       }
 
+      & div.wallet.metamask {
+        background-color: #f6851b;
+      }
+
       & svg {
         margin-left: 30px;
       }
@@ -190,5 +207,10 @@ const GuideContainer = styled.div`
         margin-left: 30px;
       }
     }
+  }
+
+  > .skip {
+    margin-top: 70px;
+    text-align: center;
   }
 `

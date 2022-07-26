@@ -19,13 +19,15 @@ export enum ConnectModal {
   EMAIL = 'email',
 }
 
-enum ChainType {
+export enum ChainType {
   SOLANA = 'SOLANA',
   EVM = 'EVM',
 }
 
 type Account = {
   accountType: 'SOLANA' | 'EVM' | any
+  thirdpartyId: string
+  thirdpartyName: string
 }
 
 export type AccountState = {
@@ -50,8 +52,8 @@ const initialState: AccountState = {
   token: '',
   avatar: '',
   name: '',
-  twitter: localStorage.getItem('twitter') || '',
-  discord: localStorage.getItem('discord') || '',
+  twitter: '',
+  discord: '',
   connectModal: null,
   accounts: [],
 }
@@ -178,11 +180,9 @@ export const accountSlice = createSlice({
     },
     setTwitter: (state, action) => {
       state.twitter = action.payload
-      localStorage.setItem('twitter', action.payload)
     },
     setDiscord: (state, action) => {
       state.discord = action.payload
-      localStorage.setItem('discord', action.payload)
     },
   },
   extraReducers: (builder) => {

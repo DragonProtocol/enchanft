@@ -34,7 +34,17 @@ import {
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 
-import { selectAccount, userUpdateProfile, setTwitter, setDiscord, userLink } from '../features/user/accountSlice'
+import {
+  selectAccount,
+  userUpdateProfile,
+  setTwitter,
+  setDiscord,
+  userLink,
+  setConnectModal,
+  ConnectModal,
+  ChainType,
+  userOtherWalletLink,
+} from '../features/user/accountSlice'
 import MainContentBox from '../components/layout/MainContentBox'
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
 import {
@@ -47,6 +57,11 @@ import EnchanftedList, { EnchanftedListItemsType } from '../components/business/
 import { EnchanftedForEntity } from '../features/user/myEnchanftedSlice'
 import { uploadAvatar } from '../services/api/login'
 import { connectionSocialMedia } from '../utils/socialMedia'
+import PhatomIcon from '../components/ConnectBtn/PhantomIcon'
+import MetamaskIcon from '../components/ConnectBtn/MetamaskIcon'
+import { sortPubKey } from '../utils/solana'
+import useWalletSign from '../hooks/useWalletSign'
+import { SIGN_MSG } from '../utils/token'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -117,6 +132,40 @@ const Profile: React.FC = () => {
   const loadingEnchanftedList = myEnchanftedStatus === AsyncRequestStatus.PENDING
   const myEnchanftedItems = formatStoreDataToComponentDataByMyEnchanfted(myEnchanftedList)
 
+  const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
+  const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
+
+  const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
+  const bindMetamask = useCallback(async () => {
+    if (!metamaskValid) alert('Install Metamask first')
+    const data = await signMsgWithMetamask()
+    console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: SIGN_MSG,
+      }),
+    )
+  }, [metamaskValid])
+
+  const bindPhantom = useCallback(async () => {
+    if (!phantomValid) alert('Install Phantom first')
+    const data = await signMsgWithPhantom()
+    console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: SIGN_MSG,
+      }),
+    )
+  }, [phantomValid])
+
   return (
     <>
       <MainContentBox>
@@ -136,6 +185,28 @@ const Profile: React.FC = () => {
             </div>
           </div>
           <div className="accounts">
+            <div className="wallet">
+              <span
+                className="phantom"
+                onClick={() => {
+                  if (accountPhantom) return
+                  bindPhantom()
+                }}
+              >
+                <PhatomIcon />
+                {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
+              </span>
+              <span
+                className="metamask"
+                onClick={() => {
+                  if (accountMetamask) return
+                  bindMetamask()
+                }}
+              >
+                <MetamaskIcon />
+                {accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}
+              </span>
+            </div>
             <div className="thirdparty-box">
               <div className="thirdparty-btn">
                 <div className="thirdparty-inner" onClick={() => connectionSocialMedia('twitter')}>
@@ -155,7 +226,7 @@ const Profile: React.FC = () => {
                   </svg>
                   {account?.twitter || 'Connect Twitter'}
                 </div>
-                {account?.twitter && (
+                {/* {account?.twitter && (
                   <div className="thirdparty-disconnect">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -172,7 +243,7 @@ const Profile: React.FC = () => {
                       ></path>
                     </svg>
                   </div>
-                )}
+                )} */}
               </div>
               <div className="thirdparty-btn thirdparty-discord">
                 <div className="thirdparty-inner" onClick={() => connectionSocialMedia('discord')}>
@@ -325,11 +396,38 @@ const ProfileWrapper = styled.div`
   }
   .accounts {
     margin: 15px 0;
+    display: flex;
+    align-items: center;
+    > .wallet {
+      display: flex;
+      align-items: center;
+      & span {
+        padding: 1px;
+        cursor: pointer;
+        font-size: 12px;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 4px;
+        margin-right: 10px;
+        padding-right: 10px;
+        color: #fff;
+        & img {
+          width: 20px;
+          margin: 5px;
+        }
+      }
+      & span.phantom {
+        background: #513ac2;
+      }
+      & span.metamask {
+        background: #f6851b;
+      }
+    }
   }
   .thirdparty-box {
     display: flex;
     & > div {
-      margin-left: 10px;
+      margin-right: 10px;
     }
     .thirdparty-btn {
       border-radius: 4px;

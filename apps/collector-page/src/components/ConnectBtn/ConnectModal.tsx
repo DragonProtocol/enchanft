@@ -111,7 +111,7 @@ export default function ConnectModal() {
       btn = (
         <div className="btn twitter" onClick={bindTwitter}>
           <TwitterIcon />
-          <p>{account.twitter || 'Connect Twitter'}</p>
+          <p>Connect Twitter</p>
         </div>
       )
       msg = `Twitter account is not connected. Please connect your Twitter account.`
@@ -120,7 +120,7 @@ export default function ConnectModal() {
       btn = (
         <div className="btn discord" onClick={bindDiscord}>
           <DiscordIcon />
-          <p>{account.discord || 'Connect Discord'}</p>
+          <p>Connect Discord</p>
         </div>
       )
       msg = `Discord account is not connected. Please connect your Discord account.`
