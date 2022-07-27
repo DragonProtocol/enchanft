@@ -45,7 +45,7 @@ export default function Creator() {
             <TaskDashboard
               participants={participants}
               winners={winners}
-              completionRate={participants == 0 ? '0.00' : (winners / participants).toFixed(2)}
+              completionRate={participants == 0 ? '0.00' : ((winners * 100) / participants).toFixed(2)}
             />
             <WinnerList
               winnersNum={taskInfo?.whitelistTotalNum || 0}
