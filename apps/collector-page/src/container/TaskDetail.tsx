@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 14:39:58
+ * @LastEditTime: 2022-07-27 19:23:56
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -24,6 +24,9 @@ import useHandleAction from '../hooks/useHandleAction'
 import { ChainType, getChainType } from '../utils/chain'
 import { TokenType } from '../utils/token'
 import TaskWinnerList from '../components/business/task/TaskWinnerList'
+import ButtonBase from '../components/common/button/ButtonBase'
+import ButtonNavigation from '../components/common/button/ButtonNavigation'
+import { IconCaretLeft } from '../components/common/icons/IconCaretLeft'
 const formatStoreDataToComponentDataByTaskDetailContent = (
   task: TaskDetailEntity,
   token: string,
@@ -152,31 +155,28 @@ const TaskDetail: React.FC = () => {
   return (
     <TaskDetailWrapper>
       <ScrollBox>
-        <MainContentBox>
-          <TaskDetailBodyBox>
-            {loadingView ? (
-              <TaskDetailLoading>Loading ... </TaskDetailLoading>
-            ) : (
-              <>
-                <DetailHeader>
-                  <IconButton onClick={handleLeave}>
-                    <ArrowBackIosIcon />
-                  </IconButton>
-                  <TaskName>{data?.name}</TaskName>
-                </DetailHeader>
+        <TaskDetailBodyBox>
+          {loadingView ? (
+            <TaskDetailLoading>Loading ... </TaskDetailLoading>
+          ) : (
+            <>
+              <DetailBodyLeft>
+                <ButtonNavigation onClick={handleLeave}>
+                  <IconCaretLeft />
+                </ButtonNavigation>
+              </DetailBodyLeft>
+              <DetailBodyRight>
                 {taskDetailContent && (
-                  <TaskDetailContentBox>
-                    <TaskDetailContent
-                      data={taskDetailContent.data}
-                      viewConfig={taskDetailContent.viewConfig}
-                      onConnectWallet={handleOpenConnectWallet}
-                      onBindWallet={handleOpenWalletBind}
-                      onTake={(task) => handleTakeTask(task.id)}
-                      navToCreator={(task) => {
-                        navigate(`/creator/${task.id}`)
-                      }}
-                    />
-                  </TaskDetailContentBox>
+                  <TaskDetailContent
+                    data={taskDetailContent.data}
+                    viewConfig={taskDetailContent.viewConfig}
+                    onConnectWallet={handleOpenConnectWallet}
+                    onBindWallet={handleOpenWalletBind}
+                    onTake={(task) => handleTakeTask(task.id)}
+                    navToCreator={(task) => {
+                      navigate(`/creator/${task.id}`)
+                    }}
+                  />
                 )}
                 <TaskActionsBox>
                   <TaskActionList
@@ -195,10 +195,10 @@ const TaskDetail: React.FC = () => {
                     <TaskWinnerList items={winnerList} />
                   </TaskWinnerListBox>
                 )}
-              </>
-            )}
-          </TaskDetailBodyBox>
-        </MainContentBox>
+              </DetailBodyRight>
+            </>
+          )}
+        </TaskDetailBodyBox>
       </ScrollBox>
     </TaskDetailWrapper>
   )
@@ -208,27 +208,20 @@ const TaskDetailWrapper = styled.div`
   width: 100%;
   height: 100%;
 `
-const TaskDetailBodyBox = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-`
-const DetailHeader = styled.div`
-  width: 100%;
+const TaskDetailBodyBox = styled(MainContentBox)`
   display: flex;
-  gap: 40px;
-  align-items: center;
+  flex-direction: row;
+  gap: 20px;
 `
-const TaskName = styled.div`
-  font-weight: 700;
-  font-size: 36px;
-  line-height: 40px;
+const DetailBodyLeft = styled.div``
+const DetailBodyRight = styled.div`
+  flex: 1;
+  height: auto;
 `
+
 const TaskDetailLoading = styled.div`
   width: 100%;
   text-align: center;
-`
-const TaskDetailContentBox = styled.div`
-  margin-top: 40px;
 `
 const TaskActionsBox = styled.div`
   margin-top: 40px;

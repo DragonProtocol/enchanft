@@ -112,6 +112,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
   return (
     <TaskDetailContentWrapper>
       <TaskDetailHeader>
+        <TaskName>{name}</TaskName>
         <ProjectName onClick={() => navigate(`/community/${communityId}?projectId=${projectId}`)}>
           Project: {project.name || 'Unknown'}
         </ProjectName>
@@ -159,6 +160,11 @@ const TaskDetailHeader = styled.div`
 `
 const TaskImageBox = styled.div`
   position: relative;
+`
+const TaskName = styled.div`
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 40px;
 `
 const TaskImage = styled.img`
   width: 100%;

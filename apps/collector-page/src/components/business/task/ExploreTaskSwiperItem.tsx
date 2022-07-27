@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-22 17:55:04
+ * @LastEditTime: 2022-07-27 16:43:43
  * @Description: file description
  */
 import React from 'react'
@@ -77,17 +77,20 @@ const ExploreTaskSwiperItemWrapper = styled.div`
   gap: 40px;
 `
 const TaskImage = styled.img`
-  width: 640px;
+  flex: 1;
   height: 100%;
   cursor: pointer;
+  /* 图片不失真 ,保持其宽高比, 多余的会被剪切*/
+  object-fit: cover;
 `
 const TaskInfoBox = styled.div`
-  flex: 1;
+  width: 440px;
   display: flex;
   flex-direction: column;
   gap: 16px;
 `
 const TaskName = styled.div`
+  font-weight: 700;
   font-size: 36px;
   line-height: 40px;
   color: #333333;

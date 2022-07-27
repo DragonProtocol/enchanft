@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 15:03:34
+ * @LastEditTime: 2022-07-27 15:27:17
  * @Description: 站点头部
  */
 import SolanaConnectWalletButton from 'components/business/connect/SolanaConnectWalletButton'
@@ -61,13 +61,13 @@ const Header: React.FC = () => {
   return (
     <HeaderWrapper>
       <HeaderLeft>
-        <HeaderLogoBox>
-          <img src={LogoImg} alt="" onClick={() => navigate('/')} />
-        </HeaderLogoBox>
+        <HeaderLogo src={LogoImg} alt="" onClick={() => navigate('/')} />
       </HeaderLeft>
-      <HeaderCenter>{PcNav()}</HeaderCenter>
       <HeaderRight>
-        <ConnectBtn />
+        {PcNav()}
+        <ConnectBtnBox>
+          <ConnectBtn />
+        </ConnectBtnBox>
       </HeaderRight>
     </HeaderWrapper>
   )
@@ -85,35 +85,34 @@ const HeaderWrapper = styled.div`
 const HeaderLeft = styled.div`
   display: flex;
 `
-const HeaderLogoBox = styled.div`
+const HeaderLogo = styled.img`
+  width: 190px;
+  height: 24px;
   cursor: pointer;
 `
-const HeaderCenter = styled.div`
+const HeaderRight = styled.div`
   flex: 1;
   height: 100%;
   display: flex;
-`
-const HeaderRight = styled.div`
-  display: flex;
   justify-content: end;
+  align-items: center;
+  gap: 80px;
 `
-const SolanaConnectWalletButtonBox = styled.div`
-  width: auto;
-`
-
+const ConnectBtnBox = styled.div``
 // nav style
 const PcNavList = styled.div`
-  width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
-  gap: 40px;
+  gap: 80px;
 `
 const PcNavItem = styled.div<{ isActive: boolean }>`
   height: 100%;
-  font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
   text-transform: uppercase;
+  color: #333333;
   display: flex;
   align-items: center;
   cursor: pointer;
