@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 13:19:28
+ * @LastEditTime: 2022-07-27 14:39:58
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -16,13 +16,14 @@ import { fetchTaskDetail, selectTaskDetail, TaskDetailEntity } from '../features
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import IconButton from '@mui/material/IconButton'
 import TaskActionList, { TaskActionItemsType } from '../components/business/task/TaskActionList'
-import { TaskAcceptedStatus, TaskTodoCompleteStatus, TodoTaskActionItem } from '../types/api'
+import { TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType, TodoTaskActionItem } from '../types/api'
 import TaskDetailContent, { TaskDetailContentDataViewType } from '../components/business/task/TaskDetailContent'
 import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import useHandleAction from '../hooks/useHandleAction'
 import { ChainType, getChainType } from '../utils/chain'
 import { TokenType } from '../utils/token'
+import TaskWinnerList from '../components/business/task/TaskWinnerList'
 const formatStoreDataToComponentDataByTaskDetailContent = (
   task: TaskDetailEntity,
   token: string,
@@ -62,8 +63,18 @@ const formatStoreDataToComponentDataByTaskDetailContent = (
     task.acceptedStatus === TaskAcceptedStatus.DONE &&
     task.status !== TaskTodoCompleteStatus.CLOSED
 
-  // TODO 待确认，这里先用task的whiteListTotalNum代替
-  const winnersNum = task.whitelistTotalNum
+  // TODO 待确认
+  // 这里先用task的whiteListTotalNum代替
+  let winnersNum = 0
+  switch (task.type) {
+    case TaskType.WHITELIST_LUCK_DRAW:
+      // 需要抽奖
+      winnersNum = task.winnerList.length || task.whitelistTotalNum
+    case TaskType.WHITELIST_ORIENTED:
+      // 直接获得奖励
+      winnersNum = task.winnerList.length
+  }
+
   return {
     data: { ...task, winnersNum },
     viewConfig: {
@@ -132,14 +143,12 @@ const TaskDetail: React.FC = () => {
   const loadingVerify = status === AsyncRequestStatus.PENDING
   const disabledVerify = loadingVerify
 
-  // TODO display winner list
-  const displayWinnerList = false
   if (!loadingView && !data) return null
   const taskDetailContent = data
     ? formatStoreDataToComponentDataByTaskDetailContent(data, token, takeTaskState, accountTypes)
     : null
   const actionItems = formatStoreDataToComponentDataByTaskActions(data?.actions || [])
-
+  const winnerList = data?.winnerList || []
   return (
     <TaskDetailWrapper>
       <ScrollBox>
@@ -181,6 +190,11 @@ const TaskDetail: React.FC = () => {
                     onVerifyActions={dispatchFetchTaskDetail}
                   />
                 </TaskActionsBox>
+                {winnerList.length > 0 && (
+                  <TaskWinnerListBox>
+                    <TaskWinnerList items={winnerList} />
+                  </TaskWinnerListBox>
+                )}
               </>
             )}
           </TaskDetailBodyBox>
@@ -217,5 +231,8 @@ const TaskDetailContentBox = styled.div`
   margin-top: 40px;
 `
 const TaskActionsBox = styled.div`
+  margin-top: 40px;
+`
+const TaskWinnerListBox = styled.div`
   margin-top: 40px;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 17:57:53
+ * @LastEditTime: 2022-07-27 14:14:28
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -149,6 +149,13 @@ export type Whitelist = {
   taskId: number
 }
 
+/** user */
+export type User = {
+  id: number
+  name: string
+  pubkey: string
+  avatar: string
+}
 /** api request and response types ============================ */
 
 /** explore api */
@@ -239,6 +246,7 @@ export type TaskDetailResponse = TaskItem & {
   mintStartTime: number
   status: TaskTodoCompleteStatus
   project: Project
+  winnerList: User[]
 }
 
 /**
