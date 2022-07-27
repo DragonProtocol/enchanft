@@ -1,40 +1,40 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { fetchListForUserFollowedCommunity } from '../../services/api/community'
+import { fetchListForUserWhitelist } from '../../services/api/whitelist'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { FollowedCommunityItem } from '../../types/api'
+import { UserWhitelistItem } from '../../types/api'
 
-export type FollowedCommunitityForEntity = FollowedCommunityItem
-type FollowedCommunityListState = EntityState<FollowedCommunitityForEntity> & {
+export type UserWhitelistForEntity = UserWhitelistItem
+type WhitelistListState = EntityState<UserWhitelistForEntity> & {
   status: AsyncRequestStatus
   errorMsg: string
   currentRequestId: string | undefined // 当前正在请求的id(由createAsyncThunk生成的唯一id)
 }
-export const userFollowedCommunitiesEntity = createEntityAdapter<FollowedCommunitityForEntity>({
+export const userWhitelistsEntity = createEntityAdapter<UserWhitelistForEntity>({
   selectId: (item) => item.id,
 })
-const initTodoTasksState: FollowedCommunityListState = userFollowedCommunitiesEntity.getInitialState({
+const initTodoTasksState: WhitelistListState = userWhitelistsEntity.getInitialState({
   status: AsyncRequestStatus.IDLE,
   errorMsg: '',
   currentRequestId: undefined,
 })
 
-type FetchFollowedCommunitiesResp = {
-  data: FollowedCommunityItem[]
+type FetchWhitelistsResp = {
+  data: UserWhitelistItem[]
   errorMsg?: string
 }
 
-export const fetchFollowedCommunities = createAsyncThunk<
-  FetchFollowedCommunitiesResp,
+export const fetchUserWhitelists = createAsyncThunk<
+  FetchWhitelistsResp,
   undefined,
   {
-    rejectValue: FetchFollowedCommunitiesResp
+    rejectValue: FetchWhitelistsResp
   }
 >(
-  'user/followedCommunities/fetchList',
+  'user/whitelists/fetchList',
   async (params, { rejectWithValue }) => {
     try {
-      const resp = await fetchListForUserFollowedCommunity()
+      const resp = await fetchListForUserWhitelist()
       return { data: resp.data.data || [] }
     } catch (error: any) {
       if (!error.response) {
@@ -50,12 +50,12 @@ export const fetchFollowedCommunities = createAsyncThunk<
     condition: (params, { getState }) => {
       const state = getState() as RootState
       const {
-        userFollowedCommunities: { status },
+        userWhitelists: { status },
         account: { token },
       } = state
       // 没有token ,则阻止新的请求
       if (!token) {
-        userFollowedCommunitiesEntity.removeAll(state.userFollowedCommunities)
+        userWhitelistsEntity.removeAll(state.userWhitelists)
         return false
       }
       // 之前的请求正在进行中,则阻止新的请求
@@ -67,50 +67,50 @@ export const fetchFollowedCommunities = createAsyncThunk<
   },
 )
 
-export const userFollowedCommunitiesSlice = createSlice({
-  name: 'userFollowedCommunities',
+export const userWhitelistsSlice = createSlice({
+  name: 'userWhitelists',
   initialState: initTodoTasksState,
   reducers: {
     addOne: (state, action) => {
       const one = action.payload
-      userFollowedCommunitiesEntity.addOne(state, one)
+      userWhitelistsEntity.addOne(state, one)
     },
     removeOne: (state, action) => {
       const id = action.payload
-      userFollowedCommunitiesEntity.removeOne(state, id)
+      userWhitelistsEntity.removeOne(state, id)
     },
     updateOne: (state, action) => {
       const one = action.payload
-      userFollowedCommunitiesEntity.upsertOne(state, one)
+      userWhitelistsEntity.upsertOne(state, one)
     },
     removeAll: (state) => {
-      userFollowedCommunitiesEntity.removeAll(state)
+      userWhitelistsEntity.removeAll(state)
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchFollowedCommunities.pending, (state, action) => {
-        console.log('fetchFollowedCommunities.pending', action)
+      .addCase(fetchUserWhitelists.pending, (state, action) => {
+        console.log('fetchUserWhitelists.pending', action)
         state.status = AsyncRequestStatus.PENDING
         state.errorMsg = ''
         state.currentRequestId = action.meta.requestId
       })
-      .addCase(fetchFollowedCommunities.fulfilled, (state, action) => {
-        console.log('fetchFollowedCommunities.fulfilled', action)
+      .addCase(fetchUserWhitelists.fulfilled, (state, action) => {
+        console.log('fetchUserWhitelists.fulfilled', action)
         const { requestId } = action.meta
         // 前后两次不同的请求，使用最后一次请求返回的数据
         if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
         state.status = AsyncRequestStatus.FULFILLED
         // set data
-        userFollowedCommunitiesEntity.setAll(state, action.payload.data)
+        userWhitelistsEntity.setAll(state, action.payload.data)
       })
-      .addCase(fetchFollowedCommunities.rejected, (state, action) => {
-        console.log('fetchFollowedCommunities.rejected', action)
+      .addCase(fetchUserWhitelists.rejected, (state, action) => {
+        console.log('fetchUserWhitelists.rejected', action)
         const { requestId } = action.meta
         // 前后两次不同的请求，使用最后一次请求返回的数据
         if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
         state.status = AsyncRequestStatus.REJECTED
-        userFollowedCommunitiesEntity.setAll(state, [])
+        userWhitelistsEntity.setAll(state, [])
         if (action.payload) {
           state.errorMsg = action.payload.errorMsg || ''
         } else {
@@ -120,10 +120,8 @@ export const userFollowedCommunitiesSlice = createSlice({
   },
 })
 
-const { actions, reducer } = userFollowedCommunitiesSlice
-export const selectUserFollowedCommunitiesState = (state: RootState) => state.userFollowedCommunities
-export const { selectAll, selectIds } = userFollowedCommunitiesEntity.getSelectors(
-  (state: RootState) => state.userFollowedCommunities,
-)
+const { actions, reducer } = userWhitelistsSlice
+export const selectUserWhitelistsState = (state: RootState) => state.userWhitelists
+export const { selectAll, selectIds } = userWhitelistsEntity.getSelectors((state: RootState) => state.userWhitelists)
 export const { addOne, removeOne, updateOne, removeAll } = actions
 export default reducer

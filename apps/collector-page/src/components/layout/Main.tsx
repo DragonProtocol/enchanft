@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 16:32:55
+ * @LastEditTime: 2022-07-27 13:30:06
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
@@ -21,6 +21,7 @@ import Guide from '../../container/Guide'
 import EnchanftedDetail from '../../container/EnchanftedDetail'
 import TaskDetail from '../../container/TaskDetail'
 import Projects from '../../container/Projects'
+import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -42,10 +43,11 @@ const Main: React.FC = () => {
     { path: '/calendar', element: <div>Calendar Page</div> },
     { path: '/creator/:taskId', element: <Creator /> },
     ...permissionRoutes,
-    { path: '*', element: <div>404</div> },
+    { path: '*', element: <MainLoading></MainLoading> },
   ])
   useEffect(() => {
     dispatch(fetchFollowedCommunities())
+    dispatch(fetchUserWhitelists())
   }, [token])
 
   //社媒账号授权 code 监听
@@ -85,4 +87,12 @@ const MainWrapper = styled.div`
   height: 100%;
   display: flex;
   overflow: hidden;
+`
+const MainLoading = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
 `

@@ -130,13 +130,16 @@ const Community: React.FC = () => {
   // 获取社区贡献等级
   const contributionranks = useAppSelector(selectAllForCommunityContributionranks)
   const fetchContributionranksIntervalRef = useRef<any>(null)
+  const dispatchContributionRanks = () =>
+    dispatch(
+      fetchCommunityContributionRanks({
+        communityId: Number(communityId),
+      }),
+    )
   useEffect(() => {
+    dispatchContributionRanks()
     fetchContributionranksIntervalRef.current = setInterval(() => {
-      dispatch(
-        fetchCommunityContributionRanks({
-          communityId: Number(communityId),
-        }),
-      )
+      dispatchContributionRanks()
     }, 60 * 1000)
     return () => {
       clearInterval(fetchContributionranksIntervalRef.current)

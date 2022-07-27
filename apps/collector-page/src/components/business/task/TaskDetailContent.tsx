@@ -5,6 +5,7 @@ import { ScrollBarCss } from '../../../GlobalStyle'
 import { TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../types/api'
 import ButtonBase from '../../common/button/ButtonBase'
 import ChainTag from '../chain/ChainTag'
+import { useNavigate } from 'react-router-dom'
 
 export type TaskDetailContentDataType = {
   id: number
@@ -18,6 +19,8 @@ export type TaskDetailContentDataType = {
   acceptedStatus: TaskAcceptedStatus
   status: TaskTodoCompleteStatus
   project: {
+    id: number
+    communityId: number
     chainId: number
     name: string
   }
@@ -25,7 +28,8 @@ export type TaskDetailContentDataType = {
 
 export type TaskDetailContentViewConfigType = {
   displayConnectWallet?: boolean
-  connectWalletText?: string
+  displayWalletBind?: boolean
+  walletBindText?: string
   displayAccept?: boolean
   displayTake?: boolean
   disabledTake?: boolean
@@ -42,13 +46,15 @@ export type TaskDetailContentHandlesType = {
   onTake?: (task: TaskDetailContentDataType) => void
   onConnectWallet?: () => void
   navToCreator?: (task: TaskDetailContentDataType) => void
+  onBindWallet?: () => void
 }
 
 export type TaskDetailContentProps = TaskDetailContentDataViewType & TaskDetailContentHandlesType
 
 const defaultViewConfig: TaskDetailContentViewConfigType = {
   displayConnectWallet: false,
-  connectWalletText: 'Connect Wallet',
+  displayWalletBind: false,
+  walletBindText: 'Connect Wallet',
   displayAccept: false,
   displayTake: false,
   disabledTake: false,
@@ -66,8 +72,11 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
   onTake,
   onConnectWallet,
   navToCreator,
+  onBindWallet,
 }: TaskDetailContentProps) => {
+  const navigate = useNavigate()
   const { id, name, type, startTime, endTime, winnersNum, image, description, project } = data
+  const { id: projectId, communityId } = project
   const {
     displayConnectWallet,
     displayAccept,
@@ -75,7 +84,8 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
     displayTake,
     loadingTake,
     displayCompleteStatus,
-    connectWalletText,
+    walletBindText,
+    displayWalletBind,
   } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -88,6 +98,11 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
       onTake(data)
     }
   }
+  const handleWalletBind = () => {
+    if (onBindWallet) {
+      onBindWallet()
+    }
+  }
   const handleConnectWallet = () => {
     if (onConnectWallet) {
       onConnectWallet()
@@ -96,10 +111,13 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
   const completeStatusLabel = data.status === TaskTodoCompleteStatus.COMPLETED ? 'Completed!' : 'Already Accepted'
   return (
     <TaskDetailContentWrapper>
-      <ProjectName>
-        Project: {project.name || 'Unknown'}
+      <TaskDetailHeader>
+        <ProjectName onClick={() => navigate(`/community/${communityId}?projectId=${projectId}`)}>
+          Project: {project.name || 'Unknown'}
+        </ProjectName>
         <Button onClick={() => navToCreator && navToCreator(data)}>manage</Button>
-      </ProjectName>
+      </TaskDetailHeader>
+
       <TaskImageBox>
         <ChainTag size={2} chainId={project.chainId} />
         <TaskImage src={image} />
@@ -114,16 +132,15 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
         <TaskDescription>{description}</TaskDescription>
         {displayAccept && <TaskAcceptedSeal>accept</TaskAcceptedSeal>}
       </TaskInfoBox>
+
+      {displayConnectWallet && <ConnectWalleBindBtn onClick={handleConnectWallet}>Connect Wallect</ConnectWalleBindBtn>}
+      {displayWalletBind && <ConnectWalleBindBtn onClick={handleWalletBind}>{walletBindText}</ConnectWalleBindBtn>}
       {displayTake && (
         <TaskTakeBtn disabled={disabledTake} onClick={handleTake}>
           {loadingTake ? 'loading...' : 'Take the task'}
         </TaskTakeBtn>
       )}
       {displayCompleteStatus && <TaskTakeBtn disabled={true}>{completeStatusLabel}</TaskTakeBtn>}
-
-      {displayConnectWallet && (
-        <ConnectWalletTipBtn onClick={handleConnectWallet}>{connectWalletText}</ConnectWalletTipBtn>
-      )}
     </TaskDetailContentWrapper>
   )
 }
@@ -134,6 +151,11 @@ const TaskDetailContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+`
+const TaskDetailHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `
 const TaskImageBox = styled.div`
   position: relative;
@@ -153,9 +175,7 @@ const ProjectName = styled.div`
   font-size: 20px;
   line-height: 30px;
   color: #3dd606;
-  > button {
-    float: right;
-  }
+  cursor: pointer;
 `
 const TaskTypeLabel = styled.div`
   font-weight: 700;
@@ -197,7 +217,7 @@ const TaskAcceptedSeal = styled.div`
   font-weight: 500;
   text-transform: uppercase;
 `
-const ConnectWalletTipBtn = styled(ButtonBase)`
+const ConnectWalleBindBtn = styled(ButtonBase)`
   height: 47px;
   border-radius: 4px;
   background-color: rgba(21, 21, 21, 100);
