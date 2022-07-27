@@ -32,6 +32,34 @@ const ConnectedBtn = styled(Button)`
   }
 `
 
+const ConnectedAccountBox = styled(Box)`
+  display: flex;
+  align-items: center;
+  padding: 5px 15px;
+  border-radius: 10px;
+  width: 200px;
+  height: 40px;
+  background-color: #70e137;
+  text-align: center;
+  position: relative;
+  box-sizing: border-box;
+  cursor: pointer;
+  & img {
+    position: absolute;
+    left: 13px;
+    top: 5px;
+    margin-right: 15px;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+  }
+
+  & span {
+    color: #fff;
+    width: 100%;
+  }
+`
+
 export default function ConnectBtn() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -62,10 +90,14 @@ export default function ConnectBtn() {
         <PopupState variant="popover" popupId="demo-popup-menu">
           {(popupState) => (
             <React.Fragment>
-              <ConnectedBtn variant="contained" {...bindTrigger(popupState)}>
+              <ConnectedAccountBox {...bindTrigger(popupState)}>
+                <img src={account.avatar} alt="" />
+                <span>{account.name || shortPubkey}</span>
+              </ConnectedAccountBox>
+              {/* <ConnectedBtn variant="contained" {...bindTrigger(popupState)}>
                 <Icon />
                 {shortPubkey}
-              </ConnectedBtn>
+              </ConnectedBtn> */}
               <Menu {...bindMenu(popupState)}>
                 <MenuItem
                   onClick={() => {
