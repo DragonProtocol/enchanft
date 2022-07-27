@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 17:50:34
+ * @LastEditTime: 2022-07-27 18:16:11
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
@@ -33,7 +33,7 @@ const axiosInstance = axios.create()
 // axiosInstance.defaults.withCredentials = true
 
 // 由于代理导致前端路由解析不到 先加上`/api` 前缀的接口
-axiosInstance.defaults.baseURL = process.env.NODE_ENV === 'development' ? 'api' : API_BASE_URL
+axiosInstance.defaults.baseURL = process.env.NODE_ENV === 'development' ? '/api' : API_BASE_URL
 
 // 添加请求拦截器
 axiosInstance.interceptors.request.use(
