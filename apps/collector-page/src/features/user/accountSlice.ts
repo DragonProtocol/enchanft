@@ -39,6 +39,7 @@ export type AccountState = {
   avatar: string
   name: string
   connectModal: ConnectModal | null
+  connectWalletModalShow: boolean
   accounts: Array<Account>
 }
 
@@ -51,6 +52,7 @@ const initialState: AccountState = {
   avatar: '',
   name: '',
   connectModal: null,
+  connectWalletModalShow: false,
   accounts: [],
 }
 
@@ -155,6 +157,9 @@ export const accountSlice = createSlice({
     setConnectModal: (state, action) => {
       state.connectModal = action.payload
     },
+    setConnectWalletModalShow: (state, action) => {
+      state.connectWalletModalShow = action.payload
+    },
     setDefaultWallet: (state, action) => {
       state.defaultWallet = action.payload
       localStorage.setItem('defaultWallet', action.payload)
@@ -249,6 +254,7 @@ export const accountSlice = createSlice({
 
 const { actions, reducer } = accountSlice
 export const {
+  setConnectWalletModalShow,
   setConnectModal,
   setDefaultWallet,
   setToken,
