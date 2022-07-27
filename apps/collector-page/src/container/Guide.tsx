@@ -25,6 +25,8 @@ export default function Guide() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
+  const twitter = account.accounts.find((item) => item.accountType === 'TWITTER')?.thirdpartyName
+  const discord = account.accounts.find((item) => item.accountType === 'DISCORD')?.thirdpartyName
 
   const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
   const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
@@ -83,7 +85,7 @@ export default function Guide() {
             <div className="label">Twitter:</div>
             <div className="btn twitter">
               <TwitterIcon />
-              <p>{account?.twitter || 'Connect Twitter'}</p>
+              <p>{twitter || 'Connect Twitter'}</p>
             </div>
           </Stack>
         </div>
@@ -92,7 +94,7 @@ export default function Guide() {
             <div className="label">Discord:</div>
             <div className="btn discord">
               <DiscordIcon />
-              <p>{account?.discord || 'Connect Discord'}</p>
+              <p>{discord || 'Connect Discord'}</p>
             </div>
           </Stack>
         </div>

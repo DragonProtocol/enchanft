@@ -38,8 +38,6 @@ export type AccountState = {
   token: string
   avatar: string
   name: string
-  twitter: string
-  discord: string
   connectModal: ConnectModal | null
   accounts: Array<Account>
 }
@@ -52,8 +50,6 @@ const initialState: AccountState = {
   token: '',
   avatar: '',
   name: '',
-  twitter: '',
-  discord: '',
   connectModal: null,
   accounts: [],
 }
@@ -178,12 +174,6 @@ export const accountSlice = createSlice({
     setName: (state, action) => {
       state.name = action.payload
     },
-    setTwitter: (state, action) => {
-      state.twitter = action.payload
-    },
-    setDiscord: (state, action) => {
-      state.discord = action.payload
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -198,10 +188,6 @@ export const accountSlice = createSlice({
         state.avatar = action.payload.avatar
         state.name = action.payload.name
         state.accounts = action.payload.accounts
-        const twitter = action.payload.accounts.find((item) => item.accountType === 'TWITTER')
-        state.twitter = twitter?.thirdpartyName || ''
-        const discord = action.payload.accounts.find((item) => item.accountType === 'DISCORD')
-        state.discord = discord?.thirdpartyName || ''
         state.errorMsg = ''
       })
       .addCase(userLogin.rejected, (state, action) => {
@@ -215,10 +201,6 @@ export const accountSlice = createSlice({
       .addCase(userLink.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED
         state.accounts = action.payload || []
-        const twitter = action.payload.find((item) => item.accountType === 'TWITTER')
-        state.twitter = twitter?.thirdpartyName || ''
-        const discord = action.payload.find((item) => item.accountType === 'DISCORD')
-        state.discord = discord?.thirdpartyName || ''
       })
       .addCase(userLink.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -258,10 +240,6 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.FULFILLED
         console.log('userOtherWalletLink.fulfilled', action.payload)
         state.accounts = action.payload || []
-        const twitter = action.payload.find((item) => item.accountType === 'TWITTER')
-        state.twitter = twitter?.thirdpartyName || ''
-        const discord = action.payload.find((item) => item.accountType === 'DISCORD')
-        state.discord = discord?.thirdpartyName || ''
       })
       .addCase(userOtherWalletLink.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -278,8 +256,6 @@ export const {
   setAvatar,
   removeToken,
   setName,
-  setTwitter,
-  setDiscord,
 } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer
