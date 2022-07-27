@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 16:47:59
+ * @LastEditTime: 2022-07-27 13:47:33
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -37,8 +37,12 @@ const formatStoreDataToComponentDataByTodoList = (
       data: { ...task, actions },
       viewConfig: {
         allowOpenActions: true,
-        loadingRefresh: loadingRefresh,
         openActions: openActions,
+        allowHandleActions: true,
+        displayRefresh: true,
+        disabledRefresh: loadingRefresh,
+        loadingRefresh: loadingRefresh,
+        loadingRefreshMsg: 'verifying...',
       },
     }
   })
@@ -55,8 +59,12 @@ const formatStoreDataToComponentDataByInProgressList = (
       data: { ...task, actions },
       viewConfig: {
         allowOpenActions: true,
-        loadingRefresh: loadingRefresh,
         openActions: openActions,
+        allowHandleActions: true,
+        displayRefresh: true,
+        disabledRefresh: loadingRefresh,
+        loadingRefresh: loadingRefresh,
+        loadingRefreshMsg: 'verifying...',
       },
     }
   })

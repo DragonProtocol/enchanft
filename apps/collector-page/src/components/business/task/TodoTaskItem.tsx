@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 16:48:35
+ * @LastEditTime: 2022-07-27 13:42:59
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -37,7 +37,11 @@ export type TodoTaskItemViewConfigType = {
   loadingMint?: boolean
   allowOpenActions?: boolean
   openActions?: boolean
+  allowHandleActions?: boolean
+  displayRefresh?: boolean
+  disabledRefresh?: boolean
   loadingRefresh?: boolean
+  loadingRefreshMsg?: string
 }
 
 export type TodoTaskItemDataViewType = {
@@ -60,7 +64,11 @@ const defaultViewConfig: TodoTaskItemViewConfigType = {
   loadingMint: false,
   allowOpenActions: false,
   openActions: false,
+  allowHandleActions: false,
+  displayRefresh: false,
+  disabledRefresh: false,
   loadingRefresh: false,
+  loadingRefreshMsg: 'refreshing...',
 }
 const TaskTodoCompleteStatusView = {
   [TaskTodoCompleteStatus.COMPLETED]: {
@@ -92,7 +100,18 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   const { name, whitelistTotalNum, type, projectId, startTime, endTime, actions, status, project, whitelist } = data
   const { name: projectName } = project
   const { mintUrl, mintStartTime } = whitelist
-  const { disabledMint, displayMint, loadingMint, allowOpenActions, openActions, loadingRefresh } = {
+  const {
+    disabledMint,
+    displayMint,
+    loadingMint,
+    allowOpenActions,
+    openActions,
+    allowHandleActions,
+    displayRefresh,
+    disabledRefresh,
+    loadingRefresh,
+    loadingRefreshMsg,
+  } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
@@ -232,9 +251,12 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
             items={actions}
             onDiscord={onDiscord}
             onTwitter={onTwitter}
-            allowHandle={true}
+            allowHandle={allowHandleActions}
+            displayVerify={displayRefresh}
+            loadingVerify={loadingRefresh}
+            disabledVerify={disabledRefresh}
+            onVerifyActions={onRefreshClick}
           ></TaskActionList>
-          <RefreshBtn onClick={onRefreshClick}>Refresh</RefreshBtn>
         </TaskActionsBox>
       )}
     </TodoTaskItemWrapper>

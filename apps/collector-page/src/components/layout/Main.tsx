@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 18:27:51
+ * @LastEditTime: 2022-07-27 13:30:06
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
@@ -43,7 +43,7 @@ const Main: React.FC = () => {
     { path: '/calendar', element: <div>Calendar Page</div> },
     { path: '/creator/:taskId', element: <Creator /> },
     ...permissionRoutes,
-    { path: '*', element: <div>404</div> },
+    { path: '*', element: <MainLoading></MainLoading> },
   ])
   useEffect(() => {
     dispatch(fetchFollowedCommunities())
@@ -87,4 +87,12 @@ const MainWrapper = styled.div`
   height: 100%;
   display: flex;
   overflow: hidden;
+`
+const MainLoading = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 30px;
 `
