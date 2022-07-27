@@ -3,17 +3,33 @@ import React, { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
+import { ScheduleInfo, Winner } from '../../../features/creator'
+import { sortPubKey } from '../../../utils/solana'
 
 export enum TaskStatus {
-  BEGIN,
-  END,
-  PROGRESSING,
   SUBMIT,
-  NOTIFY,
+  START,
+  END,
+  CLOSE,
 }
 
-export default function WinnerList({ taskStatus, winnersNum }: { taskStatus: TaskStatus; winnersNum: number }) {
-  const list: Array<number> = new Array(20).fill('').map((item, index) => index)
+export default function WinnerList({
+  winnersNum,
+  winnerList,
+  schedules,
+  uploadSelected,
+  whitelistSaved,
+  downloadWinners,
+}: {
+  winnersNum: number
+  whitelistSaved: boolean
+  winnerList: Array<Winner>
+  schedules: ScheduleInfo | null
+  uploadSelected: (arg0: Array<number>) => void
+  downloadWinners: () => void
+}) {
+  // const list: Array<number> = new Array(20).fill('').map((item, index) => index)
+  const list = winnerList
 
   const [selected, setSelected] = useState<Array<number>>([])
   const [disableSelect, setDisableSelect] = useState(false)
@@ -26,7 +42,7 @@ export default function WinnerList({ taskStatus, winnersNum }: { taskStatus: Tas
       const arrLen = tmpList.length
       const randomNum = getRandomInt(0, arrLen)
       const item = tmpList[randomNum]
-      result.push(item)
+      result.push(item.id)
       tmpList = [...tmpList.slice(0, randomNum), ...tmpList.slice(randomNum + 1)]
       num -= 1
     }
@@ -38,13 +54,28 @@ export default function WinnerList({ taskStatus, winnersNum }: { taskStatus: Tas
     <WinnerListBox className="box">
       <div className="title">
         <h3>Winner List</h3>
-        <div>
-          <Button variant="outlined" onClick={genRandom}>
-            Random
-          </Button>
-          {'  '}
-          <Button variant="outlined">Winners {winnersNum - selected.length}</Button>
-        </div>
+        {(whitelistSaved && (
+          <div>
+            <Button variant="outlined" onClick={downloadWinners}>
+              Download
+            </Button>
+          </div>
+        )) || (
+          <div>
+            <Button variant="outlined" onClick={genRandom}>
+              Random
+            </Button>
+            {'  '}
+            <Button
+              variant="outlined"
+              onClick={() => {
+                uploadSelected(selected)
+              }}
+            >
+              Save {selected.length}
+            </Button>
+          </div>
+        )}
       </div>
       <div className="list">
         {list.map((item, idx) => {
@@ -52,12 +83,14 @@ export default function WinnerList({ taskStatus, winnersNum }: { taskStatus: Tas
             <ListItem
               key={idx}
               idx={idx}
+              data={item}
               selected={selected}
               disableSelect={disableSelect}
               setSelected={(newSelected) => {
                 setDisableSelect(newSelected.length >= winnersNum)
                 setSelected(newSelected)
               }}
+              showSelect={!whitelistSaved}
             />
           )
         })}
@@ -68,12 +101,16 @@ export default function WinnerList({ taskStatus, winnersNum }: { taskStatus: Tas
 
 function ListItem({
   idx,
+  data,
   disableSelect,
   selected,
   setSelected,
+  showSelect,
 }: {
   idx: number
+  data: Winner
   disableSelect: boolean
+  showSelect: boolean
   selected: Array<number>
   setSelected: (arg0: Array<number>) => void
 }) {
@@ -81,26 +118,27 @@ function ListItem({
     <div>
       <span style={{ width: '20px' }}>{idx}</span>
       <span>
-        <img src="https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk?ext=jpeg" alt="" />
+        <img src={data.avatar} alt="" />
       </span>
-      <span>MK·D·Luffy</span>
-      <span>3112ASdPyfQFAv..wN3TrWzxiBia6UdqA</span>
-      <span>2021-12-12 21:21</span>
-      <Checkbox
-        checked={selected.includes(idx)}
-        disabled={disableSelect && !selected.includes(idx)}
-        onChange={() => {
-          if (selected.includes(idx)) {
-            const newArr = selected.filter((item) => {
-              return item !== idx
-            })
-            setSelected(newArr)
-          } else {
-            selected.push(idx)
-            setSelected([...selected])
-          }
-        }}
-      />
+      <span>{data.name}</span>
+      <span>{data.pubkey}</span>
+      {(showSelect && (
+        <Checkbox
+          checked={selected.includes(data.id)}
+          disabled={disableSelect && !selected.includes(data.id)}
+          onChange={() => {
+            if (selected.includes(data.id)) {
+              const newArr = selected.filter((item) => {
+                return item !== data.id
+              })
+              setSelected(newArr)
+            } else {
+              selected.push(data.id)
+              setSelected([...selected])
+            }
+          }}
+        />
+      )) || <span>{'  '}</span>}
     </div>
   )
 }

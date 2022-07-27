@@ -1,3 +1,4 @@
+import { Button } from '@mui/material'
 import React from 'react'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
@@ -40,6 +41,7 @@ export type TaskDetailContentDataViewType = {
 export type TaskDetailContentHandlesType = {
   onTake?: (task: TaskDetailContentDataType) => void
   onConnectWallet?: () => void
+  navToCreator?: (task: TaskDetailContentDataType) => void
 }
 
 export type TaskDetailContentProps = TaskDetailContentDataViewType & TaskDetailContentHandlesType
@@ -63,6 +65,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
   viewConfig,
   onTake,
   onConnectWallet,
+  navToCreator,
 }: TaskDetailContentProps) => {
   const { id, name, type, startTime, endTime, winnersNum, image, description, project } = data
   const {
@@ -93,7 +96,10 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
   const completeStatusLabel = data.status === TaskTodoCompleteStatus.COMPLETED ? 'Completed!' : 'Already Accepted'
   return (
     <TaskDetailContentWrapper>
-      <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
+      <ProjectName>
+        Project: {project.name || 'Unknown'}
+        <Button onClick={() => navToCreator && navToCreator(data)}>manage</Button>
+      </ProjectName>
       <TaskImageBox>
         <ChainTag size={2} chainId={project.chainId} />
         <TaskImage src={image} />
@@ -147,6 +153,9 @@ const ProjectName = styled.div`
   font-size: 20px;
   line-height: 30px;
   color: #3dd606;
+  > button {
+    float: right;
+  }
 `
 const TaskTypeLabel = styled.div`
   font-weight: 700;

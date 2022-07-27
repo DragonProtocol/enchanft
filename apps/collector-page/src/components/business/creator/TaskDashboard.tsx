@@ -9,7 +9,7 @@ export default function TaskDashboard({
 }: {
   participants: number
   winners: number
-  completionRate: number
+  completionRate: string
 }) {
   return (
     <TaskDashboardBox className="box">
@@ -23,7 +23,7 @@ export default function TaskDashboard({
   )
 }
 
-function Card({ title, num, percent }: { title: string; num: number; percent?: boolean }) {
+function Card({ title, num, percent }: { title: string; num: number | string; percent?: boolean }) {
   return (
     <div>
       <p>

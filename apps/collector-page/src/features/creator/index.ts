@@ -1,51 +1,114 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { creatorApi } from '../../services/api/creator'
+import { creatorApi, saveWinnersApi } from '../../services/api/creator'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 
-type CreatorState = {
+export type ScheduleInfo = {
+  closeTime: string
+  endTime: string
+  startTime: string
+  submitTime: string
+}
+
+export type TaskInfo = {
+  actions: Array<string>
+  endTime: string
+  name: string
+  startTime: string
+  type: string
+  whitelistTotalNum: number
+}
+
+export type Winner = {
+  id: number
+  avatar: string
+  name: string
+  pubkey: string
+}
+
+export type CreatorState = {
   status: AsyncRequestStatus
-  taskData: any
-  winnerListData: any
-  taskTitleData: any
-  scheduleData: any
+  saveStatus: AsyncRequestStatus
+  participants: number
+  winners: number
+  whitelistSaved: boolean
+  winnerList: Array<Winner>
+  taskInfo: TaskInfo | null
+  scheduleInfo: ScheduleInfo | null
 }
 
 // 站点状态信息
 const creatorState: CreatorState = {
   status: AsyncRequestStatus.IDLE,
-  taskData: {},
-  winnerListData: {},
-  taskTitleData: {},
-  scheduleData: {},
+  saveStatus: AsyncRequestStatus.IDLE,
+  participants: 0,
+  winners: 0,
+  whitelistSaved: false,
+  winnerList: [],
+  taskInfo: null,
+  scheduleInfo: null,
 }
 
-export const getCreatorData = createAsyncThunk('creator/data', async () => {
-  const resp = await creatorApi({})
+export const getCreatorDashboardData = createAsyncThunk('creator/dashboard', async ({ taskId }: { taskId: number }) => {
+  const resp = await creatorApi({ task: taskId })
   return resp.data
 })
+
+export const saveWinnersData = createAsyncThunk(
+  'creator/saveWinners',
+  async ({ taskId, winners }: { taskId: number; winners: Array<number> }) => {
+    const resp = await saveWinnersApi({ task: taskId, whitelist: winners })
+    return resp.data
+  },
+)
 
 export const creatorSlice = createSlice({
   name: 'website',
   initialState: creatorState,
   reducers: {
     some: (state) => {},
+    resetData: (state) => {
+      state.status = AsyncRequestStatus.FULFILLED
+      state.participants = creatorState.participants
+      state.winners = creatorState.winners
+      state.whitelistSaved = creatorState.whitelistSaved
+      state.winnerList = creatorState.winnerList
+      state.scheduleInfo = creatorState.scheduleInfo
+      state.taskInfo = creatorState.taskInfo
+    },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(getCreatorData.pending, (state) => {
+      .addCase(getCreatorDashboardData.pending, (state) => {
         state.status = AsyncRequestStatus.PENDING
       })
-      .addCase(getCreatorData.fulfilled, (state, action) => {
+      .addCase(getCreatorDashboardData.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED
+        state.participants = action.payload.participants
+        state.winners = action.payload.winners
+        state.whitelistSaved = action.payload.whitelistSaved
+        state.winnerList = action.payload.winnerList
+        state.scheduleInfo = action.payload.scheduleInfo
+        state.taskInfo = action.payload.taskInfo
       })
-      .addCase(getCreatorData.rejected, (state, action) => {
+      .addCase(getCreatorDashboardData.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
+      })
+      /////
+      .addCase(saveWinnersData.pending, (state, action) => {
+        state.saveStatus = AsyncRequestStatus.PENDING
+      })
+      .addCase(saveWinnersData.fulfilled, (state, action) => {
+        state.saveStatus = AsyncRequestStatus.FULFILLED
+        state.whitelistSaved = true
+      })
+      .addCase(saveWinnersData.rejected, (state, action) => {
+        state.saveStatus = AsyncRequestStatus.REJECTED
       })
   },
 })
 
 const { actions, reducer } = creatorSlice
-// export const { switchOpenMenu } = actions
+export const { resetData } = actions
 export const selectCreator = (state: RootState) => state.creator
 export default reducer
