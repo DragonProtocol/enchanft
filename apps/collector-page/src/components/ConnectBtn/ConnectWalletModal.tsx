@@ -88,7 +88,10 @@ export default function ConnectWalletModal() {
     if (localStorage.getItem('has-guide')) return
     const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
     const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
-    if (accountPhantom && accountMetamask && account.twitter && account.discord) return
+    const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
+    const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
+    if (accountPhantom && accountMetamask && twitter && discord) return
+
     navigate('/guide')
   }, [account])
 
