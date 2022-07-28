@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Menu, MenuItem, styled } from '@mui/material'
+import { Box, Button, Modal, Menu, MenuItem, styled, Snackbar, Alert } from '@mui/material'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
@@ -16,6 +16,7 @@ import {
   userLogin,
   ChainType,
   setConnectWalletModalShow,
+  resetLinkErrMsg,
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
@@ -49,7 +50,7 @@ const ConnectedAccountBox = styled(Box)`
     position: absolute;
     left: 13px;
     top: 5px;
-    margin-right: 15px;
+    /* margin-right: 15px; */
     border-radius: 50%;
     height: 30px;
     width: 30px;
@@ -58,6 +59,15 @@ const ConnectedAccountBox = styled(Box)`
   & span {
     color: #fff;
     width: 100%;
+  }
+`
+
+const ConnectButton = styled(Button)`
+  background-color: #70e137;
+  box-shadow: none;
+  &:hover {
+    background-color: #70e137;
+    box-shadow: none;
   }
 `
 
@@ -122,18 +132,38 @@ export default function ConnectBtn() {
           )}
         </PopupState>
       )) || (
-        <Button
+        <ConnectButton
           variant="contained"
           onClick={() => {
             dispatch(setConnectWalletModalShow(true))
           }}
         >
-          ConnectWallet
-        </Button>
+          Connect Wallet
+        </ConnectButton>
       )}
 
       <ConnectWalletModal />
       <ConnectModal />
+
+      {/** LinkErrMsg */}
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={!!account.linkErrMsg}
+        // message={account.linkErrMsg}
+        autoHideDuration={5000}
+        onClose={() => {
+          dispatch(resetLinkErrMsg())
+        }}
+      >
+        <Alert
+          severity="error"
+          onClose={() => {
+            dispatch(resetLinkErrMsg())
+          }}
+        >
+          {account.linkErrMsg}
+        </Alert>
+      </Snackbar>
     </>
   )
 }

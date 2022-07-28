@@ -44,6 +44,7 @@ export type AccountState = {
   connectModal: ConnectModal | null
   connectWalletModalShow: boolean
   accounts: Array<Account>
+  linkErrMsg: string
 }
 
 // 用户账户信息
@@ -58,6 +59,7 @@ const initialState: AccountState = {
   connectModal: null,
   connectWalletModalShow: false,
   accounts: [],
+  linkErrMsg: '',
 }
 
 export const userLogin = createAsyncThunk(
@@ -146,14 +148,22 @@ export const userOtherWalletLink = createAsyncThunk(
     pubkey: string
     token?: string
   }) => {
-    const resp = await link({
-      type: walletType === TokenType.Solana ? ChainType.SOLANA : ChainType.EVM,
-      signature,
-      payload,
-      pubkey,
-      token,
-    })
-    return resp.data
+    try {
+      const resp = await link({
+        type: walletType === TokenType.Solana ? ChainType.SOLANA : ChainType.EVM,
+        signature,
+        payload,
+        pubkey,
+        token,
+      })
+      return { accounts: resp.data, walletType }
+    } catch (error) {
+      if (error.response) {
+        throw new Error(error.response.data.message)
+      } else {
+        throw error
+      }
+    }
   },
 )
 
@@ -190,6 +200,9 @@ export const accountSlice = createSlice({
     setName: (state, action) => {
       state.name = action.payload
     },
+    resetLinkErrMsg: (state) => {
+      state.linkErrMsg = ''
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -204,7 +217,11 @@ export const accountSlice = createSlice({
         state.avatar = action.payload.avatar
         state.name = action.payload.name
         state.accounts = action.payload.accounts
+        state.defaultWallet = action.payload.walletType
         state.errorMsg = ''
+
+        localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
+        localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
       })
       .addCase(userLogin.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -254,11 +271,16 @@ export const accountSlice = createSlice({
       })
       .addCase(userOtherWalletLink.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED
-        console.log('userOtherWalletLink.fulfilled', action.payload)
-        state.accounts = action.payload || []
+        state.defaultWallet = action.payload.walletType
+        state.accounts = action.payload.accounts || []
+
+        localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
+        localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
       })
       .addCase(userOtherWalletLink.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
+        console.log(action)
+        state.linkErrMsg = action.error.message || ''
       })
   },
 })
@@ -274,6 +296,7 @@ export const {
   removeToken,
   setName,
   setLastLogin,
+  resetLinkErrMsg,
 } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer

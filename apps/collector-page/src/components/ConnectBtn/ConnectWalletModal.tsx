@@ -83,16 +83,9 @@ export default function ConnectWalletModal() {
     navigate('/guide')
   }, [account])
 
-  const handleSign = async (
-    data: {
-      walletType: TokenType
-      pubkey: string
-      signature: string
-    },
-    walletType: TokenType,
-  ) => {
+  const handleSign = async (data: { walletType: TokenType; pubkey: string; signature: string }) => {
     handleLogin(data)
-    dispatch(setDefaultWallet(walletType))
+    // dispatch(setDefaultWallet(walletType))
     dispatch(setPubkey(data.pubkey))
     handleClose()
     navigateToGuide()
@@ -109,7 +102,7 @@ export default function ConnectWalletModal() {
         if (!data) {
           return
         }
-        handleSign(data, TokenType.Ethereum)
+        handleSign(data)
       })
     }
   }, [account])
@@ -125,7 +118,7 @@ export default function ConnectWalletModal() {
         if (!data) {
           return
         }
-        handleSign(data, TokenType.Solana)
+        handleSign(data)
       })
     }
   }, [account])
@@ -138,7 +131,7 @@ export default function ConnectWalletModal() {
         if (!data) {
           return
         }
-        handleSign(data, TokenType.Ethereum)
+        handleSign(data)
       })
     }
     if (newAccountWith === TokenType.Solana) {
@@ -148,7 +141,7 @@ export default function ConnectWalletModal() {
         if (!data) {
           return
         }
-        handleSign(data, TokenType.Solana)
+        handleSign(data)
       })
     }
   }, [newAccountWith])
@@ -162,7 +155,7 @@ export default function ConnectWalletModal() {
         return
       }
       handleLogin(data)
-      dispatch(setDefaultWallet(TokenType.Ethereum))
+      // dispatch(setDefaultWallet(TokenType.Ethereum))
       dispatch(setPubkey(data.pubkey))
       const newData = await signMsgWithMetamask()
       if (!newData) return
@@ -185,7 +178,7 @@ export default function ConnectWalletModal() {
         return
       }
       handleLogin(data)
-      dispatch(setDefaultWallet(TokenType.Solana))
+      // dispatch(setDefaultWallet(TokenType.Solana))
       dispatch(setPubkey(data.pubkey))
       const newData = await signMsgWithPhantom()
       if (!newData) return
