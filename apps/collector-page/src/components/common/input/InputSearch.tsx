@@ -8,7 +8,7 @@
 import InputBase from '@mui/material/InputBase'
 import React from 'react'
 import styled from 'styled-components'
-import { IconInputSearch } from '../icons/IconInputSearch'
+import IconInputSearch from '../icons/IconInputSearch'
 
 import CancelIcon from '@mui/icons-material/Cancel'
 import IconButton from '@mui/material/IconButton'

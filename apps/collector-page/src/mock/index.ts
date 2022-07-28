@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 13:31:44
+ * @LastEditTime: 2022-07-28 16:35:45
  * @Description: mock 请求拦截入口
  */
 
@@ -37,7 +37,7 @@ import { ChainIds } from '../utils/chain'
     // TODO 上面的方式没有代理成功，这里先手动代理
 
     const task_type = [TaskType.WHITELIST_ORIENTED, TaskType.WHITELIST_LUCK_DRAW]
-    const task_status = [TaskAcceptedStatus.CANDO, TaskAcceptedStatus.CANNOT, TaskAcceptedStatus.DONE]
+    const task_accepted_status = [TaskAcceptedStatus.CANDO, TaskAcceptedStatus.CANNOT, TaskAcceptedStatus.DONE]
     const task_todo_status = [
       TaskTodoCompleteStatus.TODO,
       TaskTodoCompleteStatus.IN_PRGRESS,
@@ -49,7 +49,16 @@ import { ChainIds } from '../utils/chain'
     const roadmap_status = [RoadmapStatus.DONE, RoadmapStatus.UNDO]
     const project_status = [ProjectStatus.ACTIVE, ProjectStatus.LIVE, ProjectStatus.FUTURE]
     const project_chainid = [ChainIds.eth, ChainIds.solana]
-    const action_type = [ActionType.FOLLOW_TWITTER, ActionType.INVITE_PEOPLE]
+    const action_type = [
+      ActionType.FOLLOW_TWITTER,
+      ActionType.INVITE_PEOPLE,
+      ActionType.JOIN_DISCORD,
+      ActionType.RETWEET,
+      ActionType.LIKE_TWEET,
+      ActionType.UPDATE_BIO_OF_TWITTER,
+      ActionType.MEET_CONTRIBUTION_SCORE,
+      ActionType.TURN_ON_NOTIFICATION,
+    ]
     const user_action_status = [UserActionStatus.TODO, UserActionStatus.DONE]
     const start_tinme = () => new Date().getTime() + Mock.Random.integer(0, 1000 * 60 * 60 * 24)
     const range_tinme = () => new Date().getTime() + Mock.Random.integer(-1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24)
@@ -85,7 +94,7 @@ import { ChainIds } from '../utils/chain'
             id: '@increment',
             name: '@title(1, 5)',
             'type|1': task_type,
-            'acceptedStatus|1': task_status,
+            'acceptedStatus|1': task_accepted_status,
             winnersNum: 100,
             startTime: start_tinme,
             endTime: end_time,
@@ -93,6 +102,17 @@ import { ChainIds } from '../utils/chain'
               {
                 id: '@increment',
                 name: '@title(3, 15)',
+                description: '@paragraph(10, 30)',
+                orderNum: Mock.Random.integer(1, 100),
+                'type|1': action_type,
+                taskId: '@increment',
+                projectId: '@increment',
+                communityId: '@increment',
+                data: {
+                  url: 'https://twitter.com/',
+                },
+                'status|1': user_action_status,
+                progress: '',
               },
             ],
           },
@@ -143,7 +163,7 @@ import { ChainIds } from '../utils/chain'
         'status|1': task_todo_status,
         whitelistTotalNum: Mock.Random.integer(1, 100),
         projectId: '@increment',
-        'acceptedStatus|1': task_status,
+        'acceptedStatus|1': task_accepted_status,
 
         project: {
           id: '@increment',
@@ -157,6 +177,7 @@ import { ChainIds } from '../utils/chain'
           {
             id: '@increment',
             name: '@title(3, 15)',
+            description: '@paragraph(10, 30)',
             orderNum: Mock.Random.integer(1, 100),
             'type|1': action_type,
             taskId: '@increment',
@@ -169,6 +190,25 @@ import { ChainIds } from '../utils/chain'
             progress: '',
           },
         ],
+        'winnerList|10': [
+          // {
+          //   id: '@increment',
+          //   name: '@title(1, 3)',
+          //   pubkey: '@uuid',
+          //   avatar: "@dataImage('100x100', 'avatar')",
+          // },
+        ],
+        whitelist: {
+          id: '@increment',
+          mintUrl: 'https://www.baidu.com/',
+          mintPrice: '3+1 SOL',
+          mintStartTime: range_tinme(),
+          endTime: end_time,
+          mintMaxNum: 10,
+          totalNum: 100,
+          projectId: '@increment',
+          taskId: '@increment',
+        },
       }
     }
     // 设定响应时间
@@ -186,11 +226,21 @@ import { ChainIds } from '../utils/chain'
         },
       ],
     })
+    // explore search tasks
+    Mock.mock(/\/tasks\/searching(\\?.*|)/, 'get', {
+      code: 0,
+      msg: 'success',
+      'data|10': [
+        {
+          ...taskEntity(),
+        },
+      ],
+    })
     // 用户的任务列表
     Mock.mock(/\/tasks\/todo/, 'get', {
       code: 0,
       msg: 'success',
-      'data|10': [
+      'data|30': [
         {
           ...taskEntity(),
         },
@@ -211,16 +261,7 @@ import { ChainIds } from '../utils/chain'
         ...taskEntity(),
       },
     })
-    // explore search tasks
-    Mock.mock(/\/tasks(\\?.*|)/, 'get', {
-      code: 0,
-      msg: 'success',
-      'data|10': [
-        {
-          ...taskEntity(),
-        },
-      ],
-    })
+
     // explore recommend projects
     Mock.mock(/\/projects\/recommendation/, 'get', {
       code: 0,

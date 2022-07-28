@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:45:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 12:38:14
+ * @LastEditTime: 2022-07-28 14:38:09
  * @Description: file description
  */
 import React from 'react'
@@ -19,6 +19,8 @@ export type TaskActionListViewConfigType = {
   disabledVerify?: boolean
   loadingVerify?: boolean
   loadingVerifyMsg?: string
+  copyBgc?: string
+  verifyBgc?: string
 }
 export type TaskActionItemsType = TaskActionItemDataType[]
 export type TaskActionListProps = TaskActionListViewConfigType & {
@@ -40,6 +42,8 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
   disabledVerify,
   loadingVerify,
   loadingVerifyMsg = 'verifying...',
+  copyBgc,
+  verifyBgc,
 }: TaskActionListProps) => {
   const itemLen = items.length
   const onVerifyActionsClick = () => {
@@ -61,10 +65,11 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
               onDiscord={onDiscord}
               onTwitter={onTwitter}
               allowHandle={allowHandle}
+              copyBgc={copyBgc}
             />
           ))}
           {displayVerify && (
-            <VerifyBtn onClick={onVerifyActionsClick} disabled={disabledVerify}>
+            <VerifyBtn onClick={onVerifyActionsClick} disabled={disabledVerify} bgc={verifyBgc}>
               {verifyText}
             </VerifyBtn>
           )}
@@ -81,7 +86,7 @@ const TaskActionListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 10px;
+  gap: 20px;
 `
 const TaskActionListLoading = styled.div`
   text-align: center;
@@ -92,12 +97,13 @@ const TaskActionListEmpty = styled.div`
   text-align: center;
   margin-top: 20px;
 `
-const VerifyBtn = styled(ButtonBase)`
+const VerifyBtn = styled(ButtonBase)<{ bgc?: string }>`
   width: 100%;
   height: 40px;
-  border-radius: 4px;
-  background-color: rgba(16, 16, 16, 100);
-  color: rgba(255, 255, 255, 100);
+  background: ${({ bgc }) => bgc || '#f8f8f8'};
+  box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+  font-weight: 700;
   font-size: 14px;
-  margin-top: 10px;
+  line-height: 21px;
+  color: #3dd606;
 `

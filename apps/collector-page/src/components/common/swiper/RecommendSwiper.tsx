@@ -4,8 +4,8 @@ import { Navigation, Autoplay } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 
-import { IconCaretLeft } from '../icons/IconCaretLeft'
-import { IconCaretRight } from '../icons/IconCaretRight'
+import IconCaretLeft from '../icons/IconCaretLeft'
+import IconCaretRight from '../icons/IconCaretRight'
 import ButtonNavigation from '../button/ButtonNavigation'
 
 export type RecommendSwiperProps = {

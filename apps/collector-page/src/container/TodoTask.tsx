@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 13:47:33
+ * @LastEditTime: 2022-07-28 16:54:24
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -152,7 +152,7 @@ const TodoTask: React.FC = () => {
           <TodoTaskGroupBox>
             <TodoTaskGroupLeft>
               <TodoTaskList
-                title={'to do'}
+                status={TaskTodoCompleteStatus.TODO}
                 items={todoItems}
                 loading={loading}
                 onRefreshTask={(task) => handleRefreshTask(task.id)}
@@ -160,7 +160,7 @@ const TodoTask: React.FC = () => {
                 onTwitter={handleActionToTwitter}
               />
               <TodoTaskList
-                title={'in progress'}
+                status={TaskTodoCompleteStatus.IN_PRGRESS}
                 items={inProgressItems}
                 loading={loading}
                 onRefreshTask={(task) => handleRefreshTask(task.id)}
@@ -170,25 +170,25 @@ const TodoTask: React.FC = () => {
             </TodoTaskGroupLeft>
             <TodoTaskGroupRight>
               <TodoTaskList
-                title={'completed'}
+                status={TaskTodoCompleteStatus.COMPLETED}
                 items={completedItems}
                 loading={loading}
                 onRefreshTask={(task) => handleRefreshTask(task.id)}
               />
               <TodoTaskList
-                title={'won'}
+                status={TaskTodoCompleteStatus.WON}
                 items={wonItems}
                 loading={loading}
                 onRefreshTask={(task) => handleRefreshTask(task.id)}
               />
               <TodoTaskList
-                title={'closed'}
+                status={TaskTodoCompleteStatus.CLOSED}
                 items={closedItems}
                 loading={loading}
                 onRefreshTask={(task) => handleRefreshTask(task.id)}
               />
               <TodoTaskList
-                title={'lost'}
+                status={TaskTodoCompleteStatus.LOST}
                 items={lostItems}
                 loading={loading}
                 onRefreshTask={(task) => handleRefreshTask(task.id)}

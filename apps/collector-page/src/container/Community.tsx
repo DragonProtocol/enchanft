@@ -107,10 +107,15 @@ const formatStoreDataToComponentDataByProjectDetail = (
   })
 }
 
+export enum CommunityParamsVisibleType {
+  CONTRIBUTION = 'contribution',
+}
+
 const Community: React.FC = () => {
   const { communityId } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
   const projectId = searchParams.get('projectId')
+  const visible = searchParams.get('visible')
 
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
@@ -174,7 +179,13 @@ const Community: React.FC = () => {
     },
   ]
   const [curCommunityTab, setCurCommunityTab] = useState(CommunityTabOptions[0].value)
-
+  useEffect(() => {
+    if (visible) {
+      if (visible === CommunityParamsVisibleType.CONTRIBUTION) {
+        setCurCommunityTab(CommunityTabOptions[1].value)
+      }
+    }
+  }, [visible])
   // 项目展示信息切换
   const [curProjectId, setCurProjectId] = useState<number>(Number(projectId))
   useEffect(() => {

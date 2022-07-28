@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-08 10:00:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 11:06:33
+ * @LastEditTime: 2022-07-27 19:55:22
  * @Description: file description
  */
 import React from 'react'
@@ -20,5 +20,4 @@ const MainContentBoxWrapper = styled.div`
   padding: 0 48px;
   box-sizing: border-box;
   margin: 48px 0;
-  overflow-x: hidden;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-22 20:06:48
+ * @LastEditTime: 2022-07-28 16:14:46
  * @Description: file description
  */
 import React from 'react'
@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { ProjectStatus, TaskType } from '../../../types/api'
 import ChainTag from '../chain/ChainTag'
+import ProjectStatusLabel from './ProjectStatusLabel'
 
 export type ExploreProjectItemDataType = {
   id: number
@@ -86,13 +87,8 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
       </ProjectImageBox>
 
       <ProjectInfoBox>
-        <ProjectInfoTopBox>
-          <ProjectName>{name}</ProjectName>
-          <ProjectStatusLabel>
-            <ProjectStatusLabelLeft />
-            {statusLabel}
-          </ProjectStatusLabel>
-        </ProjectInfoTopBox>
+        <ProjectName>{name}</ProjectName>
+        <ProjectStatusLabel status={status} />
         <ProjectInfoBottomBox>{projectDescBottomText}</ProjectInfoBottomBox>
       </ProjectInfoBox>
     </ExploreProjectItemWrapper>
@@ -101,12 +97,11 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
 export default ExploreProjectItem
 const ExploreProjectItemWrapper = styled.div`
   width: 100%;
-  height: 330px;
+  height: 385px;
   box-sizing: border-box;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 100);
-  border: 1px solid rgba(21, 21, 21, 100);
-  padding: 20px;
+  background: #ffffff;
+  border: 2px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -117,42 +112,28 @@ const ProjectImageBox = styled.div`
 `
 const ProjectImage = styled.img`
   width: 100%;
-  height: 206px;
+  height: 265px;
+  /* 图片不失真，不会出现拉伸 */
+  object-fit: cover;
 `
 const ProjectInfoBox = styled.div`
   flex: 1;
-  padding-top: 22px;
-  overflow-y: auto;
+  padding: 10px 20px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 8px;
+  overflow-y: auto;
   ${ScrollBarCss}
 `
-// top
-const ProjectInfoTopBox = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 6px;
-`
 const ProjectName = styled.div`
-  color: rgba(16, 16, 16, 100);
+  font-weight: 700;
   font-size: 18px;
-  font-weight: bold;
-`
-const ProjectStatusLabel = styled.div`
-  display: flex;
-  gap: 6px;
-  align-items: center;
-`
-const ProjectStatusLabelLeft = styled.div`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  line-height: 20px;
-  background-color: rgba(112, 225, 55, 100);
+  color: #333333;
 `
 // bottom
 const ProjectInfoBottomBox = styled.div`
-  font-size: 14px;
+  font-size: 12px;
+  line-height: 18px;
+  color: rgba(51, 51, 51, 0.6);
 `

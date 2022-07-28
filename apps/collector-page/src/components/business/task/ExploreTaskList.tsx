@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 17:33:36
+ * @LastEditTime: 2022-07-28 11:23:59
  * @Description: file description
  */
 import React from 'react'
@@ -32,8 +32,8 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
       {!loading &&
         items.length > 0 &&
         items.map((item) => (
-          <ExploreTaskItemBox>
-            <ExploreTaskItem key={`${item.data.id}`} data={item.data} viewConfig={item.viewConfig} />
+          <ExploreTaskItemBox key={`${item.data.id}`}>
+            <ExploreTaskItem data={item.data} viewConfig={item.viewConfig} />
           </ExploreTaskItemBox>
         ))}
     </ExploreTaskListWrapper>

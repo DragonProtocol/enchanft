@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 16:27:54
+ * @LastEditTime: 2022-07-28 17:28:10
  * @Description: file description
  */
 import React from 'react'
@@ -91,7 +91,7 @@ const ExploreProjectFilter: React.FC<ExploreProjectFilterProps> = ({
       )}
       {displayKeywords && (
         <FilterRightBox>
-          <InputSearch value={keywords} onChange={handleKeywordsChange} />
+          <InputSearch value={keywords} onChange={handleKeywordsChange} placeholder="Search project keywords" />
         </FilterRightBox>
       )}
     </ExploreProjectFilterWrapper>

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 17:30:51
+ * @LastEditTime: 2022-07-28 16:01:18
  * @Description: file description
  */
 import React from 'react'
@@ -59,7 +59,7 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
 export default ExploreTaskItem
 const ExploreTaskItemWrapper = styled.div`
   width: 100%;
-  height: 243px;
+  height: 250px;
   box-sizing: border-box;
   background: #ffffff;
   border: 2px solid #333333;
@@ -80,22 +80,20 @@ const TaskImage = styled.img`
 `
 const TaskInfoBox = styled.div`
   flex: 1;
-  padding: 20px;
+  padding: 10px 20px;
   box-sizing: border-box;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 8px;
+  overflow-y: auto;
   ${ScrollBarCss}
 `
 const TaskName = styled.div`
   font-weight: 700;
   font-size: 18px;
-  line-height: 27px;
   color: #333333;
 `
 const TaskDateTime = styled.div`
   font-size: 12px;
-  line-height: 18px;
   color: rgba(51, 51, 51, 0.6);
 `
