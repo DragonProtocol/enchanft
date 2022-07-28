@@ -15,6 +15,8 @@ import {
   userLogin,
   ChainType,
   setConnectWalletModalShow,
+  userOtherWalletLink,
+  ConnectModal,
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
@@ -26,6 +28,8 @@ export default function ConnectWalletModal() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
+  const [showNewAccountBtn, setShowNewAccountBtn] = useState(false)
+  const [newAccountWith, setNewAccountWith] = useState<TokenType>()
 
   const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom, getMetamaskAddr, getPhantomAddr } =
     useWalletSign()
@@ -39,23 +43,6 @@ export default function ConnectWalletModal() {
       if (existToken) {
         dispatch(setToken(existToken))
         dispatch(userGetProfile())
-      } else {
-        if (account.defaultWallet === TokenType.Ethereum) {
-          signMsgWithMetamask().then((data) => {
-            if (!data) {
-              return
-            }
-            handleLogin(data)
-          })
-        }
-        if (account.defaultWallet === TokenType.Solana) {
-          signMsgWithPhantom().then((data) => {
-            if (!data) {
-              return
-            }
-            handleLogin(data)
-          })
-        }
       }
     }
   }, [account.pubkey, account.defaultWallet])
@@ -77,10 +64,11 @@ export default function ConnectWalletModal() {
         walletType,
       }),
     )
-    navigateToGuide()
   }
 
   const handleClose = () => {
+    console.log('handleClose')
+    setShowNewAccountBtn(false)
     dispatch(setConnectWalletModalShow(false))
   }
 
@@ -95,23 +83,124 @@ export default function ConnectWalletModal() {
     navigate('/guide')
   }, [account])
 
+  const handleSign = async (
+    data: {
+      walletType: TokenType
+      pubkey: string
+      signature: string
+    },
+    walletType: TokenType,
+  ) => {
+    handleLogin(data)
+    dispatch(setDefaultWallet(walletType))
+    dispatch(setPubkey(data.pubkey))
+    handleClose()
+    navigateToGuide()
+  }
+
   const connectMetamask = useCallback(async () => {
     const pubkey = await getMetamaskAddr()
     if (!pubkey) return
-    dispatch(setDefaultWallet(TokenType.Ethereum))
-    dispatch(setPubkey(pubkey))
-    handleClose()
-    navigateToGuide()
-  }, [])
+    if (account.lastLoginType === TokenType.Solana) {
+      setShowNewAccountBtn(true)
+      setNewAccountWith(TokenType.Ethereum)
+    } else {
+      signMsgWithMetamask().then((data) => {
+        if (!data) {
+          return
+        }
+        handleSign(data, TokenType.Ethereum)
+      })
+    }
+  }, [account])
 
   const connectPhantom = useCallback(async () => {
     const pubkey = await getPhantomAddr()
     if (!pubkey) return
-    dispatch(setDefaultWallet(TokenType.Solana))
-    dispatch(setPubkey(pubkey))
-    handleClose()
-    navigateToGuide()
-  }, [])
+    if (account.lastLoginType === TokenType.Ethereum) {
+      setShowNewAccountBtn(true)
+      setNewAccountWith(TokenType.Solana)
+    } else {
+      signMsgWithPhantom().then((data) => {
+        if (!data) {
+          return
+        }
+        handleSign(data, TokenType.Solana)
+      })
+    }
+  }, [account])
+
+  const createNewAccount = useCallback(async () => {
+    if (newAccountWith === TokenType.Ethereum) {
+      const pubkey = await getMetamaskAddr()
+      if (!pubkey) return
+      signMsgWithMetamask().then((data) => {
+        if (!data) {
+          return
+        }
+        handleSign(data, TokenType.Ethereum)
+      })
+    }
+    if (newAccountWith === TokenType.Solana) {
+      const pubkey = await getPhantomAddr()
+      if (!pubkey) return
+      signMsgWithPhantom().then((data) => {
+        if (!data) {
+          return
+        }
+        handleSign(data, TokenType.Solana)
+      })
+    }
+  }, [newAccountWith])
+
+  const loginWithLastLogin = useCallback(async () => {
+    if (newAccountWith === TokenType.Ethereum) {
+      const pubkey = await getMetamaskAddr()
+      if (!pubkey) return
+      const data = await signMsgWithPhantom()
+      if (!data) {
+        return
+      }
+      handleLogin(data)
+      dispatch(setDefaultWallet(TokenType.Ethereum))
+      dispatch(setPubkey(data.pubkey))
+      const newData = await signMsgWithMetamask()
+      if (!newData) return
+      dispatch(
+        userOtherWalletLink({
+          walletType: newData.walletType,
+          signature: newData.signature,
+          pubkey: newData.pubkey,
+          payload: SIGN_MSG,
+        }),
+      )
+      handleClose()
+      navigateToGuide()
+    }
+    if (newAccountWith === TokenType.Solana) {
+      const pubkey = await getPhantomAddr()
+      if (!pubkey) return
+      const data = await signMsgWithMetamask()
+      if (!data) {
+        return
+      }
+      handleLogin(data)
+      dispatch(setDefaultWallet(TokenType.Solana))
+      dispatch(setPubkey(data.pubkey))
+      const newData = await signMsgWithPhantom()
+      if (!newData) return
+      dispatch(
+        userOtherWalletLink({
+          walletType: newData.walletType,
+          signature: newData.signature,
+          pubkey: newData.pubkey,
+          payload: SIGN_MSG,
+        }),
+      )
+      handleClose()
+      navigateToGuide()
+    }
+  }, [newAccountWith])
 
   return (
     <Modal
@@ -135,15 +224,27 @@ export default function ConnectWalletModal() {
           p: 4,
         }}
       >
-        <div onClick={connectMetamask}>
-          <MetamaskIcon />
-          <p>Metamask</p>
-        </div>
+        <div className="wallet">
+          <div onClick={connectMetamask} className={metamaskValid ? '' : 'invalid'}>
+            <MetamaskIcon />
+            <p>Metamask{account.lastLoginType === TokenType.Ethereum ? `(lastUsed)` : ''}</p>
+          </div>
 
-        <div onClick={connectPhantom}>
-          <PhantomIcon />
-          <p>Phantom</p>
+          <div onClick={connectPhantom} className={phantomValid ? '' : 'invalid'}>
+            <PhantomIcon />
+            <p>Phantom{account.lastLoginType === TokenType.Solana ? `(lastUsed)` : ''}</p>
+          </div>
         </div>
+        {showNewAccountBtn && (
+          <div className="new-account">
+            <Button variant="contained" onClick={createNewAccount}>
+              Create New Account With {newAccountWith}
+            </Button>
+            <Button variant="contained" onClick={() => loginWithLastLogin()}>
+              Login With LastLogin
+            </Button>
+          </div>
+        )}
       </ConnectBox>
     </Modal>
   )
@@ -151,20 +252,38 @@ export default function ConnectWalletModal() {
 
 const ConnectBox = styled(Box)`
   display: flex;
+  justify-content: center;
+  flex-direction: column;
   border-radius: 10px;
-  & > div {
-    width: 50%;
-    margin: 10px 20px;
-    padding: 10px;
-    text-align: center;
-    box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
-    border-radius: 10px;
-    cursor: pointer;
-    & img {
-      width: 50px;
+  & .wallet {
+    display: flex;
+    > div.invalid {
+      background-color: lightgray;
+      cursor: not-allowed;
     }
-    & p {
-      margin: 10px;
+    > div {
+      width: 50%;
+      margin: 10px 20px;
+      padding: 10px;
+      text-align: center;
+      box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
+      cursor: pointer;
+      & img {
+        width: 50px;
+      }
+      & p {
+        margin: 10px;
+      }
+    }
+  }
+  & .new-account {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 20px;
+    > button {
+      margin: 5px 20px;
     }
   }
 `

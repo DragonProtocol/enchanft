@@ -9,7 +9,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
 import { login, updateProfile, link, getProfile } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
-import { setLoginToken, TokenType } from '../../utils/token'
+import { DEFAULT_WALLET, LAST_LOGIN_TYPE, setLoginToken, TokenType } from '../../utils/token'
 
 export enum ConnectModal {
   PHANTOM = 'phantom',
@@ -36,6 +36,7 @@ export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
   defaultWallet: TokenType
+  lastLoginType: TokenType | null
   pubkey: string
   token: string
   avatar: string
@@ -48,7 +49,8 @@ export type AccountState = {
 // 用户账户信息
 const initialState: AccountState = {
   status: AsyncRequestStatus.IDLE,
-  defaultWallet: (localStorage.getItem('defaultWallet') as TokenType) || '',
+  defaultWallet: (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '',
+  lastLoginType: (localStorage.getItem(LAST_LOGIN_TYPE) as TokenType) || '',
   pubkey: '',
   token: '',
   avatar: '',
@@ -136,17 +138,20 @@ export const userOtherWalletLink = createAsyncThunk(
     signature,
     payload,
     pubkey,
+    token,
   }: {
     walletType: TokenType
     signature: string
     payload: string
     pubkey: string
+    token?: string
   }) => {
     const resp = await link({
       type: walletType === TokenType.Solana ? ChainType.SOLANA : ChainType.EVM,
       signature,
       payload,
       pubkey,
+      token,
     })
     return resp.data
   },
@@ -156,6 +161,9 @@ export const accountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {
+    setLastLogin: (state, action) => {
+      state.lastLoginType = action.payload
+    },
     setConnectModal: (state, action) => {
       state.connectModal = action.payload
     },
@@ -164,7 +172,8 @@ export const accountSlice = createSlice({
     },
     setDefaultWallet: (state, action) => {
       state.defaultWallet = action.payload
-      localStorage.setItem('defaultWallet', action.payload)
+      localStorage.setItem(DEFAULT_WALLET, action.payload)
+      localStorage.setItem(LAST_LOGIN_TYPE, action.payload)
     },
     setToken: (state, action) => {
       state.token = action.payload
@@ -264,6 +273,7 @@ export const {
   setAvatar,
   removeToken,
   setName,
+  setLastLogin,
 } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer
