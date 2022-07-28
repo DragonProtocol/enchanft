@@ -22,6 +22,8 @@ export enum ConnectModal {
 export enum ChainType {
   SOLANA = 'SOLANA',
   EVM = 'EVM',
+  TWITTER = 'TWITTER',
+  DISCORD = 'DISCORD',
 }
 
 type Account = {
