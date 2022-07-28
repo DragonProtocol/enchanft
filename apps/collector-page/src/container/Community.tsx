@@ -268,6 +268,7 @@ export default Community
 const CommunityWrapper = styled.div`
   width: 100%;
   height: 100%;
+  background: #ffffff;
 `
 const CommunityTabs = styled.div`
   width: 700px;

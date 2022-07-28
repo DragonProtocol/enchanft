@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:58:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 16:26:32
+ * @LastEditTime: 2022-07-28 18:58:52
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -95,6 +95,7 @@ export default Projects
 const ProjectsWrapper = styled.div`
   width: 100%;
   height: 100%;
+  background: #ffffff;
 `
 const RecommendProjectsBox = styled.div`
   margin-bottom: 100px;

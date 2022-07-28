@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-14 15:32:55
+ * @LastEditTime: 2022-07-28 18:52:29
  * @Description: 站点布局入口
  */
 import React from 'react'
@@ -60,7 +60,6 @@ const MainInner = styled.div`
   position: relative;
   width: 100%;
   height: 100%;
-  background: #fff;
   box-sizing: border-box;
   overflow-y: auto;
   @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {

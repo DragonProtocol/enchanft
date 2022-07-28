@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 15:44:40
+ * @LastEditTime: 2022-07-28 18:59:34
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -238,6 +238,7 @@ export default TaskDetail
 const TaskDetailWrapper = styled.div`
   width: 100%;
   height: 100%;
+  background: #ffffff;
 `
 const TaskDetailLoading = styled.div`
   width: 100%;

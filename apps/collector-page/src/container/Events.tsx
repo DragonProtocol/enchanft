@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 11:01:33
+ * @LastEditTime: 2022-07-28 18:55:27
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -98,6 +98,7 @@ export default Events
 const EventsWrapper = styled.div`
   width: 100%;
   height: 100%;
+  background: #ffffff;
 `
 const RecommendTasksBox = styled.div`
   margin-bottom: 100px;
@@ -106,4 +107,7 @@ const SearchTasksBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 40px;
+  background: #ffffff;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  padding: 40px;
 `
