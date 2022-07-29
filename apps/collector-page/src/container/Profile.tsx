@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 18:49:29
+ * @LastEditTime: 2022-07-29 12:08:30
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -69,11 +69,12 @@ import {
 } from '../features/user/userWhitelistsSlice'
 import WhitelistList, { WhitelistListItemsType } from '../components/business/whitelist/WhitelistList'
 import AvatarDefaultImg from '../components/imgs/avatar.png'
-import ButtonBase from '../components/common/button/ButtonBase'
+import ButtonBase, { ButtonInfo, ButtonPrimary } from '../components/common/button/ButtonBase'
 import IconTwitterWhite from '../components/common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
 import IconEmailWhite from '../components/common/icons/IconTwitterWhite copy'
 import ScrollBox from '../components/common/ScrollBox'
+import CardBox from '../components/common/card/CardBox'
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {
@@ -195,11 +196,12 @@ const Profile: React.FC = () => {
     )
   }, [phantomValid])
 
+  const avatarSrc = account.avatar || AvatarDefaultImg
   return (
     <ProfileWrapper>
-      <ScrollBox>
+      <MainContentBox>
         <ProfileTopBox>
-          <UserImg src={account.avatar || AvatarDefaultImg} />
+          <UserImg src={avatarSrc} />
           <ProfileRightBox>
             <UserName>
               <span>{account.name}</span>
@@ -242,7 +244,7 @@ const Profile: React.FC = () => {
             </UserAccountListBox>
           </ProfileRightBox>
         </ProfileTopBox>
-        <ProfileTabsBox>
+        <ProfileInfoTabsBox>
           <ProfileTabs>
             {ProfileTabOptions.map((item) => (
               <ProfileTab
@@ -265,57 +267,45 @@ const Profile: React.FC = () => {
                 <EnchanftedList items={myEnchanftedItems} loading={loadingEnchanftedList} />
               )} */}
           </ProfileTabContentBox>
-        </ProfileTabsBox>
-      </ScrollBox>
-      <Dialog open={openDialog} fullWidth={true} maxWidth={'lg'}>
-        <DialogContent>
-          <Box
-            noValidate
-            component="form"
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              m: 'auto',
-            }}
-          >
-            <h4>Profile picture</h4>
-            <img
-              src={avatar}
-              alt=""
-              style={{
-                width: '100px',
-                height: '100px',
-                cursor: 'pointer',
-              }}
+        </ProfileInfoTabsBox>
+      </MainContentBox>
+      <Dialog open={openDialog} fullWidth={true} maxWidth={'sm'}>
+        <EditProfileBox>
+          <EditProfileTitle>Change Profile</EditProfileTitle>
+          <EditFormBox>
+            <EditAvatar
+              src={avatarSrc}
               onClick={() => {
                 document.getElementById('uploadinput')?.click()
               }}
             />
-            <input
-              title="uploadinput"
-              id="uploadinput"
-              style={{ display: 'none' }}
-              type="file"
-              accept="image/png, image/gif, image/jpeg"
-              onChange={async (e) => {
-                const file = e.target.files && e.target.files[0]
-                console.log(file)
-                if (!file) return
-                const { data } = await uploadAvatar(file)
-                setAvatar(data.url)
-              }}
-            />
+            <EditNameBox>
+              <input
+                title="uploadinput"
+                id="uploadinput"
+                style={{ display: 'none' }}
+                type="file"
+                accept="image/png, image/gif, image/jpeg"
+                onChange={async (e) => {
+                  const file = e.target.files && e.target.files[0]
+                  console.log(file)
+                  if (!file) return
+                  const { data } = await uploadAvatar(file)
+                  setAvatar(data.url)
+                }}
+              />
 
-            <FormControl variant="standard">
-              <h4>name</h4>
-              <TextField id="name" value={name} onChange={(e) => setName(e.target.value)} />
-            </FormControl>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => updateProfile()}>save</Button>
-          <Button onClick={() => setOpenDialog(false)}>cancel</Button>
-        </DialogActions>
+              <FormControl variant="standard">
+                <EditNameLabel>Name</EditNameLabel>
+                <TextField id="name" value={name} onChange={(e) => setName(e.target.value)} />
+              </FormControl>
+            </EditNameBox>
+          </EditFormBox>
+          <EditButtonBox>
+            <EditProfileBtnCancel onClick={() => setOpenDialog(false)}>cancel</EditProfileBtnCancel>
+            <EditProfileBtnSave onClick={() => updateProfile()}>save</EditProfileBtnSave>
+          </EditButtonBox>
+        </EditProfileBox>
       </Dialog>
     </ProfileWrapper>
   )
@@ -323,15 +313,9 @@ const Profile: React.FC = () => {
 export default Profile
 const ProfileWrapper = styled.div`
   width: 100%;
-  height: 100%;
-  padding-top: 20px;
 `
-const ProfileTopBox = styled.div`
-  background: #ffffff;
+const ProfileTopBox = styled(CardBox)`
   border: 4px solid #333333;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-  padding: 40px;
-  box-sizing: border-box;
   display: flex;
   gap: 20px;
 `
@@ -398,12 +382,11 @@ const EmailBindBtn = styled(BindBtnBase)`
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
 
-const ProfileTabsBox = styled.div`
+const ProfileInfoTabsBox = styled.div`
   margin-top: 30px;
-  background: #ffffff;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `
 const ProfileTabs = styled.div`
+  background: #ffffff;
   display: flex;
   justify-content: center;
   gap: 60px;
@@ -421,7 +404,61 @@ const ProfileTab = styled.div<{ isActive?: boolean }>`
   padding-bottom: 16px;
   text-align: center;
 `
-const ProfileTabContentBox = styled.div`
-  padding: 40px;
-  box-sizing: border-box;
+const ProfileTabContentBox = styled(CardBox)``
+
+// Edit Form
+const EditProfileBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+`
+const EditProfileTitle = styled.div`
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #222222;
+`
+const EditFormBox = styled.div`
+  display: flex;
+  gap: 10px;
+`
+const EditAvatar = styled.img`
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+`
+const EditNameBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`
+const EditNameLabel = styled.div`
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #333333;
+`
+const EditProfileBtnSave = styled(ButtonPrimary)`
+  width: 120px;
+  height: 48px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #ffffff;
+`
+const EditProfileBtnCancel = styled(ButtonBase)`
+  width: 120px;
+  height: 48px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #333333;
+  background: #f8f8f8;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+const EditButtonBox = styled.div`
+  display: flex;
+  justify-content: end;
+  gap: 20px;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 13:30:06
+ * @LastEditTime: 2022-07-29 10:33:19
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
@@ -84,9 +84,6 @@ const Main: React.FC = () => {
 export default Main
 const MainWrapper = styled.div`
   width: 100%;
-  height: 100%;
-  display: flex;
-  overflow: hidden;
 `
 const MainLoading = styled.div`
   width: 100%;

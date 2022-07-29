@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 18:59:39
+ * @LastEditTime: 2022-07-29 10:51:34
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -203,8 +203,6 @@ const TodoTask: React.FC = () => {
 export default TodoTask
 const TodoTaskWrapper = styled.div`
   width: 100%;
-  height: 100%;
-  background: #ffffff;
 `
 const TodoTaskGroupBox = styled.div`
   width: 100%;

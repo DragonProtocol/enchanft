@@ -26,6 +26,7 @@ import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '..
 import { AsyncRequestStatus } from '../types'
 import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
 import { follow } from '../features/user/communityHandlesSlice'
+import CardBox from '../components/common/card/CardBox'
 
 // 处理社区基本信息
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
@@ -231,17 +232,20 @@ const Community: React.FC = () => {
   }
   return (
     <CommunityWrapper>
-      <ScrollBox>
-        <MainContentBox>
-          {loading ? (
-            <CommunityLoading>loading...</CommunityLoading>
-          ) : (
-            <>
+      <MainContentBox>
+        {loading ? (
+          <CommunityLoading>loading...</CommunityLoading>
+        ) : (
+          <>
+            <CommunityTopBox>
               <CommunityBasicInfo
                 data={communityBasicInfoData}
                 viewConfig={communityBasicInfoViewConfig}
                 onFollowChange={handleFollowChange}
               />
+            </CommunityTopBox>
+
+            <CommunityBottomBox>
               <CommunityTabs>
                 {CommunityTabOptions.map((item) => (
                   <CommunityTab
@@ -257,18 +261,20 @@ const Community: React.FC = () => {
                 {curCommunityTab === 'collection' && renderCollection()}
                 {curCommunityTab === 'contribution' && <CommunityContribution items={contributionranks} />}
               </CommunityTabContentBox>
-            </>
-          )}
-        </MainContentBox>
-      </ScrollBox>
+            </CommunityBottomBox>
+          </>
+        )}
+      </MainContentBox>
     </CommunityWrapper>
   )
 }
 export default Community
 const CommunityWrapper = styled.div`
   width: 100%;
-  height: 100%;
-  background: #ffffff;
+`
+const CommunityTopBox = styled(CardBox)``
+const CommunityBottomBox = styled(CardBox)`
+  margin-top: 20px;
 `
 const CommunityTabs = styled.div`
   width: 700px;

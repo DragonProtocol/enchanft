@@ -23,14 +23,7 @@ import PhantomIcon from './PhantomIcon'
 import MetamaskIcon from './MetamaskIcon'
 import ConnectModal from './ConnectModal'
 import ConnectWalletModal from './ConnectWalletModal'
-
-const ConnectedBtn = styled(Button)`
-  & img {
-    width: 25px;
-    margin-right: 10px;
-    font-size: 15px;
-  }
-`
+import { ButtonPrimary } from '../common/button/ButtonBase'
 
 export default function ConnectBtn() {
   const navigate = useNavigate()
@@ -62,10 +55,10 @@ export default function ConnectBtn() {
         <PopupState variant="popover" popupId="demo-popup-menu">
           {(popupState) => (
             <React.Fragment>
-              <ConnectedBtn variant="contained" {...bindTrigger(popupState)}>
+              <ConnectBtnWrapper {...bindTrigger(popupState)}>
                 <Icon />
                 {shortPubkey}
-              </ConnectedBtn>
+              </ConnectBtnWrapper>
               <Menu {...bindMenu(popupState)}>
                 <MenuItem
                   onClick={() => {
@@ -88,14 +81,13 @@ export default function ConnectBtn() {
           )}
         </PopupState>
       )) || (
-        <Button
-          variant="contained"
+        <ConnectBtnWrapper
           onClick={() => {
             dispatch(setConnectWalletModalShow(true))
           }}
         >
-          ConnectWallet
-        </Button>
+          Connect Wallet
+        </ConnectBtnWrapper>
       )}
 
       <ConnectWalletModal />
@@ -103,3 +95,15 @@ export default function ConnectBtn() {
     </>
   )
 }
+const ConnectBtnWrapper = styled(ButtonPrimary)`
+  height: 48px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #ffffff;
+  & img {
+    width: 25px;
+    margin-right: 10px;
+    font-size: 15px;
+  }
+`

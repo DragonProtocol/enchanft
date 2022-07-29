@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-08 10:00:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 19:55:22
+ * @LastEditTime: 2022-07-29 10:25:07
  * @Description: file description
  */
 import React from 'react'
@@ -17,7 +17,6 @@ const MainContentBox: React.FC<MainContentBoxProps> = ({ children }) => {
 export default MainContentBox
 const MainContentBoxWrapper = styled.div`
   width: 100%;
-  padding: 0 48px;
   box-sizing: border-box;
   margin: 48px 0;
 `

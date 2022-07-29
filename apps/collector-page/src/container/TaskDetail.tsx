@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 18:59:34
+ * @LastEditTime: 2022-07-29 10:50:13
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -29,6 +29,7 @@ import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import IconCaretLeft from '../components/common/icons/IconCaretLeft'
 import ChainTag from '../components/business/chain/ChainTag'
 import Button from '@mui/material/Button'
+import CardBox from '../components/common/card/CardBox'
 const formatStoreDataToComponentDataByTaskDetailContent = (
   task: TaskDetailEntity,
   token: string,
@@ -162,89 +163,85 @@ const TaskDetail: React.FC = () => {
 
   return (
     <TaskDetailWrapper>
-      <ScrollBox>
-        <MainContentBox>
-          {loadingView ? (
-            <TaskDetailLoading>Loading ... </TaskDetailLoading>
-          ) : (
-            data && (
-              <TaskDetailBodyBox>
-                <DetailBodyLeft>
-                  <ButtonNavigation onClick={handleLeave}>
-                    <IconCaretLeft />
-                  </ButtonNavigation>
-                </DetailBodyLeft>
-                <DetailBodyRight>
-                  {taskDetailContent && (
-                    <>
-                      <TaskDetailTop>
-                        <TaskName>{name}</TaskName>
-                        <ProjectNameBox>
-                          <ProjectName onClick={() => navigate(`/community/${communityId}?projectId=${projectId}`)}>
-                            Project: {projectName}
-                          </ProjectName>
-                          <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>
-                        </ProjectNameBox>
-                        <TaskImageBox>
-                          <ChainTag size={2} chainId={chainId} />
-                          <TaskImage src={image} />
-                        </TaskImageBox>
-                      </TaskDetailTop>
-                      <TaskDetailContentBox>
-                        <TaskDetailContentBoxLeft>
-                          <TaskDetailContent
-                            data={taskDetailContent.data}
-                            viewConfig={taskDetailContent.viewConfig}
-                            onConnectWallet={handleOpenConnectWallet}
-                            onBindWallet={handleOpenWalletBind}
-                            onTake={(task) => handleTakeTask(task.id)}
-                          />
-                        </TaskDetailContentBoxLeft>
-                        <TaskDetailContentBoxRight>
-                          {winnerList.length > 0 ? (
-                            <TaskListBox>
-                              <TaskWinnerList items={winnerList} />
-                            </TaskListBox>
-                          ) : (
-                            <TaskListBox>
-                              <TaskActionList
-                                items={actionItems}
-                                onDiscord={handleActionToDiscord}
-                                onTwitter={handleActionToTwitter}
-                                allowHandle={allowHandleAction}
-                                displayVerify={displayVerify}
-                                loadingVerify={loadingVerify}
-                                disabledVerify={disabledVerify}
-                                onVerifyActions={dispatchFetchTaskDetail}
-                                copyBgc="#FFFFFF"
-                                verifyBgc="#FFFFFF"
-                              />
-                            </TaskListBox>
-                          )}
-                        </TaskDetailContentBoxRight>
-                      </TaskDetailContentBox>
-                    </>
-                  )}
-                </DetailBodyRight>
-              </TaskDetailBodyBox>
-            )
-          )}
-        </MainContentBox>
-      </ScrollBox>
+      <MainContentBox>
+        {loadingView ? (
+          <TaskDetailLoading>Loading ... </TaskDetailLoading>
+        ) : (
+          data && (
+            <TaskDetailBodyBox>
+              <DetailBodyLeft>
+                <ButtonNavigation onClick={handleLeave}>
+                  <IconCaretLeft />
+                </ButtonNavigation>
+              </DetailBodyLeft>
+              <DetailBodyRight>
+                {taskDetailContent && (
+                  <>
+                    <TaskDetailTop>
+                      <TaskName>{name}</TaskName>
+                      <ProjectNameBox>
+                        <ProjectName onClick={() => navigate(`/community/${communityId}?projectId=${projectId}`)}>
+                          Project: {projectName}
+                        </ProjectName>
+                        <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>
+                      </ProjectNameBox>
+                      <TaskImageBox>
+                        <ChainTag size={2} chainId={chainId} />
+                        <TaskImage src={image} />
+                      </TaskImageBox>
+                    </TaskDetailTop>
+                    <TaskDetailContentBox>
+                      <TaskDetailContentBoxLeft>
+                        <TaskDetailContent
+                          data={taskDetailContent.data}
+                          viewConfig={taskDetailContent.viewConfig}
+                          onConnectWallet={handleOpenConnectWallet}
+                          onBindWallet={handleOpenWalletBind}
+                          onTake={(task) => handleTakeTask(task.id)}
+                        />
+                      </TaskDetailContentBoxLeft>
+                      <TaskDetailContentBoxRight>
+                        {winnerList.length > 0 ? (
+                          <TaskListBox>
+                            <TaskWinnerList items={winnerList} />
+                          </TaskListBox>
+                        ) : (
+                          <TaskListBox>
+                            <TaskActionList
+                              items={actionItems}
+                              onDiscord={handleActionToDiscord}
+                              onTwitter={handleActionToTwitter}
+                              allowHandle={allowHandleAction}
+                              displayVerify={displayVerify}
+                              loadingVerify={loadingVerify}
+                              disabledVerify={disabledVerify}
+                              onVerifyActions={dispatchFetchTaskDetail}
+                              copyBgc="#FFFFFF"
+                              verifyBgc="#FFFFFF"
+                            />
+                          </TaskListBox>
+                        )}
+                      </TaskDetailContentBoxRight>
+                    </TaskDetailContentBox>
+                  </>
+                )}
+              </DetailBodyRight>
+            </TaskDetailBodyBox>
+          )
+        )}
+      </MainContentBox>
     </TaskDetailWrapper>
   )
 }
 export default TaskDetail
 const TaskDetailWrapper = styled.div`
   width: 100%;
-  height: 100%;
-  background: #ffffff;
 `
 const TaskDetailLoading = styled.div`
   width: 100%;
   text-align: center;
 `
-const TaskDetailBodyBox = styled.div`
+const TaskDetailBodyBox = styled(CardBox)`
   display: flex;
   gap: 20px;
 `
@@ -287,7 +284,7 @@ const TaskDetailContentBox = styled.div`
   gap: 40px;
 `
 const TaskDetailContentBoxLeft = styled.div`
-  width: 462px;
+  flex: 1;
   padding: 20px;
   box-sizing: border-box;
 `
