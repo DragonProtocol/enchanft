@@ -26,7 +26,7 @@ export type ActionInvitePeopleProps = {
 
 const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, copyBgc }: ActionInvitePeopleProps) => {
   const account = useAppSelector(selectAccount)
-  const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
+  const { name, progress, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
   const refUrl = getTakeTaskRefLink(account.id, taskId)
   const isDone = status === UserActionStatus.DONE
   const handleCopySuccess = () => {
@@ -38,7 +38,7 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, c
   return (
     <ActionInvitePeopleWrapper>
       <ActionInvitePeopleRow>
-        <ActionInvitePeopleLeft isDone={isDone}>{name}</ActionInvitePeopleLeft>
+        <ActionInvitePeopleLeft isDone={isDone}>{name} ({progress})</ActionInvitePeopleLeft>
         <TooltipWrapper title={description}>
           <IconTip opacity={isDone ? 0.5 : 1} />
         </TooltipWrapper>
