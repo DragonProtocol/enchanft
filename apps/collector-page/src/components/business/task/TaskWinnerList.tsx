@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 15:40:21
+ * @LastEditTime: 2022-07-29 13:15:24
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { omitIntermediateStr } from '../../../utils/string'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
+import AvatarDefaultImg from '../../imgs/avatar.png'
 
 export type WinnerItemDataType = {
   id: number
@@ -28,7 +29,7 @@ const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items }: TaskWinnerList
       <WinnerListBox>
         {items.map((item, index) => (
           <WinnerItemBox key={index}>
-            <WinnerItemAvatar src={item.avatar} />
+            <WinnerItemAvatar src={item.avatar || AvatarDefaultImg} />
             <WinnerItemUserName>{item.name}</WinnerItemUserName>
             <WinnerItemPubkey number={1}>{omitIntermediateStr(item.pubkey, 5, 4)}</WinnerItemPubkey>
           </WinnerItemBox>
