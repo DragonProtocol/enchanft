@@ -113,7 +113,7 @@ export default function Guide() {
           </Stack>
         </div> */}
 
-        <div className="connect-btn" onClick={bindMetamask}>
+        <div className="connect-btn" onClick={bindPhantom}>
           <Stack direction="row" spacing={1}>
             <div className="label">Phantom:</div>
 
@@ -124,7 +124,7 @@ export default function Guide() {
           </Stack>
         </div>
 
-        <div className="connect-btn" onClick={bindPhantom}>
+        <div className="connect-btn" onClick={bindMetamask}>
           <Stack direction="row" spacing={1}>
             <div className="label">Metamask:</div>
 

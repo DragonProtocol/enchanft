@@ -1,10 +1,11 @@
-import { Box, Button, Modal, Menu, MenuItem, styled } from '@mui/material'
+import { Box, Button, Modal, Menu, MenuItem, styled, Snackbar, Alert } from '@mui/material'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
 
 import {
   selectAccount,
+  setLastLogin,
   setConnectModal,
   setAvatar,
   setDefaultWallet,
@@ -15,6 +16,7 @@ import {
   userLogin,
   ChainType,
   setConnectWalletModalShow,
+  resetLinkErrMsg,
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
@@ -23,14 +25,8 @@ import PhantomIcon from './PhantomIcon'
 import MetamaskIcon from './MetamaskIcon'
 import ConnectModal from './ConnectModal'
 import ConnectWalletModal from './ConnectWalletModal'
-
-const ConnectedBtn = styled(Button)`
-  & img {
-    width: 25px;
-    margin-right: 10px;
-    font-size: 15px;
-  }
-`
+import { ButtonPrimary } from '../common/button/ButtonBase'
+import AvatarDefaultImg from '../imgs/avatar.png'
 
 export default function ConnectBtn() {
   const navigate = useNavigate()
@@ -40,6 +36,7 @@ export default function ConnectBtn() {
   const handleLogout = useCallback(async () => {
     if (account.pubkey) {
       clearLoginToken(account.pubkey, account.defaultWallet)
+      dispatch(setLastLogin(account.defaultWallet))
       dispatch(setToken(''))
       dispatch(setPubkey(''))
       dispatch(setAvatar(''))
@@ -62,10 +59,10 @@ export default function ConnectBtn() {
         <PopupState variant="popover" popupId="demo-popup-menu">
           {(popupState) => (
             <React.Fragment>
-              <ConnectedBtn variant="contained" {...bindTrigger(popupState)}>
-                <Icon />
-                {shortPubkey}
-              </ConnectedBtn>
+              <ConnectBtnWrapper {...bindTrigger(popupState)}>
+                <img src={account.avatar || AvatarDefaultImg} alt="" />
+                {account.name || shortPubkey}
+              </ConnectBtnWrapper>
               <Menu {...bindMenu(popupState)}>
                 <MenuItem
                   onClick={() => {
@@ -88,18 +85,49 @@ export default function ConnectBtn() {
           )}
         </PopupState>
       )) || (
-        <Button
-          variant="contained"
+        <ConnectBtnWrapper
           onClick={() => {
             dispatch(setConnectWalletModalShow(true))
           }}
         >
-          ConnectWallet
-        </Button>
+          Connect Wallet
+        </ConnectBtnWrapper>
       )}
 
       <ConnectWalletModal />
       <ConnectModal />
+
+      {/** LinkErrMsg */}
+      <Snackbar
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={!!account.linkErrMsg}
+        // message={account.linkErrMsg}
+        autoHideDuration={5000}
+        onClose={() => {
+          dispatch(resetLinkErrMsg())
+        }}
+      >
+        <Alert
+          severity="error"
+          onClose={() => {
+            dispatch(resetLinkErrMsg())
+          }}
+        >
+          {account.linkErrMsg}
+        </Alert>
+      </Snackbar>
     </>
   )
 }
+const ConnectBtnWrapper = styled(ButtonPrimary)`
+  height: 48px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #ffffff;
+  & img {
+    width: 25px;
+    margin-right: 10px;
+    font-size: 15px;
+  }
+`

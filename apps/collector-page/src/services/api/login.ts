@@ -62,6 +62,7 @@ export function link(params: any) {
     method: 'post',
     data: data,
     headers: {
+      token: params.token,
       needToken: true,
     },
   })

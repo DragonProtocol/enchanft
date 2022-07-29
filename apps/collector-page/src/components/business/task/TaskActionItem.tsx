@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 16:02:46
+ * @LastEditTime: 2022-07-28 14:35:03
  * @Description: file description
  */
 import React from 'react'
@@ -13,6 +13,8 @@ import ActionFollowCommunity from './actions/ActionFollowCommunity'
 import ActionFollowTwitter from './actions/ActionFollowTwitter'
 import ActionInvitePeople from './actions/ActionInvitePeople'
 import ActionJoinDiscord from './actions/ActionJoinDiscord'
+import IconCheckbox from '../../common/icons/IconCheckbox'
+import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 
 export type TaskActionItemDataType = {
   id: number
@@ -32,6 +34,7 @@ export type TaskActionItemProps = {
   allowHandle?: boolean
   onTwitter?: (callback: () => void) => void
   onDiscord?: (callback: () => void) => void
+  copyBgc?: string
 }
 
 const TaskActionItem: React.FC<TaskActionItemProps> = ({
@@ -39,12 +42,13 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   allowHandle,
   onTwitter,
   onDiscord,
+  copyBgc,
 }: TaskActionItemProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
-  let TaskStatusView = <TaskActionStatusTodo></TaskActionStatusTodo>
+  let TaskStatusView = <IconCheckbox />
   switch (status) {
     case UserActionStatus.DONE:
-      TaskStatusView = <TaskActionStatusDone>√</TaskActionStatusDone>
+      TaskStatusView = <IconCheckboxChecked />
       break
   }
   const renderAction = () => {
@@ -58,7 +62,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         return <ActionFollowCommunity data={data} />
       case ActionType.INVITE_PEOPLE:
         // 邀请人员
-        return <ActionInvitePeople data={data} />
+        return <ActionInvitePeople data={data} copyBgc={copyBgc} />
       case ActionType.JOIN_DISCORD:
         // 加入Discord
         return <ActionJoinDiscord data={data} onDiscord={onDiscord} />
@@ -83,7 +87,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   }
   return (
     <TaskActionItemWrapper>
-      <TaskActionItemLeft>{TaskStatusView}</TaskActionItemLeft>
+      {TaskStatusView}
       <TaskActionItemRight>{renderAction()}</TaskActionItemRight>
     </TaskActionItemWrapper>
   )
@@ -92,19 +96,12 @@ export default TaskActionItem
 const TaskActionItemWrapper = styled.div`
   width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
-  color: rgba(16, 16, 16, 100);
   font-size: 14px;
+  line-height: 20px;
+  color: #333333;
 `
-const TaskActionItemLeft = styled.div``
-const TaskActionStatusTodo = styled.div`
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background-color: rgba(21, 21, 21, 100);
-`
-const TaskActionStatusDone = styled.div``
 
 const TaskActionItemRight = styled.div`
   flex: 1;

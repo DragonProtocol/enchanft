@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 16:36:16
+ * @LastEditTime: 2022-07-28 15:17:26
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
-import TwitterIcon from './icons/twitter.svg'
+import IconTwitter from '../../../common/icons/IconTwitter'
 
 export type ActionFollowTwitterProps = {
   data: TaskActionItemDataType
@@ -18,24 +18,24 @@ export type ActionFollowTwitterProps = {
 
 const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({ data, onTwitter }: ActionFollowTwitterProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
-  const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
-  width=1000,height=1000,left=0,top=0`
+  const isDone = status === UserActionStatus.DONE
   const handleAction = () => {
+    const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+    width=1000,height=1000,left=0,top=0`
     window.open(actionData.url, name, winParams)
+  }
+  const clickAction = () => {
+    if (isDone) return
+    onTwitter && onTwitter(handleAction)
   }
   return (
     <ActionFollowTwitterWrapper>
-      <ActionFollowTwitterLeft isDone={status === UserActionStatus.DONE}>{name}</ActionFollowTwitterLeft>
-      {status !== UserActionStatus.DONE && (
-        <ActionFollowTwitterIconBtn
-          src={TwitterIcon}
-          onClick={(event) => {
-            // 阻止冒泡
-            event.stopPropagation()
-            onTwitter && onTwitter(handleAction)
-          }}
-        ></ActionFollowTwitterIconBtn>
-      )}
+      <ActionLeft isDone={isDone} onClick={clickAction}>
+        {name}
+      </ActionLeft>
+      <ActionRight isDone={isDone} onClick={clickAction}>
+        <IconTwitter opacity={isDone ? 0.5 : 1} />
+      </ActionRight>
     </ActionFollowTwitterWrapper>
   )
 }
@@ -47,10 +47,19 @@ const ActionFollowTwitterWrapper = styled.div`
   align-items: flex-start;
   gap: 10px;
 `
-const ActionFollowTwitterLeft = styled.div<{ isDone?: Boolean }>`
+const ActionLeft = styled.div<{ isDone?: Boolean }>`
   flex: 1;
-  ${({ isDone }) => isDone && `text-decoration: line-through;`}
+  ${({ isDone }) =>
+    isDone
+      ? `
+        text-decoration-line: line-through;
+        color: #333333;
+        opacity: 0.5;  
+      `
+      : `
+        cursor: pointer;
+      `}
 `
-const ActionFollowTwitterIconBtn = styled.img`
-  cursor: pointer;
+const ActionRight = styled.div<{ isDone?: Boolean }>`
+  ${({ isDone }) => !isDone && `cursor: pointer;`}
 `

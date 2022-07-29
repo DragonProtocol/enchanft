@@ -2,12 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 14:39:27
+ * @LastEditTime: 2022-07-29 13:15:24
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
+import { omitIntermediateStr } from '../../../utils/string'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
+import AvatarDefaultImg from '../../imgs/avatar.png'
 
 export type WinnerItemDataType = {
   id: number
@@ -23,13 +25,13 @@ export type TaskWinnerListProps = {
 const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items }: TaskWinnerListProps) => {
   return (
     <TaskWinnerListWrapper>
-      <WinnerTitleBox>Winner Rank</WinnerTitleBox>
+      <WinnerTitleBox>Winner List</WinnerTitleBox>
       <WinnerListBox>
         {items.map((item, index) => (
           <WinnerItemBox key={index}>
-            <WinnerItemAvatar src={item.avatar} />
+            <WinnerItemAvatar src={item.avatar || AvatarDefaultImg} />
             <WinnerItemUserName>{item.name}</WinnerItemUserName>
-            <WinnerItemPubkey number={1}>{item.pubkey}</WinnerItemPubkey>
+            <WinnerItemPubkey number={1}>{omitIntermediateStr(item.pubkey, 5, 4)}</WinnerItemPubkey>
           </WinnerItemBox>
         ))}
       </WinnerListBox>
@@ -42,32 +44,36 @@ const TaskWinnerListWrapper = styled.div`
 `
 const WinnerTitleBox = styled.div`
   width: 100%;
-  height: 40px;
-  line-height: 40px;
-  border-radius: 4px;
-  background-color: rgba(193, 205, 209, 100);
-  color: rgba(255, 255, 255, 100);
-  font-size: 20px;
-  text-align: center;
-  margin-bottom: 40px;
+  border-bottom: 1px solid #d9d9d9;
+  padding-bottom: 10px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #333333;
+  margin-bottom: 10px;
 `
 const WinnerListBox = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 10px;
 `
 const WinnerItemBox = styled.div`
   display: flex;
   gap: 20px;
-  font-size: 20px;
   align-items: center;
+  border-bottom: 1px solid #d9d9d9;
+  padding-bottom: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 21px;
+  color: #333333;
 `
 const WinnerItemAvatar = styled.img`
   width: 40px;
   height: 40px;
 `
 const WinnerItemUserName = styled.div`
-  width: 20%;
+  width: 30%;
   text-transform: capitalize;
 `
 const WinnerItemPubkey = styled(OverflowEllipsisBox)`

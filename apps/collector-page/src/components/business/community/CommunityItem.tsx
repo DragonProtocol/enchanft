@@ -52,76 +52,92 @@ const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollo
       onFollowChange(!isFollowed)
     }
   }
-  const communityDescBottomText = `${memberNums} members . ${contribution} contribution`
   return (
     <CommunityItemWrapper onClick={() => navigate(`/community/${id}`)}>
       <CommunityImage src={icon} />
-      <CommunityDescBox>
-        <CommunityDescTopBox>
-          <CommunityName>{name}</CommunityName>
-          {displayFollow && (
-            <CommunityFollow disabled={disabledFollow} isFollowed={isFollowed} onClick={onFollowChangeClick}>
-              {isFollowed ? 'Joined' : 'Join'}
-            </CommunityFollow>
-          )}
-        </CommunityDescTopBox>
-        <CommunityDescBottomBox>{communityDescBottomText}</CommunityDescBottomBox>
-      </CommunityDescBox>
+      <CommunityInfoBox>
+        <CommunityName>{name}</CommunityName>
+        <NumberInfoBox>
+          <NumberRow>
+            <NumberLabel>members</NumberLabel>
+            <NumberValue>{memberNums}</NumberValue>
+          </NumberRow>
+          <NumberRow>
+            <NumberLabel>contribution Point</NumberLabel>
+            <NumberValue>{contribution}</NumberValue>
+          </NumberRow>
+        </NumberInfoBox>
+        {displayFollow && (
+          <CommunityFollow disabled={disabledFollow} isFollowed={isFollowed} onClick={onFollowChangeClick}>
+            {isFollowed ? 'Joined' : 'Join'}
+          </CommunityFollow>
+        )}
+      </CommunityInfoBox>
     </CommunityItemWrapper>
   )
 }
 export default CommunityItem
 const CommunityItemWrapper = styled.div`
   width: 100%;
-  height: 330px;
+  height: 450px;
   box-sizing: border-box;
-  background-color: rgba(255, 255, 255, 100);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+
+  background: #ffffff;
+  border: 2px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `
 const CommunityImage = styled.img`
   width: 100%;
-  height: 206px;
+  height: 265px;
+  object-fit: cover;
 `
-const CommunityDescBox = styled.div`
+const CommunityInfoBox = styled.div`
   flex: 1;
-  padding-top: 22px;
-  overflow-y: auto;
+  padding: 20px;
+
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 8px;
+  overflow-y: auto;
   ${ScrollBarCss}
 `
-// top
-const CommunityDescTopBox = styled.div`
+const NumberInfoBox = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px dashed rgba(51, 51, 51, 0.3);
+  border-bottom: 1px dashed rgba(51, 51, 51, 0.3);
+  padding: 8px 0;
+`
+const NumberRow = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 6px;
 `
+const NumberLabel = styled.div`
+  font-size: 12px;
+  line-height: 18px;
+  color: rgba(51, 51, 51, 0.6);
+`
+const NumberValue = styled.div`
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 18px;
+  color: #333333;
+`
+
 const CommunityName = styled.div`
   color: rgba(16, 16, 16, 100);
   font-size: 18px;
   font-weight: bold;
 `
 const CommunityFollow = styled(ButtonBase)<{ isFollowed: boolean }>`
-  width: 80px;
-  height: auto;
-  padding: 5px 0;
-  border: 1px solid rgba(51, 53, 54, 100);
-  box-sizing: border-box;
-  border-radius: 4px;
-  background-color: ${(props) => (props.isFollowed ? '#fff' : 'rgba(51, 53, 54, 100)')};
-  color: ${(props) => (props.isFollowed ? 'rgba(51, 53, 54, 100)' : '#fff')};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: none;
-`
-// bottom
-const CommunityDescBottomBox = styled.div`
-  font-size: 20px;
+  height: 40px;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+  background-color: ${(props) => (props.isFollowed ? '#f8f8f8' : 'rgba(51, 53, 54, 100)')};
+  color: ${(props) => (props.isFollowed ? 'rgba(51, 53, 54, 100)' : '#f8f8f8')};
 `

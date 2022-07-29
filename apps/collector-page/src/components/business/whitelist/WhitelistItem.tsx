@@ -159,15 +159,14 @@ const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint 
     <WhitelistItemWrapper onClick={() => navigate(`/community/${id}`)}>
       <ProjectImage src={project.image} />
       <WhitelistInfoBox>
-        <WhitelistInfoTopBox>
-          <ProjectName>{project.name}</ProjectName>
-          <CommunityName>{community.name}</CommunityName>
-        </WhitelistInfoTopBox>
+        <ProjectName>{project.name}</ProjectName>
+        <CommunityName>{community.name}</CommunityName>
         {displayMint && (
           <MintBtn disabled={isDisabledMint} onClick={onMintClick}>
             {mintStartTimeCountdownText}
           </MintBtn>
         )}
+        {mintClosed && <MintClosedBox>{'Mint Closed'}</MintClosedBox>}
       </WhitelistInfoBox>
     </WhitelistItemWrapper>
   )
@@ -175,9 +174,11 @@ const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint 
 export default WhitelistItem
 const WhitelistItemWrapper = styled.div`
   width: 100%;
-  height: 330px;
+  height: 406px;
+  background: #ffffff;
+  border: 2px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   box-sizing: border-box;
-  background-color: rgba(255, 255, 255, 100);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -185,36 +186,49 @@ const WhitelistItemWrapper = styled.div`
 `
 const ProjectImage = styled.img`
   width: 100%;
-  height: 206px;
+  height: 265px;
+  object-fit: cover;
 `
 const WhitelistInfoBox = styled.div`
   flex: 1;
-  padding-top: 22px;
-  overflow-y: auto;
+  padding-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 8px;
+  overflow-y: auto;
   ${ScrollBarCss}
 `
-const WhitelistInfoTopBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-`
 const ProjectName = styled.div`
-  color: rgba(16, 16, 16, 100);
+  font-weight: 700;
   font-size: 18px;
-  font-weight: bold;
+  line-height: 27px;
+  color: #333333;
 `
 const CommunityName = styled.div`
-  font-size: 20px;
+  font-size: 12px;
+  line-height: 18px;
+  color: rgba(51, 51, 51, 0.6);
 `
 const MintBtn = styled(ButtonBase)`
   width: 100%;
   height: 40px;
-  border-radius: 4px;
-  background-color: rgba(16, 16, 16, 100);
-  color: rgba(255, 255, 255, 100);
+  background: #3dd606;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+  font-weight: 700;
   font-size: 14px;
-  margin-top: 10px;
+  line-height: 21px;
+
+  color: #ffffff;
+`
+const MintClosedBox = styled.div`
+  width: 100%;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(255, 34, 34, 0.1);
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 21px;
+  color: #ff2222;
 `
