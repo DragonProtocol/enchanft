@@ -16,6 +16,7 @@ import {
   userLogin,
   ConnectModal as ConnectModalType,
   userOtherWalletLink,
+  ChainType,
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
@@ -40,7 +41,6 @@ export default function ConnectModal() {
   const bindMetamask = useCallback(async () => {
     if (!metamaskValid) alert('Install Metamask first')
     const data = await signMsgWithMetamask()
-    console.log(data)
     if (!data) return
     dispatch(
       userOtherWalletLink({
@@ -56,7 +56,6 @@ export default function ConnectModal() {
   const bindPhantom = useCallback(async () => {
     if (!phantomValid) alert('Install Phantom first')
     const data = await signMsgWithPhantom()
-    console.log(data)
     if (!data) return
     dispatch(
       userOtherWalletLink({
@@ -70,13 +69,15 @@ export default function ConnectModal() {
   }, [metamaskValid])
 
   useEffect(() => {
+    const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
+    const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
     if (
-      (account.discord && account.connectModal === ConnectModalType.DISCORD) ||
-      (account.twitter && account.connectModal === ConnectModalType.TWITTER)
+      (discord && account.connectModal === ConnectModalType.DISCORD) ||
+      (twitter && account.connectModal === ConnectModalType.TWITTER)
     ) {
       handleCloseConnectModal()
     }
-  }, [account.discord, account.twitter])
+  }, [account])
 
   const bindTwitter = useCallback(async () => {
     connectionSocialMedia('twitter')
@@ -102,7 +103,7 @@ export default function ConnectModal() {
       btn = (
         <div className="btn wallet" onClick={bindPhantom}>
           <PhantomIcon />
-          <p>Connect PhantomIcon</p>
+          <p>Connect Phantom</p>
         </div>
       )
       msg = `Phantom  is not connected. Please connect Phantom.`
