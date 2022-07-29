@@ -17,14 +17,27 @@ export type TakeTaskParams = {
 }
 export function takeTask(params: TakeTaskParams): AxiosPromise<ApiResp<any>> {
   const { id } = params
-  const refInfo = loadRefInfo(RefType.TAKE_TASK,String(id))
-  return request({
-    url: `/tasks/${id}/takers`+ refInfo ? '?referrerId='+refInfo!.referrerId:'',
-    method: 'post',
-    headers: {
-      needToken: true,
-    },
-  })
+  const refInfo = loadRefInfo(RefType.TAKE_TASK, String(id))
+  if (refInfo && refInfo.referrerId > 0) {
+    return request({
+      url: `/tasks/${id}/takers`,
+      method: 'post',
+      data: {
+        referrerId: refInfo!.referrerId
+      },
+      headers: {
+        needToken: true,
+      },
+    })
+  } else {
+    return request({
+      url: `/tasks/${id}/takers`,
+      method: 'post',
+      headers: {
+        needToken: true,
+      },
+    })
+   }
 }
 
 /** 获取用户的任务列表 */
