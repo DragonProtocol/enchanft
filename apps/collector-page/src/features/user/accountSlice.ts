@@ -32,6 +32,11 @@ type Account = {
   thirdpartyName: string
 }
 
+export enum RoleType {
+  CREATOR = 'CREATOR',
+  COLLECTOR = 'COLLECTOR',
+}
+
 export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
@@ -45,6 +50,8 @@ export type AccountState = {
   connectWalletModalShow: boolean
   accounts: Array<Account>
   linkErrMsg: string
+  resourcePermissions: Array<any>
+  roles: Array<RoleType>
 }
 
 // 用户账户信息
@@ -60,6 +67,8 @@ const initialState: AccountState = {
   connectWalletModalShow: false,
   accounts: [],
   linkErrMsg: '',
+  resourcePermissions: [],
+  roles: [],
 }
 
 export const userLogin = createAsyncThunk(

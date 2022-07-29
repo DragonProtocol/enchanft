@@ -6,6 +6,7 @@ import { TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../t
 import ButtonBase from '../../common/button/ButtonBase'
 import ChainTag from '../chain/ChainTag'
 import { useNavigate } from 'react-router-dom'
+import usePermissions from '../../../hooks/usePermissons'
 
 export type TaskDetailContentDataType = {
   id: number
@@ -75,6 +76,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
   onBindWallet,
 }: TaskDetailContentProps) => {
   const navigate = useNavigate()
+  const { isCreator, checkTaskAllowed } = usePermissions()
   const { id, name, type, startTime, endTime, winnersNum, image, description, project } = data
   const { id: projectId, communityId } = project
   const {
@@ -109,13 +111,14 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
     }
   }
   const completeStatusLabel = data.status === TaskTodoCompleteStatus.COMPLETED ? 'Completed!' : 'Already Accepted'
+
   return (
     <TaskDetailContentWrapper>
       <TaskDetailHeader>
         <ProjectName onClick={() => navigate(`/community/${communityId}?projectId=${projectId}`)}>
           Project: {project.name || 'Unknown'}
         </ProjectName>
-        <Button onClick={() => navToCreator && navToCreator(data)}>manage</Button>
+        {isCreator && <Button onClick={() => navToCreator && navToCreator(data)}>manage</Button>}
       </TaskDetailHeader>
 
       <TaskImageBox>
