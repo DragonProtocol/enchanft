@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 12:08:30
+ * @LastEditTime: 2022-07-29 13:35:24
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -75,6 +75,8 @@ import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
 import IconEmailWhite from '../components/common/icons/IconTwitterWhite copy'
 import ScrollBox from '../components/common/ScrollBox'
 import CardBox from '../components/common/card/CardBox'
+import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
+import IconMetamask from '../components/common/icons/IconMetamask'
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {
@@ -217,7 +219,7 @@ const Profile: React.FC = () => {
                   bindMetamask()
                 }}
               >
-                <MetamaskIcon />
+                <IconMetamask />
                 {accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}
               </MetamaskBindBtn>
               <PhantomBindBtn
@@ -226,7 +228,7 @@ const Profile: React.FC = () => {
                   bindPhantom()
                 }}
               >
-                <PhatomIcon />
+                <IconPhantomWhite />
                 {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
               </PhantomBindBtn>
               <TwitterBindBtn onClick={() => connectionSocialMedia('twitter')}>
