@@ -46,7 +46,7 @@ const ButtonBaseWrapper = styled.button`
   }
 `
 export const ButtonInfo = styled(ButtonBaseWrapper)`
-  background: #ffffff;
+  background: #f8f8f8;
   border: 4px solid #222222;
   color: #222222;
   box-shadow: none;

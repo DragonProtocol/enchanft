@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 19:10:35
+ * @LastEditTime: 2022-07-29 13:35:24
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -68,7 +68,15 @@ import {
   selectAll as selectAllForUserWhitelists,
 } from '../features/user/userWhitelistsSlice'
 import WhitelistList, { WhitelistListItemsType } from '../components/business/whitelist/WhitelistList'
-
+import AvatarDefaultImg from '../components/imgs/avatar.png'
+import ButtonBase, { ButtonInfo, ButtonPrimary } from '../components/common/button/ButtonBase'
+import IconTwitterWhite from '../components/common/icons/IconTwitterWhite'
+import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
+import IconEmailWhite from '../components/common/icons/IconTwitterWhite copy'
+import ScrollBox from '../components/common/ScrollBox'
+import CardBox from '../components/common/card/CardBox'
+import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
+import IconMetamask from '../components/common/icons/IconMetamask'
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {
@@ -190,173 +198,90 @@ const Profile: React.FC = () => {
     )
   }, [phantomValid])
 
+  const avatarSrc = account.avatar || AvatarDefaultImg
   return (
-    <>
+    <ProfileWrapper>
       <MainContentBox>
-        <ProfileWrapper>
-          <div className="profile">
-            <img src={account.avatar} alt="" />
-            <div>
-              <div className="name">
-                <h3>{account.name}</h3>{' '}
-                <IconButton onClick={() => setOpenDialog(true)}>
-                  <EditIcon />
-                </IconButton>
-              </div>
-              <div className="description">
-                <span>{account.pubkey}</span>
-              </div>
-            </div>
-          </div>
-          <div className="accounts">
-            <div className="wallet">
-              <span
-                className="phantom"
-                onClick={() => {
-                  if (accountPhantom) return
-                  bindPhantom()
-                }}
-              >
-                <PhatomIcon />
-                {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
-              </span>
-              <span
-                className="metamask"
+        <ProfileTopBox>
+          <UserImg src={avatarSrc} />
+          <ProfileRightBox>
+            <UserName>
+              <span>{account.name}</span>
+              <IconButton onClick={() => setOpenDialog(true)}>
+                <EditIcon />
+              </IconButton>
+            </UserName>
+            <UserAddress>{account.pubkey}</UserAddress>
+            <UserAccountListBox>
+              <MetamaskBindBtn
                 onClick={() => {
                   if (accountMetamask) return
                   bindMetamask()
                 }}
               >
-                <MetamaskIcon />
+                <IconMetamask />
                 {accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}
-              </span>
-            </div>
-            <div className="thirdparty-box">
-              <div className="thirdparty-btn">
-                <div className="thirdparty-inner" onClick={() => connectionSocialMedia('twitter')}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                    role="img"
-                    width="20"
-                    height="20"
-                    preserveAspectRatio="xMidYMid meet"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"
-                    ></path>
-                  </svg>
-                  {twitter || 'Connect Twitter'}
-                </div>
-                {/* {account?.twitter && (
-                  <div className="thirdparty-disconnect">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      aria-hidden="true"
-                      role="img"
-                      width="18"
-                      height="18"
-                      preserveAspectRatio="xMidYMid meet"
-                      viewBox="0 0 1024 1024"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M832.6 191.4c-84.6-84.6-221.5-84.6-306 0l-96.9 96.9l51 51l96.9-96.9c53.8-53.8 144.6-59.5 204 0c59.5 59.5 53.8 150.2 0 204l-96.9 96.9l51.1 51.1l96.9-96.9c84.4-84.6 84.4-221.5-.1-306.1zM446.5 781.6c-53.8 53.8-144.6 59.5-204 0c-59.5-59.5-53.8-150.2 0-204l96.9-96.9l-51.1-51.1l-96.9 96.9c-84.6 84.6-84.6 221.5 0 306s221.5 84.6 306 0l96.9-96.9l-51-51l-96.8 97zM260.3 209.4a8.03 8.03 0 0 0-11.3 0L209.4 249a8.03 8.03 0 0 0 0 11.3l554.4 554.4c3.1 3.1 8.2 3.1 11.3 0l39.6-39.6c3.1-3.1 3.1-8.2 0-11.3L260.3 209.4z"
-                      ></path>
-                    </svg>
-                  </div>
-                )} */}
-              </div>
-              <div className="thirdparty-btn thirdparty-discord">
-                <div className="thirdparty-inner" onClick={() => connectionSocialMedia('discord')}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                    role="img"
-                    width="20"
-                    height="20"
-                    preserveAspectRatio="xMidYMid meet"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"
-                    ></path>
-                  </svg>
-                  {discord || 'Connect Discord'}
-                </div>
-                {/* <div className="thirdparty-disconnect">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                        role="img"
-                        width="18"
-                        height="18"
-                        preserveAspectRatio="xMidYMid meet"
-                        viewBox="0 0 1024 1024"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M832.6 191.4c-84.6-84.6-221.5-84.6-306 0l-96.9 96.9l51 51l96.9-96.9c53.8-53.8 144.6-59.5 204 0c59.5 59.5 53.8 150.2 0 204l-96.9 96.9l51.1 51.1l96.9-96.9c84.4-84.6 84.4-221.5-.1-306.1zM446.5 781.6c-53.8 53.8-144.6 59.5-204 0c-59.5-59.5-53.8-150.2 0-204l96.9-96.9l-51.1-51.1l-96.9 96.9c-84.6 84.6-84.6 221.5 0 306s221.5 84.6 306 0l96.9-96.9l-51-51l-96.8 97zM260.3 209.4a8.03 8.03 0 0 0-11.3 0L209.4 249a8.03 8.03 0 0 0 0 11.3l554.4 554.4c3.1 3.1 8.2 3.1 11.3 0l39.6-39.6c3.1-3.1 3.1-8.2 0-11.3L260.3 209.4z"
-                        ></path>
-                      </svg>
-                    </div> */}
-              </div>
-              {/* <Button>Discord</Button> */}
-            </div>
-          </div>
-          <Divider />
-          <ProfileTabsBox>
-            <ProfileTabs>
-              {ProfileTabOptions.map((item) => (
-                <ProfileTab
-                  key={item.value}
-                  onClick={() => setCurProfileTab(item.value)}
-                  isActive={item.value === curProfileTab}
-                >
-                  {item.label}
-                </ProfileTab>
-              ))}
-            </ProfileTabs>
-            <ProfileTabContentBox>
-              {curProfileTab === 'myCommunities' && (
-                <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
-              )}
-              {curProfileTab === 'myWhitelist' && (
-                <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />
-              )}
-              {/* {curProfileTab === 'myEnchanfted' && (
+              </MetamaskBindBtn>
+              <PhantomBindBtn
+                onClick={() => {
+                  if (accountPhantom) return
+                  bindPhantom()
+                }}
+              >
+                <IconPhantomWhite />
+                {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
+              </PhantomBindBtn>
+              <TwitterBindBtn onClick={() => connectionSocialMedia('twitter')}>
+                <IconTwitterWhite />
+                {twitter || 'Connect Twitter'}
+              </TwitterBindBtn>
+              <DiscordBindBtn onClick={() => connectionSocialMedia('discord')}>
+                <IconDiscordWhite />
+                {discord || 'Connect Discord'}
+              </DiscordBindBtn>
+              {/* <EmailBindBtn>
+                  <IconEmailWhite />
+                  {'Connect Email'}
+                </EmailBindBtn> */}
+            </UserAccountListBox>
+          </ProfileRightBox>
+        </ProfileTopBox>
+        <ProfileInfoTabsBox>
+          <ProfileTabs>
+            {ProfileTabOptions.map((item) => (
+              <ProfileTab
+                key={item.value}
+                onClick={() => setCurProfileTab(item.value)}
+                isActive={item.value === curProfileTab}
+              >
+                {item.label}
+              </ProfileTab>
+            ))}
+          </ProfileTabs>
+          <ProfileTabContentBox>
+            {curProfileTab === 'myCommunities' && (
+              <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
+            )}
+            {curProfileTab === 'myWhitelist' && (
+              <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />
+            )}
+            {/* {curProfileTab === 'myEnchanfted' && (
                 <EnchanftedList items={myEnchanftedItems} loading={loadingEnchanftedList} />
               )} */}
-            </ProfileTabContentBox>
-          </ProfileTabsBox>
-        </ProfileWrapper>
-        <Dialog open={openDialog} fullWidth={true} maxWidth={'lg'}>
-          <DialogContent>
-            <Box
-              noValidate
-              component="form"
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                m: 'auto',
+          </ProfileTabContentBox>
+        </ProfileInfoTabsBox>
+      </MainContentBox>
+      <Dialog open={openDialog} fullWidth={true} maxWidth={'sm'}>
+        <EditProfileBox>
+          <EditProfileTitle>Change Profile</EditProfileTitle>
+          <EditFormBox>
+            <EditAvatar
+              src={avatarSrc}
+              onClick={() => {
+                document.getElementById('uploadinput')?.click()
               }}
-            >
-              <h4>Profile picture</h4>
-              <img
-                src={avatar}
-                alt=""
-                style={{
-                  width: '100px',
-                  height: '100px',
-                  cursor: 'pointer',
-                }}
-                onClick={() => {
-                  document.getElementById('uploadinput')?.click()
-                }}
-              />
+            />
+            <EditNameBox>
               <input
                 title="uploadinput"
                 id="uploadinput"
@@ -373,154 +298,169 @@ const Profile: React.FC = () => {
               />
 
               <FormControl variant="standard">
-                <h4>name</h4>
+                <EditNameLabel>Name</EditNameLabel>
                 <TextField id="name" value={name} onChange={(e) => setName(e.target.value)} />
               </FormControl>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => updateProfile()}>save</Button>
-            <Button onClick={() => setOpenDialog(false)}>cancel</Button>
-          </DialogActions>
-        </Dialog>
-      </MainContentBox>
-    </>
+            </EditNameBox>
+          </EditFormBox>
+          <EditButtonBox>
+            <EditProfileBtnCancel onClick={() => setOpenDialog(false)}>cancel</EditProfileBtnCancel>
+            <EditProfileBtnSave onClick={() => updateProfile()}>save</EditProfileBtnSave>
+          </EditButtonBox>
+        </EditProfileBox>
+      </Dialog>
+    </ProfileWrapper>
   )
 }
 export default Profile
 const ProfileWrapper = styled.div`
   width: 100%;
-  height: 100%;
-
-  .profile {
-    display: flex;
-    flex-direction: row;
-    img {
-      width: 100px;
-      height: 100px;
-    }
-    > div {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      margin-left: 30px;
-      > div {
-        display: flex;
-        &.name {
-          h3 {
-            font-size: 32px;
-            margin: 0;
-          }
-        }
-        &.description {
-          align-items: center;
-          justify-content: space-between;
-          font-size: 20px;
-        }
-      }
-    }
-  }
-  .accounts {
-    margin: 15px 0;
-    display: flex;
-    align-items: center;
-    > .wallet {
-      display: flex;
-      align-items: center;
-      & span {
-        padding: 1px;
-        cursor: pointer;
-        font-size: 12px;
-        display: inline-flex;
-        align-items: center;
-        border-radius: 4px;
-        margin-right: 10px;
-        padding-right: 10px;
-        color: #fff;
-        & img {
-          width: 20px;
-          margin: 5px;
-        }
-      }
-      & span.phantom {
-        background: #513ac2;
-      }
-      & span.metamask {
-        background: #f6851b;
-      }
-    }
-  }
-  .thirdparty-box {
-    display: flex;
-    & > div {
-      margin-right: 10px;
-    }
-    .thirdparty-btn {
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      .thirdparty-inner {
-        background: #489be9;
-        padding: 5px;
-        color: white;
-        display: flex;
-        align-items: center;
-        font-size: 12px;
-        cursor: pointer;
-        svg {
-          margin-right: 5px;
-        }
-      }
-    }
-    .thirdparty-discord {
-      .thirdparty-inner {
-        background: #5368ed;
-      }
-      .thirdparty-disconnect {
-        border: 1px solid #5368ed;
-        svg {
-          color: #5368ed;
-        }
-      }
-    }
-
-    .thirdparty-disconnect {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: calc(100% - 2px);
-      border: 1px solid #489be9;
-      padding: 0 5px;
-      cursor: pointer;
-      svg {
-        color: #489be9;
-      }
-    }
-  }
-
-  hr {
-    margin: 10px 0;
-  }
 `
-const ProfileTabsBox = styled.div``
-const ProfileTabs = styled.div`
+const ProfileTopBox = styled(CardBox)`
+  border: 4px solid #333333;
   display: flex;
-  margin-top: 40px;
+  gap: 20px;
+`
+const UserImg = styled.img`
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+`
+const ProfileRightBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-between;
+`
+const UserName = styled.div`
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 54px;
+  color: #333333;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+`
+const UserAddress = styled.div`
+  font-size: 18px;
+  line-height: 24px;
+  color: rgba(51, 51, 51, 0.6);
+`
+
+const UserAccountListBox = styled.div`
+  display: flex;
+  gap: 10px;
+`
+const BindBtnBase = styled(ButtonBase)`
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 700;
+`
+const MetamaskBindBtn = styled(BindBtnBase)`
+  background: #f5e5d5;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+const PhantomBindBtn = styled(BindBtnBase)`
+  background: #551ff4;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+
+const TwitterBindBtn = styled(BindBtnBase)`
+  background: #5368ed;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+
+const DiscordBindBtn = styled(BindBtnBase)`
+  background: #5368ed;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+const EmailBindBtn = styled(BindBtnBase)`
+  background: #3dd606;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+
+const ProfileInfoTabsBox = styled.div`
+  margin-top: 30px;
+`
+const ProfileTabs = styled.div`
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
   gap: 60px;
+  border-bottom: 1px solid #d9d9d9;
+  padding-top: 40px;
 `
 const ProfileTab = styled.div<{ isActive?: boolean }>`
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+
   cursor: pointer;
-  border-bottom: ${(props) => (props.isActive ? '3px solid rgba(21, 21, 21, 100);' : 'none')};
-  color: ${(props) => (props.isActive ? '#000' : '#999')};
-  padding-bottom: 10px;
+  border-bottom: ${(props) => (props.isActive ? '4px solid #3DD606;' : 'none')};
+  color: ${(props) => (props.isActive ? '#333333' : 'rgba(51, 51, 51, 0.6)')};
+  padding-bottom: 16px;
   text-align: center;
-  font-weight: bold;
 `
-const ProfileTabContentBox = styled.div`
-  margin-top: 40px;
+const ProfileTabContentBox = styled(CardBox)``
+
+// Edit Form
+const EditProfileBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
 `
-const ProfileProjectTabsBox = styled.div`
-  margin-bottom: 40px;
+const EditProfileTitle = styled.div`
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #222222;
+`
+const EditFormBox = styled.div`
+  display: flex;
+  gap: 10px;
+`
+const EditAvatar = styled.img`
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+`
+const EditNameBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`
+const EditNameLabel = styled.div`
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #333333;
+`
+const EditProfileBtnSave = styled(ButtonPrimary)`
+  width: 120px;
+  height: 48px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #ffffff;
+`
+const EditProfileBtnCancel = styled(ButtonBase)`
+  width: 120px;
+  height: 48px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #333333;
+  background: #f8f8f8;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+const EditButtonBox = styled.div`
+  display: flex;
+  justify-content: end;
+  gap: 20px;
 `

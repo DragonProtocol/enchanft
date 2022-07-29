@@ -8,8 +8,8 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ChainIds } from '../../../utils/chain'
-import { IconEthereum } from '../../common/icons/IconEthereum'
-import { IconSolana } from '../../common/icons/IconSolana'
+import IconEthereum from '../../common/icons/IconEthereum'
+import IconSolana from '../../common/icons/IconSolana'
 export type ChainTag = {
   name: string
   icon: React.FC

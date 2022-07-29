@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 11:40:47
+ * @LastEditTime: 2022-07-28 17:28:10
  * @Description: file description
  */
 import React from 'react'
@@ -85,9 +85,15 @@ const ExploreProjectFilter: React.FC<ExploreProjectFilterProps> = ({
   return (
     <ExploreProjectFilterWrapper>
       {displayStatus && (
-        <ButtonRadioGroup options={ExploreProjectStatusOptions} value={status} onChange={handleStatusChange} />
+        <FilterLeftBox>
+          <ButtonRadioGroup options={ExploreProjectStatusOptions} value={status} onChange={handleStatusChange} />
+        </FilterLeftBox>
       )}
-      {displayKeywords && <InputSearch value={keywords} onChange={handleKeywordsChange} />}
+      {displayKeywords && (
+        <FilterRightBox>
+          <InputSearch value={keywords} onChange={handleKeywordsChange} placeholder="Search project keywords" />
+        </FilterRightBox>
+      )}
     </ExploreProjectFilterWrapper>
   )
 }
@@ -97,4 +103,9 @@ const ExploreProjectFilterWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 60px;
+`
+const FilterLeftBox = styled.div``
+const FilterRightBox = styled.div`
+  flex: 1;
+  max-width: 650px;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:58:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 16:26:32
+ * @LastEditTime: 2022-07-29 14:30:45
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -29,6 +29,7 @@ import ExploreProjectFilter, {
   ExploreProjectFilterDataType,
   ProjectStatusOther,
 } from '../components/business/project/ExploreProjectFilter'
+import CardBox from '../components/common/card/CardBox'
 
 const formatStoreDataToComponentDataByRecommendProjects = (
   projects: ExploreRecommendProjectItemEntity[],
@@ -77,17 +78,15 @@ const Projects: React.FC = () => {
 
   return (
     <ProjectsWrapper>
-      <ScrollBox>
-        <MainContentBox>
-          <RecommendProjectsBox>
-            <ExploreProjectSwiper items={recommendProjectItems} loading={recommendProjectsLoading} />
-          </RecommendProjectsBox>
-          <SearchProjectsBox>
-            <ExploreProjectFilter data={searchProjectsFilter} onChange={setProjectsFilter} />
-            <ExploreProjectList items={searchProjectItems} loading={searchProjectsLoading} />
-          </SearchProjectsBox>
-        </MainContentBox>
-      </ScrollBox>
+      <MainContentBox>
+        <RecommendProjectsBox>
+          <ExploreProjectSwiper items={recommendProjectItems} loading={recommendProjectsLoading} />
+        </RecommendProjectsBox>
+        <SearchProjectsBox>
+          <ExploreProjectFilter data={searchProjectsFilter} onChange={setProjectsFilter} />
+          <ExploreProjectList items={searchProjectItems} loading={searchProjectsLoading} />
+        </SearchProjectsBox>
+      </MainContentBox>
     </ProjectsWrapper>
   )
 }
@@ -96,10 +95,9 @@ const ProjectsWrapper = styled.div`
   width: 100%;
   height: 100%;
 `
-const RecommendProjectsBox = styled.div`
-  margin-bottom: 100px;
-`
-const SearchProjectsBox = styled.div`
+const RecommendProjectsBox = styled.div``
+const SearchProjectsBox = styled(CardBox)`
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 40px;

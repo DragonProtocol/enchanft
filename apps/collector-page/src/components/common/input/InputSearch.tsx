@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:00:22
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 13:19:24
+ * @LastEditTime: 2022-07-27 16:17:41
  * @Description: file description
  */
 import InputBase from '@mui/material/InputBase'
 import React from 'react'
 import styled from 'styled-components'
-import SearchIcon from '@mui/icons-material/Search'
+import IconInputSearch from '../icons/IconInputSearch'
+
 import CancelIcon from '@mui/icons-material/Cancel'
 import IconButton from '@mui/material/IconButton'
 export type InputSearchProps = {
@@ -38,7 +39,7 @@ const InputSearch: React.FC<InputSearchProps> = ({
   }
   return (
     <InputSearchWrapper>
-      <SearchIcon />
+      <IconInputSearch size="24px" />
       <InputBase
         sx={{ ml: 1, flex: 1, height: 'auto' }}
         placeholder={placeholder}
@@ -57,11 +58,13 @@ export default InputSearch
 const InputSearchWrapper = styled.div`
   flex: 1;
   height: 50px;
+  background: #f8f8f8;
+  font-size: 18px;
+  line-height: 27px;
+  color: rgba(51, 51, 51, 0.3);
   padding: 13px;
-  border-radius: 15px;
-  font-size: 14px;
-  border: 2px solid rgba(0, 0, 0, 1);
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  gap: 10px;
 `

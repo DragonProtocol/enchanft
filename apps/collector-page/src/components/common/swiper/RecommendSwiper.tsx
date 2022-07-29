@@ -4,10 +4,10 @@ import { Navigation, Autoplay } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 
-import SwiperPrevIcon from '@mui/icons-material/ArrowBackIos'
-import SwiperNextIcon from '@mui/icons-material/ArrowForwardIos'
+import IconCaretLeft from '../icons/IconCaretLeft'
+import IconCaretRight from '../icons/IconCaretRight'
+import ButtonNavigation from '../button/ButtonNavigation'
 
-import IconButton from '@mui/material/IconButton'
 export type RecommendSwiperProps = {
   children: React.ReactNode
   loading?: boolean
@@ -43,9 +43,9 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
     <RecommendSwiperWrapper>
       {navigation && (
         <RecommendSwiperLeft>
-          <IconButton className="recommend-swiper-prev">
-            <SwiperPrevIcon />
-          </IconButton>
+          <ButtonNavigation className="recommend-swiper-prev">
+            <IconCaretLeft />
+          </ButtonNavigation>
         </RecommendSwiperLeft>
       )}
       <Swiper
@@ -77,9 +77,9 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
       </Swiper>
       {navigation && (
         <RecommendSwiperRight>
-          <IconButton className="recommend-swiper-next">
-            <SwiperNextIcon />
-          </IconButton>
+          <ButtonNavigation className="recommend-swiper-next">
+            <IconCaretRight />
+          </ButtonNavigation>
         </RecommendSwiperRight>
       )}
     </RecommendSwiperWrapper>
@@ -88,23 +88,33 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
 export default RecommendSwiper
 const RecommendSwiperWrapper = styled.div`
   width: 100%;
-  display: flex;
-  align-items: center;
+  position: relative;
+  z-index: 1;
   .recommend-swiper {
     flex: 1;
     height: 440px;
-    background: #ffffff;
     box-sizing: border-box;
+    background: #ffffff;
     border: 4px solid #333333;
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
     padding: 40px;
   }
 `
 const RecommendSwiperLeft = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
   cursor: pointer;
+  z-index: 2;
 `
 const RecommendSwiperRight = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
   cursor: pointer;
+  z-index: 2;
 `
 const RecommendSwiperLoading = styled.div`
   text-align: center;
@@ -115,4 +125,5 @@ const RecommendSwiperEmpty = styled.div`
   text-align: center;
   margin-top: 20px;
 `
+
 export const RecommendSwiperItem = SwiperSlide

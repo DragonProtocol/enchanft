@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 18:45:27
+ * @LastEditTime: 2022-07-28 17:17:03
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
+import { TaskTodoCompleteStatus } from '../../../types/api'
 
 import TodoTaskItem, { TodoTaskItemDataViewType, TodoTaskItemHandlesType } from './TodoTaskItem'
 export type TodoTaskListViewConfigType = {
@@ -18,11 +19,44 @@ export type TodoTaskListViewConfigType = {
 export type TodoTaskListItemsType = TodoTaskItemDataViewType[]
 export type TodoTaskListProps = TodoTaskListViewConfigType &
   TodoTaskItemHandlesType & {
-    title: string
+    status: TaskTodoCompleteStatus
     items: TodoTaskListItemsType
   }
+
+export const todoTaskCompleteStatusMap = {
+  [TaskTodoCompleteStatus.TODO]: {
+    title: 'to do',
+    titleBgc: '#3DD606',
+    bodyBgc: 'rgba(61, 214, 6, 0.1)',
+  },
+  [TaskTodoCompleteStatus.IN_PRGRESS]: {
+    title: 'in progress',
+    titleBgc: '#EBB700',
+    bodyBgc: 'rgba(235, 183, 0, 0.1)',
+  },
+  [TaskTodoCompleteStatus.COMPLETED]: {
+    title: 'completed',
+    titleBgc: '#46B6DA',
+    bodyBgc: 'rgba(70, 182, 218, 0.1)',
+  },
+  [TaskTodoCompleteStatus.WON]: {
+    title: 'won',
+    titleBgc: '#E07031',
+    bodyBgc: 'rgba(224, 112, 49, 0.1)',
+  },
+  [TaskTodoCompleteStatus.LOST]: {
+    title: 'lost',
+    titleBgc: '#8C73D6',
+    bodyBgc: 'rgba(140, 115, 214, 0.1)',
+  },
+  [TaskTodoCompleteStatus.CLOSED]: {
+    title: 'closed',
+    titleBgc: '#ADADAD',
+    bodyBgc: 'rgba(173, 173, 173, 0.1)',
+  },
+}
 const TodoTaskList: React.FC<TodoTaskListProps> = ({
-  title = 'Task List',
+  status,
   items,
   loading,
   loadingMsg = 'loading...',
@@ -33,12 +67,15 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
   onDiscord,
 }: TodoTaskListProps) => {
   const itemLen = items.length
+  const title = todoTaskCompleteStatusMap[status].title || 'task list'
+  const titleBgc = todoTaskCompleteStatusMap[status].titleBgc || 'rgba(16, 16, 16, 100)'
+  const bodyBgc = todoTaskCompleteStatusMap[status].bodyBgc || 'rgba(173, 173, 173, 0.1)'
   return (
     <TodoTaskListWrapper>
-      <TodoTaskListHeader>
+      <TodoTaskListHeader bgc={titleBgc}>
         {title} ({itemLen})
       </TodoTaskListHeader>
-      <TodoTaskListBody>
+      <TodoTaskListBody bgc={bodyBgc}>
         {loading ? (
           <TodoTaskListLoading>{loadingMsg}</TodoTaskListLoading>
         ) : (
@@ -64,30 +101,29 @@ export default TodoTaskList
 const TodoTaskListWrapper = styled.div`
   width: 100%;
   height: 100%;
-  border: 1px solid rgba(16, 16, 16, 100);
-  border-radius: 10px;
   box-sizing: border-box;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 `
 
-const TodoTaskListHeader = styled.div`
+const TodoTaskListHeader = styled.div<{ bgc?: string }>`
   width: 100%;
   height: 50px;
   line-height: 50px;
-  background-color: rgba(16, 16, 16, 100);
-  color: rgba(255, 255, 255, 100);
-  font-size: 14px;
-  font-weight: bold;
+  background-color: ${(props) => props.bgc || 'rgba(16, 16, 16, 100)'};
+  font-weight: 700;
+  font-size: 18px;
+  color: #ffffff;
   text-align: center;
-  text-transform: uppercase;
+  text-transform: capitalize;
 `
-const TodoTaskListBody = styled.div`
+const TodoTaskListBody = styled.div<{ bgc?: string }>`
   flex: 1;
   width: 100%;
-  padding: 15px;
+  padding: 10px;
   box-sizing: border-box;
+  background-color: ${(props) => props.bgc || 'rgba(173, 173, 173, 0.1)'};
   display: flex;
   flex-direction: column;
   gap: 10px;

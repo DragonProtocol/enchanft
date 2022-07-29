@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-12 14:49:00
+ * @LastEditTime: 2022-07-29 13:17:44
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-
+import AvatarDefaultImg from '../../imgs/avatar.png'
 export type ContributionItemDataType = {
   ranking: number
   avatar: string
@@ -31,7 +31,7 @@ const CommunityContribution: React.FC<CommunityContributionProps> = ({ items }: 
             {items.map((item, index) => (
               <ContributionItemBox key={index}>
                 <ContributionItemRanking>{item.ranking}</ContributionItemRanking>
-                <ContributionItemAvatar src={item.avatar} />
+                <ContributionItemAvatar src={item.avatar || AvatarDefaultImg} />
                 <ContributionItemUserName>{item.userName}</ContributionItemUserName>
                 <ContributionItemPubkey number={1}>{item.pubkey}</ContributionItemPubkey>
                 <ContributionItemScore>{item.score}</ContributionItemScore>

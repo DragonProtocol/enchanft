@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-22 20:04:26
+ * @LastEditTime: 2022-07-28 16:01:18
  * @Description: file description
  */
 import React from 'react'
@@ -59,12 +59,11 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
 export default ExploreTaskItem
 const ExploreTaskItemWrapper = styled.div`
   width: 100%;
-  height: 330px;
+  height: 250px;
   box-sizing: border-box;
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 100);
-  border: 1px solid rgba(21, 21, 21, 100);
-  padding: 20px;
+  background: #ffffff;
+  border: 2px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -75,22 +74,26 @@ const TaskImageBox = styled.div`
 `
 const TaskImage = styled.img`
   width: 100%;
-  height: 206px;
+  height: 150px;
+  /* 图片不失真，不会出现拉伸 */
+  object-fit: cover;
 `
 const TaskInfoBox = styled.div`
   flex: 1;
-  padding-top: 22px;
-  overflow-y: auto;
+  padding: 10px 20px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 8px;
+  overflow-y: auto;
   ${ScrollBarCss}
 `
 const TaskName = styled.div`
-  color: rgba(16, 16, 16, 100);
+  font-weight: 700;
   font-size: 18px;
-  font-weight: bold;
+  color: #333333;
 `
 const TaskDateTime = styled.div`
-  font-size: 14px;
+  font-size: 12px;
+  color: rgba(51, 51, 51, 0.6);
 `
