@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:58:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 10:44:21
+ * @LastEditTime: 2022-07-29 14:30:45
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -95,10 +95,9 @@ const ProjectsWrapper = styled.div`
   width: 100%;
   height: 100%;
 `
-const RecommendProjectsBox = styled.div`
-  margin-bottom: 100px;
-`
+const RecommendProjectsBox = styled.div``
 const SearchProjectsBox = styled(CardBox)`
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 40px;

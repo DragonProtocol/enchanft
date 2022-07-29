@@ -281,7 +281,7 @@ const CommunityTabs = styled.div`
   height: 32px;
   display: flex;
   border: 1px solid rgba(0, 0, 0, 1);
-  margin-top: 40px;
+  margin-top: 20px;
 `
 const CommunityTab = styled.div<{ isActive?: boolean }>`
   width: 350px;

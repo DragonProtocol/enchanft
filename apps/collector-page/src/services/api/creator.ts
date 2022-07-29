@@ -23,11 +23,11 @@ export function saveWinnersApi(params: any) {
 }
 
 export function downloadWinner(taskId: string) {
-  axios
-    .get(`/creator/download/${taskId}.csv`, {
-      responseType: 'blob',
-    })
-    .then((response) => {
-      fileDownload(response.data, 'winner.csv')
-    })
+  request({
+    url: `/creator/download/${taskId}.csv`,
+    method: 'get',
+    responseType: 'blob',
+  }).then((response) => {
+    fileDownload(response.data, 'winner.csv')
+  })
 }
