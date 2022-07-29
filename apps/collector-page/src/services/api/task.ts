@@ -6,6 +6,7 @@
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
+import { loadRefInfo, RefType } from '../../container/Ref'
 import request from '../../request/axios'
 import { ApiResp } from '../../types'
 import { TaskDetailResponse, TodoTaskItem, TodoTaskResponse } from '../../types/api'
@@ -16,8 +17,9 @@ export type TakeTaskParams = {
 }
 export function takeTask(params: TakeTaskParams): AxiosPromise<ApiResp<any>> {
   const { id } = params
+  const refInfo = loadRefInfo(RefType.TAKE_TASK,String(id))
   return request({
-    url: `/tasks/${id}/takers`,
+    url: `/tasks/${id}/takers`+ refInfo ? '?referrerId='+refInfo!.referrerId:'',
     method: 'post',
     headers: {
       needToken: true,

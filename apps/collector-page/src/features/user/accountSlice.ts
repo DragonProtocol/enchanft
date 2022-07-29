@@ -41,6 +41,7 @@ export type AccountState = {
   token: string
   avatar: string
   name: string
+  id: number
   connectModal: ConnectModal | null
   connectWalletModalShow: boolean
   accounts: Array<Account>
@@ -56,6 +57,7 @@ const initialState: AccountState = {
   token: '',
   avatar: '',
   name: '',
+  id: 0,
   connectModal: null,
   connectWalletModalShow: false,
   accounts: [],
@@ -216,6 +218,7 @@ export const accountSlice = createSlice({
         state.token = action.payload.token
         state.avatar = action.payload.avatar
         state.name = action.payload.name
+        state.id = action.payload.id
         state.accounts = action.payload.accounts
         state.defaultWallet = action.payload.walletType
         state.errorMsg = ''

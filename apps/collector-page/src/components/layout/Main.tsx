@@ -22,6 +22,7 @@ import EnchanftedDetail from '../../container/EnchanftedDetail'
 import TaskDetail from '../../container/TaskDetail'
 import Projects from '../../container/Projects'
 import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
+import Ref from '../../container/Ref'
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -42,6 +43,7 @@ const Main: React.FC = () => {
     { path: '/community/:communityId', element: <Community /> },
     { path: '/calendar', element: <div>Calendar Page</div> },
     { path: '/creator/:taskId', element: <Creator /> },
+    { path: '/ref/:refCode', element: <Ref /> },
     ...permissionRoutes,
     { path: '*', element: <MainLoading></MainLoading> },
   ])
