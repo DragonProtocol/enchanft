@@ -14,6 +14,9 @@ import OverflowEllipsisBox from '../../../common/text/OverflowEllipsisBox'
 import TooltipWrapper from '../../../common/TooltipWrapper'
 import IconTip from '../../../common/icons/IconTip'
 import IconCopy from '../../../common/icons/IconCopy'
+import { getTakeTaskRefLink } from '../../../../container/Ref'
+import { useAppSelector } from '../../../../store/hooks'
+import { selectAccount } from '../../../../features/user/accountSlice'
 
 export type ActionInvitePeopleProps = {
   data: TaskActionItemDataType
@@ -22,11 +25,14 @@ export type ActionInvitePeopleProps = {
 }
 
 const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, copyBgc }: ActionInvitePeopleProps) => {
+  const account = useAppSelector(selectAccount)
   const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
+  const refUrl = getTakeTaskRefLink(account.id, taskId)
   const isDone = status === UserActionStatus.DONE
   const handleCopySuccess = () => {
+    console.log('Copy url: ',refUrl)
     if (onCopy) {
-      onCopy(actionData.url)
+      onCopy(refUrl)
     }
   }
   return (
@@ -38,9 +44,9 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, c
         </TooltipWrapper>
       </ActionInvitePeopleRow>
       <ActionInviteCopyBox bgc={copyBgc}>
-        <InviteLinkBox>{actionData.url}</InviteLinkBox>
-        <CopyToClipboard text={actionData.url}>
-          <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
+        <InviteLinkBox>{refUrl}</InviteLinkBox>
+        <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
+          <button><IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem"/></button>
         </CopyToClipboard>
       </ActionInviteCopyBox>
     </ActionInvitePeopleWrapper>

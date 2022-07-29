@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 
-export const getTakeTaskRefLink = (referrerId:number,type:RefType,taskID:number):string =>{
-  return generateRefLink(referrerId,type,{taskID:taskID})
+export const getTakeTaskRefLink = (referrerId: number, taskID: number): string => {
+  return generateRefLink(referrerId, RefType.TAKE_TASK, { taskID: taskID })
 }
 
-const generateRefLink = (referrerId:number,type:RefType,data:RefData):string =>{
-  const refCode = enRefCode({referrerId:referrerId, type:type, data:data})
-  return REF_LINK_PREFIX+refCode
+const generateRefLink = (referrerId: number, type: RefType, data: RefData): string => {
+  const refCode = enRefCode({ referrerId: referrerId, type: type, data: data })
+  return window.location.host + REF_LINK_PREFIX + refCode
 }
 
 export default function Ref() {
@@ -33,10 +33,12 @@ export default function Ref() {
 
 
 const enRefCode = (info: RefInfo) => {
-  return btoa(window.atob(JSON.stringify(info)))
+  console.log('encode ref info',info,JSON.stringify(info),window.btoa(JSON.stringify(info)))
+  return window.btoa(JSON.stringify(info))
 }
 
 const deRefCode = (refCode: string) => {
+  console.log(refCode,window.atob(refCode))
   return JSON.parse(window.atob(refCode))
 }
 
@@ -53,7 +55,7 @@ const saveRefInfo = (info: RefInfo) => {
   localStorage.setItem(infoKey, JSON.stringify(info))
 }
 
-const loadRefInfo = (type: RefType, filter: string): RefInfo | null => {
+export const loadRefInfo = (type: RefType, filter: string): RefInfo | null => {
   let infoKey: string = LOCAL_STORAGE_KEY_PREFIX + type
   switch (type) {
     case RefType.TAKE_TASK:
