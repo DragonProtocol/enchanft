@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 10:50:13
+ * @LastEditTime: 2022-07-29 14:58:53
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -98,7 +98,7 @@ const formatStoreDataToComponentDataByTaskDetailContent = (
 const formatStoreDataToComponentDataByTaskActions = (actions: TodoTaskActionItem[]): TaskActionItemsType => {
   return [...actions].sort((a, b) => a.orderNum - b.orderNum)
 }
-const TaskDetail: React.FC = () => {
+const Task: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { token, accounts } = useAppSelector(selectAccount)
@@ -233,7 +233,7 @@ const TaskDetail: React.FC = () => {
     </TaskDetailWrapper>
   )
 }
-export default TaskDetail
+export default Task
 const TaskDetailWrapper = styled.div`
   width: 100%;
 `

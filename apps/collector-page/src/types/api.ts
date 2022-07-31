@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 14:14:28
+ * @LastEditTime: 2022-07-29 19:05:07
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -126,6 +126,7 @@ export type Project = {
   discord: string
   twitter: string
   chainId: number
+  slug: string
 }
 
 export type ContributionRank = {
@@ -202,6 +203,16 @@ export type ExploreRecommendProjectItem = Project & {
   tasks: TaskItem[]
 }
 
+// project detail
+export type ProjectDetailResponse = Project & {
+  tasks: TaskItem[]
+  teamMembers: Team[]
+  roadmap: Roadmap[]
+  whitelists: Whitelist[]
+  community: Community
+}
+export type ProjectContributionRankResponseItem = ContributionRank
+
 /** community api */
 export type CommunityDetailBasicInfo = Community & {
   communityFollowerNum: number
@@ -217,8 +228,6 @@ export type CommunityCollectionResponse = {
   community: CommunityDetailBasicInfo
   projects: CommunityCollectionProjectItem[]
 }
-
-export type CommunityContributionRankResponseItem = ContributionRank
 
 /** todo task api */
 export enum UserActionStatus {

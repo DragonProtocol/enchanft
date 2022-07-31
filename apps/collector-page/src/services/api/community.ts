@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-08 19:10:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 15:57:28
+ * @LastEditTime: 2022-07-29 18:47:18
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -27,19 +27,6 @@ export function fetchDetailForCommunityCollection(
     headers: {
       needToken: true,
     },
-  })
-}
-
-/** 获取 社区贡献值排行 列表 */
-export type fetchListForCommunityContributionRankParams = {
-  communityId: number
-}
-export function fetchListForCommunityContributionRank(
-  params: fetchListForCommunityContributionRankParams,
-): AxiosPromise<ApiResp<CommunityContributionRankResponseItem[]>> {
-  return request({
-    url: `/communities/${params.communityId}/contribution-rank`,
-    method: 'get',
   })
 }
 

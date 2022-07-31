@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 15:27:17
+ * @LastEditTime: 2022-07-29 15:02:59
  * @Description: 站点头部
  */
 import SolanaConnectWalletButton from 'components/business/connect/SolanaConnectWalletButton'
@@ -31,7 +31,7 @@ const Header: React.FC = () => {
     },
     {
       name: 'projects',
-      link: '/project',
+      link: '/projects',
     },
     // {
     //   name: 'calendar',

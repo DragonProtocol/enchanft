@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 18:27:54
+ * @LastEditTime: 2022-07-29 18:53:18
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
@@ -15,10 +15,10 @@ import exploreSearchTasksReducer from '../features/explore/searchTasksSlice'
 import exploreSearchProjectsReducer from '../features/explore/searchProjectsSlice'
 import exploreRecommendTasksReducer from '../features/explore/recommendTasksSlice'
 import exploreRecommendProjectsReducer from '../features/explore/recommendProjectsSlice'
+import projectDetailReducer from '../features/project/projectDetailSlice'
+import projectContributionRanksReducer from '../features/project/projectContributionRanksSlice'
 import taskDatailReducer from '../features/task/taskDetailSlice'
 
-import communityCollectionDetailReducer from '../features/community/collectionDetailSlice'
-import communityContributionRanksReducer from '../features/community/contributionRanksSlice'
 import userTaskHandlesReducer from '../features/user/taskHandlesSlice'
 import userTodoTasksReducer from '../features/user/todoTasksSlice'
 import userFollowedCommunitiesReducer from '../features/user/followedCommunitiesSlice'
@@ -36,10 +36,10 @@ export const store = configureStore({
     exploreSearchProjects: exploreSearchProjectsReducer,
     exploreRecommendTasks: exploreRecommendTasksReducer,
     exploreRecommendProjects: exploreRecommendProjectsReducer,
+    projectDetail: projectDetailReducer,
+    projectContributionRanks: projectContributionRanksReducer,
     taskDetail: taskDatailReducer,
 
-    communityCollectionDetail: communityCollectionDetailReducer,
-    communityContributionRanks: communityContributionRanksReducer,
     userTaskHandles: userTaskHandlesReducer,
     userTodoTasks: userTodoTasksReducer,
     userFollowedCommunities: userFollowedCommunitiesReducer,

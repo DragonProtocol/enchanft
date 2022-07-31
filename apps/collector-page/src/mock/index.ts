@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 16:35:45
+ * @LastEditTime: 2022-07-29 17:08:23
  * @Description: mock 请求拦截入口
  */
 
@@ -67,6 +67,7 @@ import { ChainIds } from '../utils/chain'
     const projectEntity = () => {
       return {
         id: '@increment',
+        slug: 'slug',
         name: '@title(1, 5)',
         image: "@dataImage('260x200', 'Project Image')",
         description: '@paragraph(10, 30)',
@@ -253,15 +254,23 @@ import { ChainIds } from '../utils/chain'
       msg: 'success',
       data: 'take task mock data',
     })
+
     // task detail
-    Mock.mock(/\/tasks\/(\d*)/, 'get', {
+    Mock.mock(/\/slug\/(\d*)/, 'get', {
       code: 0,
       msg: 'success',
       'data|': {
         ...taskEntity(),
       },
     })
-
+    // project detail
+    Mock.mock(/\/slug(\\?.*|)/, 'get', {
+      code: 0,
+      msg: 'success',
+      'data|': {
+        ...projectEntity(),
+      },
+    })
     // explore recommend projects
     Mock.mock(/\/projects\/recommendation/, 'get', {
       code: 0,

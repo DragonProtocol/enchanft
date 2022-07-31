@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 10:33:19
+ * @LastEditTime: 2022-07-29 17:03:04
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
@@ -19,31 +19,32 @@ import { selectAccount, userLink } from '../../features/user/accountSlice'
 import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
 import Guide from '../../container/Guide'
 import EnchanftedDetail from '../../container/EnchanftedDetail'
-import TaskDetail from '../../container/TaskDetail'
+import Task from '../../container/Task'
 import Projects from '../../container/Projects'
 import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
-
+import Project from '../../container/Project'
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
-  const { token } = useAppSelector(selectAccount)
+  const { token, status } = useAppSelector(selectAccount)
   const isLogin = !!token
-  const permissionRoutes = isLogin
-    ? [
-        { path: '/profile', element: <Profile /> },
-        { path: '/guide', element: <Guide /> },
-        { path: '/todo', element: <TodoTask /> },
-        { path: '/enchanfted/:mint', element: <EnchanftedDetail /> },
-      ]
-    : []
+  let permissionRoutes = [
+    { path: '/profile', element: <Profile /> },
+    { path: '/guide', element: <Guide /> },
+    { path: '/todo', element: <TodoTask /> },
+    { path: '/enchanfted/:mint', element: <EnchanftedDetail /> },
+  ]
+  permissionRoutes.map((route) => ({
+    ...route,
+    element: isLogin ? route.element : <MainLoading />,
+  }))
   const routes = useRoutes([
     { path: '/', element: <Events /> },
-    { path: '/task/:id', element: <TaskDetail /> },
-    { path: '/project', element: <Projects /> },
-    { path: '/community/:communityId', element: <Community /> },
-    { path: '/calendar', element: <div>Calendar Page</div> },
     { path: '/creator/:taskId', element: <Creator /> },
+    { path: '/projects', element: <Projects /> },
+    { path: '/:projectSlug', element: <Project /> },
+    { path: '/:projectSlug/:taskId', element: <Task /> },
     ...permissionRoutes,
-    { path: '*', element: <MainLoading></MainLoading> },
+    { path: '*', element: <div>404</div> },
   ])
   useEffect(() => {
     dispatch(fetchFollowedCommunities())
