@@ -64,7 +64,7 @@ module.exports = {
     port:8080,
     proxy: {
       '/api/*': {
-        target: process.env.REACT_APP_API_BASE_URL,
+        target: 'https://test-enchanft-backend.onrender.com',
         changeOrigin: true,
         pathRewrite: {
           '/api': '',
