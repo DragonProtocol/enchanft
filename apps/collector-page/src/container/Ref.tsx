@@ -22,23 +22,24 @@ export default function Ref() {
     switch (refInfo.type) {
       case RefType.TAKE_TASK:
         navigate('/task/' + (refInfo.data as TakeTaskData).taskID)
-        break;
+        break
     }
   }, [refCode])
 
   return (
-    <div>you accept invite to { } from user { }</div>
+    <div>
+      you accept invite to {} from user {}
+    </div>
   )
 }
 
-
 const enRefCode = (info: RefInfo) => {
-  console.log('encode ref info',info,JSON.stringify(info),window.btoa(JSON.stringify(info)))
+  console.log('encode ref info', info, JSON.stringify(info), window.btoa(JSON.stringify(info)))
   return window.btoa(JSON.stringify(info))
 }
 
 const deRefCode = (refCode: string) => {
-  console.log('decode ref info',refCode,window.atob(refCode))
+  console.log('decode ref info', refCode, window.atob(refCode))
   return JSON.parse(window.atob(refCode))
 }
 
@@ -47,10 +48,10 @@ const saveRefInfo = (info: RefInfo) => {
   switch (info.type) {
     case RefType.TAKE_TASK:
       infoKey = infoKey + ':' + (info.data as TakeTaskData).taskID
-      break;
+      break
     case RefType.TAKE_TASK:
       infoKey = infoKey + ':' + (info.data as NotifacationRefData).communityID
-      break;
+      break
   }
   localStorage.setItem(infoKey, JSON.stringify(info))
 }
@@ -60,7 +61,7 @@ export const loadRefInfo = (type: RefType, filter: string): RefInfo | null => {
   switch (type) {
     case RefType.TAKE_TASK:
       infoKey = infoKey + ':' + filter
-      break;
+      break
   }
   const info = localStorage.getItem(infoKey)
   return info ? JSON.parse(info) : null
@@ -71,14 +72,14 @@ const removeRefInfo = (type: RefType, filter: string) => {
   switch (type) {
     case RefType.TAKE_TASK:
       infoKey = infoKey + ':' + filter
-      break;
+      break
   }
   return localStorage.removeItem(infoKey)
 }
 
 export interface RefInfo {
-  referrerId: number,
-  type: RefType,
+  referrerId: number
+  type: RefType
   data: RefData
 }
 
@@ -90,16 +91,16 @@ export enum RefType {
 const EXAMPLE_REF_INFO: RefInfo = {
   referrerId: 2,
   type: RefType.TAKE_TASK,
-  data: { taskID: 1 }
+  data: { taskID: 1 },
 }
 
-export type RefData = TakeTaskData | NotifacationRefData;
+export type RefData = TakeTaskData | NotifacationRefData
 
 export interface TakeTaskData {
   taskID: number
 }
 export interface NotifacationRefData {
-  communityID: number;
+  communityID: number
 }
 
 const LOCAL_STORAGE_KEY_PREFIX = 'ref:'

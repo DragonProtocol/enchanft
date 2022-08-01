@@ -23,7 +23,7 @@ export function takeTask(params: TakeTaskParams): AxiosPromise<ApiResp<any>> {
       url: `/tasks/${id}/takers`,
       method: 'post',
       data: {
-        referrerId: refInfo!.referrerId
+        referrerId: refInfo!.referrerId,
       },
       headers: {
         needToken: true,
@@ -37,7 +37,7 @@ export function takeTask(params: TakeTaskParams): AxiosPromise<ApiResp<any>> {
         needToken: true,
       },
     })
-   }
+  }
 }
 
 /** 获取用户的任务列表 */
