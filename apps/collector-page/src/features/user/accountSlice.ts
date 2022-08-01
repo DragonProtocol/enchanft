@@ -261,6 +261,7 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.FULFILLED
         state.avatar = action.payload.data.avatar
         state.name = action.payload.data.name
+        state.id = action.payload.data.id
         state.accounts = action.payload.data.accounts
         state.errorMsg = ''
       })
