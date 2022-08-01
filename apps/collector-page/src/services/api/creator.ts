@@ -5,11 +5,9 @@ const fileDownload = require('js-file-download')
 import request from '../../request/axios'
 
 export function creatorApi(params: any) {
-  const data = qs.stringify(params)
   return request({
-    url: '/creator/dashboard',
-    method: 'post',
-    data: data,
+    url: `/creator/dashboard/${params.task}`,
+    method: 'get',
   })
 }
 
