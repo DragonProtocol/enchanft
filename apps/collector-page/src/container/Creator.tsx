@@ -55,7 +55,7 @@ export default function Creator() {
               completionRate={participants == 0 ? '0.00' : ((winners * 100) / participants).toFixed(2)}
             />
             <WinnerList
-              winnersNum={taskInfo?.whitelistTotalNum || 0}
+              winnersNum={taskInfo?.winnerNum || 0}
               whitelistSaved={whitelistSaved}
               winnerList={winnerList}
               pickedWhiteList={pickedWhiteList}
@@ -82,25 +82,16 @@ const CommunityWrapper = styled.div`
 `
 
 const ContentBox = styled.div`
-  margin: 20px 132px;
+  margin: 20px 0;
   display: flex;
-
-  & div.box {
-    border: 2px solid rgba(0, 0, 0, 1);
-    border-radius: 10px;
-    line-height: 20px;
-    padding: 16px 25px;
-    box-sizing: border-box;
-  }
 
   & h3 {
     margin: 0;
-    font-size: 18px;
   }
 `
 
 const LeftBox = styled.div`
-  width: 736px;
+  width: 760px;
 `
 
 const RightBox = styled.div`
