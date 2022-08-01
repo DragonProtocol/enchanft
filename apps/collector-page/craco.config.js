@@ -64,7 +64,7 @@ module.exports = {
     port:8080,
     proxy: {
       '/api/*': {
-        target: 'http://localhost:3000',
+        target: process.env.REACT_APP_API_BASE_URL,
         changeOrigin: true,
         pathRewrite: {
           '/api': '',
