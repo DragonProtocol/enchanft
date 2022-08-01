@@ -15,7 +15,7 @@ import { downloadWinner } from '../services/api/creator'
 export default function Creator() {
   const { taskId } = useParams()
   const dispatch = useAppDispatch()
-  const { status, participants, winners, whitelistSaved, winnerList, taskInfo, scheduleInfo } =
+  const { status, participants, winners, whitelistSaved, winnerList, taskInfo, scheduleInfo, pickedWhiteList } =
     useAppSelector(selectCreator)
 
   useEffect(() => {
@@ -51,6 +51,7 @@ export default function Creator() {
               winnersNum={taskInfo?.whitelistTotalNum || 0}
               whitelistSaved={whitelistSaved}
               winnerList={winnerList}
+              pickedWhiteList={pickedWhiteList}
               schedules={scheduleInfo}
               uploadSelected={(ids: Array<number>) => {
                 saveWinners(ids)
