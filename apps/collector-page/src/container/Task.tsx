@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 14:58:53
+ * @LastEditTime: 2022-08-01 19:04:20
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -70,19 +70,19 @@ const formatStoreDataToComponentDataByTaskDetailContent = (
     task.status !== TaskTodoCompleteStatus.CLOSED
 
   // TODO 待确认
-  // 这里先用task的whiteListTotalNum代替
-  let winnersNum = 0
-  switch (task.type) {
-    case TaskType.WHITELIST_LUCK_DRAW:
-      // 需要抽奖
-      winnersNum = task.winnerList.length || task.whitelistTotalNum
-    case TaskType.WHITELIST_ORIENTED:
-      // 直接获得奖励
-      winnersNum = task.winnerList.length
-  }
+  let winnerNum = task.winnerNum
+  // let winnerNum = 0
+  // switch (task.type) {
+  //   case TaskType.WHITELIST_LUCK_DRAW:
+  //     // 需要抽奖
+  //     winnerNum = task.winnerList.length || task.whitelistTotalNum
+  //   case TaskType.WHITELIST_ORIENTED:
+  //     // 直接获得奖励
+  //     winnerNum = task.winnerList.length
+  // }
 
   return {
-    data: { ...task, winnersNum },
+    data: { ...task, winnerNum },
     viewConfig: {
       displayConnectWallet,
       displayWalletBind,
@@ -104,7 +104,7 @@ const Task: React.FC = () => {
   const { token, accounts } = useAppSelector(selectAccount)
   const accountTypes = accounts.map((account) => account.accountType)
 
-  const { id } = useParams()
+  const { taskId: id } = useParams()
   const { status, data } = useAppSelector(selectTaskDetail)
   const dispatchFetchTaskDetail = useCallback(() => dispatch(fetchTaskDetail(Number(id))), [id])
   const [loadingView, setLoadingView] = useState(true)
@@ -180,7 +180,7 @@ const Task: React.FC = () => {
                     <TaskDetailTop>
                       <TaskName>{name}</TaskName>
                       <ProjectNameBox>
-                        <ProjectName onClick={() => navigate(`/community/${communityId}?projectId=${projectId}`)}>
+                        <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>
                           Project: {projectName}
                         </ProjectName>
                         <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>
@@ -265,6 +265,7 @@ const TaskName = styled.div`
 `
 const TaskImage = styled.img`
   width: 100%;
+  height: 460px;
   object-fit: cover;
 `
 const ProjectNameBox = styled.div`

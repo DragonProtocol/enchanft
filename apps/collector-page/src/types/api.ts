@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 19:05:07
+ * @LastEditTime: 2022-08-01 16:16:56
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -171,13 +171,13 @@ export type ExploreSearchTasksRequestParams = {
   keywords?: string
 }
 export type ExploreSearchTaskItem = Task & {
-  winnersNum: number
+  winnerNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
   project: Project
 }
 export type ExploreRecommendTaskItem = Task & {
-  winnersNum: number
+  winnerNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
   project: Project
@@ -185,7 +185,7 @@ export type ExploreRecommendTaskItem = Task & {
 
 // explore project
 export type TaskItem = Task & {
-  winnersNum: number
+  winnerNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
 }
@@ -211,7 +211,6 @@ export type ProjectDetailResponse = Project & {
   whitelists: Whitelist[]
   community: Community
 }
-export type ProjectContributionRankResponseItem = ContributionRank
 
 /** community api */
 export type CommunityDetailBasicInfo = Community & {
@@ -228,6 +227,15 @@ export type CommunityCollectionResponse = {
   community: CommunityDetailBasicInfo
   projects: CommunityCollectionProjectItem[]
 }
+
+export type CommunityBasicInfoResponse = Community
+
+export type CommunityContributionRankItem = ContributionRank
+export type CommunityContributionRankResponse = CommunityContributionRankItem[]
+
+/** contribution */
+export type ContributionRanksResponse = ContributionRank[]
+export type UserContributionResponse = ContributionRank
 
 /** todo task api */
 export enum UserActionStatus {

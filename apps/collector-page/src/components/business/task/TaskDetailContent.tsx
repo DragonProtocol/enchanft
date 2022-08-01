@@ -12,7 +12,7 @@ export type TaskDetailContentDataType = {
   type: TaskType
   startTime: number
   endTime: number
-  winnersNum: number
+  winnerNum: number
   acceptedStatus: TaskAcceptedStatus
   status: TaskTodoCompleteStatus
   project: {
@@ -67,7 +67,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
   onConnectWallet,
   onBindWallet,
 }: TaskDetailContentProps) => {
-  const { id, name, type, startTime, endTime, winnersNum, image, description, project } = data
+  const { id, name, type, startTime, endTime, winnerNum, image, description, project } = data
   const {
     displayConnectWallet,
     disabledTake,
@@ -106,7 +106,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
         <TaskDateTime>
           {startDate}-{endDate}
         </TaskDateTime>
-        <TaskWinners>Winners {winnersNum}</TaskWinners>
+        <TaskWinners>Winners {winnerNum}</TaskWinners>
       </TaskDateTimeBox>
       <TaskDescription>{description}</TaskDescription>
       {displayConnectWallet && <ButtonPrimary onClick={handleConnectWallet}>Connect Wallect</ButtonPrimary>}

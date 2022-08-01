@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 18:53:18
+ * @LastEditTime: 2022-08-01 16:26:46
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
@@ -11,19 +11,31 @@ import websiteReducer from '../features/website/index'
 import accountReducer from '../features/user/accountSlice'
 import myEnchanftedReducer from '../features/user/myEnchanftedSlice'
 
-import exploreSearchTasksReducer from '../features/explore/searchTasksSlice'
-import exploreSearchProjectsReducer from '../features/explore/searchProjectsSlice'
-import exploreRecommendTasksReducer from '../features/explore/recommendTasksSlice'
+// project
 import exploreRecommendProjectsReducer from '../features/explore/recommendProjectsSlice'
+import exploreSearchProjectsReducer from '../features/explore/searchProjectsSlice'
 import projectDetailReducer from '../features/project/projectDetailSlice'
-import projectContributionRanksReducer from '../features/project/projectContributionRanksSlice'
+
+// task
+import exploreRecommendTasksReducer from '../features/explore/recommendTasksSlice'
+import exploreSearchTasksReducer from '../features/explore/searchTasksSlice'
 import taskDatailReducer from '../features/task/taskDetailSlice'
 
+// contirbution
+import contributionCommunityInfoReducer from '../features/contribution/communityInfoSlice'
+import userCommunityContributionReducer from '../features/contribution/userContributionSlice'
+
+// community
+import communityCollectionDetailReducer from '../features/community/collectionDetailSlice'
+import communityContributionRanksReducer from '../features/community/contributionRanksSlice'
+
+// user
 import userTaskHandlesReducer from '../features/user/taskHandlesSlice'
 import userTodoTasksReducer from '../features/user/todoTasksSlice'
 import userFollowedCommunitiesReducer from '../features/user/followedCommunitiesSlice'
 import userWhitelistsReducer from '../features/user/userWhitelistsSlice'
 import userCommunityHandlesReducer from '../features/user/communityHandlesSlice'
+
 import creatorReducer from '../features/creator'
 
 export const store = configureStore({
@@ -32,19 +44,26 @@ export const store = configureStore({
     account: accountReducer,
     myEnchanfted: myEnchanftedReducer,
 
-    exploreSearchTasks: exploreSearchTasksReducer,
     exploreSearchProjects: exploreSearchProjectsReducer,
-    exploreRecommendTasks: exploreRecommendTasksReducer,
     exploreRecommendProjects: exploreRecommendProjectsReducer,
     projectDetail: projectDetailReducer,
-    projectContributionRanks: projectContributionRanksReducer,
+
+    exploreRecommendTasks: exploreRecommendTasksReducer,
+    exploreSearchTasks: exploreSearchTasksReducer,
     taskDetail: taskDatailReducer,
+
+    contributionCommunityInfo: contributionCommunityInfoReducer,
+    userCommunityContribution: userCommunityContributionReducer,
+
+    communityCollectionDetail: communityCollectionDetailReducer,
+    communityContributionRanks: communityContributionRanksReducer,
 
     userTaskHandles: userTaskHandlesReducer,
     userTodoTasks: userTodoTasksReducer,
     userFollowedCommunities: userFollowedCommunitiesReducer,
     userWhitelists: userWhitelistsReducer,
     userCommunityHandles: userCommunityHandlesReducer,
+
     creator: creatorReducer,
   },
   middleware: (getDefaultMiddleware) =>

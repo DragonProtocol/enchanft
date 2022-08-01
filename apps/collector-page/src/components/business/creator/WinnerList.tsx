@@ -14,14 +14,14 @@ export enum TaskStatus {
 }
 
 export default function WinnerList({
-  winnersNum,
+  winnerNum,
   winnerList,
   schedules,
   uploadSelected,
   whitelistSaved,
   downloadWinners,
 }: {
-  winnersNum: number
+  winnerNum: number
   whitelistSaved: boolean
   winnerList: Array<Winner>
   schedules: ScheduleInfo | null
@@ -35,7 +35,7 @@ export default function WinnerList({
   const [disableSelect, setDisableSelect] = useState(false)
 
   const genRandom = useCallback(() => {
-    let num = winnersNum
+    let num = winnerNum
     let tmpList = [...list]
     const result: Array<number> = []
     while (num > 0) {
@@ -48,7 +48,7 @@ export default function WinnerList({
     }
     setSelected(result)
     setDisableSelect(true)
-  }, [list, winnersNum])
+  }, [list, winnerNum])
 
   return (
     <WinnerListBox className="box">
@@ -87,7 +87,7 @@ export default function WinnerList({
               selected={selected}
               disableSelect={disableSelect}
               setSelected={(newSelected) => {
-                setDisableSelect(newSelected.length >= winnersNum)
+                setDisableSelect(newSelected.length >= winnerNum)
                 setSelected(newSelected)
               }}
               showSelect={!whitelistSaved}

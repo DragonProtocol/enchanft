@@ -2,12 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 17:03:04
+ * @LastEditTime: 2022-08-01 16:59:07
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
 import Events from '../../container/Events'
-import Community from '../../container/Community'
 import React, { useEffect } from 'react'
 import Creator from '../../container/Creator'
 import { useRoutes } from 'react-router-dom'
@@ -23,6 +22,8 @@ import Task from '../../container/Task'
 import Projects from '../../container/Projects'
 import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
 import Project from '../../container/Project'
+import Contributionranks from '../../container/Contributionranks'
+
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
   const { token, status } = useAppSelector(selectAccount)
@@ -33,7 +34,7 @@ const Main: React.FC = () => {
     { path: '/todo', element: <TodoTask /> },
     { path: '/enchanfted/:mint', element: <EnchanftedDetail /> },
   ]
-  permissionRoutes.map((route) => ({
+  permissionRoutes = permissionRoutes.map((route) => ({
     ...route,
     element: isLogin ? route.element : <MainLoading />,
   }))
@@ -41,6 +42,7 @@ const Main: React.FC = () => {
     { path: '/', element: <Events /> },
     { path: '/creator/:taskId', element: <Creator /> },
     { path: '/projects', element: <Projects /> },
+    { path: '/contributionranks/:communityId', element: <Contributionranks /> },
     { path: '/:projectSlug', element: <Project /> },
     { path: '/:projectSlug/:taskId', element: <Task /> },
     ...permissionRoutes,

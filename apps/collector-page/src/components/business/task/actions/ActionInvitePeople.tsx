@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 15:49:23
+ * @LastEditTime: 2022-08-01 17:53:30
  * @Description: file description
  */
 import React from 'react'
@@ -40,7 +40,9 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, c
       <ActionInviteCopyBox bgc={copyBgc}>
         <InviteLinkBox>{actionData.url}</InviteLinkBox>
         <CopyToClipboard text={actionData.url}>
-          <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
+          <CopyBtn>
+            <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
+          </CopyBtn>
         </CopyToClipboard>
       </ActionInviteCopyBox>
     </ActionInvitePeopleWrapper>
@@ -85,4 +87,7 @@ const InviteLinkBox = styled(OverflowEllipsisBox)`
   font-size: 12px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.5);
+`
+const CopyBtn = styled.div`
+  cursor: pointer;
 `

@@ -26,7 +26,7 @@ import MetamaskIcon from './MetamaskIcon'
 import ConnectModal from './ConnectModal'
 import ConnectWalletModal from './ConnectWalletModal'
 import { ButtonPrimary } from '../common/button/ButtonBase'
-import AvatarDefaultImg from '../imgs/avatar.png'
+import UserAvatar from '../business/user/UserAvatar'
 
 export default function ConnectBtn() {
   const navigate = useNavigate()
@@ -60,7 +60,7 @@ export default function ConnectBtn() {
           {(popupState) => (
             <React.Fragment>
               <ConnectBtnWrapper {...bindTrigger(popupState)}>
-                <img src={account.avatar || AvatarDefaultImg} alt="" />
+                <UserAvatar src={account.avatar} />
                 {account.name || shortPubkey}
               </ConnectBtnWrapper>
               <Menu {...bindMenu(popupState)}>

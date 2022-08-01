@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 13:35:24
+ * @LastEditTime: 2022-08-01 16:29:56
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -37,8 +37,6 @@ import EditIcon from '@mui/icons-material/Edit'
 import {
   selectAccount,
   userUpdateProfile,
-  setTwitter,
-  setDiscord,
   userLink,
   setConnectModal,
   ConnectModal,
@@ -68,15 +66,14 @@ import {
   selectAll as selectAllForUserWhitelists,
 } from '../features/user/userWhitelistsSlice'
 import WhitelistList, { WhitelistListItemsType } from '../components/business/whitelist/WhitelistList'
-import AvatarDefaultImg from '../components/imgs/avatar.png'
 import ButtonBase, { ButtonInfo, ButtonPrimary } from '../components/common/button/ButtonBase'
 import IconTwitterWhite from '../components/common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
-import IconEmailWhite from '../components/common/icons/IconTwitterWhite copy'
-import ScrollBox from '../components/common/ScrollBox'
+import IconEmailWhite from '../components/common/icons/IconEmailWhite'
 import CardBox from '../components/common/card/CardBox'
 import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
 import IconMetamask from '../components/common/icons/IconMetamask'
+import UserAvatar from '../components/business/user/UserAvatar'
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {
@@ -197,13 +194,11 @@ const Profile: React.FC = () => {
       }),
     )
   }, [phantomValid])
-
-  const avatarSrc = account.avatar || AvatarDefaultImg
   return (
     <ProfileWrapper>
       <MainContentBox>
         <ProfileTopBox>
-          <UserImg src={avatarSrc} />
+          <UserImg src={account.avatar} />
           <ProfileRightBox>
             <UserName>
               <span>{account.name}</span>
@@ -276,7 +271,7 @@ const Profile: React.FC = () => {
           <EditProfileTitle>Change Profile</EditProfileTitle>
           <EditFormBox>
             <EditAvatar
-              src={avatarSrc}
+              src={account.avatar}
               onClick={() => {
                 document.getElementById('uploadinput')?.click()
               }}
@@ -321,7 +316,7 @@ const ProfileTopBox = styled(CardBox)`
   display: flex;
   gap: 20px;
 `
-const UserImg = styled.img`
+const UserImg = styled(UserAvatar)`
   width: 160px;
   height: 160px;
   object-fit: cover;
@@ -425,7 +420,7 @@ const EditFormBox = styled.div`
   display: flex;
   gap: 10px;
 `
-const EditAvatar = styled.img`
+const EditAvatar = styled(UserAvatar)`
   width: 160px;
   height: 160px;
   object-fit: cover;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-18 13:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 15:16:09
+ * @LastEditTime: 2022-08-01 17:51:19
  * @Description: file description
  */
 import React from 'react'
@@ -17,11 +17,11 @@ export type ActionFollowCommunityProps = {
 
 const ActionFollowCommunity: React.FC<ActionFollowCommunityProps> = ({ data }: ActionFollowCommunityProps) => {
   const navigate = useNavigate()
-  const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status, description } = data
+  const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status, description, project } = data
   const isDone = status === UserActionStatus.DONE
   const handleAction = () => {
     if (isDone) return
-    navigate(`/community/${communityId}`)
+    navigate(`/${project.slug}`)
   }
   return (
     <ActionFollowCommunityWrapper>

@@ -5,12 +5,12 @@ import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
 import { TaskAcceptedStatus } from '../types/api'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ProjectDetailEntity, fetchProjectDetail, selectProjectDetail } from '../features/project/projectDetailSlice'
 import {
-  fetchProjectContributionRanks,
-  selectAll as selectAllForProjectContributionranks,
-} from '../features/project/projectContributionRanksSlice'
+  fetchCommunityContributionRanks,
+  selectAll as selectAllForCommunityContributionranks,
+} from '../features/community/contributionRanksSlice'
 import ProjectBasicInfo, {
   ProjectDetailBasicInfoDataViewType,
 } from '../components/business/project/ProjectDetailBasicInfo'
@@ -25,12 +25,24 @@ import ProjectDetailCommunity, {
 } from '../components/business/project/ProjectDetailCommunity'
 import ProjectDetailBasicInfo from '../components/business/project/ProjectDetailBasicInfo'
 import { ExplorTaskSwiperItemsType } from '../components/business/task/ExploreTaskSwiper'
-import { ExploreTaskListItemsType } from '../components/business/task/ExploreTaskList'
-import { ProjectTeamMemberListItemsType } from '../components/business/project/ProjectTeamMemberList'
-import ProjectContributionList from '../components/business/project/ProjectContributionList'
+import ExploreTaskList, { ExploreTaskListItemsType } from '../components/business/task/ExploreTaskList'
+import ProjectTeamMemberList, {
+  ProjectTeamMemberListItemsType,
+} from '../components/business/project/ProjectTeamMemberList'
+import ContributionList, {
+  ContributionColumns,
+  ContributionListSize,
+} from '../components/business/contribution/ContributionList'
+import RichTextBox from '../components/common/text/RichTextBox'
+import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
+}
+export enum ProjectInfoTabsValue {
+  TEAM = 'team',
+  ROADMAP = 'roadmap',
+  REVIEWS = 'reviews',
 }
 // 处理社区基本信息
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
@@ -49,7 +61,7 @@ const formatStoreDataToComponentDataByCommunityBasicInfo = (
     },
   }
 }
-// project
+// project basic info
 const formatStoreDataToComponentDataByProjectBasicInfo = (
   data: ProjectDetailEntity,
   token: string,
@@ -64,17 +76,17 @@ const formatStoreDataToComponentDataByProjectBasicInfo = (
     },
   }
 }
-// tasks
+// project tasks
 const formatStoreDataToComponentDataByTasks = (data: ProjectDetailEntity, token: string): ExploreTaskListItemsType => {
   return data.tasks.map((task) => {
     // TODO 待确认，这里先用task的whiteListTotalNum代替
-    // const winnersNum = task.whitelistTotalNum
+    // const winnerNum = task.whitelistTotalNum
     return {
       data: { ...task, project: { ...data } },
     }
   })
 }
-// teamMembers
+// project teamMembers
 const formatStoreDataToComponentDataByTeamMembers = (
   data: ProjectDetailEntity,
   token: string,
@@ -86,31 +98,25 @@ const formatStoreDataToComponentDataByTeamMembers = (
 }
 
 const Project: React.FC = () => {
-  const { slug } = useParams()
-
+  const navigate = useNavigate()
+  const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
   const projectDetail = useAppSelector(selectProjectDetail)
   const { data, status, errorMsg } = projectDetail
   useEffect(() => {
-    if (slug) {
-      dispatch(fetchProjectDetail(slug))
+    if (projectSlug) {
+      dispatch(fetchProjectDetail(projectSlug))
     }
-  }, [slug, token])
-  const projectId = data?.id
+  }, [projectSlug, token])
+  const communityId = data?.communityId
 
   // 获取社区贡献等级
-  const contributionranks = useAppSelector(selectAllForProjectContributionranks)
+  const contributionranks = useAppSelector(selectAllForCommunityContributionranks)
   const fetchContributionranksIntervalRef = useRef<any>(null)
-  const dispatchContributionRanks = () =>
-    projectId &&
-    dispatch(
-      fetchProjectContributionRanks({
-        id: projectId,
-      }),
-    )
+  const dispatchContributionRanks = () => communityId && dispatch(fetchCommunityContributionRanks(communityId))
   useEffect(() => {
-    if (projectId) {
+    if (communityId) {
       dispatchContributionRanks()
       fetchContributionranksIntervalRef.current = setInterval(() => {
         dispatchContributionRanks()
@@ -121,44 +127,49 @@ const Project: React.FC = () => {
     return () => {
       clearInterval(fetchContributionranksIntervalRef.current)
     }
-  }, [projectId])
+  }, [communityId])
 
   // 用户关注的社区ID集合
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
 
   // 关注社区
   const handleFollowChange = (isFollowed: boolean) => {
-    if (projectId && isFollowed) {
-      dispatch(follow({ id: Number(projectId) }))
+    if (communityId && isFollowed) {
+      dispatch(follow({ id: Number(communityId) }))
     }
   }
-  // 接受任务
-  const handleTakeTask = (id) => {
-    dispatch(take({ id }))
-  }
-  // 接任务的状态
-  const { take: takeTaskState } = useAppSelector(selectUserTaskHandlesState)
 
-  // 社区展示信息切换
-  const ProjectTabOptions = [
+  // tabs
+  const ProjectInfoTabs = [
     {
-      label: 'Collection',
-      value: 'collection',
+      label: 'Meet the Team',
+      value: ProjectInfoTabsValue.TEAM,
     },
     {
-      label: 'Contribution',
-      value: 'contribution',
+      label: 'Roadmap',
+      value: ProjectInfoTabsValue.ROADMAP,
+    },
+    {
+      label: 'Reviews',
+      value: ProjectInfoTabsValue.REVIEWS,
     },
   ]
-
+  const [activeTab, setActiveTab] = useState(ProjectInfoTabsValue.TEAM)
   // 展示数据
   if (!data) return null
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(data, token, userFollowedProjectIds)
   const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data, token)
-  const roadmapDataView = formatStoreDataToComponentDataByTasks(data, token)
-
+  const showContributionranks = contributionranks.slice(0, 5)
+  const contributionMembersTotal = contributionranks.length
+  const teamMembers = formatStoreDataToComponentDataByTeamMembers(data, token)
+  const tasks = formatStoreDataToComponentDataByTasks(data, token)
   const loading = status === AsyncRequestStatus.PENDING
 
+  const ProjectInfoTabComponents = {
+    [ProjectInfoTabsValue.TEAM]: <ProjectTeamMemberList items={teamMembers} />,
+    [ProjectInfoTabsValue.ROADMAP]: <ProjectRoadmap items={data.roadmap} />,
+    [ProjectInfoTabsValue.REVIEWS]: <span>Not yet developed</span>,
+  }
   return (
     <ProjectWrapper>
       <MainContentBox>
@@ -176,12 +187,49 @@ const Project: React.FC = () => {
 
             <ProjectBottomBox>
               <ProjectBasicInfoBox>
-                <ProjectDetailBasicInfo
-                  data={projectBasicInfoDataView.data}
-                  viewConfig={projectBasicInfoDataView.viewConfig}
-                />
-                <ProjectContributionList items={contributionranks} />
+                <ProjectBasicInfoLeft>
+                  <ProjectDetailBasicInfo
+                    data={projectBasicInfoDataView.data}
+                    viewConfig={projectBasicInfoDataView.viewConfig}
+                  />
+                </ProjectBasicInfoLeft>
+                <ProjectBasicInfoRight>
+                  <ContributionList
+                    items={showContributionranks}
+                    hiddenColumns={[ContributionColumns.pubkey]}
+                    size={ContributionListSize.small}
+                    membersTotal={contributionMembersTotal}
+                    displayMore={true}
+                    moreText="View All"
+                    onMore={() => communityId && navigate(`/contributionranks/${communityId}`)}
+                  />
+                </ProjectBasicInfoRight>
               </ProjectBasicInfoBox>
+
+              <ProjectEventsBox>
+                <ExploreTaskList items={tasks} displayCreateTask={true} />
+              </ProjectEventsBox>
+
+              <ProjectOtherInfoBox>
+                <ProjectOtherInfoLeftBox>
+                  <ProjectStoryLabel>Story</ProjectStoryLabel>
+                  <ProjectStoryContent value={data.story} />
+                </ProjectOtherInfoLeftBox>
+                <ProjectOtherInfoRightBox>
+                  <ProjectOtherInfoRightTabs>
+                    {ProjectInfoTabs.map((tab) => (
+                      <ProjectOtherInfoRightTab
+                        key={tab.value}
+                        isActive={tab.value === activeTab}
+                        onClick={() => setActiveTab(tab.value)}
+                      >
+                        {tab.label}
+                      </ProjectOtherInfoRightTab>
+                    ))}
+                  </ProjectOtherInfoRightTabs>
+                  {ProjectInfoTabComponents[activeTab]}
+                </ProjectOtherInfoRightBox>
+              </ProjectOtherInfoBox>
             </ProjectBottomBox>
           </>
         )}
@@ -192,6 +240,13 @@ const Project: React.FC = () => {
 export default Project
 const ProjectWrapper = styled.div`
   width: 100%;
+`
+const ProjectLoading = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 const ProjectTopBox = styled(CardBox)``
 const ProjectBottomBox = styled(CardBox)`
@@ -204,10 +259,42 @@ const ProjectBasicInfoBox = styled.div`
   display: flex;
   gap: 40px;
 `
-const ProjectLoading = styled.div`
-  width: 100%;
-  height: 100%;
+const ProjectBasicInfoLeft = styled.div`
+  flex: 1;
+`
+const ProjectBasicInfoRight = styled.div`
+  width: 250px;
+  background: #f8f8f8;
+  padding: 10px;
+  box-sizing: border-box;
+`
+const ProjectEventsBox = styled.div``
+const ProjectOtherInfoBox = styled.div`
   display: flex;
-  justify-content: center;
-  align-items: center;
+  gap: 60px;
+`
+const ProjectOtherInfoLeftBox = styled.div`
+  flex: 1;
+`
+const ProjectStoryLabel = styled.div`
+  color: rgba(16, 16, 16, 100);
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+`
+const ProjectStoryContent = styled(RichTextBox)``
+const ProjectOtherInfoRightBox = styled.div`
+  flex: 1;
+`
+const ProjectOtherInfoRightTabs = styled.div`
+  display: flex;
+  gap: 80px;
+  margin-bottom: 20px;
+`
+const ProjectOtherInfoRightTab = styled.div<{ isActive: Boolean }>`
+  color: rgba(0, 0, 0, 1);
+  font-size: 18px;
+  ${({ isActive }) => (isActive ? `box-shadow: inset 0 -1px rgba(0, 0, 0, 1);` : '')}
+  cursor: pointer;
+  padding-bottom: 10px;
 `

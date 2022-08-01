@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 17:08:23
+ * @LastEditTime: 2022-08-01 17:03:18
  * @Description: mock 请求拦截入口
  */
 
@@ -89,6 +89,9 @@ import { ChainIds } from '../utils/chain'
           id: '@increment',
           name: '@title(1, 5)',
           image: "@dataImage('160x160', 'Community Image')",
+          twitter: 'https://twitter.com/',
+          discord: 'https://twitter.com/',
+          website: 'https://twitter.com/',
         },
         'tasks|10': [
           {
@@ -96,7 +99,7 @@ import { ChainIds } from '../utils/chain'
             name: '@title(1, 5)',
             'type|1': task_type,
             'acceptedStatus|1': task_accepted_status,
-            winnersNum: 100,
+            winnerNum: 100,
             startTime: start_tinme,
             endTime: end_time,
             'actions|10': [
@@ -157,7 +160,7 @@ import { ChainIds } from '../utils/chain'
         'type|1': task_type,
         startTime: start_tinme,
         endTime: end_time,
-        winnersNum: 100,
+        winnerNum: 100,
         mintUrl: 'https://www.baidu.com/',
         mintStartTime: range_tinme(),
         projectImage: Mock.Random.dataImage('40x40', 'project img'),
@@ -167,6 +170,7 @@ import { ChainIds } from '../utils/chain'
         'acceptedStatus|1': task_accepted_status,
 
         project: {
+          slug: 'slug',
           id: '@increment',
           name: '@title(1, 5)',
           image: "@dataImage('360x360', 'Project Image')",
@@ -256,7 +260,7 @@ import { ChainIds } from '../utils/chain'
     })
 
     // task detail
-    Mock.mock(/\/slug\/(\d*)/, 'get', {
+    Mock.mock(/\/tasks\/(\d*)/, 'get', {
       code: 0,
       msg: 'success',
       'data|': {
@@ -291,6 +295,21 @@ import { ChainIds } from '../utils/chain'
         },
       ],
     })
+
+    // 贡献值排名
+    Mock.mock(/\/communities\/(\d*)\/contribution-rank(\\?.*|)/, 'get', {
+      code: 0,
+      msg: 'success',
+      'data|10': [
+        {
+          ranking: '@increment',
+          avatar: "@dataImage('40x40', 'Avatar')",
+          userName: '@title(1, 3)',
+          pubkey: '@uuid',
+          score: '@integer(1, 100)',
+        },
+      ],
+    })
     // 社区详情
     Mock.mock(/\/communities\/(\d*)(\\?.*|)/, 'get', {
       code: 0,
@@ -309,21 +328,6 @@ import { ChainIds } from '../utils/chain'
           },
         ],
       },
-    })
-
-    // 贡献值排名
-    Mock.mock(/\/communities\/(\d*0)\/contribution-rank(\\?.*|)/, 'get', {
-      code: 0,
-      msg: 'success',
-      'data|10': [
-        {
-          ranking: '@increment',
-          avatar: "@dataImage('40x40', 'Avatar')",
-          userName: '@title(1, 3)',
-          pubkey: '@uuid',
-          score: '@integer(1, 100)',
-        },
-      ],
     })
   }
 })()

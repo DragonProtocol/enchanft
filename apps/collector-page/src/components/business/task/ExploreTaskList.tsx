@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 18:27:40
+ * @LastEditTime: 2022-07-31 21:01:28
  * @Description: file description
  */
 import React from 'react'
@@ -76,8 +76,7 @@ const ExploreTaskItemBox = styled.div`
   padding-bottom: 4px;
 `
 const CreateTaskButton = styled(ButtonBase)`
-  width: 265px;
-  height: 243px;
+  box-shadow: none;
   background: #f8f8f8;
   border: 2px solid #333333;
   display: flex;

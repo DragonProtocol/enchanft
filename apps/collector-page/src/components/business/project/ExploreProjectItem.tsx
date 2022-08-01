@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 16:14:46
+ * @LastEditTime: 2022-07-31 19:14:27
  * @Description: file description
  */
 import React from 'react'
@@ -27,6 +27,7 @@ export type ExploreProjectItemDataType = {
   publicSalePrice: string
   communityId: number
   chainId: number
+  slug: string
   tasks: Array<{
     type: TaskType
     startTime: number
@@ -55,7 +56,7 @@ const TaskTypeLabels = {
 }
 const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfig }: ExploreProjectItemProps) => {
   const navigate = useNavigate()
-  const { id, name, image, status, floorPrice, itemTotalNum, communityId, tasks, publicSaleTime, chainId } = data
+  const { id, name, image, status, floorPrice, itemTotalNum, communityId, tasks, publicSaleTime, chainId, slug } = data
   // const {} = {
   //   ...defaultViewConfig,
   //   ...viewConfig,
@@ -80,7 +81,7 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
       projectDescBottomText = `items ${itemTotalNum} . Mint Price ${floorPrice} ${publicMintStartDate}`
   }
   return (
-    <ExploreProjectItemWrapper onClick={() => navigate(`/community/${communityId}?projectId=${id}`)}>
+    <ExploreProjectItemWrapper onClick={() => navigate(`/${slug}`)}>
       <ProjectImageBox>
         <ChainTag size={1} chainId={chainId} />
         <ProjectImage src={image} />
