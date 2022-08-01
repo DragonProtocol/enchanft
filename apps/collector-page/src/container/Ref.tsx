@@ -38,7 +38,7 @@ const enRefCode = (info: RefInfo) => {
 }
 
 const deRefCode = (refCode: string) => {
-  console.log(refCode,window.atob(refCode))
+  console.log('decode ref info',refCode,window.atob(refCode))
   return JSON.parse(window.atob(refCode))
 }
 
