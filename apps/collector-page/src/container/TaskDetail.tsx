@@ -30,6 +30,7 @@ import IconCaretLeft from '../components/common/icons/IconCaretLeft'
 import ChainTag from '../components/business/chain/ChainTag'
 import Button from '@mui/material/Button'
 import CardBox from '../components/common/card/CardBox'
+import usePermissions from '../hooks/usePermissons'
 const formatStoreDataToComponentDataByTaskDetailContent = (
   task: TaskDetailEntity,
   token: string,
@@ -108,6 +109,7 @@ const TaskDetail: React.FC = () => {
   const { status, data } = useAppSelector(selectTaskDetail)
   const dispatchFetchTaskDetail = useCallback(() => dispatch(fetchTaskDetail(Number(id))), [id])
   const [loadingView, setLoadingView] = useState(true)
+  const { isCreator, checkTaskAllowed } = usePermissions()
   useEffect(() => {
     if (status === AsyncRequestStatus.FULFILLED) {
       setLoadingView(false)
@@ -183,7 +185,7 @@ const TaskDetail: React.FC = () => {
                         <ProjectName onClick={() => navigate(`/community/${communityId}?projectId=${projectId}`)}>
                           Project: {projectName}
                         </ProjectName>
-                        <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>
+                        {isCreator && <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>}
                       </ProjectNameBox>
                       <TaskImageBox>
                         <ChainTag size={2} chainId={chainId} />

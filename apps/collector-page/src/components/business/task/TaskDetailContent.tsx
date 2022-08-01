@@ -2,6 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../types/api'
+
+import ChainTag from '../chain/ChainTag'
+import { useNavigate } from 'react-router-dom'
 import ButtonBase, { ButtonInfo, ButtonPrimary } from '../../common/button/ButtonBase'
 
 export type TaskDetailContentDataType = {
@@ -67,6 +70,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
   onConnectWallet,
   onBindWallet,
 }: TaskDetailContentProps) => {
+  const navigate = useNavigate()
   const { id, name, type, startTime, endTime, winnersNum, image, description, project } = data
   const {
     displayConnectWallet,
@@ -99,6 +103,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
     }
   }
   const completeStatusLabel = data.status === TaskTodoCompleteStatus.COMPLETED ? 'Completed!' : 'Already Accepted'
+
   return (
     <TaskDetailContentWrapper>
       <TaskTypeLabel>{taskTypeLabel}</TaskTypeLabel>

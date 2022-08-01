@@ -32,6 +32,11 @@ type Account = {
   thirdpartyName: string
 }
 
+export enum RoleType {
+  CREATOR = 'CREATOR',
+  COLLECTOR = 'COLLECTOR',
+}
+
 export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
@@ -46,6 +51,8 @@ export type AccountState = {
   connectWalletModalShow: boolean
   accounts: Array<Account>
   linkErrMsg: string
+  resourcePermissions: Array<any>
+  roles: Array<RoleType>
 }
 
 // 用户账户信息
@@ -62,6 +69,8 @@ const initialState: AccountState = {
   connectWalletModalShow: false,
   accounts: [],
   linkErrMsg: '',
+  resourcePermissions: [],
+  roles: [],
 }
 
 export const userLogin = createAsyncThunk(
@@ -189,6 +198,11 @@ export const accountSlice = createSlice({
     },
     setToken: (state, action) => {
       state.token = action.payload
+      if (!action.payload) {
+        state.accounts = []
+        state.resourcePermissions = []
+        state.roles = []
+      }
     },
     setAvatar: (state, action) => {
       state.avatar = action.payload
@@ -220,6 +234,8 @@ export const accountSlice = createSlice({
         state.name = action.payload.name
         state.id = action.payload.id
         state.accounts = action.payload.accounts
+        state.resourcePermissions = action.payload.resourcePermissions
+        state.roles = action.payload.roles
         state.defaultWallet = action.payload.walletType
         state.errorMsg = ''
 
@@ -263,6 +279,8 @@ export const accountSlice = createSlice({
         state.name = action.payload.data.name
         state.id = action.payload.data.id
         state.accounts = action.payload.data.accounts
+        state.resourcePermissions = action.payload.data.resourcePermissions
+        state.roles = action.payload.data.roles
         state.errorMsg = ''
       })
       .addCase(userGetProfile.rejected, (state, action) => {
