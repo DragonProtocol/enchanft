@@ -7,7 +7,7 @@ export const getTakeTaskRefLink = (referrerId: number, taskID: number): string =
 
 const generateRefLink = (referrerId: number, type: RefType, data: RefData): string => {
   const refCode = enRefCode({ referrerId: referrerId, type: type, data: data })
-  return window.location.host + REF_LINK_PREFIX + refCode
+  return window.location.origin + REF_LINK_PREFIX + refCode
 }
 
 export default function Ref() {
