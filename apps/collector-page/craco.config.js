@@ -61,6 +61,7 @@ module.exports = {
     },
   },
   devServer: {
+    port:8080,
     proxy: {
       '/api/*': {
         target: 'https://test-enchanft-backend.onrender.com',

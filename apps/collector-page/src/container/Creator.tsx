@@ -16,7 +16,7 @@ import usePermissions from '../hooks/usePermissons'
 export default function Creator() {
   const { taskId } = useParams()
   const dispatch = useAppDispatch()
-  const { status, participants, winners, whitelistSaved, winnerList, taskInfo, scheduleInfo } =
+  const { status, participants, winners, whitelistSaved, winnerList, taskInfo, scheduleInfo, pickedWhiteList } =
     useAppSelector(selectCreator)
   const { isCreator } = usePermissions()
 
@@ -58,6 +58,7 @@ export default function Creator() {
               winnersNum={taskInfo?.whitelistTotalNum || 0}
               whitelistSaved={whitelistSaved}
               winnerList={winnerList}
+              pickedWhiteList={pickedWhiteList}
               schedules={scheduleInfo}
               uploadSelected={(ids: Array<number>) => {
                 saveWinners(ids)
