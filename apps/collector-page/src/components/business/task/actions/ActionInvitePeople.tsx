@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 17:53:30
+ * @LastEditTime: 2022-08-01 19:54:47
  * @Description: file description
  */
 import React from 'react'
@@ -14,6 +14,11 @@ import OverflowEllipsisBox from '../../../common/text/OverflowEllipsisBox'
 import TooltipWrapper from '../../../common/TooltipWrapper'
 import IconTip from '../../../common/icons/IconTip'
 import IconCopy from '../../../common/icons/IconCopy'
+import { getTakeTaskRefLink } from '../../../../container/Ref'
+import { useAppSelector } from '../../../../store/hooks'
+import { selectAccount } from '../../../../features/user/accountSlice'
+import { useEffect } from 'react'
+import { useState } from 'react'
 
 export type ActionInvitePeopleProps = {
   data: TaskActionItemDataType
@@ -22,24 +27,36 @@ export type ActionInvitePeopleProps = {
 }
 
 const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, copyBgc }: ActionInvitePeopleProps) => {
-  const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
+  const account = useAppSelector(selectAccount)
+  const { name, progress, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
+  const [refUrl, setRefUrl] = useState('')
+
+  useEffect(() => {
+    if (account.id > 0) {
+      const url = getTakeTaskRefLink(account.id, taskId)
+      setRefUrl(url)
+    }
+  }, [account])
+
   const isDone = status === UserActionStatus.DONE
   const handleCopySuccess = () => {
     if (onCopy) {
-      onCopy(actionData.url)
+      onCopy(refUrl)
     }
   }
   return (
     <ActionInvitePeopleWrapper>
       <ActionInvitePeopleRow>
-        <ActionInvitePeopleLeft isDone={isDone}>{name}</ActionInvitePeopleLeft>
+        <ActionInvitePeopleLeft isDone={isDone}>
+          {name} ({progress})
+        </ActionInvitePeopleLeft>
         <TooltipWrapper title={description}>
           <IconTip opacity={isDone ? 0.5 : 1} />
         </TooltipWrapper>
       </ActionInvitePeopleRow>
       <ActionInviteCopyBox bgc={copyBgc}>
-        <InviteLinkBox>{actionData.url}</InviteLinkBox>
-        <CopyToClipboard text={actionData.url}>
+        <InviteLinkBox>{refUrl}</InviteLinkBox>
+        <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
           <CopyBtn>
             <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
           </CopyBtn>

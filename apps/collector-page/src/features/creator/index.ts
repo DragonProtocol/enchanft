@@ -26,6 +26,11 @@ export type Winner = {
   pubkey: string
 }
 
+export type PickedWhiteList = {
+  task_id: number
+  user_id: number
+}
+
 export type CreatorState = {
   status: AsyncRequestStatus
   saveStatus: AsyncRequestStatus
@@ -33,6 +38,7 @@ export type CreatorState = {
   winners: number
   whitelistSaved: boolean
   winnerList: Array<Winner>
+  pickedWhiteList: Array<PickedWhiteList>
   taskInfo: TaskInfo | null
   scheduleInfo: ScheduleInfo | null
 }
@@ -45,6 +51,7 @@ const creatorState: CreatorState = {
   winners: 0,
   whitelistSaved: false,
   winnerList: [],
+  pickedWhiteList: [],
   taskInfo: null,
   scheduleInfo: null,
 }
@@ -88,6 +95,7 @@ export const creatorSlice = createSlice({
         state.winners = action.payload.winners
         state.whitelistSaved = action.payload.whitelistSaved
         state.winnerList = action.payload.winnerList
+        state.pickedWhiteList = action.payload.pickedWhiteList
         state.scheduleInfo = action.payload.scheduleInfo
         state.taskInfo = action.payload.taskInfo
       })

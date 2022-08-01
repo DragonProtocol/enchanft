@@ -3,7 +3,7 @@ import React, { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
-import { ScheduleInfo, Winner } from '../../../features/creator'
+import { PickedWhiteList, ScheduleInfo, Winner } from '../../../features/creator'
 import { sortPubKey } from '../../../utils/solana'
 
 export enum TaskStatus {
@@ -16,6 +16,7 @@ export enum TaskStatus {
 export default function WinnerList({
   winnerNum,
   winnerList,
+  pickedWhiteList,
   schedules,
   uploadSelected,
   whitelistSaved,
@@ -24,6 +25,7 @@ export default function WinnerList({
   winnerNum: number
   whitelistSaved: boolean
   winnerList: Array<Winner>
+  pickedWhiteList: Array<PickedWhiteList>
   schedules: ScheduleInfo | null
   uploadSelected: (arg0: Array<number>) => void
   downloadWinners: () => void
@@ -79,18 +81,23 @@ export default function WinnerList({
       </div>
       <div className="list">
         {list.map((item, idx) => {
+          const checked = whitelistSaved
+            ? pickedWhiteList.find((pickedItem) => pickedItem.user_id == item.id)
+            : selected.includes(item.id)
+          const disabled = whitelistSaved || (disableSelect && !selected.includes(item.id))
           return (
             <ListItem
               key={idx}
               idx={idx}
               data={item}
+              checked={!!checked}
+              disabled={disabled}
               selected={selected}
-              disableSelect={disableSelect}
               setSelected={(newSelected) => {
                 setDisableSelect(newSelected.length >= winnerNum)
                 setSelected(newSelected)
               }}
-              showSelect={!whitelistSaved}
+              couldSelect={!whitelistSaved}
             />
           )
         })}
@@ -102,15 +109,17 @@ export default function WinnerList({
 function ListItem({
   idx,
   data,
-  disableSelect,
+  checked,
+  disabled,
   selected,
   setSelected,
-  showSelect,
+  couldSelect,
 }: {
   idx: number
   data: Winner
-  disableSelect: boolean
-  showSelect: boolean
+  checked: boolean
+  disabled: boolean
+  couldSelect: boolean
   selected: Array<number>
   setSelected: (arg0: Array<number>) => void
 }) {
@@ -122,23 +131,22 @@ function ListItem({
       </span>
       <span>{data.name}</span>
       <span>{data.pubkey}</span>
-      {(showSelect && (
-        <Checkbox
-          checked={selected.includes(data.id)}
-          disabled={disableSelect && !selected.includes(data.id)}
-          onChange={() => {
-            if (selected.includes(data.id)) {
-              const newArr = selected.filter((item) => {
-                return item !== data.id
-              })
-              setSelected(newArr)
-            } else {
-              selected.push(data.id)
-              setSelected([...selected])
-            }
-          }}
-        />
-      )) || <span>{'  '}</span>}
+      <Checkbox
+        checked={checked}
+        disabled={disabled}
+        onChange={() => {
+          if (!couldSelect) return
+          if (selected.includes(data.id)) {
+            const newArr = selected.filter((item) => {
+              return item !== data.id
+            })
+            setSelected(newArr)
+          } else {
+            selected.push(data.id)
+            setSelected([...selected])
+          }
+        }}
+      />
     </div>
   )
 }

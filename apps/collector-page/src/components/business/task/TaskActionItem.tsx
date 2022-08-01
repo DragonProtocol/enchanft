@@ -26,6 +26,7 @@ export type TaskActionItemDataType = {
   communityId: number
   description: string
   data: ActionData
+  progress?: string
   status: UserActionStatus
 }
 

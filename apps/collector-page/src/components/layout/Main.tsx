@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 16:59:07
+ * @LastEditTime: 2022-08-01 19:55:26
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
@@ -23,6 +23,7 @@ import Projects from '../../container/Projects'
 import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
 import Project from '../../container/Project'
 import Contributionranks from '../../container/Contributionranks'
+import Ref from '../../container/Ref'
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -45,6 +46,7 @@ const Main: React.FC = () => {
     { path: '/contributionranks/:communityId', element: <Contributionranks /> },
     { path: '/:projectSlug', element: <Project /> },
     { path: '/:projectSlug/:taskId', element: <Task /> },
+    { path: '/ref/:refCode', element: <Ref /> },
     ...permissionRoutes,
     { path: '*', element: <div>404</div> },
   ])

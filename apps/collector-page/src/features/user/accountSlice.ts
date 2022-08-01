@@ -32,6 +32,11 @@ type Account = {
   thirdpartyName: string
 }
 
+export enum RoleType {
+  CREATOR = 'CREATOR',
+  COLLECTOR = 'COLLECTOR',
+}
+
 export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
@@ -41,10 +46,13 @@ export type AccountState = {
   token: string
   avatar: string
   name: string
+  id: number
   connectModal: ConnectModal | null
   connectWalletModalShow: boolean
   accounts: Array<Account>
   linkErrMsg: string
+  resourcePermissions: Array<any>
+  roles: Array<RoleType>
 }
 
 // 用户账户信息
@@ -56,10 +64,13 @@ const initialState: AccountState = {
   token: '',
   avatar: '',
   name: '',
+  id: 0,
   connectModal: null,
   connectWalletModalShow: false,
   accounts: [],
   linkErrMsg: '',
+  resourcePermissions: [],
+  roles: [],
 }
 
 export const userLogin = createAsyncThunk(
@@ -187,6 +198,11 @@ export const accountSlice = createSlice({
     },
     setToken: (state, action) => {
       state.token = action.payload
+      if (!action.payload) {
+        state.accounts = []
+        state.resourcePermissions = []
+        state.roles = []
+      }
     },
     setAvatar: (state, action) => {
       state.avatar = action.payload
@@ -216,7 +232,10 @@ export const accountSlice = createSlice({
         state.token = action.payload.token
         state.avatar = action.payload.avatar
         state.name = action.payload.name
+        state.id = action.payload.id
         state.accounts = action.payload.accounts
+        state.resourcePermissions = action.payload.resourcePermissions
+        state.roles = action.payload.roles
         state.defaultWallet = action.payload.walletType
         state.errorMsg = ''
 
@@ -258,7 +277,10 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.FULFILLED
         state.avatar = action.payload.data.avatar
         state.name = action.payload.data.name
+        state.id = action.payload.data.id
         state.accounts = action.payload.data.accounts
+        state.resourcePermissions = action.payload.data.resourcePermissions
+        state.roles = action.payload.data.roles
         state.errorMsg = ''
       })
       .addCase(userGetProfile.rejected, (state, action) => {
