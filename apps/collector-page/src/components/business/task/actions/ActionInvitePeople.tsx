@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 15:49:23
+ * @LastEditTime: 2022-08-01 19:54:47
  * @Description: file description
  */
 import React from 'react'
@@ -47,7 +47,9 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, c
   return (
     <ActionInvitePeopleWrapper>
       <ActionInvitePeopleRow>
-        <ActionInvitePeopleLeft isDone={isDone}>{name} ({progress})</ActionInvitePeopleLeft>
+        <ActionInvitePeopleLeft isDone={isDone}>
+          {name} ({progress})
+        </ActionInvitePeopleLeft>
         <TooltipWrapper title={description}>
           <IconTip opacity={isDone ? 0.5 : 1} />
         </TooltipWrapper>
@@ -55,7 +57,9 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, c
       <ActionInviteCopyBox bgc={copyBgc}>
         <InviteLinkBox>{refUrl}</InviteLinkBox>
         <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
-          <button><IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" /></button>
+          <CopyBtn>
+            <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
+          </CopyBtn>
         </CopyToClipboard>
       </ActionInviteCopyBox>
     </ActionInvitePeopleWrapper>
@@ -100,4 +104,7 @@ const InviteLinkBox = styled(OverflowEllipsisBox)`
   font-size: 12px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.5);
+`
+const CopyBtn = styled.div`
+  cursor: pointer;
 `

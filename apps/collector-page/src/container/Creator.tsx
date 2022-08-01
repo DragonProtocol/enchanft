@@ -55,7 +55,7 @@ export default function Creator() {
               completionRate={participants == 0 ? '0.00' : ((winners * 100) / participants).toFixed(2)}
             />
             <WinnerList
-              winnersNum={taskInfo?.whitelistTotalNum || 0}
+              winnerNum={taskInfo?.whitelistTotalNum || 0}
               whitelistSaved={whitelistSaved}
               winnerList={winnerList}
               pickedWhiteList={pickedWhiteList}

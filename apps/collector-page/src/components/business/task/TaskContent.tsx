@@ -19,7 +19,7 @@ export type TaskContentDataType = {
   type: TaskType
   startTime: number
   endTime: number
-  winnersNum: number
+  winnerNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Array<{
     id: number
@@ -60,7 +60,7 @@ const TaskTypeLabels = {
 
 const TaskContent: React.FC<TaskContentProps> = ({ data, viewConfig, onTake }: TaskContentProps) => {
   const navigate = useNavigate()
-  const { id, name, type, startTime, endTime, winnersNum, actions } = data
+  const { id, name, type, startTime, endTime, winnerNum, actions } = data
   const { displayConnectWalletTip, displayAccept, displayGoToTasks, disabledTake, displayTake, loadingTake } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -78,7 +78,7 @@ const TaskContent: React.FC<TaskContentProps> = ({ data, viewConfig, onTake }: T
       <TaskName>{name}</TaskName>
       <TaskContentRow>
         <span>{typeLabel}</span>
-        <span>winners {winnersNum}</span>
+        <span>winners {winnerNum}</span>
       </TaskContentRow>
       <TaskContentRow>
         {startDate} —— {endDate}

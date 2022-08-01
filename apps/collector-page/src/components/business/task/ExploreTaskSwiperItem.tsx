@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 16:43:43
+ * @LastEditTime: 2022-08-01 18:06:07
  * @Description: file description
  */
 import React from 'react'
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { TaskType } from '../../../types/api'
+import RichTextBox from '../../common/text/RichTextBox'
 import ChainTag from '../chain/ChainTag'
 
 export type ExploreTaskSwiperItemDataType = {
@@ -19,7 +20,7 @@ export type ExploreTaskSwiperItemDataType = {
   type: TaskType
   startTime: number
   endTime: number
-  winnersNum: number
+  winnerNum: number
   description: string
   project: {
     chainId: number
@@ -46,7 +47,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
   viewConfig,
 }: ExploreTaskSwiperItemProps) => {
   const navigate = useNavigate()
-  const { id, name, image, type, startTime, endTime, winnersNum, description, project } = data
+  const { id, name, image, type, startTime, endTime, winnerNum, description, project } = data
   const taskTypeLabel = TaskTypeLabels[type] || 'Unknown Task Type'
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
@@ -62,9 +63,9 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
           <TaskDateTime>
             {startDate}-{endDate}
           </TaskDateTime>
-          <TaskWinners>Winners {winnersNum}</TaskWinners>
+          <TaskWinners>Winners {winnerNum}</TaskWinners>
         </TaskDateAndWinnerBox>
-        <TaskDescription>{description}</TaskDescription>
+        <TaskDescription value={description} />
       </TaskInfoBox>
     </ExploreTaskSwiperItemWrapper>
   )
@@ -116,11 +117,8 @@ const TaskDateAndWinnerBox = styled.div`
 const TaskDateTime = styled.span``
 const TaskWinners = styled.span``
 
-const TaskDescription = styled.div`
+const TaskDescription = styled(RichTextBox)`
   flex: 1;
-  font-size: 16px;
-  line-height: 20px;
-  color: rgba(51, 51, 51, 0.6);
   overflow-y: auto;
   ${ScrollBarCss}
 `

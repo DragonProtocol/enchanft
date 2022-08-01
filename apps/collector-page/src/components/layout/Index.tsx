@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 10:30:41
+ * @LastEditTime: 2022-08-01 10:03:13
  * @Description: 站点布局入口
  */
 import React from 'react'
@@ -51,8 +51,8 @@ const HeaderInner = styled.div`
   width: 100%;
   height: 72px;
   box-sizing: border-box;
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
-    width: ${MEDIA_BREAK_POINTS.xxxl}px;
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+    width: ${MEDIA_BREAK_POINTS.xxl}px;
     margin: 0 auto;
   }
 `
@@ -67,8 +67,8 @@ const MainInner = styled.div`
   position: relative;
   width: 100%;
   box-sizing: border-box;
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
-    width: ${MEDIA_BREAK_POINTS.xxxl}px;
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+    width: ${MEDIA_BREAK_POINTS.xxl}px;
     margin: 0 auto;
   }
 `

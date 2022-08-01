@@ -2,16 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-08 19:10:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 15:57:28
+ * @LastEditTime: 2022-08-01 18:40:57
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
 import request from '../../request/axios'
 import { ApiResp } from '../../types'
 import {
+  CommunityBasicInfoResponse,
   CommunityCollectionResponse,
-  CommunityContributionRankResponseItem,
+  CommunityContributionRankResponse,
   FollowedCommunitiesResponse,
+  UserContributionResponse,
 } from '../../types/api'
 
 /** 获取 collection 详情 */
@@ -29,17 +31,43 @@ export function fetchDetailForCommunityCollection(
     },
   })
 }
+/** 获取社区基本信息 */
+export function fetchDetailByCommunityBasicInfo(id: number): AxiosPromise<ApiResp<CommunityBasicInfoResponse>> {
+  return request({
+    url: `/communities/${id}/info`,
+    method: 'get',
+  })
+}
 
 /** 获取 社区贡献值排行 列表 */
-export type fetchListForCommunityContributionRankParams = {
-  communityId: number
-}
 export function fetchListForCommunityContributionRank(
-  params: fetchListForCommunityContributionRankParams,
-): AxiosPromise<ApiResp<CommunityContributionRankResponseItem[]>> {
+  communityId: number,
+): AxiosPromise<ApiResp<CommunityContributionRankResponse>> {
   return request({
-    url: `/communities/${params.communityId}/contribution-rank`,
+    url: `/communities/${communityId}/contribution-rank`,
     method: 'get',
+  })
+}
+
+/** 获取用户在此社区的贡献信息 */
+export function fetchOneByUserCommunityContributionRank(id: number): AxiosPromise<ApiResp<UserContributionResponse>> {
+  return request({
+    url: `/communities/${id}/contribution`,
+    method: 'get',
+    headers: {
+      needToken: true,
+    },
+  })
+}
+
+/** 获取用户在此社区的积分 */
+export function fetchOneByUserCommunityScore(id: number): AxiosPromise<ApiResp<number>> {
+  return request({
+    url: `/communities/${id}/contribution`,
+    method: 'get',
+    headers: {
+      needToken: true,
+    },
   })
 }
 

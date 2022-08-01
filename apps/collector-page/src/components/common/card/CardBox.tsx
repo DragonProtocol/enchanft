@@ -2,15 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 10:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 10:47:57
+ * @LastEditTime: 2022-08-01 17:36:20
  * @Description: file description
  */
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 
-type CardBoxProps = {
-  children: any
-}
+type CardBoxProps = HTMLAttributes<HTMLDivElement>
 const CardBox: React.FC<CardBoxProps> = ({ children, ...otherProps }: CardBoxProps) => {
   return <CardBoxWrapper {...otherProps}>{children}</CardBoxWrapper>
 }

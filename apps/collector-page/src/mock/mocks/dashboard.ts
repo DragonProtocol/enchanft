@@ -21,7 +21,7 @@ export default [
           'type|1': [TaskType.WHITELIST_ORIENTED, TaskType.WHITELIST_LUCK_DRAW],
           startTime: '@date(unix)',
           endTime: '@date(unix)',
-          winnersNum: 100,
+          winnerNum: 100,
           'isAccepted|1': false,
           'acceptedStatus|1': [TaskAcceptedStatus.CANDO, TaskAcceptedStatus.CANNOT, TaskAcceptedStatus.DONE],
           project: {

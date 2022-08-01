@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 14:14:28
+ * @LastEditTime: 2022-08-01 19:35:40
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -118,6 +118,7 @@ export type Project = {
   itemTotalNum: number
   mintPrice: string
   floorPrice: string
+  mintUrl: string
   mintStartTime: number
   whitelistTotalNum: number
   publicSaleTime: number
@@ -126,6 +127,7 @@ export type Project = {
   discord: string
   twitter: string
   chainId: number
+  slug: string
 }
 
 export type ContributionRank = {
@@ -170,13 +172,13 @@ export type ExploreSearchTasksRequestParams = {
   keywords?: string
 }
 export type ExploreSearchTaskItem = Task & {
-  winnersNum: number
+  winnerNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
   project: Project
 }
 export type ExploreRecommendTaskItem = Task & {
-  winnersNum: number
+  winnerNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
   project: Project
@@ -184,7 +186,7 @@ export type ExploreRecommendTaskItem = Task & {
 
 // explore project
 export type TaskItem = Task & {
-  winnersNum: number
+  winnerNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
 }
@@ -200,6 +202,15 @@ export type ExploreSearchProjectItem = Project & {
 export type ExploreRecommendProjectItem = Project & {
   community: Community
   tasks: TaskItem[]
+}
+
+// project detail
+export type ProjectDetailResponse = Project & {
+  tasks: TaskItem[]
+  teamMembers: Team[]
+  roadmap: Roadmap[]
+  whitelists: Whitelist[]
+  community: Community
 }
 
 /** community api */
@@ -218,7 +229,14 @@ export type CommunityCollectionResponse = {
   projects: CommunityCollectionProjectItem[]
 }
 
-export type CommunityContributionRankResponseItem = ContributionRank
+export type CommunityBasicInfoResponse = Community
+
+export type CommunityContributionRankItem = ContributionRank
+export type CommunityContributionRankResponse = CommunityContributionRankItem[]
+
+/** contribution */
+export type ContributionRanksResponse = ContributionRank[]
+export type UserContributionResponse = ContributionRank
 
 /** todo task api */
 export enum UserActionStatus {
