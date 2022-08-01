@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 11:01:33
+ * @LastEditTime: 2022-07-29 14:29:14
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -27,6 +27,7 @@ import MainContentBox from '../components/layout/MainContentBox'
 import ExploreTaskSwiper, { ExplorTaskSwiperItemsType } from '../components/business/task/ExploreTaskSwiper'
 import ExploreTaskList, { ExploreTaskListItemsType } from '../components/business/task/ExploreTaskList'
 import ExploreTaskFilter, { ExploreTaskFilterDataType } from '../components/business/task/ExploreTaskFilter'
+import CardBox from '../components/common/card/CardBox'
 
 const formatStoreDataToComponentDataByRecommendTasks = (
   tasks: ExploreRecommendTaskItemEntity[],
@@ -80,30 +81,26 @@ const Events: React.FC = () => {
 
   return (
     <EventsWrapper>
-      <ScrollBox>
-        <MainContentBox>
-          <RecommendTasksBox>
-            <ExploreTaskSwiper items={recommendTaskItems} loading={recommendTasksLoading} />
-          </RecommendTasksBox>
-          <SearchTasksBox>
-            <ExploreTaskFilter data={searchTasksFilter} onChange={setTasksFilter} />
-            <ExploreTaskList items={searchTaskItems} loading={searchTasksLoading} />
-          </SearchTasksBox>
-        </MainContentBox>
-      </ScrollBox>
+      <MainContentBox>
+        <RecommendTasksBox>
+          <ExploreTaskSwiper items={recommendTaskItems} loading={recommendTasksLoading} />
+        </RecommendTasksBox>
+        <SearchTasksBox>
+          <ExploreTaskFilter data={searchTasksFilter} onChange={setTasksFilter} />
+          <ExploreTaskList items={searchTaskItems} loading={searchTasksLoading} />
+        </SearchTasksBox>
+      </MainContentBox>
     </EventsWrapper>
   )
 }
 export default Events
 const EventsWrapper = styled.div`
   width: 100%;
-  height: 100%;
 `
-const RecommendTasksBox = styled.div`
-  margin-bottom: 100px;
-`
-const SearchTasksBox = styled.div`
+const RecommendTasksBox = styled.div``
+const SearchTasksBox = styled(CardBox)`
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 15:32:13
+ * @LastEditTime: 2022-07-27 16:24:36
  * @Description: file description
  */
 import React from 'react'
@@ -73,10 +73,14 @@ const ExploreTaskFilter: React.FC<ExploreTaskFilterProps> = ({
   return (
     <ExploreTaskFilterWrapper>
       {displayStatus && (
-        <ButtonRadioGroup options={ExploreTaskSortByOptions} value={sortBy} onChange={handleSortByChange} />
+        <FilterLeftBox>
+          <ButtonRadioGroup options={ExploreTaskSortByOptions} value={sortBy} onChange={handleSortByChange} />
+        </FilterLeftBox>
       )}
       {displayKeywords && (
-        <InputSearch value={keywords} onChange={handleKeywordsChange} placeholder="Search task keywords" />
+        <FilterRightBox>
+          <InputSearch value={keywords} onChange={handleKeywordsChange} placeholder="Search task keywords" />
+        </FilterRightBox>
       )}
     </ExploreTaskFilterWrapper>
   )
@@ -87,4 +91,9 @@ const ExploreTaskFilterWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 60px;
+`
+const FilterLeftBox = styled.div``
+const FilterRightBox = styled.div`
+  flex: 1;
+  max-width: 650px;
 `

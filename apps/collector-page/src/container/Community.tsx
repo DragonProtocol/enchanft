@@ -26,6 +26,7 @@ import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '..
 import { AsyncRequestStatus } from '../types'
 import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
 import { follow } from '../features/user/communityHandlesSlice'
+import CardBox from '../components/common/card/CardBox'
 
 // 处理社区基本信息
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
@@ -107,10 +108,15 @@ const formatStoreDataToComponentDataByProjectDetail = (
   })
 }
 
+export enum CommunityParamsVisibleType {
+  CONTRIBUTION = 'contribution',
+}
+
 const Community: React.FC = () => {
   const { communityId } = useParams()
   const [searchParams, setSearchParams] = useSearchParams()
   const projectId = searchParams.get('projectId')
+  const visible = searchParams.get('visible')
 
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
@@ -174,7 +180,13 @@ const Community: React.FC = () => {
     },
   ]
   const [curCommunityTab, setCurCommunityTab] = useState(CommunityTabOptions[0].value)
-
+  useEffect(() => {
+    if (visible) {
+      if (visible === CommunityParamsVisibleType.CONTRIBUTION) {
+        setCurCommunityTab(CommunityTabOptions[1].value)
+      }
+    }
+  }, [visible])
   // 项目展示信息切换
   const [curProjectId, setCurProjectId] = useState<number>(Number(projectId))
   useEffect(() => {
@@ -220,17 +232,20 @@ const Community: React.FC = () => {
   }
   return (
     <CommunityWrapper>
-      <ScrollBox>
-        <MainContentBox>
-          {loading ? (
-            <CommunityLoading>loading...</CommunityLoading>
-          ) : (
-            <>
+      <MainContentBox>
+        {loading ? (
+          <CommunityLoading>loading...</CommunityLoading>
+        ) : (
+          <>
+            <CommunityTopBox>
               <CommunityBasicInfo
                 data={communityBasicInfoData}
                 viewConfig={communityBasicInfoViewConfig}
                 onFollowChange={handleFollowChange}
               />
+            </CommunityTopBox>
+
+            <CommunityBottomBox>
               <CommunityTabs>
                 {CommunityTabOptions.map((item) => (
                   <CommunityTab
@@ -246,24 +261,27 @@ const Community: React.FC = () => {
                 {curCommunityTab === 'collection' && renderCollection()}
                 {curCommunityTab === 'contribution' && <CommunityContribution items={contributionranks} />}
               </CommunityTabContentBox>
-            </>
-          )}
-        </MainContentBox>
-      </ScrollBox>
+            </CommunityBottomBox>
+          </>
+        )}
+      </MainContentBox>
     </CommunityWrapper>
   )
 }
 export default Community
 const CommunityWrapper = styled.div`
   width: 100%;
-  height: 100%;
+`
+const CommunityTopBox = styled(CardBox)``
+const CommunityBottomBox = styled(CardBox)`
+  margin-top: 20px;
 `
 const CommunityTabs = styled.div`
   width: 700px;
   height: 32px;
   display: flex;
   border: 1px solid rgba(0, 0, 0, 1);
-  margin-top: 40px;
+  margin-top: 20px;
 `
 const CommunityTab = styled.div<{ isActive?: boolean }>`
   width: 350px;

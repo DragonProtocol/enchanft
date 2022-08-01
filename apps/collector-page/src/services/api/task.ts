@@ -6,6 +6,7 @@
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
+import { loadRefInfo, RefType } from '../../container/Ref'
 import request from '../../request/axios'
 import { ApiResp } from '../../types'
 import { TaskDetailResponse, TodoTaskItem, TodoTaskResponse } from '../../types/api'
@@ -16,13 +17,27 @@ export type TakeTaskParams = {
 }
 export function takeTask(params: TakeTaskParams): AxiosPromise<ApiResp<any>> {
   const { id } = params
-  return request({
-    url: `/tasks/${id}/takers`,
-    method: 'post',
-    headers: {
-      needToken: true,
-    },
-  })
+  const refInfo = loadRefInfo(RefType.TAKE_TASK, String(id))
+  if (refInfo && refInfo.referrerId > 0) {
+    return request({
+      url: `/tasks/${id}/takers`,
+      method: 'post',
+      data: {
+        referrerId: refInfo!.referrerId
+      },
+      headers: {
+        needToken: true,
+      },
+    })
+  } else {
+    return request({
+      url: `/tasks/${id}/takers`,
+      method: 'post',
+      headers: {
+        needToken: true,
+      },
+    })
+   }
 }
 
 /** 获取用户的任务列表 */

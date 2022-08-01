@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 13:30:06
+ * @LastEditTime: 2022-07-29 10:33:19
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
@@ -22,6 +22,7 @@ import EnchanftedDetail from '../../container/EnchanftedDetail'
 import TaskDetail from '../../container/TaskDetail'
 import Projects from '../../container/Projects'
 import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
+import Ref from '../../container/Ref'
 
 const Main: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -42,6 +43,7 @@ const Main: React.FC = () => {
     { path: '/community/:communityId', element: <Community /> },
     { path: '/calendar', element: <div>Calendar Page</div> },
     { path: '/creator/:taskId', element: <Creator /> },
+    { path: '/ref/:refCode', element: <Ref /> },
     ...permissionRoutes,
     { path: '*', element: <MainLoading></MainLoading> },
   ])
@@ -84,9 +86,6 @@ const Main: React.FC = () => {
 export default Main
 const MainWrapper = styled.div`
   width: 100%;
-  height: 100%;
-  display: flex;
-  overflow: hidden;
 `
 const MainLoading = styled.div`
   width: 100%;

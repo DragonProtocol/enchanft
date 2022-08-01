@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 14:39:58
+ * @LastEditTime: 2022-07-29 10:50:13
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -24,6 +24,13 @@ import useHandleAction from '../hooks/useHandleAction'
 import { ChainType, getChainType } from '../utils/chain'
 import { TokenType } from '../utils/token'
 import TaskWinnerList from '../components/business/task/TaskWinnerList'
+import ButtonBase, { ButtonPrimary } from '../components/common/button/ButtonBase'
+import ButtonNavigation from '../components/common/button/ButtonNavigation'
+import IconCaretLeft from '../components/common/icons/IconCaretLeft'
+import ChainTag from '../components/business/chain/ChainTag'
+import Button from '@mui/material/Button'
+import CardBox from '../components/common/card/CardBox'
+import usePermissions from '../hooks/usePermissons'
 const formatStoreDataToComponentDataByTaskDetailContent = (
   task: TaskDetailEntity,
   token: string,
@@ -102,6 +109,7 @@ const TaskDetail: React.FC = () => {
   const { status, data } = useAppSelector(selectTaskDetail)
   const dispatchFetchTaskDetail = useCallback(() => dispatch(fetchTaskDetail(Number(id))), [id])
   const [loadingView, setLoadingView] = useState(true)
+  const { isCreator, checkTaskAllowed } = usePermissions()
   useEffect(() => {
     if (status === AsyncRequestStatus.FULFILLED) {
       setLoadingView(false)
@@ -143,96 +151,150 @@ const TaskDetail: React.FC = () => {
   const loadingVerify = status === AsyncRequestStatus.PENDING
   const disabledVerify = loadingVerify
 
-  if (!loadingView && !data) return null
+  if (loadingView) return <TaskDetailLoading>Loading ... </TaskDetailLoading>
+  if (!data) return null
+  const name = data.name || ''
+  const { projectId, image } = data
+  const { name: projectName, chainId, communityId } = data.project
+
   const taskDetailContent = data
     ? formatStoreDataToComponentDataByTaskDetailContent(data, token, takeTaskState, accountTypes)
     : null
   const actionItems = formatStoreDataToComponentDataByTaskActions(data?.actions || [])
   const winnerList = data?.winnerList || []
+
   return (
     <TaskDetailWrapper>
-      <ScrollBox>
-        <MainContentBox>
-          <TaskDetailBodyBox>
-            {loadingView ? (
-              <TaskDetailLoading>Loading ... </TaskDetailLoading>
-            ) : (
-              <>
-                <DetailHeader>
-                  <IconButton onClick={handleLeave}>
-                    <ArrowBackIosIcon />
-                  </IconButton>
-                  <TaskName>{data?.name}</TaskName>
-                </DetailHeader>
+      <MainContentBox>
+        {loadingView ? (
+          <TaskDetailLoading>Loading ... </TaskDetailLoading>
+        ) : (
+          data && (
+            <TaskDetailBodyBox>
+              <DetailBodyLeft>
+                <ButtonNavigation onClick={handleLeave}>
+                  <IconCaretLeft />
+                </ButtonNavigation>
+              </DetailBodyLeft>
+              <DetailBodyRight>
                 {taskDetailContent && (
-                  <TaskDetailContentBox>
-                    <TaskDetailContent
-                      data={taskDetailContent.data}
-                      viewConfig={taskDetailContent.viewConfig}
-                      onConnectWallet={handleOpenConnectWallet}
-                      onBindWallet={handleOpenWalletBind}
-                      onTake={(task) => handleTakeTask(task.id)}
-                      navToCreator={(task) => {
-                        navigate(`/creator/${task.id}`)
-                      }}
-                    />
-                  </TaskDetailContentBox>
+                  <>
+                    <TaskDetailTop>
+                      <TaskName>{name}</TaskName>
+                      <ProjectNameBox>
+                        <ProjectName onClick={() => navigate(`/community/${communityId}?projectId=${projectId}`)}>
+                          Project: {projectName}
+                        </ProjectName>
+                        {isCreator && <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>}
+                      </ProjectNameBox>
+                      <TaskImageBox>
+                        <ChainTag size={2} chainId={chainId} />
+                        <TaskImage src={image} />
+                      </TaskImageBox>
+                    </TaskDetailTop>
+                    <TaskDetailContentBox>
+                      <TaskDetailContentBoxLeft>
+                        <TaskDetailContent
+                          data={taskDetailContent.data}
+                          viewConfig={taskDetailContent.viewConfig}
+                          onConnectWallet={handleOpenConnectWallet}
+                          onBindWallet={handleOpenWalletBind}
+                          onTake={(task) => handleTakeTask(task.id)}
+                        />
+                      </TaskDetailContentBoxLeft>
+                      <TaskDetailContentBoxRight>
+                        {winnerList.length > 0 ? (
+                          <TaskListBox>
+                            <TaskWinnerList items={winnerList} />
+                          </TaskListBox>
+                        ) : (
+                          <TaskListBox>
+                            <TaskActionList
+                              items={actionItems}
+                              onDiscord={handleActionToDiscord}
+                              onTwitter={handleActionToTwitter}
+                              allowHandle={allowHandleAction}
+                              displayVerify={displayVerify}
+                              loadingVerify={loadingVerify}
+                              disabledVerify={disabledVerify}
+                              onVerifyActions={dispatchFetchTaskDetail}
+                              copyBgc="#FFFFFF"
+                              verifyBgc="#FFFFFF"
+                            />
+                          </TaskListBox>
+                        )}
+                      </TaskDetailContentBoxRight>
+                    </TaskDetailContentBox>
+                  </>
                 )}
-                <TaskActionsBox>
-                  <TaskActionList
-                    items={actionItems}
-                    onDiscord={handleActionToDiscord}
-                    onTwitter={handleActionToTwitter}
-                    allowHandle={allowHandleAction}
-                    displayVerify={displayVerify}
-                    loadingVerify={loadingVerify}
-                    disabledVerify={disabledVerify}
-                    onVerifyActions={dispatchFetchTaskDetail}
-                  />
-                </TaskActionsBox>
-                {winnerList.length > 0 && (
-                  <TaskWinnerListBox>
-                    <TaskWinnerList items={winnerList} />
-                  </TaskWinnerListBox>
-                )}
-              </>
-            )}
-          </TaskDetailBodyBox>
-        </MainContentBox>
-      </ScrollBox>
+              </DetailBodyRight>
+            </TaskDetailBodyBox>
+          )
+        )}
+      </MainContentBox>
     </TaskDetailWrapper>
   )
 }
 export default TaskDetail
 const TaskDetailWrapper = styled.div`
   width: 100%;
+`
+const TaskDetailLoading = styled.div`
+  width: 100%;
+  text-align: center;
+`
+const TaskDetailBodyBox = styled(CardBox)`
+  display: flex;
+  gap: 20px;
+`
+const DetailBodyLeft = styled.div``
+const DetailBodyRight = styled.div`
+  flex: 1;
   height: 100%;
 `
-const TaskDetailBodyBox = styled.div`
-  max-width: 800px;
-  margin: 0 auto;
-`
-const DetailHeader = styled.div`
-  width: 100%;
+const TaskDetailTop = styled.div`
   display: flex;
-  gap: 40px;
-  align-items: center;
+  flex-direction: column;
+  gap: 14px;
+`
+const TaskImageBox = styled.div`
+  position: relative;
 `
 const TaskName = styled.div`
   font-weight: 700;
   font-size: 36px;
   line-height: 40px;
 `
-const TaskDetailLoading = styled.div`
+const TaskImage = styled.img`
   width: 100%;
-  text-align: center;
+  object-fit: cover;
+`
+const ProjectNameBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+`
+const ProjectName = styled.div`
+  font-size: 20px;
+  line-height: 30px;
+  color: #3dd606;
+  cursor: pointer;
 `
 const TaskDetailContentBox = styled.div`
+  width: 100%;
   margin-top: 40px;
+  display: flex;
+  gap: 40px;
 `
-const TaskActionsBox = styled.div`
-  margin-top: 40px;
+const TaskDetailContentBoxLeft = styled.div`
+  flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
 `
-const TaskWinnerListBox = styled.div`
-  margin-top: 40px;
+const TaskDetailContentBoxRight = styled.div`
+  flex: 1;
+`
+const TaskListBox = styled.div`
+  background: #f8f8f8;
+  padding: 20px;
+  box-sizing: border-box;
 `

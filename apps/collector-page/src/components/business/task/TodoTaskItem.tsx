@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 13:42:59
+ * @LastEditTime: 2022-07-28 17:23:46
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -14,6 +14,7 @@ import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import MoodIcon from '@mui/icons-material/Mood'
 import MoodBadIcon from '@mui/icons-material/MoodBad'
 import TaskActionList from './TaskActionList'
+import { todoTaskCompleteStatusMap } from './TodoTaskList'
 
 export type TodoTaskItemDataType = {
   id: number
@@ -72,19 +73,19 @@ const defaultViewConfig: TodoTaskItemViewConfigType = {
 }
 const TaskTodoCompleteStatusView = {
   [TaskTodoCompleteStatus.COMPLETED]: {
-    icon: <ThumbUpAltIcon fontSize="small" />,
-    text: 'Completed',
+    icon: '👍',
+    text: 'Completed!',
   },
   [TaskTodoCompleteStatus.WON]: {
-    icon: <MoodIcon fontSize="small" />,
+    icon: '🎉',
     text: 'Congratulations!',
   },
   [TaskTodoCompleteStatus.LOST]: {
-    icon: <MoodBadIcon fontSize="small" />,
+    icon: '💔',
     text: 'Sorry',
   },
   [TaskTodoCompleteStatus.CLOSED]: {
-    icon: <MoodBadIcon fontSize="small" />,
+    icon: '🙁',
     text: 'Sorry',
   },
 }
@@ -129,7 +130,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
         return (
           <TaskProgressBox>
             <ExcessTime>{remainDays} days left</ExcessTime>
-            <CompleteNum>{loadingRefresh ? 'Loading...' : `${actionDoneNum}/${allActionNum}`}</CompleteNum>
+            <CompleteNum>{loadingRefresh ? 'Loading...' : `(${actionDoneNum}/${allActionNum})`}</CompleteNum>
           </TaskProgressBox>
         )
       case TaskTodoCompleteStatus.COMPLETED:
@@ -182,6 +183,8 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     }
   }, [mintStartTime, displayMint])
 
+  // mint 按钮背景色
+  const mintBgc = todoTaskCompleteStatusMap[status].titleBgc
   // mint按钮显示文本
   let mintStartTimeCountdownText = 'MINT'
   if (displayMint) {
@@ -208,6 +211,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
       }
     }
   }
+
   // mint 按钮状态
   const isDisabledMint = disabledMint || mintStartTimeCountdown.distance > 0
   // mint按钮点击事件
@@ -241,7 +245,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
         </TaskBasicInfoRightBox>
       </TaskBasicInfoBox>
       {displayMint && (
-        <MintBtn disabled={isDisabledMint} onClick={onMintClick}>
+        <MintBtn disabled={isDisabledMint} onClick={onMintClick} bgc={mintBgc}>
           {mintStartTimeCountdownText}
         </MintBtn>
       )}
@@ -265,10 +269,10 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
 export default TodoTaskItem
 const TodoTaskItemWrapper = styled.div`
   width: 100%;
-  border: 1px solid rgba(16, 16, 16, 100);
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 100);
-  padding: 10px 15px;
+  background: #ffffff;
+  border: 2px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  padding: 10px;
   box-sizing: border-box;
 `
 const TaskBasicInfoBox = styled.div<{ isAllowClick?: Boolean }>`
@@ -281,22 +285,25 @@ const TaskBasicInfoBox = styled.div<{ isAllowClick?: Boolean }>`
 const TaskBasicInfoLeftImg = styled.img`
   width: 40px;
   height: 40px;
-  border-radius: 4px;
+  object-fit: cover;
 `
 const TaskBasicInfoRightBox = styled.div`
   flex: 1;
 `
 const TaskName = styled.div`
-  color: rgba(16, 16, 16, 100);
+  font-weight: 700;
   font-size: 14px;
+  line-height: 21px;
+  color: #333333;
 `
 const TaskProgressBox = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
-  margin-top: 3px;
-  color: rgba(16, 16, 16, 100);
-  font-size: 12px;
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 15px;
+  color: rgba(51, 51, 51, 0.6);
 `
 const ExcessTime = styled.div``
 const CompleteNum = styled.div``
@@ -304,19 +311,22 @@ const Status = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  color: rgba(16, 16, 16, 100);
-  font-size: 12px;
+  font-size: 10px;
+  line-height: 15px;
+  color: rgba(51, 51, 51, 0.6);
+  margin-top: 5px;
 `
 const StatusIcon = styled.div``
 const StatusText = styled.div``
 
-const MintBtn = styled(ButtonBase)`
+const MintBtn = styled(ButtonBase)<{ bgc?: string }>`
   width: 100%;
-  height: 40px;
-  border-radius: 4px;
-  background-color: rgba(16, 16, 16, 100);
-  color: rgba(255, 255, 255, 100);
+  background-color: ${(props) => props.bgc || 'rgba(16, 16, 16, 100)'};
+  font-weight: 700;
   font-size: 14px;
+  line-height: 21px;
+  text-align: center;
+  color: #ffffff;
   margin-top: 10px;
 `
 const RefreshBtn = styled(ButtonBase)`
@@ -330,7 +340,7 @@ const RefreshBtn = styled(ButtonBase)`
 `
 
 const TaskActionsBox = styled.div`
-  border-top: 1px dashed rgba(16, 16, 16, 100);
+  border-top: 1px solid #d9d9d9;
   padding-top: 12px;
   margin-top: 10px;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 10:32:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 15:33:06
+ * @LastEditTime: 2022-07-27 16:06:47
  * @Description: file description
  */
 import React from 'react'
@@ -38,21 +38,18 @@ const ButtonRadioGroup: React.FC<ButtonRadioGroupProps> = ({ options, value, onC
 export default ButtonRadioGroup
 const ButtonRadioGroupWrapper = styled.div`
   height: 50px;
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 100);
-  border: 2px solid rgba(21, 21, 21, 100);
+  background: #f8f8f8;
   display: flex;
 `
 const ProjectStatusSelectorItem = styled.div<{ isActive?: boolean }>`
   width: 85px;
   height: 100%;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 27px;
   cursor: pointer;
-  border-left: 2px solid rgba(21, 21, 21, 100);
-  &:first-child {
-    border-left: none;
-  }
-  background: ${(props) => (props.isActive ? '#000' : '#fff')};
-  color: ${(props) => (props.isActive ? '#fff' : '#000')};
+  background: ${(props) => (props.isActive ? '#3DD606' : '#F8F8F8')};
+  color: ${(props) => (props.isActive ? '#FFFFFF' : '#333333')};
   display: flex;
   justify-content: center;
   align-items: center;

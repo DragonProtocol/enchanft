@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 11:24:28
+ * @LastEditTime: 2022-07-28 16:28:01
  * @Description: file description
  */
 import React from 'react'
@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { ProjectStatus } from '../../../types/api'
 import ChainTag from '../chain/ChainTag'
+import ProjectStatusLabel from './ProjectStatusLabel'
 
 export type ExploreProjectSwiperItemDataType = {
   id: number
@@ -31,26 +32,19 @@ export type ExploreProjectSwiperItemHandlesType = {}
 
 export type ExploreProjectSwiperItemProps = ExploreProjectSwiperItemDataViewType & ExploreProjectSwiperItemHandlesType
 
-const ProjectStatusLabels = {
-  [ProjectStatus.ACTIVE]: 'Active',
-  [ProjectStatus.LIVE]: 'Live',
-  [ProjectStatus.FUTURE]: 'Future',
-}
-
 const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
   data,
   viewConfig,
 }: ExploreProjectSwiperItemProps) => {
   const navigate = useNavigate()
   const { id, name, image, status, description, chainId, communityId } = data
-  const statusLabel = ProjectStatusLabels[status] || 'Unknown Project Status'
   return (
     <ExploreProjectSwiperItemWrapper>
       <ChainTag size={2} chainId={chainId} />
       <ProjectImage src={image} onClick={() => navigate(`/community/${communityId}?projectId=${id}`)} />
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
-        <ProjectStatusLabel>{statusLabel}</ProjectStatusLabel>
+        <ProjectStatusLabel status={status} fontSize="20px" />
         <ProjectDescription>{description}</ProjectDescription>
       </ProjectInfoBox>
     </ExploreProjectSwiperItemWrapper>
@@ -67,6 +61,8 @@ const ProjectImage = styled.img`
   width: 360px;
   height: 100%;
   cursor: pointer;
+  /* 图片不失真，不会出现拉伸 */
+  object-fit: cover;
 `
 const ProjectInfoBox = styled.div`
   flex: 1;
@@ -75,15 +71,10 @@ const ProjectInfoBox = styled.div`
   gap: 16px;
 `
 const ProjectName = styled.div`
-  font-size: 36px;
-  line-height: 40px;
-  color: #333333;
-`
-const ProjectStatusLabel = styled.div`
   font-weight: 700;
-  font-size: 18px;
-  line-height: 27px;
-  color: #3dd606;
+  font-size: 36px;
+  line-height: 54px;
+  color: #333333;
 `
 const ProjectDescription = styled.div`
   flex: 1;
