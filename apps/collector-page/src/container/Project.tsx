@@ -35,6 +35,7 @@ import ContributionList, {
 } from '../components/business/contribution/ContributionList'
 import RichTextBox from '../components/common/text/RichTextBox'
 import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
+import usePermissions from '../hooks/usePermissons'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -103,6 +104,7 @@ const Project: React.FC = () => {
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
   const projectDetail = useAppSelector(selectProjectDetail)
+  const { isCreator } = usePermissions()
   const { data, status, errorMsg } = projectDetail
   useEffect(() => {
     if (projectSlug) {
@@ -207,7 +209,13 @@ const Project: React.FC = () => {
               </ProjectBasicInfoBox>
 
               <ProjectEventsBox>
-                <ExploreTaskList items={tasks} displayCreateTask={true} />
+                <ExploreTaskList
+                  items={tasks}
+                  displayCreateTask={isCreator}
+                  onCreateTask={() => {
+                    navigate('/task/create')
+                  }}
+                />
               </ProjectEventsBox>
 
               <ProjectOtherInfoBox>

@@ -19,6 +19,7 @@ import { fetchFollowedCommunities } from '../../features/user/followedCommunitie
 import Guide from '../../container/Guide'
 import EnchanftedDetail from '../../container/EnchanftedDetail'
 import Task from '../../container/Task'
+import TaskCreate from '../../container/TaskCreate'
 import Projects from '../../container/Projects'
 import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
 import Project from '../../container/Project'
@@ -34,6 +35,7 @@ const Main: React.FC = () => {
     { path: '/guide', element: <Guide /> },
     { path: '/todo', element: <TodoTask /> },
     { path: '/enchanfted/:mint', element: <EnchanftedDetail /> },
+    { path: '/task/create', element: <TaskCreate /> },
   ]
   permissionRoutes = permissionRoutes.map((route) => ({
     ...route,
