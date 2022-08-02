@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:27:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-19 16:24:19
+ * @LastEditTime: 2022-08-02 14:45:58
  * @Description: enchanfted list
  */
 
@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from '../../../constants'
 import { CursorPointerUpCss } from '../../../GlobalStyle'
+import Loading from '../../common/loading/Loading'
 import EnchanftedItem, { EnchanftedItemDataViewType } from './EnchanftedItem'
 
 export type EnchanftedListViewConfigType = {
@@ -32,7 +33,11 @@ const EnchanftedList: React.FC<EnchanftedListProps> = ({
 
   return (
     <>
-      {loading && <EnchanftedListLoading>{loadingMsg}</EnchanftedListLoading>}
+      {loading && (
+        <EnchanftedListLoading>
+          <Loading />
+        </EnchanftedListLoading>
+      )}
       {!loading && items.length === 0 && emptyMsg && <EnchanftedListEmpty>{emptyMsg}</EnchanftedListEmpty>}
       <EnchanftedListWrapper>
         {!loading &&
@@ -69,6 +74,7 @@ const EnchanftedListWrapper = styled.div`
 `
 const EnchanftedListLoading = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-31 21:01:28
+ * @LastEditTime: 2022-08-02 14:55:23
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from '../../../constants'
 import ButtonBase from '../../common/button/ButtonBase'
+import Loading from '../../common/loading/Loading'
 import ExploreTaskItem, { ExploreTaskItemDataViewType } from './ExploreTaskItem'
 
 export type ExploreTaskListViewConfigType = {
@@ -31,7 +32,11 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
   onCreateTask,
 }: ExploreTaskListProps) => (
   <>
-    {loading && <ExploreTaskListLoading>{loadingMsg}</ExploreTaskListLoading>}
+    {loading && (
+      <ExploreTaskListLoading>
+        <Loading />
+      </ExploreTaskListLoading>
+    )}
     {!loading && items.length === 0 && emptyMsg && <ExploreTaskListEmpty>{emptyMsg}</ExploreTaskListEmpty>}
     <ExploreTaskListWrapper>
       {displayCreateTask && (
@@ -92,6 +97,7 @@ const CreateTaskButton = styled(ButtonBase)`
 `
 const ExploreTaskListLoading = styled.div`
   width: 100%;
+  height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;

@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 17:17:03
+ * @LastEditTime: 2022-08-02 14:50:09
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { TaskTodoCompleteStatus } from '../../../types/api'
+import Loading from '../../common/loading/Loading'
 
 import TodoTaskItem, { TodoTaskItemDataViewType, TodoTaskItemHandlesType } from './TodoTaskItem'
 export type TodoTaskListViewConfigType = {
@@ -77,7 +78,9 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
       </TodoTaskListHeader>
       <TodoTaskListBody bgc={bodyBgc}>
         {loading ? (
-          <TodoTaskListLoading>{loadingMsg}</TodoTaskListLoading>
+          <TodoTaskListLoading>
+            <Loading />
+          </TodoTaskListLoading>
         ) : (
           items.map((item) => (
             <TodoTaskItem
@@ -131,9 +134,11 @@ const TodoTaskListBody = styled.div<{ bgc?: string }>`
   ${ScrollBarCss}
 `
 const TodoTaskListLoading = styled.div`
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 const TodoTaskListEmpty = styled.div`
   text-align: center;

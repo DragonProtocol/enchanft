@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:25:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 15:02:12
+ * @LastEditTime: 2022-08-02 14:45:11
  * @Description: file description
  */
 import React from 'react'
@@ -17,6 +17,7 @@ import SwiperNextIcon from '@mui/icons-material/ArrowForwardIos'
 import TaskSwiperItem, { TaskSwiperItemDataViewType, TaskSwiperItemHandlesType } from './TaskSwiperItem'
 import IconButton from '@mui/material/IconButton'
 import { SwiperModule } from 'swiper/types'
+import Loading from '../../common/loading/Loading'
 export type TaskSwiperViewConfigType = {
   loading?: boolean
   loadingMsg?: string
@@ -67,7 +68,9 @@ const TaskSwiper: React.FC<TaskSwiperProps> = ({
       >
         {loading ? (
           <SwiperSlide>
-            <TaskSwiperLoading>{loadingMsg}</TaskSwiperLoading>
+            <TaskSwiperLoading>
+              <Loading />
+            </TaskSwiperLoading>
           </SwiperSlide>
         ) : (
           items.map((item) => (
@@ -102,9 +105,9 @@ const TaskSwiperRight = styled.div`
   cursor: pointer;
 `
 const TaskSwiperLoading = styled.div`
+  width: 100%;
+  height: 100%;
   text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
 `
 const TaskSwiperEmpty = styled.div`
   text-align: center;

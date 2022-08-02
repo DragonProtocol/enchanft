@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 16:29:56
+ * @LastEditTime: 2022-08-02 12:44:05
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -153,6 +153,8 @@ const Profile: React.FC = () => {
   const { status: whitelistsStatus } = useAppSelector(selectUserWhitelistsState)
   const loadingUserWhitelists = whitelistsStatus === AsyncRequestStatus.PENDING
   const whitelistItems = formatStoreDataToComponentDataByUserWhitelists(whitelists)
+  console.log({ whitelistItems })
+
   // 我的NFT列表
   // const myEnchanftedList = useAppSelector(selectAllForMyEnchanfted)
   // const { status: myEnchanftedStatus } = useAppSelector(selectMyEnchanftedState)

@@ -14,6 +14,9 @@ export type CommunityItemDataType = {
   twitter: string
   memberNums: number
   contribution: number
+  project: {
+    slug: string
+  }
   isFollowed: boolean
 }
 
@@ -42,7 +45,7 @@ const defaultViewConfig: CommunityItemViewConfigType = {
 
 const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollowChange }: CommunityItemProps) => {
   const navigate = useNavigate()
-  const { id, name, icon, website, description, discord, twitter, memberNums, contribution, isFollowed } = data
+  const { id, name, icon, website, description, discord, twitter, memberNums, contribution, project, isFollowed } = data
   const { disabledFollow, displayFollow, loadingFollow } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -53,7 +56,7 @@ const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollo
     }
   }
   return (
-    <CommunityItemWrapper onClick={() => navigate(`/community/${id}`)}>
+    <CommunityItemWrapper onClick={() => navigate(`/${project.slug}`)}>
       <CommunityImage src={icon} />
       <CommunityInfoBox>
         <CommunityName>{name}</CommunityName>

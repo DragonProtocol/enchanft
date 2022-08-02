@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:49:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 11:42:48
+ * @LastEditTime: 2022-08-02 14:46:31
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from '../../../constants'
+import Loading from '../../common/loading/Loading'
 import ExploreProjectItem, { ExploreProjectItemDataViewType } from './ExploreProjectItem'
 
 export type ExploreProjectListViewConfigType = {
@@ -26,7 +27,11 @@ const ExploreProjectList: React.FC<ExploreProjectListProps> = ({
   emptyMsg = 'no project',
 }: ExploreProjectListProps) => (
   <>
-    {loading && <ExploreProjectListLoading>{loadingMsg}</ExploreProjectListLoading>}
+    {loading && (
+      <ExploreProjectListLoading>
+        <Loading />
+      </ExploreProjectListLoading>
+    )}
     {!loading && items.length === 0 && emptyMsg && <ExploreProjectListEmpty>{emptyMsg}</ExploreProjectListEmpty>}
     <ExploreProjectListWrapper>
       {!loading &&
@@ -60,6 +65,7 @@ const ExploreProjectListWrapper = styled.div`
 `
 const ExploreProjectListLoading = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
