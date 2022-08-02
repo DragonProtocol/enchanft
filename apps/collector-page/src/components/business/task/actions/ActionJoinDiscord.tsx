@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 15:18:06
+ * @LastEditTime: 2022-08-02 17:52:31
  * @Description: file description
  */
 import React from 'react'
@@ -30,12 +30,12 @@ const ActionJoinDiscord: React.FC<ActionJoinDiscordProps> = ({ data, onDiscord }
   }
   return (
     <ActionJoinDiscordWrapper>
-      <ActionLeft isDone={isDone} onClick={clickAction}>
-        {name}
-      </ActionLeft>
-      <ActionRight isDone={isDone} onClick={clickAction}>
+      <ActionIcon isDone={isDone} onClick={clickAction}>
         <IconDiscord opacity={isDone ? 0.5 : 1} />
-      </ActionRight>
+      </ActionIcon>
+      <ActionContentBox isDone={isDone} onClick={clickAction}>
+        {name}
+      </ActionContentBox>
     </ActionJoinDiscordWrapper>
   )
 }
@@ -47,7 +47,7 @@ const ActionJoinDiscordWrapper = styled.div`
   align-items: flex-start;
   gap: 10px;
 `
-const ActionLeft = styled.div<{ isDone?: Boolean }>`
+const ActionContentBox = styled.div<{ isDone?: Boolean }>`
   flex: 1;
   ${({ isDone }) =>
     isDone
@@ -60,6 +60,6 @@ const ActionLeft = styled.div<{ isDone?: Boolean }>`
         cursor: pointer;
       `}
 `
-const ActionRight = styled.div<{ isDone?: Boolean }>`
+const ActionIcon = styled.div<{ isDone?: Boolean }>`
   ${({ isDone }) => !isDone && `cursor: pointer;`}
 `

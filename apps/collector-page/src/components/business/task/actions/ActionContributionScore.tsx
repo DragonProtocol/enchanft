@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 17:50:12
+ * @LastEditTime: 2022-08-02 17:54:46
  * @Description: file description
  */
 import React from 'react'
@@ -28,14 +28,14 @@ const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({ data 
   return (
     <ActionContributionScoreWrapper>
       <ActionContributionScoreRow>
-        <ActionLeft isDone={isDone} onClick={handleAction}>
-          {name}
-        </ActionLeft>
-        <ActionRight isDone={isDone} onClick={handleAction}>
+        <ActionIconBox isDone={isDone} onClick={handleAction}>
           <TooltipWrapper title={description}>
             <IconTip opacity={isDone ? 0.5 : 1} />
           </TooltipWrapper>
-        </ActionRight>
+        </ActionIconBox>
+        <ActionContentBox isDone={isDone} onClick={handleAction}>
+          {name}
+        </ActionContentBox>
       </ActionContributionScoreRow>
     </ActionContributionScoreWrapper>
   )
@@ -51,7 +51,7 @@ const ActionContributionScoreRow = styled.div`
   align-items: flex-start;
   gap: 10px;
 `
-const ActionLeft = styled.div<{ isDone?: Boolean }>`
+const ActionContentBox = styled.div<{ isDone?: Boolean }>`
   flex: 1;
   ${({ isDone }) =>
     isDone
@@ -64,6 +64,6 @@ const ActionLeft = styled.div<{ isDone?: Boolean }>`
         cursor: pointer;
       `}
 `
-const ActionRight = styled.div<{ isDone?: Boolean }>`
+const ActionIconBox = styled.div<{ isDone?: Boolean }>`
   ${({ isDone }) => !isDone && `cursor: pointer;`}
 `

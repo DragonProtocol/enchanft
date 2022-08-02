@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 12:44:05
+ * @LastEditTime: 2022-08-02 18:52:50
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -74,6 +74,7 @@ import CardBox from '../components/common/card/CardBox'
 import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
 import IconMetamask from '../components/common/icons/IconMetamask'
 import UserAvatar from '../components/business/user/UserAvatar'
+import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {
@@ -272,12 +273,14 @@ const Profile: React.FC = () => {
         <EditProfileBox>
           <EditProfileTitle>Change Profile</EditProfileTitle>
           <EditFormBox>
-            <EditAvatar
-              src={account.avatar}
+            <EditAvatarBox
               onClick={() => {
                 document.getElementById('uploadinput')?.click()
               }}
-            />
+            >
+              <EditAvatar src={account.avatar} />
+            </EditAvatarBox>
+
             <EditNameBox>
               <input
                 title="uploadinput"
@@ -421,6 +424,23 @@ const EditProfileTitle = styled.div`
 const EditFormBox = styled.div`
   display: flex;
   gap: 10px;
+`
+const EditAvatarBox = styled.div`
+  width: 160px;
+  height: 160px;
+  position: relative;
+  &:hover {
+    cursor: pointer;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url(${UploadImgMaskImg});
+    }
+  }
 `
 const EditAvatar = styled(UserAvatar)`
   width: 160px;

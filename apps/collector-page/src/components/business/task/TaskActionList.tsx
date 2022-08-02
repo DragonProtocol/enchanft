@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:45:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 14:48:48
+ * @LastEditTime: 2022-08-02 18:17:52
  * @Description: file description
  */
 import React from 'react'
@@ -69,6 +69,7 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
               onTwitter={onTwitter}
               allowHandle={allowHandle}
               copyBgc={copyBgc}
+              verifying={loadingVerify}
             />
           ))}
           {displayVerify && (
