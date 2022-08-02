@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 10:51:34
+ * @LastEditTime: 2022-08-02 19:08:08
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -30,7 +30,9 @@ const formatStoreDataToComponentDataByTodoList = (
   taskId: number,
 ): TodoTaskListItemsType => {
   return tasks.map((task) => {
-    const actions = [...task.actions].sort((a, b) => a.orderNum - b.orderNum)
+    const actions = [...task.actions]
+      .sort((a, b) => a.orderNum - b.orderNum)
+      .map((v) => ({ ...v, project: task.project }))
     const loadingRefresh = task.refreshStatus === AsyncRequestStatus.PENDING
     const openActions = task.id === taskId
     return {
@@ -52,7 +54,9 @@ const formatStoreDataToComponentDataByInProgressList = (
   taskId: number,
 ): TodoTaskListItemsType => {
   return tasks.map((task) => {
-    const actions = [...task.actions].sort((a, b) => a.orderNum - b.orderNum)
+    const actions = [...task.actions]
+      .sort((a, b) => a.orderNum - b.orderNum)
+      .map((v) => ({ ...v, project: task.project }))
     const loadingRefresh = task.refreshStatus === AsyncRequestStatus.PENDING
     const openActions = task.id === taskId
     return {
@@ -73,7 +77,7 @@ const formatStoreDataToComponentDataByInProgressList = (
 const formatStoreDataToComponentDataByCompletedList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
   return tasks.map((task) => {
     return {
-      data: { ...task },
+      data: { ...task, actions: [] },
     }
   })
 }
@@ -81,7 +85,7 @@ const formatStoreDataToComponentDataByCompletedList = (tasks: TodoTaskItemForEnt
 const formatStoreDataToComponentDataByWonList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
   return tasks.map((task) => {
     return {
-      data: { ...task },
+      data: { ...task, actions: [] },
       viewConfig: {
         displayMint: true,
       },
@@ -92,7 +96,7 @@ const formatStoreDataToComponentDataByWonList = (tasks: TodoTaskItemForEntity[])
 const formatStoreDataToComponentDataByLostList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
   return tasks.map((task) => {
     return {
-      data: { ...task },
+      data: { ...task, actions: [] },
     }
   })
 }
@@ -100,7 +104,7 @@ const formatStoreDataToComponentDataByLostList = (tasks: TodoTaskItemForEntity[]
 const formatStoreDataToComponentDataByClosedList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
   return tasks.map((task) => {
     return {
-      data: { ...task },
+      data: { ...task, actions: [] },
     }
   })
 }

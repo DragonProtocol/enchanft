@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 19:14:18
+ * @LastEditTime: 2022-08-02 18:55:27
  * @Description: file description
  */
 import React from 'react'
@@ -15,6 +15,7 @@ import ActionInvitePeople from './actions/ActionInvitePeople'
 import ActionJoinDiscord from './actions/ActionJoinDiscord'
 import IconCheckbox from '../../common/icons/IconCheckbox'
 import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
+import Loading from '../../common/loading/Loading'
 
 export type TaskActionItemDataType = {
   id: number
@@ -28,6 +29,9 @@ export type TaskActionItemDataType = {
   data: ActionData
   progress?: string
   status: UserActionStatus
+  project: {
+    slug: string
+  }
 }
 
 export type TaskActionItemProps = {
@@ -35,6 +39,7 @@ export type TaskActionItemProps = {
   allowHandle?: boolean
   onTwitter?: (callback: () => void) => void
   onDiscord?: (callback: () => void) => void
+  verifying?: boolean
   copyBgc?: string
 }
 
@@ -43,6 +48,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   allowHandle,
   onTwitter,
   onDiscord,
+  verifying,
   copyBgc,
 }: TaskActionItemProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
@@ -51,6 +57,8 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
     case UserActionStatus.DONE:
       TaskStatusView = <IconCheckboxChecked />
       break
+    case UserActionStatus.TODO:
+      TaskStatusView = verifying ? <Loading size="1.5rem" /> : <IconCheckbox />
   }
   const renderAction = () => {
     if (!allowHandle) return name
@@ -88,8 +96,8 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   }
   return (
     <TaskActionItemWrapper>
+      <TaskActionContent>{renderAction()}</TaskActionContent>
       {TaskStatusView}
-      <TaskActionItemRight>{renderAction()}</TaskActionItemRight>
     </TaskActionItemWrapper>
   )
 }
@@ -104,6 +112,6 @@ const TaskActionItemWrapper = styled.div`
   color: #333333;
 `
 
-const TaskActionItemRight = styled.div`
+const TaskActionContent = styled.div`
   flex: 1;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 19:54:47
+ * @LastEditTime: 2022-08-02 17:39:57
  * @Description: file description
  */
 import React from 'react'
@@ -46,37 +46,34 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, c
   }
   return (
     <ActionInvitePeopleWrapper>
-      <ActionInvitePeopleRow>
-        <ActionInvitePeopleLeft isDone={isDone}>
-          {name} ({progress})
-        </ActionInvitePeopleLeft>
+      <ActionIconBox>
         <TooltipWrapper title={description}>
           <IconTip opacity={isDone ? 0.5 : 1} />
         </TooltipWrapper>
-      </ActionInvitePeopleRow>
-      <ActionInviteCopyBox bgc={copyBgc}>
-        <InviteLinkBox>{refUrl}</InviteLinkBox>
-        <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
-          <CopyBtn>
-            <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
-          </CopyBtn>
-        </CopyToClipboard>
-      </ActionInviteCopyBox>
+      </ActionIconBox>
+      <ActionContentBox isDone={isDone}>
+        {name} ({progress})
+        <ActionInviteCopyBox bgc={copyBgc}>
+          <InviteLinkBox>{refUrl}</InviteLinkBox>
+          <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
+            <CopyBtn>
+              <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
+            </CopyBtn>
+          </CopyToClipboard>
+        </ActionInviteCopyBox>
+      </ActionContentBox>
     </ActionInvitePeopleWrapper>
   )
 }
 export default ActionInvitePeople
 const ActionInvitePeopleWrapper = styled.div`
   width: 100%;
-`
-const ActionInvitePeopleRow = styled.div`
-  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
 `
-const ActionInvitePeopleLeft = styled.div<{ isDone?: Boolean }>`
+const ActionContentBox = styled.div<{ isDone?: Boolean }>`
   flex: 1;
   ${({ isDone }) =>
     isDone
@@ -88,6 +85,9 @@ const ActionInvitePeopleLeft = styled.div<{ isDone?: Boolean }>`
       : `
         cursor: pointer;
       `}
+`
+const ActionIconBox = styled.div<{ isDone?: Boolean }>`
+  ${({ isDone }) => !isDone && `cursor: pointer;`}
 `
 const ActionInviteCopyBox = styled.div<{ bgc?: string }>`
   width: 100%;

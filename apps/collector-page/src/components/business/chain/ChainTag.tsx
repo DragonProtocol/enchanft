@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-22 11:34:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 16:46:40
+ * @LastEditTime: 2022-08-02 18:43:53
  * @Description: file description
  */
 import React from 'react'
@@ -52,9 +52,9 @@ const ChainTag: React.FC<ChainTagProps> = ({ chainId, size = 1, ...otherProps }:
   // const iconSize = sideHypotRate * size * 30 + 'px'
 
   return (
-    <ChainTagWrapper bgc={chain.bgc} {...otherProps}>
+    <ChainTagWrapper bgc={chain?.bgc || '#476DFF'} {...otherProps}>
       {chain && <chain.icon size={'14px'} />}
-      {chain ? chain.name : 'Unknown Chain'}
+      {chain?.name || 'Unknown Chain'}
     </ChainTagWrapper>
     // <ChainTagWrapper size={wrapperSize} {...otherProps}>
     //   <ChainTagBodyBox borderHeight={borderHeightSize} bgc={chain.bgc}>
