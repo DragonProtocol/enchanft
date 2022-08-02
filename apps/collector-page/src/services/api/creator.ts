@@ -8,6 +8,9 @@ export function creatorApi(params: any) {
   return request({
     url: `/creator/dashboard/${params.task}`,
     method: 'get',
+    headers: {
+      needToken: true,
+    },
   })
 }
 
@@ -17,6 +20,9 @@ export function saveWinnersApi(params: any) {
     url: '/creator/save/',
     method: 'post',
     data: data,
+    headers: {
+      needToken: true,
+    },
   })
 }
 
@@ -25,6 +31,9 @@ export function downloadWinner(taskId: string) {
     url: `/creator/download/${taskId}.csv`,
     method: 'get',
     responseType: 'blob',
+    headers: {
+      needToken: true,
+    },
   }).then((response) => {
     fileDownload(response.data, 'winner.csv')
   })
