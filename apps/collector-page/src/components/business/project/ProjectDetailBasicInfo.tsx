@@ -89,7 +89,7 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
     <ProjectDetailBasicInfoWrapper>
       <ProjectTopBox>
         <ProjectTopLeftBox>
-          <ChainTag size={1.5} chainId={chainId} />
+          {/* <ChainTag size={1.5} chainId={chainId} /> */}
           <ProjectImage src={image} />
         </ProjectTopLeftBox>
         {/* project basic info */}

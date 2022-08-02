@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-31 19:14:27
+ * @LastEditTime: 2022-08-02 16:52:05
  * @Description: file description
  */
 import React from 'react'
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { ProjectStatus, TaskType } from '../../../types/api'
+import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
 import ProjectStatusLabel from './ProjectStatusLabel'
 
@@ -127,7 +128,7 @@ const ProjectInfoBox = styled.div`
   overflow-y: auto;
   ${ScrollBarCss}
 `
-const ProjectName = styled.div`
+const ProjectName = styled(OverflowEllipsisBox)`
   font-weight: 700;
   font-size: 18px;
   color: #333333;
