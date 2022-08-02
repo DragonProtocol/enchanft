@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 16:01:18
+ * @LastEditTime: 2022-07-31 21:07:46
  * @Description: file description
  */
 import React from 'react'
@@ -18,6 +18,7 @@ export type ExploreTaskItemDataType = {
   startTime: number
   endTime: number
   project: {
+    slug: string
     chainId: number
   }
 }
@@ -42,7 +43,7 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
   return (
-    <ExploreTaskItemWrapper onClick={() => navigate(`/task/${id}`)}>
+    <ExploreTaskItemWrapper onClick={() => navigate(`/${project.slug}/${id}`)}>
       <TaskImageBox>
         <ChainTag size={1} chainId={project.chainId} />
         <TaskImage src={image} />

@@ -2,33 +2,44 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 11:23:59
+ * @LastEditTime: 2022-07-31 21:01:28
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from '../../../constants'
+import ButtonBase from '../../common/button/ButtonBase'
 import ExploreTaskItem, { ExploreTaskItemDataViewType } from './ExploreTaskItem'
 
 export type ExploreTaskListViewConfigType = {
   loading?: boolean
   loadingMsg?: string
   emptyMsg?: string
+  displayCreateTask?: boolean
 }
 export type ExploreTaskListItemsType = ExploreTaskItemDataViewType[]
 export type ExploreTaskListProps = ExploreTaskListViewConfigType & {
   items: ExploreTaskListItemsType
+  onCreateTask?: () => void
 }
 const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
   items,
   loading,
   loadingMsg = 'loading...',
   emptyMsg = 'no tasks',
+  displayCreateTask,
+  onCreateTask,
 }: ExploreTaskListProps) => (
   <>
     {loading && <ExploreTaskListLoading>{loadingMsg}</ExploreTaskListLoading>}
     {!loading && items.length === 0 && emptyMsg && <ExploreTaskListEmpty>{emptyMsg}</ExploreTaskListEmpty>}
     <ExploreTaskListWrapper>
+      {displayCreateTask && (
+        <CreateTaskButton onClick={() => onCreateTask && onCreateTask()}>
+          <span>+</span>
+          <span>Create</span>
+        </CreateTaskButton>
+      )}
       {!loading &&
         items.length > 0 &&
         items.map((item) => (
@@ -63,6 +74,21 @@ const ExploreTaskListWrapper = styled.div`
 const ExploreTaskItemBox = styled.div`
   // 为了显现出阴影，grid布局会不留空隙，需为子项预留box-shadow的空间
   padding-bottom: 4px;
+`
+const CreateTaskButton = styled(ButtonBase)`
+  box-shadow: none;
+  background: #f8f8f8;
+  border: 2px solid #333333;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  text-align: center;
+  color: #333333;
 `
 const ExploreTaskListLoading = styled.div`
   width: 100%;

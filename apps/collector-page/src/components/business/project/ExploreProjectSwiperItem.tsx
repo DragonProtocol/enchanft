@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 16:28:01
+ * @LastEditTime: 2022-08-01 18:07:11
  * @Description: file description
  */
 import React from 'react'
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { ProjectStatus } from '../../../types/api'
+import RichTextBox from '../../common/text/RichTextBox'
 import ChainTag from '../chain/ChainTag'
 import ProjectStatusLabel from './ProjectStatusLabel'
 
@@ -45,7 +46,7 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
         <ProjectStatusLabel status={status} fontSize="20px" />
-        <ProjectDescription>{description}</ProjectDescription>
+        <ProjectDescription value={description} />
       </ProjectInfoBox>
     </ExploreProjectSwiperItemWrapper>
   )
@@ -76,11 +77,8 @@ const ProjectName = styled.div`
   line-height: 54px;
   color: #333333;
 `
-const ProjectDescription = styled.div`
+const ProjectDescription = styled(RichTextBox)`
   flex: 1;
-  font-size: 16px;
-  line-height: 20px;
-  color: rgba(51, 51, 51, 0.6);
   overflow-y: auto;
   ${ScrollBarCss}
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 15:16:28
+ * @LastEditTime: 2022-08-01 17:50:12
  * @Description: file description
  */
 import React from 'react'
@@ -23,7 +23,7 @@ const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({ data 
   const isDone = status === UserActionStatus.DONE ? true : false
   const handleAction = () => {
     if (isDone) return
-    navigate(`/community/${communityId}?visible=${CommunityParamsVisibleType.CONTRIBUTION}`)
+    navigate(`/contributionranks/${communityId}`)
   }
   return (
     <ActionContributionScoreWrapper>

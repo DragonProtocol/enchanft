@@ -37,7 +37,7 @@ function Item({ content }: { content: string }) {
 
 const TaskTitleBox = styled(CardBox)`
   width: 420px;
-  height: 411px;
+  /* height: 411px; */
   line-height: 20px;
   background: #fffbdb;
   padding: 20px;

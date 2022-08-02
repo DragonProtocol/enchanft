@@ -34,7 +34,7 @@ const formatStoreDataToComponentDataByRecommendTasks = (
 ): ExplorTaskSwiperItemsType => {
   return tasks.map((task) => {
     // TODO 待确认，这里先用task的whiteListTotalNum代替
-    // const winnersNum = task.whitelistTotalNum
+    // const winnerNum = task.whitelistTotalNum
     return {
       data: { ...task },
     }
