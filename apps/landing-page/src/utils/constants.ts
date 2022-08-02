@@ -20,5 +20,5 @@ export const MAX_LEVELS = 3;
 export const VIEW_LAMPORTS_DECIMAL = 3;
 
 export const TWITTER_URL = 'https://twitter.com/Enchant_nft';
-export const EVENTS_URL = 'https://twitter.com/Enchant_nft';
-export const APPLY_FORM_URL = 'https://twitter.com/Enchant_nft';
+export const EVENTS_URL = 'https://wl.xyz';
+export const APPLY_FORM_URL = 'https://mod.wl.xyz';

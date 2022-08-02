@@ -25,6 +25,7 @@ import WhyEnchanftCreator from './images/why_enchanft_creator.png';
 import WhyEnchanftCollector from './images/why_enchanft_collector.png';
 import NftPlusSolImg from './images/nft_plus_sol.png';
 import TwitterIcon from './images/twitter.svg';
+import WL_LOGO from './images/wl.svg';
 import { CursorPointerUpCss } from '../GlobalStyle';
 
 function About() {
@@ -129,6 +130,7 @@ function About() {
 
       <TextAndImgBox>
         <TextBox>
+          <WLLogoBox src={WL_LOGO}></WLLogoBox>
           <TextTitle>{whitelist.title}</TextTitle>
           <TextSubTitle>{whitelist.subTitle}</TextSubTitle>
           <TextContent>
@@ -356,7 +358,14 @@ const ImgBox = styled.img`
     height: 100px;
   }
 `;
-
+const WLLogoBox = styled.img`
+  width: 100px;
+  margin-bottom: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100px;
+    height: 100px;
+  }
+`;
 const InfoBox = styled.div`
   width: 100%;
   background: #f8f8f8;
