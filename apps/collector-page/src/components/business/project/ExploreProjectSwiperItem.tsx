@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 14:06:29
+ * @LastEditTime: 2022-08-02 16:42:26
  * @Description: file description
  */
 import React from 'react'
@@ -42,7 +42,7 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
   const { id, name, image, status, description, chainId, communityId, slug } = data
   return (
     <ExploreProjectSwiperItemWrapper>
-      <ChainTag size={2} chainId={chainId} />
+      {/* <ChainTag size={2} chainId={chainId} /> */}
       <ProjectImage src={image} onClick={() => navigate(`/${slug}`)} />
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>

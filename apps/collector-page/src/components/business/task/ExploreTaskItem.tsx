@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-31 21:07:46
+ * @LastEditTime: 2022-08-02 16:48:56
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
+import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
 
 export type ExploreTaskItemDataType = {
@@ -81,7 +82,7 @@ const TaskImage = styled.img`
 `
 const TaskInfoBox = styled.div`
   flex: 1;
-  padding: 10px 20px;
+  padding: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -89,7 +90,7 @@ const TaskInfoBox = styled.div`
   overflow-y: auto;
   ${ScrollBarCss}
 `
-const TaskName = styled.div`
+const TaskName = styled(OverflowEllipsisBox)`
   font-weight: 700;
   font-size: 18px;
   color: #333333;

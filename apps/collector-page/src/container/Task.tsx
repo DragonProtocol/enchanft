@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 15:00:46
+ * @LastEditTime: 2022-08-02 16:43:06
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -196,7 +196,7 @@ const Task: React.FC = () => {
                         {isCreator && <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>}
                       </ProjectNameBox>
                       <TaskImageBox>
-                        <ChainTag size={2} chainId={chainId} />
+                        {/* <ChainTag size={2} chainId={chainId} /> */}
                         <TaskImage src={image} />
                       </TaskImageBox>
                     </TaskDetailTop>
@@ -300,6 +300,7 @@ const TaskDetailContentBoxLeft = styled.div`
   flex: 1;
   padding: 20px;
   box-sizing: border-box;
+  overflow: hidden;
 `
 const TaskDetailContentBoxRight = styled.div`
   flex: 1;

@@ -124,7 +124,7 @@ const ProjectDetail: React.FC<ProjectDetailProps> = ({ data, viewConfig, onTake 
     <ProjectDetailWrapper>
       <ProjectTopBox>
         <ProjectTopLeftBox>
-          <ChainTag size={1.5} chainId={chainId} />
+          {/* <ChainTag size={1.5} chainId={chainId} /> */}
           <ProjectImage src={image} />
         </ProjectTopLeftBox>
         {/* project basic info */}

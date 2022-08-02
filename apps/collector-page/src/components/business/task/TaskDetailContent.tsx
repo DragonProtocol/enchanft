@@ -128,7 +128,6 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
 export default TaskDetailContent
 const TaskDetailContentWrapper = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;

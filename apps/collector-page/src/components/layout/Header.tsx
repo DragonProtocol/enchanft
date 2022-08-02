@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 15:02:59
+ * @LastEditTime: 2022-08-02 15:38:08
  * @Description: 站点头部
  */
 import SolanaConnectWalletButton from 'components/business/connect/SolanaConnectWalletButton'
@@ -86,8 +86,7 @@ const HeaderLeft = styled.div`
   display: flex;
 `
 const HeaderLogo = styled.img`
-  width: 190px;
-  height: 24px;
+  height: 48px;
   cursor: pointer;
 `
 const HeaderRight = styled.div`

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 14:17:21
+ * @LastEditTime: 2022-08-02 16:42:54
  * @Description: file description
  */
 import React from 'react'
@@ -54,7 +54,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
   const endDate = new Date(endTime).toLocaleDateString()
   return (
     <ExploreTaskSwiperItemWrapper>
-      <ChainTag size={2} chainId={project.chainId} />
+      {/* <ChainTag size={2} chainId={project.chainId} /> */}
       <TaskImage src={image} onClick={() => navigate(`/${project.slug}/${id}`)} />
       <TaskInfoBox>
         <TaskName>{name}</TaskName>
