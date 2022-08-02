@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 19:41:33
+ * @LastEditTime: 2022-08-02 11:52:49
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -100,7 +100,8 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
 }: TodoTaskItemProps) => {
   const { name, whitelistTotalNum, type, projectId, startTime, endTime, actions, status, project, whitelist } = data
   const { name: projectName } = project
-  const { mintUrl, publicSaleTime: mintStartTime } = project
+  const { mintUrl } = project
+  const { mintStartTime } = whitelist
   const {
     disabledMint,
     displayMint,

@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 16:50:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 19:02:34
+ * @LastEditTime: 2022-08-02 14:43:36
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from '../../../constants'
+import Loading from '../../common/loading/Loading'
 import CommunityItem, { CommunityItemDataViewType } from './CommunityItem'
 
 export type CommunityListViewConfigType = {
@@ -26,7 +27,11 @@ const CommunityList: React.FC<CommunityListProps> = ({
   emptyMsg = 'no project',
 }: CommunityListProps) => (
   <>
-    {loading && <CommunityListLoading>{loadingMsg}</CommunityListLoading>}
+    {loading && (
+      <CommunityListLoading>
+        <Loading />
+      </CommunityListLoading>
+    )}
     {!loading && items.length === 0 && emptyMsg && <CommunityListEmpty>{emptyMsg}</CommunityListEmpty>}
     <CommunityListWrapper>
       {!loading &&
@@ -58,6 +63,7 @@ const CommunityListWrapper = styled.div`
 `
 const CommunityListLoading = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

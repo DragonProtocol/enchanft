@@ -21,6 +21,7 @@ import { fetchUserContributon, selectUserContributon } from '../features/contrib
 import { AsyncRequestStatus } from '../types'
 import ContributionAbout from '../components/business/contribution/ContributionAbout'
 import ContributionMy from '../components/business/contribution/ContributionMy'
+import Loading from '../components/common/loading/Loading'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
@@ -91,7 +92,9 @@ const Contributionranks: React.FC = () => {
         <ContributionMainBox>
           <ContributionListBox>
             {contributionranksLoading ? (
-              <ContributionLoading>loading...</ContributionLoading>
+              <ContributionLoading>
+                <Loading />
+              </ContributionLoading>
             ) : (
               <ContributionList items={contributionranks} displayMembersTotal={false} displayMore={false} />
             )}

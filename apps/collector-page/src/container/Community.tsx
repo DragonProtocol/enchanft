@@ -27,6 +27,7 @@ import { AsyncRequestStatus } from '../types'
 import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
 import { follow } from '../features/user/communityHandlesSlice'
 import CardBox from '../components/common/card/CardBox'
+import Loading from '../components/common/loading/Loading'
 
 // 处理社区基本信息
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
@@ -234,7 +235,9 @@ const Community: React.FC = () => {
     <CommunityWrapper>
       <MainContentBox>
         {loading ? (
-          <CommunityLoading>loading...</CommunityLoading>
+          <CommunityLoading>
+            <Loading />
+          </CommunityLoading>
         ) : (
           <>
             <CommunityTopBox>

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 10:53:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-26 10:49:46
+ * @LastEditTime: 2022-08-02 11:32:46
  * @Description: file description
  */
 import React from 'react'
@@ -36,7 +36,7 @@ const RichTextBox: React.FC<RichTextBoxProps> = ({
 export default RichTextBox
 const RichTextBoxWrapper = styled.div`
   width: 100%;
-  white-space: pre-wrap; /* current browsers */
+  word-break: break-all;
   img {
     max-width: 100%;
   }

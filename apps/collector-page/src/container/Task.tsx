@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 19:04:20
+ * @LastEditTime: 2022-08-02 15:00:46
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -31,6 +31,7 @@ import ChainTag from '../components/business/chain/ChainTag'
 import Button from '@mui/material/Button'
 import CardBox from '../components/common/card/CardBox'
 import usePermissions from '../hooks/usePermissons'
+import Loading from '../components/common/loading/Loading'
 const formatStoreDataToComponentDataByTaskDetailContent = (
   task: TaskDetailEntity,
   token: string,
@@ -151,7 +152,12 @@ const Task: React.FC = () => {
   const loadingVerify = status === AsyncRequestStatus.PENDING
   const disabledVerify = loadingVerify
 
-  if (loadingView) return <TaskDetailLoading>Loading ... </TaskDetailLoading>
+  if (loadingView)
+    return (
+      <TaskDetailLoading>
+        <Loading />{' '}
+      </TaskDetailLoading>
+    )
   if (!data) return null
   const name = data.name || ''
   const { projectId, image } = data
@@ -167,7 +173,9 @@ const Task: React.FC = () => {
     <TaskDetailWrapper>
       <MainContentBox>
         {loadingView ? (
-          <TaskDetailLoading>Loading ... </TaskDetailLoading>
+          <TaskDetailLoading>
+            <Loading />{' '}
+          </TaskDetailLoading>
         ) : (
           data && (
             <TaskDetailBodyBox>
@@ -240,8 +248,8 @@ const TaskDetailWrapper = styled.div`
   width: 100%;
 `
 const TaskDetailLoading = styled.div`
-  width: 100%;
   text-align: center;
+  margin-top: 100px;
 `
 const TaskDetailBodyBox = styled(CardBox)`
   display: flex;
@@ -251,6 +259,8 @@ const DetailBodyLeft = styled.div``
 const DetailBodyRight = styled.div`
   flex: 1;
   height: 100%;
+  padding-right: 50px;
+  box-sizing: border-box;
 `
 const TaskDetailTop = styled.div`
   display: flex;
@@ -293,8 +303,10 @@ const TaskDetailContentBoxLeft = styled.div`
 `
 const TaskDetailContentBoxRight = styled.div`
   flex: 1;
+  overflow: hidden;
 `
 const TaskListBox = styled.div`
+  width: 100%;
   background: #f8f8f8;
   padding: 20px;
   box-sizing: border-box;

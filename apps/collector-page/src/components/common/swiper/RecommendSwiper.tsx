@@ -7,6 +7,7 @@ import 'swiper/css'
 import IconCaretLeft from '../icons/IconCaretLeft'
 import IconCaretRight from '../icons/IconCaretRight'
 import ButtonNavigation from '../button/ButtonNavigation'
+import Loading from '../loading/Loading'
 
 export type RecommendSwiperProps = {
   children: React.ReactNode
@@ -65,7 +66,9 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
       >
         {loading ? (
           <RecommendSwiperItem>
-            <RecommendSwiperLoading>{loadingMsg}</RecommendSwiperLoading>
+            <RecommendSwiperLoading>
+              <Loading />
+            </RecommendSwiperLoading>
           </RecommendSwiperItem>
         ) : (
           children || (
@@ -92,12 +95,11 @@ const RecommendSwiperWrapper = styled.div`
   z-index: 1;
   .recommend-swiper {
     flex: 1;
-    height: 440px;
+    height: 308px;
     box-sizing: border-box;
     background: #ffffff;
     border: 4px solid #333333;
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-    padding: 40px;
   }
 `
 const RecommendSwiperLeft = styled.div`
@@ -117,9 +119,11 @@ const RecommendSwiperRight = styled.div`
   z-index: 2;
 `
 const RecommendSwiperLoading = styled.div`
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 const RecommendSwiperEmpty = styled.div`
   text-align: center;

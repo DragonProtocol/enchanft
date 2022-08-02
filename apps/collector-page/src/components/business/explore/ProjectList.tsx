@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:49:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 14:40:47
+ * @LastEditTime: 2022-08-02 14:44:13
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from '../../../constants'
+import Loading from '../../common/loading/Loading'
 import ProjectItem, { ProjectItemDataViewType } from './ProjectItem'
 
 export type ProjectListViewConfigType = {
@@ -26,7 +27,11 @@ const ProjectList: React.FC<ProjectListProps> = ({
   emptyMsg = 'no project',
 }: ProjectListProps) => (
   <>
-    {loading && <ProjectListLoading>{loadingMsg}</ProjectListLoading>}
+    {loading && (
+      <ProjectListLoading>
+        <Loading />
+      </ProjectListLoading>
+    )}
     {!loading && items.length === 0 && emptyMsg && <ProjectListEmpty>{emptyMsg}</ProjectListEmpty>}
     <ProjectListWrapper>
       {!loading &&
@@ -58,6 +63,7 @@ const ProjectListWrapper = styled.div`
 `
 const ProjectListLoading = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

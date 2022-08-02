@@ -35,6 +35,7 @@ import ContributionList, {
 } from '../components/business/contribution/ContributionList'
 import RichTextBox from '../components/common/text/RichTextBox'
 import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
+import Loading from '../components/common/loading/Loading'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -155,6 +156,7 @@ const Project: React.FC = () => {
     },
   ]
   const [activeTab, setActiveTab] = useState(ProjectInfoTabsValue.TEAM)
+  const loading = status === AsyncRequestStatus.PENDING
   // 展示数据
   if (!data) return null
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(data, token, userFollowedProjectIds)
@@ -163,7 +165,6 @@ const Project: React.FC = () => {
   const contributionMembersTotal = contributionranks.length
   const teamMembers = formatStoreDataToComponentDataByTeamMembers(data, token)
   const tasks = formatStoreDataToComponentDataByTasks(data, token)
-  const loading = status === AsyncRequestStatus.PENDING
 
   const ProjectInfoTabComponents = {
     [ProjectInfoTabsValue.TEAM]: <ProjectTeamMemberList items={teamMembers} />,
@@ -174,18 +175,20 @@ const Project: React.FC = () => {
     <ProjectWrapper>
       <MainContentBox>
         {loading ? (
-          <ProjectLoading>loading...</ProjectLoading>
+          <ProjectLoading>
+            <Loading />
+          </ProjectLoading>
         ) : (
           <>
             <ProjectTopBox>
-              <ProjectDetailCommunity
-                data={communityDataView.data}
-                viewConfig={communityDataView.viewConfig}
-                onFollowChange={handleFollowChange}
-              />
-            </ProjectTopBox>
+              <ProjectCommunityInfoBox>
+                <ProjectDetailCommunity
+                  data={communityDataView.data}
+                  viewConfig={communityDataView.viewConfig}
+                  onFollowChange={handleFollowChange}
+                />
+              </ProjectCommunityInfoBox>
 
-            <ProjectBottomBox>
               <ProjectBasicInfoBox>
                 <ProjectBasicInfoLeft>
                   <ProjectDetailBasicInfo
@@ -205,8 +208,11 @@ const Project: React.FC = () => {
                   />
                 </ProjectBasicInfoRight>
               </ProjectBasicInfoBox>
+            </ProjectTopBox>
 
+            <ProjectBottomBox>
               <ProjectEventsBox>
+                <ProjectStoryLabel>Events</ProjectStoryLabel>
                 <ExploreTaskList items={tasks} displayCreateTask={true} />
               </ProjectEventsBox>
 
@@ -242,20 +248,22 @@ const ProjectWrapper = styled.div`
   width: 100%;
 `
 const ProjectLoading = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  text-align: center;
+  margin-top: 100px;
 `
-const ProjectTopBox = styled(CardBox)``
-const ProjectBottomBox = styled(CardBox)`
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 40px;
+const ProjectTopBox = styled(CardBox)`
+  padding: 0;
+  border: 4px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `
+const ProjectCommunityInfoBox = styled.div`
+  padding: 20px;
+  box-sizing: border-box;
+  border-bottom: solid 1px #d9d9d9;
+`
+
 const ProjectBasicInfoBox = styled.div`
+  padding: 20px;
   display: flex;
   gap: 40px;
 `
@@ -267,6 +275,13 @@ const ProjectBasicInfoRight = styled.div`
   background: #f8f8f8;
   padding: 10px;
   box-sizing: border-box;
+`
+
+const ProjectBottomBox = styled(CardBox)`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 `
 const ProjectEventsBox = styled.div``
 const ProjectOtherInfoBox = styled.div`
