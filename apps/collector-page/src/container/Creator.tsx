@@ -12,20 +12,23 @@ import { selectCreator, getCreatorDashboardData, saveWinnersData, resetData } fr
 import { useParams } from 'react-router-dom'
 import { downloadWinner } from '../services/api/creator'
 import usePermissions from '../hooks/usePermissons'
+import { selectAccount } from '../features/user/accountSlice'
 
 export default function Creator() {
   const { taskId } = useParams()
   const dispatch = useAppDispatch()
   const { status, participants, winners, whitelistSaved, winnerList, taskInfo, scheduleInfo, pickedWhiteList } =
     useAppSelector(selectCreator)
+  const account = useAppSelector(selectAccount)
   const { isCreator } = usePermissions()
 
   useEffect(() => {
+    if (!account.token) return
     if (isCreator) dispatch(getCreatorDashboardData({ taskId: Number(taskId) }))
     return () => {
       dispatch(resetData())
     }
-  }, [taskId, isCreator])
+  }, [taskId, isCreator, account.token])
 
   const saveWinners = useCallback(
     (list: Array<number>) => {

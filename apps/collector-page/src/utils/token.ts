@@ -3,7 +3,7 @@ const LOCAL_STORAGE_TOKEN = 'token'
 export const DEFAULT_WALLET = 'defaultWallet'
 export const LAST_LOGIN_TYPE = 'lastLoginType'
 
-export const SIGN_MSG = 'Sign this message to sign into enchanft.xyz'
+export const SIGN_MSG = 'Sign this message to sign into ' + window.location.hostname
 export enum TokenType {
   Solana = 'solana',
   Ethereum = 'ethereum',
