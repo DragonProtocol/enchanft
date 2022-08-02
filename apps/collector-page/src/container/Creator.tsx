@@ -12,20 +12,23 @@ import { selectCreator, getCreatorDashboardData, saveWinnersData, resetData } fr
 import { useParams } from 'react-router-dom'
 import { downloadWinner } from '../services/api/creator'
 import usePermissions from '../hooks/usePermissons'
+import { selectAccount } from '../features/user/accountSlice'
 
 export default function Creator() {
   const { taskId } = useParams()
   const dispatch = useAppDispatch()
   const { status, participants, winners, whitelistSaved, winnerList, taskInfo, scheduleInfo, pickedWhiteList } =
     useAppSelector(selectCreator)
+  const account = useAppSelector(selectAccount)
   const { isCreator } = usePermissions()
 
   useEffect(() => {
+    if (!account.token) return
     if (isCreator) dispatch(getCreatorDashboardData({ taskId: Number(taskId) }))
     return () => {
       dispatch(resetData())
     }
-  }, [taskId, isCreator])
+  }, [taskId, isCreator, account.token])
 
   const saveWinners = useCallback(
     (list: Array<number>) => {
@@ -55,7 +58,7 @@ export default function Creator() {
               completionRate={participants == 0 ? '0.00' : ((winners * 100) / participants).toFixed(2)}
             />
             <WinnerList
-              winnerNum={taskInfo?.whitelistTotalNum || 0}
+              winnerNum={taskInfo?.winnerNum || 0}
               whitelistSaved={whitelistSaved}
               winnerList={winnerList}
               pickedWhiteList={pickedWhiteList}
@@ -82,25 +85,16 @@ const CommunityWrapper = styled.div`
 `
 
 const ContentBox = styled.div`
-  margin: 20px 132px;
+  margin: 20px 0;
   display: flex;
-
-  & div.box {
-    border: 2px solid rgba(0, 0, 0, 1);
-    border-radius: 10px;
-    line-height: 20px;
-    padding: 16px 25px;
-    box-sizing: border-box;
-  }
 
   & h3 {
     margin: 0;
-    font-size: 18px;
   }
 `
 
 const LeftBox = styled.div`
-  width: 736px;
+  width: 760px;
 `
 
 const RightBox = styled.div`

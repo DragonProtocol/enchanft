@@ -16,7 +16,7 @@ export type TaskInfo = {
   name: string
   startTime: string
   type: string
-  whitelistTotalNum: number
+  winnerNum: number
 }
 
 export type Winner = {
