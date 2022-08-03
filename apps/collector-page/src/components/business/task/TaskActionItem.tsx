@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 18:55:27
+ * @LastEditTime: 2022-08-03 10:24:15
  * @Description: file description
  */
 import React from 'react'
@@ -78,7 +78,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.RETWEET:
         // 转发
         // TODO 目前先复用follow twitter 的 action，后续如果action操作有差异再新建 action
-        return <ActionFollowTwitter data={data} />
+        return <ActionFollowTwitter data={data} onTwitter={onTwitter} />
       case ActionType.LIKE_TWEET:
         // 点赞
         // TODO 目前先复用follow twitter 的 action，后续如果action操作有差异再新建 action

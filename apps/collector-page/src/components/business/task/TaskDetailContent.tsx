@@ -151,6 +151,9 @@ const TaskWinners = styled.span``
 const TaskDescription = styled(RichTextBox)``
 const TaskBtn = styled(ButtonPrimary)`
   width: 100%;
+  font-weight: 700;
+  font-size: 18px;
+  color: #ffffff;
 `
 
 const TaskCompleteStatus = styled.div`
