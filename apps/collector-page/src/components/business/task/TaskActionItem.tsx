@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 10:24:15
+ * @LastEditTime: 2022-08-03 14:09:07
  * @Description: file description
  */
 import React from 'react'
@@ -61,7 +61,6 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       TaskStatusView = verifying ? <Loading size="1.5rem" /> : <IconCheckbox />
   }
   const renderAction = () => {
-    if (!allowHandle) return name
     switch (type) {
       case ActionType.FOLLOW_TWITTER:
         // 关注twitter

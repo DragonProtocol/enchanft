@@ -156,10 +156,10 @@ const Project: React.FC = () => {
       label: 'Roadmap',
       value: ProjectInfoTabsValue.ROADMAP,
     },
-    {
-      label: 'Reviews',
-      value: ProjectInfoTabsValue.REVIEWS,
-    },
+    // {
+    //   label: 'Reviews',
+    //   value: ProjectInfoTabsValue.REVIEWS,
+    // },
   ]
   const [activeTab, setActiveTab] = useState(ProjectInfoTabsValue.TEAM)
   const loading = status === AsyncRequestStatus.PENDING
@@ -180,7 +180,7 @@ const Project: React.FC = () => {
   const ProjectInfoTabComponents = {
     [ProjectInfoTabsValue.TEAM]: <ProjectTeamMemberList items={teamMembers} />,
     [ProjectInfoTabsValue.ROADMAP]: <ProjectRoadmap items={data.roadmap} />,
-    [ProjectInfoTabsValue.REVIEWS]: <span>Not yet developed</span>,
+    // [ProjectInfoTabsValue.REVIEWS]: <span>Not yet developed</span>,
   }
   return (
     <ProjectWrapper>
@@ -211,7 +211,6 @@ const Project: React.FC = () => {
                   <ContributionList
                     items={showContributionranks}
                     hiddenColumns={[ContributionColumns.pubkey]}
-                    size={ContributionListSize.small}
                     membersTotal={contributionMembersTotal}
                     displayMore={true}
                     moreText="View All"
@@ -223,13 +222,19 @@ const Project: React.FC = () => {
 
             <ProjectBottomBox>
               <ProjectEventsBox>
-                <ProjectStoryLabel>Events</ProjectStoryLabel>
+                <ProjectLabelBox>
+                  <ProjectLabel>Events</ProjectLabel>
+                </ProjectLabelBox>
+
                 <ExploreTaskList items={tasks} displayCreateTask={true} />
               </ProjectEventsBox>
 
               <ProjectOtherInfoBox>
                 <ProjectOtherInfoLeftBox>
-                  <ProjectStoryLabel>Story</ProjectStoryLabel>
+                  <ProjectLabelBox>
+                    <ProjectLabel>Story</ProjectLabel>
+                  </ProjectLabelBox>
+
                   <ProjectStoryContent value={data.story} />
                 </ProjectOtherInfoLeftBox>
                 <ProjectOtherInfoRightBox>
@@ -263,6 +268,7 @@ const ProjectLoading = styled.div`
   margin-top: 100px;
 `
 const ProjectTopBox = styled(CardBox)`
+  width: 100%;
   padding: 0;
   border: 4px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
@@ -270,21 +276,26 @@ const ProjectTopBox = styled(CardBox)`
 const ProjectCommunityInfoBox = styled.div`
   padding: 20px;
   box-sizing: border-box;
-  border-bottom: solid 1px #d9d9d9;
+  border-bottom: 4px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  position: relative;
+  z-index: 1;
 `
 
 const ProjectBasicInfoBox = styled.div`
-  padding: 20px;
+  width: 100%;
   display: flex;
   gap: 40px;
 `
 const ProjectBasicInfoLeft = styled.div`
   flex: 1;
+  padding: 20px;
+  box-sizing: border-box;
 `
 const ProjectBasicInfoRight = styled.div`
-  width: 250px;
-  background: #f8f8f8;
-  padding: 10px;
+  width: 480px;
+  background: #fffbdb;
+  padding: 20px;
   box-sizing: border-box;
 `
 
@@ -294,7 +305,11 @@ const ProjectBottomBox = styled(CardBox)`
   flex-direction: column;
   gap: 40px;
 `
-const ProjectEventsBox = styled.div``
+const ProjectEventsBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`
 const ProjectOtherInfoBox = styled.div`
   display: flex;
   gap: 60px;
@@ -302,11 +317,16 @@ const ProjectOtherInfoBox = styled.div`
 const ProjectOtherInfoLeftBox = styled.div`
   flex: 1;
 `
-const ProjectStoryLabel = styled.div`
-  color: rgba(16, 16, 16, 100);
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 20px;
+const ProjectLabelBox = styled.div`
+  border-bottom: solid 1px #d9d9d9;
+  display: flex;
+`
+const ProjectLabel = styled.div`
+  font-weight: 700;
+  font-size: 20px;
+  color: #333333;
+  padding-bottom: 10px;
+  box-shadow: inset 0 -4px #3dd606;
 `
 const ProjectStoryContent = styled(RichTextBox)``
 const ProjectOtherInfoRightBox = styled.div`
@@ -316,11 +336,13 @@ const ProjectOtherInfoRightTabs = styled.div`
   display: flex;
   gap: 80px;
   margin-bottom: 20px;
+  border-bottom: solid 1px #d9d9d9;
 `
 const ProjectOtherInfoRightTab = styled.div<{ isActive: Boolean }>`
-  color: rgba(0, 0, 0, 1);
-  font-size: 18px;
-  ${({ isActive }) => (isActive ? `box-shadow: inset 0 -1px rgba(0, 0, 0, 1);` : '')}
+  font-weight: 700;
+  font-size: 20px;
+  color: #333333;
+  ${({ isActive }) => (isActive ? `box-shadow: inset 0 -4px #3DD606;` : '')}
   cursor: pointer;
   padding-bottom: 10px;
 `

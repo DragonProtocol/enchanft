@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 10:03:13
+ * @LastEditTime: 2022-08-03 18:02:32
  * @Description: 站点布局入口
  */
 import React from 'react'
@@ -42,7 +42,7 @@ const HeaderBox = styled.div`
   width: 100%;
   background: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 2;
+  z-index: 1;
   position: fixed;
   top: 0;
   left: 0;
@@ -61,7 +61,6 @@ const MainBox = styled.div`
   height: 100%;
   padding-top: 72px;
   box-sizing: border-box;
-  z-index: 1;
 `
 const MainInner = styled.div`
   position: relative;
