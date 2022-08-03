@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-30 22:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 13:00:17
+ * @LastEditTime: 2022-08-03 18:53:08
  * @Description: 全局样式
  */
 import { createGlobalStyle, css } from 'styled-components'
@@ -31,7 +31,8 @@ export const ScrollBarCss = css`
 `
 
 export const FontFamilyCss = css`
-  font-family: 'Poppins-Regular';
+  font-family: 'Poppins';
+  font-style: normal;
   /* font-family: 'PressStart2P-Regular'; */
 `
 export const CursorPointerCss = css`
@@ -47,8 +48,8 @@ export const CursorPointerUpCss = css`
 `
 const GlobalStyle = createGlobalStyle`
   @font-face {
-    font-family: 'Poppins-Regular';
-    src: url('/fonts/Poppins-Regular.ttf') format('truetype');
+    font-family: 'Poppins';
+    src:  url('/fonts/Poppins-Medium.ttf') format('truetype');
     font-style: normal;
     font-weight: normal;
     font-display: block; // 缩短字体切换闪烁时间(较长的阻塞周期)

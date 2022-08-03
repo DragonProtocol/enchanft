@@ -113,7 +113,6 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
         </TaskDateTime>
         <TaskWinners>Winners {winnerNum}</TaskWinners>
       </TaskDateTimeBox>
-      <TaskDescription value={description} />
       {displayConnectWallet && <TaskBtn onClick={handleConnectWallet}>Connect Wallect</TaskBtn>}
       {displayWalletBind && <TaskBtn onClick={handleWalletBind}>{walletBindText}</TaskBtn>}
       {displayTake && (
@@ -122,6 +121,8 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
         </TaskBtn>
       )}
       {displayCompleteStatus && <TaskCompleteStatus>{completeStatusLabel}</TaskCompleteStatus>}
+
+      <TaskDescription value={description} />
     </TaskDetailContentWrapper>
   )
 }

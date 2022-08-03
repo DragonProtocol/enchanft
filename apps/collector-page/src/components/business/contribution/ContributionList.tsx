@@ -2,13 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 14:22:13
+ * @LastEditTime: 2022-08-03 17:54:54
  * @Description: file description
  */
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import UserAvatar from '../user/UserAvatar'
+import IconTrophy from '../../common/icons/IconTrophy'
+import CrownImg from '../../imgs/crown.svg'
 export type ContributionItemDataType = {
   ranking: number
   avatar: string
@@ -40,16 +42,16 @@ const ContributionListFontSizeMap = {
     score: '14px',
   },
   [ContributionListSize.medium]: {
-    title: '18px',
+    title: '24px',
     membersTotal: '14px',
     ranking: '16px',
-    avatar: '48px',
+    avatar: '40px',
     userName: '16px',
     pubkey: '16px',
     score: '16px',
   },
   [ContributionListSize.large]: {
-    title: '20px',
+    title: '24px',
     membersTotal: '16px',
     ranking: '18px',
     avatar: '56px',
@@ -91,6 +93,7 @@ const ContributionList: React.FC<ContributionListProps> = ({
   return (
     <ContributionListWrapper>
       <ContributioHeaderBox>
+        <IconTrophy />
         <ContributionTitle style={{ fontSize: fontSize.title }}>Contribution Rank</ContributionTitle>
         {displayMembersTotal && (
           <CotributionMembersTotal style={{ fontSize: fontSize.membersTotal }}>
@@ -102,7 +105,9 @@ const ContributionList: React.FC<ContributionListProps> = ({
         {items.map((item, index) => (
           <ContributionItemBox key={index}>
             {displayRanking && (
-              <ContributionItemRanking style={{ fontSize: fontSize.ranking }}>{item.ranking}</ContributionItemRanking>
+              <ContributionItemRanking style={{ fontSize: fontSize.ranking }} topThree={item.ranking < 4}>
+                {item.ranking}
+              </ContributionItemRanking>
             )}
             {displayAvatar && (
               <ContributionItemAvatar src={item.avatar} style={{ width: fontSize.avatar, height: fontSize.avatar }} />
@@ -120,35 +125,41 @@ const ContributionList: React.FC<ContributionListProps> = ({
             )}
           </ContributionItemBox>
         ))}
-        {displayMore && <MoreBtn onClick={handleMore}>{moreText}</MoreBtn>}
       </ContributionListBox>
+      {displayMore && <MoreBtn onClick={handleMore}>{moreText}</MoreBtn>}
     </ContributionListWrapper>
   )
 }
 export default ContributionList
 const ContributionListWrapper = styled.div`
   width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 `
 const ContributioHeaderBox = styled.div`
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding-bottom: 8px;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 18px;
   border-bottom: 1px solid #d9d9d9;
-  margin-bottom: 8px;
+  margin-bottom: 24px;
 `
 const ContributionTitle = styled.div`
+  flex: 1;
   font-weight: 700;
   font-size: 20px;
   line-height: 24px;
   color: #333333;
 `
 const CotributionMembersTotal = styled.div`
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 14px;
+  line-height: 21px;
+  text-align: right;
   color: rgba(51, 51, 51, 0.5);
 `
 const ContributionListBox = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -161,23 +172,40 @@ const ContributionItemBox = styled.div`
   border-bottom: 1px solid #d9d9d9;
   padding-bottom: 10px;
 `
-const ContributionItemRanking = styled.div`
+const ContributionItemRanking = styled.div<{ topThree?: boolean }>`
   width: 10%;
-  font-weight: bold;
+  height: 24px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 24px;
+  ${({ topThree }) =>
+    topThree &&
+    `
+    background-image: url(${CrownImg});
+    background-size:100% 100%; 
+    background-position: center;
+    background-repeat: no-repeat;
+    line-height: 30px;
+  `}
 `
 const ContributionItemAvatar = styled(UserAvatar)`
   width: 40px;
   height: 40px;
 `
 const ContributionItemUserName = styled(OverflowEllipsisBox)`
-  width: 20%;
+  flex: 1;
+  text-align: left;
   text-transform: capitalize;
 `
 const ContributionItemPubkey = styled(OverflowEllipsisBox)`
   flex: 1;
+  min-width: 45%;
+  text-align: left;
 `
 const ContributionItemScore = styled.div`
-  width: 10%;
+  font-weight: 700;
+  text-align: right;
+  color: #333333;
 `
 const MoreBtn = styled.div`
   font-size: 14px;

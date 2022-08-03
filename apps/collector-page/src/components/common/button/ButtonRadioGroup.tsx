@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 10:32:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 16:06:47
+ * @LastEditTime: 2022-08-03 13:24:46
  * @Description: file description
  */
 import React from 'react'
@@ -28,9 +28,9 @@ const ButtonRadioGroup: React.FC<ButtonRadioGroupProps> = ({ options, value, onC
   return (
     <ButtonRadioGroupWrapper>
       {options.map(({ label, value: v }) => (
-        <ProjectStatusSelectorItem key={v} isActive={v === value} onClick={() => handleChange(v)}>
+        <ButtonRadioGroupOption key={v} isActive={v === value} onClick={() => handleChange(v)}>
           {label}
-        </ProjectStatusSelectorItem>
+        </ButtonRadioGroupOption>
       ))}
     </ButtonRadioGroupWrapper>
   )
@@ -41,7 +41,7 @@ const ButtonRadioGroupWrapper = styled.div`
   background: #f8f8f8;
   display: flex;
 `
-const ProjectStatusSelectorItem = styled.div<{ isActive?: boolean }>`
+const ButtonRadioGroupOption = styled.div<{ isActive?: boolean }>`
   width: 85px;
   height: 100%;
   font-size: 18px;

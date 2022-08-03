@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 13:08:11
+ * @LastEditTime: 2022-08-03 17:52:40
  * @Description: mock 请求拦截入口
  */
 
@@ -368,6 +368,11 @@ import { ChainIds } from '../utils/chain'
           score: '@integer(1, 100)',
         },
       ],
+    })
+    Mock.mock(/\/communities\/(\d*)\/contribution(\\?.*|)/, 'get', {
+      code: 0,
+      msg: 'success',
+      data: 1000,
     })
     // user withlist
     Mock.mock(/\/users\/whitelists(\\?.*|)/, 'get', {

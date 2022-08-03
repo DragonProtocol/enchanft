@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:33:18
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 13:10:44
+ * @LastEditTime: 2022-08-03 14:19:46
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import RichTextBox from '../../common/text/RichTextBox'
+import UserAvatar from '../user/UserAvatar'
 
 export type ProjectTeamMemberItemDataType = {
   id: number
@@ -61,9 +62,9 @@ const TeamMemberTopBox = styled.div`
   display: flex;
   gap: 20px;
 `
-const TeamMemberAvatar = styled.img`
-  width: 200px;
-  height: 200px;
+const TeamMemberAvatar = styled(UserAvatar)`
+  width: 120px;
+  height: 120px;
 `
 const TeamMemberInfoBox = styled.div`
   flex: 1;
@@ -73,7 +74,7 @@ const TeamMemberInfoBox = styled.div`
 `
 const TeamMemberName = styled.div`
   color: rgba(16, 16, 16, 100);
-  font-size: 16px;
+  font-size: 24px;
   font-weight: bold;
 `
 const TeamMemberRole = styled.div`
