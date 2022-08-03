@@ -18,7 +18,10 @@ import ProjectDetail, { ProjectDetailDataViewType } from '../components/business
 import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
 import { AsyncRequestStatus } from '../types'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
-import { follow } from '../features/user/communityHandlesSlice'
+import {
+  follow as followCommunity,
+  selectfollow as selectfollowCommunity,
+} from '../features/user/communityHandlesSlice'
 import CardBox from '../components/common/card/CardBox'
 import ProjectDetailCommunity, {
   ProjectDetailCommunityDataViewType,
@@ -50,6 +53,7 @@ const formatStoreDataToComponentDataByCommunityBasicInfo = (
   data: ProjectDetailEntity,
   token: string,
   followedCommunityIds: Array<number | string>,
+  followCommunityStatus: AsyncRequestStatus,
 ): ProjectDetailCommunityDataViewType => {
   const { community } = data
   return {
@@ -59,6 +63,7 @@ const formatStoreDataToComponentDataByCommunityBasicInfo = (
     },
     viewConfig: {
       displayFollow: token ? true : false,
+      loadingFollow: followCommunityStatus === AsyncRequestStatus.PENDING,
     },
   }
 }
@@ -134,9 +139,10 @@ const Project: React.FC = () => {
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
 
   // 关注社区
+  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
   const handleFollowChange = (isFollowed: boolean) => {
     if (communityId && isFollowed) {
-      dispatch(follow({ id: Number(communityId) }))
+      dispatch(followCommunity({ id: Number(communityId) }))
     }
   }
 
@@ -159,7 +165,12 @@ const Project: React.FC = () => {
   const loading = status === AsyncRequestStatus.PENDING
   // 展示数据
   if (!data) return null
-  const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(data, token, userFollowedProjectIds)
+  const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
+    data,
+    token,
+    userFollowedProjectIds,
+    followCommunityStatus,
+  )
   const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data, token)
   const showContributionranks = contributionranks.slice(0, 5)
   const contributionMembersTotal = contributionranks.length

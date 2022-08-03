@@ -17,6 +17,7 @@ export type ProjectDetailCommunityDataType = {
 
 export type ProjectDetailCommunityViewConfigType = {
   displayFollow?: boolean
+  loadingFollow?: boolean
 }
 
 export type ProjectDetailCommunityDataViewType = {
@@ -29,7 +30,8 @@ export type ProjectDetailCommunityHandlesType = {
 export type ProjectDetailCommunityProps = ProjectDetailCommunityDataViewType & ProjectDetailCommunityHandlesType
 
 const defaultViewConfig = {
-  displayFollow: true,
+  displayFollow: false,
+  loadingFollow: false,
 }
 const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
   data,
@@ -37,7 +39,7 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
   onFollowChange,
 }: ProjectDetailCommunityProps) => {
   const { name, icon, website, twitter, isFollowed } = data
-  const { displayFollow } = {
+  const { displayFollow, loadingFollow } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
@@ -45,6 +47,10 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
     if (onFollowChange) {
       onFollowChange(!isFollowed)
     }
+  }
+  let followText = isFollowed ? 'Joined' : 'Join'
+  if (loadingFollow) {
+    followText = 'Loading ...'
   }
   return (
     <ProjectDetailCommunityWrapper>
@@ -58,9 +64,9 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
           <ProjectLinkIcon src={TwitterIcon} />
         </a>
         {displayFollow && (
-          <CommunityFollow disabled={isFollowed} onClick={handleFollowChange}>
-            {isFollowed ? 'Joined' : 'Join'}
-          </CommunityFollow>
+          <CommunityFollowBtn disabled={isFollowed} onClick={handleFollowChange}>
+            {followText}
+          </CommunityFollowBtn>
         )}
       </CommunityRightBox>
     </ProjectDetailCommunityWrapper>
@@ -94,8 +100,8 @@ const ProjectLinkIcon = styled.img`
   height: 20px;
   cursor: pointer;
 `
-const CommunityFollow = styled(ButtonWarning)`
-  width: 100px;
+const CommunityFollowBtn = styled(ButtonWarning)`
+  min-width: 100px;
   height: 48px;
   font-weight: 700;
   font-size: 18px;
