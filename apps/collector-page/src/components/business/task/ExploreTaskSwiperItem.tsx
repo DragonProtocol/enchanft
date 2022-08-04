@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 16:29:49
+ * @LastEditTime: 2022-08-02 16:42:54
  * @Description: file description
  */
 import React from 'react'
@@ -10,10 +10,8 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { TaskType } from '../../../types/api'
-import IconAlarmClock from '../../common/icons/IconAlarmClock'
-import IconGiftBox from '../../common/icons/IconGiftBox'
-import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import RichTextBox from '../../common/text/RichTextBox'
+import ChainTag from '../chain/ChainTag'
 
 export type ExploreTaskSwiperItemDataType = {
   id: number
@@ -27,9 +25,6 @@ export type ExploreTaskSwiperItemDataType = {
   project: {
     slug: string
     chainId: number
-    name: string
-  }
-  reward: {
     name: string
   }
 }
@@ -53,7 +48,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
   viewConfig,
 }: ExploreTaskSwiperItemProps) => {
   const navigate = useNavigate()
-  const { id, name, image, type, startTime, endTime, winnerNum, description, project, reward } = data
+  const { id, name, image, type, startTime, endTime, winnerNum, description, project } = data
   const taskTypeLabel = TaskTypeLabels[type] || 'Unknown Task Type'
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
@@ -66,18 +61,11 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
         <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
         <TaskTypeLabel>{taskTypeLabel}</TaskTypeLabel>
         <TaskDateAndWinnerBox>
-          <TaskDateTimeBox>
-            <IconAlarmClock size={'18px'} />
-            <TaskDateTime>
-              {startDate} -- {endDate}
-            </TaskDateTime>
-          </TaskDateTimeBox>
+          <TaskDateTime>
+            {startDate}-{endDate}
+          </TaskDateTime>
           <TaskWinners>Winners {winnerNum}</TaskWinners>
         </TaskDateAndWinnerBox>
-        <TaskRemarkBox>
-          <IconGiftBox size={'18px'} />
-          <TaskRemark>Reward : {reward.name}</TaskRemark>
-        </TaskRemarkBox>
         <TaskDescription value={description} />
       </TaskInfoBox>
     </ExploreTaskSwiperItemWrapper>
@@ -105,7 +93,7 @@ const TaskInfoBox = styled.div`
   flex-direction: column;
   gap: 10px;
 `
-const TaskName = styled(OverflowEllipsisBox)`
+const TaskName = styled.div`
   font-weight: 700;
   font-size: 36px;
   line-height: 40px;
@@ -129,23 +117,9 @@ const TaskDateAndWinnerBox = styled.div`
   line-height: 24px;
   color: #333333;
 `
-const TaskDateTimeBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`
 const TaskDateTime = styled.span``
 const TaskWinners = styled.span``
-const TaskRemarkBox = styled.div`
-  display: flex;
-  gap: 4px;
-  align-items: center;
-`
-const TaskRemark = styled(OverflowEllipsisBox)`
-  flex: 1;
-  font-size: 14px;
-  color: #333333;
-`
+
 const TaskDescription = styled(RichTextBox)`
   flex: 1;
   overflow-y: auto;
