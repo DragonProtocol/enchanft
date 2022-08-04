@@ -3,32 +3,20 @@ import styled from 'styled-components'
 import ButtonBase from '../../common/button/ButtonBase'
 import { useNavigate } from 'react-router-dom'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { Community, Project, RewardType } from '../../../types/api'
+import { Community, Project } from '../../../types/api'
 
 export type WhitelistItemDataType = {
-  task: {
-    id: number
-    image: string
-    name: string
-  }
-  community: {
-    id: number
-    name: string
-  }
-  reward: {
-    id: number
-    name: string
-    type: RewardType
-  }
-  whitelist: {
-    id: number
-    mintUrl: string
-    mintPrice: string
-    mintStartTime: number
-    mintEndTime: number
-    mintMaxNum: number
-    totalNum: number
-  }
+  id: number
+  mintUrl: string
+  mintPrice: string
+  mintStartTime: number
+  mintEndTime: number
+  mintMaxNum: number
+  totalNum: number
+  projectId: number
+  taskId: number
+  project: Project
+  community: Community
 }
 
 export type WhitelistItemViewConfigType = {
@@ -55,73 +43,34 @@ const defaultViewConfig: WhitelistItemViewConfigType = {
 }
 
 const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint }: WhitelistItemProps) => {
-  const { task, community, reward, whitelist } = data
-  const { mintUrl } = whitelist
+  const navigate = useNavigate()
+  const {
+    id,
+    mintUrl,
+    mintPrice,
+    mintStartTime,
+    mintEndTime,
+    mintMaxNum,
+    totalNum,
+    projectId,
+    taskId,
+    project,
+    community,
+  } = data
 
-  const { disabledMint, loadingMint } = {
+  const { disabledMint, displayMint, loadingMint } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
-  // mint按钮点击事件
-  const handleMint = () => {
-    // if (onMint) {
-    //   onMint(data)
-    // }
-    window.open(mintUrl, '_blank', 'noopener,noreferrer')
-  }
-  return (
-    <WhitelistItemWrapper>
-      <ProjectImage src={task.image} />
-      <WhitelistInfoBox>
-        <ProjectName>{task.name}</ProjectName>
-        <CommunityName>{community.name}</CommunityName>
-        <RewardTypeContentBox>
-          {reward.type === RewardType.OTHERS ? (
-            <RewardTypeText>Other Rewards</RewardTypeText>
-          ) : (
-            <>
-              <RewardTypeText>Whitelist</RewardTypeText>
-              <RewardWhitelistMintButton
-                data={whitelist}
-                onMint={handleMint}
-                loadingMint={loadingMint}
-                disabledMint={disabledMint}
-              />
-            </>
-          )}
-        </RewardTypeContentBox>
-      </WhitelistInfoBox>
-    </WhitelistItemWrapper>
-  )
-}
-export default WhitelistItem
-
-type RewardWhitelistMintButtonProps = {
-  data: {
-    mintUrl: string
-    mintPrice: string
-    mintStartTime: number
-    mintEndTime: number
-    mintMaxNum: number
-    totalNum: number
-  }
-  loadingMint?: boolean
-  disabledMint?: boolean
-  onMint?: () => void
-}
-const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
-  data,
-  loadingMint,
-  disabledMint,
-  onMint,
-}: RewardWhitelistMintButtonProps) => {
-  const { mintStartTime, mintEndTime } = data
   // mint 是否关闭
   const mintClosedCheckInterval = useRef<any>(null)
   const [mintClosed, setMintClosed] = useState(false)
   useEffect(() => {
-    if (mintClosedCheckInterval.current) {
-      clearInterval(mintClosedCheckInterval.current)
+    if (!displayMint) {
+      if (mintClosedCheckInterval.current) {
+        clearInterval(mintClosedCheckInterval.current)
+      }
+      return
     }
     mintClosedCheckInterval.current = setInterval(() => {
       const now = new Date().getTime()
@@ -133,7 +82,7 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
     return () => {
       clearInterval(mintStartTimeCountdownIntervalRef.current)
     }
-  }, [mintEndTime])
+  }, [mintEndTime, displayMint])
   // mint倒计时
   const [mintStartTimeCountdown, setMintStartTimeCountdown] = useState({
     distance: 0,
@@ -144,7 +93,7 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
   })
   const mintStartTimeCountdownIntervalRef = useRef<any>(null)
   useEffect(() => {
-    if (mintClosed) {
+    if (!displayMint || mintClosed) {
       if (mintStartTimeCountdownIntervalRef.current) {
         clearInterval(mintStartTimeCountdownIntervalRef.current)
       }
@@ -167,50 +116,63 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
     return () => {
       clearInterval(mintStartTimeCountdownIntervalRef.current)
     }
-  }, [mintStartTime, mintClosed])
+  }, [mintStartTime, displayMint, mintClosed])
 
   // mint按钮显示文本
   let mintStartTimeCountdownText = 'MINT'
-  if (mintClosed) {
-    mintStartTimeCountdownText = 'Mint Closed'
-  } else if (loadingMint) {
-    mintStartTimeCountdownText = 'Loading...'
-  } else if (mintStartTimeCountdown.distance > 0) {
-    mintStartTimeCountdownText = 'You can mint in'
-    if (mintStartTimeCountdown.day > 0) {
-      mintStartTimeCountdownText += ` ${mintStartTimeCountdown.day}d`
-    }
-    if (mintStartTimeCountdown.hour > 0 || mintStartTimeCountdown.day > 0) {
-      mintStartTimeCountdownText += ` ${mintStartTimeCountdown.hour}h`
-    }
-    if (mintStartTimeCountdown.minute > 0 || mintStartTimeCountdown.hour > 0 || mintStartTimeCountdown.day > 0) {
-      mintStartTimeCountdownText += ` ${mintStartTimeCountdown.minute}m`
-    }
-    if (
-      mintStartTimeCountdown.second > 0 ||
-      mintStartTimeCountdown.minute > 0 ||
-      mintStartTimeCountdown.hour > 0 ||
-      mintStartTimeCountdown.day > 0
-    ) {
-      mintStartTimeCountdownText += ` ${mintStartTimeCountdown.second}s`
+  if (displayMint) {
+    if (mintClosed) {
+      mintStartTimeCountdownText = 'Mint Closed'
+    } else if (loadingMint) {
+      mintStartTimeCountdownText = 'Loading...'
+    } else if (mintStartTimeCountdown.distance > 0) {
+      mintStartTimeCountdownText = 'You can mint in'
+      if (mintStartTimeCountdown.day > 0) {
+        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.day}d`
+      }
+      if (mintStartTimeCountdown.hour > 0 || mintStartTimeCountdown.day > 0) {
+        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.hour}h`
+      }
+      if (mintStartTimeCountdown.minute > 0 || mintStartTimeCountdown.hour > 0 || mintStartTimeCountdown.day > 0) {
+        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.minute}m`
+      }
+      if (
+        mintStartTimeCountdown.second > 0 ||
+        mintStartTimeCountdown.minute > 0 ||
+        mintStartTimeCountdown.hour > 0 ||
+        mintStartTimeCountdown.day > 0
+      ) {
+        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.second}s`
+      }
     }
   }
 
   // mint 按钮状态
   const isDisabledMint = disabledMint || mintClosed || mintStartTimeCountdown.distance > 0
+  // mint按钮点击事件
+  const onMintClick = () => {
+    // if (onMint) {
+    //   onMint(data)
+    // }
+    window.open(mintUrl, '_blank', 'noopener,noreferrer')
+  }
   return (
-    <RewardWhitelistMintButtonWrapper>
-      {mintClosed ? (
-        <MintClosedBox>{'Mint Closed'}</MintClosedBox>
-      ) : (
-        <MintBtn disabled={isDisabledMint} onClick={onMint}>
-          {mintStartTimeCountdownText}
-        </MintBtn>
-      )}
-    </RewardWhitelistMintButtonWrapper>
+    <WhitelistItemWrapper onClick={() => navigate(`/${project.slug}/${taskId}`)}>
+      <ProjectImage src={project.image} />
+      <WhitelistInfoBox>
+        <ProjectName>{project.name}</ProjectName>
+        <CommunityName>{community.name}</CommunityName>
+        {displayMint && (
+          <MintBtn disabled={isDisabledMint} onClick={onMintClick}>
+            {mintStartTimeCountdownText}
+          </MintBtn>
+        )}
+        {mintClosed && <MintClosedBox>{'Mint Closed'}</MintClosedBox>}
+      </WhitelistInfoBox>
+    </WhitelistItemWrapper>
   )
 }
-
+export default WhitelistItem
 const WhitelistItemWrapper = styled.div`
   width: 100%;
   height: 406px;
@@ -248,33 +210,15 @@ const CommunityName = styled.div`
   line-height: 18px;
   color: rgba(51, 51, 51, 0.6);
 `
-const RewardTypeContentBox = styled.div`
+const MintBtn = styled(ButtonBase)`
   width: 100%;
   height: 40px;
-  padding-top: 8px;
-  border-top: 1px dashed rgba(51, 51, 51, 0.3);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`
-const RewardWhitelistMintButtonWrapper = styled.div``
-const RewardTypeText = styled.div`
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 21px;
-  display: flex;
-  align-items: center;
-  color: #333333;
-`
-const MintBtn = styled(ButtonBase)`
-  width: 139px;
-  height: 40px;
-  padding: 0px;
   background: #3dd606;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
   font-weight: 700;
   font-size: 14px;
   line-height: 21px;
+
   color: #ffffff;
 `
 const MintClosedBox = styled.div`

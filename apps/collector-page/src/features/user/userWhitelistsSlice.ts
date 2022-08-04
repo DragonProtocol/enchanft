@@ -4,9 +4,7 @@ import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { UserWhitelistItem } from '../../types/api'
 
-export type UserWhitelistForEntity = UserWhitelistItem & {
-  id: number
-}
+export type UserWhitelistForEntity = UserWhitelistItem
 type WhitelistListState = EntityState<UserWhitelistForEntity> & {
   status: AsyncRequestStatus
   errorMsg: string
@@ -37,8 +35,7 @@ export const fetchUserWhitelists = createAsyncThunk<
   async (params, { rejectWithValue }) => {
     try {
       const resp = await fetchListForUserWhitelist()
-      const data = resp.data.data.map((item) => ({ ...item, id: item.reward.id }))
-      return { data: data || [] }
+      return { data: resp.data.data || [] }
     } catch (error: any) {
       if (!error.response) {
         throw error

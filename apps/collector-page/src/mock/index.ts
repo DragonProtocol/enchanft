@@ -2,14 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 18:42:02
+ * @LastEditTime: 2022-08-03 17:52:40
  * @Description: mock 请求拦截入口
  */
 
 import {
   ActionType,
   ProjectStatus,
-  RewardType,
   RoadmapStatus,
   TaskAcceptedStatus,
   TaskTodoCompleteStatus,
@@ -60,7 +59,6 @@ import { ChainIds } from '../utils/chain'
       ActionType.MEET_CONTRIBUTION_SCORE,
       ActionType.TURN_ON_NOTIFICATION,
     ]
-    const reward_type = [RewardType.OTHERS, RewardType.WHITELIST]
     const user_action_status = [UserActionStatus.TODO, UserActionStatus.DONE]
     const start_tinme = () => new Date().getTime() + Mock.Random.integer(0, 1000 * 60 * 60 * 24)
     const range_tinme = () => new Date().getTime() + Mock.Random.integer(-1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24)
@@ -105,9 +103,6 @@ import { ChainIds } from '../utils/chain'
             winnerNum: 100,
             startTime: start_tinme,
             endTime: end_time,
-            reward: {
-              name: '@title(3, 15)',
-            },
             'actions|10': [
               {
                 id: '@increment',
@@ -183,9 +178,7 @@ import { ChainIds } from '../utils/chain'
           'status|1': project_status,
           'chainId|1': project_chainid,
         },
-        reward: {
-          name: '@title(3, 15)',
-        },
+
         'actions|10': [
           {
             id: '@increment',
@@ -280,13 +273,6 @@ import { ChainIds } from '../utils/chain'
         project: {
           slug: 'slug',
         },
-      }
-    }
-    const rewardEntity = () => {
-      return {
-        id: '@increment',
-        name: '@title(1, 5)',
-        'type|1': reward_type,
       }
     }
     // 设定响应时间
@@ -394,10 +380,7 @@ import { ChainIds } from '../utils/chain'
       msg: 'success',
       'data|10': [
         {
-          task: taskEntity(),
-          community: communityEntity(),
-          whitelist: whitelistEntity(),
-          reward: rewardEntity(),
+          ...whitelistEntity(),
         },
       ],
     })
