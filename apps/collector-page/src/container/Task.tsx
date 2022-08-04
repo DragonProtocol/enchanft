@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 11:13:47
+ * @LastEditTime: 2022-08-04 16:53:26
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -32,70 +32,68 @@ import Button from '@mui/material/Button'
 import CardBox from '../components/common/card/CardBox'
 import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
-const formatStoreDataToComponentDataByTaskDetailContent = (
+import TaskStatusButton, {
+  TaskStatusButtonDataViewType,
+  TaskStatusButtonType,
+} from '../components/business/task/TaskStatusButton'
+
+const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
   takeTaskState: TaskHandle<TakeTaskParams>,
   accountTypes: string[],
-): TaskDetailContentDataViewType => {
-  const displayConnectWallet = !token
-  // 是否需要绑定钱包
-  let displayWalletBind = false
-  const taskChainType = getChainType(task.project.chainId)
-  const walletBindText = taskChainType === ChainType.SOLANA ? 'Bind Phantom Wallet' : 'Bind MeatMask Wallet'
-  if (!displayConnectWallet) {
-    // 验证当前task对应的链类型是否存在于已绑定的钱包中，不存在则要求账号绑定对应的钱包
-    // TODO 这里的几个type类型考虑是否需要统一下
-    switch (taskChainType) {
-      case ChainType.EVM:
-        if (!accountTypes.includes('EVM')) {
-          displayWalletBind = true
-        }
-        break
-      case ChainType.SOLANA:
-        if (!accountTypes.includes('SOLANA')) {
-          displayWalletBind = true
-        }
-        break
+): TaskStatusButtonDataViewType | null => {
+  // 1. 没链接钱包
+  if (!token) {
+    return {
+      type: TaskStatusButtonType.CONNECT_WALLET,
     }
   }
 
-  // const displayAccept = token && task.acceptedStatus === TaskAcceptedStatus.DONE ? true : false
-  const displayTake = !displayConnectWallet && !displayWalletBind && task.acceptedStatus === TaskAcceptedStatus.CANDO
-  const loadingTake = takeTaskState.params?.id === task.id && takeTaskState.status === AsyncRequestStatus.PENDING
-  const disabledTake = loadingTake
-  const displayCompleteStatus =
-    !displayConnectWallet &&
-    !displayWalletBind &&
-    !displayTake &&
-    task.acceptedStatus === TaskAcceptedStatus.DONE &&
-    task.status !== TaskTodoCompleteStatus.CLOSED
-
-  // TODO 待确认
-  let winnerNum = task.winnerNum
-  // let winnerNum = 0
-  // switch (task.type) {
-  //   case TaskType.WHITELIST_LUCK_DRAW:
-  //     // 需要抽奖
-  //     winnerNum = task.winnerList.length || task.whitelistTotalNum
-  //   case TaskType.WHITELIST_ORIENTED:
-  //     // 直接获得奖励
-  //     winnerNum = task.winnerList.length
-  // }
-
-  return {
-    data: { ...task, winnerNum },
-    viewConfig: {
-      displayConnectWallet,
-      displayWalletBind,
-      walletBindText,
-      // displayAccept,
-      displayTake,
-      disabledTake,
-      loadingTake,
-      displayCompleteStatus,
-    },
+  // 2.钱包账户没有跟用户系统绑定
+  let isBindWallet = false
+  const taskChainType = getChainType(task.project.chainId)
+  switch (taskChainType) {
+    case ChainType.EVM:
+      if (!accountTypes.includes('EVM')) {
+        isBindWallet = true
+      }
+      break
+    case ChainType.SOLANA:
+      if (!accountTypes.includes('SOLANA')) {
+        isBindWallet = true
+      }
+      break
   }
+  if (!isBindWallet) {
+    const btnText = taskChainType === ChainType.SOLANA ? 'Bind Phantom Wallet' : 'Bind MeatMask Wallet'
+    return {
+      type: TaskStatusButtonType.BIND_WALLET,
+      btnText,
+    }
+  }
+
+  // 3. 当前账户可以接受任务，但还没接
+  const isCanTake = task.acceptedStatus === TaskAcceptedStatus.CANDO
+  if (isCanTake) {
+    const loadingTake = takeTaskState.status === AsyncRequestStatus.PENDING
+    const disabledTake = loadingTake
+    return {
+      type: TaskStatusButtonType.TAKE,
+      loading: loadingTake,
+      disabled: disabledTake,
+    }
+  }
+
+  // 4. 当前账户是否完成任务
+  const isCompleted = task.acceptedStatus === TaskAcceptedStatus.DONE && task.status !== TaskTodoCompleteStatus.CLOSED
+  if (isCompleted) {
+    return {
+      type: TaskStatusButtonType.COMPLETE,
+    }
+  }
+
+  return null
 }
 const formatStoreDataToComponentDataByTaskActions = (task: TaskDetailEntity): TaskActionItemsType => {
   return [...task.actions].sort((a, b) => a.orderNum - b.orderNum).map((v) => ({ ...v, project: task.project }))
@@ -124,9 +122,8 @@ const Task: React.FC = () => {
   const handleLeave = useCallback(() => {
     navigate(-1)
   }, [])
-  // 接受任务
-  const handleTakeTask = (id) => {
-    dispatch(take({ id }))
+  const handleTakeTask = () => {
+    dispatch(take({ id: Number(id) }))
   }
   // 接任务的状态
   const { take: takeTaskState } = useAppSelector(selectUserTaskHandlesState)
@@ -151,13 +148,13 @@ const Task: React.FC = () => {
       </TaskDetailLoading>
     )
   if (!data) return null
+  // 接受任务
   const name = data.name || ''
   const { projectId, image } = data
   const { name: projectName, chainId, communityId } = data.project
-
-  const taskDetailContent = data
-    ? formatStoreDataToComponentDataByTaskDetailContent(data, token, takeTaskState, accountTypes)
-    : null
+  // task status button
+  const taskStatusButton = formatStoreDataToComponentDataByTaskStatusButton(data, token, takeTaskState, accountTypes)
+  // task action and winnerList
   const actionItems = formatStoreDataToComponentDataByTaskActions(data)
   const winnerList = data?.winnerList || []
   // 是否允许操作action
@@ -172,73 +169,66 @@ const Task: React.FC = () => {
   return (
     <TaskDetailWrapper>
       <MainContentBox>
-        {loadingView ? (
-          <TaskDetailLoading>
-            <Loading />{' '}
-          </TaskDetailLoading>
-        ) : (
-          data && (
-            <TaskDetailBodyBox>
-              <DetailBodyLeft>
-                <ButtonNavigation onClick={handleLeave}>
-                  <IconCaretLeft />
-                </ButtonNavigation>
-              </DetailBodyLeft>
-              <DetailBodyRight>
-                {taskDetailContent && (
+        <TaskDetailBodyBox>
+          <DetailBodyLeft>
+            <ButtonNavigation onClick={handleLeave}>
+              <IconCaretLeft />
+            </ButtonNavigation>
+          </DetailBodyLeft>
+          <DetailBodyRight>
+            <TaskDetailTop>
+              <TaskName>{name}</TaskName>
+              <ProjectNameBox>
+                <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
+                {isCreator && <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>}
+              </ProjectNameBox>
+              <TaskImageBox>
+                {/* <ChainTag size={2} chainId={chainId} /> */}
+                <TaskImage src={image} />
+              </TaskImageBox>
+            </TaskDetailTop>
+            <TaskDetailContentBox>
+              <TaskDetailContentBoxLeft>
+                <TaskDetailContent data={data} />
+              </TaskDetailContentBoxLeft>
+              <TaskDetailContentBoxRight>
+                {winnerList.length > 0 ? (
+                  <TaskListBox>
+                    <TaskWinnerList items={winnerList} />
+                  </TaskListBox>
+                ) : (
                   <>
-                    <TaskDetailTop>
-                      <TaskName>{name}</TaskName>
-                      <ProjectNameBox>
-                        <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>
-                          Project: {projectName}
-                        </ProjectName>
-                        {isCreator && <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>}
-                      </ProjectNameBox>
-                      <TaskImageBox>
-                        {/* <ChainTag size={2} chainId={chainId} /> */}
-                        <TaskImage src={image} />
-                      </TaskImageBox>
-                    </TaskDetailTop>
-                    <TaskDetailContentBox>
-                      <TaskDetailContentBoxLeft>
-                        <TaskDetailContent
-                          data={taskDetailContent.data}
-                          viewConfig={taskDetailContent.viewConfig}
-                          onConnectWallet={handleOpenConnectWallet}
-                          onBindWallet={handleOpenWalletBind}
-                          onTake={(task) => handleTakeTask(task.id)}
-                        />
-                      </TaskDetailContentBoxLeft>
-                      <TaskDetailContentBoxRight>
-                        {winnerList.length > 0 ? (
-                          <TaskListBox>
-                            <TaskWinnerList items={winnerList} />
-                          </TaskListBox>
-                        ) : (
-                          <TaskListBox>
-                            <TaskActionList
-                              items={actionItems}
-                              onDiscord={handleActionToDiscord}
-                              onTwitter={handleActionToTwitter}
-                              allowHandle={allowHandleAction}
-                              displayVerify={displayVerify}
-                              loadingVerify={loadingVerify}
-                              disabledVerify={disabledVerify}
-                              onVerifyActions={dispatchFetchTaskDetail}
-                              copyBgc="#FFFFFF"
-                              verifyBgc="#FFFFFF"
-                            />
-                          </TaskListBox>
-                        )}
-                      </TaskDetailContentBoxRight>
-                    </TaskDetailContentBox>
+                    {taskStatusButton && (
+                      <TaskStatusButton
+                        type={taskStatusButton.type}
+                        loading={taskStatusButton.loading}
+                        disabled={taskStatusButton.disabled}
+                        btnText={taskStatusButton.btnText}
+                        onConnectWallet={handleOpenConnectWallet}
+                        onBindWallet={handleOpenWalletBind}
+                        onTake={handleTakeTask}
+                      />
+                    )}
+                    <TaskListBox>
+                      <TaskActionList
+                        items={actionItems}
+                        onDiscord={handleActionToDiscord}
+                        onTwitter={handleActionToTwitter}
+                        allowHandle={allowHandleAction}
+                        displayVerify={displayVerify}
+                        loadingVerify={loadingVerify}
+                        disabledVerify={disabledVerify}
+                        onVerifyActions={dispatchFetchTaskDetail}
+                        copyBgc="#FFFFFF"
+                        verifyBgc="#FFFFFF"
+                      />
+                    </TaskListBox>
                   </>
                 )}
-              </DetailBodyRight>
-            </TaskDetailBodyBox>
-          )
-        )}
+              </TaskDetailContentBoxRight>
+            </TaskDetailContentBox>
+          </DetailBodyRight>
+        </TaskDetailBodyBox>
       </MainContentBox>
     </TaskDetailWrapper>
   )
@@ -305,6 +295,9 @@ const TaskDetailContentBoxLeft = styled.div`
 const TaskDetailContentBoxRight = styled.div`
   flex: 1;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `
 const TaskListBox = styled.div`
   width: 100%;
