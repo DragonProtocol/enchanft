@@ -6,6 +6,7 @@ import { TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../t
 import ChainTag from '../chain/ChainTag'
 import { useNavigate } from 'react-router-dom'
 import ButtonBase, { ButtonInfo, ButtonPrimary } from '../../common/button/ButtonBase'
+import RichTextBox from '../../common/text/RichTextBox'
 
 export type TaskDetailContentDataType = {
   id: number
@@ -112,22 +113,22 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
         </TaskDateTime>
         <TaskWinners>Winners {winnerNum}</TaskWinners>
       </TaskDateTimeBox>
-      <TaskDescription>{description}</TaskDescription>
-      {displayConnectWallet && <ButtonPrimary onClick={handleConnectWallet}>Connect Wallect</ButtonPrimary>}
-      {displayWalletBind && <ButtonPrimary onClick={handleWalletBind}>{walletBindText}</ButtonPrimary>}
+      {displayConnectWallet && <TaskBtn onClick={handleConnectWallet}>Connect Wallect</TaskBtn>}
+      {displayWalletBind && <TaskBtn onClick={handleWalletBind}>{walletBindText}</TaskBtn>}
       {displayTake && (
-        <ButtonPrimary disabled={disabledTake} onClick={handleTake}>
+        <TaskBtn disabled={disabledTake} onClick={handleTake}>
           {loadingTake ? 'loading...' : 'Take the task'}
-        </ButtonPrimary>
+        </TaskBtn>
       )}
       {displayCompleteStatus && <TaskCompleteStatus>{completeStatusLabel}</TaskCompleteStatus>}
+
+      <TaskDescription value={description} />
     </TaskDetailContentWrapper>
   )
 }
 export default TaskDetailContent
 const TaskDetailContentWrapper = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -148,10 +149,12 @@ const TaskDateTimeBox = styled.div`
 const TaskDateTime = styled.span``
 const TaskWinners = styled.span``
 
-const TaskDescription = styled.div`
-  font-size: 16px;
-  line-height: 20px;
-  color: rgba(51, 51, 51, 0.6);
+const TaskDescription = styled(RichTextBox)``
+const TaskBtn = styled(ButtonPrimary)`
+  width: 100%;
+  font-weight: 700;
+  font-size: 18px;
+  color: #ffffff;
 `
 
 const TaskCompleteStatus = styled.div`
@@ -162,7 +165,7 @@ const TaskCompleteStatus = styled.div`
   padding: 10px 18px;
   box-sizing: border-box;
   gap: 10px;
-  width: 422px;
+  width: 100%;
   height: 48px;
   background: #f8f8f8;
   font-weight: 700;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-30 22:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 15:17:52
+ * @LastEditTime: 2022-08-03 18:53:08
  * @Description: 全局样式
  */
 import { createGlobalStyle, css } from 'styled-components'
@@ -31,7 +31,9 @@ export const ScrollBarCss = css`
 `
 
 export const FontFamilyCss = css`
-  font-family: 'Poppins-Regular';
+  font-family: 'Poppins';
+  font-style: normal;
+  /* font-family: 'PressStart2P-Regular'; */
 `
 export const CursorPointerCss = css`
   /* cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABFklEQVRYR9WXURLDIAhE6/0PbSdOtUpcd1Gnpv1KGpTHBpCE1/cXq+vrMph7dGvXZTtpfW10DCA5jrH1H0Jhs5E0hnZdCR+vb5S8Nn8mQCeS9BdSalYJqMBjAGzq59xAESN7VFVUgV8AZB/dZBR7QTFDCqGquvUBVVoEtgIwpQRzmANSFHgWQKExHdIrPeuMvQNDarXe6nC/AutgV3JW+6bgqQLeV8FekRtgV+ToDKEKnACYKsfZjjkam7a0ZpYTytwmgainpC3HvwBocgKOxqRjehoR9DFKNFYtOwCGYCszobeCbl26N6yyQ6g8X/Wex/rBPsNEV6qAMaJPMynIHQCoSqS9JSMmwef51LflTgCRszU7DvAGiV6mHWfsaVUAAAAASUVORK5CYII=')
@@ -46,12 +48,19 @@ export const CursorPointerUpCss = css`
 `
 const GlobalStyle = createGlobalStyle`
   @font-face {
-    font-family: 'Poppins-Regular';
-    src: url('fonts/Poppins-Regular.ttf') format('truetype');
+    font-family: 'Poppins';
+    src:  url('/fonts/Poppins-Medium.ttf') format('truetype');
     font-style: normal;
     font-weight: normal;
     font-display: block; // 缩短字体切换闪烁时间(较长的阻塞周期)
   }
+  /* @font-face {
+    font-family: 'PressStart2P-Regular';
+    src: url('/fonts/PressStart2P-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+    font-display: block; // 缩短字体切换闪烁时间(较长的阻塞周期)
+  } */
   html,body,#root {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;

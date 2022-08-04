@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 19:35:40
+ * @LastEditTime: 2022-08-02 12:07:48
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -275,6 +275,7 @@ export type TaskDetailResponse = TaskItem & {
 export type FollowedCommunityItem = Community & {
   memberNums: number
   contribution: number
+  project: Project
 }
 export type FollowedCommunitiesResponse = FollowedCommunityItem[]
 

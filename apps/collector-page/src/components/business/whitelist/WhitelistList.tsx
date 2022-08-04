@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-26 17:00:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 19:16:44
+ * @LastEditTime: 2022-08-02 14:50:34
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from '../../../constants'
+import Loading from '../../common/loading/Loading'
 import WhitelistItem, { WhitelistItemDataViewType } from './WhitelistItem'
 
 export type WhitelistListViewConfigType = {
@@ -26,7 +27,11 @@ const WhitelistList: React.FC<WhitelistListProps> = ({
   emptyMsg = 'no whitelist',
 }: WhitelistListProps) => (
   <>
-    {loading && <WhitelistListLoading>{loadingMsg}</WhitelistListLoading>}
+    {loading && (
+      <WhitelistListLoading>
+        <Loading />
+      </WhitelistListLoading>
+    )}
     {!loading && items.length === 0 && emptyMsg && <WhitelistListEmpty>{emptyMsg}</WhitelistListEmpty>}
     <WhitelistListWrapper>
       {!loading &&
@@ -40,7 +45,7 @@ const WhitelistListWrapper = styled.div`
   width: 100%;
   min-height: 100px;
   display: grid;
-  grid-gap: 90px;
+  grid-gap: 20px;
   justify-content: space-between;
   list-style-type: none;
   grid-template-columns: repeat(4, minmax(250px, 1fr));
@@ -58,6 +63,7 @@ const WhitelistListWrapper = styled.div`
 `
 const WhitelistListLoading = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

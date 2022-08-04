@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 18:06:07
+ * @LastEditTime: 2022-08-02 16:42:54
  * @Description: file description
  */
 import React from 'react'
@@ -23,6 +23,7 @@ export type ExploreTaskSwiperItemDataType = {
   winnerNum: number
   description: string
   project: {
+    slug: string
     chainId: number
     name: string
   }
@@ -53,8 +54,8 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
   const endDate = new Date(endTime).toLocaleDateString()
   return (
     <ExploreTaskSwiperItemWrapper>
-      <ChainTag size={2} chainId={project.chainId} />
-      <TaskImage src={image} onClick={() => navigate(`/task/${id}`)} />
+      {/* <ChainTag size={2} chainId={project.chainId} /> */}
+      <TaskImage src={image} onClick={() => navigate(`/${project.slug}/${id}`)} />
       <TaskInfoBox>
         <TaskName>{name}</TaskName>
         <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
@@ -75,20 +76,22 @@ const ExploreTaskSwiperItemWrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  gap: 40px;
+  overflow: hidden;
 `
 const TaskImage = styled.img`
-  flex: 1;
+  width: 50%;
   height: 100%;
   cursor: pointer;
   /* 图片不失真 ,保持其宽高比, 多余的会被剪切*/
   object-fit: cover;
 `
 const TaskInfoBox = styled.div`
-  width: 440px;
+  width: 50%;
+  padding: 40px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 `
 const TaskName = styled.div`
   font-weight: 700;

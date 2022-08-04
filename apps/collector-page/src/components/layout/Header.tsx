@@ -2,28 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 15:02:59
+ * @LastEditTime: 2022-08-03 14:53:48
  * @Description: 站点头部
  */
-import SolanaConnectWalletButton from 'components/business/connect/SolanaConnectWalletButton'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import bs58 from 'bs58'
 import styled from 'styled-components'
-import { PublicKey } from '@solana/web3.js'
-import { setToken, selectAccount, userLogin, setPubkey, userGetProfile } from '../../features/user/accountSlice'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import LogoImg from '../imgs/logo.svg'
 import ConnectBtn from '../ConnectBtn'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { connected, signMessage, publicKey, disconnecting } = useWallet()
-  const dispatch = useAppDispatch()
-  const account = useAppSelector(selectAccount)
-  const prePublicKey = useRef<PublicKey | null>()
   const navs = [
     {
       name: 'events',
@@ -38,11 +28,14 @@ const Header: React.FC = () => {
     //   link: '/calendar',
     // },
   ]
+  const deactivateLinks = ['/profile', '/contributionranks', '/ref', '/creator']
   const [curNavLink, setCurNavLink] = useState('/')
 
   useEffect(() => {
     if (navs.findIndex((item) => item.link === location.pathname) !== -1) {
       setCurNavLink(location.pathname)
+    } else if (deactivateLinks.includes(location.pathname)) {
+      setCurNavLink('')
     }
   }, [location])
 
@@ -86,8 +79,7 @@ const HeaderLeft = styled.div`
   display: flex;
 `
 const HeaderLogo = styled.img`
-  width: 190px;
-  height: 24px;
+  height: 48px;
   cursor: pointer;
 `
 const HeaderRight = styled.div`

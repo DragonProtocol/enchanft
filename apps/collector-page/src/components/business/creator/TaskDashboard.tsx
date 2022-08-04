@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline'
+import CardBox from '../../common/card/CardBox'
 
 export default function TaskDashboard({
   participants,
@@ -12,7 +13,7 @@ export default function TaskDashboard({
   completionRate: string
 }) {
   return (
-    <TaskDashboardBox className="box">
+    <TaskDashboardBox>
       <h3>Task Dashboard</h3>
       <div className="cards">
         <Card title={'Participants'} num={participants} />
@@ -26,10 +27,7 @@ export default function TaskDashboard({
 function Card({ title, num, percent }: { title: string; num: number | string; percent?: boolean }) {
   return (
     <div>
-      <p>
-        <PeopleOutlineIcon sx={{ mx: 1 }} />
-        {title}
-      </p>
+      <p>{title}</p>
       <p className="num">
         {num.toLocaleString()}
         {percent && '%'}
@@ -38,38 +36,46 @@ function Card({ title, num, percent }: { title: string; num: number | string; pe
   )
 }
 
-const TaskDashboardBox = styled.div`
-  height: 239px;
+const TaskDashboardBox = styled(CardBox)`
+  height: 224px;
+  box-sizing: border-box;
+
+  & h3 {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 400;
+    color: #333333;
+  }
 
   & > .cards {
     display: flex;
     margin-top: 22px;
     justify-content: space-between;
     & > div {
-      width: 217px;
-      height: 140px;
-      border-radius: 10px;
-      /* box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4); */
-      border: 1px solid rgba(0, 0, 0, 0.4);
+      width: 220px;
+      height: 100px;
+      background-color: #f8f8f8;
       text-align: center;
-      padding: 20px 5px;
+      padding: 24px 5px;
       box-sizing: border-box;
       & p {
-        height: 29px;
         color: rgba(16, 16, 16, 100);
-        font-size: 20px;
+        font-weight: 400;
+        font-size: 10px;
+        line-height: 20px;
         margin: 0;
         display: flex;
         align-items: center;
         justify-content: center;
       }
       & .num {
-        width: 125px;
-        height: 40px;
-        color: rgba(16, 16, 16, 100);
-        font-size: 28px;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 18px;
+        text-align: center;
+        color: #3dd606;
         width: initial;
-        margin-top: 28px;
+        margin-top: 10px;
         display: block;
       }
     }

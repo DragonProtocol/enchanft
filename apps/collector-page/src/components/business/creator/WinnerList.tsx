@@ -6,6 +6,7 @@ import Checkbox from '@mui/material/Checkbox'
 import { PickedWhiteList, ScheduleInfo, Winner } from '../../../features/creator'
 import { sortPubKey } from '../../../utils/solana'
 import UserAvatar from '../user/UserAvatar'
+import CardBox from '../../common/card/CardBox'
 
 export enum TaskStatus {
   SUBMIT,
@@ -38,8 +39,8 @@ export default function WinnerList({
   const [disableSelect, setDisableSelect] = useState(false)
 
   const genRandom = useCallback(() => {
-    let num = winnerNum
     let tmpList = [...list]
+    let num = Math.min(winnerNum, tmpList.length)
     const result: Array<number> = []
     while (num > 0) {
       const arrLen = tmpList.length
@@ -54,29 +55,29 @@ export default function WinnerList({
   }, [list, winnerNum])
 
   return (
-    <WinnerListBox className="box">
+    <WinnerListBox>
       <div className="title">
         <h3>Winner List</h3>
         {(whitelistSaved && (
           <div>
-            <Button variant="outlined" onClick={downloadWinners}>
+            <CustomBtn variant="outlined" onClick={downloadWinners}>
               Download
-            </Button>
+            </CustomBtn>
           </div>
         )) || (
           <div>
-            <Button variant="outlined" onClick={genRandom}>
+            <CustomBtn variant="outlined" onClick={genRandom}>
               Random
-            </Button>
+            </CustomBtn>
             {'  '}
-            <Button
+            <CustomBtn
               variant="outlined"
               onClick={() => {
                 uploadSelected(selected)
               }}
             >
               Save {selected.length}
-            </Button>
+            </CustomBtn>
           </div>
         )}
       </div>
@@ -126,12 +127,14 @@ function ListItem({
 }) {
   return (
     <div>
-      <span style={{ width: '20px' }}>{idx}</span>
-      <span>
-        <UserAvatar src={data.avatar} />
-      </span>
-      <span>{data.name}</span>
-      <span>{data.pubkey}</span>
+      <div>
+        <span className="index">{idx}</span>
+        <span>
+          <UserAvatar src={data.avatar} />
+        </span>
+        <span className="name">{data.name}</span>
+        <span>{data.pubkey}</span>
+      </div>
       <Checkbox
         checked={checked}
         disabled={disabled}
@@ -152,29 +155,67 @@ function ListItem({
   )
 }
 
-const WinnerListBox = styled.div`
+const CustomBtn = styled(Button)`
+  color: #3dd606;
+  border-color: #3dd606;
+  &:hover {
+    border-color: #3dd606;
+  }
+`
+
+const WinnerListBox = styled(CardBox)`
   margin-top: 25px;
 
   & .title {
     display: flex;
     justify-content: space-between;
+
+    & h3 {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+      color: #333333;
+    }
   }
 
   & .list {
+    background: #f8f8f8;
+    padding: 20px;
+    margin-top: 20px;
     & > div {
-      margin-top: 20px;
+      font-weight: 400;
+      font-size: 10px;
+      line-height: 20px;
+      color: #333333;
       display: flex;
       justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #d9d9d9;
+      &:first-child {
+        border-top: 1px solid #d9d9d9;
+      }
+      & > div {
+        display: flex;
+        & img {
+          width: 40px;
+          height: 40px;
+        }
 
-      & img {
-        width: 40px;
+        & .index {
+          width: 60px;
+        }
+
+        & .name {
+          width: 80px;
+          margin: 0 10px;
+        }
       }
 
       & span {
         font-size: 16px;
         display: flex;
         align-items: center;
-        margin-right: 15px;
+        padding-right: 0;
         &:last-child {
           font-size: 14px;
           margin: 0px;

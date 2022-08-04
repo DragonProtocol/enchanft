@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:45:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 14:38:09
+ * @LastEditTime: 2022-08-02 18:17:52
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import ButtonBase from '../../common/button/ButtonBase'
+import Loading from '../../common/loading/Loading'
 
 import TaskActionItem, { TaskActionItemDataType } from './TaskActionItem'
 export type TaskActionListViewConfigType = {
@@ -55,7 +56,9 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
   return (
     <TaskActionListWrapper>
       {loading ? (
-        <TaskActionListLoading>{loadingMsg}</TaskActionListLoading>
+        <TaskActionListLoading>
+          <Loading />
+        </TaskActionListLoading>
       ) : (
         <>
           {items.map((item) => (
@@ -66,6 +69,7 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
               onTwitter={onTwitter}
               allowHandle={allowHandle}
               copyBgc={copyBgc}
+              verifying={loadingVerify}
             />
           ))}
           {displayVerify && (
@@ -89,9 +93,11 @@ const TaskActionListWrapper = styled.div`
   gap: 20px;
 `
 const TaskActionListLoading = styled.div`
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 const TaskActionListEmpty = styled.div`
   text-align: center;

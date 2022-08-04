@@ -2,35 +2,36 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 19:04:20
+ * @LastEditTime: 2022-08-03 11:13:47
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { AsyncRequestStatus } from '../types'
-import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
 import { useNavigate, useParams } from 'react-router-dom'
 import { fetchTaskDetail, selectTaskDetail, TaskDetailEntity } from '../features/task/taskDetailSlice'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
-import IconButton from '@mui/material/IconButton'
 import TaskActionList, { TaskActionItemsType } from '../components/business/task/TaskActionList'
-import { TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType, TodoTaskActionItem } from '../types/api'
+import {
+  TaskAcceptedStatus,
+  TaskTodoCompleteStatus,
+  TaskType,
+  TodoTaskActionItem,
+  UserActionStatus,
+} from '../types/api'
 import TaskDetailContent, { TaskDetailContentDataViewType } from '../components/business/task/TaskDetailContent'
 import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import useHandleAction from '../hooks/useHandleAction'
 import { ChainType, getChainType } from '../utils/chain'
-import { TokenType } from '../utils/token'
 import TaskWinnerList from '../components/business/task/TaskWinnerList'
-import ButtonBase, { ButtonPrimary } from '../components/common/button/ButtonBase'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import IconCaretLeft from '../components/common/icons/IconCaretLeft'
-import ChainTag from '../components/business/chain/ChainTag'
 import Button from '@mui/material/Button'
 import CardBox from '../components/common/card/CardBox'
 import usePermissions from '../hooks/usePermissons'
+import Loading from '../components/common/loading/Loading'
 const formatStoreDataToComponentDataByTaskDetailContent = (
   task: TaskDetailEntity,
   token: string,
@@ -96,8 +97,8 @@ const formatStoreDataToComponentDataByTaskDetailContent = (
     },
   }
 }
-const formatStoreDataToComponentDataByTaskActions = (actions: TodoTaskActionItem[]): TaskActionItemsType => {
-  return [...actions].sort((a, b) => a.orderNum - b.orderNum)
+const formatStoreDataToComponentDataByTaskActions = (task: TaskDetailEntity): TaskActionItemsType => {
+  return [...task.actions].sort((a, b) => a.orderNum - b.orderNum).map((v) => ({ ...v, project: task.project }))
 }
 const Task: React.FC = () => {
   const navigate = useNavigate()
@@ -142,16 +143,13 @@ const Task: React.FC = () => {
   const handleOpenWalletBind = useCallback(() => {
     dispatch(setConnectModal(modalType))
   }, [modalType])
-  // 是否允许操作action
-  const allowHandleAction =
-    data?.acceptedStatus === TaskAcceptedStatus.DONE && data?.status !== TaskTodoCompleteStatus.CLOSED
 
-  // verify action
-  const displayVerify = allowHandleAction
-  const loadingVerify = status === AsyncRequestStatus.PENDING
-  const disabledVerify = loadingVerify
-
-  if (loadingView) return <TaskDetailLoading>Loading ... </TaskDetailLoading>
+  if (loadingView)
+    return (
+      <TaskDetailLoading>
+        <Loading />{' '}
+      </TaskDetailLoading>
+    )
   if (!data) return null
   const name = data.name || ''
   const { projectId, image } = data
@@ -160,14 +158,24 @@ const Task: React.FC = () => {
   const taskDetailContent = data
     ? formatStoreDataToComponentDataByTaskDetailContent(data, token, takeTaskState, accountTypes)
     : null
-  const actionItems = formatStoreDataToComponentDataByTaskActions(data?.actions || [])
+  const actionItems = formatStoreDataToComponentDataByTaskActions(data)
   const winnerList = data?.winnerList || []
+  // 是否允许操作action
+  const allowHandleAction =
+    data?.acceptedStatus === TaskAcceptedStatus.DONE && data?.status !== TaskTodoCompleteStatus.CLOSED
+
+  // verify action
+  const displayVerify = allowHandleAction && actionItems.some((v) => v.status === UserActionStatus.TODO)
+  const loadingVerify = status === AsyncRequestStatus.PENDING
+  const disabledVerify = loadingVerify
 
   return (
     <TaskDetailWrapper>
       <MainContentBox>
         {loadingView ? (
-          <TaskDetailLoading>Loading ... </TaskDetailLoading>
+          <TaskDetailLoading>
+            <Loading />{' '}
+          </TaskDetailLoading>
         ) : (
           data && (
             <TaskDetailBodyBox>
@@ -188,7 +196,7 @@ const Task: React.FC = () => {
                         {isCreator && <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>}
                       </ProjectNameBox>
                       <TaskImageBox>
-                        <ChainTag size={2} chainId={chainId} />
+                        {/* <ChainTag size={2} chainId={chainId} /> */}
                         <TaskImage src={image} />
                       </TaskImageBox>
                     </TaskDetailTop>
@@ -240,8 +248,8 @@ const TaskDetailWrapper = styled.div`
   width: 100%;
 `
 const TaskDetailLoading = styled.div`
-  width: 100%;
   text-align: center;
+  margin-top: 100px;
 `
 const TaskDetailBodyBox = styled(CardBox)`
   display: flex;
@@ -251,6 +259,8 @@ const DetailBodyLeft = styled.div``
 const DetailBodyRight = styled.div`
   flex: 1;
   height: 100%;
+  padding-right: 50px;
+  box-sizing: border-box;
 `
 const TaskDetailTop = styled.div`
   display: flex;
@@ -290,11 +300,14 @@ const TaskDetailContentBoxLeft = styled.div`
   flex: 1;
   padding: 20px;
   box-sizing: border-box;
+  overflow: hidden;
 `
 const TaskDetailContentBoxRight = styled.div`
   flex: 1;
+  overflow: hidden;
 `
 const TaskListBox = styled.div`
+  width: 100%;
   background: #f8f8f8;
   padding: 20px;
   box-sizing: border-box;

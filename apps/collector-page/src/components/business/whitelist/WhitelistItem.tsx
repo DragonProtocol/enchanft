@@ -57,6 +57,7 @@ const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint 
     project,
     community,
   } = data
+
   const { disabledMint, displayMint, loadingMint } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -156,7 +157,7 @@ const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint 
     window.open(mintUrl, '_blank', 'noopener,noreferrer')
   }
   return (
-    <WhitelistItemWrapper onClick={() => navigate(`/community/${id}`)}>
+    <WhitelistItemWrapper onClick={() => navigate(`/${project.slug}/${taskId}`)}>
       <ProjectImage src={project.image} />
       <WhitelistInfoBox>
         <ProjectName>{project.name}</ProjectName>
@@ -191,7 +192,7 @@ const ProjectImage = styled.img`
 `
 const WhitelistInfoBox = styled.div`
   flex: 1;
-  padding-top: 20px;
+  padding: 10px 20px;
   display: flex;
   flex-direction: column;
   gap: 8px;

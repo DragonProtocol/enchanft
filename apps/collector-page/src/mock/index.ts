@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 17:03:18
+ * @LastEditTime: 2022-08-03 17:52:40
  * @Description: mock 请求拦截入口
  */
 
@@ -64,13 +64,14 @@ import { ChainIds } from '../utils/chain'
     const range_tinme = () => new Date().getTime() + Mock.Random.integer(-1000 * 60 * 60 * 24, 1000 * 60 * 60 * 24)
     const end_time = () => new Date().getTime() + Mock.Random.integer(1000 * 60 * 60 * 24 * 2, 1000 * 60 * 60 * 24 * 10)
 
+    const rich_text = `demodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemodemo`
     const projectEntity = () => {
       return {
         id: '@increment',
         slug: 'slug',
         name: '@title(1, 5)',
         image: "@dataImage('260x200', 'Project Image')",
-        description: '@paragraph(10, 30)',
+        description: rich_text,
         'chainId|1': project_chainid,
         'status|1': project_status,
         taskNum: 100,
@@ -82,7 +83,7 @@ import { ChainIds } from '../utils/chain'
         publicSaleTime: start_tinme,
         publicSalePrice: '@integer(1, 100)',
         communityId: '@increment',
-        story: '@paragraph(20, 100)',
+        story: rich_text,
         mintMaxToken: '@integer(1, 100)',
         'taskType|1': task_type,
         community: {
@@ -106,7 +107,7 @@ import { ChainIds } from '../utils/chain'
               {
                 id: '@increment',
                 name: '@title(3, 15)',
-                description: '@paragraph(10, 30)',
+                description: rich_text,
                 orderNum: Mock.Random.integer(1, 100),
                 'type|1': action_type,
                 taskId: '@increment',
@@ -127,14 +128,14 @@ import { ChainIds } from '../utils/chain'
             partner: '@title(1, 5)',
             role: 'CO-FOUNDER',
             avatar: "@dataImage('200x200', 'Tema Member Avatar')",
-            description: '@paragraph(10, 50)',
+            description: rich_text,
             projectId: '@increment',
           },
         ],
         'roadmap|10': [
           {
             id: '@increment',
-            description: '@title(5, 15)',
+            description: rich_text,
             'status|1': roadmap_status,
           },
         ],
@@ -156,7 +157,7 @@ import { ChainIds } from '../utils/chain'
         id: '@increment',
         name: '@title(1, 5)',
         image: "@dataImage('820x460', 'Task Image')",
-        description: '@paragraph(10, 30)',
+        description: rich_text,
         'type|1': task_type,
         startTime: start_tinme,
         endTime: end_time,
@@ -182,7 +183,7 @@ import { ChainIds } from '../utils/chain'
           {
             id: '@increment',
             name: '@title(3, 15)',
-            description: '@paragraph(10, 30)',
+            description: rich_text,
             orderNum: Mock.Random.integer(1, 100),
             'type|1': action_type,
             taskId: '@increment',
@@ -216,9 +217,67 @@ import { ChainIds } from '../utils/chain'
         },
       }
     }
+    const whitelistEntity = () => {
+      return {
+        id: '@increment',
+        mintUrl: 'https://www.baidu.com/',
+        mintPrice: '3+1 SOL',
+        mintStartTime: range_tinme(),
+        endTime: end_time,
+        mintMaxNum: 10,
+        totalNum: 100,
+        projectId: '@increment',
+        taskId: '@increment',
+        project: {
+          id: '@increment',
+          slug: 'slug',
+          name: '@title(1, 5)',
+          image: "@dataImage('260x200', 'Project Image')",
+          description: rich_text,
+          'chainId|1': project_chainid,
+          'status|1': project_status,
+          taskNum: 100,
+          floorPrice: '3+1',
+          injectedCoins: '',
+          itemTotalNum: 9999,
+          mintPrice: '3+1',
+          mintStartTime: start_tinme,
+          publicSaleTime: start_tinme,
+          publicSalePrice: '@integer(1, 100)',
+          communityId: '@increment',
+          story: rich_text,
+          mintMaxToken: '@integer(1, 100)',
+          'taskType|1': task_type,
+        },
+        community: {
+          id: '@increment',
+          name: '@title(1, 5)',
+          icon: "@dataImage('160x160', 'Community Image')",
+          twitter: 'https://twitter.com/',
+          discord: 'https://twitter.com/',
+          website: 'https://twitter.com/',
+          project: {
+            slug: 'slug',
+          },
+        },
+      }
+    }
+    const communityEntity = () => {
+      return {
+        id: '@increment',
+        name: '@title(1, 5)',
+        icon: "@dataImage('160x160', 'Community Image')",
+        twitter: 'https://twitter.com/',
+        discord: 'https://twitter.com/',
+        website: 'https://twitter.com/',
+        project: {
+          slug: 'slug',
+        },
+      }
+    }
     // 设定响应时间
     Mock.setup({
-      timeout: 3000,
+      timeout: 1000,
     })
 
     // explore remmound tasks
@@ -310,6 +369,31 @@ import { ChainIds } from '../utils/chain'
         },
       ],
     })
+    Mock.mock(/\/communities\/(\d*)\/contribution(\\?.*|)/, 'get', {
+      code: 0,
+      msg: 'success',
+      data: 1000,
+    })
+    // user withlist
+    Mock.mock(/\/users\/whitelists(\\?.*|)/, 'get', {
+      code: 0,
+      msg: 'success',
+      'data|10': [
+        {
+          ...whitelistEntity(),
+        },
+      ],
+    })
+    // user /communities/followed
+    Mock.mock(/\/communities\/followed/, 'get', {
+      code: 0,
+      msg: 'success',
+      'data|10': [
+        {
+          ...communityEntity(),
+        },
+      ],
+    })
     // 社区详情
     Mock.mock(/\/communities\/(\d*)(\\?.*|)/, 'get', {
       code: 0,
@@ -319,7 +403,7 @@ import { ChainIds } from '../utils/chain'
           id: '@increment',
           name: '@title(1, 5)',
           icon: "@dataImage('160x160', 'Community Image')",
-          description: '@paragraph(10, 30)',
+          description: rich_text,
           communityFollowerNum: '@integer(1, 10000)',
         },
         'projects|6': [

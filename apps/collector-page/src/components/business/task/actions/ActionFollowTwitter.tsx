@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 15:17:26
+ * @LastEditTime: 2022-08-02 17:33:43
  * @Description: file description
  */
 import React from 'react'
@@ -30,12 +30,12 @@ const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({ data, onTwitt
   }
   return (
     <ActionFollowTwitterWrapper>
-      <ActionLeft isDone={isDone} onClick={clickAction}>
-        {name}
-      </ActionLeft>
-      <ActionRight isDone={isDone} onClick={clickAction}>
+      <ActionIconBox isDone={isDone} onClick={clickAction}>
         <IconTwitter opacity={isDone ? 0.5 : 1} />
-      </ActionRight>
+      </ActionIconBox>
+      <ActionContentBox isDone={isDone} onClick={clickAction}>
+        {name}
+      </ActionContentBox>
     </ActionFollowTwitterWrapper>
   )
 }
@@ -47,7 +47,7 @@ const ActionFollowTwitterWrapper = styled.div`
   align-items: flex-start;
   gap: 10px;
 `
-const ActionLeft = styled.div<{ isDone?: Boolean }>`
+const ActionContentBox = styled.div<{ isDone?: Boolean }>`
   flex: 1;
   ${({ isDone }) =>
     isDone
@@ -60,6 +60,6 @@ const ActionLeft = styled.div<{ isDone?: Boolean }>`
         cursor: pointer;
       `}
 `
-const ActionRight = styled.div<{ isDone?: Boolean }>`
+const ActionIconBox = styled.div<{ isDone?: Boolean }>`
   ${({ isDone }) => !isDone && `cursor: pointer;`}
 `

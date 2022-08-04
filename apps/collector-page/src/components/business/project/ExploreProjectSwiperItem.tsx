@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 18:07:11
+ * @LastEditTime: 2022-08-02 16:42:26
  * @Description: file description
  */
 import React from 'react'
@@ -22,6 +22,7 @@ export type ExploreProjectSwiperItemDataType = {
   description: string
   chainId: number
   communityId: number
+  slug: string
 }
 export type ExploreProjectSwiperItemViewConfigType = {}
 
@@ -38,11 +39,11 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
   viewConfig,
 }: ExploreProjectSwiperItemProps) => {
   const navigate = useNavigate()
-  const { id, name, image, status, description, chainId, communityId } = data
+  const { id, name, image, status, description, chainId, communityId, slug } = data
   return (
     <ExploreProjectSwiperItemWrapper>
-      <ChainTag size={2} chainId={chainId} />
-      <ProjectImage src={image} onClick={() => navigate(`/community/${communityId}?projectId=${id}`)} />
+      {/* <ChainTag size={2} chainId={chainId} /> */}
+      <ProjectImage src={image} onClick={() => navigate(`/${slug}`)} />
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
         <ProjectStatusLabel status={status} fontSize="20px" />
@@ -56,17 +57,18 @@ const ExploreProjectSwiperItemWrapper = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  gap: 40px;
 `
 const ProjectImage = styled.img`
   width: 360px;
-  height: 100%;
+  height: 360px;
   cursor: pointer;
   /* 图片不失真，不会出现拉伸 */
   object-fit: cover;
 `
 const ProjectInfoBox = styled.div`
   flex: 1;
+  padding: 40px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 16px;

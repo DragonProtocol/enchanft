@@ -1,13 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import Timeline from '@mui/lab/Timeline'
-import TimelineItem from '@mui/lab/TimelineItem'
-import TimelineSeparator from '@mui/lab/TimelineSeparator'
-import TimelineDot from '@mui/lab/TimelineDot'
-import TimelineConnector from '@mui/lab/TimelineConnector'
-import TimelineContent from '@mui/lab/TimelineContent'
 import { ScheduleInfo } from '../../../features/creator'
+import CardBox from '../../common/card/CardBox'
+import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
+import IconCheckbox from '../../common/icons/IconCheckbox'
 // {
 //   title: string
 //   date: string
@@ -34,51 +31,71 @@ export default function Schedule({ schedules }: { schedules: ScheduleInfo | null
     },
   ]
   return (
-    <ScheduleBox className="box">
+    <ScheduleBox>
       <h3>Schedule</h3>
-      <Timeline
-        sx={{
-          mx: 0,
-          p: 0,
-        }}
-      >
+      <TimelineBox>
         {data.map((item, idx) => {
           const itemDate = item?.date ? new Date(item?.date) : dateNow
           const done = dateNow > itemDate
           return (
-            <TimelineItem
-              key={item.title}
-              sx={{
-                ':before': {
-                  content: 'none',
-                },
-              }}
-            >
-              <TimelineSeparator>
-                <TimelineDot
-                  variant={done ? 'filled' : 'outlined'}
-                  sx={{
-                    borderColor: '#222222',
-                    backgroundColor: done ? '#222222' : '',
-                  }}
-                />
-                {idx === data.length - 1 ? null : <TimelineConnector />}
-              </TimelineSeparator>
-              <TimelineContent>
-                <p className="title">{item.title}</p>
-                <p>{itemDate.toLocaleString()}</p>
-              </TimelineContent>
-            </TimelineItem>
+            <div className="item" key={item.title}>
+              {(done && <IconCheckboxChecked />) || <IconCheckbox />}
+              <p className="title">{item.title}</p>
+              <p>{itemDate.toLocaleDateString()}</p>
+            </div>
           )
         })}
-      </Timeline>
+      </TimelineBox>
     </ScheduleBox>
   )
 }
 
-const ScheduleBox = styled.div`
+const TimelineBox = styled.div`
   margin-top: 20px;
+  & div.item {
+    position: relative;
+    padding-bottom: 10px;
+    &:before {
+      content: '';
+      position: absolute;
+      border-left: 1px solid #33333333;
+      height: calc(100% - 18px);
+      top: 18px;
+      left: 12px;
+    }
+    &:last-child::before {
+      content: none;
+    }
+  }
+
+  & svg {
+    position: absolute;
+    height: 18px;
+  }
+  & p {
+    margin: 0;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 20px;
+    margin-left: 30px;
+    color: rgba(51, 51, 51, 0.4);
+  }
   & .title {
-    margin: 0px;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 20px;
+
+    color: #333333;
+  }
+`
+
+const ScheduleBox = styled(CardBox)`
+  margin-top: 20px;
+  padding: 20px;
+  & h3 {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 24px;
+    color: #333333;
   }
 `

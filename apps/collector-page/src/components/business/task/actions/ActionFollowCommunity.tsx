@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-18 13:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 17:51:19
+ * @LastEditTime: 2022-08-02 17:33:23
  * @Description: file description
  */
 import React from 'react'
@@ -25,12 +25,12 @@ const ActionFollowCommunity: React.FC<ActionFollowCommunityProps> = ({ data }: A
   }
   return (
     <ActionFollowCommunityWrapper>
-      <ActionLeft isDone={isDone} onClick={handleAction}>
-        {name}
-      </ActionLeft>
-      <ActionRight isDone={isDone} onClick={handleAction}>
+      <ActionIconBox isDone={isDone} onClick={handleAction}>
         <IconNotify opacity={isDone ? 0.5 : 1} />
-      </ActionRight>
+      </ActionIconBox>
+      <ActionContentBox isDone={isDone} onClick={handleAction}>
+        {name}
+      </ActionContentBox>
     </ActionFollowCommunityWrapper>
   )
 }
@@ -42,7 +42,7 @@ const ActionFollowCommunityWrapper = styled.div`
   align-items: flex-start;
   gap: 10px;
 `
-const ActionLeft = styled.div<{ isDone?: Boolean }>`
+const ActionContentBox = styled.div<{ isDone?: Boolean }>`
   flex: 1;
   ${({ isDone }) =>
     isDone
@@ -55,6 +55,6 @@ const ActionLeft = styled.div<{ isDone?: Boolean }>`
         cursor: pointer;
       `}
 `
-const ActionRight = styled.div<{ isDone?: Boolean }>`
+const ActionIconBox = styled.div<{ isDone?: Boolean }>`
   ${({ isDone }) => !isDone && `cursor: pointer;`}
 `
