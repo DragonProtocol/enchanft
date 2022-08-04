@@ -30,6 +30,7 @@ export default function Basic({ state, updateState }: { state: State; updateStat
         ...state,
         image: data.url,
       })
+      e.target.value = null
     },
     [state, updateState],
   )
@@ -84,38 +85,63 @@ export default function Basic({ state, updateState }: { state: State; updateStat
         ></textarea>
       </div>
       <div>
+        <h4>Reward</h4>
+        <select
+          title="reward"
+          name=""
+          value={state.reward.type}
+          onChange={(e) => {
+            updateState({
+              ...state,
+              reward: {
+                ...state.reward,
+                type: e.target.value as RewardType,
+              },
+            })
+          }}
+        >
+          <option value={RewardType.WHITELIST}>whitelist</option>
+          <option value={RewardType.OTHER}>other</option>
+        </select>
+        {state.reward.type === RewardType.OTHER && (
+          <input
+            type="text"
+            title="reward-others-name"
+            value={state.reward.name}
+            onChange={(e) => {
+              updateState({
+                ...state,
+                reward: {
+                  ...state.reward,
+                  name: e.target.value,
+                },
+              })
+            }}
+          />
+        )}
+      </div>
+      <div>
         <h4>Task type</h4>
         <FormControlLabel
           control={
             <Switch
-              checked={state.raffle}
+              checked={state.reward.raffled}
               onChange={() => {
                 updateState({
                   ...state,
-                  raffle: !state.raffle,
+                  reward: {
+                    ...state.reward,
+                    raffled: !state.reward.raffled,
+                  },
                 })
               }}
             />
           }
           label="Raffle?"
         />
-      </div>
-      <div>
-        <p>Reward</p>
-        <select
-          title="reward"
-          name=""
-          value={state.type}
-          onChange={(e) => {
-            updateState({
-              ...state,
-              type: e.target.value as RewardType,
-            })
-          }}
-        >
-          <option value={RewardType.WHITELIST}>whitelist</option>
-          <option value={RewardType.OTHERS}>others</option>
-        </select>
+        <p style={{ margin: 0 }}>
+          Winner-oriented task, the task will automatically close once it winners complete the task.
+        </p>
       </div>
       <div>
         <h4>Total winners</h4>
@@ -173,10 +199,14 @@ export default function Basic({ state, updateState }: { state: State; updateStat
 }
 
 const BasicBox = styled.div`
-  & input,
-  & select,
-  & textarea {
+  & select {
     width: 100%;
+  }
+  & input {
+    width: calc(100% - 8px);
+  }
+  & textarea {
+    width: calc(100% - 12px);
   }
 
   & input {
@@ -193,11 +223,15 @@ const BasicBox = styled.div`
   }
 
   & .attach-file {
+    & img {
+      width: 100%;
+    }
     > div {
       color: rgba(153, 154, 154, 100);
       padding: 10px 0;
     }
     > label {
+      cursor: pointer;
       padding: 5px 8px;
       background-color: rgba(164, 173, 179, 100);
     }

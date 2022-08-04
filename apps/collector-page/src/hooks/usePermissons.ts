@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { selectAccount, RoleType } from '../features/user/accountSlice'
+import { selectAccount, RoleType, ResourceType } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 
 export default function usePermissions() {
@@ -13,13 +13,30 @@ export default function usePermissions() {
     }
   }, [account.roles])
 
-  // TODO
-  const checkTaskAllowed = useMemo(async () => {
-    return true
-  }, [account])
+  const checkTaskAllowed = useCallback(
+    (taskId: number) => {
+      const hasTaskPermission = !!account.resourcePermissions
+        .find((item) => item.resourceType === ResourceType.TASK)
+        ?.resourceIds.includes(taskId)
+      return hasTaskPermission
+    },
+    [account],
+  )
+
+  const checkProjectAllowed = useCallback(
+    (projectId: number) => {
+      const hasProjectPermission = !!account.resourcePermissions
+        .find((item) => item.resourceType === ResourceType.PROJECT)
+        ?.resourceIds.includes(projectId)
+
+      return hasProjectPermission
+    },
+    [account],
+  )
 
   return {
     isCreator,
     checkTaskAllowed,
+    checkProjectAllowed,
   }
 }

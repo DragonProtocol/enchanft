@@ -37,6 +37,15 @@ export enum RoleType {
   COLLECTOR = 'COLLECTOR',
 }
 
+export enum ResourceType {
+  TASK = 'TASK',
+  PROJECT = 'PROJECT',
+}
+
+export type ResourcePermission =
+  | { resourceType: ResourceType.TASK; resourceIds: number[] }
+  | { resourceType: ResourceType.PROJECT; resourceIds: number[] }
+
 export type AccountState = {
   status: AsyncRequestStatus
   errorMsg?: string
@@ -51,7 +60,7 @@ export type AccountState = {
   connectWalletModalShow: boolean
   accounts: Array<Account>
   linkErrMsg: string
-  resourcePermissions: Array<any>
+  resourcePermissions: Array<ResourcePermission>
   roles: Array<RoleType>
 }
 

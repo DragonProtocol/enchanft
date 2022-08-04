@@ -5,6 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import { PickedWhiteList, ScheduleInfo, Winner } from '../../../features/creator'
 import { sortPubKey } from '../../../utils/solana'
+import UserAvatar from '../user/UserAvatar'
 
 export enum TaskStatus {
   SUBMIT,
@@ -127,7 +128,7 @@ function ListItem({
     <div>
       <span style={{ width: '20px' }}>{idx}</span>
       <span>
-        <img src={data.avatar} alt="" />
+        <UserAvatar src={data.avatar} />
       </span>
       <span>{data.name}</span>
       <span>{data.pubkey}</span>

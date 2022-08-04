@@ -35,7 +35,7 @@ const Main: React.FC = () => {
     { path: '/guide', element: <Guide /> },
     { path: '/todo', element: <TodoTask /> },
     { path: '/enchanfted/:mint', element: <EnchanftedDetail /> },
-    { path: '/task/create', element: <TaskCreate /> },
+    { path: '/task/create/:projectId', element: <TaskCreate /> },
   ]
   permissionRoutes = permissionRoutes.map((route) => ({
     ...route,

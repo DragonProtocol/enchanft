@@ -104,7 +104,7 @@ const Project: React.FC = () => {
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
   const projectDetail = useAppSelector(selectProjectDetail)
-  const { isCreator } = usePermissions()
+  const { isCreator, checkProjectAllowed } = usePermissions()
   const { data, status, errorMsg } = projectDetail
   useEffect(() => {
     if (projectSlug) {
@@ -211,9 +211,9 @@ const Project: React.FC = () => {
               <ProjectEventsBox>
                 <ExploreTaskList
                   items={tasks}
-                  displayCreateTask={isCreator}
+                  displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
                   onCreateTask={() => {
-                    navigate('/task/create')
+                    navigate(`/task/create/${data.id}`)
                   }}
                 />
               </ProjectEventsBox>
