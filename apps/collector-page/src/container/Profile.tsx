@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 19:20:37
+ * @LastEditTime: 2022-08-04 19:29:40
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -110,7 +110,7 @@ const ProfileTabOptions = [
     value: 'myCommunities',
   },
   {
-    label: 'My Whitelist',
+    label: 'My Rewards',
     value: 'myRewards',
   },
   // {
