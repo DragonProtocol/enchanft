@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 14:29:24
+ * @LastEditTime: 2022-08-04 16:29:49
  * @Description: file description
  */
 import React from 'react'
@@ -27,6 +27,9 @@ export type ExploreTaskSwiperItemDataType = {
   project: {
     slug: string
     chainId: number
+    name: string
+  }
+  reward: {
     name: string
   }
 }
