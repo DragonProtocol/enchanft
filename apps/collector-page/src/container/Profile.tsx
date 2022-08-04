@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 18:52:50
+ * @LastEditTime: 2022-08-04 19:20:37
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -93,9 +93,7 @@ const formatStoreDataToComponentDataByUserWhitelists = (
   return whitelists.map((item) => {
     return {
       data: { ...item },
-      viewConfig: {
-        displayMint: true,
-      },
+      viewConfig: {},
     }
   })
 }
@@ -113,7 +111,7 @@ const ProfileTabOptions = [
   },
   {
     label: 'My Whitelist',
-    value: 'myWhitelist',
+    value: 'myRewards',
   },
   // {
   //   label: 'My Enchanfted',
@@ -260,9 +258,7 @@ const Profile: React.FC = () => {
             {curProfileTab === 'myCommunities' && (
               <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
             )}
-            {curProfileTab === 'myWhitelist' && (
-              <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />
-            )}
+            {curProfileTab === 'myRewards' && <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />}
             {/* {curProfileTab === 'myEnchanfted' && (
                 <EnchanftedList items={myEnchanftedItems} loading={loadingEnchanftedList} />
               )} */}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 13:01:29
+ * @LastEditTime: 2022-08-04 18:29:32
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -153,9 +153,8 @@ export type Whitelist = {
 
 /** reward */
 export enum RewardType {
-  WHITELIST_ORIENTED = 'WHITELIST_ORIENTED',
-  WHITELIST_LUCK_DRAW = 'WHITELIST_LUCK_DRAW',
-  OTHERS = 'OTHERS',
+  WHITELIST = 'WHITELIST',
+  OTHERS = 'OTHER',
 }
 
 export type Reward = {
@@ -301,8 +300,10 @@ export type TaskDetailResponse = Task & {
 }
 
 /** whitelist api */
-export type UserWhitelistItem = Whitelist & {
-  project: Project
+export type UserWhitelistItem = {
+  task: Task
   community: Community
+  whitelist: Whitelist
+  reward: Reward
 }
 export type UserWhitelistsResponse = UserWhitelistItem[]
