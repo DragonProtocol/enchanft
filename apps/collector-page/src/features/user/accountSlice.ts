@@ -32,6 +32,19 @@ type Account = {
   thirdpartyName: string
 }
 
+//this should be a global type for all api response
+type ResponseMessage = {
+  type: AlertSeverity
+  message: string | undefined
+}
+
+export enum AlertSeverity {
+  ERROR = 'error',
+  INFO = 'info',
+  SUCCESS = 'success',
+  WARNING = 'warning'
+}
+
 export enum RoleType {
   CREATOR = 'CREATOR',
   COLLECTOR = 'COLLECTOR',
@@ -39,7 +52,7 @@ export enum RoleType {
 
 export type AccountState = {
   status: AsyncRequestStatus
-  errorMsg?: string
+  errorMsg?: string //我不确定这个errorMsg有没有被使用，所以没敢改，如果在外部没有使用，建议统一改成resMessage
   defaultWallet: TokenType
   lastLoginType: TokenType | null
   pubkey: string
@@ -50,9 +63,9 @@ export type AccountState = {
   connectModal: ConnectModal | null
   connectWalletModalShow: boolean
   accounts: Array<Account>
-  linkErrMsg: string
   resourcePermissions: Array<any>
   roles: Array<RoleType>
+  resMessage: ResponseMessage | null 
 }
 
 // 用户账户信息
@@ -68,9 +81,9 @@ const initialState: AccountState = {
   connectModal: null,
   connectWalletModalShow: false,
   accounts: [],
-  linkErrMsg: '',
   resourcePermissions: [],
   roles: [],
+  resMessage: null,
 }
 
 export const userLogin = createAsyncThunk(
@@ -216,8 +229,8 @@ export const accountSlice = createSlice({
     setName: (state, action) => {
       state.name = action.payload
     },
-    resetLinkErrMsg: (state) => {
-      state.linkErrMsg = ''
+    resetResMessage: (state) => {
+      state.resMessage = null
     },
   },
   extraReducers: (builder) => {
@@ -241,6 +254,7 @@ export const accountSlice = createSlice({
 
         localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
         localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
+
       })
       .addCase(userLogin.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -253,10 +267,19 @@ export const accountSlice = createSlice({
       .addCase(userLink.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED
         state.accounts = action.payload || []
+        console.log(state,action)
+        state.resMessage = {
+          type: AlertSeverity.SUCCESS,
+          message: 'link ' + action.payload.walletType + ' successfully!'
+        }
       })
       .addCase(userLink.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
+        state.resMessage = {
+          type: AlertSeverity.ERROR,
+          message: action.error.message
+        }
       })
       ///////
       .addCase(userUpdateProfile.pending, (state) => {
@@ -298,11 +321,19 @@ export const accountSlice = createSlice({
 
         localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
         localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
+
+        state.resMessage = {
+          type: AlertSeverity.SUCCESS,
+          message: 'link ' + action.payload.walletType + ' wallet successfully!'
+        }
       })
       .addCase(userOtherWalletLink.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
-        console.log(action)
-        state.linkErrMsg = action.error.message || ''
+
+        state.resMessage = {
+          type: AlertSeverity.ERROR,
+          message: action.error.message
+        }
       })
   },
 })
@@ -318,7 +349,7 @@ export const {
   removeToken,
   setName,
   setLastLogin,
-  resetLinkErrMsg,
+  resetResMessage
 } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer
