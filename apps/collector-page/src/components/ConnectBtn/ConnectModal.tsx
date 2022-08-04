@@ -81,10 +81,12 @@ export default function ConnectModal() {
 
   const bindTwitter = useCallback(async () => {
     connectionSocialMedia('twitter')
+    handleCloseConnectModal()
   }, [])
 
   const bindDiscord = useCallback(async () => {
     connectionSocialMedia('discord')
+    handleCloseConnectModal()
   }, [])
 
   let btn: null | ReactElement = null
