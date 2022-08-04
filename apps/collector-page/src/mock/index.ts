@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 17:52:40
+ * @LastEditTime: 2022-08-04 13:22:28
  * @Description: mock 请求拦截入口
  */
 
@@ -103,6 +103,9 @@ import { ChainIds } from '../utils/chain'
             winnerNum: 100,
             startTime: start_tinme,
             endTime: end_time,
+            reward: {
+              name: '@title(3, 15)',
+            },
             'actions|10': [
               {
                 id: '@increment',
@@ -178,7 +181,9 @@ import { ChainIds } from '../utils/chain'
           'status|1': project_status,
           'chainId|1': project_chainid,
         },
-
+        reward: {
+          name: '@title(3, 15)',
+        },
         'actions|10': [
           {
             id: '@increment',

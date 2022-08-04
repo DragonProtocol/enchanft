@@ -7,6 +7,9 @@ import ChainTag from '../chain/ChainTag'
 import { useNavigate } from 'react-router-dom'
 import ButtonBase, { ButtonInfo, ButtonPrimary } from '../../common/button/ButtonBase'
 import RichTextBox from '../../common/text/RichTextBox'
+import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
+import IconGiftBox from '../../common/icons/IconGiftBox'
+import IconAlarmClock from '../../common/icons/IconAlarmClock'
 
 export type TaskDetailContentDataType = {
   id: number
@@ -23,6 +26,9 @@ export type TaskDetailContentDataType = {
     id: number
     communityId: number
     chainId: number
+    name: string
+  }
+  reward: {
     name: string
   }
 }
@@ -71,7 +77,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
   onConnectWallet,
   onBindWallet,
 }: TaskDetailContentProps) => {
-  const { id, name, type, startTime, endTime, winnerNum, image, description, project } = data
+  const { id, name, type, startTime, endTime, winnerNum, image, description, project, reward } = data
   const {
     displayConnectWallet,
     disabledTake,
@@ -107,12 +113,19 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
   return (
     <TaskDetailContentWrapper>
       <TaskTypeLabel>{taskTypeLabel}</TaskTypeLabel>
-      <TaskDateTimeBox>
-        <TaskDateTime>
-          {startDate}-{endDate}
-        </TaskDateTime>
+      <TaskDateAndWinnerBox>
+        <TaskDateTimeBox>
+          <IconAlarmClock size={'18px'} />
+          <TaskDateTime>
+            {startDate} -- {endDate}
+          </TaskDateTime>
+        </TaskDateTimeBox>
         <TaskWinners>Winners {winnerNum}</TaskWinners>
-      </TaskDateTimeBox>
+      </TaskDateAndWinnerBox>
+      <TaskRemarkBox>
+        <IconGiftBox size={'18px'} />
+        <TaskRemark>Reward : {reward.name}</TaskRemark>
+      </TaskRemarkBox>
       {displayConnectWallet && <TaskBtn onClick={handleConnectWallet}>Connect Wallect</TaskBtn>}
       {displayWalletBind && <TaskBtn onClick={handleWalletBind}>{walletBindText}</TaskBtn>}
       {displayTake && (
@@ -131,7 +144,7 @@ const TaskDetailContentWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 `
 const TaskTypeLabel = styled.div`
   font-weight: 700;
@@ -139,17 +152,35 @@ const TaskTypeLabel = styled.div`
   line-height: 27px;
   color: #333333;
 `
-const TaskDateTimeBox = styled.div`
+const TaskDateAndWinnerBox = styled.div`
   display: flex;
   gap: 40px;
   font-size: 16px;
   line-height: 24px;
   color: #333333;
 `
+const TaskDateTimeBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`
 const TaskDateTime = styled.span``
 const TaskWinners = styled.span``
-
-const TaskDescription = styled(RichTextBox)``
+const TaskRemarkBox = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`
+const TaskRemark = styled(OverflowEllipsisBox)`
+  flex: 1;
+  font-size: 14px;
+  color: #333333;
+`
+const TaskDescription = styled(RichTextBox)`
+  flex: 1;
+  overflow-y: auto;
+  ${ScrollBarCss}
+`
 const TaskBtn = styled(ButtonPrimary)`
   width: 100%;
   font-weight: 700;
