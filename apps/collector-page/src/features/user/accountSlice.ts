@@ -267,15 +267,16 @@ export const accountSlice = createSlice({
       .addCase(userLink.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED
         state.accounts = action.payload || []
-        console.log(state,action)
+        console.log('link successfully: ',state,action)
         state.resMessage = {
           type: AlertSeverity.SUCCESS,
-          message: 'link ' + action.payload.walletType + ' successfully!'
+          message: 'link ' + action.meta.arg.type + ' successfully!'
         }
       })
       .addCase(userLink.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
+        console.log('link failed: ',state,action)
         state.resMessage = {
           type: AlertSeverity.ERROR,
           message: action.error.message
