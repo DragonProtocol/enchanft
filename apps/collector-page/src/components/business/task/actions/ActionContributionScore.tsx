@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 17:54:46
+ * @LastEditTime: 2022-08-05 16:25:17
  * @Description: file description
  */
 import React from 'react'
@@ -15,14 +15,18 @@ import { useNavigate } from 'react-router-dom'
 import { CommunityParamsVisibleType } from '../../../../container/Community'
 export type ActionContributionScoreProps = {
   data: TaskActionItemDataType
+  allowHandle?: boolean
 }
 
-const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({ data }: ActionContributionScoreProps) => {
+const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({
+  data,
+  allowHandle,
+}: ActionContributionScoreProps) => {
   const navigate = useNavigate()
   const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
   const isDone = status === UserActionStatus.DONE ? true : false
   const handleAction = () => {
-    if (isDone) return
+    if (!allowHandle || isDone) return
     navigate(`/contributionranks/${communityId}`)
   }
   return (

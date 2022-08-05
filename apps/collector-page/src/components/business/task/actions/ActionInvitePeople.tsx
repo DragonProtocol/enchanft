@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 17:39:57
+ * @LastEditTime: 2022-08-05 16:26:39
  * @Description: file description
  */
 import React from 'react'
@@ -22,11 +22,17 @@ import { useState } from 'react'
 
 export type ActionInvitePeopleProps = {
   data: TaskActionItemDataType
+  allowHandle?: boolean
   onCopy?: (text: string) => void
   copyBgc?: string
 }
 
-const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, copyBgc }: ActionInvitePeopleProps) => {
+const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
+  data,
+  allowHandle,
+  onCopy,
+  copyBgc,
+}: ActionInvitePeopleProps) => {
   const account = useAppSelector(selectAccount)
   const { name, progress, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
   const [refUrl, setRefUrl] = useState('')
@@ -52,15 +58,17 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, c
         </TooltipWrapper>
       </ActionIconBox>
       <ActionContentBox isDone={isDone}>
-        {name} ({progress})
-        <ActionInviteCopyBox bgc={copyBgc}>
-          <InviteLinkBox>{refUrl}</InviteLinkBox>
-          <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
-            <CopyBtn>
-              <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
-            </CopyBtn>
-          </CopyToClipboard>
-        </ActionInviteCopyBox>
+        {name} {progress && `(${progress})`}
+        {allowHandle && (
+          <ActionInviteCopyBox bgc={copyBgc}>
+            <InviteLinkBox>{refUrl}</InviteLinkBox>
+            <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
+              <CopyBtn>
+                <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
+              </CopyBtn>
+            </CopyToClipboard>
+          </ActionInviteCopyBox>
+        )}
       </ActionContentBox>
     </ActionInvitePeopleWrapper>
   )

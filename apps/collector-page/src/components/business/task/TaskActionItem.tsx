@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 13:39:53
+ * @LastEditTime: 2022-08-05 16:11:44
  * @Description: file description
  */
 import React from 'react'
@@ -54,14 +54,6 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   copyBgc,
 }: TaskActionItemProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
-  let TaskStatusView = <IconCheckbox />
-  switch (status) {
-    case UserActionStatus.DONE:
-      TaskStatusView = <IconCheckboxChecked />
-      break
-    case UserActionStatus.TODO:
-      TaskStatusView = verifying ? <Loading size="1.5rem" /> : <IconCheckbox />
-  }
   const renderAction = () => {
     switch (type) {
       case ActionType.FOLLOW_TWITTER:
@@ -95,10 +87,21 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         return name
     }
   }
+  const renderStatus = () => {
+    if (allowHandle) {
+      switch (status) {
+        case UserActionStatus.DONE:
+          return <IconCheckboxChecked />
+        case UserActionStatus.TODO:
+          return verifying ? <Loading size="1.5rem" /> : <IconCheckbox />
+      }
+    }
+    return null
+  }
   return (
     <TaskActionItemWrapper>
       <TaskActionContent>{renderAction()}</TaskActionContent>
-      {TaskStatusView}
+      {renderStatus()}
     </TaskActionItemWrapper>
   )
 }
