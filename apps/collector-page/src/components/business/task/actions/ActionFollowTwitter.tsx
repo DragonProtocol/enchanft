@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 17:33:43
+ * @LastEditTime: 2022-08-05 16:25:58
  * @Description: file description
  */
 import React from 'react'
@@ -13,10 +13,15 @@ import IconTwitter from '../../../common/icons/IconTwitter'
 
 export type ActionFollowTwitterProps = {
   data: TaskActionItemDataType
+  allowHandle?: boolean
   onTwitter?: (callback: () => void) => void
 }
 
-const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({ data, onTwitter }: ActionFollowTwitterProps) => {
+const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({
+  data,
+  allowHandle,
+  onTwitter,
+}: ActionFollowTwitterProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
   const isDone = status === UserActionStatus.DONE
   const handleAction = () => {
@@ -25,7 +30,7 @@ const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({ data, onTwitt
     window.open(actionData.url, name, winParams)
   }
   const clickAction = () => {
-    if (isDone) return
+    if (!allowHandle || isDone) return
     onTwitter && onTwitter(handleAction)
   }
   return (

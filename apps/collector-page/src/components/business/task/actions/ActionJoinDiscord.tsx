@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 17:52:31
+ * @LastEditTime: 2022-08-05 16:27:50
  * @Description: file description
  */
 import React from 'react'
@@ -13,10 +13,15 @@ import IconDiscord from '../../../common/icons/IconDiscord'
 
 export type ActionJoinDiscordProps = {
   data: TaskActionItemDataType
+  allowHandle?: boolean
   onDiscord?: (callback: () => void) => void
 }
 
-const ActionJoinDiscord: React.FC<ActionJoinDiscordProps> = ({ data, onDiscord }: ActionJoinDiscordProps) => {
+const ActionJoinDiscord: React.FC<ActionJoinDiscordProps> = ({
+  data,
+  allowHandle,
+  onDiscord,
+}: ActionJoinDiscordProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
   const isDone = status === UserActionStatus.DONE
   const handleAction = () => {
@@ -25,7 +30,7 @@ const ActionJoinDiscord: React.FC<ActionJoinDiscordProps> = ({ data, onDiscord }
     window.open(actionData.url, name, winParams)
   }
   const clickAction = () => {
-    if (isDone) return
+    if (!allowHandle || isDone) return
     onDiscord && onDiscord(handleAction)
   }
   return (

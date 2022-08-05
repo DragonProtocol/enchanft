@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 11:54:08
+ * @LastEditTime: 2022-08-05 15:50:41
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -14,6 +14,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { fetchTaskDetail, selectTaskDetail, TaskDetailEntity } from '../features/task/taskDetailSlice'
 import TaskActionList, { TaskActionItemsType } from '../components/business/task/TaskActionList'
 import {
+  ActionType,
   TaskAcceptedStatus,
   TaskTodoCompleteStatus,
   TaskType,
@@ -37,7 +38,11 @@ import TaskStatusButton, {
   TaskStatusButtonType,
 } from '../components/business/task/TaskStatusButton'
 import TaskImageDefault from '../components/business/task/TaskImageDefault'
-
+import {
+  follow as followCommunity,
+  selectfollow as selectfollowCommunity,
+} from '../features/user/communityHandlesSlice'
+import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
@@ -105,8 +110,26 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
 
   return null
 }
-const formatStoreDataToComponentDataByTaskActions = (task: TaskDetailEntity): TaskActionItemsType => {
-  return [...task.actions].sort((a, b) => a.orderNum - b.orderNum).map((v) => ({ ...v, project: task.project }))
+const formatStoreDataToComponentDataByTaskActions = (
+  task: TaskDetailEntity,
+  userFollowedProjectIds: number[],
+): TaskActionItemsType => {
+  return [...task.actions]
+    .sort((a, b) => a.orderNum - b.orderNum)
+    .map((v) => {
+      const action = { ...v, project: task.project }
+      // TODO 如果检索到当前action是关注社区的action，且在我关注的社区中，并且我已经接了，则将其状态改为已完成
+      if (
+        task.acceptedStatus === TaskAcceptedStatus.DONE &&
+        action.type === ActionType.TURN_ON_NOTIFICATION &&
+        userFollowedProjectIds.includes(action.communityId)
+      ) {
+        Object.assign(action, {
+          status: UserActionStatus.DONE,
+        })
+      }
+      return action
+    })
 }
 const Task: React.FC = () => {
   const navigate = useNavigate()
@@ -151,6 +174,14 @@ const Task: React.FC = () => {
     dispatch(setConnectModal(modalType))
   }, [modalType])
 
+  // 关注社区
+  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
+  const handleFollowCommunity = (communityId: number) => {
+    dispatch(followCommunity({ id: communityId }))
+  }
+  // 用户关注的社区ID集合
+  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
+
   if (loadingView)
     return (
       <TaskDetailLoading>
@@ -165,7 +196,10 @@ const Task: React.FC = () => {
   // task status button
   const taskStatusButton = formatStoreDataToComponentDataByTaskStatusButton(data, token, takeTaskState, accountTypes)
   // task action and winnerList
-  const actionItems = formatStoreDataToComponentDataByTaskActions(data)
+  const actionItems = formatStoreDataToComponentDataByTaskActions(
+    data,
+    userFollowedProjectIds.map((item) => Number(item)),
+  )
   const winnerList = data?.winnerList || []
   // 是否允许操作action
   const allowHandleAction =
@@ -175,6 +209,9 @@ const Task: React.FC = () => {
   const displayVerify = allowHandleAction && actionItems.some((v) => v.status === UserActionStatus.TODO)
   const loadingVerify = status === AsyncRequestStatus.PENDING
   const disabledVerify = loadingVerify
+  const verifyingActions = loadingVerify
+    ? actionItems.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
+    : []
 
   return (
     <TaskDetailWrapper>
@@ -224,10 +261,12 @@ const Task: React.FC = () => {
                         items={actionItems}
                         onDiscord={handleActionToDiscord}
                         onTwitter={handleActionToTwitter}
+                        onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
                         allowHandle={allowHandleAction}
                         displayVerify={displayVerify}
                         loadingVerify={loadingVerify}
                         disabledVerify={disabledVerify}
+                        verifyingActions={verifyingActions}
                         onVerifyActions={dispatchFetchTaskDetail}
                         copyBgc="#FFFFFF"
                         verifyBgc="#FFFFFF"

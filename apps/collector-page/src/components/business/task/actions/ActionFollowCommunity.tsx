@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-18 13:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 17:33:23
+ * @LastEditTime: 2022-08-05 16:25:07
  * @Description: file description
  */
 import React from 'react'
@@ -13,19 +13,29 @@ import { TaskActionItemDataType } from '../TaskActionItem'
 import IconNotify from '../../../common/icons/IconNotify'
 export type ActionFollowCommunityProps = {
   data: TaskActionItemDataType
+  allowHandle?: boolean
+  onFollowCommunity?: (action: TaskActionItemDataType) => void
 }
 
-const ActionFollowCommunity: React.FC<ActionFollowCommunityProps> = ({ data }: ActionFollowCommunityProps) => {
+const ActionFollowCommunity: React.FC<ActionFollowCommunityProps> = ({
+  data,
+  allowHandle,
+  onFollowCommunity,
+}: ActionFollowCommunityProps) => {
   const navigate = useNavigate()
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status, description, project } = data
   const isDone = status === UserActionStatus.DONE
   const handleAction = () => {
-    if (isDone) return
+    if (!allowHandle || isDone) return
     navigate(`/${project.slug}`)
+  }
+  const handleFollowCommunity = () => {
+    if (!allowHandle || isDone) return
+    if (onFollowCommunity) onFollowCommunity(data)
   }
   return (
     <ActionFollowCommunityWrapper>
-      <ActionIconBox isDone={isDone} onClick={handleAction}>
+      <ActionIconBox isDone={isDone} onClick={handleFollowCommunity}>
         <IconNotify opacity={isDone ? 0.5 : 1} />
       </ActionIconBox>
       <ActionContentBox isDone={isDone} onClick={handleAction}>

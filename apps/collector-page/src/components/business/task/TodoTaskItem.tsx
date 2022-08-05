@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 11:52:49
+ * @LastEditTime: 2022-08-05 14:54:43
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -43,6 +43,7 @@ export type TodoTaskItemViewConfigType = {
   disabledRefresh?: boolean
   loadingRefresh?: boolean
   loadingRefreshMsg?: string
+  verifyingActions?: number[]
 }
 
 export type TodoTaskItemDataViewType = {
@@ -55,6 +56,7 @@ export type TodoTaskItemHandlesType = {
   onRefreshTask?: (task: TodoTaskItemDataType) => void
   onTwitter?: (callback: () => void) => void
   onDiscord?: (callback: () => void) => void
+  onFollowCommunity?: (action: TaskActionItemDataType) => void
 }
 
 export type TodoTaskItemProps = TodoTaskItemDataViewType & TodoTaskItemHandlesType
@@ -70,6 +72,7 @@ const defaultViewConfig: TodoTaskItemViewConfigType = {
   disabledRefresh: false,
   loadingRefresh: false,
   loadingRefreshMsg: 'refreshing...',
+  verifyingActions: [],
 }
 const TaskTodoCompleteStatusView = {
   [TaskTodoCompleteStatus.COMPLETED]: {
@@ -97,6 +100,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   onRefreshTask,
   onTwitter,
   onDiscord,
+  onFollowCommunity,
 }: TodoTaskItemProps) => {
   const { name, whitelistTotalNum, type, projectId, startTime, endTime, actions, status, project, whitelist } = data
   const { name: projectName } = project
@@ -113,6 +117,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     disabledRefresh,
     loadingRefresh,
     loadingRefreshMsg,
+    verifyingActions,
   } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -256,11 +261,13 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
             items={actions}
             onDiscord={onDiscord}
             onTwitter={onTwitter}
+            onFollowCommunity={onFollowCommunity}
             allowHandle={allowHandleActions}
             displayVerify={displayRefresh}
             loadingVerify={loadingRefresh}
             disabledVerify={disabledRefresh}
             onVerifyActions={onRefreshClick}
+            verifyingActions={verifyingActions}
           ></TaskActionList>
         </TaskActionsBox>
       )}
