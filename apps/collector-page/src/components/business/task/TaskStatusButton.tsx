@@ -77,7 +77,7 @@ const TaskStatusButton: React.FC<TaskStatusButtonProps> = ({
   return (
     <TaskStatusButtonWrapper>
       {isCompleteStatusBtn ? (
-        <TaskCompleteStatusBtn>{btnText}</TaskCompleteStatusBtn>
+        <TaskCompleteStatusBtn>{_btnText}</TaskCompleteStatusBtn>
       ) : (
         <TaskBtn onClick={handleClick} disabled={disabled}>
           {loading ? loadingText : _btnText}
