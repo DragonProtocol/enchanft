@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 16:42:26
+ * @LastEditTime: 2022-08-05 19:00:09
  * @Description: file description
  */
 import React from 'react'
@@ -64,6 +64,15 @@ const ProjectImage = styled.img`
   cursor: pointer;
   /* 图片不失真，不会出现拉伸 */
   object-fit: cover;
+  /* 鼠标移入时, 放大图片10%, 0.5s完成 */
+  &:hover {
+    transform: scale(1.1);
+  }
+  /** 鼠标点下，下沉2px */
+  &:active {
+    transform: translateY(2px);
+  }
+  transition: all 0.5s ease-out;
 `
 const ProjectInfoBox = styled.div`
   flex: 1;

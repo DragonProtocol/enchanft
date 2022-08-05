@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 18:33:49
+ * @LastEditTime: 2022-08-05 19:25:33
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -205,7 +205,6 @@ const Task: React.FC = () => {
   // 是否允许操作action
   const allowHandleAction =
     data?.acceptedStatus === TaskAcceptedStatus.DONE && data?.status !== TaskTodoCompleteStatus.CLOSED
-  console.log({ allowHandleAction })
 
   // verify action
   const displayVerify = allowHandleAction && actionItems.some((v) => v.status === UserActionStatus.TODO)
