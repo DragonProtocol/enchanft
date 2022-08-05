@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-18 13:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 16:25:07
+ * @LastEditTime: 2022-08-05 18:25:41
  * @Description: file description
  */
 import React from 'react'
@@ -11,6 +11,8 @@ import styled from 'styled-components'
 import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import IconNotify from '../../../common/icons/IconNotify'
+import ActionIconBox from './ActionIconBox'
+import ActionNameSpan from './ActionNameSpan'
 export type ActionFollowCommunityProps = {
   data: TaskActionItemDataType
   allowHandle?: boolean
@@ -33,13 +35,16 @@ const ActionFollowCommunity: React.FC<ActionFollowCommunityProps> = ({
     if (!allowHandle || isDone) return
     if (onFollowCommunity) onFollowCommunity(data)
   }
+
   return (
     <ActionFollowCommunityWrapper>
-      <ActionIconBox isDone={isDone} onClick={handleFollowCommunity}>
+      <ActionIconBox allowHandle={allowHandle} isDone={isDone} onClick={handleFollowCommunity}>
         <IconNotify opacity={isDone ? 0.5 : 1} />
       </ActionIconBox>
-      <ActionContentBox isDone={isDone} onClick={handleAction}>
-        {name}
+      <ActionContentBox onClick={handleAction}>
+        <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
+          {name}
+        </ActionNameSpan>
       </ActionContentBox>
     </ActionFollowCommunityWrapper>
   )
@@ -52,19 +57,6 @@ const ActionFollowCommunityWrapper = styled.div`
   align-items: flex-start;
   gap: 10px;
 `
-const ActionContentBox = styled.div<{ isDone?: Boolean }>`
+const ActionContentBox = styled.div`
   flex: 1;
-  ${({ isDone }) =>
-    isDone
-      ? `
-        text-decoration-line: line-through;
-        color: #333333;
-        opacity: 0.5; 
-      `
-      : `
-        cursor: pointer;
-      `}
-`
-const ActionIconBox = styled.div<{ isDone?: Boolean }>`
-  ${({ isDone }) => !isDone && `cursor: pointer;`}
 `

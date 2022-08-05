@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 16:25:58
+ * @LastEditTime: 2022-08-05 18:18:43
  * @Description: file description
  */
 import React from 'react'
@@ -10,6 +10,8 @@ import styled from 'styled-components'
 import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import IconTwitter from '../../../common/icons/IconTwitter'
+import ActionIconBox from './ActionIconBox'
+import ActionNameSpan from './ActionNameSpan'
 
 export type ActionFollowTwitterProps = {
   data: TaskActionItemDataType
@@ -35,11 +37,13 @@ const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({
   }
   return (
     <ActionFollowTwitterWrapper>
-      <ActionIconBox isDone={isDone} onClick={clickAction}>
+      <ActionIconBox allowHandle={allowHandle} isDone={isDone} onClick={clickAction}>
         <IconTwitter opacity={isDone ? 0.5 : 1} />
       </ActionIconBox>
-      <ActionContentBox isDone={isDone} onClick={clickAction}>
-        {name}
+      <ActionContentBox onClick={clickAction}>
+        <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
+          {name}
+        </ActionNameSpan>
       </ActionContentBox>
     </ActionFollowTwitterWrapper>
   )
@@ -52,19 +56,6 @@ const ActionFollowTwitterWrapper = styled.div`
   align-items: flex-start;
   gap: 10px;
 `
-const ActionContentBox = styled.div<{ isDone?: Boolean }>`
+const ActionContentBox = styled.div`
   flex: 1;
-  ${({ isDone }) =>
-    isDone
-      ? `
-        text-decoration-line: line-through;
-        color: #333333;
-        opacity: 0.5;  
-      `
-      : `
-        cursor: pointer;
-      `}
-`
-const ActionIconBox = styled.div<{ isDone?: Boolean }>`
-  ${({ isDone }) => !isDone && `cursor: pointer;`}
 `

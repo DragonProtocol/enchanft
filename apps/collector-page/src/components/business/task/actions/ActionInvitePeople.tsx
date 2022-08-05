@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 16:33:38
+ * @LastEditTime: 2022-08-05 18:04:22
  * @Description: file description
  */
 import React from 'react'
@@ -19,6 +19,8 @@ import { useAppSelector } from '../../../../store/hooks'
 import { selectAccount } from '../../../../features/user/accountSlice'
 import { useEffect } from 'react'
 import { useState } from 'react'
+import ActionIconBox from './ActionIconBox'
+import ActionNameSpan from './ActionNameSpan'
 
 export type ActionInvitePeopleProps = {
   data: TaskActionItemDataType
@@ -52,13 +54,16 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
   }
   return (
     <ActionInvitePeopleWrapper>
-      <ActionIconBox>
+      <ActionIconBox allowHandle={allowHandle} isDone={isDone}>
         <TooltipWrapper title={description}>
           <IconTip opacity={isDone ? 0.5 : 1} />
         </TooltipWrapper>
       </ActionIconBox>
-      <ActionContentBox isDone={isDone}>
-        {name} {progress && progress != '' && <ProgressSpan>({progress})</ProgressSpan>}
+      <ActionContentBox>
+        <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
+          {name} {progress && progress != '' && <ProgressSpan>({progress})</ProgressSpan>}
+        </ActionNameSpan>
+
         {allowHandle && (
           <ActionInviteCopyBox bgc={copyBgc}>
             <InviteLinkBox>{refUrl}</InviteLinkBox>
@@ -81,25 +86,11 @@ const ActionInvitePeopleWrapper = styled.div`
   align-items: flex-start;
   gap: 10px;
 `
-const ActionContentBox = styled.div<{ isDone?: Boolean }>`
+const ActionContentBox = styled.div`
   flex: 1;
-  ${({ isDone }) =>
-    isDone
-      ? `
-        text-decoration-line: line-through;
-        color: #333333;
-        opacity: 0.5;  
-      `
-      : `
-        cursor: pointer;
-      `}
 `
 const ProgressSpan = styled.span`
   color: rgba(51, 51, 51, 0.5);
-`
-
-const ActionIconBox = styled.div<{ isDone?: Boolean }>`
-  ${({ isDone }) => !isDone && `cursor: pointer;`}
 `
 const ActionInviteCopyBox = styled.div<{ bgc?: string }>`
   width: 100%;
