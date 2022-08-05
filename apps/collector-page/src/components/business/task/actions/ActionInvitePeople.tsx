@@ -52,7 +52,7 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({ data, onCopy, c
         </TooltipWrapper>
       </ActionIconBox>
       <ActionContentBox isDone={isDone}>
-        {name} ({progress})
+        {name} {progress && progress != '' && <ProgressSpan>({progress})</ProgressSpan>}
         <ActionInviteCopyBox bgc={copyBgc}>
           <InviteLinkBox>{refUrl}</InviteLinkBox>
           <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
@@ -86,6 +86,10 @@ const ActionContentBox = styled.div<{ isDone?: Boolean }>`
         cursor: pointer;
       `}
 `
+const ProgressSpan = styled.span`
+  color: rgba(51, 51, 51, 0.5);
+`
+
 const ActionIconBox = styled.div<{ isDone?: Boolean }>`
   ${({ isDone }) => !isDone && `cursor: pointer;`}
 `
