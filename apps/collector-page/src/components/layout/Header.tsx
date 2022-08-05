@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 14:53:48
+ * @LastEditTime: 2022-08-05 19:18:55
  * @Description: 站点头部
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -43,9 +43,9 @@ const Header: React.FC = () => {
     () => (
       <PcNavList>
         {navs.map((item) => (
-          <PcNavItem key={item.link} isActive={item.link === curNavLink} onClick={() => navigate(item.link)}>
-            {item.name}
-          </PcNavItem>
+          <PcNavItemBox key={item.link} isActive={item.link === curNavLink} onClick={() => navigate(item.link)}>
+            <PcNavItemText>{item.name}</PcNavItemText>
+          </PcNavItemBox>
         ))}
       </PcNavList>
     ),
@@ -98,15 +98,27 @@ const PcNavList = styled.div`
   justify-content: center;
   gap: 80px;
 `
-const PcNavItem = styled.div<{ isActive: boolean }>`
+const PcNavItemBox = styled.div<{ isActive: boolean }>`
   height: 100%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: ${(props) => (props.isActive ? 'inset 0 -2px #000' : 'none')};
+  transition: all 1s ease-out;
+`
+const PcNavItemText = styled.span`
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
   text-transform: uppercase;
   color: #333333;
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  box-shadow: ${(props) => (props.isActive ? 'inset 0 -2px #000' : 'none')};
+  /* 鼠标移入整体上移2px */
+  &:hover {
+    transform: translateY(-4px);
+  }
+  /* 鼠标点击整体缩小2% */
+  &:active {
+    transform: scale(0.98);
+  }
+  transition: all 0.5s ease-out;
 `

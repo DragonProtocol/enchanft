@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 10:32:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 13:24:46
+ * @LastEditTime: 2022-08-05 19:24:21
  * @Description: file description
  */
 import React from 'react'
@@ -53,4 +53,5 @@ const ButtonRadioGroupOption = styled.div<{ isActive?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: all 0.2s ease-in-out;
 `

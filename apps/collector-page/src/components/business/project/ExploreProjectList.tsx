@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:49:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 14:46:31
+ * @LastEditTime: 2022-08-05 19:08:22
  * @Description: file description
  */
 import React from 'react'
@@ -37,7 +37,9 @@ const ExploreProjectList: React.FC<ExploreProjectListProps> = ({
       {!loading &&
         items.length > 0 &&
         items.map((item) => (
-          <ExploreProjectItem key={`${item.data.id}`} data={item.data} viewConfig={item.viewConfig} />
+          <ExploreProjectItemBox key={`${item.data.id}`}>
+            <ExploreProjectItem data={item.data} viewConfig={item.viewConfig} />
+          </ExploreProjectItemBox>
         ))}
     </ExploreProjectListWrapper>
   </>
@@ -62,6 +64,19 @@ const ExploreProjectListWrapper = styled.div`
     flex-direction: column;
     grid-gap: 12px;
   }
+`
+const ExploreProjectItemBox = styled.div`
+  // 为了显现出阴影，grid布局会不留空隙，需为子项预留box-shadow的空间
+  padding-bottom: 4px;
+  /* 鼠标移入整体上移2px */
+  &:hover {
+    transform: translateY(-4px);
+  }
+  /* 鼠标点击整体缩小2% */
+  &:active {
+    transform: scale(0.98);
+  }
+  transition: all 0.5s ease-out;
 `
 const ExploreProjectListLoading = styled.div`
   width: 100%;

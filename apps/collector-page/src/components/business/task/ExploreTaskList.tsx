@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 14:55:23
+ * @LastEditTime: 2022-08-05 19:07:15
  * @Description: file description
  */
 import React from 'react'
@@ -79,6 +79,15 @@ const ExploreTaskListWrapper = styled.div`
 const ExploreTaskItemBox = styled.div`
   // 为了显现出阴影，grid布局会不留空隙，需为子项预留box-shadow的空间
   padding-bottom: 4px;
+  /* 鼠标移入整体上移2px */
+  &:hover {
+    transform: translateY(-4px);
+  }
+  /* 鼠标点击整体缩小2% */
+  &:active {
+    transform: scale(0.98);
+  }
+  transition: all 0.5s ease-out;
 `
 const CreateTaskButton = styled(ButtonBase)`
   box-shadow: none;
