@@ -42,13 +42,22 @@ export enum AlertSeverity {
   ERROR = 'error',
   INFO = 'info',
   SUCCESS = 'success',
-  WARNING = 'warning'
+  WARNING = 'warning',
 }
 
 export enum RoleType {
   CREATOR = 'CREATOR',
   COLLECTOR = 'COLLECTOR',
 }
+
+export enum ResourceType {
+  TASK = 'TASK',
+  PROJECT = 'PROJECT',
+}
+
+export type ResourcePermission =
+  | { resourceType: ResourceType.TASK; resourceIds: number[] }
+  | { resourceType: ResourceType.PROJECT; resourceIds: number[] }
 
 export type AccountState = {
   status: AsyncRequestStatus
@@ -63,9 +72,10 @@ export type AccountState = {
   connectModal: ConnectModal | null
   connectWalletModalShow: boolean
   accounts: Array<Account>
-  resourcePermissions: Array<any>
+  linkErrMsg: string
+  resourcePermissions: Array<ResourcePermission>
   roles: Array<RoleType>
-  resMessage: ResponseMessage | null 
+  resMessage: ResponseMessage | null
 }
 
 // 用户账户信息
@@ -84,6 +94,7 @@ const initialState: AccountState = {
   resourcePermissions: [],
   roles: [],
   resMessage: null,
+  linkErrMsg: '',
 }
 
 export const userLogin = createAsyncThunk(
@@ -254,7 +265,6 @@ export const accountSlice = createSlice({
 
         localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
         localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
-
       })
       .addCase(userLogin.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -267,19 +277,19 @@ export const accountSlice = createSlice({
       .addCase(userLink.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED
         state.accounts = action.payload || []
-        console.log('link successfully: ',state,action)
+        console.log('link successfully: ', state, action)
         state.resMessage = {
           type: AlertSeverity.SUCCESS,
-          message: 'link ' + action.meta.arg.type + ' successfully!'
+          message: 'link ' + action.meta.arg.type + ' successfully!',
         }
       })
       .addCase(userLink.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
-        console.log('link failed: ',state,action)
+        console.log('link failed: ', state, action)
         state.resMessage = {
           type: AlertSeverity.ERROR,
-          message: action.error.message
+          message: action.error.message,
         }
       })
       ///////
@@ -325,7 +335,7 @@ export const accountSlice = createSlice({
 
         state.resMessage = {
           type: AlertSeverity.SUCCESS,
-          message: 'link ' + action.payload.walletType + ' wallet successfully!'
+          message: 'link ' + action.payload.walletType + ' wallet successfully!',
         }
       })
       .addCase(userOtherWalletLink.rejected, (state, action) => {
@@ -333,7 +343,7 @@ export const accountSlice = createSlice({
 
         state.resMessage = {
           type: AlertSeverity.ERROR,
-          message: action.error.message
+          message: action.error.message,
         }
       })
   },
@@ -350,7 +360,7 @@ export const {
   removeToken,
   setName,
   setLastLogin,
-  resetResMessage
+  resetResMessage,
 } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer

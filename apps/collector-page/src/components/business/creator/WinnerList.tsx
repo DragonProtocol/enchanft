@@ -5,6 +5,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Checkbox from '@mui/material/Checkbox'
 import { PickedWhiteList, ScheduleInfo, Winner } from '../../../features/creator'
 import { sortPubKey } from '../../../utils/solana'
+import UserAvatar from '../user/UserAvatar'
 import CardBox from '../../common/card/CardBox'
 
 export enum TaskStatus {
@@ -38,8 +39,8 @@ export default function WinnerList({
   const [disableSelect, setDisableSelect] = useState(false)
 
   const genRandom = useCallback(() => {
-    let num = winnerNum
     let tmpList = [...list]
+    let num = Math.min(winnerNum, tmpList.length)
     const result: Array<number> = []
     while (num > 0) {
       const arrLen = tmpList.length
@@ -129,7 +130,7 @@ function ListItem({
       <div>
         <span className="index">{idx}</span>
         <span>
-          <img src={data.avatar} alt="" />
+          <UserAvatar src={data.avatar} />
         </span>
         <span className="name">{data.name}</span>
         <span>{data.pubkey}</span>

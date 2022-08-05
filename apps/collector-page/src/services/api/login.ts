@@ -54,6 +54,19 @@ export function uploadAvatar(file: File) {
   })
 }
 
+export function uploadImage(file: File) {
+  const form = new FormData()
+  form.append('file', file)
+  return request({
+    url: '/medium/upload',
+    method: 'post',
+    data: form,
+    headers: {
+      needToken: true,
+    },
+  })
+}
+
 // 绑定社交账号
 export function link(params: any) {
   const data = qs.stringify(params)
