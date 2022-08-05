@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 16:11:44
+ * @LastEditTime: 2022-08-05 16:38:53
  * @Description: file description
  */
 import React from 'react'
@@ -13,6 +13,7 @@ import ActionFollowCommunity from './actions/ActionFollowCommunity'
 import ActionFollowTwitter from './actions/ActionFollowTwitter'
 import ActionInvitePeople from './actions/ActionInvitePeople'
 import ActionJoinDiscord from './actions/ActionJoinDiscord'
+import ActionDiscordInvitesPeople from './actions/ActionDiscordInvitesPeople'
 import IconCheckbox from '../../common/icons/IconCheckbox'
 import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 import Loading from '../../common/loading/Loading'
@@ -58,28 +59,31 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
     switch (type) {
       case ActionType.FOLLOW_TWITTER:
         // 关注twitter
-        return <ActionFollowTwitter data={data} onTwitter={onTwitter} />
+        return <ActionFollowTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.TURN_ON_NOTIFICATION:
         // 关注社区
-        return <ActionFollowCommunity data={data} onFollowCommunity={onFollowCommunity} />
+        return <ActionFollowCommunity data={data} onFollowCommunity={onFollowCommunity} allowHandle={allowHandle} />
       case ActionType.INVITE_PEOPLE:
         // 邀请人员
-        return <ActionInvitePeople data={data} copyBgc={copyBgc} />
+        return <ActionInvitePeople data={data} copyBgc={copyBgc} allowHandle={allowHandle} />
       case ActionType.JOIN_DISCORD:
         // 加入Discord
-        return <ActionJoinDiscord data={data} onDiscord={onDiscord} />
+        return <ActionJoinDiscord data={data} onDiscord={onDiscord} allowHandle={allowHandle} />
+      case ActionType.DISCORD_INVITES_PEOPLE:
+        // 邀请人员加入Discord Server
+        return <ActionDiscordInvitesPeople data={data} onDiscord={onDiscord} allowHandle={allowHandle} />
       case ActionType.RETWEET:
         // 转发
         // TODO 目前先复用follow twitter 的 action，后续如果action操作有差异再新建 action
-        return <ActionFollowTwitter data={data} onTwitter={onTwitter} />
+        return <ActionFollowTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.LIKE_TWEET:
         // 点赞
         // TODO 目前先复用follow twitter 的 action，后续如果action操作有差异再新建 action
-        return <ActionFollowTwitter data={data} onTwitter={onTwitter} />
+        return <ActionFollowTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.UPDATE_BIO_OF_TWITTER:
         // 更新Twitter Bio
         // TODO 目前先复用follow twitter 的 action，后续如果action操作有差异再新建 action
-        return <ActionFollowTwitter data={data} onTwitter={onTwitter} />
+        return <ActionFollowTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.MEET_CONTRIBUTION_SCORE:
         // 达成贡献度
         return <ActionContributionScore data={data} />

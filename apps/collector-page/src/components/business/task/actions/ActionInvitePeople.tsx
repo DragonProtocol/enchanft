@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 16:26:39
+ * @LastEditTime: 2022-08-05 16:33:38
  * @Description: file description
  */
 import React from 'react'
@@ -58,7 +58,7 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
         </TooltipWrapper>
       </ActionIconBox>
       <ActionContentBox isDone={isDone}>
-        {name} {progress && `(${progress})`}
+        {name} {progress && progress != '' && <ProgressSpan>({progress})</ProgressSpan>}
         {allowHandle && (
           <ActionInviteCopyBox bgc={copyBgc}>
             <InviteLinkBox>{refUrl}</InviteLinkBox>
@@ -94,6 +94,10 @@ const ActionContentBox = styled.div<{ isDone?: Boolean }>`
         cursor: pointer;
       `}
 `
+const ProgressSpan = styled.span`
+  color: rgba(51, 51, 51, 0.5);
+`
+
 const ActionIconBox = styled.div<{ isDone?: Boolean }>`
   ${({ isDone }) => !isDone && `cursor: pointer;`}
 `
