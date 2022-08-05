@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 10:43:19
+ * @LastEditTime: 2022-08-05 11:54:08
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -54,14 +54,15 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
   // 2.钱包账户没有跟用户系统绑定
   let isBindWallet = false
   const taskChainType = getChainType(task.project.chainId)
+
   switch (taskChainType) {
     case ChainType.EVM:
-      if (!accountTypes.includes('EVM')) {
+      if (accountTypes.includes('EVM')) {
         isBindWallet = true
       }
       break
     case ChainType.SOLANA:
-      if (!accountTypes.includes('SOLANA')) {
+      if (accountTypes.includes('SOLANA')) {
         isBindWallet = true
       }
       break
@@ -86,11 +87,19 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
     }
   }
 
-  // 4. 当前账户是否完成任务
-  const isCompleted = task.acceptedStatus === TaskAcceptedStatus.DONE && task.status !== TaskTodoCompleteStatus.CLOSED
-  if (isCompleted) {
-    return {
-      type: TaskStatusButtonType.COMPLETE,
+  // 4. 当前任务是否正在进行中
+  // TODO 考虑直接将TaskTodoCompleteStatus枚举值合并到TaskStatusButtonType枚举值中
+  const isDone = task.acceptedStatus === TaskAcceptedStatus.DONE
+  if (isDone) {
+    switch (task.status) {
+      case TaskTodoCompleteStatus.TODO:
+        return {
+          type: TaskStatusButtonType.TODO,
+        }
+      case TaskTodoCompleteStatus.COMPLETED:
+        return {
+          type: TaskStatusButtonType.COMPLETE,
+        }
     }
   }
 
