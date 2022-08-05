@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 19:08:08
+ * @LastEditTime: 2022-08-05 15:38:00
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -11,7 +11,7 @@ import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
-import { TaskTodoCompleteStatus } from '../types/api'
+import { ActionType, TaskTodoCompleteStatus, UserActionStatus } from '../types/api'
 import { AsyncRequestStatus } from '../types'
 import TodoTaskList, { TodoTaskListItemsType } from '../components/business/task/TodoTaskList'
 import {
@@ -23,18 +23,42 @@ import {
 } from '../features/user/todoTasksSlice'
 import { useSearchParams } from 'react-router-dom'
 import useHandleAction from '../hooks/useHandleAction'
+import {
+  follow as followCommunity,
+  selectfollow as selectfollowCommunity,
+} from '../features/user/communityHandlesSlice'
+import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 
 // TODO 将以下格式化函数合并为一个
 const formatStoreDataToComponentDataByTodoList = (
   tasks: TodoTaskItemForEntity[],
   taskId: number,
+  followCommunityStatus: AsyncRequestStatus,
+  userFollowedProjectIds: number[],
 ): TodoTaskListItemsType => {
   return tasks.map((task) => {
     const actions = [...task.actions]
       .sort((a, b) => a.orderNum - b.orderNum)
-      .map((v) => ({ ...v, project: task.project }))
+      .map((v) => {
+        const action = { ...v, project: task.project }
+        // TODO 如果检索到当前action是关注社区的action，且在我关注的社区中，则将其状态改为已完成
+        if (action.type === ActionType.TURN_ON_NOTIFICATION && userFollowedProjectIds.includes(action.communityId)) {
+          Object.assign(action, {
+            status: UserActionStatus.DONE,
+          })
+        }
+        return action
+      })
     const loadingRefresh = task.refreshStatus === AsyncRequestStatus.PENDING
     const openActions = task.id === taskId
+    let verifyingActions: number[] = []
+    if (loadingRefresh) {
+      verifyingActions = actions.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
+    } else if (followCommunityStatus === AsyncRequestStatus.PENDING) {
+      // 如果当前关注社区的请求正在进行中，设定需要loading的action集合
+      // TODO 暂时先检索是关注社区的action，(按理说整理应该用find查找communityId)
+      verifyingActions = actions.filter((item) => item.type === ActionType.TURN_ON_NOTIFICATION).map((item) => item.id)
+    }
     return {
       data: { ...task, actions },
       viewConfig: {
@@ -45,6 +69,7 @@ const formatStoreDataToComponentDataByTodoList = (
         disabledRefresh: loadingRefresh,
         loadingRefresh: loadingRefresh,
         loadingRefreshMsg: 'verifying...',
+        verifyingActions: verifyingActions,
       },
     }
   })
@@ -52,13 +77,32 @@ const formatStoreDataToComponentDataByTodoList = (
 const formatStoreDataToComponentDataByInProgressList = (
   tasks: TodoTaskItemForEntity[],
   taskId: number,
+  followCommunityStatus: AsyncRequestStatus,
+  userFollowedProjectIds: number[],
 ): TodoTaskListItemsType => {
   return tasks.map((task) => {
     const actions = [...task.actions]
       .sort((a, b) => a.orderNum - b.orderNum)
-      .map((v) => ({ ...v, project: task.project }))
+      .map((v) => {
+        const action = { ...v, project: task.project }
+        // TODO 如果检索到当前action是关注社区的action，且在我关注的社区中，则将其状态改为已完成
+        if (action.type === ActionType.TURN_ON_NOTIFICATION && userFollowedProjectIds.includes(action.communityId)) {
+          Object.assign(action, {
+            status: UserActionStatus.DONE,
+          })
+        }
+        return action
+      })
     const loadingRefresh = task.refreshStatus === AsyncRequestStatus.PENDING
     const openActions = task.id === taskId
+    let verifyingActions: number[] = []
+    if (loadingRefresh) {
+      verifyingActions = actions.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
+    } else if (followCommunityStatus === AsyncRequestStatus.PENDING) {
+      // 如果当前关注社区的请求正在进行中，设定需要loading的action集合
+      // TODO 暂时先检索是关注社区的action，(按理说整理应该用find查找communityId)
+      verifyingActions = actions.filter((item) => item.type === ActionType.TURN_ON_NOTIFICATION).map((item) => item.id)
+    }
     return {
       data: { ...task, actions },
       viewConfig: {
@@ -69,6 +113,7 @@ const formatStoreDataToComponentDataByInProgressList = (
         disabledRefresh: loadingRefresh,
         loadingRefresh: loadingRefresh,
         loadingRefreshMsg: 'verifying...',
+        verifyingActions: verifyingActions,
       },
     }
   })
@@ -124,6 +169,24 @@ const TodoTask: React.FC = () => {
     }
   }, [token])
 
+  // 处理单个任务刷新
+  const handleRefreshTask = (taskId: number) => {
+    dispatch(refreshTodoTasksOne({ id: taskId }))
+  }
+
+  // 处理执行action操作
+  const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
+
+  // 关注社区
+  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
+  const handleFollowCommunity = (communityId: number) => {
+    console.log({ communityId })
+
+    dispatch(followCommunity({ id: communityId }))
+  }
+  // 用户关注的社区ID集合
+  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
+
   // 数据分组
   const todoList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.TODO)
   const inProgressList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.IN_PRGRESS)
@@ -133,21 +196,23 @@ const TodoTask: React.FC = () => {
   const closedList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.CLOSED)
 
   // 数据展示
-  const todoItems = formatStoreDataToComponentDataByTodoList(todoList, taskId)
-  const inProgressItems = formatStoreDataToComponentDataByInProgressList(inProgressList, taskId)
+  const todoItems = formatStoreDataToComponentDataByTodoList(
+    todoList,
+    taskId,
+    followCommunityStatus,
+    userFollowedProjectIds.map((item) => Number(item)),
+  )
+  const inProgressItems = formatStoreDataToComponentDataByInProgressList(
+    inProgressList,
+    taskId,
+    followCommunityStatus,
+    userFollowedProjectIds.map((item) => Number(item)),
+  )
   const completedItems = formatStoreDataToComponentDataByCompletedList(completedList)
   const wonItems = formatStoreDataToComponentDataByWonList(wonList)
   const lostItems = formatStoreDataToComponentDataByLostList(lostList)
   const closedItems = formatStoreDataToComponentDataByClosedList(closedList)
   const loading = status === AsyncRequestStatus.PENDING
-
-  // 处理单个任务刷新
-  const handleRefreshTask = (taskId: number) => {
-    dispatch(refreshTodoTasksOne({ id: taskId }))
-  }
-
-  // 处理执行action操作
-  const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
 
   return (
     <TodoTaskWrapper>
@@ -162,6 +227,7 @@ const TodoTask: React.FC = () => {
                 onRefreshTask={(task) => handleRefreshTask(task.id)}
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
+                onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.IN_PRGRESS}
@@ -170,6 +236,7 @@ const TodoTask: React.FC = () => {
                 onRefreshTask={(task) => handleRefreshTask(task.id)}
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
+                onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
               />
             </TodoTaskGroupLeft>
             <TodoTaskGroupRight>

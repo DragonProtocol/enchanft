@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:45:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 18:17:52
+ * @LastEditTime: 2022-08-05 14:16:11
  * @Description: file description
  */
 import React from 'react'
@@ -20,6 +20,7 @@ export type TaskActionListViewConfigType = {
   disabledVerify?: boolean
   loadingVerify?: boolean
   loadingVerifyMsg?: string
+  verifyingActions?: number[]
   copyBgc?: string
   verifyBgc?: string
 }
@@ -28,6 +29,7 @@ export type TaskActionListProps = TaskActionListViewConfigType & {
   items: TaskActionItemsType
   onTwitter?: (callback: () => void) => void
   onDiscord?: (callback: () => void) => void
+  onFollowCommunity?: (action: TaskActionItemDataType) => void
   onVerifyActions?: () => void
 }
 const TaskActionList: React.FC<TaskActionListProps> = ({
@@ -38,11 +40,13 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
   allowHandle,
   onTwitter,
   onDiscord,
+  onFollowCommunity,
   onVerifyActions,
   displayVerify,
   disabledVerify,
   loadingVerify,
   loadingVerifyMsg = 'verifying...',
+  verifyingActions = [],
   copyBgc,
   verifyBgc,
 }: TaskActionListProps) => {
@@ -61,22 +65,23 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
         </TaskActionListLoading>
       ) : (
         <>
+          {displayVerify && (
+            <VerifyBtn onClick={onVerifyActionsClick} disabled={disabledVerify} bgc={verifyBgc}>
+              {verifyText}
+            </VerifyBtn>
+          )}
           {items.map((item) => (
             <TaskActionItem
               key={item.id}
               data={item}
               onDiscord={onDiscord}
               onTwitter={onTwitter}
+              onFollowCommunity={onFollowCommunity}
               allowHandle={allowHandle}
               copyBgc={copyBgc}
-              verifying={loadingVerify}
+              verifying={verifyingActions.includes(item.id)}
             />
           ))}
-          {displayVerify && (
-            <VerifyBtn onClick={onVerifyActionsClick} disabled={disabledVerify} bgc={verifyBgc}>
-              {verifyText}
-            </VerifyBtn>
-          )}
         </>
       )}
 

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 14:50:09
+ * @LastEditTime: 2022-08-05 15:40:01
  * @Description: file description
  */
 import React from 'react'
@@ -66,6 +66,7 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
   onRefreshTask,
   onTwitter,
   onDiscord,
+  onFollowCommunity,
 }: TodoTaskListProps) => {
   const itemLen = items.length
   const title = todoTaskCompleteStatusMap[status].title || 'task list'
@@ -91,6 +92,7 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
               onRefreshTask={onRefreshTask}
               onDiscord={onDiscord}
               onTwitter={onTwitter}
+              onFollowCommunity={onFollowCommunity}
             />
           ))
         )}

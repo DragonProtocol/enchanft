@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 14:09:07
+ * @LastEditTime: 2022-08-05 13:39:53
  * @Description: file description
  */
 import React from 'react'
@@ -39,6 +39,7 @@ export type TaskActionItemProps = {
   allowHandle?: boolean
   onTwitter?: (callback: () => void) => void
   onDiscord?: (callback: () => void) => void
+  onFollowCommunity?: (action: TaskActionItemDataType) => void
   verifying?: boolean
   copyBgc?: string
 }
@@ -48,6 +49,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   allowHandle,
   onTwitter,
   onDiscord,
+  onFollowCommunity,
   verifying,
   copyBgc,
 }: TaskActionItemProps) => {
@@ -67,7 +69,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         return <ActionFollowTwitter data={data} onTwitter={onTwitter} />
       case ActionType.TURN_ON_NOTIFICATION:
         // 关注社区
-        return <ActionFollowCommunity data={data} />
+        return <ActionFollowCommunity data={data} onFollowCommunity={onFollowCommunity} />
       case ActionType.INVITE_PEOPLE:
         // 邀请人员
         return <ActionInvitePeople data={data} copyBgc={copyBgc} />
