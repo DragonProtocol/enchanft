@@ -13,6 +13,7 @@ import ActionFollowCommunity from './actions/ActionFollowCommunity'
 import ActionFollowTwitter from './actions/ActionFollowTwitter'
 import ActionInvitePeople from './actions/ActionInvitePeople'
 import ActionJoinDiscord from './actions/ActionJoinDiscord'
+import ActionDiscordInvitesPeople from './actions/ActionDiscordInvitesPeople'
 import IconCheckbox from '../../common/icons/IconCheckbox'
 import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 import Loading from '../../common/loading/Loading'
@@ -74,6 +75,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.JOIN_DISCORD:
         // 加入Discord
         return <ActionJoinDiscord data={data} onDiscord={onDiscord} />
+      case ActionType.DISCORD_INVITES_PEOPLE:
+          // 邀请人员加入Discord Server
+          return <ActionDiscordInvitesPeople data={data} onDiscord={onDiscord} />
       case ActionType.RETWEET:
         // 转发
         // TODO 目前先复用follow twitter 的 action，后续如果action操作有差异再新建 action
