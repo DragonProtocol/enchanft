@@ -37,8 +37,10 @@ export const fetchUserWhitelists = createAsyncThunk<
   async (params, { rejectWithValue }) => {
     try {
       const resp = await fetchListForUserWhitelist()
-      const data = resp.data.data.map((item) => ({ ...item, id: item.reward.id }))
-      return { data: data || [] }
+      const data = (resp.data.data || [])
+        .filter((item) => !!item.reward)
+        .map((item) => ({ ...item, id: item.reward?.id }))
+      return { data }
     } catch (error: any) {
       if (!error.response) {
         throw error

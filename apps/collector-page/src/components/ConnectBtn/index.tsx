@@ -16,7 +16,7 @@ import {
   userLogin,
   ChainType,
   setConnectWalletModalShow,
-  resetResMessage
+  resetResMessage,
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
@@ -85,21 +85,21 @@ export default function ConnectBtn() {
           )}
         </PopupState>
       )) || (
-          <ConnectBtnWrapper
-            onClick={() => {
-              dispatch(setConnectWalletModalShow(true))
-            }}
-          >
-            Connect Wallet
-          </ConnectBtnWrapper>
-        )}
+        <ConnectBtnWrapper
+          onClick={() => {
+            dispatch(setConnectWalletModalShow(true))
+          }}
+        >
+          Connect Wallet
+        </ConnectBtnWrapper>
+      )}
 
       <ConnectWalletModal />
       <ConnectModal />
 
       {/** LinkErrMsg */}
 
-      {account.resMessage != null &&
+      {account.resMessage != null && (
         <Snackbar
           anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
           open={!!account.resMessage.message}
@@ -118,7 +118,7 @@ export default function ConnectBtn() {
             {account.resMessage.message}
           </Alert>
         </Snackbar>
-      }
+      )}
     </>
   )
 }

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 16:29:49
+ * @LastEditTime: 2022-08-05 10:40:44
  * @Description: file description
  */
 import React from 'react'
@@ -14,6 +14,7 @@ import IconAlarmClock from '../../common/icons/IconAlarmClock'
 import IconGiftBox from '../../common/icons/IconGiftBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import RichTextBox from '../../common/text/RichTextBox'
+import TaskImageDefault from './TaskImageDefault'
 
 export type ExploreTaskSwiperItemDataType = {
   id: number
@@ -29,7 +30,7 @@ export type ExploreTaskSwiperItemDataType = {
     chainId: number
     name: string
   }
-  reward: {
+  reward?: {
     name: string
   }
 }
@@ -74,10 +75,13 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
           </TaskDateTimeBox>
           <TaskWinners>Winners {winnerNum}</TaskWinners>
         </TaskDateAndWinnerBox>
-        <TaskRemarkBox>
-          <IconGiftBox size={'18px'} />
-          <TaskRemark>Reward : {reward.name}</TaskRemark>
-        </TaskRemarkBox>
+        {reward && (
+          <TaskRemarkBox>
+            <IconGiftBox size={'18px'} />
+            <TaskRemark>Reward : {reward.name}</TaskRemark>
+          </TaskRemarkBox>
+        )}
+
         <TaskDescription value={description} />
       </TaskInfoBox>
     </ExploreTaskSwiperItemWrapper>
@@ -90,7 +94,7 @@ const ExploreTaskSwiperItemWrapper = styled.div`
   display: flex;
   overflow: hidden;
 `
-const TaskImage = styled.img`
+const TaskImage = styled(TaskImageDefault)`
   width: 50%;
   height: 100%;
   cursor: pointer;

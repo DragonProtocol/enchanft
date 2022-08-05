@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 16:50:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 14:43:36
+ * @LastEditTime: 2022-08-05 10:22:09
  * @Description: file description
  */
 import React from 'react'
@@ -24,7 +24,7 @@ const CommunityList: React.FC<CommunityListProps> = ({
   items,
   loading,
   loadingMsg = 'loading...',
-  emptyMsg = 'no project',
+  emptyMsg = 'no communitys',
 }: CommunityListProps) => (
   <>
     {loading && (

@@ -1,7 +1,6 @@
 export const connectionSocialMedia = (type: string) => {
   const socialMediaMap = {
-    twitter:
-      `https://twitter.com/i/oauth2/authorize?
+    twitter: `https://twitter.com/i/oauth2/authorize?
 response_type=code&
 client_id=Z2dvdGFFV0pOa3BkTWdQWF9GdGg6MTpjaQ&
 redirect_uri=https://wl.xyz/auth&
@@ -9,8 +8,7 @@ scope=bookmark.read+block.read+like.read+list.read+follows.read+space.read+mute.
 state=3063390848298.8647&
 code_challenge=challenge&
 code_challenge_method=plain`,
-    discord:
-      `https://discord.com/oauth2/authorize?
+    discord: `https://discord.com/oauth2/authorize?
 response_type=code&
 client_id=1003616859582627881&
 scope=identify%20guilds&
@@ -26,7 +24,7 @@ prompt=consent`,
   window.open(
     url,
     '__blank',
-`width=480,
+    `width=480,
 height=800,
 top=0,
 menubar=no,

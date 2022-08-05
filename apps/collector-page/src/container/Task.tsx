@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 16:53:26
+ * @LastEditTime: 2022-08-05 10:43:19
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -36,6 +36,7 @@ import TaskStatusButton, {
   TaskStatusButtonDataViewType,
   TaskStatusButtonType,
 } from '../components/business/task/TaskStatusButton'
+import TaskImageDefault from '../components/business/task/TaskImageDefault'
 
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
@@ -265,7 +266,7 @@ const TaskName = styled.div`
   font-size: 36px;
   line-height: 40px;
 `
-const TaskImage = styled.img`
+const TaskImage = styled(TaskImageDefault)`
   width: 100%;
   height: 460px;
   object-fit: cover;
