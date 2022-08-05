@@ -2,17 +2,19 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 16:25:17
+ * @LastEditTime: 2022-08-05 18:18:27
  * @Description: file description
  */
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import TooltipWrapper from '../../../common/TooltipWrapper'
 import IconTip from '../../../common/icons/IconTip'
 import { useNavigate } from 'react-router-dom'
 import { CommunityParamsVisibleType } from '../../../../container/Community'
+import ActionNameSpan from './ActionNameSpan'
+import ActionIconBox from './ActionIconBox'
 export type ActionContributionScoreProps = {
   data: TaskActionItemDataType
   allowHandle?: boolean
@@ -32,13 +34,15 @@ const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({
   return (
     <ActionContributionScoreWrapper>
       <ActionContributionScoreRow>
-        <ActionIconBox isDone={isDone} onClick={handleAction}>
+        <ActionIconBox allowHandle={allowHandle} isDone={isDone} onClick={handleAction}>
           <TooltipWrapper title={description}>
             <IconTip opacity={isDone ? 0.5 : 1} />
           </TooltipWrapper>
         </ActionIconBox>
-        <ActionContentBox isDone={isDone} onClick={handleAction}>
-          {name}
+        <ActionContentBox onClick={handleAction}>
+          <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
+            {name}
+          </ActionNameSpan>
         </ActionContentBox>
       </ActionContributionScoreRow>
     </ActionContributionScoreWrapper>
@@ -55,19 +59,6 @@ const ActionContributionScoreRow = styled.div`
   align-items: flex-start;
   gap: 10px;
 `
-const ActionContentBox = styled.div<{ isDone?: Boolean }>`
+const ActionContentBox = styled.div`
   flex: 1;
-  ${({ isDone }) =>
-    isDone
-      ? `
-        text-decoration-line: line-through;
-        color: #333333;
-        opacity: 0.5;
-      `
-      : `
-        cursor: pointer;
-      `}
-`
-const ActionIconBox = styled.div<{ isDone?: Boolean }>`
-  ${({ isDone }) => !isDone && `cursor: pointer;`}
 `

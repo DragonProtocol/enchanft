@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 15:50:41
+ * @LastEditTime: 2022-08-05 18:33:49
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -43,6 +43,7 @@ import {
   selectfollow as selectfollowCommunity,
 } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
+import ButtonBase from '../components/common/button/ButtonBase'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
@@ -204,6 +205,7 @@ const Task: React.FC = () => {
   // 是否允许操作action
   const allowHandleAction =
     data?.acceptedStatus === TaskAcceptedStatus.DONE && data?.status !== TaskTodoCompleteStatus.CLOSED
+  console.log({ allowHandleAction })
 
   // verify action
   const displayVerify = allowHandleAction && actionItems.some((v) => v.status === UserActionStatus.TODO)
@@ -227,7 +229,7 @@ const Task: React.FC = () => {
               <TaskName>{name}</TaskName>
               <ProjectNameBox>
                 <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
-                {isCreator && <Button onClick={() => navigate(`/creator/${id}`)}>manage</Button>}
+                {isCreator && <ManageButton onClick={() => navigate(`/creator/${id}`)}>manage</ManageButton>}
               </ProjectNameBox>
               <TaskImageBox>
                 {/* <ChainTag size={2} chainId={chainId} /> */}
@@ -328,6 +330,23 @@ const ProjectName = styled.div`
   line-height: 30px;
   color: #3dd606;
   cursor: pointer;
+`
+const ManageButton = styled(ButtonBase)`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 18px;
+  width: 210px;
+  height: 48px;
+
+  background: #f8f8f8;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #333333;
 `
 const TaskDetailContentBox = styled.div`
   width: 100%;

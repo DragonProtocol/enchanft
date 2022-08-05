@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 16:38:53
+ * @LastEditTime: 2022-08-05 17:13:42
  * @Description: file description
  */
 import React from 'react'
@@ -55,6 +55,8 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   copyBgc,
 }: TaskActionItemProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
+  console.log('TaskActionItem allowHandle', allowHandle)
+
   const renderAction = () => {
     switch (type) {
       case ActionType.FOLLOW_TWITTER:
@@ -86,7 +88,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         return <ActionFollowTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.MEET_CONTRIBUTION_SCORE:
         // 达成贡献度
-        return <ActionContributionScore data={data} />
+        return <ActionContributionScore data={data} allowHandle={allowHandle} />
       default:
         return name
     }

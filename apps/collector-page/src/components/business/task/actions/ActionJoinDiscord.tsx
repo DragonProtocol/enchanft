@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 16:27:50
+ * @LastEditTime: 2022-08-05 18:18:56
  * @Description: file description
  */
 import React from 'react'
@@ -10,6 +10,8 @@ import styled from 'styled-components'
 import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import IconDiscord from '../../../common/icons/IconDiscord'
+import ActionIconBox from './ActionIconBox'
+import ActionNameSpan from './ActionNameSpan'
 
 export type ActionJoinDiscordProps = {
   data: TaskActionItemDataType
@@ -35,11 +37,13 @@ const ActionJoinDiscord: React.FC<ActionJoinDiscordProps> = ({
   }
   return (
     <ActionJoinDiscordWrapper>
-      <ActionIcon isDone={isDone} onClick={clickAction}>
+      <ActionIconBox allowHandle={allowHandle} isDone={isDone} onClick={clickAction}>
         <IconDiscord opacity={isDone ? 0.5 : 1} />
-      </ActionIcon>
-      <ActionContentBox isDone={isDone} onClick={clickAction}>
-        {name}
+      </ActionIconBox>
+      <ActionContentBox onClick={clickAction}>
+        <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
+          {name}
+        </ActionNameSpan>
       </ActionContentBox>
     </ActionJoinDiscordWrapper>
   )
@@ -52,19 +56,6 @@ const ActionJoinDiscordWrapper = styled.div`
   align-items: flex-start;
   gap: 10px;
 `
-const ActionContentBox = styled.div<{ isDone?: Boolean }>`
+const ActionContentBox = styled.div`
   flex: 1;
-  ${({ isDone }) =>
-    isDone
-      ? `
-        text-decoration-line: line-through;
-        color: #333333;
-        opacity: 0.5;  
-      `
-      : `
-        cursor: pointer;
-      `}
-`
-const ActionIcon = styled.div<{ isDone?: Boolean }>`
-  ${({ isDone }) => !isDone && `cursor: pointer;`}
 `
