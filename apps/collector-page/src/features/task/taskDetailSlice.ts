@@ -6,15 +6,17 @@
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { fetchDetail } from '../../services/api/task'
+import { fetchDetail, createTask as createTaskApi } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { TaskDetailResponse } from '../../types/api'
+import { State as CreateTaskState } from '../../components/business/task/create/state'
 
 export type TaskDetailEntity = TaskDetailResponse
 type TaskState = {
   data: TaskDetailEntity | null
   status: AsyncRequestStatus
+  createStatus: AsyncRequestStatus
   errorMsg: string
   currentRequestId: string | undefined // 当前正在请求的id(由createAsyncThunk生成的唯一id)
 }
@@ -27,6 +29,7 @@ type FetchDetailResp = {
 const initTaskState: TaskState = {
   data: null,
   status: AsyncRequestStatus.IDLE,
+  createStatus: AsyncRequestStatus.IDLE,
   errorMsg: '',
   currentRequestId: undefined,
 }
@@ -47,6 +50,11 @@ export const fetchTaskDetail = createAsyncThunk<
     }
     return rejectWithValue({ data: null, errorMsg: error.response.data })
   }
+})
+
+export const createTask = createAsyncThunk('task/create', async (data: CreateTaskState) => {
+  const resp = await createTaskApi(data)
+  return resp.data
 })
 
 export const taskDetailSlice = createSlice({
@@ -85,6 +93,16 @@ export const taskDetailSlice = createSlice({
         } else {
           state.errorMsg = action.error.message || ''
         }
+      })
+      /////
+      .addCase(createTask.pending, (state) => {
+        state.createStatus = AsyncRequestStatus.PENDING
+      })
+      .addCase(createTask.fulfilled, (state) => {
+        state.createStatus = AsyncRequestStatus.FULFILLED
+      })
+      .addCase(createTask.rejected, (state) => {
+        state.createStatus = AsyncRequestStatus.REJECTED
       })
   },
 })

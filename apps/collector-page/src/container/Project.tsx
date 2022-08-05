@@ -38,6 +38,7 @@ import ContributionList, {
 } from '../components/business/contribution/ContributionList'
 import RichTextBox from '../components/common/text/RichTextBox'
 import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
+import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
 
 export enum ProjectParamsVisibleType {
@@ -109,6 +110,7 @@ const Project: React.FC = () => {
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
   const projectDetail = useAppSelector(selectProjectDetail)
+  const { isCreator, checkProjectAllowed } = usePermissions()
   const { data, status, errorMsg } = projectDetail
   useEffect(() => {
     if (projectSlug) {
@@ -225,8 +227,13 @@ const Project: React.FC = () => {
                 <ProjectLabelBox>
                   <ProjectLabel>Events</ProjectLabel>
                 </ProjectLabelBox>
-
-                <ExploreTaskList items={tasks} displayCreateTask={true} />
+                <ExploreTaskList
+                  items={tasks}
+                  displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
+                  onCreateTask={() => {
+                    navigate(`/task/create/${data.id}`)
+                  }}
+                />
               </ProjectEventsBox>
 
               <ProjectOtherInfoBox>

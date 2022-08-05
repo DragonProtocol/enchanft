@@ -10,6 +10,7 @@ import { loadRefInfo, RefType } from '../../container/Ref'
 import request from '../../request/axios'
 import { ApiResp } from '../../types'
 import { TaskDetailResponse, TodoTaskItem, TodoTaskResponse } from '../../types/api'
+import { State as CreateTaskState } from '../../components/business/task/create/state'
 
 /** 接任务 */
 export type TakeTaskParams = {
@@ -70,6 +71,40 @@ export function fetchDetail(id: number): AxiosPromise<ApiResp<TaskDetailResponse
   return request({
     url: `/tasks/${id}`,
     method: 'get',
+    headers: {
+      needToken: true,
+    },
+  })
+}
+
+export function createTask(data: CreateTaskState) {
+  const postData = {
+    projectId: data.projectId,
+    name: data.name,
+    description: data.description,
+    image: data.image,
+    winNum: data.winnerNum,
+    startTime: data.startTime,
+    endTime: data.endTime,
+    reward: data.reward,
+    actions: data.actions.map((item) => {
+      return {
+        name: item.name,
+        type: item.typeMore,
+        description: '',
+        data: {
+          url: item.url,
+          server_id: item.server_id,
+          require_score: item.require_score,
+          num: item.num,
+        },
+      }
+    }),
+  }
+  return request({
+    url: `/tasks`,
+    method: 'post',
+    data: postData,
     headers: {
       needToken: true,
     },
