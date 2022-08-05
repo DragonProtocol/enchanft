@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 14:03:05
+ * @LastEditTime: 2022-08-05 10:40:15
  * @Description: file description
  */
 import React from 'react'
@@ -12,6 +12,7 @@ import { ScrollBarCss } from '../../../GlobalStyle'
 import IconGiftBox from '../../common/icons/IconGiftBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
+import TaskImageDefault from './TaskImageDefault'
 
 export type ExploreTaskItemDataType = {
   id: number
@@ -23,7 +24,7 @@ export type ExploreTaskItemDataType = {
     slug: string
     chainId: number
   }
-  reward: {
+  reward?: {
     name: string
   }
 }
@@ -58,10 +59,12 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
         <TaskDateTime>
           {startDate} —— {endDate}
         </TaskDateTime>
-        <TaskRemarkBox>
-          <IconGiftBox size={'16px'} />
-          <TaskRemark>{reward.name}</TaskRemark>
-        </TaskRemarkBox>
+        {reward && (
+          <TaskRemarkBox>
+            <IconGiftBox size={'16px'} />
+            <TaskRemark>{reward.name}</TaskRemark>
+          </TaskRemarkBox>
+        )}
       </TaskInfoBox>
     </ExploreTaskItemWrapper>
   )
@@ -84,7 +87,7 @@ const TaskImageBox = styled.div`
   height: 130px;
   position: relative;
 `
-const TaskImage = styled.img`
+const TaskImage = styled(TaskImageDefault)`
   width: 100%;
   height: 100%;
   /* 图片不失真，不会出现拉伸 */
@@ -96,8 +99,8 @@ const TaskInfoBox = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   align-items: flex-start;
+  gap: 8px;
   overflow-y: scroll;
   ${ScrollBarCss}
 `

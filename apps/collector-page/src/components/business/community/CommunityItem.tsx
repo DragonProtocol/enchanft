@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import ButtonBase from '../../common/button/ButtonBase'
 import { useNavigate } from 'react-router-dom'
 import { ScrollBarCss } from '../../../GlobalStyle'
+import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 
 export type CommunityItemDataType = {
   id: number
@@ -133,7 +134,7 @@ const NumberValue = styled.div`
   color: #333333;
 `
 
-const CommunityName = styled.div`
+const CommunityName = styled(OverflowEllipsisBox)`
   color: rgba(16, 16, 16, 100);
   font-size: 18px;
   font-weight: bold;

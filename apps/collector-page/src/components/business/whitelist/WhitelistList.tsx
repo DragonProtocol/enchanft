@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-26 17:00:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 14:50:34
+ * @LastEditTime: 2022-08-05 10:22:27
  * @Description: file description
  */
 import React from 'react'
@@ -24,7 +24,7 @@ const WhitelistList: React.FC<WhitelistListProps> = ({
   items,
   loading,
   loadingMsg = 'loading...',
-  emptyMsg = 'no whitelist',
+  emptyMsg = 'no rewards',
 }: WhitelistListProps) => (
   <>
     {loading && (

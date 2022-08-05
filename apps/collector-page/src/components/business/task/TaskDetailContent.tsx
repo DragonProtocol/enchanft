@@ -24,7 +24,7 @@ export type TaskDetailContentDataType = {
     chainId: number
     name: string
   }
-  reward: {
+  reward?: {
     name: string
   }
 }
@@ -58,10 +58,13 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetai
         </TaskDateTimeBox>
         <TaskWinners>Winners {winnerNum}</TaskWinners>
       </TaskDateAndWinnerBox>
-      <TaskRemarkBox>
-        <IconGiftBox size={'18px'} />
-        <TaskRemark>Reward : {reward.name}</TaskRemark>
-      </TaskRemarkBox>
+      {reward && (
+        <TaskRemarkBox>
+          <IconGiftBox size={'18px'} />
+          <TaskRemark>Reward : {reward.name}</TaskRemark>
+        </TaskRemarkBox>
+      )}
+
       <TaskDescription value={description} />
     </TaskDetailContentWrapper>
   )

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 18:29:32
+ * @LastEditTime: 2022-08-05 10:02:07
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -189,14 +189,14 @@ export type ExploreSearchTaskItem = Task & {
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
   project: Project
-  reward: Reward
+  reward?: Reward
 }
 export type ExploreRecommendTaskItem = Task & {
   winnerNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
   project: Project
-  reward: Reward
+  reward?: Reward
 }
 
 // explore project
@@ -224,7 +224,7 @@ export type ProjectDetailTaskItem = Task & {
   winnerNum: number
   acceptedStatus: TaskAcceptedStatus
   actions: Action[]
-  reward: Reward
+  reward?: Reward
 }
 export type ProjectDetailResponse = Project & {
   tasks: ProjectDetailTaskItem[]
@@ -296,7 +296,7 @@ export type TaskDetailResponse = Task & {
   status: TaskTodoCompleteStatus
   project: Project
   winnerList: User[]
-  reward: Reward
+  reward?: Reward
 }
 
 /** whitelist api */
@@ -304,6 +304,6 @@ export type UserWhitelistItem = {
   task: Task
   community: Community
   whitelist: Whitelist
-  reward: Reward
+  reward?: Reward
 }
 export type UserWhitelistsResponse = UserWhitelistItem[]

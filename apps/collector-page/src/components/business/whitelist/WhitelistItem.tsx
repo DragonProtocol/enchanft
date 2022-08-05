@@ -4,6 +4,7 @@ import ButtonBase from '../../common/button/ButtonBase'
 import { useNavigate } from 'react-router-dom'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { Community, Project, RewardType } from '../../../types/api'
+import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 
 export type WhitelistItemDataType = {
   task: {
@@ -73,7 +74,7 @@ const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint 
     <WhitelistItemWrapper>
       <ProjectImage src={task.image} />
       <WhitelistInfoBox>
-        <ProjectName>{task.name}</ProjectName>
+        <TaskName>{task.name}</TaskName>
         <CommunityName>{community.name}</CommunityName>
         <RewardTypeContentBox>
           {reward.type === RewardType.OTHERS ? (
@@ -237,7 +238,7 @@ const WhitelistInfoBox = styled.div`
   overflow-y: auto;
   ${ScrollBarCss}
 `
-const ProjectName = styled.div`
+const TaskName = styled(OverflowEllipsisBox)`
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
