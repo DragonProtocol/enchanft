@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-19 15:11:26
+ * @LastEditTime: 2022-08-08 18:30:28
  * @Description: 系统相关常量定义
  */
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -18,3 +18,5 @@ export const MEDIA_BREAK_POINTS = {
 export const MOBILE_BREAK_POINT = 768
 export const VIEW_LAMPORTS_DECIMAL = 3
 export const MAX_CHILDREN_PER_LEVEL = 3
+export const TASK_DEFAULT_IMAGE_URL =
+  'https://strapi-njmm.onrender.com/uploads/thumbnail_default_image_4_d5ad13d828.png'
