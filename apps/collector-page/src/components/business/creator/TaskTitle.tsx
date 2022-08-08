@@ -29,14 +29,13 @@ export default function TaskTitle({ info }: { info: TaskInfo | null }) {
 function Item({ content }: { content: string }) {
   return (
     <p className="item">
-      <IconCheckbox />
+      {/* <IconCheckbox /> */}
       {content}
     </p>
   )
 }
 
 const TaskTitleBox = styled(CardBox)`
-  width: 420px;
   /* height: 411px; */
   line-height: 20px;
   background: #fffbdb;

@@ -1,7 +1,7 @@
 import { Box, Modal } from '@mui/material'
 import React, { useEffect } from 'react'
 import styled from 'styled-components'
-import { ActionType, State } from './state'
+import { ActionType, RewardType, State } from './state'
 import { ChainType, selectAccount } from '../../../../features/user/accountSlice'
 import { useAppSelector } from '../../../../store/hooks'
 import IconTip from '../../../common/icons/IconTip'
@@ -9,6 +9,10 @@ import IconDiscord from '../../../common/icons/IconDiscord'
 import IconNotify from '../../../common/icons/IconNotify'
 import IconTwitter from '../../../common/icons/IconTwitter'
 import { AsyncRequestStatus } from '../../../../types'
+import IconCaretLeft from '../../../common/icons/IconCaretLeft'
+import ButtonNavigation from '../../../common/button/ButtonNavigation'
+import dayjs from 'dayjs'
+import IconCheckbox from '../../../common/icons/IconCheckbox'
 
 export default function Preview({
   state,
@@ -21,44 +25,42 @@ export default function Preview({
   closeHandler: () => void
   submitResult: () => void
 }) {
-  const account = useAppSelector(selectAccount)
-
   return (
-    <Modal
-      open={open}
-      onClose={closeHandler}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <Box
-        sx={{
-          position: 'absolute' as 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 800,
-          maxHeight: 'calc(100% - 100px)',
-          bgcolor: 'background.paper',
-          overflow: 'scroll',
-          boxShadow: 24,
-          p: 4,
-        }}
-      >
-        <ModalViewBox>
+    <TaskPrevewWrapper>
+      <div className="tint">
+        <p> Please check the event page carefully as it cannot be edited once submitted.</p>
+      </div>
+      <div className="container">
+        <div className="back-btn" onClick={closeHandler}>
+          <ButtonNavigation>
+            <IconCaretLeft />
+          </ButtonNavigation>
+        </div>
+        <div className="title">
           <h3>{state.name}</h3>
-          <p>{account.name}</p>
-          <div className="attach-file">
-            {(state.image && <img src={state.image} alt="" />) || <div className="">400 x 600</div>}
+        </div>
+        <div className="project">Project:{state.projectName}</div>
+        <div className="img">
+          <img src={state.image} alt="" />
+        </div>
+        <div className="infos">
+          <div className="left">
+            <h3>{state.type} Task</h3>
+            <div>
+              {/* TODO 图标*/}
+              <IconNotify />
+              <span>
+                {dayjs(state.startTime).format('YYYY/MM/DD')}——{dayjs(state.endTime).format('YYYY/MM/DD')}
+              </span>
+              <span>Winners: {state.winnerNum}</span>
+            </div>
+            <div>
+              <IconNotify />
+              <span>Reward: {state.reward.type === RewardType.WHITELIST ? 'whitelist' : state.reward.name}</span>
+            </div>
+            <div className="desc">{state.description}</div>
           </div>
-          <p>{state.reward.raffled ? 'Winner-Luck-Draw' : 'Winner-Oriented'} Task</p>
-          <p>Reward: {state.reward.type.toLowerCase()}</p>
-          <p>winners: {state.winnerNum}</p>
-          <p>
-            {new Date(state.startTime).toLocaleDateString()} — {new Date(state.endTime).toLocaleDateString()}
-          </p>
-          <p>{state.description}</p>
-          <h4>{`Take the task`}</h4>
-          <ul>
+          <div className="right">
             {state.actions.map((item, idx) => {
               let Icon
               if (item.type === ActionType.DISCORD) {
@@ -74,89 +76,165 @@ export default function Preview({
                 Icon = IconTip
               }
               return (
-                <li key={idx} className="action-item">
-                  <p>{item.name}</p> <Icon />
-                </li>
+                <div key={idx} className="action-item">
+                  <IconCheckbox></IconCheckbox> <p>{item.name}</p> <Icon />
+                </div>
               )
             })}
-          </ul>
-
-          <button onClick={submitResult}>submit</button>
-        </ModalViewBox>
-      </Box>
-    </Modal>
+          </div>
+        </div>
+      </div>
+      <div className="submit-btn">
+        <button onClick={submitResult}>Submit</button>
+      </div>
+    </TaskPrevewWrapper>
   )
 }
-const ModalViewBox = styled.div`
-  font-size: 20px;
-  position: relative;
-  & h3 {
-    margin: 0;
-    font-size: 28px;
+
+const TaskPrevewWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  margin-top: 20px;
+  background-color: #fff;
+  box-sizing: border-box;
+
+  & .tint {
+    height: 50px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-sizing: border-box;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fffbdb;
+    & p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 24px;
+      color: #333333;
+      font-weight: 400;
+    }
   }
 
-  & img {
-    width: 100%;
-  }
+  & .container {
+    position: relative;
+    padding: 40px 110px;
+    & .back-btn {
+      position: absolute;
+      left: 40px;
+    }
 
-  & h4 {
-    margin: 0;
-    text-align: center;
-    background-color: #000;
-    color: #fff;
-    padding: 10px 0;
-    margin-bottom: 10px;
-  }
-  & ul {
-    margin: 0;
-    padding: 0 20px;
+    & .title {
+      h3 {
+        margin: 5px 0;
+        font-weight: 700;
+        font-size: 36px;
+        line-height: 40px;
+        color: #333333;
+      }
+    }
 
-    & .action-item {
+    & .project {
+      margin: 14px 0;
+      font-weight: 400;
+      font-size: 20px;
+      line-height: 30px;
+      color: #3dd606;
+    }
+
+    & img {
+      width: 100%;
+    }
+
+    & .infos {
+      margin-top: 26px;
       display: flex;
-      align-items: center;
-      justify-content: space-between;
+      > div {
+        flex-grow: 1;
+      }
 
-      & p {
-        position: relative;
-        margin: 5px;
-
-        &::before {
-          content: '';
-          position: absolute;
-          width: 15px;
-          height: 15px;
-          left: -25px;
-          top: 8px;
-          background-color: #000;
-          border-radius: 50%;
+      > div.left {
+        & h3 {
+          margin: 0;
         }
+        > div {
+          margin: 10px 0;
+          height: 21px;
+          color: #333333;
+          display: flex;
+          align-items: center;
+
+          > span {
+            display: inline-block;
+            width: 50%;
+            margin: 0 5px;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 21px;
+          }
+        }
+
+        & .desc {
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 21px;
+
+          color: rgba(51, 51, 51, 0.6);
+        }
+      }
+
+      > div.right {
+        background-color: #f8f8f8;
+        padding: 20px;
+        & .action-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 20px;
+          & p {
+            margin: 0;
+            margin-left: 10px;
+            flex-grow: 1;
+          }
+        }
+        & .action-item:last-child {
+          margin: 0;
+        }
+      }
+
+      & h3 {
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 27px;
+
+        color: #333333;
       }
     }
   }
 
-  & .attach-file {
-    > div {
-      color: rgba(153, 154, 154, 100);
-      padding: 10px 0;
+  & .submit-btn {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    height: 68px;
+    background: #ffffff;
+    box-shadow: 0px -4px 0px rgba(0, 0, 0, 0.25);
+    & button {
+      cursor: pointer;
+      border: none;
+      outline: none;
+      background-color: #3dd606;
+      color: #fff;
+      width: 200px;
+      height: 48px;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 27px;
+      box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
     }
-    > label {
-      padding: 5px 8px;
-      background-color: rgba(164, 173, 179, 100);
-    }
-
-    > #task-banner {
-      display: none;
-    }
-  }
-
-  & button {
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
-    background-color: #000;
-    color: #fff;
-    border: none;
-    height: 50px;
-    font-size: 20px;
   }
 `

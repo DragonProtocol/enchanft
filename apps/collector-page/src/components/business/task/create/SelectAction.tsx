@@ -7,6 +7,12 @@ import { Action, ActionType, ActionTypeMore, State } from './state'
 import { connectionSocialMedia } from '../../../../utils/socialMedia'
 import TwitterIcon from '../../../ConnectBtn/TwitterIcon'
 import DiscordIcon from '../../../ConnectBtn/DiscordIcon'
+import IconCheckboxChecked from '../../../common/icons/IconCheckboxChecked'
+import IconCheckbox from '../../../common/icons/IconCheckbox'
+import IconTip from '../../../common/icons/IconTip'
+import IconDiscord from '../../../common/icons/IconDiscord'
+import IconNotify from '../../../common/icons/IconNotify'
+import IconTwitter from '../../../common/icons/IconTwitter'
 
 export default function SelectActions({
   refresh,
@@ -59,7 +65,7 @@ export default function SelectActions({
   useEffect(() => {
     const actions: Action[] = []
     if (followTwitter && followTwitterLink) {
-      const msg = document.getElementById('follow-twitter-msg')?.innerText
+      const msg = document.getElementById('follow-twitter-msg')?.textContent
       msg &&
         actions.push({
           name: msg,
@@ -70,7 +76,7 @@ export default function SelectActions({
         })
     }
     if (joinDiscord && joinDiscordLink && joinDiscordServerId) {
-      const msg = document.getElementById('join-discord-msg')?.innerText
+      const msg = document.getElementById('join-discord-msg')?.textContent
       msg &&
         actions.push({
           name: msg,
@@ -82,7 +88,7 @@ export default function SelectActions({
         })
     }
     if (inviteFriends && inviteNum) {
-      const msg = document.getElementById('invite-friends-msg')?.innerText
+      const msg = document.getElementById('invite-friends-msg')?.textContent
       msg &&
         actions.push({
           name: msg,
@@ -94,7 +100,7 @@ export default function SelectActions({
     }
 
     if (inviteDiscord && inviteDiscordNum) {
-      const msg = document.getElementById('invite-discord-msg')?.innerText
+      const msg = document.getElementById('invite-discord-msg')?.textContent
       msg &&
         actions.push({
           name: msg,
@@ -106,7 +112,7 @@ export default function SelectActions({
     }
 
     if (likeTwitter && likeTwitterLink) {
-      const msg = document.getElementById('like-twitter-msg')?.innerText
+      const msg = document.getElementById('like-twitter-msg')?.textContent
       msg &&
         actions.push({
           name: msg,
@@ -117,7 +123,7 @@ export default function SelectActions({
         })
     }
     if (retweetTwitterLink && retweetTwitter) {
-      const msg = document.getElementById('retweet-twitter-msg')?.innerText
+      const msg = document.getElementById('retweet-twitter-msg')?.textContent
       msg &&
         actions.push({
           name: msg,
@@ -128,7 +134,7 @@ export default function SelectActions({
         })
     }
     if (joinCommunity) {
-      const msg = document.getElementById('join-community-msg')?.innerText
+      const msg = document.getElementById('join-community-msg')?.textContent
       msg &&
         actions.push({
           name: msg,
@@ -138,7 +144,7 @@ export default function SelectActions({
         })
     }
     if (joinCommunityContribution && joinCommunityContributionNum) {
-      const msg = document.getElementById('join-community-contribution-msg')?.innerText
+      const msg = document.getElementById('join-community-contribution-msg')?.textContent
       msg &&
         actions.push({
           name: msg,
@@ -176,233 +182,273 @@ export default function SelectActions({
 
   return (
     <SelectActionsBox>
-      <h4>Select actions</h4>
-      <div>
-        <Checkbox
-          checked={followTwitter}
-          onChange={(e) => {
-            if (twitter) setFollowTwitter(!followTwitter)
-          }}
-        />{' '}
-        <span id="follow-twitter-msg">Follow @{twitter?.thirdpartyName || 'XXX'} on Twitter</span>
-        <br />
-        {twitter ? (
-          followTwitter && (
-            <div className="input-box">
-              Tweet link:{' '}
-              <input
-                type="text"
-                title="task-like"
-                value={followTwitterLink}
-                onChange={(e) => setFollowTwitterLink(e.target.value)}
-              />
-            </div>
-          )
-        ) : (
-          <ConnectTwitter />
-        )}
+      <div className="subtitle">
+        <span>Select actions</span>
       </div>
-      <div>
-        <Checkbox
-          checked={joinDiscord}
-          onChange={() => {
-            if (discord) setJoinDiscord(!joinDiscord)
-          }}
-        />{' '}
-        <span id="join-discord-msg">Join #{discord?.thirdpartyName || 'XXX'} server on Discord</span>
-        <br />
-        {discord ? (
-          joinDiscord && (
-            <>
-              <div className="input-box">
-                discord server link:{' '}
-                <input
-                  type="text"
-                  title="task-like"
-                  value={joinDiscordLink}
-                  onChange={(e) => setJoinDiscordLink(e.target.value)}
-                />
-              </div>
-              <div className="input-box">
-                discord server id:{' '}
-                <input
-                  type="text"
-                  title="task-like"
-                  value={joinDiscordServerId}
-                  onChange={(e) => setJoinDiscordServerId(e.target.value)}
-                />
-              </div>
-            </>
-          )
-        ) : (
-          <ConnectDiscord />
-        )}
-      </div>
-      <div>
-        <Checkbox
-          checked={inviteDiscord}
-          onChange={() => {
-            if (discord) setInviteDiscord(!inviteDiscord)
-          }}
-        />{' '}
-        <span id="invite-discord-msg">
-          Invite {inviteDiscordNum || 'X'} friends to join #{discord?.thirdpartyName || 'XXX'} server on Discord
-        </span>
-        <br />
-        {discord ? (
-          inviteDiscord && (
-            <div>
-              X ={' '}
-              <input
-                type="number"
-                title="invite-discord"
-                value={inviteDiscordNum === 0 ? '' : inviteDiscordNum.toString()}
-                min="1"
-                step="1"
-                onKeyPress={numberInput}
-                onChange={(e) => {
-                  setInviteDiscordNum(Number(e.target.value))
+      <div className="content">
+        <div>
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={followTwitter}
+                onChange={() => {
+                  if (twitter) setFollowTwitter(!followTwitter)
                 }}
               />
+              <span id="follow-twitter-msg" className="msg">
+                Follow @{twitter?.thirdpartyName || 'XXX'} on Twitter
+              </span>
+              <IconTwitter />
             </div>
-          )
-        ) : (
-          <ConnectDiscord />
-        )}
-      </div>
-      <div>
-        <Checkbox
-          checked={inviteFriends}
-          onChange={() => {
-            const nextValue = !inviteFriends
-            setInvalidFriends(nextValue)
-            if (!nextValue) {
-              setInviteNum(0)
-            }
-          }}
-        />{' '}
-        <span id="invite-friends-msg">invite {inviteNum || 'X'} friends to take the Task</span>
-        <br />
-        {inviteFriends && (
-          <div>
-            X ={' '}
-            <input
-              type="number"
-              title="task-invite"
-              value={inviteNum === 0 ? '' : inviteNum.toString()}
-              min="1"
-              step="1"
-              onKeyPress={numberInput}
-              onChange={(e) => {
-                setInviteNum(Number(e.target.value))
-              }}
-            />
+            <div className="help">
+              {twitter ? (
+                followTwitter && (
+                  <div className="input-box">
+                    <span>Tweet Link:</span>
+                    <input
+                      type="text"
+                      title="task-like"
+                      value={followTwitterLink}
+                      onChange={(e) => setFollowTwitterLink(e.target.value)}
+                    />
+                  </div>
+                )
+              ) : (
+                <ConnectTwitter />
+              )}
+            </div>
           </div>
-        )}
-      </div>
-      <div>
-        <Checkbox
-          checked={likeTwitter}
-          onChange={() => {
-            if (!twitter) return
-            setLikeTwitter(!likeTwitter)
-            if (!likeTwitter) {
-              setLikeTwitterLink('')
-            }
-          }}
-        />{' '}
-        <span id="like-twitter-msg">Like @{twitter?.thirdpartyName || 'XXX'} on twitter</span>
-        <br />
-        {twitter ? (
-          likeTwitter && (
-            <div className="input-box">
-              Tweet link:{' '}
-              <input
-                type="text"
-                title="task-like"
-                value={likeTwitterLink}
-                onChange={(e) => setLikeTwitterLink(e.target.value)}
-              />
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={joinDiscord}
+                onChange={() => {
+                  if (discord) setJoinDiscord(!joinDiscord)
+                }}
+              />{' '}
+              <span id="join-discord-msg" className="msg">
+                Join #{discord?.thirdpartyName || 'XXX'} server on Discord
+              </span>
+              <IconDiscord />
             </div>
-          )
-        ) : (
-          <ConnectTwitter />
-        )}
-      </div>
-      <div>
-        <Checkbox
-          checked={retweetTwitter}
-          onChange={() => {
-            if (!twitter) return
-            setRetweetTwitter(!retweetTwitter)
-            if (!retweetTwitter) {
-              setRetweetTwitterLink('')
-            }
-          }}
-        />{' '}
-        <span id="retweet-twitter-msg">Retweet @{twitter?.thirdpartyName || 'XXX'} on twitter</span>
-        <br />
-        {twitter ? (
-          retweetTwitter && (
-            <div className="input-box">
-              Tweet link:{' '}
-              <input
-                type="text"
-                title="retweet"
-                value={retweetTwitterLink}
-                onChange={(e) => {
-                  setRetweetTwitterLink(e.target.value)
+            <div className="help">
+              {discord ? (
+                joinDiscord && (
+                  <>
+                    <div className="input-box">
+                      <span>Discord Server Link:</span>
+                      <input
+                        type="text"
+                        title="task-like"
+                        value={joinDiscordLink}
+                        onChange={(e) => setJoinDiscordLink(e.target.value)}
+                      />
+                    </div>
+                    <div className="input-box">
+                      <span>Discord Server Id:</span>
+                      <input
+                        type="text"
+                        title="task-like"
+                        value={joinDiscordServerId}
+                        onChange={(e) => setJoinDiscordServerId(e.target.value)}
+                      />
+                    </div>
+                  </>
+                )
+              ) : (
+                <ConnectDiscord />
+              )}
+            </div>
+          </div>
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={inviteDiscord}
+                onChange={() => {
+                  if (discord) setInviteDiscord(!inviteDiscord)
                 }}
               />
+              <span id="invite-discord-msg" className="msg">
+                Invite
+                <input
+                  placeholder="X"
+                  title="invite-discord"
+                  value={inviteDiscordNum === 0 ? '' : inviteDiscordNum.toString()}
+                  onKeyPress={numberInput}
+                  onChange={(e) => {
+                    if (discord) setInviteDiscordNum(Number(e.target.value))
+                  }}
+                />
+                <span>{` ${inviteDiscordNum} `}</span>
+                friends to join #{discord?.thirdpartyName || 'XXX'} server on Discord
+              </span>
+              <IconDiscord />
             </div>
-          )
-        ) : (
-          <ConnectTwitter />
-        )}
-      </div>
-      <div>
-        <Checkbox
-          checked={joinCommunity}
-          onChange={() => {
-            setJoinCommunity(!joinCommunity)
-          }}
-        />{' '}
-        <span id="join-community-msg">Join {account.name || 'XXX'}'s the community</span>
-      </div>
-      <div>
-        <Checkbox
-          checked={joinCommunityContribution}
-          onChange={() => {
-            const nextValue = !joinCommunityContribution
-            setJoinCommunityContribution(nextValue)
-            if (!nextValue) {
-              setJoinCommunityContributionNum(0)
-            }
-          }}
-        />{' '}
-        <span id="join-community-contribution-msg">
-          {account.name || 'XXX'}'s community contribution {'>'} {joinCommunityContributionNum || 'X'}
-        </span>
-        <br />
-        {joinCommunityContribution && (
-          <div>
-            X ={' '}
-            <input
-              type="text"
-              title="task-join-community"
-              value={joinCommunityContributionNum === 0 ? '' : joinCommunityContributionNum.toString()}
-              min="1"
-              step="1"
-              onKeyPress={numberInput}
-              onChange={(e) => {
-                const value = Number(e.target.value)
-                setJoinCommunityContributionNum(value)
-              }}
-            />
+            <div className="help">{discord ? null : <ConnectDiscord />}</div>
           </div>
-        )}
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={inviteFriends}
+                onChange={() => {
+                  const nextValue = !inviteFriends
+                  setInvalidFriends(nextValue)
+                  if (!nextValue) {
+                    setInviteNum(0)
+                  }
+                }}
+              />
+              <span id="invite-friends-msg" className="msg">
+                invite
+                <input
+                  title="task-invite"
+                  value={inviteNum === 0 ? '' : inviteNum.toString()}
+                  placeholder="X"
+                  onKeyPress={numberInput}
+                  onChange={(e) => {
+                    if (inviteFriends) setInviteNum(Number(e.target.value))
+                  }}
+                />
+                <span>{` ${inviteNum} `}</span>
+                friends to take the Task
+              </span>
+              <IconTip />
+            </div>
+          </div>
+        </div>
+        <div>
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={likeTwitter}
+                onChange={() => {
+                  if (!twitter) return
+                  setLikeTwitter(!likeTwitter)
+                  if (!likeTwitter) {
+                    setLikeTwitterLink('')
+                  }
+                }}
+              />
+              <span id="like-twitter-msg" className="msg">
+                Like @{twitter?.thirdpartyName || 'XXX'} on twitter
+              </span>
+              <IconTwitter />
+            </div>
+            <div className="help">
+              {twitter ? (
+                likeTwitter && (
+                  <div className="input-box">
+                    <span>Tweet Link:</span>
+                    <input
+                      type="text"
+                      title="task-like"
+                      value={likeTwitterLink}
+                      onChange={(e) => setLikeTwitterLink(e.target.value)}
+                    />
+                  </div>
+                )
+              ) : (
+                <ConnectTwitter />
+              )}
+            </div>
+          </div>
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={retweetTwitter}
+                onChange={() => {
+                  if (!twitter) return
+                  setRetweetTwitter(!retweetTwitter)
+                  if (!retweetTwitter) {
+                    setRetweetTwitterLink('')
+                  }
+                }}
+              />
+              <span id="retweet-twitter-msg" className="msg">
+                Retweet @{twitter?.thirdpartyName || 'XXX'} on twitter
+              </span>
+              <IconTwitter />
+            </div>
+            <div className="help">
+              {twitter ? (
+                retweetTwitter && (
+                  <div className="input-box">
+                    <span>Tweet Link</span>
+                    <input
+                      type="text"
+                      title="retweet"
+                      value={retweetTwitterLink}
+                      onChange={(e) => {
+                        setRetweetTwitterLink(e.target.value)
+                      }}
+                    />
+                  </div>
+                )
+              ) : (
+                <ConnectTwitter />
+              )}
+            </div>
+          </div>
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={joinCommunity}
+                onChange={() => {
+                  setJoinCommunity(!joinCommunity)
+                }}
+              />
+              <span id="join-community-msg" className="msg">
+                Join {account.name || 'XXX'}'s the community
+              </span>
+              <IconNotify />
+            </div>
+          </div>
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={joinCommunityContribution}
+                onChange={() => {
+                  const nextValue = !joinCommunityContribution
+                  setJoinCommunityContribution(nextValue)
+                  if (!nextValue) {
+                    setJoinCommunityContributionNum(0)
+                  }
+                }}
+              />
+              <span id="join-community-contribution-msg" className="msg">
+                {account.name || 'XXX'}'s community contribution {'>'}
+                <input
+                  type="text"
+                  title="task-join-community"
+                  value={joinCommunityContributionNum === 0 ? '' : joinCommunityContributionNum.toString()}
+                  placeholder="X"
+                  onKeyPress={numberInput}
+                  onChange={(e) => {
+                    if (!joinCommunityContribution) return
+                    const value = Number(e.target.value)
+                    setJoinCommunityContributionNum(value)
+                  }}
+                />
+                <span>{` ${joinCommunityContributionNum} `}</span>
+              </span>
+              <IconTip />
+            </div>
+          </div>
+        </div>
       </div>
     </SelectActionsBox>
+  )
+}
+
+function CustomCheckBox({ checked, onChange }: { checked: boolean; onChange: () => void }) {
+  return (
+    <span
+      onClick={() => {
+        onChange()
+      }}
+    >
+      {checked ? <IconCheckboxChecked /> : <IconCheckbox />}
+    </span>
   )
 }
 
@@ -425,38 +471,87 @@ function ConnectDiscord() {
 }
 
 const SelectActionsBox = styled.div`
-  & span {
-    padding: 0;
+  & .content {
+    display: flex;
+    justify-content: space-between;
+    > div {
+      width: 580px;
+      & .content-item {
+        background-color: #f8f8f8;
+        margin-bottom: 20px;
+        padding: 10px 18px;
+        /* display: flex;
+        align-items: center; */
+
+        & .desc {
+          display: flex;
+          align-items: center;
+
+          & span:first-child {
+            margin-top: 5px;
+            margin-bottom: 5px;
+            margin-right: 10px;
+            width: 25px;
+            height: 25px;
+          }
+          & .msg {
+            flex-grow: 1;
+
+            > input {
+              margin: 0 10px;
+              border: none;
+              outline: none;
+              background-color: #fff;
+              height: 40px;
+              width: 80px;
+              text-align: center;
+              font-size: 14px;
+              line-height: 20px;
+            }
+
+            > span {
+              display: none;
+            }
+          }
+        }
+
+        & .help {
+          margin: 0 30px;
+          & div.input-box {
+            background-color: #fff;
+            padding: 10px;
+            display: flex;
+            color: rgba(51, 51, 51, 0.3);
+            font-size: 14px;
+            line-height: 20px;
+            > input {
+              flex-grow: 1;
+              margin-left: 10px;
+              border: none;
+              outline: none;
+            }
+          }
+        }
+      }
+    }
   }
-  & h4 {
-    margin-bottom: 0;
-  }
-  > div {
-    margin: 5px 0;
-    padding: 8px 0 13px 0;
-    border-bottom: 1px dashed gray;
-  }
+
   > div:last-child {
     border: none;
   }
 
-  & div.input-box {
-    display: flex;
-    > input {
-      flex-grow: 1;
-    }
-  }
-
   & div.btn {
     position: relative;
-    border-radius: 10px;
+    /* border-radius: 10px; */
     cursor: pointer;
-    width: 400px;
+    width: 100%;
     height: 40px;
     color: #fff;
     display: flex;
     align-items: center;
-
+    & svg {
+      margin-left: 10px;
+    }
     & p {
       text-align: center;
       width: 100%;

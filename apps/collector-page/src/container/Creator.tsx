@@ -99,4 +99,5 @@ const LeftBox = styled.div`
 
 const RightBox = styled.div`
   margin-left: 20px;
+  flex-grow: 1;
 `

@@ -20,6 +20,8 @@ import Basic from '../components/business/task/create/Basic'
 import Preview from '../components/business/task/create/Preview'
 import SelectActions from '../components/business/task/create/SelectAction'
 import { State as CreateTaskState, DefaultState } from '../components/business/task/create/state'
+import ButtonNavigation from '../components/common/button/ButtonNavigation'
+import IconCaretLeft from '../components/common/icons/IconCaretLeft'
 import { createTask, selectTaskDetail } from '../features/task/taskDetailSlice'
 import { RoleType, selectAccount } from '../features/user/accountSlice'
 import usePermissions from '../hooks/usePermissons'
@@ -27,12 +29,16 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { AsyncRequestStatus } from '../types'
 
 export default function TaskCreate() {
-  const { projectId } = useParams()
+  const { projectId, projectName } = useParams()
   const [openPreview, setOpenPreview] = React.useState(false)
   const [toastMsg, setToastMsg] = React.useState('')
   const [showToast, setShowToast] = React.useState(false)
   const [refreshAction, setRefreshAction] = React.useState(0)
-  const [state, setState] = useState<CreateTaskState>({ ...DefaultState, projectId: Number(projectId) })
+  const [state, setState] = useState<CreateTaskState>({
+    ...DefaultState,
+    projectId: Number(projectId),
+    projectName: projectName || '',
+  })
   const dispatch = useAppDispatch()
   const { isCreator, checkProjectAllowed } = usePermissions()
   const { createStatus } = useAppSelector(selectTaskDetail)
@@ -66,11 +72,15 @@ export default function TaskCreate() {
 
   return (
     <>
-      <TaskCreateWrapper>
-        <div>
-          <h3>Create a new WL task</h3>
-          {/* <TextField fullWidth label="fullWidth" id="fullWidth" /> */}
-          <div>
+      {(!openPreview && (
+        <TaskCreateWrapper>
+          <div className="infos">
+            <div className="title">
+              <ButtonNavigation>
+                <IconCaretLeft />
+              </ButtonNavigation>
+              <h3>Create a new Task</h3>
+            </div>
             <Basic
               state={state}
               updateState={(newState) => {
@@ -83,20 +93,21 @@ export default function TaskCreate() {
                 setState({ ...state, actions: newStateActions })
               }}
             />
-            <div>
+            <div className="preview-box">
               <button className="preview-btn" onClick={() => setOpenPreview(true)}>
-                Preview
+                View
               </button>
             </div>
           </div>
-        </div>
+        </TaskCreateWrapper>
+      )) || (
         <Preview
           state={state}
           open={openPreview}
           closeHandler={() => setOpenPreview(false)}
           submitResult={submitResult}
         />
-      </TaskCreateWrapper>
+      )}
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         open={showToast}
@@ -111,25 +122,57 @@ export default function TaskCreate() {
 const TaskCreateWrapper = styled.div`
   width: 100%;
   height: 100%;
-  padding: 40px 0;
+  padding: 40px;
   background-color: #fff;
-  > div {
-    width: 800px;
-    margin: 0 auto;
+  box-sizing: border-box;
+
+  & > div.infos {
+    & .title {
+      display: flex;
+      align-items: center;
+      & h3 {
+        margin: 0;
+        height: 40px;
+        line-height: 40px;
+        font-size: 36px;
+        margin-left: 20px;
+      }
+    }
+
+    & .subtitle {
+      margin-top: 40px;
+      border-bottom: 1px solid #d9d9d9;
+      margin-bottom: 10px;
+      & span {
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 40px;
+        border-bottom: 4px solid #3dd606;
+      }
+    }
   }
 
   & h4 {
+    height: 27px;
+    line-height: 27px;
+    font-size: 18px;
+    font-weight: 700;
     margin-bottom: 0;
+    margin-top: 20px;
   }
 
-  & button.preview-btn {
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
-    background-color: #000;
-    color: #fff;
-    border: none;
-    height: 50px;
-    font-size: 20px;
+  & .preview-box {
+    text-align: end;
+    & button.preview-btn {
+      cursor: pointer;
+      margin-top: 20px;
+      width: 200px;
+      background-color: #3dd606;
+      color: #fff;
+      border: none;
+      height: 48px;
+      font-size: 20px;
+      box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    }
   }
 `

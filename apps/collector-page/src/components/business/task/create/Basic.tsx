@@ -11,7 +11,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material'
-import { InputAdornment } from '@mui/material'
+import AddIcon from '@mui/icons-material/Add'
 import React, { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import * as dayjs from 'dayjs'
@@ -35,206 +35,353 @@ export default function Basic({ state, updateState }: { state: State; updateStat
     [state, updateState],
   )
 
+  function numberInput(e) {
+    if (e.charCode < 48 || e.charCode > 57) {
+      e.preventDefault()
+    }
+  }
+
   return (
     <BasicBox>
-      <div>
-        <h4>Task title</h4>
-        <input
-          title="task-title"
-          value={state?.name}
-          onChange={(e) =>
-            updateState({
-              ...state,
-              name: e.target.value,
-            })
-          }
-        />
-      </div>
-      <div className="attach-file">
-        <h4>Task banner</h4>
-        {(state.image && (
-          <div>
-            <img src={state.image} alt="" />
-          </div>
-        )) || <div className="">400 x 600</div>}
-        <label
-          htmlFor="task-banner"
-          onClick={() => {
-            taskBannerRef.current?.select()
-          }}
-        >
-          Attach file
-        </label>
-        <input ref={taskBannerRef} title="task-banner" id="task-banner" type="file" onChange={uploadImageHandler} />
-      </div>
-      <div>
-        <h4>Task statement</h4>
-        <textarea
-          title="task-statement"
-          name=""
-          id=""
-          cols={30}
-          rows={10}
-          value={state.description}
-          onChange={(e) => {
-            updateState({
-              ...state,
-              description: e.target.value,
-            })
-          }}
-        ></textarea>
-      </div>
-      <div>
-        <h4>Reward</h4>
-        <select
-          title="reward"
-          name=""
-          value={state.reward.type}
-          onChange={(e) => {
-            updateState({
-              ...state,
-              reward: {
-                ...state.reward,
-                type: e.target.value as RewardType,
-              },
-            })
-          }}
-        >
-          <option value={RewardType.WHITELIST}>whitelist</option>
-          <option value={RewardType.OTHER}>other</option>
-        </select>
-        {state.reward.type === RewardType.OTHER && (
-          <input
-            type="text"
-            title="reward-others-name"
-            value={state.reward.name}
-            onChange={(e) => {
-              updateState({
-                ...state,
-                reward: {
-                  ...state.reward,
-                  name: e.target.value,
-                },
-              })
-            }}
-          />
-        )}
-      </div>
-      <div>
-        <h4>Task type</h4>
-        <FormControlLabel
-          control={
-            <Switch
-              checked={state.reward.raffled}
-              onChange={() => {
-                updateState({
-                  ...state,
-                  reward: {
-                    ...state.reward,
-                    raffled: !state.reward.raffled,
-                  },
-                })
+      <div className="information">
+        <div className="subtitle">
+          <span>Information</span>
+        </div>
+        <div className="content">
+          <div className="attach-file">
+            <h4>Task banner (640 * 300)</h4>
+            <input title="task-banner" id="task-banner" type="file" onChange={uploadImageHandler} />
+            <div
+              onClick={() => {
+                document.getElementById('task-banner')?.click()
               }}
-            />
-          }
-          label="Raffle?"
-        />
-        <p style={{ margin: 0 }}>
-          Winner-oriented task, the task will automatically close once it winners complete the task.
-        </p>
+            >
+              {(state.image && <img src={state.image} alt="" />) || (
+                <div className="add-btn">
+                  <AddIcon />
+                  <br />
+                  <span>Attach file</span>
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
+            <div className="content-item">
+              <h4>Task title</h4>
+              <input
+                title="task-title"
+                value={state?.name}
+                onChange={(e) =>
+                  updateState({
+                    ...state,
+                    name: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="content-item">
+              <h4>Task statement</h4>
+              <textarea
+                title="task-statement"
+                name=""
+                id=""
+                cols={30}
+                rows={10}
+                value={state.description}
+                onChange={(e) => {
+                  updateState({
+                    ...state,
+                    description: e.target.value,
+                  })
+                }}
+              ></textarea>
+            </div>
+          </div>
+        </div>
       </div>
-      <div>
-        <h4>Total winners</h4>
-        <input
-          type="number"
-          title="total-winners"
-          min="1"
-          step="1"
-          onKeyPress={(e) => e.charCode >= 48 && e.charCode <= 57}
-          value={state.winnerNum === 0 ? '' : state.winnerNum.toString()}
-          onChange={(e) => {
-            const num = Number(e.target.value)
-            updateState({
-              ...state,
-              winnerNum: num,
-            })
-          }}
-        />
-      </div>
-      <div>
-        <h4>Task date</h4>
-        <span>{`from  `}</span>
-        <input
-          type="date"
-          title="from-date"
-          className="date"
-          value={dayjs(state.startTime).format('YYYY-MM-DD')}
-          onChange={(e) => {
-            const startTime = dayjs(e.target.value).toDate().getTime()
-            if (startTime > state.endTime) return
-            updateState({
-              ...state,
-              startTime,
-            })
-          }}
-        />
-        <span>{`  to  `}</span>
-        <input
-          type="date"
-          title="to-date"
-          className="date"
-          value={dayjs(state.endTime).format('YYYY-MM-DD')}
-          onChange={(e) => {
-            const endTime = dayjs(e.target.value).toDate().getTime()
-            if (endTime < state.startTime) return
-            updateState({
-              ...state,
-              endTime,
-            })
-          }}
-        />
+      <div className="setting">
+        <div className="subtitle">
+          <span>Task Setting</span>
+        </div>
+        <div className="content">
+          <div>
+            <div className="content-item">
+              <h4>Task type</h4>
+              {/* <FormControlLabel
+                control={
+                  <Switch
+                    checked={state.reward.raffled}
+                    onChange={() => {
+                      
+                    }}
+                  />
+                }
+                label="Raffle?"
+              /> */}
+              <div className="raffle-switch-box">
+                <span>Raffle:</span>
+                <div className={state.reward.raffled ? 'raffle-switch active' : 'raffle-switch'}>
+                  <span
+                    onClick={() => {
+                      updateState({
+                        ...state,
+                        reward: {
+                          ...state.reward,
+                          raffled: !state.reward.raffled,
+                        },
+                      })
+                    }}
+                  ></span>
+                </div>
+              </div>
+              <p className="type-desc">
+                Winner-oriented task, the task will automatically close once it winners complete the task.
+              </p>
+            </div>
+            <div className="content-item">
+              <h4>Total winners</h4>
+              <input
+                title="total-winners"
+                onKeyPress={numberInput}
+                value={state.winnerNum === 0 ? '' : state.winnerNum.toString()}
+                onChange={(e) => {
+                  const num = Number(e.target.value)
+                  updateState({
+                    ...state,
+                    winnerNum: num,
+                  })
+                }}
+              />
+            </div>
+          </div>
+          <div>
+            <div className="content-item">
+              <h4>Reward</h4>
+              <div className="reward-btn-group">
+                <button
+                  className={state.reward.type === RewardType.WHITELIST ? 'active' : ''}
+                  onClick={() => {
+                    updateState({
+                      ...state,
+                      reward: {
+                        ...state.reward,
+                        type: RewardType.WHITELIST,
+                      },
+                    })
+                  }}
+                >
+                  Whitelist
+                </button>
+                <button
+                  className={state.reward.type === RewardType.OTHER ? 'active' : ''}
+                  onClick={() => {
+                    updateState({
+                      ...state,
+                      reward: {
+                        ...state.reward,
+                        type: RewardType.OTHER,
+                      },
+                    })
+                  }}
+                >
+                  Other
+                </button>
+              </div>
+              <input
+                type="text"
+                title="reward-others-name"
+                placeholder={state.reward.type === RewardType.OTHER ? 'Name' : ''}
+                value={state.reward.name}
+                onChange={(e) => {
+                  if (state.reward.type === RewardType.OTHER)
+                    updateState({
+                      ...state,
+                      reward: {
+                        ...state.reward,
+                        name: e.target.value,
+                      },
+                    })
+                }}
+              />
+            </div>
+            <div className="content-item">
+              <h4>Task date</h4>
+              <div className="date-box">
+                <input
+                  type="date"
+                  title="from-date"
+                  className="date"
+                  value={dayjs(state.startTime).format('YYYY-MM-DD')}
+                  onChange={(e) => {
+                    const startTime = dayjs(e.target.value).toDate().getTime()
+                    if (startTime > state.endTime) return
+                    updateState({
+                      ...state,
+                      startTime,
+                    })
+                  }}
+                />
+                <span />
+                <input
+                  type="date"
+                  title="to-date"
+                  className="date"
+                  value={dayjs(state.endTime).format('YYYY-MM-DD')}
+                  onChange={(e) => {
+                    const endTime = dayjs(e.target.value).toDate().getTime()
+                    if (endTime < state.startTime) return
+                    updateState({
+                      ...state,
+                      endTime,
+                    })
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </BasicBox>
   )
 }
 
 const BasicBox = styled.div`
+  & .content {
+    display: flex;
+    justify-content: space-between;
+    > div {
+      width: 580px;
+    }
+
+    & div.content-item {
+      display: flex;
+      flex-direction: column;
+
+      & div.date-box {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        & span {
+          display: inline-block;
+          width: 20px;
+          height: 2px;
+          background: black;
+        }
+        & input.date {
+          box-sizing: border-box;
+          width: 260px;
+        }
+      }
+
+      & div.reward-btn-group {
+        margin-bottom: 10px;
+        & button {
+          border: none;
+          outline: none;
+          background: #f8f8f8;
+          border-radius: 0;
+          font-size: 18px;
+          line-height: 27px;
+          width: 50%;
+          height: 50px;
+        }
+        & button.active {
+          background: #3dd606;
+          color: #fff;
+        }
+      }
+
+      & p.type-desc {
+        font-size: 14px;
+        line-height: 21px;
+        color: rgba(51, 51, 51, 0.6);
+        margin-bottom: 0px;
+        margin-top: 10px;
+      }
+
+      & div.raffle-switch-box {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        > span {
+          font-weight: 400;
+          font-size: 18px;
+          line-height: 27px;
+          margin-right: 10px;
+        }
+        & .raffle-switch {
+          display: inline-block;
+          position: relative;
+          width: 100px;
+          height: 50px;
+          padding: 5px;
+          background-color: #3dd606;
+          transition: all 0.1s ease-out;
+          box-sizing: border-box;
+          & > span {
+            cursor: pointer;
+            display: inline-block;
+            position: absolute;
+            left: 55px;
+            width: 40px;
+            height: 40px;
+            background-color: #fff;
+            transition: all 0.1s ease-out;
+          }
+          &.active {
+            background-color: #f8f8f8;
+            & > span {
+              left: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
   & select {
     width: 100%;
   }
-  & input {
-    width: calc(100% - 8px);
-  }
+  & input,
   & textarea {
-    width: calc(100% - 12px);
-  }
-
-  & input {
-    padding: 2px;
+    background-color: #f8f8f8;
+    border: none;
+    outline: none;
+    padding: 12px 20px;
+    font-size: 18px;
+    line-height: 27px;
   }
 
   & textarea {
     resize: none;
-    padding: 5px;
-  }
-
-  & input.date {
-    width: initial;
+    padding: 12px 20px;
+    height: 133px;
   }
 
   & .attach-file {
     & img {
       width: 100%;
+      height: 100%;
     }
     > div {
-      color: rgba(153, 154, 154, 100);
-      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 253px;
+      background: #f8f8f8;
+      & .add-btn {
+        text-align: center;
+        & svg {
+          width: 40px;
+          height: 40px;
+        }
+      }
     }
-    > label {
+    /* > label {
       cursor: pointer;
       padding: 5px 8px;
       background-color: rgba(164, 173, 179, 100);
-    }
+    } */
 
     > #task-banner {
       display: none;

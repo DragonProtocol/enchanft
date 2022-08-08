@@ -28,6 +28,6 @@ export async function sendWalletTrans(tx: Transaction, connection: Connection, w
   console.log(result)
 }
 
-export function sortPubKey(key: string) {
-  return key.slice(0, 4) + '..' + key.slice(-4)
+export function sortPubKey(key: string, len = 4) {
+  return key.slice(0, len) + '..'.repeat(len / 4) + key.slice(-len)
 }
