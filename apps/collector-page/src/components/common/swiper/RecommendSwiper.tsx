@@ -30,11 +30,20 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
   loop,
 }: RecommendSwiperProps) => {
   const modulesConfig: any[] = []
+  const navigationConfig: any = {}
+  const autoplayConfig: any = {}
   if (navigation) {
     modulesConfig.push(Navigation)
+    Object.assign(navigationConfig, {
+      nextEl: '.recommend-swiper-next',
+      prevEl: '.recommend-swiper-prev',
+    })
   }
   if (autoplay) {
     modulesConfig.push(Autoplay)
+    Object.assign(autoplayConfig, {
+      delay: 6000,
+    })
   }
   const paginationConfig = {
     clickable: pagination ? true : false,
@@ -49,35 +58,31 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
           </ButtonNavigation>
         </RecommendSwiperLeft>
       )}
-      <Swiper
-        className="recommend-swiper"
-        spaceBetween={50}
-        slidesPerView={1}
-        loop={loopConfig}
-        modules={modulesConfig}
-        navigation={{
-          nextEl: '.recommend-swiper-next',
-          prevEl: '.recommend-swiper-prev',
-        }}
-        autoplay={{
-          delay: 6000,
-        }}
-        pagination={paginationConfig}
-      >
-        {loading ? (
-          <RecommendSwiperItem>
-            <RecommendSwiperLoading>
-              <Loading />
-            </RecommendSwiperLoading>
-          </RecommendSwiperItem>
-        ) : (
-          children || (
+      {loading ? (
+        <RecommendSwiperItem>
+          <RecommendSwiperLoading>
+            <Loading />
+          </RecommendSwiperLoading>
+        </RecommendSwiperItem>
+      ) : (
+        <Swiper
+          className="recommend-swiper"
+          spaceBetween={50}
+          slidesPerView={1}
+          loop={loopConfig}
+          modules={modulesConfig}
+          navigation={navigationConfig}
+          autoplay={autoplayConfig}
+          pagination={paginationConfig}
+        >
+          {children || (
             <RecommendSwiperItem>
               <RecommendSwiperEmpty>{emptyMsg}</RecommendSwiperEmpty>
             </RecommendSwiperItem>
-          )
-        )}
-      </Swiper>
+          )}
+        </Swiper>
+      )}
+
       {navigation && (
         <RecommendSwiperRight>
           <ButtonNavigation className="recommend-swiper-next">
@@ -93,13 +98,14 @@ const RecommendSwiperWrapper = styled.div`
   width: 100%;
   position: relative;
   z-index: 1;
+  height: 308px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border: 4px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   .recommend-swiper {
-    flex: 1;
-    height: 308px;
-    box-sizing: border-box;
-    background: #ffffff;
-    border: 4px solid #333333;
-    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    width: 100%;
+    height: 100%;
   }
 `
 const RecommendSwiperLeft = styled.div`
