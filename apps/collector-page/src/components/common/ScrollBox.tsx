@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-07 20:48:40
+ * @LastEditTime: 2022-08-08 15:57:43
  * @Description: 滚动盒子，提供视口滚动监听
  */
 import React, { useEffect } from 'react'
@@ -38,5 +38,5 @@ export default ScrollBox
 const ScrollBoxWrapper = styled.div`
   width: 100%;
   height: 100%;
-  overflow-y: auto;
+  overflow-y: overlay;
 `

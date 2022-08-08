@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 18:02:32
+ * @LastEditTime: 2022-08-08 15:55:08
  * @Description: 站点布局入口
  */
 import React from 'react'
@@ -37,6 +37,7 @@ const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #f8f8f8;
 `
 const HeaderBox = styled.div`
   width: 100%;
@@ -51,6 +52,7 @@ const HeaderInner = styled.div`
   width: 100%;
   height: 72px;
   box-sizing: border-box;
+  padding: 0 40px;
   @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) {
     width: ${MEDIA_BREAK_POINTS.xxl}px;
     margin: 0 auto;
@@ -66,6 +68,7 @@ const MainInner = styled.div`
   position: relative;
   width: 100%;
   box-sizing: border-box;
+  padding: 0 40px;
   @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) {
     width: ${MEDIA_BREAK_POINTS.xxl}px;
     margin: 0 auto;
