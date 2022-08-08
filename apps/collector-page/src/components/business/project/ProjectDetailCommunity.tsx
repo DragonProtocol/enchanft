@@ -1,17 +1,16 @@
-import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone'
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive'
 import React from 'react'
 import styled from 'styled-components'
-import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import WebsiteIcon from '../../imgs/internet.svg'
-import TwitterIcon from '../../imgs/twitter.svg'
 import { ButtonWarning } from '../../common/button/ButtonBase'
+import IconWebsite from '../../common/icons/IconWebsite'
+import IconTwitterBlack from '../../common/icons/IconTwitterBlack'
+import IconDiscordBlack from '../../common/icons/IconDiscordBlack'
 export type ProjectDetailCommunityDataType = {
   id: number
   name: string
   icon: string
   website: string
   twitter: string
+  discord: string
   isFollowed: boolean
 }
 
@@ -38,7 +37,7 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
   viewConfig,
   onFollowChange,
 }: ProjectDetailCommunityProps) => {
-  const { name, icon, website, twitter, isFollowed } = data
+  const { name, icon, website, twitter, discord, isFollowed } = data
   const { displayFollow, loadingFollow } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -57,12 +56,15 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
       <CommunityImg src={icon} />
       <CommunityName>{name}</CommunityName>
       <CommunityRightBox>
-        <a href={website} target="_blank" rel="noopener noreferrer">
-          <ProjectLinkIcon src={WebsiteIcon} />
-        </a>
-        <a href={twitter} target="_blank" rel="noopener noreferrer">
-          <ProjectLinkIcon src={TwitterIcon} />
-        </a>
+        <ProjectLink href={website} target="_blank" rel="noopener noreferrer">
+          <IconWebsite />
+        </ProjectLink>
+        <ProjectLink href={twitter} target="_blank" rel="noopener noreferrer">
+          <IconTwitterBlack />
+        </ProjectLink>
+        <ProjectLink href={discord} target="_blank" rel="noopener noreferrer">
+          <IconDiscordBlack />
+        </ProjectLink>
         {displayFollow && (
           <CommunityFollowBtn disabled={isFollowed} onClick={handleFollowChange}>
             {followText}
@@ -95,7 +97,7 @@ const CommunityRightBox = styled.div`
   gap: 32px;
   align-items: center;
 `
-const ProjectLinkIcon = styled.img`
+const ProjectLink = styled.a`
   width: 20px;
   height: 20px;
   cursor: pointer;
