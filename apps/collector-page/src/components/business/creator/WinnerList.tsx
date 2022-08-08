@@ -133,7 +133,7 @@ function ListItem({
           <UserAvatar src={data.avatar} />
         </span>
         <span className="name">{data.name}</span>
-        <span>{data.pubkey}</span>
+        <span>{sortPubKey(data.pubkey, 16)}</span>
       </div>
       <Checkbox
         checked={checked}
@@ -206,7 +206,7 @@ const WinnerListBox = styled(CardBox)`
         }
 
         & .name {
-          width: 80px;
+          width: 120px;
           margin: 0 10px;
         }
       }

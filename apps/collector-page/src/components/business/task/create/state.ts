@@ -45,6 +45,7 @@ export type Reward = {
 
 export type State = {
   projectId: number
+  projectName: string
   type: TaskType
   name: string
   description: string
@@ -58,6 +59,7 @@ export type State = {
 
 export const DefaultState: State = {
   projectId: 0,
+  projectName: '',
   type: TaskType.WHITELIST_ORIENTED,
   name: '',
   description: '',
