@@ -75,9 +75,11 @@ const Contributionranks: React.FC = () => {
   // TODO 没有twitter名称字段
   const communityInfo = {
     name: community?.name || '',
-    twitter: community?.twitter || '',
     icon: community?.icon || '',
+    twitter: community?.twitter || '',
     twitterName: '',
+    discord: community?.discord || '',
+    discordName: '',
   }
   return (
     <ContributionWrapper>

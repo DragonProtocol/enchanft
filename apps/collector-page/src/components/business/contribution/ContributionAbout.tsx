@@ -2,19 +2,24 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 18:49:49
+ * @LastEditTime: 2022-08-08 14:43:38
  * @Description: file description
  */
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import ButtonBase from '../../common/button/ButtonBase'
 import IconTwitterWhite from '../../common/icons/IconTwitterWhite'
+import IconDiscordWhite from '../../common/icons/IconDiscordWhite'
 import likeReplyRetweetImg from './imgs/like_reply_retweet.png'
+import discordChatInviteImg from './imgs/discord_chat_invite.png'
 export type ContributionAboutDataType = {
   name: string
+  icon: string
   twitter: string
   twitterName: string
-  icon: string
+  discord: string
+  discordName: string
+  discordMembers?: number
 }
 
 export type ContributionAboutViewConfigType = {}
@@ -29,7 +34,7 @@ export type ContributionAboutProps = ContributionAboutDataViewType & Contributio
 
 const defaultViewConfig = {}
 const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig }: ContributionAboutProps) => {
-  const { name, twitter, twitterName, icon } = data
+  const { name, icon, twitter, twitterName, discord, discordName, discordMembers } = data
   const {} = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -37,9 +42,15 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
   const onTwitter = () => {
     const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
     width=1000,height=1000,left=0,top=0`
-    window.open(twitter, name, winParams)
+    window.open(twitter, twitterName, winParams)
   }
-  const TwitterLinkComponent = twitter && <TwitterLink onClick={onTwitter}>@{twitterName || name}</TwitterLink>
+  const onDiscord = () => {
+    const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+    width=1000,height=1000,left=0,top=0`
+    window.open(discord, discordName, winParams)
+  }
+  const TwitterLinkComponent = twitter && <LinkTextBtn onClick={onTwitter}>@{twitterName || name}</LinkTextBtn>
+  const DiscordLinkComponent = discord && <LinkTextBtn onClick={onDiscord}>#{discordName || name}</LinkTextBtn>
 
   const questions = [
     {
@@ -56,19 +67,45 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
               <CommunityImg src={icon} />
               <CommunityCenter>
                 <CommunityName>{name}</CommunityName>
-                {twitter && <CommunityTwitterName>@{twitterName || name}</CommunityTwitterName>}
+                {twitter && <CommunityLinkName>@{twitterName || name}</CommunityLinkName>}
               </CommunityCenter>
               {twitter && (
-                <CommunityTwitterBtn onClick={onTwitter}>
+                <LinkBtnTwitter onClick={onTwitter}>
                   <IconTwitterWhite />
-                </CommunityTwitterBtn>
+                </LinkBtnTwitter>
               )}
             </CommunityBox>
           ),
         },
         {
           title: <>Like, retweet or replay {TwitterLinkComponent} daily on Twitter to earn contribution point.</>,
-          content: <LikeReplyRetweetImg src={likeReplyRetweetImg} />,
+          content: <QusetionAnswerImg src={likeReplyRetweetImg} />,
+        },
+        {
+          title: <>Join {DiscordLinkComponent} server on Discord.</>,
+          content: (
+            <CommunityBox>
+              <CommunityImg src={icon} radius={'16px'} />
+              <CommunityCenter>
+                <CommunityName>{name}</CommunityName>
+                {discordMembers && (
+                  <DiscordMembersBox>
+                    <DiscordMembersLabel />
+                    <DiscordMembers>{discordMembers} Members</DiscordMembers>
+                  </DiscordMembersBox>
+                )}
+              </CommunityCenter>
+              {discord && (
+                <LinkBtnDiscord onClick={onDiscord}>
+                  <IconDiscordWhite />
+                </LinkBtnDiscord>
+              )}
+            </CommunityBox>
+          ),
+        },
+        {
+          title: <>Chat in or invite friends to the {DiscordLinkComponent} daily on Discord.</>,
+          content: <QusetionAnswerImg src={discordChatInviteImg} />,
         },
       ],
     },
@@ -140,7 +177,7 @@ const QuestionAnswerTitle = styled.div`
   color: #333333;
 `
 
-const TwitterLink = styled.a`
+const LinkTextBtn = styled.a`
   font-weight: 700;
   color: #4c91f0;
   cursor: pointer;
@@ -154,10 +191,10 @@ const CommunityBox = styled.div`
   background: #f8f2ca;
   align-items: center;
 `
-const CommunityImg = styled.img`
+const CommunityImg = styled.img<{ radius?: string }>`
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: ${(props) => props.radius || '50%'};
 `
 const CommunityCenter = styled.div`
   flex: 1;
@@ -171,18 +208,45 @@ const CommunityName = styled.span`
   line-height: 20px;
   color: #333333;
 `
-const CommunityTwitterName = styled.span`
+const CommunityLinkNameBox = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`
+const CommunityLinkName = styled.span`
   font-size: 12px;
   line-height: 20px;
   color: #333333;
 `
-const CommunityTwitterBtn = styled(ButtonBase)`
+const DiscordMembersBox = styled.span`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`
+const DiscordMembersLabel = styled.div`
+  width: 8px;
+  height: 8px;
+  background: rgba(51, 51, 51, 0.3);
+  border-radius: 50%;
+`
+const DiscordMembers = styled.span`
+  font-size: 12px;
+  line-height: 20px;
+  color: #333333;
+`
+
+const LinkBtn = styled(ButtonBase)`
   width: 60px;
   height: 28px;
-  background: #4c91f0;
   border-radius: 31px;
   box-shadow: none;
 `
-const LikeReplyRetweetImg = styled.img`
+const LinkBtnTwitter = styled(LinkBtn)`
+  background: #4c91f0;
+`
+const LinkBtnDiscord = styled(LinkBtn)`
+  background: #7788d6;
+`
+const QusetionAnswerImg = styled.img`
   width: 100%;
 `
