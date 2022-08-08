@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-20 14:29:03
+ * @LastEditTime: 2022-08-08 11:35:05
  * @FilePath: \synft-app\src\container\AboutEnchaNFT.tsx
  * @Description: about container
  */
@@ -131,7 +131,11 @@ function About() {
       <TextAndImgBox>
         <TextBox>
           <WLLogoBox src={WL_LOGO}></WLLogoBox>
-          <TextTitle>{whitelist.title}</TextTitle>
+          <TextTitleBox>
+            <TextTitle>{whitelist.title}</TextTitle>
+            <MobileImgBox src={whitelist.icon} />
+          </TextTitleBox>
+
           <TextSubTitle>{whitelist.subTitle}</TextSubTitle>
           <TextContent>
             {whitelist.items.map((item, index) => (
@@ -139,13 +143,16 @@ function About() {
             ))}
           </TextContent>
         </TextBox>
-        <ImgBox src={whitelist.icon}></ImgBox>
+        <PcImgBox src={whitelist.icon}></PcImgBox>
       </TextAndImgBox>
 
       <TextAndImgBox>
-        <ImgBox src={tasksAutomation.icon}></ImgBox>
+        <PcImgBox src={tasksAutomation.icon}></PcImgBox>
         <TextBox>
-          <TextTitle>{tasksAutomation.title}</TextTitle>
+          <TextTitleBox>
+            <MobileImgBox src={whitelist.icon} />
+            <TextTitle>{tasksAutomation.title}</TextTitle>
+          </TextTitleBox>
           <TextSubTitle>{tasksAutomation.subTitle}</TextSubTitle>
           <TextContent>
             {tasksAutomation.items.map((item, index) => (
@@ -157,7 +164,11 @@ function About() {
 
       <TextAndImgBox>
         <TextBox>
-          <TextTitle>{unifyCommunity.title}</TextTitle>
+          <TextTitleBox>
+            <TextTitle>{unifyCommunity.title}</TextTitle>
+            <MobileImgBox src={unifyCommunity.icon} />
+          </TextTitleBox>
+
           <TextSubTitle>{unifyCommunity.subTitle}</TextSubTitle>
           <TextContent>
             {unifyCommunity.items.map((item, index) => (
@@ -165,7 +176,7 @@ function About() {
             ))}
           </TextContent>
         </TextBox>
-        <ImgBox src={unifyCommunity.icon}></ImgBox>
+        <PcImgBox src={unifyCommunity.icon}></PcImgBox>
       </TextAndImgBox>
 
       <InfoBox>
@@ -177,9 +188,13 @@ function About() {
           <WhyBox>
             {why_enchanft.map((item, index) => (
               <WhyRowBox key={index}>
-                <WhyRowIcon src={item.icon} />
+                <PcWhyRowIcon src={item.icon} />
                 <WhyRowRightBox>
-                  <WhyRowTitle>{item.title}</WhyRowTitle>
+                  <WhyRowTitleBox>
+                    <WhyRowTitle>{item.title}</WhyRowTitle>
+                    <MobileWhyRowIcon src={item.icon} />
+                  </WhyRowTitleBox>
+
                   <WhyRowContent>
                     {item.items.map((item, index) => (
                       <WhyRowContentItem key={index}>{item}</WhyRowContentItem>
@@ -308,6 +323,12 @@ const TextBox = styled.div`
   flex-direction: column;
   justify-content: center;
 `;
+const TextTitleBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+`;
 const TextTitle = styled.div`
   font-style: normal;
   font-weight: 400;
@@ -349,13 +370,18 @@ const TextContentItem = styled.div`
     vertical-align: middle;
   }
 `;
-
-const ImgBox = styled.img`
+const PcImgBox = styled.img`
   width: 474px;
   height: 350px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    width: 100px;
-    height: 100px;
+    display: none;
+  }
+`;
+const MobileImgBox = styled.img`
+  width: 120px;
+  object-fit: cover;
+  @media (min-width: ${MOBILE_BREAK_POINT}px) {
+    display: none;
   }
 `;
 const WLLogoBox = styled.img`
@@ -379,7 +405,7 @@ const InfoBoxItemInner = styled.div`
 
 const InfoTitle = styled.div`
   font-size: 20px;
-  line-height: 20px;
+  line-height: 40px;
   text-transform: uppercase;
   color: #333333;
   text-align: center;
@@ -410,12 +436,27 @@ const WhyRowBox = styled.div`
   align-items: center;
   gap: 20px;
 `;
-const WhyRowIcon = styled.img`
+const MobileWhyRowIcon = styled.img`
+  width: 100px;
+  object-fit: cover;
+  @media (min-width: ${MOBILE_BREAK_POINT}px) {
+    display: none;
+  }
+`;
+const PcWhyRowIcon = styled.img`
   width: 138px;
   height: 90px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    display: none;
+  }
 `;
 const WhyRowRightBox = styled.div`
   flex: 1;
+`;
+const WhyRowTitleBox = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
 `;
 const WhyRowTitle = styled.div`
   font-size: 14px;
@@ -530,17 +571,25 @@ const EmailUsBox = styled.div`
       align-items: center;
       padding: 0px;
       gap: 24px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        gap: 12px;
+      }
       span {
         font-size: 18px;
         line-height: 40px;
         @media (max-width: ${MOBILE_BREAK_POINT}px) {
-          font-size: 14px;
+          line-height: 30px;
+          font-size: 12px;
         }
       }
     }
     .text-icon {
       font-size: 40px;
       line-height: 40px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 30px;
+        line-height: 30px;
+      }
     }
   }
   .contact-us {
