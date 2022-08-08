@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 19:00:09
+ * @LastEditTime: 2022-08-08 17:09:27
  * @Description: file description
  */
 import React from 'react'
@@ -43,7 +43,10 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
   return (
     <ExploreProjectSwiperItemWrapper>
       {/* <ChainTag size={2} chainId={chainId} /> */}
-      <ProjectImage src={image} onClick={() => navigate(`/${slug}`)} />
+      <ProjectImageBox>
+        <ProjectImage src={image} onClick={() => navigate(`/${slug}`)} />
+      </ProjectImageBox>
+
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
         <ProjectStatusLabel status={status} fontSize="20px" />
@@ -58,9 +61,14 @@ const ExploreProjectSwiperItemWrapper = styled.div`
   height: 100%;
   display: flex;
 `
-const ProjectImage = styled.img`
+const ProjectImageBox = styled.div`
   width: 360px;
   height: 360px;
+  overflow: hidden;
+`
+const ProjectImage = styled.img`
+  width: 100%;
+  height: 100%;
   cursor: pointer;
   /* 图片不失真，不会出现拉伸 */
   object-fit: cover;
