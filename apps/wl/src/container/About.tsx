@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 12:01:13
+ * @LastEditTime: 2022-08-08 13:30:42
  * @FilePath: \synft-app\src\container\AboutEnchaNFT.tsx
  * @Description: about container
  */
@@ -129,7 +129,7 @@ function About() {
 
       <TextAndImgBox>
         <TextBox>
-          <WLLogoBox src={WL_LOGO}></WLLogoBox>
+          {/* <WLLogoBox src={WL_LOGO}></WLLogoBox> */}
           <TextTitleBox>
             <TextTitle>{whitelist.title}</TextTitle>
             <MobileImgBox src={whitelist.icon} />
@@ -185,9 +185,9 @@ function About() {
           onClick={openApplyForm}
         >
           <span className="text-icon">✉️</span>
-          <div>
+          <div className="text-box">
             <span className="text-icon">👉</span>
-            <span>Start your community</span>
+            <span className="text">Start your community</span>
             <span className="text-icon">👈</span>
           </div>
         </div>
@@ -265,7 +265,7 @@ const TextTitleBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 20px;
+  gap: 10px;
 `;
 const TextTitle = styled.div`
   font-style: normal;
@@ -274,6 +274,9 @@ const TextTitle = styled.div`
   line-height: 40px;
   text-transform: uppercase;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 18px;
+  }
 `;
 const TextSubTitle = styled.div`
   font-style: normal;
@@ -282,6 +285,9 @@ const TextSubTitle = styled.div`
   line-height: 36px;
   color: #333333;
   margin-top: 12px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+  }
 `;
 const TextContent = styled.div`
   margin-top: 40px;
@@ -488,30 +494,26 @@ const EmailUsBox = styled.div`
     gap: 10px;
     padding: 15px 0 30px 0;
     ${CursorPointerUpCss}
-    div {
+    .text-box {
+      width: 100%;
       display: flex;
       flex-direction: row;
+      justify-content: center;
       align-items: center;
       padding: 0px;
-      gap: 24px;
-      @media (max-width: ${MOBILE_BREAK_POINT}px) {
-        gap: 12px;
-      }
-      span {
+      gap: 10px;
+      .text {
         font-size: 18px;
-        line-height: 40px;
+        white-space: nowrap;
         @media (max-width: ${MOBILE_BREAK_POINT}px) {
-          line-height: 30px;
           font-size: 12px;
         }
       }
     }
     .text-icon {
       font-size: 40px;
-      line-height: 40px;
       @media (max-width: ${MOBILE_BREAK_POINT}px) {
-        font-size: 30px;
-        line-height: 30px;
+        font-size: 20px;
       }
     }
   }
