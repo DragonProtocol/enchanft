@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 19:25:33
+ * @LastEditTime: 2022-08-08 16:45:04
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -218,66 +218,59 @@ const Task: React.FC = () => {
     <TaskDetailWrapper>
       <MainContentBox>
         <TaskDetailBodyBox>
-          <DetailBodyLeft>
+          <TaskDetailHeaderBox>
             <ButtonNavigation onClick={handleLeave}>
               <IconCaretLeft />
             </ButtonNavigation>
-          </DetailBodyLeft>
-          <DetailBodyRight>
-            <TaskDetailTop>
-              <TaskName>{name}</TaskName>
-              <ProjectNameBox>
-                <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
-                {isCreator && <ManageButton onClick={() => navigate(`/creator/${id}`)}>manage</ManageButton>}
-              </ProjectNameBox>
-              <TaskImageBox>
-                {/* <ChainTag size={2} chainId={chainId} /> */}
-                <TaskImage src={image} />
-              </TaskImageBox>
-            </TaskDetailTop>
-            <TaskDetailContentBox>
-              <TaskDetailContentBoxLeft>
-                <TaskDetailContent data={data} />
-              </TaskDetailContentBoxLeft>
-              <TaskDetailContentBoxRight>
-                {winnerList.length > 0 ? (
+            <TaskName>{name}</TaskName>
+            {isCreator && <ManageButton onClick={() => navigate(`/creator/${id}`)}>Manage</ManageButton>}
+          </TaskDetailHeaderBox>
+          <ProjectNameBox>
+            <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
+          </ProjectNameBox>
+          <TaskDetailContentBox>
+            <TaskDetailContentBoxLeft>
+              <TaskImage src={image} />
+              <TaskDetailContent data={data} />
+            </TaskDetailContentBoxLeft>
+            <TaskDetailContentBoxRight>
+              {winnerList.length > 0 ? (
+                <TaskListBox>
+                  <TaskWinnerList items={winnerList} />
+                </TaskListBox>
+              ) : (
+                <>
+                  {taskStatusButton && (
+                    <TaskStatusButton
+                      type={taskStatusButton.type}
+                      loading={taskStatusButton.loading}
+                      disabled={taskStatusButton.disabled}
+                      btnText={taskStatusButton.btnText}
+                      onConnectWallet={handleOpenConnectWallet}
+                      onBindWallet={handleOpenWalletBind}
+                      onTake={handleTakeTask}
+                    />
+                  )}
                   <TaskListBox>
-                    <TaskWinnerList items={winnerList} />
+                    <TaskActionList
+                      items={actionItems}
+                      onDiscord={handleActionToDiscord}
+                      onTwitter={handleActionToTwitter}
+                      onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
+                      allowHandle={allowHandleAction}
+                      displayVerify={displayVerify}
+                      loadingVerify={loadingVerify}
+                      disabledVerify={disabledVerify}
+                      verifyingActions={verifyingActions}
+                      onVerifyActions={dispatchFetchTaskDetail}
+                      copyBgc="#FFFFFF"
+                      verifyBgc="#FFFFFF"
+                    />
                   </TaskListBox>
-                ) : (
-                  <>
-                    {taskStatusButton && (
-                      <TaskStatusButton
-                        type={taskStatusButton.type}
-                        loading={taskStatusButton.loading}
-                        disabled={taskStatusButton.disabled}
-                        btnText={taskStatusButton.btnText}
-                        onConnectWallet={handleOpenConnectWallet}
-                        onBindWallet={handleOpenWalletBind}
-                        onTake={handleTakeTask}
-                      />
-                    )}
-                    <TaskListBox>
-                      <TaskActionList
-                        items={actionItems}
-                        onDiscord={handleActionToDiscord}
-                        onTwitter={handleActionToTwitter}
-                        onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
-                        allowHandle={allowHandleAction}
-                        displayVerify={displayVerify}
-                        loadingVerify={loadingVerify}
-                        disabledVerify={disabledVerify}
-                        verifyingActions={verifyingActions}
-                        onVerifyActions={dispatchFetchTaskDetail}
-                        copyBgc="#FFFFFF"
-                        verifyBgc="#FFFFFF"
-                      />
-                    </TaskListBox>
-                  </>
-                )}
-              </TaskDetailContentBoxRight>
-            </TaskDetailContentBox>
-          </DetailBodyRight>
+                </>
+              )}
+            </TaskDetailContentBoxRight>
+          </TaskDetailContentBox>
         </TaskDetailBodyBox>
       </MainContentBox>
     </TaskDetailWrapper>
@@ -293,36 +286,23 @@ const TaskDetailLoading = styled.div`
 `
 const TaskDetailBodyBox = styled(CardBox)`
   display: flex;
-  gap: 20px;
-`
-const DetailBodyLeft = styled.div``
-const DetailBodyRight = styled.div`
-  flex: 1;
-  height: 100%;
-  padding-right: 50px;
-  box-sizing: border-box;
-`
-const TaskDetailTop = styled.div`
-  display: flex;
   flex-direction: column;
-  gap: 14px;
 `
-const TaskImageBox = styled.div`
-  position: relative;
+const TaskDetailHeaderBox = styled.div`
+  display: flex;
+  gap: 20px;
+  align-items: center;
 `
 const TaskName = styled.div`
+  flex: 1;
   font-weight: 700;
   font-size: 36px;
   line-height: 40px;
-`
-const TaskImage = styled(TaskImageDefault)`
-  width: 100%;
-  height: 460px;
-  object-fit: cover;
+  color: #333333;
 `
 const ProjectNameBox = styled.div`
-  display: flex;
-  justify-content: space-between;
+  padding-top: 5px;
+  padding-left: 70px;
 `
 const ProjectName = styled.div`
   font-size: 20px;
@@ -347,15 +327,22 @@ const ManageButton = styled(ButtonBase)`
   line-height: 27px;
   color: #333333;
 `
+
+const TaskImage = styled(TaskImageDefault)`
+  width: 100%;
+  height: 253px;
+  object-fit: cover;
+  margin-bottom: 26px;
+`
+
 const TaskDetailContentBox = styled.div`
   width: 100%;
-  margin-top: 40px;
+  margin-top: 18px;
   display: flex;
   gap: 40px;
 `
 const TaskDetailContentBoxLeft = styled.div`
   flex: 1;
-  padding: 20px;
   box-sizing: border-box;
   overflow: hidden;
 `
