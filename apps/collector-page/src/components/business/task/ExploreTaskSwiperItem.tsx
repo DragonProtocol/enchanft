@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 18:59:37
+ * @LastEditTime: 2022-08-08 17:07:45
  * @Description: file description
  */
 import React from 'react'
@@ -61,7 +61,10 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
   return (
     <ExploreTaskSwiperItemWrapper>
       {/* <ChainTag size={2} chainId={project.chainId} /> */}
-      <TaskImage src={image} onClick={() => navigate(`/${project.slug}/${id}`)} />
+      <TaskImageBox>
+        <TaskImage src={image} onClick={() => navigate(`/${project.slug}/${id}`)} />
+      </TaskImageBox>
+
       <TaskInfoBox>
         <TaskName>{name}</TaskName>
         <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
@@ -94,8 +97,13 @@ const ExploreTaskSwiperItemWrapper = styled.div`
   display: flex;
   overflow: hidden;
 `
-const TaskImage = styled(TaskImageDefault)`
+const TaskImageBox = styled.div`
   width: 50%;
+  height: 100%;
+  overflow: hidden;
+`
+const TaskImage = styled(TaskImageDefault)`
+  width: 100%;
   height: 100%;
   cursor: pointer;
   /* 图片不失真 ,保持其宽高比, 多余的会被剪切*/
