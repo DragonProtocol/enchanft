@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 16:45:04
+ * @LastEditTime: 2022-08-09 19:11:01
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -240,18 +240,18 @@ const Task: React.FC = () => {
                 </TaskListBox>
               ) : (
                 <>
-                  {taskStatusButton && (
-                    <TaskStatusButton
-                      type={taskStatusButton.type}
-                      loading={taskStatusButton.loading}
-                      disabled={taskStatusButton.disabled}
-                      btnText={taskStatusButton.btnText}
-                      onConnectWallet={handleOpenConnectWallet}
-                      onBindWallet={handleOpenWalletBind}
-                      onTake={handleTakeTask}
-                    />
-                  )}
                   <TaskListBox>
+                    {taskStatusButton && (
+                      <TaskStatusButton
+                        type={taskStatusButton.type}
+                        loading={taskStatusButton.loading}
+                        disabled={taskStatusButton.disabled}
+                        btnText={taskStatusButton.btnText}
+                        onConnectWallet={handleOpenConnectWallet}
+                        onBindWallet={handleOpenWalletBind}
+                        onTake={handleTakeTask}
+                      />
+                    )}
                     <TaskActionList
                       items={actionItems}
                       onDiscord={handleActionToDiscord}
@@ -358,4 +358,7 @@ const TaskListBox = styled.div`
   background: #f8f8f8;
   padding: 20px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `

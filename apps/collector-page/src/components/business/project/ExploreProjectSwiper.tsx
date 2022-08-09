@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:25:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 12:42:27
+ * @LastEditTime: 2022-08-09 16:54:06
  * @Description: file description
  */
 import React from 'react'
@@ -34,26 +34,24 @@ const ExploreProjectSwiper: React.FC<ExploreProjectSwiperProps> = ({
   const loop = itemLen > 1 ? true : false
   const pagination = itemLen > 1 ? true : false
   return (
-    <ExploreProjectSwiperWrapper>
-      <RecommendSwiper
-        navigation={navigation}
-        autoplay={autoplay}
-        loop={loop}
-        pagination={pagination}
-        loading={loading}
-        loadingMsg={loadingMsg}
-        emptyMsg={emptyMsg}
-      >
-        {items.map((item) => (
-          <RecommendSwiperItem key={item.data.id}>
-            <ExploreProjectSwiperItem data={item.data} viewConfig={item.viewConfig} />
-          </RecommendSwiperItem>
-        ))}
-      </RecommendSwiper>
+    <ExploreProjectSwiperWrapper
+      navigation={navigation}
+      autoplay={autoplay}
+      loop={loop}
+      pagination={pagination}
+      loading={loading}
+      loadingMsg={loadingMsg}
+      emptyMsg={emptyMsg}
+    >
+      {items.map((item) => (
+        <RecommendSwiperItem key={item.data.id}>
+          <ExploreProjectSwiperItem data={item.data} viewConfig={item.viewConfig} />
+        </RecommendSwiperItem>
+      ))}
     </ExploreProjectSwiperWrapper>
   )
 }
 export default ExploreProjectSwiper
-const ExploreProjectSwiperWrapper = styled.div`
+const ExploreProjectSwiperWrapper = styled(RecommendSwiper)`
   width: 100%;
 `

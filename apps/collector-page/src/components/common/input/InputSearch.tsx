@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:00:22
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 16:17:41
+ * @LastEditTime: 2022-08-09 17:03:37
  * @Description: file description
  */
 import InputBase from '@mui/material/InputBase'
 import React from 'react'
 import styled from 'styled-components'
-import IconInputSearch from '../icons/IconInputSearch'
+import IconInputSearchEmoji from '../icons/IconInputSearchEmoji'
 
 import CancelIcon from '@mui/icons-material/Cancel'
 import IconButton from '@mui/material/IconButton'
@@ -39,7 +39,7 @@ const InputSearch: React.FC<InputSearchProps> = ({
   }
   return (
     <InputSearchWrapper>
-      <IconInputSearch size="24px" />
+      <IconInputSearchEmoji size="24px" />
       <InputBase
         sx={{ ml: 1, flex: 1, height: 'auto' }}
         placeholder={placeholder}

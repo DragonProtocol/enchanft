@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import { Navigation, Autoplay } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
@@ -9,8 +9,7 @@ import IconCaretRight from '../icons/IconCaretRight'
 import ButtonNavigation from '../button/ButtonNavigation'
 import Loading from '../loading/Loading'
 
-export type RecommendSwiperProps = {
-  children: React.ReactNode
+export type RecommendSwiperProps = HTMLAttributes<HTMLDivElement> & {
   loading?: boolean
   loadingMsg?: string
   emptyMsg?: string
@@ -96,9 +95,9 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
 export default RecommendSwiper
 const RecommendSwiperWrapper = styled.div`
   width: 100%;
+  height: 100%;
   position: relative;
   z-index: 1;
-  height: 308px;
   box-sizing: border-box;
   background: #ffffff;
   border: 4px solid #333333;

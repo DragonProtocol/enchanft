@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 17:54:54
+ * @LastEditTime: 2022-08-09 19:03:12
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -53,13 +53,47 @@ const ContributionListFontSizeMap = {
   [ContributionListSize.large]: {
     title: '24px',
     membersTotal: '16px',
-    ranking: '18px',
-    avatar: '56px',
-    userName: '18px',
-    pubkey: '18px',
-    score: '18px',
+    ranking: '16px',
+    avatar: '40px',
+    userName: '16px',
+    pubkey: '16px',
+    score: '16px',
   },
 }
+
+const ContributionListFontWeightMap = {
+  [ContributionListSize.small]: {
+    title: '700',
+    membersTotal: '400',
+    ranking: '700',
+    userName: '400',
+    pubkey: 'normal',
+    score: '700',
+  },
+  [ContributionListSize.medium]: {
+    title: '700',
+    membersTotal: '400',
+    ranking: '700',
+    userName: '400',
+    pubkey: 'normal',
+    score: '700',
+  },
+  [ContributionListSize.large]: {
+    title: '700',
+    membersTotal: '400',
+    ranking: '700',
+    userName: '700',
+    pubkey: '400',
+    score: '700',
+  },
+}
+
+const ContributionListFlexGapMap = {
+  [ContributionListSize.small]: '8px',
+  [ContributionListSize.medium]: '10px',
+  [ContributionListSize.large]: '20px',
+}
+
 export type ContributionListProps = {
   items: ContributionItemDataType[]
   hiddenColumns?: ContributionColumns[]
@@ -87,6 +121,8 @@ const ContributionList: React.FC<ContributionListProps> = ({
   const displayPubkey = !hiddenColumns.includes(ContributionColumns.pubkey)
   const displayScore = !hiddenColumns.includes(ContributionColumns.score)
   const fontSize = ContributionListFontSizeMap[size]
+  const fontWeight = ContributionListFontWeightMap[size]
+  const flexGap = ContributionListFlexGapMap[size]
   const handleMore = useCallback(() => {
     if (onMore) onMore()
   }, [onMore])
@@ -94,18 +130,23 @@ const ContributionList: React.FC<ContributionListProps> = ({
     <ContributionListWrapper>
       <ContributioHeaderBox>
         <IconTrophy />
-        <ContributionTitle style={{ fontSize: fontSize.title }}>Contribution Rank</ContributionTitle>
+        <ContributionTitle style={{ fontSize: fontSize.title, fontWeight: fontWeight.title }}>
+          Contribution Rank
+        </ContributionTitle>
         {displayMembersTotal && (
-          <CotributionMembersTotal style={{ fontSize: fontSize.membersTotal }}>
+          <CotributionMembersTotal style={{ fontSize: fontSize.membersTotal, fontWeight: fontWeight.membersTotal }}>
             {membersTotal} members
           </CotributionMembersTotal>
         )}
       </ContributioHeaderBox>
       <ContributionListBox>
         {items.map((item, index) => (
-          <ContributionItemBox key={index}>
+          <ContributionItemBox key={index} style={{ gap: flexGap }}>
             {displayRanking && (
-              <ContributionItemRanking style={{ fontSize: fontSize.ranking }} topThree={item.ranking < 4}>
+              <ContributionItemRanking
+                style={{ fontSize: fontSize.ranking, fontWeight: fontWeight.ranking }}
+                topThree={item.ranking < 4}
+              >
                 {item.ranking}
               </ContributionItemRanking>
             )}
@@ -113,15 +154,19 @@ const ContributionList: React.FC<ContributionListProps> = ({
               <ContributionItemAvatar src={item.avatar} style={{ width: fontSize.avatar, height: fontSize.avatar }} />
             )}
             {displayUserName && (
-              <ContributionItemUserName style={{ fontSize: fontSize.userName }}>
+              <ContributionItemUserName style={{ fontSize: fontSize.userName, fontWeight: fontWeight.userName }}>
                 {item.userName}
               </ContributionItemUserName>
             )}
             {displayPubkey && (
-              <ContributionItemPubkey style={{ fontSize: fontSize.pubkey }}>{item.pubkey}</ContributionItemPubkey>
+              <ContributionItemPubkey style={{ fontSize: fontSize.pubkey, fontWeight: fontWeight.pubkey }}>
+                {item.pubkey}
+              </ContributionItemPubkey>
             )}
             {displayScore && (
-              <ContributionItemScore style={{ fontSize: fontSize.score }}>{item.score}</ContributionItemScore>
+              <ContributionItemScore style={{ fontSize: fontSize.score, fontWeight: fontWeight.score }}>
+                {item.score}
+              </ContributionItemScore>
             )}
           </ContributionItemBox>
         ))}
@@ -193,7 +238,7 @@ const ContributionItemAvatar = styled(UserAvatar)`
   height: 40px;
 `
 const ContributionItemUserName = styled(OverflowEllipsisBox)`
-  flex: 1;
+  flex: 160px;
   text-align: left;
   text-transform: capitalize;
 `
@@ -203,6 +248,7 @@ const ContributionItemPubkey = styled(OverflowEllipsisBox)`
   text-align: left;
 `
 const ContributionItemScore = styled.div`
+  width: 86px;
   font-weight: 700;
   text-align: right;
   color: #333333;

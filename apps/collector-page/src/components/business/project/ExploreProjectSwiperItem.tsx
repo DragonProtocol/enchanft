@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 17:09:27
+ * @LastEditTime: 2022-08-09 16:57:23
  * @Description: file description
  */
 import React from 'react'
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { ProjectStatus } from '../../../types/api'
-import RichTextBox from '../../common/text/RichTextBox'
+import RichTextToPlainTextSpan from '../../common/text/RichTextToPlainTextSpan'
 import ChainTag from '../chain/ChainTag'
 import ProjectStatusLabel from './ProjectStatusLabel'
 
@@ -88,7 +88,7 @@ const ProjectInfoBox = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 `
 const ProjectName = styled.div`
   font-weight: 700;
@@ -96,8 +96,11 @@ const ProjectName = styled.div`
   line-height: 54px;
   color: #333333;
 `
-const ProjectDescription = styled(RichTextBox)`
+const ProjectDescription = styled(RichTextToPlainTextSpan)`
   flex: 1;
   overflow-y: auto;
   ${ScrollBarCss}
+  font-size: 16px;
+  line-height: 20px;
+  color: rgba(51, 51, 51, 0.6);
 `
