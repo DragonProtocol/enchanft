@@ -1,7 +1,7 @@
-const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID；
-const TWITTER_CALLBACK_URL = process.env.TWITTER_CALLBACK_URL；
+const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID;
+const TWITTER_CALLBACK_URL = process.env.TWITTER_CALLBACK_URL;
 const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-const DISCORD_CALLBACK_URL = process.env.DISCORD_CALLBACK_URL；
+const DISCORD_CALLBACK_URL = process.env.DISCORD_CALLBACK_URL;
 export const connectionSocialMedia = (type: string) => {
   const socialMediaMap = {
     twitter: `https://twitter.com/i/oauth2/authorize?
