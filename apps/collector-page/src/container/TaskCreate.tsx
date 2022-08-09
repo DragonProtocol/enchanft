@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import { InputAdornment } from '@mui/material'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import Basic from '../components/business/task/create/Basic'
 import Preview from '../components/business/task/create/Preview'
@@ -22,6 +22,7 @@ import SelectActions from '../components/business/task/create/SelectAction'
 import { State as CreateTaskState, DefaultState } from '../components/business/task/create/state'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import IconCaretLeft from '../components/common/icons/IconCaretLeft'
+import { TASK_DEFAULT_IMAGE_URLS } from '../constants'
 import { createTask, selectTaskDetail } from '../features/task/taskDetailSlice'
 import { RoleType, selectAccount } from '../features/user/accountSlice'
 import usePermissions from '../hooks/usePermissons'
@@ -29,6 +30,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { AsyncRequestStatus } from '../types'
 
 export default function TaskCreate() {
+  const navigate = useNavigate()
   const { projectId, projectName } = useParams()
   const [openPreview, setOpenPreview] = React.useState(false)
   const [toastMsg, setToastMsg] = React.useState('')
@@ -76,7 +78,7 @@ export default function TaskCreate() {
         <TaskCreateWrapper>
           <div className="infos">
             <div className="title">
-              <ButtonNavigation>
+              <ButtonNavigation onClick={() => navigate(-1)}>
                 <IconCaretLeft />
               </ButtonNavigation>
               <h3>Create a new Task</h3>
@@ -94,7 +96,19 @@ export default function TaskCreate() {
               }}
             />
             <div className="preview-box">
-              <button className="preview-btn" onClick={() => setOpenPreview(true)}>
+              <button
+                className="preview-btn"
+                onClick={() => {
+                  if (!state.image) {
+                    const random = Math.floor(Math.random() * TASK_DEFAULT_IMAGE_URLS.length)
+                    setState({
+                      ...state,
+                      image: TASK_DEFAULT_IMAGE_URLS[random],
+                    })
+                  }
+                  setOpenPreview(true)
+                }}
+              >
                 View
               </button>
             </div>

@@ -251,7 +251,7 @@ const BasicBox = styled.div`
     display: flex;
     justify-content: space-between;
     > div {
-      width: 580px;
+      width: 540px;
     }
 
     & div.content-item {

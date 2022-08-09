@@ -475,7 +475,7 @@ const SelectActionsBox = styled.div`
     display: flex;
     justify-content: space-between;
     > div {
-      width: 580px;
+      width: 540px;
       & .content-item {
         background-color: #f8f8f8;
         margin-bottom: 20px;

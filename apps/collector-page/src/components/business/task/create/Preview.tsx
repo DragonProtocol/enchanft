@@ -13,6 +13,8 @@ import IconCaretLeft from '../../../common/icons/IconCaretLeft'
 import ButtonNavigation from '../../../common/button/ButtonNavigation'
 import dayjs from 'dayjs'
 import IconCheckbox from '../../../common/icons/IconCheckbox'
+import IconGiftBox from '../../../common/icons/IconGiftBox'
+import IconAlarmClock from '../../../common/icons/IconAlarmClock'
 
 export default function Preview({
   state,
@@ -47,15 +49,14 @@ export default function Preview({
           <div className="left">
             <h3>{state.type} Task</h3>
             <div>
-              {/* TODO 图标*/}
-              <IconNotify />
+              <IconAlarmClock />
               <span>
                 {dayjs(state.startTime).format('YYYY/MM/DD')}——{dayjs(state.endTime).format('YYYY/MM/DD')}
               </span>
               <span>Winners: {state.winnerNum}</span>
             </div>
             <div>
-              <IconNotify />
+              <IconGiftBox />
               <span>Reward: {state.reward.type === RewardType.WHITELIST ? 'whitelist' : state.reward.name}</span>
             </div>
             <div className="desc">{state.description}</div>

@@ -1,4 +1,4 @@
-import { Button } from '@mui/material'
+import { Button, ButtonBase } from '@mui/material'
 import React, { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -60,23 +60,18 @@ export default function WinnerList({
         <h3>Winner List</h3>
         {(whitelistSaved && (
           <div>
-            <CustomBtn variant="outlined" onClick={downloadWinners}>
-              Download
-            </CustomBtn>
+            <CustomBtn onClick={downloadWinners}>Download</CustomBtn>
           </div>
         )) || (
           <div>
-            <CustomBtn variant="outlined" onClick={genRandom}>
-              Random
-            </CustomBtn>
+            <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
             {'  '}
             <CustomBtn
-              variant="outlined"
               onClick={() => {
                 uploadSelected(selected)
               }}
             >
-              Save {selected.length}
+              Winners {selected.length}
             </CustomBtn>
           </div>
         )}
@@ -155,12 +150,17 @@ function ListItem({
   )
 }
 
-const CustomBtn = styled(Button)`
-  color: #3dd606;
-  border-color: #3dd606;
-  &:hover {
-    border-color: #3dd606;
-  }
+const CustomBtn = styled(ButtonBase)`
+  padding: 10px 18px;
+  /* height: 48px; */
+
+  background: #f8f8f8;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+
+  /* font-weight: 700; */
+  /* font-size: 18px; */
+  /* line-height: 27px; */
+  color: #333333;
 `
 
 const WinnerListBox = styled(CardBox)`
