@@ -55,6 +55,7 @@ export type State = {
   startTime: number
   endTime: number
   actions: Array<Action>
+  followTwitters: Array<string>
 }
 
 export const DefaultState: State = {
@@ -73,4 +74,5 @@ export const DefaultState: State = {
   startTime: Date.now(),
   endTime: Date.now(),
   actions: [],
+  followTwitters: [],
 }

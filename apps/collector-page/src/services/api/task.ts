@@ -110,3 +110,13 @@ export function createTask(data: CreateTaskState) {
     },
   })
 }
+
+export function checkTwitterNameValid(name: string) {
+  return request({
+    url: `/users/twitter?name=${name}`,
+    method: 'get',
+    headers: {
+      needToken: true,
+    },
+  })
+}

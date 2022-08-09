@@ -9,12 +9,13 @@ import IconDiscord from '../../../common/icons/IconDiscord'
 import IconNotify from '../../../common/icons/IconNotify'
 import IconTwitter from '../../../common/icons/IconTwitter'
 import { AsyncRequestStatus } from '../../../../types'
-import IconCaretLeft from '../../../common/icons/IconCaretLeft'
+
 import ButtonNavigation from '../../../common/button/ButtonNavigation'
 import dayjs from 'dayjs'
 import IconCheckbox from '../../../common/icons/IconCheckbox'
 import IconGiftBox from '../../../common/icons/IconGiftBox'
 import IconAlarmClock from '../../../common/icons/IconAlarmClock'
+import PngIconCaretLeft from '../../../common/icons/PngIconCaretLeft'
 
 export default function Preview({
   state,
@@ -27,15 +28,16 @@ export default function Preview({
   closeHandler: () => void
   submitResult: () => void
 }) {
+  console.log(state)
   return (
-    <TaskPrevewWrapper>
+    <TaskPrevewWrapper style={{ display: open ? '' : 'none' }}>
       <div className="tint">
         <p> Please check the event page carefully as it cannot be edited once submitted.</p>
       </div>
       <div className="container">
         <div className="back-btn" onClick={closeHandler}>
           <ButtonNavigation>
-            <IconCaretLeft />
+            <PngIconCaretLeft />
           </ButtonNavigation>
         </div>
         <div className="title">
@@ -145,7 +147,7 @@ const TaskPrevewWrapper = styled.div`
       color: #3dd606;
     }
 
-    & img {
+    & .img > img {
       width: 100%;
     }
 
