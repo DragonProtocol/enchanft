@@ -97,10 +97,12 @@ export function createTask(data: CreateTaskState) {
           server_id: item.server_id,
           require_score: item.require_score,
           num: item.num,
+          accounts: item.accounts,
         },
       }
     }),
   }
+
   return request({
     url: `/tasks`,
     method: 'post',

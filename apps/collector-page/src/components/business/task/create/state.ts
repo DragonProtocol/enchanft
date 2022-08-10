@@ -35,6 +35,7 @@ export type Action = {
   server_id?: string
   require_score?: number
   num?: number
+  accounts?: string[]
 }
 
 export type Reward = {

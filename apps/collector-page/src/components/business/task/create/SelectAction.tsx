@@ -19,6 +19,8 @@ import IconDiscord from '../../../common/icons/IconDiscord'
 import IconNotify from '../../../common/icons/IconNotify'
 import IconTwitter from '../../../common/icons/IconTwitter'
 import { checkTwitterNameValid } from '../../../../services/api/task'
+import PngIconDelete from '../../../common/icons/PngIconDelete'
+import PngIconDone from '../../../common/icons/PngIconDone'
 
 export default function SelectActions({
   followTwitters,
@@ -55,12 +57,13 @@ export default function SelectActions({
 
   useEffect(() => {
     const actions: Action[] = []
-    if (followTwitter) {
+    if (followTwitter && followTwitterLinkResult.length > 0) {
       actions.push({
         name: `Follow @${followTwitterLinkResult.join('@')} on Twitter`,
         type: ActionType.TWITTER,
         typeMore: ActionTypeMore.FOLLOW_TWITTER,
         description: '',
+        accounts: followTwitterLinkResult,
       })
       updateStateFollowTwitters(followTwitterLinkResult)
     } else if (twitter) {
@@ -454,19 +457,22 @@ function TwitterFollowed({
       {followTwitterLinkResult.map((item, index) => {
         return (
           <div className="help" key={item + index}>
+            <span className="username">Username: </span>
             <div className="input-box">
-              <span>Username: @</span>
+              <span>@</span>
               <input type="text" title="task-like" value={item} onChange={() => {}} />
-              <CheckIcon />
             </div>
 
-            <DeleteForeverIcon
+            <div
+              className="tint-box"
               onClick={() => {
                 const before = followTwitterLinkResult.slice(0, index)
                 const after = followTwitterLinkResult.slice(index + 1)
                 updateTwitterLinkResult([...before, ...after])
               }}
-            />
+            >
+              <PngIconDelete />
+            </div>
           </div>
         )
       })}
@@ -474,6 +480,7 @@ function TwitterFollowed({
   )
 }
 
+let addTwitterToFollowedAlive = false
 function AddTwitterToFollowed({
   addValid,
   followTwitterLinkResult,
@@ -484,65 +491,81 @@ function AddTwitterToFollowed({
   const timerRef = useRef<NodeJS.Timeout>()
   const [data, setData] = useState('')
   const [checked, setChecked] = useState(false)
-  const [dataValid, setDataValid] = useState(false)
+  const [dataValid, setDataValid] = useState(true)
 
   const checkValid = async (data: string) => {
-    if (!data) return
-    console.log('checkTwitterNameValid:', { data })
+    const checkData = data.trim()
+    if (!checkData) return
     try {
-      await checkTwitterNameValid(data)
-      setDataValid(true)
+      await checkTwitterNameValid(checkData)
+      if (addTwitterToFollowedAlive) setDataValid(true)
     } catch (error) {
-      setDataValid(true)
+      if (addTwitterToFollowedAlive) setDataValid(true)
     } finally {
-      setChecked(true)
+      if (addTwitterToFollowedAlive) setChecked(true)
     }
   }
 
   const reset = () => {
     setData('')
     setChecked(false)
-    setDataValid(false)
+    setDataValid(true)
   }
 
   useEffect(() => {
+    addTwitterToFollowedAlive = true
     return () => {
+      addTwitterToFollowedAlive = false
       if (timerRef.current) clearTimeout(timerRef.current)
     }
   }, [])
 
   return (
-    <div className="help">
-      <div className="input-box">
-        <span>Username: @</span>
-        <input
-          type="text"
-          title="task-like"
-          value={data}
-          onChange={(e) => {
-            const dataValue = e.target.value
-            setData(dataValue)
-            if (timerRef.current) {
-              clearTimeout(timerRef.current)
-            }
-            timerRef.current = setTimeout(() => {
-              checkValid(dataValue)
-            }, 1000)
-          }}
-        />
-        {checked ? (dataValid && <CheckIcon />) || <CloseIcon /> : null}
-      </div>
+    <>
+      <div className={'help'}>
+        <span className="username">Username: </span>
+        <div className={!dataValid ? 'input-box invalid' : 'input-box'}>
+          <span>@</span>
+          <input
+            type="text"
+            title="task-like"
+            value={data}
+            onChange={(e) => {
+              const dataValue = e.target.value
+              setDataValid(true)
+              setChecked(false)
+              setData(dataValue)
+              if (timerRef.current) {
+                clearTimeout(timerRef.current)
+              }
+              timerRef.current = setTimeout(() => {
+                checkValid(dataValue)
+              }, 800)
+            }}
+          />
+        </div>
 
-      <AddIcon
-        className={!dataValid ? 'invalid-icon' : ''}
+        {checked && dataValid && (
+          <div className="tint-box">
+            <PngIconDone />
+          </div>
+        )}
+      </div>
+      <div
+        className={'help add-btn'}
         onClick={() => {
+          const resultData = data.trim()
           if (!dataValid) return
           if (followTwitterLinkResult.length >= 5) return
-          addValid(data)
+          if (!resultData) return
+          addValid(resultData)
           reset()
         }}
-      />
-    </div>
+      >
+        <AddIcon />
+        <span>Add Account</span>
+      </div>
+    </>
   )
 }
 
@@ -602,7 +625,9 @@ const SelectActionsBox = styled.div`
           }
           & .msg {
             flex-grow: 1;
-
+            font-size: 14px;
+            line-height: 20px;
+            color: #333333;
             > input {
               margin: 0 10px;
               border: none;
@@ -625,9 +650,17 @@ const SelectActionsBox = styled.div`
           margin: 0 0 5px 30px;
           display: flex;
           align-items: center;
+          & span.username {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 20px;
+            color: #333333;
+            margin-right: 10px;
+          }
           & div.input-box {
             flex-grow: 1;
             background-color: #fff;
+            border: 1px solid #fff;
             padding: 10px;
             display: flex;
             color: rgba(51, 51, 51, 0.3);
@@ -638,6 +671,22 @@ const SelectActionsBox = styled.div`
               border: none;
               outline: none;
             }
+            > svg {
+              height: 20px;
+            }
+          }
+          & div.tint-box {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #fff;
+            margin-left: 10px;
+            cursor: pointer;
+          }
+          & div.invalid {
+            border: 1px solid red;
           }
           & svg {
             cursor: pointer;
@@ -646,6 +695,16 @@ const SelectActionsBox = styled.div`
           & .invalid-icon {
             cursor: not-allowed;
           }
+        }
+
+        & .help.add-btn {
+          margin-top: 10px;
+          color: #3dd606;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 20px;
+          cursor: pointer;
+          padding-left: 90px;
         }
       }
     }
