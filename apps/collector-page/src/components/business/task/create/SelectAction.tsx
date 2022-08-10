@@ -1,6 +1,11 @@
 import { Button, Checkbox } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import AddIcon from '@mui/icons-material/Add'
+import CheckIcon from '@mui/icons-material/Check'
+import CloseIcon from '@mui/icons-material/Close'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+
 import { ChainType, selectAccount } from '../../../../features/user/accountSlice'
 import { useAppSelector } from '../../../../store/hooks'
 import { Action, ActionType, ActionTypeMore, State } from './state'
@@ -13,13 +18,18 @@ import IconTip from '../../../common/icons/IconTip'
 import IconDiscord from '../../../common/icons/IconDiscord'
 import IconNotify from '../../../common/icons/IconNotify'
 import IconTwitter from '../../../common/icons/IconTwitter'
+import { checkTwitterNameValid } from '../../../../services/api/task'
+import PngIconDelete from '../../../common/icons/PngIconDelete'
+import PngIconDone from '../../../common/icons/PngIconDone'
 
 export default function SelectActions({
-  refresh,
+  followTwitters,
   updateStateActions,
+  updateStateFollowTwitters,
 }: {
-  refresh: number
+  followTwitters: string[]
   updateStateActions: (arg0: Action[]) => void
+  updateStateFollowTwitters: (arg0: string[]) => void
 }) {
   const account = useAppSelector(selectAccount)
 
@@ -27,7 +37,9 @@ export default function SelectActions({
   const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
 
   const [followTwitter, setFollowTwitter] = useState(false)
-  const [followTwitterLink, setFollowTwitterLink] = useState('')
+  const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<Array<string>>(
+    followTwitters.length > 0 ? [...followTwitters] : twitter ? [twitter.thirdpartyName] : [],
+  )
   const [joinDiscord, setJoinDiscord] = useState(false)
   const [joinDiscordLink, setJoinDiscordLink] = useState('')
   const [joinDiscordServerId, setJoinDiscordServerId] = useState('')
@@ -44,36 +56,18 @@ export default function SelectActions({
   const [joinCommunityContributionNum, setJoinCommunityContributionNum] = useState(0)
 
   useEffect(() => {
-    setFollowTwitter(false)
-    setFollowTwitterLink('')
-    setJoinDiscord(false)
-    setJoinDiscordLink('')
-    setJoinDiscordServerId('')
-    setInviteDiscord(false)
-    setInviteDiscordNum(0)
-    setInvalidFriends(false)
-    setInviteNum(0)
-    setLikeTwitter(false)
-    setLikeTwitterLink('')
-    setRetweetTwitter(false)
-    setRetweetTwitterLink('')
-    setJoinCommunity(false)
-    setJoinCommunityContribution(false)
-    setJoinCommunityContributionNum(0)
-  }, [refresh])
-
-  useEffect(() => {
     const actions: Action[] = []
-    if (followTwitter && followTwitterLink) {
-      const msg = document.getElementById('follow-twitter-msg')?.textContent
-      msg &&
-        actions.push({
-          name: msg,
-          type: ActionType.TWITTER,
-          typeMore: ActionTypeMore.FOLLOW_TWITTER,
-          description: '',
-          url: followTwitterLink,
-        })
+    if (followTwitter && followTwitterLinkResult.length > 0) {
+      actions.push({
+        name: `Follow @${followTwitterLinkResult.join('@')} on Twitter`,
+        type: ActionType.TWITTER,
+        typeMore: ActionTypeMore.FOLLOW_TWITTER,
+        description: '',
+        accounts: followTwitterLinkResult,
+      })
+      updateStateFollowTwitters(followTwitterLinkResult)
+    } else if (twitter) {
+      updateStateFollowTwitters([twitter.thirdpartyName])
     }
     if (joinDiscord && joinDiscordLink && joinDiscordServerId) {
       const msg = document.getElementById('join-discord-msg')?.textContent
@@ -158,7 +152,7 @@ export default function SelectActions({
   }, [
     discord,
     twitter,
-    followTwitterLink,
+    followTwitterLinkResult,
     followTwitter,
     joinDiscord,
     joinDiscordLink,
@@ -180,6 +174,8 @@ export default function SelectActions({
     }
   }
 
+  console.log(followTwitterLinkResult, followTwitters)
+
   return (
     <SelectActionsBox>
       <div className="subtitle">
@@ -196,27 +192,36 @@ export default function SelectActions({
                 }}
               />
               <span id="follow-twitter-msg" className="msg">
-                Follow @{twitter?.thirdpartyName || 'XXX'} on Twitter
+                Follow this account on Twitter
               </span>
               <IconTwitter />
             </div>
-            <div className="help">
-              {twitter ? (
-                followTwitter && (
-                  <div className="input-box">
-                    <span>Tweet Link:</span>
-                    <input
-                      type="text"
-                      title="task-like"
-                      value={followTwitterLink}
-                      onChange={(e) => setFollowTwitterLink(e.target.value)}
+            {twitter ? (
+              <>
+                {followTwitter && (
+                  <>
+                    <TwitterFollowed
+                      followTwitterLinkResult={followTwitterLinkResult}
+                      updateTwitterLinkResult={(data) => {
+                        setFollowTwitterLinkResult(data)
+                      }}
                     />
-                  </div>
-                )
-              ) : (
+                    {followTwitterLinkResult.length < 5 && (
+                      <AddTwitterToFollowed
+                        followTwitterLinkResult={followTwitterLinkResult}
+                        addValid={(data) => {
+                          setFollowTwitterLinkResult([...followTwitterLinkResult, data])
+                        }}
+                      />
+                    )}
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="help">
                 <ConnectTwitter />
-              )}
-            </div>
+              </div>
+            )}
           </div>
           <div className="content-item">
             <div className="desc">
@@ -440,6 +445,130 @@ export default function SelectActions({
   )
 }
 
+function TwitterFollowed({
+  followTwitterLinkResult,
+  updateTwitterLinkResult,
+}: {
+  followTwitterLinkResult: string[]
+  updateTwitterLinkResult: (arg0: string[]) => void
+}) {
+  return (
+    <>
+      {followTwitterLinkResult.map((item, index) => {
+        return (
+          <div className="help" key={item + index}>
+            <span className="username">Username: </span>
+            <div className="input-box">
+              <span>@</span>
+              <input type="text" title="task-like" value={item} onChange={() => {}} />
+            </div>
+
+            <div
+              className="tint-box"
+              onClick={() => {
+                const before = followTwitterLinkResult.slice(0, index)
+                const after = followTwitterLinkResult.slice(index + 1)
+                updateTwitterLinkResult([...before, ...after])
+              }}
+            >
+              <PngIconDelete />
+            </div>
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
+let addTwitterToFollowedAlive = false
+function AddTwitterToFollowed({
+  addValid,
+  followTwitterLinkResult,
+}: {
+  addValid: (arg0: string) => void
+  followTwitterLinkResult: string[]
+}) {
+  const timerRef = useRef<NodeJS.Timeout>()
+  const [data, setData] = useState('')
+  const [checked, setChecked] = useState(false)
+  const [dataValid, setDataValid] = useState(true)
+
+  const checkValid = async (data: string) => {
+    const checkData = data.trim()
+    if (!checkData) return
+    try {
+      await checkTwitterNameValid(checkData)
+      if (addTwitterToFollowedAlive) setDataValid(true)
+    } catch (error) {
+      if (addTwitterToFollowedAlive) setDataValid(true)
+    } finally {
+      if (addTwitterToFollowedAlive) setChecked(true)
+    }
+  }
+
+  const reset = () => {
+    setData('')
+    setChecked(false)
+    setDataValid(true)
+  }
+
+  useEffect(() => {
+    addTwitterToFollowedAlive = true
+    return () => {
+      addTwitterToFollowedAlive = false
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
+
+  return (
+    <>
+      <div className={'help'}>
+        <span className="username">Username: </span>
+        <div className={!dataValid ? 'input-box invalid' : 'input-box'}>
+          <span>@</span>
+          <input
+            type="text"
+            title="task-like"
+            value={data}
+            onChange={(e) => {
+              const dataValue = e.target.value
+              setDataValid(true)
+              setChecked(false)
+              setData(dataValue)
+              if (timerRef.current) {
+                clearTimeout(timerRef.current)
+              }
+              timerRef.current = setTimeout(() => {
+                checkValid(dataValue)
+              }, 800)
+            }}
+          />
+        </div>
+
+        {checked && dataValid && (
+          <div className="tint-box">
+            <PngIconDone />
+          </div>
+        )}
+      </div>
+      <div
+        className={'help add-btn'}
+        onClick={() => {
+          const resultData = data.trim()
+          if (!dataValid) return
+          if (followTwitterLinkResult.length >= 5) return
+          if (!resultData) return
+          addValid(resultData)
+          reset()
+        }}
+      >
+        <AddIcon />
+        <span>Add Account</span>
+      </div>
+    </>
+  )
+}
+
 function CustomCheckBox({ checked, onChange }: { checked: boolean; onChange: () => void }) {
   return (
     <span
@@ -475,7 +604,7 @@ const SelectActionsBox = styled.div`
     display: flex;
     justify-content: space-between;
     > div {
-      width: 580px;
+      width: 540px;
       & .content-item {
         background-color: #f8f8f8;
         margin-bottom: 20px;
@@ -496,7 +625,9 @@ const SelectActionsBox = styled.div`
           }
           & .msg {
             flex-grow: 1;
-
+            font-size: 14px;
+            line-height: 20px;
+            color: #333333;
             > input {
               margin: 0 10px;
               border: none;
@@ -516,9 +647,20 @@ const SelectActionsBox = styled.div`
         }
 
         & .help {
-          margin: 0 30px;
+          margin: 0 0 5px 30px;
+          display: flex;
+          align-items: center;
+          & span.username {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 20px;
+            color: #333333;
+            margin-right: 10px;
+          }
           & div.input-box {
+            flex-grow: 1;
             background-color: #fff;
+            border: 1px solid #fff;
             padding: 10px;
             display: flex;
             color: rgba(51, 51, 51, 0.3);
@@ -526,11 +668,43 @@ const SelectActionsBox = styled.div`
             line-height: 20px;
             > input {
               flex-grow: 1;
-              margin-left: 10px;
               border: none;
               outline: none;
             }
+            > svg {
+              height: 20px;
+            }
           }
+          & div.tint-box {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #fff;
+            margin-left: 10px;
+            cursor: pointer;
+          }
+          & div.invalid {
+            border: 1px solid red;
+          }
+          & svg {
+            cursor: pointer;
+          }
+
+          & .invalid-icon {
+            cursor: not-allowed;
+          }
+        }
+
+        & .help.add-btn {
+          margin-top: 10px;
+          color: #3dd606;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 20px;
+          cursor: pointer;
+          padding-left: 90px;
         }
       }
     }

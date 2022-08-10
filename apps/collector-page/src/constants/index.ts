@@ -18,5 +18,12 @@ export const MEDIA_BREAK_POINTS = {
 export const MOBILE_BREAK_POINT = 768
 export const VIEW_LAMPORTS_DECIMAL = 3
 export const MAX_CHILDREN_PER_LEVEL = 3
-export const TASK_DEFAULT_IMAGE_URL =
-  'https://strapi-njmm.onrender.com/uploads/thumbnail_default_image_4_d5ad13d828.png'
+
+export const TASK_DEFAULT_IMAGE_URLS = [
+  'https://strapi-njmm.onrender.com/uploads/thumbnail_default_image_3_a24df5553e.png',
+  'https://strapi-njmm.onrender.com/uploads/thumbnail_default_image_4_d5ad13d828.png',
+  'https://strapi-njmm.onrender.com/uploads/thumbnail_default_image_2_5642902130.png',
+  'https://strapi-njmm.onrender.com/uploads/thumbnail_default_image_1_f6ceb43ab1.png',
+]
+
+export const TASK_DEFAULT_IMAGE_URL = TASK_DEFAULT_IMAGE_URLS[1]

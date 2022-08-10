@@ -97,14 +97,26 @@ export function createTask(data: CreateTaskState) {
           server_id: item.server_id,
           require_score: item.require_score,
           num: item.num,
+          accounts: item.accounts,
         },
       }
     }),
   }
+
   return request({
     url: `/tasks`,
     method: 'post',
     data: postData,
+    headers: {
+      needToken: true,
+    },
+  })
+}
+
+export function checkTwitterNameValid(name: string) {
+  return request({
+    url: `/users/twitter?name=${name}`,
+    method: 'get',
     headers: {
       needToken: true,
     },

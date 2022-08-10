@@ -21,8 +21,8 @@ import {
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
 import useWalletSign from '../../hooks/useWalletSign'
-import PhantomIcon from './PhantomIcon'
-import MetamaskIcon from './MetamaskIcon'
+import IconMetamask from '../common/icons/IconMetamask'
+import IconPhantom from '../common/icons/IconPhantomWhite'
 
 export default function ConnectWalletModal() {
   const navigate = useNavigate()
@@ -208,34 +208,40 @@ export default function ConnectWalletModal() {
       <ConnectBox
         sx={{
           position: 'absolute' as 'absolute',
-          top: '30%',
+          top: '40%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
-          width: 400,
+          width: 384,
           bgcolor: 'background.paper',
           boxShadow: 24,
-          p: 4,
+          py: '20px',
+          px: 0,
         }}
       >
         <div className="wallet">
-          <div onClick={connectMetamask} className={metamaskValid ? '' : 'invalid'}>
-            <MetamaskIcon />
-            <p>Metamask{account.lastLoginType === TokenType.Ethereum ? `(lastUsed)` : ''}</p>
+          <div onClick={connectPhantom} className={phantomValid ? 'phantom' : 'phantom invalid'}>
+            <div className="btn">
+              <IconPhantom />
+              <p>Phantom</p>
+            </div>
+            <p className="last-time">{account.lastLoginType === TokenType.Solana ? `(Last Time)` : ''}</p>
           </div>
-
-          <div onClick={connectPhantom} className={phantomValid ? '' : 'invalid'}>
-            <PhantomIcon />
-            <p>Phantom{account.lastLoginType === TokenType.Solana ? `(lastUsed)` : ''}</p>
+          <div onClick={connectMetamask} className={metamaskValid ? 'metamask' : 'metamask invalid'}>
+            <div className="btn">
+              <IconMetamask />
+              <p>Metamask</p>
+            </div>
+            <p className="last-time">{account.lastLoginType === TokenType.Ethereum ? `(Last Time)` : ''}</p>
           </div>
         </div>
         {showNewAccountBtn && (
           <div className="new-account">
-            <Button variant="contained" onClick={createNewAccount}>
-              Create New Account With {newAccountWith}
-            </Button>
-            <Button variant="contained" onClick={() => loginWithLastLogin()}>
-              Login With LastLogin
-            </Button>
+            <HelpBtn variant="contained" onClick={createNewAccount}>
+              Create New Account With {newAccountWith === TokenType.Solana ? 'Phantom' : 'Metamask'}
+            </HelpBtn>
+            <HelpBtn variant="contained" onClick={() => loginWithLastLogin()}>
+              Login With Last Time
+            </HelpBtn>
           </div>
         )}
       </ConnectBox>
@@ -247,26 +253,67 @@ const ConnectBox = styled(Box)`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   & .wallet {
     display: flex;
+    justify-content: space-evenly;
     > div.invalid {
       background-color: lightgray;
       cursor: not-allowed;
     }
     > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       width: 50%;
-      margin: 10px 20px;
-      padding: 10px;
+      width: 160px;
+      height: 160px;
+      /* padding: 10px; */
       text-align: center;
-      box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
-      border-radius: 10px;
+      color: #fff;
       cursor: pointer;
-      & img {
+      position: relative;
+
+      & svg {
         width: 50px;
+        height: 50px;
       }
       & p {
         margin: 10px;
+      }
+
+      & div.btn {
+        & p {
+          margin: 0;
+          font-weight: 700;
+          font-size: 18px;
+          line-height: 27px;
+          color: #ffffff;
+        }
+      }
+
+      & p.last-time {
+        margin: 0;
+        position: absolute;
+        bottom: 12px;
+        font-weight: 400;
+        font-size: 12px;
+        line-height: 18px;
+        color: #ffffff;
+      }
+    }
+
+    > div.phantom {
+      background: #551ff4;
+      box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+    }
+    > div.metamask {
+      background: #f6851b;
+      box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+      & svg {
+        padding: 3px;
+        background-color: #fff;
+        border-radius: 50%;
       }
     }
   }
@@ -278,5 +325,13 @@ const ConnectBox = styled(Box)`
     > button {
       margin: 5px 20px;
     }
+  }
+`
+
+const HelpBtn = styled(Button)`
+  background-color: #3dd606;
+  text-transform: none;
+  &:hover {
+    background-color: #3dd606;
   }
 `

@@ -251,7 +251,7 @@ const BasicBox = styled.div`
     display: flex;
     justify-content: space-between;
     > div {
-      width: 580px;
+      width: 540px;
     }
 
     & div.content-item {
@@ -264,7 +264,7 @@ const BasicBox = styled.div`
         justify-content: space-between;
         & span {
           display: inline-block;
-          width: 20px;
+          width: 10px;
           height: 2px;
           background: black;
         }
