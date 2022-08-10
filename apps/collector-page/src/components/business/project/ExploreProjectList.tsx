@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:49:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 19:08:22
+ * @LastEditTime: 2022-08-10 14:04:56
  * @Description: file description
  */
 import React from 'react'
@@ -28,11 +28,12 @@ const ExploreProjectList: React.FC<ExploreProjectListProps> = ({
 }: ExploreProjectListProps) => (
   <>
     {loading && (
-      <ExploreProjectListLoading>
+      <ListStatusBox>
         <Loading />
-      </ExploreProjectListLoading>
+      </ListStatusBox>
     )}
-    {!loading && items.length === 0 && emptyMsg && <ExploreProjectListEmpty>{emptyMsg}</ExploreProjectListEmpty>}
+    {!loading && items.length === 0 && emptyMsg && <ListStatusBox>{emptyMsg}</ListStatusBox>}
+
     <ExploreProjectListWrapper>
       {!loading &&
         items.length > 0 &&
@@ -47,9 +48,8 @@ const ExploreProjectList: React.FC<ExploreProjectListProps> = ({
 export default ExploreProjectList
 const ExploreProjectListWrapper = styled.div`
   width: 100%;
-  min-height: 100px;
   display: grid;
-  grid-gap: 26px;
+  grid-gap: 20px;
   justify-content: space-between;
   list-style-type: none;
   grid-template-columns: repeat(4, minmax(250px, 1fr));
@@ -65,6 +65,14 @@ const ExploreProjectListWrapper = styled.div`
     grid-gap: 12px;
   }
 `
+const ListStatusBox = styled.div`
+  width: 100%;
+  height: 100%;
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 const ExploreProjectItemBox = styled.div`
   // 为了显现出阴影，grid布局会不留空隙，需为子项预留box-shadow的空间
   padding-bottom: 4px;
@@ -77,17 +85,4 @@ const ExploreProjectItemBox = styled.div`
     transform: scale(0.98);
   }
   transition: all 0.5s ease-out;
-`
-const ExploreProjectListLoading = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-const ExploreProjectListEmpty = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `

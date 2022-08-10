@@ -2,17 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 15:55:08
+ * @LastEditTime: 2022-08-10 13:03:02
  * @Description: 站点布局入口
  */
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from 'constants/index'
 import Main from './Main'
 import Header from './Header'
 import TodoFloatingWindow from './TodoFloatingWindow'
 import ScrollBox from '../common/ScrollBox'
-
+import MainInner from './MainInner'
 const Layout: React.FC = () => (
   <LayoutWrapper>
     <HeaderBox>
@@ -32,8 +32,8 @@ const Layout: React.FC = () => (
 )
 export default Layout
 const LayoutWrapper = styled.div`
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -63,14 +63,4 @@ const MainBox = styled.div`
   height: 100%;
   padding-top: 72px;
   box-sizing: border-box;
-`
-const MainInner = styled.div`
-  position: relative;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 0 40px;
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) {
-    width: ${MEDIA_BREAK_POINTS.xxl}px;
-    margin: 0 auto;
-  }
 `

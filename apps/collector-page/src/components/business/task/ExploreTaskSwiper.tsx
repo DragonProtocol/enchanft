@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:25:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 12:39:47
+ * @LastEditTime: 2022-08-09 16:52:10
  * @Description: file description
  */
 import React from 'react'
@@ -34,26 +34,24 @@ const ExploreTaskSwiper: React.FC<ExploreTaskSwiperProps> = ({
   const loop = itemLen > 1 ? true : false
   const pagination = itemLen > 1 ? true : false
   return (
-    <ExploreTaskSwiperWrapper>
-      <RecommendSwiper
-        navigation={navigation}
-        autoplay={autoplay}
-        loop={loop}
-        pagination={pagination}
-        loading={loading}
-        loadingMsg={loadingMsg}
-        emptyMsg={emptyMsg}
-      >
-        {items.map((item) => (
-          <RecommendSwiperItem key={item.data.id}>
-            <ExploreTaskSwiperItem data={item.data} viewConfig={item.viewConfig} />
-          </RecommendSwiperItem>
-        ))}
-      </RecommendSwiper>
+    <ExploreTaskSwiperWrapper
+      navigation={navigation}
+      autoplay={autoplay}
+      loop={loop}
+      pagination={pagination}
+      loading={loading}
+      loadingMsg={loadingMsg}
+      emptyMsg={emptyMsg}
+    >
+      {items.map((item) => (
+        <RecommendSwiperItem key={item.data.id}>
+          <ExploreTaskSwiperItem data={item.data} viewConfig={item.viewConfig} />
+        </RecommendSwiperItem>
+      ))}
     </ExploreTaskSwiperWrapper>
   )
 }
 export default ExploreTaskSwiper
-const ExploreTaskSwiperWrapper = styled.div`
+const ExploreTaskSwiperWrapper = styled(RecommendSwiper)`
   width: 100%;
 `

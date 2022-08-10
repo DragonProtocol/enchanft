@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:33:18
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 14:19:46
+ * @LastEditTime: 2022-08-10 14:31:39
  * @Description: file description
  */
 import React from 'react'
@@ -70,19 +70,22 @@ const TeamMemberInfoBox = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  justify-content: center;
+  gap: 10px;
 `
 const TeamMemberName = styled.div`
-  color: rgba(16, 16, 16, 100);
-  font-size: 24px;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 24px;
+  color: #333333;
 `
 const TeamMemberRole = styled.div`
-  color: rgba(16, 16, 16, 100);
-  font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 24px;
+  color: #3dd606;
 `
 const TeamMemberDescription = styled(RichTextBox)`
   width: 100%;
-  margin-top: 25px;
+  margin-top: 10px;
 `

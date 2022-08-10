@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:45:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-14 11:29:56
+ * @LastEditTime: 2022-08-10 15:28:03
  * @Description: file description
  */
 import React from 'react'
@@ -14,6 +14,9 @@ import TimelineDot from '@mui/lab/TimelineDot'
 import TimelineItem from '@mui/lab/TimelineItem'
 import TimelineSeparator from '@mui/lab/TimelineSeparator'
 import { RoadmapStatus } from '../../../types/api'
+import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
+import IconCheckbox from '../../common/icons/IconCheckbox'
+import RichTextBox from '../../common/text/RichTextBox'
 export type ProjectRoadmapItemDataType = {
   id: number
   status: RoadmapStatus
@@ -26,44 +29,66 @@ export type ProjectRoadmapProps = {
 const ProjectRoadmap: React.FC<ProjectRoadmapProps> = ({ items }) => {
   return (
     <ProjectRoadmapWrapper>
-      <Timeline position="alternate">
+      <CustomTimeline>
         {items.map((item, index) => (
-          <TimelineItem key={index}>
-            <TimelineSeparator>
-              <TimelineDot
-                variant={item.status === RoadmapStatus.DONE ? 'filled' : 'outlined'}
-                sx={{
-                  borderColor: '#222222',
-                  backgroundColor: item.status === RoadmapStatus.DONE ? '#222222' : '',
-                }}
-              />
-              <TimelineConnector />
-            </TimelineSeparator>
-            <TimelineContent>
-              <RoadmapItemDescription>{item.description}</RoadmapItemDescription>
-            </TimelineContent>
-          </TimelineItem>
+          <CustomTimelineItem key={index}>
+            <CustomTimelineSeparator>
+              <CustomTimelineDot>
+                {item.status === RoadmapStatus.DONE ? <IconCheckboxChecked /> : <IconCheckbox />}
+              </CustomTimelineDot>
+              <CustomTimelineConnector />
+            </CustomTimelineSeparator>
+            <CustomTimelineContent>
+              <RoadmapItemDescription value={item.description} />
+            </CustomTimelineContent>
+          </CustomTimelineItem>
         ))}
-      </Timeline>
+      </CustomTimeline>
     </ProjectRoadmapWrapper>
   )
 }
 
 export default ProjectRoadmap
 
-const ProjectRoadmapWrapper = styled.div``
-
-const RoadmapItemDescription = styled.div`
-  color: rgba(16, 16, 16, 100);
-  font-size: 18px;
-`
-const RoadmapItemContent = styled.div`
-  color: rgba(16, 16, 16, 100);
-  font-size: 18px;
+const ProjectRoadmapWrapper = styled.div`
+  width: 100%;
 `
 
-const RoadmapItemStatus = styled.div`
-  font-size: 24px;
-  line-height: 24px;
-  margin-left: 10px;
+const RoadmapItemDescription = styled(RichTextBox)``
+
+const CustomTimeline = styled(Timeline)`
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  &::before {
+    display: none;
+  }
+`
+const CustomTimelineItem = styled(TimelineItem)`
+  display: flex;
+  &::before {
+    display: none;
+  }
+`
+const CustomTimelineSeparator = styled(TimelineSeparator)``
+
+const CustomTimelineDot = styled(TimelineDot)`
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+`
+
+const CustomTimelineConnector = styled(TimelineConnector)`
+  width: 1px;
+  background-color: rgba(51, 51, 51, 0.2);
+`
+
+const CustomTimelineContent = styled(TimelineContent)`
+  flex: 1;
+  padding: 0;
+  padding-left: 10px;
+  box-sizing: border-box;
+  overflow: hidden;
 `

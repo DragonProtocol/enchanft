@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:30:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 14:22:29
+ * @LastEditTime: 2022-08-09 19:20:32
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -36,7 +36,7 @@ const ContributionMy: React.FC<ContributionMyProps> = ({ data, viewConfig }: Con
       <Avatar src={avatar} />
       <RightBox>
         <UserName>{userName}</UserName>
-        <UserScore>{score}</UserScore>
+        <UserScore>My Point : {score}</UserScore>
       </RightBox>
     </ContributionMyWrapper>
   )

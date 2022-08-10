@@ -12,7 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import IconCaretLeft from '../components/common/icons/IconCaretLeft'
 import CardBox from '../components/common/card/CardBox'
-import ContributionList from '../components/business/contribution/ContributionList'
+import ContributionList, { ContributionListSize } from '../components/business/contribution/ContributionList'
 import {
   fetchContributionCommunityInfo,
   selectContributionCommunityInfo,
@@ -98,7 +98,12 @@ const Contributionranks: React.FC = () => {
                 <Loading />
               </ContributionLoading>
             ) : (
-              <ContributionList items={contributionranks} displayMembersTotal={false} displayMore={false} />
+              <ContributionList
+                size={ContributionListSize.large}
+                items={contributionranks}
+                displayMembersTotal={false}
+                displayMore={false}
+              />
             )}
           </ContributionListBox>
           <ContributionRigtBox>
@@ -140,25 +145,30 @@ const ContributionTitle = styled.div`
 `
 const ContributionMainBox = styled.div`
   width: 100%;
-  margin-top: 32px;
+  margin-top: 20px;
   display: flex;
   gap: 20px;
 `
 const ContributionListBox = styled(CardBox)`
   width: 760px;
+  padding: 20px;
+  border: 4px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `
 const ContributionRigtBox = styled.div`
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  overflow: hidden;
 `
 const ContributionMyBox = styled(CardBox)`
   width: 100%;
+  padding: 20px;
+  border: 4px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `
 const ContributionAboutBox = styled(CardBox)`
+  margin-top: 20px;
   width: 100%;
+  padding: 20px;
   background: #fffbdb;
+  border: 4px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `

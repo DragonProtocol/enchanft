@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 16:45:04
+ * @LastEditTime: 2022-08-10 13:19:39
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -44,6 +44,7 @@ import {
 } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 import ButtonBase from '../components/common/button/ButtonBase'
+import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
@@ -185,9 +186,9 @@ const Task: React.FC = () => {
 
   if (loadingView)
     return (
-      <TaskDetailLoading>
+      <MainInnerStatusBox>
         <Loading />{' '}
-      </TaskDetailLoading>
+      </MainInnerStatusBox>
     )
   if (!data) return null
   // 接受任务
@@ -223,7 +224,7 @@ const Task: React.FC = () => {
               <IconCaretLeft />
             </ButtonNavigation>
             <TaskName>{name}</TaskName>
-            {isCreator && <ManageButton onClick={() => navigate(`/creator/${id}`)}>Manage</ManageButton>}
+            {isCreator && <ManageButton onClick={() => navigate(`/creator/${id}`)}>Task Management</ManageButton>}
           </TaskDetailHeaderBox>
           <ProjectNameBox>
             <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
@@ -240,18 +241,18 @@ const Task: React.FC = () => {
                 </TaskListBox>
               ) : (
                 <>
-                  {taskStatusButton && (
-                    <TaskStatusButton
-                      type={taskStatusButton.type}
-                      loading={taskStatusButton.loading}
-                      disabled={taskStatusButton.disabled}
-                      btnText={taskStatusButton.btnText}
-                      onConnectWallet={handleOpenConnectWallet}
-                      onBindWallet={handleOpenWalletBind}
-                      onTake={handleTakeTask}
-                    />
-                  )}
                   <TaskListBox>
+                    {taskStatusButton && (
+                      <TaskStatusButton
+                        type={taskStatusButton.type}
+                        loading={taskStatusButton.loading}
+                        disabled={taskStatusButton.disabled}
+                        btnText={taskStatusButton.btnText}
+                        onConnectWallet={handleOpenConnectWallet}
+                        onBindWallet={handleOpenWalletBind}
+                        onTake={handleTakeTask}
+                      />
+                    )}
                     <TaskActionList
                       items={actionItems}
                       onDiscord={handleActionToDiscord}
@@ -280,11 +281,8 @@ export default Task
 const TaskDetailWrapper = styled.div`
   width: 100%;
 `
-const TaskDetailLoading = styled.div`
-  text-align: center;
-  margin-top: 100px;
-`
 const TaskDetailBodyBox = styled(CardBox)`
+  padding: 40px;
   display: flex;
   flex-direction: column;
 `
@@ -358,4 +356,7 @@ const TaskListBox = styled.div`
   background: #f8f8f8;
   padding: 20px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 13:59:39
+ * @LastEditTime: 2022-08-10 14:13:01
  * @Description: file description
  */
 import React from 'react'
@@ -74,8 +74,13 @@ const WinnerItemAvatar = styled(UserAvatar)`
 `
 const WinnerItemUserName = styled.div`
   width: 30%;
-  text-transform: capitalize;
+  font-size: 14px;
+  line-height: 21px;
+  color: #333333;
 `
 const WinnerItemPubkey = styled(OverflowEllipsisBox)`
   flex: 1;
+  font-size: 14px;
+  line-height: 21px;
+  color: #333333;
 `

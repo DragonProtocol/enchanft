@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 17:07:45
+ * @LastEditTime: 2022-08-09 16:35:59
  * @Description: file description
  */
 import React from 'react'
@@ -13,7 +13,7 @@ import { TaskType } from '../../../types/api'
 import IconAlarmClock from '../../common/icons/IconAlarmClock'
 import IconGiftBox from '../../common/icons/IconGiftBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import RichTextBox from '../../common/text/RichTextBox'
+import RichTextToPlainTextSpan from '../../common/text/RichTextToPlainTextSpan'
 import TaskImageDefault from './TaskImageDefault'
 
 export type ExploreTaskSwiperItemDataType = {
@@ -66,26 +66,31 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
       </TaskImageBox>
 
       <TaskInfoBox>
-        <TaskName>{name}</TaskName>
-        <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
-        <TaskTypeLabel>{taskTypeLabel}</TaskTypeLabel>
-        <TaskDateAndWinnerBox>
-          <TaskDateTimeBox>
-            <IconAlarmClock size={'18px'} />
-            <TaskDateTime>
-              {startDate} -- {endDate}
-            </TaskDateTime>
-          </TaskDateTimeBox>
-          <TaskWinners>Winners {winnerNum}</TaskWinners>
-        </TaskDateAndWinnerBox>
-        {reward && (
-          <TaskRemarkBox>
-            <IconGiftBox size={'18px'} />
-            <TaskRemark>Reward : {reward.name}</TaskRemark>
-          </TaskRemarkBox>
-        )}
-
-        <TaskDescription value={description} />
+        <TaskInfoTopBox>
+          <TaskName>{name}</TaskName>
+          <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
+        </TaskInfoTopBox>
+        <TaskInfoBottomBox>
+          <TaskTypeLabel>{taskTypeLabel}</TaskTypeLabel>
+          <TaskDateAndWinnerBox>
+            <TaskDateTimeBox>
+              <IconAlarmClock size={'18px'} />
+              <TaskDateTime>
+                {startDate} —— {endDate}
+              </TaskDateTime>
+            </TaskDateTimeBox>
+            <TaskWinners>Winners {winnerNum}</TaskWinners>
+          </TaskDateAndWinnerBox>
+          {reward && (
+            <TaskRewardBox>
+              <IconGiftBox size={'18px'} />
+              <TaskReward>Reward : {reward.name}</TaskReward>
+            </TaskRewardBox>
+          )}
+          <TaskDescription>
+            <RichTextToPlainTextSpan value={description} />
+          </TaskDescription>
+        </TaskInfoBottomBox>
       </TaskInfoBox>
     </ExploreTaskSwiperItemWrapper>
   )
@@ -124,17 +129,32 @@ const TaskInfoBox = styled.div`
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+  gap: 15px;
+`
+const TaskInfoTopBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`
+const TaskInfoBottomBox = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid #e6e6e6;
+  border-bottom: 1px solid #e6e6e6;
+  box-sizing: border-box;
 `
 const TaskName = styled(OverflowEllipsisBox)`
   font-weight: 700;
-  font-size: 36px;
+  font-size: 32px;
   line-height: 40px;
   color: #333333;
 `
 const ProjectName = styled.div`
-  font-size: 20px;
-  line-height: 30px;
+  font-size: 18px;
+  line-height: 27px;
   color: #3dd606;
 `
 const TaskTypeLabel = styled.div`
@@ -145,9 +165,9 @@ const TaskTypeLabel = styled.div`
 `
 const TaskDateAndWinnerBox = styled.div`
   display: flex;
-  gap: 40px;
-  font-size: 16px;
-  line-height: 24px;
+  gap: 60px;
+  font-size: 14px;
+  line-height: 21px;
   color: #333333;
 `
 const TaskDateTimeBox = styled.div`
@@ -157,18 +177,19 @@ const TaskDateTimeBox = styled.div`
 `
 const TaskDateTime = styled.span``
 const TaskWinners = styled.span``
-const TaskRemarkBox = styled.div`
+const TaskRewardBox = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
 `
-const TaskRemark = styled(OverflowEllipsisBox)`
+const TaskReward = styled(OverflowEllipsisBox)`
   flex: 1;
   font-size: 14px;
+  line-height: 21px;
   color: #333333;
 `
-const TaskDescription = styled(RichTextBox)`
-  flex: 1;
-  overflow-y: auto;
-  ${ScrollBarCss}
+const TaskDescription = styled(OverflowEllipsisBox)`
+  font-size: 14px;
+  line-height: 21px;
+  color: rgba(51, 51, 51, 0.6);
 `

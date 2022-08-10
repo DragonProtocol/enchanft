@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 10:32:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 19:24:21
+ * @LastEditTime: 2022-08-10 11:22:29
  * @Description: file description
  */
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 
 type OptionValue = string | number
@@ -13,20 +13,25 @@ type Option = {
   label: string
   value: OptionValue
 }
-export type ButtonRadioGroupProps = {
+export type ButtonRadioGroupProps = HTMLAttributes<HTMLDivElement> & {
   options: Option[]
   value: OptionValue
   onChange?: (value: OptionValue) => void
 }
 
-const ButtonRadioGroup: React.FC<ButtonRadioGroupProps> = ({ options, value, onChange }: ButtonRadioGroupProps) => {
+const ButtonRadioGroup: React.FC<ButtonRadioGroupProps> = ({
+  options,
+  value,
+  onChange,
+  ...divProps
+}: ButtonRadioGroupProps) => {
   const handleChange = (v: OptionValue) => {
     if (onChange) {
       onChange(v)
     }
   }
   return (
-    <ButtonRadioGroupWrapper>
+    <ButtonRadioGroupWrapper {...divProps}>
       {options.map(({ label, value: v }) => (
         <ButtonRadioGroupOption key={v} isActive={v === value} onClick={() => handleChange(v)}>
           {label}
