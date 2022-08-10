@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-09 16:57:23
+ * @LastEditTime: 2022-08-10 13:50:01
  * @Description: file description
  */
 import React from 'react'
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { ProjectStatus } from '../../../types/api'
+import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import RichTextToPlainTextSpan from '../../common/text/RichTextToPlainTextSpan'
 import ChainTag from '../chain/ChainTag'
 import ProjectStatusLabel from './ProjectStatusLabel'
@@ -50,7 +51,9 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
         <ProjectStatusLabel status={status} fontSize="20px" />
-        <ProjectDescription value={description} />
+        <ProjectDescription number={9}>
+          <RichTextToPlainTextSpan value={description} />
+        </ProjectDescription>
       </ProjectInfoBox>
     </ExploreProjectSwiperItemWrapper>
   )
@@ -65,6 +68,7 @@ const ProjectImageBox = styled.div`
   width: 360px;
   height: 360px;
   overflow: hidden;
+  flex-shrink: 0;
 `
 const ProjectImage = styled.img`
   width: 100%;
@@ -96,10 +100,9 @@ const ProjectName = styled.div`
   line-height: 54px;
   color: #333333;
 `
-const ProjectDescription = styled(RichTextToPlainTextSpan)`
+
+const ProjectDescription = styled(OverflowEllipsisBox)`
   flex: 1;
-  overflow-y: auto;
-  ${ScrollBarCss}
   font-size: 16px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.6);

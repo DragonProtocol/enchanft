@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 19:07:15
+ * @LastEditTime: 2022-08-10 15:58:47
  * @Description: file description
  */
 import React from 'react'
@@ -33,11 +33,11 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
 }: ExploreTaskListProps) => (
   <>
     {loading && (
-      <ExploreTaskListLoading>
+      <ListStatusBox>
         <Loading />
-      </ExploreTaskListLoading>
+      </ListStatusBox>
     )}
-    {!loading && items.length === 0 && emptyMsg && <ExploreTaskListEmpty>{emptyMsg}</ExploreTaskListEmpty>}
+    {!loading && items.length === 0 && emptyMsg && <ListStatusBox>{emptyMsg}</ListStatusBox>}
     <ExploreTaskListWrapper>
       {displayCreateTask && (
         <CreateTaskButton onClick={() => onCreateTask && onCreateTask()}>
@@ -58,23 +58,30 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
 export default ExploreTaskList
 const ExploreTaskListWrapper = styled.div`
   width: 100%;
-  min-height: 100px;
   display: grid;
   grid-gap: 20px;
   justify-content: space-between;
   list-style-type: none;
-  grid-template-columns: repeat(4, minmax(265px, 1fr));
+  grid-template-columns: repeat(4, minmax(250px, 1fr));
   @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
-    grid-template-columns: repeat(3, minmax(265px, 1fr));
+    grid-template-columns: repeat(3, minmax(250px, 1fr));
   }
   @media (min-width: ${MEDIA_BREAK_POINTS.sm}px) and (max-width: ${MEDIA_BREAK_POINTS.md}px) {
-    grid-template-columns: repeat(2, minmax(265px, 1fr));
+    grid-template-columns: repeat(2, minmax(250px, 1fr));
   }
   @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
     display: flex;
     flex-direction: column;
     grid-gap: 12px;
   }
+`
+const ListStatusBox = styled.div`
+  width: 100%;
+  height: 100%;
+  min-height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 const ExploreTaskItemBox = styled.div`
   // 为了显现出阴影，grid布局会不留空隙，需为子项预留box-shadow的空间
@@ -103,17 +110,4 @@ const CreateTaskButton = styled(ButtonBase)`
   line-height: 27px;
   text-align: center;
   color: #333333;
-`
-const ExploreTaskListLoading = styled.div`
-  width: 100%;
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`
-const ExploreTaskListEmpty = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 19:29:40
+ * @LastEditTime: 2022-08-10 15:53:13
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -396,11 +396,11 @@ const ProfileTab = styled.div<{ isActive?: boolean }>`
   font-size: 20px;
   line-height: 24px;
 
+  color: ${({ isActive }) => (isActive ? `#333333` : 'rgba(51, 51, 51, 0.6)')};
+  ${({ isActive }) => (isActive ? `box-shadow: inset 0 -4px #3DD606;` : '')}
   cursor: pointer;
-  border-bottom: ${(props) => (props.isActive ? '4px solid #3DD606;' : 'none')};
-  color: ${(props) => (props.isActive ? '#333333' : 'rgba(51, 51, 51, 0.6)')};
   padding-bottom: 16px;
-  text-align: center;
+  transition: all 0.2s ease-in-out;
 `
 const ProfileTabContentBox = styled(CardBox)``
 

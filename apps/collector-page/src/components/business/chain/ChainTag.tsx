@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-22 11:34:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 18:43:53
+ * @LastEditTime: 2022-08-10 13:31:14
  * @Description: file description
  */
 import React from 'react'
@@ -13,17 +13,20 @@ import IconSolana from '../../common/icons/IconSolana'
 export type ChainTag = {
   name: string
   icon: React.FC
+  iconSize: string
   bgc: string
 }
 export const chainMap: { [key in ChainIds]: ChainTag } = {
   [ChainIds.eth]: {
     name: 'Ethereum',
     icon: IconEthereumWhite,
+    iconSize: '16px',
     bgc: '#476DFF',
   },
   [ChainIds.solana]: {
     name: 'solana',
     icon: IconSolana,
+    iconSize: '14px',
     bgc: '#171F1C',
   },
 }
@@ -53,7 +56,7 @@ const ChainTag: React.FC<ChainTagProps> = ({ chainId, size = 1, ...otherProps }:
 
   return (
     <ChainTagWrapper bgc={chain?.bgc || '#476DFF'} {...otherProps}>
-      {chain && <chain.icon size={'14px'} />}
+      {chain && <chain.icon size={chain.iconSize} />}
       {chain?.name || 'Unknown Chain'}
     </ChainTagWrapper>
     // <ChainTagWrapper size={wrapperSize} {...otherProps}>
@@ -70,6 +73,7 @@ export default ChainTag
 const ChainTagWrapper = styled.div<{ bgc: string }>`
   height: 22px;
   padding: 4px;
+  box-sizing: border-box;
   font-weight: 700;
   font-size: 12px;
   text-transform: uppercase;

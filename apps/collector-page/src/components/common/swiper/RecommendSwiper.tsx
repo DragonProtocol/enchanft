@@ -27,6 +27,7 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
   autoplay,
   pagination,
   loop,
+  ...divProps
 }: RecommendSwiperProps) => {
   const modulesConfig: any[] = []
   const navigationConfig: any = {}
@@ -49,7 +50,7 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
   }
   const loopConfig = loop ? true : false
   return (
-    <RecommendSwiperWrapper>
+    <RecommendSwiperWrapper {...divProps}>
       {navigation && (
         <RecommendSwiperLeft>
           <ButtonNavigation className="recommend-swiper-prev">

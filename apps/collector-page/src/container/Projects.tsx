@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:58:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-09 16:53:27
+ * @LastEditTime: 2022-08-10 13:12:55
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -102,5 +102,5 @@ const SearchProjectsBox = styled(CardBox)`
   margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 20px;
 `

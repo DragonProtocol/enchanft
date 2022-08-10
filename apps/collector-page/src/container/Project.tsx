@@ -40,6 +40,7 @@ import RichTextBox from '../components/common/text/RichTextBox'
 import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
 import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
+import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -165,6 +166,12 @@ const Project: React.FC = () => {
   ]
   const [activeTab, setActiveTab] = useState(ProjectInfoTabsValue.TEAM)
   const loading = status === AsyncRequestStatus.PENDING
+  if (loading)
+    return (
+      <MainInnerStatusBox>
+        <Loading />{' '}
+      </MainInnerStatusBox>
+    )
   // 展示数据
   if (!data) return null
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
@@ -187,81 +194,75 @@ const Project: React.FC = () => {
   return (
     <ProjectWrapper>
       <MainContentBox>
-        {loading ? (
-          <ProjectLoading>
-            <Loading />
-          </ProjectLoading>
-        ) : (
-          <>
-            <ProjectTopBox>
-              <ProjectCommunityInfoBox>
-                <ProjectDetailCommunity
-                  data={communityDataView.data}
-                  viewConfig={communityDataView.viewConfig}
-                  onFollowChange={handleFollowChange}
-                />
-              </ProjectCommunityInfoBox>
+        <ProjectTopBox>
+          <ProjectCommunityInfoBox>
+            <ProjectDetailCommunity
+              data={communityDataView.data}
+              viewConfig={communityDataView.viewConfig}
+              onFollowChange={handleFollowChange}
+            />
+          </ProjectCommunityInfoBox>
 
-              <ProjectBasicInfoBox>
-                <ProjectBasicInfoLeft>
-                  <ProjectDetailBasicInfo
-                    data={projectBasicInfoDataView.data}
-                    viewConfig={projectBasicInfoDataView.viewConfig}
-                  />
-                </ProjectBasicInfoLeft>
-                <ProjectBasicInfoRight>
-                  <ContributionList
-                    items={showContributionranks}
-                    hiddenColumns={[ContributionColumns.pubkey]}
-                    membersTotal={contributionMembersTotal}
-                    displayMore={true}
-                    moreText="View All"
-                    onMore={() => communityId && navigate(`/contributionranks/${communityId}`)}
-                  />
-                </ProjectBasicInfoRight>
-              </ProjectBasicInfoBox>
-            </ProjectTopBox>
+          <ProjectBasicInfoBox>
+            <ProjectBasicInfoLeft>
+              <ProjectDetailBasicInfo
+                data={projectBasicInfoDataView.data}
+                viewConfig={projectBasicInfoDataView.viewConfig}
+              />
+            </ProjectBasicInfoLeft>
+            <ProjectBasicInfoRight>
+              <ContributionList
+                items={showContributionranks}
+                hiddenColumns={[ContributionColumns.pubkey]}
+                membersTotal={contributionMembersTotal}
+                displayMore={true}
+                moreText="View All"
+                onMore={() => communityId && navigate(`/contributionranks/${communityId}`)}
+              />
+            </ProjectBasicInfoRight>
+          </ProjectBasicInfoBox>
+        </ProjectTopBox>
 
-            <ProjectBottomBox>
-              <ProjectEventsBox>
-                <ProjectLabelBox>
-                  <ProjectLabel>Events</ProjectLabel>
-                </ProjectLabelBox>
-                <ExploreTaskList
-                  items={tasks}
-                  displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
-                  onCreateTask={() => {
-                    navigate(`/${data.name}/task/create/${data.id}`)
-                  }}
-                />
-              </ProjectEventsBox>
+        <ProjectBottomBox>
+          <ProjectEventsBox>
+            <ProjectLabelBox>
+              <ProjectLabel>Events</ProjectLabel>
+            </ProjectLabelBox>
+            <ExploreTaskListBox>
+              <ExploreTaskList
+                items={tasks}
+                displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
+                onCreateTask={() => {
+                  navigate(`/${data.name}/task/create/${data.id}`)
+                }}
+              />
+            </ExploreTaskListBox>
+          </ProjectEventsBox>
 
-              <ProjectOtherInfoBox>
-                <ProjectOtherInfoLeftBox>
-                  <ProjectLabelBox>
-                    <ProjectLabel>Story</ProjectLabel>
-                  </ProjectLabelBox>
+          <ProjectOtherInfoBox>
+            <ProjectOtherInfoLeftBox>
+              <ProjectLabelBox>
+                <ProjectLabel>Story</ProjectLabel>
+              </ProjectLabelBox>
 
-                  <ProjectStoryContent value={data.story} />
-                </ProjectOtherInfoLeftBox>
-                <ProjectOtherInfoRightBox>
-                  <ProjectOtherInfoRightTabs>
-                    {ProjectInfoTabs.map((tab) => (
-                      <ProjectOtherInfoRightTab
-                        key={tab.value}
-                        isActive={tab.value === activeTab}
-                        onClick={() => setActiveTab(tab.value)}
-                      >
-                        {tab.label}
-                      </ProjectOtherInfoRightTab>
-                    ))}
-                  </ProjectOtherInfoRightTabs>
-                  {ProjectInfoTabComponents[activeTab]}
-                </ProjectOtherInfoRightBox>
-              </ProjectOtherInfoBox>
-            </ProjectBottomBox>
-          </>
-        )}
+              <ProjectStoryContent value={data.story} />
+            </ProjectOtherInfoLeftBox>
+            <ProjectOtherInfoRightBox>
+              <ProjectOtherInfoRightTabs>
+                {ProjectInfoTabs.map((tab) => (
+                  <ProjectOtherInfoRightTab
+                    key={tab.value}
+                    isActive={tab.value === activeTab}
+                    onClick={() => setActiveTab(tab.value)}
+                  >
+                    {tab.label}
+                  </ProjectOtherInfoRightTab>
+                ))}
+              </ProjectOtherInfoRightTabs>
+              {ProjectInfoTabComponents[activeTab]}
+            </ProjectOtherInfoRightBox>
+          </ProjectOtherInfoBox>
+        </ProjectBottomBox>
       </MainContentBox>
     </ProjectWrapper>
   )
@@ -269,10 +270,6 @@ const Project: React.FC = () => {
 export default Project
 const ProjectWrapper = styled.div`
   width: 100%;
-`
-const ProjectLoading = styled.div`
-  text-align: center;
-  margin-top: 100px;
 `
 const ProjectTopBox = styled(CardBox)`
   width: 100%;
@@ -292,7 +289,7 @@ const ProjectCommunityInfoBox = styled.div`
 const ProjectBasicInfoBox = styled.div`
   width: 100%;
   display: flex;
-  gap: 40px;
+  gap: 20px;
 `
 const ProjectBasicInfoLeft = styled.div`
   flex: 1;
@@ -312,14 +309,10 @@ const ProjectBottomBox = styled(CardBox)`
   flex-direction: column;
   gap: 40px;
 `
-const ProjectEventsBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`
+const ProjectEventsBox = styled.div``
 const ProjectOtherInfoBox = styled.div`
   display: flex;
-  gap: 60px;
+  gap: 40px;
 `
 const ProjectOtherInfoLeftBox = styled.div`
   flex: 1;
@@ -327,6 +320,9 @@ const ProjectOtherInfoLeftBox = styled.div`
 const ProjectLabelBox = styled.div`
   border-bottom: solid 1px #d9d9d9;
   display: flex;
+`
+const ExploreTaskListBox = styled.div`
+  margin-top: 20px;
 `
 const ProjectLabel = styled.div`
   font-weight: 700;
@@ -337,7 +333,7 @@ const ProjectLabel = styled.div`
 `
 const ProjectStoryContent = styled(RichTextBox)``
 const ProjectOtherInfoRightBox = styled.div`
-  flex: 1;
+  width: 560px;
 `
 const ProjectOtherInfoRightTabs = styled.div`
   display: flex;
@@ -348,8 +344,9 @@ const ProjectOtherInfoRightTabs = styled.div`
 const ProjectOtherInfoRightTab = styled.div<{ isActive: Boolean }>`
   font-weight: 700;
   font-size: 20px;
-  color: #333333;
+  color: ${({ isActive }) => (isActive ? `#333333` : 'rgba(51, 51, 51, 0.6)')};
   ${({ isActive }) => (isActive ? `box-shadow: inset 0 -4px #3DD606;` : '')}
   cursor: pointer;
   padding-bottom: 10px;
+  transition: all 0.2s ease-in-out;
 `
