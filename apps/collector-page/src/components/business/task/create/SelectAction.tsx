@@ -500,7 +500,7 @@ function AddTwitterToFollowed({
       await checkTwitterNameValid(checkData)
       if (addTwitterToFollowedAlive) setDataValid(true)
     } catch (error) {
-      if (addTwitterToFollowedAlive) setDataValid(true)
+      if (addTwitterToFollowedAlive) setDataValid(false)
     } finally {
       if (addTwitterToFollowedAlive) setChecked(true)
     }
