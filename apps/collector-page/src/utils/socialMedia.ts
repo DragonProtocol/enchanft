@@ -1,7 +1,14 @@
-const TWITTER_CLIENT_ID = process.env.TWITTER_CLIENT_ID;
-const TWITTER_CALLBACK_URL = process.env.TWITTER_CALLBACK_URL;
-const DISCORD_CLIENT_ID = process.env.DISCORD_CLIENT_ID;
-const DISCORD_CALLBACK_URL = process.env.DISCORD_CALLBACK_URL;
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-08-08 13:44:40
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-08-10 10:49:09
+ * @Description: file description
+ */
+const TWITTER_CLIENT_ID = process.env.REACT_APP_TWITTER_CLIENT_ID
+const TWITTER_CALLBACK_URL = process.env.REACT_APP_TWITTER_CALLBACK_URL
+const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID
+const DISCORD_CALLBACK_URL = process.env.REACT_APP_DISCORD_CALLBACK_URL
 export const connectionSocialMedia = (type: string) => {
   const socialMediaMap = {
     twitter: `https://twitter.com/i/oauth2/authorize?
