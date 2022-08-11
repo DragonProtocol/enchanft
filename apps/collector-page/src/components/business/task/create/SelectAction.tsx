@@ -236,7 +236,7 @@ export default function SelectActions({
               </span>
               <IconDiscord />
             </div>
-            <div className="help">
+            <div className="help join-discord">
               {discord ? (
                 joinDiscord && (
                   <>
@@ -694,6 +694,13 @@ const SelectActionsBox = styled.div`
 
           & .invalid-icon {
             cursor: not-allowed;
+          }
+        }
+
+        & .help.join-discord {
+          display: block;
+          > div {
+            margin-bottom: 10px;
           }
         }
 
