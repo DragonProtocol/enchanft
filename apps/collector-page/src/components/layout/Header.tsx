@@ -2,54 +2,62 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 19:18:55
+ * @LastEditTime: 2022-08-11 11:13:35
  * @Description: 站点头部
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { matchPath, matchRoutes, useLocation, useMatch, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import LogoImg from '../imgs/logo.svg'
 import ConnectBtn from '../ConnectBtn'
+import { CutomRouteObject, permissionRoutes, RouteKeys, routes } from './Main'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const [routeKey, setRouteKey] = useState<RouteKeys>(RouteKeys.noMatch)
+  useEffect(() => {
+    const match = matchRoutes([...permissionRoutes, ...routes], location)
+    if (!match) {
+      setRouteKey(RouteKeys.noMatch)
+    } else {
+      const { key } = match[0].route as CutomRouteObject
+      setRouteKey(key || RouteKeys.noMatch)
+    }
+  }, [location])
+
   const navs = [
     {
       name: 'events',
       link: '/',
+      activeRouteKeys: [RouteKeys.events, RouteKeys.todoTask, RouteKeys.task],
     },
     {
       name: 'projects',
       link: '/projects',
+      activeRouteKeys: [RouteKeys.projects, RouteKeys.project, RouteKeys.contributionranks],
     },
     // {
     //   name: 'calendar',
     //   link: '/calendar',
     // },
   ]
-  const deactivateLinks = ['/profile', '/contributionranks', '/ref', '/creator']
-  const [curNavLink, setCurNavLink] = useState('/')
-
-  useEffect(() => {
-    if (navs.findIndex((item) => item.link === location.pathname) !== -1) {
-      setCurNavLink(location.pathname)
-    } else if (deactivateLinks.includes(location.pathname)) {
-      setCurNavLink('')
-    }
-  }, [location])
 
   const PcNav = useCallback(
     () => (
       <PcNavList>
         {navs.map((item) => (
-          <PcNavItemBox key={item.link} isActive={item.link === curNavLink} onClick={() => navigate(item.link)}>
+          <PcNavItemBox
+            key={item.link}
+            isActive={item.activeRouteKeys.includes(routeKey)}
+            onClick={() => navigate(item.link)}
+          >
             <PcNavItemText>{item.name}</PcNavItemText>
           </PcNavItemBox>
         ))}
       </PcNavList>
     ),
-    [navs, curNavLink],
+    [navs, routeKey],
   )
   return (
     <HeaderWrapper>

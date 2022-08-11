@@ -28,15 +28,15 @@ const CommunitysState: CommunitysState = communityContributionRanksEntity.getIni
 
 export const fetchCommunityContributionRanks = createAsyncThunk<
   FetchListResp,
-  number,
+  string,
   {
     rejectValue: FetchListResp
   }
 >(
   'community/fetchCommunityContributionRanks',
-  async (id, { rejectWithValue }) => {
+  async (slug, { rejectWithValue }) => {
     try {
-      const resp = await fetchListForCommunityContributionRank(id)
+      const resp = await fetchListForCommunityContributionRank(slug)
       return { data: resp.data.data || [] }
     } catch (error: any) {
       if (!error.response) {

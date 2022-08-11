@@ -25,34 +25,33 @@ import Loading from '../components/common/loading/Loading'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
-  const { communityId: id } = useParams()
-  const communityId = Number(id)
+  const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
   const { token, avatar, name } = useAppSelector(selectAccount)
 
   // 获取社区信息
   const { data: community, status: communityStatus } = useAppSelector(selectContributionCommunityInfo)
   useEffect(() => {
-    if (communityId) {
-      dispatch(fetchContributionCommunityInfo(communityId))
+    if (projectSlug) {
+      dispatch(fetchContributionCommunityInfo(projectSlug))
     }
-  }, [communityId])
+  }, [projectSlug])
 
   // 获取用户在此社区的贡献信息
   const { data: userContribution, status: userContributionStatus } = useAppSelector(selectUserContributon)
   useEffect(() => {
-    if (token && communityId) {
-      dispatch(fetchUserContributon(communityId))
+    if (token && projectSlug) {
+      dispatch(fetchUserContributon(projectSlug))
     }
-  }, [communityId, token])
+  }, [projectSlug, token])
 
   // 获取社区贡献等级排行
   const contributionranks = useAppSelector(selectAllForProjectContributionranks)
   const { status: contributionranksStatus } = useAppSelector(selecteContributionRanksState)
   const fetchContributionranksIntervalRef = useRef<any>(null)
-  const dispatchContributionRanks = () => communityId && dispatch(fetchCommunityContributionRanks(communityId))
+  const dispatchContributionRanks = () => projectSlug && dispatch(fetchCommunityContributionRanks(projectSlug))
   useEffect(() => {
-    if (communityId) {
+    if (projectSlug) {
       dispatchContributionRanks()
       fetchContributionranksIntervalRef.current = setInterval(() => {
         dispatchContributionRanks()
@@ -63,7 +62,7 @@ const Contributionranks: React.FC = () => {
     return () => {
       clearInterval(fetchContributionranksIntervalRef.current)
     }
-  }, [communityId])
+  }, [projectSlug])
 
   // 展示数据
   const contributionranksLoading = contributionranksStatus === AsyncRequestStatus.PENDING
