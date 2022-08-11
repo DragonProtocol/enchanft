@@ -217,7 +217,7 @@ const Project: React.FC = () => {
                 membersTotal={contributionMembersTotal}
                 displayMore={true}
                 moreText="View All"
-                onMore={() => communityId && navigate(`/contributionranks/${communityId}`)}
+                onMore={() => navigate(`/${projectSlug}/rank`)}
               />
             </ProjectBasicInfoRight>
           </ProjectBasicInfoBox>

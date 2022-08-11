@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-08 19:10:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 18:40:57
+ * @LastEditTime: 2022-08-11 11:15:04
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -32,19 +32,19 @@ export function fetchDetailForCommunityCollection(
   })
 }
 /** 获取社区基本信息 */
-export function fetchDetailByCommunityBasicInfo(id: number): AxiosPromise<ApiResp<CommunityBasicInfoResponse>> {
+export function fetchDetailByCommunityBasicInfo(slug: string): AxiosPromise<ApiResp<CommunityBasicInfoResponse>> {
   return request({
-    url: `/communities/${id}/info`,
+    url: `/projects/${slug}/community`,
     method: 'get',
   })
 }
 
 /** 获取 社区贡献值排行 列表 */
 export function fetchListForCommunityContributionRank(
-  communityId: number,
+  slug: string,
 ): AxiosPromise<ApiResp<CommunityContributionRankResponse>> {
   return request({
-    url: `/communities/${communityId}/contribution-rank`,
+    url: `/projects/${slug}/contribution-rank`,
     method: 'get',
   })
 }
@@ -61,9 +61,9 @@ export function fetchOneByUserCommunityContributionRank(id: number): AxiosPromis
 }
 
 /** 获取用户在此社区的积分 */
-export function fetchOneByUserCommunityScore(id: number): AxiosPromise<ApiResp<number>> {
+export function fetchOneByUserCommunityScore(slug: string): AxiosPromise<ApiResp<number>> {
   return request({
-    url: `/communities/${id}/contribution`,
+    url: `/projects/${slug}/contribution`,
     method: 'get',
     headers: {
       needToken: true,
