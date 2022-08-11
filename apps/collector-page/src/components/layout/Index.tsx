@@ -2,17 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 13:03:02
+ * @LastEditTime: 2022-08-11 17:58:40
  * @Description: 站点布局入口
  */
-import React, { HTMLAttributes } from 'react'
+import React from 'react'
 import styled from 'styled-components'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.min.css'
 import { MEDIA_BREAK_POINTS } from 'constants/index'
 import Main from './Main'
 import Header from './Header'
 import TodoFloatingWindow from './TodoFloatingWindow'
 import ScrollBox from '../common/ScrollBox'
 import MainInner from './MainInner'
+
 const Layout: React.FC = () => (
   <LayoutWrapper>
     <HeaderBox>
@@ -28,6 +31,7 @@ const Layout: React.FC = () => (
       </ScrollBox>
       <TodoFloatingWindow />
     </MainBox>
+    <ToastContainer autoClose={2000} position="bottom-left" />
   </LayoutWrapper>
 )
 export default Layout

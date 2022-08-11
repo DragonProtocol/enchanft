@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 17:13:42
+ * @LastEditTime: 2022-08-11 17:44:41
  * @Description: file description
  */
 import React from 'react'
@@ -17,6 +17,8 @@ import ActionDiscordInvitesPeople from './actions/ActionDiscordInvitesPeople'
 import IconCheckbox from '../../common/icons/IconCheckbox'
 import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 import Loading from '../../common/loading/Loading'
+import ActionRetweetTwitter from './actions/ActionRetweetTwitter'
+import ActionLikeTwitter from './actions/ActionLikeTwitter'
 
 export type TaskActionItemDataType = {
   id: number
@@ -55,8 +57,6 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   copyBgc,
 }: TaskActionItemProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
-  console.log('TaskActionItem allowHandle', allowHandle)
-
   const renderAction = () => {
     switch (type) {
       case ActionType.FOLLOW_TWITTER:
@@ -75,13 +75,11 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         // 邀请人员加入Discord Server
         return <ActionDiscordInvitesPeople data={data} onDiscord={onDiscord} allowHandle={allowHandle} />
       case ActionType.RETWEET:
-        // 转发
-        // TODO 目前先复用follow twitter 的 action，后续如果action操作有差异再新建 action
-        return <ActionFollowTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
+        // 转发twitter
+        return <ActionRetweetTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.LIKE_TWEET:
-        // 点赞
-        // TODO 目前先复用follow twitter 的 action，后续如果action操作有差异再新建 action
-        return <ActionFollowTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
+        // 点赞twitter
+        return <ActionLikeTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.UPDATE_BIO_OF_TWITTER:
         // 更新Twitter Bio
         // TODO 目前先复用follow twitter 的 action，后续如果action操作有差异再新建 action

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 18:04:22
+ * @LastEditTime: 2022-08-11 17:45:38
  * @Description: file description
  */
 import React from 'react'
@@ -21,6 +21,7 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import ActionIconBox from './ActionIconBox'
 import ActionNameSpan from './ActionNameSpan'
+import { toast } from 'react-toastify'
 
 export type ActionInvitePeopleProps = {
   data: TaskActionItemDataType
@@ -48,6 +49,7 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
 
   const isDone = status === UserActionStatus.DONE
   const handleCopySuccess = () => {
+    toast.success('Copied!')
     if (onCopy) {
       onCopy(refUrl)
     }

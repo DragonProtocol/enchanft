@@ -1,5 +1,5 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { fetchListForUserTodoTask, fetchOneForUserTodoTask, FetchOneParams } from '../../services/api/task'
+import { fetchListForUserTodoTask, verifyOneTask, VerifyOneTaskParams } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { TodoTaskItem, TodoTaskResponse } from '../../types/api'
@@ -68,9 +68,9 @@ type refreshOneResp = {
   errorMsg?: string
 }
 
-export const refreshTodoTasksOne = createAsyncThunk<
+export const verifyOneTodoTask = createAsyncThunk<
   refreshOneResp,
-  FetchOneParams,
+  VerifyOneTaskParams,
   {
     rejectValue: refreshOneResp
   }
@@ -78,7 +78,7 @@ export const refreshTodoTasksOne = createAsyncThunk<
   'user/todoTasks/refreshOne',
   async (params, { rejectWithValue }) => {
     try {
-      const resp = await fetchOneForUserTodoTask(params)
+      const resp = await verifyOneTask(params)
       if (resp.data.code === 0 && resp.data.data) {
         return { data: resp.data.data, errorMsg: '' }
       } else {
@@ -150,14 +150,14 @@ export const userTodoTasksSlice = createSlice({
           state.errorMsg = action.error.message || ''
         }
       })
-      .addCase(refreshTodoTasksOne.pending, (state, action) => {
-        console.log('refreshTodoTasksOne.pending', action)
+      .addCase(verifyOneTodoTask.pending, (state, action) => {
+        console.log('verifyOneTodoTask.pending', action)
         const { id } = action.meta.arg
         const changes = { refreshStatus: AsyncRequestStatus.PENDING }
         todoTasksEntity.updateOne(state, { id, changes })
       })
-      .addCase(refreshTodoTasksOne.fulfilled, (state, action) => {
-        console.log('refreshTodoTasksOne.fulfilled', action)
+      .addCase(verifyOneTodoTask.fulfilled, (state, action) => {
+        console.log('verifyOneTodoTask.fulfilled', action)
         const { data } = action.payload
         if (data) {
           todoTasksEntity.setOne(state, { ...data, refreshStatus: AsyncRequestStatus.FULFILLED })
@@ -167,8 +167,8 @@ export const userTodoTasksSlice = createSlice({
           todoTasksEntity.updateOne(state, { id, changes })
         }
       })
-      .addCase(refreshTodoTasksOne.rejected, (state, action) => {
-        console.log('refreshTodoTasksOne.rejected', action)
+      .addCase(verifyOneTodoTask.rejected, (state, action) => {
+        console.log('verifyOneTodoTask.rejected', action)
         const { id } = action.meta.arg
         const changes = { refreshStatus: AsyncRequestStatus.REJECTED }
         todoTasksEntity.updateOne(state, { id, changes })
