@@ -113,7 +113,8 @@ export default function SelectActions({
           type: ActionType.TWITTER,
           typeMore: ActionTypeMore.LIKE_TWEET,
           description: '',
-          url: likeTwitterLink,
+          url: `https://twitter.com/intent/like?tweet_id=${likeTwitterLink}`,
+          tweet_id: likeTwitterLink,
         })
     }
     if (retweetTwitterLink && retweetTwitter) {
@@ -124,7 +125,8 @@ export default function SelectActions({
           type: ActionType.TWITTER,
           typeMore: ActionTypeMore.RETWEET,
           description: '',
-          url: retweetTwitterLink,
+          url: `https://twitter.com/intent/retweet?tweet_id=${retweetTwitterLink}`,
+          tweet_id: retweetTwitterLink,
         })
     }
     if (joinCommunity) {
@@ -343,11 +345,12 @@ export default function SelectActions({
               {twitter ? (
                 likeTwitter && (
                   <div className="input-box">
-                    <span>Tweet Link:</span>
+                    <span>Tweet Id:</span>
                     <input
                       type="text"
                       title="task-like"
                       value={likeTwitterLink}
+                      onKeyPress={numberInput}
                       onChange={(e) => setLikeTwitterLink(e.target.value)}
                     />
                   </div>
@@ -378,10 +381,11 @@ export default function SelectActions({
               {twitter ? (
                 retweetTwitter && (
                   <div className="input-box">
-                    <span>Tweet Link</span>
+                    <span>Tweet Id:</span>
                     <input
                       type="text"
                       title="retweet"
+                      onKeyPress={numberInput}
                       value={retweetTwitterLink}
                       onChange={(e) => {
                         setRetweetTwitterLink(e.target.value)

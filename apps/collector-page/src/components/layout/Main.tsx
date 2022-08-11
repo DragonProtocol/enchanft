@@ -49,7 +49,7 @@ export const permissionRoutes: CutomRouteObject[] = [
   { path: '/guide', element: <Guide />, key: RouteKeys.guide },
   { path: '/todo', element: <TodoTask />, key: RouteKeys.todoTask },
   { path: '/enchanfted/:mint', element: <EnchanftedDetail />, key: RouteKeys.enchanftedDetail },
-  { path: '/:projectName/task/create/:projectId', element: <TaskCreate />, key: RouteKeys.taskCreate },
+  { path: '/:projectSlug/task/create/:projectId', element: <TaskCreate />, key: RouteKeys.taskCreate },
 ]
 export const routes: CutomRouteObject[] = [
   { path: '/', element: <Events />, key: RouteKeys.events },

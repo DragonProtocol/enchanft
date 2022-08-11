@@ -36,6 +36,7 @@ export type Action = {
   require_score?: number
   num?: number
   accounts?: string[]
+  tweet_id?: string
 }
 
 export type Reward = {

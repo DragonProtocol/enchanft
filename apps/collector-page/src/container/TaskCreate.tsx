@@ -14,7 +14,7 @@ import {
 } from '@mui/material'
 import { InputAdornment } from '@mui/material'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import Basic from '../components/business/task/create/Basic'
 import Preview from '../components/business/task/create/Preview'
@@ -29,10 +29,12 @@ import usePermissions from '../hooks/usePermissons'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { AsyncRequestStatus } from '../types'
 import PngIconCaretLeft from '../components/common/icons/PngIconCaretLeft'
+import { fetchDetail, createTask as createTaskApi } from '../services/api/task'
 
 export default function TaskCreate() {
   const navigate = useNavigate()
-  const { projectId, projectName } = useParams()
+  const { projectId, projectSlug } = useParams()
+  const [searchParams] = useSearchParams()
   const [openPreview, setOpenPreview] = React.useState(false)
   const [toastMsg, setToastMsg] = React.useState('')
   const [showToast, setShowToast] = React.useState(false)
@@ -40,34 +42,22 @@ export default function TaskCreate() {
   const [state, setState] = useState<CreateTaskState>({
     ...DefaultState,
     projectId: Number(projectId),
-    projectName: projectName || '',
+    projectName: searchParams.get('projectName') ? decodeURIComponent(searchParams.get('projectName')!) : '',
   })
-  const dispatch = useAppDispatch()
+
+  // const dispatch = useAppDispatch()
   const { isCreator, checkProjectAllowed } = usePermissions()
-  const { createStatus } = useAppSelector(selectTaskDetail)
+  // const { createStatus } = useAppSelector(selectTaskDetail)
 
-  const submitResult = useCallback(() => {
-    dispatch(createTask(state))
+  const submitResult = useCallback(async () => {
+    try {
+      const resp = await createTaskApi(state)
+      navigate(`/${projectSlug}/${resp.data.data.id}`)
+    } catch (error) {
+      setToastMsg('create fail')
+      setShowToast(true)
+    }
   }, [state])
-
-  const refreshActionHandler = useCallback(() => {
-    setRefreshAction(refreshAction + 1)
-  }, [refreshAction])
-
-  useEffect(() => {
-    if (createStatus === AsyncRequestStatus.FULFILLED) {
-      setOpenPreview(false)
-      setState({ ...DefaultState, projectId: Number(projectId) })
-      refreshActionHandler()
-      setToastMsg('create success')
-      setShowToast(true)
-    }
-    if (createStatus === AsyncRequestStatus.REJECTED) {
-      setToastMsg('create failed')
-      setOpenPreview(false)
-      setShowToast(true)
-    }
-  }, [createStatus])
 
   if (!isCreator || !checkProjectAllowed(Number(projectId))) {
     return <TaskCreateWrapper>Not allowed</TaskCreateWrapper>
