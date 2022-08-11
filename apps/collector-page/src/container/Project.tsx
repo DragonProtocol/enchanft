@@ -123,9 +123,9 @@ const Project: React.FC = () => {
   // 获取社区贡献等级
   const contributionranks = useAppSelector(selectAllForCommunityContributionranks)
   const fetchContributionranksIntervalRef = useRef<any>(null)
-  const dispatchContributionRanks = () => communityId && dispatch(fetchCommunityContributionRanks(communityId))
+  const dispatchContributionRanks = () => projectSlug && dispatch(fetchCommunityContributionRanks(projectSlug))
   useEffect(() => {
-    if (communityId) {
+    if (projectSlug) {
       dispatchContributionRanks()
       fetchContributionranksIntervalRef.current = setInterval(() => {
         dispatchContributionRanks()
@@ -136,7 +136,7 @@ const Project: React.FC = () => {
     return () => {
       clearInterval(fetchContributionranksIntervalRef.current)
     }
-  }, [communityId])
+  }, [projectSlug])
 
   // 用户关注的社区ID集合
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
