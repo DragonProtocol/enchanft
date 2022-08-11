@@ -47,6 +47,7 @@ export type Community = {
   website: string
   description: string
   discord: string
+  discordId?: string
   twitter: string
 }
 

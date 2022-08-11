@@ -233,7 +233,11 @@ const Project: React.FC = () => {
                 items={tasks}
                 displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
                 onCreateTask={() => {
-                  navigate(`/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}`)
+                  navigate(
+                    `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${
+                      data.community.discordId || ''
+                    }`,
+                  )
                 }}
               />
             </ExploreTaskListBox>

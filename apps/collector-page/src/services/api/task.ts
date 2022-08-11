@@ -122,3 +122,16 @@ export function checkTwitterNameValid(name: string) {
     },
   })
 }
+
+export function projectBindBot({ projectId, discordId }: { projectId: string; discordId: string }) {
+  return request({
+    url: `/projects/${projectId}/binding`,
+    method: 'post',
+    data: {
+      discordId,
+    },
+    headers: {
+      needToken: true,
+    },
+  })
+}
