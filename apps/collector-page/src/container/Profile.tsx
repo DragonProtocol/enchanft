@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 15:53:13
+ * @LastEditTime: 2022-08-11 18:17:22
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -91,9 +91,12 @@ const formatStoreDataToComponentDataByUserWhitelists = (
   whitelists: UserWhitelistForEntity[],
 ): WhitelistListItemsType => {
   return whitelists.map((item) => {
+    const displayMint = Boolean(item.whitelist?.mintUrl)
     return {
       data: { ...item },
-      viewConfig: {},
+      viewConfig: {
+        displayMint,
+      },
     }
   })
 }

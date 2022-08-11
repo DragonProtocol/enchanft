@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 15:36:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-21 18:58:15
+ * @LastEditTime: 2022-08-11 16:02:52
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -52,21 +52,21 @@ export function fetchListForUserTodoTask(): AxiosPromise<ApiResp<TodoTaskRespons
   })
 }
 
-/** 获取用户的单个任务 */
-export type FetchOneParams = {
+/** 对单个任务进行验证 */
+export type VerifyOneTaskParams = {
   id: number
 }
-export function fetchOneForUserTodoTask(params: FetchOneParams): AxiosPromise<ApiResp<TodoTaskItem>> {
+export function verifyOneTask(params: VerifyOneTaskParams): AxiosPromise<ApiResp<TodoTaskItem>> {
   const { id } = params
   return request({
-    url: `/tasks/${id}`,
-    method: 'get',
+    url: `/tasks/${id}/verification`,
+    method: 'post',
     headers: {
       needToken: true,
     },
   })
 }
-
+/** 获取单个任务详情 */
 export function fetchDetail(id: number): AxiosPromise<ApiResp<TaskDetailResponse>> {
   return request({
     url: `/tasks/${id}`,

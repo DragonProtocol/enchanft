@@ -54,14 +54,14 @@ export enum ProjectInfoTabsValue {
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
   data: ProjectDetailEntity,
   token: string,
-  followedCommunityIds: Array<number | string>,
+  followedCommunityIds: Array<string>,
   followCommunityStatus: AsyncRequestStatus,
 ): ProjectDetailCommunityDataViewType => {
   const { community } = data
   return {
     data: {
       ...community,
-      isFollowed: followedCommunityIds.includes(data.id),
+      isFollowed: followedCommunityIds.includes(data.id.toString()),
     },
     viewConfig: {
       displayFollow: token ? true : false,

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 15:38:00
+ * @LastEditTime: 2022-08-11 18:09:25
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -16,7 +16,7 @@ import { AsyncRequestStatus } from '../types'
 import TodoTaskList, { TodoTaskListItemsType } from '../components/business/task/TodoTaskList'
 import {
   fetchTodoTasks,
-  refreshTodoTasksOne,
+  verifyOneTodoTask,
   selectAll,
   selectUserTodoTasksState,
   TodoTaskItemForEntity,
@@ -129,10 +129,11 @@ const formatStoreDataToComponentDataByCompletedList = (tasks: TodoTaskItemForEnt
 
 const formatStoreDataToComponentDataByWonList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
   return tasks.map((task) => {
+    const displayMint = Boolean(task.project.mintUrl)
     return {
       data: { ...task, actions: [] },
       viewConfig: {
-        displayMint: true,
+        displayMint,
       },
     }
   })
@@ -171,7 +172,7 @@ const TodoTask: React.FC = () => {
 
   // 处理单个任务刷新
   const handleRefreshTask = (taskId: number) => {
-    dispatch(refreshTodoTasksOne({ id: taskId }))
+    dispatch(verifyOneTodoTask({ id: taskId }))
   }
 
   // 处理执行action操作
