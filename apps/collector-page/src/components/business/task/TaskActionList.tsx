@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:45:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 14:16:11
+ * @LastEditTime: 2022-08-12 14:52:16
  * @Description: file description
  */
 import React from 'react'
@@ -56,7 +56,7 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
       onVerifyActions()
     }
   }
-  const verifyText = loadingVerify ? loadingVerifyMsg : 'Verify'
+  const verifyText = loadingVerify ? loadingVerifyMsg : 'Verify & Apply for WL'
   return (
     <TaskActionListWrapper>
       {loading ? (
