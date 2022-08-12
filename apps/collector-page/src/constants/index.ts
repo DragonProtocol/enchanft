@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 18:30:28
+ * @LastEditTime: 2022-08-12 10:36:51
  * @Description: 系统相关常量定义
  */
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -27,3 +27,4 @@ export const TASK_DEFAULT_IMAGE_URLS = [
 ]
 
 export const TASK_DEFAULT_IMAGE_URL = TASK_DEFAULT_IMAGE_URLS[1]
+export const TASK_SHARE_URI = process.env.REACT_APP_TASK_SHARE_URI
