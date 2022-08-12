@@ -14,7 +14,7 @@ export enum TaskStatusButtonType {
 const buttonTextMap = {
   [TaskStatusButtonType.CONNECT_WALLET]: 'Connect Wallet',
   [TaskStatusButtonType.BIND_WALLET]: 'Bind Wallet',
-  [TaskStatusButtonType.TAKE]: 'Take The Task',
+  [TaskStatusButtonType.TAKE]: 'Apply For WL',
   [TaskStatusButtonType.TODO]: 'Already Accepted',
   [TaskStatusButtonType.COMPLETE]: 'Completed!',
 }
