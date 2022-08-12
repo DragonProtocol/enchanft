@@ -33,7 +33,7 @@ import { fetchDetail, createTask as createTaskApi, projectBindBot } from '../ser
 import PngIconDone from '../components/common/icons/PngIconDone'
 
 const discordBotCallback = `https://discord.com/oauth2/authorize?client_id=1003616859582627881&permissions=49&scope=bot&response_type=code&redirect_uri=${encodeURI(
-  process.env.REACT_APP_DISCORD_BOT_CALLBACK_URL!,
+  process.env.REACT_APP_DISCORD_CALLBACK_URL!,
 )}`
 
 export default function TaskCreate() {
