@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
@@ -107,17 +107,31 @@ const formatStoreDataToComponentDataByTeamMembers = (
 
 const Project: React.FC = () => {
   const navigate = useNavigate()
-  const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
-  const projectDetail = useAppSelector(selectProjectDetail)
+
+  const { projectSlug } = useParams()
+  const { data, status, errorMsg } = useAppSelector(selectProjectDetail)
+  const dispatchFetchDetail = useCallback(() => projectSlug && dispatch(fetchProjectDetail(projectSlug)), [projectSlug])
+  const [loadingView, setLoadingView] = useState(true)
   const { isCreator, checkProjectAllowed } = usePermissions()
-  const { data, status, errorMsg } = projectDetail
+
+  // slug，重新请求数据，并进入loading状态
   useEffect(() => {
-    if (projectSlug) {
-      dispatch(fetchProjectDetail(projectSlug))
+    setLoadingView(true)
+    dispatchFetchDetail()
+  }, [projectSlug])
+  // token 变化，重新请求详情数据
+  useEffect(() => {
+    dispatchFetchDetail()
+  }, [token])
+  // 确保终止loading状态
+  useEffect(() => {
+    if (loadingView && ![AsyncRequestStatus.IDLE, AsyncRequestStatus.PENDING].includes(status)) {
+      setLoadingView(false)
     }
-  }, [projectSlug, token])
+  }, [loadingView, status])
+
   const communityId = data?.communityId
 
   // 获取社区贡献等级
@@ -165,15 +179,16 @@ const Project: React.FC = () => {
     // },
   ]
   const [activeTab, setActiveTab] = useState(ProjectInfoTabsValue.TEAM)
-  const loading = status === AsyncRequestStatus.PENDING
-  if (loading)
+  if (loadingView)
     return (
       <MainInnerStatusBox>
         <Loading />{' '}
       </MainInnerStatusBox>
     )
   // 展示数据
-  if (!data) return null
+  if (!data) {
+    return <MainInnerStatusBox>Can't find project {projectSlug}</MainInnerStatusBox>
+  }
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
     data,
     token,
@@ -259,7 +274,9 @@ const Project: React.FC = () => {
                   </ProjectOtherInfoRightTab>
                 ))}
               </ProjectOtherInfoRightTabs>
-              {ProjectInfoTabComponents[activeTab]}
+              {/* {ProjectInfoTabComponents[activeTab]} */}
+              {(activeTab === ProjectInfoTabsValue.TEAM && <ProjectTeamMemberList items={teamMembers} />) ||
+                (activeTab === ProjectInfoTabsValue.ROADMAP && <ProjectRoadmap items={data.roadmap} />)}
             </ProjectOtherInfoRightBox>
           </ProjectOtherInfoBox>
         </ProjectBottomBox>
@@ -267,7 +284,7 @@ const Project: React.FC = () => {
     </ProjectWrapper>
   )
 }
-export default Project
+export default React.memo(Project)
 const ProjectWrapper = styled.div`
   width: 100%;
 `

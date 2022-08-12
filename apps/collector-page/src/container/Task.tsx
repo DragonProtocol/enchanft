@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 10:37:30
+ * @LastEditTime: 2022-08-12 18:02:51
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -145,19 +145,26 @@ const Task: React.FC = () => {
 
   const { taskId: id, projectSlug } = useParams()
   const { status, data } = useAppSelector(selectTaskDetail)
-  const dispatchFetchTaskDetail = useCallback(() => dispatch(fetchTaskDetail(Number(id))), [id])
-  const [loadingView, setLoadingView] = useState(true)
+  const dispatchFetchTaskDetail = useCallback(() => id && dispatch(fetchTaskDetail(Number(id))), [id])
+  const [loadingView, setLoadingView] = useState(false)
   const { isCreator, checkTaskAllowed } = usePermissions()
-  useEffect(() => {
-    if (status === AsyncRequestStatus.FULFILLED) {
-      setLoadingView(false)
-    }
-  }, [status])
 
+  // slug 变化，重新请求数据，并进入loading状态
   useEffect(() => {
     setLoadingView(true)
     dispatchFetchTaskDetail()
-  }, [id, token])
+  }, [id])
+  // token 变化，重新请求详情数据
+  useEffect(() => {
+    dispatchFetchTaskDetail()
+  }, [token])
+  // 确保终止loading状态
+  useEffect(() => {
+    if (loadingView && ![AsyncRequestStatus.IDLE, AsyncRequestStatus.PENDING].includes(status)) {
+      setLoadingView(false)
+    }
+  }, [loadingView, status])
+
   const handleLeave = useCallback(() => {
     navigate(-1)
   }, [])
@@ -181,7 +188,6 @@ const Task: React.FC = () => {
   }, [modalType])
 
   // 关注社区
-  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
   const handleFollowCommunity = (communityId: number) => {
     dispatch(followCommunity({ id: communityId }))
   }
@@ -194,7 +200,14 @@ const Task: React.FC = () => {
         <Loading />{' '}
       </MainInnerStatusBox>
     )
-  if (!data) return null
+
+  if (!data) {
+    return (
+      <MainInnerStatusBox>
+        Can't find task {projectSlug}/{id}
+      </MainInnerStatusBox>
+    )
+  }
   // 接受任务
   const name = data.name || ''
   const { projectId, image } = data
@@ -313,7 +326,7 @@ const ProjectNameBox = styled.div`
   padding-top: 5px;
   padding-left: 70px;
 `
-const ProjectName = styled.div`
+const ProjectName = styled.span`
   font-size: 20px;
   line-height: 30px;
   color: #3dd606;
