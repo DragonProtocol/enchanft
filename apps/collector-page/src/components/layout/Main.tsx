@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 11:04:50
+ * @LastEditTime: 2022-08-12 19:03:15
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
@@ -47,7 +47,7 @@ export type CutomRouteObject = RouteObject & {
 export const permissionRoutes: CutomRouteObject[] = [
   { path: '/profile', element: <Profile />, key: RouteKeys.profile },
   { path: '/guide', element: <Guide />, key: RouteKeys.guide },
-  { path: '/todo', element: <TodoTask />, key: RouteKeys.todoTask },
+  { path: '/towl', element: <TodoTask />, key: RouteKeys.todoTask },
   { path: '/enchanfted/:mint', element: <EnchanftedDetail />, key: RouteKeys.enchanftedDetail },
   { path: '/:projectSlug/task/create/:projectId', element: <TaskCreate />, key: RouteKeys.taskCreate },
 ]

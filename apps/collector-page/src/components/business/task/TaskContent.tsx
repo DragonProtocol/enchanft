@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:39:25
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-18 18:26:31
+ * @LastEditTime: 2022-08-12 19:04:17
  * @Description:（公开面板上的）任务内容
  */
 import React from 'react'
@@ -97,7 +97,7 @@ const TaskContent: React.FC<TaskContentProps> = ({ data, viewConfig, onTake }: T
           {loadingTake ? 'loading...' : 'Take the task'}
         </TaskTakeBtn>
       )}
-      {displayGoToTasks && <TaskTakeBtn onClick={() => navigate(`/todo?taskId=${id}`)}>Go To Tasks</TaskTakeBtn>}
+      {displayGoToTasks && <TaskTakeBtn onClick={() => navigate(`/towl?taskId=${id}`)}>Go To Tasks</TaskTakeBtn>}
       {displayAccept && <TaskAcceptedSeal>accept</TaskAcceptedSeal>}
       {displayConnectWalletTip && <SolanaConnectWalletButton />}
     </TaskContentWrapper>
