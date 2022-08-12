@@ -61,7 +61,7 @@ const formatStoreDataToComponentDataByCommunityBasicInfo = (
   return {
     data: {
       ...community,
-      isFollowed: followedCommunityIds.map((item) => String(item)).includes(String(data.id)),
+      isFollowed: followedCommunityIds.map((item) => String(item)).includes(String(community.id)),
     },
     viewConfig: {
       displayFollow: token ? true : false,

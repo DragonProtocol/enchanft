@@ -2,38 +2,57 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 10:06:24
+ * @LastEditTime: 2022-08-12 14:20:04
  * @Description: 站点布局入口
  */
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.min.css'
 import { MEDIA_BREAK_POINTS } from 'constants/index'
-import Main from './Main'
+import Main, { CutomRouteObject, permissionRoutes, RouteKeys, routes } from './Main'
 import Header from './Header'
 import TodoFloatingWindow from './TodoFloatingWindow'
 import ScrollBox from '../common/ScrollBox'
 import MainInner from './MainInner'
+import { matchRoutes, useLocation } from 'react-router-dom'
 
-const Layout: React.FC = () => (
-  <LayoutWrapper>
-    <HeaderBox>
-      <HeaderInner>
-        <Header />
-      </HeaderInner>
-    </HeaderBox>
-    <MainBox>
-      <ScrollBox>
-        <MainInner>
-          <Main />
-        </MainInner>
-      </ScrollBox>
-      <TodoFloatingWindow />
-    </MainBox>
-    <ToastContainer autoClose={2000} position="top-right" />
-  </LayoutWrapper>
-)
+const Layout: React.FC = () => {
+  // TODO 后面对路由优化时，这个matchRoutes重复代码可封装成hooks
+  const location = useLocation()
+  const [displayTodoFloating, setDisplayTodoFloating] = useState(true)
+  useEffect(() => {
+    const match = matchRoutes([...permissionRoutes, ...routes], location)
+    if (!match) {
+      setDisplayTodoFloating(false)
+    } else {
+      const { key } = match[0].route as CutomRouteObject
+      if (key === RouteKeys.creator) {
+        setDisplayTodoFloating(false)
+      } else {
+        setDisplayTodoFloating(true)
+      }
+    }
+  }, [location])
+  return (
+    <LayoutWrapper>
+      <HeaderBox>
+        <HeaderInner>
+          <Header />
+        </HeaderInner>
+      </HeaderBox>
+      <MainBox>
+        <ScrollBox>
+          <MainInner>
+            <Main />
+          </MainInner>
+        </ScrollBox>
+        {displayTodoFloating && <TodoFloatingWindow />}
+      </MainBox>
+      <ToastContainer autoClose={2000} position="top-right" />
+    </LayoutWrapper>
+  )
+}
 export default Layout
 const LayoutWrapper = styled.div`
   width: 100vw;
