@@ -23,14 +23,21 @@ import PngIconDelete from '../../../common/icons/PngIconDelete'
 import PngIconDone from '../../../common/icons/PngIconDone'
 
 export default function SelectActions({
+  hasInviteBot,
   followTwitters,
+  communityName,
+  communityTwitter,
   updateStateActions,
   updateStateFollowTwitters,
 }: {
+  hasInviteBot: boolean
+  communityName: string
+  communityTwitter: string
   followTwitters: string[]
   updateStateActions: (arg0: Action[]) => void
   updateStateFollowTwitters: (arg0: string[]) => void
 }) {
+  const communityTwitterName = communityTwitter.split('/')[3]
   const account = useAppSelector(selectAccount)
 
   const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
@@ -38,7 +45,7 @@ export default function SelectActions({
 
   const [followTwitter, setFollowTwitter] = useState(false)
   const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<Array<string>>(
-    followTwitters.length > 0 ? [...followTwitters] : twitter ? [twitter.thirdpartyName] : [],
+    followTwitters.length > 0 ? [...followTwitters] : communityTwitterName ? [communityTwitterName] : [],
   )
   const [joinDiscord, setJoinDiscord] = useState(false)
   const [joinDiscordLink, setJoinDiscordLink] = useState('')
@@ -66,8 +73,8 @@ export default function SelectActions({
         accounts: followTwitterLinkResult,
       })
       updateStateFollowTwitters(followTwitterLinkResult)
-    } else if (twitter) {
-      updateStateFollowTwitters([twitter.thirdpartyName])
+    } else if (communityTwitterName) {
+      updateStateFollowTwitters([communityTwitterName])
     }
     if (joinDiscord && joinDiscordLink && joinDiscordServerId) {
       const msg = document.getElementById('join-discord-msg')?.textContent
@@ -228,105 +235,6 @@ export default function SelectActions({
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
-                checked={joinDiscord}
-                onChange={() => {
-                  if (discord) setJoinDiscord(!joinDiscord)
-                }}
-              />{' '}
-              <span id="join-discord-msg" className="msg">
-                Join #{discord?.thirdpartyName || 'XXX'} server on Discord
-              </span>
-              <IconDiscord />
-            </div>
-            <div className="help join-discord">
-              {discord ? (
-                joinDiscord && (
-                  <>
-                    <div className="input-box">
-                      <span>Discord Server Link:</span>
-                      <input
-                        type="text"
-                        title="task-like"
-                        value={joinDiscordLink}
-                        onChange={(e) => setJoinDiscordLink(e.target.value)}
-                      />
-                    </div>
-                    <div className="input-box">
-                      <span>Discord Server Id:</span>
-                      <input
-                        type="text"
-                        title="task-like"
-                        value={joinDiscordServerId}
-                        onChange={(e) => setJoinDiscordServerId(e.target.value)}
-                      />
-                    </div>
-                  </>
-                )
-              ) : (
-                <ConnectDiscord />
-              )}
-            </div>
-          </div>
-          <div className="content-item">
-            <div className="desc">
-              <CustomCheckBox
-                checked={inviteDiscord}
-                onChange={() => {
-                  if (discord) setInviteDiscord(!inviteDiscord)
-                }}
-              />
-              <span id="invite-discord-msg" className="msg">
-                Invite
-                <input
-                  placeholder="X"
-                  title="invite-discord"
-                  value={inviteDiscordNum === 0 ? '' : inviteDiscordNum.toString()}
-                  onKeyPress={numberInput}
-                  onChange={(e) => {
-                    if (discord) setInviteDiscordNum(Number(e.target.value))
-                  }}
-                />
-                <span>{` ${inviteDiscordNum} `}</span>
-                friends to join #{discord?.thirdpartyName || 'XXX'} server on Discord
-              </span>
-              <IconDiscord />
-            </div>
-            <div className="help">{discord ? null : <ConnectDiscord />}</div>
-          </div>
-          <div className="content-item">
-            <div className="desc">
-              <CustomCheckBox
-                checked={inviteFriends}
-                onChange={() => {
-                  const nextValue = !inviteFriends
-                  setInvalidFriends(nextValue)
-                  if (!nextValue) {
-                    setInviteNum(0)
-                  }
-                }}
-              />
-              <span id="invite-friends-msg" className="msg">
-                invite
-                <input
-                  title="task-invite"
-                  value={inviteNum === 0 ? '' : inviteNum.toString()}
-                  placeholder="X"
-                  onKeyPress={numberInput}
-                  onChange={(e) => {
-                    if (inviteFriends) setInviteNum(Number(e.target.value))
-                  }}
-                />
-                <span>{` ${inviteNum} `}</span>
-                friends to take the Task
-              </span>
-              <IconTip />
-            </div>
-          </div>
-        </div>
-        <div>
-          <div className="content-item">
-            <div className="desc">
-              <CustomCheckBox
                 checked={likeTwitter}
                 onChange={() => {
                   if (!twitter) return
@@ -337,7 +245,7 @@ export default function SelectActions({
                 }}
               />
               <span id="like-twitter-msg" className="msg">
-                Like @{twitter?.thirdpartyName || 'XXX'} on twitter
+                Like the tweet
               </span>
               <IconTwitter />
             </div>
@@ -373,7 +281,7 @@ export default function SelectActions({
                 }}
               />
               <span id="retweet-twitter-msg" className="msg">
-                Retweet @{twitter?.thirdpartyName || 'XXX'} on twitter
+                Retweet the tweet
               </span>
               <IconTwitter />
             </div>
@@ -398,6 +306,110 @@ export default function SelectActions({
               )}
             </div>
           </div>
+
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={inviteFriends}
+                onChange={() => {
+                  const nextValue = !inviteFriends
+                  setInvalidFriends(nextValue)
+                  if (!nextValue) {
+                    setInviteNum(0)
+                  }
+                }}
+              />
+              <span id="invite-friends-msg" className="msg">
+                invite
+                <input
+                  title="task-invite"
+                  value={inviteNum === 0 ? '' : inviteNum.toString()}
+                  placeholder="X"
+                  onKeyPress={numberInput}
+                  onChange={(e) => {
+                    if (inviteFriends) setInviteNum(Number(e.target.value))
+                  }}
+                />
+                <span>{` ${inviteNum} `}</span>
+                friends to take the Task
+              </span>
+              <IconTip />
+            </div>
+          </div>
+        </div>
+        <div>
+          {hasInviteBot && (
+            <div className="content-item">
+              <div className="desc">
+                <CustomCheckBox
+                  checked={joinDiscord}
+                  onChange={() => {
+                    if (discord) setJoinDiscord(!joinDiscord)
+                  }}
+                />{' '}
+                <span id="join-discord-msg" className="msg">
+                  Join #{discord?.thirdpartyName || 'XXX'} server on Discord
+                </span>
+                <IconDiscord />
+              </div>
+              <div className="help join-discord">
+                {discord ? (
+                  joinDiscord && (
+                    <>
+                      <div className="input-box">
+                        <span>Discord Server Link:</span>
+                        <input
+                          type="text"
+                          title="task-like"
+                          value={joinDiscordLink}
+                          onChange={(e) => setJoinDiscordLink(e.target.value)}
+                        />
+                      </div>
+                      <div className="input-box">
+                        <span>Discord Server Id:</span>
+                        <input
+                          type="text"
+                          title="task-like"
+                          value={joinDiscordServerId}
+                          onChange={(e) => setJoinDiscordServerId(e.target.value)}
+                        />
+                      </div>
+                    </>
+                  )
+                ) : (
+                  <ConnectDiscord />
+                )}
+              </div>
+            </div>
+          )}
+          {hasInviteBot && (
+            <div className="content-item">
+              <div className="desc">
+                <CustomCheckBox
+                  checked={inviteDiscord}
+                  onChange={() => {
+                    if (discord) setInviteDiscord(!inviteDiscord)
+                  }}
+                />
+                <span id="invite-discord-msg" className="msg">
+                  Invite
+                  <input
+                    placeholder="X"
+                    title="invite-discord"
+                    value={inviteDiscordNum === 0 ? '' : inviteDiscordNum.toString()}
+                    onKeyPress={numberInput}
+                    onChange={(e) => {
+                      if (discord) setInviteDiscordNum(Number(e.target.value))
+                    }}
+                  />
+                  <span>{` ${inviteDiscordNum} `}</span>
+                  friends to join #{discord?.thirdpartyName || 'XXX'} server on Discord
+                </span>
+                <IconDiscord />
+              </div>
+              <div className="help">{discord ? null : <ConnectDiscord />}</div>
+            </div>
+          )}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -425,7 +437,7 @@ export default function SelectActions({
                 }}
               />
               <span id="join-community-contribution-msg" className="msg">
-                {account.name || 'XXX'}'s community contribution {'>'}
+                {communityName || 'XXX'} community contribution {'>'}
                 <input
                   type="text"
                   title="task-join-community"
