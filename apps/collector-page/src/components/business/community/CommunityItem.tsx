@@ -138,6 +138,7 @@ const CommunityName = styled(OverflowEllipsisBox)`
   color: rgba(16, 16, 16, 100);
   font-size: 18px;
   font-weight: bold;
+  flex-shrink: 0;
 `
 const CommunityFollow = styled(ButtonBase)<{ isFollowed: boolean }>`
   height: 40px;

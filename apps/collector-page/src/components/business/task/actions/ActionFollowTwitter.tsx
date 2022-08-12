@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 17:56:15
+ * @LastEditTime: 2022-08-12 11:16:39
  * @Description: file description
  */
 import React from 'react'
@@ -48,12 +48,10 @@ const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({
         <FollowTwitterTitle allowHandle={allowHandle} isDone={isDone}>
           Follow{' '}
           {accounts.map((item, index) => (
-            <>
-              <TwitterLink key={index} onClick={() => clickAction(item)}>
-                {'@' + item}
-              </TwitterLink>
+            <TwitterLinkBox key={index}>
+              <TwitterLink onClick={() => clickAction(item)}>{'@' + item}</TwitterLink>
               {index < accounts.length - 1 ? ' , ' : ''}
-            </>
+            </TwitterLinkBox>
           ))}{' '}
           on Twitter
         </FollowTwitterTitle>
@@ -83,6 +81,7 @@ const FollowTwitterTitle = styled(ActionNameSpan)`
     color: inherit;
   }
 `
+const TwitterLinkBox = styled.span``
 const TwitterLink = styled.a`
   cursor: pointer;
   &:hover {

@@ -246,11 +246,13 @@ const TaskName = styled(OverflowEllipsisBox)`
   font-size: 18px;
   line-height: 27px;
   color: #333333;
+  flex-shrink: 0;
 `
 const CommunityName = styled.div`
   font-size: 12px;
   line-height: 18px;
   color: rgba(51, 51, 51, 0.6);
+  flex-shrink: 0;
 `
 const RewardTypeContentBox = styled.div`
   width: 100%;

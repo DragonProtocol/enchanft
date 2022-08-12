@@ -9,6 +9,7 @@ import {
   selecteContributionRanksState,
 } from '../features/community/contributionRanksSlice'
 import { useNavigate, useParams } from 'react-router-dom'
+import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import IconCaretLeft from '../components/common/icons/IconCaretLeft'
 import CardBox from '../components/common/card/CardBox'
@@ -17,10 +18,14 @@ import {
   fetchContributionCommunityInfo,
   selectContributionCommunityInfo,
 } from '../features/contribution/communityInfoSlice'
+import {
+  follow as followCommunity,
+  selectfollow as selectfollowCommunity,
+} from '../features/user/communityHandlesSlice'
 import { fetchUserContributon, selectUserContributon } from '../features/contribution/userContributionSlice'
 import { AsyncRequestStatus } from '../types'
 import ContributionAbout from '../components/business/contribution/ContributionAbout'
-import ContributionMy from '../components/business/contribution/ContributionMy'
+import ContributionMy, { ContributionMyDataViewType } from '../components/business/contribution/ContributionMy'
 import Loading from '../components/common/loading/Loading'
 
 const Contributionranks: React.FC = () => {
@@ -36,14 +41,26 @@ const Contributionranks: React.FC = () => {
       dispatch(fetchContributionCommunityInfo(projectSlug))
     }
   }, [projectSlug])
+  // 用户关注的社区ID集合
+  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
+  const isFollowedCommunity = community?.id
+    ? userFollowedProjectIds.map((item) => String(item)).includes(String(community.id))
+    : false
+  // 关注社区
+  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
+  const handleFollowCommunity = () => {
+    if (community?.id) {
+      dispatch(followCommunity({ id: community.id }))
+    }
+  }
 
-  // 获取用户在此社区的贡献信息
+  // 获取用户在此社区的贡献值
   const { data: userContribution, status: userContributionStatus } = useAppSelector(selectUserContributon)
   useEffect(() => {
-    if (token && projectSlug) {
+    if (token && projectSlug && isFollowedCommunity) {
       dispatch(fetchUserContributon(projectSlug))
     }
-  }, [projectSlug, token])
+  }, [projectSlug, token, isFollowedCommunity])
 
   // 获取社区贡献等级排行
   const contributionranks = useAppSelector(selectAllForProjectContributionranks)
@@ -66,10 +83,17 @@ const Contributionranks: React.FC = () => {
 
   // 展示数据
   const contributionranksLoading = contributionranksStatus === AsyncRequestStatus.PENDING
-  const userContributionInfo = {
-    avatar: avatar,
-    userName: name,
-    score: userContribution || 0,
+  const userContributionInfo: ContributionMyDataViewType = {
+    data: {
+      avatar: avatar,
+      userName: name,
+      score: userContribution || 0,
+    },
+    viewConfig: {
+      displayFollowCommunity: !isFollowedCommunity,
+      loadingFollowCommunity: followCommunityStatus === AsyncRequestStatus.PENDING,
+      disabledFollowCommunity: followCommunityStatus === AsyncRequestStatus.PENDING,
+    },
   }
   // TODO 没有twitter名称字段
   const communityInfo = {
@@ -108,7 +132,11 @@ const Contributionranks: React.FC = () => {
           <ContributionRigtBox>
             {token && (
               <ContributionMyBox>
-                <ContributionMy data={userContributionInfo} />
+                <ContributionMy
+                  data={userContributionInfo.data}
+                  viewConfig={userContributionInfo.viewConfig}
+                  onFollowCommunity={handleFollowCommunity}
+                />
               </ContributionMyBox>
             )}
 
