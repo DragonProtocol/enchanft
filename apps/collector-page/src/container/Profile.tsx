@@ -75,6 +75,8 @@ import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
 import IconMetamask from '../components/common/icons/IconMetamask'
 import UserAvatar from '../components/business/user/UserAvatar'
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
+import { toast } from 'react-toastify'
+
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {
@@ -277,7 +279,7 @@ const Profile: React.FC = () => {
                 document.getElementById('uploadinput')?.click()
               }}
             >
-              <EditAvatar src={account.avatar} />
+              <EditAvatar src={avatar || account.avatar} />
             </EditAvatarBox>
 
             <EditNameBox>
@@ -291,8 +293,13 @@ const Profile: React.FC = () => {
                   const file = e.target.files && e.target.files[0]
                   console.log(file)
                   if (!file) return
-                  const { data } = await uploadAvatar(file)
-                  setAvatar(data.url)
+                  try {
+                    const { data } = await uploadAvatar(file)
+                    setAvatar(data.url)
+                    toast.success('upload success')
+                  } catch (error) {
+                    toast.error('upload fail')
+                  }
                 }}
               />
 

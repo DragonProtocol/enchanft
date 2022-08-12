@@ -136,7 +136,9 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                 </div>
               </div>
               <p className="type-desc">
-                Winner-oriented task, the task will automatically close once it winners complete the task.
+                {(state.reward.raffled &&
+                  'Winner-oriented task, the task will automatically close once it winners complete the task.') ||
+                  'Winner-lucky draw task, we will randomly select  winners for you upon closing the task.'}
               </p>
             </div>
             <div className="content-item">
