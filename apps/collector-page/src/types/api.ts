@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 10:02:07
+ * @LastEditTime: 2022-08-11 16:37:46
  * @Description: api 接口相关的数据类型定义
  */
 
@@ -77,7 +77,12 @@ export enum ActionType {
   TURN_ON_NOTIFICATION = 'TURN_ON_NOTIFICATION',
 }
 export type ActionData = {
-  url: string
+  url?: string
+  tweetId?: string
+  serverId?: string
+  requireScore?: number
+  num?: number
+  accounts?: string[]
 }
 export type Action = {
   id: number

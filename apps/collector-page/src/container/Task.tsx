@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 13:19:39
+ * @LastEditTime: 2022-08-12 10:37:30
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import { AsyncRequestStatus } from '../types'
 import MainContentBox from '../components/layout/MainContentBox'
 import { useNavigate, useParams } from 'react-router-dom'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { fetchTaskDetail, selectTaskDetail, TaskDetailEntity } from '../features/task/taskDetailSlice'
 import TaskActionList, { TaskActionItemsType } from '../components/business/task/TaskActionList'
 import {
@@ -45,6 +46,9 @@ import {
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 import ButtonBase from '../components/common/button/ButtonBase'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
+import { toast } from 'react-toastify'
+import IconShare from '../components/common/icons/IconShare'
+import { TASK_SHARE_URI } from '../constants'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
@@ -139,7 +143,7 @@ const Task: React.FC = () => {
   const { token, accounts } = useAppSelector(selectAccount)
   const accountTypes = accounts.map((account) => account.accountType)
 
-  const { taskId: id } = useParams()
+  const { taskId: id, projectSlug } = useParams()
   const { status, data } = useAppSelector(selectTaskDetail)
   const dispatchFetchTaskDetail = useCallback(() => dispatch(fetchTaskDetail(Number(id))), [id])
   const [loadingView, setLoadingView] = useState(true)
@@ -214,7 +218,8 @@ const Task: React.FC = () => {
   const verifyingActions = loadingVerify
     ? actionItems.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
     : []
-
+  // 后面如果带/，则去掉/
+  const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
   return (
     <TaskDetailWrapper>
       <MainContentBox>
@@ -224,6 +229,12 @@ const Task: React.FC = () => {
               <IconCaretLeft />
             </ButtonNavigation>
             <TaskName>{name}</TaskName>
+            <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
+              <ShareButton>
+                <IconShare size="16px" />
+              </ShareButton>
+            </CopyToClipboard>
+
             {isCreator && <ManageButton onClick={() => navigate(`/creator/${id}`)}>Task Management</ManageButton>}
           </TaskDetailHeaderBox>
           <ProjectNameBox>
@@ -288,7 +299,7 @@ const TaskDetailBodyBox = styled(CardBox)`
 `
 const TaskDetailHeaderBox = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 10px;
   align-items: center;
 `
 const TaskName = styled.div`
@@ -307,6 +318,15 @@ const ProjectName = styled.div`
   line-height: 30px;
   color: #3dd606;
   cursor: pointer;
+`
+const ShareButton = styled(ButtonBase)`
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f8f8;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
 const ManageButton = styled(ButtonBase)`
   display: flex;

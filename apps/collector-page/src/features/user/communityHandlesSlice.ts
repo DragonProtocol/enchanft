@@ -2,10 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-15 16:48:52
+ * @LastEditTime: 2022-08-11 16:11:56
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { toast } from 'react-toastify'
 import { followCommunity, FollowCommunityParams } from '../../services/api/community'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
@@ -63,12 +64,14 @@ export const userCommunityHandlesSlice = createSlice({
         state.follow.params = null
         state.follow.status = AsyncRequestStatus.FULFILLED
         state.follow.errorMsg = ''
+        toast.success('follow success')
       })
       .addCase(follow.rejected, (state, action) => {
         console.log('follow rejected', action)
         state.follow.params = null
         state.follow.status = AsyncRequestStatus.REJECTED
         state.follow.errorMsg = action.error.message || ''
+        toast.error(action.error.message)
       })
   },
 })
