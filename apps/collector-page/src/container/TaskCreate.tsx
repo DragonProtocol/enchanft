@@ -50,6 +50,8 @@ export default function TaskCreate() {
     projectName: searchParams.get('projectName') ? decodeURIComponent(searchParams.get('projectName')!) : '',
   })
 
+  const communityName = searchParams.get('communityName') || ''
+  const communityTwitter = searchParams.get('communityTwitter') || ''
   const [hasInviteBot, setHasInviteBot] = React.useState(!!searchParams.get('discordId'))
   // const dispatch = useAppDispatch()
   const { isCreator, checkProjectAllowed } = usePermissions()
@@ -136,6 +138,8 @@ export default function TaskCreate() {
             updateStateActions={(newStateActions) => {
               setState({ ...state, actions: newStateActions })
             }}
+            communityName={communityName}
+            communityTwitter={communityTwitter}
             followTwitters={state.followTwitters}
             updateStateFollowTwitters={(data) => {
               setState({ ...state, followTwitters: data })

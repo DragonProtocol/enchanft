@@ -25,22 +25,27 @@ import PngIconDone from '../../../common/icons/PngIconDone'
 export default function SelectActions({
   hasInviteBot,
   followTwitters,
+  communityName,
+  communityTwitter,
   updateStateActions,
   updateStateFollowTwitters,
 }: {
   hasInviteBot: boolean
+  communityName: string
+  communityTwitter: string
   followTwitters: string[]
   updateStateActions: (arg0: Action[]) => void
   updateStateFollowTwitters: (arg0: string[]) => void
 }) {
+  const communityTwitterName = communityTwitter.split('/')[3]
   const account = useAppSelector(selectAccount)
 
   const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
-  const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
+  const twitter = 'account.accounts.find((item) => item.accountType === ChainType.TWITTER)'
 
   const [followTwitter, setFollowTwitter] = useState(false)
   const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<Array<string>>(
-    followTwitters.length > 0 ? [...followTwitters] : twitter ? [twitter.thirdpartyName] : [],
+    followTwitters.length > 0 ? [...followTwitters] : communityTwitterName ? [communityTwitterName] : [],
   )
   const [joinDiscord, setJoinDiscord] = useState(false)
   const [joinDiscordLink, setJoinDiscordLink] = useState('')
@@ -68,8 +73,8 @@ export default function SelectActions({
         accounts: followTwitterLinkResult,
       })
       updateStateFollowTwitters(followTwitterLinkResult)
-    } else if (twitter) {
-      updateStateFollowTwitters([twitter.thirdpartyName])
+    } else if (communityTwitterName) {
+      updateStateFollowTwitters([communityTwitterName])
     }
     if (joinDiscord && joinDiscordLink && joinDiscordServerId) {
       const msg = document.getElementById('join-discord-msg')?.textContent
@@ -240,7 +245,7 @@ export default function SelectActions({
                 }}
               />
               <span id="like-twitter-msg" className="msg">
-                Like @{twitter?.thirdpartyName || 'XXX'} on twitter
+                Like the tweet
               </span>
               <IconTwitter />
             </div>
@@ -276,7 +281,7 @@ export default function SelectActions({
                 }}
               />
               <span id="retweet-twitter-msg" className="msg">
-                Retweet @{twitter?.thirdpartyName || 'XXX'} on twitter
+                Retweet the tweet
               </span>
               <IconTwitter />
             </div>
@@ -432,7 +437,7 @@ export default function SelectActions({
                 }}
               />
               <span id="join-community-contribution-msg" className="msg">
-                {account.name || 'XXX'}'s community contribution {'>'}
+                {communityName || 'XXX'} community contribution {'>'}
                 <input
                   type="text"
                   title="task-join-community"
