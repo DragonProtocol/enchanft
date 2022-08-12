@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 18:57:28
+ * @LastEditTime: 2022-08-12 10:37:30
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -48,6 +48,7 @@ import ButtonBase from '../components/common/button/ButtonBase'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import { toast } from 'react-toastify'
 import IconShare from '../components/common/icons/IconShare'
+import { TASK_SHARE_URI } from '../constants'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
@@ -142,7 +143,7 @@ const Task: React.FC = () => {
   const { token, accounts } = useAppSelector(selectAccount)
   const accountTypes = accounts.map((account) => account.accountType)
 
-  const { taskId: id } = useParams()
+  const { taskId: id, projectSlug } = useParams()
   const { status, data } = useAppSelector(selectTaskDetail)
   const dispatchFetchTaskDetail = useCallback(() => dispatch(fetchTaskDetail(Number(id))), [id])
   const [loadingView, setLoadingView] = useState(true)
@@ -217,7 +218,8 @@ const Task: React.FC = () => {
   const verifyingActions = loadingVerify
     ? actionItems.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
     : []
-
+  // 后面如果带/，则去掉/
+  const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
   return (
     <TaskDetailWrapper>
       <MainContentBox>
@@ -227,7 +229,7 @@ const Task: React.FC = () => {
               <IconCaretLeft />
             </ButtonNavigation>
             <TaskName>{name}</TaskName>
-            <CopyToClipboard text={location.href} onCopy={() => toast.success('Link copied.')}>
+            <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
               <ShareButton>
                 <IconShare size="16px" />
               </ShareButton>

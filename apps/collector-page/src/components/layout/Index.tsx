@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 17:58:40
+ * @LastEditTime: 2022-08-12 10:06:24
  * @Description: 站点布局入口
  */
 import React from 'react'
@@ -31,7 +31,7 @@ const Layout: React.FC = () => (
       </ScrollBox>
       <TodoFloatingWindow />
     </MainBox>
-    <ToastContainer autoClose={2000} position="bottom-left" />
+    <ToastContainer autoClose={2000} position="top-right" />
   </LayoutWrapper>
 )
 export default Layout
