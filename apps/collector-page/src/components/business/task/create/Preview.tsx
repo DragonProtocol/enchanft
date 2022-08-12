@@ -80,7 +80,7 @@ export default function Preview({
               }
               return (
                 <div key={idx} className="action-item">
-                  <IconCheckbox></IconCheckbox> <p>{item.name}</p> <Icon />
+                  <p>{item.name}</p> <Icon />
                 </div>
               )
             })}
@@ -188,6 +188,11 @@ const TaskPrevewWrapper = styled.div`
         }
       }
 
+      > div.right,
+      > div.left {
+        width: 50%;
+        box-sizing: border-box;
+      }
       > div.right {
         background-color: #f8f8f8;
         padding: 20px;
