@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { TASK_SHARE_URI } from '../constants'
 
 export const getTakeTaskRefLink = (referrerId: number, taskID: number): string => {
   return generateRefLink(referrerId, RefType.TAKE_TASK, { taskID: taskID })
@@ -7,7 +8,8 @@ export const getTakeTaskRefLink = (referrerId: number, taskID: number): string =
 
 const generateRefLink = (referrerId: number, type: RefType, data: RefData): string => {
   const refCode = enRefCode({ referrerId: referrerId, type: type, data: data })
-  return window.location.origin + REF_LINK_PREFIX + refCode
+  // return window.location.origin + REF_LINK_PREFIX + refCode
+  return TASK_SHARE_URI + REF_LINK_PREFIX + refCode
 }
 
 export default function Ref() {

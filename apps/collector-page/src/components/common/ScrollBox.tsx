@@ -2,15 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 15:57:43
+ * @LastEditTime: 2022-08-11 11:32:55
  * @Description: 滚动盒子，提供视口滚动监听
  */
-import React, { useEffect } from 'react'
+import React, { HTMLAttributes, useEffect } from 'react'
 import styled from 'styled-components'
 import { useInView } from 'react-intersection-observer'
 
-type ScrollBoxProps = {
-  children: any
+type ScrollBoxProps = HTMLAttributes<HTMLDivElement> & {
   // 当前滚动盒子的ID
   boxId?: string
   // 当前滚动盒子的父级盒子元素

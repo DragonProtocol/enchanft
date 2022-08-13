@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 16:52:05
+ * @LastEditTime: 2022-08-10 11:16:12
  * @Description: file description
  */
 import React from 'react'
@@ -99,7 +99,7 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
 export default ExploreProjectItem
 const ExploreProjectItemWrapper = styled.div`
   width: 100%;
-  height: 385px;
+  height: 394px;
   box-sizing: border-box;
   background: #ffffff;
   border: 2px solid #333333;
@@ -114,7 +114,7 @@ const ProjectImageBox = styled.div`
 `
 const ProjectImage = styled.img`
   width: 100%;
-  height: 265px;
+  height: 275px;
   /* 图片不失真，不会出现拉伸 */
   object-fit: cover;
 `
@@ -132,6 +132,7 @@ const ProjectName = styled(OverflowEllipsisBox)`
   font-weight: 700;
   font-size: 18px;
   color: #333333;
+  flex-shrink: 0;
 `
 // bottom
 const ProjectInfoBottomBox = styled.div`

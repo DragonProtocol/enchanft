@@ -14,57 +14,77 @@ import {
 } from '@mui/material'
 import { InputAdornment } from '@mui/material'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import styled from 'styled-components'
 import Basic from '../components/business/task/create/Basic'
 import Preview from '../components/business/task/create/Preview'
 import SelectActions from '../components/business/task/create/SelectAction'
 import { State as CreateTaskState, DefaultState } from '../components/business/task/create/state'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
-import IconCaretLeft from '../components/common/icons/IconCaretLeft'
+
+import { TASK_DEFAULT_IMAGE_URLS } from '../constants'
 import { createTask, selectTaskDetail } from '../features/task/taskDetailSlice'
 import { RoleType, selectAccount } from '../features/user/accountSlice'
 import usePermissions from '../hooks/usePermissons'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { AsyncRequestStatus } from '../types'
+import PngIconCaretLeft from '../components/common/icons/PngIconCaretLeft'
+import { fetchDetail, createTask as createTaskApi, projectBindBot } from '../services/api/task'
+import PngIconDone from '../components/common/icons/PngIconDone'
+
+const discordBotCallback = `https://discord.com/oauth2/authorize?client_id=1003616859582627881&permissions=49&scope=bot&response_type=code&redirect_uri=${encodeURI(
+  process.env.REACT_APP_DISCORD_CALLBACK_URL!,
+)}`
 
 export default function TaskCreate() {
-  const { projectId, projectName } = useParams()
+  const navigate = useNavigate()
+  const { projectId, projectSlug } = useParams()
+  const [searchParams] = useSearchParams()
   const [openPreview, setOpenPreview] = React.useState(false)
   const [toastMsg, setToastMsg] = React.useState('')
   const [showToast, setShowToast] = React.useState(false)
-  const [refreshAction, setRefreshAction] = React.useState(0)
+
   const [state, setState] = useState<CreateTaskState>({
     ...DefaultState,
     projectId: Number(projectId),
-    projectName: projectName || '',
+    projectName: searchParams.get('projectName') ? decodeURIComponent(searchParams.get('projectName')!) : '',
   })
-  const dispatch = useAppDispatch()
+
+  const communityName = searchParams.get('communityName') || ''
+  const communityTwitter = searchParams.get('communityTwitter') || ''
+  const [hasInviteBot, setHasInviteBot] = React.useState(!!searchParams.get('discordId'))
+  // const dispatch = useAppDispatch()
   const { isCreator, checkProjectAllowed } = usePermissions()
-  const { createStatus } = useAppSelector(selectTaskDetail)
+  // const { createStatus } = useAppSelector(selectTaskDetail)
 
-  const submitResult = useCallback(() => {
-    dispatch(createTask(state))
-  }, [state])
-
-  const refreshActionHandler = useCallback(() => {
-    setRefreshAction(refreshAction + 1)
-  }, [refreshAction])
+  const projectBind = async (guildId: string) => {
+    if (!projectId) return
+    await projectBindBot({ projectId, discordId: guildId })
+    setHasInviteBot(true)
+  }
 
   useEffect(() => {
-    if (createStatus === AsyncRequestStatus.FULFILLED) {
-      setOpenPreview(false)
-      setState({ ...DefaultState, projectId: Number(projectId) })
-      refreshActionHandler()
-      setToastMsg('create success')
+    localStorage.setItem('discord_guild_id', JSON.stringify({ guildId: null }))
+    const handleStorageChange = ({ newValue, key, url }) => {
+      if ('discord_guild_id' === key) {
+        const { guildId } = JSON.parse(newValue || '{}')
+        if (guildId) projectBind(guildId)
+      }
+    }
+    window.addEventListener('storage', handleStorageChange)
+
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
+  const submitResult = useCallback(async () => {
+    try {
+      const resp = await createTaskApi(state)
+      navigate(`/${projectSlug}/${resp.data.data.id}`)
+    } catch (error) {
+      setToastMsg('create fail')
       setShowToast(true)
     }
-    if (createStatus === AsyncRequestStatus.REJECTED) {
-      setToastMsg('create failed')
-      setOpenPreview(false)
-      setShowToast(true)
-    }
-  }, [createStatus])
+  }, [state])
 
   if (!isCreator || !checkProjectAllowed(Number(projectId))) {
     return <TaskCreateWrapper>Not allowed</TaskCreateWrapper>
@@ -72,42 +92,87 @@ export default function TaskCreate() {
 
   return (
     <>
-      {(!openPreview && (
-        <TaskCreateWrapper>
-          <div className="infos">
-            <div className="title">
-              <ButtonNavigation>
-                <IconCaretLeft />
-              </ButtonNavigation>
-              <h3>Create a new Task</h3>
-            </div>
-            <Basic
-              state={state}
-              updateState={(newState) => {
-                setState({ ...newState })
-              }}
-            />
-            <SelectActions
-              refresh={refreshAction}
-              updateStateActions={(newStateActions) => {
-                setState({ ...state, actions: newStateActions })
-              }}
-            />
-            <div className="preview-box">
-              <button className="preview-btn" onClick={() => setOpenPreview(true)}>
-                View
-              </button>
-            </div>
+      <TaskCreateWrapper style={{ display: openPreview ? 'none' : '' }}>
+        <div className="infos">
+          <div className="title">
+            <ButtonNavigation onClick={() => navigate(-1)}>
+              <PngIconCaretLeft />
+            </ButtonNavigation>
+            <h3>Create a new Task</h3>
           </div>
-        </TaskCreateWrapper>
-      )) || (
-        <Preview
-          state={state}
-          open={openPreview}
-          closeHandler={() => setOpenPreview(false)}
-          submitResult={submitResult}
-        />
-      )}
+          <Basic
+            state={state}
+            updateState={(newState) => {
+              setState({ ...newState })
+            }}
+          />
+
+          <div className="invite-bot">
+            <button
+              onClick={() => {
+                window.open(
+                  discordBotCallback,
+                  '__blank',
+                  `width=480,
+          height=800,
+          top=0,
+          menubar=no,
+          toolbar=no,
+          status=no,
+          scrollbars=no,
+          resizable=yes,
+          directories=no,
+          status=no,
+          location=no`,
+                )
+              }}
+            >
+              InviteBotToDiscord
+            </button>
+
+            {hasInviteBot && <PngIconDone />}
+          </div>
+
+          <SelectActions
+            hasInviteBot={hasInviteBot}
+            updateStateActions={(newStateActions) => {
+              setState({ ...state, actions: newStateActions })
+            }}
+            communityName={communityName}
+            communityTwitter={communityTwitter}
+            followTwitters={state.followTwitters}
+            updateStateFollowTwitters={(data) => {
+              setState({ ...state, followTwitters: data })
+            }}
+          />
+
+          <div className="preview-box">
+            <button
+              className="preview-btn"
+              onClick={() => {
+                if (!state.image) {
+                  const random = Math.floor(Math.random() * TASK_DEFAULT_IMAGE_URLS.length)
+                  setState({
+                    ...state,
+                    image: TASK_DEFAULT_IMAGE_URLS[random],
+                  })
+                }
+                setOpenPreview(true)
+              }}
+            >
+              View
+            </button>
+          </div>
+        </div>
+      </TaskCreateWrapper>
+
+      <Preview
+        state={state}
+        open={openPreview}
+        closeHandler={() => setOpenPreview(false)}
+        submitResult={submitResult}
+      />
+
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
         open={showToast}
@@ -149,6 +214,29 @@ const TaskCreateWrapper = styled.div`
         line-height: 40px;
         border-bottom: 4px solid #3dd606;
       }
+    }
+  }
+
+  & .invite-bot {
+    margin-top: 40px;
+    display: flex;
+    align-items: center;
+    > button {
+      background-color: #3dd606;
+      border: none;
+      outline: none;
+      color: #fff;
+      width: 200px;
+      background-color: #3dd606;
+      color: #fff;
+      border: none;
+      height: 48px;
+      font-size: 20px;
+    }
+
+    > img {
+      width: 30px;
+      margin-left: 10px;
     }
   }
 

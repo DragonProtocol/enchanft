@@ -35,6 +35,8 @@ export type Action = {
   server_id?: string
   require_score?: number
   num?: number
+  accounts?: string[]
+  tweet_id?: string
 }
 
 export type Reward = {
@@ -55,6 +57,7 @@ export type State = {
   startTime: number
   endTime: number
   actions: Array<Action>
+  followTwitters: Array<string>
 }
 
 export const DefaultState: State = {
@@ -73,4 +76,5 @@ export const DefaultState: State = {
   startTime: Date.now(),
   endTime: Date.now(),
   actions: [],
+  followTwitters: [],
 }

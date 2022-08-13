@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 18:18:27
+ * @LastEditTime: 2022-08-10 19:31:26
  * @Description: file description
  */
 import React from 'react'
@@ -25,11 +25,11 @@ const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({
   allowHandle,
 }: ActionContributionScoreProps) => {
   const navigate = useNavigate()
-  const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
+  const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status, project } = data
   const isDone = status === UserActionStatus.DONE ? true : false
   const handleAction = () => {
     if (!allowHandle || isDone) return
-    navigate(`/contributionranks/${communityId}`)
+    navigate(`/${project.slug}/rank`)
   }
   return (
     <ActionContributionScoreWrapper>

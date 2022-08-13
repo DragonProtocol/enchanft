@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-29 14:29:14
+ * @LastEditTime: 2022-08-10 15:59:52
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -97,7 +97,9 @@ export default Events
 const EventsWrapper = styled.div`
   width: 100%;
 `
-const RecommendTasksBox = styled.div``
+const RecommendTasksBox = styled.div`
+  height: 308px;
+`
 const SearchTasksBox = styled(CardBox)`
   margin-top: 20px;
   display: flex;

@@ -9,10 +9,13 @@ import IconDiscord from '../../../common/icons/IconDiscord'
 import IconNotify from '../../../common/icons/IconNotify'
 import IconTwitter from '../../../common/icons/IconTwitter'
 import { AsyncRequestStatus } from '../../../../types'
-import IconCaretLeft from '../../../common/icons/IconCaretLeft'
+
 import ButtonNavigation from '../../../common/button/ButtonNavigation'
 import dayjs from 'dayjs'
 import IconCheckbox from '../../../common/icons/IconCheckbox'
+import IconGiftBox from '../../../common/icons/IconGiftBox'
+import IconAlarmClock from '../../../common/icons/IconAlarmClock'
+import PngIconCaretLeft from '../../../common/icons/PngIconCaretLeft'
 
 export default function Preview({
   state,
@@ -25,15 +28,16 @@ export default function Preview({
   closeHandler: () => void
   submitResult: () => void
 }) {
+  console.log(state)
   return (
-    <TaskPrevewWrapper>
+    <TaskPrevewWrapper style={{ display: open ? '' : 'none' }}>
       <div className="tint">
         <p> Please check the event page carefully as it cannot be edited once submitted.</p>
       </div>
       <div className="container">
         <div className="back-btn" onClick={closeHandler}>
           <ButtonNavigation>
-            <IconCaretLeft />
+            <PngIconCaretLeft />
           </ButtonNavigation>
         </div>
         <div className="title">
@@ -47,15 +51,14 @@ export default function Preview({
           <div className="left">
             <h3>{state.type} Task</h3>
             <div>
-              {/* TODO 图标*/}
-              <IconNotify />
+              <IconAlarmClock />
               <span>
                 {dayjs(state.startTime).format('YYYY/MM/DD')}——{dayjs(state.endTime).format('YYYY/MM/DD')}
               </span>
               <span>Winners: {state.winnerNum}</span>
             </div>
             <div>
-              <IconNotify />
+              <IconGiftBox />
               <span>Reward: {state.reward.type === RewardType.WHITELIST ? 'whitelist' : state.reward.name}</span>
             </div>
             <div className="desc">{state.description}</div>
@@ -77,7 +80,7 @@ export default function Preview({
               }
               return (
                 <div key={idx} className="action-item">
-                  <IconCheckbox></IconCheckbox> <p>{item.name}</p> <Icon />
+                  <p>{item.name}</p> <Icon />
                 </div>
               )
             })}
@@ -144,7 +147,7 @@ const TaskPrevewWrapper = styled.div`
       color: #3dd606;
     }
 
-    & img {
+    & .img > img {
       width: 100%;
     }
 
@@ -185,6 +188,11 @@ const TaskPrevewWrapper = styled.div`
         }
       }
 
+      > div.right,
+      > div.left {
+        width: 50%;
+        box-sizing: border-box;
+      }
       > div.right {
         background-color: #f8f8f8;
         padding: 20px;

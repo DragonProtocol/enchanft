@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 16:45:04
+ * @LastEditTime: 2022-08-12 18:02:51
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import { AsyncRequestStatus } from '../types'
 import MainContentBox from '../components/layout/MainContentBox'
 import { useNavigate, useParams } from 'react-router-dom'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { fetchTaskDetail, selectTaskDetail, TaskDetailEntity } from '../features/task/taskDetailSlice'
 import TaskActionList, { TaskActionItemsType } from '../components/business/task/TaskActionList'
 import {
@@ -44,6 +45,10 @@ import {
 } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 import ButtonBase from '../components/common/button/ButtonBase'
+import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
+import { toast } from 'react-toastify'
+import IconShare from '../components/common/icons/IconShare'
+import { TASK_SHARE_URI } from '../constants'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
@@ -138,21 +143,28 @@ const Task: React.FC = () => {
   const { token, accounts } = useAppSelector(selectAccount)
   const accountTypes = accounts.map((account) => account.accountType)
 
-  const { taskId: id } = useParams()
+  const { taskId: id, projectSlug } = useParams()
   const { status, data } = useAppSelector(selectTaskDetail)
-  const dispatchFetchTaskDetail = useCallback(() => dispatch(fetchTaskDetail(Number(id))), [id])
-  const [loadingView, setLoadingView] = useState(true)
+  const dispatchFetchTaskDetail = useCallback(() => id && dispatch(fetchTaskDetail(Number(id))), [id])
+  const [loadingView, setLoadingView] = useState(false)
   const { isCreator, checkTaskAllowed } = usePermissions()
-  useEffect(() => {
-    if (status === AsyncRequestStatus.FULFILLED) {
-      setLoadingView(false)
-    }
-  }, [status])
 
+  // slug 变化，重新请求数据，并进入loading状态
   useEffect(() => {
     setLoadingView(true)
     dispatchFetchTaskDetail()
-  }, [id, token])
+  }, [id])
+  // token 变化，重新请求详情数据
+  useEffect(() => {
+    dispatchFetchTaskDetail()
+  }, [token])
+  // 确保终止loading状态
+  useEffect(() => {
+    if (loadingView && ![AsyncRequestStatus.IDLE, AsyncRequestStatus.PENDING].includes(status)) {
+      setLoadingView(false)
+    }
+  }, [loadingView, status])
+
   const handleLeave = useCallback(() => {
     navigate(-1)
   }, [])
@@ -176,7 +188,6 @@ const Task: React.FC = () => {
   }, [modalType])
 
   // 关注社区
-  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
   const handleFollowCommunity = (communityId: number) => {
     dispatch(followCommunity({ id: communityId }))
   }
@@ -185,11 +196,18 @@ const Task: React.FC = () => {
 
   if (loadingView)
     return (
-      <TaskDetailLoading>
+      <MainInnerStatusBox>
         <Loading />{' '}
-      </TaskDetailLoading>
+      </MainInnerStatusBox>
     )
-  if (!data) return null
+
+  if (!data) {
+    return (
+      <MainInnerStatusBox>
+        Can't find task {projectSlug}/{id}
+      </MainInnerStatusBox>
+    )
+  }
   // 接受任务
   const name = data.name || ''
   const { projectId, image } = data
@@ -213,7 +231,8 @@ const Task: React.FC = () => {
   const verifyingActions = loadingVerify
     ? actionItems.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
     : []
-
+  // 后面如果带/，则去掉/
+  const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
   return (
     <TaskDetailWrapper>
       <MainContentBox>
@@ -223,7 +242,13 @@ const Task: React.FC = () => {
               <IconCaretLeft />
             </ButtonNavigation>
             <TaskName>{name}</TaskName>
-            {isCreator && <ManageButton onClick={() => navigate(`/creator/${id}`)}>Manage</ManageButton>}
+            <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
+              <ShareButton>
+                <IconShare size="16px" />
+              </ShareButton>
+            </CopyToClipboard>
+
+            {isCreator && <ManageButton onClick={() => navigate(`/creator/${id}`)}>Task Management</ManageButton>}
           </TaskDetailHeaderBox>
           <ProjectNameBox>
             <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
@@ -240,18 +265,18 @@ const Task: React.FC = () => {
                 </TaskListBox>
               ) : (
                 <>
-                  {taskStatusButton && (
-                    <TaskStatusButton
-                      type={taskStatusButton.type}
-                      loading={taskStatusButton.loading}
-                      disabled={taskStatusButton.disabled}
-                      btnText={taskStatusButton.btnText}
-                      onConnectWallet={handleOpenConnectWallet}
-                      onBindWallet={handleOpenWalletBind}
-                      onTake={handleTakeTask}
-                    />
-                  )}
                   <TaskListBox>
+                    {taskStatusButton && (
+                      <TaskStatusButton
+                        type={taskStatusButton.type}
+                        loading={taskStatusButton.loading}
+                        disabled={taskStatusButton.disabled}
+                        btnText={taskStatusButton.btnText}
+                        onConnectWallet={handleOpenConnectWallet}
+                        onBindWallet={handleOpenWalletBind}
+                        onTake={handleTakeTask}
+                      />
+                    )}
                     <TaskActionList
                       items={actionItems}
                       onDiscord={handleActionToDiscord}
@@ -280,17 +305,14 @@ export default Task
 const TaskDetailWrapper = styled.div`
   width: 100%;
 `
-const TaskDetailLoading = styled.div`
-  text-align: center;
-  margin-top: 100px;
-`
 const TaskDetailBodyBox = styled(CardBox)`
+  padding: 40px;
   display: flex;
   flex-direction: column;
 `
 const TaskDetailHeaderBox = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 10px;
   align-items: center;
 `
 const TaskName = styled.div`
@@ -304,11 +326,20 @@ const ProjectNameBox = styled.div`
   padding-top: 5px;
   padding-left: 70px;
 `
-const ProjectName = styled.div`
+const ProjectName = styled.span`
   font-size: 20px;
   line-height: 30px;
   color: #3dd606;
   cursor: pointer;
+`
+const ShareButton = styled(ButtonBase)`
+  width: 48px;
+  height: 48px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f8f8f8;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
 const ManageButton = styled(ButtonBase)`
   display: flex;
@@ -358,4 +389,7 @@ const TaskListBox = styled.div`
   background: #f8f8f8;
   padding: 20px;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `

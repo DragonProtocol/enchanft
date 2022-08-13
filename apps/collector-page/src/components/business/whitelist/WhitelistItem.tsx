@@ -7,6 +7,7 @@ import { Community, Project, RewardType } from '../../../types/api'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 
 export type WhitelistItemDataType = {
+  id: number
   task: {
     id: number
     image: string
@@ -16,7 +17,7 @@ export type WhitelistItemDataType = {
     id: number
     name: string
   }
-  reward: {
+  reward?: {
     id: number
     name: string
     type: RewardType
@@ -76,21 +77,23 @@ const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint 
       <WhitelistInfoBox>
         <TaskName>{task.name}</TaskName>
         <CommunityName>{community.name}</CommunityName>
-        <RewardTypeContentBox>
-          {reward.type === RewardType.OTHERS ? (
-            <RewardTypeText>Other Rewards</RewardTypeText>
-          ) : (
-            <>
-              <RewardTypeText>Whitelist</RewardTypeText>
-              <RewardWhitelistMintButton
-                data={whitelist}
-                onMint={handleMint}
-                loadingMint={loadingMint}
-                disabledMint={disabledMint}
-              />
-            </>
-          )}
-        </RewardTypeContentBox>
+        {reward && (
+          <RewardTypeContentBox>
+            {reward.type === RewardType.OTHERS ? (
+              <RewardTypeText>Other Rewards</RewardTypeText>
+            ) : (
+              <>
+                <RewardTypeText>Whitelist</RewardTypeText>
+                <RewardWhitelistMintButton
+                  data={whitelist}
+                  onMint={handleMint}
+                  loadingMint={loadingMint}
+                  disabledMint={disabledMint}
+                />
+              </>
+            )}
+          </RewardTypeContentBox>
+        )}
       </WhitelistInfoBox>
     </WhitelistItemWrapper>
   )
@@ -243,11 +246,13 @@ const TaskName = styled(OverflowEllipsisBox)`
   font-size: 18px;
   line-height: 27px;
   color: #333333;
+  flex-shrink: 0;
 `
 const CommunityName = styled.div`
   font-size: 12px;
   line-height: 18px;
   color: rgba(51, 51, 51, 0.6);
+  flex-shrink: 0;
 `
 const RewardTypeContentBox = styled.div`
   width: 100%;

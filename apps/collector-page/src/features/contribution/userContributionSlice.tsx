@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 15:21:43
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 18:44:47
+ * @LastEditTime: 2022-08-10 19:38:39
  * @Description: file description
  */
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -32,15 +32,15 @@ const initUserContributonState: UserContributonState = {
 
 export const fetchUserContributon = createAsyncThunk<
   FetchInfoResp,
-  number,
+  string,
   {
     rejectValue: FetchInfoResp
   }
 >(
   'community/fetchUserContributon',
-  async (id, { rejectWithValue }) => {
+  async (slug, { rejectWithValue }) => {
     try {
-      const resp = await fetchOneByUserCommunityScore(id)
+      const resp = await fetchOneByUserCommunityScore(slug)
       return { data: resp.data.data || 0 }
     } catch (error: any) {
       if (!error.response) {

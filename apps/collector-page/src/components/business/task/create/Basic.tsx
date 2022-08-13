@@ -136,7 +136,9 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                 </div>
               </div>
               <p className="type-desc">
-                Winner-oriented task, the task will automatically close once it winners complete the task.
+                {(state.reward.raffled &&
+                  'Winner-oriented task, the task will automatically close once it winners complete the task.') ||
+                  'Winner-lucky draw task, we will randomly select  winners for you upon closing the task.'}
               </p>
             </div>
             <div className="content-item">
@@ -251,7 +253,7 @@ const BasicBox = styled.div`
     display: flex;
     justify-content: space-between;
     > div {
-      width: 580px;
+      width: 540px;
     }
 
     & div.content-item {
@@ -264,7 +266,7 @@ const BasicBox = styled.div`
         justify-content: space-between;
         & span {
           display: inline-block;
-          width: 20px;
+          width: 10px;
           height: 2px;
           background: black;
         }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
@@ -40,6 +40,7 @@ import RichTextBox from '../components/common/text/RichTextBox'
 import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
 import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
+import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -53,14 +54,14 @@ export enum ProjectInfoTabsValue {
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
   data: ProjectDetailEntity,
   token: string,
-  followedCommunityIds: Array<number | string>,
+  followedCommunityIds: Array<string | number>,
   followCommunityStatus: AsyncRequestStatus,
 ): ProjectDetailCommunityDataViewType => {
   const { community } = data
   return {
     data: {
       ...community,
-      isFollowed: followedCommunityIds.includes(data.id),
+      isFollowed: followedCommunityIds.map((item) => String(item)).includes(String(community.id)),
     },
     viewConfig: {
       displayFollow: token ? true : false,
@@ -106,25 +107,39 @@ const formatStoreDataToComponentDataByTeamMembers = (
 
 const Project: React.FC = () => {
   const navigate = useNavigate()
-  const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
-  const projectDetail = useAppSelector(selectProjectDetail)
+
+  const { projectSlug } = useParams()
+  const { data, status, errorMsg } = useAppSelector(selectProjectDetail)
+  const dispatchFetchDetail = useCallback(() => projectSlug && dispatch(fetchProjectDetail(projectSlug)), [projectSlug])
+  const [loadingView, setLoadingView] = useState(true)
   const { isCreator, checkProjectAllowed } = usePermissions()
-  const { data, status, errorMsg } = projectDetail
+
+  // slug，重新请求数据，并进入loading状态
   useEffect(() => {
-    if (projectSlug) {
-      dispatch(fetchProjectDetail(projectSlug))
+    setLoadingView(true)
+    dispatchFetchDetail()
+  }, [projectSlug])
+  // token 变化，重新请求详情数据
+  useEffect(() => {
+    dispatchFetchDetail()
+  }, [token])
+  // 确保终止loading状态
+  useEffect(() => {
+    if (loadingView && ![AsyncRequestStatus.IDLE, AsyncRequestStatus.PENDING].includes(status)) {
+      setLoadingView(false)
     }
-  }, [projectSlug, token])
+  }, [loadingView, status])
+
   const communityId = data?.communityId
 
   // 获取社区贡献等级
   const contributionranks = useAppSelector(selectAllForCommunityContributionranks)
   const fetchContributionranksIntervalRef = useRef<any>(null)
-  const dispatchContributionRanks = () => communityId && dispatch(fetchCommunityContributionRanks(communityId))
+  const dispatchContributionRanks = () => projectSlug && dispatch(fetchCommunityContributionRanks(projectSlug))
   useEffect(() => {
-    if (communityId) {
+    if (projectSlug) {
       dispatchContributionRanks()
       fetchContributionranksIntervalRef.current = setInterval(() => {
         dispatchContributionRanks()
@@ -135,7 +150,7 @@ const Project: React.FC = () => {
     return () => {
       clearInterval(fetchContributionranksIntervalRef.current)
     }
-  }, [communityId])
+  }, [projectSlug])
 
   // 用户关注的社区ID集合
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
@@ -164,9 +179,16 @@ const Project: React.FC = () => {
     // },
   ]
   const [activeTab, setActiveTab] = useState(ProjectInfoTabsValue.TEAM)
-  const loading = status === AsyncRequestStatus.PENDING
+  if (loadingView)
+    return (
+      <MainInnerStatusBox>
+        <Loading />{' '}
+      </MainInnerStatusBox>
+    )
   // 展示数据
-  if (!data) return null
+  if (!data) {
+    return <MainInnerStatusBox>Can't find project {projectSlug}</MainInnerStatusBox>
+  }
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
     data,
     token,
@@ -187,92 +209,88 @@ const Project: React.FC = () => {
   return (
     <ProjectWrapper>
       <MainContentBox>
-        {loading ? (
-          <ProjectLoading>
-            <Loading />
-          </ProjectLoading>
-        ) : (
-          <>
-            <ProjectTopBox>
-              <ProjectCommunityInfoBox>
-                <ProjectDetailCommunity
-                  data={communityDataView.data}
-                  viewConfig={communityDataView.viewConfig}
-                  onFollowChange={handleFollowChange}
-                />
-              </ProjectCommunityInfoBox>
+        <ProjectTopBox>
+          <ProjectCommunityInfoBox>
+            <ProjectDetailCommunity
+              data={communityDataView.data}
+              viewConfig={communityDataView.viewConfig}
+              onFollowChange={handleFollowChange}
+            />
+          </ProjectCommunityInfoBox>
 
-              <ProjectBasicInfoBox>
-                <ProjectBasicInfoLeft>
-                  <ProjectDetailBasicInfo
-                    data={projectBasicInfoDataView.data}
-                    viewConfig={projectBasicInfoDataView.viewConfig}
-                  />
-                </ProjectBasicInfoLeft>
-                <ProjectBasicInfoRight>
-                  <ContributionList
-                    items={showContributionranks}
-                    hiddenColumns={[ContributionColumns.pubkey]}
-                    membersTotal={contributionMembersTotal}
-                    displayMore={true}
-                    moreText="View All"
-                    onMore={() => communityId && navigate(`/contributionranks/${communityId}`)}
-                  />
-                </ProjectBasicInfoRight>
-              </ProjectBasicInfoBox>
-            </ProjectTopBox>
+          <ProjectBasicInfoBox>
+            <ProjectBasicInfoLeft>
+              <ProjectDetailBasicInfo
+                data={projectBasicInfoDataView.data}
+                viewConfig={projectBasicInfoDataView.viewConfig}
+              />
+            </ProjectBasicInfoLeft>
+            <ProjectBasicInfoRight>
+              <ContributionList
+                items={showContributionranks}
+                hiddenColumns={[ContributionColumns.pubkey]}
+                membersTotal={contributionMembersTotal}
+                displayMore={true}
+                moreText="View All"
+                onMore={() => navigate(`/${projectSlug}/rank`)}
+              />
+            </ProjectBasicInfoRight>
+          </ProjectBasicInfoBox>
+        </ProjectTopBox>
 
-            <ProjectBottomBox>
-              <ProjectEventsBox>
-                <ProjectLabelBox>
-                  <ProjectLabel>Events</ProjectLabel>
-                </ProjectLabelBox>
-                <ExploreTaskList
-                  items={tasks}
-                  displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
-                  onCreateTask={() => {
-                    navigate(`/${data.name}/task/create/${data.id}`)
-                  }}
-                />
-              </ProjectEventsBox>
+        <ProjectBottomBox>
+          <ProjectEventsBox>
+            <ProjectLabelBox>
+              <ProjectLabel>Events</ProjectLabel>
+            </ProjectLabelBox>
+            <ExploreTaskListBox>
+              <ExploreTaskList
+                items={tasks}
+                displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
+                onCreateTask={() => {
+                  navigate(
+                    `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${
+                      data.community.discordId || ''
+                    }&communityName=${data.community.name}&communityTwitter=${data.community.twitter}`,
+                  )
+                }}
+              />
+            </ExploreTaskListBox>
+          </ProjectEventsBox>
 
-              <ProjectOtherInfoBox>
-                <ProjectOtherInfoLeftBox>
-                  <ProjectLabelBox>
-                    <ProjectLabel>Story</ProjectLabel>
-                  </ProjectLabelBox>
+          <ProjectOtherInfoBox>
+            <ProjectOtherInfoLeftBox>
+              <ProjectLabelBox>
+                <ProjectLabel>Story</ProjectLabel>
+              </ProjectLabelBox>
 
-                  <ProjectStoryContent value={data.story} />
-                </ProjectOtherInfoLeftBox>
-                <ProjectOtherInfoRightBox>
-                  <ProjectOtherInfoRightTabs>
-                    {ProjectInfoTabs.map((tab) => (
-                      <ProjectOtherInfoRightTab
-                        key={tab.value}
-                        isActive={tab.value === activeTab}
-                        onClick={() => setActiveTab(tab.value)}
-                      >
-                        {tab.label}
-                      </ProjectOtherInfoRightTab>
-                    ))}
-                  </ProjectOtherInfoRightTabs>
-                  {ProjectInfoTabComponents[activeTab]}
-                </ProjectOtherInfoRightBox>
-              </ProjectOtherInfoBox>
-            </ProjectBottomBox>
-          </>
-        )}
+              <ProjectStoryContent value={data.story} />
+            </ProjectOtherInfoLeftBox>
+            <ProjectOtherInfoRightBox>
+              <ProjectOtherInfoRightTabs>
+                {ProjectInfoTabs.map((tab) => (
+                  <ProjectOtherInfoRightTab
+                    key={tab.value}
+                    isActive={tab.value === activeTab}
+                    onClick={() => setActiveTab(tab.value)}
+                  >
+                    {tab.label}
+                  </ProjectOtherInfoRightTab>
+                ))}
+              </ProjectOtherInfoRightTabs>
+              {/* {ProjectInfoTabComponents[activeTab]} */}
+              {(activeTab === ProjectInfoTabsValue.TEAM && <ProjectTeamMemberList items={teamMembers} />) ||
+                (activeTab === ProjectInfoTabsValue.ROADMAP && <ProjectRoadmap items={data.roadmap} />)}
+            </ProjectOtherInfoRightBox>
+          </ProjectOtherInfoBox>
+        </ProjectBottomBox>
       </MainContentBox>
     </ProjectWrapper>
   )
 }
-export default Project
+export default React.memo(Project)
 const ProjectWrapper = styled.div`
   width: 100%;
-`
-const ProjectLoading = styled.div`
-  text-align: center;
-  margin-top: 100px;
 `
 const ProjectTopBox = styled(CardBox)`
   width: 100%;
@@ -292,7 +310,7 @@ const ProjectCommunityInfoBox = styled.div`
 const ProjectBasicInfoBox = styled.div`
   width: 100%;
   display: flex;
-  gap: 40px;
+  gap: 20px;
 `
 const ProjectBasicInfoLeft = styled.div`
   flex: 1;
@@ -312,14 +330,10 @@ const ProjectBottomBox = styled(CardBox)`
   flex-direction: column;
   gap: 40px;
 `
-const ProjectEventsBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`
+const ProjectEventsBox = styled.div``
 const ProjectOtherInfoBox = styled.div`
   display: flex;
-  gap: 60px;
+  gap: 40px;
 `
 const ProjectOtherInfoLeftBox = styled.div`
   flex: 1;
@@ -327,6 +341,9 @@ const ProjectOtherInfoLeftBox = styled.div`
 const ProjectLabelBox = styled.div`
   border-bottom: solid 1px #d9d9d9;
   display: flex;
+`
+const ExploreTaskListBox = styled.div`
+  margin-top: 20px;
 `
 const ProjectLabel = styled.div`
   font-weight: 700;
@@ -337,7 +354,7 @@ const ProjectLabel = styled.div`
 `
 const ProjectStoryContent = styled(RichTextBox)``
 const ProjectOtherInfoRightBox = styled.div`
-  flex: 1;
+  width: 560px;
 `
 const ProjectOtherInfoRightTabs = styled.div`
   display: flex;
@@ -348,8 +365,9 @@ const ProjectOtherInfoRightTabs = styled.div`
 const ProjectOtherInfoRightTab = styled.div<{ isActive: Boolean }>`
   font-weight: 700;
   font-size: 20px;
-  color: #333333;
+  color: ${({ isActive }) => (isActive ? `#333333` : 'rgba(51, 51, 51, 0.6)')};
   ${({ isActive }) => (isActive ? `box-shadow: inset 0 -4px #3DD606;` : '')}
   cursor: pointer;
   padding-bottom: 10px;
+  transition: all 0.2s ease-in-out;
 `

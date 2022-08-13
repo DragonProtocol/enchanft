@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 15:11:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 14:32:19
+ * @LastEditTime: 2022-08-12 19:04:27
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -19,14 +19,14 @@ const TodoFloatingWindow: React.FC = () => {
   const { token } = useAppSelector(selectAccount)
   const [isEnter, setIsEnter] = useState(false)
   useEffect(() => {
-    if (location.pathname === '/todo') {
+    if (location.pathname === '/towl') {
       setIsEnter(true)
     } else {
       setIsEnter(false)
     }
   }, [location])
   const handleEnter = useCallback(() => {
-    navigate('/todo')
+    navigate('/towl')
   }, [])
   const handleLeave = useCallback(() => {
     navigate(-1)

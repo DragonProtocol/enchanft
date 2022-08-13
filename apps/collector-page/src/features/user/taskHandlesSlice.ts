@@ -2,10 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 13:57:04
+ * @LastEditTime: 2022-08-11 16:14:53
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { toast } from 'react-toastify'
 import { takeTask } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
@@ -68,12 +69,14 @@ export const userTaskHandlesSlice = createSlice({
         state.take.params = null
         state.take.status = AsyncRequestStatus.FULFILLED
         state.take.errorMsg = ''
+        toast.success('take task success')
       })
       .addCase(take.rejected, (state, action) => {
         console.log('take rejected', action)
         state.take.params = null
         state.take.status = AsyncRequestStatus.REJECTED
         state.take.errorMsg = action.error.message || ''
+        toast.error(action.error.message)
       })
   },
 })

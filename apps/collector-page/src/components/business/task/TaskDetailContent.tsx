@@ -101,7 +101,7 @@ const TaskRemarkBox = styled.div`
   gap: 4px;
   align-items: center;
 `
-const TaskRemark = styled(OverflowEllipsisBox)`
+const TaskRemark = styled.span`
   flex: 1;
   font-size: 14px;
   color: #333333;

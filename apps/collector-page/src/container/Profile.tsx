@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-04 19:29:40
+ * @LastEditTime: 2022-08-11 18:17:22
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -75,6 +75,8 @@ import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
 import IconMetamask from '../components/common/icons/IconMetamask'
 import UserAvatar from '../components/business/user/UserAvatar'
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
+import { toast } from 'react-toastify'
+
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {
@@ -91,9 +93,12 @@ const formatStoreDataToComponentDataByUserWhitelists = (
   whitelists: UserWhitelistForEntity[],
 ): WhitelistListItemsType => {
   return whitelists.map((item) => {
+    const displayMint = Boolean(item.whitelist?.mintUrl)
     return {
       data: { ...item },
-      viewConfig: {},
+      viewConfig: {
+        displayMint,
+      },
     }
   })
 }
@@ -274,7 +279,7 @@ const Profile: React.FC = () => {
                 document.getElementById('uploadinput')?.click()
               }}
             >
-              <EditAvatar src={account.avatar} />
+              <EditAvatar src={avatar || account.avatar} />
             </EditAvatarBox>
 
             <EditNameBox>
@@ -288,8 +293,13 @@ const Profile: React.FC = () => {
                   const file = e.target.files && e.target.files[0]
                   console.log(file)
                   if (!file) return
-                  const { data } = await uploadAvatar(file)
-                  setAvatar(data.url)
+                  try {
+                    const { data } = await uploadAvatar(file)
+                    setAvatar(data.url)
+                    toast.success('upload success')
+                  } catch (error) {
+                    toast.error('upload fail')
+                  }
                 }}
               />
 
@@ -396,11 +406,11 @@ const ProfileTab = styled.div<{ isActive?: boolean }>`
   font-size: 20px;
   line-height: 24px;
 
+  color: ${({ isActive }) => (isActive ? `#333333` : 'rgba(51, 51, 51, 0.6)')};
+  ${({ isActive }) => (isActive ? `box-shadow: inset 0 -4px #3DD606;` : '')}
   cursor: pointer;
-  border-bottom: ${(props) => (props.isActive ? '4px solid #3DD606;' : 'none')};
-  color: ${(props) => (props.isActive ? '#333333' : 'rgba(51, 51, 51, 0.6)')};
   padding-bottom: 16px;
-  text-align: center;
+  transition: all 0.2s ease-in-out;
 `
 const ProfileTabContentBox = styled(CardBox)``
 

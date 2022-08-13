@@ -1,6 +1,11 @@
 import { Button, Checkbox } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
+import AddIcon from '@mui/icons-material/Add'
+import CheckIcon from '@mui/icons-material/Check'
+import CloseIcon from '@mui/icons-material/Close'
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+
 import { ChainType, selectAccount } from '../../../../features/user/accountSlice'
 import { useAppSelector } from '../../../../store/hooks'
 import { Action, ActionType, ActionTypeMore, State } from './state'
@@ -13,24 +18,36 @@ import IconTip from '../../../common/icons/IconTip'
 import IconDiscord from '../../../common/icons/IconDiscord'
 import IconNotify from '../../../common/icons/IconNotify'
 import IconTwitter from '../../../common/icons/IconTwitter'
+import { checkTwitterNameValid } from '../../../../services/api/task'
+import PngIconDelete from '../../../common/icons/PngIconDelete'
+import PngIconDone from '../../../common/icons/PngIconDone'
 
 export default function SelectActions({
-  refresh,
+  hasInviteBot,
+  followTwitters,
+  communityName,
+  communityTwitter,
   updateStateActions,
+  updateStateFollowTwitters,
 }: {
-  refresh: number
+  hasInviteBot: boolean
+  communityName: string
+  communityTwitter: string
+  followTwitters: string[]
   updateStateActions: (arg0: Action[]) => void
+  updateStateFollowTwitters: (arg0: string[]) => void
 }) {
+  const communityTwitterName = communityTwitter.split('/')[3]
   const account = useAppSelector(selectAccount)
 
   const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
   const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
 
   const [followTwitter, setFollowTwitter] = useState(false)
-  const [followTwitterLink, setFollowTwitterLink] = useState('')
+  const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<Array<string>>(
+    followTwitters.length > 0 ? [...followTwitters] : communityTwitterName ? [communityTwitterName] : [],
+  )
   const [joinDiscord, setJoinDiscord] = useState(false)
-  const [joinDiscordLink, setJoinDiscordLink] = useState('')
-  const [joinDiscordServerId, setJoinDiscordServerId] = useState('')
   const [inviteDiscord, setInviteDiscord] = useState(false)
   const [inviteDiscordNum, setInviteDiscordNum] = useState(0)
   const [inviteFriends, setInvalidFriends] = useState(false)
@@ -44,38 +61,20 @@ export default function SelectActions({
   const [joinCommunityContributionNum, setJoinCommunityContributionNum] = useState(0)
 
   useEffect(() => {
-    setFollowTwitter(false)
-    setFollowTwitterLink('')
-    setJoinDiscord(false)
-    setJoinDiscordLink('')
-    setJoinDiscordServerId('')
-    setInviteDiscord(false)
-    setInviteDiscordNum(0)
-    setInvalidFriends(false)
-    setInviteNum(0)
-    setLikeTwitter(false)
-    setLikeTwitterLink('')
-    setRetweetTwitter(false)
-    setRetweetTwitterLink('')
-    setJoinCommunity(false)
-    setJoinCommunityContribution(false)
-    setJoinCommunityContributionNum(0)
-  }, [refresh])
-
-  useEffect(() => {
     const actions: Action[] = []
-    if (followTwitter && followTwitterLink) {
-      const msg = document.getElementById('follow-twitter-msg')?.textContent
-      msg &&
-        actions.push({
-          name: msg,
-          type: ActionType.TWITTER,
-          typeMore: ActionTypeMore.FOLLOW_TWITTER,
-          description: '',
-          url: followTwitterLink,
-        })
+    if (followTwitter && followTwitterLinkResult.length > 0) {
+      actions.push({
+        name: `Follow @${followTwitterLinkResult.join('@')} on Twitter`,
+        type: ActionType.TWITTER,
+        typeMore: ActionTypeMore.FOLLOW_TWITTER,
+        description: '',
+        accounts: followTwitterLinkResult,
+      })
+      updateStateFollowTwitters(followTwitterLinkResult)
+    } else if (communityTwitterName) {
+      updateStateFollowTwitters([communityTwitterName])
     }
-    if (joinDiscord && joinDiscordLink && joinDiscordServerId) {
+    if (joinDiscord) {
       const msg = document.getElementById('join-discord-msg')?.textContent
       msg &&
         actions.push({
@@ -83,8 +82,6 @@ export default function SelectActions({
           type: ActionType.DISCORD,
           typeMore: ActionTypeMore.JOIN_DISCORD,
           description: '',
-          url: joinDiscordLink,
-          server_id: joinDiscordServerId,
         })
     }
     if (inviteFriends && inviteNum) {
@@ -107,7 +104,7 @@ export default function SelectActions({
           type: ActionType.UNKNOWN,
           typeMore: ActionTypeMore.DISCORD_INVITES_PEOPLE,
           description: '',
-          num: inviteNum,
+          num: inviteDiscordNum,
         })
     }
 
@@ -119,7 +116,8 @@ export default function SelectActions({
           type: ActionType.TWITTER,
           typeMore: ActionTypeMore.LIKE_TWEET,
           description: '',
-          url: likeTwitterLink,
+          url: `https://twitter.com/intent/like?tweet_id=${likeTwitterLink}`,
+          tweet_id: likeTwitterLink,
         })
     }
     if (retweetTwitterLink && retweetTwitter) {
@@ -130,7 +128,8 @@ export default function SelectActions({
           type: ActionType.TWITTER,
           typeMore: ActionTypeMore.RETWEET,
           description: '',
-          url: retweetTwitterLink,
+          url: `https://twitter.com/intent/retweet?tweet_id=${retweetTwitterLink}`,
+          tweet_id: retweetTwitterLink,
         })
     }
     if (joinCommunity) {
@@ -158,11 +157,11 @@ export default function SelectActions({
   }, [
     discord,
     twitter,
-    followTwitterLink,
+    followTwitterLinkResult,
     followTwitter,
     joinDiscord,
-    joinDiscordLink,
-    joinDiscordServerId,
+    inviteDiscord,
+    inviteDiscordNum,
     inviteFriends,
     inviteNum,
     likeTwitter,
@@ -180,6 +179,8 @@ export default function SelectActions({
     }
   }
 
+  console.log(followTwitterLinkResult, followTwitters)
+
   return (
     <SelectActionsBox>
       <div className="subtitle">
@@ -196,20 +197,65 @@ export default function SelectActions({
                 }}
               />
               <span id="follow-twitter-msg" className="msg">
-                Follow @{twitter?.thirdpartyName || 'XXX'} on Twitter
+                Follow this account on Twitter
+              </span>
+              <IconTwitter />
+            </div>
+            {twitter ? (
+              <>
+                {followTwitter && (
+                  <>
+                    <TwitterFollowed
+                      followTwitterLinkResult={followTwitterLinkResult}
+                      updateTwitterLinkResult={(data) => {
+                        setFollowTwitterLinkResult(data)
+                      }}
+                    />
+                    {followTwitterLinkResult.length < 5 && (
+                      <AddTwitterToFollowed
+                        followTwitterLinkResult={followTwitterLinkResult}
+                        addValid={(data) => {
+                          setFollowTwitterLinkResult([...followTwitterLinkResult, data])
+                        }}
+                      />
+                    )}
+                  </>
+                )}
+              </>
+            ) : (
+              <div className="help">
+                <ConnectTwitter />
+              </div>
+            )}
+          </div>
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={likeTwitter}
+                onChange={() => {
+                  if (!twitter) return
+                  setLikeTwitter(!likeTwitter)
+                  if (!likeTwitter) {
+                    setLikeTwitterLink('')
+                  }
+                }}
+              />
+              <span id="like-twitter-msg" className="msg">
+                Like the tweet
               </span>
               <IconTwitter />
             </div>
             <div className="help">
               {twitter ? (
-                followTwitter && (
+                likeTwitter && (
                   <div className="input-box">
-                    <span>Tweet Link:</span>
+                    <span>Tweet Id:</span>
                     <input
                       type="text"
                       title="task-like"
-                      value={followTwitterLink}
-                      onChange={(e) => setFollowTwitterLink(e.target.value)}
+                      value={likeTwitterLink}
+                      onKeyPress={numberInput}
+                      onChange={(e) => setLikeTwitterLink(e.target.value)}
                     />
                   </div>
                 )
@@ -221,71 +267,42 @@ export default function SelectActions({
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
-                checked={joinDiscord}
+                checked={retweetTwitter}
                 onChange={() => {
-                  if (discord) setJoinDiscord(!joinDiscord)
+                  if (!twitter) return
+                  setRetweetTwitter(!retweetTwitter)
+                  if (!retweetTwitter) {
+                    setRetweetTwitterLink('')
+                  }
                 }}
-              />{' '}
-              <span id="join-discord-msg" className="msg">
-                Join #{discord?.thirdpartyName || 'XXX'} server on Discord
+              />
+              <span id="retweet-twitter-msg" className="msg">
+                Retweet the tweet
               </span>
-              <IconDiscord />
+              <IconTwitter />
             </div>
             <div className="help">
-              {discord ? (
-                joinDiscord && (
-                  <>
-                    <div className="input-box">
-                      <span>Discord Server Link:</span>
-                      <input
-                        type="text"
-                        title="task-like"
-                        value={joinDiscordLink}
-                        onChange={(e) => setJoinDiscordLink(e.target.value)}
-                      />
-                    </div>
-                    <div className="input-box">
-                      <span>Discord Server Id:</span>
-                      <input
-                        type="text"
-                        title="task-like"
-                        value={joinDiscordServerId}
-                        onChange={(e) => setJoinDiscordServerId(e.target.value)}
-                      />
-                    </div>
-                  </>
+              {twitter ? (
+                retweetTwitter && (
+                  <div className="input-box">
+                    <span>Tweet Id:</span>
+                    <input
+                      type="text"
+                      title="retweet"
+                      onKeyPress={numberInput}
+                      value={retweetTwitterLink}
+                      onChange={(e) => {
+                        setRetweetTwitterLink(e.target.value)
+                      }}
+                    />
+                  </div>
                 )
               ) : (
-                <ConnectDiscord />
+                <ConnectTwitter />
               )}
             </div>
           </div>
-          <div className="content-item">
-            <div className="desc">
-              <CustomCheckBox
-                checked={inviteDiscord}
-                onChange={() => {
-                  if (discord) setInviteDiscord(!inviteDiscord)
-                }}
-              />
-              <span id="invite-discord-msg" className="msg">
-                Invite
-                <input
-                  placeholder="X"
-                  title="invite-discord"
-                  value={inviteDiscordNum === 0 ? '' : inviteDiscordNum.toString()}
-                  onKeyPress={numberInput}
-                  onChange={(e) => {
-                    if (discord) setInviteDiscordNum(Number(e.target.value))
-                  }}
-                />
-                <span>{` ${inviteDiscordNum} `}</span>
-                friends to join #{discord?.thirdpartyName || 'XXX'} server on Discord
-              </span>
-              <IconDiscord />
-            </div>
-            <div className="help">{discord ? null : <ConnectDiscord />}</div>
-          </div>
+
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -317,78 +334,50 @@ export default function SelectActions({
           </div>
         </div>
         <div>
-          <div className="content-item">
-            <div className="desc">
-              <CustomCheckBox
-                checked={likeTwitter}
-                onChange={() => {
-                  if (!twitter) return
-                  setLikeTwitter(!likeTwitter)
-                  if (!likeTwitter) {
-                    setLikeTwitterLink('')
-                  }
-                }}
-              />
-              <span id="like-twitter-msg" className="msg">
-                Like @{twitter?.thirdpartyName || 'XXX'} on twitter
-              </span>
-              <IconTwitter />
+          {hasInviteBot && (
+            <div className="content-item">
+              <div className="desc">
+                <CustomCheckBox
+                  checked={joinDiscord}
+                  onChange={() => {
+                    setJoinDiscord(!joinDiscord)
+                  }}
+                />{' '}
+                <span id="join-discord-msg" className="msg">
+                  Join Discord Server
+                </span>
+                <IconDiscord />
+              </div>
             </div>
-            <div className="help">
-              {twitter ? (
-                likeTwitter && (
-                  <div className="input-box">
-                    <span>Tweet Link:</span>
-                    <input
-                      type="text"
-                      title="task-like"
-                      value={likeTwitterLink}
-                      onChange={(e) => setLikeTwitterLink(e.target.value)}
-                    />
-                  </div>
-                )
-              ) : (
-                <ConnectTwitter />
-              )}
+          )}
+          {hasInviteBot && (
+            <div className="content-item">
+              <div className="desc">
+                <CustomCheckBox
+                  checked={inviteDiscord}
+                  onChange={() => {
+                    setInviteDiscord(!inviteDiscord)
+                  }}
+                />
+                <span id="invite-discord-msg" className="msg">
+                  Invite
+                  <input
+                    placeholder="X"
+                    title="invite-discord"
+                    value={inviteDiscordNum === 0 ? '' : inviteDiscordNum.toString()}
+                    onKeyPress={numberInput}
+                    onChange={(e) => {
+                      if (inviteDiscord) setInviteDiscordNum(Number(e.target.value))
+                    }}
+                  />
+                  <span>{` ${inviteDiscordNum} `}</span>
+                  Friends to Discord Server
+                </span>
+                <IconDiscord />
+              </div>
+              {/* <div className="help">{discord ? null : <ConnectDiscord />}</div> */}
             </div>
-          </div>
-          <div className="content-item">
-            <div className="desc">
-              <CustomCheckBox
-                checked={retweetTwitter}
-                onChange={() => {
-                  if (!twitter) return
-                  setRetweetTwitter(!retweetTwitter)
-                  if (!retweetTwitter) {
-                    setRetweetTwitterLink('')
-                  }
-                }}
-              />
-              <span id="retweet-twitter-msg" className="msg">
-                Retweet @{twitter?.thirdpartyName || 'XXX'} on twitter
-              </span>
-              <IconTwitter />
-            </div>
-            <div className="help">
-              {twitter ? (
-                retweetTwitter && (
-                  <div className="input-box">
-                    <span>Tweet Link</span>
-                    <input
-                      type="text"
-                      title="retweet"
-                      value={retweetTwitterLink}
-                      onChange={(e) => {
-                        setRetweetTwitterLink(e.target.value)
-                      }}
-                    />
-                  </div>
-                )
-              ) : (
-                <ConnectTwitter />
-              )}
-            </div>
-          </div>
+          )}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -398,7 +387,7 @@ export default function SelectActions({
                 }}
               />
               <span id="join-community-msg" className="msg">
-                Join {account.name || 'XXX'}'s the community
+                Join the community
               </span>
               <IconNotify />
             </div>
@@ -416,7 +405,7 @@ export default function SelectActions({
                 }}
               />
               <span id="join-community-contribution-msg" className="msg">
-                {account.name || 'XXX'}'s community contribution {'>'}
+                {communityName || 'XXX'} community contribution {'>'}
                 <input
                   type="text"
                   title="task-join-community"
@@ -437,6 +426,135 @@ export default function SelectActions({
         </div>
       </div>
     </SelectActionsBox>
+  )
+}
+
+function TwitterFollowed({
+  followTwitterLinkResult,
+  updateTwitterLinkResult,
+}: {
+  followTwitterLinkResult: string[]
+  updateTwitterLinkResult: (arg0: string[]) => void
+}) {
+  return (
+    <>
+      {followTwitterLinkResult.map((item, index) => {
+        return (
+          <div className="help" key={item + index}>
+            <span className="username">Username: </span>
+            <div className="input-box">
+              <span>@</span>
+              <input type="text" title="task-like" value={item} onChange={() => {}} />
+            </div>
+
+            <div
+              className="tint-box"
+              onClick={() => {
+                const before = followTwitterLinkResult.slice(0, index)
+                const after = followTwitterLinkResult.slice(index + 1)
+                updateTwitterLinkResult([...before, ...after])
+              }}
+            >
+              <PngIconDelete />
+            </div>
+          </div>
+        )
+      })}
+    </>
+  )
+}
+
+let addTwitterToFollowedAlive = false
+function AddTwitterToFollowed({
+  addValid,
+  followTwitterLinkResult,
+}: {
+  addValid: (arg0: string) => void
+  followTwitterLinkResult: string[]
+}) {
+  const timerRef = useRef<NodeJS.Timeout>()
+  const [data, setData] = useState('')
+  const [checked, setChecked] = useState(false)
+  const [dataValid, setDataValid] = useState(true)
+  const [addNew, setAddNew] = useState(false)
+
+  const checkValid = async (data: string) => {
+    const checkData = data.trim()
+    if (!checkData) return
+    try {
+      await checkTwitterNameValid(checkData)
+      if (addTwitterToFollowedAlive) {
+        addValid(checkData)
+        setAddNew(false)
+      }
+    } catch (error) {
+      if (addTwitterToFollowedAlive) setDataValid(false)
+    } finally {
+      if (addTwitterToFollowedAlive) setChecked(true)
+    }
+  }
+
+  const reset = () => {
+    setData('')
+    setChecked(false)
+    setDataValid(true)
+  }
+
+  useEffect(() => {
+    addTwitterToFollowedAlive = true
+    return () => {
+      addTwitterToFollowedAlive = false
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
+
+  return (
+    <>
+      {addNew && (
+        <div className={'help'}>
+          <span className="username">Username: </span>
+          <div className={!dataValid ? 'input-box invalid' : 'input-box'}>
+            <span>@</span>
+            <input
+              type="text"
+              title="task-like"
+              value={data}
+              onChange={(e) => {
+                const dataValue = e.target.value
+                setDataValid(true)
+                setChecked(false)
+                setData(dataValue)
+                if (timerRef.current) {
+                  clearTimeout(timerRef.current)
+                }
+                timerRef.current = setTimeout(() => {
+                  checkValid(dataValue)
+                }, 800)
+              }}
+            />
+          </div>
+
+          {checked && dataValid && (
+            <div className="tint-box">
+              <PngIconDone />
+            </div>
+          )}
+        </div>
+      )}
+      <div
+        className={'help add-btn'}
+        onClick={() => {
+          // const resultData = data.trim()
+          if (!dataValid) return
+          if (followTwitterLinkResult.length >= 5) return
+          reset()
+          setAddNew(true)
+        }}
+      >
+        <AddIcon />
+        <span>Add Account</span>
+      </div>
+    </>
   )
 }
 
@@ -475,7 +593,7 @@ const SelectActionsBox = styled.div`
     display: flex;
     justify-content: space-between;
     > div {
-      width: 580px;
+      width: 540px;
       & .content-item {
         background-color: #f8f8f8;
         margin-bottom: 20px;
@@ -496,7 +614,9 @@ const SelectActionsBox = styled.div`
           }
           & .msg {
             flex-grow: 1;
-
+            font-size: 14px;
+            line-height: 20px;
+            color: #333333;
             > input {
               margin: 0 10px;
               border: none;
@@ -516,9 +636,20 @@ const SelectActionsBox = styled.div`
         }
 
         & .help {
-          margin: 0 30px;
+          margin: 0 0 5px 30px;
+          display: flex;
+          align-items: center;
+          & span.username {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 20px;
+            color: #333333;
+            margin-right: 10px;
+          }
           & div.input-box {
+            flex-grow: 1;
             background-color: #fff;
+            border: 1px solid #fff;
             padding: 10px;
             display: flex;
             color: rgba(51, 51, 51, 0.3);
@@ -526,11 +657,50 @@ const SelectActionsBox = styled.div`
             line-height: 20px;
             > input {
               flex-grow: 1;
-              margin-left: 10px;
               border: none;
               outline: none;
             }
+            > svg {
+              height: 20px;
+            }
           }
+          & div.tint-box {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            padding: 10px;
+            box-sizing: border-box;
+            background-color: #fff;
+            margin-left: 10px;
+            cursor: pointer;
+          }
+          & div.invalid {
+            border: 1px solid red;
+          }
+          & svg {
+            cursor: pointer;
+          }
+
+          & .invalid-icon {
+            cursor: not-allowed;
+          }
+        }
+
+        & .help.join-discord {
+          display: block;
+          > div {
+            margin-bottom: 10px;
+          }
+        }
+
+        & .help.add-btn {
+          margin-top: 10px;
+          color: #3dd606;
+          font-weight: 400;
+          font-size: 14px;
+          line-height: 20px;
+          cursor: pointer;
+          padding-left: 90px;
         }
       }
     }

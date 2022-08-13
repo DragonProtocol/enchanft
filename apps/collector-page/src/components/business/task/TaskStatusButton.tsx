@@ -14,7 +14,7 @@ export enum TaskStatusButtonType {
 const buttonTextMap = {
   [TaskStatusButtonType.CONNECT_WALLET]: 'Connect Wallet',
   [TaskStatusButtonType.BIND_WALLET]: 'Bind Wallet',
-  [TaskStatusButtonType.TAKE]: 'Take The Task',
+  [TaskStatusButtonType.TAKE]: 'Apply For WL',
   [TaskStatusButtonType.TODO]: 'Already Accepted',
   [TaskStatusButtonType.COMPLETE]: 'Completed!',
 }
@@ -77,7 +77,7 @@ const TaskStatusButton: React.FC<TaskStatusButtonProps> = ({
   return (
     <TaskStatusButtonWrapper>
       {isCompleteStatusBtn ? (
-        <TaskCompleteStatusBtn>{_btnText}</TaskCompleteStatusBtn>
+        <TaskCompleteStatusBtn type={type}>{_btnText}</TaskCompleteStatusBtn>
       ) : (
         <TaskBtn onClick={handleClick} disabled={disabled}>
           {loading ? loadingText : _btnText}
@@ -100,7 +100,7 @@ const TaskBtn = styled(ButtonPrimary)`
   color: #ffffff;
 `
 
-const TaskCompleteStatusBtn = styled.div`
+const TaskCompleteStatusBtn = styled.div<{ type: TaskStatusButtonType }>`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -110,9 +110,9 @@ const TaskCompleteStatusBtn = styled.div`
   gap: 10px;
   width: 100%;
   height: 48px;
-  background: #f8f8f8;
+  background: #ffffff;
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
-  color: #333333;
+  color: ${({ type }) => (type === TaskStatusButtonType.COMPLETE ? '#3DD606' : '#333333')};
 `
