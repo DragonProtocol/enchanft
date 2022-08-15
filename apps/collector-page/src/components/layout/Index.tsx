@@ -27,7 +27,7 @@ const Layout: React.FC = () => {
       setDisplayTodoFloating(false)
     } else {
       const { key } = match[0].route as CutomRouteObject
-      if (key === RouteKeys.creator) {
+      if (key === RouteKeys.taskCreate) {
         setDisplayTodoFloating(false)
       } else {
         setDisplayTodoFloating(true)
