@@ -11,6 +11,13 @@ import request from '../../request/axios'
 import { ApiResp } from '../../types'
 import { TaskDetailResponse, TodoTaskItem, TodoTaskResponse } from '../../types/api'
 import { State as CreateTaskState } from '../../components/business/task/create/state'
+import { useGAEvent } from '../../hooks/useGoogleAnalytics'
+
+const TASK_CATALOG_GA = 'TASK'
+enum TaskActionGA {
+  TAKE_TASK = 'TAKE_TASK',
+  VERIFY_ACTIONS = 'VERIFY_ACTIONS',
+}
 
 /** 接任务 */
 export type TakeTaskParams = {
@@ -19,6 +26,8 @@ export type TakeTaskParams = {
 export function takeTask(params: TakeTaskParams): AxiosPromise<ApiResp<any>> {
   const { id } = params
   const refInfo = loadRefInfo(RefType.TAKE_TASK, String(id))
+  const gaEvent = useGAEvent(TASK_CATALOG_GA)
+  gaEvent( TaskActionGA.TAKE_TASK, id)
   if (refInfo && refInfo.referrerId > 0) {
     return request({
       url: `/tasks/${id}/takers`,
@@ -58,6 +67,8 @@ export type VerifyOneTaskParams = {
 }
 export function verifyOneTask(params: VerifyOneTaskParams): AxiosPromise<ApiResp<TodoTaskItem>> {
   const { id } = params
+  const gaEvent = useGAEvent(TASK_CATALOG_GA)
+  gaEvent(TaskActionGA.VERIFY_ACTIONS, id)
   return request({
     url: `/tasks/${id}/verification`,
     method: 'post',
