@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 14:20:04
+ * @LastEditTime: 2022-08-15 18:12:52
  * @Description: 站点布局入口
  */
 import React, { useEffect, useState } from 'react'
@@ -16,12 +16,24 @@ import TodoFloatingWindow from './TodoFloatingWindow'
 import ScrollBox from '../common/ScrollBox'
 import MainInner from './MainInner'
 import { matchRoutes, useLocation } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../../store/hooks'
+import { selectAccount, userLink } from '../../features/user/accountSlice'
+import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
+import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
+import { fetchTodoTasks, selectAll } from '../../features/user/todoTasksSlice'
+import { TaskTodoCompleteStatus } from '../../types/entities'
 
 const Layout: React.FC = () => {
+  const dispatch = useAppDispatch()
+  const { token } = useAppSelector(selectAccount)
   // TODO 后面对路由优化时，这个matchRoutes重复代码可封装成hooks
   const location = useLocation()
-  const [displayTodoFloating, setDisplayTodoFloating] = useState(true)
+  const [displayTodoFloating, setDisplayTodoFloating] = useState(false)
   useEffect(() => {
+    if (!token) {
+      setDisplayTodoFloating(false)
+      return
+    }
     const match = matchRoutes([...permissionRoutes, ...routes], location)
     if (!match) {
       setDisplayTodoFloating(false)
@@ -33,7 +45,49 @@ const Layout: React.FC = () => {
         setDisplayTodoFloating(true)
       }
     }
-  }, [location])
+  }, [location, token])
+
+  // 获取用户相关信息
+  useEffect(() => {
+    if (!token) {
+      return
+    }
+    dispatch(fetchFollowedCommunities())
+    dispatch(fetchUserWhitelists())
+    dispatch(fetchTodoTasks())
+  }, [token])
+  const todoTasks = useAppSelector(selectAll)
+  const count = todoTasks.filter((item) =>
+    [TaskTodoCompleteStatus.TODO, TaskTodoCompleteStatus.IN_PRGRESS].includes(item.status),
+  ).length
+  //社媒账号授权 code 监听
+  useEffect(() => {
+    localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
+    const handleStorageChange = ({ newValue, key, url }) => {
+      if ('social_auth' === key) {
+        console.log('social_auth change url', url)
+        // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
+        const { code, type } = JSON.parse(newValue || '')
+        if (code && type) {
+          linkUser({ code, type })
+          localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
+        }
+      }
+    }
+    window.addEventListener('storage', handleStorageChange)
+
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [])
+
+  const linkUser = (accountInfo) => {
+    const code = accountInfo.code
+    const type = accountInfo.type || 'TWITTER'
+    if (code && type) {
+      dispatch(userLink({ code, type }))
+    } else {
+      alert('account bind failed!')
+    }
+  }
   return (
     <LayoutWrapper>
       <HeaderBox>
@@ -47,7 +101,7 @@ const Layout: React.FC = () => {
             <Main />
           </MainInner>
         </ScrollBox>
-        {displayTodoFloating && <TodoFloatingWindow />}
+        {displayTodoFloating && <TodoFloatingWindow count={count} />}
       </MainBox>
       <ToastContainer autoClose={2000} position="top-right" />
     </LayoutWrapper>
