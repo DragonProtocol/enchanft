@@ -16,8 +16,10 @@ import TodoFloatingWindow from './TodoFloatingWindow'
 import ScrollBox from '../common/ScrollBox'
 import MainInner from './MainInner'
 import { matchRoutes, useLocation } from 'react-router-dom'
+import { useGAPageView } from '../../hooks'
 
 const Layout: React.FC = () => {
+  useGAPageView()
   // TODO 后面对路由优化时，这个matchRoutes重复代码可封装成hooks
   const location = useLocation()
   const [displayTodoFloating, setDisplayTodoFloating] = useState(true)
