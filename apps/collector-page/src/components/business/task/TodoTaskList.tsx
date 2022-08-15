@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 15:40:01
+ * @LastEditTime: 2022-08-15 13:51:40
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { TaskTodoCompleteStatus } from '../../../types/api'
+import { TaskTodoCompleteStatus } from '../../../types/entities'
 import Loading from '../../common/loading/Loading'
 
 import TodoTaskItem, { TodoTaskItemDataViewType, TodoTaskItemHandlesType } from './TodoTaskItem'

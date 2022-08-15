@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../types/api'
+import { RewardType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../types/entities'
 import RichTextBox from '../../common/text/RichTextBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import IconGiftBox from '../../common/icons/IconGiftBox'
@@ -26,6 +26,8 @@ export type TaskDetailContentDataType = {
   }
   reward?: {
     name: string
+    type: RewardType
+    raffled: boolean
   }
 }
 
@@ -35,14 +37,19 @@ export type TaskDetailContentDataViewType = {
 
 export type TaskDetailContentProps = TaskDetailContentDataViewType
 
-const TaskTypeLabels = {
-  [TaskType.WHITELIST_ORIENTED]: 'Whitelist-Oriented Task',
-  [TaskType.WHITELIST_LUCK_DRAW]: 'Whitelist Luck Draw Task',
-}
-
 const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetailContentProps) => {
   const { id, name, type, startTime, endTime, winnerNum, image, description, project, reward } = data
-  const taskTypeLabel = TaskTypeLabels[type] || 'Unknown Task Type'
+  let taskTypeLabel = 'Unknown Reward Type'
+  if (reward) {
+    switch (reward.type) {
+      case RewardType.WHITELIST:
+        taskTypeLabel = reward.raffled ? 'Whitelist Luck Draw' : 'Whitelist-Oriented Task'
+        break
+      case RewardType.OTHERS:
+        taskTypeLabel = 'Other Reward'
+        break
+    }
+  }
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
 
