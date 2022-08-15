@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 18:02:51
+ * @LastEditTime: 2022-08-15 13:53:25
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -14,14 +14,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { fetchTaskDetail, selectTaskDetail, TaskDetailEntity } from '../features/task/taskDetailSlice'
 import TaskActionList, { TaskActionItemsType } from '../components/business/task/TaskActionList'
-import {
-  ActionType,
-  TaskAcceptedStatus,
-  TaskTodoCompleteStatus,
-  TaskType,
-  TodoTaskActionItem,
-  UserActionStatus,
-} from '../types/api'
+import { ActionType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../types/entities'
+import { TodoTaskActionItem, UserActionStatus } from '../types/api'
 import TaskDetailContent, { TaskDetailContentDataViewType } from '../components/business/task/TaskDetailContent'
 import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'

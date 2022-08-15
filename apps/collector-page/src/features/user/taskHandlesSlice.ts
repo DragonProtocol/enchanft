@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 16:14:53
+ * @LastEditTime: 2022-08-15 13:54:33
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
@@ -10,7 +10,7 @@ import { toast } from 'react-toastify'
 import { takeTask } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { TaskAcceptedStatus, TaskTodoCompleteStatus } from '../../types/api'
+import { TaskAcceptedStatus, TaskTodoCompleteStatus } from '../../types/entities'
 import { updateOneForProjectTask } from '../community/collectionDetailSlice'
 import { fetchTaskDetail, updateTaskDetail } from '../task/taskDetailSlice'
 // import { updateOne as updateOneForDashboardRecommendTasksSlice } from '../explore/recommendTasksSlice'

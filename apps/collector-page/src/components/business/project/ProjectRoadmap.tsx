@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:45:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 15:28:03
+ * @LastEditTime: 2022-08-15 13:46:39
  * @Description: file description
  */
 import React from 'react'
@@ -13,7 +13,7 @@ import TimelineContent from '@mui/lab/TimelineContent'
 import TimelineDot from '@mui/lab/TimelineDot'
 import TimelineItem from '@mui/lab/TimelineItem'
 import TimelineSeparator from '@mui/lab/TimelineSeparator'
-import { RoadmapStatus } from '../../../types/api'
+import { RoadmapStatus } from '../../../types/entities'
 import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 import IconCheckbox from '../../common/icons/IconCheckbox'
 import RichTextBox from '../../common/text/RichTextBox'

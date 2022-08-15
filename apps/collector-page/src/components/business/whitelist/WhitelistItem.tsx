@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import ButtonBase from '../../common/button/ButtonBase'
 import { useNavigate } from 'react-router-dom'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { Community, Project, RewardType } from '../../../types/api'
+import { Community, Project, RewardType } from '../../../types/entities'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 
 export type WhitelistItemDataType = {

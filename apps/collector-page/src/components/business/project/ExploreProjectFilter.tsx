@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 17:28:10
+ * @LastEditTime: 2022-08-15 13:44:14
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
-import { ProjectStatus } from '../../../types/api'
+import { ProjectStatus } from '../../../types/entities'
 import ButtonRadioGroup from '../../common/button/ButtonRadioGroup'
 import InputSearch from '../../common/input/InputSearch'
 export enum ProjectStatusOther {

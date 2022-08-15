@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 14:03:36
+ * @LastEditTime: 2022-08-15 13:51:21
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { Project, TaskTodoCompleteStatus, TaskType, UserActionStatus, Whitelist } from '../../../types/api'
+import { Project, TaskTodoCompleteStatus, TaskType, Whitelist } from '../../../types/entities'
+import { UserActionStatus } from '../../../types/api'
 import ButtonBase from '../../common/button/ButtonBase'
 import { TaskActionItemDataType } from './TaskActionItem'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'

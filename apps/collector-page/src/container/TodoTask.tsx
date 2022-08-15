@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 18:09:25
+ * @LastEditTime: 2022-08-15 13:53:58
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -11,7 +11,8 @@ import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
-import { ActionType, TaskTodoCompleteStatus, UserActionStatus } from '../types/api'
+import { ActionType, TaskTodoCompleteStatus } from '../types/entities'
+import { UserActionStatus } from '../types/api'
 import { AsyncRequestStatus } from '../types'
 import TodoTaskList, { TodoTaskListItemsType } from '../components/business/task/TodoTaskList'
 import {
