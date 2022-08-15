@@ -1,3 +1,10 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-08-08 13:44:40
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-08-15 12:00:11
+ * @Description: file description
+ */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { selectAccount, RoleType, ResourceType } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
@@ -34,9 +41,22 @@ export default function usePermissions() {
     [account],
   )
 
+  // TODO 待确认传参，和resourceType
+  const checkContributionAllowed = useCallback(
+    (projectId: number) => {
+      const hasProjectPermission = !!account.resourcePermissions
+        .find((item) => item.resourceType === ResourceType.PROJECT)
+        ?.resourceIds.includes(projectId)
+
+      return hasProjectPermission
+    },
+    [account],
+  )
+
   return {
     isCreator,
     checkTaskAllowed,
     checkProjectAllowed,
+    checkContributionAllowed,
   }
 }

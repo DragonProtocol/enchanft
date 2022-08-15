@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
@@ -27,12 +27,16 @@ import { AsyncRequestStatus } from '../types'
 import ContributionAbout from '../components/business/contribution/ContributionAbout'
 import ContributionMy, { ContributionMyDataViewType } from '../components/business/contribution/ContributionMy'
 import Loading from '../components/common/loading/Loading'
+import usePermissions from '../hooks/usePermissons'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
   const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
   const { token, avatar, name } = useAppSelector(selectAccount)
+
+  // 用户的contribution操作权限
+  const { checkContributionAllowed } = usePermissions()
 
   // 获取社区信息
   const { data: community, status: communityStatus } = useAppSelector(selectContributionCommunityInfo)
@@ -43,9 +47,8 @@ const Contributionranks: React.FC = () => {
   }, [projectSlug])
   // 用户关注的社区ID集合
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
-  const isFollowedCommunity = community?.id
-    ? userFollowedProjectIds.map((item) => String(item)).includes(String(community.id))
-    : false
+  const isFollowedCommunity =
+    !!community?.id && userFollowedProjectIds.map((item) => String(item)).includes(String(community.id))
   // 关注社区
   const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
   const handleFollowCommunity = () => {
@@ -104,6 +107,14 @@ const Contributionranks: React.FC = () => {
     discord: community?.discord || '',
     discordName: '',
   }
+
+  // 下载
+  const displayDownload = !!community?.id && checkContributionAllowed(community.id)
+  const handleDownload = useCallback(() => {
+    if (community?.id) {
+      // TODO 下载api
+    }
+  }, [])
   return (
     <ContributionWrapper>
       <MainContentBox>
@@ -124,8 +135,10 @@ const Contributionranks: React.FC = () => {
               <ContributionList
                 size={ContributionListSize.large}
                 items={contributionranks}
-                displayMembersTotal={false}
+                membersTotal={contributionranks.length}
                 displayMore={false}
+                displayDownload={displayDownload}
+                onDownload={handleDownload}
               />
             )}
           </ContributionListBox>
