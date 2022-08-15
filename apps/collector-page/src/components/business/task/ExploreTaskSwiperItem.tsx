@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 14:49:42
+ * @LastEditTime: 2022-08-15 15:44:34
  * @Description: file description
  */
 import React from 'react'
@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { RewardType } from '../../../types/entities'
+import { getTaskRewardTypeLabel } from '../../../utils/task'
 import IconAlarmClock from '../../common/icons/IconAlarmClock'
 import IconGiftBox from '../../common/icons/IconGiftBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
@@ -51,17 +52,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
 }: ExploreTaskSwiperItemProps) => {
   const navigate = useNavigate()
   const { id, name, image, startTime, endTime, winnerNum, description, project, reward } = data
-  let taskTypeLabel = 'Unknown Reward Type'
-  if (reward) {
-    switch (reward.type) {
-      case RewardType.WHITELIST:
-        taskTypeLabel = reward.raffled ? 'Whitelist Luck Draw' : 'Whitelist-Oriented Task'
-        break
-      case RewardType.OTHERS:
-        taskTypeLabel = 'Other Reward'
-        break
-    }
-  }
+  const rewardTypeLabel = getTaskRewardTypeLabel(reward)
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
   return (
@@ -77,7 +68,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
           <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
         </TaskInfoTopBox>
         <TaskInfoBottomBox>
-          <TaskTypeLabel>{taskTypeLabel}</TaskTypeLabel>
+          <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
           <TaskDateAndWinnerBox>
             <TaskDateTimeBox>
               <IconAlarmClock size={'18px'} />

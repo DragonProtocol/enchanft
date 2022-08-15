@@ -6,6 +6,7 @@ import RichTextBox from '../../common/text/RichTextBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import IconGiftBox from '../../common/icons/IconGiftBox'
 import IconAlarmClock from '../../common/icons/IconAlarmClock'
+import { getTaskRewardTypeLabel } from '../../../utils/task'
 
 export type TaskDetailContentDataType = {
   id: number
@@ -39,23 +40,13 @@ export type TaskDetailContentProps = TaskDetailContentDataViewType
 
 const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetailContentProps) => {
   const { id, name, type, startTime, endTime, winnerNum, image, description, project, reward } = data
-  let taskTypeLabel = 'Unknown Reward Type'
-  if (reward) {
-    switch (reward.type) {
-      case RewardType.WHITELIST:
-        taskTypeLabel = reward.raffled ? 'Whitelist Luck Draw' : 'Whitelist-Oriented Task'
-        break
-      case RewardType.OTHERS:
-        taskTypeLabel = 'Other Reward'
-        break
-    }
-  }
+  const rewardTypeLabel = getTaskRewardTypeLabel(reward)
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
 
   return (
     <TaskDetailContentWrapper>
-      <TaskTypeLabel>{taskTypeLabel}</TaskTypeLabel>
+      <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
       <TaskDateAndWinnerBox>
         <TaskDateTimeBox>
           <IconAlarmClock size={'18px'} />
