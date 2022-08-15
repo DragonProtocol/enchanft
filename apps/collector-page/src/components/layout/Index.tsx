@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 18:12:52
+ * @LastEditTime: 2022-08-15 19:00:23
  * @Description: 站点布局入口
  */
 import React, { useEffect, useState } from 'react'
@@ -22,10 +22,11 @@ import { fetchFollowedCommunities } from '../../features/user/followedCommunitie
 import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
 import { fetchTodoTasks, selectAll } from '../../features/user/todoTasksSlice'
 import { TaskTodoCompleteStatus } from '../../types/entities'
-
+import { useGAPageView } from '../../hooks'
 const Layout: React.FC = () => {
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
+  useGAPageView()
   // TODO 后面对路由优化时，这个matchRoutes重复代码可封装成hooks
   const location = useLocation()
   const [displayTodoFloating, setDisplayTodoFloating] = useState(false)
