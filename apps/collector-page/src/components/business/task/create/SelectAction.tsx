@@ -41,7 +41,7 @@ export default function SelectActions({
   const account = useAppSelector(selectAccount)
 
   const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
-  const twitter = 'account.accounts.find((item) => item.accountType === ChainType.TWITTER)'
+  const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
 
   const [followTwitter, setFollowTwitter] = useState(false)
   const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<Array<string>>(
