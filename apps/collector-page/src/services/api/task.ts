@@ -98,6 +98,7 @@ export function createTask(data: CreateTaskState) {
           require_score: item.require_score,
           num: item.num,
           accounts: item.accounts,
+          tweet_id: item.tweet_id,
         },
       }
     }),
