@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   Checkbox,
   FormControl,
   FormControlLabel,
@@ -36,13 +37,28 @@ const discordBotCallback = `https://discord.com/oauth2/authorize?client_id=10036
   process.env.REACT_APP_DISCORD_CALLBACK_URL!,
 )}`
 
+const ModalStyle = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 2,
+}
+
 export default function TaskCreate() {
   const navigate = useNavigate()
   const { projectId, projectSlug } = useParams()
   const [searchParams] = useSearchParams()
-  const [openPreview, setOpenPreview] = React.useState(false)
-  const [toastMsg, setToastMsg] = React.useState('')
-  const [showToast, setShowToast] = React.useState(false)
+  const [openPreview, setOpenPreview] = useState(false)
+  const [toastMsg, setToastMsg] = useState('')
+  const [showToast, setShowToast] = useState(false)
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [errMsg, setErrMsg] = useState('')
 
   const [state, setState] = useState<CreateTaskState>({
     ...DefaultState,
@@ -77,6 +93,12 @@ export default function TaskCreate() {
   }, [])
 
   const submitResult = useCallback(async () => {
+    if (state.actions.length == 0) {
+      setErrMsg('cannot create task without action!!!')
+      return
+    }
+    if (isSubmitting) return
+    setIsSubmitting(true)
     try {
       const resp = await createTaskApi(state)
       navigate(`/${projectSlug}/${resp.data.data.id}`)
@@ -84,7 +106,8 @@ export default function TaskCreate() {
       setToastMsg('create fail')
       setShowToast(true)
     }
-  }, [state])
+    setIsSubmitting(false)
+  }, [state, isSubmitting])
 
   if (!isCreator || !checkProjectAllowed(Number(projectId))) {
     return <TaskCreateWrapper>Not allowed</TaskCreateWrapper>
@@ -170,7 +193,7 @@ export default function TaskCreate() {
         state={state}
         open={openPreview}
         closeHandler={() => setOpenPreview(false)}
-        submitResult={submitResult}
+        submitResult={() => setConfirmModalOpen(true)}
       />
 
       <Snackbar
@@ -180,9 +203,79 @@ export default function TaskCreate() {
         onClose={() => setShowToast(false)}
         message={toastMsg}
       />
+
+      <ConfirmModal
+        open={confirmModalOpen}
+        // onClose={() => setConfirmModalOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+            Leaving Community
+          </Typography>
+          <Typography className="desc" sx={{ mt: 2 }}>
+            Please check the event page carefully as it cannot be edited once submitted.
+          </Typography>
+          {errMsg && (
+            <Typography className="desc err-msg" sx={{ mt: 2 }}>
+              {errMsg}
+            </Typography>
+          )}
+          <ModalBtnBox>
+            <button
+              className="cancel"
+              onClick={() => {
+                setErrMsg('')
+                setConfirmModalOpen(false)
+              }}
+            >
+              Cancel
+            </button>
+            <button className="confirm" onClick={submitResult}>
+              Submit
+            </button>
+          </ModalBtnBox>
+        </Box>
+      </ConfirmModal>
     </>
   )
 }
+
+const ConfirmModal = styled(Modal)`
+  & .desc {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #333333;
+  }
+
+  & .err-msg {
+    color: red;
+  }
+`
+
+const ModalBtnBox = styled.div`
+  display: flex;
+  justify-content: end;
+
+  & button {
+    cursor: pointer;
+    background: #f8f8f8;
+    margin-top: 20px;
+    padding: 0 20px;
+    border: none;
+    height: 48px;
+    font-size: 20px;
+    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  }
+
+  & button.confirm {
+    background-color: #3dd606;
+    margin-left: 20px;
+    color: #fff;
+  }
+`
 
 const TaskCreateWrapper = styled.div`
   width: 100%;

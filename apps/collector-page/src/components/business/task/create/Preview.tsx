@@ -61,7 +61,9 @@ export default function Preview({
               <IconGiftBox />
               <span>Reward: {state.reward.type === RewardType.WHITELIST ? 'whitelist' : state.reward.name}</span>
             </div>
-            <div className="desc">{state.description}</div>
+            <div className="desc">
+              <pre>{state.description}</pre>
+            </div>
           </div>
           <div className="right">
             {state.actions.map((item, idx) => {
@@ -180,11 +182,16 @@ const TaskPrevewWrapper = styled.div`
         }
 
         & .desc {
+          height: auto;
           font-weight: 400;
           font-size: 14px;
           line-height: 21px;
 
           color: rgba(51, 51, 51, 0.6);
+
+          & > pre {
+            margin: 0;
+          }
         }
       }
 
