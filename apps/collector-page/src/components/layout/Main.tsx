@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 19:03:15
+ * @LastEditTime: 2022-08-15 17:50:48
  * @Description: 站点主体内容（路由导航）
  */
 import Profile from '../../container/Profile'
@@ -15,13 +15,11 @@ import TodoTask from '../../container/TodoTask'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { selectAccount, userLink } from '../../features/user/accountSlice'
 
-import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
 import Guide from '../../container/Guide'
 import EnchanftedDetail from '../../container/EnchanftedDetail'
 import Task from '../../container/Task'
 import TaskCreate from '../../container/TaskCreate'
 import Projects from '../../container/Projects'
-import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
 import Project from '../../container/Project'
 import Contributionranks from '../../container/Contributionranks'
 import Ref from '../../container/Ref'
@@ -63,7 +61,6 @@ export const routes: CutomRouteObject[] = [
 ]
 
 const Main: React.FC = () => {
-  const dispatch = useAppDispatch()
   const { token, status } = useAppSelector(selectAccount)
   const isLogin = !!token
   const permissionRoutesMap = permissionRoutes.map((route) => ({
@@ -71,40 +68,6 @@ const Main: React.FC = () => {
     element: isLogin ? route.element : <NoLogin>You have to connect wallet to view this page!</NoLogin>,
   }))
   const renderRoutes = useRoutes([...routes, ...permissionRoutesMap])
-
-  useEffect(() => {
-    dispatch(fetchFollowedCommunities())
-    dispatch(fetchUserWhitelists())
-  }, [token])
-
-  //社媒账号授权 code 监听
-  useEffect(() => {
-    localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
-    const handleStorageChange = ({ newValue, key, url }) => {
-      if ('social_auth' === key) {
-        console.log('social_auth change url', url)
-        // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
-        const { code, type } = JSON.parse(newValue || '')
-        if (code && type) {
-          linkUser({ code, type })
-          localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
-        }
-      }
-    }
-    window.addEventListener('storage', handleStorageChange)
-
-    return () => window.removeEventListener('storage', handleStorageChange)
-  }, [])
-
-  const linkUser = (accountInfo) => {
-    const code = accountInfo.code
-    const type = accountInfo.type || 'TWITTER'
-    if (code && type) {
-      dispatch(userLink({ code, type }))
-    } else {
-      alert('account bind failed!')
-    }
-  }
 
   return <MainWrapper>{renderRoutes}</MainWrapper>
 }

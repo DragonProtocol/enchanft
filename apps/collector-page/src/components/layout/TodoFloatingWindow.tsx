@@ -2,21 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 15:11:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 19:04:27
+ * @LastEditTime: 2022-08-15 18:09:38
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { selectAccount } from '../../features/user/accountSlice'
-import { useAppSelector } from '../../store/hooks'
-import ListAltIcon from '@mui/icons-material/ListAlt'
 import CloseIcon from '@mui/icons-material/Close'
 import IconListAlt from '../common/icons/IconListAlt'
-const TodoFloatingWindow: React.FC = () => {
+type TodoFloatingWindowProps = {
+  count?: number
+}
+const TodoFloatingWindow: React.FC<TodoFloatingWindowProps> = ({ count = 0 }) => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { token } = useAppSelector(selectAccount)
   const [isEnter, setIsEnter] = useState(false)
   useEffect(() => {
     if (location.pathname === '/towl') {
@@ -40,11 +39,10 @@ const TodoFloatingWindow: React.FC = () => {
     }
   }, [isEnter])
 
-  if (!token) return null
-
   return (
     <TodoFloatingWindowWrapper onClick={handleClick}>
       {isEnter ? <CloseIcon sx={{ fontSize: '50px' }} /> : <IconListAlt size="50px" />}
+      {!isEnter && count > 0 && <TodoFloatingWindowCount>{count}</TodoFloatingWindowCount>}
     </TodoFloatingWindowWrapper>
   )
 }
@@ -65,5 +63,24 @@ const TodoFloatingWindowWrapper = styled.div`
   align-items: center;
   color: #333333;
   cursor: pointer;
+  z-index: 2;
+`
+// 右上角数量提示
+const TodoFloatingWindowCount = styled.div`
+  min-width: 36px;
+  height: 36px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(50%, -50%);
+  border-radius: 18px;
+  padding: 10px;
+  box-sizing: border-box;
+  background: #ff0000;
+  color: #fff;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   z-index: 2;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 13:53:58
+ * @LastEditTime: 2022-08-15 17:55:40
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -160,16 +160,9 @@ const TodoTask: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const hasTaskId = searchParams.has('taskId')
   const taskId = hasTaskId ? Number(searchParams.get('taskId')) : -1
-  const { token } = useAppSelector(selectAccount)
   const dispatch = useAppDispatch()
   const todoTasks = useAppSelector(selectAll)
   const { status } = useAppSelector(selectUserTodoTasksState)
-  // 单个任务刷新的select
-  useEffect(() => {
-    if (token) {
-      dispatch(fetchTodoTasks())
-    }
-  }, [token])
 
   // 处理单个任务刷新
   const handleRefreshTask = (taskId: number) => {

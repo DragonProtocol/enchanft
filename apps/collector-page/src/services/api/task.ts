@@ -27,7 +27,7 @@ export function takeTask(params: TakeTaskParams): AxiosPromise<ApiResp<any>> {
   const { id } = params
   const refInfo = loadRefInfo(RefType.TAKE_TASK, String(id))
   const gaEvent = useGAEvent(TASK_CATALOG_GA)
-  gaEvent( TaskActionGA.TAKE_TASK, id)
+  gaEvent(TaskActionGA.TAKE_TASK, id)
   if (refInfo && refInfo.referrerId > 0) {
     return request({
       url: `/tasks/${id}/takers`,

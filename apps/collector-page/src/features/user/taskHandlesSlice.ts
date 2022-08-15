@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 13:54:33
+ * @LastEditTime: 2022-08-15 18:35:56
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
@@ -13,6 +13,7 @@ import { AsyncRequestStatus } from '../../types'
 import { TaskAcceptedStatus, TaskTodoCompleteStatus } from '../../types/entities'
 import { updateOneForProjectTask } from '../community/collectionDetailSlice'
 import { fetchTaskDetail, updateTaskDetail } from '../task/taskDetailSlice'
+import { fetchTodoTasks } from './todoTasksSlice'
 // import { updateOne as updateOneForDashboardRecommendTasksSlice } from '../explore/recommendTasksSlice'
 // 每一种操作单独存储当前的数据状态
 export type TaskHandle<T> = {
@@ -44,6 +45,7 @@ export const take = createAsyncThunk('user/taskHandles/take', async (params: Tak
       dispatch(updateTaskDetail(updateTask))
       dispatch(updateOneForProjectTask(updateTask))
       dispatch(fetchTaskDetail(params.id))
+      dispatch(fetchTodoTasks())
     } else {
       throw new Error(resp.data.msg)
     }
