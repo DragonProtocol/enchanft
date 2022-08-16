@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 18:47:24
+ * @LastEditTime: 2022-08-16 16:28:55
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -272,7 +272,7 @@ const TodoTaskWrapper = styled.div`
 `
 const TodoTaskGroupBox = styled.div`
   width: 100%;
-  height: 900px;
+  height: 850px;
   display: flex;
   gap: 10px;
 `

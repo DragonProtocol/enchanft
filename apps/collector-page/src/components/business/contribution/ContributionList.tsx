@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-09 19:03:12
+ * @LastEditTime: 2022-08-16 14:21:08
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -131,7 +131,7 @@ const ContributionList: React.FC<ContributionListProps> = ({
       <ContributioHeaderBox>
         <IconTrophy />
         <ContributionTitle style={{ fontSize: fontSize.title, fontWeight: fontWeight.title }}>
-          Contribution Rank
+          Contribution Token
         </ContributionTitle>
         {displayMembersTotal && (
           <CotributionMembersTotal style={{ fontSize: fontSize.membersTotal, fontWeight: fontWeight.membersTotal }}>
@@ -187,7 +187,7 @@ const ContributioHeaderBox = styled.div`
   align-items: center;
   gap: 10px;
   padding-bottom: 18px;
-  border-bottom: 1px solid #d9d9d9;
+  border-bottom: 2px solid #333333;
   margin-bottom: 24px;
 `
 const ContributionTitle = styled.div`

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 13:51:21
+ * @LastEditTime: 2022-08-16 16:56:06
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -283,6 +283,7 @@ const TodoTaskItemWrapper = styled.div`
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   padding: 10px;
   box-sizing: border-box;
+  border-radius: 10px;
 `
 const TaskBasicInfoBox = styled.div<{ isAllowClick?: Boolean }>`
   width: 100%;

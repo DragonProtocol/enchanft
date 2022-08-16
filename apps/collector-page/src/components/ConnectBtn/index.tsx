@@ -127,7 +127,6 @@ const ConnectBtnWrapper = styled(ButtonPrimary)`
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
-  color: #ffffff;
   & img {
     width: 25px;
     margin-right: 10px;

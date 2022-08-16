@@ -198,14 +198,14 @@ const Project: React.FC = () => {
   const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data, token)
   const showContributionranks = contributionranks.slice(0, 5)
   const contributionMembersTotal = contributionranks.length
-  const teamMembers = formatStoreDataToComponentDataByTeamMembers(data, token)
+  // const teamMembers = formatStoreDataToComponentDataByTeamMembers(data, token)
   const tasks = formatStoreDataToComponentDataByTasks(data, token)
 
-  const ProjectInfoTabComponents = {
-    [ProjectInfoTabsValue.TEAM]: <ProjectTeamMemberList items={teamMembers} />,
-    [ProjectInfoTabsValue.ROADMAP]: <ProjectRoadmap items={data.roadmap} />,
-    // [ProjectInfoTabsValue.REVIEWS]: <span>Not yet developed</span>,
-  }
+  // const ProjectInfoTabComponents = {
+  //   [ProjectInfoTabsValue.TEAM]: <ProjectTeamMemberList items={teamMembers} />,
+  //   [ProjectInfoTabsValue.ROADMAP]: <ProjectRoadmap items={data.roadmap} />,
+  //   // [ProjectInfoTabsValue.REVIEWS]: <span>Not yet developed</span>,
+  // }
   return (
     <ProjectWrapper>
       <MainContentBox>
@@ -258,7 +258,7 @@ const Project: React.FC = () => {
             </ExploreTaskListBox>
           </ProjectEventsBox>
 
-          <ProjectOtherInfoBox>
+          {/* <ProjectOtherInfoBox>
             <ProjectOtherInfoLeftBox>
               <ProjectLabelBox>
                 <ProjectLabel>Story</ProjectLabel>
@@ -278,11 +278,10 @@ const Project: React.FC = () => {
                   </ProjectOtherInfoRightTab>
                 ))}
               </ProjectOtherInfoRightTabs>
-              {/* {ProjectInfoTabComponents[activeTab]} */}
               {(activeTab === ProjectInfoTabsValue.TEAM && <ProjectTeamMemberList items={teamMembers} />) ||
                 (activeTab === ProjectInfoTabsValue.ROADMAP && <ProjectRoadmap items={data.roadmap} />)}
             </ProjectOtherInfoRightBox>
-          </ProjectOtherInfoBox>
+          </ProjectOtherInfoBox> */}
         </ProjectBottomBox>
       </MainContentBox>
     </ProjectWrapper>
@@ -339,7 +338,6 @@ const ProjectOtherInfoLeftBox = styled.div`
   flex: 1;
 `
 const ProjectLabelBox = styled.div`
-  border-bottom: solid 1px #d9d9d9;
   display: flex;
 `
 const ExploreTaskListBox = styled.div`
@@ -349,8 +347,6 @@ const ProjectLabel = styled.div`
   font-weight: 700;
   font-size: 20px;
   color: #333333;
-  padding-bottom: 10px;
-  box-shadow: inset 0 -4px #3dd606;
 `
 const ProjectStoryContent = styled(RichTextBox)``
 const ProjectOtherInfoRightBox = styled.div`

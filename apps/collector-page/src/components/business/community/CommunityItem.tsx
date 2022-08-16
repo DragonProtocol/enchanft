@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import ButtonBase from '../../common/button/ButtonBase'
+import { ButtonInfo } from '../../common/button/ButtonBase'
 import { useNavigate } from 'react-router-dom'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
+import CardItemBox from '../../common/card/CardItemBox'
 
 export type CommunityItemDataType = {
   id: number
@@ -81,18 +82,12 @@ const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollo
   )
 }
 export default CommunityItem
-const CommunityItemWrapper = styled.div`
-  width: 100%;
+const CommunityItemWrapper = styled(CardItemBox)`
   height: 450px;
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
-
-  background: #ffffff;
-  border: 2px solid #333333;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `
 const CommunityImage = styled.img`
   width: 100%;
@@ -106,8 +101,6 @@ const CommunityInfoBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  overflow-y: auto;
-  ${ScrollBarCss}
 `
 const NumberInfoBox = styled.div`
   flex: 1;
@@ -140,9 +133,7 @@ const CommunityName = styled(OverflowEllipsisBox)`
   font-weight: bold;
   flex-shrink: 0;
 `
-const CommunityFollow = styled(ButtonBase)<{ isFollowed: boolean }>`
+const CommunityFollow = styled(ButtonInfo)<{ isFollowed: boolean }>`
   height: 40px;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-  background-color: ${(props) => (props.isFollowed ? '#f8f8f8' : 'rgba(51, 53, 54, 100)')};
   color: ${(props) => (props.isFollowed ? 'rgba(51, 53, 54, 100)' : '#f8f8f8')};
 `

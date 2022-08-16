@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 15:58:47
+ * @LastEditTime: 2022-08-16 18:05:39
  * @Description: file description
  */
 import React from 'react'
@@ -10,7 +10,9 @@ import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from '../../../constants'
 import ButtonBase from '../../common/button/ButtonBase'
 import Loading from '../../common/loading/Loading'
+import IconPlus from '../../common/icons/IconPlus'
 import ExploreTaskItem, { ExploreTaskItemDataViewType } from './ExploreTaskItem'
+import CardItemBox from '../../common/card/CardItemBox'
 
 export type ExploreTaskListViewConfigType = {
   loading?: boolean
@@ -41,7 +43,7 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
     <ExploreTaskListWrapper>
       {displayCreateTask && (
         <CreateTaskButton onClick={() => onCreateTask && onCreateTask()}>
-          <span>+</span>
+          <IconPlus size="2rem" />
           <span>Create</span>
         </CreateTaskButton>
       )}
@@ -96,18 +98,18 @@ const ExploreTaskItemBox = styled.div`
   }
   transition: all 0.5s ease-out;
 `
-const CreateTaskButton = styled(ButtonBase)`
-  box-shadow: none;
-  background: #f8f8f8;
-  border: 2px solid #333333;
+const CreateTaskButton = styled(CardItemBox)`
+  background: #ebeee4;
   display: flex;
   flex-direction: column;
   gap: 20px;
   justify-content: center;
   align-items: center;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 27px;
-  text-align: center;
-  color: #333333;
+
+  span {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 27px;
+    color: #333333;
+  }
 `

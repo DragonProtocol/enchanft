@@ -84,6 +84,8 @@ const ProjectDetailCommunityWrapper = styled.div`
 const CommunityImg = styled.img`
   width: 60px;
   height: 60px;
+  border-radius: 10px;
+  object-fit: cover;
 `
 const CommunityName = styled.div`
   flex: 1;

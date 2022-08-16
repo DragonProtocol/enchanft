@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 11:41:04
+ * @LastEditTime: 2022-08-16 15:42:45
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -38,7 +38,7 @@ import {
   selectfollow as selectfollowCommunity,
 } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
-import ButtonBase from '../components/common/button/ButtonBase'
+import ButtonBase, { ButtonInfo } from '../components/common/button/ButtonBase'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import { toast } from 'react-toastify'
 import IconShare from '../components/common/icons/IconShare'
@@ -331,16 +331,14 @@ const ProjectName = styled.span`
   color: #3dd606;
   cursor: pointer;
 `
-const ShareButton = styled(ButtonBase)`
+const ShareButton = styled(ButtonInfo)`
   width: 48px;
   height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f8f8f8;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
-const ManageButton = styled(ButtonBase)`
+const ManageButton = styled(ButtonInfo)`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -348,9 +346,6 @@ const ManageButton = styled(ButtonBase)`
   padding: 10px 18px;
   width: 210px;
   height: 48px;
-
-  background: #f8f8f8;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 
   font-weight: 700;
   font-size: 18px;
@@ -363,6 +358,7 @@ const TaskImage = styled(TaskImageDefault)`
   height: 253px;
   object-fit: cover;
   margin-bottom: 26px;
+  border-radius: 10px;
 `
 
 const TaskDetailContentBox = styled.div`
@@ -385,7 +381,8 @@ const TaskDetailContentBoxRight = styled.div`
 `
 const TaskListBox = styled.div`
   width: 100%;
-  background: #f8f8f8;
+  background: #ebeee4;
+  border-radius: 10px;
   padding: 20px;
   box-sizing: border-box;
   display: flex;
