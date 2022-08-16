@@ -72,7 +72,7 @@ export const DefaultState: State = {
     raffled: false,
     name: '',
   },
-  winnerNum: 0,
+  winnerNum: 20,
   startTime: Date.now(),
   endTime: Date.now(),
   actions: [],
