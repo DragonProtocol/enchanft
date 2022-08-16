@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 17:55:40
+ * @LastEditTime: 2022-08-15 18:47:24
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -165,7 +165,7 @@ const TodoTask: React.FC = () => {
   const { status } = useAppSelector(selectUserTodoTasksState)
 
   // 处理单个任务刷新
-  const handleRefreshTask = (taskId: number) => {
+  const handleVerifyTask = (taskId: number) => {
     dispatch(verifyOneTodoTask({ id: taskId }))
   }
 
@@ -219,7 +219,7 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.TODO}
                 items={todoItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
                 onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
@@ -228,7 +228,7 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.IN_PRGRESS}
                 items={inProgressItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
                 onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
@@ -239,25 +239,25 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.COMPLETED}
                 items={completedItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.WON}
                 items={wonItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.CLOSED}
                 items={closedItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.LOST}
                 items={lostItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
             </TodoTaskGroupRight>
           </TodoTaskGroupBox>

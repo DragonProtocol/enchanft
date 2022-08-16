@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 13:53:25
+ * @LastEditTime: 2022-08-16 11:41:04
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -17,7 +17,7 @@ import TaskActionList, { TaskActionItemsType } from '../components/business/task
 import { ActionType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../types/entities'
 import { TodoTaskActionItem, UserActionStatus } from '../types/api'
 import TaskDetailContent, { TaskDetailContentDataViewType } from '../components/business/task/TaskDetailContent'
-import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
+import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle, verify } from '../features/user/taskHandlesSlice'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import useHandleAction from '../hooks/useHandleAction'
 import { ChainType, getChainType } from '../utils/chain'
@@ -43,6 +43,7 @@ import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import { toast } from 'react-toastify'
 import IconShare from '../components/common/icons/IconShare'
 import { TASK_SHARE_URI } from '../constants'
+import { verifyOneTodoTask } from '../features/user/todoTasksSlice'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
@@ -162,11 +163,15 @@ const Task: React.FC = () => {
   const handleLeave = useCallback(() => {
     navigate(-1)
   }, [])
+
+  // handles: take, verify
+  const { take: takeTaskState, verify: takeVerifyState } = useAppSelector(selectUserTaskHandlesState)
   const handleTakeTask = () => {
     dispatch(take({ id: Number(id) }))
   }
-  // 接任务的状态
-  const { take: takeTaskState } = useAppSelector(selectUserTaskHandlesState)
+  const handleVerifyTask = () => {
+    dispatch(verify({ id: Number(id) }))
+  }
   // 处理执行action操作
   const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
   // 获取链的类型
@@ -220,7 +225,7 @@ const Task: React.FC = () => {
 
   // verify action
   const displayVerify = allowHandleAction && actionItems.some((v) => v.status === UserActionStatus.TODO)
-  const loadingVerify = status === AsyncRequestStatus.PENDING
+  const loadingVerify = takeVerifyState.status === AsyncRequestStatus.PENDING
   const disabledVerify = loadingVerify
   const verifyingActions = loadingVerify
     ? actionItems.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
@@ -281,7 +286,7 @@ const Task: React.FC = () => {
                       loadingVerify={loadingVerify}
                       disabledVerify={disabledVerify}
                       verifyingActions={verifyingActions}
-                      onVerifyActions={dispatchFetchTaskDetail}
+                      onVerifyActions={handleVerifyTask}
                       copyBgc="#FFFFFF"
                       verifyBgc="#FFFFFF"
                     />

@@ -63,16 +63,16 @@ export const fetchTodoTasks = createAsyncThunk<
   },
 )
 
-type refreshOneResp = {
+type verifyOneTaskResp = {
   data: TodoTaskItem | null
   errorMsg?: string
 }
 
 export const verifyOneTodoTask = createAsyncThunk<
-  refreshOneResp,
+  verifyOneTaskResp,
   VerifyOneTaskParams,
   {
-    rejectValue: refreshOneResp
+    rejectValue: verifyOneTaskResp
   }
 >(
   'user/todoTasks/refreshOne',
@@ -178,6 +178,6 @@ export const userTodoTasksSlice = createSlice({
 
 const { actions, reducer } = userTodoTasksSlice
 export const selectUserTodoTasksState = (state: RootState) => state.userTodoTasks
-export const { selectAll } = todoTasksEntity.getSelectors((state: RootState) => state.userTodoTasks)
+export const { selectAll, selectById } = todoTasksEntity.getSelectors((state: RootState) => state.userTodoTasks)
 export const { updateOne } = actions
 export default reducer
