@@ -150,26 +150,30 @@ export default function Guide() {
         <div>
           <div className="p-info">
             <div className="avatar" onClick={() => document.getElementById('upload-avatar')?.click()}>
-              <AddIcon />
-              <span>Upload Image</span>
-              <input
-                title="upload-avatar"
-                id="upload-avatar"
-                style={{ display: 'none' }}
-                type="file"
-                accept="image/png, image/gif, image/jpeg"
-                onChange={async (e) => {
-                  const file = e.target.files && e.target.files[0]
-                  if (!file) return
-                  try {
-                    const { data } = await uploadAvatar(file)
-                    setAvatar(data.url)
-                    toast.success('upload success')
-                  } catch (error) {
-                    toast.error('upload fail')
-                  }
-                }}
-              />
+              {(avatar && <img src={avatar} alt="" />) || (
+                <>
+                  <AddIcon />
+                  <span>Upload Image</span>
+                  <input
+                    title="upload-avatar"
+                    id="upload-avatar"
+                    style={{ display: 'none' }}
+                    type="file"
+                    accept="image/png, image/gif, image/jpeg"
+                    onChange={async (e) => {
+                      const file = e.target.files && e.target.files[0]
+                      if (!file) return
+                      try {
+                        const { data } = await uploadAvatar(file)
+                        setAvatar(data.url)
+                        toast.success('upload success')
+                      } catch (error) {
+                        toast.error('upload fail')
+                      }
+                    }}
+                  />
+                </>
+              )}
             </div>
             <div className="name">
               <p>Name</p>
@@ -348,6 +352,11 @@ const GuideContainer = styled.div`
       justify-content: center;
       align-items: center;
 
+      & img {
+        width: 100%;
+        height: 100%;
+      }
+
       & svg {
         height: 40px;
         width: 40px;
@@ -388,6 +397,7 @@ const GuideContainer = styled.div`
     display: flex;
     justify-content: space-between;
     > button {
+      cursor: pointer;
       border: none;
       outline: none;
       width: 200px;
