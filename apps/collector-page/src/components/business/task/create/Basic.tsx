@@ -202,7 +202,6 @@ export default function Basic({ state, updateState }: { state: State; updateStat
               <div className="date-box">
                 <input
                   type="date"
-                  lang="fr-CA"
                   title="from-date"
                   className="date"
                   value={dayjs(state.startTime).format('YYYY-MM-DD')}
