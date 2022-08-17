@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 18:11:53
+ * @LastEditTime: 2022-08-17 18:55:42
  * @Description: file description
  */
 import React from 'react'
@@ -52,10 +52,7 @@ const ProjectStatusLabels = {
   [ProjectStatus.LIVE]: 'Live',
   [ProjectStatus.FUTURE]: 'Future',
 }
-const TaskTypeLabels = {
-  [TaskType.WHITELIST_ORIENTED]: 'Whitelist',
-  [TaskType.WHITELIST_LUCK_DRAW]: 'Raffle',
-}
+
 const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfig }: ExploreProjectItemProps) => {
   const navigate = useNavigate()
   const { id, name, image, status, floorPrice, itemTotalNum, communityId, tasks, publicSaleTime, chainId, slug } = data
@@ -71,8 +68,7 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
       // 距离结束时间的天数
       const task = tasks[0]
       const days = task ? Math.floor((task.endTime - Date.now()) / (1000 * 60 * 60 * 24)) : 0
-      const taskTypeLabel = TaskTypeLabels[task?.type] || 'Unknown Task Type'
-      projectDescBottomText = `${tasks.length} task . ${days} days . ${taskTypeLabel}`
+      projectDescBottomText = `${tasks.length} task . ${days} days`
       break
     case ProjectStatus.LIVE:
       projectDescBottomText = `items ${itemTotalNum} . Floor Price ${floorPrice}`

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 18:19:58
+ * @LastEditTime: 2022-08-17 19:06:41
  * @Description: file description
  */
 import React from 'react'
@@ -20,9 +20,10 @@ export type WinnerItemDataType = {
 
 export type TaskWinnerListProps = {
   items: WinnerItemDataType[]
+  highlightPubkeys?: string[]
 }
 
-const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items }: TaskWinnerListProps) => {
+const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items, highlightPubkeys = [] }: TaskWinnerListProps) => {
   return (
     <TaskWinnerListWrapper>
       <WinnerTitleBox>Winner List</WinnerTitleBox>
@@ -30,7 +31,7 @@ const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items }: TaskWinnerList
         {items.map((item, index) => (
           <WinnerItemBox key={index}>
             <WinnerItemAvatar src={item.avatar} />
-            <WinnerItemUserName>{item.name}</WinnerItemUserName>
+            <WinnerItemUserName highlight={highlightPubkeys.includes(item.pubkey)}>{item.name}</WinnerItemUserName>
             <WinnerItemPubkey number={1}>{item.pubkey}</WinnerItemPubkey>
           </WinnerItemBox>
         ))}
@@ -72,11 +73,11 @@ const WinnerItemAvatar = styled(UserAvatar)`
   width: 40px;
   height: 40px;
 `
-const WinnerItemUserName = styled.div`
+const WinnerItemUserName = styled.div<{ highlight?: boolean }>`
   width: 30%;
   font-size: 14px;
   line-height: 21px;
-  color: #333333;
+  color: ${(props) => (props.highlight ? '#3DD606' : '#333333')};
 `
 const WinnerItemPubkey = styled(OverflowEllipsisBox)`
   flex: 1;
