@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 14:43:38
+ * @LastEditTime: 2022-08-17 11:54:55
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -12,14 +12,16 @@ import IconTwitterWhite from '../../common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../../common/icons/IconDiscordWhite'
 import likeReplyRetweetImg from './imgs/like_reply_retweet.png'
 import discordChatInviteImg from './imgs/discord_chat_invite.png'
+import { getTwitterHomeLink } from '../../../utils/twitter'
 export type ContributionAboutDataType = {
   name: string
   icon: string
   twitter: string
-  twitterName: string
+  twitterId: string
   discord: string
   discordName: string
   discordMembers?: number
+  discordInviteUrl: string
 }
 
 export type ContributionAboutViewConfigType = {}
@@ -34,23 +36,26 @@ export type ContributionAboutProps = ContributionAboutDataViewType & Contributio
 
 const defaultViewConfig = {}
 const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig }: ContributionAboutProps) => {
-  const { name, icon, twitter, twitterName, discord, discordName, discordMembers } = data
+  const { name, icon, twitterId, discordInviteUrl, discordName, discordMembers } = data
   const {} = {
     ...defaultViewConfig,
     ...viewConfig,
   }
   const onTwitter = () => {
+    if (!twitterId) return
+    const twitterHomeLink = getTwitterHomeLink(twitterId)
     const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
     width=1000,height=1000,left=0,top=0`
-    window.open(twitter, twitterName, winParams)
+    window.open(twitterHomeLink, twitterId, winParams)
   }
   const onDiscord = () => {
+    if (!discordInviteUrl) return
     const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
     width=1000,height=1000,left=0,top=0`
-    window.open(discord, discordName, winParams)
+    window.open(discordInviteUrl, discordName, winParams)
   }
-  const TwitterLinkComponent = twitter && <LinkTextBtn onClick={onTwitter}>@{twitterName || name}</LinkTextBtn>
-  const DiscordLinkComponent = discord && <LinkTextBtn onClick={onDiscord}>#{discordName || name}</LinkTextBtn>
+  const TwitterLinkComponent = <LinkTextBtn onClick={onTwitter}>@{twitterId || name}</LinkTextBtn>
+  const DiscordLinkComponent = <LinkTextBtn onClick={onDiscord}>#{discordName || name}</LinkTextBtn>
 
   const questions = [
     {
@@ -67,9 +72,9 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
               <CommunityImg src={icon} />
               <CommunityCenter>
                 <CommunityName>{name}</CommunityName>
-                {twitter && <CommunityLinkName>@{twitterName || name}</CommunityLinkName>}
+                {twitterId && <CommunityLinkName>@{twitterId || name}</CommunityLinkName>}
               </CommunityCenter>
-              {twitter && (
+              {twitterId && (
                 <LinkBtnTwitter onClick={onTwitter}>
                   <IconTwitterWhite />
                 </LinkBtnTwitter>
@@ -95,7 +100,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
                   </DiscordMembersBox>
                 )}
               </CommunityCenter>
-              {discord && (
+              {discordInviteUrl && (
                 <LinkBtnDiscord onClick={onDiscord}>
                   <IconDiscordWhite />
                 </LinkBtnDiscord>

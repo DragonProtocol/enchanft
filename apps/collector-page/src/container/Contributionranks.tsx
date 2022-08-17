@@ -103,8 +103,9 @@ const Contributionranks: React.FC = () => {
     name: community?.name || '',
     icon: community?.icon || '',
     twitter: community?.twitter || '',
-    twitterName: '',
+    twitterId: community?.twitterId || '',
     discord: community?.discord || '',
+    discordInviteUrl: community?.discordInviteUrl || '',
     discordName: '',
   }
 
@@ -203,9 +204,9 @@ const ContributionMyBox = styled(CardBox)`
   padding: 20px;
   border: 4px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
 `
 const ContributionAboutBox = styled(CardBox)`
-  margin-top: 20px;
   width: 100%;
   padding: 20px;
   background: #fffbdb;

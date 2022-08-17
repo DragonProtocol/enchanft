@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
-import { TaskAcceptedStatus } from '../types/api'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ProjectDetailEntity, fetchProjectDetail, selectProjectDetail } from '../features/project/projectDetailSlice'
 import {
@@ -14,8 +13,6 @@ import {
 import ProjectBasicInfo, {
   ProjectDetailBasicInfoDataViewType,
 } from '../components/business/project/ProjectDetailBasicInfo'
-import ProjectDetail, { ProjectDetailDataViewType } from '../components/business/project/ProjectDetail'
-import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
 import { AsyncRequestStatus } from '../types'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 import {
@@ -27,7 +24,6 @@ import ProjectDetailCommunity, {
   ProjectDetailCommunityDataViewType,
 } from '../components/business/project/ProjectDetailCommunity'
 import ProjectDetailBasicInfo from '../components/business/project/ProjectDetailBasicInfo'
-import { ExplorTaskSwiperItemsType } from '../components/business/task/ExploreTaskSwiper'
 import ExploreTaskList, { ExploreTaskListItemsType } from '../components/business/task/ExploreTaskList'
 import ProjectTeamMemberList, {
   ProjectTeamMemberListItemsType,
