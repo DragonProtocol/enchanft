@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 16:21:23
+ * @LastEditTime: 2022-08-17 16:58:39
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -11,6 +11,7 @@ import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import UserAvatar from '../user/UserAvatar'
 import IconTrophy from '../../common/icons/IconTrophy'
 import CrownImg from '../../imgs/crown.svg'
+import ButtonBase from '../../common/button/ButtonBase'
 export type ContributionItemDataType = {
   ranking: number
   avatar: string
@@ -99,8 +100,12 @@ export type ContributionListProps = {
   hiddenColumns?: ContributionColumns[]
   displayMembersTotal?: boolean
   membersTotal?: number
+  displayDownload?: boolean
+  loadingDownload?: boolean
+  disabledDownload?: boolean
   displayMore?: boolean
   moreText?: string
+  onDownload?: () => void
   onMore?: () => void
   size?: ContributionListSize
 }
@@ -110,8 +115,12 @@ const ContributionList: React.FC<ContributionListProps> = ({
   hiddenColumns = [],
   displayMembersTotal = true,
   membersTotal = 0,
+  displayDownload = false,
+  loadingDownload = false,
+  disabledDownload = false,
   displayMore,
   moreText = 'View More',
+  onDownload,
   onMore,
   size = ContributionListSize.medium,
 }: ContributionListProps) => {
@@ -123,6 +132,11 @@ const ContributionList: React.FC<ContributionListProps> = ({
   const fontSize = ContributionListFontSizeMap[size]
   const fontWeight = ContributionListFontWeightMap[size]
   const flexGap = ContributionListFlexGapMap[size]
+  const handleDownload = useCallback(() => {
+    if (onDownload) {
+      onDownload()
+    }
+  }, [onDownload])
   const handleMore = useCallback(() => {
     if (onMore) onMore()
   }, [onMore])
@@ -137,6 +151,11 @@ const ContributionList: React.FC<ContributionListProps> = ({
           <CotributionMembersTotal style={{ fontSize: fontSize.membersTotal, fontWeight: fontWeight.membersTotal }}>
             {membersTotal} members
           </CotributionMembersTotal>
+        )}
+        {displayDownload && (
+          <DownloadBtn onClick={handleDownload} disabled={disabledDownload}>
+            {loadingDownload ? 'Loading...' : 'Download'}
+          </DownloadBtn>
         )}
       </ContributioHeaderBox>
       <ContributionListBox>
@@ -261,4 +280,15 @@ const MoreBtn = styled.div`
   color: #3dd606;
   margin-top: 10px;
   cursor: pointer;
+`
+const DownloadBtn = styled(ButtonBase)`
+  width: 132px;
+  height: 40px;
+  line-height: 40px;
+  text-align: center;
+  background: #f8f8f8;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+  font-weight: 700;
+  font-size: 14px;
+  color: #333333;
 `

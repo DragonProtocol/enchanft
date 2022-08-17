@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-08 19:10:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 11:15:04
+ * @LastEditTime: 2022-08-17 13:06:32
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -15,7 +15,7 @@ import {
   FollowedCommunitiesResponse,
   UserContributionResponse,
 } from '../../types/api'
-
+import fileDownload from 'js-file-download'
 /** 获取 collection 详情 */
 export type fetchDetailForCommunityCollectionParams = {
   communityId: number
@@ -91,6 +91,17 @@ export function fetchListForUserFollowedCommunity(): AxiosPromise<ApiResp<Follow
   return request({
     url: `/communities/followed`,
     method: 'get',
+    headers: {
+      needToken: true,
+    },
+  })
+}
+
+export function downloadContributions(communityId: string | number): AxiosPromise<any> {
+  return request({
+    url: `/communities/download/${communityId}.csv`,
+    method: 'get',
+    responseType: 'blob',
     headers: {
       needToken: true,
     },

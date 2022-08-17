@@ -14,10 +14,7 @@ import ProjectBasicInfo, {
 } from '../components/business/project/ProjectDetailBasicInfo'
 import { AsyncRequestStatus } from '../types'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
-import {
-  follow as followCommunity,
-  selectfollow as selectfollowCommunity,
-} from '../features/user/communityHandlesSlice'
+import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import CardBox from '../components/common/card/CardBox'
 import ProjectDetailCommunity, {
   ProjectDetailCommunityDataViewType,
@@ -111,6 +108,7 @@ const Project: React.FC = () => {
   const dispatchFetchDetail = useCallback(() => projectSlug && dispatch(fetchProjectDetail(projectSlug)), [projectSlug])
   const [loadingView, setLoadingView] = useState(true)
   const { isCreator, checkProjectAllowed } = usePermissions()
+  const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
 
   // slug，重新请求数据，并进入loading状态
   useEffect(() => {
@@ -152,7 +150,7 @@ const Project: React.FC = () => {
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
 
   // 关注社区
-  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
+  const { status: followCommunityStatus } = followCommunityState
   const handleFollowChange = (isFollowed: boolean) => {
     if (communityId && isFollowed) {
       dispatch(followCommunity({ id: Number(communityId) }))

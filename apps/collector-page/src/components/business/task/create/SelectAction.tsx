@@ -49,16 +49,16 @@ export default function SelectActions({
   )
   const [joinDiscord, setJoinDiscord] = useState(false)
   const [inviteDiscord, setInviteDiscord] = useState(false)
-  const [inviteDiscordNum, setInviteDiscordNum] = useState(0)
+  const [inviteDiscordNum, setInviteDiscordNum] = useState(5)
   const [inviteFriends, setInvalidFriends] = useState(false)
-  const [inviteNum, setInviteNum] = useState(0)
+  const [inviteNum, setInviteNum] = useState(5)
   const [likeTwitter, setLikeTwitter] = useState(false)
   const [likeTwitterLink, setLikeTwitterLink] = useState('')
   const [retweetTwitter, setRetweetTwitter] = useState(false)
   const [retweetTwitterLink, setRetweetTwitterLink] = useState('')
   const [joinCommunity, setJoinCommunity] = useState(false)
   const [joinCommunityContribution, setJoinCommunityContribution] = useState(false)
-  const [joinCommunityContributionNum, setJoinCommunityContributionNum] = useState(0)
+  const [joinCommunityContributionNum, setJoinCommunityContributionNum] = useState(20)
 
   useEffect(() => {
     const actions: Action[] = []
@@ -310,6 +310,7 @@ export default function SelectActions({
                       <input
                         type="text"
                         title="retweet"
+                        min={'1'}
                         onKeyPress={numberInput}
                         value={retweetTwitterLink}
                         onChange={(e) => {
@@ -341,6 +342,7 @@ export default function SelectActions({
                 invite
                 <input
                   title="task-invite"
+                  min={'1'}
                   value={inviteNum === 0 ? '' : inviteNum.toString()}
                   placeholder="X"
                   onKeyPress={numberInput}
@@ -385,6 +387,7 @@ export default function SelectActions({
                   Invite
                   <input
                     placeholder="X"
+                    min={'1'}
                     title="invite-discord"
                     value={inviteDiscordNum === 0 ? '' : inviteDiscordNum.toString()}
                     onKeyPress={numberInput}
@@ -431,6 +434,7 @@ export default function SelectActions({
                 <input
                   type="text"
                   title="task-join-community"
+                  min={'1'}
                   value={joinCommunityContributionNum === 0 ? '' : joinCommunityContributionNum.toString()}
                   placeholder="X"
                   onKeyPress={numberInput}
