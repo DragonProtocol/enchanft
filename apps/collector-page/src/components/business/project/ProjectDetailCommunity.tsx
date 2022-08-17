@@ -4,13 +4,16 @@ import { ButtonWarning } from '../../common/button/ButtonBase'
 import IconWebsite from '../../common/icons/IconWebsite'
 import IconTwitterBlack from '../../common/icons/IconTwitterBlack'
 import IconDiscordBlack from '../../common/icons/IconDiscordBlack'
+import { getTwitterHomeLink } from '../../../utils/twitter'
 export type ProjectDetailCommunityDataType = {
   id: number
   name: string
   icon: string
   website: string
   twitter: string
+  twitterId: string
   discord: string
+  discordInviteUrl: string
   isFollowed: boolean
 }
 
@@ -37,7 +40,8 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
   viewConfig,
   onFollowChange,
 }: ProjectDetailCommunityProps) => {
-  const { name, icon, website, twitter, discord, isFollowed } = data
+  const { name, icon, website, twitterId, discordInviteUrl, isFollowed } = data
+  const twitterHomeLink = getTwitterHomeLink(twitterId)
   const { displayFollow, loadingFollow } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -59,10 +63,10 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
         <ProjectLink href={website} target="_blank" rel="noopener noreferrer">
           <IconWebsite />
         </ProjectLink>
-        <ProjectLink href={twitter} target="_blank" rel="noopener noreferrer">
+        <ProjectLink href={twitterHomeLink} target="_blank" rel="noopener noreferrer">
           <IconTwitterBlack />
         </ProjectLink>
-        <ProjectLink href={discord} target="_blank" rel="noopener noreferrer">
+        <ProjectLink href={discordInviteUrl} target="_blank" rel="noopener noreferrer">
           <IconDiscordBlack />
         </ProjectLink>
         {displayFollow && (

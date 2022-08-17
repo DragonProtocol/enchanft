@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
@@ -19,20 +19,28 @@ import {
   selectContributionCommunityInfo,
 } from '../features/contribution/communityInfoSlice'
 import {
+  downloadContributionTokens,
   follow as followCommunity,
-  selectfollow as selectfollowCommunity,
+  selectUserCommunityHandlesState,
 } from '../features/user/communityHandlesSlice'
 import { fetchUserContributon, selectUserContributon } from '../features/contribution/userContributionSlice'
 import { AsyncRequestStatus } from '../types'
 import ContributionAbout from '../components/business/contribution/ContributionAbout'
 import ContributionMy, { ContributionMyDataViewType } from '../components/business/contribution/ContributionMy'
 import Loading from '../components/common/loading/Loading'
+import usePermissions from '../hooks/usePermissons'
+import { downloadContributions } from '../services/api/community'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
   const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
   const { token, avatar, name } = useAppSelector(selectAccount)
+  const { follow: followCommunityState, downloadContributionTokens: downloadContributionTokensState } = useAppSelector(
+    selectUserCommunityHandlesState,
+  )
+  // 用户的contribution操作权限
+  const { checkContributionAllowed } = usePermissions()
 
   // 获取社区信息
   const { data: community, status: communityStatus } = useAppSelector(selectContributionCommunityInfo)
@@ -43,11 +51,10 @@ const Contributionranks: React.FC = () => {
   }, [projectSlug])
   // 用户关注的社区ID集合
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
-  const isFollowedCommunity = community?.id
-    ? userFollowedProjectIds.map((item) => String(item)).includes(String(community.id))
-    : false
+  const isFollowedCommunity =
+    !!community?.id && userFollowedProjectIds.map((item) => String(item)).includes(String(community.id))
   // 关注社区
-  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
+  const { status: followCommunityStatus } = followCommunityState
   const handleFollowCommunity = () => {
     if (community?.id) {
       dispatch(followCommunity({ id: community.id }))
@@ -81,6 +88,17 @@ const Contributionranks: React.FC = () => {
     }
   }, [projectSlug])
 
+  // download contribution tokens
+  const { status: downloadContributionTokensStatus } = downloadContributionTokensState
+  const displayDownload = !!community?.id && checkContributionAllowed(community.id)
+  const loadingDownload = downloadContributionTokensStatus === AsyncRequestStatus.PENDING
+  const disabledDownload = loadingDownload
+  const handleDownload = useCallback(() => {
+    if (community?.id) {
+      dispatch(downloadContributionTokens(community.id))
+    }
+  }, [community])
+
   // 展示数据
   const contributionranksLoading = contributionranksStatus === AsyncRequestStatus.PENDING
   const userContributionInfo: ContributionMyDataViewType = {
@@ -100,10 +118,12 @@ const Contributionranks: React.FC = () => {
     name: community?.name || '',
     icon: community?.icon || '',
     twitter: community?.twitter || '',
-    twitterName: '',
+    twitterId: community?.twitterId || '',
     discord: community?.discord || '',
+    discordInviteUrl: community?.discordInviteUrl || '',
     discordName: '',
   }
+
   return (
     <ContributionWrapper>
       <MainContentBox>
@@ -124,8 +144,12 @@ const Contributionranks: React.FC = () => {
               <ContributionList
                 size={ContributionListSize.large}
                 items={contributionranks}
-                displayMembersTotal={false}
+                membersTotal={contributionranks.length}
                 displayMore={false}
+                displayDownload={displayDownload}
+                loadingDownload={loadingDownload}
+                disabledDownload={disabledDownload}
+                onDownload={handleDownload}
               />
             )}
           </ContributionListBox>
@@ -190,9 +214,9 @@ const ContributionMyBox = styled(CardBox)`
   padding: 20px;
   border: 4px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
 `
 const ContributionAboutBox = styled(CardBox)`
-  margin-top: 20px;
   width: 100%;
   padding: 20px;
   background: #fffbdb;

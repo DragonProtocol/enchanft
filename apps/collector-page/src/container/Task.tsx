@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 15:42:45
+ * @LastEditTime: 2022-08-17 13:23:41
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -33,10 +33,7 @@ import TaskStatusButton, {
   TaskStatusButtonType,
 } from '../components/business/task/TaskStatusButton'
 import TaskImageDefault from '../components/business/task/TaskImageDefault'
-import {
-  follow as followCommunity,
-  selectfollow as selectfollowCommunity,
-} from '../features/user/communityHandlesSlice'
+import { follow as followCommunity } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 import ButtonBase, { ButtonInfo } from '../components/common/button/ButtonBase'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'

@@ -4,7 +4,6 @@ import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
-import { TaskAcceptedStatus } from '../types/api'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ProjectDetailEntity, fetchProjectDetail, selectProjectDetail } from '../features/project/projectDetailSlice'
 import {
@@ -14,20 +13,14 @@ import {
 import ProjectBasicInfo, {
   ProjectDetailBasicInfoDataViewType,
 } from '../components/business/project/ProjectDetailBasicInfo'
-import ProjectDetail, { ProjectDetailDataViewType } from '../components/business/project/ProjectDetail'
-import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
 import { AsyncRequestStatus } from '../types'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
-import {
-  follow as followCommunity,
-  selectfollow as selectfollowCommunity,
-} from '../features/user/communityHandlesSlice'
+import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import CardBox from '../components/common/card/CardBox'
 import ProjectDetailCommunity, {
   ProjectDetailCommunityDataViewType,
 } from '../components/business/project/ProjectDetailCommunity'
 import ProjectDetailBasicInfo from '../components/business/project/ProjectDetailBasicInfo'
-import { ExplorTaskSwiperItemsType } from '../components/business/task/ExploreTaskSwiper'
 import ExploreTaskList, { ExploreTaskListItemsType } from '../components/business/task/ExploreTaskList'
 import ProjectTeamMemberList, {
   ProjectTeamMemberListItemsType,
@@ -115,6 +108,7 @@ const Project: React.FC = () => {
   const dispatchFetchDetail = useCallback(() => projectSlug && dispatch(fetchProjectDetail(projectSlug)), [projectSlug])
   const [loadingView, setLoadingView] = useState(true)
   const { isCreator, checkProjectAllowed } = usePermissions()
+  const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
 
   // slug，重新请求数据，并进入loading状态
   useEffect(() => {
@@ -156,7 +150,7 @@ const Project: React.FC = () => {
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
 
   // 关注社区
-  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
+  const { status: followCommunityStatus } = followCommunityState
   const handleFollowChange = (isFollowed: boolean) => {
     if (communityId && isFollowed) {
       dispatch(followCommunity({ id: Number(communityId) }))
