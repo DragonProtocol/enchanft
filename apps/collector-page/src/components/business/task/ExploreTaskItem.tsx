@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 19:02:05
+ * @LastEditTime: 2022-08-16 18:11:36
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
+import CardItemBox from '../../common/card/CardItemBox'
 import IconGiftBox from '../../common/icons/IconGiftBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
@@ -70,13 +71,8 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
   )
 }
 export default ExploreTaskItem
-const ExploreTaskItemWrapper = styled.div`
-  width: 100%;
+const ExploreTaskItemWrapper = styled(CardItemBox)`
   height: 250px;
-  box-sizing: border-box;
-  background: #ffffff;
-  border: 2px solid #333333;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -101,8 +97,6 @@ const TaskInfoBox = styled.div`
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-  overflow-y: scroll;
-  ${ScrollBarCss}
 `
 const TaskName = styled(OverflowEllipsisBox)`
   font-weight: 700;

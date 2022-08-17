@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-22 11:34:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 13:31:14
+ * @LastEditTime: 2022-08-16 13:46:44
  * @Description: file description
  */
 import React from 'react'
@@ -79,6 +79,7 @@ const ChainTagWrapper = styled.div<{ bgc: string }>`
   text-transform: uppercase;
   color: #ffffff;
   background: ${(props) => props.bgc};
+  border-radius: 0px 0px 10px 0px;
   display: flex;
   align-items: center;
   gap: 5px;

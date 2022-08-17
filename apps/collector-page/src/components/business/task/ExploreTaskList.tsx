@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 15:58:47
+ * @LastEditTime: 2022-08-17 16:45:12
  * @Description: file description
  */
 import React from 'react'
@@ -10,13 +10,16 @@ import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS } from '../../../constants'
 import ButtonBase from '../../common/button/ButtonBase'
 import Loading from '../../common/loading/Loading'
+import IconPlus from '../../common/icons/IconPlus'
 import ExploreTaskItem, { ExploreTaskItemDataViewType } from './ExploreTaskItem'
+import CardItemBox from '../../common/card/CardItemBox'
 
 export type ExploreTaskListViewConfigType = {
   loading?: boolean
   loadingMsg?: string
   emptyMsg?: string
   displayCreateTask?: boolean
+  maxColumns?: number
 }
 export type ExploreTaskListItemsType = ExploreTaskItemDataViewType[]
 export type ExploreTaskListProps = ExploreTaskListViewConfigType & {
@@ -29,6 +32,7 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
   loadingMsg = 'loading...',
   emptyMsg = 'no tasks',
   displayCreateTask,
+  maxColumns = 4,
   onCreateTask,
 }: ExploreTaskListProps) => (
   <>
@@ -38,10 +42,10 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
       </ListStatusBox>
     )}
     {!loading && items.length === 0 && emptyMsg && <ListStatusBox>{emptyMsg}</ListStatusBox>}
-    <ExploreTaskListWrapper>
+    <ExploreTaskListWrapper maxColumns={maxColumns}>
       {displayCreateTask && (
         <CreateTaskButton onClick={() => onCreateTask && onCreateTask()}>
-          <span>+</span>
+          <IconPlus size="2rem" />
           <span>Create</span>
         </CreateTaskButton>
       )}
@@ -56,18 +60,18 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
   </>
 )
 export default ExploreTaskList
-const ExploreTaskListWrapper = styled.div`
+const ExploreTaskListWrapper = styled.div<{ maxColumns?: number }>`
   width: 100%;
   display: grid;
   grid-gap: 20px;
   justify-content: space-between;
   list-style-type: none;
-  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  grid-template-columns: repeat(${({ maxColumns = 4 }) => maxColumns}, minmax(220px, 1fr));
   @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
-    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    grid-template-columns: repeat(${({ maxColumns = 4 }) => maxColumns - 1}, minmax(220px, 1fr));
   }
   @media (min-width: ${MEDIA_BREAK_POINTS.sm}px) and (max-width: ${MEDIA_BREAK_POINTS.md}px) {
-    grid-template-columns: repeat(2, minmax(250px, 1fr));
+    grid-template-columns: repeat(${({ maxColumns = 4 }) => maxColumns - 2}, minmax(220px, 1fr));
   }
   @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
     display: flex;
@@ -96,18 +100,18 @@ const ExploreTaskItemBox = styled.div`
   }
   transition: all 0.5s ease-out;
 `
-const CreateTaskButton = styled(ButtonBase)`
-  box-shadow: none;
-  background: #f8f8f8;
-  border: 2px solid #333333;
+const CreateTaskButton = styled(CardItemBox)`
+  background: #ebeee4;
   display: flex;
   flex-direction: column;
   gap: 20px;
   justify-content: center;
   align-items: center;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 27px;
-  text-align: center;
-  color: #333333;
+
+  span {
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 27px;
+    color: #333333;
+  }
 `

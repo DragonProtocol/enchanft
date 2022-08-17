@@ -3,8 +3,9 @@ import styled from 'styled-components'
 import ButtonBase from '../../common/button/ButtonBase'
 import { useNavigate } from 'react-router-dom'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { Community, Project, RewardType } from '../../../types/api'
+import { Community, Project, RewardType } from '../../../types/entities'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
+import CardItemBox from '../../common/card/CardItemBox'
 
 export type WhitelistItemDataType = {
   id: number
@@ -215,13 +216,8 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
   )
 }
 
-const WhitelistItemWrapper = styled.div`
-  width: 100%;
+const WhitelistItemWrapper = styled(CardItemBox)`
   height: 406px;
-  background: #ffffff;
-  border: 2px solid #333333;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

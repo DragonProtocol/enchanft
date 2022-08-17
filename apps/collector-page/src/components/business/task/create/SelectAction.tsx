@@ -49,16 +49,16 @@ export default function SelectActions({
   )
   const [joinDiscord, setJoinDiscord] = useState(false)
   const [inviteDiscord, setInviteDiscord] = useState(false)
-  const [inviteDiscordNum, setInviteDiscordNum] = useState(0)
+  const [inviteDiscordNum, setInviteDiscordNum] = useState(5)
   const [inviteFriends, setInvalidFriends] = useState(false)
-  const [inviteNum, setInviteNum] = useState(0)
+  const [inviteNum, setInviteNum] = useState(5)
   const [likeTwitter, setLikeTwitter] = useState(false)
   const [likeTwitterLink, setLikeTwitterLink] = useState('')
   const [retweetTwitter, setRetweetTwitter] = useState(false)
   const [retweetTwitterLink, setRetweetTwitterLink] = useState('')
   const [joinCommunity, setJoinCommunity] = useState(false)
   const [joinCommunityContribution, setJoinCommunityContribution] = useState(false)
-  const [joinCommunityContributionNum, setJoinCommunityContributionNum] = useState(0)
+  const [joinCommunityContributionNum, setJoinCommunityContributionNum] = useState(20)
 
   useEffect(() => {
     const actions: Action[] = []
@@ -248,16 +248,27 @@ export default function SelectActions({
             <div className="help">
               {twitter ? (
                 likeTwitter && (
-                  <div className="input-box">
-                    <span>Tweet Id:</span>
-                    <input
-                      type="text"
-                      title="task-like"
-                      value={likeTwitterLink}
-                      onKeyPress={numberInput}
-                      onChange={(e) => setLikeTwitterLink(e.target.value)}
-                    />
-                  </div>
+                  <>
+                    <span className="username tint">
+                      Tweet Id
+                      <span className="tint-box">
+                        <IconTip />
+                        <span className="tint-msg">
+                          https://twitter.com/username/status/<b>tweetID</b>
+                        </span>
+                      </span>
+                      :
+                    </span>
+                    <div className="input-box">
+                      <input
+                        type="text"
+                        title="task-like"
+                        value={likeTwitterLink}
+                        onKeyPress={numberInput}
+                        onChange={(e) => setLikeTwitterLink(e.target.value)}
+                      />
+                    </div>
+                  </>
                 )
               ) : (
                 <ConnectTwitter />
@@ -284,18 +295,30 @@ export default function SelectActions({
             <div className="help">
               {twitter ? (
                 retweetTwitter && (
-                  <div className="input-box">
-                    <span>Tweet Id:</span>
-                    <input
-                      type="text"
-                      title="retweet"
-                      onKeyPress={numberInput}
-                      value={retweetTwitterLink}
-                      onChange={(e) => {
-                        setRetweetTwitterLink(e.target.value)
-                      }}
-                    />
-                  </div>
+                  <>
+                    <span className="username tint">
+                      Tweet Id
+                      <span className="tint-box">
+                        <IconTip />
+                        <span className="tint-msg">
+                          https://twitter.com/username/status/<b>tweetID</b>
+                        </span>
+                      </span>
+                      :
+                    </span>
+                    <div className="input-box">
+                      <input
+                        type="text"
+                        title="retweet"
+                        min={'1'}
+                        onKeyPress={numberInput}
+                        value={retweetTwitterLink}
+                        onChange={(e) => {
+                          setRetweetTwitterLink(e.target.value)
+                        }}
+                      />
+                    </div>
+                  </>
                 )
               ) : (
                 <ConnectTwitter />
@@ -319,6 +342,7 @@ export default function SelectActions({
                 invite
                 <input
                   title="task-invite"
+                  min={'1'}
                   value={inviteNum === 0 ? '' : inviteNum.toString()}
                   placeholder="X"
                   onKeyPress={numberInput}
@@ -363,6 +387,7 @@ export default function SelectActions({
                   Invite
                   <input
                     placeholder="X"
+                    min={'1'}
                     title="invite-discord"
                     value={inviteDiscordNum === 0 ? '' : inviteDiscordNum.toString()}
                     onKeyPress={numberInput}
@@ -409,6 +434,7 @@ export default function SelectActions({
                 <input
                   type="text"
                   title="task-join-community"
+                  min={'1'}
                   value={joinCommunityContributionNum === 0 ? '' : joinCommunityContributionNum.toString()}
                   placeholder="X"
                   onKeyPress={numberInput}
@@ -645,6 +671,32 @@ const SelectActionsBox = styled.div`
             line-height: 20px;
             color: #333333;
             margin-right: 10px;
+          }
+          & span.tint {
+            display: flex;
+            align-items: center;
+
+            & > .tint-box {
+              position: relative;
+              > span.tint-msg {
+                display: none;
+                position: absolute;
+                top: -40px;
+                left: -60px;
+                background: #000;
+                color: #fff;
+                padding: 8px;
+                font-size: smaller;
+                > b {
+                  color: rgb(246, 189, 10);
+                }
+              }
+              &:hover {
+                > span.tint-msg {
+                  display: initial;
+                }
+              }
+            }
           }
           & div.input-box {
             flex-grow: 1;

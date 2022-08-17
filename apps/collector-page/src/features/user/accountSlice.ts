@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 11:48:36
+ * @LastEditTime: 2022-08-17 12:01:04
  * @Description: 用户的账户信息
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
@@ -53,11 +53,13 @@ export enum RoleType {
 export enum ResourceType {
   TASK = 'TASK',
   PROJECT = 'PROJECT',
+  COMMUNITY = 'COMMUNITY',
 }
 
 export type ResourcePermission =
   | { resourceType: ResourceType.TASK; resourceIds: number[] }
   | { resourceType: ResourceType.PROJECT; resourceIds: number[] }
+  | { resourceType: ResourceType.COMMUNITY; resourceIds: number[] }
 
 export type AccountState = {
   status: AsyncRequestStatus

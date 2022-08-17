@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 18:09:25
+ * @LastEditTime: 2022-08-17 13:24:01
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -11,7 +11,8 @@ import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
-import { ActionType, TaskTodoCompleteStatus, UserActionStatus } from '../types/api'
+import { ActionType, TaskTodoCompleteStatus } from '../types/entities'
+import { UserActionStatus } from '../types/api'
 import { AsyncRequestStatus } from '../types'
 import TodoTaskList, { TodoTaskListItemsType } from '../components/business/task/TodoTaskList'
 import {
@@ -23,10 +24,7 @@ import {
 } from '../features/user/todoTasksSlice'
 import { useSearchParams } from 'react-router-dom'
 import useHandleAction from '../hooks/useHandleAction'
-import {
-  follow as followCommunity,
-  selectfollow as selectfollowCommunity,
-} from '../features/user/communityHandlesSlice'
+import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 
 // TODO 将以下格式化函数合并为一个
@@ -159,19 +157,12 @@ const TodoTask: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const hasTaskId = searchParams.has('taskId')
   const taskId = hasTaskId ? Number(searchParams.get('taskId')) : -1
-  const { token } = useAppSelector(selectAccount)
   const dispatch = useAppDispatch()
   const todoTasks = useAppSelector(selectAll)
   const { status } = useAppSelector(selectUserTodoTasksState)
-  // 单个任务刷新的select
-  useEffect(() => {
-    if (token) {
-      dispatch(fetchTodoTasks())
-    }
-  }, [token])
-
+  const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
   // 处理单个任务刷新
-  const handleRefreshTask = (taskId: number) => {
+  const handleVerifyTask = (taskId: number) => {
     dispatch(verifyOneTodoTask({ id: taskId }))
   }
 
@@ -179,10 +170,8 @@ const TodoTask: React.FC = () => {
   const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
 
   // 关注社区
-  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
+  const { status: followCommunityStatus } = followCommunityState
   const handleFollowCommunity = (communityId: number) => {
-    console.log({ communityId })
-
     dispatch(followCommunity({ id: communityId }))
   }
   // 用户关注的社区ID集合
@@ -225,7 +214,7 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.TODO}
                 items={todoItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
                 onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
@@ -234,7 +223,7 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.IN_PRGRESS}
                 items={inProgressItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
                 onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
@@ -245,25 +234,25 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.COMPLETED}
                 items={completedItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.WON}
                 items={wonItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.CLOSED}
                 items={closedItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.LOST}
                 items={lostItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
             </TodoTaskGroupRight>
           </TodoTaskGroupBox>
@@ -278,7 +267,7 @@ const TodoTaskWrapper = styled.div`
 `
 const TodoTaskGroupBox = styled.div`
   width: 100%;
-  height: 900px;
+  height: 850px;
   display: flex;
   gap: 10px;
 `

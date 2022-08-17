@@ -2,14 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 11:16:12
+ * @LastEditTime: 2022-08-16 18:11:53
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { ProjectStatus, TaskType } from '../../../types/api'
+import { ProjectStatus, TaskType } from '../../../types/entities'
+import CardItemBox from '../../common/card/CardItemBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
 import ProjectStatusLabel from './ProjectStatusLabel'
@@ -97,13 +98,8 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
   )
 }
 export default ExploreProjectItem
-const ExploreProjectItemWrapper = styled.div`
-  width: 100%;
+const ExploreProjectItemWrapper = styled(CardItemBox)`
   height: 394px;
-  box-sizing: border-box;
-  background: #ffffff;
-  border: 2px solid #333333;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
   justify-content: space-between;

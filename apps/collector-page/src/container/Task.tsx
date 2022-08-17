@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 18:02:51
+ * @LastEditTime: 2022-08-17 13:23:41
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -14,16 +14,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { fetchTaskDetail, selectTaskDetail, TaskDetailEntity } from '../features/task/taskDetailSlice'
 import TaskActionList, { TaskActionItemsType } from '../components/business/task/TaskActionList'
-import {
-  ActionType,
-  TaskAcceptedStatus,
-  TaskTodoCompleteStatus,
-  TaskType,
-  TodoTaskActionItem,
-  UserActionStatus,
-} from '../types/api'
+import { ActionType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../types/entities'
+import { TodoTaskActionItem, UserActionStatus } from '../types/api'
 import TaskDetailContent, { TaskDetailContentDataViewType } from '../components/business/task/TaskDetailContent'
-import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle } from '../features/user/taskHandlesSlice'
+import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle, verify } from '../features/user/taskHandlesSlice'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import useHandleAction from '../hooks/useHandleAction'
 import { ChainType, getChainType } from '../utils/chain'
@@ -39,16 +33,14 @@ import TaskStatusButton, {
   TaskStatusButtonType,
 } from '../components/business/task/TaskStatusButton'
 import TaskImageDefault from '../components/business/task/TaskImageDefault'
-import {
-  follow as followCommunity,
-  selectfollow as selectfollowCommunity,
-} from '../features/user/communityHandlesSlice'
+import { follow as followCommunity } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
-import ButtonBase from '../components/common/button/ButtonBase'
+import ButtonBase, { ButtonInfo } from '../components/common/button/ButtonBase'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import { toast } from 'react-toastify'
 import IconShare from '../components/common/icons/IconShare'
 import { TASK_SHARE_URI } from '../constants'
+import { verifyOneTodoTask } from '../features/user/todoTasksSlice'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
@@ -168,11 +160,15 @@ const Task: React.FC = () => {
   const handleLeave = useCallback(() => {
     navigate(-1)
   }, [])
+
+  // handles: take, verify
+  const { take: takeTaskState, verify: takeVerifyState } = useAppSelector(selectUserTaskHandlesState)
   const handleTakeTask = () => {
     dispatch(take({ id: Number(id) }))
   }
-  // 接任务的状态
-  const { take: takeTaskState } = useAppSelector(selectUserTaskHandlesState)
+  const handleVerifyTask = () => {
+    dispatch(verify({ id: Number(id) }))
+  }
   // 处理执行action操作
   const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
   // 获取链的类型
@@ -226,7 +222,7 @@ const Task: React.FC = () => {
 
   // verify action
   const displayVerify = allowHandleAction && actionItems.some((v) => v.status === UserActionStatus.TODO)
-  const loadingVerify = status === AsyncRequestStatus.PENDING
+  const loadingVerify = takeVerifyState.status === AsyncRequestStatus.PENDING
   const disabledVerify = loadingVerify
   const verifyingActions = loadingVerify
     ? actionItems.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
@@ -287,7 +283,7 @@ const Task: React.FC = () => {
                       loadingVerify={loadingVerify}
                       disabledVerify={disabledVerify}
                       verifyingActions={verifyingActions}
-                      onVerifyActions={dispatchFetchTaskDetail}
+                      onVerifyActions={handleVerifyTask}
                       copyBgc="#FFFFFF"
                       verifyBgc="#FFFFFF"
                     />
@@ -332,16 +328,14 @@ const ProjectName = styled.span`
   color: #3dd606;
   cursor: pointer;
 `
-const ShareButton = styled(ButtonBase)`
+const ShareButton = styled(ButtonInfo)`
   width: 48px;
   height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f8f8f8;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
-const ManageButton = styled(ButtonBase)`
+const ManageButton = styled(ButtonInfo)`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -349,9 +343,6 @@ const ManageButton = styled(ButtonBase)`
   padding: 10px 18px;
   width: 210px;
   height: 48px;
-
-  background: #f8f8f8;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 
   font-weight: 700;
   font-size: 18px;
@@ -364,6 +355,7 @@ const TaskImage = styled(TaskImageDefault)`
   height: 253px;
   object-fit: cover;
   margin-bottom: 26px;
+  border-radius: 10px;
 `
 
 const TaskDetailContentBox = styled.div`
@@ -386,7 +378,8 @@ const TaskDetailContentBoxRight = styled.div`
 `
 const TaskListBox = styled.div`
   width: 100%;
-  background: #f8f8f8;
+  background: #ebeee4;
+  border-radius: 10px;
   padding: 20px;
   box-sizing: border-box;
   display: flex;

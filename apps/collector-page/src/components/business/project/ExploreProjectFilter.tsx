@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 17:28:10
+ * @LastEditTime: 2022-08-16 17:25:17
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
-import { ProjectStatus } from '../../../types/api'
+import { ProjectStatus } from '../../../types/entities'
 import ButtonRadioGroup from '../../common/button/ButtonRadioGroup'
 import InputSearch from '../../common/input/InputSearch'
 export enum ProjectStatusOther {
@@ -104,7 +104,9 @@ const ExploreProjectFilterWrapper = styled.div`
   align-items: center;
   gap: 60px;
 `
-const FilterLeftBox = styled.div``
+const FilterLeftBox = styled.div`
+  width: 300px;
+`
 const FilterRightBox = styled.div`
   flex: 1;
   max-width: 650px;
