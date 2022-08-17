@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-08 13:44:40
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 12:00:11
+ * @LastEditTime: 2022-08-17 12:01:28
  * @Description: file description
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -43,10 +43,10 @@ export default function usePermissions() {
 
   // TODO 待确认传参，和resourceType
   const checkContributionAllowed = useCallback(
-    (projectId: number) => {
+    (communityId: number) => {
       const hasProjectPermission = !!account.resourcePermissions
-        .find((item) => item.resourceType === ResourceType.PROJECT)
-        ?.resourceIds.includes(projectId)
+        .find((item) => item.resourceType === ResourceType.COMMUNITY)
+        ?.resourceIds.includes(communityId)
 
       return hasProjectPermission
     },

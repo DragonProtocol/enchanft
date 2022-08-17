@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 16:28:55
+ * @LastEditTime: 2022-08-17 13:24:01
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -24,10 +24,7 @@ import {
 } from '../features/user/todoTasksSlice'
 import { useSearchParams } from 'react-router-dom'
 import useHandleAction from '../hooks/useHandleAction'
-import {
-  follow as followCommunity,
-  selectfollow as selectfollowCommunity,
-} from '../features/user/communityHandlesSlice'
+import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 
 // TODO 将以下格式化函数合并为一个
@@ -163,7 +160,7 @@ const TodoTask: React.FC = () => {
   const dispatch = useAppDispatch()
   const todoTasks = useAppSelector(selectAll)
   const { status } = useAppSelector(selectUserTodoTasksState)
-
+  const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
   // 处理单个任务刷新
   const handleVerifyTask = (taskId: number) => {
     dispatch(verifyOneTodoTask({ id: taskId }))
@@ -173,10 +170,8 @@ const TodoTask: React.FC = () => {
   const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
 
   // 关注社区
-  const { status: followCommunityStatus } = useAppSelector(selectfollowCommunity)
+  const { status: followCommunityStatus } = followCommunityState
   const handleFollowCommunity = (communityId: number) => {
-    console.log({ communityId })
-
     dispatch(followCommunity({ id: communityId }))
   }
   // 用户关注的社区ID集合

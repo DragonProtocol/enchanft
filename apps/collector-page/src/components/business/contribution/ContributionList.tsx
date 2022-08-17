@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 10:22:46
+ * @LastEditTime: 2022-08-17 13:30:53
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -101,6 +101,8 @@ export type ContributionListProps = {
   displayMembersTotal?: boolean
   membersTotal?: number
   displayDownload?: boolean
+  loadingDownload?: boolean
+  disabledDownload?: boolean
   displayMore?: boolean
   moreText?: string
   onDownload?: () => void
@@ -114,6 +116,8 @@ const ContributionList: React.FC<ContributionListProps> = ({
   displayMembersTotal = true,
   membersTotal = 0,
   displayDownload = false,
+  loadingDownload = false,
+  disabledDownload = false,
   displayMore,
   moreText = 'View More',
   onDownload,
@@ -148,7 +152,11 @@ const ContributionList: React.FC<ContributionListProps> = ({
             {membersTotal} members
           </CotributionMembersTotal>
         )}
-        {displayDownload && <DownloadBtn onClick={handleDownload}>Download</DownloadBtn>}
+        {displayDownload && (
+          <DownloadBtn onClick={handleDownload} disabled={disabledDownload}>
+            {loadingDownload ? 'Loading...' : 'Download'}
+          </DownloadBtn>
+        )}
       </ContributioHeaderBox>
       <ContributionListBox>
         {items.map((item, index) => (
