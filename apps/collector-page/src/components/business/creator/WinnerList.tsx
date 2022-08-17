@@ -1,4 +1,4 @@
-import { Button, ButtonBase } from '@mui/material'
+import { Box, Button, ButtonBase, Modal, Typography } from '@mui/material'
 import React, { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -7,12 +7,28 @@ import { PickedWhiteList, ScheduleInfo, Winner } from '../../../features/creator
 import { sortPubKey } from '../../../utils/solana'
 import UserAvatar from '../user/UserAvatar'
 import CardBox from '../../common/card/CardBox'
+import CrownImg from '../../imgs/crown.svg'
+import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
+import IconCheckbox from '../../common/icons/IconCheckbox'
 
 export enum TaskStatus {
   SUBMIT,
   START,
   END,
   CLOSE,
+}
+
+const ModalStyle = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  borderRadius: '10px',
+  p: 2,
 }
 
 export default function WinnerList({
@@ -38,6 +54,8 @@ export default function WinnerList({
   const [selected, setSelected] = useState<Array<number>>([])
   const [disableSelect, setDisableSelect] = useState(false)
 
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false)
+
   const genRandom = useCallback(() => {
     let tmpList = [...list]
     let num = Math.min(winnerNum, tmpList.length)
@@ -55,51 +73,80 @@ export default function WinnerList({
   }, [list, winnerNum])
 
   return (
-    <WinnerListBox>
-      <div className="title">
-        <h3>Winner List</h3>
-        {(whitelistSaved && (
-          <div>
-            <CustomBtn onClick={downloadWinners}>Download</CustomBtn>
-          </div>
-        )) || (
-          <div>
-            <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
-            {'  '}
-            <CustomBtn
+    <>
+      <WinnerListBox>
+        <div className="title">
+          <h3>Entry List</h3>
+          {(whitelistSaved && (
+            <div>
+              <CustomBtn onClick={downloadWinners}>Download</CustomBtn>
+            </div>
+          )) || (
+            <div>
+              <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
+              {'  '}
+              <CustomBtn
+                onClick={() => {
+                  setConfirmModalOpen(true)
+                }}
+              >
+                Entries {selected.length}
+              </CustomBtn>
+            </div>
+          )}
+        </div>
+        <div className="list">
+          {list.map((item, idx) => {
+            const checked = whitelistSaved
+              ? pickedWhiteList.find((pickedItem) => pickedItem.user_id == item.id)
+              : selected.includes(item.id)
+            const disabled = whitelistSaved || (disableSelect && !selected.includes(item.id))
+            return (
+              <ListItem
+                key={idx}
+                idx={idx}
+                data={item}
+                checked={!!checked}
+                disabled={disabled}
+                selected={selected}
+                setSelected={(newSelected) => {
+                  setDisableSelect(newSelected.length >= winnerNum)
+                  setSelected(newSelected)
+                }}
+                couldSelect={!whitelistSaved}
+              />
+            )
+          })}
+        </div>
+      </WinnerListBox>
+
+      <ConfirmModal
+        open={confirmModalOpen}
+        // onClose={() => setConfirmModalOpen(false)}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={ModalStyle}>
+          <Typography className="desc" sx={{ mt: 2 }}>
+            You cannot change once confirmed
+          </Typography>
+
+          <ModalBtnBox>
+            <button
+              className="cancel"
               onClick={() => {
-                uploadSelected(selected)
+                setConfirmModalOpen(false)
               }}
             >
-              Winners {selected.length}
-            </CustomBtn>
-          </div>
-        )}
-      </div>
-      <div className="list">
-        {list.map((item, idx) => {
-          const checked = whitelistSaved
-            ? pickedWhiteList.find((pickedItem) => pickedItem.user_id == item.id)
-            : selected.includes(item.id)
-          const disabled = whitelistSaved || (disableSelect && !selected.includes(item.id))
-          return (
-            <ListItem
-              key={idx}
-              idx={idx}
-              data={item}
-              checked={!!checked}
-              disabled={disabled}
-              selected={selected}
-              setSelected={(newSelected) => {
-                setDisableSelect(newSelected.length >= winnerNum)
-                setSelected(newSelected)
-              }}
-              couldSelect={!whitelistSaved}
-            />
-          )
-        })}
-      </div>
-    </WinnerListBox>
+              Cancel
+            </button>
+            <button className="confirm" onClick={() => uploadSelected(selected)}>
+              Confirm
+            </button>
+          </ModalBtnBox>
+        </Box>
+      </ConfirmModal>
+    </>
   )
 }
 
@@ -123,64 +170,115 @@ function ListItem({
   return (
     <div>
       <div>
-        <span className="index">{idx}</span>
+        <span className={idx < 3 ? 'index front-3' : 'index'}>{idx + 1}</span>
         <span>
           <UserAvatar src={data.avatar} />
         </span>
         <span className="name">{data.name}</span>
-        <span>{sortPubKey(data.pubkey, 16)}</span>
+        <span className="pubkey">{sortPubKey(data.pubkey, 16)}</span>
       </div>
-      <Checkbox
-        checked={checked}
-        disabled={disabled}
-        onChange={() => {
-          if (!couldSelect) return
-          if (selected.includes(data.id)) {
-            const newArr = selected.filter((item) => {
-              return item !== data.id
-            })
-            setSelected(newArr)
-          } else {
-            selected.push(data.id)
-            setSelected([...selected])
-          }
-        }}
-      />
+      {couldSelect && (
+        <CustomCheckBox
+          checked={checked}
+          onChange={() => {
+            if (!couldSelect) return
+            if (selected.includes(data.id)) {
+              const newArr = selected.filter((item) => {
+                return item !== data.id
+              })
+              setSelected(newArr)
+            } else {
+              selected.push(data.id)
+              setSelected([...selected])
+            }
+          }}
+        />
+      )}
     </div>
   )
 }
 
-const CustomBtn = styled(ButtonBase)`
+function CustomCheckBox({ checked, onChange }: { checked: boolean; onChange: () => void }) {
+  return (
+    <span
+      onClick={() => {
+        onChange()
+      }}
+    >
+      {checked ? <IconCheckboxChecked /> : <IconCheckbox />}
+    </span>
+  )
+}
+
+const ConfirmModal = styled(Modal)`
+  & .desc {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #333333;
+  }
+
+  & .err-msg {
+    color: red;
+  }
+`
+
+const CustomBtn = styled.button`
   padding: 10px 18px;
-  /* height: 48px; */
+  border-radius: 10px;
+  background: #ebeee4;
+  box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+  outline: none;
+  border: none;
+`
 
-  background: #f8f8f8;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+const ModalBtnBox = styled.div`
+  display: flex;
+  justify-content: end;
 
-  /* font-weight: 700; */
-  /* font-size: 18px; */
-  /* line-height: 27px; */
-  color: #333333;
+  & button {
+    cursor: pointer;
+    background: #f8f8f8;
+    margin-top: 20px;
+    padding: 0 20px;
+    border: none;
+    height: 48px;
+    font-size: 20px;
+    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+  }
+
+  & button.confirm {
+    background-color: #3dd606;
+    margin-left: 20px;
+    color: #fff;
+  }
 `
 
 const WinnerListBox = styled(CardBox)`
   margin-top: 25px;
-
+  background: #f7f9f1;
   & .title {
     display: flex;
     justify-content: space-between;
 
     & h3 {
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 24px;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 30px;
       color: #333333;
+    }
+
+    > div {
+      > button {
+        &:first {
+          margin: 0 10px;
+        }
+      }
     }
   }
 
   & .list {
-    background: #f8f8f8;
-    padding: 20px;
     margin-top: 20px;
     & > div {
       font-weight: 400;
@@ -191,11 +289,12 @@ const WinnerListBox = styled(CardBox)`
       justify-content: space-between;
       padding: 10px 0;
       border-bottom: 1px solid #d9d9d9;
-      &:first-child {
-        border-top: 1px solid #d9d9d9;
+      &:last-child {
+        border-bottom: none;
       }
       & > div {
         display: flex;
+        align-items: center;
         & img {
           width: 40px;
           height: 40px;
@@ -203,11 +302,38 @@ const WinnerListBox = styled(CardBox)`
 
         & .index {
           width: 60px;
+          margin-right: 20px;
         }
 
         & .name {
           width: 120px;
           margin: 0 10px;
+          font-weight: 700;
+          font-size: 16px;
+          line-height: 20px;
+          color: #333333;
+        }
+
+        & .pubkey {
+          font-weight: 400;
+          font-size: 16px;
+          line-height: 20px;
+          color: #333333;
+        }
+      }
+
+      & span.index {
+        height: 24px;
+        font-weight: 700;
+        text-align: center;
+        line-height: 24px;
+        background-size: 100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        text-align: center;
+        display: inline-block;
+        &.front-3 {
+          background-image: url(${CrownImg});
         }
       }
 

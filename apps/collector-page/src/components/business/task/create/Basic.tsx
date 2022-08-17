@@ -6,8 +6,6 @@ import { RewardType, State } from './state'
 import { uploadImage as uploadImageApi } from '../../../../services/api/login'
 
 export default function Basic({ state, updateState }: { state: State; updateState: (arg0: State) => void }) {
-  const taskBannerRef = useRef<HTMLInputElement>(null)
-
   const uploadImageHandler = useCallback(
     async (e) => {
       const file = e.target.files && e.target.files[0]
@@ -35,6 +33,41 @@ export default function Basic({ state, updateState }: { state: State; updateStat
           <span>Information</span>
         </div>
         <div className="content">
+          <div>
+            <div className="content-item">
+              <h4>Task title</h4>
+              <input
+                title="task-title"
+                placeholder="At least 4 characters"
+                value={state?.name}
+                onChange={(e) =>
+                  updateState({
+                    ...state,
+                    name: e.target.value,
+                  })
+                }
+              />
+            </div>
+
+            <div className="content-item">
+              <h4>Task statement</h4>
+              <textarea
+                title="task-statement"
+                placeholder="Input"
+                name=""
+                id=""
+                cols={30}
+                rows={10}
+                value={state.description}
+                onChange={(e) => {
+                  updateState({
+                    ...state,
+                    description: e.target.value,
+                  })
+                }}
+              ></textarea>
+            </div>
+          </div>
           <div className="attach-file">
             <h4>Task banner (640 * 300)</h4>
             <input title="task-banner" id="task-banner" type="file" onChange={uploadImageHandler} />
@@ -52,39 +85,6 @@ export default function Basic({ state, updateState }: { state: State; updateStat
               )}
             </div>
           </div>
-          <div>
-            <div className="content-item">
-              <h4>Task title</h4>
-              <input
-                title="task-title"
-                value={state?.name}
-                onChange={(e) =>
-                  updateState({
-                    ...state,
-                    name: e.target.value,
-                  })
-                }
-              />
-            </div>
-
-            <div className="content-item">
-              <h4>Task statement</h4>
-              <textarea
-                title="task-statement"
-                name=""
-                id=""
-                cols={30}
-                rows={10}
-                value={state.description}
-                onChange={(e) => {
-                  updateState({
-                    ...state,
-                    description: e.target.value,
-                  })
-                }}
-              ></textarea>
-            </div>
-          </div>
         </div>
       </div>
       <div className="setting">
@@ -95,17 +95,6 @@ export default function Basic({ state, updateState }: { state: State; updateStat
           <div>
             <div className="content-item">
               <h4>Task type</h4>
-              {/* <FormControlLabel
-                control={
-                  <Switch
-                    checked={state.reward.raffled}
-                    onChange={() => {
-                      
-                    }}
-                  />
-                }
-                label="Raffle?"
-              /> */}
               <div className="raffle-switch-box">
                 <span>Raffle:</span>
                 <div className={state.reward.raffled ? 'raffle-switch active' : 'raffle-switch'}>
@@ -132,6 +121,7 @@ export default function Basic({ state, updateState }: { state: State; updateStat
               <h4>Total winners</h4>
               <input
                 title="total-winners"
+                type={'number'}
                 onKeyPress={numberInput}
                 value={state.winnerNum === 0 ? '' : state.winnerNum.toString()}
                 onChange={(e) => {
@@ -219,7 +209,7 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                   type="date"
                   title="to-date"
                   className="date"
-                  value={dayjs(state.endTime).add(30, 'day').format('YYYY-MM-DD')}
+                  value={dayjs(state.endTime).format('YYYY-MM-DD')}
                   onChange={(e) => {
                     const endTime = dayjs(e.target.value).toDate().getTime()
                     if (endTime < state.startTime) return
@@ -268,18 +258,22 @@ const BasicBox = styled.div`
 
       & div.reward-btn-group {
         margin-bottom: 10px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 4px solid #333333;
         & button {
           border: none;
           outline: none;
-          background: #f8f8f8;
+          background: #f7f9f1;
           border-radius: 0;
           font-size: 18px;
           line-height: 27px;
           width: 50%;
           height: 50px;
+          cursor: pointer;
         }
         & button.active {
-          background: #3dd606;
+          background: #333333;
           color: #fff;
         }
       }
@@ -308,6 +302,7 @@ const BasicBox = styled.div`
           width: 100px;
           height: 50px;
           padding: 5px;
+          border-radius: 25px;
           background-color: #3dd606;
           transition: all 0.1s ease-out;
           box-sizing: border-box;
@@ -318,11 +313,12 @@ const BasicBox = styled.div`
             left: 55px;
             width: 40px;
             height: 40px;
+            border-radius: 20px;
             background-color: #fff;
             transition: all 0.1s ease-out;
           }
           &.active {
-            background-color: #f8f8f8;
+            background: #ebeee4;
             & > span {
               left: 5px;
             }
@@ -342,6 +338,8 @@ const BasicBox = styled.div`
     padding: 12px 20px;
     font-size: 18px;
     line-height: 27px;
+    background: #ebeee4;
+    border-radius: 10px;
   }
 
   & textarea {
@@ -356,11 +354,12 @@ const BasicBox = styled.div`
       height: 100%;
     }
     > div {
+      background: #ebeee4;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       height: 253px;
-      background: #f8f8f8;
       & .add-btn {
         text-align: center;
         & svg {

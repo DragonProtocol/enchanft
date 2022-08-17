@@ -300,7 +300,7 @@ const Profile: React.FC = () => {
 
               <FormControl variant="standard">
                 <EditNameLabel>Name</EditNameLabel>
-                <TextField id="name" value={name} onChange={(e) => setName(e.target.value)} />
+                <TextField id="name" value={name || account.name} onChange={(e) => setName(e.target.value)} />
               </FormControl>
             </EditNameBox>
           </EditFormBox>

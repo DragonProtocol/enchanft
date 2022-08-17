@@ -52,6 +52,7 @@ export default function Schedule({ schedules }: { schedules: ScheduleInfo | null
 
 const TimelineBox = styled.div`
   margin-top: 20px;
+
   & div.item {
     position: relative;
     padding-bottom: 10px;
@@ -75,16 +76,15 @@ const TimelineBox = styled.div`
   & p {
     margin: 0;
     font-weight: 400;
-    font-size: 10px;
-    line-height: 20px;
     margin-left: 30px;
+    font-size: 12px;
+    line-height: 20px;
     color: rgba(51, 51, 51, 0.4);
   }
   & .title {
     font-weight: 400;
-    font-size: 10px;
+    font-size: 16px;
     line-height: 20px;
-
     color: #333333;
   }
 `
@@ -93,9 +93,9 @@ const ScheduleBox = styled(CardBox)`
   margin-top: 20px;
   padding: 20px;
   & h3 {
-    font-weight: 400;
-    font-size: 14px;
-    line-height: 24px;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 30px;
     color: #333333;
   }
 `

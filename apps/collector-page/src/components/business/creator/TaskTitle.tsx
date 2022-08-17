@@ -3,18 +3,25 @@ import styled from 'styled-components'
 import { TaskInfo } from '../../../features/creator'
 import CardBox from '../../common/card/CardBox'
 import IconCheckbox from '../../common/icons/IconCheckbox'
+import { RewardType, TaskType } from '../task/create/state'
+import IconAlarmClock from '../../common/icons/IconAlarmClock'
 
 export default function TaskTitle({ info }: { info: TaskInfo | null }) {
   return (
     <TaskTitleBox>
       <h3>{info?.name}</h3>
+      <hr />
       <div>
-        <p></p>
-        <p>
-          {info?.startTime && new Date(info?.startTime).toLocaleDateString()}—
-          {info?.endTime && new Date(info?.endTime).toLocaleDateString()}
-          <span style={{ float: 'right' }}>Winners {info?.winnerNum}</span>
-        </p>
+        <h4>{`${
+          info?.type === RewardType.WHITELIST ? TaskType.WHITELIST_ORIENTED : TaskType.WHITELIST_LUCK_DRAW
+        } Task`}</h4>
+        <div className="alarm-clock">
+          <p>
+            <IconAlarmClock /> {info?.startTime && new Date(info?.startTime).toLocaleDateString()}—
+            {info?.endTime && new Date(info?.endTime).toLocaleDateString()}
+          </p>
+          <span>Entries {info?.winnerNum}</span>
+        </div>
         <hr />
         <div className="items">
           {info?.actions.map((item, idx) => {
@@ -41,15 +48,53 @@ const TaskTitleBox = styled(CardBox)`
   background: #fffbdb;
   padding: 20px;
 
+  & h3 {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 30px;
+    color: #333333;
+  }
+
+  & h4 {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 21px;
+    color: #333333;
+  }
+
+  & hr {
+    border-color: rgba(51, 51, 51, 0.2);
+    margin: 10px 0;
+  }
+
+  & .alarm-clock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+    color: #333333;
+    > p {
+      & svg {
+        height: 20px;
+        margin-right: 5px;
+      }
+      margin: 0;
+      display: flex;
+      align-items: center;
+    }
+  }
   & .items {
     margin-top: 15px;
     & .item {
       display: flex;
       align-items: center;
-      margin: 6px 0;
+      margin: 10px 0;
       font-weight: 400;
-      font-size: 10px;
+      font-size: 14px;
       line-height: 20px;
+      color: #333333;
       color: #333333;
       & svg {
         height: 18px;

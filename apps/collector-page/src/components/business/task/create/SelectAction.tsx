@@ -21,6 +21,7 @@ import IconTwitter from '../../../common/icons/IconTwitter'
 import { checkTwitterNameValid } from '../../../../services/api/task'
 import PngIconDelete from '../../../common/icons/PngIconDelete'
 import PngIconDone from '../../../common/icons/PngIconDone'
+import { CREATE_TASK_DEFAULT_INVITE_NUM } from '../../../../constants'
 
 export default function SelectActions({
   hasInviteBot,
@@ -41,7 +42,7 @@ export default function SelectActions({
   const account = useAppSelector(selectAccount)
 
   const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
-  const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
+  const twitter = 'account.accounts.find((item) => item.accountType === ChainType.TWITTER)'
 
   const [followTwitter, setFollowTwitter] = useState(false)
   const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<Array<string>>(
@@ -49,9 +50,9 @@ export default function SelectActions({
   )
   const [joinDiscord, setJoinDiscord] = useState(false)
   const [inviteDiscord, setInviteDiscord] = useState(false)
-  const [inviteDiscordNum, setInviteDiscordNum] = useState(5)
+  const [inviteDiscordNum, setInviteDiscordNum] = useState(CREATE_TASK_DEFAULT_INVITE_NUM)
   const [inviteFriends, setInvalidFriends] = useState(false)
-  const [inviteNum, setInviteNum] = useState(5)
+  const [inviteNum, setInviteNum] = useState(CREATE_TASK_DEFAULT_INVITE_NUM)
   const [likeTwitter, setLikeTwitter] = useState(false)
   const [likeTwitterLink, setLikeTwitterLink] = useState('')
   const [retweetTwitter, setRetweetTwitter] = useState(false)
@@ -343,6 +344,7 @@ export default function SelectActions({
                 <input
                   title="task-invite"
                   min={'1'}
+                  type="number"
                   value={inviteNum === 0 ? '' : inviteNum.toString()}
                   placeholder="X"
                   onKeyPress={numberInput}
@@ -388,6 +390,7 @@ export default function SelectActions({
                   <input
                     placeholder="X"
                     min={'1'}
+                    type="number"
                     title="invite-discord"
                     value={inviteDiscordNum === 0 ? '' : inviteDiscordNum.toString()}
                     onKeyPress={numberInput}
@@ -432,9 +435,9 @@ export default function SelectActions({
               <span id="join-community-contribution-msg" className="msg">
                 {communityName || 'XXX'} community contribution {'>'}
                 <input
-                  type="text"
                   title="task-join-community"
                   min={'1'}
+                  type="number"
                   value={joinCommunityContributionNum === 0 ? '' : joinCommunityContributionNum.toString()}
                   placeholder="X"
                   onKeyPress={numberInput}
@@ -539,7 +542,7 @@ function AddTwitterToFollowed({
       {addNew && (
         <div className={'help'}>
           <span className="username">Username: </span>
-          <div className={!dataValid ? 'input-box invalid' : 'input-box'}>
+          <div className={!dataValid ? 'input-box adding invalid' : 'input-box adding'}>
             <span>@</span>
             <input
               type="text"
@@ -621,7 +624,8 @@ const SelectActionsBox = styled.div`
     > div {
       width: 540px;
       & .content-item {
-        background-color: #f8f8f8;
+        background: #ebeee4;
+        border-radius: 10px;
         margin-bottom: 20px;
         padding: 10px 18px;
         /* display: flex;
@@ -649,10 +653,11 @@ const SelectActionsBox = styled.div`
               outline: none;
               background-color: #fff;
               height: 40px;
-              width: 80px;
+              width: 60px;
               text-align: center;
               font-size: 14px;
               line-height: 20px;
+              border-radius: 10px;
             }
 
             > span {
@@ -687,6 +692,7 @@ const SelectActionsBox = styled.div`
                 color: #fff;
                 padding: 8px;
                 font-size: smaller;
+                border-radius: 10px;
                 > b {
                   color: rgb(246, 189, 10);
                 }
@@ -702,9 +708,9 @@ const SelectActionsBox = styled.div`
             flex-grow: 1;
             background-color: #fff;
             border: 1px solid #fff;
+            border-radius: 10px;
             padding: 10px;
             display: flex;
-            color: rgba(51, 51, 51, 0.3);
             font-size: 14px;
             line-height: 20px;
             > input {
@@ -715,10 +721,15 @@ const SelectActionsBox = styled.div`
             > svg {
               height: 20px;
             }
+            &.adding {
+              color: rgba(51, 51, 51, 0.3);
+            }
           }
+
           & div.tint-box {
             width: 40px;
             height: 40px;
+            border-radius: 10px;
             text-align: center;
             padding: 10px;
             box-sizing: border-box;
@@ -783,6 +794,7 @@ const SelectActionsBox = styled.div`
 
   & div.twitter {
     background-color: #3293f8;
+    border-radius: 10px;
   }
   & div.discord {
     background-color: #5165f6;
