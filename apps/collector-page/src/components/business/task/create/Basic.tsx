@@ -155,6 +155,7 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                       ...state,
                       reward: {
                         ...state.reward,
+                        name: '',
                         type: RewardType.WHITELIST,
                       },
                     })
@@ -177,22 +178,24 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                   Other
                 </button>
               </div>
-              <input
-                type="text"
-                title="reward-others-name"
-                placeholder={state.reward.type === RewardType.OTHER ? 'Name' : ''}
-                value={state.reward.name}
-                onChange={(e) => {
-                  if (state.reward.type === RewardType.OTHER)
-                    updateState({
-                      ...state,
-                      reward: {
-                        ...state.reward,
-                        name: e.target.value,
-                      },
-                    })
-                }}
-              />
+              {state.reward.type === RewardType.OTHER && (
+                <input
+                  type="text"
+                  title="reward-others-name"
+                  placeholder={state.reward.type === RewardType.OTHER ? 'Name' : ''}
+                  value={state.reward.name}
+                  onChange={(e) => {
+                    if (state.reward.type === RewardType.OTHER)
+                      updateState({
+                        ...state,
+                        reward: {
+                          ...state.reward,
+                          name: e.target.value,
+                        },
+                      })
+                  }}
+                />
+              )}
             </div>
             <div className="content-item">
               <h4>Task date</h4>
@@ -216,7 +219,7 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                   type="date"
                   title="to-date"
                   className="date"
-                  value={dayjs(state.endTime).format('YYYY-MM-DD')}
+                  value={dayjs(state.endTime).add(30, 'day').format('YYYY-MM-DD')}
                   onChange={(e) => {
                     const endTime = dayjs(e.target.value).toDate().getTime()
                     if (endTime < state.startTime) return

@@ -20,7 +20,7 @@ import styled from 'styled-components'
 import Basic from '../components/business/task/create/Basic'
 import Preview from '../components/business/task/create/Preview'
 import SelectActions from '../components/business/task/create/SelectAction'
-import { State as CreateTaskState, DefaultState } from '../components/business/task/create/state'
+import { State as CreateTaskState, DefaultState, RewardType } from '../components/business/task/create/state'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 
 import { TASK_DEFAULT_IMAGE_URLS } from '../constants'
@@ -32,6 +32,7 @@ import { AsyncRequestStatus } from '../types'
 import PngIconCaretLeft from '../components/common/icons/PngIconCaretLeft'
 import { fetchDetail, createTask as createTaskApi, projectBindBot } from '../services/api/task'
 import PngIconDone from '../components/common/icons/PngIconDone'
+import { toast } from 'react-toastify'
 
 const discordBotCallback = `https://discord.com/oauth2/authorize?client_id=1003616859582627881&permissions=49&scope=bot&response_type=code&redirect_uri=${encodeURI(
   process.env.REACT_APP_DISCORD_CALLBACK_URL!,
@@ -173,6 +174,25 @@ export default function TaskCreate() {
             <button
               className="preview-btn"
               onClick={() => {
+                if (!state.name) {
+                  toast.error('Task title is required')
+                  return
+                }
+                if (!state.description) {
+                  toast.error('Task statement is required')
+                  return
+                }
+                if (state.reward.type === RewardType.OTHER) {
+                  if (!state.reward.name) {
+                    toast.error('Reward name is required when the type is other')
+                    return
+                  }
+                }
+                if (state.actions.length === 0) {
+                  toast.error('Task actions must have one item at least')
+                  return
+                }
+
                 if (!state.image) {
                   const random = Math.floor(Math.random() * TASK_DEFAULT_IMAGE_URLS.length)
                   setState({
@@ -211,9 +231,6 @@ export default function TaskCreate() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={ModalStyle}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Leaving Community
-          </Typography>
           <Typography className="desc" sx={{ mt: 2 }}>
             Please check the event page carefully as it cannot be edited once submitted.
           </Typography>
