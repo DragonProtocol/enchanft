@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
-import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ProjectDetailEntity, fetchProjectDetail, selectProjectDetail } from '../features/project/projectDetailSlice'
@@ -34,6 +33,7 @@ import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
 import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
+import PngIconNotebook from '../components/common/icons/PngIconNotebook'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -202,57 +202,56 @@ const Project: React.FC = () => {
   // }
   return (
     <ProjectWrapper>
-      <MainContentBox>
-        <ProjectTopBox>
-          <ProjectCommunityInfoBox>
+      <ProjectLeftBox>
+        <ProjectLeftBodyBox>
+          <ProjectImage src={data.image} />
+          <ProjectBasicInfoBox>
+            <ProjectName>{data.name}</ProjectName>
             <ProjectDetailCommunity
               data={communityDataView.data}
               viewConfig={communityDataView.viewConfig}
               onFollowChange={handleFollowChange}
             />
-          </ProjectCommunityInfoBox>
-
-          <ProjectBasicInfoBox>
-            <ProjectBasicInfoLeft>
-              <ProjectDetailBasicInfo
-                data={projectBasicInfoDataView.data}
-                viewConfig={projectBasicInfoDataView.viewConfig}
-              />
-            </ProjectBasicInfoLeft>
-            <ProjectBasicInfoRight>
-              <ContributionList
-                items={showContributionranks}
-                hiddenColumns={[ContributionColumns.pubkey]}
-                membersTotal={contributionMembersTotal}
-                displayMore={true}
-                moreText="View All"
-                onMore={() => navigate(`/${projectSlug}/rank`)}
-              />
-            </ProjectBasicInfoRight>
+            <ProjectDetailBasicInfo
+              data={projectBasicInfoDataView.data}
+              viewConfig={projectBasicInfoDataView.viewConfig}
+            />
           </ProjectBasicInfoBox>
-        </ProjectTopBox>
+        </ProjectLeftBodyBox>
+      </ProjectLeftBox>
 
-        <ProjectBottomBox>
-          <ProjectEventsBox>
-            <ProjectLabelBox>
-              <ProjectLabel>Events</ProjectLabel>
-            </ProjectLabelBox>
-            <ExploreTaskListBox>
-              <ExploreTaskList
-                items={tasks}
-                displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
-                onCreateTask={() => {
-                  navigate(
-                    `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${
-                      data.community.discordId || ''
-                    }&communityName=${data.community.name}&communityTwitter=${data.community.twitter}`,
-                  )
-                }}
-              />
-            </ExploreTaskListBox>
-          </ProjectEventsBox>
+      <ProjectRightBox>
+        <ContributionListBox>
+          <ContributionList
+            items={showContributionranks}
+            membersTotal={contributionMembersTotal}
+            displayMore={true}
+            moreText="Start Contributing"
+            onMore={() => navigate(`/${projectSlug}/rank`)}
+          />
+        </ContributionListBox>
+        <ProjectEventsBox>
+          <ProjectLabelBox>
+            <PngIconNotebook />
+            <ProjectLabel>Events</ProjectLabel>
+          </ProjectLabelBox>
+          <ExploreTaskListBox>
+            <ExploreTaskList
+              items={tasks}
+              displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
+              maxColumns={3}
+              onCreateTask={() => {
+                navigate(
+                  `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${
+                    data.community.discordId || ''
+                  }&communityName=${data.community.name}&communityTwitter=${data.community.twitter}`,
+                )
+              }}
+            />
+          </ExploreTaskListBox>
+        </ProjectEventsBox>
 
-          {/* <ProjectOtherInfoBox>
+        {/* <ProjectOtherInfoBox>
             <ProjectOtherInfoLeftBox>
               <ProjectLabelBox>
                 <ProjectLabel>Story</ProjectLabel>
@@ -276,54 +275,53 @@ const Project: React.FC = () => {
                 (activeTab === ProjectInfoTabsValue.ROADMAP && <ProjectRoadmap items={data.roadmap} />)}
             </ProjectOtherInfoRightBox>
           </ProjectOtherInfoBox> */}
-        </ProjectBottomBox>
-      </MainContentBox>
+      </ProjectRightBox>
     </ProjectWrapper>
   )
 }
 export default React.memo(Project)
-const ProjectWrapper = styled.div`
-  width: 100%;
-`
-const ProjectTopBox = styled(CardBox)`
-  width: 100%;
-  padding: 0;
-  border: 4px solid #333333;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-`
-const ProjectCommunityInfoBox = styled.div`
-  padding: 20px;
-  box-sizing: border-box;
-  border-bottom: 4px solid #333333;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-  position: relative;
-  z-index: 1;
-`
-
-const ProjectBasicInfoBox = styled.div`
-  width: 100%;
+const ProjectWrapper = styled(MainContentBox)`
   display: flex;
   gap: 20px;
 `
-const ProjectBasicInfoLeft = styled.div`
-  flex: 1;
+const ProjectLeftBox = styled.div`
+  flex-shrink: 0;
+  width: 420px;
+`
+const ProjectLeftBodyBox = styled(CardBox)`
+  padding: 0;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+`
+const ProjectImage = styled.img`
+  width: 420px;
+  height: 420px;
+  object-fit: cover;
+`
+const ProjectName = styled.div`
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 42px;
+  color: #333333;
+`
+const ProjectBasicInfoBox = styled.div`
   padding: 20px;
   box-sizing: border-box;
-`
-const ProjectBasicInfoRight = styled.div`
-  width: 480px;
-  background: #fffbdb;
-  padding: 20px;
-  box-sizing: border-box;
-`
-
-const ProjectBottomBox = styled(CardBox)`
-  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 40px;
+  gap: 10px;
 `
-const ProjectEventsBox = styled.div``
+
+const ProjectRightBox = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow: hidden;
+`
+const ContributionListBox = styled(CardBox)`
+  background: #fffbdb;
+`
+const ProjectEventsBox = styled(CardBox)``
 const ProjectOtherInfoBox = styled.div`
   display: flex;
   gap: 40px;
@@ -333,6 +331,8 @@ const ProjectOtherInfoLeftBox = styled.div`
 `
 const ProjectLabelBox = styled.div`
   display: flex;
+  gap: 10px;
+  align-items: center;
 `
 const ExploreTaskListBox = styled.div`
   margin-top: 20px;

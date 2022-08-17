@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 13:30:53
+ * @LastEditTime: 2022-08-17 16:58:39
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -206,7 +206,7 @@ const ContributioHeaderBox = styled.div`
   align-items: center;
   gap: 10px;
   padding-bottom: 18px;
-  border-bottom: 2px solid #333333;
+  border-bottom: 1px solid #d9d9d9;
   margin-bottom: 24px;
 `
 const ContributionTitle = styled.div`
@@ -237,7 +237,7 @@ const ContributionItemBox = styled.div`
   padding-bottom: 10px;
 `
 const ContributionItemRanking = styled.div<{ topThree?: boolean }>`
-  width: 10%;
+  width: 50px;
   height: 24px;
   font-weight: 700;
   text-align: center;
@@ -257,7 +257,7 @@ const ContributionItemAvatar = styled(UserAvatar)`
   height: 40px;
 `
 const ContributionItemUserName = styled(OverflowEllipsisBox)`
-  flex: 160px;
+  width: 160px;
   text-align: left;
   text-transform: capitalize;
 `
@@ -269,14 +269,16 @@ const ContributionItemPubkey = styled(OverflowEllipsisBox)`
 const ContributionItemScore = styled.div`
   width: 86px;
   font-weight: 700;
-  text-align: right;
+  text-align: left;
   color: #333333;
 `
 const MoreBtn = styled.div`
-  font-size: 14px;
-  line-height: 21px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
   text-align: center;
   color: #3dd606;
+  margin-top: 10px;
   cursor: pointer;
 `
 const DownloadBtn = styled(ButtonBase)`

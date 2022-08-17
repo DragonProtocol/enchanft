@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 16:56:06
+ * @LastEditTime: 2022-08-17 14:04:03
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -278,7 +278,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
 export default TodoTaskItem
 const TodoTaskItemWrapper = styled.div`
   width: 100%;
-  background: #ffffff;
+  background: #f7f9f1;
   border: 2px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   padding: 10px;

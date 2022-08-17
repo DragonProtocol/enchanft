@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 18:05:39
+ * @LastEditTime: 2022-08-17 16:45:12
  * @Description: file description
  */
 import React from 'react'
@@ -19,6 +19,7 @@ export type ExploreTaskListViewConfigType = {
   loadingMsg?: string
   emptyMsg?: string
   displayCreateTask?: boolean
+  maxColumns?: number
 }
 export type ExploreTaskListItemsType = ExploreTaskItemDataViewType[]
 export type ExploreTaskListProps = ExploreTaskListViewConfigType & {
@@ -31,6 +32,7 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
   loadingMsg = 'loading...',
   emptyMsg = 'no tasks',
   displayCreateTask,
+  maxColumns = 4,
   onCreateTask,
 }: ExploreTaskListProps) => (
   <>
@@ -40,7 +42,7 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
       </ListStatusBox>
     )}
     {!loading && items.length === 0 && emptyMsg && <ListStatusBox>{emptyMsg}</ListStatusBox>}
-    <ExploreTaskListWrapper>
+    <ExploreTaskListWrapper maxColumns={maxColumns}>
       {displayCreateTask && (
         <CreateTaskButton onClick={() => onCreateTask && onCreateTask()}>
           <IconPlus size="2rem" />
@@ -58,18 +60,18 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
   </>
 )
 export default ExploreTaskList
-const ExploreTaskListWrapper = styled.div`
+const ExploreTaskListWrapper = styled.div<{ maxColumns?: number }>`
   width: 100%;
   display: grid;
   grid-gap: 20px;
   justify-content: space-between;
   list-style-type: none;
-  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  grid-template-columns: repeat(${({ maxColumns = 4 }) => maxColumns}, minmax(220px, 1fr));
   @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
-    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    grid-template-columns: repeat(${({ maxColumns = 4 }) => maxColumns - 1}, minmax(220px, 1fr));
   }
   @media (min-width: ${MEDIA_BREAK_POINTS.sm}px) and (max-width: ${MEDIA_BREAK_POINTS.md}px) {
-    grid-template-columns: repeat(2, minmax(250px, 1fr));
+    grid-template-columns: repeat(${({ maxColumns = 4 }) => maxColumns - 2}, minmax(220px, 1fr));
   }
   @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
     display: flex;

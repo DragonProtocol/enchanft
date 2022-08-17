@@ -1,17 +1,9 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { ProjectStatus, TaskType, Whitelist } from '../../../types/api'
-import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
+import { ProjectStatus, TaskType, Whitelist } from '../../../types/entities'
 import TaskContent, { TaskContentDataViewType, TaskContentHandlesType } from '../task/TaskContent'
-import ProjectRoadmap, { ProjectRoadmapItemDataType } from './ProjectRoadmap'
-import { ProjectTeamMemberItemDataViewType } from './ProjectTeamMemberItem'
-import ProjectTeamMemberList from './ProjectTeamMemberList'
-import WebsiteIcon from '../../imgs/internet.svg'
-import TwitterIcon from '../../imgs/twitter.svg'
-import ProjectTaskSwiper from './ProjectTaskSwiper'
 import RichTextBox from '../../common/text/RichTextBox'
-import ChainTag from '../chain/ChainTag'
 import TimeCountdown from '../../common/time/TimeCountdown'
 export type ProjectDetailBasicInfoDataType = {
   id: number
@@ -74,93 +66,75 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
     return (
       <>
         <ProjectMintInfoBox>
-          <ProjectMintInfoLabel>Whitelist</ProjectMintInfoLabel>
-          <ProjectMintInfoStartsInTextBox>
+          <ProjectMintInfoBoxTop>
+            <ProjectMintInfoLabel>Whitelist</ProjectMintInfoLabel>
             {whitelist.mintStartTime < new Date().getTime() ? (
               <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
             ) : (
               <>
                 <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
-                <TimeCountdown timestamp={whitelist.mintStartTime} />
+                <MintTimeCountdown timestamp={whitelist.mintStartTime} />
               </>
             )}
-          </ProjectMintInfoStartsInTextBox>
+          </ProjectMintInfoBoxTop>
+
           <PrjectMintInfoPriceText>
             MAX {whitelist.mintMaxNum} Tokens . {whitelistMintPriceText}
           </PrjectMintInfoPriceText>
         </ProjectMintInfoBox>
-        <HorizontalLine />
       </>
     )
   }
   return (
     <ProjectDetailBasicInfoWrapper>
-      <ProjectTopBox>
-        <ProjectImage src={image} />
-        {/* project basic info */}
-        <ProjectTopRightBox>
-          <ProjectName>{name}</ProjectName>
-          <PorjectNumbersBox>
-            <PorjectNumbersItemBox>
-              <ProjectNumbersItemLabel>items</ProjectNumbersItemLabel>
-              <ProjectNumbersItemValue>{itemTotalNum || 0}</ProjectNumbersItemValue>
-            </PorjectNumbersItemBox>
-            <PorjectNumbersItemBox>
-              <ProjectNumbersItemLabel>EnchaNFT</ProjectNumbersItemLabel>
-              <ProjectNumbersItemValue>{injectedCoins || 0}</ProjectNumbersItemValue>
-            </PorjectNumbersItemBox>
-          </PorjectNumbersBox>
-          <ProjectDescription value={description} />
-        </ProjectTopRightBox>
-      </ProjectTopBox>
+      {/* <ProjectName>{name}</ProjectName> */}
+      <PorjectNumbersBox>
+        <PorjectNumbersItemBox>
+          <ProjectNumbersItemLabel>items</ProjectNumbersItemLabel>
+          <ProjectNumbersItemValue>{itemTotalNum || 0}</ProjectNumbersItemValue>
+        </PorjectNumbersItemBox>
+        <PorjectNumbersItemBox>
+          <ProjectNumbersItemLabel>EnchaNFT</ProjectNumbersItemLabel>
+          <ProjectNumbersItemValue>{injectedCoins || 0}</ProjectNumbersItemValue>
+        </PorjectNumbersItemBox>
+      </PorjectNumbersBox>
+      <ProjectDescription value={description} />
       {displayMintInfo && (
-        <ProjectBottomBox>
+        <>
           {renderWhitelist()}
           <ProjectMintInfoBox>
-            <ProjectMintInfoLabel>Public</ProjectMintInfoLabel>
-            <ProjectMintInfoStartsInTextBox>
+            <ProjectMintInfoBoxTop>
+              <ProjectMintInfoLabel>Public</ProjectMintInfoLabel>
               {publicSaleTime < new Date().getTime() ? (
                 <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
               ) : (
                 <>
                   <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
-                  <TimeCountdown timestamp={publicSaleTime} />
+                  <MintTimeCountdown timestamp={publicSaleTime} />
                 </>
               )}
-            </ProjectMintInfoStartsInTextBox>
+            </ProjectMintInfoBoxTop>
+
             <PrjectMintInfoPriceText>MAX 1 Tokens . Mint Price {publicSalePrice}</PrjectMintInfoPriceText>
           </ProjectMintInfoBox>
-        </ProjectBottomBox>
+        </>
       )}
     </ProjectDetailBasicInfoWrapper>
   )
 }
 export default ProjectDetailBasicInfo
 const ProjectDetailBasicInfoWrapper = styled.div`
-  width: 100%;
-`
-
-const ProjectTopBox = styled.div`
-  width: 100%;
-  display: flex;
-  gap: 20px;
-`
-const ProjectImage = styled.img`
-  width: 230px;
-  height: 230px;
-  border-radius: 10px;
-  object-fit: cover;
-`
-const ProjectTopRightBox = styled.div`
-  flex: 1;
-  height: 230px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 10px;
+`
+const MintTimeCountdown = styled(TimeCountdown)`
+  margin-left: 10px;
 `
 const ProjectName = styled.div`
   font-weight: 700;
-  font-size: 24px;
+  font-size: 28px;
+  line-height: 42px;
   color: #333333;
 `
 const PorjectNumbersBox = styled.div`
@@ -174,7 +148,7 @@ const PorjectNumbersItemBox = styled.div`
   align-items: center;
   padding: 10px;
   gap: 12px;
-  width: 190px;
+  width: 185px;
   height: 40px;
   background: #ebeee4;
   border-radius: 10px;
@@ -189,23 +163,13 @@ const ProjectNumbersItemValue = styled.span`
   color: #333333;
 `
 const ProjectDescription = styled(RichTextBox)`
-  flex: 1;
+  max-height: 120px;
   overflow-y: auto;
   ${ScrollBarCss}
+  padding-bottom: 10px;
+  border-bottom: 1px solid #d9d9d9;
 `
-const ProjectBottomBox = styled.div`
-  margin-top: 15px;
-  width: 100%;
-  height: 168px;
-  background: #ebeee4;
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-  padding: 30px 20px;
-  box-sizing: border-box;
-  justify-content: space-around;
-`
+
 const HorizontalLine = styled.div`
   width: 100%;
   height: 1px;
@@ -213,9 +177,14 @@ const HorizontalLine = styled.div`
 `
 
 const ProjectMintInfoBox = styled.div`
+  border-bottom: 1px solid #d9d9d9;
+  padding: 20px 0;
+  box-sizing: border-box;
+`
+const ProjectMintInfoBoxTop = styled.div`
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 70px;
 `
 const ProjectMintInfoLabel = styled.div`
   flex: 1;
@@ -223,19 +192,20 @@ const ProjectMintInfoLabel = styled.div`
   font-size: 16px;
   color: #333333;
 `
-const ProjectMintInfoStartsInTextBox = styled.div`
-  width: 200px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-`
 const ProjectMintInfoStartsInText = styled.div`
   font-size: 14px;
   color: rgba(51, 51, 51, 0.6);
 `
 const PrjectMintInfoPriceText = styled.div`
-  flex: 1;
-  font-weight: 700;
+  height: 40px;
+  background: #ebeee4;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
   font-size: 14px;
+  line-height: 21px;
   color: #333333;
+  margin-top: 10px;
 `
