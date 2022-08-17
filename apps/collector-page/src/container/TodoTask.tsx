@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 13:24:01
+ * @LastEditTime: 2022-08-17 18:11:08
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -121,6 +121,9 @@ const formatStoreDataToComponentDataByCompletedList = (tasks: TodoTaskItemForEnt
   return tasks.map((task) => {
     return {
       data: { ...task, actions: [] },
+      viewConfig: {
+        allowNavigateToTask: true,
+      },
     }
   })
 }
@@ -132,6 +135,7 @@ const formatStoreDataToComponentDataByWonList = (tasks: TodoTaskItemForEntity[])
       data: { ...task, actions: [] },
       viewConfig: {
         displayMint,
+        allowNavigateToTask: true,
       },
     }
   })
@@ -141,6 +145,9 @@ const formatStoreDataToComponentDataByLostList = (tasks: TodoTaskItemForEntity[]
   return tasks.map((task) => {
     return {
       data: { ...task, actions: [] },
+      viewConfig: {
+        allowNavigateToTask: true,
+      },
     }
   })
 }
@@ -149,6 +156,9 @@ const formatStoreDataToComponentDataByClosedList = (tasks: TodoTaskItemForEntity
   return tasks.map((task) => {
     return {
       data: { ...task, actions: [] },
+      viewConfig: {
+        allowNavigateToTask: true,
+      },
     }
   })
 }

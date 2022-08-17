@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 14:04:03
+ * @LastEditTime: 2022-08-17 18:11:37
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -16,6 +16,7 @@ import MoodIcon from '@mui/icons-material/Mood'
 import MoodBadIcon from '@mui/icons-material/MoodBad'
 import TaskActionList from './TaskActionList'
 import { todoTaskCompleteStatusMap } from './TodoTaskList'
+import { useNavigate } from 'react-router-dom'
 
 export type TodoTaskItemDataType = {
   id: number
@@ -45,6 +46,7 @@ export type TodoTaskItemViewConfigType = {
   loadingRefresh?: boolean
   loadingRefreshMsg?: string
   verifyingActions?: number[]
+  allowNavigateToTask?: boolean
 }
 
 export type TodoTaskItemDataViewType = {
@@ -74,6 +76,7 @@ const defaultViewConfig: TodoTaskItemViewConfigType = {
   loadingRefresh: false,
   loadingRefreshMsg: 'refreshing...',
   verifyingActions: [],
+  allowNavigateToTask: false,
 }
 const TaskTodoCompleteStatusView = {
   [TaskTodoCompleteStatus.COMPLETED]: {
@@ -103,9 +106,10 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   onDiscord,
   onFollowCommunity,
 }: TodoTaskItemProps) => {
-  const { name, whitelistTotalNum, type, projectId, startTime, endTime, actions, status, project, whitelist } = data
+  const navginate = useNavigate()
+  const { id, name, whitelistTotalNum, type, projectId, startTime, endTime, actions, status, project, whitelist } = data
   const { name: projectName } = project
-  const { mintUrl } = project
+  const { mintUrl, slug: projectSlug } = project
   const { mintStartTime } = whitelist
   const {
     disabledMint,
@@ -119,6 +123,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     loadingRefresh,
     loadingRefreshMsg,
     verifyingActions,
+    allowNavigateToTask,
   } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -235,6 +240,8 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   const onTaskClick = () => {
     if (allowOpenActions) {
       setIsOpenActions(!isOpenActions)
+    } else if (allowNavigateToTask) {
+      navginate(`/${projectSlug}/${id}`)
     }
   }
   const onRefreshClick = () => {
@@ -244,7 +251,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   }
   return (
     <TodoTaskItemWrapper>
-      <TaskBasicInfoBox isAllowClick={allowOpenActions} onClick={onTaskClick}>
+      <TaskBasicInfoBox isAllowClick={allowOpenActions || allowNavigateToTask} onClick={onTaskClick}>
         <TaskBasicInfoLeftImg src={project.image} />
         <TaskBasicInfoRightBox>
           <TaskName>{name}</TaskName>
