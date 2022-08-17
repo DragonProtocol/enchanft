@@ -47,6 +47,7 @@ const ModalStyle = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
+  borderRadius: '10px',
   p: 2,
 }
 
@@ -119,9 +120,9 @@ export default function TaskCreate() {
       <TaskCreateWrapper style={{ display: openPreview ? 'none' : '' }}>
         <div className="infos">
           <div className="title">
-            <ButtonNavigation onClick={() => navigate(-1)}>
+            <ButtonNavigationCustom onClick={() => navigate(-1)}>
               <PngIconCaretLeft />
-            </ButtonNavigation>
+            </ButtonNavigationCustom>
             <h3>Create a new Task</h3>
           </div>
           <Basic
@@ -259,6 +260,10 @@ export default function TaskCreate() {
   )
 }
 
+const ButtonNavigationCustom = styled(ButtonNavigation)`
+  border-radius: 10px;
+`
+
 const ConfirmModal = styled(Modal)`
   & .desc {
     font-weight: 400;
@@ -285,6 +290,7 @@ const ModalBtnBox = styled.div`
     height: 48px;
     font-size: 20px;
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
   }
 
   & button.confirm {
@@ -298,8 +304,11 @@ const TaskCreateWrapper = styled.div`
   width: 100%;
   height: 100%;
   padding: 40px;
-  background-color: #fff;
+  margin-top: 20px;
+  background: #f7f9f1;
   box-sizing: border-box;
+  border: 4px solid #333333;
+  border-radius: 20px;
 
   & > div.infos {
     & .title {
@@ -332,6 +341,7 @@ const TaskCreateWrapper = styled.div`
     display: flex;
     align-items: center;
     > button {
+      border-radius: 10px;
       background-color: #3dd606;
       border: none;
       outline: none;
@@ -371,6 +381,7 @@ const TaskCreateWrapper = styled.div`
       height: 48px;
       font-size: 20px;
       box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+      border-radius: 10px;
     }
   }
 `

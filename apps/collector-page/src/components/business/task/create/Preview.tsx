@@ -30,78 +30,87 @@ export default function Preview({
 }) {
   console.log(state)
   return (
-    <TaskPrevewWrapper style={{ display: open ? '' : 'none' }}>
-      <div className="tint">
-        <p> Please check the event page carefully as it cannot be edited once submitted.</p>
-      </div>
-      <div className="container">
-        <div className="back-btn" onClick={closeHandler}>
-          <ButtonNavigation>
-            <PngIconCaretLeft />
-          </ButtonNavigation>
+    <>
+      <TaskPrevewWrapper style={{ display: open ? '' : 'none' }}>
+        <div className="tint">
+          <p> Please check the event page carefully as it cannot be edited once submitted.</p>
         </div>
-        <div className="title">
-          <h3>{state.name}</h3>
-        </div>
-        <div className="project">Project:{state.projectName}</div>
-        <div className="img">
-          <img src={state.image} alt="" />
-        </div>
-        <div className="infos">
-          <div className="left">
-            <h3>{state.type} Task</h3>
-            <div>
-              <IconAlarmClock />
-              <span>
-                {dayjs(state.startTime).format('YYYY/MM/DD')}——{dayjs(state.endTime).format('YYYY/MM/DD')}
-              </span>
-              <span>Winners: {state.winnerNum}</span>
-            </div>
-            <div>
-              <IconGiftBox />
-              <span>Reward: {state.reward.type === RewardType.WHITELIST ? 'whitelist' : state.reward.name}</span>
-            </div>
-            <div className="desc">
-              <pre>{state.description}</pre>
+        <div className="container">
+          <div className="title-container" onClick={closeHandler}>
+            <ButtonNavigation>
+              <PngIconCaretLeft />
+            </ButtonNavigation>
+            <div className="title">
+              <h3>{state.name}</h3>
+              <div className="project">Project:{state.projectName}</div>
             </div>
           </div>
-          <div className="right">
-            {state.actions.map((item, idx) => {
-              let Icon
-              if (item.type === ActionType.DISCORD) {
-                Icon = IconDiscord
-              }
-              if (item.type === ActionType.TWITTER) {
-                Icon = IconTwitter
-              }
-              if (item.type === ActionType.NOTIFY) {
-                Icon = IconNotify
-              }
-              if (item.type === ActionType.UNKNOWN) {
-                Icon = IconTip
-              }
-              return (
-                <div key={idx} className="action-item">
-                  <p>{item.name}</p> <Icon />
-                </div>
-              )
-            })}
+
+          <div className="infos">
+            <div className="left">
+              <img src={state.image} alt="" />
+              <h3>{state.type} Task</h3>
+              <div>
+                <IconAlarmClock />
+                <span>
+                  {dayjs(state.startTime).format('YYYY/MM/DD')}——{dayjs(state.endTime).format('YYYY/MM/DD')}
+                </span>
+                <span>Winners: {state.winnerNum}</span>
+              </div>
+              <div>
+                <IconGiftBox />
+                <span>Reward: {state.reward.type === RewardType.WHITELIST ? 'whitelist' : state.reward.name}</span>
+              </div>
+              <div className="desc">
+                <pre>{state.description}</pre>
+              </div>
+            </div>
+            <div className="right">
+              <div>
+                <button>Take the Task</button>
+                {state.actions.map((item, idx) => {
+                  let Icon
+                  if (item.type === ActionType.DISCORD) {
+                    Icon = IconDiscord
+                  }
+                  if (item.type === ActionType.TWITTER) {
+                    Icon = IconTwitter
+                  }
+                  if (item.type === ActionType.NOTIFY) {
+                    Icon = IconNotify
+                  }
+                  if (item.type === ActionType.UNKNOWN) {
+                    Icon = IconTip
+                  }
+                  return (
+                    <div key={idx} className="action-item">
+                      <p>{item.name}</p> <Icon />
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="submit-btn">
-        <button onClick={submitResult}>Submit</button>
-      </div>
-    </TaskPrevewWrapper>
+      </TaskPrevewWrapper>
+      <SubmitBtn style={{ display: open ? '' : 'none' }}>
+        <div>
+          <button onClick={submitResult}>Submit</button>
+        </div>
+      </SubmitBtn>
+    </>
   )
 }
 
 const TaskPrevewWrapper = styled.div`
   width: 100%;
   height: 100%;
-  margin-top: 20px;
-  background-color: #fff;
+  margin: 20px 0 40px 0;
+  background: #f7f9f1;
+  border: 4px solid #333333;
+  border-radius: 20px;
   box-sizing: border-box;
+  overflow: hidden;
 
   & .tint {
     height: 50px;
@@ -113,7 +122,7 @@ const TaskPrevewWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #fffbdb;
+    background: rgba(235, 183, 0, 0.5);
     & p {
       margin: 0;
       font-size: 16px;
@@ -125,10 +134,19 @@ const TaskPrevewWrapper = styled.div`
 
   & .container {
     position: relative;
-    padding: 40px 110px;
+    padding: 40px;
     & .back-btn {
       position: absolute;
       left: 40px;
+    }
+
+    & .title-container {
+      display: flex;
+      gap: 20px;
+
+      /* > button {
+        border-radius: 10px !important;
+      } */
     }
 
     & .title {
@@ -154,13 +172,19 @@ const TaskPrevewWrapper = styled.div`
     }
 
     & .infos {
-      margin-top: 26px;
+      margin-top: 10px;
       display: flex;
+      gap: 40px;
       > div {
         flex-grow: 1;
       }
 
       > div.left {
+        & img {
+          width: 100%;
+          border-radius: 10px;
+          margin-bottom: 26px;
+        }
         & h3 {
           margin: 0;
         }
@@ -201,8 +225,27 @@ const TaskPrevewWrapper = styled.div`
         box-sizing: border-box;
       }
       > div.right {
-        background-color: #f8f8f8;
-        padding: 20px;
+        > div {
+          border-radius: 10px;
+          padding: 20px;
+          background: #ebeee4;
+          border-radius: 10px;
+          > button {
+            border-radius: 10px;
+            background-color: #3dd606;
+            box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+            outline: none;
+            height: 48px;
+            border: none;
+            width: 100%;
+            font-weight: 700;
+            font-size: 18px;
+            line-height: 27px;
+            color: #ffffff;
+            margin-bottom: 20px;
+          }
+        }
+
         & .action-item {
           display: flex;
           align-items: center;
@@ -227,16 +270,21 @@ const TaskPrevewWrapper = styled.div`
       }
     }
   }
-
-  & .submit-btn {
-    position: sticky;
-    bottom: 0;
+`
+const SubmitBtn = styled.div`
+  left: 0;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  bottom: 0;
+  background: #f7f9f1;
+  border-top: 4px solid #333333;
+  > div {
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 100;
     height: 68px;
-    background: #ffffff;
     box-shadow: 0px -4px 0px rgba(0, 0, 0, 0.25);
     & button {
       cursor: pointer;
@@ -244,6 +292,7 @@ const TaskPrevewWrapper = styled.div`
       outline: none;
       background-color: #3dd606;
       color: #fff;
+      border-radius: 10px;
       width: 200px;
       height: 48px;
       font-weight: 700;

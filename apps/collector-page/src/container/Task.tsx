@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 13:23:41
+ * @LastEditTime: 2022-08-17 17:36:12
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -54,10 +54,23 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
     }
   }
 
-  // 2.钱包账户没有跟用户系统绑定
+  // 2. 已经接了任务
+  // TODO 考虑直接将TaskTodoCompleteStatus枚举值合并到TaskStatusButtonType枚举值中
+  const isDone = task.acceptedStatus === TaskAcceptedStatus.DONE
+  if (isDone) {
+    // 2.1 已经完成了任务
+    if (task.status === TaskTodoCompleteStatus.COMPLETED) {
+      return {
+        type: TaskStatusButtonType.COMPLETE,
+      }
+    } else {
+      return null
+    }
+  }
+
+  // 3.还没接任务，且钱包账户没有跟用户系统绑定
   let isBindWallet = false
   const taskChainType = getChainType(task.project.chainId)
-
   switch (taskChainType) {
     case ChainType.EVM:
       if (accountTypes.includes('EVM')) {
@@ -77,8 +90,7 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
       btnText,
     }
   }
-
-  // 3. 当前账户可以接受任务，但还没接
+  // 4. 还没接任务，且当前账户可以接受任务
   const isCanTake = task.acceptedStatus === TaskAcceptedStatus.CANDO
   if (isCanTake) {
     const loadingTake = takeTaskState.status === AsyncRequestStatus.PENDING
@@ -87,22 +99,6 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
       type: TaskStatusButtonType.TAKE,
       loading: loadingTake,
       disabled: disabledTake,
-    }
-  }
-
-  // 4. 当前任务是否正在进行中
-  // TODO 考虑直接将TaskTodoCompleteStatus枚举值合并到TaskStatusButtonType枚举值中
-  const isDone = task.acceptedStatus === TaskAcceptedStatus.DONE
-  if (isDone) {
-    switch (task.status) {
-      case TaskTodoCompleteStatus.TODO:
-        return {
-          type: TaskStatusButtonType.TODO,
-        }
-      case TaskTodoCompleteStatus.COMPLETED:
-        return {
-          type: TaskStatusButtonType.COMPLETE,
-        }
     }
   }
 
