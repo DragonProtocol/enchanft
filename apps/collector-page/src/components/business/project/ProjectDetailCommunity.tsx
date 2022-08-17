@@ -53,9 +53,9 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
   }
   return (
     <ProjectDetailCommunityWrapper>
-      <CommunityImg src={icon} />
-      <CommunityName>{name}</CommunityName>
-      <CommunityRightBox>
+      {/* <CommunityImg src={icon} /> */}
+      {/* <CommunityName>{name}</CommunityName> */}
+      <CommunityLeftBox>
         <ProjectLink href={website} target="_blank" rel="noopener noreferrer">
           <IconWebsite />
         </ProjectLink>
@@ -65,12 +65,12 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
         <ProjectLink href={discord} target="_blank" rel="noopener noreferrer">
           <IconDiscordBlack />
         </ProjectLink>
-        {displayFollow && (
-          <CommunityFollowBtn disabled={isFollowed} onClick={handleFollowChange}>
-            {followText}
-          </CommunityFollowBtn>
-        )}
-      </CommunityRightBox>
+      </CommunityLeftBox>
+      {displayFollow && (
+        <CommunityFollowBtn disabled={isFollowed} onClick={handleFollowChange}>
+          {followText}
+        </CommunityFollowBtn>
+      )}
     </ProjectDetailCommunityWrapper>
   )
 }
@@ -78,8 +78,8 @@ export default ProjectDetailCommunity
 const ProjectDetailCommunityWrapper = styled.div`
   width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 20px;
 `
 const CommunityImg = styled.img`
   width: 60px;
@@ -94,7 +94,7 @@ const CommunityName = styled.div`
   color: #333333;
 `
 
-const CommunityRightBox = styled.div`
+const CommunityLeftBox = styled.div`
   display: flex;
   gap: 32px;
   align-items: center;
@@ -106,7 +106,7 @@ const ProjectLink = styled.a`
 `
 const CommunityFollowBtn = styled(ButtonWarning)`
   min-width: 100px;
-  height: 48px;
+  height: 40px;
   font-weight: 700;
   font-size: 18px;
 `
