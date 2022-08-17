@@ -8,15 +8,13 @@ export enum TaskStatusButtonType {
   CONNECT_WALLET = 'CONNECT_WALLET',
   BIND_WALLET = 'BIND_WALLET',
   TAKE = 'TAKE',
-  TODO = 'TODO',
   COMPLETE = 'COMPLETE',
 }
 const buttonTextMap = {
   [TaskStatusButtonType.CONNECT_WALLET]: 'Connect Wallet',
   [TaskStatusButtonType.BIND_WALLET]: 'Bind Wallet',
   [TaskStatusButtonType.TAKE]: 'Apply For WL',
-  [TaskStatusButtonType.TODO]: 'Already Accepted',
-  [TaskStatusButtonType.COMPLETE]: 'Completed!',
+  [TaskStatusButtonType.COMPLETE]: 'Outcome Pending',
 }
 export type TaskStatusButtonDataViewType = {
   type: TaskStatusButtonType
@@ -109,9 +107,9 @@ const TaskCompleteStatusBtn = styled.div<{ type: TaskStatusButtonType }>`
   gap: 10px;
   width: 100%;
   height: 48px;
-  background: #ffffff;
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
   color: ${({ type }) => (type === TaskStatusButtonType.COMPLETE ? '#3DD606' : '#333333')};
+  border-bottom: 1px solid #d9d9d9;
 `

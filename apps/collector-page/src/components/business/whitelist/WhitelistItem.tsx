@@ -175,13 +175,13 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
   }, [mintStartTime, mintClosed])
 
   // mint按钮显示文本
-  let mintStartTimeCountdownText = 'MINT'
+  let mintBtnText: string | JSX.Element = 'MINT'
   if (mintClosed) {
-    mintStartTimeCountdownText = 'Mint Closed'
+    mintBtnText = 'Mint Closed'
   } else if (loadingMint) {
-    mintStartTimeCountdownText = 'Loading...'
+    mintBtnText = 'Loading...'
   } else if (mintStartTimeCountdown.distance > 0) {
-    mintStartTimeCountdownText = 'You can mint in'
+    let mintStartTimeCountdownText = ''
     if (mintStartTimeCountdown.day > 0) {
       mintStartTimeCountdownText += ` ${mintStartTimeCountdown.day}d`
     }
@@ -199,6 +199,13 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
     ) {
       mintStartTimeCountdownText += ` ${mintStartTimeCountdown.second}s`
     }
+    mintBtnText = (
+      <span>
+        <span style={{ fontSize: '12px', fontWeight: '400' }}>You can mint in</span>
+        <br />
+        {mintStartTimeCountdownText}
+      </span>
+    )
   }
 
   // mint 按钮状态
@@ -209,7 +216,7 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
         <MintClosedBox>{'Mint Closed'}</MintClosedBox>
       ) : (
         <MintBtn disabled={isDisabledMint} onClick={onMint}>
-          {mintStartTimeCountdownText}
+          {mintBtnText}
         </MintBtn>
       )}
     </RewardWhitelistMintButtonWrapper>
@@ -276,7 +283,6 @@ const MintBtn = styled(ButtonBase)`
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
   font-weight: 700;
   font-size: 14px;
-  line-height: 21px;
   color: #ffffff;
 `
 const MintClosedBox = styled.div`

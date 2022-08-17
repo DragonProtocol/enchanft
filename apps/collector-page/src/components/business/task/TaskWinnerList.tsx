@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 14:13:01
+ * @LastEditTime: 2022-08-17 18:19:58
  * @Description: file description
  */
 import React from 'react'
@@ -31,7 +31,7 @@ const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items }: TaskWinnerList
           <WinnerItemBox key={index}>
             <WinnerItemAvatar src={item.avatar} />
             <WinnerItemUserName>{item.name}</WinnerItemUserName>
-            <WinnerItemPubkey number={1}>{omitIntermediateStr(item.pubkey, 5, 4)}</WinnerItemPubkey>
+            <WinnerItemPubkey number={1}>{item.pubkey}</WinnerItemPubkey>
           </WinnerItemBox>
         ))}
       </WinnerListBox>
