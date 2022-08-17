@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 10:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 16:09:13
+ * @LastEditTime: 2022-08-16 13:11:56
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
@@ -16,8 +16,9 @@ export default CardBox
 const CardBoxWrapper = styled.div`
   width: 100%;
   padding: 20px;
-  background: #ffffff;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  background: #f7f9f1;
+  border: 4px solid #333333;
+  border-radius: 20px;
   box-sizing: border-box;
   overflow: hidden;
 `

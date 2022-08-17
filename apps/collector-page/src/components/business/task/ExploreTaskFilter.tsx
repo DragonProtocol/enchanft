@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 16:24:36
+ * @LastEditTime: 2022-08-16 17:23:36
  * @Description: file description
  */
 import React from 'react'
@@ -92,7 +92,9 @@ const ExploreTaskFilterWrapper = styled.div`
   align-items: center;
   gap: 60px;
 `
-const FilterLeftBox = styled.div``
+const FilterLeftBox = styled.div`
+  width: 200px;
+`
 const FilterRightBox = styled.div`
   flex: 1;
   max-width: 650px;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 19:00:23
+ * @LastEditTime: 2022-08-16 14:47:24
  * @Description: 站点布局入口
  */
 import React, { useEffect, useState } from 'react'
@@ -102,8 +102,8 @@ const Layout: React.FC = () => {
             <Main />
           </MainInner>
         </ScrollBox>
-        {displayTodoFloating && <TodoFloatingWindow count={count} />}
       </MainBox>
+      {displayTodoFloating && <TodoFloatingWindow count={count} />}
       <ToastContainer autoClose={2000} position="top-right" />
     </LayoutWrapper>
   )
@@ -115,11 +115,11 @@ const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #f8f8f8;
+  background-color: #ebeee4;
 `
 const HeaderBox = styled.div`
   width: 100%;
-  background: #fff;
+  background: #f7f9f1;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1;
   position: fixed;

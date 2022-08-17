@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-03 16:05:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-03 18:17:21
+ * @LastEditTime: 2022-08-16 14:05:07
  * @Description: file description
  */
 import React, { HTMLAttributes, useEffect, useRef, useState } from 'react'
@@ -70,6 +70,7 @@ const TimeCountdownWrapper = styled.div`
 const CountdownItem = styled.div`
   width: 24px;
   height: 24px;
+  border-radius: 4px;
   background: #333333;
   font-weight: 700;
   font-size: 14px;

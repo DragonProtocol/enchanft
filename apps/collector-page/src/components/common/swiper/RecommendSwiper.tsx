@@ -99,13 +99,15 @@ const RecommendSwiperWrapper = styled.div`
   height: 100%;
   position: relative;
   z-index: 1;
-  box-sizing: border-box;
-  background: #ffffff;
-  border: 4px solid #333333;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   .recommend-swiper {
     width: 100%;
     height: 100%;
+    box-sizing: border-box;
+    background: #f7f9f1;
+    border: 4px solid #333333;
+    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    border-radius: 20px;
+    overflow: hidden;
   }
 `
 const RecommendSwiperLeft = styled.div`

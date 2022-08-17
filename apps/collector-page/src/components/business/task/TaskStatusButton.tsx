@@ -97,7 +97,6 @@ const TaskBtn = styled(ButtonPrimary)`
   width: 100%;
   font-weight: 700;
   font-size: 18px;
-  color: #ffffff;
 `
 
 const TaskCompleteStatusBtn = styled.div<{ type: TaskStatusButtonType }>`

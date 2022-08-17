@@ -148,6 +148,7 @@ const ProjectTopBox = styled.div`
 const ProjectImage = styled.img`
   width: 230px;
   height: 230px;
+  border-radius: 10px;
   object-fit: cover;
 `
 const ProjectTopRightBox = styled.div`
@@ -175,7 +176,8 @@ const PorjectNumbersItemBox = styled.div`
   gap: 12px;
   width: 190px;
   height: 40px;
-  border: 2px solid #333333;
+  background: #ebeee4;
+  border-radius: 10px;
 `
 const ProjectNumbersItemLabel = styled.span`
   font-size: 16px;
@@ -195,7 +197,8 @@ const ProjectBottomBox = styled.div`
   margin-top: 15px;
   width: 100%;
   height: 168px;
-  background: #f8f8f8;
+  background: #ebeee4;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   gap: 28px;
@@ -211,8 +214,8 @@ const HorizontalLine = styled.div`
 
 const ProjectMintInfoBox = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  gap: 70px;
 `
 const ProjectMintInfoLabel = styled.div`
   flex: 1;
@@ -221,7 +224,7 @@ const ProjectMintInfoLabel = styled.div`
   color: #333333;
 `
 const ProjectMintInfoStartsInTextBox = styled.div`
-  flex: 1;
+  width: 200px;
   display: flex;
   gap: 10px;
   align-items: center;
