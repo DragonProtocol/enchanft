@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 11:39:54
+ * @LastEditTime: 2022-08-17 10:28:53
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
@@ -48,6 +48,7 @@ export const take = createAsyncThunk('user/taskHandles/take', async (params: Tak
     if (resp.data.code === 0) {
       const updateTask = { id: params.id, acceptedStatus: TaskAcceptedStatus.DONE, status: TaskTodoCompleteStatus.TODO }
       dispatch(updateTaskDetail(updateTask))
+      dispatch(fetchTaskDetail(params.id))
       dispatch(fetchTodoTasks())
     } else {
       throw new Error(resp.data.msg)
