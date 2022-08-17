@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 16:45:12
+ * @LastEditTime: 2022-08-17 19:23:59
  * @Description: file description
  */
 import React from 'react'
@@ -44,10 +44,12 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
     {!loading && items.length === 0 && emptyMsg && <ListStatusBox>{emptyMsg}</ListStatusBox>}
     <ExploreTaskListWrapper maxColumns={maxColumns}>
       {displayCreateTask && (
-        <CreateTaskButton onClick={() => onCreateTask && onCreateTask()}>
-          <IconPlus size="2rem" />
-          <span>Create</span>
-        </CreateTaskButton>
+        <ExploreTaskItemBox>
+          <CreateTaskButton onClick={() => onCreateTask && onCreateTask()}>
+            <IconPlus size="2rem" />
+            <span>Create</span>
+          </CreateTaskButton>
+        </ExploreTaskItemBox>
       )}
       {!loading &&
         items.length > 0 &&
@@ -99,8 +101,10 @@ const ExploreTaskItemBox = styled.div`
     transform: scale(0.98);
   }
   transition: all 0.5s ease-out;
+  cursor: pointer;
 `
 const CreateTaskButton = styled(CardItemBox)`
+  height: 250px;
   background: #ebeee4;
   display: flex;
   flex-direction: column;
