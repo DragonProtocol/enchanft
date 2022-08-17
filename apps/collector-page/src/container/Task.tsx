@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 17:36:12
+ * @LastEditTime: 2022-08-17 19:08:09
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -128,7 +128,7 @@ const formatStoreDataToComponentDataByTaskActions = (
 const Task: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token, accounts } = useAppSelector(selectAccount)
+  const { token, accounts, pubkey } = useAppSelector(selectAccount)
   const accountTypes = accounts.map((account) => account.accountType)
 
   const { taskId: id, projectSlug } = useParams()
@@ -253,7 +253,7 @@ const Task: React.FC = () => {
             <TaskDetailContentBoxRight>
               {winnerList.length > 0 ? (
                 <TaskListBox>
-                  <TaskWinnerList items={winnerList} />
+                  <TaskWinnerList items={winnerList} highlightPubkeys={[pubkey]} />
                 </TaskListBox>
               ) : (
                 <>
