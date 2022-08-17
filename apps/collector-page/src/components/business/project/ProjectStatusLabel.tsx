@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-28 16:03:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 16:24:50
+ * @LastEditTime: 2022-08-15 13:46:56
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
-import { ProjectStatus } from '../../../types/api'
+import { ProjectStatus } from '../../../types/entities'
 
 const ProjectStatusColors = {
   [ProjectStatus.ACTIVE]: '#3DD606',

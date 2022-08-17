@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 18:17:22
+ * @LastEditTime: 2022-08-16 17:21:35
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -76,6 +76,7 @@ import IconMetamask from '../components/common/icons/IconMetamask'
 import UserAvatar from '../components/business/user/UserAvatar'
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
 import { toast } from 'react-toastify'
+import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -248,17 +249,11 @@ const Profile: React.FC = () => {
           </ProfileRightBox>
         </ProfileTopBox>
         <ProfileInfoTabsBox>
-          <ProfileTabs>
-            {ProfileTabOptions.map((item) => (
-              <ProfileTab
-                key={item.value}
-                onClick={() => setCurProfileTab(item.value)}
-                isActive={item.value === curProfileTab}
-              >
-                {item.label}
-              </ProfileTab>
-            ))}
-          </ProfileTabs>
+          <ButtonRadioGroupProfileTabs
+            options={ProfileTabOptions}
+            value={curProfileTab}
+            onChange={(value) => setCurProfileTab(value)}
+          />
           <ProfileTabContentBox>
             {curProfileTab === 'myCommunities' && (
               <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
@@ -390,29 +385,16 @@ const EmailBindBtn = styled(BindBtnBase)`
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
 
-const ProfileInfoTabsBox = styled.div`
-  margin-top: 30px;
+const ProfileInfoTabsBox = styled(CardBox)`
+  margin-top: 20px;
 `
-const ProfileTabs = styled.div`
-  background: #ffffff;
-  display: flex;
-  justify-content: center;
-  gap: 60px;
-  border-bottom: 1px solid #d9d9d9;
-  padding-top: 40px;
+const ButtonRadioGroupProfileTabs = styled(ButtonRadioGroup)`
+  width: 400px;
+  margin: 0 auto;
 `
-const ProfileTab = styled.div<{ isActive?: boolean }>`
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-
-  color: ${({ isActive }) => (isActive ? `#333333` : 'rgba(51, 51, 51, 0.6)')};
-  ${({ isActive }) => (isActive ? `box-shadow: inset 0 -4px #3DD606;` : '')}
-  cursor: pointer;
-  padding-bottom: 16px;
-  transition: all 0.2s ease-in-out;
+const ProfileTabContentBox = styled.div`
+  margin-top: 20px;
 `
-const ProfileTabContentBox = styled(CardBox)``
 
 // Edit Form
 const EditProfileBox = styled.div`
@@ -470,7 +452,6 @@ const EditProfileBtnSave = styled(ButtonPrimary)`
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
-  color: #ffffff;
 `
 const EditProfileBtnCancel = styled(ButtonBase)`
   width: 120px;

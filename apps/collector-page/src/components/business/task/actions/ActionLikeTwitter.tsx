@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 17:20:38
+ * @LastEditTime: 2022-08-15 17:17:02
  * @Description: file description
  */
 import React from 'react'
@@ -30,7 +30,7 @@ const ActionLikeTwitter: React.FC<ActionLikeTwitterProps> = ({
   const handleAction = () => {
     const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
     width=1000,height=1000,left=0,top=0`
-    const url = getTwitterLikeLink(actionData?.tweetId || '')
+    const url = getTwitterLikeLink(actionData?.tweet_id || '')
     window.open(url, name, winParams)
   }
   const clickAction = () => {

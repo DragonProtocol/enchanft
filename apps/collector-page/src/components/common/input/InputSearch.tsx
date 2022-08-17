@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:00:22
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-09 17:03:37
+ * @LastEditTime: 2022-08-16 13:24:14
  * @Description: file description
  */
 import InputBase from '@mui/material/InputBase'
@@ -58,7 +58,8 @@ export default InputSearch
 const InputSearchWrapper = styled.div`
   flex: 1;
   height: 50px;
-  background: #f8f8f8;
+  background: #ebeee4;
+  border-radius: 10px;
   font-size: 18px;
   line-height: 27px;
   color: rgba(51, 51, 51, 0.3);

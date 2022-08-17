@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 18:09:25
+ * @LastEditTime: 2022-08-16 16:28:55
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -11,7 +11,8 @@ import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
-import { ActionType, TaskTodoCompleteStatus, UserActionStatus } from '../types/api'
+import { ActionType, TaskTodoCompleteStatus } from '../types/entities'
+import { UserActionStatus } from '../types/api'
 import { AsyncRequestStatus } from '../types'
 import TodoTaskList, { TodoTaskListItemsType } from '../components/business/task/TodoTaskList'
 import {
@@ -159,19 +160,12 @@ const TodoTask: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const hasTaskId = searchParams.has('taskId')
   const taskId = hasTaskId ? Number(searchParams.get('taskId')) : -1
-  const { token } = useAppSelector(selectAccount)
   const dispatch = useAppDispatch()
   const todoTasks = useAppSelector(selectAll)
   const { status } = useAppSelector(selectUserTodoTasksState)
-  // 单个任务刷新的select
-  useEffect(() => {
-    if (token) {
-      dispatch(fetchTodoTasks())
-    }
-  }, [token])
 
   // 处理单个任务刷新
-  const handleRefreshTask = (taskId: number) => {
+  const handleVerifyTask = (taskId: number) => {
     dispatch(verifyOneTodoTask({ id: taskId }))
   }
 
@@ -225,7 +219,7 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.TODO}
                 items={todoItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
                 onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
@@ -234,7 +228,7 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.IN_PRGRESS}
                 items={inProgressItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
                 onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
@@ -245,25 +239,25 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.COMPLETED}
                 items={completedItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.WON}
                 items={wonItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.CLOSED}
                 items={closedItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.LOST}
                 items={lostItems}
                 loading={loading}
-                onRefreshTask={(task) => handleRefreshTask(task.id)}
+                onRefreshTask={(task) => handleVerifyTask(task.id)}
               />
             </TodoTaskGroupRight>
           </TodoTaskGroupBox>
@@ -278,7 +272,7 @@ const TodoTaskWrapper = styled.div`
 `
 const TodoTaskGroupBox = styled.div`
   width: 100%;
-  height: 900px;
+  height: 850px;
   display: flex;
   gap: 10px;
 `

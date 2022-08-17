@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 17:44:41
+ * @LastEditTime: 2022-08-15 13:49:12
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
-import { ActionData, ActionType, Project, TaskType, UserActionStatus } from '../../../types/api'
+import { ActionData, ActionType, Project, TaskType } from '../../../types/entities'
+import { UserActionStatus } from '../../../types/api'
 import ActionContributionScore from './actions/ActionContributionScore'
 import ActionFollowCommunity from './actions/ActionFollowCommunity'
 import ActionFollowTwitter from './actions/ActionFollowTwitter'

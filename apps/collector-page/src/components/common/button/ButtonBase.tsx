@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-25 10:35:02
+ * @LastEditTime: 2022-08-16 15:45:38
  * @Description: 基础按钮
  */
 import React, { ButtonHTMLAttributes } from 'react'
@@ -24,18 +24,22 @@ export const ButtonWarning = styled(ButtonBase)`
 export const ButtonDanger = styled(ButtonBase)`
   background-color: #d60606;
 `
+export const ButtonInfo = styled(ButtonBase)`
+  background-color: #ebeee4;
+`
 
 export const ButtonBaseCss = css`
   display: flex;
   justify-content: center;
   align-items: center;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
   font-size: 12px;
   color: #ffffff;
   border: none;
   cursor: pointer;
   padding: 16px 18px;
   box-sizing: border-box;
+  border-radius: 10px;
 `
 const ButtonBaseWrapper = styled.button`
   ${ButtonBaseCss}
@@ -44,10 +48,4 @@ const ButtonBaseWrapper = styled.button`
     pointer-events: auto;
     opacity: 0.5;
   }
-`
-export const ButtonInfo = styled(ButtonBaseWrapper)`
-  background: #f8f8f8;
-  border: 4px solid #222222;
-  color: #222222;
-  box-shadow: none;
 `
