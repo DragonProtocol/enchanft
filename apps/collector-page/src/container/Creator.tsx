@@ -9,10 +9,12 @@ import TaskTitle from '../components/business/creator/TaskTitle'
 import Schedule from '../components/business/creator/Schedule'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { selectCreator, getCreatorDashboardData, saveWinnersData, resetData } from '../features/creator'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { downloadWinner } from '../services/api/creator'
 import usePermissions from '../hooks/usePermissons'
 import { selectAccount } from '../features/user/accountSlice'
+import ButtonNavigation from '../components/common/button/ButtonNavigation'
+import PngIconCaretLeft from '../components/common/icons/PngIconCaretLeft'
 
 export default function Creator() {
   const { taskId } = useParams()
@@ -21,6 +23,7 @@ export default function Creator() {
     useAppSelector(selectCreator)
   const account = useAppSelector(selectAccount)
   const { isCreator } = usePermissions()
+  const navigate = useNavigate()
 
   useEffect(() => {
     if (!account.token) return
@@ -50,6 +53,12 @@ export default function Creator() {
   return (
     <CommunityWrapper>
       <ScrollBox>
+        <div className="creator-title">
+          <ButtonNavigation onClick={() => navigate(-1)}>
+            <PngIconCaretLeft />
+          </ButtonNavigation>
+          <h3>{taskInfo?.name}</h3>
+        </div>
         <ContentBox>
           <LeftBox>
             <TaskDashboard
@@ -82,6 +91,21 @@ export default function Creator() {
 const CommunityWrapper = styled.div`
   width: 100%;
   height: 100%;
+
+  & .creator-title {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+    align-items: center;
+
+    & h3 {
+      font-weight: 700;
+      font-size: 36px;
+      line-height: 40px;
+      margin: 0;
+      color: #333333;
+    }
+  }
 `
 
 const ContentBox = styled.div`

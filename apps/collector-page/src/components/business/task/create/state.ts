@@ -1,3 +1,6 @@
+import dayjs from 'dayjs'
+import { CREATE_TASK_DEFAULT_WINNER_NUM } from '../../../../constants'
+
 export enum RewardType {
   WHITELIST = 'WHITELIST',
   OTHER = 'OTHER',
@@ -72,9 +75,9 @@ export const DefaultState: State = {
     raffled: false,
     name: '',
   },
-  winnerNum: 20,
+  winnerNum: CREATE_TASK_DEFAULT_WINNER_NUM,
   startTime: Date.now(),
-  endTime: Date.now(),
+  endTime: dayjs(Date.now()).add(30, 'day').toDate().getTime(),
   actions: [],
   followTwitters: [],
 }

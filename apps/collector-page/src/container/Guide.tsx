@@ -1,4 +1,3 @@
-import AddIcon from '@mui/icons-material/Add'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -19,6 +18,7 @@ import PhantomIcon from '../components/ConnectBtn/PhantomIcon'
 import TwitterIcon from '../components/ConnectBtn/TwitterIcon'
 import EmailIcon from '../components/ConnectBtn/EmailIcon'
 import useWalletSign from '../hooks/useWalletSign'
+import AddIcon from '../components/common/icons/PngIconAdd'
 import { sortPubKey } from '../utils/solana'
 import { connectionSocialMedia } from '../utils/socialMedia'
 import { uploadAvatar } from '../services/api/login'
@@ -217,6 +217,8 @@ const GuideContainer = styled.div`
   box-shadow: 0px 4px 0px rgb(0 0 0 / 25%);
   box-sizing: border-box;
   border: 4px solid #333333;
+  border-radius: 20px;
+  background: #f7f9f1;
 
   & .title {
     text-align: center;
@@ -300,6 +302,7 @@ const GuideContainer = styled.div`
       width: 422px;
       height: 48px;
       cursor: pointer;
+      border-radius: 10px;
 
       &.twitter {
         background-color: #4d93f1;
@@ -343,9 +346,10 @@ const GuideContainer = styled.div`
     > div.avatar {
       width: 160px;
       height: 160px;
-      background: #f8f8f8;
       margin-right: 60px;
       cursor: pointer;
+      background: #ebeee4;
+      border-radius: 10px;
 
       display: flex;
       flex-direction: column;
@@ -357,7 +361,7 @@ const GuideContainer = styled.div`
         height: 100%;
       }
 
-      & svg {
+      & img {
         height: 40px;
         width: 40px;
       }
@@ -388,6 +392,8 @@ const GuideContainer = styled.div`
         font-weight: 400;
         font-size: 18px;
         line-height: 27px;
+        background: #ebeee4;
+        border-radius: 10px;
       }
     }
   }
@@ -407,6 +413,7 @@ const GuideContainer = styled.div`
       font-weight: 700;
       font-size: 18px;
       line-height: 27px;
+      border-radius: 10px;
 
       &.active {
         background: #3dd606;
