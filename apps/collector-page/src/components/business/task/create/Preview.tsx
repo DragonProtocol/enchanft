@@ -62,7 +62,7 @@ export default function Preview({
                 <span>Reward: {state.reward.type === RewardType.WHITELIST ? 'whitelist' : state.reward.name}</span>
               </div>
               <div className="desc">
-                <pre>{state.description}</pre>
+                <p>{state.description}</p>
               </div>
             </div>
             <div className="right">
@@ -213,8 +213,9 @@ const TaskPrevewWrapper = styled.div`
 
           color: rgba(51, 51, 51, 0.6);
 
-          & > pre {
+          & > p {
             margin: 0;
+            white-space: pre-wrap;
           }
         }
       }
