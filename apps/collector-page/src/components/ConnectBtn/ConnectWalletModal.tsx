@@ -69,6 +69,7 @@ export default function ConnectWalletModal() {
   const handleClose = () => {
     console.log('handleClose')
     setShowNewAccountBtn(false)
+    setNewAccountWith(undefined)
     dispatch(setConnectWalletModalShow(false))
   }
 
@@ -195,6 +196,47 @@ export default function ConnectWalletModal() {
     }
   }, [newAccountWith])
 
+  // With {newAccountWith === TokenType.Solana ? 'Phantom' : 'Metamask'}
+  let walletElem = (
+    <>
+      <div onClick={connectPhantom} className={phantomValid ? 'phantom' : 'phantom invalid'}>
+        <div className="btn">
+          <IconPhantom />
+          <p>Phantom</p>
+        </div>
+        <p className="last-time">{account.lastLoginType === TokenType.Solana ? `(Last Time)` : ''}</p>
+      </div>
+      <div onClick={connectMetamask} className={metamaskValid ? 'metamask' : 'metamask invalid'}>
+        <div className="btn">
+          <IconMetamask />
+          <p>Metamask</p>
+        </div>
+        <p className="last-time">{account.lastLoginType === TokenType.Ethereum ? `(Last Time)` : ''}</p>
+      </div>
+    </>
+  )
+
+  if (newAccountWith === TokenType.Solana) {
+    walletElem = (
+      <div className="phantom-select">
+        <div>
+          <IconPhantom />
+        </div>
+        <p>Solana</p>
+      </div>
+    )
+  }
+  if (newAccountWith === TokenType.Ethereum) {
+    walletElem = (
+      <div className="metamask-select">
+        <div>
+          <IconMetamask />
+        </div>
+        <p>Metamask</p>
+      </div>
+    )
+  }
+
   return (
     <Modal
       open={account.connectWalletModalShow}
@@ -216,32 +258,21 @@ export default function ConnectWalletModal() {
           boxShadow: 24,
           py: '20px',
           px: 0,
+          borderRadius: '10px',
         }}
       >
-        <div className="wallet">
-          <div onClick={connectPhantom} className={phantomValid ? 'phantom' : 'phantom invalid'}>
-            <div className="btn">
-              <IconPhantom />
-              <p>Phantom</p>
-            </div>
-            <p className="last-time">{account.lastLoginType === TokenType.Solana ? `(Last Time)` : ''}</p>
-          </div>
-          <div onClick={connectMetamask} className={metamaskValid ? 'metamask' : 'metamask invalid'}>
-            <div className="btn">
-              <IconMetamask />
-              <p>Metamask</p>
-            </div>
-            <p className="last-time">{account.lastLoginType === TokenType.Ethereum ? `(Last Time)` : ''}</p>
-          </div>
+        <div className="title">
+          <p>Connect Wallet</p>
         </div>
+        <div className="wallet">{walletElem}</div>
         {showNewAccountBtn && (
           <div className="new-account">
-            <HelpBtn variant="contained" onClick={createNewAccount}>
-              Create New Account With {newAccountWith === TokenType.Solana ? 'Phantom' : 'Metamask'}
-            </HelpBtn>
-            <HelpBtn variant="contained" onClick={() => loginWithLastLogin()}>
-              Login With Last Time
-            </HelpBtn>
+            <button className="last" onClick={() => loginWithLastLogin()}>
+              Connect With <img src={account.lastLoginInfo.avatar} alt="" /> {account.lastLoginInfo.name}
+            </button>
+            <button className="new" onClick={createNewAccount}>
+              Create New Account
+            </button>
           </div>
         )}
       </ConnectBox>
@@ -254,6 +285,39 @@ const ConnectBox = styled(Box)`
   justify-content: center;
   flex-direction: column;
   /* border-radius: 10px; */
+  & .title {
+    padding: 0 20px;
+    margin-bottom: 20px;
+    > p {
+      margin: 0;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 30px;
+      color: #333333;
+    }
+  }
+  & .wallet {
+    & > .phantom-select {
+      > div {
+        padding: 4px 6px 0 6px;
+        border-radius: 10px;
+        background: #551ff4;
+      }
+    }
+    & > .metamask-select,
+    & > .phantom-select {
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+
+      > p {
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 27px;
+        color: #333333;
+      }
+    }
+  }
   & .wallet {
     display: flex;
     justify-content: space-evenly;
@@ -304,10 +368,12 @@ const ConnectBox = styled(Box)`
     }
 
     > div.phantom {
+      border-radius: 10px;
       background: #551ff4;
       box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
     }
     > div.metamask {
+      border-radius: 10px;
       background: #f6851b;
       box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
       & svg {
@@ -323,7 +389,34 @@ const ConnectBox = styled(Box)`
     justify-content: center;
     margin-top: 20px;
     > button {
-      margin: 5px 20px;
+      border: none;
+      outline: none;
+      margin: 5px auto;
+      cursor: pointer;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 27px;
+      width: 344px;
+      height: 48px;
+    }
+
+    > button.last {
+      background: #3dd606;
+      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+      color: #ffffff;
+
+      > img {
+        width: 20px;
+        height: 20px;
+        vertical-align: text-top;
+      }
+    }
+
+    > button.new {
+      background: #ebeee4;
+      color: #333333;
+      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
     }
   }
 `

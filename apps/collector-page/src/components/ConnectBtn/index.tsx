@@ -6,6 +6,7 @@ import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
 import {
   selectAccount,
   setLastLogin,
+  setLastLoginInfo,
   setConnectModal,
   setAvatar,
   setDefaultWallet,
@@ -37,6 +38,7 @@ export default function ConnectBtn() {
     if (account.pubkey) {
       clearLoginToken(account.pubkey, account.defaultWallet)
       dispatch(setLastLogin(account.defaultWallet))
+      dispatch(setLastLoginInfo({ name: account.name, avatar: account.avatar }))
       dispatch(setToken(''))
       dispatch(setPubkey(''))
       dispatch(setAvatar(''))

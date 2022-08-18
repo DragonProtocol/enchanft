@@ -2,6 +2,8 @@ const LOCAL_STORAGE_TOKEN = 'token'
 
 export const DEFAULT_WALLET = 'defaultWallet'
 export const LAST_LOGIN_TYPE = 'lastLoginType'
+export const LAST_LOGIN_NAME = 'last_login_name'
+export const LAST_LOGIN_AVATAR = 'last_login_avatar'
 
 export const SIGN_MSG = 'Sign this message to sign into ' + window.location.hostname
 export enum TokenType {
