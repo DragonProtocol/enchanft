@@ -12,10 +12,10 @@ export const getTaskRewardTypeLabel = (reward?: { type: RewardType; raffled: boo
   if (reward) {
     switch (reward.type) {
       case RewardType.WHITELIST:
-        rewardTypeLabel = reward.raffled ? 'Whitelist Luck Draw' : 'Whitelist-Oriented Task'
+        rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS'
         break
       case RewardType.OTHERS:
-        rewardTypeLabel = 'Other Reward'
+        rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS'
         break
     }
   }
