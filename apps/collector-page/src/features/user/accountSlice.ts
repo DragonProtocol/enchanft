@@ -9,7 +9,14 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
 import { login, updateProfile, link, getProfile } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
-import { DEFAULT_WALLET, LAST_LOGIN_TYPE, setLoginToken, TokenType } from '../../utils/token'
+import {
+  DEFAULT_WALLET,
+  LAST_LOGIN_AVATAR,
+  LAST_LOGIN_NAME,
+  LAST_LOGIN_TYPE,
+  setLoginToken,
+  TokenType,
+} from '../../utils/token'
 
 export enum ConnectModal {
   PHANTOM = 'phantom',
@@ -66,6 +73,7 @@ export type AccountState = {
   errorMsg?: string //我不确定这个errorMsg有没有被使用，所以没敢改，如果在外部没有使用，建议统一改成resMessage
   defaultWallet: TokenType
   lastLoginType: TokenType | null
+  lastLoginInfo: { name: string; avatar: string }
   pubkey: string
   token: string
   avatar: string
@@ -85,6 +93,10 @@ const initialState: AccountState = {
   status: AsyncRequestStatus.IDLE,
   defaultWallet: (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '',
   lastLoginType: (localStorage.getItem(LAST_LOGIN_TYPE) as TokenType) || '',
+  lastLoginInfo: {
+    name: localStorage.getItem(LAST_LOGIN_NAME) || '',
+    avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
+  },
   pubkey: '',
   token: '',
   avatar: '',
@@ -211,6 +223,9 @@ export const accountSlice = createSlice({
     setLastLogin: (state, action) => {
       state.lastLoginType = action.payload
     },
+    setLastLoginInfo: (state, action) => {
+      state.lastLoginInfo = action.payload
+    },
     setConnectModal: (state, action) => {
       state.connectModal = action.payload
     },
@@ -265,6 +280,9 @@ export const accountSlice = createSlice({
         state.defaultWallet = action.payload.walletType
         state.errorMsg = ''
 
+        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.avatar)
+        localStorage.setItem(LAST_LOGIN_NAME, action.payload.name)
+
         localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
         localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
       })
@@ -318,6 +336,9 @@ export const accountSlice = createSlice({
         state.resourcePermissions = action.payload.data.resourcePermissions
         state.roles = action.payload.data.roles
         state.errorMsg = ''
+
+        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.data.avatar)
+        localStorage.setItem(LAST_LOGIN_NAME, action.payload.data.name)
       })
       .addCase(userGetProfile.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -362,6 +383,7 @@ export const {
   removeToken,
   setName,
   setLastLogin,
+  setLastLoginInfo,
   resetResMessage,
 } = actions
 export const selectAccount = (state: RootState) => state.account

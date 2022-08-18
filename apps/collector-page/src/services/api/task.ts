@@ -147,3 +147,13 @@ export function projectBindBot({ projectId, discordId }: { projectId: string; di
     },
   })
 }
+
+export function checkTweetIdValid(tweetId: string) {
+  return request({
+    url: `/users/twitter?tweetId=${tweetId}`,
+    method: 'get',
+    headers: {
+      needToken: true,
+    },
+  })
+}
