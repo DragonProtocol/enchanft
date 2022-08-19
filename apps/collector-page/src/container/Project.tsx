@@ -200,6 +200,13 @@ const Project: React.FC = () => {
   //   [ProjectInfoTabsValue.ROADMAP]: <ProjectRoadmap items={data.roadmap} />,
   //   // [ProjectInfoTabsValue.REVIEWS]: <span>Not yet developed</span>,
   // }
+
+  //进入ranks页面，如果没有关注，自动关注社区
+  const startContribute = () => {
+    navigate(`/${projectSlug} / rank`)
+    handleFollowChange(true)
+  }
+
   return (
     <ProjectWrapper>
       <ProjectLeftBox>
@@ -227,7 +234,7 @@ const Project: React.FC = () => {
             membersTotal={contributionMembersTotal}
             displayMore={true}
             moreText="Start Contributing"
-            onMore={() => navigate(`/${projectSlug}/rank`)}
+            onMore={startContribute}
           />
         </ContributionListBox>
         <ProjectEventsBox>
@@ -283,33 +290,33 @@ export default React.memo(Project)
 const ProjectWrapper = styled(MainContentBox)`
   display: flex;
   gap: 20px;
-`
+  `
 const ProjectLeftBox = styled.div`
   flex-shrink: 0;
   width: 420px;
-`
+  `
 const ProjectLeftBodyBox = styled(CardBox)`
   padding: 0;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-`
+  `
 const ProjectImage = styled.img`
   width: 420px;
   height: 420px;
   object-fit: cover;
-`
+  `
 const ProjectName = styled.div`
   font-weight: 700;
   font-size: 28px;
   line-height: 42px;
   color: #333333;
-`
+  `
 const ProjectBasicInfoBox = styled.div`
   padding: 20px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 10px;
-`
+  `
 
 const ProjectRightBox = styled.div`
   flex: 1;
@@ -317,41 +324,41 @@ const ProjectRightBox = styled.div`
   flex-direction: column;
   gap: 20px;
   overflow: hidden;
-`
+  `
 const ContributionListBox = styled(CardBox)`
   background: #fffbdb;
-`
+  `
 const ProjectEventsBox = styled(CardBox)``
 const ProjectOtherInfoBox = styled.div`
   display: flex;
   gap: 40px;
-`
+  `
 const ProjectOtherInfoLeftBox = styled.div`
   flex: 1;
-`
+  `
 const ProjectLabelBox = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
-`
+  `
 const ExploreTaskListBox = styled.div`
   margin-top: 20px;
-`
+  `
 const ProjectLabel = styled.div`
   font-weight: 700;
   font-size: 20px;
   color: #333333;
-`
+  `
 const ProjectStoryContent = styled(RichTextBox)``
 const ProjectOtherInfoRightBox = styled.div`
   width: 560px;
-`
+  `
 const ProjectOtherInfoRightTabs = styled.div`
   display: flex;
   gap: 80px;
   margin-bottom: 20px;
   border-bottom: solid 1px #d9d9d9;
-`
+  `
 const ProjectOtherInfoRightTab = styled.div<{ isActive: Boolean }>`
   font-weight: 700;
   font-size: 20px;
@@ -360,4 +367,4 @@ const ProjectOtherInfoRightTab = styled.div<{ isActive: Boolean }>`
   cursor: pointer;
   padding-bottom: 10px;
   transition: all 0.2s ease-in-out;
-`
+  `
