@@ -18,12 +18,18 @@ export type ContributionAboutDataType = {
   icon: string
   twitter: string
   twitterId: string
+  discordId: string
   discord: string
   discordName: string
   discordMembers?: number
   discordInviteUrl: string
 }
 
+const enum QA_ANSWER_TYPE {
+  WL = 'WL',
+  TWITTER = 'TWITTER',
+  DISCORD = 'DISCORD',
+}
 export type ContributionAboutViewConfigType = {}
 
 export type ContributionAboutDataViewType = {
@@ -36,7 +42,7 @@ export type ContributionAboutProps = ContributionAboutDataViewType & Contributio
 
 const defaultViewConfig = {}
 const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig }: ContributionAboutProps) => {
-  const { name, icon, twitterId, discordInviteUrl, discordName, discordMembers } = data
+  const { name, icon, twitterId, discordId, discordInviteUrl, discordName, discordMembers } = data
   const {} = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -63,10 +69,12 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
       answers: [
         {
           title: `Join the community.`,
+          type: QA_ANSWER_TYPE.WL,
           content: ``,
         },
         {
           title: <>Follow {TwitterLinkComponent} on Twitter.</>,
+          type: QA_ANSWER_TYPE.TWITTER,
           content: (
             <CommunityBox>
               <CommunityImg src={icon} />
@@ -84,10 +92,12 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
         },
         {
           title: <>Like, retweet or replay {TwitterLinkComponent} daily on Twitter to earn contribution point.</>,
+          type: QA_ANSWER_TYPE.TWITTER,
           content: <QusetionAnswerImg src={likeReplyRetweetImg} />,
         },
         {
           title: <>Join {DiscordLinkComponent} server on Discord.</>,
+          type: QA_ANSWER_TYPE.DISCORD,
           content: (
             <CommunityBox>
               <CommunityImg src={icon} radius={'16px'} />
@@ -110,6 +120,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
         },
         {
           title: <>Chat in or invite friends to the {DiscordLinkComponent} daily on Discord.</>,
+          type: QA_ANSWER_TYPE.DISCORD,
           content: <QusetionAnswerImg src={discordChatInviteImg} />,
         },
       ],
@@ -119,10 +130,12 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
       answers: [
         {
           title: 'Whitelist',
+          type: QA_ANSWER_TYPE.WL,
           content: '',
         },
         {
           title: 'Community events',
+          type: QA_ANSWER_TYPE.WL,
           content: '',
         },
       ],
@@ -134,14 +147,18 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
       {questions.map((question, index) => (
         <QuestionItemBox key={index}>
           <QuestionTitle>{question.title}</QuestionTitle>
-          {question.answers.map((answer, index) => (
-            <QuestionContent key={index}>
-              <QuestionAnswerTitle>
-                {index + 1}. {answer.title}
-              </QuestionAnswerTitle>
-              {answer.content}
-            </QuestionContent>
-          ))}
+          {question.answers.map((answer, index) => {
+            if (answer.type === QA_ANSWER_TYPE.TWITTER && (!twitterId || twitterId === '')) return ''
+            if (answer.type === QA_ANSWER_TYPE.DISCORD && (!discordId || discordId === '')) return ''
+            return (
+              <QuestionContent key={index}>
+                <QuestionAnswerTitle>
+                  • {answer.title}
+                </QuestionAnswerTitle>
+                {answer.content}
+              </QuestionContent>
+            )
+          })}
         </QuestionItemBox>
       ))}
     </ContributionAboutWrapper>
