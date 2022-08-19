@@ -154,13 +154,13 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                   Whitelist
                 </button>
                 <button
-                  className={state.reward.type === RewardType.OTHER ? 'active' : ''}
+                  className={state.reward.type === RewardType.OTHERS ? 'active' : ''}
                   onClick={() => {
                     updateState({
                       ...state,
                       reward: {
                         ...state.reward,
-                        type: RewardType.OTHER,
+                        type: RewardType.OTHERS,
                       },
                     })
                   }}
@@ -168,14 +168,14 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                   Other
                 </button>
               </div>
-              {state.reward.type === RewardType.OTHER && (
+              {state.reward.type === RewardType.OTHERS && (
                 <input
                   type="text"
                   title="reward-others-name"
-                  placeholder={state.reward.type === RewardType.OTHER ? 'Name' : ''}
+                  placeholder={state.reward.type === RewardType.OTHERS ? 'Name' : ''}
                   value={state.reward.name}
                   onChange={(e) => {
-                    if (state.reward.type === RewardType.OTHER)
+                    if (state.reward.type === RewardType.OTHERS)
                       updateState({
                         ...state,
                         reward: {

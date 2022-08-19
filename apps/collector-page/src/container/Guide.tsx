@@ -129,7 +129,7 @@ export default function Guide() {
           <div className="buttons">
             <button
               onClick={() => {
-                localStorage.setItem('has-guide', 'has-guide')
+                localStorage.setItem(`has-guide-${account.id}`, 'has-guide')
                 navigate('/')
               }}
             >
@@ -191,6 +191,7 @@ export default function Guide() {
             <button
               className="active"
               onClick={() => {
+                localStorage.setItem(`has-finish-${account.id}`, 'has-finish')
                 dispatch(
                   userUpdateProfile({
                     avatar: avatar,

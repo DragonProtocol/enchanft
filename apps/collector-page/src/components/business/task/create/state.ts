@@ -1,10 +1,9 @@
 import dayjs from 'dayjs'
 import { CREATE_TASK_DEFAULT_WINNER_NUM } from '../../../../constants'
+import { RewardType } from '../../../../types/entities'
 
-export enum RewardType {
-  WHITELIST = 'WHITELIST',
-  OTHER = 'OTHER',
-}
+export { RewardType } from '../../../../types/entities'
+
 export enum TaskType {
   WHITELIST_ORIENTED = 'Whitelist-Oriented',
   WHITELIST_LUCK_DRAW = 'Whitelist-luck-draw',

@@ -16,6 +16,7 @@ import IconCheckbox from '../../../common/icons/IconCheckbox'
 import IconGiftBox from '../../../common/icons/IconGiftBox'
 import IconAlarmClock from '../../../common/icons/IconAlarmClock'
 import PngIconCaretLeft from '../../../common/icons/PngIconCaretLeft'
+import { getTaskRewardTypeLabel } from '../../../../utils/task'
 
 export default function Preview({
   state,
@@ -49,7 +50,7 @@ export default function Preview({
           <div className="infos">
             <div className="left">
               <img src={state.image} alt="" />
-              <h3>{state.type} Task</h3>
+              <h3>{getTaskRewardTypeLabel({ type: state.reward.type, raffled: state.reward.raffled })}</h3>
               <div>
                 <IconAlarmClock />
                 <span>
@@ -181,9 +182,10 @@ const TaskPrevewWrapper = styled.div`
 
       > div.left {
         & img {
-          width: 100%;
           border-radius: 10px;
           margin-bottom: 26px;
+          width: 640px;
+          height: 300px;
         }
         & h3 {
           margin: 0;

@@ -74,7 +74,8 @@ export default function ConnectWalletModal() {
   }
 
   const navigateToGuide = useCallback(() => {
-    if (localStorage.getItem('has-guide')) return
+    if (localStorage.getItem(`has-guide-${account.id}`)) return
+    if (localStorage.getItem(`has-finish-${account.id}`)) return
     const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
     const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
     const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
