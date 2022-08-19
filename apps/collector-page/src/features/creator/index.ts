@@ -41,6 +41,9 @@ export type CreatorState = {
   pickedWhiteList: Array<PickedWhiteList>
   taskInfo: TaskInfo | null
   scheduleInfo: ScheduleInfo | null
+  reward: {
+    raffled: false
+  }
 }
 
 // 站点状态信息
@@ -54,6 +57,9 @@ const creatorState: CreatorState = {
   pickedWhiteList: [],
   taskInfo: null,
   scheduleInfo: null,
+  reward: {
+    raffled: false,
+  },
 }
 
 export const getCreatorDashboardData = createAsyncThunk('creator/dashboard', async ({ taskId }: { taskId: number }) => {
@@ -82,6 +88,9 @@ export const creatorSlice = createSlice({
       state.winnerList = creatorState.winnerList
       state.scheduleInfo = creatorState.scheduleInfo
       state.taskInfo = creatorState.taskInfo
+      state.reward = {
+        raffled: false,
+      }
     },
   },
   extraReducers: (builder) => {
@@ -98,6 +107,7 @@ export const creatorSlice = createSlice({
         state.pickedWhiteList = action.payload.pickedWhiteList
         state.scheduleInfo = action.payload.scheduleInfo
         state.taskInfo = action.payload.taskInfo
+        state.reward = action.payload.reward
       })
       .addCase(getCreatorDashboardData.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED

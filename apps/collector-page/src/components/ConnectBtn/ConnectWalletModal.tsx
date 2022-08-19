@@ -2,6 +2,7 @@ import { Box, Button, Modal, Menu, MenuItem, styled } from '@mui/material'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
+import AvatarDefault from '../imgs/avatar.png'
 
 import {
   selectAccount,
@@ -269,7 +270,8 @@ export default function ConnectWalletModal() {
         {showNewAccountBtn && (
           <div className="new-account">
             <button className="last" onClick={() => loginWithLastLogin()}>
-              Connect With <img src={account.lastLoginInfo.avatar} alt="" /> {account.lastLoginInfo.name}
+              Connect With <img src={account.lastLoginInfo.avatar || AvatarDefault} alt="" />{' '}
+              {account.lastLoginInfo.name}
             </button>
             <button className="new" onClick={createNewAccount}>
               Create New Account

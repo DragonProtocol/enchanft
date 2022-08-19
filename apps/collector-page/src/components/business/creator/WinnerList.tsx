@@ -32,6 +32,7 @@ const ModalStyle = {
 }
 
 export default function WinnerList({
+  reward,
   winnerNum,
   winnerList,
   pickedWhiteList,
@@ -40,6 +41,7 @@ export default function WinnerList({
   whitelistSaved,
   downloadWinners,
 }: {
+  reward: { raffled: boolean }
   winnerNum: number
   whitelistSaved: boolean
   winnerList: Array<Winner>
@@ -86,19 +88,20 @@ export default function WinnerList({
             </div>
           )) || (
             <>
-              {dateNow > schedulesEndTime && (
-                <div>
-                  <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
-                  {'  '}
-                  <CustomBtn
-                    onClick={() => {
-                      setConfirmModalOpen(true)
-                    }}
-                  >
-                    Entries {selected.length}
-                  </CustomBtn>
-                </div>
-              )}
+              {(reward.raffled && null) ||
+                (dateNow > schedulesEndTime && (
+                  <div>
+                    <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
+                    {'  '}
+                    <CustomBtn
+                      onClick={() => {
+                        setConfirmModalOpen(true)
+                      }}
+                    >
+                      Entries {selected.length}
+                    </CustomBtn>
+                  </div>
+                ))}
             </>
           )}
         </div>

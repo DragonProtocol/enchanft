@@ -225,6 +225,7 @@ const Task: React.FC = () => {
     : []
   // 后面如果带/，则去掉/
   const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
+
   return (
     <TaskDetailWrapper>
       <MainContentBox>
@@ -240,7 +241,7 @@ const Task: React.FC = () => {
               </ShareButton>
             </CopyToClipboard>
 
-            {projectId && checkProjectAllowed(Number(projectId)) && isCreator && (
+            {data.project.id && checkProjectAllowed(Number(data.project.id)) && isCreator && (
               <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
             )}
           </TaskDetailHeaderBox>
