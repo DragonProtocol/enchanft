@@ -135,7 +135,7 @@ const Task: React.FC = () => {
   const { status, data } = useAppSelector(selectTaskDetail)
   const dispatchFetchTaskDetail = useCallback(() => id && dispatch(fetchTaskDetail(Number(id))), [id])
   const [loadingView, setLoadingView] = useState(false)
-  const { isCreator, checkTaskAllowed } = usePermissions()
+  const { isCreator, checkTaskAllowed, checkProjectAllowed } = usePermissions()
 
   // slug 变化，重新请求数据，并进入loading状态
   useEffect(() => {
@@ -240,7 +240,7 @@ const Task: React.FC = () => {
               </ShareButton>
             </CopyToClipboard>
 
-            {id && checkTaskAllowed(Number(id)) && isCreator && (
+            {projectId && checkProjectAllowed(Number(projectId)) && isCreator && (
               <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
             )}
           </TaskDetailHeaderBox>
