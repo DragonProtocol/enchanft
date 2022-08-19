@@ -303,14 +303,14 @@ const BasicBox = styled.div`
           height: 50px;
           padding: 5px;
           border-radius: 25px;
-          background-color: #3dd606;
+          background: #ebeee4;
           transition: all 0.1s ease-out;
           box-sizing: border-box;
           & > span {
             cursor: pointer;
             display: inline-block;
             position: absolute;
-            left: 55px;
+            left: 5px;
             width: 40px;
             height: 40px;
             border-radius: 20px;
@@ -318,9 +318,9 @@ const BasicBox = styled.div`
             transition: all 0.1s ease-out;
           }
           &.active {
-            background: #ebeee4;
+            background-color: #3dd606;
             & > span {
-              left: 5px;
+              left: 55px;
             }
           }
         }

@@ -184,8 +184,8 @@ const TaskPrevewWrapper = styled.div`
         & img {
           border-radius: 10px;
           margin-bottom: 26px;
-          width: 640px;
-          height: 300px;
+          width: 100%;
+          max-height: 300px;
         }
         & h3 {
           margin: 0;
