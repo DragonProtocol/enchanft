@@ -240,7 +240,9 @@ const Task: React.FC = () => {
               </ShareButton>
             </CopyToClipboard>
 
-            {isCreator && <ManageButton onClick={() => navigate(`/creator/${id}`)}>Task Management</ManageButton>}
+            {id && checkTaskAllowed(Number(id)) && isCreator && (
+              <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
+            )}
           </TaskDetailHeaderBox>
           <ProjectNameBox>
             <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
