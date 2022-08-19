@@ -150,7 +150,7 @@ export default function Guide() {
         <div>
           <div className="p-info">
             <div className="avatar" onClick={() => document.getElementById('upload-avatar')?.click()}>
-              {(avatar && <img src={avatar} alt="" />) || (
+              {(avatar && <img src={avatar} className="avatar" alt="" />) || (
                 <>
                   <AddIcon />
                   <span>Upload Image</span>
@@ -357,7 +357,7 @@ const GuideContainer = styled.div`
       justify-content: center;
       align-items: center;
 
-      & img {
+      & img.avatar {
         width: 100%;
         height: 100%;
       }
