@@ -2,14 +2,20 @@ import AddIcon from '@mui/icons-material/Add'
 import React, { useCallback, useRef, useState } from 'react'
 import styled from 'styled-components'
 import * as dayjs from 'dayjs'
+import { toast } from 'react-toastify'
 import { RewardType, State } from './state'
 import { uploadImage as uploadImageApi } from '../../../../services/api/login'
+import { TASK_IMAGE_SIZE_LIMIT } from '../../../../constants'
 
 export default function Basic({ state, updateState }: { state: State; updateState: (arg0: State) => void }) {
   const uploadImageHandler = useCallback(
     async (e) => {
       const file = e.target.files && e.target.files[0]
       if (!file) return
+      if ((file as File).size > TASK_IMAGE_SIZE_LIMIT) {
+        toast.error('File Too Large. 1M Limit')
+        return
+      }
       const { data } = await uploadImageApi(file)
       updateState({
         ...state,
@@ -70,7 +76,13 @@ export default function Basic({ state, updateState }: { state: State; updateStat
           </div>
           <div className="attach-file">
             <h4>Task banner (640 * 300)</h4>
-            <input title="task-banner" id="task-banner" type="file" onChange={uploadImageHandler} />
+            <input
+              title="task-banner"
+              id="task-banner"
+              type="file"
+              accept="image/png, image/gif, image/jpeg"
+              onChange={uploadImageHandler}
+            />
             <div
               onClick={() => {
                 document.getElementById('task-banner')?.click()

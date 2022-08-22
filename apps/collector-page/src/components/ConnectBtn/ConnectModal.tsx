@@ -96,10 +96,10 @@ export default function ConnectModal() {
       btn = (
         <div className="btn wallet" onClick={bindMetamask}>
           <MetamaskIcon />
-          <p>Connect Metamask</p>
+          <p>Connect MetaMask</p>
         </div>
       )
-      msg = `Metamask  is not connected. Please connect Metamask.`
+      msg = `MetaMask  is not connected. Please connect MetaMask.`
       break
     case ConnectModalType.PHANTOM:
       btn = (
