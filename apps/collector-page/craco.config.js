@@ -10,6 +10,7 @@ const path = require('path')
 const webpack = require('webpack')
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
   webpack: {
@@ -48,6 +49,7 @@ module.exports = {
           process: 'process/browser',
           Buffer: ['buffer', 'Buffer'],
         }),
+        new BundleAnalyzerPlugin()
       )
 
       config.ignoreWarnings = [/Failed to parse source map/]
