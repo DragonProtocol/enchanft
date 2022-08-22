@@ -77,6 +77,7 @@ import UserAvatar from '../components/business/user/UserAvatar'
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
 import { toast } from 'react-toastify'
 import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup'
+import { AVATAR_SIZE_LIMIT } from '../constants'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -286,8 +287,11 @@ const Profile: React.FC = () => {
                 accept="image/png, image/gif, image/jpeg"
                 onChange={async (e) => {
                   const file = e.target.files && e.target.files[0]
-                  console.log(file)
                   if (!file) return
+                  if (file.size > AVATAR_SIZE_LIMIT) {
+                    toast.error('File Too Large, 200k limit')
+                    return
+                  }
                   try {
                     const { data } = await uploadAvatar(file)
                     setAvatar(data.url)

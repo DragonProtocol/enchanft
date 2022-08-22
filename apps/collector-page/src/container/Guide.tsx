@@ -23,6 +23,7 @@ import { sortPubKey } from '../utils/solana'
 import { connectionSocialMedia } from '../utils/socialMedia'
 import { uploadAvatar } from '../services/api/login'
 import { toast } from 'react-toastify'
+import { AVATAR_SIZE_LIMIT } from '../constants'
 
 export default function Guide() {
   const navigate = useNavigate()
@@ -106,7 +107,7 @@ export default function Guide() {
               <DiscordIcon />
               <p>{discord || 'Connect Discord'}</p>
             </div>
-            <div
+            {/* <div
               className="connect-btn email"
               onClick={() => {
                 dispatch(setConnectModal(ConnectModal.EMAIL))
@@ -114,7 +115,7 @@ export default function Guide() {
             >
               <EmailIcon />
               <span>Connect Email</span>
-            </div>
+            </div> */}
 
             <div className="connect-btn phantom" onClick={bindPhantom}>
               <PhantomIcon />
@@ -123,7 +124,7 @@ export default function Guide() {
 
             <div className="connect-btn metamask" onClick={bindMetamask}>
               <MetamaskIcon />
-              <p>{accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}</p>
+              <p>{accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect MetaMask'}</p>
             </div>
           </div>
           <div className="buttons">
@@ -163,6 +164,10 @@ export default function Guide() {
                     onChange={async (e) => {
                       const file = e.target.files && e.target.files[0]
                       if (!file) return
+                      if (file.size > AVATAR_SIZE_LIMIT) {
+                        toast.error('File Too Large, 200k limit')
+                        return
+                      }
                       try {
                         const { data } = await uploadAvatar(file)
                         setAvatar(data.url)
