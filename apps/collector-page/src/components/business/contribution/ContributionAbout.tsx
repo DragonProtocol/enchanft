@@ -152,9 +152,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
             if (answer.type === QA_ANSWER_TYPE.DISCORD && (!discordId || discordId === '')) return ''
             return (
               <QuestionContent key={index}>
-                <QuestionAnswerTitle>
-                  • {answer.title}
-                </QuestionAnswerTitle>
+                <QuestionAnswerTitle>• {answer.title}</QuestionAnswerTitle>
                 {answer.content}
               </QuestionContent>
             )
