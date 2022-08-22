@@ -76,6 +76,8 @@ importers:
 
   apps/collector-page:
     specifiers:
+      '@appsignal/javascript': ^1.3.23
+      '@appsignal/react': ^1.0.20
       '@craco/craco': ^7.0.0-alpha.6
       '@ecnft/js-sdk-core': ^0.2.7
       '@ecnft/js-sdk-react': ^0.2.10
@@ -128,6 +130,7 @@ importers:
       qs: ^6.11.0
       react: 18.2.0
       react-copy-to-clipboard: ^5.1.0
+      react-device-detect: ^2.2.2
       react-dom: 18.2.0
       react-ga: ^3.3.0
       react-intersection-observer: ^9.3.4
@@ -146,6 +149,8 @@ importers:
       web-vitals: ^2.1.4
       webpack: ^5.73.0
     dependencies:
+      '@appsignal/javascript': 1.3.23
+      '@appsignal/react': 1.0.20_react@18.2.0
       '@ecnft/js-sdk-core': link:../../libs/js-sdk/core
       '@ecnft/js-sdk-react': link:../../libs/js-sdk/react
       '@metaplex-foundation/mpl-token-metadata': 2.2.1
@@ -184,6 +189,7 @@ importers:
       qs: 6.11.0
       react: 18.2.0
       react-copy-to-clipboard: 5.1.0_react@18.2.0
+      react-device-detect: 2.2.2_biqbaboplfbrettd7655fr4n2y
       react-dom: 18.2.0_react@18.2.0
       react-ga: 3.3.1_sh5qlbywuemxd2y3xkrw2y2kr4
       react-intersection-observer: 9.3.5_react@18.2.0
@@ -837,6 +843,42 @@ packages:
       json-schema: 0.4.0
       jsonpointer: 5.0.0
       leven: 3.1.0
+
+  /@appsignal/core/1.1.17:
+    resolution: {integrity: sha512-UwsuXHmQ+KwLbTUuAqlnUMbfyglpr44h57daM/PXXbDtBJInGP6GDqccFp/p2C+8lUhDlvyCxaRb1uxDeXzUeA==}
+    dependencies:
+      '@appsignal/types': 3.0.0
+      isomorphic-unfetch: 3.1.0
+      tslib: 2.4.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@appsignal/javascript/1.3.23:
+    resolution: {integrity: sha512-5CJMKsc6+nxzifeO/ZsqQvBlF4Yj5JOBTbfrv+1Uq+9pO4i3OaLPZsY4ZooPYmbUv8swuoI6kqHRp45OrqFS+w==}
+    dependencies:
+      '@appsignal/core': 1.1.17
+      '@appsignal/types': 3.0.0
+      tslib: 2.4.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@appsignal/react/1.0.20_react@18.2.0:
+    resolution: {integrity: sha512-bEfrTEVj4Iap8iD03soYXwV8rwywsPIFJ5qYp5KKtYy9+zJAZLpowV45nO54d0TMeKqYjGgSyqAaqStjc63SZA==}
+    peerDependencies:
+      react: '>= 16.8.6 <= 18.1.0'
+    dependencies:
+      '@appsignal/core': 1.1.17
+      '@appsignal/types': 3.0.0
+      react: 18.2.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
+  /@appsignal/types/3.0.0:
+    resolution: {integrity: sha512-L0OAKaro7209Du39UF2ZWU8CzUJxeeKaW6Zyu2FA2SGdW3HK0PoJxY7A8R52KdZiXzMlCAlrOjvoDvT/ct0RIg==}
+    dev: false
 
   /@babel/code-frame/7.18.6:
     resolution: {integrity: sha512-TDCmlK5eOvH+eH7cdAFlNXeVJqWIQ7gW9tY1GJIpUtFb6CmjVyq2VM3u71bOyR8CRihcCgMUYoDNyLXao3+70Q==}
@@ -13242,6 +13284,15 @@ packages:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
     engines: {node: '>=0.10.0'}
 
+  /isomorphic-unfetch/3.1.0:
+    resolution: {integrity: sha512-geDJjpoZ8N0kWexiwkX8F9NkTsXhetLPVbZFQ+JTW239QNOwvB0gniuR1Wc6f0AMTn7/mFGyXvHTifrCp/GH8Q==}
+    dependencies:
+      node-fetch: 2.6.7
+      unfetch: 4.2.0
+    transitivePeerDependencies:
+      - encoding
+    dev: false
+
   /isomorphic-ws/4.0.1_ws@7.5.8:
     resolution: {integrity: sha512-BhBvN2MBpWTaSHdWRb/bwdZJ1WaehQ2L1KngkCkfLUGF0mAWAT1sQUQacEmQ0jXkFw/czDXPNQSL5u2/Krsz1w==}
     peerDependencies:
@@ -17360,6 +17411,17 @@ packages:
       - vue-template-compiler
       - webpack
 
+  /react-device-detect/2.2.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-zSN1gIAztUekp5qUT/ybHwQ9fmOqVT1psxpSlTn1pe0CO+fnJHKRLOWWac5nKxOxvOpD/w84hk1I+EydrJp7SA==}
+    peerDependencies:
+      react: '>= 0.14.0'
+      react-dom: '>= 0.14.0'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      ua-parser-js: 1.0.2
+    dev: false
+
   /react-devtools-core/4.24.0:
     resolution: {integrity: sha512-Rw7FzYOOzcfyUPaAm9P3g0tFdGqGq2LLiAI+wjYcp6CsF3DeeMrRS3HZAho4s273C29G/DJhx0e8BpRE/QZNGg==}
     dependencies:
@@ -20398,6 +20460,10 @@ packages:
       - supports-color
     dev: true
 
+  /ua-parser-js/1.0.2:
+    resolution: {integrity: sha512-00y/AXhx0/SsnI51fTc0rLRmafiGOM4/O+ny10Ps7f+j/b8p/ZY11ytMgznXkOVo4GQ+KwQG5UQLkLGirsACRg==}
+    dev: false
+
   /uglify-es/3.3.9:
     resolution: {integrity: sha512-r+MU0rfv4L/0eeW3xZrd16t4NZfK8Ld4SWVglYBb7ez5uXFWHuVRs6xCTrf1yirs9a4j4Y27nn7SRfO6v67XsQ==}
     engines: {node: '>=0.8.0'}
@@ -20420,6 +20486,10 @@ packages:
     resolution: {integrity: sha512-eXL4nmJT7oCpkZsHZUOJo8hcX3GbsiDOa0Qu9F646fi8dT3XuSVopVqAcEiVzSKKH7UoDti23wNX3qGFxcW5Qg==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /unfetch/4.2.0:
+    resolution: {integrity: sha512-F9p7yYCn6cIW9El1zi0HI6vqpeIvBsr3dSuRO6Xuppb1u5rXpCPmMvLSyECLhybr9isec8Ohl0hPekMVrEinDA==}
+    dev: false
 
   /unicode-canonical-property-names-ecmascript/2.0.0:
     resolution: {integrity: sha512-yY5PpDlfVIU5+y/BSCxAJRBIS1Zc2dDG3Ujq+sR0U+JjUevW2JhocOF+soROYDSaAezOzOKuyyixhD6mBknSmQ==}
