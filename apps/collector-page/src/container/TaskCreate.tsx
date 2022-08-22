@@ -183,7 +183,7 @@ export default function TaskCreate() {
                   toast.error('Task statement is required')
                   return
                 }
-                if (state.reward.type === RewardType.OTHER) {
+                if (state.reward.type === RewardType.OTHERS) {
                   if (!state.reward.name) {
                     toast.error('Reward name is required when the type is other')
                     return
