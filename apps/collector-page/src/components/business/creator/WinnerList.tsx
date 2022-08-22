@@ -10,6 +10,7 @@ import CardBox from '../../common/card/CardBox'
 import CrownImg from '../../imgs/crown.svg'
 import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 import IconCheckbox from '../../common/icons/IconCheckbox'
+import { RewardType } from '../task/create/state'
 
 export enum TaskStatus {
   SUBMIT,
@@ -41,7 +42,7 @@ export default function WinnerList({
   whitelistSaved,
   downloadWinners,
 }: {
-  reward: { raffled: boolean }
+  reward: { raffled: boolean; type: RewardType }
   winnerNum: number
   whitelistSaved: boolean
   winnerList: Array<Winner>

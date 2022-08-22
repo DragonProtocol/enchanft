@@ -5,16 +5,21 @@ import CardBox from '../../common/card/CardBox'
 import IconCheckbox from '../../common/icons/IconCheckbox'
 import { RewardType, TaskType } from '../task/create/state'
 import IconAlarmClock from '../../common/icons/IconAlarmClock'
+import { getTaskRewardTypeLabel } from '../../../utils/task'
 
-export default function TaskTitle({ info }: { info: TaskInfo | null }) {
+export default function TaskTitle({
+  info,
+  reward,
+}: {
+  info: TaskInfo | null
+  reward: { raffled: boolean; type: RewardType }
+}) {
   return (
     <TaskTitleBox>
       <h3>{info?.name}</h3>
       <hr />
       <div>
-        <h4>{`${
-          info?.type === RewardType.WHITELIST ? TaskType.WHITELIST_ORIENTED : TaskType.WHITELIST_LUCK_DRAW
-        } Task`}</h4>
+        <h4>{getTaskRewardTypeLabel(reward)}</h4>
         <div className="alarm-clock">
           <p>
             <IconAlarmClock /> {info?.startTime && new Date(info?.startTime).toLocaleDateString()}—

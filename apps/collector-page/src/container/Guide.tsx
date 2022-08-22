@@ -24,11 +24,28 @@ import { connectionSocialMedia } from '../utils/socialMedia'
 import { uploadAvatar } from '../services/api/login'
 import { toast } from 'react-toastify'
 import { AVATAR_SIZE_LIMIT } from '../constants'
+import { Box, CircularProgress, Modal } from '@mui/material'
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  pt: 2,
+  px: 4,
+  pb: 3,
+  borderRadius: '10px',
+  textAlign: 'center',
+  outline: 'none',
+}
 
 export default function Guide() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
+  const [modalOpen, setModalOpen] = useState(false)
+
   const twitter = account.accounts.find((item) => item.accountType === 'TWITTER')?.thirdpartyName
   const discord = account.accounts.find((item) => item.accountType === 'DISCORD')?.thirdpartyName
 
@@ -168,12 +185,15 @@ export default function Guide() {
                         toast.error('File Too Large, 200k limit')
                         return
                       }
+                      setModalOpen(true)
                       try {
                         const { data } = await uploadAvatar(file)
                         setAvatar(data.url)
                         toast.success('upload success')
                       } catch (error) {
                         toast.error('upload fail')
+                      } finally {
+                        setModalOpen(false)
                       }
                     }}
                   />
@@ -212,6 +232,12 @@ export default function Guide() {
           </div>
         </div>
       )}
+      <Modal open={modalOpen}>
+        <Box sx={{ ...style }}>
+          <CircularProgress size="6rem" color="inherit" />
+          <p>Uploading Image</p>
+        </Box>
+      </Modal>
     </GuideContainer>
   )
 }

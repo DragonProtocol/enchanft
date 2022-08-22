@@ -80,7 +80,7 @@ export default function Creator() {
             />
           </LeftBox>
           <RightBox>
-            <TaskTitle info={taskInfo} />
+            <TaskTitle info={taskInfo} reward={reward} />
             <Schedule schedules={scheduleInfo} />
           </RightBox>
         </ContentBox>

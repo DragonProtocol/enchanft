@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { creatorApi, saveWinnersApi } from '../../services/api/creator'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
+import { RewardType } from '../../types/entities'
 
 export type ScheduleInfo = {
   closeTime: string
@@ -42,7 +43,9 @@ export type CreatorState = {
   taskInfo: TaskInfo | null
   scheduleInfo: ScheduleInfo | null
   reward: {
-    raffled: false
+    name: string
+    type: RewardType
+    raffled: boolean
   }
 }
 
@@ -58,7 +61,9 @@ const creatorState: CreatorState = {
   taskInfo: null,
   scheduleInfo: null,
   reward: {
+    type: RewardType.WHITELIST,
     raffled: false,
+    name: '',
   },
 }
 
@@ -88,9 +93,7 @@ export const creatorSlice = createSlice({
       state.winnerList = creatorState.winnerList
       state.scheduleInfo = creatorState.scheduleInfo
       state.taskInfo = creatorState.taskInfo
-      state.reward = {
-        raffled: false,
-      }
+      state.reward = creatorState.reward
     },
   },
   extraReducers: (builder) => {
