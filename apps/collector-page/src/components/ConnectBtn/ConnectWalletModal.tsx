@@ -22,7 +22,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
 import useWalletSign from '../../hooks/useWalletSign'
-import IconMetamask from '../common/icons/IconMetamask'
+import IconMetamask from '../common/icons/PngIconMetaMask'
 import IconPhantom from '../common/icons/IconPhantomWhite'
 
 export default function ConnectWalletModal() {
@@ -198,7 +198,6 @@ export default function ConnectWalletModal() {
     }
   }, [newAccountWith])
 
-  // With {newAccountWith === TokenType.Solana ? 'Phantom' : 'Metamask'}
   let walletElem = (
     <>
       <div onClick={connectPhantom} className={phantomValid ? 'phantom' : 'phantom invalid'}>
@@ -211,7 +210,7 @@ export default function ConnectWalletModal() {
       <div onClick={connectMetamask} className={metamaskValid ? 'metamask' : 'metamask invalid'}>
         <div className="btn">
           <IconMetamask />
-          <p>Metamask</p>
+          <p>MetaMask</p>
         </div>
         <p className="last-time">{account.lastLoginType === TokenType.Ethereum ? `(Last Time)` : ''}</p>
       </div>
@@ -234,7 +233,7 @@ export default function ConnectWalletModal() {
         <div>
           <IconMetamask />
         </div>
-        <p>Metamask</p>
+        <p>MetaMask</p>
       </div>
     )
   }
@@ -379,7 +378,8 @@ const ConnectBox = styled(Box)`
       border-radius: 10px;
       background: #f6851b;
       box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-      & svg {
+      & svg,
+      & img {
         padding: 3px;
         background-color: #fff;
         border-radius: 50%;

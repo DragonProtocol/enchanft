@@ -84,7 +84,7 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
       break
   }
   if (!isBindWallet) {
-    const btnText = taskChainType === ChainType.SOLANA ? 'Bind Phantom Wallet' : 'Bind MeatMask Wallet'
+    const btnText = taskChainType === ChainType.SOLANA ? 'Bind Phantom Wallet' : 'Bind MetaMask Wallet'
     return {
       type: TaskStatusButtonType.BIND_WALLET,
       btnText,
