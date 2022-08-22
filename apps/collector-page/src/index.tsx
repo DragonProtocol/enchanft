@@ -1,13 +1,27 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-08-01 10:00:43
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-08-22 11:14:24
+ * @Description: file description
+ */
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserView, MobileView } from 'react-device-detect'
 import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
+import MobileRedirect from './MobileRedirect'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <App />
+    <BrowserView>
+      <App />
+    </BrowserView>
+    <MobileView>
+      <MobileRedirect />
+    </MobileView>
   </React.StrictMode>,
 )
 
