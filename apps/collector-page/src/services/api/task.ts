@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 15:36:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 16:02:52
+ * @LastEditTime: 2022-08-22 18:11:34
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
 import { loadRefInfo, RefType } from '../../container/Ref'
 import request from '../../request/axios'
 import { ApiResp } from '../../types'
-import { TaskDetailResponse, TodoTaskItem, TodoTaskResponse } from '../../types/api'
+import { TaskDetailResponse, TodoTaskActionItem, TodoTaskItem, TodoTaskResponse } from '../../types/api'
 import { State as CreateTaskState } from '../../components/business/task/create/state'
 import { useGAEvent } from '../../hooks/useGoogleAnalytics'
 
@@ -17,6 +17,7 @@ const TASK_CATALOG_GA = 'TASK'
 enum TaskActionGA {
   TAKE_TASK = 'TAKE_TASK',
   VERIFY_ACTIONS = 'VERIFY_ACTIONS',
+  VERIFY_ONE_ACTION = 'VERIFY_ONE_ACTION',
 }
 
 /** 接任务 */
@@ -71,6 +72,24 @@ export function verifyOneTask(params: VerifyOneTaskParams): AxiosPromise<ApiResp
   gaEvent(TaskActionGA.VERIFY_ACTIONS, id)
   return request({
     url: `/tasks/${id}/verification`,
+    method: 'post',
+    headers: {
+      needToken: true,
+    },
+  })
+}
+
+/** 对单个action进行验证 */
+export type VerifyOneActionParams = {
+  id: number
+  taskId: number
+}
+export function verifyOneAction(params: VerifyOneActionParams): AxiosPromise<ApiResp<TodoTaskActionItem>> {
+  const { taskId, id } = params
+  const gaEvent = useGAEvent(TASK_CATALOG_GA)
+  gaEvent(TaskActionGA.VERIFY_ONE_ACTION, id)
+  return request({
+    url: `/tasks/${taskId}/actions/${id}/verification`,
     method: 'post',
     headers: {
       needToken: true,

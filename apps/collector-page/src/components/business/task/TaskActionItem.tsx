@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 13:49:12
+ * @LastEditTime: 2022-08-22 14:35:14
  * @Description: file description
  */
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import { ActionData, ActionType, Project, TaskType } from '../../../types/entities'
 import { UserActionStatus } from '../../../types/api'
@@ -37,13 +37,15 @@ export type TaskActionItemDataType = {
     slug: string
   }
 }
-
-export type TaskActionItemProps = {
-  data: TaskActionItemDataType
-  allowHandle?: boolean
+export type TaskActionItemHandlesType = {
   onTwitter?: (callback: () => void) => void
   onDiscord?: (callback: () => void) => void
   onFollowCommunity?: (action: TaskActionItemDataType) => void
+  onVerifyAction?: (action: TaskActionItemDataType) => void
+}
+export type TaskActionItemProps = TaskActionItemHandlesType & {
+  data: TaskActionItemDataType
+  allowHandle?: boolean
   verifying?: boolean
   copyBgc?: string
 }
@@ -54,6 +56,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   onTwitter,
   onDiscord,
   onFollowCommunity,
+  onVerifyAction,
   verifying,
   copyBgc,
 }: TaskActionItemProps) => {
@@ -92,13 +95,24 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         return name
     }
   }
+  const onVerifyActionClick = useCallback(() => {
+    if (onVerifyAction) {
+      onVerifyAction(data)
+    }
+  }, [])
   const renderStatus = () => {
     if (allowHandle) {
       switch (status) {
         case UserActionStatus.DONE:
           return <IconCheckboxChecked />
         case UserActionStatus.TODO:
-          return verifying ? <Loading size="1.5rem" /> : <IconCheckbox />
+          return verifying ? (
+            <Loading size="1.5rem" />
+          ) : (
+            <TaskActionStatusTodo onClick={onVerifyActionClick}>
+              <IconCheckbox />
+            </TaskActionStatusTodo>
+          )
       }
     }
     return null
@@ -123,4 +137,7 @@ const TaskActionItemWrapper = styled.div`
 
 const TaskActionContent = styled.div`
   flex: 1;
+`
+const TaskActionStatusTodo = styled.div`
+  cursor: pointer;
 `

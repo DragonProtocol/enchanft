@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 16:25:29
+ * @LastEditTime: 2022-08-22 19:13:46
  * @Description: file description
  */
 import React from 'react'
@@ -63,7 +63,8 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
   loadingMsg = 'loading...',
   emptyMsg,
   onMint,
-  onRefreshTask,
+  onVerifyTask,
+  onVerifyAction,
   onTwitter,
   onDiscord,
   onFollowCommunity,
@@ -89,7 +90,8 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
               data={item.data}
               viewConfig={item.viewConfig}
               onMint={onMint}
-              onRefreshTask={onRefreshTask}
+              onVerifyTask={onVerifyTask}
+              onVerifyAction={onVerifyAction}
               onDiscord={onDiscord}
               onTwitter={onTwitter}
               onFollowCommunity={onFollowCommunity}

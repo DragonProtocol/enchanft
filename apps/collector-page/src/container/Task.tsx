@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 19:08:09
+ * @LastEditTime: 2022-08-23 14:34:33
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -17,7 +17,16 @@ import TaskActionList, { TaskActionItemsType } from '../components/business/task
 import { ActionType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../types/entities'
 import { TodoTaskActionItem, UserActionStatus } from '../types/api'
 import TaskDetailContent, { TaskDetailContentDataViewType } from '../components/business/task/TaskDetailContent'
-import { selectUserTaskHandlesState, take, TakeTaskParams, TaskHandle, verify } from '../features/user/taskHandlesSlice'
+import {
+  selectIdsVerifyActionQueue,
+  selectIdsVerifyTaskQueue,
+  selectUserTaskHandlesState,
+  takeTask,
+  TakeTaskParams,
+  TaskHandle,
+  verifyTask,
+  verifyAction,
+} from '../features/user/taskHandlesSlice'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import useHandleAction from '../hooks/useHandleAction'
 import { ChainType, getChainType } from '../utils/chain'
@@ -40,7 +49,6 @@ import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import { toast } from 'react-toastify'
 import IconShare from '../components/common/icons/IconShare'
 import { TASK_SHARE_URI } from '../constants'
-import { verifyOneTodoTask } from '../features/user/todoTasksSlice'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
@@ -113,15 +121,15 @@ const formatStoreDataToComponentDataByTaskActions = (
     .map((v) => {
       const action = { ...v, project: task.project }
       // TODO 如果检索到当前action是关注社区的action，且在我关注的社区中，并且我已经接了，则将其状态改为已完成
-      if (
-        task.acceptedStatus === TaskAcceptedStatus.DONE &&
-        action.type === ActionType.TURN_ON_NOTIFICATION &&
-        userFollowedProjectIds.includes(action.communityId)
-      ) {
-        Object.assign(action, {
-          status: UserActionStatus.DONE,
-        })
-      }
+      // if (
+      //   task.acceptedStatus === TaskAcceptedStatus.DONE &&
+      //   action.type === ActionType.TURN_ON_NOTIFICATION &&
+      //   userFollowedProjectIds.includes(action.communityId)
+      // ) {
+      //   Object.assign(action, {
+      //     status: UserActionStatus.DONE,
+      //   })
+      // }
       return action
     })
 }
@@ -158,13 +166,11 @@ const Task: React.FC = () => {
   }, [])
 
   // handles: take, verify
-  const { take: takeTaskState, verify: takeVerifyState } = useAppSelector(selectUserTaskHandlesState)
+  const { takeTask: takeTaskState } = useAppSelector(selectUserTaskHandlesState)
   const handleTakeTask = () => {
-    dispatch(take({ id: Number(id) }))
+    dispatch(takeTask({ id: Number(id) }))
   }
-  const handleVerifyTask = () => {
-    dispatch(verify({ id: Number(id) }))
-  }
+
   // 处理执行action操作
   const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
   // 获取链的类型
@@ -184,7 +190,12 @@ const Task: React.FC = () => {
     dispatch(followCommunity({ id: communityId }))
   }
   // 用户关注的社区ID集合
-  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
+  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject).map((item) => Number(item))
+
+  // verify task queue
+  const verifingTaskIds = useAppSelector(selectIdsVerifyTaskQueue).map((item) => Number(item))
+  // verify action queue
+  const verifingActionIds = useAppSelector(selectIdsVerifyActionQueue).map((item) => Number(item))
 
   if (loadingView)
     return (
@@ -207,10 +218,7 @@ const Task: React.FC = () => {
   // task status button
   const taskStatusButton = formatStoreDataToComponentDataByTaskStatusButton(data, token, takeTaskState, accountTypes)
   // task action and winnerList
-  const actionItems = formatStoreDataToComponentDataByTaskActions(
-    data,
-    userFollowedProjectIds.map((item) => Number(item)),
-  )
+  const actionItems = formatStoreDataToComponentDataByTaskActions(data, userFollowedProjectIds)
   const winnerList = data?.winnerList || []
   // 是否允许操作action
   const allowHandleAction =
@@ -218,11 +226,13 @@ const Task: React.FC = () => {
 
   // verify action
   const displayVerify = allowHandleAction && actionItems.some((v) => v.status === UserActionStatus.TODO)
-  const loadingVerify = takeVerifyState.status === AsyncRequestStatus.PENDING
+  const loadingVerify = verifingTaskIds.includes(data.id)
   const disabledVerify = loadingVerify
-  const verifyingActions = loadingVerify
-    ? actionItems.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
-    : []
+  let verifyingActions = verifingActionIds
+  if (loadingVerify) {
+    verifyingActions = actionItems.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
+  }
+
   // 后面如果带/，则去掉/
   const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
 
@@ -282,7 +292,8 @@ const Task: React.FC = () => {
                       loadingVerify={loadingVerify}
                       disabledVerify={disabledVerify}
                       verifyingActions={verifyingActions}
-                      onVerifyActions={handleVerifyTask}
+                      onVerifyActions={() => dispatch(verifyTask(data))}
+                      onVerifyAction={(action) => dispatch(verifyAction(action))}
                       copyBgc="#FFFFFF"
                       verifyBgc="#FFFFFF"
                     />

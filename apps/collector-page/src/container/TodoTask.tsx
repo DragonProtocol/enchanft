@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 18:11:08
+ * @LastEditTime: 2022-08-23 14:25:22
  * @Description: file description
  */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
@@ -15,17 +15,17 @@ import { ActionType, TaskTodoCompleteStatus } from '../types/entities'
 import { UserActionStatus } from '../types/api'
 import { AsyncRequestStatus } from '../types'
 import TodoTaskList, { TodoTaskListItemsType } from '../components/business/task/TodoTaskList'
-import {
-  fetchTodoTasks,
-  verifyOneTodoTask,
-  selectAll,
-  selectUserTodoTasksState,
-  TodoTaskItemForEntity,
-} from '../features/user/todoTasksSlice'
+import { selectAll, selectUserTodoTasksState, TodoTaskItemForEntity } from '../features/user/todoTasksSlice'
 import { useSearchParams } from 'react-router-dom'
 import useHandleAction from '../hooks/useHandleAction'
 import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
+import {
+  selectIdsVerifyActionQueue,
+  selectIdsVerifyTaskQueue,
+  verifyAction,
+  verifyTask,
+} from '../features/user/taskHandlesSlice'
 
 // TODO 将以下格式化函数合并为一个
 const formatStoreDataToComponentDataByTodoList = (
@@ -33,6 +33,8 @@ const formatStoreDataToComponentDataByTodoList = (
   taskId: number,
   followCommunityStatus: AsyncRequestStatus,
   userFollowedProjectIds: number[],
+  verifingTaskIds: number[],
+  verifingActionIds: number[],
 ): TodoTaskListItemsType => {
   return tasks.map((task) => {
     const actions = [...task.actions]
@@ -40,22 +42,26 @@ const formatStoreDataToComponentDataByTodoList = (
       .map((v) => {
         const action = { ...v, project: task.project }
         // TODO 如果检索到当前action是关注社区的action，且在我关注的社区中，则将其状态改为已完成
-        if (action.type === ActionType.TURN_ON_NOTIFICATION && userFollowedProjectIds.includes(action.communityId)) {
-          Object.assign(action, {
-            status: UserActionStatus.DONE,
-          })
-        }
+        // if (action.type === ActionType.TURN_ON_NOTIFICATION && userFollowedProjectIds.includes(action.communityId)) {
+        //   Object.assign(action, {
+        //     status: UserActionStatus.DONE,
+        //   })
+        // }
         return action
       })
-    const loadingRefresh = task.refreshStatus === AsyncRequestStatus.PENDING
+    const loadingRefresh = verifingTaskIds.includes(task.id)
     const openActions = task.id === taskId
-    let verifyingActions: number[] = []
+    let verifyingActions = verifingActionIds
     if (loadingRefresh) {
       verifyingActions = actions.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
-    } else if (followCommunityStatus === AsyncRequestStatus.PENDING) {
+    }
+    if (followCommunityStatus === AsyncRequestStatus.PENDING) {
       // 如果当前关注社区的请求正在进行中，设定需要loading的action集合
       // TODO 暂时先检索是关注社区的action，(按理说整理应该用find查找communityId)
-      verifyingActions = actions.filter((item) => item.type === ActionType.TURN_ON_NOTIFICATION).map((item) => item.id)
+      const followCommunityActionIds = actions
+        .filter((item) => item.type === ActionType.TURN_ON_NOTIFICATION)
+        .map((item) => item.id)
+      verifyingActions = [...new Set([...verifyingActions, ...followCommunityActionIds])]
     }
     return {
       data: { ...task, actions },
@@ -77,6 +83,8 @@ const formatStoreDataToComponentDataByInProgressList = (
   taskId: number,
   followCommunityStatus: AsyncRequestStatus,
   userFollowedProjectIds: number[],
+  verifingTaskIds: number[],
+  verifingActionIds: number[],
 ): TodoTaskListItemsType => {
   return tasks.map((task) => {
     const actions = [...task.actions]
@@ -84,22 +92,26 @@ const formatStoreDataToComponentDataByInProgressList = (
       .map((v) => {
         const action = { ...v, project: task.project }
         // TODO 如果检索到当前action是关注社区的action，且在我关注的社区中，则将其状态改为已完成
-        if (action.type === ActionType.TURN_ON_NOTIFICATION && userFollowedProjectIds.includes(action.communityId)) {
-          Object.assign(action, {
-            status: UserActionStatus.DONE,
-          })
-        }
+        // if (action.type === ActionType.TURN_ON_NOTIFICATION && userFollowedProjectIds.includes(action.communityId)) {
+        //   Object.assign(action, {
+        //     status: UserActionStatus.DONE,
+        //   })
+        // }
         return action
       })
-    const loadingRefresh = task.refreshStatus === AsyncRequestStatus.PENDING
+    const loadingRefresh = verifingTaskIds.includes(task.id)
     const openActions = task.id === taskId
-    let verifyingActions: number[] = []
+    let verifyingActions = verifingActionIds
     if (loadingRefresh) {
       verifyingActions = actions.filter((item) => item.status === UserActionStatus.TODO).map((item) => item.id)
-    } else if (followCommunityStatus === AsyncRequestStatus.PENDING) {
+    }
+    if (followCommunityStatus === AsyncRequestStatus.PENDING) {
       // 如果当前关注社区的请求正在进行中，设定需要loading的action集合
       // TODO 暂时先检索是关注社区的action，(按理说整理应该用find查找communityId)
-      verifyingActions = actions.filter((item) => item.type === ActionType.TURN_ON_NOTIFICATION).map((item) => item.id)
+      const followCommunityActionIds = actions
+        .filter((item) => item.type === ActionType.TURN_ON_NOTIFICATION)
+        .map((item) => item.id)
+      verifyingActions = [...new Set([...verifyingActions, ...followCommunityActionIds])]
     }
     return {
       data: { ...task, actions },
@@ -171,12 +183,8 @@ const TodoTask: React.FC = () => {
   const todoTasks = useAppSelector(selectAll)
   const { status } = useAppSelector(selectUserTodoTasksState)
   const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
-  // 处理单个任务刷新
-  const handleVerifyTask = (taskId: number) => {
-    dispatch(verifyOneTodoTask({ id: taskId }))
-  }
 
-  // 处理执行action操作
+  // 执行action操作
   const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
 
   // 关注社区
@@ -184,8 +192,13 @@ const TodoTask: React.FC = () => {
   const handleFollowCommunity = (communityId: number) => {
     dispatch(followCommunity({ id: communityId }))
   }
+
   // 用户关注的社区ID集合
-  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
+  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject).map((item) => Number(item))
+  // verify task queue
+  const verifingTaskIds = useAppSelector(selectIdsVerifyTaskQueue).map((item) => Number(item))
+  // verify action queue
+  const verifingActionIds = useAppSelector(selectIdsVerifyActionQueue).map((item) => Number(item))
 
   // 数据分组
   const todoList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.TODO)
@@ -200,13 +213,17 @@ const TodoTask: React.FC = () => {
     todoList,
     taskId,
     followCommunityStatus,
-    userFollowedProjectIds.map((item) => Number(item)),
+    userFollowedProjectIds,
+    verifingTaskIds,
+    verifingActionIds,
   )
   const inProgressItems = formatStoreDataToComponentDataByInProgressList(
     inProgressList,
     taskId,
     followCommunityStatus,
-    userFollowedProjectIds.map((item) => Number(item)),
+    userFollowedProjectIds,
+    verifingTaskIds,
+    verifingActionIds,
   )
   const completedItems = formatStoreDataToComponentDataByCompletedList(completedList)
   const wonItems = formatStoreDataToComponentDataByWonList(wonList)
@@ -224,7 +241,8 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.TODO}
                 items={todoItems}
                 loading={loading}
-                onRefreshTask={(task) => handleVerifyTask(task.id)}
+                onVerifyTask={(task) => dispatch(verifyTask(task))}
+                onVerifyAction={(action) => dispatch(verifyAction(action))}
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
                 onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
@@ -233,7 +251,8 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.IN_PRGRESS}
                 items={inProgressItems}
                 loading={loading}
-                onRefreshTask={(task) => handleVerifyTask(task.id)}
+                onVerifyTask={(task) => dispatch(verifyTask(task))}
+                onVerifyAction={(action) => dispatch(verifyAction(action))}
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
                 onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
@@ -244,25 +263,25 @@ const TodoTask: React.FC = () => {
                 status={TaskTodoCompleteStatus.COMPLETED}
                 items={completedItems}
                 loading={loading}
-                onRefreshTask={(task) => handleVerifyTask(task.id)}
+                onVerifyTask={(task) => dispatch(verifyTask(task))}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.WON}
                 items={wonItems}
                 loading={loading}
-                onRefreshTask={(task) => handleVerifyTask(task.id)}
+                onVerifyTask={(task) => dispatch(verifyTask(task))}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.CLOSED}
                 items={closedItems}
                 loading={loading}
-                onRefreshTask={(task) => handleVerifyTask(task.id)}
+                onVerifyTask={(task) => dispatch(verifyTask(task))}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.LOST}
                 items={lostItems}
                 loading={loading}
-                onRefreshTask={(task) => handleVerifyTask(task.id)}
+                onVerifyTask={(task) => dispatch(verifyTask(task))}
               />
             </TodoTaskGroupRight>
           </TodoTaskGroupBox>

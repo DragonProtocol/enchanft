@@ -2,15 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 17:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 18:25:34
+ * @LastEditTime: 2022-08-23 11:44:16
  * @Description: file description
  */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { fetchDetail, createTask as createTaskApi } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { TaskDetailResponse } from '../../types/api'
+import { TaskDetailResponse, TodoTaskActionItem } from '../../types/api'
 import { State as CreateTaskState } from '../../components/business/task/create/state'
+import { getTaskEntityForUpdateActionAfter } from '../../utils/task'
 
 export type TaskDetailEntity = TaskDetailResponse
 type TaskState = {
@@ -64,6 +65,13 @@ export const taskDetailSlice = createSlice({
     updateTaskDetail: (state, action) => {
       state.data = { ...state.data, ...action.payload }
     },
+    updateTaskDetailAction: (state, action: PayloadAction<TodoTaskActionItem>) => {
+      if (state.data) {
+        const task = state.data
+        const newTask = getTaskEntityForUpdateActionAfter(task, action.payload) as TaskDetailEntity
+        state.data = { ...newTask }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -109,5 +117,5 @@ export const taskDetailSlice = createSlice({
 
 const { actions, reducer } = taskDetailSlice
 export const selectTaskDetail = (state: RootState) => state.taskDetail
-export const { updateTaskDetail } = actions
+export const { updateTaskDetail, updateTaskDetailAction } = actions
 export default reducer

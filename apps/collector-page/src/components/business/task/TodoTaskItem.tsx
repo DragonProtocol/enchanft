@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 18:11:37
+ * @LastEditTime: 2022-08-22 19:13:04
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -14,7 +14,7 @@ import { TaskActionItemDataType } from './TaskActionItem'
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt'
 import MoodIcon from '@mui/icons-material/Mood'
 import MoodBadIcon from '@mui/icons-material/MoodBad'
-import TaskActionList from './TaskActionList'
+import TaskActionList, { TaskActionsListHandlesType } from './TaskActionList'
 import { todoTaskCompleteStatusMap } from './TodoTaskList'
 import { useNavigate } from 'react-router-dom'
 
@@ -54,12 +54,10 @@ export type TodoTaskItemDataViewType = {
   viewConfig?: TodoTaskItemViewConfigType
 }
 
-export type TodoTaskItemHandlesType = {
+export type TodoTaskItemHandlesType = TaskActionsListHandlesType & {
   onMint?: (task: TodoTaskItemDataType) => void
-  onRefreshTask?: (task: TodoTaskItemDataType) => void
-  onTwitter?: (callback: () => void) => void
-  onDiscord?: (callback: () => void) => void
-  onFollowCommunity?: (action: TaskActionItemDataType) => void
+  onVerifyTask?: (task: TodoTaskItemDataType) => void
+  onVerifyAction?: (action: TaskActionItemDataType) => void
 }
 
 export type TodoTaskItemProps = TodoTaskItemDataViewType & TodoTaskItemHandlesType
@@ -101,7 +99,8 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   data,
   viewConfig,
   onMint,
-  onRefreshTask,
+  onVerifyTask,
+  onVerifyAction,
   onTwitter,
   onDiscord,
   onFollowCommunity,
@@ -244,9 +243,9 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
       navginate(`/${projectSlug}/${id}`)
     }
   }
-  const onRefreshClick = () => {
-    if (onRefreshTask) {
-      onRefreshTask(data)
+  const onVerifyTaskClick = () => {
+    if (onVerifyTask) {
+      onVerifyTask(data)
     }
   }
   return (
@@ -274,8 +273,9 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
             displayVerify={displayRefresh}
             loadingVerify={loadingRefresh}
             disabledVerify={disabledRefresh}
-            onVerifyActions={onRefreshClick}
+            onVerifyActions={onVerifyTaskClick}
             verifyingActions={verifyingActions}
+            onVerifyAction={onVerifyAction}
           ></TaskActionList>
         </TaskActionsBox>
       )}
