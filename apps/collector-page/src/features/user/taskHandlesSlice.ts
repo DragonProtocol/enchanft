@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 14:30:21
+ * @LastEditTime: 2022-08-23 14:52:40
  * @Description: file description
  */
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
@@ -12,6 +12,7 @@ import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { Action, Task, TaskAcceptedStatus, TaskTodoCompleteStatus } from '../../types/entities'
 import { fetchTaskDetail, updateTaskDetail, updateTaskDetailAction } from '../task/taskDetailSlice'
+import { fetchFollowedCommunities } from './followedCommunitiesSlice'
 import { fetchTodoTasks, setOne as setOneForTodoTask, updateOneAction } from './todoTasksSlice'
 
 // create an execution queue for the verify task
@@ -69,6 +70,7 @@ export const takeTask = createAsyncThunk('user/taskHandles/takeTask', async (par
       dispatch(updateTaskDetail(updateTask))
       dispatch(fetchTaskDetail(params.id))
       dispatch(fetchTodoTasks())
+      dispatch(fetchFollowedCommunities())
     } else {
       throw new Error(resp.data.msg)
     }
