@@ -14,24 +14,39 @@ export default function Schedule({ schedules }: { schedules: ScheduleInfo | null
   const dateNow = new Date()
   let closeTime = new Date(0).getTime()
 
-  const data = [
-    {
+  const data: Array<{ title: string; date: string }> = []
+  if (schedules?.submitTime) {
+    data.push({
       title: 'Task submit date',
       date: schedules?.submitTime,
-    },
-    {
+    })
+  }
+  if (schedules?.startTime) {
+    data.push({
       title: 'Task start',
       date: schedules?.startTime,
-    },
-    {
+    })
+  }
+  if (schedules?.endTime) {
+    data.push({
       title: 'Task end',
       date: schedules?.endTime,
-    },
-    {
+    })
+  }
+  if (schedules?.pickWinnersTime) {
+    data.push({
+      title: 'Pick Entries',
+      date: schedules?.pickWinnersTime,
+    })
+  }
+
+  if (schedules?.closeTime) {
+    data.push({
       title: 'Task close',
       date: schedules?.closeTime,
-    },
-  ]
+    })
+  }
+
   return (
     <ScheduleBox>
       <h3>Schedule</h3>
