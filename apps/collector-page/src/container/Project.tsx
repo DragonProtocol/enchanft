@@ -200,6 +200,13 @@ const Project: React.FC = () => {
   //   [ProjectInfoTabsValue.ROADMAP]: <ProjectRoadmap items={data.roadmap} />,
   //   // [ProjectInfoTabsValue.REVIEWS]: <span>Not yet developed</span>,
   // }
+
+  //进入ranks页面，如果没有关注，自动关注社区
+  const startContribute = () => {
+    navigate(`/${projectSlug}/rank`)
+    if (!communityDataView.data.isFollowed) handleFollowChange(true)
+  }
+
   return (
     <ProjectWrapper>
       <ProjectLeftBox>
@@ -227,7 +234,7 @@ const Project: React.FC = () => {
             membersTotal={contributionMembersTotal}
             displayMore={true}
             moreText="Start Contributing"
-            onMore={() => navigate(`/${projectSlug}/rank`)}
+            onMore={startContribute}
           />
         </ContributionListBox>
         <ProjectEventsBox>

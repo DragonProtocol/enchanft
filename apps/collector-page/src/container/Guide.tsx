@@ -23,11 +23,29 @@ import { sortPubKey } from '../utils/solana'
 import { connectionSocialMedia } from '../utils/socialMedia'
 import { uploadAvatar } from '../services/api/login'
 import { toast } from 'react-toastify'
+import { AVATAR_SIZE_LIMIT } from '../constants'
+import { Box, CircularProgress, Modal } from '@mui/material'
+
+const style = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  bgcolor: 'background.paper',
+  pt: 2,
+  px: 4,
+  pb: 3,
+  borderRadius: '10px',
+  textAlign: 'center',
+  outline: 'none',
+}
 
 export default function Guide() {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
+  const [modalOpen, setModalOpen] = useState(false)
+
   const twitter = account.accounts.find((item) => item.accountType === 'TWITTER')?.thirdpartyName
   const discord = account.accounts.find((item) => item.accountType === 'DISCORD')?.thirdpartyName
 
@@ -106,7 +124,7 @@ export default function Guide() {
               <DiscordIcon />
               <p>{discord || 'Connect Discord'}</p>
             </div>
-            <div
+            {/* <div
               className="connect-btn email"
               onClick={() => {
                 dispatch(setConnectModal(ConnectModal.EMAIL))
@@ -114,7 +132,7 @@ export default function Guide() {
             >
               <EmailIcon />
               <span>Connect Email</span>
-            </div>
+            </div> */}
 
             <div className="connect-btn phantom" onClick={bindPhantom}>
               <PhantomIcon />
@@ -123,13 +141,13 @@ export default function Guide() {
 
             <div className="connect-btn metamask" onClick={bindMetamask}>
               <MetamaskIcon />
-              <p>{accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}</p>
+              <p>{accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect MetaMask'}</p>
             </div>
           </div>
           <div className="buttons">
             <button
               onClick={() => {
-                localStorage.setItem('has-guide', 'has-guide')
+                localStorage.setItem(`has-guide-${account.id}`, 'has-guide')
                 navigate('/')
               }}
             >
@@ -150,7 +168,7 @@ export default function Guide() {
         <div>
           <div className="p-info">
             <div className="avatar" onClick={() => document.getElementById('upload-avatar')?.click()}>
-              {(avatar && <img src={avatar} alt="" />) || (
+              {(avatar && <img src={avatar} className="avatar" alt="" />) || (
                 <>
                   <AddIcon />
                   <span>Upload Image</span>
@@ -163,12 +181,19 @@ export default function Guide() {
                     onChange={async (e) => {
                       const file = e.target.files && e.target.files[0]
                       if (!file) return
+                      if (file.size > AVATAR_SIZE_LIMIT) {
+                        toast.error('File Too Large, 200k limit')
+                        return
+                      }
+                      setModalOpen(true)
                       try {
                         const { data } = await uploadAvatar(file)
                         setAvatar(data.url)
                         toast.success('upload success')
                       } catch (error) {
                         toast.error('upload fail')
+                      } finally {
+                        setModalOpen(false)
                       }
                     }}
                   />
@@ -191,6 +216,7 @@ export default function Guide() {
             <button
               className="active"
               onClick={() => {
+                localStorage.setItem(`has-finish-${account.id}`, 'has-finish')
                 dispatch(
                   userUpdateProfile({
                     avatar: avatar,
@@ -206,6 +232,12 @@ export default function Guide() {
           </div>
         </div>
       )}
+      <Modal open={modalOpen}>
+        <Box sx={{ ...style }}>
+          <CircularProgress size="6rem" color="inherit" />
+          <p>Uploading Image</p>
+        </Box>
+      </Modal>
     </GuideContainer>
   )
 }
@@ -356,7 +388,7 @@ const GuideContainer = styled.div`
       justify-content: center;
       align-items: center;
 
-      & img {
+      & img.avatar {
         width: 100%;
         height: 100%;
       }

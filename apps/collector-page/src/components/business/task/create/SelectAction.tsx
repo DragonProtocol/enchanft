@@ -18,7 +18,7 @@ import IconTip from '../../../common/icons/IconTip'
 import IconDiscord from '../../../common/icons/IconDiscord'
 import IconNotify from '../../../common/icons/IconNotify'
 import IconTwitter from '../../../common/icons/IconTwitter'
-import { checkTwitterNameValid } from '../../../../services/api/task'
+import { checkTwitterNameValid, checkTweetIdValid } from '../../../../services/api/task'
 import PngIconDelete from '../../../common/icons/PngIconDelete'
 import PngIconDone from '../../../common/icons/PngIconDone'
 import { CREATE_TASK_DEFAULT_INVITE_NUM } from '../../../../constants'
@@ -42,7 +42,7 @@ export default function SelectActions({
   const account = useAppSelector(selectAccount)
 
   const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
-  const twitter = 'account.accounts.find((item) => item.accountType === ChainType.TWITTER)'
+  const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
 
   const [followTwitter, setFollowTwitter] = useState(false)
   const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<Array<string>>(
@@ -56,7 +56,7 @@ export default function SelectActions({
   const [likeTwitter, setLikeTwitter] = useState(false)
   const [likeTwitterLink, setLikeTwitterLink] = useState('')
   const [retweetTwitter, setRetweetTwitter] = useState(false)
-  const [retweetTwitterLink, setRetweetTwitterLink] = useState('')
+  const [retweetId, setRetweetId] = useState('')
   const [joinCommunity, setJoinCommunity] = useState(false)
   const [joinCommunityContribution, setJoinCommunityContribution] = useState(false)
   const [joinCommunityContributionNum, setJoinCommunityContributionNum] = useState(20)
@@ -121,7 +121,7 @@ export default function SelectActions({
           tweet_id: likeTwitterLink,
         })
     }
-    if (retweetTwitterLink && retweetTwitter) {
+    if (retweetId && retweetTwitter) {
       const msg = document.getElementById('retweet-twitter-msg')?.textContent
       msg &&
         actions.push({
@@ -129,8 +129,8 @@ export default function SelectActions({
           type: ActionType.TWITTER,
           typeMore: ActionTypeMore.RETWEET,
           description: '',
-          url: `https://twitter.com/intent/retweet?tweet_id=${retweetTwitterLink}`,
-          tweet_id: retweetTwitterLink,
+          url: `https://twitter.com/intent/retweet?tweet_id=${retweetId}`,
+          tweet_id: retweetId,
         })
     }
     if (joinCommunity) {
@@ -168,17 +168,11 @@ export default function SelectActions({
     likeTwitter,
     likeTwitterLink,
     retweetTwitter,
-    retweetTwitterLink,
+    retweetId,
     joinCommunity,
     joinCommunityContribution,
     joinCommunityContributionNum,
   ])
-
-  function numberInput(e) {
-    if (e.charCode < 48 || e.charCode > 57) {
-      e.preventDefault()
-    }
-  }
 
   console.log(followTwitterLinkResult, followTwitters)
 
@@ -236,9 +230,6 @@ export default function SelectActions({
                 onChange={() => {
                   if (!twitter) return
                   setLikeTwitter(!likeTwitter)
-                  if (!likeTwitter) {
-                    setLikeTwitterLink('')
-                  }
                 }}
               />
               <span id="like-twitter-msg" className="msg">
@@ -249,27 +240,12 @@ export default function SelectActions({
             <div className="help">
               {twitter ? (
                 likeTwitter && (
-                  <>
-                    <span className="username tint">
-                      Tweet Id
-                      <span className="tint-box">
-                        <IconTip />
-                        <span className="tint-msg">
-                          https://twitter.com/username/status/<b>tweetID</b>
-                        </span>
-                      </span>
-                      :
-                    </span>
-                    <div className="input-box">
-                      <input
-                        type="text"
-                        title="task-like"
-                        value={likeTwitterLink}
-                        onKeyPress={numberInput}
-                        onChange={(e) => setLikeTwitterLink(e.target.value)}
-                      />
-                    </div>
-                  </>
+                  <TweetIdInput
+                    retweetId={likeTwitterLink}
+                    setRetweetId={(id) => {
+                      setLikeTwitterLink(id)
+                    }}
+                  />
                 )
               ) : (
                 <ConnectTwitter />
@@ -283,9 +259,6 @@ export default function SelectActions({
                 onChange={() => {
                   if (!twitter) return
                   setRetweetTwitter(!retweetTwitter)
-                  if (!retweetTwitter) {
-                    setRetweetTwitterLink('')
-                  }
                 }}
               />
               <span id="retweet-twitter-msg" className="msg">
@@ -296,30 +269,12 @@ export default function SelectActions({
             <div className="help">
               {twitter ? (
                 retweetTwitter && (
-                  <>
-                    <span className="username tint">
-                      Tweet Id
-                      <span className="tint-box">
-                        <IconTip />
-                        <span className="tint-msg">
-                          https://twitter.com/username/status/<b>tweetID</b>
-                        </span>
-                      </span>
-                      :
-                    </span>
-                    <div className="input-box">
-                      <input
-                        type="text"
-                        title="retweet"
-                        min={'1'}
-                        onKeyPress={numberInput}
-                        value={retweetTwitterLink}
-                        onChange={(e) => {
-                          setRetweetTwitterLink(e.target.value)
-                        }}
-                      />
-                    </div>
-                  </>
+                  <TweetIdInput
+                    retweetId={retweetId}
+                    setRetweetId={(id) => {
+                      setRetweetId(id)
+                    }}
+                  />
                 )
               ) : (
                 <ConnectTwitter />
@@ -334,9 +289,6 @@ export default function SelectActions({
                 onChange={() => {
                   const nextValue = !inviteFriends
                   setInvalidFriends(nextValue)
-                  if (!nextValue) {
-                    setInviteNum(0)
-                  }
                 }}
               />
               <span id="invite-friends-msg" className="msg">
@@ -427,9 +379,6 @@ export default function SelectActions({
                 onChange={() => {
                   const nextValue = !joinCommunityContribution
                   setJoinCommunityContribution(nextValue)
-                  if (!nextValue) {
-                    setJoinCommunityContributionNum(0)
-                  }
                 }}
               />
               <span id="join-community-contribution-msg" className="msg">
@@ -455,6 +404,67 @@ export default function SelectActions({
         </div>
       </div>
     </SelectActionsBox>
+  )
+}
+
+function TweetIdInput({ retweetId, setRetweetId }: { retweetId: string; setRetweetId: (id: string) => void }) {
+  const [value, setValue] = useState(retweetId)
+  const timerRef = useRef<NodeJS.Timeout>()
+  const [checked, setChecked] = useState(false)
+  const [dataValid, setDataValid] = useState(true)
+
+  const checkValid = async (data: string) => {
+    const checkData = data.trim()
+    if (!checkData) return
+    try {
+      await checkTweetIdValid(checkData)
+      setRetweetId(data)
+    } catch (error) {
+      setDataValid(false)
+    } finally {
+      setChecked(true)
+    }
+  }
+
+  return (
+    <>
+      <span className="username tint">
+        Tweet Id
+        <span className="tint-box">
+          <IconTip />
+          <span className="tint-msg">
+            https://twitter.com/username/status/<b>tweetID</b>
+          </span>
+        </span>
+        :
+      </span>
+      <div className={!dataValid ? 'input-box invalid' : 'input-box'}>
+        <input
+          type="number"
+          title="retweet"
+          min={'1'}
+          onKeyPress={numberInput}
+          value={value}
+          onChange={(e) => {
+            const dataValue = e.target.value
+            setDataValid(true)
+            setChecked(false)
+            setValue(e.target.value)
+            if (timerRef.current) {
+              clearTimeout(timerRef.current)
+            }
+            timerRef.current = setTimeout(() => {
+              checkValid(dataValue)
+            }, 800)
+          }}
+        />
+      </div>
+      {checked && dataValid && (
+        <div className="tint-box">
+          <PngIconDone />
+        </div>
+      )}
+    </>
   )
 }
 
@@ -608,13 +618,10 @@ function ConnectTwitter() {
   )
 }
 
-function ConnectDiscord() {
-  return (
-    <div className="btn discord" onClick={() => connectionSocialMedia('discord')}>
-      <DiscordIcon />
-      <p>{'Connect Discord First'}</p>
-    </div>
-  )
+function numberInput(e) {
+  if (e.charCode < 48 || e.charCode > 57) {
+    e.preventDefault()
+  }
 }
 
 const SelectActionsBox = styled.div`

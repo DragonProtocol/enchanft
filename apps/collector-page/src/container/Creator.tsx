@@ -19,7 +19,7 @@ import PngIconCaretLeft from '../components/common/icons/PngIconCaretLeft'
 export default function Creator() {
   const { taskId } = useParams()
   const dispatch = useAppDispatch()
-  const { status, participants, winners, whitelistSaved, winnerList, taskInfo, scheduleInfo, pickedWhiteList } =
+  const { status, participants, winners, whitelistSaved, winnerList, taskInfo, scheduleInfo, pickedWhiteList, reward } =
     useAppSelector(selectCreator)
   const account = useAppSelector(selectAccount)
   const { isCreator } = usePermissions()
@@ -67,6 +67,7 @@ export default function Creator() {
               completionRate={participants == 0 ? '0.00' : ((winners * 100) / participants).toFixed(2)}
             />
             <WinnerList
+              reward={reward}
               winnerNum={taskInfo?.winnerNum || 0}
               whitelistSaved={whitelistSaved}
               winnerList={winnerList}
@@ -79,7 +80,7 @@ export default function Creator() {
             />
           </LeftBox>
           <RightBox>
-            <TaskTitle info={taskInfo} />
+            <TaskTitle info={taskInfo} reward={reward} />
             <Schedule schedules={scheduleInfo} />
           </RightBox>
         </ContentBox>

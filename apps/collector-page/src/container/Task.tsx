@@ -84,7 +84,7 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
       break
   }
   if (!isBindWallet) {
-    const btnText = taskChainType === ChainType.SOLANA ? 'Bind Phantom Wallet' : 'Bind MeatMask Wallet'
+    const btnText = taskChainType === ChainType.SOLANA ? 'Bind Phantom Wallet' : 'Bind MetaMask Wallet'
     return {
       type: TaskStatusButtonType.BIND_WALLET,
       btnText,
@@ -135,7 +135,7 @@ const Task: React.FC = () => {
   const { status, data } = useAppSelector(selectTaskDetail)
   const dispatchFetchTaskDetail = useCallback(() => id && dispatch(fetchTaskDetail(Number(id))), [id])
   const [loadingView, setLoadingView] = useState(false)
-  const { isCreator, checkTaskAllowed } = usePermissions()
+  const { isCreator, checkTaskAllowed, checkProjectAllowed } = usePermissions()
 
   // slug 变化，重新请求数据，并进入loading状态
   useEffect(() => {
@@ -225,6 +225,7 @@ const Task: React.FC = () => {
     : []
   // 后面如果带/，则去掉/
   const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
+
   return (
     <TaskDetailWrapper>
       <MainContentBox>
@@ -240,7 +241,9 @@ const Task: React.FC = () => {
               </ShareButton>
             </CopyToClipboard>
 
-            {isCreator && <ManageButton onClick={() => navigate(`/creator/${id}`)}>Task Management</ManageButton>}
+            {data.project.id && checkProjectAllowed(Number(data.project.id)) && isCreator && (
+              <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
+            )}
           </TaskDetailHeaderBox>
           <ProjectNameBox>
             <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>

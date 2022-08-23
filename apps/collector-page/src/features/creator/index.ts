@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { creatorApi, saveWinnersApi } from '../../services/api/creator'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
+import { RewardType } from '../../types/entities'
 
 export type ScheduleInfo = {
   closeTime: string
@@ -41,6 +42,11 @@ export type CreatorState = {
   pickedWhiteList: Array<PickedWhiteList>
   taskInfo: TaskInfo | null
   scheduleInfo: ScheduleInfo | null
+  reward: {
+    name: string
+    type: RewardType
+    raffled: boolean
+  }
 }
 
 // 站点状态信息
@@ -54,6 +60,11 @@ const creatorState: CreatorState = {
   pickedWhiteList: [],
   taskInfo: null,
   scheduleInfo: null,
+  reward: {
+    type: RewardType.WHITELIST,
+    raffled: false,
+    name: '',
+  },
 }
 
 export const getCreatorDashboardData = createAsyncThunk('creator/dashboard', async ({ taskId }: { taskId: number }) => {
@@ -82,6 +93,7 @@ export const creatorSlice = createSlice({
       state.winnerList = creatorState.winnerList
       state.scheduleInfo = creatorState.scheduleInfo
       state.taskInfo = creatorState.taskInfo
+      state.reward = creatorState.reward
     },
   },
   extraReducers: (builder) => {
@@ -98,6 +110,7 @@ export const creatorSlice = createSlice({
         state.pickedWhiteList = action.payload.pickedWhiteList
         state.scheduleInfo = action.payload.scheduleInfo
         state.taskInfo = action.payload.taskInfo
+        state.reward = action.payload.reward
       })
       .addCase(getCreatorDashboardData.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED

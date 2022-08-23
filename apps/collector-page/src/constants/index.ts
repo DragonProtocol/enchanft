@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 10:36:51
+ * @LastEditTime: 2022-08-22 13:33:52
  * @Description: 系统相关常量定义
  */
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -31,3 +31,7 @@ export const TASK_SHARE_URI = process.env.REACT_APP_TASK_SHARE_URI
 
 export const CREATE_TASK_DEFAULT_WINNER_NUM = 20
 export const CREATE_TASK_DEFAULT_INVITE_NUM = 5
+
+export const WL_INFO_URL = 'https://info.wl.xyz'
+export const TASK_IMAGE_SIZE_LIMIT = 1 * 1024 * 1024
+export const AVATAR_SIZE_LIMIT = 200 * 1024

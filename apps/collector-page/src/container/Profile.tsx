@@ -31,6 +31,7 @@ import {
   TextField,
   Tabs,
   Tab,
+  CircularProgress,
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 
@@ -77,6 +78,7 @@ import UserAvatar from '../components/business/user/UserAvatar'
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
 import { toast } from 'react-toastify'
 import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup'
+import { AVATAR_SIZE_LIMIT } from '../constants'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -130,7 +132,7 @@ const Profile: React.FC = () => {
   const account = useAppSelector(selectAccount)
   const [name, setName] = useState('')
   const [avatar, setAvatar] = useState('')
-
+  const [uploading, setUploading] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
 
   const updateProfile = useCallback(() => {
@@ -274,7 +276,12 @@ const Profile: React.FC = () => {
                 document.getElementById('uploadinput')?.click()
               }}
             >
-              <EditAvatar src={avatar || account.avatar} />
+              {(uploading && (
+                <div className="uploading">
+                  <CircularProgress size="5rem" color="inherit" />
+                  <p>Uploading Image</p>
+                </div>
+              )) || <EditAvatar src={avatar || account.avatar} />}
             </EditAvatarBox>
 
             <EditNameBox>
@@ -286,14 +293,21 @@ const Profile: React.FC = () => {
                 accept="image/png, image/gif, image/jpeg"
                 onChange={async (e) => {
                   const file = e.target.files && e.target.files[0]
-                  console.log(file)
                   if (!file) return
+                  if (file.size > AVATAR_SIZE_LIMIT) {
+                    toast.error('File Too Large, 200k limit')
+                    return
+                  }
+
+                  setUploading(true)
                   try {
                     const { data } = await uploadAvatar(file)
                     setAvatar(data.url)
                     toast.success('upload success')
                   } catch (error) {
                     toast.error('upload fail')
+                  } finally {
+                    setUploading(false)
                   }
                 }}
               />
@@ -428,6 +442,10 @@ const EditAvatarBox = styled.div`
       height: 100%;
       background-image: url(${UploadImgMaskImg});
     }
+  }
+  & .uploading {
+    text-align: center;
+    padding-top: 20px;
   }
 `
 const EditAvatar = styled(UserAvatar)`

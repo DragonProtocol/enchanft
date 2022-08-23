@@ -10,6 +10,7 @@ import CardBox from '../../common/card/CardBox'
 import CrownImg from '../../imgs/crown.svg'
 import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 import IconCheckbox from '../../common/icons/IconCheckbox'
+import { RewardType } from '../task/create/state'
 
 export enum TaskStatus {
   SUBMIT,
@@ -32,6 +33,7 @@ const ModalStyle = {
 }
 
 export default function WinnerList({
+  reward,
   winnerNum,
   winnerList,
   pickedWhiteList,
@@ -40,6 +42,7 @@ export default function WinnerList({
   whitelistSaved,
   downloadWinners,
 }: {
+  reward: { raffled: boolean; type: RewardType }
   winnerNum: number
   whitelistSaved: boolean
   winnerList: Array<Winner>
@@ -72,6 +75,9 @@ export default function WinnerList({
     setDisableSelect(true)
   }, [list, winnerNum])
 
+  const dateNow = new Date()
+  const schedulesEndTime = schedules?.endTime ? new Date(schedules?.endTime) : dateNow
+
   return (
     <>
       <WinnerListBox>
@@ -82,17 +88,22 @@ export default function WinnerList({
               <CustomBtn onClick={downloadWinners}>Download</CustomBtn>
             </div>
           )) || (
-            <div>
-              <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
-              {'  '}
-              <CustomBtn
-                onClick={() => {
-                  setConfirmModalOpen(true)
-                }}
-              >
-                Entries {selected.length}
-              </CustomBtn>
-            </div>
+            <>
+              {(reward.raffled && null) ||
+                (dateNow > schedulesEndTime && (
+                  <div>
+                    <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
+                    {'  '}
+                    <CustomBtn
+                      onClick={() => {
+                        setConfirmModalOpen(true)
+                      }}
+                    >
+                      Entries {selected.length}
+                    </CustomBtn>
+                  </div>
+                ))}
+            </>
           )}
         </div>
         <div className="list">
@@ -113,7 +124,7 @@ export default function WinnerList({
                   setDisableSelect(newSelected.length >= winnerNum)
                   setSelected(newSelected)
                 }}
-                couldSelect={!whitelistSaved}
+                couldSelect={!whitelistSaved || dateNow > schedulesEndTime}
               />
             )
           })}
@@ -140,7 +151,13 @@ export default function WinnerList({
             >
               Cancel
             </button>
-            <button className="confirm" onClick={() => uploadSelected(selected)}>
+            <button
+              className="confirm"
+              onClick={() => {
+                uploadSelected(selected)
+                setConfirmModalOpen(false)
+              }}
+            >
               Confirm
             </button>
           </ModalBtnBox>

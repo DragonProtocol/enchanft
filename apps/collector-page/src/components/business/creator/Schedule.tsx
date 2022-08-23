@@ -12,6 +12,8 @@ import IconCheckbox from '../../common/icons/IconCheckbox'
 // }
 export default function Schedule({ schedules }: { schedules: ScheduleInfo | null }) {
   const dateNow = new Date()
+  let closeTime = new Date(0).getTime()
+
   const data = [
     {
       title: 'Task submit date',
@@ -37,6 +39,7 @@ export default function Schedule({ schedules }: { schedules: ScheduleInfo | null
         {data.map((item, idx) => {
           const itemDate = item?.date ? new Date(item?.date) : dateNow
           const done = dateNow > itemDate
+          if (itemDate.getTime() == closeTime) return null
           return (
             <div className="item" key={item.title}>
               {(done && <IconCheckboxChecked />) || <IconCheckbox />}
