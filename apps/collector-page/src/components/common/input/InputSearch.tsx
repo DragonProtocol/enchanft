@@ -8,7 +8,7 @@
 import InputBase from '@mui/material/InputBase'
 import React from 'react'
 import styled from 'styled-components'
-import IconInputSearchEmoji from '../icons/IconInputSearchEmoji'
+import PngIconInputSearchEmoji from '../icons/PngIconInputSearchEmoji'
 
 import CancelIcon from '@mui/icons-material/Cancel'
 import IconButton from '@mui/material/IconButton'
@@ -39,7 +39,7 @@ const InputSearch: React.FC<InputSearchProps> = ({
   }
   return (
     <InputSearchWrapper>
-      <IconInputSearchEmoji size="24px" />
+      <PngIconInputSearchEmoji size="24px" />
       <InputBase
         sx={{ ml: 1, flex: 1, height: 'auto' }}
         placeholder={placeholder}

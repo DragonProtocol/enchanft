@@ -4,8 +4,8 @@ import { ScrollBarCss } from '../../../GlobalStyle'
 import { RewardType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../types/entities'
 import RichTextBox from '../../common/text/RichTextBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import IconGiftBox from '../../common/icons/IconGiftBox'
-import IconAlarmClock from '../../common/icons/IconAlarmClock'
+import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
+import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
 import { getTaskRewardTypeLabel } from '../../../utils/task'
 
 export type TaskDetailContentDataType = {
@@ -49,7 +49,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetai
       <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
       <TaskDateAndWinnerBox>
         <TaskDateTimeBox>
-          <IconAlarmClock size={'18px'} />
+          <PngIconAlarmClock size={'18px'} />
           <TaskDateTime>
             {startDate} -- {endDate}
           </TaskDateTime>
@@ -58,7 +58,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetai
       </TaskDateAndWinnerBox>
       {reward && (
         <TaskRemarkBox>
-          <IconGiftBox size={'18px'} />
+          <PngIconGiftBox size={'18px'} />
           <TaskRemark>Reward : {reward.name}</TaskRemark>
         </TaskRemarkBox>
       )}

@@ -11,8 +11,8 @@ import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { RewardType } from '../../../types/entities'
 import { getTaskRewardTypeLabel } from '../../../utils/task'
-import IconAlarmClock from '../../common/icons/IconAlarmClock'
-import IconGiftBox from '../../common/icons/IconGiftBox'
+import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
+import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import RichTextToPlainTextSpan from '../../common/text/RichTextToPlainTextSpan'
 import TaskImageDefault from './TaskImageDefault'
@@ -71,7 +71,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
           <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
           <TaskDateAndWinnerBox>
             <TaskDateTimeBox>
-              <IconAlarmClock size={'18px'} />
+              <PngIconAlarmClock size={'18px'} />
               <TaskDateTime>
                 {startDate} —— {endDate}
               </TaskDateTime>
@@ -80,7 +80,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
           </TaskDateAndWinnerBox>
           {reward && (
             <TaskRewardBox>
-              <IconGiftBox size={'18px'} />
+              <PngIconGiftBox size={'18px'} />
               <TaskReward>Reward : {reward.name}</TaskReward>
             </TaskRewardBox>
           )}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 14:34:33
+ * @LastEditTime: 2022-08-23 15:40:29
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -318,7 +318,7 @@ const TaskDetailBodyBox = styled(CardBox)`
 `
 const TaskDetailHeaderBox = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 20px;
   align-items: center;
 `
 const TaskName = styled.div`
