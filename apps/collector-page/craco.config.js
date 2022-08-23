@@ -10,7 +10,7 @@ const path = require('path')
 const webpack = require('webpack')
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
   webpack: {
@@ -26,6 +26,9 @@ module.exports = {
           mainFields: ['module', 'main'],
         }),
       )
+      config.externals = {
+        mockjs: 'mockjs',
+      }
 
       // Replace include option for babel loader with exclude
       // so babel will handle workspace projects as well.
@@ -44,13 +47,15 @@ module.exports = {
       config.resolve.alias = {
         '@mui/styled-engine': '@mui/styled-engine-sc',
       }
+      
       config.plugins.push(
         new webpack.ProvidePlugin({
           process: 'process/browser',
           Buffer: ['buffer', 'Buffer'],
         }),
-        new BundleAnalyzerPlugin()
       )
+
+      if (process.argv.includes('--report')) config.plugins.push(new BundleAnalyzerPlugin())
 
       config.ignoreWarnings = [/Failed to parse source map/]
       return config
