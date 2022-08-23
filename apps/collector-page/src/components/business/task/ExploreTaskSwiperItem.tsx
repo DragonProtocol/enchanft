@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 15:44:34
+ * @LastEditTime: 2022-08-23 17:33:58
  * @Description: file description
  */
 import React from 'react'
@@ -13,6 +13,7 @@ import { RewardType } from '../../../types/entities'
 import { getTaskRewardTypeLabel } from '../../../utils/task'
 import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
+import PngIconScissorHand from '../../common/icons/PngIconScissorHand'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import RichTextToPlainTextSpan from '../../common/text/RichTextToPlainTextSpan'
 import TaskImageDefault from './TaskImageDefault'
@@ -70,13 +71,16 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
         <TaskInfoBottomBox>
           <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
           <TaskDateAndWinnerBox>
-            <TaskDateTimeBox>
-              <PngIconAlarmClock size={'18px'} />
+            <TaskDateAndWinnerItem>
+              <PngIconAlarmClock size={'16px'} />
               <TaskDateTime>
-                {startDate} —— {endDate}
+                {startDate} -- {endDate}
               </TaskDateTime>
-            </TaskDateTimeBox>
-            <TaskWinners>Winners {winnerNum}</TaskWinners>
+            </TaskDateAndWinnerItem>
+            <TaskDateAndWinnerItem>
+              <PngIconScissorHand size={'16px'} />
+              <TaskWinners>Winners : {winnerNum}</TaskWinners>
+            </TaskDateAndWinnerItem>
           </TaskDateAndWinnerBox>
           {reward && (
             <TaskRewardBox>
@@ -162,10 +166,21 @@ const TaskTypeLabel = styled.div`
 `
 const TaskDateAndWinnerBox = styled.div`
   display: flex;
-  gap: 60px;
+  gap: 20px;
+  font-weight: 700;
   font-size: 14px;
   line-height: 21px;
   color: #333333;
+`
+const TaskDateAndWinnerItem = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 4px 10px;
+  gap: 4px;
+
+  background: #d3ed85;
+  border-radius: 20px;
 `
 const TaskDateTimeBox = styled.div`
   display: flex;
