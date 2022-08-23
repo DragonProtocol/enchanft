@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:45:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 14:52:16
+ * @LastEditTime: 2022-08-22 14:37:56
  * @Description: file description
  */
 import React from 'react'
@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import ButtonBase from '../../common/button/ButtonBase'
 import Loading from '../../common/loading/Loading'
 
-import TaskActionItem, { TaskActionItemDataType } from './TaskActionItem'
+import TaskActionItem, { TaskActionItemDataType, TaskActionItemHandlesType } from './TaskActionItem'
 export type TaskActionListViewConfigType = {
   loading?: boolean
   loadingMsg?: string
@@ -25,13 +25,13 @@ export type TaskActionListViewConfigType = {
   verifyBgc?: string
 }
 export type TaskActionItemsType = TaskActionItemDataType[]
-export type TaskActionListProps = TaskActionListViewConfigType & {
-  items: TaskActionItemsType
-  onTwitter?: (callback: () => void) => void
-  onDiscord?: (callback: () => void) => void
-  onFollowCommunity?: (action: TaskActionItemDataType) => void
+export type TaskActionsListHandlesType = TaskActionItemHandlesType & {
   onVerifyActions?: () => void
 }
+export type TaskActionListProps = TaskActionListViewConfigType &
+  TaskActionsListHandlesType & {
+    items: TaskActionItemsType
+  }
 const TaskActionList: React.FC<TaskActionListProps> = ({
   items,
   loading,
@@ -42,6 +42,7 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
   onDiscord,
   onFollowCommunity,
   onVerifyActions,
+  onVerifyAction,
   displayVerify,
   disabledVerify,
   loadingVerify,
@@ -77,6 +78,7 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
               onDiscord={onDiscord}
               onTwitter={onTwitter}
               onFollowCommunity={onFollowCommunity}
+              onVerifyAction={onVerifyAction}
               allowHandle={allowHandle}
               copyBgc={copyBgc}
               verifying={verifyingActions.includes(item.id)}

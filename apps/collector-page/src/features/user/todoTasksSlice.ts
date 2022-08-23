@@ -2,11 +2,11 @@ import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, Payloa
 import { fetchListForUserTodoTask, verifyOneTask, VerifyOneTaskParams } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { TodoTaskItem, TodoTaskResponse } from '../../types/api'
+import { TodoTaskActionItem, TodoTaskItem, TodoTaskResponse, UserActionStatus } from '../../types/api'
+import { TaskTodoCompleteStatus } from '../../types/entities'
+import { getTaskEntityForUpdateActionAfter } from '../../utils/task'
 
-export type TodoTaskItemForEntity = TodoTaskItem & {
-  refreshStatus?: AsyncRequestStatus
-}
+export type TodoTaskItemForEntity = TodoTaskItem
 type TodoTaskListState = EntityState<TodoTaskItemForEntity> & {
   status: AsyncRequestStatus
   errorMsg: string
@@ -63,61 +63,20 @@ export const fetchTodoTasks = createAsyncThunk<
   },
 )
 
-type verifyOneTaskResp = {
-  data: TodoTaskItem | null
-  errorMsg?: string
-}
-
-export const verifyOneTodoTask = createAsyncThunk<
-  verifyOneTaskResp,
-  VerifyOneTaskParams,
-  {
-    rejectValue: verifyOneTaskResp
-  }
->(
-  'user/todoTasks/refreshOne',
-  async (params, { rejectWithValue }) => {
-    try {
-      const resp = await verifyOneTask(params)
-      if (resp.data.code === 0 && resp.data.data) {
-        return { data: resp.data.data, errorMsg: '' }
-      } else {
-        return rejectWithValue({
-          data: null,
-          errorMsg: resp.data.msg,
-        })
-      }
-    } catch (error: any) {
-      if (!error.response) {
-        throw error
-      }
-      return rejectWithValue({
-        data: null,
-        errorMsg: error.response.data,
-      })
-    }
-  },
-  {
-    condition: (params, { getState }) => {
-      const state = getState() as RootState
-      const { selectById } = todoTasksEntity.getSelectors()
-      const item = selectById(state.userTodoTasks, params.id)
-      // 之前的请求正在进行中,则阻止新的请求
-      if (item?.refreshStatus === AsyncRequestStatus.PENDING) {
-        return false
-      }
-      return true
-    },
-  },
-)
-
 export const userTodoTasksSlice = createSlice({
   name: 'UserTodoTasks',
   initialState: initTodoTasksState,
   reducers: {
-    updateOne: (state, action) => {
-      const one = action.payload
-      todoTasksEntity.upsertOne(state, one)
+    updateOne: todoTasksEntity.updateOne,
+    setOne: todoTasksEntity.setOne,
+    updateOneAction: (state, action: PayloadAction<TodoTaskActionItem>) => {
+      const { taskId } = action.payload
+      const { selectById } = todoTasksEntity.getSelectors()
+      const task = selectById(state, taskId)
+      if (task) {
+        const newTask = getTaskEntityForUpdateActionAfter(task, action.payload) as TodoTaskItemForEntity
+        todoTasksEntity.setOne(state, newTask)
+      }
     },
   },
   extraReducers: (builder) => {
@@ -150,34 +109,11 @@ export const userTodoTasksSlice = createSlice({
           state.errorMsg = action.error.message || ''
         }
       })
-      .addCase(verifyOneTodoTask.pending, (state, action) => {
-        console.log('verifyOneTodoTask.pending', action)
-        const { id } = action.meta.arg
-        const changes = { refreshStatus: AsyncRequestStatus.PENDING }
-        todoTasksEntity.updateOne(state, { id, changes })
-      })
-      .addCase(verifyOneTodoTask.fulfilled, (state, action) => {
-        console.log('verifyOneTodoTask.fulfilled', action)
-        const { data } = action.payload
-        if (data) {
-          todoTasksEntity.setOne(state, { ...data, refreshStatus: AsyncRequestStatus.FULFILLED })
-        } else {
-          const { id } = action.meta.arg
-          const changes = { refreshStatus: AsyncRequestStatus.FULFILLED }
-          todoTasksEntity.updateOne(state, { id, changes })
-        }
-      })
-      .addCase(verifyOneTodoTask.rejected, (state, action) => {
-        console.log('verifyOneTodoTask.rejected', action)
-        const { id } = action.meta.arg
-        const changes = { refreshStatus: AsyncRequestStatus.REJECTED }
-        todoTasksEntity.updateOne(state, { id, changes })
-      })
   },
 })
 
 const { actions, reducer } = userTodoTasksSlice
 export const selectUserTodoTasksState = (state: RootState) => state.userTodoTasks
 export const { selectAll, selectById } = todoTasksEntity.getSelectors((state: RootState) => state.userTodoTasks)
-export const { updateOne } = actions
+export const { updateOne, setOne, updateOneAction } = actions
 export default reducer
