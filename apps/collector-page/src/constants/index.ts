@@ -20,10 +20,10 @@ export const VIEW_LAMPORTS_DECIMAL = 3
 export const MAX_CHILDREN_PER_LEVEL = 3
 
 export const TASK_DEFAULT_IMAGE_URLS = [
-  'https://strapi-njmm.onrender.com/uploads/thumbnail_default_image_3_a24df5553e.png',
-  'https://strapi-njmm.onrender.com/uploads/thumbnail_default_image_4_d5ad13d828.png',
-  'https://strapi-njmm.onrender.com/uploads/thumbnail_default_image_2_5642902130.png',
-  'https://strapi-njmm.onrender.com/uploads/thumbnail_default_image_1_f6ceb43ab1.png',
+  'https://res.cloudinary.com/wl-xyz/image/upload/v1661230579/assets/0.jpg',
+  'https://res.cloudinary.com/wl-xyz/image/upload/v1661230579/assets/1.jpg',
+  'https://res.cloudinary.com/wl-xyz/image/upload/v1661230579/assets/2.jpg',
+  'https://res.cloudinary.com/wl-xyz/image/upload/v1661230579/assets/3.jpg',
 ]
 
 export const TASK_DEFAULT_IMAGE_URL = TASK_DEFAULT_IMAGE_URLS[1]
