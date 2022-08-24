@@ -100,11 +100,13 @@ const RecommendSwiperWrapper = styled.div`
   position: relative;
   z-index: 1;
   .recommend-swiper {
-    width: 100%;
-    height: 100%;
+    width: calc(100% - 8px);
+    height: calc(100% - 8px);
+    outline: 4px solid #333333;
+
     box-sizing: border-box;
     background: #f7f9f1;
-    border: 4px solid #333333;
+
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
     overflow: hidden;
