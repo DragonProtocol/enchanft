@@ -26,9 +26,10 @@ module.exports = {
           mainFields: ['module', 'main'],
         }),
       )
-      config.externals = {
-        mockjs: 'mockjs',
-      }
+      
+      // config.externals = {
+      //   mockjs: 'mockjs',
+      // }
 
       // Replace include option for babel loader with exclude
       // so babel will handle workspace projects as well.

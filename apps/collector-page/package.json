@@ -51,7 +51,8 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.8",
     "styled-components": "^5.3.5",
-    "swiper": "^8.2.4"
+    "swiper": "^8.2.4",
+    "mockjs": "^1.1.0"
   },
   "scripts": {
     "start": "craco start",
@@ -69,7 +70,6 @@
     "serve": "npm start"
   },
   "devDependencies": {
-    "mockjs": "^1.1.0",
     "@craco/craco": "^7.0.0-alpha.6",
     "babel-jest": "27.5.1",
     "babel-plugin-styled-components": "1.10.7",
