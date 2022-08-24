@@ -9,6 +9,9 @@ import { SIGN_MSG, TokenType } from '../utils/token'
 
 export default function useWalletSign() {
   const windowObj: any = window
+  windowObj.phantomValidChecked = false
+  windowObj.metaMaskValidChecked = false
+
   const [phantomValid, setPhantomValid] = useState(false)
   const [metamaskValid, setMetamaskValid] = useState(false)
 
@@ -60,6 +63,8 @@ export default function useWalletSign() {
 
   useEffect(() => {
     if (account.defaultWallet === TokenType.Ethereum && metamaskValid) {
+      if (windowObj.metaMaskValidChecked) return
+      windowObj.metaMaskValidChecked = true
       getEthProvider()
         .then((ethProvider) => {
           if (!ethProvider) return
@@ -72,6 +77,9 @@ export default function useWalletSign() {
         })
     }
     if (account.defaultWallet === TokenType.Solana && phantomValid) {
+      if (windowObj.phantomValidChecked) return
+      windowObj.phantomValidChecked = true
+      console.log('getSolanaProvider' + Date.now())
       getSolanaProvider()
         .then((provider) => {
           if (!provider) return

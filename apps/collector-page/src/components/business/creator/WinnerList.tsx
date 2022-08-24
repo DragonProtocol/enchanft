@@ -11,6 +11,7 @@ import CrownImg from '../../imgs/crown.svg'
 import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 import IconCheckbox from '../../common/icons/IconCheckbox'
 import { RewardType } from '../task/create/state'
+import { getTaskRewardTypeLabel } from '../../../utils/task'
 
 export enum TaskStatus {
   SUBMIT,
@@ -36,6 +37,7 @@ export default function WinnerList({
   reward,
   winnerNum,
   winnerList,
+  candidateList,
   pickedWhiteList,
   schedules,
   uploadSelected,
@@ -46,21 +48,20 @@ export default function WinnerList({
   winnerNum: number
   whitelistSaved: boolean
   winnerList: Array<Winner>
+  candidateList: Array<Winner>
   pickedWhiteList: Array<PickedWhiteList>
   schedules: ScheduleInfo | null
   uploadSelected: (arg0: Array<number>) => void
   downloadWinners: () => void
 }) {
-  // const list: Array<number> = new Array(20).fill('').map((item, index) => index)
-  const list = winnerList
-
+  const [activeList, setActiveList] = useState('entry')
   const [selected, setSelected] = useState<Array<number>>([])
   const [disableSelect, setDisableSelect] = useState(false)
 
   const [confirmModalOpen, setConfirmModalOpen] = useState(false)
 
   const genRandom = useCallback(() => {
-    let tmpList = [...list]
+    let tmpList = [...winnerList]
     let num = Math.min(winnerNum, tmpList.length)
     const result: Array<number> = []
     while (num > 0) {
@@ -73,7 +74,7 @@ export default function WinnerList({
     }
     setSelected(result)
     setDisableSelect(true)
-  }, [list, winnerNum])
+  }, [winnerList, winnerNum])
 
   const dateNow = new Date()
   const schedulesEndTime = schedules?.endTime ? new Date(schedules?.endTime) : dateNow
@@ -82,7 +83,30 @@ export default function WinnerList({
     <>
       <WinnerListBox>
         <div className="title">
-          <h3>Entry List</h3>
+          {(whitelistSaved && (
+            <h3>
+              <span
+                className={(activeList === 'entry' && 'active') || ''}
+                onClick={() => {
+                  setActiveList('entry')
+                }}
+              >
+                Entry List
+              </span>
+              <span
+                className={(activeList === 'candidate' && 'active') || ''}
+                onClick={() => {
+                  setActiveList('candidate')
+                }}
+              >
+                Participants List
+              </span>
+            </h3>
+          )) || (
+            <h3>
+              <span className="active">Entry List</span>
+            </h3>
+          )}
           {(whitelistSaved && (
             <div>
               <CustomBtn onClick={downloadWinners}>Download</CustomBtn>
@@ -106,29 +130,39 @@ export default function WinnerList({
             </>
           )}
         </div>
-        <div className="list">
-          {list.map((item, idx) => {
-            const checked = whitelistSaved
-              ? pickedWhiteList.find((pickedItem) => pickedItem.user_id == item.id)
-              : selected.includes(item.id)
-            const disabled = whitelistSaved || (disableSelect && !selected.includes(item.id))
-            return (
-              <ListItem
-                key={idx}
-                idx={idx}
-                data={item}
-                checked={!!checked}
-                disabled={disabled}
-                selected={selected}
-                setSelected={(newSelected) => {
-                  setDisableSelect(newSelected.length >= winnerNum)
-                  setSelected(newSelected)
-                }}
-                couldSelect={!whitelistSaved || dateNow > schedulesEndTime}
-              />
-            )
-          })}
-        </div>
+        {(activeList == 'entry' && (
+          <div className="list">
+            {winnerList.map((item, idx) => {
+              const checked = whitelistSaved
+                ? pickedWhiteList.find((pickedItem) => pickedItem.user_id == item.id)
+                : selected.includes(item.id)
+              const disabled = whitelistSaved || (disableSelect && !selected.includes(item.id))
+              return (
+                <ListItem
+                  key={idx}
+                  idx={idx}
+                  data={item}
+                  checked={!!checked}
+                  disabled={disabled}
+                  selected={selected}
+                  setSelected={(newSelected) => {
+                    setDisableSelect(newSelected.length >= winnerNum)
+                    setSelected(newSelected)
+                  }}
+                  couldSelect={
+                    getTaskRewardTypeLabel(reward) != 'FCFS' ? !whitelistSaved || dateNow > schedulesEndTime : false
+                  }
+                />
+              )
+            })}
+          </div>
+        )) || (
+          <div className="list">
+            {candidateList.map((item, idx) => {
+              return <PickedList key={idx} idx={idx} data={item} />
+            })}
+          </div>
+        )}
       </WinnerListBox>
 
       <ConfirmModal
@@ -215,6 +249,21 @@ function ListItem({
   )
 }
 
+function PickedList({ idx, data }: { idx: number; data: any }) {
+  return (
+    <div>
+      <div>
+        <span className={idx < 3 ? 'index front-3' : 'index'}>{idx + 1}</span>
+        <span>
+          <UserAvatar src={data.avatar} />
+        </span>
+        <span className="name">{data.name}</span>
+        <span className="pubkey">{sortPubKey(data.pubkey, 16)}</span>
+      </div>
+    </div>
+  )
+}
+
 function CustomCheckBox({ checked, onChange }: { checked: boolean; onChange: () => void }) {
   return (
     <span
@@ -242,7 +291,7 @@ const ConfirmModal = styled(Modal)`
 
 const CustomBtn = styled.button`
   padding: 10px 18px;
-  border-radius: 10px;
+  border-radius: 20px;
   background: #ebeee4;
   box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
   outline: none;
@@ -280,14 +329,40 @@ const WinnerListBox = styled(CardBox)`
     justify-content: space-between;
 
     & h3 {
-      font-weight: 700;
-      font-size: 20px;
-      line-height: 30px;
-      color: #333333;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid #333333;
+      height: 50px;
+      box-sizing: border-box;
+      & span {
+        text-align: center;
+        display: inline-block;
+        padding: 10px;
+        font-weight: 700;
+        font-size: 18px;
+        line-height: 27px;
+        width: 180px;
+        background-color: #f7f9f1;
+        color: #333333;
+        cursor: pointer;
+
+        &.active {
+          color: #ffffff;
+          background-color: #333333;
+        }
+      }
     }
 
     > div {
+      display: flex;
+      align-items: center;
       > button {
+        border-radius: 10px;
+        font-weight: 700;
+        font-size: 14px;
+        line-height: 21px;
+        color: #333333;
+        cursor: pointer;
         &:first {
           margin: 0 10px;
         }
