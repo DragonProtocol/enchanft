@@ -13,8 +13,8 @@ import { AsyncRequestStatus } from '../../../../types'
 import ButtonNavigation from '../../../common/button/ButtonNavigation'
 import dayjs from 'dayjs'
 import IconCheckbox from '../../../common/icons/IconCheckbox'
-import IconGiftBox from '../../../common/icons/IconGiftBox'
-import IconAlarmClock from '../../../common/icons/IconAlarmClock'
+import PngIconGiftBox from '../../../common/icons/PngIconGiftBox'
+import PngIconAlarmClock from '../../../common/icons/PngIconAlarmClock'
 import PngIconCaretLeft from '../../../common/icons/PngIconCaretLeft'
 import { getTaskRewardTypeLabel } from '../../../../utils/task'
 
@@ -52,14 +52,14 @@ export default function Preview({
               <img src={state.image} alt="" />
               <h3>{getTaskRewardTypeLabel({ type: state.reward.type, raffled: state.reward.raffled })}</h3>
               <div>
-                <IconAlarmClock />
+                <PngIconAlarmClock />
                 <span>
                   {dayjs(state.startTime).format('YYYY/MM/DD')}——{dayjs(state.endTime).format('YYYY/MM/DD')}
                 </span>
                 <span>Winners: {state.winnerNum}</span>
               </div>
               <div>
-                <IconGiftBox />
+                <PngIconGiftBox />
                 <span>Reward: {state.reward.type === RewardType.WHITELIST ? 'whitelist' : state.reward.name}</span>
               </div>
               <div className="desc">

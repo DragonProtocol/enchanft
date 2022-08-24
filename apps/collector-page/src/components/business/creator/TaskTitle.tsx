@@ -4,7 +4,7 @@ import { TaskInfo } from '../../../features/creator'
 import CardBox from '../../common/card/CardBox'
 import IconCheckbox from '../../common/icons/IconCheckbox'
 import { RewardType, TaskType } from '../task/create/state'
-import IconAlarmClock from '../../common/icons/IconAlarmClock'
+import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
 import { getTaskRewardTypeLabel } from '../../../utils/task'
 
 export default function TaskTitle({
@@ -22,7 +22,7 @@ export default function TaskTitle({
         <h4>{getTaskRewardTypeLabel(reward)}</h4>
         <div className="alarm-clock">
           <p>
-            <IconAlarmClock /> {info?.startTime && new Date(info?.startTime).toLocaleDateString()}—
+            <PngIconAlarmClock /> {info?.startTime && new Date(info?.startTime).toLocaleDateString()}—
             {info?.endTime && new Date(info?.endTime).toLocaleDateString()}
           </p>
           <span>Entries {info?.winnerNum}</span>

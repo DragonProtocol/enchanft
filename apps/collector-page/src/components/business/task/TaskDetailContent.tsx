@@ -4,8 +4,9 @@ import { ScrollBarCss } from '../../../GlobalStyle'
 import { RewardType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../types/entities'
 import RichTextBox from '../../common/text/RichTextBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import IconGiftBox from '../../common/icons/IconGiftBox'
-import IconAlarmClock from '../../common/icons/IconAlarmClock'
+import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
+import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
+import PngIconScissorHand from '../../common/icons/PngIconScissorHand'
 import { getTaskRewardTypeLabel } from '../../../utils/task'
 
 export type TaskDetailContentDataType = {
@@ -48,17 +49,20 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetai
     <TaskDetailContentWrapper>
       <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
       <TaskDateAndWinnerBox>
-        <TaskDateTimeBox>
-          <IconAlarmClock size={'18px'} />
+        <TaskDateAndWinnerItem>
+          <PngIconAlarmClock size={'16px'} />
           <TaskDateTime>
             {startDate} -- {endDate}
           </TaskDateTime>
-        </TaskDateTimeBox>
-        <TaskWinners>Winners {winnerNum}</TaskWinners>
+        </TaskDateAndWinnerItem>
+        <TaskDateAndWinnerItem>
+          <PngIconScissorHand size={'16px'} />
+          <TaskWinners>Winners : {winnerNum}</TaskWinners>
+        </TaskDateAndWinnerItem>
       </TaskDateAndWinnerBox>
       {reward && (
         <TaskRemarkBox>
-          <IconGiftBox size={'18px'} />
+          <PngIconGiftBox size={'16px'} />
           <TaskRemark>Reward : {reward.name}</TaskRemark>
         </TaskRemarkBox>
       )}
@@ -82,15 +86,21 @@ const TaskTypeLabel = styled.div`
 `
 const TaskDateAndWinnerBox = styled.div`
   display: flex;
-  gap: 40px;
-  font-size: 16px;
-  line-height: 24px;
+  gap: 20px;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 21px;
   color: #333333;
 `
-const TaskDateTimeBox = styled.div`
+const TaskDateAndWinnerItem = styled.div`
   display: flex;
+  flex-direction: row;
   align-items: center;
+  padding: 4px 10px;
   gap: 4px;
+
+  background: #d3ed85;
+  border-radius: 20px;
 `
 const TaskDateTime = styled.span``
 const TaskWinners = styled.span``
@@ -101,7 +111,9 @@ const TaskRemarkBox = styled.div`
 `
 const TaskRemark = styled.span`
   flex: 1;
+  font-weight: 700;
   font-size: 14px;
+  line-height: 21px;
   color: #333333;
 `
 const TaskDescription = styled(RichTextBox)`

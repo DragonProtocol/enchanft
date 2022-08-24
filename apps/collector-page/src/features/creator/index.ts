@@ -8,6 +8,7 @@ export type ScheduleInfo = {
   closeTime: string
   endTime: string
   startTime: string
+  pickWinnersTime?: string
   submitTime: string
 }
 
@@ -39,6 +40,7 @@ export type CreatorState = {
   winners: number
   whitelistSaved: boolean
   winnerList: Array<Winner>
+  candidateList: Array<Winner>
   pickedWhiteList: Array<PickedWhiteList>
   taskInfo: TaskInfo | null
   scheduleInfo: ScheduleInfo | null
@@ -57,6 +59,7 @@ const creatorState: CreatorState = {
   winners: 0,
   whitelistSaved: false,
   winnerList: [],
+  candidateList: [],
   pickedWhiteList: [],
   taskInfo: null,
   scheduleInfo: null,
@@ -91,6 +94,7 @@ export const creatorSlice = createSlice({
       state.winners = creatorState.winners
       state.whitelistSaved = creatorState.whitelistSaved
       state.winnerList = creatorState.winnerList
+      state.candidateList = creatorState.candidateList
       state.scheduleInfo = creatorState.scheduleInfo
       state.taskInfo = creatorState.taskInfo
       state.reward = creatorState.reward
@@ -107,6 +111,7 @@ export const creatorSlice = createSlice({
         state.winners = action.payload.winners
         state.whitelistSaved = action.payload.whitelistSaved
         state.winnerList = action.payload.winnerList
+        state.candidateList = action.payload.candidateList
         state.pickedWhiteList = action.payload.pickedWhiteList
         state.scheduleInfo = action.payload.scheduleInfo
         state.taskInfo = action.payload.taskInfo

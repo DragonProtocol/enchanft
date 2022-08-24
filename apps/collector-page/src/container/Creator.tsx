@@ -19,8 +19,18 @@ import PngIconCaretLeft from '../components/common/icons/PngIconCaretLeft'
 export default function Creator() {
   const { taskId } = useParams()
   const dispatch = useAppDispatch()
-  const { status, participants, winners, whitelistSaved, winnerList, taskInfo, scheduleInfo, pickedWhiteList, reward } =
-    useAppSelector(selectCreator)
+  const {
+    status,
+    participants,
+    winners,
+    whitelistSaved,
+    winnerList,
+    candidateList,
+    taskInfo,
+    scheduleInfo,
+    pickedWhiteList,
+    reward,
+  } = useAppSelector(selectCreator)
   const account = useAppSelector(selectAccount)
   const { isCreator } = usePermissions()
   const navigate = useNavigate()
@@ -71,6 +81,7 @@ export default function Creator() {
               winnerNum={taskInfo?.winnerNum || 0}
               whitelistSaved={whitelistSaved}
               winnerList={winnerList}
+              candidateList={candidateList}
               pickedWhiteList={pickedWhiteList}
               schedules={scheduleInfo}
               uploadSelected={(ids: Array<number>) => {

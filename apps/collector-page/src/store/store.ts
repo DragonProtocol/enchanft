@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 16:26:46
+ * @LastEditTime: 2022-08-23 13:46:39
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
