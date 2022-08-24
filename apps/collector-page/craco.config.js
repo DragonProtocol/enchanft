@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-04 11:59:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-09 13:26:46
+ * @LastEditTime: 2022-08-24 15:13:48
  * @Description: 覆盖 cra 内部 webpack 配置
  */
 
@@ -26,10 +26,10 @@ module.exports = {
           mainFields: ['module', 'main'],
         }),
       )
-      
-      // config.externals = {
-      //   mockjs: 'mockjs',
-      // }
+
+      config.externals = {
+        mockjs: 'mockjs',
+      }
 
       // Replace include option for babel loader with exclude
       // so babel will handle workspace projects as well.
@@ -48,7 +48,7 @@ module.exports = {
       config.resolve.alias = {
         '@mui/styled-engine': '@mui/styled-engine-sc',
       }
-      
+
       config.plugins.push(
         new webpack.ProvidePlugin({
           process: 'process/browser',
