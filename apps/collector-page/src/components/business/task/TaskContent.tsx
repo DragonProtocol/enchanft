@@ -9,7 +9,7 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { TaskAcceptedStatus, TaskType } from '../../../types/api'
+import { TaskAcceptedStatus, TaskType } from '../../../types/entities'
 import ButtonBase from '../../common/button/ButtonBase'
 import SolanaConnectWalletButton from '../connect/SolanaConnectWalletButton'
 
