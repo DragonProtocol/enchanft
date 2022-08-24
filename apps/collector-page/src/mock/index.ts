@@ -2,10 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 14:10:35
+ * @LastEditTime: 2022-08-24 15:10:31
  * @Description: mock 请求拦截入口
  */
 
+import { UserActionStatus } from '../types/api'
 import {
   ActionType,
   ProjectStatus,
@@ -14,30 +15,14 @@ import {
   TaskAcceptedStatus,
   TaskTodoCompleteStatus,
   TaskType,
-  UserActionStatus,
-} from '../types/api'
-import Mock from 'mockjs'
+} from '../types/entities'
 import { ChainIds } from '../utils/chain'
 ;(async () => {
   // 只在开发环境，且设定启动mock
   if (process.env.NODE_ENV === 'development' && process.env.REACT_APP_MOCK === '1') {
-    // const mockGroup = await import('./mocks')
-    // const { default: Mock } = await import('mockjs')
-    // for (const [key, mocks] of Object.entries(mockGroup)) {
-    //   for (const mock of mocks.default as unknown as Array<any>) {
-    //     const res = Mock.mock(mock.url, mock.method, mock.resp)
-    //     console.log({
-    //       url: mock.url,
-    //       method: mock.method,
-    //       resp: mock.resp,
-    //       res,
-    //     })
-    //   }
-    // }
+    const { default: Mock } = await import('mockjs')
 
-    // TODO 上面的方式没有代理成功，这里先手动代理
-
-    const task_type = [TaskType.WHITELIST_ORIENTED, TaskType.WHITELIST_LUCK_DRAW]
+    const task_type = [TaskType.DEFAULT]
     const task_accepted_status = [TaskAcceptedStatus.CANDO, TaskAcceptedStatus.CANNOT, TaskAcceptedStatus.DONE]
     const task_todo_status = [
       TaskTodoCompleteStatus.TODO,
