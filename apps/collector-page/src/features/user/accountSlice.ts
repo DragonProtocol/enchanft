@@ -74,6 +74,7 @@ export type AccountState = {
   defaultWallet: TokenType
   lastLoginType: TokenType | null
   lastLoginInfo: { name: string; avatar: string }
+  walletChecked: boolean
   pubkey: string
   token: string
   avatar: string
@@ -97,6 +98,7 @@ const initialState: AccountState = {
     name: localStorage.getItem(LAST_LOGIN_NAME) || '',
     avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
   },
+  walletChecked: false,
   pubkey: '',
   token: '',
   avatar: '',
@@ -220,6 +222,12 @@ export const accountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {
+    resetLoginStatus: (state) => {
+      state.status = initialState.status
+    },
+    setWalletChecked: (state) => {
+      state.walletChecked = true
+    },
     setLastLogin: (state, action) => {
       state.lastLoginType = action.payload
     },
@@ -378,6 +386,8 @@ export const {
   setConnectModal,
   setDefaultWallet,
   setToken,
+  resetLoginStatus,
+  setWalletChecked,
   setPubkey,
   setAvatar,
   removeToken,
