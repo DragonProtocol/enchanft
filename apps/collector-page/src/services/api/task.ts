@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 15:36:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-22 18:11:34
+ * @LastEditTime: 2022-08-25 19:01:35
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -96,6 +96,25 @@ export function verifyOneAction(params: VerifyOneActionParams): AxiosPromise<Api
     },
   })
 }
+
+/** 直接完成单个action */
+export type CompletionOneActionParams = {
+  id: number
+  taskId: number
+}
+export function completionOneAction(params: CompletionOneActionParams): AxiosPromise<ApiResp<TodoTaskActionItem>> {
+  const { taskId, id } = params
+  const gaEvent = useGAEvent(TASK_CATALOG_GA)
+  gaEvent(TaskActionGA.VERIFY_ONE_ACTION, id)
+  return request({
+    url: `/tasks/${taskId}/actions/${id}/completion`,
+    method: 'post',
+    headers: {
+      needToken: true,
+    },
+  })
+}
+
 /** 获取单个任务详情 */
 export function fetchDetail(id: number): AxiosPromise<ApiResp<TaskDetailResponse>> {
   return request({

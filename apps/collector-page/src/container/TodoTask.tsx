@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 14:25:22
+ * @LastEditTime: 2022-08-25 19:13:50
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -21,6 +21,7 @@ import useHandleAction from '../hooks/useHandleAction'
 import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 import {
+  completionAction,
   selectIdsVerifyActionQueue,
   selectIdsVerifyTaskQueue,
   verifyAction,
@@ -246,6 +247,7 @@ const TodoTask: React.FC = () => {
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
                 onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
+                onCustomAction={(action) => dispatch(completionAction(action))}
               />
               <TodoTaskList
                 status={TaskTodoCompleteStatus.IN_PRGRESS}
@@ -256,6 +258,7 @@ const TodoTask: React.FC = () => {
                 onDiscord={handleActionToDiscord}
                 onTwitter={handleActionToTwitter}
                 onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
+                onCustomAction={(action) => dispatch(completionAction(action))}
               />
             </TodoTaskGroupLeft>
             <TodoTaskGroupRight>

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 14:06:44
+ * @LastEditTime: 2022-08-25 18:30:47
  * @Description: 与后端entities type定义对应
  */
 
@@ -69,11 +69,14 @@ export enum ActionType {
   INVITE_PEOPLE = 'INVITE_PEOPLE',
   JOIN_DISCORD = 'JOIN_DISCORD',
   DISCORD_INVITES_PEOPLE = 'DISCORD_INVITES_PEOPLE',
+  DISCORD_OBTAIN_ROLE = 'DISCORD_OBTAIN_ROLE',
   RETWEET = 'RETWEET',
   LIKE_TWEET = 'LIKE_TWEET',
+  REPLY_TWEET = 'REPLY_TWEET',
   UPDATE_BIO_OF_TWITTER = 'UPDATE_BIO_OF_TWITTER',
   MEET_CONTRIBUTION_SCORE = 'MEET_CONTRIBUTION_SCORE',
   TURN_ON_NOTIFICATION = 'TURN_ON_NOTIFICATION',
+  CUSTOM = 'CUSTOM',
 }
 export type ActionData = {
   url?: string

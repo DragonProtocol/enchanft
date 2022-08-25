@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-22 19:13:04
+ * @LastEditTime: 2022-08-25 19:17:20
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -58,6 +58,7 @@ export type TodoTaskItemHandlesType = TaskActionsListHandlesType & {
   onMint?: (task: TodoTaskItemDataType) => void
   onVerifyTask?: (task: TodoTaskItemDataType) => void
   onVerifyAction?: (action: TaskActionItemDataType) => void
+  onCustomAction?: (action: TaskActionItemDataType) => void
 }
 
 export type TodoTaskItemProps = TodoTaskItemDataViewType & TodoTaskItemHandlesType
@@ -104,6 +105,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   onTwitter,
   onDiscord,
   onFollowCommunity,
+  onCustomAction,
 }: TodoTaskItemProps) => {
   const navginate = useNavigate()
   const { id, name, whitelistTotalNum, type, projectId, startTime, endTime, actions, status, project, whitelist } = data
@@ -276,6 +278,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
             onVerifyActions={onVerifyTaskClick}
             verifyingActions={verifyingActions}
             onVerifyAction={onVerifyAction}
+            onCustomAction={onCustomAction}
           ></TaskActionList>
         </TaskActionsBox>
       )}

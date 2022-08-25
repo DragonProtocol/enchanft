@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 17:20:45
+ * @LastEditTime: 2022-08-25 19:02:29
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -26,6 +26,7 @@ import {
   TaskHandle,
   verifyTask,
   verifyAction,
+  completionAction,
 } from '../features/user/taskHandlesSlice'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import useHandleAction from '../hooks/useHandleAction'
@@ -302,6 +303,7 @@ const Task: React.FC = () => {
                         verifyingActions={verifyingActions}
                         onVerifyActions={() => dispatch(verifyTask(data))}
                         onVerifyAction={(action) => dispatch(verifyAction(action))}
+                        onCustomAction={(action) => dispatch(completionAction(action))}
                         copyBgc="#FFFFFF"
                         verifyBgc="#FFFFFF"
                       />

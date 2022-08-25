@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:45:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-22 14:37:56
+ * @LastEditTime: 2022-08-25 19:12:31
  * @Description: file description
  */
 import React from 'react'
@@ -43,6 +43,7 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
   onFollowCommunity,
   onVerifyActions,
   onVerifyAction,
+  onCustomAction,
   displayVerify,
   disabledVerify,
   loadingVerify,
@@ -79,6 +80,7 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
               onTwitter={onTwitter}
               onFollowCommunity={onFollowCommunity}
               onVerifyAction={onVerifyAction}
+              onCustomAction={onCustomAction}
               allowHandle={allowHandle}
               copyBgc={copyBgc}
               verifying={verifyingActions.includes(item.id)}
