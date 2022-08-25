@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 14:34:33
+ * @LastEditTime: 2022-08-23 17:20:45
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -33,6 +33,7 @@ import { ChainType, getChainType } from '../utils/chain'
 import TaskWinnerList from '../components/business/task/TaskWinnerList'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import IconCaretLeft from '../components/common/icons/IconCaretLeft'
+import PngIconForbidden from '../components/common/icons/PngIconForbidden'
 import Button from '@mui/material/Button'
 import CardBox from '../components/common/card/CardBox'
 import usePermissions from '../hooks/usePermissons'
@@ -211,7 +212,7 @@ const Task: React.FC = () => {
       </MainInnerStatusBox>
     )
   }
-  // 接受任务
+
   const name = data.name || ''
   const { projectId, image } = data
   const { name: projectName, chainId, communityId } = data.project
@@ -240,68 +241,76 @@ const Task: React.FC = () => {
     <TaskDetailWrapper>
       <MainContentBox>
         <TaskDetailBodyBox>
-          <TaskDetailHeaderBox>
-            <ButtonNavigation onClick={handleLeave}>
-              <IconCaretLeft />
-            </ButtonNavigation>
-            <TaskName>{name}</TaskName>
-            <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
-              <ShareButton>
-                <IconShare size="16px" />
-              </ShareButton>
-            </CopyToClipboard>
+          {data?.status === TaskTodoCompleteStatus.CLOSED && (
+            <TaskDetailBodyMainBanner>
+              <PngIconForbidden size="20px" /> Whitelist Closed!
+            </TaskDetailBodyMainBanner>
+          )}
 
-            {data.project.id && checkProjectAllowed(Number(data.project.id)) && isCreator && (
-              <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
-            )}
-          </TaskDetailHeaderBox>
-          <ProjectNameBox>
-            <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
-          </ProjectNameBox>
-          <TaskDetailContentBox>
-            <TaskDetailContentBoxLeft>
-              <TaskImage src={image} />
-              <TaskDetailContent data={data} />
-            </TaskDetailContentBoxLeft>
-            <TaskDetailContentBoxRight>
-              {winnerList.length > 0 ? (
-                <TaskListBox>
-                  <TaskWinnerList items={winnerList} highlightPubkeys={[pubkey]} />
-                </TaskListBox>
-              ) : (
-                <>
-                  <TaskListBox>
-                    {taskStatusButton && (
-                      <TaskStatusButton
-                        type={taskStatusButton.type}
-                        loading={taskStatusButton.loading}
-                        disabled={taskStatusButton.disabled}
-                        btnText={taskStatusButton.btnText}
-                        onConnectWallet={handleOpenConnectWallet}
-                        onBindWallet={handleOpenWalletBind}
-                        onTake={handleTakeTask}
-                      />
-                    )}
-                    <TaskActionList
-                      items={actionItems}
-                      onDiscord={handleActionToDiscord}
-                      onTwitter={handleActionToTwitter}
-                      onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
-                      allowHandle={allowHandleAction}
-                      displayVerify={displayVerify}
-                      loadingVerify={loadingVerify}
-                      disabledVerify={disabledVerify}
-                      verifyingActions={verifyingActions}
-                      onVerifyActions={() => dispatch(verifyTask(data))}
-                      onVerifyAction={(action) => dispatch(verifyAction(action))}
-                      copyBgc="#FFFFFF"
-                      verifyBgc="#FFFFFF"
-                    />
-                  </TaskListBox>
-                </>
+          <TaskDetailBodyMainBox>
+            <TaskDetailHeaderBox>
+              <ButtonNavigation onClick={handleLeave}>
+                <IconCaretLeft />
+              </ButtonNavigation>
+              <TaskName>{name}</TaskName>
+              <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
+                <ShareButton>
+                  <IconShare size="16px" />
+                </ShareButton>
+              </CopyToClipboard>
+
+              {data.project.id && checkProjectAllowed(Number(data.project.id)) && isCreator && (
+                <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
               )}
-            </TaskDetailContentBoxRight>
-          </TaskDetailContentBox>
+            </TaskDetailHeaderBox>
+            <ProjectNameBox>
+              <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
+            </ProjectNameBox>
+            <TaskDetailContentBox>
+              <TaskDetailContentBoxLeft>
+                <TaskImage src={image} />
+                <TaskDetailContent data={data} />
+              </TaskDetailContentBoxLeft>
+              <TaskDetailContentBoxRight>
+                {winnerList.length > 0 ? (
+                  <TaskListBox>
+                    <TaskWinnerList items={winnerList} highlightPubkeys={[pubkey]} />
+                  </TaskListBox>
+                ) : (
+                  <>
+                    <TaskListBox>
+                      {taskStatusButton && (
+                        <TaskStatusButton
+                          type={taskStatusButton.type}
+                          loading={taskStatusButton.loading}
+                          disabled={taskStatusButton.disabled}
+                          btnText={taskStatusButton.btnText}
+                          onConnectWallet={handleOpenConnectWallet}
+                          onBindWallet={handleOpenWalletBind}
+                          onTake={handleTakeTask}
+                        />
+                      )}
+                      <TaskActionList
+                        items={actionItems}
+                        onDiscord={handleActionToDiscord}
+                        onTwitter={handleActionToTwitter}
+                        onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
+                        allowHandle={allowHandleAction}
+                        displayVerify={displayVerify}
+                        loadingVerify={loadingVerify}
+                        disabledVerify={disabledVerify}
+                        verifyingActions={verifyingActions}
+                        onVerifyActions={() => dispatch(verifyTask(data))}
+                        onVerifyAction={(action) => dispatch(verifyAction(action))}
+                        copyBgc="#FFFFFF"
+                        verifyBgc="#FFFFFF"
+                      />
+                    </TaskListBox>
+                  </>
+                )}
+              </TaskDetailContentBoxRight>
+            </TaskDetailContentBox>
+          </TaskDetailBodyMainBox>
         </TaskDetailBodyBox>
       </MainContentBox>
     </TaskDetailWrapper>
@@ -312,13 +321,25 @@ const TaskDetailWrapper = styled.div`
   width: 100%;
 `
 const TaskDetailBodyBox = styled(CardBox)`
-  padding: 40px;
+  padding: 0;
+  overflow: hidden;
+`
+const TaskDetailBodyMainBanner = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  background: rgba(235, 183, 0, 0.5);
+`
+const TaskDetailBodyMainBox = styled.div`
+  padding: 40px;
+  box-sizing: border-box;
 `
 const TaskDetailHeaderBox = styled.div`
   display: flex;
-  gap: 10px;
+  gap: 20px;
   align-items: center;
 `
 const TaskName = styled.div`

@@ -294,6 +294,7 @@ export default function ConnectWalletModal() {
             py: '20px',
             px: 0,
             borderRadius: '20px',
+            background: '#F7F9F1',
           }}
         >
           <div className="title">

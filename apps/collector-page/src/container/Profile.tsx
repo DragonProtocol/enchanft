@@ -267,24 +267,15 @@ const Profile: React.FC = () => {
           </ProfileTabContentBox>
         </ProfileInfoTabsBox>
       </MainContentBox>
-      <Dialog open={openDialog} fullWidth={true} maxWidth={'sm'}>
+      <DialogBox open={openDialog}>
         <EditProfileBox>
-          <EditProfileTitle>Change Profile</EditProfileTitle>
+          <EditProfileTitle>Edit Profile</EditProfileTitle>
           <EditFormBox>
             <EditAvatarBox
               onClick={() => {
                 document.getElementById('uploadinput')?.click()
               }}
             >
-              {(uploading && (
-                <div className="uploading">
-                  <CircularProgress size="5rem" color="inherit" />
-                  <p>Uploading Image</p>
-                </div>
-              )) || <EditAvatar src={avatar || account.avatar} />}
-            </EditAvatarBox>
-
-            <EditNameBox>
               <input
                 title="uploadinput"
                 id="uploadinput"
@@ -311,19 +302,27 @@ const Profile: React.FC = () => {
                   }
                 }}
               />
+              {(uploading && (
+                <div className="uploading">
+                  <CircularProgress size="5rem" color="inherit" />
+                  <p>Uploading Image</p>
+                </div>
+              )) || <EditAvatar src={avatar || account.avatar} />}
+            </EditAvatarBox>
 
+            <EditNameBox>
               <FormControl variant="standard">
                 <EditNameLabel>Name</EditNameLabel>
-                <TextField id="name" value={name || account.name} onChange={(e) => setName(e.target.value)} />
+                <input title="name" id="name" value={name || account.name} onChange={(e) => setName(e.target.value)} />
               </FormControl>
             </EditNameBox>
           </EditFormBox>
           <EditButtonBox>
-            <EditProfileBtnCancel onClick={() => setOpenDialog(false)}>cancel</EditProfileBtnCancel>
-            <EditProfileBtnSave onClick={() => updateProfile()}>save</EditProfileBtnSave>
+            <EditProfileBtnCancel onClick={() => setOpenDialog(false)}>Cancel</EditProfileBtnCancel>
+            <EditProfileBtnSave onClick={() => updateProfile()}>Save</EditProfileBtnSave>
           </EditButtonBox>
         </EditProfileBox>
-      </Dialog>
+      </DialogBox>
     </ProfileWrapper>
   )
 }
@@ -410,12 +409,23 @@ const ProfileTabContentBox = styled.div`
   margin-top: 20px;
 `
 
+const DialogBox = styled(Dialog)`
+  & div[role='dialog'] {
+    border-radius: 20px;
+  }
+`
+
 // Edit Form
 const EditProfileBox = styled.div`
+  width: 540px;
+  border-radius: 20px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px;
+  gap: 20px;
+  padding: 20px;
+
+  background: #f7f9f1;
 `
 const EditProfileTitle = styled.div`
   font-weight: 700;
@@ -425,9 +435,11 @@ const EditProfileTitle = styled.div`
 `
 const EditFormBox = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 10px;
 `
 const EditAvatarBox = styled.div`
+  margin: 0 auto;
   width: 160px;
   height: 160px;
   position: relative;
@@ -454,9 +466,21 @@ const EditAvatar = styled(UserAvatar)`
   object-fit: cover;
 `
 const EditNameBox = styled.div`
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  & input {
+    padding: 11.5px 18px;
+    margin-top: 10px;
+    font-size: 18px;
+    line-height: 27px;
+    border-radius: 10px;
+    background: #ebeee4;
+    border: none !important;
+    outline: none !important;
+  }
 `
 const EditNameLabel = styled.div`
   font-weight: 700;

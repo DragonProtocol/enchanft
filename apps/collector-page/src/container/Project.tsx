@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
-import { selectAccount } from '../features/user/accountSlice'
+import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import MainContentBox from '../components/layout/MainContentBox'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ProjectDetailEntity, fetchProjectDetail, selectProjectDetail } from '../features/project/projectDetailSlice'
@@ -17,6 +17,7 @@ import { selectIds as selectIdsByUserFollowedProject } from '../features/user/fo
 import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import CardBox from '../components/common/card/CardBox'
 import ProjectDetailCommunity, {
+  FollowStatusType,
   ProjectDetailCommunityDataViewType,
 } from '../components/business/project/ProjectDetailCommunity'
 import ProjectDetailBasicInfo from '../components/business/project/ProjectDetailBasicInfo'
@@ -34,6 +35,7 @@ import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import PngIconNotebook from '../components/common/icons/PngIconNotebook'
+import { ChainType, getChainType } from '../utils/chain'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -49,16 +51,50 @@ const formatStoreDataToComponentDataByCommunityBasicInfo = (
   token: string,
   followedCommunityIds: Array<string | number>,
   followCommunityStatus: AsyncRequestStatus,
+  accountTypes: string[],
 ): ProjectDetailCommunityDataViewType => {
-  const { community } = data
+  const { community, chainId } = data
+
+  const chainType = getChainType(chainId)
+
+  let followStatusType = FollowStatusType.UNKNOWN
+
+  if (token) {
+    const isFollowed = followedCommunityIds.map((item) => String(item)).includes(String(community.id))
+    if (isFollowed) {
+      followStatusType = FollowStatusType.FOLLOWED
+    } else if (followCommunityStatus === AsyncRequestStatus.PENDING) {
+      followStatusType = FollowStatusType.FOLLOWING
+    } else {
+      // 钱包是否跟用户系统绑定
+      let isBindWallet = false
+      switch (chainType) {
+        case ChainType.EVM:
+          if (accountTypes.includes('EVM')) {
+            isBindWallet = true
+          }
+          break
+        case ChainType.SOLANA:
+          if (accountTypes.includes('SOLANA')) {
+            isBindWallet = true
+          }
+          break
+      }
+      if (!isBindWallet) {
+        followStatusType = FollowStatusType.BIND_WALLET
+      } else {
+        followStatusType = FollowStatusType.FOLLOW
+      }
+    }
+  } else {
+    followStatusType = FollowStatusType.CONNECT_WALLET
+  }
+
   return {
-    data: {
-      ...community,
-      isFollowed: followedCommunityIds.map((item) => String(item)).includes(String(community.id)),
-    },
+    data: community,
     viewConfig: {
-      displayFollow: token ? true : false,
-      loadingFollow: followCommunityStatus === AsyncRequestStatus.PENDING,
+      followStatusType,
+      bindWalletType: chainType,
     },
   }
 }
@@ -101,7 +137,8 @@ const formatStoreDataToComponentDataByTeamMembers = (
 const Project: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token } = useAppSelector(selectAccount)
+  const { token, accounts } = useAppSelector(selectAccount)
+  const accountTypes = accounts.map((account) => account.accountType)
 
   const { projectSlug } = useParams()
   const { data, status, errorMsg } = useAppSelector(selectProjectDetail)
@@ -126,8 +163,6 @@ const Project: React.FC = () => {
     }
   }, [loadingView, status])
 
-  const communityId = data?.communityId
-
   // 获取社区贡献等级
   const contributionranks = useAppSelector(selectAllForCommunityContributionranks)
   const fetchContributionranksIntervalRef = useRef<any>(null)
@@ -149,46 +184,56 @@ const Project: React.FC = () => {
   // 用户关注的社区ID集合
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
 
-  // 关注社区
-  const { status: followCommunityStatus } = followCommunityState
-  const handleFollowChange = (isFollowed: boolean) => {
-    if (communityId && isFollowed) {
-      dispatch(followCommunity({ id: Number(communityId) }))
-    }
-  }
+  // 打开连接钱包的窗口
+  const handleOpenConnectWallet = useCallback(() => {
+    dispatch(setConnectWalletModalShow(true))
+  }, [])
 
   // tabs
-  const ProjectInfoTabs = [
-    {
-      label: 'Meet the Team',
-      value: ProjectInfoTabsValue.TEAM,
-    },
-    {
-      label: 'Roadmap',
-      value: ProjectInfoTabsValue.ROADMAP,
-    },
-    // {
-    //   label: 'Reviews',
-    //   value: ProjectInfoTabsValue.REVIEWS,
-    // },
-  ]
-  const [activeTab, setActiveTab] = useState(ProjectInfoTabsValue.TEAM)
+  // const ProjectInfoTabs = [
+  //   {
+  //     label: 'Meet the Team',
+  //     value: ProjectInfoTabsValue.TEAM,
+  //   },
+  //   {
+  //     label: 'Roadmap',
+  //     value: ProjectInfoTabsValue.ROADMAP,
+  //   },
+  //   // {
+  //   //   label: 'Reviews',
+  //   //   value: ProjectInfoTabsValue.REVIEWS,
+  //   // },
+  // ]
+  // const [activeTab, setActiveTab] = useState(ProjectInfoTabsValue.TEAM)
+
   if (loadingView)
     return (
       <MainInnerStatusBox>
         <Loading />{' '}
       </MainInnerStatusBox>
     )
-  // 展示数据
+
   if (!data) {
     return <MainInnerStatusBox>Can't find project {projectSlug}</MainInnerStatusBox>
   }
+
+  // 关注社区
+  const { communityId } = data
+  const { status: followCommunityStatus } = followCommunityState
+  const handleFollow = () => {
+    if (communityId) {
+      dispatch(followCommunity({ id: Number(communityId) }))
+    }
+  }
+
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
     data,
     token,
     userFollowedProjectIds,
     followCommunityStatus,
+    accountTypes,
   )
+
   const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data, token)
   const showContributionranks = contributionranks.slice(0, 5)
   const contributionMembersTotal = contributionranks.length
@@ -201,10 +246,15 @@ const Project: React.FC = () => {
   //   // [ProjectInfoTabsValue.REVIEWS]: <span>Not yet developed</span>,
   // }
 
-  //进入ranks页面，如果没有关注，自动关注社区
+  //进入ranks页面，如果符合条件就自动关注
   const startContribute = () => {
     navigate(`/${projectSlug}/rank`)
-    if (!communityDataView.data.isFollowed) handleFollowChange(true)
+    if (communityDataView.viewConfig?.followStatusType === FollowStatusType.FOLLOW) handleFollow()
+  }
+  // 打开绑定钱包账户的窗口
+  const handleOpenWalletBind = (chainType: ChainType) => {
+    const modalType = chainType === ChainType.SOLANA ? ConnectModal.PHANTOM : ConnectModal.METAMASK
+    dispatch(setConnectModal(modalType))
   }
 
   return (
@@ -217,7 +267,9 @@ const Project: React.FC = () => {
             <ProjectDetailCommunity
               data={communityDataView.data}
               viewConfig={communityDataView.viewConfig}
-              onFollowChange={handleFollowChange}
+              onFollow={handleFollow}
+              onBindWallet={handleOpenWalletBind}
+              onConnectWallet={handleOpenConnectWallet}
             />
             <ProjectDetailBasicInfo
               data={projectBasicInfoDataView.data}

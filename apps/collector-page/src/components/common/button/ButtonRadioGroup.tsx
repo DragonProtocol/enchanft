@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 10:32:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 17:44:06
+ * @LastEditTime: 2022-08-24 14:00:43
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
@@ -46,7 +46,7 @@ const ButtonRadioGroupWrapper = styled.div`
   height: 50px;
   box-sizing: border-box;
   display: flex;
-  border: 2px solid #333333;
+  box-shadow: inset 0px 0px 0px 2px #333333;
   border-radius: 10px;
   overflow: hidden;
 `

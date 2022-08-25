@@ -90,8 +90,6 @@ const ListStatusBox = styled.div`
   align-items: center;
 `
 const ExploreTaskItemBox = styled.div`
-  // 为了显现出阴影，grid布局会不留空隙，需为子项预留box-shadow的空间
-  padding-bottom: 4px;
   /* 鼠标移入整体上移2px */
   &:hover {
     transform: translateY(-4px);

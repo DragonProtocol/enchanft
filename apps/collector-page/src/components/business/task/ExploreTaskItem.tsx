@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import CardItemBox from '../../common/card/CardItemBox'
-import IconGiftBox from '../../common/icons/IconGiftBox'
+import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
 import TaskImageDefault from './TaskImageDefault'
@@ -62,7 +62,7 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
         </TaskDateTime>
         {reward && (
           <TaskRemarkBox>
-            <IconGiftBox size={'16px'} />
+            <PngIconGiftBox size={'16px'} />
             <TaskRemark>{reward.name}</TaskRemark>
           </TaskRemarkBox>
         )}

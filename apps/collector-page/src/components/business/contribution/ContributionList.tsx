@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 16:58:39
+ * @LastEditTime: 2022-08-23 16:33:35
  * @Description: file description
  */
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import UserAvatar from '../user/UserAvatar'
-import IconTrophy from '../../common/icons/IconTrophy'
+import PngIconTrophy from '../../common/icons/PngIconTrophy'
 import CrownImg from '../../imgs/crown.svg'
 import ButtonBase from '../../common/button/ButtonBase'
 export type ContributionItemDataType = {
@@ -143,7 +143,7 @@ const ContributionList: React.FC<ContributionListProps> = ({
   return (
     <ContributionListWrapper>
       <ContributioHeaderBox>
-        <IconTrophy />
+        <PngIconTrophy />
         <ContributionTitle style={{ fontSize: fontSize.title, fontWeight: fontWeight.title }}>
           Contribution Token
         </ContributionTitle>

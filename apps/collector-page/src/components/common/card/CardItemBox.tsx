@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 10:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 18:01:43
+ * @LastEditTime: 2022-08-24 14:45:52
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
@@ -16,7 +16,7 @@ export default CardItemBox
 const CardItemBoxWrapper = styled.div`
   width: 100%;
   background: #f7f9f1;
-  border: 2px solid #333333;
+  outline: 2px solid #333333;
   border-radius: 10px;
   box-sizing: border-box;
   overflow: hidden;
