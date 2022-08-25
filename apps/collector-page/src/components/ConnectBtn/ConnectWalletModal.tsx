@@ -44,6 +44,10 @@ export default function ConnectWalletModal() {
       if (existToken) {
         dispatch(setToken(existToken))
         dispatch(userGetProfile())
+      } else {
+        dispatch(setToken(''))
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
       }
     }
   }, [account.pubkey, account.defaultWallet])
