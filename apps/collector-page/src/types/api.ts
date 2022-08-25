@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 14:01:18
+ * @LastEditTime: 2022-08-25 12:04:47
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -10,6 +10,7 @@ import {
   Action,
   Community,
   ContributionRank,
+  MintStage,
   Project,
   ProjectStatus,
   Reward,
@@ -55,7 +56,7 @@ export type TaskItem = Task & {
   actions: Action[]
 }
 export type ExploreSearchProjectsRequestParams = {
-  status?: ProjectStatus | ''
+  mintStage?: MintStage | ''
   keywords?: string
 }
 export type ExploreSearchProjectItem = Project & {

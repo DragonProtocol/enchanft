@@ -2,18 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 18:55:42
+ * @LastEditTime: 2022-08-25 14:29:42
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { ProjectStatus, TaskType } from '../../../types/entities'
+import { MintStage, ProjectStatus, TaskType } from '../../../types/entities'
 import CardItemBox from '../../common/card/CardItemBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
-import ProjectStatusLabel from './ProjectStatusLabel'
+import MintStageLabel from './MintStageLabel'
 
 export type ExploreProjectItemDataType = {
   id: number
@@ -23,7 +23,7 @@ export type ExploreProjectItemDataType = {
   floorPrice: string
   injectedCoins: number
   itemTotalNum: number
-  mintPrice: string
+  mintStage: MintStage
   mintStartTime: number
   publicSaleTime: number
   publicSalePrice: string
@@ -47,36 +47,47 @@ export type ExploreProjectItemDataViewType = {
 export type ExploreProjectItemProps = ExploreProjectItemDataViewType
 
 const defaultViewConfig = {}
-const ProjectStatusLabels = {
-  [ProjectStatus.ACTIVE]: 'Active',
-  [ProjectStatus.LIVE]: 'Live',
-  [ProjectStatus.FUTURE]: 'Future',
-}
 
 const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfig }: ExploreProjectItemProps) => {
   const navigate = useNavigate()
-  const { id, name, image, status, floorPrice, itemTotalNum, communityId, tasks, publicSaleTime, chainId, slug } = data
+  const {
+    id,
+    name,
+    image,
+    mintStage,
+    publicSalePrice,
+    itemTotalNum,
+    communityId,
+    tasks,
+    publicSaleTime,
+    chainId,
+    slug,
+  } = data
   // const {} = {
   //   ...defaultViewConfig,
   //   ...viewConfig,
   // }
 
-  const statusLabel = ProjectStatusLabels[status] || 'Unknown ExploreProject Status'
   let projectDescBottomText = ''
-  switch (status) {
-    case ProjectStatus.ACTIVE:
-      // 距离结束时间的天数
-      const task = tasks[0]
-      const days = task ? Math.floor((task.endTime - Date.now()) / (1000 * 60 * 60 * 24)) : 0
-      projectDescBottomText = `${tasks.length} task . ${days} days`
+  if (itemTotalNum) {
+    projectDescBottomText = `items ${itemTotalNum}`
+  }
+  switch (mintStage) {
+    case MintStage.FUTURE:
+      if (publicSalePrice) {
+        projectDescBottomText += ` . Mint Price ${publicSalePrice}`
+      }
+      if (publicSaleTime) {
+        // 预发售日期
+        const publicMintStartDate = new Date(publicSaleTime).toLocaleDateString()
+        projectDescBottomText += ` . ${publicMintStartDate}`
+      }
       break
-    case ProjectStatus.LIVE:
-      projectDescBottomText = `items ${itemTotalNum} . Floor Price ${floorPrice}`
+    case MintStage.LIVE:
+      if (publicSalePrice) {
+        projectDescBottomText += ` . Mint Price ${publicSalePrice}`
+      }
       break
-    case ProjectStatus.FUTURE:
-      // 预发售日期
-      const publicMintStartDate = new Date(publicSaleTime).toLocaleDateString()
-      projectDescBottomText = `items ${itemTotalNum} . Mint Price ${floorPrice} ${publicMintStartDate}`
   }
   return (
     <ExploreProjectItemWrapper onClick={() => navigate(`/${slug}`)}>
@@ -87,7 +98,7 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
 
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
-        <ProjectStatusLabel status={status} />
+        <MintStageLabel mintStage={mintStage} />
         <ProjectInfoBottomBox>{projectDescBottomText}</ProjectInfoBottomBox>
       </ProjectInfoBox>
     </ExploreProjectItemWrapper>
