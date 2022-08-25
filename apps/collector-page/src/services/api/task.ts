@@ -121,7 +121,7 @@ export function createTask(data: CreateTaskState) {
       return {
         name: item.name,
         type: item.typeMore,
-        description: '',
+        description: item.description,
         data: {
           url: item.url,
           server_id: item.server_id,

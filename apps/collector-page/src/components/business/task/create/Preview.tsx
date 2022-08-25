@@ -16,6 +16,7 @@ import IconCheckbox from '../../../common/icons/IconCheckbox'
 import PngIconGiftBox from '../../../common/icons/PngIconGiftBox'
 import PngIconAlarmClock from '../../../common/icons/PngIconAlarmClock'
 import PngIconCaretLeft from '../../../common/icons/PngIconCaretLeft'
+import PngIconWL from '../../../common/icons/PngIconWL'
 import { getTaskRewardTypeLabel } from '../../../../utils/task'
 
 export default function Preview({
@@ -51,16 +52,20 @@ export default function Preview({
             <div className="left">
               <img src={state.image} alt="" />
               <h3>{getTaskRewardTypeLabel({ type: state.reward.type, raffled: state.reward.raffled })}</h3>
-              <div>
+              <div className="items">
                 <PngIconAlarmClock />
                 <span>
                   {dayjs(state.startTime).format('YYYY/MM/DD')}——{dayjs(state.endTime).format('YYYY/MM/DD')}
                 </span>
                 <span>Winners: {state.winnerNum}</span>
               </div>
-              <div>
+              <div className="items">
                 <PngIconGiftBox />
-                <span>Reward: {state.reward.type === RewardType.WHITELIST ? 'whitelist' : state.reward.name}</span>
+                {state.reward.type === RewardType.WHITELIST && <span>Reward: whitelist</span>}
+                {state.reward.type === RewardType.OTHERS && <span>Reward: {state.reward.name}</span>}
+                {state.reward.type === RewardType.CONTRIBUTION_TOKEN && (
+                  <span>Reward: contribution token - {state.reward.token_num}</span>
+                )}
               </div>
               <div className="desc">
                 <p>{state.description}</p>
@@ -81,11 +86,11 @@ export default function Preview({
                     Icon = IconNotify
                   }
                   if (item.type === ActionType.UNKNOWN) {
-                    Icon = IconTip
+                    Icon = PngIconWL
                   }
                   return (
                     <div key={idx} className="action-item">
-                      <p>{item.name}</p> <Icon />
+                      <p>{item.name || item.description}</p> <Icon />
                     </div>
                   )
                 })}
@@ -226,6 +231,12 @@ const TaskPrevewWrapper = styled.div`
       > div.left {
         width: 50%;
         box-sizing: border-box;
+
+        & .items {
+          & img {
+            margin-bottom: 0;
+          }
+        }
       }
       > div.right {
         > div {

@@ -14,6 +14,9 @@ export const getTaskRewardTypeLabel = (reward?: { type: RewardType; raffled: boo
   let rewardTypeLabel = 'Unknown Reward Type'
   if (reward) {
     switch (reward.type) {
+      case RewardType.CONTRIBUTION_TOKEN:
+        rewardTypeLabel = 'Custom Action'
+        break
       case RewardType.WHITELIST:
         rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS'
         break
