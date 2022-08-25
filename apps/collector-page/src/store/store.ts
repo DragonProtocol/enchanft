@@ -2,14 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 13:46:39
+ * @LastEditTime: 2022-08-25 16:35:31
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
 
 import websiteReducer from '../features/website/index'
 import accountReducer from '../features/user/accountSlice'
-import myEnchanftedReducer from '../features/user/myEnchanftedSlice'
 
 // project
 import exploreRecommendProjectsReducer from '../features/explore/recommendProjectsSlice'
@@ -42,7 +41,6 @@ export const store = configureStore({
   reducer: {
     website: websiteReducer,
     account: accountReducer,
-    myEnchanfted: myEnchanftedReducer,
 
     exploreSearchProjects: exploreSearchProjectsReducer,
     exploreRecommendProjects: exploreRecommendProjectsReducer,

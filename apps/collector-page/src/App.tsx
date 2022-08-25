@@ -2,12 +2,10 @@
  * @Author:
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-27 17:44:57
+ * @LastEditTime: 2022-08-25 16:42:45
  * @Description:
  */
 import { Provider as ReduxProvider } from 'react-redux'
-import SolanaProvider from './providers/SolanaProvider'
-import { Provider as SynftProvider } from '@ecnft/js-sdk-react'
 import { BrowserRouter } from 'react-router-dom'
 import Layout from './components/layout/Index'
 import { store } from './store/store'
@@ -28,16 +26,12 @@ function App() {
   appsignal.demo()
   return (
     <ErrorBoundary instance={appsignal} tags={{ tag: 'value' }} fallback={(error) => <FallbackComponent />}>
-      <SolanaProvider>
-        <SynftProvider>
-          <ReduxProvider store={store}>
-            <GlobalStyle />
-            <BrowserRouter>
-              <Layout />
-            </BrowserRouter>
-          </ReduxProvider>
-        </SynftProvider>
-      </SolanaProvider>
+      <ReduxProvider store={store}>
+        <GlobalStyle />
+        <BrowserRouter>
+          <Layout />
+        </BrowserRouter>
+      </ReduxProvider>
     </ErrorBoundary>
   )
 }
