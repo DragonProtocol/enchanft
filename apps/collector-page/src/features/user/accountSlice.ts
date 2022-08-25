@@ -13,6 +13,8 @@ import {
   DEFAULT_WALLET,
   LAST_LOGIN_AVATAR,
   LAST_LOGIN_NAME,
+  LAST_LOGIN_TOKEN,
+  LAST_LOGIN_PUBKEY,
   LAST_LOGIN_TYPE,
   setLoginToken,
   TokenType,
@@ -75,6 +77,7 @@ export type AccountState = {
   lastLoginType: TokenType | null
   lastLoginInfo: { name: string; avatar: string }
   pubkey: string
+  lastPubkey: string
   token: string
   avatar: string
   name: string
@@ -97,10 +100,11 @@ const initialState: AccountState = {
     name: localStorage.getItem(LAST_LOGIN_NAME) || '',
     avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
   },
-  pubkey: '',
-  token: '',
-  avatar: '',
-  name: '',
+  pubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
+  lastPubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
+  token: localStorage.getItem(LAST_LOGIN_TOKEN) || '',
+  avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
+  name: localStorage.getItem(LAST_LOGIN_NAME) || '',
   id: 0,
   connectModal: null,
   connectWalletModalShow: false,
@@ -249,6 +253,7 @@ export const accountSlice = createSlice({
       state.avatar = action.payload
     },
     setPubkey: (state, action) => {
+      localStorage.setItem(LAST_LOGIN_PUBKEY, action.payload)
       state.pubkey = action.payload
     },
     removeToken: (state) => {
@@ -280,8 +285,9 @@ export const accountSlice = createSlice({
         state.defaultWallet = action.payload.walletType
         state.errorMsg = ''
 
-        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.avatar)
-        localStorage.setItem(LAST_LOGIN_NAME, action.payload.name)
+        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.avatar || '')
+        localStorage.setItem(LAST_LOGIN_NAME, action.payload.name || '')
+        localStorage.setItem(LAST_LOGIN_TOKEN, action.payload.token || '')
 
         localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
         localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
@@ -337,8 +343,8 @@ export const accountSlice = createSlice({
         state.roles = action.payload.data.roles
         state.errorMsg = ''
 
-        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.data.avatar)
-        localStorage.setItem(LAST_LOGIN_NAME, action.payload.data.name)
+        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.data.avatar || '')
+        localStorage.setItem(LAST_LOGIN_NAME, action.payload.data.name || '')
       })
       .addCase(userGetProfile.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
