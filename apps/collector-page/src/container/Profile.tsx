@@ -2,17 +2,9 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 17:21:35
+ * @LastEditTime: 2022-08-25 15:12:39
  * @Description: 个人信息
  */
-import { useSynftContract } from '@ecnft/js-sdk-react'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import {
-  clearMyNFT,
-  fetchMyEnchanfted,
-  selectAll as selectAllForMyEnchanfted,
-  selectMyEnchanftedState,
-} from '../features/user/myEnchanftedSlice'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCallback } from 'react'
 import useInterval from '../hooks/useInterval'
@@ -52,8 +44,6 @@ import {
   selectUserFollowedCommunitiesState,
 } from '../features/user/followedCommunitiesSlice'
 import { AsyncRequestStatus } from '../types'
-import EnchanftedList, { EnchanftedListItemsType } from '../components/business/nft/EnchanftedList'
-import { EnchanftedForEntity } from '../features/user/myEnchanftedSlice'
 import { uploadAvatar } from '../services/api/login'
 import { connectionSocialMedia } from '../utils/socialMedia'
 import PhatomIcon from '../components/ConnectBtn/PhantomIcon'
@@ -105,13 +95,6 @@ const formatStoreDataToComponentDataByUserWhitelists = (
     }
   })
 }
-// const formatStoreDataToComponentDataByMyEnchanfted = (nfts: EnchanftedForEntity[]): EnchanftedListItemsType => {
-//   return nfts.map((nft) => {
-//     return {
-//       data: { ...nft },
-//     }
-//   })
-// }
 const ProfileTabOptions = [
   {
     label: 'My Communities',
@@ -121,10 +104,6 @@ const ProfileTabOptions = [
     label: 'My Rewards',
     value: 'myRewards',
   },
-  // {
-  //   label: 'My Enchanfted',
-  //   value: 'myEnchanfted',
-  // },
 ]
 const Profile: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -160,13 +139,6 @@ const Profile: React.FC = () => {
   const { status: whitelistsStatus } = useAppSelector(selectUserWhitelistsState)
   const loadingUserWhitelists = whitelistsStatus === AsyncRequestStatus.PENDING
   const whitelistItems = formatStoreDataToComponentDataByUserWhitelists(whitelists)
-  console.log({ whitelistItems })
-
-  // 我的NFT列表
-  // const myEnchanftedList = useAppSelector(selectAllForMyEnchanfted)
-  // const { status: myEnchanftedStatus } = useAppSelector(selectMyEnchanftedState)
-  // const loadingEnchanftedList = myEnchanftedStatus === AsyncRequestStatus.PENDING
-  // const myEnchanftedItems = formatStoreDataToComponentDataByMyEnchanfted(myEnchanftedList)
 
   const twitter = account.accounts.find((item) => item.accountType === 'TWITTER')?.thirdpartyName
   const discord = account.accounts.find((item) => item.accountType === 'DISCORD')?.thirdpartyName
@@ -261,9 +233,6 @@ const Profile: React.FC = () => {
               <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
             )}
             {curProfileTab === 'myRewards' && <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />}
-            {/* {curProfileTab === 'myEnchanfted' && (
-                <EnchanftedList items={myEnchanftedItems} loading={loadingEnchanftedList} />
-              )} */}
           </ProfileTabContentBox>
         </ProfileInfoTabsBox>
       </MainContentBox>

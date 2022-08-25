@@ -2,12 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-22 10:50:29
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-22 11:49:23
+ * @LastEditTime: 2022-08-25 16:03:45
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
-import { createReturn } from 'typescript'
 import { ButtonPrimary } from './components/common/button/ButtonBase'
 import CardBox from './components/common/card/CardBox'
 import PcPng from './components/imgs/pc.png'
