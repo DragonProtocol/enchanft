@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Menu, MenuItem, styled } from '@mui/material'
+import { Box, Button, Modal, Menu, MenuItem } from '@mui/material'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
@@ -24,8 +24,10 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
 import useWalletSign from '../../hooks/useWalletSign'
 import IconMetamask from '../common/icons/PngIconMetaMask'
+import PngIconCongratulate from '../common/icons/PngIconCongratulate'
 import IconPhantom from '../common/icons/IconPhantomWhite'
 import { AsyncRequestStatus } from '../../types'
+import styled from 'styled-components'
 
 enum LoginStatus {
   INIT = 'init',
@@ -292,7 +294,6 @@ export default function ConnectWalletModal() {
             py: '20px',
             px: 0,
             borderRadius: '20px',
-            background: '#F7F9F1',
           }}
         >
           <div className="title">
@@ -319,44 +320,72 @@ export default function ConnectWalletModal() {
             top: '40%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 384,
-            bgcolor: 'background.paper',
+            width: '540px',
             boxShadow: 24,
-            py: '20px',
             px: 0,
-            borderRadius: '10px',
+            background: '#F7F9F1',
+            borderRadius: '20px',
+            overflow: 'hidden',
           }}
         >
           {(() => {
             if (!signDone) {
               if (signErr) {
                 return (
-                  <div>
-                    <p>❌ Signature Rejected</p>
-                    <button onClick={() => setWalletModalShow(false)}>close</button>
-                    <button onClick={reSign}>retry</button>
-                  </div>
+                  <ModalBox>
+                    <h3>❌ Signature Rejected</h3>
+                    <p>Please sign the message in your wallet to login.</p>
+                    <div className="btns">
+                      <button className="close" onClick={() => setWalletModalShow(false)}>
+                        Close
+                      </button>
+                      <button className="retry" onClick={reSign}>
+                        Retry
+                      </button>
+                    </div>
+                  </ModalBox>
                 )
               }
               return (
-                <div>
-                  <p>🕹 Signature Request</p>
-                </div>
+                <ModalBox>
+                  <h3>🕹 Signature Request</h3>
+                  <p>
+                    Please sign the message in your wallet to login WL, we use this signature to verify that you‘re the
+                    owner.
+                  </p>
+                </ModalBox>
               )
             }
             console.log('account.status', account.status)
             if (account.status == AsyncRequestStatus.FULFILLED) {
               setTimeout(resetStatus, 2500)
-              return <div>welcome to wl</div>
+              return (
+                <ModalBox className="welcome">
+                  <div>
+                    <PngIconCongratulate />
+                    <h3>Signature Successed!</h3>
+                    <p>😊 Welcome to WL! 😊</p>
+                  </div>
+                </ModalBox>
+              )
             }
             if (account.status == AsyncRequestStatus.PENDING) {
-              return <div>loading</div>
+              return (
+                <ModalBox>
+                  <h3>⏳ Loading</h3>
+                  <p>Logging in now, Please wait...</p>
+                </ModalBox>
+              )
             }
             return (
-              <div>
-                login fail
-                <button onClick={() => setWalletModalShow(false)}>close</button>
-              </div>
+              <ModalBox>
+                <h3>Login Fail</h3>
+                <div className="btns">
+                  <button className="close" onClick={() => setWalletModalShow(false)}>
+                    Close
+                  </button>
+                </div>
+              </ModalBox>
             )
           })()}
         </Box>
@@ -364,6 +393,74 @@ export default function ConnectWalletModal() {
     </>
   )
 }
+
+const ModalBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: #f7f9f1;
+  & h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 30px;
+    color: #333333;
+  }
+  & p {
+    margin: 0;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #333333;
+  }
+
+  & .btns {
+    display: flex;
+    gap: 20px;
+    justify-content: end;
+    & button {
+      padding: 10px 18px;
+      gap: 10px;
+      width: 120px;
+      height: 48px;
+      outline: none;
+      border: none;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 27px;
+      color: #ffffff;
+    }
+    & .close {
+      background: #ebeee4;
+      color: #333333;
+      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    & .retry {
+      background: #3dd606;
+      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+  }
+
+  &.welcome {
+    background: #fffbdb;
+    padding: 40px 20px;
+    text-align: center;
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      & img {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  }
+`
 
 const WalletModal = styled(Modal)`
   backdrop-filter: blur(12px);
