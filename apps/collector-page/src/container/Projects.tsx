@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:58:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 13:12:55
+ * @LastEditTime: 2022-08-25 11:53:22
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -27,7 +27,7 @@ import ExploreProjectSwiper, { ExplorProjectSwiperItemsType } from '../component
 import ExploreProjectList, { ExploreProjectListItemsType } from '../components/business/project/ExploreProjectList'
 import ExploreProjectFilter, {
   ExploreProjectFilterDataType,
-  ProjectStatusOther,
+  MintStageOther,
 } from '../components/business/project/ExploreProjectFilter'
 import CardBox from '../components/common/card/CardBox'
 
@@ -63,7 +63,7 @@ const Projects: React.FC = () => {
   const { status: searchProjectsStatus } = useAppSelector(selectExploreSearchProjectsState)
   const projects = useAppSelector(selectAllForExploreSearchProjects)
   const [searchProjectsFilter, setProjectsFilter] = useState<ExploreProjectFilterDataType>({
-    status: ProjectStatusOther.All,
+    mintStage: MintStageOther.All,
     keywords: '',
   })
   useEffect(() => {
