@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { ButtonWarning } from '../../common/button/ButtonBase'
+import { ButtonPrimary, ButtonWarning } from '../../common/button/ButtonBase'
 import IconWebsite from '../../common/icons/IconWebsite'
 import IconTwitterBlack from '../../common/icons/IconTwitterBlack'
 import IconDiscordBlack from '../../common/icons/IconDiscordBlack'
 import { getTwitterHomeLink } from '../../../utils/twitter'
+import { ChainType } from '../../../utils/chain'
 export type ProjectDetailCommunityDataType = {
   id: number
   name: string
@@ -14,12 +15,19 @@ export type ProjectDetailCommunityDataType = {
   twitterId: string
   discord: string
   discordInviteUrl: string
-  isFollowed: boolean
 }
 
+export enum FollowStatusType {
+  CONNECT_WALLET = 'CONNECT_WALLET',
+  BIND_WALLET = 'BIND_WALLET',
+  FOLLOW = 'FOLLOW',
+  FOLLOWING = 'FOLLOWING',
+  FOLLOWED = 'FOLLOWED',
+  UNKNOWN = 'UNKNOWN',
+}
 export type ProjectDetailCommunityViewConfigType = {
-  displayFollow?: boolean
-  loadingFollow?: boolean
+  followStatusType?: FollowStatusType
+  bindWalletType?: ChainType
 }
 
 export type ProjectDetailCommunityDataViewType = {
@@ -27,34 +35,66 @@ export type ProjectDetailCommunityDataViewType = {
   viewConfig?: ProjectDetailCommunityViewConfigType
 }
 export type ProjectDetailCommunityHandlesType = {
-  onFollowChange?: (open: boolean) => void
+  onFollow?: () => void
+  onConnectWallet?: () => void
+  onBindWallet?: (chainType: ChainType) => void
 }
 export type ProjectDetailCommunityProps = ProjectDetailCommunityDataViewType & ProjectDetailCommunityHandlesType
 
 const defaultViewConfig = {
-  displayFollow: false,
-  loadingFollow: false,
+  followStatusType: FollowStatusType.UNKNOWN,
+  bindWalletType: ChainType.UNKNOWN,
+}
+
+const bindWalletTypeBtnTextMap = {
+  [ChainType.EVM]: 'Bind MetaMask',
+  [ChainType.SOLANA]: 'Bind Phantom',
+  [ChainType.UNKNOWN]: 'unknown chain type',
 }
 const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
   data,
   viewConfig,
-  onFollowChange,
+  onFollow,
+  onConnectWallet,
+  onBindWallet,
 }: ProjectDetailCommunityProps) => {
-  const { name, icon, website, twitterId, discordInviteUrl, isFollowed } = data
+  const { name, icon, website, twitterId, discordInviteUrl } = data
   const twitterHomeLink = getTwitterHomeLink(twitterId)
-  const { displayFollow, loadingFollow } = {
+  const { followStatusType, bindWalletType } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
-  const handleFollowChange = () => {
-    if (onFollowChange) {
-      onFollowChange(!isFollowed)
+  const handleFollow = () => {
+    if (onFollow) {
+      onFollow()
     }
   }
-  let followText = isFollowed ? 'Joined' : 'Join'
-  if (loadingFollow) {
-    followText = 'Loading ...'
+  const handleConnectWallet = () => {
+    if (onConnectWallet) {
+      onConnectWallet()
+    }
   }
+  const handleBindWallet = () => {
+    if (onBindWallet) {
+      onBindWallet(bindWalletType)
+    }
+  }
+  const renderFollowBtn = useCallback(() => {
+    switch (followStatusType) {
+      case FollowStatusType.CONNECT_WALLET:
+        return <WalletBtn onClick={handleConnectWallet}>Connect Wallet</WalletBtn>
+      case FollowStatusType.BIND_WALLET:
+        return <WalletBtn onClick={handleBindWallet}>{bindWalletTypeBtnTextMap[bindWalletType]}</WalletBtn>
+      case FollowStatusType.FOLLOW:
+        return <FollowBtn onClick={handleFollow}>Join</FollowBtn>
+      case FollowStatusType.FOLLOWING:
+        return <FollowBtn disabled>following ...</FollowBtn>
+      case FollowStatusType.FOLLOWED:
+        return <FollowBtn disabled>Joined</FollowBtn>
+      default:
+        return null
+    }
+  }, [followStatusType, bindWalletType])
   return (
     <ProjectDetailCommunityWrapper>
       {/* <CommunityImg src={icon} /> */}
@@ -70,11 +110,7 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
           <IconDiscordBlack />
         </ProjectLink>
       </CommunityLeftBox>
-      {displayFollow && (
-        <CommunityFollowBtn disabled={isFollowed} onClick={handleFollowChange}>
-          {followText}
-        </CommunityFollowBtn>
-      )}
+      {renderFollowBtn()}
     </ProjectDetailCommunityWrapper>
   )
 }
@@ -108,7 +144,13 @@ const ProjectLink = styled.a`
   height: 20px;
   cursor: pointer;
 `
-const CommunityFollowBtn = styled(ButtonWarning)`
+const FollowBtn = styled(ButtonWarning)`
+  min-width: 100px;
+  height: 40px;
+  font-weight: 700;
+  font-size: 18px;
+`
+const WalletBtn = styled(ButtonPrimary)`
   min-width: 100px;
   height: 40px;
   font-weight: 700;
