@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 17:21:35
+ * @LastEditTime: 2022-08-25 11:35:26
  * @Description: 个人信息
  */
 import { useSynftContract } from '@ecnft/js-sdk-react'
@@ -223,7 +223,10 @@ const Profile: React.FC = () => {
                   bindMetamask()
                 }}
               >
-                <IconMetamask />
+                <ConnectIconBox>
+                  <IconMetamask />
+                </ConnectIconBox>
+
                 {accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}
               </MetamaskBindBtn>
               <PhantomBindBtn
@@ -376,7 +379,7 @@ const BindBtnBase = styled(ButtonBase)`
   font-weight: 700;
 `
 const MetamaskBindBtn = styled(BindBtnBase)`
-  background: #f5e5d5;
+  background: #f6851b;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
 const PhantomBindBtn = styled(BindBtnBase)`
@@ -397,7 +400,15 @@ const EmailBindBtn = styled(BindBtnBase)`
   background: #3dd606;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
-
+const ConnectIconBox = styled.div`
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 2px;
+  background: #ffffff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.5rem;
+`
 const ProfileInfoTabsBox = styled(CardBox)`
   margin-top: 20px;
 `
