@@ -166,6 +166,7 @@ export type Whitelist = {
 export enum RewardType {
   WHITELIST = 'WHITELIST',
   OTHERS = 'OTHER',
+  CONTRIBUTION_TOKEN = 'CONTRIBUTION_TOKEN',
 }
 
 export type Reward = {

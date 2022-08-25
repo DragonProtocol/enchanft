@@ -29,6 +29,7 @@ export const TASK_SHARE_URI = process.env.REACT_APP_TASK_SHARE_URI
 
 export const CREATE_TASK_DEFAULT_WINNER_NUM = 20
 export const CREATE_TASK_DEFAULT_INVITE_NUM = 5
+export const CREATE_TASK_DEFAULT_CONTRIBUTION_TOKEN = 20
 
 export const WL_INFO_URL = 'https://info.wl.xyz'
 export const TASK_IMAGE_SIZE_LIMIT = 1 * 1024 * 1024

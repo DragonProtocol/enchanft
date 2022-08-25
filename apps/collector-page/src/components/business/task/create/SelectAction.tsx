@@ -60,6 +60,18 @@ export default function SelectActions({
   const [joinCommunity, setJoinCommunity] = useState(false)
   const [joinCommunityContribution, setJoinCommunityContribution] = useState(false)
   const [joinCommunityContributionNum, setJoinCommunityContributionNum] = useState(20)
+  const [custom, setCustom] = useState([
+    {
+      type: ActionType.UNKNOWN,
+      name: '',
+      typeMore: ActionTypeMore.CUSTOM,
+      select: false,
+      description: '',
+      url: '',
+      prompt: '',
+      err: false,
+    },
+  ])
 
   useEffect(() => {
     const actions: Action[] = []
@@ -154,6 +166,8 @@ export default function SelectActions({
           require_score: joinCommunityContributionNum,
         })
     }
+    const resultCustom = custom.filter((item) => item.select && item.name && item.url)
+    actions.push(...resultCustom)
     updateStateActions(actions)
   }, [
     discord,
@@ -172,6 +186,7 @@ export default function SelectActions({
     joinCommunity,
     joinCommunityContribution,
     joinCommunityContributionNum,
+    custom,
   ])
 
   console.log(followTwitterLinkResult, followTwitters)
@@ -358,7 +373,7 @@ export default function SelectActions({
               {/* <div className="help">{discord ? null : <ConnectDiscord />}</div> */}
             </div>
           )}
-          <div className="content-item">
+          {/* <div className="content-item">
             <div className="desc">
               <CustomCheckBox
                 checked={joinCommunity}
@@ -371,7 +386,7 @@ export default function SelectActions({
               </span>
               <IconNotify />
             </div>
-          </div>
+          </div> */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -401,6 +416,103 @@ export default function SelectActions({
               <IconTip />
             </div>
           </div>
+
+          {custom.map((item, idx) => {
+            return (
+              <div className="content-item" key={idx}>
+                <div className="desc">
+                  <CustomCheckBox
+                    checked={item.select}
+                    onChange={() => {
+                      const curr = { ...item, select: !item.select }
+                      setCustom([...custom.slice(0, idx), curr, ...custom.slice(idx + 1)])
+                    }}
+                  />
+                  <span id="follow-twitter-msg" className="msg">
+                    Custom acton
+                  </span>
+                </div>
+                {item.select && (
+                  <>
+                    <div className="help">
+                      <span className="username custom">Name: </span>
+                      <div className="input-box">
+                        <input
+                          type="text"
+                          title="task-like"
+                          value={item.name}
+                          onChange={(e) => {
+                            const curr = { ...item, name: e.target.value }
+                            setCustom([...custom.slice(0, idx), curr, ...custom.slice(idx + 1)])
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="help">
+                      <span className="username custom">URL: </span>
+                      <div className="input-box">
+                        <input
+                          type="text"
+                          title="task-like"
+                          value={item.url}
+                          onChange={(e) => {
+                            const curr = { ...item, url: e.target.value }
+                            setCustom([...custom.slice(0, idx), curr, ...custom.slice(idx + 1)])
+                          }}
+                        />
+                      </div>
+                    </div>
+                    <div className="help">
+                      <span className="username custom">Description: </span>
+                      <div className="input-box">
+                        <input
+                          placeholder="optional"
+                          type="text"
+                          title="task-like"
+                          value={item.description}
+                          onChange={(e) => {
+                            const curr = { ...item, description: e.target.value }
+                            setCustom([...custom.slice(0, idx), curr, ...custom.slice(idx + 1)])
+                          }}
+                        />
+                      </div>
+                    </div>
+                    {(idx == custom.length - 1 && (
+                      <div
+                        className={'help add-btn custom'}
+                        onClick={() => {
+                          setCustom([
+                            ...custom,
+                            {
+                              name: '',
+                              type: ActionType.UNKNOWN,
+                              typeMore: ActionTypeMore.CUSTOM,
+                              select: false,
+                              description: '',
+                              url: '',
+                              prompt: '',
+                              err: false,
+                            },
+                          ])
+                        }}
+                      >
+                        <AddIcon />
+                      </div>
+                    )) || (
+                      <div
+                        className={'help add-btn custom'}
+                        onClick={() => {
+                          setCustom([...custom.slice(0, idx), ...custom.slice(idx + 1)])
+                        }}
+                      >
+                        <PngIconDelete />
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )
+          })}
         </div>
       </div>
     </SelectActionsBox>
@@ -683,6 +795,10 @@ const SelectActionsBox = styled.div`
             line-height: 20px;
             color: #333333;
             margin-right: 10px;
+            &.custom {
+              text-align: end;
+              width: 85px;
+            }
           }
           & span.tint {
             display: flex;
@@ -771,6 +887,9 @@ const SelectActionsBox = styled.div`
           line-height: 20px;
           cursor: pointer;
           padding-left: 90px;
+          &.custom {
+            justify-content: end;
+          }
         }
       }
     }
