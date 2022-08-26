@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 10:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 11:30:32
+ * @LastEditTime: 2022-08-26 19:12:22
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
@@ -14,13 +14,9 @@ const hoverMoveUpCss = css`
   /* 鼠标移入整体上移2px */
   &:hover {
     transform: translateY(-4px);
-    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 6px 0px rgba(0, 0, 0, 0.25);
   }
-  /* 鼠标点击整体缩小2% */
-  &:active {
-    transform: scale(0.98);
-  }
-  transition: all 0.5s ease-out;
+  transition: all 0.3s ease-out;
 `
 export const CardItemBoxAnimationMap = {
   [CardItemBoxAnimationType.HOVER_MOVE_UP]: hoverMoveUpCss,
