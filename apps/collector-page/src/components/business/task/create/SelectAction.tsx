@@ -429,7 +429,7 @@ export default function SelectActions({
                     }}
                   />
                   <span id="follow-twitter-msg" className="msg">
-                    Custom acton
+                    Custom action
                   </span>
                 </div>
                 {item.select && (
