@@ -2,14 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 16:49:21
+ * @LastEditTime: 2022-08-26 18:25:26
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { AsyncRequestStatus } from '../types'
-import MainContentBox from '../components/layout/MainContentBox'
 import { useNavigate, useParams } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import {
@@ -247,81 +246,79 @@ const Task: React.FC = () => {
 
   return (
     <TaskDetailWrapper>
-      <MainContentBox>
-        <TaskDetailBodyBox>
-          {data?.status === TaskTodoCompleteStatus.CLOSED && (
-            <TaskDetailBodyMainBanner>
-              <PngIconForbidden size="20px" /> Whitelist Closed!
-            </TaskDetailBodyMainBanner>
-          )}
+      <TaskDetailBodyBox>
+        {data?.status === TaskTodoCompleteStatus.CLOSED && (
+          <TaskDetailBodyMainBanner>
+            <PngIconForbidden size="20px" /> Whitelist Closed!
+          </TaskDetailBodyMainBanner>
+        )}
 
-          <TaskDetailBodyMainBox>
-            <TaskDetailHeaderBox>
-              <ButtonNavigation onClick={handleLeave}>
-                <IconCaretLeft />
-              </ButtonNavigation>
-              <TaskName>{name}</TaskName>
-              <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
-                <ShareButton>
-                  <IconShare size="16px" />
-                </ShareButton>
-              </CopyToClipboard>
+        <TaskDetailBodyMainBox>
+          <TaskDetailHeaderBox>
+            <ButtonNavigation onClick={handleLeave}>
+              <IconCaretLeft />
+            </ButtonNavigation>
+            <TaskName>{name}</TaskName>
+            <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
+              <ShareButton>
+                <IconShare size="16px" />
+              </ShareButton>
+            </CopyToClipboard>
 
-              {data.project.id && checkProjectAllowed(Number(data.project.id)) && isCreator && (
-                <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
-              )}
-            </TaskDetailHeaderBox>
-            <ProjectNameBox>
-              <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
-            </ProjectNameBox>
-            <TaskDetailContentBox>
-              <TaskDetailContentBoxLeft>
-                <TaskImage src={image} />
-                <TaskDetailContent data={data} />
-              </TaskDetailContentBoxLeft>
-              <TaskDetailContentBoxRight>
-                {winnerList.length > 0 ? (
+            {data.project.id && checkProjectAllowed(Number(data.project.id)) && isCreator && (
+              <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
+            )}
+          </TaskDetailHeaderBox>
+          <ProjectNameBox>
+            <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
+          </ProjectNameBox>
+          <TaskDetailContentBox>
+            <TaskDetailContentBoxLeft>
+              <TaskImage src={image} />
+              <TaskDetailContent data={data} />
+            </TaskDetailContentBoxLeft>
+            <TaskDetailContentBoxRight>
+              {winnerList.length > 0 ? (
+                <TaskListBox>
+                  <TaskWinnerList items={winnerList} highlightPubkeys={[pubkey]} />
+                </TaskListBox>
+              ) : (
+                <>
                   <TaskListBox>
-                    <TaskWinnerList items={winnerList} highlightPubkeys={[pubkey]} />
-                  </TaskListBox>
-                ) : (
-                  <>
-                    <TaskListBox>
-                      {taskStatusButton && (
-                        <TaskStatusButton
-                          type={taskStatusButton.type}
-                          loading={taskStatusButton.loading}
-                          disabled={taskStatusButton.disabled}
-                          btnText={taskStatusButton.btnText}
-                          onConnectWallet={handleOpenConnectWallet}
-                          onBindWallet={handleOpenWalletBind}
-                          onTake={handleTakeTask}
-                        />
-                      )}
-                      <TaskActionList
-                        items={actionItems}
-                        onDiscord={handleActionToDiscord}
-                        onTwitter={handleActionToTwitter}
-                        onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
-                        allowHandle={allowHandleAction}
-                        displayVerify={displayVerify}
-                        loadingVerify={loadingVerify}
-                        disabledVerify={disabledVerify}
-                        verifyingActions={verifyingActions}
-                        onVerifyActions={() => dispatch(verifyTask(data))}
-                        onVerifyAction={(action) => dispatch(verifyAction(action))}
-                        onCustomAction={(action) => dispatch(completionAction(action))}
-                        copyBgc="#FFFFFF"
-                        verifyBgc="#FFFFFF"
+                    {taskStatusButton && (
+                      <TaskStatusButton
+                        type={taskStatusButton.type}
+                        loading={taskStatusButton.loading}
+                        disabled={taskStatusButton.disabled}
+                        btnText={taskStatusButton.btnText}
+                        onConnectWallet={handleOpenConnectWallet}
+                        onBindWallet={handleOpenWalletBind}
+                        onTake={handleTakeTask}
                       />
-                    </TaskListBox>
-                  </>
-                )}
-              </TaskDetailContentBoxRight>
-            </TaskDetailContentBox>
-          </TaskDetailBodyMainBox>
-        </TaskDetailBodyBox>
-      </MainContentBox>
+                    )}
+                    <TaskActionList
+                      items={actionItems}
+                      onDiscord={handleActionToDiscord}
+                      onTwitter={handleActionToTwitter}
+                      onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
+                      allowHandle={allowHandleAction}
+                      displayVerify={displayVerify}
+                      loadingVerify={loadingVerify}
+                      disabledVerify={disabledVerify}
+                      verifyingActions={verifyingActions}
+                      onVerifyActions={() => dispatch(verifyTask(data))}
+                      onVerifyAction={(action) => dispatch(verifyAction(action))}
+                      onCustomAction={(action) => dispatch(completionAction(action))}
+                      copyBgc="#FFFFFF"
+                      verifyBgc="#FFFFFF"
+                    />
+                  </TaskListBox>
+                </>
+              )}
+            </TaskDetailContentBoxRight>
+          </TaskDetailContentBox>
+        </TaskDetailBodyMainBox>
+      </TaskDetailBodyBox>
     </TaskDetailWrapper>
   )
 }

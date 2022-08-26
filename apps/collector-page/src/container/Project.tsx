@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
-import MainContentBox from '../components/layout/MainContentBox'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   ProjectDetailEntity,
@@ -346,7 +345,7 @@ const Project: React.FC = () => {
   )
 }
 export default Project
-const ProjectWrapper = styled(MainContentBox)`
+const ProjectWrapper = styled.div`
   display: flex;
   gap: 20px;
 `

@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
-import MainContentBox from '../components/layout/MainContentBox'
 import {
   fetchCommunityContributionRanks,
   selectAll as selectAllForProjectContributionranks,
@@ -127,50 +126,48 @@ const Contributionranks: React.FC = () => {
 
   return (
     <ContributionWrapper>
-      <MainContentBox>
-        <ContributionHeader>
-          <ButtonNavigation onClick={() => navigate(-1)}>
-            <IconCaretLeft />
-          </ButtonNavigation>
-          <ContributionTitle>{communityInfo.name} Contribution</ContributionTitle>
-        </ContributionHeader>
+      <ContributionHeader>
+        <ButtonNavigation onClick={() => navigate(-1)}>
+          <IconCaretLeft />
+        </ButtonNavigation>
+        <ContributionTitle>{communityInfo.name} Contribution</ContributionTitle>
+      </ContributionHeader>
 
-        <ContributionMainBox>
-          <ContributionListBox>
-            {contributionranksLoading ? (
-              <ContributionLoading>
-                <Loading />
-              </ContributionLoading>
-            ) : (
-              <ContributionList
-                size={ContributionListSize.large}
-                items={contributionranks}
-                membersTotal={contributionranks.length}
-                displayMore={false}
-                displayDownload={displayDownload}
-                loadingDownload={loadingDownload}
-                disabledDownload={disabledDownload}
-                onDownload={handleDownload}
+      <ContributionMainBox>
+        <ContributionListBox>
+          {contributionranksLoading ? (
+            <ContributionLoading>
+              <Loading />
+            </ContributionLoading>
+          ) : (
+            <ContributionList
+              size={ContributionListSize.large}
+              items={contributionranks}
+              membersTotal={contributionranks.length}
+              displayMore={false}
+              displayDownload={displayDownload}
+              loadingDownload={loadingDownload}
+              disabledDownload={disabledDownload}
+              onDownload={handleDownload}
+            />
+          )}
+        </ContributionListBox>
+        <ContributionRigtBox>
+          {token && (
+            <ContributionMyBox>
+              <ContributionMy
+                data={userContributionInfo.data}
+                viewConfig={userContributionInfo.viewConfig}
+                onFollowCommunity={handleFollowCommunity}
               />
-            )}
-          </ContributionListBox>
-          <ContributionRigtBox>
-            {token && (
-              <ContributionMyBox>
-                <ContributionMy
-                  data={userContributionInfo.data}
-                  viewConfig={userContributionInfo.viewConfig}
-                  onFollowCommunity={handleFollowCommunity}
-                />
-              </ContributionMyBox>
-            )}
+            </ContributionMyBox>
+          )}
 
-            <ContributionAboutBox>
-              <ContributionAbout data={communityInfo} />
-            </ContributionAboutBox>
-          </ContributionRigtBox>
-        </ContributionMainBox>
-      </MainContentBox>
+          <ContributionAboutBox>
+            <ContributionAbout data={communityInfo} />
+          </ContributionAboutBox>
+        </ContributionRigtBox>
+      </ContributionMainBox>
     </ContributionWrapper>
   )
 }
