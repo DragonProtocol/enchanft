@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:00:22
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 13:24:14
+ * @LastEditTime: 2022-08-26 17:14:37
  * @Description: file description
  */
 import InputBase from '@mui/material/InputBase'
@@ -40,12 +40,7 @@ const InputSearch: React.FC<InputSearchProps> = ({
   return (
     <InputSearchWrapper>
       <PngIconInputSearchEmoji size="24px" />
-      <InputBase
-        sx={{ ml: 1, flex: 1, height: 'auto' }}
-        placeholder={placeholder}
-        onChange={handleChange}
-        value={value}
-      />
+      <InputBaseBox placeholder={placeholder} onChange={handleChange} value={value} />
       {displayClear && value && (
         <IconButton onClick={handleClear}>
           <CancelIcon />
@@ -56,7 +51,7 @@ const InputSearch: React.FC<InputSearchProps> = ({
 }
 export default InputSearch
 const InputSearchWrapper = styled.div`
-  flex: 1;
+  width: 100%;
   height: 50px;
   background: #ebeee4;
   border-radius: 10px;
@@ -68,4 +63,7 @@ const InputSearchWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`
+const InputBaseBox = styled(InputBase)`
+  flex: 1;
 `

@@ -2,9 +2,13 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
-import MainContentBox from '../components/layout/MainContentBox'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { ProjectDetailEntity, fetchProjectDetail, selectProjectDetail } from '../features/project/projectDetailSlice'
+import {
+  ProjectDetailEntity,
+  fetchProjectDetail,
+  selectProjectDetail,
+  resetProjectDetailState,
+} from '../features/project/projectDetailSlice'
 import {
   fetchCommunityContributionRanks,
   selectAll as selectAllForCommunityContributionranks,
@@ -147,15 +151,17 @@ const Project: React.FC = () => {
   const { isCreator, checkProjectAllowed } = usePermissions()
   const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
 
-  // slug，重新请求数据，并进入loading状态
+  // 进入loading状态
   useEffect(() => {
     setLoadingView(true)
-    dispatchFetchDetail()
   }, [projectSlug])
-  // token 变化，重新请求详情数据
+  // projectSlug、 token 变化，重新请求详情数据
   useEffect(() => {
     dispatchFetchDetail()
-  }, [token])
+    return () => {
+      dispatch(resetProjectDetailState())
+    }
+  }, [projectSlug, token])
   // 确保终止loading状态
   useEffect(() => {
     if (loadingView && ![AsyncRequestStatus.IDLE, AsyncRequestStatus.PENDING].includes(status)) {
@@ -338,8 +344,8 @@ const Project: React.FC = () => {
     </ProjectWrapper>
   )
 }
-export default React.memo(Project)
-const ProjectWrapper = styled(MainContentBox)`
+export default Project
+const ProjectWrapper = styled.div`
   display: flex;
   gap: 20px;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:58:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 11:53:22
+ * @LastEditTime: 2022-08-26 18:24:57
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -21,8 +21,6 @@ import {
   selectExploreSearchProjectsState,
   selectAll as selectAllForExploreSearchProjects,
 } from '../features/explore/searchProjectsSlice'
-import ScrollBox from '../components/common/ScrollBox'
-import MainContentBox from '../components/layout/MainContentBox'
 import ExploreProjectSwiper, { ExplorProjectSwiperItemsType } from '../components/business/project/ExploreProjectSwiper'
 import ExploreProjectList, { ExploreProjectListItemsType } from '../components/business/project/ExploreProjectList'
 import ExploreProjectFilter, {
@@ -78,15 +76,13 @@ const Projects: React.FC = () => {
 
   return (
     <ProjectsWrapper>
-      <MainContentBox>
-        <RecommendProjectsBox>
-          <ExploreProjectSwiper items={recommendProjectItems} loading={recommendProjectsLoading} />
-        </RecommendProjectsBox>
-        <SearchProjectsBox>
-          <ExploreProjectFilter data={searchProjectsFilter} onChange={setProjectsFilter} />
-          <ExploreProjectList items={searchProjectItems} loading={searchProjectsLoading} />
-        </SearchProjectsBox>
-      </MainContentBox>
+      <RecommendProjectsBox>
+        <ExploreProjectSwiper items={recommendProjectItems} loading={recommendProjectsLoading} />
+      </RecommendProjectsBox>
+      <SearchProjectsBox>
+        <ExploreProjectFilter data={searchProjectsFilter} onChange={setProjectsFilter} />
+        <ExploreProjectList items={searchProjectItems} loading={searchProjectsLoading} />
+      </SearchProjectsBox>
     </ProjectsWrapper>
   )
 }

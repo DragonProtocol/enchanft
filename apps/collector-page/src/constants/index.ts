@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 15:28:39
+ * @LastEditTime: 2022-08-26 17:48:03
  * @Description: 系统相关常量定义
  */
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -32,6 +32,11 @@ export const CREATE_TASK_DEFAULT_INVITE_NUM = 5
 export const CREATE_TASK_DEFAULT_CONTRIBUTION_TOKEN = 20
 
 export const WL_INFO_URL = 'https://info.wl.xyz'
+export const WL_TWITTER_URL = 'https://twitter.com/realwlxyz'
+export const WL_DISCORD_URL = 'https://discord.com/invite/ZXEgc3UrjB'
+
+export const WL_APP_VERSION = process.env.REACT_APP_VERSION
+
 export const TASK_IMAGE_SIZE_LIMIT = 1 * 1024 * 1024
 export const AVATAR_SIZE_LIMIT = 200 * 1024
 

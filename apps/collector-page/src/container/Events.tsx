@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 15:59:52
+ * @LastEditTime: 2022-08-26 18:22:47
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -22,8 +22,6 @@ import {
   selectExploreSearchTasksState,
   selectAll as selectAllForExploreSearchTasks,
 } from '../features/explore/searchTasksSlice'
-import ScrollBox from '../components/common/ScrollBox'
-import MainContentBox from '../components/layout/MainContentBox'
 import ExploreTaskSwiper, { ExplorTaskSwiperItemsType } from '../components/business/task/ExploreTaskSwiper'
 import ExploreTaskList, { ExploreTaskListItemsType } from '../components/business/task/ExploreTaskList'
 import ExploreTaskFilter, { ExploreTaskFilterDataType } from '../components/business/task/ExploreTaskFilter'
@@ -81,15 +79,13 @@ const Events: React.FC = () => {
 
   return (
     <EventsWrapper>
-      <MainContentBox>
-        <RecommendTasksBox>
-          <ExploreTaskSwiper items={recommendTaskItems} loading={recommendTasksLoading} />
-        </RecommendTasksBox>
-        <SearchTasksBox>
-          <ExploreTaskFilter data={searchTasksFilter} onChange={setTasksFilter} />
-          <ExploreTaskList items={searchTaskItems} loading={searchTasksLoading} />
-        </SearchTasksBox>
-      </MainContentBox>
+      <RecommendTasksBox>
+        <ExploreTaskSwiper items={recommendTaskItems} loading={recommendTasksLoading} />
+      </RecommendTasksBox>
+      <SearchTasksBox>
+        <ExploreTaskFilter data={searchTasksFilter} onChange={setTasksFilter} />
+        <ExploreTaskList items={searchTaskItems} loading={searchTasksLoading} />
+      </SearchTasksBox>
     </EventsWrapper>
   )
 }
