@@ -245,7 +245,6 @@ const Task: React.FC = () => {
   // 后面如果带/，则去掉/
   const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
 
-
   return (
     <TaskDetailWrapper>
       <TaskDetailBodyBox>
@@ -255,22 +254,21 @@ const Task: React.FC = () => {
           </TaskDetailBodyMainBanner>
         )}
 
-          <TaskDetailBodyMainBox>
-            <TaskDetailHeaderBox>
-              <ButtonNavigation onClick={handleLeave}>
-                <IconCaretLeft />
-              </ButtonNavigation>
-              <TaskName>{name}</TaskName>
-              {/* <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
+        <TaskDetailBodyMainBox>
+          <TaskDetailHeaderBox>
+            <ButtonNavigation onClick={handleLeave}>
+              <IconCaretLeft />
+            </ButtonNavigation>
+            <TaskName>{name}</TaskName>
+            {/* <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
                 <ShareButton>
                   <IconShare size="16px" />
                 </ShareButton>
               </CopyToClipboard> */}
 
-              <ShareButton onClick={()=>tweetShare(SHARE_EVENT_TWEET_CONTENTS, taskShareUrl)}>
-                <IconShare size="16px" />
-              </ShareButton>
-
+            <ShareButton onClick={() => tweetShare(SHARE_EVENT_TWEET_CONTENTS, taskShareUrl)}>
+              <IconShare size="16px" />
+            </ShareButton>
 
             {data.project.id && checkProjectAllowed(Number(data.project.id)) && isCreator && (
               <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
