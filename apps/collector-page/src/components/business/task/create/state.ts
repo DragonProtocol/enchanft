@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { CREATE_TASK_DEFAULT_WINNER_NUM } from '../../../../constants'
+import { CREATE_TASK_DEFAULT_CONTRIBUTION_TOKEN, CREATE_TASK_DEFAULT_WINNER_NUM } from '../../../../constants'
 import { RewardType } from '../../../../types/entities'
 
 export { RewardType } from '../../../../types/entities'
@@ -26,6 +26,7 @@ export enum ActionTypeMore {
   // UPDATE_BIO_OF_TWITTER = 'UPDATE_BIO_OF_TWITTER',
   MEET_CONTRIBUTION_SCORE = 'MEET_CONTRIBUTION_SCORE',
   TURN_ON_NOTIFICATION = 'TURN_ON_NOTIFICATION',
+  CUSTOM = 'CUSTOM',
 }
 
 export type Action = {
@@ -44,7 +45,8 @@ export type Action = {
 export type Reward = {
   type: RewardType
   raffled: boolean
-  name: string
+  name?: string
+  token_num?: number
 }
 
 export type State = {
@@ -73,6 +75,7 @@ export const DefaultState: State = {
     type: RewardType.WHITELIST,
     raffled: false,
     name: '',
+    token_num: CREATE_TASK_DEFAULT_CONTRIBUTION_TOKEN,
   },
   winnerNum: CREATE_TASK_DEFAULT_WINNER_NUM,
   startTime: Date.now(),

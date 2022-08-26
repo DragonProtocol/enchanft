@@ -55,7 +55,7 @@ export default function ConnectBtn() {
 
   return (
     <>
-      {(shortPubkey && (
+      {(shortPubkey && account.token && (
         <PopupState variant="popover" popupId="demo-popup-menu">
           {(popupState) => (
             <React.Fragment>

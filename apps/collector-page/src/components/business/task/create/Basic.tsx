@@ -205,6 +205,21 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                   >
                     Other
                   </button>
+                  <button
+                    className={state.reward.type === RewardType.CONTRIBUTION_TOKEN ? 'active' : ''}
+                    onClick={() => {
+                      updateState({
+                        ...state,
+                        reward: {
+                          ...state.reward,
+                          name: '',
+                          type: RewardType.CONTRIBUTION_TOKEN,
+                        },
+                      })
+                    }}
+                  >
+                    Contribution Token
+                  </button>
                 </div>
                 {state.reward.type === RewardType.OTHERS && (
                   <input
@@ -213,14 +228,36 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                     placeholder={state.reward.type === RewardType.OTHERS ? 'Name' : ''}
                     value={state.reward.name}
                     onChange={(e) => {
-                      if (state.reward.type === RewardType.OTHERS)
-                        updateState({
-                          ...state,
-                          reward: {
-                            ...state.reward,
-                            name: e.target.value,
-                          },
-                        })
+                      updateState({
+                        ...state,
+                        reward: {
+                          ...state.reward,
+                          name: e.target.value,
+                        },
+                      })
+                    }}
+                  />
+                )}
+                {state.reward.type === RewardType.CONTRIBUTION_TOKEN && (
+                  <input
+                    type="number"
+                    title="reward-others-name"
+                    value={
+                      state.reward.token_num
+                        ? state.reward.token_num === 0
+                          ? ''
+                          : state.reward.token_num.toString()
+                        : ''
+                    }
+                    onChange={(e) => {
+                      const num = Number(e.target.value)
+                      updateState({
+                        ...state,
+                        reward: {
+                          ...state.reward,
+                          token_num: num,
+                        },
+                      })
                     }}
                   />
                 )}
@@ -314,9 +351,14 @@ const BasicBox = styled.div`
           border-radius: 0;
           font-size: 18px;
           line-height: 27px;
-          width: 50%;
+          width: 33%;
           height: 50px;
           cursor: pointer;
+        }
+        & button:nth-child(2) {
+          border-left: 4px solid #333333;
+          border-right: 4px solid #333333;
+          width: 34%;
         }
         & button.active {
           background: #333333;

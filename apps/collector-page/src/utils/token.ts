@@ -4,6 +4,8 @@ export const DEFAULT_WALLET = 'defaultWallet'
 export const LAST_LOGIN_TYPE = 'lastLoginType'
 export const LAST_LOGIN_NAME = 'last_login_name'
 export const LAST_LOGIN_AVATAR = 'last_login_avatar'
+export const LAST_LOGIN_TOKEN = 'last_login_token'
+export const LAST_LOGIN_PUBKEY = 'last_login_pubkey'
 
 export const SIGN_MSG = 'Sign this message to sign into ' + window.location.hostname
 export enum TokenType {

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 11:23:47
+ * @LastEditTime: 2022-08-25 14:06:44
  * @Description: 与后端entities type定义对应
  */
 
@@ -108,11 +108,16 @@ export type Team = {
 /* project */
 
 export enum ProjectStatus {
+  DEFAULT = 'DEFAULT',
   ACTIVE = 'ACTIVE',
-  LIVE = 'LIVE',
-  FUTURE = 'FUTURE',
+  INACTIVE = 'INACTIVE',
 }
-
+export enum MintStage {
+  FUTURE = 'FUTURE',
+  LIVE = 'LIVE',
+  SOLDOUT = 'SOLDOUT',
+  CLOSED = 'CLOSED',
+}
 export type Project = {
   id: number
   name: string
@@ -122,7 +127,7 @@ export type Project = {
   image: string
   communityId: number
   itemTotalNum: number
-  mintPrice: string
+  mintStage: MintStage
   floorPrice: string
   mintUrl: string
   mintStartTime: number
@@ -161,6 +166,7 @@ export type Whitelist = {
 export enum RewardType {
   WHITELIST = 'WHITELIST',
   OTHERS = 'OTHER',
+  CONTRIBUTION_TOKEN = 'CONTRIBUTION_TOKEN',
 }
 
 export type Reward = {

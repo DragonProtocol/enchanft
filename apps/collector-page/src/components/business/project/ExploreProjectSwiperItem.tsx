@@ -2,24 +2,24 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 13:50:01
+ * @LastEditTime: 2022-08-25 12:26:17
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { ProjectStatus } from '../../../types/api'
+import { MintStage } from '../../../types/entities'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import RichTextToPlainTextSpan from '../../common/text/RichTextToPlainTextSpan'
 import ChainTag from '../chain/ChainTag'
-import ProjectStatusLabel from './ProjectStatusLabel'
+import MintStageLabel from './MintStageLabel'
 
 export type ExploreProjectSwiperItemDataType = {
   id: number
   name: string
   image: string
-  status: ProjectStatus
+  mintStage: MintStage
   description: string
   chainId: number
   communityId: number
@@ -40,7 +40,7 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
   viewConfig,
 }: ExploreProjectSwiperItemProps) => {
   const navigate = useNavigate()
-  const { id, name, image, status, description, chainId, communityId, slug } = data
+  const { id, name, image, mintStage, description, chainId, communityId, slug } = data
   return (
     <ExploreProjectSwiperItemWrapper>
       {/* <ChainTag size={2} chainId={chainId} /> */}
@@ -50,7 +50,7 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
 
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
-        <ProjectStatusLabel status={status} fontSize="20px" />
+        <MintStageLabel mintStage={mintStage} fontSize="20px" />
         <ProjectDescription number={9}>
           <RichTextToPlainTextSpan value={description} />
         </ProjectDescription>
