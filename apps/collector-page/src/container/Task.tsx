@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 19:02:29
+ * @LastEditTime: 2022-08-26 16:49:21
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -12,7 +12,12 @@ import { AsyncRequestStatus } from '../types'
 import MainContentBox from '../components/layout/MainContentBox'
 import { useNavigate, useParams } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
-import { fetchTaskDetail, selectTaskDetail, TaskDetailEntity } from '../features/task/taskDetailSlice'
+import {
+  fetchTaskDetail,
+  selectTaskDetail,
+  resetTaskDetailState,
+  TaskDetailEntity,
+} from '../features/task/taskDetailSlice'
 import TaskActionList, { TaskActionItemsType } from '../components/business/task/TaskActionList'
 import { ActionType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../types/entities'
 import { TodoTaskActionItem, UserActionStatus } from '../types/api'
@@ -147,15 +152,17 @@ const Task: React.FC = () => {
   const [loadingView, setLoadingView] = useState(false)
   const { isCreator, checkTaskAllowed, checkProjectAllowed } = usePermissions()
 
-  // slug 变化，重新请求数据，并进入loading状态
+  // 进入loading状态
   useEffect(() => {
     setLoadingView(true)
-    dispatchFetchTaskDetail()
   }, [id])
-  // token 变化，重新请求详情数据
+  // id、token 变化，重新请求详情数据
   useEffect(() => {
     dispatchFetchTaskDetail()
-  }, [token])
+    return () => {
+      dispatch(resetTaskDetailState())
+    }
+  }, [id, token])
   // 确保终止loading状态
   useEffect(() => {
     if (loadingView && ![AsyncRequestStatus.IDLE, AsyncRequestStatus.PENDING].includes(status)) {
