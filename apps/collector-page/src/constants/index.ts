@@ -34,3 +34,5 @@ export const CREATE_TASK_DEFAULT_CONTRIBUTION_TOKEN = 20
 export const WL_INFO_URL = 'https://info.wl.xyz'
 export const TASK_IMAGE_SIZE_LIMIT = 1 * 1024 * 1024
 export const AVATAR_SIZE_LIMIT = 200 * 1024
+
+export const SHARE_EVENT_TWEET_CONTENTS = 'I am exploring on WL.xyz follow the link to find answer with me.\n'

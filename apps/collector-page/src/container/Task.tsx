@@ -50,7 +50,8 @@ import ButtonBase, { ButtonInfo } from '../components/common/button/ButtonBase'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import { toast } from 'react-toastify'
 import IconShare from '../components/common/icons/IconShare'
-import { TASK_SHARE_URI } from '../constants'
+import { SHARE_EVENT_TWEET_CONTENTS, TASK_SHARE_URI } from '../constants'
+import { tweetShare } from '../utils/twitter'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   token: string,
@@ -238,6 +239,7 @@ const Task: React.FC = () => {
   // 后面如果带/，则去掉/
   const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
 
+
   return (
     <TaskDetailWrapper>
       <MainContentBox>
@@ -254,11 +256,16 @@ const Task: React.FC = () => {
                 <IconCaretLeft />
               </ButtonNavigation>
               <TaskName>{name}</TaskName>
-              <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
+              {/* <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
                 <ShareButton>
                   <IconShare size="16px" />
                 </ShareButton>
-              </CopyToClipboard>
+              </CopyToClipboard> */}
+
+              <ShareButton onClick={()=>tweetShare(SHARE_EVENT_TWEET_CONTENTS, taskShareUrl)}>
+                <IconShare size="16px" />
+              </ShareButton>
+
 
               {data.project.id && checkProjectAllowed(Number(data.project.id)) && isCreator && (
                 <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
