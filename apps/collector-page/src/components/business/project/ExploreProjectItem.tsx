@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 14:29:42
+ * @LastEditTime: 2022-08-26 11:56:34
  * @Description: file description
  */
 import React from 'react'
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { MintStage, ProjectStatus, TaskType } from '../../../types/entities'
-import CardItemBox from '../../common/card/CardItemBox'
+import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
 import MintStageLabel from './MintStageLabel'
@@ -90,7 +90,10 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
       break
   }
   return (
-    <ExploreProjectItemWrapper onClick={() => navigate(`/${slug}`)}>
+    <ExploreProjectItemWrapper
+      onClick={() => navigate(`/${slug}`)}
+      animationType={CardItemBoxAnimationType.HOVER_MOVE_UP}
+    >
       <ProjectImageBox>
         <ChainTag size={1} chainId={chainId} />
         <ProjectImage src={image} />

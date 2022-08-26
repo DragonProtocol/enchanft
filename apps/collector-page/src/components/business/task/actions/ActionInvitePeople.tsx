@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 18:32:43
+ * @LastEditTime: 2022-08-26 13:57:56
  * @Description: file description
  */
 import React from 'react'
@@ -11,7 +11,7 @@ import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import OverflowEllipsisBox from '../../../common/text/OverflowEllipsisBox'
-import TooltipWrapper from '../../../common/TooltipWrapper'
+import TooltipWrapper from '../../../common/tooltip/TooltipWrapper'
 import PngIconWL from '../../../common/icons/PngIconWL'
 import IconCopy from '../../../common/icons/IconCopy'
 import { getTakeTaskRefLink } from '../../../../container/Ref'

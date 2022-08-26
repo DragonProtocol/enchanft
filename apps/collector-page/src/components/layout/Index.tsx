@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 14:47:24
+ * @LastEditTime: 2022-08-26 13:54:49
  * @Description: 站点布局入口
  */
 import React, { useEffect, useState } from 'react'
@@ -13,7 +13,7 @@ import { MEDIA_BREAK_POINTS } from 'constants/index'
 import Main, { CutomRouteObject, permissionRoutes, RouteKeys, routes } from './Main'
 import Header from './Header'
 import TodoFloatingWindow from './TodoFloatingWindow'
-import ScrollBox from '../common/ScrollBox'
+import ScrollBox from '../common/scroll/ScrollBox'
 import MainInner from './MainInner'
 import { matchRoutes, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
