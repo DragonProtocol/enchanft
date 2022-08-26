@@ -1,7 +1,7 @@
 import { Box, Container } from '@mui/material'
 import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import ScrollBox from '../components/common/ScrollBox'
+import ScrollBox from '../components/common/scroll/ScrollBox'
 
 import TaskDashboard from '../components/business/creator/TaskDashboard'
 import WinnerList, { TaskStatus } from '../components/business/creator/WinnerList'

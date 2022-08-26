@@ -4,7 +4,7 @@ import { ButtonInfo } from '../../common/button/ButtonBase'
 import { useNavigate } from 'react-router-dom'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import CardItemBox from '../../common/card/CardItemBox'
+import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
 
 export type CommunityItemDataType = {
   id: number
@@ -58,7 +58,10 @@ const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollo
     }
   }
   return (
-    <CommunityItemWrapper onClick={() => navigate(`/${project.slug}`)}>
+    <CommunityItemWrapper
+      onClick={() => navigate(`/${project.slug}`)}
+      animationType={CardItemBoxAnimationType.HOVER_MOVE_UP}
+    >
       <CommunityImage src={icon} />
       <CommunityInfoBox>
         <CommunityName>{name}</CommunityName>

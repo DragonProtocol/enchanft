@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 19:13:50
+ * @LastEditTime: 2022-08-26 13:56:21
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
-import ScrollBox from '../components/common/ScrollBox'
+import ScrollBox from '../components/common/scroll/ScrollBox'
 import MainContentBox from '../components/layout/MainContentBox'
 import { ActionType, TaskTodoCompleteStatus } from '../types/entities'
 import { UserActionStatus } from '../types/api'

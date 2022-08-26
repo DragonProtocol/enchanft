@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 18:11:36
+ * @LastEditTime: 2022-08-26 11:55:51
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import CardItemBox from '../../common/card/CardItemBox'
+import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
@@ -50,7 +50,10 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
   return (
-    <ExploreTaskItemWrapper onClick={() => navigate(`/${project.slug}/${id}`)}>
+    <ExploreTaskItemWrapper
+      onClick={() => navigate(`/${project.slug}/${id}`)}
+      animationType={CardItemBoxAnimationType.HOVER_MOVE_UP}
+    >
       <TaskImageBox>
         <ChainTag size={1} chainId={project.chainId} />
         <TaskImage src={image} />
