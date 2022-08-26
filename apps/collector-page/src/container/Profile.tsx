@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 17:24:45
+ * @LastEditTime: 2022-08-26 18:23:13
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -36,7 +36,6 @@ import {
   ChainType,
   userOtherWalletLink,
 } from '../features/user/accountSlice'
-import MainContentBox from '../components/layout/MainContentBox'
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
 import {
   FollowedCommunitityForEntity,
@@ -46,8 +45,6 @@ import {
 import { AsyncRequestStatus } from '../types'
 import { uploadAvatar } from '../services/api/login'
 import { connectionSocialMedia } from '../utils/socialMedia'
-import PhatomIcon from '../components/ConnectBtn/PhantomIcon'
-import MetamaskIcon from '../components/ConnectBtn/MetamaskIcon'
 import { sortPubKey } from '../utils/solana'
 import useWalletSign from '../hooks/useWalletSign'
 import { SIGN_MSG } from '../utils/token'
@@ -177,68 +174,66 @@ const Profile: React.FC = () => {
   }, [phantomValid])
   return (
     <ProfileWrapper>
-      <MainContentBox>
-        <ProfileTopBox>
-          <UserImg src={account.avatar} />
-          <ProfileRightBox>
-            <UserName>
-              <span>{account.name}</span>
-              <IconButton onClick={() => setOpenDialog(true)}>
-                <EditIcon />
-              </IconButton>
-            </UserName>
-            <UserAddress>{account.pubkey}</UserAddress>
-            <UserAccountListBox>
-              <MetamaskBindBtn
-                onClick={() => {
-                  if (accountMetamask) return
-                  bindMetamask()
-                }}
-              >
-                <ConnectIconBox>
-                  <IconMetamask />
-                </ConnectIconBox>
+      <ProfileTopBox>
+        <UserImg src={account.avatar} />
+        <ProfileRightBox>
+          <UserName>
+            <span>{account.name}</span>
+            <IconButton onClick={() => setOpenDialog(true)}>
+              <EditIcon />
+            </IconButton>
+          </UserName>
+          <UserAddress>{account.pubkey}</UserAddress>
+          <UserAccountListBox>
+            <MetamaskBindBtn
+              onClick={() => {
+                if (accountMetamask) return
+                bindMetamask()
+              }}
+            >
+              <ConnectIconBox>
+                <IconMetamask />
+              </ConnectIconBox>
 
-                {accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}
-              </MetamaskBindBtn>
-              <PhantomBindBtn
-                onClick={() => {
-                  if (accountPhantom) return
-                  bindPhantom()
-                }}
-              >
-                <IconPhantomWhite />
-                {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
-              </PhantomBindBtn>
-              <TwitterBindBtn onClick={() => connectionSocialMedia('twitter')}>
-                <IconTwitterWhite />
-                {twitter || 'Connect Twitter'}
-              </TwitterBindBtn>
-              <DiscordBindBtn onClick={() => connectionSocialMedia('discord')}>
-                <IconDiscordWhite />
-                {discord || 'Connect Discord'}
-              </DiscordBindBtn>
-              {/* <EmailBindBtn>
+              {accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}
+            </MetamaskBindBtn>
+            <PhantomBindBtn
+              onClick={() => {
+                if (accountPhantom) return
+                bindPhantom()
+              }}
+            >
+              <IconPhantomWhite />
+              {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
+            </PhantomBindBtn>
+            <TwitterBindBtn onClick={() => connectionSocialMedia('twitter')}>
+              <IconTwitterWhite />
+              {twitter || 'Connect Twitter'}
+            </TwitterBindBtn>
+            <DiscordBindBtn onClick={() => connectionSocialMedia('discord')}>
+              <IconDiscordWhite />
+              {discord || 'Connect Discord'}
+            </DiscordBindBtn>
+            {/* <EmailBindBtn>
                   <IconEmailWhite />
                   {'Connect Email'}
                 </EmailBindBtn> */}
-            </UserAccountListBox>
-          </ProfileRightBox>
-        </ProfileTopBox>
-        <ProfileInfoTabsBox>
-          <ButtonRadioGroupProfileTabs
-            options={ProfileTabOptions}
-            value={curProfileTab}
-            onChange={(value) => setCurProfileTab(value)}
-          />
-          <ProfileTabContentBox>
-            {curProfileTab === 'myCommunities' && (
-              <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
-            )}
-            {curProfileTab === 'myRewards' && <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />}
-          </ProfileTabContentBox>
-        </ProfileInfoTabsBox>
-      </MainContentBox>
+          </UserAccountListBox>
+        </ProfileRightBox>
+      </ProfileTopBox>
+      <ProfileInfoTabsBox>
+        <ButtonRadioGroupProfileTabs
+          options={ProfileTabOptions}
+          value={curProfileTab}
+          onChange={(value) => setCurProfileTab(value)}
+        />
+        <ProfileTabContentBox>
+          {curProfileTab === 'myCommunities' && (
+            <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
+          )}
+          {curProfileTab === 'myRewards' && <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />}
+        </ProfileTabContentBox>
+      </ProfileInfoTabsBox>
       <DialogBox open={openDialog}>
         <EditProfileBox>
           <EditProfileTitle>Edit Profile</EditProfileTitle>

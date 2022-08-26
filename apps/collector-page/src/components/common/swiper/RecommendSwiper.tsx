@@ -107,7 +107,7 @@ const RecommendSwiperWrapper = styled.div`
     box-sizing: border-box;
     background: #f7f9f1;
 
-    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 8px 0px rgba(0, 0, 0, 0.25);
     border-radius: 20px;
     overflow: hidden;
   }

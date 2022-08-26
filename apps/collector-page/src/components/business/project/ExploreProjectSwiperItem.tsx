@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 12:26:17
+ * @LastEditTime: 2022-08-26 14:16:53
  * @Description: file description
  */
 import React from 'react'
@@ -10,7 +10,9 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { MintStage } from '../../../types/entities'
+import ScrollBox from '../../common/scroll/ScrollBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
+import RichTextBox from '../../common/text/RichTextBox'
 import RichTextToPlainTextSpan from '../../common/text/RichTextToPlainTextSpan'
 import ChainTag from '../chain/ChainTag'
 import MintStageLabel from './MintStageLabel'
@@ -51,8 +53,11 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
         <MintStageLabel mintStage={mintStage} fontSize="20px" />
-        <ProjectDescription number={9}>
+        {/* <ProjectDescription number={9}>
           <RichTextToPlainTextSpan value={description} />
+        </ProjectDescription> */}
+        <ProjectDescription barSize="sm">
+          <RichTextBox value={description} />
         </ProjectDescription>
       </ProjectInfoBox>
     </ExploreProjectSwiperItemWrapper>
@@ -101,9 +106,12 @@ const ProjectName = styled.div`
   color: #333333;
 `
 
-const ProjectDescription = styled(OverflowEllipsisBox)`
+// const ProjectDescription = styled(OverflowEllipsisBox)`
+//   flex: 1;
+//   font-size: 16px;
+//   line-height: 20px;
+//   color: rgba(51, 51, 51, 0.6);
+// `
+const ProjectDescription = styled(ScrollBox)`
   flex: 1;
-  font-size: 16px;
-  line-height: 20px;
-  color: rgba(51, 51, 51, 0.6);
 `

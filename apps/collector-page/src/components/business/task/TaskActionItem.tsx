@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-22 14:35:14
+ * @LastEditTime: 2022-08-25 19:12:04
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -20,6 +20,7 @@ import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 import Loading from '../../common/loading/Loading'
 import ActionRetweetTwitter from './actions/ActionRetweetTwitter'
 import ActionLikeTwitter from './actions/ActionLikeTwitter'
+import ActionCustom from './actions/ActionCustom'
 
 export type TaskActionItemDataType = {
   id: number
@@ -42,6 +43,7 @@ export type TaskActionItemHandlesType = {
   onDiscord?: (callback: () => void) => void
   onFollowCommunity?: (action: TaskActionItemDataType) => void
   onVerifyAction?: (action: TaskActionItemDataType) => void
+  onCustomAction?: (action: TaskActionItemDataType) => void
 }
 export type TaskActionItemProps = TaskActionItemHandlesType & {
   data: TaskActionItemDataType
@@ -57,6 +59,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   onDiscord,
   onFollowCommunity,
   onVerifyAction,
+  onCustomAction,
   verifying,
   copyBgc,
 }: TaskActionItemProps) => {
@@ -91,6 +94,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.MEET_CONTRIBUTION_SCORE:
         // 达成贡献度
         return <ActionContributionScore data={data} allowHandle={allowHandle} />
+      case ActionType.CUSTOM:
+        // 自定义action
+        return <ActionCustom data={data} allowHandle={allowHandle} onCustomAction={onCustomAction} />
       default:
         return name
     }
