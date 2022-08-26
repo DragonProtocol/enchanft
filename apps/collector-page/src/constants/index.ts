@@ -39,3 +39,5 @@ export const WL_APP_VERSION = process.env.REACT_APP_VERSION
 
 export const TASK_IMAGE_SIZE_LIMIT = 1 * 1024 * 1024
 export const AVATAR_SIZE_LIMIT = 200 * 1024
+
+export const SHARE_EVENT_TWEET_CONTENTS = 'I am exploring on WL.xyz follow the link to find answer with me.\n'

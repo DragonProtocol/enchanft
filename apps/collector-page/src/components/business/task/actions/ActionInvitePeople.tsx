@@ -22,6 +22,8 @@ import { useState } from 'react'
 import ActionIconBox from './ActionIconBox'
 import ActionNameSpan from './ActionNameSpan'
 import { toast } from 'react-toastify'
+import { tweetShare } from '../../../../utils/twitter'
+import { SHARE_EVENT_TWEET_CONTENTS } from '../../../../constants'
 
 export type ActionInvitePeopleProps = {
   data: TaskActionItemDataType
@@ -68,7 +70,7 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
 
         {allowHandle && (
           <ActionInviteCopyBox bgc={copyBgc}>
-            <InviteLinkBox>{refUrl}</InviteLinkBox>
+            <InviteLinkBox onClick={()=>tweetShare(SHARE_EVENT_TWEET_CONTENTS, refUrl)}>{refUrl}</InviteLinkBox>
             <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
               <CopyBtn>
                 <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
