@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 10:53:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-02 15:54:49
+ * @LastEditTime: 2022-08-26 14:10:09
  * @Description: file description
  */
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import DOMPurify from 'dompurify'
 import { marked } from 'marked'
@@ -13,7 +13,7 @@ export enum RichTextMode {
   HTML,
   MARKDOWN,
 }
-type RichTextBoxProps = {
+type RichTextBoxProps = HTMLAttributes<HTMLDivElement> & {
   mode?: RichTextMode
   value: string
 }

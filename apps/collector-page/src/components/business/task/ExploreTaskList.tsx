@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 19:23:59
+ * @LastEditTime: 2022-08-26 11:57:29
  * @Description: file description
  */
 import React from 'react'
@@ -12,7 +12,7 @@ import ButtonBase from '../../common/button/ButtonBase'
 import Loading from '../../common/loading/Loading'
 import IconPlus from '../../common/icons/IconPlus'
 import ExploreTaskItem, { ExploreTaskItemDataViewType } from './ExploreTaskItem'
-import CardItemBox from '../../common/card/CardItemBox'
+import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
 
 export type ExploreTaskListViewConfigType = {
   loading?: boolean
@@ -44,20 +44,17 @@ const ExploreTaskList: React.FC<ExploreTaskListProps> = ({
     {!loading && items.length === 0 && emptyMsg && <ListStatusBox>{emptyMsg}</ListStatusBox>}
     <ExploreTaskListWrapper maxColumns={maxColumns}>
       {displayCreateTask && (
-        <ExploreTaskItemBox>
-          <CreateTaskButton onClick={() => onCreateTask && onCreateTask()}>
-            <IconPlus size="2rem" />
-            <span>Create</span>
-          </CreateTaskButton>
-        </ExploreTaskItemBox>
+        <CreateTaskButton
+          onClick={() => onCreateTask && onCreateTask()}
+          animationType={CardItemBoxAnimationType.HOVER_MOVE_UP}
+        >
+          <IconPlus size="2rem" />
+          <span>Create</span>
+        </CreateTaskButton>
       )}
       {!loading &&
         items.length > 0 &&
-        items.map((item) => (
-          <ExploreTaskItemBox key={`${item.data.id}`}>
-            <ExploreTaskItem data={item.data} viewConfig={item.viewConfig} />
-          </ExploreTaskItemBox>
-        ))}
+        items.map((item) => <ExploreTaskItem key={`${item.data.id}`} data={item.data} viewConfig={item.viewConfig} />)}
     </ExploreTaskListWrapper>
   </>
 )
@@ -88,18 +85,6 @@ const ListStatusBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
-const ExploreTaskItemBox = styled.div`
-  /* 鼠标移入整体上移2px */
-  &:hover {
-    transform: translateY(-4px);
-  }
-  /* 鼠标点击整体缩小2% */
-  &:active {
-    transform: scale(0.98);
-  }
-  transition: all 0.5s ease-out;
-  cursor: pointer;
 `
 const CreateTaskButton = styled(CardItemBox)`
   height: 250px;

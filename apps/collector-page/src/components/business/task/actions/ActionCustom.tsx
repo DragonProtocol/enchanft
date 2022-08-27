@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 13:57:49
+ * @LastEditTime: 2022-08-26 13:57:46
  * @Description: file description
  */
 import React from 'react'
@@ -11,28 +11,27 @@ import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper'
 import PngIconWL from '../../../common/icons/PngIconWL'
-import { useNavigate } from 'react-router-dom'
 import ActionNameSpan from './ActionNameSpan'
 import ActionIconBox from './ActionIconBox'
-export type ActionContributionScoreProps = {
+export type ActionCustomProps = {
   data: TaskActionItemDataType
   allowHandle?: boolean
+  onCustomAction?: (action: TaskActionItemDataType) => void
 }
 
-const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({
-  data,
-  allowHandle,
-}: ActionContributionScoreProps) => {
-  const navigate = useNavigate()
+const ActionCustom: React.FC<ActionCustomProps> = ({ data, allowHandle, onCustomAction }: ActionCustomProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status, project } = data
   const isDone = status === UserActionStatus.DONE ? true : false
   const handleAction = () => {
     if (!allowHandle || isDone) return
-    navigate(`/${project.slug}/rank`)
+    window.open(actionData.url, '_blank')
+    if (onCustomAction) {
+      onCustomAction(data)
+    }
   }
   return (
-    <ActionContributionScoreWrapper>
-      <ActionContributionScoreRow>
+    <ActionCustomWrapper>
+      <ActionCustomRow>
         <ActionIconBox allowHandle={allowHandle} isDone={isDone} onClick={handleAction}>
           <TooltipWrapper title={description}>
             <PngIconWL style={{ opacity: isDone ? 0.5 : 1 }} />
@@ -43,15 +42,15 @@ const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({
             {name}
           </ActionNameSpan>
         </ActionContentBox>
-      </ActionContributionScoreRow>
-    </ActionContributionScoreWrapper>
+      </ActionCustomRow>
+    </ActionCustomWrapper>
   )
 }
-export default ActionContributionScore
-const ActionContributionScoreWrapper = styled.div`
+export default ActionCustom
+const ActionCustomWrapper = styled.div`
   width: 100%;
 `
-const ActionContributionScoreRow = styled.div`
+const ActionCustomRow = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;

@@ -2,12 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 14:52:40
+ * @LastEditTime: 2022-08-25 19:02:07
  * @Description: file description
  */
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify'
-import { takeTask as takeTaskRquest, verifyOneAction, verifyOneTask } from '../../services/api/task'
+import {
+  completionOneAction,
+  takeTask as takeTaskRquest,
+  verifyOneAction,
+  verifyOneTask,
+} from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { Action, Task, TaskAcceptedStatus, TaskTodoCompleteStatus } from '../../types/entities'
@@ -119,6 +124,37 @@ export const verifyAction = createAsyncThunk(
     try {
       dispatch(addOneVerifyActionQueue(action))
       const resp = await verifyOneAction({ id, taskId })
+      if (resp.data.code === 0 && resp.data.data) {
+        dispatch(updateTaskDetailAction(resp.data.data))
+        dispatch(updateOneAction(resp.data.data))
+      } else {
+        throw new Error(resp.data.msg)
+      }
+    } catch (error) {
+      throw error
+    } finally {
+      dispatch(removeOneVerifyActionQueue(id))
+    }
+  },
+  {
+    condition: (action: Action, { getState }) => {
+      const state = getState() as RootState
+      const { selectById } = verifyActionQueueEntity.getSelectors()
+      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
+      return !item
+    },
+  },
+)
+
+// completion action
+export const completionAction = createAsyncThunk(
+  'user/taskHandles/completionAction',
+  async (action: Action, { dispatch }) => {
+    const { id, taskId } = action
+    try {
+      dispatch(addOneVerifyActionQueue(action))
+      const resp = await completionOneAction({ id, taskId })
       if (resp.data.code === 0 && resp.data.data) {
         dispatch(updateTaskDetailAction(resp.data.data))
         dispatch(updateOneAction(resp.data.data))

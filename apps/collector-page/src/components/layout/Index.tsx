@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 14:47:24
+ * @LastEditTime: 2022-08-26 17:55:42
  * @Description: 站点布局入口
  */
 import React, { useEffect, useState } from 'react'
@@ -13,7 +13,7 @@ import { MEDIA_BREAK_POINTS } from 'constants/index'
 import Main, { CutomRouteObject, permissionRoutes, RouteKeys, routes } from './Main'
 import Header from './Header'
 import TodoFloatingWindow from './TodoFloatingWindow'
-import ScrollBox from '../common/ScrollBox'
+import ScrollBox from '../common/scroll/ScrollBox'
 import MainInner from './MainInner'
 import { matchRoutes, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
@@ -23,6 +23,7 @@ import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
 import { fetchTodoTasks, selectAll } from '../../features/user/todoTasksSlice'
 import { TaskTodoCompleteStatus } from '../../types/entities'
 import { useGAPageView } from '../../hooks'
+import Footer from './Footer'
 const Layout: React.FC = () => {
   const dispatch = useAppDispatch()
   const { token } = useAppSelector(selectAccount)
@@ -101,6 +102,9 @@ const Layout: React.FC = () => {
           <MainInner>
             <Main />
           </MainInner>
+          <FooterInner>
+            <Footer />
+          </FooterInner>
         </ScrollBox>
       </MainBox>
       {displayTodoFloating && <TodoFloatingWindow count={count} />}
@@ -141,4 +145,15 @@ const MainBox = styled.div`
   height: 100%;
   padding-top: 72px;
   box-sizing: border-box;
+`
+const FooterInner = styled.div`
+  width: 100%;
+  height: 72px;
+  box-sizing: border-box;
+  padding: 0 40px;
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+    width: ${MEDIA_BREAK_POINTS.xxl}px;
+    margin: 0 auto;
+  }
 `

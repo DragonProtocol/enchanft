@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 17:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 18:25:29
+ * @LastEditTime: 2022-08-26 16:53:38
  * @Description: file description
  */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { fetchDetailByProjectSlug } from '../../services/api/project'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
@@ -56,6 +56,9 @@ export const projectDetailSlice = createSlice({
     updateProjectDetail: (state, action) => {
       state.data = { ...state.data, ...action.payload }
     },
+    resetProjectDetailState: (state) => {
+      Object.assign(state, initProjectState)
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -91,5 +94,5 @@ export const projectDetailSlice = createSlice({
 
 const { actions, reducer } = projectDetailSlice
 export const selectProjectDetail = (state: RootState) => state.projectDetail
-export const { updateProjectDetail } = actions
+export const { updateProjectDetail, resetProjectDetailState } = actions
 export default reducer

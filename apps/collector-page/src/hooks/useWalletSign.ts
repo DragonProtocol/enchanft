@@ -73,6 +73,7 @@ export default function useWalletSign() {
         })
         .then((addr) => {
           if (!addr) return
+          if (addr === account.lastPubkey) return
           dispatch(setPubkey(addr))
         })
     }
@@ -87,10 +88,11 @@ export default function useWalletSign() {
         })
         .then((addr) => {
           if (!addr) return
+          if (addr === account.lastPubkey) return
           dispatch(setPubkey(addr))
         })
     }
-  }, [account.defaultWallet, phantomValid, metamaskValid])
+  }, [account.defaultWallet, account.pubkey, phantomValid, metamaskValid])
 
   const signMsgWithPhantom = async () => {
     const solanaProvider = await getSolanaProvider()
