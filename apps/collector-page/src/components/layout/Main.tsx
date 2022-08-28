@@ -9,7 +9,7 @@
 import React, { useEffect } from 'react'
 import { RouteObject, useRoutes } from 'react-router-dom'
 import styled from 'styled-components'
-import loadable from "@loadable/component";
+import loadable from '@loadable/component'
 
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { selectAccount, userLink } from '../../features/user/accountSlice'
@@ -47,9 +47,8 @@ export type CutomRouteObject = RouteObject & {
 
 const loadComponent = (importPath: string) => {
   const Component = loadable(() => import(`../../container/${importPath}.tsx`))
-  return <Component/>
+  return <Component />
 }
-  
 
 export const permissionRoutes: CutomRouteObject[] = [
   { path: '/profile', element: loadComponent('Profile'), key: RouteKeys.profile },
