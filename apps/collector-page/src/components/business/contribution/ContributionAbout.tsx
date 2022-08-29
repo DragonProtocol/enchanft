@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 11:54:55
+ * @LastEditTime: 2022-08-29 18:46:04
  * @Description: file description
  */
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import ButtonBase from '../../common/button/ButtonBase'
+import ButtonBase, { ButtonPrimary } from '../../common/button/ButtonBase'
 import IconTwitterWhite from '../../common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../../common/icons/IconDiscordWhite'
 import likeReplyRetweetImg from './imgs/like_reply_retweet.png'
@@ -30,20 +30,30 @@ const enum QA_ANSWER_TYPE {
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',
 }
-export type ContributionAboutViewConfigType = {}
+export type ContributionAboutViewConfigType = {
+  displayCheckin: boolean
+  loadingCheckin: boolean
+  disabledCheckin: boolean
+}
 
 export type ContributionAboutDataViewType = {
   data: ContributionAboutDataType
   viewConfig?: ContributionAboutViewConfigType
 }
-export type ContributionAboutHandlesType = {}
+export type ContributionAboutHandlesType = {
+  onCommunityCheckin?: () => void
+}
 
 export type ContributionAboutProps = ContributionAboutDataViewType & ContributionAboutHandlesType
 
 const defaultViewConfig = {}
-const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig }: ContributionAboutProps) => {
+const ContributionAbout: React.FC<ContributionAboutProps> = ({
+  data,
+  viewConfig,
+  onCommunityCheckin,
+}: ContributionAboutProps) => {
   const { name, icon, twitterId, discordId, discordInviteUrl, discordName, discordMembers } = data
-  const {} = {
+  const { displayCheckin, loadingCheckin, disabledCheckin } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
@@ -68,13 +78,14 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
       title: 'Q: How to get contribution in this community?',
       answers: [
         {
-          title: `Join the community.`,
+          display: true,
           type: QA_ANSWER_TYPE.WL,
+          title: `Join the community.`,
           content: ``,
         },
         {
+          display: !!twitterId,
           title: <>Follow {TwitterLinkComponent} on Twitter.</>,
-          type: QA_ANSWER_TYPE.TWITTER,
           content: (
             <CommunityBox>
               <CommunityImg src={icon} />
@@ -91,8 +102,9 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
           ),
         },
         {
-          title: <>Like, retweet or replay {TwitterLinkComponent} daily on Twitter to earn contribution point.</>,
+          display: !!twitterId,
           type: QA_ANSWER_TYPE.TWITTER,
+          title: <>Like, retweet or replay {TwitterLinkComponent} daily on Twitter to earn contribution point.</>,
           content: <QusetionAnswerImg src={likeReplyRetweetImg} />,
         },
         {
@@ -119,9 +131,20 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
           ),
         },
         {
-          title: <>Chat in or invite friends to the {DiscordLinkComponent} daily on Discord.</>,
+          display: !!discordId,
           type: QA_ANSWER_TYPE.DISCORD,
+          title: <>Chat in or invite friends to the {DiscordLinkComponent} daily on Discord.</>,
           content: <QusetionAnswerImg src={discordChatInviteImg} />,
+        },
+        {
+          display: displayCheckin,
+          type: QA_ANSWER_TYPE.DISCORD,
+          title: `Daily Click.`,
+          content: (
+            <GetContributionTokenBtn disabled={disabledCheckin} onClick={onCommunityCheckin}>
+              {loadingCheckin ? 'loading ...' : 'Get Toady’s Contribution Token!'}
+            </GetContributionTokenBtn>
+          ),
         },
       ],
     },
@@ -129,13 +152,15 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
       title: 'Q: What is the use of contribution?',
       answers: [
         {
-          title: 'Whitelist',
+          display: true,
           type: QA_ANSWER_TYPE.WL,
+          title: 'Whitelist',
           content: '',
         },
         {
-          title: 'Community events',
+          display: true,
           type: QA_ANSWER_TYPE.WL,
+          title: 'Community events',
           content: '',
         },
       ],
@@ -148,11 +173,10 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({ data, viewConfig 
         <QuestionItemBox key={index}>
           <QuestionTitle>{question.title}</QuestionTitle>
           {question.answers.map((answer, index) => {
-            if (answer.type === QA_ANSWER_TYPE.TWITTER && (!twitterId || twitterId === '')) return ''
-            if (answer.type === QA_ANSWER_TYPE.DISCORD && (!discordId || discordId === '')) return ''
+            if (!answer.display) return null
             return (
               <QuestionContent key={index}>
-                <QuestionAnswerTitle>• {answer.title}</QuestionAnswerTitle>
+                <QuestionAnswerTitle>★ {answer.title}</QuestionAnswerTitle>
                 {answer.content}
               </QuestionContent>
             )
@@ -269,4 +293,11 @@ const LinkBtnDiscord = styled(LinkBtn)`
 `
 const QusetionAnswerImg = styled.img`
   width: 100%;
+`
+const GetContributionTokenBtn = styled(ButtonPrimary)`
+  height: 48px;
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
 `

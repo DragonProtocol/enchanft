@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 12:04:47
+ * @LastEditTime: 2022-08-29 18:59:30
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -111,6 +111,12 @@ export type FollowedCommunityItem = Community & {
   project: Project
 }
 export type FollowedCommunitiesResponse = FollowedCommunityItem[]
+
+export type CommunityCheckinResponse = {
+  seqDays: number
+  contribution: number
+}
+export type VerifyCommunityCheckinResponse = 0 | 1
 
 /** contribution */
 export type ContributionRanksResponse = ContributionRank[]

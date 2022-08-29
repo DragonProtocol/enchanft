@@ -40,6 +40,9 @@ import Loading from '../components/common/loading/Loading'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import PngIconNotebook from '../components/common/icons/PngIconNotebook'
 import { ChainType, getChainType } from '../utils/chain'
+import { ButtonPrimary } from '../components/common/button/ButtonBase'
+import { selectIds as selectIdsByUserCheckinCommunity } from '../features/user/checkinCommunitiesSlice'
+import useCommunityCheckin from '../hooks/useCommunityCheckin'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -190,6 +193,9 @@ const Project: React.FC = () => {
   // 用户关注的社区ID集合
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
 
+  // 社区签到
+  const { isVerifiedCheckin, isCheckin, handleCheckin, checkinState } = useCommunityCheckin(data?.communityId)
+
   // 打开连接钱包的窗口
   const handleOpenConnectWallet = useCallback(() => {
     dispatch(setConnectWalletModalShow(true))
@@ -263,6 +269,10 @@ const Project: React.FC = () => {
     dispatch(setConnectModal(modalType))
   }
 
+  // 社区签到
+  const displayCheckin = token && !isCheckin && isVerifiedCheckin
+  const loadingCheckin = checkinState.status === AsyncRequestStatus.PENDING
+  const disabledCheckin = loadingCheckin || isCheckin
   return (
     <ProjectWrapper>
       <ProjectLeftBox>
@@ -341,6 +351,13 @@ const Project: React.FC = () => {
             </ProjectOtherInfoRightBox>
           </ProjectOtherInfoBox> */}
       </ProjectRightBox>
+      {displayCheckin && (
+        <CommunityCheckinFloatingWindow>
+          <CommunityCheckinBtn onClick={handleCheckin} disabled={disabledCheckin}>
+            {loadingCheckin ? 'loading ...' : 'Get Contribution Token!'}
+          </CommunityCheckinBtn>
+        </CommunityCheckinFloatingWindow>
+      )}
     </ProjectWrapper>
   )
 }
@@ -349,6 +366,35 @@ const ProjectWrapper = styled.div`
   display: flex;
   gap: 20px;
 `
+const CommunityCheckinFloatingWindow = styled.div`
+  position: fixed;
+  right: 0;
+  bottom: 280px;
+  width: 132px;
+  height: 82px;
+  background: #fffbdb;
+  border: 4px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  border-right: none;
+  padding: 10px;
+  box-sizing: border-box;
+  /* 左上角和左下角radius */
+  border-radius: 20px 0 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333333;
+  cursor: pointer;
+  z-index: 2;
+`
+const CommunityCheckinBtn = styled(ButtonPrimary)`
+  background: linear-gradient(135.7deg, #ebff00 -4.05%, #3dd606 97.84%);
+  font-weight: 700;
+  font-size: 12px;
+  color: #333333;
+  height: 100%;
+`
+
 const ProjectLeftBox = styled.div`
   flex-shrink: 0;
   width: 420px;

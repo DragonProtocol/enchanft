@@ -29,6 +29,7 @@ import ContributionMy, { ContributionMyDataViewType } from '../components/busine
 import Loading from '../components/common/loading/Loading'
 import usePermissions from '../hooks/usePermissons'
 import { downloadContributions } from '../services/api/community'
+import useCommunityCheckin from '../hooks/useCommunityCheckin'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
@@ -98,6 +99,12 @@ const Contributionranks: React.FC = () => {
     }
   }, [community])
 
+  // 社区签到
+  const { isVerifiedCheckin, isCheckin, handleCheckin, checkinState } = useCommunityCheckin(community?.id)
+  const displayCheckin = token && !isCheckin && isVerifiedCheckin
+  const loadingCheckin = checkinState.status === AsyncRequestStatus.PENDING
+  const disabledCheckin = loadingCheckin || isCheckin
+
   // 展示数据
   const contributionranksLoading = contributionranksStatus === AsyncRequestStatus.PENDING
   const userContributionInfo: ContributionMyDataViewType = {
@@ -164,7 +171,15 @@ const Contributionranks: React.FC = () => {
           )}
 
           <ContributionAboutBox>
-            <ContributionAbout data={communityInfo} />
+            <ContributionAbout
+              data={communityInfo}
+              viewConfig={{
+                displayCheckin: displayCheckin,
+                loadingCheckin: loadingCheckin,
+                disabledCheckin: disabledCheckin,
+              }}
+              onCommunityCheckin={handleCheckin}
+            />
           </ContributionAboutBox>
         </ContributionRigtBox>
       </ContributionMainBox>
