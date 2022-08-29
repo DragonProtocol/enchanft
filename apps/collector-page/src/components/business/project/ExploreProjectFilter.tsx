@@ -2,39 +2,39 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 17:25:17
+ * @LastEditTime: 2022-08-29 11:17:31
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
-import { ProjectStatus } from '../../../types/entities'
+import { MintStage } from '../../../types/entities'
 import ButtonRadioGroup from '../../common/button/ButtonRadioGroup'
 import InputSearch from '../../common/input/InputSearch'
-export enum ProjectStatusOther {
+export enum MintStageOther {
   All = '',
 }
-export type ExploreProjectStatusType = ProjectStatus | ProjectStatusOther
-export const ExploreProjectStatusOptions = [
+export type ExploreMintStageType = MintStage | MintStageOther
+export const ExploreMintStageOptions = [
   {
     label: 'All',
-    value: ProjectStatusOther.All,
+    value: MintStageOther.All,
   },
-  // {
-  //   label: 'Active',
-  //   value: ProjectStatus.ACTIVE,
-  // },
   {
     label: 'Live',
-    value: ProjectStatus.LIVE,
+    value: MintStage.LIVE,
   },
   {
     label: 'Future',
-    value: ProjectStatus.FUTURE,
+    value: MintStage.FUTURE,
+  },
+  {
+    label: 'Closed',
+    value: MintStage.CLOSED,
   },
 ]
 
 export type ExploreProjectFilterDataType = {
-  status: ExploreProjectStatusType
+  mintStage: ExploreMintStageType
   keywords: string
 }
 
@@ -61,7 +61,7 @@ const ExploreProjectFilter: React.FC<ExploreProjectFilterProps> = ({
   viewConfig,
   onChange,
 }: ExploreProjectFilterProps) => {
-  const { status, keywords } = data
+  const { mintStage, keywords } = data
   const { displayStatus, displayKeywords } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -70,7 +70,7 @@ const ExploreProjectFilter: React.FC<ExploreProjectFilterProps> = ({
     if (onChange) {
       onChange({
         ...data,
-        status: value,
+        mintStage: value,
       })
     }
   }
@@ -86,7 +86,7 @@ const ExploreProjectFilter: React.FC<ExploreProjectFilterProps> = ({
     <ExploreProjectFilterWrapper>
       {displayStatus && (
         <FilterLeftBox>
-          <ButtonRadioGroup options={ExploreProjectStatusOptions} value={status} onChange={handleStatusChange} />
+          <ButtonRadioGroup options={ExploreMintStageOptions} value={mintStage} onChange={handleStatusChange} />
         </FilterLeftBox>
       )}
       {displayKeywords && (
@@ -105,9 +105,9 @@ const ExploreProjectFilterWrapper = styled.div`
   gap: 60px;
 `
 const FilterLeftBox = styled.div`
-  width: 300px;
+  /* width: 300px; */
 `
 const FilterRightBox = styled.div`
   flex: 1;
-  max-width: 650px;
+  max-width: 500px;
 `

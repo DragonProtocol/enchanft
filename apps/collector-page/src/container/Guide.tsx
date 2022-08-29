@@ -97,6 +97,7 @@ export default function Guide() {
     connectionSocialMedia('discord')
   }, [])
 
+  const avatarIn = avatar || account.avatar
   return (
     <GuideContainer>
       <div className="title">
@@ -168,44 +169,44 @@ export default function Guide() {
         <div>
           <div className="p-info">
             <div className="avatar" onClick={() => document.getElementById('upload-avatar')?.click()}>
-              {(avatar && <img src={avatar} className="avatar" alt="" />) || (
+              {(avatarIn && <img src={avatarIn} className="avatar" alt="" />) || (
                 <>
                   <AddIcon />
                   <span>Upload Image</span>
-                  <input
-                    title="upload-avatar"
-                    id="upload-avatar"
-                    style={{ display: 'none' }}
-                    type="file"
-                    accept="image/png, image/gif, image/jpeg"
-                    onChange={async (e) => {
-                      const file = e.target.files && e.target.files[0]
-                      if (!file) return
-                      if (file.size > AVATAR_SIZE_LIMIT) {
-                        toast.error('File Too Large, 200k limit')
-                        return
-                      }
-                      setModalOpen(true)
-                      try {
-                        const { data } = await uploadAvatar(file)
-                        setAvatar(data.url)
-                        toast.success('upload success')
-                      } catch (error) {
-                        toast.error('upload fail')
-                      } finally {
-                        setModalOpen(false)
-                      }
-                    }}
-                  />
                 </>
               )}
+              <input
+                title="upload-avatar"
+                id="upload-avatar"
+                style={{ display: 'none' }}
+                type="file"
+                accept="image/png, image/gif, image/jpeg"
+                onChange={async (e) => {
+                  const file = e.target.files && e.target.files[0]
+                  if (!file) return
+                  if (file.size > AVATAR_SIZE_LIMIT) {
+                    toast.error('File Too Large, 200k limit')
+                    return
+                  }
+                  setModalOpen(true)
+                  try {
+                    const { data } = await uploadAvatar(file)
+                    setAvatar(data.url)
+                    toast.success('upload success')
+                  } catch (error) {
+                    toast.error('upload fail')
+                  } finally {
+                    setModalOpen(false)
+                  }
+                }}
+              />
             </div>
             <div className="name">
               <p>Name</p>
               <input
                 type="text"
                 placeholder="At least 4 characters"
-                value={name}
+                value={name || account.name}
                 onChange={(e) => {
                   setName(e.target.value)
                 }}

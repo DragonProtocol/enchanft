@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 17:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 11:44:16
+ * @LastEditTime: 2022-08-26 16:54:15
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -72,6 +72,9 @@ export const taskDetailSlice = createSlice({
         state.data = { ...newTask }
       }
     },
+    resetTaskDetailState: (state) => {
+      Object.assign(state, initTaskState)
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -117,5 +120,5 @@ export const taskDetailSlice = createSlice({
 
 const { actions, reducer } = taskDetailSlice
 export const selectTaskDetail = (state: RootState) => state.taskDetail
-export const { updateTaskDetail, updateTaskDetailAction } = actions
+export const { updateTaskDetail, updateTaskDetailAction, resetTaskDetailState } = actions
 export default reducer

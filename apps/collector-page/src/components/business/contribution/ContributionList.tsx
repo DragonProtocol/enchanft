@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 16:33:35
+ * @LastEditTime: 2022-08-29 11:31:00
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -44,7 +44,7 @@ const ContributionListFontSizeMap = {
   },
   [ContributionListSize.medium]: {
     title: '24px',
-    membersTotal: '14px',
+    membersTotal: '16px',
     ranking: '16px',
     avatar: '40px',
     userName: '16px',
@@ -67,7 +67,7 @@ const ContributionListFontWeightMap = {
     title: '700',
     membersTotal: '400',
     ranking: '700',
-    userName: '400',
+    userName: '700',
     pubkey: 'normal',
     score: '700',
   },
@@ -75,7 +75,7 @@ const ContributionListFontWeightMap = {
     title: '700',
     membersTotal: '400',
     ranking: '700',
-    userName: '400',
+    userName: '700',
     pubkey: 'normal',
     score: '700',
   },
@@ -91,7 +91,7 @@ const ContributionListFontWeightMap = {
 
 const ContributionListFlexGapMap = {
   [ContributionListSize.small]: '8px',
-  [ContributionListSize.medium]: '10px',
+  [ContributionListSize.medium]: '20px',
   [ContributionListSize.large]: '20px',
 }
 
@@ -232,6 +232,7 @@ const ContributionItemBox = styled.div`
   display: flex;
   gap: 20px;
   font-size: 20px;
+  color: #333333;
   align-items: center;
   border-bottom: 1px solid #d9d9d9;
   padding-bottom: 10px;
@@ -270,7 +271,6 @@ const ContributionItemScore = styled.div`
   width: 86px;
   font-weight: 700;
   text-align: left;
-  color: #333333;
 `
 const MoreBtn = styled.div`
   font-weight: 700;

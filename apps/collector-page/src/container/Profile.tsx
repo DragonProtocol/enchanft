@@ -2,17 +2,9 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 17:21:35
+ * @LastEditTime: 2022-08-26 18:23:13
  * @Description: 个人信息
  */
-import { useSynftContract } from '@ecnft/js-sdk-react'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import {
-  clearMyNFT,
-  fetchMyEnchanfted,
-  selectAll as selectAllForMyEnchanfted,
-  selectMyEnchanftedState,
-} from '../features/user/myEnchanftedSlice'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCallback } from 'react'
 import useInterval from '../hooks/useInterval'
@@ -44,7 +36,6 @@ import {
   ChainType,
   userOtherWalletLink,
 } from '../features/user/accountSlice'
-import MainContentBox from '../components/layout/MainContentBox'
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
 import {
   FollowedCommunitityForEntity,
@@ -52,12 +43,8 @@ import {
   selectUserFollowedCommunitiesState,
 } from '../features/user/followedCommunitiesSlice'
 import { AsyncRequestStatus } from '../types'
-import EnchanftedList, { EnchanftedListItemsType } from '../components/business/nft/EnchanftedList'
-import { EnchanftedForEntity } from '../features/user/myEnchanftedSlice'
 import { uploadAvatar } from '../services/api/login'
 import { connectionSocialMedia } from '../utils/socialMedia'
-import PhatomIcon from '../components/ConnectBtn/PhantomIcon'
-import MetamaskIcon from '../components/ConnectBtn/MetamaskIcon'
 import { sortPubKey } from '../utils/solana'
 import useWalletSign from '../hooks/useWalletSign'
 import { SIGN_MSG } from '../utils/token'
@@ -105,13 +92,6 @@ const formatStoreDataToComponentDataByUserWhitelists = (
     }
   })
 }
-// const formatStoreDataToComponentDataByMyEnchanfted = (nfts: EnchanftedForEntity[]): EnchanftedListItemsType => {
-//   return nfts.map((nft) => {
-//     return {
-//       data: { ...nft },
-//     }
-//   })
-// }
 const ProfileTabOptions = [
   {
     label: 'My Communities',
@@ -121,10 +101,6 @@ const ProfileTabOptions = [
     label: 'My Rewards',
     value: 'myRewards',
   },
-  // {
-  //   label: 'My Enchanfted',
-  //   value: 'myEnchanfted',
-  // },
 ]
 const Profile: React.FC = () => {
   const dispatch = useAppDispatch()
@@ -160,13 +136,6 @@ const Profile: React.FC = () => {
   const { status: whitelistsStatus } = useAppSelector(selectUserWhitelistsState)
   const loadingUserWhitelists = whitelistsStatus === AsyncRequestStatus.PENDING
   const whitelistItems = formatStoreDataToComponentDataByUserWhitelists(whitelists)
-  console.log({ whitelistItems })
-
-  // 我的NFT列表
-  // const myEnchanftedList = useAppSelector(selectAllForMyEnchanfted)
-  // const { status: myEnchanftedStatus } = useAppSelector(selectMyEnchanftedState)
-  // const loadingEnchanftedList = myEnchanftedStatus === AsyncRequestStatus.PENDING
-  // const myEnchanftedItems = formatStoreDataToComponentDataByMyEnchanfted(myEnchanftedList)
 
   const twitter = account.accounts.find((item) => item.accountType === 'TWITTER')?.thirdpartyName
   const discord = account.accounts.find((item) => item.accountType === 'DISCORD')?.thirdpartyName
@@ -205,86 +174,75 @@ const Profile: React.FC = () => {
   }, [phantomValid])
   return (
     <ProfileWrapper>
-      <MainContentBox>
-        <ProfileTopBox>
-          <UserImg src={account.avatar} />
-          <ProfileRightBox>
-            <UserName>
-              <span>{account.name}</span>
-              <IconButton onClick={() => setOpenDialog(true)}>
-                <EditIcon />
-              </IconButton>
-            </UserName>
-            <UserAddress>{account.pubkey}</UserAddress>
-            <UserAccountListBox>
-              <MetamaskBindBtn
-                onClick={() => {
-                  if (accountMetamask) return
-                  bindMetamask()
-                }}
-              >
+      <ProfileTopBox>
+        <UserImg src={account.avatar} />
+        <ProfileRightBox>
+          <UserName>
+            <span>{account.name}</span>
+            <IconButton onClick={() => setOpenDialog(true)}>
+              <EditIcon />
+            </IconButton>
+          </UserName>
+          <UserAddress>{account.pubkey}</UserAddress>
+          <UserAccountListBox>
+            <MetamaskBindBtn
+              onClick={() => {
+                if (accountMetamask) return
+                bindMetamask()
+              }}
+            >
+              <ConnectIconBox>
                 <IconMetamask />
-                {accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}
-              </MetamaskBindBtn>
-              <PhantomBindBtn
-                onClick={() => {
-                  if (accountPhantom) return
-                  bindPhantom()
-                }}
-              >
-                <IconPhantomWhite />
-                {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
-              </PhantomBindBtn>
-              <TwitterBindBtn onClick={() => connectionSocialMedia('twitter')}>
-                <IconTwitterWhite />
-                {twitter || 'Connect Twitter'}
-              </TwitterBindBtn>
-              <DiscordBindBtn onClick={() => connectionSocialMedia('discord')}>
-                <IconDiscordWhite />
-                {discord || 'Connect Discord'}
-              </DiscordBindBtn>
-              {/* <EmailBindBtn>
+              </ConnectIconBox>
+
+              {accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}
+            </MetamaskBindBtn>
+            <PhantomBindBtn
+              onClick={() => {
+                if (accountPhantom) return
+                bindPhantom()
+              }}
+            >
+              <IconPhantomWhite />
+              {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
+            </PhantomBindBtn>
+            <TwitterBindBtn onClick={() => connectionSocialMedia('twitter')}>
+              <IconTwitterWhite />
+              {twitter || 'Connect Twitter'}
+            </TwitterBindBtn>
+            <DiscordBindBtn onClick={() => connectionSocialMedia('discord')}>
+              <IconDiscordWhite />
+              {discord || 'Connect Discord'}
+            </DiscordBindBtn>
+            {/* <EmailBindBtn>
                   <IconEmailWhite />
                   {'Connect Email'}
                 </EmailBindBtn> */}
-            </UserAccountListBox>
-          </ProfileRightBox>
-        </ProfileTopBox>
-        <ProfileInfoTabsBox>
-          <ButtonRadioGroupProfileTabs
-            options={ProfileTabOptions}
-            value={curProfileTab}
-            onChange={(value) => setCurProfileTab(value)}
-          />
-          <ProfileTabContentBox>
-            {curProfileTab === 'myCommunities' && (
-              <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
-            )}
-            {curProfileTab === 'myRewards' && <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />}
-            {/* {curProfileTab === 'myEnchanfted' && (
-                <EnchanftedList items={myEnchanftedItems} loading={loadingEnchanftedList} />
-              )} */}
-          </ProfileTabContentBox>
-        </ProfileInfoTabsBox>
-      </MainContentBox>
-      <Dialog open={openDialog} fullWidth={true} maxWidth={'sm'}>
+          </UserAccountListBox>
+        </ProfileRightBox>
+      </ProfileTopBox>
+      <ProfileInfoTabsBox>
+        <ButtonRadioGroupProfileTabs
+          options={ProfileTabOptions}
+          value={curProfileTab}
+          onChange={(value) => setCurProfileTab(value)}
+        />
+        <ProfileTabContentBox>
+          {curProfileTab === 'myCommunities' && (
+            <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
+          )}
+          {curProfileTab === 'myRewards' && <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />}
+        </ProfileTabContentBox>
+      </ProfileInfoTabsBox>
+      <DialogBox open={openDialog}>
         <EditProfileBox>
-          <EditProfileTitle>Change Profile</EditProfileTitle>
+          <EditProfileTitle>Edit Profile</EditProfileTitle>
           <EditFormBox>
             <EditAvatarBox
               onClick={() => {
                 document.getElementById('uploadinput')?.click()
               }}
             >
-              {(uploading && (
-                <div className="uploading">
-                  <CircularProgress size="5rem" color="inherit" />
-                  <p>Uploading Image</p>
-                </div>
-              )) || <EditAvatar src={avatar || account.avatar} />}
-            </EditAvatarBox>
-
-            <EditNameBox>
               <input
                 title="uploadinput"
                 id="uploadinput"
@@ -311,19 +269,27 @@ const Profile: React.FC = () => {
                   }
                 }}
               />
+              {(uploading && (
+                <div className="uploading">
+                  <CircularProgress size="5rem" color="inherit" />
+                  <p>Uploading Image</p>
+                </div>
+              )) || <EditAvatar src={avatar || account.avatar} />}
+            </EditAvatarBox>
 
+            <EditNameBox>
               <FormControl variant="standard">
                 <EditNameLabel>Name</EditNameLabel>
-                <TextField id="name" value={name || account.name} onChange={(e) => setName(e.target.value)} />
+                <input title="name" id="name" value={name || account.name} onChange={(e) => setName(e.target.value)} />
               </FormControl>
             </EditNameBox>
           </EditFormBox>
           <EditButtonBox>
-            <EditProfileBtnCancel onClick={() => setOpenDialog(false)}>cancel</EditProfileBtnCancel>
-            <EditProfileBtnSave onClick={() => updateProfile()}>save</EditProfileBtnSave>
+            <EditProfileBtnCancel onClick={() => setOpenDialog(false)}>Cancel</EditProfileBtnCancel>
+            <EditProfileBtnSave onClick={() => updateProfile()}>Save</EditProfileBtnSave>
           </EditButtonBox>
         </EditProfileBox>
-      </Dialog>
+      </DialogBox>
     </ProfileWrapper>
   )
 }
@@ -377,7 +343,7 @@ const BindBtnBase = styled(ButtonBase)`
   font-weight: 700;
 `
 const MetamaskBindBtn = styled(BindBtnBase)`
-  background: #f5e5d5;
+  background: #f6851b;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
 const PhantomBindBtn = styled(BindBtnBase)`
@@ -398,7 +364,15 @@ const EmailBindBtn = styled(BindBtnBase)`
   background: #3dd606;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
-
+const ConnectIconBox = styled.div`
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 2px;
+  background: #ffffff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.5rem;
+`
 const ProfileInfoTabsBox = styled(CardBox)`
   margin-top: 20px;
 `
@@ -410,12 +384,23 @@ const ProfileTabContentBox = styled.div`
   margin-top: 20px;
 `
 
+const DialogBox = styled(Dialog)`
+  & div[role='dialog'] {
+    border-radius: 20px;
+  }
+`
+
 // Edit Form
 const EditProfileBox = styled.div`
+  width: 540px;
+  border-radius: 20px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px;
+  gap: 20px;
+  padding: 20px;
+
+  background: #f7f9f1;
 `
 const EditProfileTitle = styled.div`
   font-weight: 700;
@@ -425,9 +410,11 @@ const EditProfileTitle = styled.div`
 `
 const EditFormBox = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 10px;
 `
 const EditAvatarBox = styled.div`
+  margin: 0 auto;
   width: 160px;
   height: 160px;
   position: relative;
@@ -454,9 +441,21 @@ const EditAvatar = styled(UserAvatar)`
   object-fit: cover;
 `
 const EditNameBox = styled.div`
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  & input {
+    padding: 11.5px 18px;
+    margin-top: 10px;
+    font-size: 18px;
+    line-height: 27px;
+    border-radius: 10px;
+    background: #ebeee4;
+    border: none !important;
+    outline: none !important;
+  }
 `
 const EditNameLabel = styled.div`
   font-weight: 700;

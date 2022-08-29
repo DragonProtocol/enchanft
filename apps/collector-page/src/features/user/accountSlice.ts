@@ -13,6 +13,8 @@ import {
   DEFAULT_WALLET,
   LAST_LOGIN_AVATAR,
   LAST_LOGIN_NAME,
+  LAST_LOGIN_TOKEN,
+  LAST_LOGIN_PUBKEY,
   LAST_LOGIN_TYPE,
   setLoginToken,
   TokenType,
@@ -70,11 +72,14 @@ export type ResourcePermission =
 
 export type AccountState = {
   status: AsyncRequestStatus
+  linkStatus: AsyncRequestStatus
   errorMsg?: string //我不确定这个errorMsg有没有被使用，所以没敢改，如果在外部没有使用，建议统一改成resMessage
   defaultWallet: TokenType
   lastLoginType: TokenType | null
   lastLoginInfo: { name: string; avatar: string }
+  walletChecked: boolean
   pubkey: string
+  lastPubkey: string
   token: string
   avatar: string
   name: string
@@ -91,16 +96,19 @@ export type AccountState = {
 // 用户账户信息
 const initialState: AccountState = {
   status: AsyncRequestStatus.IDLE,
+  linkStatus: AsyncRequestStatus.IDLE,
   defaultWallet: (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '',
   lastLoginType: (localStorage.getItem(LAST_LOGIN_TYPE) as TokenType) || '',
   lastLoginInfo: {
     name: localStorage.getItem(LAST_LOGIN_NAME) || '',
     avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
   },
-  pubkey: '',
-  token: '',
-  avatar: '',
-  name: '',
+  walletChecked: false,
+  pubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
+  lastPubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
+  token: localStorage.getItem(LAST_LOGIN_TOKEN) || '',
+  avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
+  name: localStorage.getItem(LAST_LOGIN_NAME) || '',
   id: 0,
   connectModal: null,
   connectWalletModalShow: false,
@@ -171,10 +179,10 @@ export const userLink = createAsyncThunk(
     condition: (params, { getState }) => {
       const state = getState() as RootState
       const {
-        account: { status },
+        account: { linkStatus },
       } = state
       // 之前的请求正在进行中,则阻止新的请求
-      if (status === AsyncRequestStatus.PENDING) {
+      if (linkStatus === AsyncRequestStatus.PENDING) {
         return false
       }
       return true
@@ -220,6 +228,12 @@ export const accountSlice = createSlice({
   name: 'account',
   initialState,
   reducers: {
+    resetLoginStatus: (state) => {
+      state.status = initialState.status
+    },
+    setWalletChecked: (state) => {
+      state.walletChecked = true
+    },
     setLastLogin: (state, action) => {
       state.lastLoginType = action.payload
     },
@@ -249,6 +263,7 @@ export const accountSlice = createSlice({
       state.avatar = action.payload
     },
     setPubkey: (state, action) => {
+      localStorage.setItem(LAST_LOGIN_PUBKEY, action.payload)
       state.pubkey = action.payload
     },
     removeToken: (state) => {
@@ -280,8 +295,9 @@ export const accountSlice = createSlice({
         state.defaultWallet = action.payload.walletType
         state.errorMsg = ''
 
-        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.avatar)
-        localStorage.setItem(LAST_LOGIN_NAME, action.payload.name)
+        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.avatar || '')
+        localStorage.setItem(LAST_LOGIN_NAME, action.payload.name || '')
+        localStorage.setItem(LAST_LOGIN_TOKEN, action.payload.token || '')
 
         localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
         localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
@@ -292,10 +308,10 @@ export const accountSlice = createSlice({
       })
       ///////
       .addCase(userLink.pending, (state) => {
-        state.status = AsyncRequestStatus.PENDING
+        state.linkStatus = AsyncRequestStatus.PENDING
       })
       .addCase(userLink.fulfilled, (state, action) => {
-        state.status = AsyncRequestStatus.FULFILLED
+        state.linkStatus = AsyncRequestStatus.FULFILLED
         state.accounts = action.payload || []
         console.log('link successfully: ', state, action)
         state.resMessage = {
@@ -304,7 +320,7 @@ export const accountSlice = createSlice({
         }
       })
       .addCase(userLink.rejected, (state, action) => {
-        state.status = AsyncRequestStatus.REJECTED
+        state.linkStatus = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
         console.log('link failed: ', state, action)
         state.resMessage = {
@@ -337,8 +353,8 @@ export const accountSlice = createSlice({
         state.roles = action.payload.data.roles
         state.errorMsg = ''
 
-        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.data.avatar)
-        localStorage.setItem(LAST_LOGIN_NAME, action.payload.data.name)
+        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.data.avatar || '')
+        localStorage.setItem(LAST_LOGIN_NAME, action.payload.data.name || '')
       })
       .addCase(userGetProfile.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -346,10 +362,10 @@ export const accountSlice = createSlice({
       })
       ///
       .addCase(userOtherWalletLink.pending, (state) => {
-        state.status = AsyncRequestStatus.PENDING
+        state.linkStatus = AsyncRequestStatus.PENDING
       })
       .addCase(userOtherWalletLink.fulfilled, (state, action) => {
-        state.status = AsyncRequestStatus.FULFILLED
+        state.linkStatus = AsyncRequestStatus.FULFILLED
         state.defaultWallet = action.payload.walletType
         state.accounts = action.payload.accounts || []
 
@@ -362,7 +378,7 @@ export const accountSlice = createSlice({
         }
       })
       .addCase(userOtherWalletLink.rejected, (state, action) => {
-        state.status = AsyncRequestStatus.REJECTED
+        state.linkStatus = AsyncRequestStatus.REJECTED
 
         state.resMessage = {
           type: AlertSeverity.ERROR,
@@ -378,6 +394,8 @@ export const {
   setConnectModal,
   setDefaultWallet,
   setToken,
+  resetLoginStatus,
+  setWalletChecked,
   setPubkey,
   setAvatar,
   removeToken,

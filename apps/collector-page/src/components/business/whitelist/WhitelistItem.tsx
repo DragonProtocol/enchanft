@@ -228,7 +228,6 @@ const WhitelistItemWrapper = styled(CardItemBox)`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  cursor: pointer;
 `
 const ProjectImage = styled.img`
   width: 100%;

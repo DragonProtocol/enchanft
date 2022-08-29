@@ -2,15 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 14:25:22
+ * @LastEditTime: 2022-08-26 18:25:35
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
-import ScrollBox from '../components/common/ScrollBox'
-import MainContentBox from '../components/layout/MainContentBox'
+import ScrollBox from '../components/common/scroll/ScrollBox'
 import { ActionType, TaskTodoCompleteStatus } from '../types/entities'
 import { UserActionStatus } from '../types/api'
 import { AsyncRequestStatus } from '../types'
@@ -21,6 +20,7 @@ import useHandleAction from '../hooks/useHandleAction'
 import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 import {
+  completionAction,
   selectIdsVerifyActionQueue,
   selectIdsVerifyTaskQueue,
   verifyAction,
@@ -233,60 +233,58 @@ const TodoTask: React.FC = () => {
 
   return (
     <TodoTaskWrapper>
-      <ScrollBox>
-        <MainContentBox>
-          <TodoTaskGroupBox>
-            <TodoTaskGroupLeft>
-              <TodoTaskList
-                status={TaskTodoCompleteStatus.TODO}
-                items={todoItems}
-                loading={loading}
-                onVerifyTask={(task) => dispatch(verifyTask(task))}
-                onVerifyAction={(action) => dispatch(verifyAction(action))}
-                onDiscord={handleActionToDiscord}
-                onTwitter={handleActionToTwitter}
-                onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
-              />
-              <TodoTaskList
-                status={TaskTodoCompleteStatus.IN_PRGRESS}
-                items={inProgressItems}
-                loading={loading}
-                onVerifyTask={(task) => dispatch(verifyTask(task))}
-                onVerifyAction={(action) => dispatch(verifyAction(action))}
-                onDiscord={handleActionToDiscord}
-                onTwitter={handleActionToTwitter}
-                onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
-              />
-            </TodoTaskGroupLeft>
-            <TodoTaskGroupRight>
-              <TodoTaskList
-                status={TaskTodoCompleteStatus.COMPLETED}
-                items={completedItems}
-                loading={loading}
-                onVerifyTask={(task) => dispatch(verifyTask(task))}
-              />
-              <TodoTaskList
-                status={TaskTodoCompleteStatus.WON}
-                items={wonItems}
-                loading={loading}
-                onVerifyTask={(task) => dispatch(verifyTask(task))}
-              />
-              <TodoTaskList
-                status={TaskTodoCompleteStatus.CLOSED}
-                items={closedItems}
-                loading={loading}
-                onVerifyTask={(task) => dispatch(verifyTask(task))}
-              />
-              <TodoTaskList
-                status={TaskTodoCompleteStatus.LOST}
-                items={lostItems}
-                loading={loading}
-                onVerifyTask={(task) => dispatch(verifyTask(task))}
-              />
-            </TodoTaskGroupRight>
-          </TodoTaskGroupBox>
-        </MainContentBox>
-      </ScrollBox>
+      <TodoTaskGroupBox>
+        <TodoTaskGroupLeft>
+          <TodoTaskList
+            status={TaskTodoCompleteStatus.TODO}
+            items={todoItems}
+            loading={loading}
+            onVerifyTask={(task) => dispatch(verifyTask(task))}
+            onVerifyAction={(action) => dispatch(verifyAction(action))}
+            onDiscord={handleActionToDiscord}
+            onTwitter={handleActionToTwitter}
+            onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
+            onCustomAction={(action) => dispatch(completionAction(action))}
+          />
+          <TodoTaskList
+            status={TaskTodoCompleteStatus.IN_PRGRESS}
+            items={inProgressItems}
+            loading={loading}
+            onVerifyTask={(task) => dispatch(verifyTask(task))}
+            onVerifyAction={(action) => dispatch(verifyAction(action))}
+            onDiscord={handleActionToDiscord}
+            onTwitter={handleActionToTwitter}
+            onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
+            onCustomAction={(action) => dispatch(completionAction(action))}
+          />
+        </TodoTaskGroupLeft>
+        <TodoTaskGroupRight>
+          <TodoTaskList
+            status={TaskTodoCompleteStatus.COMPLETED}
+            items={completedItems}
+            loading={loading}
+            onVerifyTask={(task) => dispatch(verifyTask(task))}
+          />
+          <TodoTaskList
+            status={TaskTodoCompleteStatus.WON}
+            items={wonItems}
+            loading={loading}
+            onVerifyTask={(task) => dispatch(verifyTask(task))}
+          />
+          <TodoTaskList
+            status={TaskTodoCompleteStatus.CLOSED}
+            items={closedItems}
+            loading={loading}
+            onVerifyTask={(task) => dispatch(verifyTask(task))}
+          />
+          <TodoTaskList
+            status={TaskTodoCompleteStatus.LOST}
+            items={lostItems}
+            loading={loading}
+            onVerifyTask={(task) => dispatch(verifyTask(task))}
+          />
+        </TodoTaskGroupRight>
+      </TodoTaskGroupBox>
     </TodoTaskWrapper>
   )
 }

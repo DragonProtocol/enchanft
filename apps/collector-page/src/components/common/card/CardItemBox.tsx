@@ -2,22 +2,45 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 10:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-24 14:45:52
+ * @LastEditTime: 2022-08-26 19:12:22
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
-import styled from 'styled-components'
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+export enum CardItemBoxAnimationType {
+  HOVER_MOVE_UP = 'HOVER_MOVE_UP',
+}
+const hoverMoveUpCss = css`
+  /* 鼠标移入整体上移2px */
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 6px 0px rgba(0, 0, 0, 0.25);
+  }
+  transition: all 0.3s ease-out;
+`
+export const CardItemBoxAnimationMap = {
+  [CardItemBoxAnimationType.HOVER_MOVE_UP]: hoverMoveUpCss,
+}
+export type CardItemBoxProps = HTMLAttributes<HTMLDivElement> & {
+  animationType?: CardItemBoxAnimationType
+}
+const CardItemBox: React.FC<CardItemBoxProps> = ({ children, animationType, ...otherProps }: CardItemBoxProps) => {
+  const _props = otherProps
+  if (animationType) {
+    const animationCss = CardItemBoxAnimationMap[animationType]
+    Object.assign(_props, { animationCss })
+  }
 
-type CardItemBoxProps = HTMLAttributes<HTMLDivElement>
-const CardItemBox: React.FC<CardItemBoxProps> = ({ children, ...otherProps }: CardItemBoxProps) => {
-  return <CardItemBoxWrapper {...otherProps}>{children}</CardItemBoxWrapper>
+  return <CardItemBoxWrapper {..._props}>{children}</CardItemBoxWrapper>
 }
 export default CardItemBox
-const CardItemBoxWrapper = styled.div`
+
+const CardItemBoxWrapper = styled.div<{ animationCss?: FlattenSimpleInterpolation }>`
   width: 100%;
   background: #f7f9f1;
   outline: 2px solid #333333;
   border-radius: 10px;
   box-sizing: border-box;
   overflow: hidden;
+  ${({ animationCss }) => animationCss}
 `

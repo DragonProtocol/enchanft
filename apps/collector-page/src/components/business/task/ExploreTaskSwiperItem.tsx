@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 17:33:58
+ * @LastEditTime: 2022-08-29 10:51:41
  * @Description: file description
  */
 import React from 'react'
@@ -57,10 +57,10 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
   return (
-    <ExploreTaskSwiperItemWrapper>
+    <ExploreTaskSwiperItemWrapper onClick={() => navigate(`/${project.slug}/${id}`)}>
       {/* <ChainTag size={2} chainId={project.chainId} /> */}
       <TaskImageBox>
-        <TaskImage src={image} onClick={() => navigate(`/${project.slug}/${id}`)} />
+        <TaskImage src={image} />
       </TaskImageBox>
 
       <TaskInfoBox>
@@ -102,6 +102,7 @@ const ExploreTaskSwiperItemWrapper = styled.div`
   height: 100%;
   display: flex;
   overflow: hidden;
+  cursor: pointer;
 `
 const TaskImageBox = styled.div`
   width: 50%;

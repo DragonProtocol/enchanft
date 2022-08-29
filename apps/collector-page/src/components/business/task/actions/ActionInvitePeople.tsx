@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 17:45:38
+ * @LastEditTime: 2022-08-26 13:57:56
  * @Description: file description
  */
 import React from 'react'
@@ -11,8 +11,8 @@ import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import OverflowEllipsisBox from '../../../common/text/OverflowEllipsisBox'
-import TooltipWrapper from '../../../common/TooltipWrapper'
-import IconTip from '../../../common/icons/IconTip'
+import TooltipWrapper from '../../../common/tooltip/TooltipWrapper'
+import PngIconWL from '../../../common/icons/PngIconWL'
 import IconCopy from '../../../common/icons/IconCopy'
 import { getTakeTaskRefLink } from '../../../../container/Ref'
 import { useAppSelector } from '../../../../store/hooks'
@@ -22,6 +22,8 @@ import { useState } from 'react'
 import ActionIconBox from './ActionIconBox'
 import ActionNameSpan from './ActionNameSpan'
 import { toast } from 'react-toastify'
+import { tweetShare } from '../../../../utils/twitter'
+import { SHARE_EVENT_TWEET_CONTENTS } from '../../../../constants'
 
 export type ActionInvitePeopleProps = {
   data: TaskActionItemDataType
@@ -58,7 +60,7 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
     <ActionInvitePeopleWrapper>
       <ActionIconBox allowHandle={allowHandle} isDone={isDone}>
         <TooltipWrapper title={description}>
-          <IconTip opacity={isDone ? 0.5 : 1} />
+          <PngIconWL style={{ opacity: isDone ? 0.5 : 1 }} />
         </TooltipWrapper>
       </ActionIconBox>
       <ActionContentBox>
@@ -68,7 +70,7 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
 
         {allowHandle && (
           <ActionInviteCopyBox bgc={copyBgc}>
-            <InviteLinkBox>{refUrl}</InviteLinkBox>
+            <InviteLinkBox onClick={() => tweetShare(SHARE_EVENT_TWEET_CONTENTS, refUrl)}>{refUrl}</InviteLinkBox>
             <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
               <CopyBtn>
                 <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />

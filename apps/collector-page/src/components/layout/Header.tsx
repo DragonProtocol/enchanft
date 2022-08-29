@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 11:13:35
+ * @LastEditTime: 2022-08-29 10:28:11
  * @Description: 站点头部
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -111,7 +111,7 @@ const PcNavItemBox = styled.div<{ isActive: boolean }>`
   display: flex;
   align-items: center;
   cursor: pointer;
-  box-shadow: ${(props) => (props.isActive ? 'inset 0 -2px #000' : 'none')};
+  box-shadow: ${(props) => (props.isActive ? 'inset 0 -4px #3DD606' : 'none')};
   transition: all 1s ease-out;
 `
 const PcNavItemText = styled.span`
