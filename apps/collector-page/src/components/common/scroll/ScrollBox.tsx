@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 14:14:54
+ * @LastEditTime: 2022-08-29 11:14:14
  * @Description: 滚动盒子，提供视口滚动监听
  */
 import React, { HTMLAttributes, useEffect } from 'react'
@@ -20,7 +20,14 @@ type ScrollBoxProps = HTMLAttributes<HTMLDivElement> & {
   // scroll bar css
   barSize?: ScrollBarSize
 }
-const ScrollBox: React.FC<ScrollBoxProps> = ({ children, rootEl, onInView, boxId, barSize = 'md' }: ScrollBoxProps) => {
+const ScrollBox: React.FC<ScrollBoxProps> = ({
+  children,
+  rootEl,
+  onInView,
+  boxId,
+  barSize = 'md',
+  ...divProps
+}: ScrollBoxProps) => {
   const { ref: inViewRef, inView } = useInView({
     root: rootEl || null,
     threshold: 0,
@@ -29,7 +36,7 @@ const ScrollBox: React.FC<ScrollBoxProps> = ({ children, rootEl, onInView, boxId
     if (inView && onInView) onInView()
   }, [inView, onInView])
   return (
-    <ScrollBoxWrapper id={boxId} barSize={barSize}>
+    <ScrollBoxWrapper id={boxId} barSize={barSize} {...divProps}>
       {children}
       {/* 当前滚动盒子的锚点 */}
       <div ref={inViewRef} />

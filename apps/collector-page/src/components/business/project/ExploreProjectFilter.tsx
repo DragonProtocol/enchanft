@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 11:56:53
+ * @LastEditTime: 2022-08-29 11:17:31
  * @Description: file description
  */
 import React from 'react'
@@ -109,5 +109,5 @@ const FilterLeftBox = styled.div`
 `
 const FilterRightBox = styled.div`
   flex: 1;
-  max-width: 650px;
+  max-width: 500px;
 `

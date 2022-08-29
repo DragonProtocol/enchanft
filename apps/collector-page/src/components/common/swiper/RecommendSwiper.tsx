@@ -59,28 +59,30 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
         </RecommendSwiperLeft>
       )}
       {loading ? (
-        <RecommendSwiperItem>
+        <RecommendSwiperBox>
           <RecommendSwiperLoading>
             <Loading />
           </RecommendSwiperLoading>
-        </RecommendSwiperItem>
+        </RecommendSwiperBox>
       ) : (
-        <Swiper
-          className="recommend-swiper"
-          spaceBetween={50}
-          slidesPerView={1}
-          loop={loopConfig}
-          modules={modulesConfig}
-          navigation={navigationConfig}
-          autoplay={autoplayConfig}
-          pagination={paginationConfig}
-        >
-          {children || (
-            <RecommendSwiperItem>
-              <RecommendSwiperEmpty>{emptyMsg}</RecommendSwiperEmpty>
-            </RecommendSwiperItem>
-          )}
-        </Swiper>
+        <RecommendSwiperBox>
+          <Swiper
+            className="recommend-swiper"
+            spaceBetween={50}
+            slidesPerView={1}
+            loop={loopConfig}
+            modules={modulesConfig}
+            navigation={navigationConfig}
+            autoplay={autoplayConfig}
+            pagination={paginationConfig}
+          >
+            {children || (
+              <RecommendSwiperItem>
+                <RecommendSwiperEmpty>{emptyMsg}</RecommendSwiperEmpty>
+              </RecommendSwiperItem>
+            )}
+          </Swiper>
+        </RecommendSwiperBox>
       )}
 
       {navigation && (
@@ -100,17 +102,21 @@ const RecommendSwiperWrapper = styled.div`
   position: relative;
   z-index: 1;
   .recommend-swiper {
-    width: calc(100% - 8px);
-    height: calc(100% - 8px);
-    outline: 4px solid #333333;
-
-    box-sizing: border-box;
-    background: #f7f9f1;
-
-    box-shadow: 0px 8px 0px rgba(0, 0, 0, 0.25);
-    border-radius: 20px;
-    overflow: hidden;
+    width: 100%;
+    height: 100%;
   }
+`
+const RecommendSwiperBox = styled.div`
+  width: calc(100% - 8px);
+  height: calc(100% - 8px);
+  outline: 4px solid #333333;
+
+  box-sizing: border-box;
+  background: #f7f9f1;
+
+  box-shadow: 0px 8px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
+  overflow: hidden;
 `
 const RecommendSwiperLeft = styled.div`
   position: absolute;

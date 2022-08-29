@@ -168,6 +168,11 @@ const ProjectDescription = styled(RichTextBox)`
   ${ScrollBarCss}
   padding-bottom: 10px;
   border-bottom: 1px solid #d9d9d9;
+
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 20px;
+  color: rgba(51, 51, 51, 0.6);
 `
 
 const HorizontalLine = styled.div`
