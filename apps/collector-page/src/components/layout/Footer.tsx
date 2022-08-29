@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 18:31:59
+ * @LastEditTime: 2022-08-29 12:19:51
  * @Description: 站点头部
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -26,7 +26,12 @@ const Footer: React.FC = () => {
           <IconDiscordBlack />
         </ProjectLink>
       </FooterLeft>
-      <FooterRight>v{WL_APP_VERSION}</FooterRight>
+      <FooterRight>
+        <ReportBugs href={WL_DISCORD_URL} target="_blank" rel="noopener noreferrer">
+          report bugs
+        </ReportBugs>
+        |<Version>v{WL_APP_VERSION}</Version>
+      </FooterRight>
     </FooterWrapper>
   )
 }
@@ -46,6 +51,7 @@ const FooterLeft = styled.div`
   align-items: center;
 `
 const ProjectLink = styled.a`
+  display: inline-block;
   width: 20px;
   height: 20px;
   cursor: pointer;
@@ -56,5 +62,9 @@ const FooterRight = styled.div`
   display: flex;
   justify-content: end;
   align-items: center;
-  gap: 80px;
+  gap: 10px;
 `
+const ReportBugs = styled.a`
+  color: #3dd606;
+`
+const Version = styled.span``
