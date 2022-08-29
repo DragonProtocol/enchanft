@@ -24,10 +24,12 @@ import { fetchTodoTasks, selectAll } from '../../features/user/todoTasksSlice'
 import { TaskTodoCompleteStatus } from '../../types/entities'
 import { useGAPageView } from '../../hooks'
 import Footer from './Footer'
+import useWalletSign from '../../hooks/useWalletSign'
 const Layout: React.FC = () => {
   const dispatch = useAppDispatch()
-  const { token } = useAppSelector(selectAccount)
+  const { token, walletChecked } = useAppSelector(selectAccount)
   useGAPageView()
+  useWalletSign()
   // TODO 后面对路由优化时，这个matchRoutes重复代码可封装成hooks
   const location = useLocation()
   const [displayTodoFloating, setDisplayTodoFloating] = useState(false)
@@ -90,6 +92,8 @@ const Layout: React.FC = () => {
       alert('account bind failed!')
     }
   }
+
+  // if (!walletChecked) return null
   return (
     <LayoutWrapper>
       <HeaderBox>

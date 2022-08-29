@@ -68,8 +68,8 @@ export const routes: CutomRouteObject[] = [
 ]
 
 const Main: React.FC = () => {
-  const { token, status } = useAppSelector(selectAccount)
-  const isLogin = !!token
+  const { pubkey, token, status } = useAppSelector(selectAccount)
+  const isLogin = !!token && !!pubkey
   const permissionRoutesMap = permissionRoutes.map((route) => ({
     ...route,
     element: isLogin ? route.element : <NoLogin>You have to connect wallet to view this page!</NoLogin>,

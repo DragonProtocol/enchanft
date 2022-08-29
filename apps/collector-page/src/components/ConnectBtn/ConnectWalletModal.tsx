@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Menu, MenuItem, styled } from '@mui/material'
+import { Box, Button, Modal, Menu, MenuItem } from '@mui/material'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
@@ -14,6 +14,7 @@ import {
   setToken,
   userGetProfile,
   userLogin,
+  resetLoginStatus,
   ChainType,
   setConnectWalletModalShow,
   userOtherWalletLink,
@@ -23,7 +24,17 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
 import useWalletSign from '../../hooks/useWalletSign'
 import IconMetamask from '../common/icons/PngIconMetaMask'
+import PngIconCongratulate from '../common/icons/PngIconCongratulate'
 import IconPhantom from '../common/icons/IconPhantomWhite'
+import { AsyncRequestStatus } from '../../types'
+import styled from 'styled-components'
+
+enum LoginStatus {
+  INIT = 'init',
+  PENDING = 'pending',
+  SUCCESS = 'success',
+  FAIL = 'fail',
+}
 
 export default function ConnectWalletModal() {
   const navigate = useNavigate()
@@ -31,6 +42,10 @@ export default function ConnectWalletModal() {
   const account = useAppSelector(selectAccount)
   const [showNewAccountBtn, setShowNewAccountBtn] = useState(false)
   const [newAccountWith, setNewAccountWith] = useState<TokenType>()
+
+  const [walletModalShow, setWalletModalShow] = useState(false)
+  const [signErr, setSignErr] = useState(false)
+  const [signDone, setSignDone] = useState(false)
 
   const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom, getMetamaskAddr, getPhantomAddr } =
     useWalletSign()
@@ -91,11 +106,56 @@ export default function ConnectWalletModal() {
   }, [account])
 
   const handleSign = async (data: { walletType: TokenType; pubkey: string; signature: string }) => {
-    handleLogin(data)
+    setSignDone(true)
+    await handleLogin(data)
     // dispatch(setDefaultWallet(walletType))
     dispatch(setPubkey(data.pubkey))
     handleClose()
     navigateToGuide()
+  }
+
+  const signerRef = useRef<() => Promise<any>>()
+
+  const resetStatus = () => {
+    setSignDone(false)
+    setSignErr(false)
+    setWalletModalShow(false)
+    dispatch(resetLoginStatus())
+  }
+
+  const signMsg = async (
+    signer: () => Promise<
+      | {
+          walletType: TokenType
+          pubkey: string
+          signature: string
+        }
+      | undefined
+    >,
+    last = false,
+  ) => {
+    signerRef.current = signer
+    resetStatus()
+    setWalletModalShow(true)
+
+    let data
+    try {
+      data = await signer()
+    } catch (error) {
+      setSignErr(true)
+    }
+    // setWalletModalShow(false)
+    if (!data) {
+      return
+    }
+    if (last) return data
+    handleSign(data)
+    return data
+  }
+
+  const reSign = async () => {
+    if (!signerRef.current) return
+    await signMsg(signerRef.current)
   }
 
   const connectMetamask = useCallback(async () => {
@@ -105,12 +165,7 @@ export default function ConnectWalletModal() {
       setShowNewAccountBtn(true)
       setNewAccountWith(TokenType.Ethereum)
     } else {
-      signMsgWithMetamask().then((data) => {
-        if (!data) {
-          return
-        }
-        handleSign(data)
-      })
+      await signMsg(signMsgWithMetamask)
     }
   }, [account])
 
@@ -121,12 +176,7 @@ export default function ConnectWalletModal() {
       setShowNewAccountBtn(true)
       setNewAccountWith(TokenType.Solana)
     } else {
-      signMsgWithPhantom().then((data) => {
-        if (!data) {
-          return
-        }
-        handleSign(data)
-      })
+      await signMsg(signMsgWithPhantom)
     }
   }, [account])
 
@@ -134,22 +184,12 @@ export default function ConnectWalletModal() {
     if (newAccountWith === TokenType.Ethereum) {
       const pubkey = await getMetamaskAddr()
       if (!pubkey) return
-      signMsgWithMetamask().then((data) => {
-        if (!data) {
-          return
-        }
-        handleSign(data)
-      })
+      await signMsg(signMsgWithMetamask)
     }
     if (newAccountWith === TokenType.Solana) {
       const pubkey = await getPhantomAddr()
       if (!pubkey) return
-      signMsgWithPhantom().then((data) => {
-        if (!data) {
-          return
-        }
-        handleSign(data)
-      })
+      await signMsg(signMsgWithPhantom)
     }
   }, [newAccountWith])
 
@@ -157,14 +197,11 @@ export default function ConnectWalletModal() {
     if (newAccountWith === TokenType.Ethereum) {
       const pubkey = await getMetamaskAddr()
       if (!pubkey) return
-      const data = await signMsgWithPhantom()
-      if (!data) {
-        return
-      }
-      handleLogin(data)
-      // dispatch(setDefaultWallet(TokenType.Ethereum))
-      dispatch(setPubkey(data.pubkey))
-      const newData = await signMsgWithMetamask()
+
+      const data = await signMsg(signMsgWithPhantom, true)
+      data && dispatch(setPubkey(data.pubkey))
+
+      const newData = await signMsg(signMsgWithMetamask)
       if (!newData) return
       dispatch(
         userOtherWalletLink({
@@ -180,14 +217,12 @@ export default function ConnectWalletModal() {
     if (newAccountWith === TokenType.Solana) {
       const pubkey = await getPhantomAddr()
       if (!pubkey) return
-      const data = await signMsgWithMetamask()
-      if (!data) {
-        return
-      }
-      handleLogin(data)
-      // dispatch(setDefaultWallet(TokenType.Solana))
-      dispatch(setPubkey(data.pubkey))
-      const newData = await signMsgWithPhantom()
+
+      const data = await signMsg(signMsgWithMetamask, true)
+
+      data && dispatch(setPubkey(data.pubkey))
+
+      const newData = await signMsg(signMsgWithPhantom)
       if (!newData) return
       dispatch(
         userOtherWalletLink({
@@ -243,48 +278,198 @@ export default function ConnectWalletModal() {
   }
 
   return (
-    <Modal
-      open={account.connectWalletModalShow}
-      onClose={handleClose}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-      sx={{
-        zIndex: 100,
-      }}
-    >
-      <ConnectBox
+    <>
+      <Modal
+        open={account.connectWalletModalShow}
+        onClose={handleClose}
         sx={{
-          position: 'absolute' as 'absolute',
-          top: '40%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: 384,
-          bgcolor: 'background.paper',
-          boxShadow: 24,
-          py: '20px',
-          px: 0,
-          borderRadius: '10px',
+          zIndex: 100,
         }}
       >
-        <div className="title">
-          <p>Connect Wallet</p>
-        </div>
-        <div className="wallet">{walletElem}</div>
-        {showNewAccountBtn && (
-          <div className="new-account">
-            <button className="last" onClick={() => loginWithLastLogin()}>
-              Connect With <img src={account.lastLoginInfo.avatar || AvatarDefault} alt="" />{' '}
-              {account.lastLoginInfo.name}
-            </button>
-            <button className="new" onClick={createNewAccount}>
-              Create New Account
-            </button>
+        <ConnectBox
+          sx={{
+            position: 'absolute' as 'absolute',
+            top: '40%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: 384,
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            py: '20px',
+            px: 0,
+            borderRadius: '20px',
+            background: '#F7F9F1',
+          }}
+        >
+          <div className="title">
+            <p>Connect Wallet</p>
           </div>
-        )}
-      </ConnectBox>
-    </Modal>
+          <div className="wallet">{walletElem}</div>
+          {showNewAccountBtn && (
+            <div className="new-account">
+              <button className="last" onClick={() => loginWithLastLogin()}>
+                Connect With <img src={account.lastLoginInfo.avatar || AvatarDefault} alt="" />{' '}
+                {account.lastLoginInfo.name}
+              </button>
+              <button className="new" onClick={createNewAccount}>
+                Create New Account
+              </button>
+            </div>
+          )}
+        </ConnectBox>
+      </Modal>
+      <WalletModal open={walletModalShow}>
+        <Box
+          sx={{
+            position: 'absolute' as 'absolute',
+            top: '40%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: '540px',
+            boxShadow: 24,
+            px: 0,
+            background: '#F7F9F1',
+            borderRadius: '20px',
+            overflow: 'hidden',
+          }}
+        >
+          {(() => {
+            if (!signDone) {
+              if (signErr) {
+                return (
+                  <ModalBox>
+                    <h3>❌ Signature Rejected</h3>
+                    <p>Please sign the message in your wallet to login.</p>
+                    <div className="btns">
+                      <button className="close" onClick={() => setWalletModalShow(false)}>
+                        Close
+                      </button>
+                      <button className="retry" onClick={reSign}>
+                        Retry
+                      </button>
+                    </div>
+                  </ModalBox>
+                )
+              }
+              return (
+                <ModalBox>
+                  <h3>🕹 Signature Request</h3>
+                  <p>
+                    Please sign the message in your wallet to login WL, we use this signature to verify that you‘re the
+                    owner.
+                  </p>
+                </ModalBox>
+              )
+            }
+            console.log('account.status', account.status)
+            if (account.status == AsyncRequestStatus.FULFILLED) {
+              setTimeout(resetStatus, 2500)
+              return (
+                <ModalBox className="welcome">
+                  <div>
+                    <PngIconCongratulate />
+                    <h3>Signature Successed!</h3>
+                    <p>😊 Welcome to WL! 😊</p>
+                  </div>
+                </ModalBox>
+              )
+            }
+            if (account.status == AsyncRequestStatus.PENDING) {
+              return (
+                <ModalBox>
+                  <h3>⏳ Loading</h3>
+                  <p>Logging in now, Please wait...</p>
+                </ModalBox>
+              )
+            }
+            return (
+              <ModalBox>
+                <h3>Login Fail</h3>
+                <div className="btns">
+                  <button className="close" onClick={() => setWalletModalShow(false)}>
+                    Close
+                  </button>
+                </div>
+              </ModalBox>
+            )
+          })()}
+        </Box>
+      </WalletModal>
+    </>
   )
 }
+
+const ModalBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  background: #f7f9f1;
+  & h3 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 30px;
+    color: #333333;
+  }
+  & p {
+    margin: 0;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    color: #333333;
+  }
+
+  & .btns {
+    display: flex;
+    gap: 20px;
+    justify-content: end;
+    & button {
+      padding: 10px 18px;
+      gap: 10px;
+      width: 120px;
+      height: 48px;
+      outline: none;
+      border: none;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 27px;
+      color: #ffffff;
+    }
+    & .close {
+      background: #ebeee4;
+      color: #333333;
+      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    & .retry {
+      background: #3dd606;
+      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+  }
+
+  &.welcome {
+    background: #fffbdb;
+    padding: 40px 20px;
+    text-align: center;
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+      & img {
+        width: 120px;
+        height: 120px;
+      }
+    }
+  }
+`
+
+const WalletModal = styled(Modal)`
+  backdrop-filter: blur(12px);
+`
 
 const ConnectBox = styled(Box)`
   display: flex;

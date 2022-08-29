@@ -53,8 +53,6 @@ export default function ConnectBtn() {
     return ''
   }, [account.pubkey])
 
-  const Icon = account.defaultWallet === TokenType.Solana ? PhantomIcon : MetamaskIcon
-
   return (
     <>
       {(shortPubkey && account.token && (
