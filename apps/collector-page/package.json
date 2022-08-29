@@ -75,7 +75,6 @@
     "os": "^0.1.2",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
-    "react-loadable": "^5.5.0",
     "react-test-renderer": "18.2.0",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
