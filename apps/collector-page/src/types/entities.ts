@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 18:30:47
+ * @LastEditTime: 2022-08-30 16:40:31
  * @Description: 与后端entities type定义对应
  */
 
@@ -82,6 +82,7 @@ export type ActionData = {
   url?: string
   tweet_id?: string
   server_id?: string
+  role?: string
   require_score?: number
   num?: number
   accounts?: string[]
