@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 16:40:31
+ * @LastEditTime: 2022-08-30 19:21:20
  * @Description: 与后端entities type定义对应
  */
 
@@ -172,12 +172,15 @@ export enum RewardType {
   OTHERS = 'OTHER',
   CONTRIBUTION_TOKEN = 'CONTRIBUTION_TOKEN',
 }
-
+export type RewardData = {
+  token_num?: number
+}
 export type Reward = {
   id: number
   name: string
   type: RewardType
   raffled: boolean
+  data: RewardData
 }
 
 /** user */
