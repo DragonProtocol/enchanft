@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 19:12:04
+ * @LastEditTime: 2022-08-30 16:58:49
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -21,6 +21,7 @@ import Loading from '../../common/loading/Loading'
 import ActionRetweetTwitter from './actions/ActionRetweetTwitter'
 import ActionLikeTwitter from './actions/ActionLikeTwitter'
 import ActionCustom from './actions/ActionCustom'
+import ActionDiscordObtainRole from './actions/ActionDiscordObtainRole'
 
 export type TaskActionItemDataType = {
   id: number
@@ -81,6 +82,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.DISCORD_INVITES_PEOPLE:
         // 邀请人员加入Discord Server
         return <ActionDiscordInvitesPeople data={data} onDiscord={onDiscord} allowHandle={allowHandle} />
+      case ActionType.DISCORD_OBTAIN_ROLE:
+        // 获取doscord role
+        return <ActionDiscordObtainRole data={data} onDiscord={onDiscord} allowHandle={allowHandle} />
       case ActionType.RETWEET:
         // 转发twitter
         return <ActionRetweetTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
