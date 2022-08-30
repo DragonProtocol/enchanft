@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-29 16:47:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 11:18:01
+ * @LastEditTime: 2022-08-30 11:54:58
  * @Description: file description
  */
 import { useCallback, useEffect } from 'react'
 import { selectAccount } from '../features/user/accountSlice'
-import { removeAll, selectIds } from '../features/user/checkinCommunitiesSlice'
+import { removeAll, selectById, selectIds } from '../features/user/checkinCommunitiesSlice'
 import {
   checkin,
   resetVerifyCheckin,
@@ -24,8 +24,10 @@ export default (communityId?: number, slug?: string) => {
 
   const handleCheckin = useCallback(() => token && communityId && dispatch(checkin(communityId)), [token, communityId])
   const userCheckinCommunityIds = useAppSelector(selectIds)
+  const userCheckedinCommunityData = useAppSelector((state) => selectById(state, communityId || 0))
   const isVerifiedCheckin = verifyCheckinState.status === AsyncRequestStatus.FULFILLED
   const isCheckedin = !!communityId && userCheckinCommunityIds.includes(communityId)
+  const checkinScore = userCheckedinCommunityData?.contribution || 0
 
   // verify check in
   useEffect(() => {
@@ -48,5 +50,5 @@ export default (communityId?: number, slug?: string) => {
     }
   }, [])
 
-  return { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState }
+  return { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinScore }
 }

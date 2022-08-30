@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 11:30:34
+ * @LastEditTime: 2022-08-30 11:56:29
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -35,6 +35,7 @@ export type ContributionAboutViewConfigType = {
   loadingCheckin: boolean
   disabledCheckin: boolean
   isCheckedin: boolean
+  checkinScore: number
 }
 
 export type ContributionAboutDataViewType = {
@@ -52,6 +53,7 @@ const defaultViewConfig = {
   loadingCheckin: false,
   disabledCheckin: false,
   isCheckedin: false,
+  checkinScore: 0,
 }
 const ContributionAbout: React.FC<ContributionAboutProps> = ({
   data,
@@ -59,7 +61,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
   onCommunityCheckin,
 }: ContributionAboutProps) => {
   const { name, icon, twitterId, discordId, discordInviteUrl, discordName, discordMembers } = data
-  const { displayCheckin, loadingCheckin, disabledCheckin, isCheckedin } = {
+  const { displayCheckin, loadingCheckin, disabledCheckin, isCheckedin, checkinScore } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
@@ -78,7 +80,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
   }
   const TwitterLinkComponent = <LinkTextBtn onClick={onTwitter}>@{twitterId || name}</LinkTextBtn>
   const DiscordLinkComponent = <LinkTextBtn onClick={onDiscord}>#{discordName || name}</LinkTextBtn>
-  const checkinBtnText = isCheckedin ? 'Checked In !' : 'Get Toady’s Contribution Token !'
+  const checkinBtnText = isCheckedin ? `Checked In ! ` : 'Get Toady’s Contribution Token !'
   const questions = [
     {
       title: 'Q: How to get contribution in this community?',

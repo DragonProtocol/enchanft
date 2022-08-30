@@ -2,13 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 11:14:53
+ * @LastEditTime: 2022-08-30 11:44:41
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import fileDownload from 'js-file-download'
 import { toast } from 'react-toastify'
-import { COMMUNITY_CHECK_IN_CONTRIBUTION } from '../../constants'
 import {
   checkinCommunity,
   downloadContributions,
@@ -82,7 +81,7 @@ export const verifyCheckin = createAsyncThunk(
       const resp = await verifyCommunityCheckin(communityId)
       if (resp.data.code === 0) {
         if (resp.data.data === 1) {
-          const addCheckinCommunity = { communityId, seqDays: 1, contribution: COMMUNITY_CHECK_IN_CONTRIBUTION }
+          const addCheckinCommunity = { communityId, seqDays: 1, contribution: 0 }
           dispatch(addOneForCheckinCommunities(addCheckinCommunity))
           if (slug) {
             dispatch(fetchCommunityContributionRanks(slug))
@@ -102,8 +101,10 @@ export const checkin = createAsyncThunk('user/communityHandles/checkin', async (
   try {
     const resp = await checkinCommunity(communityId)
     if (resp.data.code === 0) {
-      const addCheckinCommunity = { communityId, ...resp.data.data }
+      const { seqDays, contribution } = resp.data.data
+      const addCheckinCommunity = { communityId, seqDays: seqDays || 0, contribution: contribution || 0 }
       dispatch(addOneForCheckinCommunities(addCheckinCommunity))
+      toast.success(`Got ${addCheckinCommunity.contribution} contribution token!`)
     } else {
       throw new Error(resp.data.msg)
     }
@@ -172,7 +173,6 @@ export const userCommunityHandlesSlice = createSlice({
         state.checkin.params = null
         state.checkin.status = AsyncRequestStatus.FULFILLED
         state.checkin.errorMsg = ''
-        toast.success('Got 36 contribution token!')
       })
       .addCase(checkin.rejected, (state, action) => {
         console.log('checkin rejected', action)

@@ -85,7 +85,7 @@ const Contributionranks: React.FC = () => {
   }, [community])
 
   // 社区签到
-  const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState } = useCommunityCheckin(
+  const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinScore } = useCommunityCheckin(
     community?.id,
     projectSlug,
   )
@@ -167,6 +167,7 @@ const Contributionranks: React.FC = () => {
                 loadingCheckin: loadingCheckin,
                 disabledCheckin: disabledCheckin,
                 isCheckedin: isCheckedin,
+                checkinScore: checkinScore,
               }}
               onCommunityCheckin={handleCheckin}
             />
