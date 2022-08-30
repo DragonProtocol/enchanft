@@ -48,6 +48,9 @@ export default function SelectActions({
   const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<Array<string>>(
     followTwitters.length > 0 ? [...followTwitters] : communityTwitterName ? [communityTwitterName] : [],
   )
+  const [hasDiscordRole, setHasDiscordRole] = useState(false)
+  const [discordRole, setDiscordRole] = useState('')
+  const [discordRoleDesc, setDiscordRoleDesc] = useState('')
   const [joinDiscord, setJoinDiscord] = useState(false)
   const [inviteDiscord, setInviteDiscord] = useState(false)
   const [inviteDiscordNum, setInviteDiscordNum] = useState(CREATE_TASK_DEFAULT_INVITE_NUM)
@@ -166,6 +169,17 @@ export default function SelectActions({
           require_score: joinCommunityContributionNum,
         })
     }
+
+    if (hasDiscordRole && discordRole.trim()) {
+      actions.push({
+        name: `Get【${discordRole.trim()}】Role on Discord`,
+        type: ActionType.DISCORD,
+        typeMore: ActionTypeMore.DISCORD_OBTAIN_ROLE,
+        description: discordRoleDesc.trim(),
+        role: discordRole.trim(),
+      })
+    }
+
     const resultCustom = custom.filter((item) => item.select && item.name && item.url)
     actions.push(...resultCustom)
     updateStateActions(actions)
@@ -186,10 +200,11 @@ export default function SelectActions({
     joinCommunity,
     joinCommunityContribution,
     joinCommunityContributionNum,
+    hasDiscordRole,
+    discordRole,
+    discordRoleDesc,
     custom,
   ])
-
-  console.log(followTwitterLinkResult, followTwitters)
 
   return (
     <SelectActionsBox>
@@ -371,6 +386,53 @@ export default function SelectActions({
                 <IconDiscord />
               </div>
               {/* <div className="help">{discord ? null : <ConnectDiscord />}</div> */}
+            </div>
+          )}
+          {hasInviteBot && (
+            <div className="content-item">
+              <div className="desc">
+                <CustomCheckBox
+                  checked={hasDiscordRole}
+                  onChange={() => {
+                    setHasDiscordRole(!hasDiscordRole)
+                  }}
+                />
+                <span id="discord-role-msg" className="msg">
+                  Get the role on Discord
+                </span>
+                <IconDiscord />
+              </div>
+              {hasDiscordRole && (
+                <>
+                  <div className="help">
+                    <span className="username tint">Role name:</span>
+                    &nbsp;
+                    <div className={'input-box'}>
+                      <input
+                        type="text"
+                        title="discord-role"
+                        value={discordRole}
+                        onChange={(e) => {
+                          setDiscordRole(e.target.value)
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <div className="help">
+                    <span className="username tint">Description:</span>
+                    <div className={'input-box'}>
+                      <input
+                        type="text"
+                        title="discord-role"
+                        value={discordRoleDesc}
+                        onChange={(e) => {
+                          setDiscordRoleDesc(e.target.value)
+                        }}
+                      />
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           )}
           {/* <div className="content-item">
