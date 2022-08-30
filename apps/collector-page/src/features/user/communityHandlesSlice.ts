@@ -2,15 +2,23 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 13:42:25
+ * @LastEditTime: 2022-08-30 11:44:41
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import fileDownload from 'js-file-download'
 import { toast } from 'react-toastify'
-import { downloadContributions, followCommunity, FollowCommunityParams } from '../../services/api/community'
+import {
+  checkinCommunity,
+  downloadContributions,
+  followCommunity,
+  FollowCommunityParams,
+  verifyCommunityCheckin,
+} from '../../services/api/community'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
+import { fetchCommunityContributionRanks } from '../community/contributionRanksSlice'
+import { addOne as addOneForCheckinCommunities } from './checkinCommunitiesSlice'
 import { addOne as addOneForFollowedCommunities, fetchFollowedCommunities } from './followedCommunitiesSlice'
 // 每一种操作单独存储当前的数据状态
 export type CommunityHandle<T> = {
@@ -27,10 +35,14 @@ const initCommunityHandlestate = {
 export type UserCommunityHandlesStateType = {
   follow: CommunityHandle<FollowCommunityParams>
   downloadContributionTokens: CommunityHandle<number>
+  verifyCheckin: CommunityHandle<{ communityId?: number; slug?: string }>
+  checkin: CommunityHandle<number>
 }
 const initUserCommunityHandlesState: UserCommunityHandlesStateType = {
   follow: initCommunityHandlestate,
   downloadContributionTokens: initCommunityHandlestate,
+  verifyCheckin: initCommunityHandlestate,
+  checkin: initCommunityHandlestate,
 }
 export const follow = createAsyncThunk(
   'user/communityHandles/follow',
@@ -61,10 +73,54 @@ export const downloadContributionTokens = createAsyncThunk(
     }
   },
 )
+
+export const verifyCheckin = createAsyncThunk(
+  'user/communityHandles/verifyCheckin',
+  async ({ communityId, slug }: { communityId: number; slug?: string }, { dispatch, getState }) => {
+    try {
+      const resp = await verifyCommunityCheckin(communityId)
+      if (resp.data.code === 0) {
+        if (resp.data.data === 1) {
+          const addCheckinCommunity = { communityId, seqDays: 1, contribution: 0 }
+          dispatch(addOneForCheckinCommunities(addCheckinCommunity))
+          if (slug) {
+            dispatch(fetchCommunityContributionRanks(slug))
+          }
+        }
+      } else {
+        throw new Error(resp.data.msg)
+      }
+      return { errorMsg: '' }
+    } catch (error) {
+      throw error
+    }
+  },
+)
+
+export const checkin = createAsyncThunk('user/communityHandles/checkin', async (communityId: number, { dispatch }) => {
+  try {
+    const resp = await checkinCommunity(communityId)
+    if (resp.data.code === 0) {
+      const { seqDays, contribution } = resp.data.data
+      const addCheckinCommunity = { communityId, seqDays: seqDays || 0, contribution: contribution || 0 }
+      dispatch(addOneForCheckinCommunities(addCheckinCommunity))
+      toast.success(`Got ${addCheckinCommunity.contribution} contribution token!`)
+    } else {
+      throw new Error(resp.data.msg)
+    }
+    return { errorMsg: '' }
+  } catch (error) {
+    throw error
+  }
+})
 export const userCommunityHandlesSlice = createSlice({
   name: 'CommunityHandles',
   initialState: initUserCommunityHandlesState,
-  reducers: {},
+  reducers: {
+    resetVerifyCheckin: (state) => {
+      state.verifyCheckin = initCommunityHandlestate
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(follow.pending, (state, action) => {
@@ -85,6 +141,44 @@ export const userCommunityHandlesSlice = createSlice({
         state.follow.params = null
         state.follow.status = AsyncRequestStatus.REJECTED
         state.follow.errorMsg = action.error.message || ''
+        toast.error(action.error.message)
+      })
+      .addCase(verifyCheckin.pending, (state, action) => {
+        console.log('verifyCheckin pending', action)
+        state.verifyCheckin.params = action.meta.arg
+        state.verifyCheckin.status = AsyncRequestStatus.PENDING
+        state.verifyCheckin.errorMsg = ''
+      })
+      .addCase(verifyCheckin.fulfilled, (state, action) => {
+        console.log('verifyCheckin fulfilled', action)
+        state.verifyCheckin.params = null
+        state.verifyCheckin.status = AsyncRequestStatus.FULFILLED
+        state.verifyCheckin.errorMsg = ''
+      })
+      .addCase(verifyCheckin.rejected, (state, action) => {
+        console.log('verifyCheckin rejected', action)
+        state.verifyCheckin.params = null
+        state.verifyCheckin.status = AsyncRequestStatus.REJECTED
+        state.verifyCheckin.errorMsg = action.error.message || ''
+        toast.error(action.error.message)
+      })
+      .addCase(checkin.pending, (state, action) => {
+        console.log('checkin pending', action)
+        state.checkin.params = action.meta.arg
+        state.checkin.status = AsyncRequestStatus.PENDING
+        state.checkin.errorMsg = ''
+      })
+      .addCase(checkin.fulfilled, (state, action) => {
+        console.log('checkin fulfilled', action)
+        state.checkin.params = null
+        state.checkin.status = AsyncRequestStatus.FULFILLED
+        state.checkin.errorMsg = ''
+      })
+      .addCase(checkin.rejected, (state, action) => {
+        console.log('checkin rejected', action)
+        state.checkin.params = null
+        state.checkin.status = AsyncRequestStatus.REJECTED
+        state.checkin.errorMsg = action.error.message || ''
         toast.error(action.error.message)
       })
       .addCase(downloadContributionTokens.pending, (state, action) => {
@@ -113,5 +207,5 @@ export const userCommunityHandlesSlice = createSlice({
 export const selectUserCommunityHandlesState = (state: RootState) => state.userCommunityHandles
 
 const { actions, reducer } = userCommunityHandlesSlice
-
+export const { resetVerifyCheckin } = actions
 export default reducer

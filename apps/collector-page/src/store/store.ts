@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 16:35:31
+ * @LastEditTime: 2022-08-29 14:51:51
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
@@ -32,6 +32,7 @@ import communityContributionRanksReducer from '../features/community/contributio
 import userTaskHandlesReducer from '../features/user/taskHandlesSlice'
 import userTodoTasksReducer from '../features/user/todoTasksSlice'
 import userFollowedCommunitiesReducer from '../features/user/followedCommunitiesSlice'
+import userCheckinCommunitiesReducer from '../features/user/checkinCommunitiesSlice'
 import userWhitelistsReducer from '../features/user/userWhitelistsSlice'
 import userCommunityHandlesReducer from '../features/user/communityHandlesSlice'
 
@@ -59,6 +60,7 @@ export const store = configureStore({
     userTaskHandles: userTaskHandlesReducer,
     userTodoTasks: userTodoTasksReducer,
     userFollowedCommunities: userFollowedCommunitiesReducer,
+    userCheckinCommunities: userCheckinCommunitiesReducer,
     userWhitelists: userWhitelistsReducer,
     userCommunityHandles: userCommunityHandlesReducer,
 
