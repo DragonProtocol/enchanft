@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-09 13:27:02
+ * @LastEditTime: 2022-08-30 16:17:55
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
@@ -66,7 +66,7 @@ axiosInstance.interceptors.response.use(
     response,
   (error) =>
     // 对响应错误做点什么
-    Promise.reject(error),
+    Promise.reject(error.response?.data || error),
 )
 
 export default axiosInstance

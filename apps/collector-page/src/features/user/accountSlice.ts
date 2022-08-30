@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 12:01:04
+ * @LastEditTime: 2022-08-30 14:43:21
  * @Description: 用户的账户信息
  */
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
@@ -19,6 +19,7 @@ import {
   setLoginToken,
   TokenType,
 } from '../../utils/token'
+import { toast } from 'react-toastify'
 
 export enum ConnectModal {
   PHANTOM = 'phantom',
@@ -73,7 +74,7 @@ export type ResourcePermission =
 export type AccountState = {
   status: AsyncRequestStatus
   linkStatus: AsyncRequestStatus
-  errorMsg?: string //我不确定这个errorMsg有没有被使用，所以没敢改，如果在外部没有使用，建议统一改成resMessage
+  errorMsg?: string
   defaultWallet: TokenType
   lastLoginType: TokenType | null
   lastLoginInfo: { name: string; avatar: string }
@@ -90,7 +91,6 @@ export type AccountState = {
   linkErrMsg: string
   resourcePermissions: Array<ResourcePermission>
   roles: Array<RoleType>
-  resMessage: ResponseMessage | null
 }
 
 // 用户账户信息
@@ -115,7 +115,6 @@ const initialState: AccountState = {
   accounts: [],
   resourcePermissions: [],
   roles: [],
-  resMessage: null,
   linkErrMsg: '',
 }
 
@@ -272,9 +271,6 @@ export const accountSlice = createSlice({
     setName: (state, action) => {
       state.name = action.payload
     },
-    resetResMessage: (state) => {
-      state.resMessage = null
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -314,19 +310,13 @@ export const accountSlice = createSlice({
         state.linkStatus = AsyncRequestStatus.FULFILLED
         state.accounts = action.payload || []
         console.log('link successfully: ', state, action)
-        state.resMessage = {
-          type: AlertSeverity.SUCCESS,
-          message: 'link ' + action.meta.arg.type + ' successfully!',
-        }
+        toast.success('link ' + action.meta.arg.type + ' successfully!')
       })
       .addCase(userLink.rejected, (state, action) => {
         state.linkStatus = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
         console.log('link failed: ', state, action)
-        state.resMessage = {
-          type: AlertSeverity.ERROR,
-          message: action.error.message,
-        }
+        toast.error(action.error.message)
       })
       ///////
       .addCase(userUpdateProfile.pending, (state) => {
@@ -371,19 +361,11 @@ export const accountSlice = createSlice({
 
         localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
         localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
-
-        state.resMessage = {
-          type: AlertSeverity.SUCCESS,
-          message: 'link ' + action.payload.walletType + ' wallet successfully!',
-        }
+        toast.success('link ' + action.payload.walletType + ' wallet successfully!')
       })
       .addCase(userOtherWalletLink.rejected, (state, action) => {
         state.linkStatus = AsyncRequestStatus.REJECTED
-
-        state.resMessage = {
-          type: AlertSeverity.ERROR,
-          message: action.error.message,
-        }
+        toast.error(action.error.message)
       })
   },
 })
@@ -402,7 +384,6 @@ export const {
   setName,
   setLastLogin,
   setLastLoginInfo,
-  resetResMessage,
 } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer
