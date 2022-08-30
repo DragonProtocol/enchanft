@@ -148,6 +148,7 @@ export function createTask(data: CreateTaskState) {
           num: item.num,
           accounts: item.accounts,
           tweet_id: item.tweet_id,
+          role: item.role,
         },
       }
     }),
