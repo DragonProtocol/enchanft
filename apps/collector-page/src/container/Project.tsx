@@ -43,6 +43,7 @@ import { ChainType, getChainType } from '../utils/chain'
 import { ButtonPrimary } from '../components/common/button/ButtonBase'
 import { selectIds as selectIdsByUserCheckinCommunity } from '../features/user/checkinCommunitiesSlice'
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
+import useContributionranks from '../hooks/useContributionranks'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -173,28 +174,16 @@ const Project: React.FC = () => {
   }, [loadingView, status])
 
   // 获取社区贡献等级
-  const contributionranks = useAppSelector(selectAllForCommunityContributionranks)
-  const fetchContributionranksIntervalRef = useRef<any>(null)
-  const dispatchContributionRanks = () => projectSlug && dispatch(fetchCommunityContributionRanks(projectSlug))
-  useEffect(() => {
-    if (projectSlug) {
-      dispatchContributionRanks()
-      fetchContributionranksIntervalRef.current = setInterval(() => {
-        dispatchContributionRanks()
-      }, 60 * 1000)
-    } else {
-      clearInterval(fetchContributionranksIntervalRef.current)
-    }
-    return () => {
-      clearInterval(fetchContributionranksIntervalRef.current)
-    }
-  }, [projectSlug])
+  const { contributionranks } = useContributionranks(projectSlug)
 
   // 用户关注的社区ID集合
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
 
   // 社区签到
-  const { isVerifiedCheckin, isCheckin, handleCheckin, checkinState } = useCommunityCheckin(data?.communityId)
+  const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState } = useCommunityCheckin(
+    data?.communityId,
+    projectSlug,
+  )
 
   // 打开连接钱包的窗口
   const handleOpenConnectWallet = useCallback(() => {
@@ -270,9 +259,9 @@ const Project: React.FC = () => {
   }
 
   // 社区签到
-  const displayCheckin = token && !isCheckin && isVerifiedCheckin
+  const displayCheckin = token && !isCheckedin && isVerifiedCheckin
   const loadingCheckin = checkinState.status === AsyncRequestStatus.PENDING
-  const disabledCheckin = loadingCheckin || isCheckin
+  const disabledCheckin = loadingCheckin || isCheckedin
   return (
     <ProjectWrapper>
       <ProjectLeftBox>

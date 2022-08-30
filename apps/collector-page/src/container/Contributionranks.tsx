@@ -30,6 +30,7 @@ import Loading from '../components/common/loading/Loading'
 import usePermissions from '../hooks/usePermissons'
 import { downloadContributions } from '../services/api/community'
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
+import useContributionranks from '../hooks/useContributionranks'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
@@ -70,23 +71,7 @@ const Contributionranks: React.FC = () => {
   }, [projectSlug, token, isFollowedCommunity])
 
   // 获取社区贡献等级排行
-  const contributionranks = useAppSelector(selectAllForProjectContributionranks)
-  const { status: contributionranksStatus } = useAppSelector(selecteContributionRanksState)
-  const fetchContributionranksIntervalRef = useRef<any>(null)
-  const dispatchContributionRanks = () => projectSlug && dispatch(fetchCommunityContributionRanks(projectSlug))
-  useEffect(() => {
-    if (projectSlug) {
-      dispatchContributionRanks()
-      fetchContributionranksIntervalRef.current = setInterval(() => {
-        dispatchContributionRanks()
-      }, 60 * 1000)
-    } else {
-      clearInterval(fetchContributionranksIntervalRef.current)
-    }
-    return () => {
-      clearInterval(fetchContributionranksIntervalRef.current)
-    }
-  }, [projectSlug])
+  const { contributionranks, contributionranksState } = useContributionranks(projectSlug)
 
   // download contribution tokens
   const { status: downloadContributionTokensStatus } = downloadContributionTokensState
@@ -100,13 +85,17 @@ const Contributionranks: React.FC = () => {
   }, [community])
 
   // 社区签到
-  const { isVerifiedCheckin, isCheckin, handleCheckin, checkinState } = useCommunityCheckin(community?.id)
-  const displayCheckin = token && !isCheckin && isVerifiedCheckin
+  const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState } = useCommunityCheckin(
+    community?.id,
+    projectSlug,
+  )
+
   const loadingCheckin = checkinState.status === AsyncRequestStatus.PENDING
-  const disabledCheckin = loadingCheckin || isCheckin
+  const disabledCheckin = loadingCheckin || isCheckedin
 
   // 展示数据
-  const contributionranksLoading = contributionranksStatus === AsyncRequestStatus.PENDING
+
+  const contributionranksLoading = contributionranksState.status === AsyncRequestStatus.PENDING
   const userContributionInfo: ContributionMyDataViewType = {
     data: {
       avatar: avatar,
@@ -174,9 +163,10 @@ const Contributionranks: React.FC = () => {
             <ContributionAbout
               data={communityInfo}
               viewConfig={{
-                displayCheckin: displayCheckin,
+                displayCheckin: true,
                 loadingCheckin: loadingCheckin,
                 disabledCheckin: disabledCheckin,
+                isCheckedin: isCheckedin,
               }}
               onCommunityCheckin={handleCheckin}
             />

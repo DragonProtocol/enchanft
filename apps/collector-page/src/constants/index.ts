@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 17:48:03
+ * @LastEditTime: 2022-08-30 10:30:00
  * @Description: 系统相关常量定义
  */
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -41,3 +41,5 @@ export const TASK_IMAGE_SIZE_LIMIT = 1 * 1024 * 1024
 export const AVATAR_SIZE_LIMIT = 200 * 1024
 
 export const SHARE_EVENT_TWEET_CONTENTS = 'I am exploring on WL.xyz follow the link to find answer with me.\n'
+
+export const COMMUNITY_CHECK_IN_CONTRIBUTION = 36

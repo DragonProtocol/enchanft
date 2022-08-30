@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 18:46:04
+ * @LastEditTime: 2022-08-30 11:30:34
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -34,6 +34,7 @@ export type ContributionAboutViewConfigType = {
   displayCheckin: boolean
   loadingCheckin: boolean
   disabledCheckin: boolean
+  isCheckedin: boolean
 }
 
 export type ContributionAboutDataViewType = {
@@ -46,14 +47,19 @@ export type ContributionAboutHandlesType = {
 
 export type ContributionAboutProps = ContributionAboutDataViewType & ContributionAboutHandlesType
 
-const defaultViewConfig = {}
+const defaultViewConfig = {
+  displayCheckin: false,
+  loadingCheckin: false,
+  disabledCheckin: false,
+  isCheckedin: false,
+}
 const ContributionAbout: React.FC<ContributionAboutProps> = ({
   data,
   viewConfig,
   onCommunityCheckin,
 }: ContributionAboutProps) => {
   const { name, icon, twitterId, discordId, discordInviteUrl, discordName, discordMembers } = data
-  const { displayCheckin, loadingCheckin, disabledCheckin } = {
+  const { displayCheckin, loadingCheckin, disabledCheckin, isCheckedin } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
@@ -72,7 +78,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
   }
   const TwitterLinkComponent = <LinkTextBtn onClick={onTwitter}>@{twitterId || name}</LinkTextBtn>
   const DiscordLinkComponent = <LinkTextBtn onClick={onDiscord}>#{discordName || name}</LinkTextBtn>
-
+  const checkinBtnText = isCheckedin ? 'Checked In !' : 'Get Toady’s Contribution Token !'
   const questions = [
     {
       title: 'Q: How to get contribution in this community?',
@@ -142,7 +148,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
           title: `Daily Click.`,
           content: (
             <GetContributionTokenBtn disabled={disabledCheckin} onClick={onCommunityCheckin}>
-              {loadingCheckin ? 'loading ...' : 'Get Toady’s Contribution Token!'}
+              {loadingCheckin ? 'loading ...' : checkinBtnText}
             </GetContributionTokenBtn>
           ),
         },

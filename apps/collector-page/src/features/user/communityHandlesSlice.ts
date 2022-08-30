@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 19:01:43
+ * @LastEditTime: 2022-08-30 11:14:53
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import fileDownload from 'js-file-download'
 import { toast } from 'react-toastify'
+import { COMMUNITY_CHECK_IN_CONTRIBUTION } from '../../constants'
 import {
   checkinCommunity,
   downloadContributions,
@@ -17,6 +18,7 @@ import {
 } from '../../services/api/community'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
+import { fetchCommunityContributionRanks } from '../community/contributionRanksSlice'
 import { addOne as addOneForCheckinCommunities } from './checkinCommunitiesSlice'
 import { addOne as addOneForFollowedCommunities, fetchFollowedCommunities } from './followedCommunitiesSlice'
 // 每一种操作单独存储当前的数据状态
@@ -34,7 +36,7 @@ const initCommunityHandlestate = {
 export type UserCommunityHandlesStateType = {
   follow: CommunityHandle<FollowCommunityParams>
   downloadContributionTokens: CommunityHandle<number>
-  verifyCheckin: CommunityHandle<number>
+  verifyCheckin: CommunityHandle<{ communityId?: number; slug?: string }>
   checkin: CommunityHandle<number>
 }
 const initUserCommunityHandlesState: UserCommunityHandlesStateType = {
@@ -75,13 +77,16 @@ export const downloadContributionTokens = createAsyncThunk(
 
 export const verifyCheckin = createAsyncThunk(
   'user/communityHandles/verifyCheckin',
-  async (communityId: number, { dispatch }) => {
+  async ({ communityId, slug }: { communityId: number; slug?: string }, { dispatch, getState }) => {
     try {
       const resp = await verifyCommunityCheckin(communityId)
       if (resp.data.code === 0) {
         if (resp.data.data === 1) {
-          const addCheckinCommunity = { communityId, seqDays: 1, contribution: 36 }
+          const addCheckinCommunity = { communityId, seqDays: 1, contribution: COMMUNITY_CHECK_IN_CONTRIBUTION }
           dispatch(addOneForCheckinCommunities(addCheckinCommunity))
+          if (slug) {
+            dispatch(fetchCommunityContributionRanks(slug))
+          }
         }
       } else {
         throw new Error(resp.data.msg)

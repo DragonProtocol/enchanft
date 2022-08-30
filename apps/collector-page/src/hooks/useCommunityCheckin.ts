@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-29 16:47:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 19:16:40
+ * @LastEditTime: 2022-08-30 11:18:01
  * @Description: file description
  */
 import { useCallback, useEffect } from 'react'
@@ -17,7 +17,7 @@ import {
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { AsyncRequestStatus } from '../types'
 
-export default (communityId: number | undefined) => {
+export default (communityId?: number, slug?: string) => {
   const { token } = useAppSelector(selectAccount)
   const dispatch = useAppDispatch()
   const { verifyCheckin: verifyCheckinState, checkin: checkinState } = useAppSelector(selectUserCommunityHandlesState)
@@ -25,14 +25,14 @@ export default (communityId: number | undefined) => {
   const handleCheckin = useCallback(() => token && communityId && dispatch(checkin(communityId)), [token, communityId])
   const userCheckinCommunityIds = useAppSelector(selectIds)
   const isVerifiedCheckin = verifyCheckinState.status === AsyncRequestStatus.FULFILLED
-  const isCheckin = !!communityId && userCheckinCommunityIds.includes(communityId)
+  const isCheckedin = !!communityId && userCheckinCommunityIds.includes(communityId)
 
   // verify check in
   useEffect(() => {
-    if (token && communityId && !isCheckin && verifyCheckinState.status === AsyncRequestStatus.IDLE) {
-      dispatch(verifyCheckin(communityId))
+    if (token && communityId && !isCheckedin && verifyCheckinState.status === AsyncRequestStatus.IDLE) {
+      dispatch(verifyCheckin({ communityId, slug }))
     }
-  }, [token, communityId, isCheckin, verifyCheckinState.status])
+  }, [token, communityId, isCheckedin, verifyCheckinState.status])
 
   // empty check in
   useEffect(() => {
@@ -43,11 +43,10 @@ export default (communityId: number | undefined) => {
 
   // reset verify in
   useEffect(() => {
-    dispatch(resetVerifyCheckin())
     return () => {
       dispatch(resetVerifyCheckin())
     }
-  }, [communityId])
+  }, [])
 
-  return { isVerifiedCheckin, isCheckin, handleCheckin, checkinState }
+  return { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState }
 }
