@@ -135,7 +135,14 @@ export function createTask(data: CreateTaskState) {
     winNum: data.winnerNum,
     startTime: data.startTime,
     endTime: data.endTime,
-    reward: data.reward,
+    reward: {
+      type: data.reward.type,
+      raffled: data.reward.raffled,
+      name: data.reward.name,
+      data: {
+        token_num: data.reward.token_num,
+      },
+    },
     actions: data.actions.map((item) => {
       return {
         name: item.name,
