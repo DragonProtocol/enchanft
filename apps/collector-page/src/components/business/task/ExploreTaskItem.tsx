@@ -2,17 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 11:55:51
+ * @LastEditTime: 2022-08-30 19:30:24
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
+import { RewardData } from '../../../types/entities'
+import { getTaskRewardTypeValue } from '../../../utils/task'
 import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
+import { RewardType } from './create/state'
 import TaskImageDefault from './TaskImageDefault'
 
 export type ExploreTaskItemDataType = {
@@ -27,6 +30,9 @@ export type ExploreTaskItemDataType = {
   }
   reward?: {
     name: string
+    type: RewardType
+    raffled: boolean
+    data: RewardData
   }
 }
 
@@ -49,6 +55,7 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
   }
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
+  const rewardValue = getTaskRewardTypeValue(reward)
   return (
     <ExploreTaskItemWrapper
       onClick={() => navigate(`/${project.slug}/${id}`)}
@@ -66,7 +73,7 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
         {reward && (
           <TaskRemarkBox>
             <PngIconGiftBox size={'16px'} />
-            <TaskRemark>{reward.name}</TaskRemark>
+            <TaskRemark>{rewardValue}</TaskRemark>
           </TaskRemarkBox>
         )}
       </TaskInfoBox>

@@ -2,20 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-15 15:37:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-23 12:03:03
+ * @LastEditTime: 2022-08-30 19:28:42
  * @Description: file description
  */
 import { TaskDetailEntity } from '../features/task/taskDetailSlice'
 import { TodoTaskItemForEntity } from '../features/user/todoTasksSlice'
 import { TaskDetailResponse, TodoTaskActionItem, TodoTaskItem, UserActionStatus } from '../types/api'
-import { RewardType, TaskTodoCompleteStatus } from '../types/entities'
+import { RewardData, RewardType, TaskTodoCompleteStatus } from '../types/entities'
 
 export const getTaskRewardTypeLabel = (reward?: { type: RewardType; raffled: boolean }) => {
   let rewardTypeLabel = 'Unknown Reward Type'
   if (reward) {
     switch (reward.type) {
       case RewardType.CONTRIBUTION_TOKEN:
-        rewardTypeLabel = 'Custom Action'
+        rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS'
         break
       case RewardType.WHITELIST:
         rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS'
@@ -26,6 +26,28 @@ export const getTaskRewardTypeLabel = (reward?: { type: RewardType; raffled: boo
     }
   }
   return rewardTypeLabel
+}
+export const getTaskRewardTypeValue = (reward?: {
+  type: RewardType
+  raffled: boolean
+  name: string
+  data: RewardData
+}) => {
+  let rewardTypeValue = 'Unknown Reward'
+  if (reward) {
+    switch (reward.type) {
+      case RewardType.CONTRIBUTION_TOKEN:
+        rewardTypeValue = `${reward.data?.token_num || ''} Contribution Token`
+        break
+      case RewardType.WHITELIST:
+        rewardTypeValue = reward?.name || 'Whitelist'
+        break
+      case RewardType.OTHERS:
+        rewardTypeValue = reward?.name || 'Others'
+        break
+    }
+  }
+  return rewardTypeValue
 }
 
 type TaskEntityType = TodoTaskItemForEntity | TaskDetailEntity

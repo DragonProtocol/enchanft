@@ -2,15 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 10:51:41
+ * @LastEditTime: 2022-08-30 19:28:11
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { RewardType } from '../../../types/entities'
-import { getTaskRewardTypeLabel } from '../../../utils/task'
+import { RewardData, RewardType } from '../../../types/entities'
+import { getTaskRewardTypeLabel, getTaskRewardTypeValue } from '../../../utils/task'
 import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 import PngIconScissorHand from '../../common/icons/PngIconScissorHand'
@@ -35,6 +35,7 @@ export type ExploreTaskSwiperItemDataType = {
     name: string
     type: RewardType
     raffled: boolean
+    data: RewardData
   }
 }
 export type ExploreTaskSwiperItemViewConfigType = {}
@@ -56,6 +57,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
   const rewardTypeLabel = getTaskRewardTypeLabel(reward)
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
+  const rewardValue = getTaskRewardTypeValue(reward)
   return (
     <ExploreTaskSwiperItemWrapper onClick={() => navigate(`/${project.slug}/${id}`)}>
       {/* <ChainTag size={2} chainId={project.chainId} /> */}
@@ -85,7 +87,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
           {reward && (
             <TaskRewardBox>
               <PngIconGiftBox size={'18px'} />
-              <TaskReward>Reward : {reward.name}</TaskReward>
+              <TaskReward>Reward : {rewardValue}</TaskReward>
             </TaskRewardBox>
           )}
           <TaskDescription>

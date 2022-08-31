@@ -3,9 +3,10 @@ import styled from 'styled-components'
 import ButtonBase from '../../common/button/ButtonBase'
 import { useNavigate } from 'react-router-dom'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { Community, Project, RewardType } from '../../../types/entities'
+import { Community, Project, RewardData, RewardType } from '../../../types/entities'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import CardItemBox from '../../common/card/CardItemBox'
+import { getTaskRewardTypeValue } from '../../../utils/task'
 
 export type WhitelistItemDataType = {
   id: number
@@ -19,9 +20,10 @@ export type WhitelistItemDataType = {
     name: string
   }
   reward?: {
-    id: number
     name: string
     type: RewardType
+    raffled: boolean
+    data: RewardData
   }
   whitelist: {
     id: number
@@ -72,6 +74,7 @@ const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint 
     // }
     window.open(mintUrl, '_blank', 'noopener,noreferrer')
   }
+  const rewardValue = getTaskRewardTypeValue(reward)
   return (
     <WhitelistItemWrapper>
       <ProjectImage src={task.image} />
@@ -80,18 +83,14 @@ const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint 
         <CommunityName>{community.name}</CommunityName>
         {reward && (
           <RewardTypeContentBox>
-            {reward.type === RewardType.OTHERS ? (
-              <RewardTypeText>Other Rewards</RewardTypeText>
-            ) : (
-              <>
-                <RewardTypeText>Whitelist</RewardTypeText>
-                <RewardWhitelistMintButton
-                  data={whitelist}
-                  onMint={handleMint}
-                  loadingMint={loadingMint}
-                  disabledMint={disabledMint}
-                />
-              </>
+            <RewardTypeText>{rewardValue}</RewardTypeText>
+            {mintUrl && (
+              <RewardWhitelistMintButton
+                data={whitelist}
+                onMint={handleMint}
+                loadingMint={loadingMint}
+                disabledMint={disabledMint}
+              />
             )}
           </RewardTypeContentBox>
         )}
