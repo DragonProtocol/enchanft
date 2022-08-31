@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-08 13:30:42
+ * @LastEditTime: 2022-08-31 14:55:23
  * @FilePath: \synft-app\src\container\AboutEnchaNFT.tsx
  * @Description: about container
  */
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { ButtonPrimary, ButtonWarning } from '../components/common/ButtonBase';
 import {
   APPLY_FORM_URL,
@@ -17,16 +17,16 @@ import {
 } from '../utils/constants';
 import BannerIconImg from './images/banner_icon.png';
 import BannerImg from './images/banner.jpg';
-import EnchanftWhitelist from './images/enchanft_whitelist.png';
-import TasksAutomation from './images/tasks_automation.png';
-import UnifyCommunity from './images/unify_community.png';
+import EnchanftWhitelist from './gif/enchanft_whitelist.gif';
+import TasksAutomation from './gif/tasks_automation.gif';
+import UnifyCommunity from './gif/unify_community.gif';
 import WhyEnchanftCreator from './images/why_enchanft_creator.png';
 import WhyEnchanftCollector from './images/why_enchanft_collector.png';
 import NftPlusSolImg from './images/nft_plus_sol.png';
 import TwitterIcon from './images/twitter.svg';
 import WL_LOGO from './images/wl.svg';
 import { CursorPointerUpCss } from '../GlobalStyle';
-
+import ReactFreezeframe from 'react-freezeframe';
 function About() {
   const whitelist = {
     icon: EnchanftWhitelist,
@@ -112,11 +112,7 @@ function About() {
     <AboutWrapper>
       <BannerBox url={BannerImg}>
         <BannerIcon src={BannerIconImg} />
-        <BannerText>
-          Supercharged NFT allow lists
-          <br />
-          with EnchaNFT
-        </BannerText>
+        <BannerText>Supercharged NFT allow lists with EnchaNFT</BannerText>
         <BannerButtonBox>
           <BannerButtonStartCommunity onClick={openApplyForm}>
             Start your community
@@ -132,7 +128,9 @@ function About() {
           {/* <WLLogoBox src={WL_LOGO}></WLLogoBox> */}
           <TextTitleBox>
             <TextTitle>{whitelist.title}</TextTitle>
-            <MobileImgBox src={whitelist.icon} />
+            <MobileImgBox>
+              <MobileImg src={whitelist.icon} />
+            </MobileImgBox>
           </TextTitleBox>
 
           <TextSubTitle>{whitelist.subTitle}</TextSubTitle>
@@ -142,14 +140,20 @@ function About() {
             ))}
           </TextContent>
         </TextBox>
-        <PcImgBox src={whitelist.icon}></PcImgBox>
+        <PcImgBox>
+          <PcImg src={whitelist.icon}></PcImg>
+        </PcImgBox>
       </TextAndImgBox>
 
       <TextAndImgBox>
-        <PcImgBox src={tasksAutomation.icon}></PcImgBox>
+        <PcImgBox>
+          <PcImg src={tasksAutomation.icon}></PcImg>
+        </PcImgBox>
         <TextBox>
           <TextTitleBox>
-            <MobileImgBox src={whitelist.icon} />
+            <MobileImgBox>
+              <MobileImg src={tasksAutomation.icon} />
+            </MobileImgBox>
             <TextTitle>{tasksAutomation.title}</TextTitle>
           </TextTitleBox>
           <TextSubTitle>{tasksAutomation.subTitle}</TextSubTitle>
@@ -165,7 +169,9 @@ function About() {
         <TextBox>
           <TextTitleBox>
             <TextTitle>{unifyCommunity.title}</TextTitle>
-            <MobileImgBox src={unifyCommunity.icon} />
+            <MobileImgBox>
+              <MobileImg src={unifyCommunity.icon} />
+            </MobileImgBox>
           </TextTitleBox>
 
           <TextSubTitle>{unifyCommunity.subTitle}</TextSubTitle>
@@ -175,7 +181,9 @@ function About() {
             ))}
           </TextContent>
         </TextBox>
-        <PcImgBox src={unifyCommunity.icon}></PcImgBox>
+        <PcImgBox>
+          <PcImg src={unifyCommunity.icon}></PcImg>
+        </PcImgBox>
       </TextAndImgBox>
 
       <EmailUsBox>
@@ -220,11 +228,16 @@ const BannerBox = styled.div<{ url: any }>`
   background-position: center;
   border: 4px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   gap: 24px;
   justify-content: center;
   align-items: center;
+  padding: 0px 112px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding: 0px 20px;
+  }
 `;
 const BannerIcon = styled.img`
   width: 104px;
@@ -232,22 +245,34 @@ const BannerIcon = styled.img`
 `;
 const BannerText = styled.div`
   font-style: normal;
-  font-weight: 400;
-  font-size: 28px;
+  font-weight: 700;
+  font-size: 36px;
   line-height: 40px;
   text-align: center;
   text-transform: uppercase;
   color: #ffffff;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 30px;
+  }
 `;
 const BannerButtonBox = styled.div`
   display: flex;
   gap: 24px;
 `;
-const BannerButtonStartCommunity = styled(ButtonPrimary)`
+const BannerButtonTextCss = css`
   padding: 18px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+  }
+`;
+const BannerButtonStartCommunity = styled(ButtonPrimary)`
+  ${BannerButtonTextCss}
 `;
 const BannerButtonExplore = styled(ButtonWarning)`
-  padding: 18px;
+  ${BannerButtonTextCss}
 `;
 
 const TextAndImgBox = styled.div`
@@ -256,7 +281,7 @@ const TextAndImgBox = styled.div`
   gap: 40px;
 `;
 const TextBox = styled.div`
-  flex: 1;
+  width: 510px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -269,44 +294,46 @@ const TextTitleBox = styled.div`
 `;
 const TextTitle = styled.div`
   font-style: normal;
-  font-weight: 400;
-  font-size: 22px;
-  line-height: 40px;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 54px;
   text-transform: uppercase;
   color: #333333;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     font-size: 18px;
+    line-height: 30px;
+    width: 50%;
   }
 `;
 const TextSubTitle = styled.div`
   font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 36px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 30px;
   color: #333333;
-  margin-top: 12px;
+  margin-top: 10px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     font-size: 14px;
   }
 `;
 const TextContent = styled.div`
-  margin-top: 40px;
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 `;
 const TextContentItem = styled.div`
   max-width: 472px;
   font-style: normal;
   font-weight: 400;
-  font-size: 12px;
-  line-height: 20px;
+  font-size: 18px;
+  line-height: 27px;
   color: #333333;
   &:before {
     content: '';
     display: inline-block;
-    width: 8px;
-    height: 8px;
+    width: 4px;
+    height: 4px;
     border-radius: 50%;
     background: #00b300;
     margin-right: 14px;
@@ -314,19 +341,23 @@ const TextContentItem = styled.div`
     vertical-align: middle;
   }
 `;
-const PcImgBox = styled.img`
-  width: 474px;
-  height: 350px;
+const PcImgBox = styled.div`
+  flex: 1;
+  text-align: center;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     display: none;
   }
 `;
-const MobileImgBox = styled.img`
-  width: 120px;
-  object-fit: cover;
+const PcImg = styled(ReactFreezeframe)`
+  height: 350px;
+`;
+const MobileImgBox = styled.div`
   @media (min-width: ${MOBILE_BREAK_POINT}px) {
     display: none;
   }
+`;
+const MobileImg = styled.img`
+  height: 100px;
 `;
 const WLLogoBox = styled.img`
   width: 100px;
@@ -486,13 +517,13 @@ const EmailUsBox = styled.div`
     background: #fffbdb;
     border: 4px solid #222222;
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-    border-radius: 2px;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 60px;
     gap: 10px;
-    padding: 15px 0 30px 0;
+    padding: 15px 0 25px 0;
     ${CursorPointerUpCss}
     .text-box {
       width: 100%;
@@ -503,7 +534,9 @@ const EmailUsBox = styled.div`
       padding: 0px;
       gap: 10px;
       .text {
-        font-size: 18px;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 36px;
         white-space: nowrap;
         @media (max-width: ${MOBILE_BREAK_POINT}px) {
           font-size: 12px;
@@ -526,7 +559,7 @@ const EmailUsBox = styled.div`
     background: #fffbdb;
     border: 4px solid #222222;
     box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-    border-radius: 2px;
+    border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
