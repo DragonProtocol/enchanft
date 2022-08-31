@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-29 16:47:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 11:54:58
+ * @LastEditTime: 2022-08-31 18:51:31
  * @Description: file description
  */
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { selectAccount } from '../features/user/accountSlice'
 import { removeAll, selectById, selectIds } from '../features/user/checkinCommunitiesSlice'
 import {
@@ -27,8 +27,11 @@ export default (communityId?: number, slug?: string) => {
   const userCheckedinCommunityData = useAppSelector((state) => selectById(state, communityId || 0))
   const isVerifiedCheckin = verifyCheckinState.status === AsyncRequestStatus.FULFILLED
   const isCheckedin = !!communityId && userCheckinCommunityIds.includes(communityId)
-  const checkinScore = userCheckedinCommunityData?.contribution || 0
-
+  const checkinData = {
+    contribution: userCheckedinCommunityData?.contribution || 0,
+    seqDays: userCheckedinCommunityData?.seqDays || 0,
+  }
+  const openClaimModal = !!checkinState.openClaimModal
   // verify check in
   useEffect(() => {
     if (token && communityId && !isCheckedin && verifyCheckinState.status === AsyncRequestStatus.IDLE) {
@@ -50,5 +53,5 @@ export default (communityId?: number, slug?: string) => {
     }
   }, [])
 
-  return { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinScore }
+  return { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal }
 }

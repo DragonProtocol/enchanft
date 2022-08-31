@@ -44,6 +44,7 @@ import { ButtonPrimary } from '../components/common/button/ButtonBase'
 import { selectIds as selectIdsByUserCheckinCommunity } from '../features/user/checkinCommunitiesSlice'
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
+import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -180,10 +181,8 @@ const Project: React.FC = () => {
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
 
   // 社区签到
-  const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState } = useCommunityCheckin(
-    data?.communityId,
-    projectSlug,
-  )
+  const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal } =
+    useCommunityCheckin(data?.communityId, projectSlug)
 
   // 打开连接钱包的窗口
   const handleOpenConnectWallet = useCallback(() => {
@@ -347,6 +346,7 @@ const Project: React.FC = () => {
           </CommunityCheckinBtn>
         </CommunityCheckinFloatingWindow>
       )}
+      <CommunityCheckedinClaimModal open={openClaimModal} data={checkinData} />
     </ProjectWrapper>
   )
 }
