@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 19:17:20
+ * @LastEditTime: 2022-09-01 19:06:51
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { Project, TaskTodoCompleteStatus, TaskType, Whitelist } from '../../../types/entities'
+import { Project, Reward, RewardType, TaskTodoCompleteStatus, TaskType, Whitelist } from '../../../types/entities'
 import { UserActionStatus } from '../../../types/api'
 import ButtonBase from '../../common/button/ButtonBase'
 import { TaskActionItemDataType } from './TaskActionItem'
@@ -32,6 +32,7 @@ export type TodoTaskItemDataType = {
   actions: TaskActionItemDataType[]
   project: Project
   whitelist: Whitelist
+  reward?: Reward
 }
 
 export type TodoTaskItemViewConfigType = {
@@ -47,6 +48,7 @@ export type TodoTaskItemViewConfigType = {
   loadingRefreshMsg?: string
   verifyingActions?: number[]
   allowNavigateToTask?: boolean
+  displayReward?: boolean
 }
 
 export type TodoTaskItemDataViewType = {
@@ -76,6 +78,7 @@ const defaultViewConfig: TodoTaskItemViewConfigType = {
   loadingRefreshMsg: 'refreshing...',
   verifyingActions: [],
   allowNavigateToTask: false,
+  displayReward: false,
 }
 const TaskTodoCompleteStatusView = {
   [TaskTodoCompleteStatus.COMPLETED]: {
@@ -108,7 +111,20 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   onCustomAction,
 }: TodoTaskItemProps) => {
   const navginate = useNavigate()
-  const { id, name, whitelistTotalNum, type, projectId, startTime, endTime, actions, status, project, whitelist } = data
+  const {
+    id,
+    name,
+    whitelistTotalNum,
+    type,
+    projectId,
+    startTime,
+    endTime,
+    actions,
+    status,
+    project,
+    whitelist,
+    reward,
+  } = data
   const { name: projectName } = project
   const { mintUrl, slug: projectSlug } = project
   const { mintStartTime } = whitelist
@@ -125,6 +141,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     loadingRefreshMsg,
     verifyingActions,
     allowNavigateToTask,
+    displayReward,
   } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -250,6 +267,31 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
       onVerifyTask(data)
     }
   }
+  const renderRewardContent = () => {
+    if (reward) {
+      switch (reward.type) {
+        case RewardType.CONTRIBUTION_TOKEN:
+          return (
+            <>
+              You got {reward.data.token_num} contribution token of{' '}
+              <RewardProjectTextBtn onClick={() => navginate(`/${projectSlug}`)}>{project.name}</RewardProjectTextBtn>
+            </>
+          )
+        case RewardType.OTHERS:
+          return (
+            <>
+              You got {reward.name} form{' '}
+              <RewardProjectTextBtn onClick={() => navginate(`/${projectSlug}`)}>{project.name}</RewardProjectTextBtn>.
+              The team will contact you later
+            </>
+          )
+        default:
+          return null
+      }
+    } else {
+      return null
+    }
+  }
   return (
     <TodoTaskItemWrapper>
       <TaskBasicInfoBox isAllowClick={allowOpenActions || allowNavigateToTask} onClick={onTaskClick}>
@@ -259,6 +301,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
           {renderTaskStatusContent()}
         </TaskBasicInfoRightBox>
       </TaskBasicInfoBox>
+      {displayReward && <RewardBox>{renderRewardContent()}</RewardBox>}
       {displayMint && (
         <MintBtn disabled={isDisabledMint} onClick={onMintClick} bgc={mintBgc}>
           {mintStartTimeCountdownText}
@@ -338,7 +381,19 @@ const Status = styled.div`
 `
 const StatusIcon = styled.div``
 const StatusText = styled.div``
-
+const RewardBox = styled.div`
+  font-size: 10px;
+  line-height: 15px;
+  color: rgba(51, 51, 51, 0.6);
+  margin-top: 5px;
+`
+const RewardProjectTextBtn = styled.a`
+  color: #333333;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
+`
 const MintBtn = styled(ButtonBase)<{ bgc?: string }>`
   width: 100%;
   background-color: ${(props) => props.bgc || 'rgba(16, 16, 16, 100)'};

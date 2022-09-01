@@ -289,7 +289,7 @@ const Project: React.FC = () => {
             items={showContributionranks}
             membersTotal={contributionMembersTotal}
             displayMore={true}
-            moreText="Start Contributing"
+            moreText="Join and start contributing"
             onMore={startContribute}
           />
         </ContributionListBox>

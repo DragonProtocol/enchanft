@@ -121,4 +121,8 @@ const TaskDescription = styled(RichTextBox)`
   flex: 1;
   overflow-y: auto;
   ${ScrollBarCss}
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: rgba(51, 51, 51, 0.6);
 `
