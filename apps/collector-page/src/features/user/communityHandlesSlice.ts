@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 11:44:41
+ * @LastEditTime: 2022-08-31 19:10:52
  * @Description: file description
  */
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import fileDownload from 'js-file-download'
 import { toast } from 'react-toastify'
 import {
@@ -36,7 +36,9 @@ export type UserCommunityHandlesStateType = {
   follow: CommunityHandle<FollowCommunityParams>
   downloadContributionTokens: CommunityHandle<number>
   verifyCheckin: CommunityHandle<{ communityId?: number; slug?: string }>
-  checkin: CommunityHandle<number>
+  checkin: CommunityHandle<number> & {
+    openClaimModal?: boolean
+  }
 }
 const initUserCommunityHandlesState: UserCommunityHandlesStateType = {
   follow: initCommunityHandlestate,
@@ -105,6 +107,10 @@ export const checkin = createAsyncThunk('user/communityHandles/checkin', async (
       const addCheckinCommunity = { communityId, seqDays: seqDays || 0, contribution: contribution || 0 }
       dispatch(addOneForCheckinCommunities(addCheckinCommunity))
       toast.success(`Got ${addCheckinCommunity.contribution} contribution token!`)
+      dispatch(setCheckinOpenClaimModal(true))
+      setTimeout(() => {
+        dispatch(setCheckinOpenClaimModal(false))
+      }, 3000)
     } else {
       throw new Error(resp.data.msg)
     }
@@ -119,6 +125,9 @@ export const userCommunityHandlesSlice = createSlice({
   reducers: {
     resetVerifyCheckin: (state) => {
       state.verifyCheckin = initCommunityHandlestate
+    },
+    setCheckinOpenClaimModal: (state, action: PayloadAction<boolean>) => {
+      state.checkin.openClaimModal = action.payload
     },
   },
   extraReducers: (builder) => {
@@ -207,5 +216,5 @@ export const userCommunityHandlesSlice = createSlice({
 export const selectUserCommunityHandlesState = (state: RootState) => state.userCommunityHandles
 
 const { actions, reducer } = userCommunityHandlesSlice
-export const { resetVerifyCheckin } = actions
+export const { resetVerifyCheckin, setCheckinOpenClaimModal } = actions
 export default reducer

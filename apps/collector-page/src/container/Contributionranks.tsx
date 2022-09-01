@@ -31,6 +31,7 @@ import usePermissions from '../hooks/usePermissons'
 import { downloadContributions } from '../services/api/community'
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
+import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
@@ -85,10 +86,8 @@ const Contributionranks: React.FC = () => {
   }, [community])
 
   // 社区签到
-  const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinScore } = useCommunityCheckin(
-    community?.id,
-    projectSlug,
-  )
+  const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal } =
+    useCommunityCheckin(community?.id, projectSlug)
 
   const loadingCheckin = checkinState.status === AsyncRequestStatus.PENDING
   const disabledCheckin = loadingCheckin || isCheckedin
@@ -167,13 +166,14 @@ const Contributionranks: React.FC = () => {
                 loadingCheckin: loadingCheckin,
                 disabledCheckin: disabledCheckin,
                 isCheckedin: isCheckedin,
-                checkinScore: checkinScore,
               }}
               onCommunityCheckin={handleCheckin}
             />
           </ContributionAboutBox>
         </ContributionRigtBox>
       </ContributionMainBox>
+
+      <CommunityCheckedinClaimModal open={openClaimModal} data={checkinData} />
     </ContributionWrapper>
   )
 }
