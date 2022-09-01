@@ -1,7 +1,7 @@
 /*
  * @Author: shixuewen
  * @Date: 2022-03-11 18:48:03
- * @LastEditTime: 2022-08-31 11:58:01
+ * @LastEditTime: 2022-09-01 10:53:02
  * @LastEditors: shixuewen friendlysxw@163.com
  * @Description: 一些全局样式
  * @FilePath: \synft-app\src\GlobalStyle.ts
@@ -52,7 +52,7 @@ const GlobalStyle = createGlobalStyle`
     height:100vh;
     overflow:hidden;
     ${FontFamilyCss}
-    ${CursorPointerCss}
+    /* ${CursorPointerCss} */
   }
 `;
 export default GlobalStyle;

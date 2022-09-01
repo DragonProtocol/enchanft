@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-28 15:07:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-31 11:59:11
+ * @LastEditTime: 2022-09-01 10:21:09
  * @Description: 整体结构布局
  */
 import React, { useEffect } from 'react';
@@ -48,6 +48,7 @@ const LayoutWrapper = styled.div<{ isAbortPage: boolean }>`
     width: 100%;
     height: 72px;
     box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     @media (max-width: ${MEDIA_BREAK_POINTS.md}px) {
       padding: 0 12px;
     }
