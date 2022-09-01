@@ -191,26 +191,30 @@ export const userLink = createAsyncThunk(
 
 export const userOtherWalletLink = createAsyncThunk(
   'user/otherWalletLink',
-  async ({
-    walletType,
-    signature,
-    payload,
-    pubkey,
-    token,
-  }: {
-    walletType: TokenType
-    signature: string
-    payload: string
-    pubkey: string
-    token?: string
-  }) => {
+  async (
+    {
+      walletType,
+      signature,
+      payload,
+      pubkey,
+      token,
+    }: {
+      walletType: TokenType
+      signature: string
+      payload: string
+      pubkey: string
+      token?: string
+    },
+    thunkAPI,
+  ) => {
+    const account = (thunkAPI.getState() as RootState).account
     try {
       const resp = await link({
         type: walletType === TokenType.Solana ? ChainType.SOLANA : ChainType.EVM,
         signature,
         payload,
         pubkey,
-        token,
+        token: token || account.token,
       })
       return { accounts: resp.data, walletType }
     } catch (error) {
@@ -356,11 +360,8 @@ export const accountSlice = createSlice({
       })
       .addCase(userOtherWalletLink.fulfilled, (state, action) => {
         state.linkStatus = AsyncRequestStatus.FULFILLED
-        state.defaultWallet = action.payload.walletType
         state.accounts = action.payload.accounts || []
 
-        localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
-        localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
         toast.success('link ' + action.payload.walletType + ' wallet successfully!')
       })
       .addCase(userOtherWalletLink.rejected, (state, action) => {

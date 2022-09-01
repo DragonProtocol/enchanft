@@ -148,7 +148,7 @@ export default function ConnectWalletModal() {
     if (!data) {
       return
     }
-    if (last) return data
+    // if (last) return data
     handleSign(data)
     return data
   }
