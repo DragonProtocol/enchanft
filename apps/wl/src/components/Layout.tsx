@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-28 15:07:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-06-28 15:48:46
+ * @LastEditTime: 2022-09-01 13:49:31
  * @Description: 整体结构布局
  */
 import React, { useEffect } from 'react';
@@ -40,7 +40,6 @@ export default Layout;
 const LayoutWrapper = styled.div<{ isAbortPage: boolean }>`
   width: 100%;
   box-sizing: border-box;
-  ${(props) => (props.isAbortPage ? 'background: #ffffff;' : '')};
   .layout-inner {
     max-width: 1024px;
     margin: 0 auto;
@@ -48,10 +47,10 @@ const LayoutWrapper = styled.div<{ isAbortPage: boolean }>`
   .header {
     width: 100%;
     height: 72px;
-    background: #ffffff;
     box-sizing: border-box;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     @media (max-width: ${MEDIA_BREAK_POINTS.md}px) {
-      padding: 0 12px;
+      padding: 0 20px;
     }
     .header-inner {
       height: 100%;
@@ -63,9 +62,9 @@ const LayoutWrapper = styled.div<{ isAbortPage: boolean }>`
     overflow-x: hidden;
     padding-top: 48px;
     @media (max-width: ${MEDIA_BREAK_POINTS.md}px) {
-      padding: 12px;
+      padding: 20px;
       padding-bottom: 0;
-      height: calc(100vh - 72px - 12px);
+      height: calc(100vh - 72px - 20px);
     }
     .main-route {
       box-sizing: border-box;

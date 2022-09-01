@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2022-03-15 11:15:41
- * @LastEditTime: 2022-06-28 14:18:00
+ * @LastEditTime: 2022-08-31 11:22:21
  * @LastEditors: shixuewen friendlysxw@163.com
  * @Description: 基础按钮组件
  */
@@ -41,6 +41,7 @@ export const ButtonBaseCss = css`
   font-size: 12px;
   color: #ffffff;
   border: none;
+  border-radius: 10px;
   ${FontFamilyCss}
   ${CursorPointerUpCss}
 `;
