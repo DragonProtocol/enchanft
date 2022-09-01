@@ -1,0 +1,83 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/creator-page/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:webpack",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "compiler": "babel",
+        "outputPath": "dist/apps/creator-page",
+        "index": "apps/creator-page/src/index.html",
+        "baseHref": "/",
+        "main": "apps/creator-page/src/main.tsx",
+        "polyfills": "apps/creator-page/src/polyfills.ts",
+        "tsConfig": "apps/creator-page/tsconfig.app.json",
+        "assets": [
+          "apps/creator-page/src/favicon.ico",
+          "apps/creator-page/src/assets"
+        ],
+        "styles": ["apps/creator-page/src/styles.css"],
+        "scripts": [],
+        "webpackConfig": "@nrwl/react/plugins/webpack"
+      },
+      "configurations": {
+        "development": {
+          "extractLicenses": false,
+          "optimization": false,
+          "sourceMap": true,
+          "vendorChunk": true
+        },
+        "production": {
+          "fileReplacements": [
+            {
+              "replace": "apps/creator-page/src/environments/environment.ts",
+              "with": "apps/creator-page/src/environments/environment.prod.ts"
+            }
+          ],
+          "optimization": true,
+          "outputHashing": "all",
+          "sourceMap": false,
+          "namedChunks": false,
+          "extractLicenses": true,
+          "vendorChunk": false
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nrwl/web:dev-server",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "creator-page:build",
+        "hmr": true
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "creator-page:build:development"
+        },
+        "production": {
+          "buildTarget": "creator-page:build:production",
+          "hmr": false
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["apps/creator-page/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/apps/creator-page"],
+      "options": {
+        "jestConfig": "apps/creator-page/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
