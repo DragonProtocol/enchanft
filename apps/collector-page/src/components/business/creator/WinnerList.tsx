@@ -93,14 +93,16 @@ export default function WinnerList({
               >
                 Entry List
               </span>
-              <span
-                className={(activeList === 'candidate' && 'active') || ''}
-                onClick={() => {
-                  setActiveList('candidate')
-                }}
-              >
-                Participants List
-              </span>
+              {reward.raffled && (
+                <span
+                  className={(activeList === 'candidate' && 'active') || ''}
+                  onClick={() => {
+                    setActiveList('candidate')
+                  }}
+                >
+                  Participants List
+                </span>
+              )}
             </h3>
           )) || (
             <h3>

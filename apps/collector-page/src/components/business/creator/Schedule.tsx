@@ -1,51 +1,67 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import styled from 'styled-components'
 
 import { ScheduleInfo } from '../../../features/creator'
 import CardBox from '../../common/card/CardBox'
 import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 import IconCheckbox from '../../common/icons/IconCheckbox'
+import { RewardType } from '../task/create/state'
 // {
 //   title: string
 //   date: string
 //   done: boolean
 // }
-export default function Schedule({ schedules }: { schedules: ScheduleInfo | null }) {
+export default function Schedule({
+  schedules,
+  reward,
+}: {
+  schedules: ScheduleInfo | null
+  reward: { raffled: boolean; type: RewardType }
+}) {
   const dateNow = new Date()
   let closeTime = new Date(0).getTime()
 
-  const data: Array<{ title: string; date: string }> = []
-  if (schedules?.submitTime) {
-    data.push({
-      title: 'Task submit date',
-      date: schedules?.submitTime,
-    })
-  }
-  if (schedules?.startTime) {
-    data.push({
-      title: 'Task start',
-      date: schedules?.startTime,
-    })
-  }
-  if (schedules?.endTime) {
-    data.push({
-      title: 'Task end',
-      date: schedules?.endTime,
-    })
-  }
-  if (schedules?.pickWinnersTime) {
-    data.push({
-      title: 'Pick Entries',
-      date: schedules?.pickWinnersTime,
-    })
-  }
+  const data = useMemo(() => {
+    const data: Array<{ title: string; date: string }> = []
+    if (schedules?.submitTime) {
+      data.push({
+        title: 'Task submit date',
+        date: schedules?.submitTime,
+      })
+    }
+    if (schedules?.startTime) {
+      data.push({
+        title: 'Task start',
+        date: schedules?.startTime,
+      })
+    }
 
-  if (schedules?.closeTime) {
-    data.push({
-      title: 'Task close',
-      date: schedules?.closeTime,
+    if (schedules?.pickWinnersTime && reward.raffled) {
+      data.push({
+        title: 'Pick Entries',
+        date: schedules?.pickWinnersTime,
+      })
+    }
+
+    if (schedules?.endTime) {
+      data.push({
+        title: 'Task end',
+        date: schedules?.endTime,
+      })
+    }
+
+    if (schedules?.closeTime) {
+      data.push({
+        title: 'Task close',
+        date: schedules?.closeTime,
+      })
+    }
+    return data.sort((a, b) => {
+      const aDate = a?.date ? new Date(a?.date) : dateNow
+      const bDate = b?.date ? new Date(b?.date) : dateNow
+      return aDate.getTime() - bDate.getTime()
     })
-  }
+  }, [schedules, reward])
 
   return (
     <ScheduleBox>
