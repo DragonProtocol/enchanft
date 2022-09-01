@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 18:25:35
+ * @LastEditTime: 2022-09-01 18:40:18
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -10,7 +10,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import ScrollBox from '../components/common/scroll/ScrollBox'
-import { ActionType, TaskTodoCompleteStatus } from '../types/entities'
+import { ActionType, RewardType, TaskTodoCompleteStatus } from '../types/entities'
 import { UserActionStatus } from '../types/api'
 import { AsyncRequestStatus } from '../types'
 import TodoTaskList, { TodoTaskListItemsType } from '../components/business/task/TodoTaskList'
@@ -142,11 +142,14 @@ const formatStoreDataToComponentDataByCompletedList = (tasks: TodoTaskItemForEnt
 
 const formatStoreDataToComponentDataByWonList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
   return tasks.map((task) => {
-    const displayMint = Boolean(task.project.mintUrl)
+    const { reward } = task
+    const displayMint = reward?.type === RewardType.WHITELIST && Boolean(task.project.mintUrl)
+    const displayReward = reward?.type && reward?.type !== RewardType.WHITELIST
     return {
       data: { ...task, actions: [] },
       viewConfig: {
         displayMint,
+        displayReward,
         allowNavigateToTask: true,
       },
     }

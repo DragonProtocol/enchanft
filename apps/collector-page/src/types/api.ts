@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 18:59:30
+ * @LastEditTime: 2022-09-01 18:11:06
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -138,6 +138,7 @@ export type TodoTaskItem = Task & {
   actions: TodoTaskActionItem[]
   project: Project
   whitelist: Whitelist
+  reward?: Reward
 }
 
 export type TodoTaskResponse = TodoTaskItem[]
