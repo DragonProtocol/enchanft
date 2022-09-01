@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-31 14:55:23
+ * @LastEditTime: 2022-09-01 10:33:37
  * @FilePath: \synft-app\src\container\AboutEnchaNFT.tsx
  * @Description: about container
  */
@@ -199,11 +199,11 @@ function About() {
             <span className="text-icon">👈</span>
           </div>
         </div>
-        <div className="contact-us" aria-hidden onClick={() => openTwitter()}>
+        {/* <div className="contact-us" aria-hidden onClick={() => openTwitter()}>
           <img src={TwitterIcon} />
           <span>contact</span>
           <span>us</span>
-        </div>
+        </div> */}
       </EmailUsBox>
     </AboutWrapper>
   );
@@ -279,6 +279,9 @@ const TextAndImgBox = styled.div`
   display: flex;
   margin-top: 100px;
   gap: 40px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    margin-top: 50px;
+  }
 `;
 const TextBox = styled.div`
   width: 510px;
@@ -302,7 +305,6 @@ const TextTitle = styled.div`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     font-size: 18px;
     line-height: 30px;
-    width: 50%;
   }
 `;
 const TextSubTitle = styled.div`
@@ -357,7 +359,7 @@ const MobileImgBox = styled.div`
   }
 `;
 const MobileImg = styled.img`
-  height: 100px;
+  height: 80px;
 `;
 const WLLogoBox = styled.img`
   width: 100px;
