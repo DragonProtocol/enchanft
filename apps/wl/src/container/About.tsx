@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-01 10:33:37
+ * @LastEditTime: 2022-09-01 16:13:40
  * @FilePath: \synft-app\src\container\AboutEnchaNFT.tsx
  * @Description: about container
  */
@@ -50,7 +50,8 @@ function About() {
   const unifyCommunity = {
     icon: UnifyCommunity,
     title: 'Unify Your Community',
-    subTitle: '',
+    subTitle:
+      'Rank your community members by their contribution accross Discord & Twitter & more',
     items: [
       'Tracking social engagement (RT, Like) as contribution point even when you are not running contests or giveaway',
       'Bring your community together with a unified contribution points sysyem',
@@ -112,7 +113,8 @@ function About() {
     <AboutWrapper>
       <BannerBox url={BannerImg}>
         <BannerIcon src={BannerIconImg} />
-        <BannerText>Supercharged NFT allow lists with EnchaNFT</BannerText>
+        <BannerText>Supercharged NFT</BannerText>
+        <BannerSubText>allow lists with EnchaNFT</BannerSubText>
         <BannerButtonBox>
           <BannerButtonStartCommunity onClick={openApplyForm}>
             Start your community
@@ -126,14 +128,14 @@ function About() {
       <TextAndImgBox>
         <TextBox>
           {/* <WLLogoBox src={WL_LOGO}></WLLogoBox> */}
-          <TextTitleBox>
-            <TextTitle>{whitelist.title}</TextTitle>
-            <MobileImgBox>
-              <MobileImg src={whitelist.icon} />
-            </MobileImgBox>
-          </TextTitleBox>
+          <TextHeader>
+            <MobileImg src={whitelist.icon} />
+            <TextTitleBox>
+              <TextTitle>{whitelist.title}</TextTitle>
+              <TextSubTitle>{whitelist.subTitle}</TextSubTitle>
+            </TextTitleBox>
+          </TextHeader>
 
-          <TextSubTitle>{whitelist.subTitle}</TextSubTitle>
           <TextContent>
             {whitelist.items.map((item, index) => (
               <TextContentItem key={index}>{item}</TextContentItem>
@@ -150,13 +152,14 @@ function About() {
           <PcImg src={tasksAutomation.icon}></PcImg>
         </PcImgBox>
         <TextBox>
-          <TextTitleBox>
-            <MobileImgBox>
-              <MobileImg src={tasksAutomation.icon} />
-            </MobileImgBox>
-            <TextTitle>{tasksAutomation.title}</TextTitle>
-          </TextTitleBox>
-          <TextSubTitle>{tasksAutomation.subTitle}</TextSubTitle>
+          <TextHeader>
+            <MobileImg src={tasksAutomation.icon} />
+            <TextTitleBox>
+              <TextTitle>{tasksAutomation.title}</TextTitle>
+              <TextSubTitle>{tasksAutomation.subTitle}</TextSubTitle>
+            </TextTitleBox>
+          </TextHeader>
+
           <TextContent>
             {tasksAutomation.items.map((item, index) => (
               <TextContentItem key={index}>{item}</TextContentItem>
@@ -167,14 +170,14 @@ function About() {
 
       <TextAndImgBox>
         <TextBox>
-          <TextTitleBox>
-            <TextTitle>{unifyCommunity.title}</TextTitle>
-            <MobileImgBox>
-              <MobileImg src={unifyCommunity.icon} />
-            </MobileImgBox>
-          </TextTitleBox>
+          <TextHeader>
+            <MobileImg src={unifyCommunity.icon} />
+            <TextTitleBox>
+              <TextTitle>{unifyCommunity.title}</TextTitle>
+              <TextSubTitle>{unifyCommunity.subTitle}</TextSubTitle>
+            </TextTitleBox>
+          </TextHeader>
 
-          <TextSubTitle>{unifyCommunity.subTitle}</TextSubTitle>
           <TextContent>
             {unifyCommunity.items.map((item, index) => (
               <TextContentItem key={index}>{item}</TextContentItem>
@@ -236,7 +239,8 @@ const BannerBox = styled.div<{ url: any }>`
   align-items: center;
   padding: 0px 112px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    padding: 0px 20px;
+    padding: 16px;
+    height: auto;
   }
 `;
 const BannerIcon = styled.img`
@@ -252,7 +256,19 @@ const BannerText = styled.div`
   text-transform: uppercase;
   color: #ffffff;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    font-size: 30px;
+    font-size: 28px;
+  }
+`;
+const BannerSubText = styled.div`
+  font-style: normal;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 40px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #ffffff;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 16px;
   }
 `;
 const BannerButtonBox = styled.div`
@@ -265,6 +281,7 @@ const BannerButtonTextCss = css`
   font-size: 18px;
   line-height: 27px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding: 12px;
     font-size: 14px;
   }
 `;
@@ -289,11 +306,20 @@ const TextBox = styled.div`
   flex-direction: column;
   justify-content: center;
 `;
-const TextTitleBox = styled.div`
+const TextHeader = styled.div<{ mobileAlign?: 'flex-start' | 'flex-end' }>`
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 10px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 18px;
+    line-height: 30px;
+    justify-content: ${({ mobileAlign = 'flex-start' }) => mobileAlign};
+  }
+`;
+const TextTitleBox = styled.div<{ mobileAlign?: 'start' | 'end' }>`
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    /* text-align: ${({ mobileAlign = 'start' }) => mobileAlign}; */
+    text-align: start;
+  }
 `;
 const TextTitle = styled.div`
   font-style: normal;
@@ -303,7 +329,7 @@ const TextTitle = styled.div`
   text-transform: uppercase;
   color: #333333;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    font-size: 18px;
+    font-size: 16px;
     line-height: 30px;
   }
 `;
@@ -315,7 +341,9 @@ const TextSubTitle = styled.div`
   color: #333333;
   margin-top: 10px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 18px;
+    margin-top: 4px;
   }
 `;
 const TextContent = styled.div`
@@ -331,14 +359,17 @@ const TextContentItem = styled.div`
   font-size: 18px;
   line-height: 27px;
   color: #333333;
+  padding-left: 18px;
+  position: relative;
   &:before {
     content: '';
-    display: inline-block;
-    width: 4px;
-    height: 4px;
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    top: 9px;
+    left: 0px;
     border-radius: 50%;
     background: #00b300;
-    margin-right: 14px;
     line-height: 20px;
     vertical-align: middle;
   }
@@ -353,13 +384,11 @@ const PcImgBox = styled.div`
 const PcImg = styled(ReactFreezeframe)`
   height: 350px;
 `;
-const MobileImgBox = styled.div`
+const MobileImg = styled.img`
+  height: 80px;
   @media (min-width: ${MOBILE_BREAK_POINT}px) {
     display: none;
   }
-`;
-const MobileImg = styled.img`
-  height: 80px;
 `;
 const WLLogoBox = styled.img`
   width: 100px;
@@ -567,7 +596,7 @@ const EmailUsBox = styled.div`
     align-items: center;
     justify-content: center;
     gap: 4px;
-    ${CursorPointerUpCss}
+    /* ${CursorPointerUpCss} */
     span {
       font-size: 10px;
     }
