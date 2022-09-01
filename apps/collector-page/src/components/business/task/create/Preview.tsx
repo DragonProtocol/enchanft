@@ -1,5 +1,5 @@
 import { Box, Modal } from '@mui/material'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { ActionType, RewardType, State } from './state'
 import { ChainType, selectAccount } from '../../../../features/user/accountSlice'
@@ -30,13 +30,28 @@ export default function Preview({
   closeHandler: () => void
   submitResult: () => void
 }) {
-  console.log(state)
+  // console.log(state)
+
+  const [scrollTop, setScrollTop] = useState(0)
+
+  useEffect(() => {
+    const scrollBox = document.getElementById('scroll-box')
+    if (!scrollBox) return
+    const onScroll = (e) => {
+      setScrollTop(e.target.scrollTop)
+    }
+    scrollBox.addEventListener('scroll', onScroll)
+    return () => scrollBox.removeEventListener('scroll', onScroll)
+  }, [scrollTop])
+
   return (
     <>
-      <TaskPrevewWrapper style={{ display: open ? '' : 'none' }}>
-        <div className="tint">
+      <TaskPreviewWrapper id="task-preview-wrapper" style={{ display: open ? '' : 'none' }}>
+        {scrollTop > 23 && <div className="tint placeholder"></div>}
+        <div className={scrollTop > 23 ? 'tint fixed' : 'tint'}>
           <p> Please check the event page carefully as it cannot be edited once submitted.</p>
         </div>
+
         <div className="container">
           <div className="title-container" onClick={closeHandler}>
             <ButtonNavigation>
@@ -64,7 +79,7 @@ export default function Preview({
                 {state.reward.type === RewardType.WHITELIST && <span>Reward: whitelist</span>}
                 {state.reward.type === RewardType.OTHERS && <span>Reward: {state.reward.name}</span>}
                 {state.reward.type === RewardType.CONTRIBUTION_TOKEN && (
-                  <span>Reward: contribution token - {state.reward.token_num}</span>
+                  <span>Reward: contribution token {state.reward.token_num}</span>
                 )}
               </div>
               <div className="desc">
@@ -98,7 +113,7 @@ export default function Preview({
             </div>
           </div>
         </div>
-      </TaskPrevewWrapper>
+      </TaskPreviewWrapper>
       <SubmitBtn style={{ display: open ? '' : 'none' }}>
         <div>
           <button onClick={submitResult}>Submit</button>
@@ -108,7 +123,7 @@ export default function Preview({
   )
 }
 
-const TaskPrevewWrapper = styled.div`
+const TaskPreviewWrapper = styled.div`
   width: 100%;
   height: 100%;
   margin: 20px 0 40px 0;
@@ -128,13 +143,23 @@ const TaskPrevewWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(235, 183, 0, 0.5);
+    background: rgba(237, 209, 125, 1);
     & p {
       margin: 0;
       font-size: 16px;
       line-height: 24px;
       color: #333333;
       font-weight: 400;
+    }
+
+    &.fixed {
+      position: fixed;
+      width: 1192px;
+      top: 72px;
+    }
+
+    &.placeholder {
+      background: inherit;
     }
   }
 
