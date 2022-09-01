@@ -5,8 +5,8 @@ import {
 } from '../../services/api/community'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { Community, CommunityCollectionResponse, CommunityCollectionProjectItem } from '../../types/api'
-export type CommunityBasicInfoForEntity = Community
+import { CommunityCollectionResponse, CommunityCollectionProjectItem, CommunityDetailBasicInfo } from '../../types/api'
+export type CommunityBasicInfoForEntity = CommunityDetailBasicInfo
 export type CommunityCollectionProjectItemForEntity = CommunityCollectionProjectItem
 export type CommunityCollectionForEntity =
   | (CommunityCollectionResponse & { community: CommunityBasicInfoForEntity })

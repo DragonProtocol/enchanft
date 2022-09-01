@@ -1,14 +1,11 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {
-  fetchListForCommunityContributionRank,
-  fetchListForCommunityContributionRankParams,
-} from '../../services/api/community'
+import { fetchListForCommunityContributionRank } from '../../services/api/community'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { CommunityContributionRankResponseItem } from '../../types/api'
+import { CommunityContributionRankItem } from '../../types/api'
 
-export type CommunityContributionRanksItemForEntity = CommunityContributionRankResponseItem
-type ProjectsState = EntityState<CommunityContributionRanksItemForEntity> & {
+export type CommunityContributionRanksItemForEntity = CommunityContributionRankItem
+type CommunitysState = EntityState<CommunityContributionRanksItemForEntity> & {
   status: AsyncRequestStatus
   errorMsg: string
   currentRequestId: string | undefined // 当前正在请求的id(由createAsyncThunk生成的唯一id)
@@ -23,7 +20,7 @@ export const communityContributionRanksEntity = createEntityAdapter<CommunityCon
   selectId: (item) => item.pubkey,
 })
 // 初始化列表信息
-const ProjectsState: ProjectsState = communityContributionRanksEntity.getInitialState({
+const CommunitysState: CommunitysState = communityContributionRanksEntity.getInitialState({
   status: AsyncRequestStatus.IDLE,
   errorMsg: '',
   currentRequestId: undefined,
@@ -31,15 +28,15 @@ const ProjectsState: ProjectsState = communityContributionRanksEntity.getInitial
 
 export const fetchCommunityContributionRanks = createAsyncThunk<
   FetchListResp,
-  fetchListForCommunityContributionRankParams,
+  string,
   {
     rejectValue: FetchListResp
   }
 >(
-  'dashboard/fetchCommunityContributionRanks',
-  async (params, { rejectWithValue }) => {
+  'community/fetchCommunityContributionRanks',
+  async (slug, { rejectWithValue }) => {
     try {
-      const resp = await fetchListForCommunityContributionRank(params)
+      const resp = await fetchListForCommunityContributionRank(slug)
       return { data: resp.data.data || [] }
     } catch (error: any) {
       if (!error.response) {
@@ -65,7 +62,7 @@ export const fetchCommunityContributionRanks = createAsyncThunk<
 
 export const communityContributionRanksSlice = createSlice({
   name: 'communityContributionRanks',
-  initialState: ProjectsState,
+  initialState: CommunitysState,
   reducers: {},
   extraReducers: (builder) => {
     builder
@@ -102,5 +99,6 @@ export const communityContributionRanksSlice = createSlice({
 export const { selectAll } = communityContributionRanksEntity.getSelectors(
   (state: RootState) => state.communityContributionRanks,
 )
+export const selecteContributionRanksState = (state: RootState) => state.communityContributionRanks
 const { reducer } = communityContributionRanksSlice
 export default reducer

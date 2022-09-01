@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:02:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-11 19:07:53
+ * @LastEditTime: 2022-08-03 14:20:55
  * @Description: file description
  */
 import React from 'react'
@@ -53,8 +53,6 @@ const ProjectTeamMemberListWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  gap: 40px;
 `
-const ProjectTeamMemberItemBox = styled.div`
-  padding: 30px 0px;
-  border-bottom: 1px dashed rgba(0, 0, 0, 1);
-`
+const ProjectTeamMemberItemBox = styled.div``

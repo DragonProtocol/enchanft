@@ -2,15 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:33:18
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-11 18:18:16
+ * @LastEditTime: 2022-08-10 14:31:39
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { ScrollBarCss } from '../../../GlobalStyle'
-import { ProjectStatus, TaskType } from '../../../types/api'
-import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
+import RichTextBox from '../../common/text/RichTextBox'
+import UserAvatar from '../user/UserAvatar'
 
 export type ProjectTeamMemberItemDataType = {
   id: number
@@ -50,7 +49,7 @@ const ProjectTeamMemberItem: React.FC<ProjectTeamMemberItemProps> = ({
           <TeamMemberRole>{role}</TeamMemberRole>
         </TeamMemberInfoBox>
       </TeamMemberTopBox>
-      <TeamMemberDescription number={3}>{description}</TeamMemberDescription>
+      <TeamMemberDescription value={description} />
     </ProjectTeamMemberItemWrapper>
   )
 }
@@ -63,28 +62,30 @@ const TeamMemberTopBox = styled.div`
   display: flex;
   gap: 20px;
 `
-const TeamMemberAvatar = styled.img`
-  width: 200px;
-  height: 200px;
+const TeamMemberAvatar = styled(UserAvatar)`
+  width: 120px;
+  height: 120px;
 `
 const TeamMemberInfoBox = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  justify-content: center;
+  gap: 10px;
 `
 const TeamMemberName = styled.div`
-  color: rgba(16, 16, 16, 100);
-  font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 24px;
+  color: #333333;
 `
 const TeamMemberRole = styled.div`
-  color: rgba(16, 16, 16, 100);
-  font-size: 16px;
-  font-weight: bold;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 24px;
+  color: #3dd606;
 `
-const TeamMemberDescription = styled(OverflowEllipsisBox)`
-  color: rgba(16, 16, 16, 100);
-  font-size: 16px;
-  margin-top: 25px;
+const TeamMemberDescription = styled(RichTextBox)`
+  width: 100%;
+  margin-top: 10px;
 `

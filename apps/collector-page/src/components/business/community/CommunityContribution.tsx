@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-12 14:49:00
+ * @LastEditTime: 2022-08-01 13:58:27
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-
+import UserAvatar from '../user/UserAvatar'
 export type ContributionItemDataType = {
   ranking: number
   avatar: string
@@ -89,7 +89,7 @@ const ContributionItemRanking = styled.div`
   width: 10%;
   font-weight: bold;
 `
-const ContributionItemAvatar = styled.img`
+const ContributionItemAvatar = styled(UserAvatar)`
   width: 40px;
   height: 40px;
 `

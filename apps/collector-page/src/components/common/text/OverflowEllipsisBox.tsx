@@ -2,20 +2,19 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:58:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-11 18:17:39
+ * @LastEditTime: 2022-08-02 11:46:17
  * @Description: file description
  */
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 
-type OverflowEllipsisBoxProps = {
-  children: any
+type OverflowEllipsisBoxProps = HTMLAttributes<HTMLDivElement> & {
   // 行数（超出多少行显示省略号）
-  number: number
+  number?: number
 }
 const OverflowEllipsisBox: React.FC<OverflowEllipsisBoxProps> = ({
   children,
-  number,
+  number = 1,
   ...otherProps
 }: OverflowEllipsisBoxProps) => {
   return (
@@ -31,4 +30,5 @@ const OverflowEllipsisBoxWrapper = styled.div<{ number: number }>`
   display: -webkit-box;
   -webkit-line-clamp: ${(props) => props.number};
   -webkit-box-orient: vertical;
+  word-break: break-all;
 `

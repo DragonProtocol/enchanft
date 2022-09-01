@@ -2,30 +2,69 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-12 15:07:05
+ * @LastEditTime: 2022-08-29 14:51:51
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
 
 import websiteReducer from '../features/website/index'
 import accountReducer from '../features/user/accountSlice'
-import myEnchanftedReducer from '../features/user/myEnchanftedSlice'
-import dashboardRecommendTasksReducer from '../features/dashboard/recommendTasksSlice'
-import dashboardProjectsReducer from '../features/dashboard/projectsSlice'
+
+// project
+import exploreRecommendProjectsReducer from '../features/explore/recommendProjectsSlice'
+import exploreSearchProjectsReducer from '../features/explore/searchProjectsSlice'
+import projectDetailReducer from '../features/project/projectDetailSlice'
+
+// task
+import exploreRecommendTasksReducer from '../features/explore/recommendTasksSlice'
+import exploreSearchTasksReducer from '../features/explore/searchTasksSlice'
+import taskDatailReducer from '../features/task/taskDetailSlice'
+
+// contirbution
+import contributionCommunityInfoReducer from '../features/contribution/communityInfoSlice'
+import userCommunityContributionReducer from '../features/contribution/userContributionSlice'
+
+// community
 import communityCollectionDetailReducer from '../features/community/collectionDetailSlice'
 import communityContributionRanksReducer from '../features/community/contributionRanksSlice'
+
+// user
 import userTaskHandlesReducer from '../features/user/taskHandlesSlice'
+import userTodoTasksReducer from '../features/user/todoTasksSlice'
+import userFollowedCommunitiesReducer from '../features/user/followedCommunitiesSlice'
+import userCheckinCommunitiesReducer from '../features/user/checkinCommunitiesSlice'
+import userWhitelistsReducer from '../features/user/userWhitelistsSlice'
+import userCommunityHandlesReducer from '../features/user/communityHandlesSlice'
+
+import creatorReducer from '../features/creator'
 
 export const store = configureStore({
   reducer: {
     website: websiteReducer,
     account: accountReducer,
-    myEnchanfted: myEnchanftedReducer,
-    dashboardRecommendTasks: dashboardRecommendTasksReducer,
-    dashboardProjects: dashboardProjectsReducer,
+
+    exploreSearchProjects: exploreSearchProjectsReducer,
+    exploreRecommendProjects: exploreRecommendProjectsReducer,
+    projectDetail: projectDetailReducer,
+
+    exploreRecommendTasks: exploreRecommendTasksReducer,
+    exploreSearchTasks: exploreSearchTasksReducer,
+    taskDetail: taskDatailReducer,
+
+    contributionCommunityInfo: contributionCommunityInfoReducer,
+    userCommunityContribution: userCommunityContributionReducer,
+
     communityCollectionDetail: communityCollectionDetailReducer,
     communityContributionRanks: communityContributionRanksReducer,
+
     userTaskHandles: userTaskHandlesReducer,
+    userTodoTasks: userTodoTasksReducer,
+    userFollowedCommunities: userFollowedCommunitiesReducer,
+    userCheckinCommunities: userCheckinCommunitiesReducer,
+    userWhitelists: userWhitelistsReducer,
+    userCommunityHandles: userCommunityHandlesReducer,
+
+    creator: creatorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

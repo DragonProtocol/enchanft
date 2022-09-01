@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-04 11:59:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 15:22:14
+ * @LastEditTime: 2022-08-24 15:13:48
  * @Description: 覆盖 cra 内部 webpack 配置
  */
 
@@ -10,6 +10,7 @@ const path = require('path')
 const webpack = require('webpack')
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin')
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
   webpack: {
@@ -25,6 +26,10 @@ module.exports = {
           mainFields: ['module', 'main'],
         }),
       )
+
+      config.externals = {
+        mockjs: 'mockjs',
+      }
 
       // Replace include option for babel loader with exclude
       // so babel will handle workspace projects as well.
@@ -43,12 +48,15 @@ module.exports = {
       config.resolve.alias = {
         '@mui/styled-engine': '@mui/styled-engine-sc',
       }
+
       config.plugins.push(
         new webpack.ProvidePlugin({
           process: 'process/browser',
           Buffer: ['buffer', 'Buffer'],
         }),
       )
+
+      if (process.argv.includes('--report')) config.plugins.push(new BundleAnalyzerPlugin())
 
       config.ignoreWarnings = [/Failed to parse source map/]
       return config
@@ -60,12 +68,16 @@ module.exports = {
       return config
     },
   },
-  devServer: {
-    proxy: {
-      '/': {
-        target: 'https://test-enchanft-backend.onrender.com',
-        changeOrigin: true,
-      },
-    },
-  },
+  // devServer: {
+  //   port: 8080,
+  //   proxy: {
+  //     '/api/*': {
+  //       target: process.env.REACT_APP_API_BASE_URL,
+  //       changeOrigin: true,
+  //       pathRewrite: {
+  //         '/api': '',
+  //       },
+  //     },
+  //   },
+  // },
 }

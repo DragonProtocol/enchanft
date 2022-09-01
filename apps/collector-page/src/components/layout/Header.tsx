@@ -2,99 +2,73 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 10:30:53
+ * @LastEditTime: 2022-08-29 10:28:11
  * @Description: 站点头部
  */
-import SolanaConnectWalletButton from 'components/business/connect/SolanaConnectWalletButton'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useWallet } from '@solana/wallet-adapter-react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import bs58 from 'bs58'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { matchPath, matchRoutes, useLocation, useMatch, useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { setToken, selectAccount, userLogin } from '../../features/user/accountSlice'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { SIGN_MSG } from 'constants/solana'
 import LogoImg from '../imgs/logo.svg'
+import ConnectBtn from '../ConnectBtn'
+import { CutomRouteObject, permissionRoutes, RouteKeys, routes } from './Main'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
   const location = useLocation()
-  const { connected, signMessage, publicKey } = useWallet()
-  const dispatch = useAppDispatch()
-  const account = useAppSelector(selectAccount)
+  const [routeKey, setRouteKey] = useState<RouteKeys>(RouteKeys.noMatch)
+  useEffect(() => {
+    const match = matchRoutes([...permissionRoutes, ...routes], location)
+    if (!match) {
+      setRouteKey(RouteKeys.noMatch)
+    } else {
+      const { key } = match[0].route as CutomRouteObject
+      setRouteKey(key || RouteKeys.noMatch)
+    }
+  }, [location])
+
   const navs = [
     {
-      name: 'launchpad',
+      name: 'events',
       link: '/',
+      activeRouteKeys: [RouteKeys.events, RouteKeys.todoTask, RouteKeys.task],
+    },
+    {
+      name: 'projects',
+      link: '/projects',
+      activeRouteKeys: [RouteKeys.projects, RouteKeys.project, RouteKeys.contributionranks],
     },
     // {
     //   name: 'calendar',
     //   link: '/calendar',
     // },
-    {
-      name: 'profile',
-      link: '/profile',
-    },
   ]
-  const [curNavLink, setCurNavLink] = useState('/')
-
-  const authenticate = useCallback(async () => {
-    if (!signMessage || !publicKey) return
-    if (account.token) return
-    try {
-      const msg = SIGN_MSG
-      const data = await signMessage(Buffer.from(msg))
-      const signature = bs58.encode(data)
-      dispatch(
-        userLogin({
-          signature,
-          payload: msg,
-          pubkey: publicKey.toString(),
-        }),
-      )
-    } catch (error) {
-      if (error.message === 'User rejected the request.') {
-        // TODO ui
-        alert('sign in first')
-      }
-    }
-  }, [account, signMessage, publicKey])
-
-  useEffect(() => {
-    if (navs.findIndex((item) => item.link === location.pathname) !== -1) {
-      setCurNavLink(location.pathname)
-    }
-  }, [location])
-
-  useEffect(() => {
-    if (!connected) return
-    authenticate()
-  }, [connected])
 
   const PcNav = useCallback(
     () => (
       <PcNavList>
         {navs.map((item) => (
-          <PcNavItem key={item.link} isActive={item.link === curNavLink} onClick={() => navigate(item.link)}>
-            {item.name}
-          </PcNavItem>
+          <PcNavItemBox
+            key={item.link}
+            isActive={item.activeRouteKeys.includes(routeKey)}
+            onClick={() => navigate(item.link)}
+          >
+            <PcNavItemText>{item.name}</PcNavItemText>
+          </PcNavItemBox>
         ))}
       </PcNavList>
     ),
-    [navs, curNavLink],
+    [navs, routeKey],
   )
   return (
     <HeaderWrapper>
       <HeaderLeft>
-        <HeaderLogoBox>
-          <img src={LogoImg} alt="" />
-        </HeaderLogoBox>
+        <HeaderLogo src={LogoImg} alt="" onClick={() => navigate('/')} />
       </HeaderLeft>
-      <HeaderCenter>{PcNav()}</HeaderCenter>
       <HeaderRight>
-        <SolanaConnectWalletButtonBox>
-          <SolanaConnectWalletButton />
-        </SolanaConnectWalletButtonBox>
+        {PcNav()}
+        <ConnectBtnBox>
+          <ConnectBtn />
+        </ConnectBtnBox>
       </HeaderRight>
     </HeaderWrapper>
   )
@@ -112,35 +86,47 @@ const HeaderWrapper = styled.div`
 const HeaderLeft = styled.div`
   display: flex;
 `
-const HeaderLogoBox = styled.div``
-const HeaderCenter = styled.div`
+const HeaderLogo = styled.img`
+  height: 48px;
+  cursor: pointer;
+`
+const HeaderRight = styled.div`
   flex: 1;
   height: 100%;
   display: flex;
-`
-const HeaderRight = styled.div`
-  display: flex;
   justify-content: end;
+  align-items: center;
+  gap: 80px;
 `
-const SolanaConnectWalletButtonBox = styled.div`
-  width: auto;
-`
-
+const ConnectBtnBox = styled.div``
 // nav style
 const PcNavList = styled.div`
-  width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
-  gap: 40px;
+  gap: 80px;
 `
-const PcNavItem = styled.div<{ isActive: boolean }>`
+const PcNavItemBox = styled.div<{ isActive: boolean }>`
   height: 100%;
-  font-size: 16px;
-  font-weight: bold;
-  text-transform: uppercase;
   display: flex;
   align-items: center;
   cursor: pointer;
-  box-shadow: ${(props) => (props.isActive ? 'inset 0 -2px #000' : 'none')};
+  box-shadow: ${(props) => (props.isActive ? 'inset 0 -4px #3DD606' : 'none')};
+  transition: all 1s ease-out;
+`
+const PcNavItemText = styled.span`
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  text-transform: uppercase;
+  color: #333333;
+  /* 鼠标移入整体上移2px */
+  &:hover {
+    transform: translateY(-4px);
+  }
+  /* 鼠标点击整体缩小2% */
+  &:active {
+    transform: scale(0.98);
+  }
+  transition: all 0.5s ease-out;
 `

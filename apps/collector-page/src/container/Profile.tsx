@@ -2,14 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-08 16:34:23
+ * @LastEditTime: 2022-08-26 18:23:13
  * @Description: 个人信息
  */
-import { useSynftContract } from '@ecnft/js-sdk-react'
-import { useConnection, useWallet } from '@solana/wallet-adapter-react'
-import { clearMyNFT, getMyNFTokens, selectMyNFTData, selectMyNFTDataStatus } from 'features/user/myEnchanftedSlice'
 import React, { useEffect, useRef, useState } from 'react'
 import { useCallback } from 'react'
+import useInterval from '../hooks/useInterval'
 import { useAppDispatch, useAppSelector } from 'store/hooks'
 import styled from 'styled-components'
 import {
@@ -25,275 +23,465 @@ import {
   TextField,
   Tabs,
   Tab,
+  CircularProgress,
 } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 
-import { selectAccount, userUpdateProfile } from '../features/user/accountSlice'
-import MainContentBox from '../components/layout/MainContentBox'
+import {
+  selectAccount,
+  userUpdateProfile,
+  userLink,
+  setConnectModal,
+  ConnectModal,
+  ChainType,
+  userOtherWalletLink,
+} from '../features/user/accountSlice'
+import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
+import {
+  FollowedCommunitityForEntity,
+  selectAll as selectAllForFollowedCommunity,
+  selectUserFollowedCommunitiesState,
+} from '../features/user/followedCommunitiesSlice'
+import { AsyncRequestStatus } from '../types'
+import { uploadAvatar } from '../services/api/login'
+import { connectionSocialMedia } from '../utils/socialMedia'
+import { sortPubKey } from '../utils/solana'
+import useWalletSign from '../hooks/useWalletSign'
+import { SIGN_MSG } from '../utils/token'
+import {
+  selectUserWhitelistsState,
+  UserWhitelistForEntity,
+  selectAll as selectAllForUserWhitelists,
+} from '../features/user/userWhitelistsSlice'
+import WhitelistList, { WhitelistListItemsType } from '../components/business/whitelist/WhitelistList'
+import ButtonBase, { ButtonInfo, ButtonPrimary } from '../components/common/button/ButtonBase'
+import IconTwitterWhite from '../components/common/icons/IconTwitterWhite'
+import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
+import IconEmailWhite from '../components/common/icons/IconEmailWhite'
+import CardBox from '../components/common/card/CardBox'
+import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
+import IconMetamask from '../components/common/icons/IconMetamask'
+import UserAvatar from '../components/business/user/UserAvatar'
+import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
+import { toast } from 'react-toastify'
+import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup'
+import { AVATAR_SIZE_LIMIT } from '../constants'
 
+const formatStoreDataToComponentDataByFollowedCommunities = (
+  communities: FollowedCommunitityForEntity[],
+): CommunityListItemsType => {
+  return communities.map((item) => {
+    return {
+      data: { ...item, isFollowed: true },
+      viewConfig: {
+        displayFollow: true,
+      },
+    }
+  })
+}
+const formatStoreDataToComponentDataByUserWhitelists = (
+  whitelists: UserWhitelistForEntity[],
+): WhitelistListItemsType => {
+  return whitelists.map((item) => {
+    const displayMint = Boolean(item.whitelist?.mintUrl)
+    return {
+      data: { ...item },
+      viewConfig: {
+        displayMint,
+      },
+    }
+  })
+}
+const ProfileTabOptions = [
+  {
+    label: 'My Communities',
+    value: 'myCommunities',
+  },
+  {
+    label: 'My Rewards',
+    value: 'myRewards',
+  },
+]
 const Profile: React.FC = () => {
-  const wallet = useWallet()
-  const walletRef = useRef('')
-  const { connection } = useConnection()
-  const { synftContract } = useSynftContract()
   const dispatch = useAppDispatch()
 
   const account = useAppSelector(selectAccount)
   const [name, setName] = useState('')
-  const myNFTData = useAppSelector(selectMyNFTData)
-  const myNFTDataStatus = useAppSelector(selectMyNFTDataStatus)
-
+  const [avatar, setAvatar] = useState('')
+  const [uploading, setUploading] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
 
-  useEffect(() => {
-    if (!wallet.publicKey) {
-      walletRef.current = ''
-      dispatch(clearMyNFT())
-      return
-    }
-    if (walletRef.current === wallet.publicKey.toString()) return
-
-    walletRef.current = wallet.publicKey.toString()
-    const owner = wallet.publicKey
-    dispatch(getMyNFTokens({ owner, connection, synftContract }))
-  }, [wallet, connection, synftContract])
-
   const updateProfile = useCallback(() => {
-    if (!wallet.publicKey) return
+    if (!account.token) return
     dispatch(
       userUpdateProfile({
-        avatar: 'avatar-test',
+        avatar: avatar,
         name: name,
-        pubkey: wallet.publicKey.toString(),
+        pubkey: account.pubkey,
       }),
     )
-  }, [wallet, name])
+    setOpenDialog(false)
+  }, [account.token, account.pubkey, name, avatar])
 
+  // profile展示信息切换
+  const [curProfileTab, setCurProfileTab] = useState(ProfileTabOptions[0].value)
+
+  // 我的社区列表
+  const followedCommunities = useAppSelector(selectAllForFollowedCommunity)
+  const { status: followedCommunitiesStatus } = useAppSelector(selectUserFollowedCommunitiesState)
+  const loadingFollowedCommunities = followedCommunitiesStatus === AsyncRequestStatus.PENDING
+  const followedCommunityItems = formatStoreDataToComponentDataByFollowedCommunities(followedCommunities)
+  // 我的whitelist列表
+  const whitelists = useAppSelector(selectAllForUserWhitelists)
+  const { status: whitelistsStatus } = useAppSelector(selectUserWhitelistsState)
+  const loadingUserWhitelists = whitelistsStatus === AsyncRequestStatus.PENDING
+  const whitelistItems = formatStoreDataToComponentDataByUserWhitelists(whitelists)
+
+  const twitter = account.accounts.find((item) => item.accountType === 'TWITTER')?.thirdpartyName
+  const discord = account.accounts.find((item) => item.accountType === 'DISCORD')?.thirdpartyName
+  const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
+  const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
+
+  const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
+  const bindMetamask = useCallback(async () => {
+    if (!metamaskValid) alert('Install Metamask first')
+    const data = await signMsgWithMetamask()
+    console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: SIGN_MSG,
+      }),
+    )
+  }, [metamaskValid])
+
+  const bindPhantom = useCallback(async () => {
+    if (!phantomValid) alert('Install Phantom first')
+    const data = await signMsgWithPhantom()
+    console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: SIGN_MSG,
+      }),
+    )
+  }, [phantomValid])
   return (
-    <>
-      <MainContentBox>
-        <ProfileWrapper>
-          <div className="profile">
-            <img src={'https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk?ext=jpeg'} alt="" />
-            <div>
-              <div className="name">
-                <h3>{account.name}</h3>{' '}
-                <IconButton onClick={() => setOpenDialog(true)}>
-                  <EditIcon />
-                </IconButton>
-              </div>
-              <div className="description">
-                <span>{wallet.publicKey?.toString()}</span>
-                <div className="thirdparty-box">
-                  <div className="thirdparty-btn">
-                    <div
-                      className="thirdparty-inner"
-                      onClick={() => {
-                        // TODO 跳转回原页面
-                        window.open(
-                          'https://twitter.com/i/oauth2/authorize?response_type=code&client_id=bzBLMWs0NnBHejQ4a3dXYkROTHk6MTpjaQ&redirect_uri=https://launch.enchanft.xyz/callback&scope=tweet.read+users.read+offline.access&state=3063390848298.8647&code_challenge=challenge&code_challenge_method=plain',
-                          '__blank',
-                          'width=640,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no',
-                        )
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                        role="img"
-                        width="20"
-                        height="20"
-                        preserveAspectRatio="xMidYMid meet"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M22.46 6c-.77.35-1.6.58-2.46.69c.88-.53 1.56-1.37 1.88-2.38c-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29c0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15c0 1.49.75 2.81 1.91 3.56c-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07a4.28 4.28 0 0 0 4 2.98a8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21C16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56c.84-.6 1.56-1.36 2.14-2.23Z"
-                        ></path>
-                      </svg>
-                      {account?.twitter || 'Connect Twitter'}
-                    </div>
-                    {account?.twitter && (
-                      <div className="thirdparty-disconnect">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          aria-hidden="true"
-                          role="img"
-                          width="18"
-                          height="18"
-                          preserveAspectRatio="xMidYMid meet"
-                          viewBox="0 0 1024 1024"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M832.6 191.4c-84.6-84.6-221.5-84.6-306 0l-96.9 96.9l51 51l96.9-96.9c53.8-53.8 144.6-59.5 204 0c59.5 59.5 53.8 150.2 0 204l-96.9 96.9l51.1 51.1l96.9-96.9c84.4-84.6 84.4-221.5-.1-306.1zM446.5 781.6c-53.8 53.8-144.6 59.5-204 0c-59.5-59.5-53.8-150.2 0-204l96.9-96.9l-51.1-51.1l-96.9 96.9c-84.6 84.6-84.6 221.5 0 306s221.5 84.6 306 0l96.9-96.9l-51-51l-96.8 97zM260.3 209.4a8.03 8.03 0 0 0-11.3 0L209.4 249a8.03 8.03 0 0 0 0 11.3l554.4 554.4c3.1 3.1 8.2 3.1 11.3 0l39.6-39.6c3.1-3.1 3.1-8.2 0-11.3L260.3 209.4z"
-                          ></path>
-                        </svg>
-                      </div>
-                    )}
-                  </div>
-                  <div className="thirdparty-btn thirdparty-discord">
-                    <div className="thirdparty-inner">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                        role="img"
-                        width="20"
-                        height="20"
-                        preserveAspectRatio="xMidYMid meet"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09c-.01-.02-.04-.03-.07-.03c-1.5.26-2.93.71-4.27 1.33c-.01 0-.02.01-.03.02c-2.72 4.07-3.47 8.03-3.1 11.95c0 .02.01.04.03.05c1.8 1.32 3.53 2.12 5.24 2.65c.03.01.06 0 .07-.02c.4-.55.76-1.13 1.07-1.74c.02-.04 0-.08-.04-.09c-.57-.22-1.11-.48-1.64-.78c-.04-.02-.04-.08-.01-.11c.11-.08.22-.17.33-.25c.02-.02.05-.02.07-.01c3.44 1.57 7.15 1.57 10.55 0c.02-.01.05-.01.07.01c.11.09.22.17.33.26c.04.03.04.09-.01.11c-.52.31-1.07.56-1.64.78c-.04.01-.05.06-.04.09c.32.61.68 1.19 1.07 1.74c.03.01.06.02.09.01c1.72-.53 3.45-1.33 5.25-2.65c.02-.01.03-.03.03-.05c.44-4.53-.73-8.46-3.1-11.95c-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12c0 1.17-.83 2.12-1.89 2.12z"
-                        ></path>
-                      </svg>
-                      Connect Discord
-                    </div>
-                    {/* <div className="thirdparty-disconnect">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        aria-hidden="true"
-                        role="img"
-                        width="18"
-                        height="18"
-                        preserveAspectRatio="xMidYMid meet"
-                        viewBox="0 0 1024 1024"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M832.6 191.4c-84.6-84.6-221.5-84.6-306 0l-96.9 96.9l51 51l96.9-96.9c53.8-53.8 144.6-59.5 204 0c59.5 59.5 53.8 150.2 0 204l-96.9 96.9l51.1 51.1l96.9-96.9c84.4-84.6 84.4-221.5-.1-306.1zM446.5 781.6c-53.8 53.8-144.6 59.5-204 0c-59.5-59.5-53.8-150.2 0-204l96.9-96.9l-51.1-51.1l-96.9 96.9c-84.6 84.6-84.6 221.5 0 306s221.5 84.6 306 0l96.9-96.9l-51-51l-96.8 97zM260.3 209.4a8.03 8.03 0 0 0-11.3 0L209.4 249a8.03 8.03 0 0 0 0 11.3l554.4 554.4c3.1 3.1 8.2 3.1 11.3 0l39.6-39.6c3.1-3.1 3.1-8.2 0-11.3L260.3 209.4z"
-                        ></path>
-                      </svg>
-                    </div> */}
-                  </div>
-                  {/* <Button>Discord</Button> */}
-                </div>
-              </div>
-            </div>
-          </div>
-          <Divider />
-        </ProfileWrapper>
-        <Dialog open={openDialog} fullWidth={true} maxWidth={'lg'}>
-          <DialogContent>
-            <Box
-              noValidate
-              component="form"
-              sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                m: 'auto',
+    <ProfileWrapper>
+      <ProfileTopBox>
+        <UserImg src={account.avatar} />
+        <ProfileRightBox>
+          <UserName>
+            <span>{account.name}</span>
+            <IconButton onClick={() => setOpenDialog(true)}>
+              <EditIcon />
+            </IconButton>
+          </UserName>
+          <UserAddress>{account.pubkey}</UserAddress>
+          <UserAccountListBox>
+            <MetamaskBindBtn
+              onClick={() => {
+                if (accountMetamask) return
+                bindMetamask()
               }}
             >
-              <h4>Profile picture</h4>
-              <img
-                src={'https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk?ext=jpeg'}
-                alt=""
-                style={{
-                  width: '100px',
-                  height: '100px',
+              <ConnectIconBox>
+                <IconMetamask />
+              </ConnectIconBox>
+
+              {accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}
+            </MetamaskBindBtn>
+            <PhantomBindBtn
+              onClick={() => {
+                if (accountPhantom) return
+                bindPhantom()
+              }}
+            >
+              <IconPhantomWhite />
+              {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
+            </PhantomBindBtn>
+            <TwitterBindBtn onClick={() => connectionSocialMedia('twitter')}>
+              <IconTwitterWhite />
+              {twitter || 'Connect Twitter'}
+            </TwitterBindBtn>
+            <DiscordBindBtn onClick={() => connectionSocialMedia('discord')}>
+              <IconDiscordWhite />
+              {discord || 'Connect Discord'}
+            </DiscordBindBtn>
+            {/* <EmailBindBtn>
+                  <IconEmailWhite />
+                  {'Connect Email'}
+                </EmailBindBtn> */}
+          </UserAccountListBox>
+        </ProfileRightBox>
+      </ProfileTopBox>
+      <ProfileInfoTabsBox>
+        <ButtonRadioGroupProfileTabs
+          options={ProfileTabOptions}
+          value={curProfileTab}
+          onChange={(value) => setCurProfileTab(value)}
+        />
+        <ProfileTabContentBox>
+          {curProfileTab === 'myCommunities' && (
+            <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
+          )}
+          {curProfileTab === 'myRewards' && <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />}
+        </ProfileTabContentBox>
+      </ProfileInfoTabsBox>
+      <DialogBox open={openDialog}>
+        <EditProfileBox>
+          <EditProfileTitle>Edit Profile</EditProfileTitle>
+          <EditFormBox>
+            <EditAvatarBox
+              onClick={() => {
+                document.getElementById('uploadinput')?.click()
+              }}
+            >
+              <input
+                title="uploadinput"
+                id="uploadinput"
+                style={{ display: 'none' }}
+                type="file"
+                accept="image/png, image/gif, image/jpeg"
+                onChange={async (e) => {
+                  const file = e.target.files && e.target.files[0]
+                  if (!file) return
+                  if (file.size > AVATAR_SIZE_LIMIT) {
+                    toast.error('File Too Large, 200k limit')
+                    return
+                  }
+
+                  setUploading(true)
+                  try {
+                    const { data } = await uploadAvatar(file)
+                    setAvatar(data.url)
+                    toast.success('upload success')
+                  } catch (error) {
+                    toast.error('upload fail')
+                  } finally {
+                    setUploading(false)
+                  }
                 }}
               />
+              {(uploading && (
+                <div className="uploading">
+                  <CircularProgress size="5rem" color="inherit" />
+                  <p>Uploading Image</p>
+                </div>
+              )) || <EditAvatar src={avatar || account.avatar} />}
+            </EditAvatarBox>
 
+            <EditNameBox>
               <FormControl variant="standard">
-                <h4>name</h4>
-                <TextField id="name" value={name} onChange={(e) => setName(e.target.value)} />
+                <EditNameLabel>Name</EditNameLabel>
+                <input title="name" id="name" value={name || account.name} onChange={(e) => setName(e.target.value)} />
               </FormControl>
-            </Box>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => updateProfile()}>save</Button>
-            <Button onClick={() => setOpenDialog(false)}>cancel</Button>
-          </DialogActions>
-        </Dialog>
-      </MainContentBox>
-    </>
+            </EditNameBox>
+          </EditFormBox>
+          <EditButtonBox>
+            <EditProfileBtnCancel onClick={() => setOpenDialog(false)}>Cancel</EditProfileBtnCancel>
+            <EditProfileBtnSave onClick={() => updateProfile()}>Save</EditProfileBtnSave>
+          </EditButtonBox>
+        </EditProfileBox>
+      </DialogBox>
+    </ProfileWrapper>
   )
 }
 export default Profile
 const ProfileWrapper = styled.div`
   width: 100%;
-  height: 100%;
+`
+const ProfileTopBox = styled(CardBox)`
+  border: 4px solid #333333;
+  display: flex;
+  gap: 20px;
+`
+const UserImg = styled(UserAvatar)`
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+`
+const ProfileRightBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-between;
+`
+const UserName = styled.div`
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 54px;
+  color: #333333;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+`
+const UserAddress = styled.div`
+  font-size: 18px;
+  line-height: 24px;
+  color: rgba(51, 51, 51, 0.6);
+`
 
-  .profile {
-    display: flex;
-    flex-direction: row;
-    img {
-      width: 100px;
-      height: 100px;
-    }
-    > div {
-      flex-grow: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      margin-left: 30px;
-      > div {
-        display: flex;
-        &.name {
-          h3 {
-            font-size: 32px;
-            margin: 0;
-          }
-        }
-        &.description {
-          align-items: center;
-          justify-content: space-between;
-          font-size: 20px;
-        }
-      }
+const UserAccountListBox = styled.div`
+  display: flex;
+  gap: 10px;
+`
+const BindBtnBase = styled(ButtonBase)`
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #ffffff;
+  font-weight: 700;
+`
+const MetamaskBindBtn = styled(BindBtnBase)`
+  background: #f6851b;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+const PhantomBindBtn = styled(BindBtnBase)`
+  background: #551ff4;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+
+const TwitterBindBtn = styled(BindBtnBase)`
+  background: #5368ed;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+
+const DiscordBindBtn = styled(BindBtnBase)`
+  background: #5368ed;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+const EmailBindBtn = styled(BindBtnBase)`
+  background: #3dd606;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+const ConnectIconBox = styled.div`
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 2px;
+  background: #ffffff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 1.5rem;
+`
+const ProfileInfoTabsBox = styled(CardBox)`
+  margin-top: 20px;
+`
+const ButtonRadioGroupProfileTabs = styled(ButtonRadioGroup)`
+  width: 400px;
+  margin: 0 auto;
+`
+const ProfileTabContentBox = styled.div`
+  margin-top: 20px;
+`
+
+const DialogBox = styled(Dialog)`
+  & div[role='dialog'] {
+    border-radius: 20px;
+  }
+`
+
+// Edit Form
+const EditProfileBox = styled.div`
+  width: 540px;
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+
+  background: #f7f9f1;
+`
+const EditProfileTitle = styled.div`
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #222222;
+`
+const EditFormBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`
+const EditAvatarBox = styled.div`
+  margin: 0 auto;
+  width: 160px;
+  height: 160px;
+  position: relative;
+  &:hover {
+    cursor: pointer;
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url(${UploadImgMaskImg});
     }
   }
-  .thirdparty-box {
-    display: flex;
-    & > div {
-      margin-left: 10px;
-    }
-    .thirdparty-btn {
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      .thirdparty-inner {
-        background: #489be9;
-        padding: 5px;
-        color: white;
-        display: flex;
-        align-items: center;
-        font-size: 12px;
-        cursor: pointer;
-        svg {
-          margin-right: 5px;
-        }
-      }
-    }
-    .thirdparty-discord {
-      .thirdparty-inner {
-        background: #5368ed;
-      }
-      .thirdparty-disconnect {
-        border: 1px solid #5368ed;
-        svg {
-          color: #5368ed;
-        }
-      }
-    }
-
-    .thirdparty-disconnect {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: calc(100% - 2px);
-      border: 1px solid #489be9;
-      padding: 0 5px;
-      cursor: pointer;
-      svg {
-        color: #489be9;
-      }
-    }
+  & .uploading {
+    text-align: center;
+    padding-top: 20px;
   }
+`
+const EditAvatar = styled(UserAvatar)`
+  width: 160px;
+  height: 160px;
+  object-fit: cover;
+`
+const EditNameBox = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 
-  hr {
-    margin: 10px 0;
+  & input {
+    padding: 11.5px 18px;
+    margin-top: 10px;
+    font-size: 18px;
+    line-height: 27px;
+    border-radius: 10px;
+    background: #ebeee4;
+    border: none !important;
+    outline: none !important;
   }
+`
+const EditNameLabel = styled.div`
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #333333;
+`
+const EditProfileBtnSave = styled(ButtonPrimary)`
+  width: 120px;
+  height: 48px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+`
+const EditProfileBtnCancel = styled(ButtonBase)`
+  width: 120px;
+  height: 48px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #333333;
+  background: #f8f8f8;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+const EditButtonBox = styled.div`
+  display: flex;
+  justify-content: end;
+  gap: 20px;
 `

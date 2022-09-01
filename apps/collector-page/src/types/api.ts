@@ -2,140 +2,91 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-12 17:49:20
- * @Description: api 接口相关的数据类型定义
+ * @LastEditTime: 2022-08-29 18:59:30
+ * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
-/* task types */
+import {
+  Action,
+  Community,
+  ContributionRank,
+  MintStage,
+  Project,
+  ProjectStatus,
+  Reward,
+  Roadmap,
+  Task,
+  TaskAcceptedStatus,
+  TaskTodoCompleteStatus,
+  Team,
+  User,
+  Whitelist,
+} from './entities'
 
-export enum TaskType {
-  WHITELIST_ORIENTED = 'WHITELIST_ORIENTED',
-  WHITELIST_LUCK_DRAW = 'WHITELIST_LUCK_DRAW',
-}
-export enum TaskStatus {
-  CANDO = 'CANDO',
-  CANNOT = 'CANNOT',
-  DONE = 'DONE',
-}
+/** explore api */
 
-export type Task = {
-  id: number
-  name: string
-  whitelistTotalNum: string
-  type: TaskType
-  projectId: number
-  startTime: number
-  endTime: number
+// explore task
+export enum ExploreTaskSortBy {
+  NEW = 'NEW',
+  HOT = 'HOT',
 }
-
-/** community types */
-export type Community = {
-  id: number
-  name: string
-  icon: string
-  website: string
-  description: string
-  discord: string
-  twitter: string
-  communityFollowerNum: number
-  isOpenNotification: boolean
+export type ExploreSearchTasksRequestParams = {
+  orderType?: ExploreTaskSortBy
+  keywords?: string
 }
-
-/** roadmap types */
-export enum RoadmapStatus {
-  DONE = 'DONE',
-  UNDO = 'UNDO',
+export type ExploreSearchTaskItem = Task & {
+  winnerNum: number
+  acceptedStatus: TaskAcceptedStatus
+  actions: Action[]
+  project: Project
+  reward?: Reward
 }
-
-export type Roadmap = {
-  id: number
-  status: RoadmapStatus
-  description: string
-  projectId: number
+export type ExploreRecommendTaskItem = Task & {
+  winnerNum: number
+  acceptedStatus: TaskAcceptedStatus
+  actions: Action[]
+  project: Project
+  reward?: Reward
 }
 
-/** action types */
-export type Action = {
-  id: number
-  name: string
-  orderNum: number
-  type: string
-  taskId: number
-  projectId: number
-  communityId: number
-}
-
-/** team types */
-export type Team = {
-  id: number
-  partner: string
-  role: string
-  avatar: string
-  description: string
-  projectId: number
-}
-
-/* project types */
-
-export enum ProjectStatus {
-  ACTIVE = 'ACTIVE',
-  LIVE = 'LIVE',
-  FUTURE = 'FUTURE',
-}
-
-export type Project = {
-  id: number
-  name: string
-  description: string
-  story: string
-  status: ProjectStatus
-  image: string
-  communityId: number
-  itemTotalNum: number
-  mintPrice: string
-  floorPrice: string
-  mintStartTime: number
-  whitelistTotalNum: number
-  publicSaleTime: number
-  publicSalePrice: string
-  injectedCoins: number
-  discord: string
-  twitter: string
-}
-
-export type ContributionRank = {
-  ranking: number
-  avatar: string
-  userName: string
-  pubkey: string
-  score: number
-}
-/** whitelist types */
-export type Whitelist = {
-  id: number
-  mintPrice: string
-  mintStartTime: number
-  mintMaxNum: number
-  totalNum: number
-  projectId: number
-  taskId: number
-}
-
-/** api response types */
-
+// explore project
 export type TaskItem = Task & {
-  winnersNum: number
-  acceptedStatus: TaskStatus
+  winnerNum: number
+  acceptedStatus: TaskAcceptedStatus
   actions: Action[]
 }
-
-export type DashboardTaskItem = TaskItem & {
-  project: Project
+export type ExploreSearchProjectsRequestParams = {
+  mintStage?: MintStage | ''
+  keywords?: string
 }
-
-export type DashboardProjectItem = Project & {
+export type ExploreSearchProjectItem = Project & {
   community: Community
   tasks: TaskItem[]
+}
+
+export type ExploreRecommendProjectItem = Project & {
+  community: Community
+  tasks: TaskItem[]
+}
+
+// project detail
+export type ProjectDetailTaskItem = Task & {
+  winnerNum: number
+  acceptedStatus: TaskAcceptedStatus
+  actions: Action[]
+  reward?: Reward
+}
+export type ProjectDetailResponse = Project & {
+  tasks: ProjectDetailTaskItem[]
+  teamMembers: Team[]
+  roadmap: Roadmap[]
+  whitelists: Whitelist[]
+  community: Community
+}
+
+/** community api */
+export type CommunityDetailBasicInfo = Community & {
+  communityFollowerNum: number
 }
 export type CommunityCollectionProjectItem = Project & {
   tasks: TaskItem[]
@@ -145,8 +96,70 @@ export type CommunityCollectionProjectItem = Project & {
 }
 
 export type CommunityCollectionResponse = {
-  community: Community
+  community: CommunityDetailBasicInfo
   projects: CommunityCollectionProjectItem[]
 }
 
-export type CommunityContributionRankResponseItem = ContributionRank
+export type CommunityBasicInfoResponse = Community
+
+export type CommunityContributionRankItem = ContributionRank
+export type CommunityContributionRankResponse = CommunityContributionRankItem[]
+
+export type FollowedCommunityItem = Community & {
+  memberNums: number
+  contribution: number
+  project: Project
+}
+export type FollowedCommunitiesResponse = FollowedCommunityItem[]
+
+export type CommunityCheckinResponse = {
+  seqDays: number
+  contribution: number
+}
+export type VerifyCommunityCheckinResponse = 0 | 1
+
+/** contribution */
+export type ContributionRanksResponse = ContributionRank[]
+export type UserContributionResponse = ContributionRank
+
+/** todo task api */
+export enum UserActionStatus {
+  TODO = 'TODO',
+  DONE = 'DONE',
+}
+
+export type TodoTaskActionItem = Action & {
+  status: UserActionStatus
+  progress: string
+}
+
+export type TodoTaskItem = Task & {
+  status: TaskTodoCompleteStatus
+  actions: TodoTaskActionItem[]
+  project: Project
+  whitelist: Whitelist
+}
+
+export type TodoTaskResponse = TodoTaskItem[]
+
+/** task detail api */
+export type TaskDetailResponse = Task & {
+  winnerNum: number
+  acceptedStatus: TaskAcceptedStatus
+  actions: TodoTaskActionItem[]
+  mintUrl: string
+  mintStartTime: number
+  status: TaskTodoCompleteStatus
+  project: Project
+  winnerList: User[]
+  reward?: Reward
+}
+
+/** whitelist api */
+export type UserWhitelistItem = {
+  task: Task
+  community: Community
+  whitelist: Whitelist
+  reward?: Reward
+}
+export type UserWhitelistsResponse = UserWhitelistItem[]
