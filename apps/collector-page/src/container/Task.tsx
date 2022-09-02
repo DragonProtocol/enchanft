@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 18:25:26
+ * @LastEditTime: 2022-09-02 19:38:00
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -39,6 +39,7 @@ import TaskWinnerList from '../components/business/task/TaskWinnerList'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import IconCaretLeft from '../components/common/icons/IconCaretLeft'
 import PngIconForbidden from '../components/common/icons/PngIconForbidden'
+import PngIconHourglass from '../components/common/icons/PngIconHourglass'
 import Button from '@mui/material/Button'
 import CardBox from '../components/common/card/CardBox'
 import usePermissions from '../hooks/usePermissons'
@@ -56,56 +57,40 @@ import { toast } from 'react-toastify'
 import IconShare from '../components/common/icons/IconShare'
 import { SHARE_EVENT_TWEET_CONTENTS, TASK_SHARE_URI } from '../constants'
 import { tweetShare } from '../utils/twitter'
+import useTimeCountdown from '../hooks/useTimeCountdown'
+import TimeCountdown from '../components/common/time/TimeCountdown'
+import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
-  token: string,
   takeTaskState: TaskHandle<TakeTaskParams>,
-  accountTypes: string[],
+  accountOperationType: AccountOperationType,
+  accountOperationDesc: string,
 ): TaskStatusButtonDataViewType | null => {
-  // 1. 没链接钱包
-  if (!token) {
+  // 1. 账户未绑定
+  if (accountOperationType !== AccountOperationType.COMPLETED) {
     return {
-      type: TaskStatusButtonType.CONNECT_WALLET,
+      type: TaskStatusButtonType.ACCOUNT_OPERATION,
+      btnText: accountOperationDesc,
     }
   }
 
   // 2. 已经接了任务
-  // TODO 考虑直接将TaskTodoCompleteStatus枚举值合并到TaskStatusButtonType枚举值中
   const isDone = task.acceptedStatus === TaskAcceptedStatus.DONE
   if (isDone) {
-    // 2.1 已经完成了任务
-    if (task.status === TaskTodoCompleteStatus.COMPLETED) {
-      return {
-        type: TaskStatusButtonType.COMPLETE,
-      }
-    } else {
-      return null
+    switch (task.status) {
+      case TaskTodoCompleteStatus.COMPLETED: // 已经完成了任务
+        return {
+          type: TaskStatusButtonType.COMPLETE,
+        }
+      case TaskTodoCompleteStatus.CLOSED: // 任务已关闭
+        return {
+          type: TaskStatusButtonType.MISSION_OF,
+        }
     }
+    return null
   }
 
-  // 3.还没接任务，且钱包账户没有跟用户系统绑定
-  let isBindWallet = false
-  const taskChainType = getChainType(task.project.chainId)
-  switch (taskChainType) {
-    case ChainType.EVM:
-      if (accountTypes.includes('EVM')) {
-        isBindWallet = true
-      }
-      break
-    case ChainType.SOLANA:
-      if (accountTypes.includes('SOLANA')) {
-        isBindWallet = true
-      }
-      break
-  }
-  if (!isBindWallet) {
-    const btnText = taskChainType === ChainType.SOLANA ? 'Bind Phantom Wallet' : 'Bind MetaMask Wallet'
-    return {
-      type: TaskStatusButtonType.BIND_WALLET,
-      btnText,
-    }
-  }
-  // 4. 还没接任务，且当前账户可以接受任务
+  // 3. 还没接任务，且当前账户可以接受任务
   const isCanTake = task.acceptedStatus === TaskAcceptedStatus.CANDO
   if (isCanTake) {
     const loadingTake = takeTaskState.status === AsyncRequestStatus.PENDING
@@ -117,6 +102,7 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
     }
   }
 
+  // 4. 其它
   return null
 }
 const formatStoreDataToComponentDataByTaskActions = (
@@ -143,6 +129,7 @@ const formatStoreDataToComponentDataByTaskActions = (
 const Task: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
+
   const { token, accounts, pubkey } = useAppSelector(selectAccount)
   const accountTypes = accounts.map((account) => account.accountType)
 
@@ -151,6 +138,10 @@ const Task: React.FC = () => {
   const dispatchFetchTaskDetail = useCallback(() => id && dispatch(fetchTaskDetail(Number(id))), [id])
   const [loadingView, setLoadingView] = useState(false)
   const { isCreator, checkTaskAllowed, checkProjectAllowed } = usePermissions()
+
+  const { accountOperationType, accountOperationDesc, handleAccountOperation } = useAccountOperationForChain(
+    data?.project?.chainId,
+  )
 
   // 进入loading状态
   useEffect(() => {
@@ -173,6 +164,9 @@ const Task: React.FC = () => {
   const handleLeave = useCallback(() => {
     navigate(-1)
   }, [])
+
+  // task start countdown
+  const taskStartCountdown = useTimeCountdown(data?.startTime || 0)
 
   // handles: take, verify
   const { takeTask: takeTaskState } = useAppSelector(selectUserTaskHandlesState)
@@ -225,7 +219,12 @@ const Task: React.FC = () => {
   const { projectId, image } = data
   const { name: projectName, chainId, communityId } = data.project
   // task status button
-  const taskStatusButton = formatStoreDataToComponentDataByTaskStatusButton(data, token, takeTaskState, accountTypes)
+  const taskStatusButtonData = formatStoreDataToComponentDataByTaskStatusButton(
+    data,
+    takeTaskState,
+    accountOperationType,
+    accountOperationDesc,
+  )
   // task action and winnerList
   const actionItems = formatStoreDataToComponentDataByTaskActions(data, userFollowedProjectIds)
   const winnerList = data?.winnerList || []
@@ -289,15 +288,22 @@ const Task: React.FC = () => {
                 </TaskListBox>
               ) : (
                 <>
+                  {taskStartCountdown.distance > 0 && (
+                    <TaskListBox>
+                      <TaskStartCountdownBox>
+                        <PngIconHourglass />
+                        <TimeCountdown data={taskStartCountdown} />
+                      </TaskStartCountdownBox>
+                    </TaskListBox>
+                  )}
                   <TaskListBox>
-                    {taskStatusButton && (
+                    {taskStartCountdown.distance <= 0 && taskStatusButtonData && (
                       <TaskStatusButton
-                        type={taskStatusButton.type}
-                        loading={taskStatusButton.loading}
-                        disabled={taskStatusButton.disabled}
-                        btnText={taskStatusButton.btnText}
-                        onConnectWallet={handleOpenConnectWallet}
-                        onBindWallet={handleOpenWalletBind}
+                        type={taskStatusButtonData.type}
+                        loading={taskStatusButtonData.loading}
+                        disabled={taskStatusButtonData.disabled}
+                        btnText={taskStatusButtonData.btnText}
+                        onAccountOperation={handleAccountOperation}
                         onTake={handleTakeTask}
                       />
                     )}
@@ -427,4 +433,9 @@ const TaskListBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+`
+const TaskStartCountdownBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `
