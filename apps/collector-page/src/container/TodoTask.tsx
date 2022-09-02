@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-01 18:40:18
+ * @LastEditTime: 2022-09-02 11:25:43
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -142,14 +142,10 @@ const formatStoreDataToComponentDataByCompletedList = (tasks: TodoTaskItemForEnt
 
 const formatStoreDataToComponentDataByWonList = (tasks: TodoTaskItemForEntity[]): TodoTaskListItemsType => {
   return tasks.map((task) => {
-    const { reward } = task
-    const displayMint = reward?.type === RewardType.WHITELIST && Boolean(task.project.mintUrl)
-    const displayReward = reward?.type && reward?.type !== RewardType.WHITELIST
     return {
       data: { ...task, actions: [] },
       viewConfig: {
-        displayMint,
-        displayReward,
+        displayReward: true,
         allowNavigateToTask: true,
       },
     }
