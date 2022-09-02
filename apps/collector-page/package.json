@@ -60,7 +60,7 @@
     "serve": "npm start"
   },
   "devDependencies": {
-    "@craco/craco": "^7.0.0-alpha.6",
+    "@craco/craco": "^7.0.0-alpha.7",
     "@types/mockjs": "^1.0.6",
     "@types/react-lottie": "^1.2.6",
     "babel-jest": "27.5.1",
