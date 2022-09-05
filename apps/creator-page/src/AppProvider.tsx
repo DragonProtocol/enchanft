@@ -5,12 +5,11 @@ import {
   useEffect,
   useState,
 } from 'react';
-import { Metaplex } from '@metaplex-foundation/js';
 import { Connection, clusterApiUrl, PublicKey } from '@solana/web3.js';
 import { ethers } from 'ethers';
 
-const connection = new Connection(clusterApiUrl('devnet'));
-const metaplex = new Metaplex(connection);
+// const connection = new Connection(clusterApiUrl('devnet'));
+// const metaplex = new Metaplex(connection);
 const windowObj: any = window;
 
 type PhantomProvider = {
@@ -23,7 +22,6 @@ type MetaMaskProvider = {
 };
 
 export interface AppContextData {
-  metaplex: Metaplex;
   phantomValid: boolean;
   metaMaskValid: boolean;
   phantom: PhantomProvider | null;
@@ -90,7 +88,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   return (
     <AppContext.Provider
       value={{
-        metaplex,
         phantomValid,
         metaMaskValid,
         metaMask,
@@ -105,7 +102,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 export function useAppConfig() {
   const context = useContext(AppContext);
   return {
-    metaplex: context?.metaplex,
     phantomValid: context?.phantomValid,
     metaMaskValid: context?.metaMaskValid,
   };

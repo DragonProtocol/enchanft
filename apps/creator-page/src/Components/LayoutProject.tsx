@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export default function ProjectLayout() {
   return (
-    <MainBox>
+    <MainBox id="main">
       <Outlet />
     </MainBox>
   );
@@ -15,7 +15,7 @@ const MainBox = styled.main`
   > div {
     margin: 20px auto;
     box-sizing: border-box;
-    max-width: 1200px;
+    max-width: 1208px;
     background: #f7f9f1;
     border: 4px solid #333333;
     border-radius: 20px;

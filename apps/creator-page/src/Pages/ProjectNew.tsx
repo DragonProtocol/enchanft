@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import BackBtn from '../Components/BackBtn';
-import CommunityCreate from '../Components/CommunityCreate';
+import CommunityCreate from '../Components/ProjectCreate';
 
-export default function CommunityNew() {
+export default function ProjectNew() {
   const navigation = useNavigate();
   return (
     <CreateBox>

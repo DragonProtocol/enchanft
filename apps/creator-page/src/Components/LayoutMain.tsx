@@ -8,7 +8,7 @@ export default function MainLayout() {
   return (
     <MainLayoutBox>
       <AsideNav></AsideNav>
-      <main>
+      <main id="main">
         <Outlet />
       </main>
     </MainLayoutBox>
@@ -29,9 +29,12 @@ const MainLayoutBox = styled.div`
     overflow: scroll;
 
     & > div {
+      margin: 20px auto;
       box-sizing: border-box;
-      max-width: 1200px;
-      margin: 0 auto;
+      max-width: 1208px;
+      background: #f7f9f1;
+      border: 4px solid #333333;
+      border-radius: 20px;
     }
   }
 `;
