@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-01 18:11:06
+ * @LastEditTime: 2022-09-05 11:10:34
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -144,6 +144,11 @@ export type TodoTaskItem = Task & {
 export type TodoTaskResponse = TodoTaskItem[]
 
 /** task detail api */
+export type TaskParticipants = {
+  userDetails: User[]
+  takers: number
+  finishers: number
+}
 export type TaskDetailResponse = Task & {
   winnerNum: number
   acceptedStatus: TaskAcceptedStatus
@@ -154,6 +159,7 @@ export type TaskDetailResponse = Task & {
   project: Project
   winnerList: User[]
   reward?: Reward
+  participants?: TaskParticipants
 }
 
 /** whitelist api */
