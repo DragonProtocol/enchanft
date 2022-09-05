@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-02 19:38:00
+ * @LastEditTime: 2022-09-05 12:35:07
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -55,11 +55,12 @@ import ButtonBase, { ButtonInfo } from '../components/common/button/ButtonBase'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import { toast } from 'react-toastify'
 import IconShare from '../components/common/icons/IconShare'
-import { SHARE_EVENT_TWEET_CONTENTS, TASK_SHARE_URI } from '../constants'
+import { SHARE_EVENT_TWEET_CONTENTS, TASK_PARTICIPANTS_DISPLAY_MIN_NUM, TASK_SHARE_URI } from '../constants'
 import { tweetShare } from '../utils/twitter'
 import useTimeCountdown from '../hooks/useTimeCountdown'
 import TimeCountdown from '../components/common/time/TimeCountdown'
 import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
+import TaskDetailParticipants from '../components/business/task/TaskDetailParticipants'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   takeTaskState: TaskHandle<TakeTaskParams>,
@@ -216,7 +217,7 @@ const Task: React.FC = () => {
   }
 
   const name = data.name || ''
-  const { projectId, image } = data
+  const { projectId, image, participants } = data
   const { name: projectName, chainId, communityId } = data.project
   // task status button
   const taskStatusButtonData = formatStoreDataToComponentDataByTaskStatusButton(
@@ -243,7 +244,7 @@ const Task: React.FC = () => {
 
   // 后面如果带/，则去掉/
   const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
-
+  const displayParticipants = participants && participants.takers >= TASK_PARTICIPANTS_DISPLAY_MIN_NUM
   return (
     <TaskDetailWrapper>
       <TaskDetailBodyBox>
@@ -328,6 +329,11 @@ const Task: React.FC = () => {
               )}
             </TaskDetailContentBoxRight>
           </TaskDetailContentBox>
+          {displayParticipants && (
+            <TaskDetailParticipantsBox>
+              <TaskDetailParticipants data={participants} />
+            </TaskDetailParticipantsBox>
+          )}
         </TaskDetailBodyMainBox>
       </TaskDetailBodyBox>
     </TaskDetailWrapper>
@@ -438,4 +444,8 @@ const TaskStartCountdownBox = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+`
+
+const TaskDetailParticipantsBox = styled.div`
+  margin-top: 40px;
 `
