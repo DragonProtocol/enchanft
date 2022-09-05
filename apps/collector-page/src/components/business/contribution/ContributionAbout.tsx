@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-31 18:54:38
+ * @LastEditTime: 2022-09-02 16:34:53
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -10,7 +10,7 @@ import styled from 'styled-components'
 import ButtonBase, { ButtonPrimary } from '../../common/button/ButtonBase'
 import IconTwitterWhite from '../../common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../../common/icons/IconDiscordWhite'
-import likeReplyRetweetImg from './imgs/like_reply_retweet.png'
+import likeRetweetImg from './imgs/like_retweet.png'
 import discordChatInviteImg from './imgs/discord_chat_invite.png'
 import { getTwitterHomeLink } from '../../../utils/twitter'
 export type ContributionAboutDataType = {
@@ -110,8 +110,8 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
         {
           display: !!twitterId,
           type: QA_ANSWER_TYPE.TWITTER,
-          title: <>Like, retweet or replay {TwitterLinkComponent} daily on Twitter to earn contribution point.</>,
-          content: <QusetionAnswerImg src={likeReplyRetweetImg} />,
+          title: <>Like, retweet {TwitterLinkComponent} daily on Twitter to earn contribution point.</>,
+          content: <QusetionAnswerImg src={likeRetweetImg} />,
         },
         {
           title: <>Join {DiscordLinkComponent} server on Discord.</>,
