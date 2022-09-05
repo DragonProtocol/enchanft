@@ -33,7 +33,8 @@ const TaskDetailParticipants: React.FC<TaskDetailParticipantsProps> = ({ data }:
       <ParticipantsHeader>
         <ParticipantsTitle>Participants</ParticipantsTitle>
         <ParticipantsNumText>
-          {finishersText}/{takersText} compteted
+          {/* {finishersText}/{takersText} compteted */}
+          {takersText} applied
         </ParticipantsNumText>
       </ParticipantsHeader>
       <ParticipantsListBox>
