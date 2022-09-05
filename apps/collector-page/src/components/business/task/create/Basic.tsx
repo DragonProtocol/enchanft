@@ -151,8 +151,8 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                 </div>
                 <p className="type-desc">
                   {(state.reward.raffled &&
-                    'Winner-oriented task, the task will automatically close once it winners complete the task.') ||
-                    'Winner-lucky draw task, we will randomly select  winners for you upon closing the task.'}
+                    'Raffle task, the task will automatically close once it winners complete the task.') ||
+                    'FCFS task, we will randomly select  winners for you upon closing the task.'}
                 </p>
               </div>
               <div className="content-item">
@@ -160,6 +160,7 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                 <input
                   title="total-winners"
                   type={'number'}
+                  min={'0'}
                   onKeyPress={numberInput}
                   value={state.winnerNum === 0 ? '' : state.winnerNum.toString()}
                   onChange={(e) => {
@@ -420,6 +421,7 @@ const BasicBox = styled.div`
   }
   & input,
   & textarea {
+    font-family: inherit;
     background-color: #f8f8f8;
     border: none;
     outline: none;

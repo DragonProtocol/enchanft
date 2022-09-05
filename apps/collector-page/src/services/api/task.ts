@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 15:36:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 19:01:35
+ * @LastEditTime: 2022-09-05 11:20:58
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -12,6 +12,7 @@ import { ApiResp } from '../../types'
 import { TaskDetailResponse, TodoTaskActionItem, TodoTaskItem, TodoTaskResponse } from '../../types/api'
 import { State as CreateTaskState } from '../../components/business/task/create/state'
 import { useGAEvent } from '../../hooks/useGoogleAnalytics'
+import { TASK_PARTICIPANTS_FETCH_NUM } from '../../constants'
 
 const TASK_CATALOG_GA = 'TASK'
 enum TaskActionGA {
@@ -118,7 +119,7 @@ export function completionOneAction(params: CompletionOneActionParams): AxiosPro
 /** 获取单个任务详情 */
 export function fetchDetail(id: number): AxiosPromise<ApiResp<TaskDetailResponse>> {
   return request({
-    url: `/tasks/${id}`,
+    url: `/tasks/${id}?participants=${TASK_PARTICIPANTS_FETCH_NUM}`,
     method: 'get',
     headers: {
       needToken: true,
@@ -135,7 +136,14 @@ export function createTask(data: CreateTaskState) {
     winNum: data.winnerNum,
     startTime: data.startTime,
     endTime: data.endTime,
-    reward: data.reward,
+    reward: {
+      type: data.reward.type,
+      raffled: data.reward.raffled,
+      name: data.reward.name,
+      data: {
+        token_num: data.reward.token_num,
+      },
+    },
     actions: data.actions.map((item) => {
       return {
         name: item.name,
@@ -148,6 +156,7 @@ export function createTask(data: CreateTaskState) {
           num: item.num,
           accounts: item.accounts,
           tweet_id: item.tweet_id,
+          role: item.role,
         },
       }
     }),

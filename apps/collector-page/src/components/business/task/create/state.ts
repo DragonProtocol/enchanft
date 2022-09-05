@@ -27,6 +27,7 @@ export enum ActionTypeMore {
   MEET_CONTRIBUTION_SCORE = 'MEET_CONTRIBUTION_SCORE',
   TURN_ON_NOTIFICATION = 'TURN_ON_NOTIFICATION',
   CUSTOM = 'CUSTOM',
+  DISCORD_OBTAIN_ROLE = 'DISCORD_OBTAIN_ROLE',
 }
 
 export type Action = {
@@ -38,6 +39,7 @@ export type Action = {
   server_id?: string
   require_score?: number
   num?: number
+  role?: string
   accounts?: string[]
   tweet_id?: string
 }

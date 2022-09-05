@@ -1,13 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { RewardType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../types/entities'
+import { RewardData, RewardType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../types/entities'
 import RichTextBox from '../../common/text/RichTextBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
 import PngIconScissorHand from '../../common/icons/PngIconScissorHand'
-import { getTaskRewardTypeLabel } from '../../../utils/task'
+import { getTaskRewardTypeLabel, getTaskRewardTypeValue } from '../../../utils/task'
 
 export type TaskDetailContentDataType = {
   id: number
@@ -30,6 +30,7 @@ export type TaskDetailContentDataType = {
     name: string
     type: RewardType
     raffled: boolean
+    data: RewardData
   }
 }
 
@@ -44,7 +45,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetai
   const rewardTypeLabel = getTaskRewardTypeLabel(reward)
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
-
+  const rewardValue = getTaskRewardTypeValue(reward)
   return (
     <TaskDetailContentWrapper>
       <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
@@ -63,7 +64,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetai
       {reward && (
         <TaskRemarkBox>
           <PngIconGiftBox size={'16px'} />
-          <TaskRemark>Reward : {reward.name}</TaskRemark>
+          <TaskRemark>Reward : {rewardValue}</TaskRemark>
         </TaskRemarkBox>
       )}
 
@@ -120,4 +121,8 @@ const TaskDescription = styled(RichTextBox)`
   flex: 1;
   overflow-y: auto;
   ${ScrollBarCss}
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: rgba(51, 51, 51, 0.6);
 `

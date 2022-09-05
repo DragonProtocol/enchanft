@@ -117,7 +117,7 @@ export default function TaskCreate() {
 
   return (
     <>
-      <TaskCreateWrapper style={{ display: openPreview ? 'none' : '' }}>
+      <TaskCreateWrapper id="task-create-wrapper" style={{ display: openPreview ? 'none' : '' }}>
         <div className="infos">
           <div className="title">
             <ButtonNavigationCustom onClick={() => navigate(-1)}>

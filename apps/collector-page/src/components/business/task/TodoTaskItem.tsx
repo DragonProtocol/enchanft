@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 19:17:20
+ * @LastEditTime: 2022-09-02 12:01:05
  * @Description: file description
  */
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
-import { Project, TaskTodoCompleteStatus, TaskType, Whitelist } from '../../../types/entities'
+import { Project, Reward, RewardType, TaskTodoCompleteStatus, TaskType, Whitelist } from '../../../types/entities'
 import { UserActionStatus } from '../../../types/api'
 import ButtonBase from '../../common/button/ButtonBase'
 import { TaskActionItemDataType } from './TaskActionItem'
@@ -17,6 +17,8 @@ import MoodBadIcon from '@mui/icons-material/MoodBad'
 import TaskActionList, { TaskActionsListHandlesType } from './TaskActionList'
 import { todoTaskCompleteStatusMap } from './TodoTaskList'
 import { useNavigate } from 'react-router-dom'
+import TaskMintButton from './TaskMintButton'
+import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 
 export type TodoTaskItemDataType = {
   id: number
@@ -32,6 +34,7 @@ export type TodoTaskItemDataType = {
   actions: TaskActionItemDataType[]
   project: Project
   whitelist: Whitelist
+  reward?: Reward
 }
 
 export type TodoTaskItemViewConfigType = {
@@ -47,6 +50,7 @@ export type TodoTaskItemViewConfigType = {
   loadingRefreshMsg?: string
   verifyingActions?: number[]
   allowNavigateToTask?: boolean
+  displayReward?: boolean
 }
 
 export type TodoTaskItemDataViewType = {
@@ -76,6 +80,7 @@ const defaultViewConfig: TodoTaskItemViewConfigType = {
   loadingRefreshMsg: 'refreshing...',
   verifyingActions: [],
   allowNavigateToTask: false,
+  displayReward: false,
 }
 const TaskTodoCompleteStatusView = {
   [TaskTodoCompleteStatus.COMPLETED]: {
@@ -108,7 +113,20 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   onCustomAction,
 }: TodoTaskItemProps) => {
   const navginate = useNavigate()
-  const { id, name, whitelistTotalNum, type, projectId, startTime, endTime, actions, status, project, whitelist } = data
+  const {
+    id,
+    name,
+    whitelistTotalNum,
+    type,
+    projectId,
+    startTime,
+    endTime,
+    actions,
+    status,
+    project,
+    whitelist,
+    reward,
+  } = data
   const { name: projectName } = project
   const { mintUrl, slug: projectSlug } = project
   const { mintStartTime } = whitelist
@@ -125,6 +143,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     loadingRefreshMsg,
     verifyingActions,
     allowNavigateToTask,
+    displayReward,
   } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -160,73 +179,6 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
         return null
     }
   }
-
-  // mint倒计时
-  const [mintStartTimeCountdown, setMintStartTimeCountdown] = useState({
-    distance: 0,
-    day: 0,
-    hour: 0,
-    minute: 0,
-    second: 0,
-  })
-  const mintStartTimeCountdownIntervalRef = useRef<any>(null)
-  useEffect(() => {
-    if (!displayMint) {
-      if (mintStartTimeCountdownIntervalRef.current) {
-        clearInterval(mintStartTimeCountdownIntervalRef.current)
-      }
-      return
-    }
-    mintStartTimeCountdownIntervalRef.current = setInterval(() => {
-      const distance = mintStartTime - Date.now()
-      const distanceDay = Math.floor(distance / (1000 * 60 * 60 * 24))
-      const distanceHour = Math.floor((distance / (1000 * 60 * 60)) % 24)
-      const distanceMinute = Math.floor((distance / (1000 * 60)) % 60)
-      const distanceSecond = Math.floor((distance / 1000) % 60)
-      setMintStartTimeCountdown({
-        distance: distance,
-        day: distanceDay,
-        hour: distanceHour,
-        minute: distanceMinute,
-        second: distanceSecond,
-      })
-    }, 1000)
-    return () => {
-      clearInterval(mintStartTimeCountdownIntervalRef.current)
-    }
-  }, [mintStartTime, displayMint])
-
-  // mint 按钮背景色
-  const mintBgc = todoTaskCompleteStatusMap[status].titleBgc
-  // mint按钮显示文本
-  let mintStartTimeCountdownText = 'MINT'
-  if (displayMint) {
-    if (loadingMint) {
-      mintStartTimeCountdownText = 'Loading...'
-    } else if (mintStartTimeCountdown.distance > 0) {
-      mintStartTimeCountdownText = 'You can mint in'
-      if (mintStartTimeCountdown.day > 0) {
-        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.day}d`
-      }
-      if (mintStartTimeCountdown.hour > 0 || mintStartTimeCountdown.day > 0) {
-        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.hour}h`
-      }
-      if (mintStartTimeCountdown.minute > 0 || mintStartTimeCountdown.hour > 0 || mintStartTimeCountdown.day > 0) {
-        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.minute}m`
-      }
-      if (
-        mintStartTimeCountdown.second > 0 ||
-        mintStartTimeCountdown.minute > 0 ||
-        mintStartTimeCountdown.hour > 0 ||
-        mintStartTimeCountdown.day > 0
-      ) {
-        mintStartTimeCountdownText += ` ${mintStartTimeCountdown.second}s`
-      }
-    }
-  }
-
-  // mint 按钮状态
-  const isDisabledMint = disabledMint || mintStartTimeCountdown.distance > 0
   // mint按钮点击事件
   const onMintClick = () => {
     // if (onMint) {
@@ -250,6 +202,40 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
       onVerifyTask(data)
     }
   }
+  const renderRewardContent = useCallback(() => {
+    if (reward) {
+      switch (reward.type) {
+        case RewardType.WHITELIST:
+          if (!project.mintUrl) return null
+          return <TaskMintButton startTimestamp={mintStartTime} onClick={onMintClick} disabled={disabledMint} />
+        case RewardType.CONTRIBUTION_TOKEN:
+          return (
+            <RewardTextBox>
+              <PngIconGiftBox size="16px" />
+              <RewardText>
+                You got <RewardTextBold>{reward.data.token_num}</RewardTextBold> contribution token of{' '}
+                <RewardProjectTextBtn onClick={() => navginate(`/${projectSlug}`)}>{project.name}</RewardProjectTextBtn>
+              </RewardText>
+            </RewardTextBox>
+          )
+        case RewardType.OTHERS:
+          return (
+            <RewardTextBox>
+              <PngIconGiftBox size="16px" />
+              <RewardText>
+                You got <RewardTextBold>{reward.name}</RewardTextBold> form{' '}
+                <RewardProjectTextBtn onClick={() => navginate(`/${projectSlug}`)}>{project.name}</RewardProjectTextBtn>
+                . The team will contact you later
+              </RewardText>
+            </RewardTextBox>
+          )
+        default:
+          return 'Unknown reward'
+      }
+    } else {
+      return 'Unknown reward'
+    }
+  }, [reward, startTime, project])
   return (
     <TodoTaskItemWrapper>
       <TaskBasicInfoBox isAllowClick={allowOpenActions || allowNavigateToTask} onClick={onTaskClick}>
@@ -259,13 +245,9 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
           {renderTaskStatusContent()}
         </TaskBasicInfoRightBox>
       </TaskBasicInfoBox>
-      {displayMint && (
-        <MintBtn disabled={isDisabledMint} onClick={onMintClick} bgc={mintBgc}>
-          {mintStartTimeCountdownText}
-        </MintBtn>
-      )}
+      {displayReward && <TaskOpenBodyBox>{renderRewardContent()}</TaskOpenBodyBox>}
       {isOpenActions && (
-        <TaskActionsBox>
+        <TaskOpenBodyBox>
           <TaskActionList
             items={actions}
             onDiscord={onDiscord}
@@ -280,7 +262,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
             onVerifyAction={onVerifyAction}
             onCustomAction={onCustomAction}
           ></TaskActionList>
-        </TaskActionsBox>
+        </TaskOpenBodyBox>
       )}
     </TodoTaskItemWrapper>
   )
@@ -338,28 +320,29 @@ const Status = styled.div`
 `
 const StatusIcon = styled.div``
 const StatusText = styled.div``
-
-const MintBtn = styled(ButtonBase)<{ bgc?: string }>`
-  width: 100%;
-  background-color: ${(props) => props.bgc || 'rgba(16, 16, 16, 100)'};
-  font-weight: 700;
+const RewardTextBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`
+const RewardText = styled.div`
+  font-weight: 400;
   font-size: 14px;
   line-height: 21px;
-  text-align: center;
-  color: #ffffff;
-  margin-top: 10px;
+  color: #333333;
 `
-const RefreshBtn = styled(ButtonBase)`
-  width: 100%;
-  height: 40px;
-  border-radius: 4px;
-  background-color: rgba(16, 16, 16, 100);
-  color: rgba(255, 255, 255, 100);
-  font-size: 14px;
-  margin-top: 10px;
+const RewardTextBold = styled.span`
+  font-weight: 700;
+`
+const RewardProjectTextBtn = styled.a`
+  font-weight: 700;
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
+  }
 `
 
-const TaskActionsBox = styled.div`
+const TaskOpenBodyBox = styled.div`
   border-top: 1px solid #d9d9d9;
   padding-top: 12px;
   margin-top: 10px;

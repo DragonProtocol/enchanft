@@ -148,7 +148,7 @@ export default function ConnectWalletModal() {
     if (!data) {
       return
     }
-    if (last) return data
+    // if (last) return data
     handleSign(data)
     return data
   }
@@ -312,7 +312,7 @@ export default function ConnectWalletModal() {
                 {account.lastLoginInfo.name}
               </button>
               <button className="new" onClick={createNewAccount}>
-                Create New Account
+                Continue With Another Account
               </button>
             </div>
           )}

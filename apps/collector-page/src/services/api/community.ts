@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-08 19:10:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 13:06:32
+ * @LastEditTime: 2022-08-29 18:53:00
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -10,10 +10,12 @@ import request from '../../request/axios'
 import { ApiResp } from '../../types'
 import {
   CommunityBasicInfoResponse,
+  CommunityCheckinResponse,
   CommunityCollectionResponse,
   CommunityContributionRankResponse,
   FollowedCommunitiesResponse,
   UserContributionResponse,
+  VerifyCommunityCheckinResponse,
 } from '../../types/api'
 import fileDownload from 'js-file-download'
 /** 获取 collection 详情 */
@@ -80,6 +82,27 @@ export function followCommunity(params: FollowCommunityParams): AxiosPromise<Api
   return request({
     url: `/communities/${id}/followers`,
     method: 'post',
+    headers: {
+      needToken: true,
+    },
+  })
+}
+
+/** 社区签到 */
+export function checkinCommunity(id: number): AxiosPromise<ApiResp<CommunityCheckinResponse>> {
+  return request({
+    url: `/engagements/${id}/checkin`,
+    method: 'post',
+    headers: {
+      needToken: true,
+    },
+  })
+}
+/** 验证今日是否签到 */
+export function verifyCommunityCheckin(id: number): AxiosPromise<ApiResp<VerifyCommunityCheckinResponse>> {
+  return request({
+    url: `/engagements/${id}/checkin`,
+    method: 'get',
     headers: {
       needToken: true,
     },

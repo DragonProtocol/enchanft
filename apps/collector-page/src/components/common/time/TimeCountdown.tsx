@@ -2,46 +2,63 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-03 16:05:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 14:05:07
+ * @LastEditTime: 2022-09-02 15:22:59
  * @Description: file description
  */
 import React, { HTMLAttributes, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 
 type TimeCountdownProps = HTMLAttributes<HTMLDivElement> & {
-  timestamp: number
+  timestamp?: number
+  data?: {
+    distance: number
+    day: number
+    hour: number
+    minute: number
+    second: number
+  }
 }
-const TimeCountdown: React.FC<TimeCountdownProps> = ({ timestamp, ...otherProps }: TimeCountdownProps) => {
-  const [countdownData, setCountdownData] = useState({
-    distance: 0,
-    day: 0,
-    hour: 0,
-    minute: 0,
-    second: 0,
-  })
+const defaultCountdownData = {
+  distance: 0,
+  day: 0,
+  hour: 0,
+  minute: 0,
+  second: 0,
+}
+const TimeCountdown: React.FC<TimeCountdownProps> = ({ timestamp = 0, data, ...otherProps }: TimeCountdownProps) => {
+  const [countdownData, setCountdownData] = useState(defaultCountdownData)
   const countdownDataIntervalRef = useRef<any>(null)
   useEffect(() => {
-    if (countdownDataIntervalRef.current && countdownData.distance <= 0) {
-      clearInterval(countdownDataIntervalRef.current)
+    if (data) {
+      setCountdownData(data)
+    } else {
+      if (timestamp > Date.now()) {
+        countdownDataIntervalRef.current = setInterval(() => {
+          const distance = timestamp - Date.now()
+          const distanceDay = Math.floor(distance / (1000 * 60 * 60 * 24))
+          const distanceHour = Math.floor((distance / (1000 * 60 * 60)) % 24)
+          const distanceMinute = Math.floor((distance / (1000 * 60)) % 60)
+          const distanceSecond = Math.floor((distance / 1000) % 60)
+          setCountdownData({
+            distance: distance,
+            day: distanceDay,
+            hour: distanceHour,
+            minute: distanceMinute,
+            second: distanceSecond,
+          })
+          if (distance === 0) {
+            clearInterval(countdownDataIntervalRef.current)
+          }
+        }, 1000)
+      } else {
+        clearInterval(countdownDataIntervalRef.current)
+        setCountdownData(defaultCountdownData)
+      }
     }
-    countdownDataIntervalRef.current = setInterval(() => {
-      const distance = timestamp - Date.now()
-      const distanceDay = Math.floor(distance / (1000 * 60 * 60 * 24))
-      const distanceHour = Math.floor((distance / (1000 * 60 * 60)) % 24)
-      const distanceMinute = Math.floor((distance / (1000 * 60)) % 60)
-      const distanceSecond = Math.floor((distance / 1000) % 60)
-      setCountdownData({
-        distance: distance,
-        day: distanceDay,
-        hour: distanceHour,
-        minute: distanceMinute,
-        second: distanceSecond,
-      })
-    }, 1000)
     return () => {
       clearInterval(countdownDataIntervalRef.current)
     }
-  }, [timestamp])
+  }, [timestamp, data])
   // 时间补0
   const timeZero = (time: number) => {
     if (time < 0) {

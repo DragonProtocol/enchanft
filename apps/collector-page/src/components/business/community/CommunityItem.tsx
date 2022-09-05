@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
+import { formatNumberToUnitString } from '../../../utils/number'
 
 export type CommunityItemDataType = {
   id: number
@@ -68,7 +69,7 @@ const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollo
         <NumberInfoBox>
           <NumberRow>
             <NumberLabel>members</NumberLabel>
-            <NumberValue>{memberNums}</NumberValue>
+            <NumberValue>{formatNumberToUnitString(memberNums)}</NumberValue>
           </NumberRow>
           <NumberRow>
             <NumberLabel>contribution Point</NumberLabel>

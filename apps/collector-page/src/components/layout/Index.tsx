@@ -102,7 +102,7 @@ const Layout: React.FC = () => {
         </HeaderInner>
       </HeaderBox>
       <MainBox>
-        <ScrollBox>
+        <ScrollBox id="scroll-box">
           <MainInner>
             <Main />
           </MainInner>
