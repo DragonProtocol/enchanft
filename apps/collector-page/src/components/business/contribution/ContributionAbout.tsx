@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-02 16:34:53
+ * @LastEditTime: 2022-09-05 19:26:01
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -114,6 +114,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
           content: <QusetionAnswerImg src={likeRetweetImg} />,
         },
         {
+          display: !!discordId,
           title: <>Join {DiscordLinkComponent} server on Discord.</>,
           type: QA_ANSWER_TYPE.DISCORD,
           content: (
@@ -144,7 +145,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
         },
         {
           display: displayCheckin,
-          type: QA_ANSWER_TYPE.DISCORD,
+          type: QA_ANSWER_TYPE.WL,
           title: `Daily Click.`,
           content: (
             <GetContributionTokenBtn disabled={disabledCheckin} onClick={onCommunityCheckin}>
