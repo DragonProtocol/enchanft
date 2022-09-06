@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 11:43:59
+ * @LastEditTime: 2022-09-06 13:55:20
  * @Description: 站点布局入口
  */
 import React, { useEffect, useState } from 'react'
@@ -17,7 +17,7 @@ import ScrollBox from '../common/scroll/ScrollBox'
 import MainInner from './MainInner'
 import { matchRoutes, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { selectAccount, userLink } from '../../features/user/accountSlice'
+import { selectAccount, setIsLogin, userLink } from '../../features/user/accountSlice'
 import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
 import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
 import { fetchTodoTasks, selectAll } from '../../features/user/todoTasksSlice'
@@ -25,10 +25,13 @@ import { TaskTodoCompleteStatus } from '../../types/entities'
 import { useGAPageView } from '../../hooks'
 import Footer from './Footer'
 import useWalletSign from '../../hooks/useWalletSign'
-import useLogin from '../../hooks/useLogin'
 const Layout: React.FC = () => {
   const dispatch = useAppDispatch()
-  const { isLogin } = useLogin()
+  const { token, pubkey, isLogin } = useAppSelector(selectAccount)
+  useEffect(() => {
+    dispatch(setIsLogin(!!token && !!pubkey))
+  }, [token, pubkey])
+
   useGAPageView()
   useWalletSign()
   // TODO 后面对路由优化时，这个matchRoutes重复代码可封装成hooks

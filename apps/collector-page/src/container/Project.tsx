@@ -45,7 +45,6 @@ import { selectIds as selectIdsByUserCheckinCommunity } from '../features/user/c
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
-import useLogin from '../hooks/useLogin'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -143,8 +142,7 @@ const formatStoreDataToComponentDataByTeamMembers = (data: ProjectDetailEntity):
 const Project: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token, accounts } = useAppSelector(selectAccount)
-  const { isLogin } = useLogin()
+  const { token, accounts, isLogin } = useAppSelector(selectAccount)
   const accountTypes = accounts.map((account) => account.accountType)
 
   const { projectSlug } = useParams()

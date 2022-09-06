@@ -2,14 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 17:11:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 11:17:08
+ * @LastEditTime: 2022-09-06 13:56:45
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { ChainType, getChainType } from '../utils/chain'
-import useLogin from './useLogin'
 
 export enum AccountOperationType {
   CONNECT_WALLET = 'CONNECT_WALLET',
@@ -27,8 +26,7 @@ export const ccountOperationDescMap = {
 }
 export default (chainId?: number) => {
   const dispatch = useAppDispatch()
-  const { accounts } = useAppSelector(selectAccount)
-  const { isLogin } = useLogin()
+  const { accounts, isLogin } = useAppSelector(selectAccount)
   let accountOperationType = AccountOperationType.CONNECT_WALLET
   const handleAccountOperationMap = {
     [AccountOperationType.CONNECT_WALLET]: () => {

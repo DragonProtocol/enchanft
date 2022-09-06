@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 11:41:48
+ * @LastEditTime: 2022-09-06 13:55:44
  * @Description: 站点主体内容（路由导航）
  */
 
@@ -10,7 +10,8 @@ import React, { useEffect } from 'react'
 import { RouteObject, useRoutes } from 'react-router-dom'
 import styled from 'styled-components'
 import loadable from '@loadable/component'
-import useLogin from '../../hooks/useLogin'
+import { useAppSelector } from '../../store/hooks'
+import { selectAccount } from '../../features/user/accountSlice'
 
 // import Guide from '../../container/Guide'
 // import Task from '../../container/Task'
@@ -66,7 +67,7 @@ export const routes: CutomRouteObject[] = [
 ]
 
 const Main: React.FC = () => {
-  const { isLogin } = useLogin()
+  const { isLogin } = useAppSelector(selectAccount)
   const permissionRoutesMap = permissionRoutes.map((route) => ({
     ...route,
     element: isLogin ? route.element : <NoLogin>You have to connect wallet to view this page!</NoLogin>,

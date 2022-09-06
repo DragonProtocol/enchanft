@@ -53,10 +53,10 @@ export const fetchTodoTasks = createAsyncThunk<
       const state = getState() as RootState
       const {
         userTodoTasks: { status },
-        account: { token },
+        account: { isLogin },
       } = state
-      // 没有token ,则阻止新的请求
-      if (!token) {
+      // 没有登录,则阻止请求
+      if (!isLogin) {
         todoTasksEntity.removeAll(state.userTodoTasks)
         return false
       }

@@ -32,14 +32,12 @@ import { downloadContributions } from '../services/api/community'
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
-import useLogin from '../hooks/useLogin'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
   const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
-  const { avatar, name } = useAppSelector(selectAccount)
-  const { isLogin } = useLogin()
+  const { avatar, name, isLogin } = useAppSelector(selectAccount)
   const { follow: followCommunityState, downloadContributionTokens: downloadContributionTokensState } = useAppSelector(
     selectUserCommunityHandlesState,
   )

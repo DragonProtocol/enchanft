@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 14:43:21
+ * @LastEditTime: 2022-09-06 13:53:30
  * @Description: 用户的账户信息
  */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
 import { login, updateProfile, link, getProfile } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
@@ -72,6 +72,7 @@ export type ResourcePermission =
   | { resourceType: ResourceType.COMMUNITY; resourceIds: number[] }
 
 export type AccountState = {
+  isLogin: boolean
   status: AsyncRequestStatus
   linkStatus: AsyncRequestStatus
   errorMsg?: string
@@ -95,6 +96,7 @@ export type AccountState = {
 
 // 用户账户信息
 const initialState: AccountState = {
+  isLogin: false,
   status: AsyncRequestStatus.IDLE,
   linkStatus: AsyncRequestStatus.IDLE,
   defaultWallet: (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '',
@@ -275,6 +277,9 @@ export const accountSlice = createSlice({
     setName: (state, action) => {
       state.name = action.payload
     },
+    setIsLogin: (state, action: PayloadAction<boolean>) => {
+      state.isLogin = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -385,6 +390,7 @@ export const {
   setName,
   setLastLogin,
   setLastLoginInfo,
+  setIsLogin,
 } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer

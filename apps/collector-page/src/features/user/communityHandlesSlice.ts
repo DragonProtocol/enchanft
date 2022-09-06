@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 13:04:34
+ * @LastEditTime: 2022-09-06 13:59:08
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -101,10 +101,10 @@ export const verifyCheckin = createAsyncThunk(
     condition: (params, { getState }) => {
       const state = getState() as RootState
       const {
-        account: { token },
+        account: { isLogin },
       } = state
-      // 没有token ,则阻止新的请求
-      if (!token) {
+      // 没有登录,则阻止请求
+      if (!isLogin) {
         return false
       }
       return true
