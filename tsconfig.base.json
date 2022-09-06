@@ -15,7 +15,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "paths": {
+      "@ecnft/orbis-component": ["libs/orbis-component/src/index.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
