@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 13:55:20
+ * @LastEditTime: 2022-09-06 14:19:36
  * @Description: 站点布局入口
  */
 import React, { useEffect, useState } from 'react'
@@ -27,10 +27,7 @@ import Footer from './Footer'
 import useWalletSign from '../../hooks/useWalletSign'
 const Layout: React.FC = () => {
   const dispatch = useAppDispatch()
-  const { token, pubkey, isLogin } = useAppSelector(selectAccount)
-  useEffect(() => {
-    dispatch(setIsLogin(!!token && !!pubkey))
-  }, [token, pubkey])
+  const { isLogin } = useAppSelector(selectAccount)
 
   useGAPageView()
   useWalletSign()
