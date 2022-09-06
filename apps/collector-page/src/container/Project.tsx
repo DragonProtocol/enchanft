@@ -45,6 +45,7 @@ import { selectIds as selectIdsByUserCheckinCommunity } from '../features/user/c
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
+import useLogin from '../hooks/useLogin'
 
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
@@ -57,7 +58,7 @@ export enum ProjectInfoTabsValue {
 // 处理社区基本信息
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
   data: ProjectDetailEntity,
-  token: string,
+  isLogin: boolean,
   followedCommunityIds: Array<string | number>,
   followCommunityStatus: AsyncRequestStatus,
   accountTypes: string[],
@@ -68,7 +69,7 @@ const formatStoreDataToComponentDataByCommunityBasicInfo = (
 
   let followStatusType = FollowStatusType.UNKNOWN
 
-  if (token) {
+  if (isLogin) {
     const isFollowed = followedCommunityIds.map((item) => String(item)).includes(String(community.id))
     if (isFollowed) {
       followStatusType = FollowStatusType.FOLLOWED
@@ -110,7 +111,6 @@ const formatStoreDataToComponentDataByCommunityBasicInfo = (
 // project basic info
 const formatStoreDataToComponentDataByProjectBasicInfo = (
   data: ProjectDetailEntity,
-  token: string,
 ): ProjectDetailBasicInfoDataViewType => {
   const displayMintInfo = true
   const displayTasks = true
@@ -123,7 +123,7 @@ const formatStoreDataToComponentDataByProjectBasicInfo = (
   }
 }
 // project tasks
-const formatStoreDataToComponentDataByTasks = (data: ProjectDetailEntity, token: string): ExploreTaskListItemsType => {
+const formatStoreDataToComponentDataByTasks = (data: ProjectDetailEntity): ExploreTaskListItemsType => {
   return data.tasks.map((task) => {
     // TODO 待确认，这里先用task的whiteListTotalNum代替
     // const winnerNum = task.whitelistTotalNum
@@ -133,10 +133,7 @@ const formatStoreDataToComponentDataByTasks = (data: ProjectDetailEntity, token:
   })
 }
 // project teamMembers
-const formatStoreDataToComponentDataByTeamMembers = (
-  data: ProjectDetailEntity,
-  token: string,
-): ProjectTeamMemberListItemsType => {
+const formatStoreDataToComponentDataByTeamMembers = (data: ProjectDetailEntity): ProjectTeamMemberListItemsType => {
   return data.teamMembers.map((member) => ({
     data: member,
     viewConfig: {},
@@ -147,6 +144,7 @@ const Project: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
   const { token, accounts } = useAppSelector(selectAccount)
+  const { isLogin } = useLogin()
   const accountTypes = accounts.map((account) => account.accountType)
 
   const { projectSlug } = useParams()
@@ -228,17 +226,17 @@ const Project: React.FC = () => {
 
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
     data,
-    token,
+    isLogin,
     userFollowedProjectIds,
     followCommunityStatus,
     accountTypes,
   )
 
-  const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data, token)
+  const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data)
   const showContributionranks = contributionranks.slice(0, 5)
   const contributionMembersTotal = contributionranks.length
   // const teamMembers = formatStoreDataToComponentDataByTeamMembers(data, token)
-  const tasks = formatStoreDataToComponentDataByTasks(data, token)
+  const tasks = formatStoreDataToComponentDataByTasks(data)
 
   // const ProjectInfoTabComponents = {
   //   [ProjectInfoTabsValue.TEAM]: <ProjectTeamMemberList items={teamMembers} />,
@@ -258,7 +256,7 @@ const Project: React.FC = () => {
   }
 
   // 社区签到
-  const displayCheckin = token && !isCheckedin && isVerifiedCheckin
+  const displayCheckin = isLogin && !isCheckedin && isVerifiedCheckin
   const loadingCheckin = checkinState.status === AsyncRequestStatus.PENDING
   const disabledCheckin = loadingCheckin || isCheckedin
   return (

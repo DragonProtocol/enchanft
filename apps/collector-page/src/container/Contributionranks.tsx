@@ -32,12 +32,14 @@ import { downloadContributions } from '../services/api/community'
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
+import useLogin from '../hooks/useLogin'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
   const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
-  const { token, avatar, name } = useAppSelector(selectAccount)
+  const { avatar, name } = useAppSelector(selectAccount)
+  const { isLogin } = useLogin()
   const { follow: followCommunityState, downloadContributionTokens: downloadContributionTokensState } = useAppSelector(
     selectUserCommunityHandlesState,
   )
@@ -66,10 +68,10 @@ const Contributionranks: React.FC = () => {
   // 获取用户在此社区的贡献值
   const { data: userContribution, status: userContributionStatus } = useAppSelector(selectUserContributon)
   useEffect(() => {
-    if (token && projectSlug && isFollowedCommunity) {
+    if (isLogin && projectSlug && isFollowedCommunity) {
       dispatch(fetchUserContributon(projectSlug))
     }
-  }, [projectSlug, token, isFollowedCommunity])
+  }, [projectSlug, isLogin, isFollowedCommunity])
 
   // 获取社区贡献等级排行
   const { contributionranks, contributionranksState } = useContributionranks(projectSlug)
@@ -148,7 +150,7 @@ const Contributionranks: React.FC = () => {
           )}
         </ContributionListBox>
         <ContributionRigtBox>
-          {token && (
+          {isLogin && (
             <ContributionMyBox>
               <ContributionMy
                 data={userContributionInfo.data}

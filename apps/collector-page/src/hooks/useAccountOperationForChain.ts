@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 17:11:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-02 19:01:12
+ * @LastEditTime: 2022-09-06 11:17:08
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { ChainType, getChainType } from '../utils/chain'
+import useLogin from './useLogin'
 
 export enum AccountOperationType {
   CONNECT_WALLET = 'CONNECT_WALLET',
@@ -26,7 +27,8 @@ export const ccountOperationDescMap = {
 }
 export default (chainId?: number) => {
   const dispatch = useAppDispatch()
-  const { token, accounts } = useAppSelector(selectAccount)
+  const { accounts } = useAppSelector(selectAccount)
+  const { isLogin } = useLogin()
   let accountOperationType = AccountOperationType.CONNECT_WALLET
   const handleAccountOperationMap = {
     [AccountOperationType.CONNECT_WALLET]: () => {
@@ -42,7 +44,7 @@ export default (chainId?: number) => {
     [AccountOperationType.COMPLETED]: () => {},
   }
 
-  if (token) {
+  if (isLogin) {
     const chainType = chainId ? getChainType(chainId) : ChainType.UNKNOWN
     const accountTypes = accounts.map((account) => account.accountType)
     switch (chainType) {
@@ -61,7 +63,7 @@ export default (chainId?: number) => {
         break
     }
   }
-  let accountOperationDesc = ccountOperationDescMap[accountOperationType]
-  let handleAccountOperation = handleAccountOperationMap[accountOperationType]
+  const accountOperationDesc = ccountOperationDescMap[accountOperationType]
+  const handleAccountOperation = handleAccountOperationMap[accountOperationType]
   return { accountOperationType, accountOperationDesc, handleAccountOperation }
 }
