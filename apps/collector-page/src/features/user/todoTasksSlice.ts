@@ -53,11 +53,17 @@ export const fetchTodoTasks = createAsyncThunk<
       const state = getState() as RootState
       const {
         userTodoTasks: { status },
+        account: { token },
       } = state
-      // 之前的请求正在进行中,则阻止新的请求
-      if (status === AsyncRequestStatus.PENDING) {
+      // 没有token ,则阻止新的请求
+      if (!token) {
+        todoTasksEntity.removeAll(state.userTodoTasks)
         return false
       }
+      // 之前的请求正在进行中,则阻止新的请求
+      // if (status === AsyncRequestStatus.PENDING) {
+      //   return false
+      // }
       return true
     },
   },
