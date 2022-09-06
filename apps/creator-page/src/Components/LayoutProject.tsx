@@ -10,7 +10,8 @@ export default function ProjectLayout() {
 }
 
 const MainBox = styled.main`
-  height: calc(100vh - 72px);
+  height: calc(100vh - 73px);
+  margin-top: 1px;
   overflow: scroll;
   > div {
     margin: 20px auto;

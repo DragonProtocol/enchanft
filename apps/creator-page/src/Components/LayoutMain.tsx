@@ -7,7 +7,7 @@ export default function MainLayout() {
   const { phantomValid, metaMaskValid } = useAppConfig();
   return (
     <MainLayoutBox>
-      <AsideNav></AsideNav>
+      <AsideNav />
       <main id="main">
         <Outlet />
       </main>

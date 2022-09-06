@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import log from 'loglevel';
 
 import {
   State as CreateTaskState,
@@ -10,14 +11,27 @@ import Basic from '../Components/TaskCreate/Basic';
 import Actions from '../Components/TaskCreate/Actions';
 import PreviewBtn from '../Components/TaskCreate/PreviewBtn';
 import Preview from '../Components/TaskCreate/Preview';
+import { useAppConfig } from '../AppProvider';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 
 export default function TaskNew() {
-  const { name } = useParams();
+  const { slug } = useParams();
+  const { account } = useAppConfig();
+  const dispatch = useAppDispatch();
+  const project = useAppSelector(selectProjectDetail);
+
   const [state, setState] = useState<CreateTaskState>({
     ...DefaultState,
   });
-
   const [openPreview, setOpenPreview] = useState(false);
+
+  useEffect(() => {
+    if (!slug) return;
+    dispatch(fetchProjectDetail({ slug, token: account.info.token }));
+  }, [account, dispatch, slug]);
+
+  log.debug(slug, project);
 
   return (
     <>
@@ -35,7 +49,7 @@ export default function TaskNew() {
           updateStateActions={(newStateActions) => {
             setState({ ...state, actions: newStateActions });
           }}
-          projectName={name || ''}
+          projectName={slug || ''}
           projectTwitter={'projectTwitter'}
           followTwitters={state.followTwitters}
           updateStateFollowTwitters={(data) => {

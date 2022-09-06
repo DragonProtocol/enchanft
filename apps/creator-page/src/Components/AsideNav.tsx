@@ -15,7 +15,7 @@ import UpSvg from './imgs/up.svg';
 export default function AsideNav() {
   const { phantomValid, metaMaskValid } = useAppConfig();
   const navigation = useNavigate();
-  const { name } = useParams();
+  const { slug } = useParams();
 
   return (
     <AsideBox>
@@ -37,7 +37,7 @@ export default function AsideNav() {
             className={({ isActive }) =>
               isActive ? 'link-item active' : 'link-item'
             }
-            to={`/project/${name}/task/new`}
+            to={`/project/${slug}/task/new`}
           >
             New Task
           </NavLink>

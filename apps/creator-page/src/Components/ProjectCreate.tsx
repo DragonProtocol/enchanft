@@ -10,19 +10,7 @@ export default function CommunityCreate() {
       <div className="title">
         <h3>Other Setting</h3>
       </div>
-      <div>
-        <h1>CommunityCreate</h1>
-        <h1>fadsfads</h1>
-        <h1>fadsfads</h1>
-        <h1>fadsfads</h1>
-        <h1>fadsfads</h1>
-        <h1>fadsfads</h1>
-        <h1>fadsfads</h1>
-        <h1>fadsfads</h1>
-        <h1>fadsfads</h1>
-        <h1>fadsfads</h1>
-        <h1>fadsfads</h1>
-      </div>
+      <div></div>
       <div className="btns">
         <button>Cancel</button>
         <button>Submit</button>

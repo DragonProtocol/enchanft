@@ -8,6 +8,8 @@ import { toast } from 'react-toastify';
 import { TASK_IMAGE_SIZE_LIMIT } from '../../utils/constants';
 import { uploadImage as uploadImageApi } from '../../api';
 import { DiscordBotCallback } from '../../utils/socialMedia';
+import IconDiscordWhite from '../Icons/IconDiscordWhite';
+import { useAppConfig } from '../../AppProvider';
 
 export default function CreateTaskBasic({
   state,
@@ -16,22 +18,21 @@ export default function CreateTaskBasic({
   state: State;
   updateState: (arg0: State) => void;
 }) {
+  const { account } = useAppConfig();
   const [showModal, setShowModal] = useState(false);
 
   const uploadImageHandler = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
-      console.log(file);
       if ((file as File).size > TASK_IMAGE_SIZE_LIMIT) {
         toast.error('File Too Large. 1M Limit');
-        console.log('toast.error');
         return;
       }
       setShowModal(true);
 
       try {
-        const { data } = await uploadImageApi(file, '');
+        const { data } = await uploadImageApi(file, account.info.token);
         updateState({
           ...state,
           image: data.url,
@@ -44,7 +45,7 @@ export default function CreateTaskBasic({
         setShowModal(false);
       }
     },
-    [state, updateState]
+    [account.info.token, state, updateState]
   );
 
   return (
@@ -189,7 +190,7 @@ export default function CreateTaskBasic({
                     );
                   }}
                 >
-                  Invite WL Bot
+                  <IconDiscordWhite size="28px" /> Invite WL Bot
                 </button>
               </div>
             </div>
@@ -456,6 +457,10 @@ const BasicBox = styled.div`
         font-size: 18px;
         line-height: 27px;
         color: #ffffff;
+        & svg {
+          vertical-align: bottom;
+          margin-right: 10px;
+        }
       }
     }
   }

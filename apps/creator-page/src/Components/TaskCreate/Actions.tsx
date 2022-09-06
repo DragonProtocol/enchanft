@@ -7,7 +7,7 @@ import IconCheckbox from '../Icons/IconCheckbox';
 import IconCheckboxChecked from '../Icons/IconCheckboxChecked';
 import IconDiscord from '../Icons/IconDiscord';
 import IconPlus from '../Icons/IconPlus';
-import IconTip from '../Icons/IconTip';
+import IconWL from '../Icons/PngIconWL';
 import IconTwitter from '../Icons/IconTwitter';
 import PngIconDelete from '../Icons/PngIconDelete';
 import PngIconDone from '../Icons/PngIconDone';
@@ -335,7 +335,7 @@ export default function Actions({
                 <span>{` ${inviteNum} `}</span>
                 friends to take the Task
               </span>
-              <IconTip />
+              <IconWL />
             </div>
           </div>
         </div>
@@ -480,7 +480,7 @@ export default function Actions({
                 />
                 <span>{` ${joinCommunityContributionNum} `}</span>
               </span>
-              <IconTip />
+              <IconWL />
             </div>
           </div>
 

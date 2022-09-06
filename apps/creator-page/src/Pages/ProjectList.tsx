@@ -14,9 +14,11 @@ export default function ProjectList() {
       <div className="list">
         <AddCard
           addAction={() => {
-            navigation('/community/new');
+            navigation('/project/new');
           }}
         />
+        <ItemCard />
+        <ItemCard />
         <ItemCard />
         <ItemCard />
         <ItemCard />

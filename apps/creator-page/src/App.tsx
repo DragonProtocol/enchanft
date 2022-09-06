@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import bs58 from 'bs58';
 import { Connection, clusterApiUrl } from '@solana/web3.js';
 
+import { Provider as ReduxProvider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { AppProvider } from './AppProvider';
+import { AppProvider, useAppConfig } from './AppProvider';
 import Header from './Components/Header';
 import { ToastContainer } from 'react-toastify';
 
@@ -15,12 +16,23 @@ import ProjectList from './Pages/ProjectList';
 import ProjectNew from './Pages/ProjectNew';
 import TaskNew from './Pages/TaskNew';
 
-import './App.css';
 import 'react-toastify/dist/ReactToastify.css';
+import { store } from './redux/store';
+import NotFound from './Pages/NotFound';
+import Account from './Pages/Account';
 
 function App() {
+  const { validLogin } = useAppConfig();
+  if (!validLogin) {
+    return (
+      <div>
+        <Header />
+        <div>Connect Wallet First</div>
+      </div>
+    );
+  }
   return (
-    <div className="App">
+    <div>
       <Header />
       <Routes>
         <Route path="/" element={<LayoutProject />}>
@@ -28,9 +40,11 @@ function App() {
           <Route path="project/new" element={<ProjectNew />} />
         </Route>
         <Route element={<LayoutMain />}>
-          <Route path="project/:name" element={<PPList />} />
-          <Route path="project/:name/task/new" element={<TaskNew />} />
+          <Route path="project/:slug" element={<PPList />} />
+          <Route path="project/:slug/task/new" element={<TaskNew />} />
+          <Route path="account" element={<Account />} />
         </Route>
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <ToastContainer autoClose={2000} position="top-right" />
     </div>
@@ -40,9 +54,11 @@ function App() {
 export default function Providers() {
   return (
     <BrowserRouter>
-      <AppProvider>
-        <App />
-      </AppProvider>
+      <ReduxProvider store={store}>
+        <AppProvider>
+          <App />
+        </AppProvider>
+      </ReduxProvider>
     </BrowserRouter>
   );
 }
