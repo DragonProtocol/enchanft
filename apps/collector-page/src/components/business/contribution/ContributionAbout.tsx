@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 18:58:59
+ * @LastEditTime: 2022-09-06 19:09:47
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -157,7 +157,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
         {
           display: true,
           type: QA_ANSWER_TYPE.WL,
-          title: 'Community events',
+          title: 'Project events',
           content: '',
         },
       ],
