@@ -1,11 +1,17 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-09-01 16:24:28
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-09-06 17:56:16
+ * @Description: file description
+ */
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { ButtonPrimary, ButtonWarning } from '../../common/button/ButtonBase'
 import IconWebsite from '../../common/icons/IconWebsite'
 import IconTwitterBlack from '../../common/icons/IconTwitterBlack'
 import IconDiscordBlack from '../../common/icons/IconDiscordBlack'
 import { getTwitterHomeLink } from '../../../utils/twitter'
-import { ChainType } from '../../../utils/chain'
+import CommunityFollowButton, { CommunityFollowButtonViewConfigType } from '../community/CommunityFollowButton'
 export type ProjectDetailCommunityDataType = {
   id: number
   name: string
@@ -17,84 +23,24 @@ export type ProjectDetailCommunityDataType = {
   discordInviteUrl: string
 }
 
-export enum FollowStatusType {
-  CONNECT_WALLET = 'CONNECT_WALLET',
-  BIND_WALLET = 'BIND_WALLET',
-  FOLLOW = 'FOLLOW',
-  FOLLOWING = 'FOLLOWING',
-  FOLLOWED = 'FOLLOWED',
-  UNKNOWN = 'UNKNOWN',
-}
-export type ProjectDetailCommunityViewConfigType = {
-  followStatusType?: FollowStatusType
-  bindWalletType?: ChainType
-}
-
 export type ProjectDetailCommunityDataViewType = {
   data: ProjectDetailCommunityDataType
-  viewConfig?: ProjectDetailCommunityViewConfigType
+  viewConfig?: CommunityFollowButtonViewConfigType
 }
 export type ProjectDetailCommunityHandlesType = {
   onFollow?: () => void
-  onConnectWallet?: () => void
-  onBindWallet?: (chainType: ChainType) => void
+  onAccountOperation?: () => void
 }
 export type ProjectDetailCommunityProps = ProjectDetailCommunityDataViewType & ProjectDetailCommunityHandlesType
 
-const defaultViewConfig = {
-  followStatusType: FollowStatusType.UNKNOWN,
-  bindWalletType: ChainType.UNKNOWN,
-}
-
-const bindWalletTypeBtnTextMap = {
-  [ChainType.EVM]: 'Bind MetaMask',
-  [ChainType.SOLANA]: 'Bind Phantom',
-  [ChainType.UNKNOWN]: 'unknown chain type',
-}
 const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
   data,
   viewConfig,
   onFollow,
-  onConnectWallet,
-  onBindWallet,
+  onAccountOperation,
 }: ProjectDetailCommunityProps) => {
   const { name, icon, website, twitterId, discordInviteUrl } = data
   const twitterHomeLink = getTwitterHomeLink(twitterId)
-  const { followStatusType, bindWalletType } = {
-    ...defaultViewConfig,
-    ...viewConfig,
-  }
-  const handleFollow = () => {
-    if (onFollow) {
-      onFollow()
-    }
-  }
-  const handleConnectWallet = () => {
-    if (onConnectWallet) {
-      onConnectWallet()
-    }
-  }
-  const handleBindWallet = () => {
-    if (onBindWallet) {
-      onBindWallet(bindWalletType)
-    }
-  }
-  const renderFollowBtn = useCallback(() => {
-    switch (followStatusType) {
-      case FollowStatusType.CONNECT_WALLET:
-        return <WalletBtn onClick={handleConnectWallet}>Connect Wallet</WalletBtn>
-      case FollowStatusType.BIND_WALLET:
-        return <WalletBtn onClick={handleBindWallet}>{bindWalletTypeBtnTextMap[bindWalletType]}</WalletBtn>
-      case FollowStatusType.FOLLOW:
-        return <FollowBtn onClick={handleFollow}>Join</FollowBtn>
-      case FollowStatusType.FOLLOWING:
-        return <FollowBtn disabled>following ...</FollowBtn>
-      case FollowStatusType.FOLLOWED:
-        return <FollowBtn disabled>Joined</FollowBtn>
-      default:
-        return null
-    }
-  }, [followStatusType, bindWalletType])
   return (
     <ProjectDetailCommunityWrapper>
       {/* <CommunityImg src={icon} /> */}
@@ -110,7 +56,12 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
           <IconDiscordBlack />
         </ProjectLink>
       </CommunityLeftBox>
-      {renderFollowBtn()}
+      <FollowBtn
+        followStatusType={viewConfig?.followStatusType}
+        followBtnText={viewConfig?.followBtnText}
+        onFollow={onFollow}
+        onAccountOperation={onAccountOperation}
+      />
     </ProjectDetailCommunityWrapper>
   )
 }
@@ -120,18 +71,6 @@ const ProjectDetailCommunityWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
-const CommunityImg = styled.img`
-  width: 60px;
-  height: 60px;
-  border-radius: 10px;
-  object-fit: cover;
-`
-const CommunityName = styled.div`
-  flex: 1;
-  font-weight: 700;
-  font-size: 24px;
-  color: #333333;
 `
 
 const CommunityLeftBox = styled.div`
@@ -144,15 +83,7 @@ const ProjectLink = styled.a`
   height: 20px;
   cursor: pointer;
 `
-const FollowBtn = styled(ButtonWarning)`
+const FollowBtn = styled(CommunityFollowButton)`
   min-width: 100px;
   height: 40px;
-  font-weight: 700;
-  font-size: 18px;
-`
-const WalletBtn = styled(ButtonPrimary)`
-  min-width: 100px;
-  height: 40px;
-  font-weight: 700;
-  font-size: 18px;
 `

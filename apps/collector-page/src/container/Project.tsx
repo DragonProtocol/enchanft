@@ -21,7 +21,6 @@ import { selectIds as selectIdsByUserFollowedProject } from '../features/user/fo
 import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import CardBox from '../components/common/card/CardBox'
 import ProjectDetailCommunity, {
-  FollowStatusType,
   ProjectDetailCommunityDataViewType,
 } from '../components/business/project/ProjectDetailCommunity'
 import ProjectDetailBasicInfo from '../components/business/project/ProjectDetailBasicInfo'
@@ -45,7 +44,8 @@ import { selectIds as selectIdsByUserCheckinCommunity } from '../features/user/c
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
-
+import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
+import { FollowStatusType } from '../components/business/community/CommunityFollowButton'
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
 }
@@ -57,54 +57,32 @@ export enum ProjectInfoTabsValue {
 // 处理社区基本信息
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
   data: ProjectDetailEntity,
-  isLogin: boolean,
   followedCommunityIds: Array<string | number>,
   followCommunityStatus: AsyncRequestStatus,
-  accountTypes: string[],
+  accountOperationType: AccountOperationType,
+  accountOperationDesc: string,
 ): ProjectDetailCommunityDataViewType => {
-  const { community, chainId } = data
-
-  const chainType = getChainType(chainId)
-
+  const { community } = data
+  const viewConfig = {}
   let followStatusType = FollowStatusType.UNKNOWN
-
-  if (isLogin) {
+  //  账户未绑定
+  if (accountOperationType !== AccountOperationType.COMPLETED) {
+    followStatusType = FollowStatusType.ACCOUNT_OPERATION
+    Object.assign(viewConfig, { followBtnText: accountOperationDesc })
+  } else {
     const isFollowed = followedCommunityIds.map((item) => String(item)).includes(String(community.id))
     if (isFollowed) {
       followStatusType = FollowStatusType.FOLLOWED
     } else if (followCommunityStatus === AsyncRequestStatus.PENDING) {
       followStatusType = FollowStatusType.FOLLOWING
     } else {
-      // 钱包是否跟用户系统绑定
-      let isBindWallet = false
-      switch (chainType) {
-        case ChainType.EVM:
-          if (accountTypes.includes('EVM')) {
-            isBindWallet = true
-          }
-          break
-        case ChainType.SOLANA:
-          if (accountTypes.includes('SOLANA')) {
-            isBindWallet = true
-          }
-          break
-      }
-      if (!isBindWallet) {
-        followStatusType = FollowStatusType.BIND_WALLET
-      } else {
-        followStatusType = FollowStatusType.FOLLOW
-      }
+      followStatusType = FollowStatusType.FOLLOW
     }
-  } else {
-    followStatusType = FollowStatusType.CONNECT_WALLET
   }
-
+  Object.assign(viewConfig, { followStatusType })
   return {
     data: community,
-    viewConfig: {
-      followStatusType,
-      bindWalletType: chainType,
-    },
+    viewConfig,
   }
 }
 // project basic info
@@ -170,6 +148,10 @@ const Project: React.FC = () => {
     }
   }, [loadingView, status])
 
+  // 按钮执行前要对账户进行的操作
+  const { accountOperationType, accountOperationDesc, handleAccountOperation } = useAccountOperationForChain(
+    data?.chainId,
+  )
   // 获取社区贡献等级
   const { contributionranks } = useContributionranks(projectSlug)
 
@@ -179,11 +161,6 @@ const Project: React.FC = () => {
   // 社区签到
   const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal } =
     useCommunityCheckin(data?.communityId, projectSlug)
-
-  // 打开连接钱包的窗口
-  const handleOpenConnectWallet = useCallback(() => {
-    dispatch(setConnectWalletModalShow(true))
-  }, [])
 
   // tabs
   // const ProjectInfoTabs = [
@@ -224,10 +201,10 @@ const Project: React.FC = () => {
 
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
     data,
-    isLogin,
     userFollowedProjectIds,
     followCommunityStatus,
-    accountTypes,
+    accountOperationType,
+    accountOperationDesc,
   )
 
   const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data)
@@ -247,11 +224,6 @@ const Project: React.FC = () => {
     navigate(`/${projectSlug}/rank`)
     if (communityDataView.viewConfig?.followStatusType === FollowStatusType.FOLLOW) handleFollow()
   }
-  // 打开绑定钱包账户的窗口
-  const handleOpenWalletBind = (chainType: ChainType) => {
-    const modalType = chainType === ChainType.SOLANA ? ConnectModal.PHANTOM : ConnectModal.METAMASK
-    dispatch(setConnectModal(modalType))
-  }
 
   // 社区签到
   const displayCheckin = isLogin && !isCheckedin && isVerifiedCheckin
@@ -268,8 +240,7 @@ const Project: React.FC = () => {
               data={communityDataView.data}
               viewConfig={communityDataView.viewConfig}
               onFollow={handleFollow}
-              onBindWallet={handleOpenWalletBind}
-              onConnectWallet={handleOpenConnectWallet}
+              onAccountOperation={handleAccountOperation}
             />
             <ProjectDetailBasicInfo
               data={projectBasicInfoDataView.data}

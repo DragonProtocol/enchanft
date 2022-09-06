@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-05 12:35:07
+ * @LastEditTime: 2022-09-06 16:42:06
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -140,6 +140,7 @@ const Task: React.FC = () => {
   const [loadingView, setLoadingView] = useState(false)
   const { isCreator, checkTaskAllowed, checkProjectAllowed } = usePermissions()
 
+  // 按钮执行前要对账户进行的操作
   const { accountOperationType, accountOperationDesc, handleAccountOperation } = useAccountOperationForChain(
     data?.project?.chainId,
   )
@@ -179,15 +180,6 @@ const Task: React.FC = () => {
   const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
   // 获取链的类型
   const chainType = data?.project?.chainId ? getChainType(data?.project?.chainId) : ChainType.UNKNOWN
-  // 打开连接钱包的窗口
-  const handleOpenConnectWallet = useCallback(() => {
-    dispatch(setConnectWalletModalShow(true))
-  }, [])
-  // 打开绑定钱包账户的窗口
-  const modalType = chainType === ChainType.SOLANA ? ConnectModal.PHANTOM : ConnectModal.METAMASK
-  const handleOpenWalletBind = useCallback(() => {
-    dispatch(setConnectModal(modalType))
-  }, [modalType])
 
   // 关注社区
   const handleFollowCommunity = (communityId: number) => {
