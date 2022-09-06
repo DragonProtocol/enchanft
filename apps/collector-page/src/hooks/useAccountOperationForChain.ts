@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 17:11:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-02 19:01:12
+ * @LastEditTime: 2022-09-06 13:56:45
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react'
@@ -26,7 +26,7 @@ export const ccountOperationDescMap = {
 }
 export default (chainId?: number) => {
   const dispatch = useAppDispatch()
-  const { token, accounts } = useAppSelector(selectAccount)
+  const { accounts, isLogin } = useAppSelector(selectAccount)
   let accountOperationType = AccountOperationType.CONNECT_WALLET
   const handleAccountOperationMap = {
     [AccountOperationType.CONNECT_WALLET]: () => {
@@ -42,7 +42,7 @@ export default (chainId?: number) => {
     [AccountOperationType.COMPLETED]: () => {},
   }
 
-  if (token) {
+  if (isLogin) {
     const chainType = chainId ? getChainType(chainId) : ChainType.UNKNOWN
     const accountTypes = accounts.map((account) => account.accountType)
     switch (chainType) {
@@ -61,7 +61,7 @@ export default (chainId?: number) => {
         break
     }
   }
-  let accountOperationDesc = ccountOperationDescMap[accountOperationType]
-  let handleAccountOperation = handleAccountOperationMap[accountOperationType]
+  const accountOperationDesc = ccountOperationDescMap[accountOperationType]
+  const handleAccountOperation = handleAccountOperationMap[accountOperationType]
   return { accountOperationType, accountOperationDesc, handleAccountOperation }
 }

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-29 16:47:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-31 18:51:31
+ * @LastEditTime: 2022-09-06 13:57:19
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react'
@@ -18,11 +18,14 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { AsyncRequestStatus } from '../types'
 
 export default (communityId?: number, slug?: string) => {
-  const { token } = useAppSelector(selectAccount)
+  const { isLogin } = useAppSelector(selectAccount)
   const dispatch = useAppDispatch()
   const { verifyCheckin: verifyCheckinState, checkin: checkinState } = useAppSelector(selectUserCommunityHandlesState)
 
-  const handleCheckin = useCallback(() => token && communityId && dispatch(checkin(communityId)), [token, communityId])
+  const handleCheckin = useCallback(
+    () => isLogin && communityId && dispatch(checkin(communityId)),
+    [isLogin, communityId],
+  )
   const userCheckinCommunityIds = useAppSelector(selectIds)
   const userCheckedinCommunityData = useAppSelector((state) => selectById(state, communityId || 0))
   const isVerifiedCheckin = verifyCheckinState.status === AsyncRequestStatus.FULFILLED
@@ -34,17 +37,17 @@ export default (communityId?: number, slug?: string) => {
   const openClaimModal = !!checkinState.openClaimModal
   // verify check in
   useEffect(() => {
-    if (token && communityId && !isCheckedin && verifyCheckinState.status === AsyncRequestStatus.IDLE) {
+    if (isLogin && communityId && !isCheckedin && verifyCheckinState.status === AsyncRequestStatus.IDLE) {
       dispatch(verifyCheckin({ communityId, slug }))
     }
-  }, [token, communityId, isCheckedin, verifyCheckinState.status])
+  }, [isLogin, communityId, isCheckedin, verifyCheckinState.status])
 
   // empty check in
   useEffect(() => {
-    if (!token) {
+    if (!isLogin) {
       dispatch(removeAll)
     }
-  }, [token])
+  }, [isLogin])
 
   // reset verify in
   useEffect(() => {

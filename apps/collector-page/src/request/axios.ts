@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 16:17:55
+ * @LastEditTime: 2022-09-06 14:02:18
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
@@ -45,7 +45,8 @@ axiosInstance.interceptors.request.use(
     if (!config.headers) config.headers = {}
     config.headers.Authorization = `Bearer `
     if (needToken) {
-      const token = config.headers?.token || store.getState().account.token // token从store中获取
+      const { account } = store.getState()
+      const token = config.headers?.token || (account.isLogin ? account.token : '') // token从store中获取
       config.headers.Authorization = `Bearer ${token}`
     }
     // 2、get请求，params参数序列化
