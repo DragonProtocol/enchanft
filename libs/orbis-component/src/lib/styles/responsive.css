@@ -1,0 +1,84 @@
+/** Rules for mobiles */
+@media screen and (max-width: 850px) {
+  .main {
+    margin: 0
+  }
+  .top-mobile {
+    display: flex;
+  }
+  .navigation-container {
+    display: none;
+  }
+
+  .right-side {
+    display: none;
+  }
+
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .post .user-container .user-details-container .badge {
+    display: none !important;
+  }
+  .nfts-container .nft-card {
+    margin-right: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+  .nft-card img.nft-image {
+    width: 100%;
+  }
+  .nft-card .nft-details {
+    width: 100%;
+  }
+  .groups-container .one-group {
+    margin-right: 2%;
+    width: 48%;
+  }
+  .doc-img-container img {
+    max-width: 100%;
+  }
+  .reply-to-content {
+    flex-direction: column
+  }
+  .reply-to-container .link-reply {
+    align-self: flex-start;
+    margin-top: 20px;
+  }
+  .reply-to-container .reply-to-content-post {
+    margin-left: 47px;
+    margin-top: -7px;
+  }
+  .post .reactions {
+    margin-left: 0px;
+  }
+  .post .no-blockchain-activity {
+    flex-direction: column;
+  }
+  .post .no-blockchain-activity.follow p {
+    margin-bottom: 5px;
+  }
+  .padding-sub-reply {
+    margin-left: 15px;
+  }
+  .feed-messages .one-message {
+    width: 70%;
+  }
+}
+
+/** Rules for tables or smaller desktop */
+@media screen and (min-width:851px) and (max-width: 1190px) {
+  .top-mobile {
+    display: flex;
+  }
+  .post .user-container .user-details-container .badge {
+    display: none !important;
+  }
+  .right-side {
+    display: none;
+  }
+  .hide-tablet {
+    display: none !important;
+  }
+}
