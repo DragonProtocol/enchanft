@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 import bs58 from 'bs58'
 import { useNavigate } from 'react-router-dom'
 
-import { selectAccount, setDefaultWallet, setPubkey, setWalletChecked } from '../features/user/accountSlice'
+import { selectAccount, setDefaultWallet, setIsLogin, setPubkey, setWalletChecked } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { DEFAULT_WALLET, SIGN_MSG, TokenType } from '../utils/token'
 
@@ -67,26 +67,40 @@ export default function useWalletSign() {
   const walletCheck = async (metamaskValid: boolean, phantomValid: boolean) => {
     const defaultWallet = (localStorage.getItem(DEFAULT_WALLET) as TokenType) || ''
     if (defaultWallet === TokenType.Ethereum && metamaskValid) {
-      if (windowObj.metaMaskValidChecked) return
+      if (windowObj.metaMaskValidChecked) {
+        dispatch(setIsLogin(false))
+        return
+      }
       windowObj.metaMaskValidChecked = true
       const ethProvider = await getEthProvider()
-      if (!ethProvider) return
+      if (!ethProvider) {
+        dispatch(setIsLogin(false))
+        return
+      }
       const signer = ethProvider.getSigner()
       const addr = await signer.getAddress()
-      if (!addr) return
+      if (!addr) {
+        dispatch(setIsLogin(false))
+        return
+      }
       dispatch(setPubkey(addr))
     }
     if (defaultWallet === TokenType.Solana && phantomValid) {
-      if (windowObj.phantomValidChecked) return
+      if (windowObj.phantomValidChecked) {
+        dispatch(setIsLogin(false))
+        return
+      }
       windowObj.phantomValidChecked = true
       console.log('getSolanaProvider' + Date.now())
       const provider = await getSolanaProvider()
       if (!provider) {
+        dispatch(setIsLogin(false))
         return
       }
       const addr = provider.publicKey.toString()
 
       if (!addr) {
+        dispatch(setIsLogin(false))
         return
       }
       dispatch(setPubkey(addr))

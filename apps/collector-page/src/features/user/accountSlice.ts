@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 14:17:44
+ * @LastEditTime: 2022-09-06 14:40:34
  * @Description: 用户的账户信息
  */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
@@ -96,7 +96,7 @@ export type AccountState = {
 
 // 用户账户信息
 const initialState: AccountState = {
-  isLogin: false,
+  isLogin: !!localStorage.getItem(LAST_LOGIN_PUBKEY) && !!localStorage.getItem(LAST_LOGIN_TOKEN),
   status: AsyncRequestStatus.IDLE,
   linkStatus: AsyncRequestStatus.IDLE,
   defaultWallet: (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '',
