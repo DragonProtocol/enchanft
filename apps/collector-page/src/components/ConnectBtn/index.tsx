@@ -17,6 +17,7 @@ import {
   userLogin,
   ChainType,
   setConnectWalletModalShow,
+  setIsLogin,
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
@@ -42,6 +43,7 @@ export default function ConnectBtn() {
       dispatch(setPubkey(''))
       dispatch(setAvatar(''))
       dispatch(setName(''))
+      dispatch(setIsLogin(false))
     }
   }, [account])
 
