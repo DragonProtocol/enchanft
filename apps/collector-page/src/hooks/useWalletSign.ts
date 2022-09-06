@@ -67,10 +67,7 @@ export default function useWalletSign() {
   const walletCheck = async (metamaskValid: boolean, phantomValid: boolean) => {
     const defaultWallet = (localStorage.getItem(DEFAULT_WALLET) as TokenType) || ''
     if (defaultWallet === TokenType.Ethereum && metamaskValid) {
-      if (windowObj.metaMaskValidChecked) {
-        dispatch(setIsLogin(false))
-        return
-      }
+      if (windowObj.metaMaskValidChecked) return
       windowObj.metaMaskValidChecked = true
       const ethProvider = await getEthProvider()
       if (!ethProvider) {
@@ -86,10 +83,7 @@ export default function useWalletSign() {
       dispatch(setPubkey(addr))
     }
     if (defaultWallet === TokenType.Solana && phantomValid) {
-      if (windowObj.phantomValidChecked) {
-        dispatch(setIsLogin(false))
-        return
-      }
+      if (windowObj.phantomValidChecked) return
       windowObj.phantomValidChecked = true
       console.log('getSolanaProvider' + Date.now())
       const provider = await getSolanaProvider()
