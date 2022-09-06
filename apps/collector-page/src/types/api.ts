@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-05 11:10:34
+ * @LastEditTime: 2022-09-06 17:26:56
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -100,7 +100,9 @@ export type CommunityCollectionResponse = {
   projects: CommunityCollectionProjectItem[]
 }
 
-export type CommunityBasicInfoResponse = Community
+export type CommunityBasicInfoResponse = Community & {
+  chainId: number
+}
 
 export type CommunityContributionRankItem = ContributionRank
 export type CommunityContributionRankResponse = CommunityContributionRankItem[]

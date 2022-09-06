@@ -32,6 +32,8 @@ import { downloadContributions } from '../services/api/community'
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
+import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
+import { CheckinStatusType } from '../components/business/community/CommunityCheckinButton'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
@@ -51,6 +53,12 @@ const Contributionranks: React.FC = () => {
       dispatch(fetchContributionCommunityInfo(projectSlug))
     }
   }, [projectSlug])
+
+  // 按钮执行前要对账户进行的操作
+  const { accountOperationType, accountOperationDesc, handleAccountOperation } = useAccountOperationForChain(
+    community?.chainId,
+  )
+
   // 用户关注的社区ID集合
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
   const isFollowedCommunity =
@@ -89,9 +97,21 @@ const Contributionranks: React.FC = () => {
   const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal } =
     useCommunityCheckin(community?.id, projectSlug)
 
-  const loadingCheckin = checkinState.status === AsyncRequestStatus.PENDING
-  const disabledCheckin = loadingCheckin || isCheckedin
-
+  let checkinStatusType = CheckinStatusType.UNKNOWN
+  let checkinBtnText = ''
+  //  账户未绑定
+  if (accountOperationType !== AccountOperationType.COMPLETED) {
+    checkinStatusType = CheckinStatusType.ACCOUNT_OPERATION
+    checkinBtnText = accountOperationDesc
+  } else {
+    if (isCheckedin) {
+      checkinStatusType = CheckinStatusType.CHECKEDIN
+    } else if (checkinState.status === AsyncRequestStatus.PENDING) {
+      checkinStatusType = CheckinStatusType.CHECKING
+    } else {
+      checkinStatusType = CheckinStatusType.CHECKIN
+    }
+  }
   // 展示数据
 
   const contributionranksLoading = contributionranksState.status === AsyncRequestStatus.PENDING
@@ -162,12 +182,11 @@ const Contributionranks: React.FC = () => {
             <ContributionAbout
               data={communityInfo}
               viewConfig={{
-                displayCheckin: true,
-                loadingCheckin: loadingCheckin,
-                disabledCheckin: disabledCheckin,
-                isCheckedin: isCheckedin,
+                checkinStatusType,
+                checkinBtnText,
               }}
-              onCommunityCheckin={handleCheckin}
+              onCheckin={handleCheckin}
+              onAccountOperation={handleAccountOperation}
             />
           </ContributionAboutBox>
         </ContributionRigtBox>
