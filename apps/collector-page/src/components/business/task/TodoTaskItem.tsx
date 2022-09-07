@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-02 12:01:05
+ * @LastEditTime: 2022-09-07 10:45:06
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -17,7 +17,7 @@ import MoodBadIcon from '@mui/icons-material/MoodBad'
 import TaskActionList, { TaskActionsListHandlesType } from './TaskActionList'
 import { todoTaskCompleteStatusMap } from './TodoTaskList'
 import { useNavigate } from 'react-router-dom'
-import TaskMintButton from './TaskMintButton'
+import ProjectMintButton from '../project/ProjectMintButton'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 
 export type TodoTaskItemDataType = {
@@ -207,7 +207,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
       switch (reward.type) {
         case RewardType.WHITELIST:
           if (!project.mintUrl) return null
-          return <TaskMintButton startTimestamp={mintStartTime} onClick={onMintClick} disabled={disabledMint} />
+          return <ProjectMintButton startTimestamp={mintStartTime} onClick={onMintClick} disabled={disabledMint} />
         case RewardType.CONTRIBUTION_TOKEN:
           return (
             <RewardTextBox>
