@@ -3,6 +3,8 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+// import {OrbisComponent} from '@ecnft/orbis-component/'
+import { OrbisComponent } from '../../../../libs/orbis-component/src'
 import {
   ProjectDetailEntity,
   fetchProjectDetail,
@@ -290,7 +292,7 @@ const Project: React.FC = () => {
             />
           </ExploreTaskListBox>
         </ProjectEventsBox>
-
+        <OrbisComponent/>
         {/* <ProjectOtherInfoBox>
             <ProjectOtherInfoLeftBox>
               <ProjectLabelBox>

@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useRouter } from 'next/router'
-import Head from 'next/head'
-
 /** Import Orbis SDK */
 import { Orbis } from "@orbisclub/orbis-sdk";
 
