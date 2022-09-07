@@ -8,8 +8,12 @@ import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import CardItemBox from '../../common/card/CardItemBox'
 import { getTaskRewardTypeValue } from '../../../utils/task'
 
-export type WhitelistItemDataType = {
+export type RewardItemDataType = {
   id: number
+  name: string
+  type: RewardType
+  raffled: boolean
+  data: RewardData
   task: {
     id: number
     image: string
@@ -18,12 +22,6 @@ export type WhitelistItemDataType = {
   community: {
     id: number
     name: string
-  }
-  reward?: {
-    name: string
-    type: RewardType
-    raffled: boolean
-    data: RewardData
   }
   whitelist: {
     id: number
@@ -34,34 +32,35 @@ export type WhitelistItemDataType = {
     mintMaxNum: number
     totalNum: number
   }
+  project: {
+    mintUrl: string
+  }
 }
 
-export type WhitelistItemViewConfigType = {
-  displayMint?: boolean
+export type RewardItemViewConfigType = {
   disabledMint?: boolean
   loadingMint?: boolean
 }
 
-export type WhitelistItemDataViewType = {
-  data: WhitelistItemDataType
-  viewConfig?: WhitelistItemViewConfigType
+export type RewardItemDataViewType = {
+  data: RewardItemDataType
+  viewConfig?: RewardItemViewConfigType
 }
 
-export type WhitelistItemHandlesType = {
-  onMint?: (task: WhitelistItemDataType) => void
+export type RewardItemHandlesType = {
+  onMint?: (task: RewardItemDataType) => void
 }
 
-export type WhitelistItemProps = WhitelistItemDataViewType & WhitelistItemHandlesType
+export type RewardItemProps = RewardItemDataViewType & RewardItemHandlesType
 
-const defaultViewConfig: WhitelistItemViewConfigType = {
-  displayMint: false,
+const defaultViewConfig: RewardItemViewConfigType = {
   disabledMint: false,
   loadingMint: false,
 }
 
-const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint }: WhitelistItemProps) => {
-  const { task, community, reward, whitelist } = data
-  const { mintUrl } = whitelist
+const RewardItem: React.FC<RewardItemProps> = ({ data, viewConfig, onMint }: RewardItemProps) => {
+  const { type, task, community, whitelist, project } = data
+  const { mintUrl } = project
 
   const { disabledMint, loadingMint } = {
     ...defaultViewConfig,
@@ -74,31 +73,29 @@ const WhitelistItem: React.FC<WhitelistItemProps> = ({ data, viewConfig, onMint 
     // }
     window.open(mintUrl, '_blank', 'noopener,noreferrer')
   }
-  const rewardValue = getTaskRewardTypeValue(reward)
+  const rewardValue = getTaskRewardTypeValue(data)
   return (
-    <WhitelistItemWrapper>
+    <RewardItemWrapper>
       <ProjectImage src={task.image} />
-      <WhitelistInfoBox>
+      <RewardInfoBox>
         <TaskName>{task.name}</TaskName>
         <CommunityName>{community.name}</CommunityName>
-        {reward && (
-          <RewardTypeContentBox>
-            <RewardTypeText>{rewardValue}</RewardTypeText>
-            {mintUrl && (
-              <RewardWhitelistMintButton
-                data={whitelist}
-                onMint={handleMint}
-                loadingMint={loadingMint}
-                disabledMint={disabledMint}
-              />
-            )}
-          </RewardTypeContentBox>
-        )}
-      </WhitelistInfoBox>
-    </WhitelistItemWrapper>
+        <RewardTypeContentBox>
+          <RewardTypeText>{rewardValue}</RewardTypeText>
+          {type === RewardType.WHITELIST && mintUrl && (
+            <RewardWhitelistMintButton
+              data={whitelist}
+              onMint={handleMint}
+              loadingMint={loadingMint}
+              disabledMint={disabledMint}
+            />
+          )}
+        </RewardTypeContentBox>
+      </RewardInfoBox>
+    </RewardItemWrapper>
   )
 }
-export default WhitelistItem
+export default RewardItem
 
 type RewardWhitelistMintButtonProps = {
   data: {
@@ -222,7 +219,7 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
   )
 }
 
-const WhitelistItemWrapper = styled(CardItemBox)`
+const RewardItemWrapper = styled(CardItemBox)`
   height: 406px;
   display: flex;
   flex-direction: column;
@@ -233,7 +230,7 @@ const ProjectImage = styled.img`
   height: 265px;
   object-fit: cover;
 `
-const WhitelistInfoBox = styled.div`
+const RewardInfoBox = styled.div`
   flex: 1;
   padding: 10px 20px;
   display: flex;

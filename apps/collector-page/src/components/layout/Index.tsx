@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 14:19:36
+ * @LastEditTime: 2022-09-07 11:51:05
  * @Description: 站点布局入口
  */
 import React, { useEffect, useState } from 'react'
@@ -19,7 +19,7 @@ import { matchRoutes, useLocation } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { selectAccount, setIsLogin, userLink } from '../../features/user/accountSlice'
 import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
-import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
+import { fetchUserRewards } from '../../features/user/userRewardsSlice'
 import { fetchTodoTasks, selectAll } from '../../features/user/todoTasksSlice'
 import { TaskTodoCompleteStatus } from '../../types/entities'
 import { useGAPageView } from '../../hooks'
@@ -58,7 +58,7 @@ const Layout: React.FC = () => {
       return
     }
     dispatch(fetchFollowedCommunities())
-    dispatch(fetchUserWhitelists())
+    dispatch(fetchUserRewards())
     dispatch(fetchTodoTasks())
   }, [isLogin])
   const todoTasks = useAppSelector(selectAll)

@@ -33,7 +33,7 @@ import userTaskHandlesReducer from '../features/user/taskHandlesSlice'
 import userTodoTasksReducer from '../features/user/todoTasksSlice'
 import userFollowedCommunitiesReducer from '../features/user/followedCommunitiesSlice'
 import userCheckinCommunitiesReducer from '../features/user/checkinCommunitiesSlice'
-import userWhitelistsReducer from '../features/user/userWhitelistsSlice'
+import userRewardsReducer from '../features/user/userRewardsSlice'
 import userCommunityHandlesReducer from '../features/user/communityHandlesSlice'
 
 import creatorReducer from '../features/creator'
@@ -61,7 +61,7 @@ export const store = configureStore({
     userTodoTasks: userTodoTasksReducer,
     userFollowedCommunities: userFollowedCommunitiesReducer,
     userCheckinCommunities: userCheckinCommunitiesReducer,
-    userWhitelists: userWhitelistsReducer,
+    userRewards: userRewardsReducer,
     userCommunityHandles: userCommunityHandlesReducer,
 
     creator: creatorReducer,

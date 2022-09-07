@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 17:26:56
+ * @LastEditTime: 2022-09-07 15:17:00
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -165,10 +165,10 @@ export type TaskDetailResponse = Task & {
 }
 
 /** whitelist api */
-export type UserWhitelistItem = {
+export type UserRewardItem = Reward & {
   task: Task
   community: Community
   whitelist: Whitelist
-  reward?: Reward
+  project: Project
 }
-export type UserWhitelistsResponse = UserWhitelistItem[]
+export type UserRewardsResponse = UserRewardItem[]

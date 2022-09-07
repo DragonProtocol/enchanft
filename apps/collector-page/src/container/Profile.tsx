@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 18:23:13
+ * @LastEditTime: 2022-09-07 14:56:13
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -49,11 +49,11 @@ import { sortPubKey } from '../utils/solana'
 import useWalletSign from '../hooks/useWalletSign'
 import { SIGN_MSG } from '../utils/token'
 import {
-  selectUserWhitelistsState,
-  UserWhitelistForEntity,
-  selectAll as selectAllForUserWhitelists,
-} from '../features/user/userWhitelistsSlice'
-import WhitelistList, { WhitelistListItemsType } from '../components/business/whitelist/WhitelistList'
+  selectUserRewardsState,
+  UserRewardForEntity,
+  selectAll as selectAllForUserRewards,
+} from '../features/user/userRewardsSlice'
+import RewardList, { RewardListItemsType } from '../components/business/reward/RewardList'
 import ButtonBase, { ButtonInfo, ButtonPrimary } from '../components/common/button/ButtonBase'
 import IconTwitterWhite from '../components/common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
@@ -79,16 +79,11 @@ const formatStoreDataToComponentDataByFollowedCommunities = (
     }
   })
 }
-const formatStoreDataToComponentDataByUserWhitelists = (
-  whitelists: UserWhitelistForEntity[],
-): WhitelistListItemsType => {
-  return whitelists.map((item) => {
-    const displayMint = Boolean(item.whitelist?.mintUrl)
+const formatStoreDataToComponentDataByUserRewards = (rewards: UserRewardForEntity[]): RewardListItemsType => {
+  return rewards.map((item) => {
     return {
       data: { ...item },
-      viewConfig: {
-        displayMint,
-      },
+      viewConfig: {},
     }
   })
 }
@@ -131,11 +126,11 @@ const Profile: React.FC = () => {
   const { status: followedCommunitiesStatus } = useAppSelector(selectUserFollowedCommunitiesState)
   const loadingFollowedCommunities = followedCommunitiesStatus === AsyncRequestStatus.PENDING
   const followedCommunityItems = formatStoreDataToComponentDataByFollowedCommunities(followedCommunities)
-  // 我的whitelist列表
-  const whitelists = useAppSelector(selectAllForUserWhitelists)
-  const { status: whitelistsStatus } = useAppSelector(selectUserWhitelistsState)
-  const loadingUserWhitelists = whitelistsStatus === AsyncRequestStatus.PENDING
-  const whitelistItems = formatStoreDataToComponentDataByUserWhitelists(whitelists)
+  // 我的reward列表
+  const rewards = useAppSelector(selectAllForUserRewards)
+  const { status: rewardsStatus } = useAppSelector(selectUserRewardsState)
+  const loadingUserRewards = rewardsStatus === AsyncRequestStatus.PENDING
+  const rewardItems = formatStoreDataToComponentDataByUserRewards(rewards)
 
   const twitter = account.accounts.find((item) => item.accountType === 'TWITTER')?.thirdpartyName
   const discord = account.accounts.find((item) => item.accountType === 'DISCORD')?.thirdpartyName
@@ -231,7 +226,7 @@ const Profile: React.FC = () => {
           {curProfileTab === 'myCommunities' && (
             <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
           )}
-          {curProfileTab === 'myRewards' && <WhitelistList items={whitelistItems} loading={loadingUserWhitelists} />}
+          {curProfileTab === 'myRewards' && <RewardList items={rewardItems} loading={loadingUserRewards} />}
         </ProfileTabContentBox>
       </ProfileInfoTabsBox>
       <DialogBox open={openDialog}>
