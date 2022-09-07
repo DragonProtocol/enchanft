@@ -8,13 +8,13 @@ export enum TaskStatusButtonType {
   ACCOUNT_OPERATION = 'ACCOUNT_OPERATION',
   TAKE = 'TAKE',
   COMPLETE = 'COMPLETE',
-  MISSION_OF = 'MISSION_OF',
+  MISSION_OFF = 'MISSION_OFF',
 }
 const buttonTextMap = {
   [TaskStatusButtonType.ACCOUNT_OPERATION]: 'Account operation',
   [TaskStatusButtonType.TAKE]: 'Apply For WL',
   [TaskStatusButtonType.COMPLETE]: 'Outcome Pending',
-  [TaskStatusButtonType.MISSION_OF]: 'Mission of',
+  [TaskStatusButtonType.MISSION_OFF]: 'Mission off',
 }
 export type TaskStatusButtonDataViewType = {
   type: TaskStatusButtonType
@@ -67,7 +67,7 @@ const TaskStatusButton: React.FC<TaskStatusButtonProps> = ({
         )
       case TaskStatusButtonType.COMPLETE:
         return <TaskStatusDescBtn>{_btnText}</TaskStatusDescBtn>
-      case TaskStatusButtonType.MISSION_OF:
+      case TaskStatusButtonType.MISSION_OFF:
         return <TaskBtn disabled={true}>{_btnText}</TaskBtn>
     }
   }

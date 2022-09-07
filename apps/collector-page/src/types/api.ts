@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-07 15:17:00
+ * @LastEditTime: 2022-09-07 19:24:48
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -35,58 +35,58 @@ export type ExploreSearchTasksRequestParams = {
   keywords?: string
 }
 export type ExploreSearchTaskItem = Task & {
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  actions: Action[]
-  project: Project
+  winnerNum?: number
+  acceptedStatus?: TaskAcceptedStatus
+  actions?: Action[]
+  project?: Project
   reward?: Reward
 }
 export type ExploreRecommendTaskItem = Task & {
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  actions: Action[]
-  project: Project
+  winnerNum?: number
+  acceptedStatus?: TaskAcceptedStatus
+  actions?: Action[]
+  project?: Project
   reward?: Reward
 }
 
 // explore project
 export type TaskItem = Task & {
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  actions: Action[]
+  winnerNum?: number
+  acceptedStatus?: TaskAcceptedStatus
+  actions?: Action[]
 }
 export type ExploreSearchProjectsRequestParams = {
   mintStage?: MintStage | ''
   keywords?: string
 }
 export type ExploreSearchProjectItem = Project & {
-  community: Community
-  tasks: TaskItem[]
+  community?: Community
+  tasks?: TaskItem[]
 }
 
 export type ExploreRecommendProjectItem = Project & {
-  community: Community
-  tasks: TaskItem[]
+  community?: Community
+  tasks?: TaskItem[]
 }
 
 // project detail
 export type ProjectDetailTaskItem = Task & {
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  actions: Action[]
+  winnerNum?: number
+  acceptedStatus?: TaskAcceptedStatus
+  actions?: Action[]
   reward?: Reward
 }
 export type ProjectDetailResponse = Project & {
-  tasks: ProjectDetailTaskItem[]
-  teamMembers: Team[]
-  roadmap: Roadmap[]
-  whitelists: Whitelist[]
-  community: Community
+  tasks?: ProjectDetailTaskItem[]
+  teamMembers?: Team[]
+  roadmap?: Roadmap[]
+  whitelists?: Whitelist[]
+  community?: Community
 }
 
 /** community api */
 export type CommunityDetailBasicInfo = Community & {
-  communityFollowerNum: number
+  communityFollowerNum?: number
 }
 export type CommunityCollectionProjectItem = Project & {
   tasks: TaskItem[]

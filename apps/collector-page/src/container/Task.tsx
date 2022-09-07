@@ -85,7 +85,7 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
         }
       case TaskTodoCompleteStatus.CLOSED: // 任务已关闭
         return {
-          type: TaskStatusButtonType.MISSION_OF,
+          type: TaskStatusButtonType.MISSION_OFF,
         }
     }
     return null

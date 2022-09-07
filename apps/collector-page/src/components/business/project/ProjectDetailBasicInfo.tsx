@@ -16,7 +16,7 @@ export type ProjectDetailBasicInfoDataType = {
   publicSalePrice: string
   injectedCoins: number
   chainId: number
-  whitelists: Whitelist[]
+  whitelists?: Whitelist[]
 }
 
 export type ProjectDetailBasicInfoViewConfigType = {
@@ -58,28 +58,28 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
   }
 
   const renderWhitelist = () => {
+    if (!whitelists || !whitelists.length) return null
     const whitelist = whitelists[0]
-    if (!whitelist) {
-      return null
-    }
+    if (!whitelist) return
     const whitelistMintPriceText = whitelist.mintPrice ? `Mint Price ${whitelist.mintPrice}` : 'Free Mint'
     return (
       <>
         <ProjectMintInfoBox>
           <ProjectMintInfoBoxTop>
             <ProjectMintInfoLabel>Whitelist</ProjectMintInfoLabel>
-            {whitelist.mintStartTime < new Date().getTime() ? (
-              <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
-            ) : (
-              <>
-                <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
-                <MintTimeCountdown timestamp={whitelist.mintStartTime} />
-              </>
-            )}
+            {whitelist.mintStartTime &&
+              (whitelist.mintStartTime < new Date().getTime() ? (
+                <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
+              ) : (
+                <>
+                  <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
+                  <MintTimeCountdown timestamp={whitelist.mintStartTime} />
+                </>
+              ))}
           </ProjectMintInfoBoxTop>
 
           <PrjectMintInfoPriceText>
-            MAX {whitelist.mintMaxNum} Tokens . {whitelistMintPriceText}
+            {whitelist?.mintMaxNum && 'MAX ' + whitelist.mintMaxNum + ' Tokens .'} {whitelistMintPriceText}
           </PrjectMintInfoPriceText>
         </ProjectMintInfoBox>
       </>
@@ -105,17 +105,19 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
           <ProjectMintInfoBox>
             <ProjectMintInfoBoxTop>
               <ProjectMintInfoLabel>Public</ProjectMintInfoLabel>
-              {publicSaleTime < new Date().getTime() ? (
-                <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
-              ) : (
-                <>
-                  <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
-                  <MintTimeCountdown timestamp={publicSaleTime} />
-                </>
-              )}
+              {publicSaleTime &&
+                (publicSaleTime < new Date().getTime() ? (
+                  <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
+                ) : (
+                  <>
+                    <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
+                    <MintTimeCountdown timestamp={publicSaleTime} />
+                  </>
+                ))}
             </ProjectMintInfoBoxTop>
-
-            <PrjectMintInfoPriceText>MAX 1 Tokens . Mint Price {publicSalePrice}</PrjectMintInfoPriceText>
+            {publicSalePrice && (
+              <PrjectMintInfoPriceText>MAX 1 Tokens . Mint Price {publicSalePrice}</PrjectMintInfoPriceText>
+            )}
           </ProjectMintInfoBox>
         </>
       )}
