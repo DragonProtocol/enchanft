@@ -42,7 +42,8 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.8",
     "styled-components": "^5.3.5",
-    "swiper": "^8.2.4"
+    "swiper": "^8.2.4",
+    "@ecnft/orbis-component": "*"
   },
   "scripts": {
     "start": "craco start",

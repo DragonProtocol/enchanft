@@ -1,1 +1,1 @@
-export * from './lib/orbis-component';
+export * from './lib/orbis-component.jsx';

@@ -3,8 +3,8 @@ import '../styles/globals.css'
 import '../styles/utilities.css'
 import '../styles/responsive.css'
 import styles from '../styles/Home.module.css'
-import Head from 'next/head'
-import { useRouter } from 'next/router'
+// import Head from 'next/head'
+// import { useRouter } from 'next/router'
 
 /** Import some Orbis modules */
 import { Navigation } from "../components/Navigation";
@@ -84,7 +84,7 @@ function App({ Component, pageProps }) {
 
   return(
     <>
-      <Head>
+      {/* <Head>
           <title key="title">Orbis Group</title>
           <meta name="description" content="Orbis is a fully decentralized social layer for the internet that any developers can use to build their own social apps or features." key="description"></meta>
           <meta property="og:title" content="Orbis Group" key="og_title" />
@@ -94,7 +94,7 @@ function App({ Component, pageProps }) {
           <link rel="icon" href="/favicon.png" />
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
+      </Head> */}
       <GlobalContext.Provider value={{ user, setUser, group_id, orbis }}>
         <ModalsContext.Provider value={{ setModalVis, navigationVis }}>
           <div className={styles.container}>
