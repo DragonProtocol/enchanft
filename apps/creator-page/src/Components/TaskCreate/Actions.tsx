@@ -1,17 +1,21 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { checkTweetIdValid, checkTwitterNameValid } from '../../api';
+import { ChainType, checkTweetIdValid, checkTwitterNameValid } from '../../api';
 import { CREATE_TASK_DEFAULT_INVITE_NUM } from '../../utils/constants';
 import { connectionSocialMedia } from '../../utils/socialMedia';
 import IconCheckbox from '../Icons/IconCheckbox';
 import IconCheckboxChecked from '../Icons/IconCheckboxChecked';
 import IconDiscord from '../Icons/IconDiscord';
 import IconPlus from '../Icons/IconPlus';
-import IconWL from '../Icons/PngIconWL';
+import IconWL from '../Icons/IconWL';
 import IconTwitter from '../Icons/IconTwitter';
 import PngIconDelete from '../Icons/PngIconDelete';
 import PngIconDone from '../Icons/PngIconDone';
 import { Action, ActionType, ActionTypeMore } from './type';
+import { useAppConfig } from '../../AppProvider';
+import numberInput from '../../utils/numberinput';
+import IconTwitterWhite from '../Icons/IconTwitterWhite';
+import IconTip from '../Icons/IconTip';
 
 export default function Actions({
   hasInviteBot,
@@ -28,15 +32,24 @@ export default function Actions({
   updateStateActions: (arg0: Action[]) => void;
   updateStateFollowTwitters: (arg0: string[]) => void;
 }) {
-  // TODO
-  const discord =
-    'account.accounts.find((item) => item.accountType === ChainType.DISCORD)';
-  const twitter =
-    'account.accounts.find((item) => item.accountType === ChainType.TWITTER)';
+  const { account } = useAppConfig();
+  const discord = account.info?.accounts.find(
+    (item) => item.accountType === ChainType.DISCORD
+  );
+  const twitter = account.info?.accounts.find(
+    (item) => item.accountType === ChainType.TWITTER
+  );
   const [followTwitter, setFollowTwitter] = useState(false);
   const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<
     Array<string>
-  >([]);
+  >(
+    followTwitters.length > 0
+      ? [...followTwitters]
+      : projectTwitter
+      ? [projectTwitter]
+      : []
+  );
+
   const [hasDiscordRole, setHasDiscordRole] = useState(false);
   const [discordRole, setDiscordRole] = useState('');
   const [discordRoleDesc, setDiscordRoleDesc] = useState('');
@@ -97,7 +110,7 @@ export default function Actions({
       msg &&
         actions.push({
           name: msg,
-          type: ActionType.UNKNOWN,
+          type: ActionType.WL,
           typeMore: ActionTypeMore.INVITE_PEOPLE,
           description: '',
           num: inviteNum,
@@ -109,7 +122,7 @@ export default function Actions({
       msg &&
         actions.push({
           name: msg,
-          type: ActionType.UNKNOWN,
+          type: ActionType.DISCORD,
           typeMore: ActionTypeMore.DISCORD_INVITES_PEOPLE,
           description: '',
           num: inviteDiscordNum,
@@ -157,7 +170,7 @@ export default function Actions({
       msg &&
         actions.push({
           name: msg,
-          type: ActionType.UNKNOWN,
+          type: ActionType.WL,
           typeMore: ActionTypeMore.MEET_CONTRIBUTION_SCORE,
           description: '',
           require_score: joinCommunityContributionNum,
@@ -338,6 +351,40 @@ export default function Actions({
               <IconWL />
             </div>
           </div>
+
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={joinCommunityContribution}
+                onChange={() => {
+                  const nextValue = !joinCommunityContribution;
+                  setJoinCommunityContribution(nextValue);
+                }}
+              />
+              <span id="join-community-contribution-msg" className="msg">
+                {projectName || 'XXX'} community contribution token {'>'}
+                <input
+                  title="task-join-community"
+                  min={'1'}
+                  type="number"
+                  value={
+                    joinCommunityContributionNum === 0
+                      ? ''
+                      : joinCommunityContributionNum.toString()
+                  }
+                  placeholder="X"
+                  onKeyPress={numberInput}
+                  onChange={(e) => {
+                    if (!joinCommunityContribution) return;
+                    const value = Number(e.target.value);
+                    setJoinCommunityContributionNum(value);
+                  }}
+                />
+                <span>{` ${joinCommunityContributionNum} `}</span>
+              </span>
+              <IconWL />
+            </div>
+          </div>
         </div>
         <div>
           {hasInviteBot && (
@@ -450,39 +497,6 @@ export default function Actions({
               <IconNotify />
             </div>
           </div> */}
-          <div className="content-item">
-            <div className="desc">
-              <CustomCheckBox
-                checked={joinCommunityContribution}
-                onChange={() => {
-                  const nextValue = !joinCommunityContribution;
-                  setJoinCommunityContribution(nextValue);
-                }}
-              />
-              <span id="join-community-contribution-msg" className="msg">
-                {projectName || 'XXX'} community contribution {'>'}
-                <input
-                  title="task-join-community"
-                  min={'1'}
-                  type="number"
-                  value={
-                    joinCommunityContributionNum === 0
-                      ? ''
-                      : joinCommunityContributionNum.toString()
-                  }
-                  placeholder="X"
-                  onKeyPress={numberInput}
-                  onChange={(e) => {
-                    if (!joinCommunityContribution) return;
-                    const value = Number(e.target.value);
-                    setJoinCommunityContributionNum(value);
-                  }}
-                />
-                <span>{` ${joinCommunityContributionNum} `}</span>
-              </span>
-              <IconWL />
-            </div>
-          </div>
 
           {custom.map((item, idx) => {
             return (
@@ -619,26 +633,30 @@ function TweetIdInput({
   const timerRef = useRef<NodeJS.Timeout>();
   const [checked, setChecked] = useState(false);
   const [dataValid, setDataValid] = useState(true);
+  const { account } = useAppConfig();
 
-  const checkValid = async (data: string) => {
-    const checkData = data.trim();
-    if (!checkData) return;
-    try {
-      await checkTweetIdValid(checkData, ''); // TODO
-      setRetweetId(data);
-    } catch (error) {
-      setDataValid(false);
-    } finally {
-      setChecked(true);
-    }
-  };
+  const checkValid = useCallback(
+    async (data: string) => {
+      const checkData = data.trim();
+      if (!checkData || !account.info) return;
+      try {
+        await checkTweetIdValid(checkData, account.info.token);
+        setRetweetId(data);
+      } catch (error) {
+        setDataValid(false);
+      } finally {
+        setChecked(true);
+      }
+    },
+    [account.info, setRetweetId]
+  );
 
   return (
     <>
       <span className="username tint">
         Tweet Id
         <span className="tint-box">
-          {/* <IconTip /> */}
+          <IconTip />
           <span className="tint-msg">
             https://twitter.com/username/status/<b>tweetID</b>
           </span>
@@ -667,7 +685,7 @@ function TweetIdInput({
         />
       </div>
       {checked && dataValid && (
-        <div className="tint-box">{/* <PngIconDone /> */}</div>
+        <div className="tint-box">{<PngIconDone />}</div>
       )}
     </>
   );
@@ -704,7 +722,7 @@ function TwitterFollowed({
                 updateTwitterLinkResult([...before, ...after]);
               }}
             >
-              {/* <PngIconDelete /> */}
+              <PngIconDelete />
             </div>
           </div>
         );
@@ -726,12 +744,13 @@ function AddTwitterToFollowed({
   const [checked, setChecked] = useState(false);
   const [dataValid, setDataValid] = useState(true);
   const [addNew, setAddNew] = useState(false);
+  const { account } = useAppConfig();
 
   const checkValid = async (data: string) => {
     const checkData = data.trim();
-    if (!checkData) return;
+    if (!checkData || !account.info) return;
     try {
-      await checkTwitterNameValid(checkData, ''); // TODO
+      await checkTwitterNameValid(checkData, account.info.token);
       if (addTwitterToFollowedAlive) {
         addValid(checkData);
         setAddNew(false);
@@ -836,16 +855,10 @@ function ConnectTwitter() {
       className="btn twitter"
       onClick={() => connectionSocialMedia('twitter')}
     >
-      {/* <TwitterIcon /> */}
+      <IconTwitterWhite />
       <p>{'Connect Twitter First'}</p>
     </div>
   );
-}
-
-function numberInput(e: React.KeyboardEvent<HTMLInputElement>) {
-  if (e.charCode < 48 || e.charCode > 57) {
-    e.preventDefault();
-  }
 }
 
 const SelectActionsBox = styled.div`

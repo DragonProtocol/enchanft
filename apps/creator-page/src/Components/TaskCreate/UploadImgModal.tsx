@@ -1,6 +1,6 @@
 import Modal from 'react-modal';
-import ReactLoading from 'react-loading';
 import styled from 'styled-components';
+import Loading from '../Loading';
 
 Modal.setAppElement('#upload-img-modal');
 export default function UploadImgModal({
@@ -16,23 +16,20 @@ export default function UploadImgModal({
       style={{
         overlay: {
           backgroundColor: 'rgba(0,0,0,0.3)',
+          zIndex: 200,
+          backdropFilter: 'blur(12px)',
         },
         content: {
-          width: '400px',
-          height: '220px',
+          display: 'flex',
+          alignItems: 'center',
           margin: '0 auto',
-          padding: '25px 0',
-          textAlign: 'center',
+          background: 'none',
+          border: 'none',
         },
       }}
     >
       <ContentBox>
-        <ReactLoading
-          type={'spin'}
-          color={'#000'}
-          height={'100%'}
-          width={'100%'}
-        />
+        <Loading />
         <p>Uploading Image</p>
       </ContentBox>
     </Modal>
@@ -40,10 +37,19 @@ export default function UploadImgModal({
 }
 
 const ContentBox = styled.div`
-  width: 40%;
   margin: 0 auto;
+  text-align: start;
+  background: #f7f9f1;
+  border-radius: 20px;
+  width: 400px;
+  padding: 30px 20px 20px 20px;
+  text-align: center;
+
+  & img {
+    width: 80px;
+  }
   & p {
     font-size: 20px;
-    font-weight: 700;
+    color: #333333;
   }
 `;

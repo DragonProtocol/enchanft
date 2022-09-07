@@ -8,16 +8,19 @@ import IconTwitter from '../Icons/IconTwitter';
 import PngIconAlarmClock from '../Icons/PngIconAlarmClock';
 import PngIconCaretLeft from '../Icons/PngIconCaretLeft';
 import PngIconGiftBox from '../Icons/PngIconGiftBox';
-import PngIconWL from '../Icons/PngIconWL';
+import IconWL from '../Icons/IconWL';
 import { ActionType, RewardType, State } from './type';
+import IconTip from '../Icons/IconTip';
 
 export default function Preview({
   state,
+  projectName,
   open,
   closeHandler,
   submitResult,
 }: {
   state: State;
+  projectName: string;
   open: boolean;
   closeHandler: () => void;
   submitResult: () => void;
@@ -55,7 +58,7 @@ export default function Preview({
             </button>
             <div className="title">
               <h3>{state.name}</h3>
-              <div className="project">Project:{state.projectName}</div>
+              <div className="project">Project: {projectName}</div>
             </div>
           </div>
 
@@ -86,7 +89,7 @@ export default function Preview({
                 )}
                 {state.reward.type === RewardType.CONTRIBUTION_TOKEN && (
                   <span>
-                    Reward: contribution token {state.reward.token_num}
+                    Reward: {state.reward.token_num} contribution token
                   </span>
                 )}
               </div>
@@ -109,7 +112,10 @@ export default function Preview({
                     Icon = IconNotify;
                   }
                   if (item.type === ActionType.UNKNOWN) {
-                    Icon = PngIconWL;
+                    Icon = IconTip;
+                  }
+                  if (item.type === ActionType.WL) {
+                    Icon = IconWL;
                   }
                   return (
                     <div key={idx} className="action-item">

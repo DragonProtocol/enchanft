@@ -30,13 +30,13 @@ export default function Header() {
   });
 
   const shortPubkey = useMemo(() => {
-    if (account.info.pubkey) {
+    if (account.info?.pubkey) {
       return (
         account.info.pubkey.slice(0, 4) + '..' + account.info.pubkey.slice(-4)
       );
     }
     return '';
-  }, [account.info.pubkey]);
+  }, [account.info?.pubkey]);
 
   return (
     <>
@@ -103,8 +103,8 @@ export default function Header() {
             >
               {(validLogin && (
                 <>
-                  <UserAvatar src={account.info.avatar} />
-                  {account.info.name || shortPubkey}
+                  <UserAvatar src={account.info?.avatar} />
+                  {account.info?.name || shortPubkey}
                 </>
               )) ||
                 'Connect Wallet'}

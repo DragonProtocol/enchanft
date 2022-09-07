@@ -20,7 +20,7 @@ import {
   TokenType,
 } from './utils/token';
 import bs58 from 'bs58';
-import { getProfile } from './api';
+import { AccountLink, ChainType, getProfile } from './api';
 import log from 'loglevel';
 
 // const connection = new Connection(clusterApiUrl('devnet'));
@@ -42,12 +42,41 @@ export type SignMsgResult = {
   signature: string;
 };
 
+export enum RoleType {
+  CREATOR = 'CREATOR',
+  COLLECTOR = 'COLLECTOR',
+}
+
+type AppAccountInfo = {
+  walletType: string;
+  pubkey: string;
+  token: string;
+  id: 0;
+  name: string;
+  avatar: string;
+  accounts: AccountLink[];
+  roles: string[];
+  resourcePermissions: {
+    resourceIds: number[];
+    resourceType: 'PROJECT';
+  }[];
+};
+type AppAccount = {
+  lastLoginToken: string;
+  lastPubkey: string;
+  lastLoginType: string;
+  lastLoginInfo: {
+    avatar: string;
+    name: string;
+  };
+  info: AppAccountInfo | null;
+};
 export interface AppContextData {
   phantomValid: boolean;
   metaMaskValid: boolean;
   phantom: PhantomProvider | null;
   metaMask: MetaMaskProvider | null;
-  account: any;
+  account: AppAccount;
   updateAccount: (arg0: any) => void;
   getSolanaProvider: () => void;
   getEthProvider: () => void;
@@ -56,7 +85,29 @@ export interface AppContextData {
   signMsgWithPhantom: () => Promise<SignMsgResult | undefined>;
   signMsgWithMetaMask: () => Promise<SignMsgResult | undefined>;
   validLogin: boolean;
+  isCreator: boolean;
 }
+
+const DefaultAccount: AppAccount = {
+  lastLoginToken: localStorage.getItem(LAST_LOGIN_TOKEN) || '',
+  lastPubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
+  lastLoginType: localStorage.getItem(LAST_LOGIN_TYPE) || '',
+  lastLoginInfo: {
+    avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
+    name: localStorage.getItem(LAST_LOGIN_NAME) || '',
+  },
+  info: {
+    walletType: '',
+    pubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
+    token: localStorage.getItem(LAST_LOGIN_TOKEN) || '',
+    id: 0,
+    name: localStorage.getItem(LAST_LOGIN_NAME) || '',
+    avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
+    accounts: [],
+    roles: [],
+    resourcePermissions: [],
+  },
+};
 
 const DefaultCtxData: AppContextData = {
   phantomValid: false,
@@ -64,26 +115,7 @@ const DefaultCtxData: AppContextData = {
   phantom: null,
   metaMask: null,
   validLogin: false,
-  account: {
-    lastLoginToken: localStorage.getItem(LAST_LOGIN_TOKEN) || '',
-    lastPubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
-    lastLoginType: localStorage.getItem(LAST_LOGIN_TYPE) || '',
-    lastLoginInfo: {
-      avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
-      name: localStorage.getItem(LAST_LOGIN_NAME) || '',
-    },
-    info: {
-      walletType: '',
-      pubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
-      token: localStorage.getItem(LAST_LOGIN_TOKEN) || '',
-      id: 0,
-      name: localStorage.getItem(LAST_LOGIN_NAME) || '',
-      avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
-      accounts: [],
-      roles: [],
-      resourcePermissions: [],
-    },
-  },
+  account: DefaultAccount,
   updateAccount: (arg0: any) => {},
   getSolanaProvider,
   getEthProvider,
@@ -91,6 +123,7 @@ const DefaultCtxData: AppContextData = {
   getPhantomAddr,
   signMsgWithPhantom,
   signMsgWithMetaMask,
+  isCreator: false,
 };
 
 export const AppContext = createContext<AppContextData>(DefaultCtxData);
@@ -103,7 +136,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   const [metaMaskValid, setMetaMaskValid] = useState(false);
   const [metaMask, setMetaMask] = useState<MetaMaskProvider | null>(null);
   const [phantom, setPhantom] = useState<PhantomProvider | null>(null);
-  const [account, setAccount] = useState<any>(DefaultCtxData.account);
+  const [account, setAccount] = useState<AppAccount>(DefaultCtxData.account);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -128,7 +161,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   const getProfileWithToken = useCallback(
     async (token: string, walletType: TokenType, pubkey: string) => {
       const resp = await getProfile(token);
-      console.log(resp.data);
+
       const { data } = resp.data;
       setAccount({
         ...account,
@@ -137,7 +170,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           pubkey: pubkey,
           ...data,
           token,
-        },
+        } as AppAccountInfo,
       });
     },
     [account]
@@ -163,7 +196,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         });
         console.log('metamaskValid', addr);
         if (account.lastPubkey !== addr.toString()) {
-          setAccount({ ...account, info: {} });
+          setAccount({ ...account, info: null });
         } else {
           await getProfileWithToken(
             account.lastLoginToken,
@@ -187,7 +220,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         });
         console.log('phantomValid', addr.toBase58());
         if (account.lastPubkey !== addr.toString()) {
-          setAccount({ ...account, info: {} });
+          setAccount({ ...account, info: null });
         } else {
           await getProfileWithToken(
             account.lastLoginToken,
@@ -201,7 +234,11 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   );
 
   const validLogin = useMemo(() => {
-    return !!(account.info.token && account.info.pubkey);
+    return !!(account.info?.token && account.info.pubkey);
+  }, [account]);
+
+  const isCreator = useMemo(() => {
+    return account.info?.roles.includes(RoleType.CREATOR) || false;
   }, [account]);
 
   log.debug('account', account);
@@ -216,6 +253,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         metaMask,
         phantom,
         account,
+        isCreator,
         updateAccount: (newAccount) => {
           setAccount({ ...account, ...newAccount });
         },

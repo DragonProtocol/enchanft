@@ -1,6 +1,8 @@
 import axios, { AxiosPromise } from 'axios';
 import qs from 'qs';
 
+import { State as CreateTaskState } from '../Components/TaskCreate/type';
+
 const ApiBaseUrl = process.env.REACT_APP_API_BASE_URL;
 console.log({ ApiBaseUrl });
 
@@ -17,18 +19,26 @@ export enum ChainType {
   DISCORD = 'DISCORD',
 }
 
-type Account = {
-  accountType: 'SOLANA' | 'EVM' | any;
-  thirdpartyId: string;
-  thirdpartyName: string;
-};
+export enum AsyncRequestStatus {
+  IDLE = 'idle',
+  PENDING = 'pending',
+  FULFILLED = 'fulfilled',
+  REJECTED = 'rejected',
+}
 
+export type AccountLink = {
+  accountType: ChainType;
+  id: 187;
+  thirdpartyId: '3VBhW51tUBzZfWpSv5fcZww3sMtcPoYq55k38rWPFsvi';
+  thirdpartyName: '';
+  userId: 63;
+};
 export type LoginResult = {
   token: string;
   id: number;
   name: string;
   avatar: string;
-  accounts: [Account];
+  accounts: AccountLink[];
   roles: ['COLLECTOR'];
   resourcePermissions: [];
 };
@@ -109,6 +119,73 @@ export function fetchDetailByProjectSlug(
   return axios({
     url: ApiBaseUrl + `/projects/${slug}`,
     method: 'get',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function createTask(data: CreateTaskState, token: string) {
+  const postData = {
+    projectId: data.projectId,
+    name: data.name,
+    description: data.description,
+    image: data.image,
+    winNum: data.winnerNum,
+    startTime: data.startTime,
+    endTime: data.endTime,
+    reward: {
+      type: data.reward.type,
+      raffled: data.reward.raffled,
+      name: data.reward.name,
+      data: {
+        token_num: data.reward.token_num,
+      },
+    },
+    actions: data.actions.map((item) => {
+      return {
+        name: item.name,
+        type: item.typeMore,
+        description: item.description,
+        data: {
+          url: item.url,
+          server_id: item.server_id,
+          require_score: item.require_score,
+          num: item.num,
+          accounts: item.accounts,
+          tweet_id: item.tweet_id,
+          role: item.role,
+        },
+      };
+    }),
+  };
+
+  return axios({
+    url: ApiBaseUrl + `/tasks`,
+    method: 'post',
+    data: postData,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function creatorApi(taskId: number, token: string) {
+  return axios({
+    url: ApiBaseUrl + `/creator/dashboard/${taskId}`,
+    method: 'get',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function saveWinnersApi(params: any, token: string) {
+  const data = qs.stringify(params);
+  return axios({
+    url: ApiBaseUrl + '/creator/save/',
+    method: 'post',
+    data: data,
     headers: {
       Authorization: `Bearer ${token}`,
     },

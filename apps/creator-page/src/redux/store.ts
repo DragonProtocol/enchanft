@@ -3,11 +3,13 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
 
 import projectDetailReducer from './projectSlice';
 import projectListReducer from './projectListSlice';
+import creatorDashboardReducer from './creatorDashboard';
 
 export const store = configureStore({
   reducer: {
     projectDetail: projectDetailReducer,
     projectList: projectListReducer,
+    creatorDashboard: creatorDashboardReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

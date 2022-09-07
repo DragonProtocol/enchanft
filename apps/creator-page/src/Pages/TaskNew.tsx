@@ -1,7 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import log from 'loglevel';
 
 import {
   State as CreateTaskState,
@@ -14,24 +13,47 @@ import Preview from '../Components/TaskCreate/Preview';
 import { useAppConfig } from '../AppProvider';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
+import ConfirmModal from '../Components/TaskCreate/ConfirmModal';
+import { toast } from 'react-toastify';
+import { createTask } from '../api';
 
 export default function TaskNew() {
   const { slug } = useParams();
   const { account } = useAppConfig();
   const dispatch = useAppDispatch();
-  const project = useAppSelector(selectProjectDetail);
+  const navigate = useNavigate();
+  const { data: project } = useAppSelector(selectProjectDetail);
+
+  const [openPreview, setOpenPreview] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const [state, setState] = useState<CreateTaskState>({
     ...DefaultState,
   });
-  const [openPreview, setOpenPreview] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const submitTask = useCallback(async () => {
+    if (!slug || !account.info || !project) return;
+    if (state.actions.length === 0) {
+      toast.error('cannot create task without action!!!');
+      return;
+    }
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const resp = await createTask(
+        { ...state, projectId: project.id },
+        account.info.token
+      );
+      dispatch(fetchProjectDetail({ slug, token: account.info.token }));
+      navigate(`/project/${slug}/task/${resp.data.data.id}`);
+    } catch (error) {
+      toast.error('create fail');
+    }
+    setShowModal(false);
+    setIsSubmitting(false);
+  }, [slug, account.info, project, state, isSubmitting, dispatch, navigate]);
 
-  useEffect(() => {
-    if (!slug) return;
-    dispatch(fetchProjectDetail({ slug, token: account.info.token }));
-  }, [account, dispatch, slug]);
-
-  log.debug(slug, project);
+  if (!project) return null;
 
   return (
     <>
@@ -49,8 +71,8 @@ export default function TaskNew() {
           updateStateActions={(newStateActions) => {
             setState({ ...state, actions: newStateActions });
           }}
-          projectName={slug || ''}
-          projectTwitter={'projectTwitter'}
+          projectName={project.name}
+          projectTwitter={project.community.twitter}
           followTwitters={state.followTwitters}
           updateStateFollowTwitters={(data) => {
             setState({ ...state, followTwitters: data });
@@ -68,9 +90,19 @@ export default function TaskNew() {
       </NewBox>
       <Preview
         state={state}
+        projectName={project.name}
         open={openPreview}
         closeHandler={() => setOpenPreview(false)}
-        submitResult={() => {}}
+        submitResult={() => {
+          setShowModal(true);
+        }}
+      />
+      <ConfirmModal
+        show={showModal}
+        closeModal={() => {
+          setShowModal(false);
+        }}
+        confirmSubmit={submitTask}
       />
     </>
   );
@@ -78,6 +110,8 @@ export default function TaskNew() {
 
 const NewBox = styled.div`
   padding: 40px;
+  background: #f7f9f1;
+  border: 4px solid #333333;
   & h3 {
     margin: 0;
   }

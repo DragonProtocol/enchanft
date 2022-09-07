@@ -14,11 +14,33 @@ export enum TaskType {
   WHITELIST_ORIENTED = 'Whitelist-Oriented',
   WHITELIST_LUCK_DRAW = 'Whitelist-luck-draw',
 }
+export type ScheduleInfo = {
+  closeTime: string;
+  endTime: string;
+  startTime: string;
+  pickWinnersTime?: string;
+  submitTime: string;
+};
+export enum TaskStatus {
+  SUBMIT,
+  START,
+  END,
+  CLOSE,
+}
+export type TaskInfo = {
+  actions: Array<string>;
+  endTime: string;
+  name: string;
+  startTime: string;
+  type: string;
+  winnerNum: number;
+};
 export enum ActionType {
   UNKNOWN = 'unknown',
   TWITTER = 'twitter',
   DISCORD = 'discord',
   NOTIFY = 'notify',
+  WL = 'wl',
 }
 
 export enum ActionTypeMore {

@@ -1,64 +1,87 @@
-import {
-  NavLink,
-  Route,
-  Routes,
-  useNavigate,
-  useParams,
-} from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAppConfig } from '../AppProvider';
 
 import TextPng from './imgs/text.png';
 import SettingPng from './imgs/setting.png';
 import UpSvg from './imgs/up.svg';
+import { ProjectDetail } from '../redux/projectSlice';
+import { useState } from 'react';
 
-export default function AsideNav() {
-  const { phantomValid, metaMaskValid } = useAppConfig();
-  const navigation = useNavigate();
-  const { slug } = useParams();
-
+export default function AsideNav({ project }: { project: ProjectDetail }) {
+  const [showTasks, setShowTasks] = useState(true);
+  const [showSetting, setShowSetting] = useState(true);
+  const { slug, image, name, tasks } = project;
   return (
     <AsideBox>
-      <div className="project">
-        <img
-          src="https://ihsjifyh373rbw4xqsbf4u5gcj6rhojof47a25npn7cez47o7z4q.arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk"
-          alt=""
-        />
-        <span>One Piece</span>
-      </div>
+      <NavLink
+        className={({ isActive }) =>
+          isActive ? 'project-item active' : 'project-item'
+        }
+        to={`/project/${slug}/detail`}
+      >
+        <div className="project">
+          <img src={image} alt="" />
+          <span>{name}</span>
+        </div>
+      </NavLink>
       <div className="events">
-        <div className="sec-title">
+        <div
+          className="sec-title"
+          onClick={() => {
+            setShowTasks(!showTasks);
+          }}
+        >
           <img src={TextPng} alt="" />
           <span>Events</span>
-          <img src={UpSvg} alt="" />
+          <img src={UpSvg} alt="" className={showTasks ? '' : 'trans'} />
         </div>
-        <div className="nav">
-          <NavLink
-            className={({ isActive }) =>
-              isActive ? 'link-item active' : 'link-item'
-            }
-            to={`/project/${slug}/task/new`}
-          >
-            New Task
-          </NavLink>
-        </div>
+        {showTasks && (
+          <>
+            <div className="nav">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? 'link-item active' : 'link-item'
+                }
+                to={`/project/${slug}/task/new`}
+              >
+                New Task
+              </NavLink>
+            </div>
+            {tasks.map((item) => {
+              return (
+                <div key={item.id} className="nav">
+                  <NavLink
+                    className={({ isActive }) =>
+                      isActive ? 'link-item active' : 'link-item'
+                    }
+                    to={`/project/${slug}/task/${item.id}`}
+                  >
+                    {item.name}
+                  </NavLink>
+                </div>
+              );
+            })}
+          </>
+        )}
       </div>
       <div className="settings">
-        <div className="sec-title">
+        <div className="sec-title" onClick={() => setShowSetting(!showSetting)}>
           <img src={SettingPng} alt="" />
           <span>Settings</span>
-          <img src={UpSvg} alt="" />
+          <img src={UpSvg} alt="" className={showSetting ? '' : 'trans'} />
         </div>
-        <div className="nav">
-          <NavLink
-            className={({ isActive }) =>
-              isActive ? 'link-item active' : 'link-item'
-            }
-            to={`/account`}
-          >
-            Account
-          </NavLink>
-        </div>
+        {showSetting && (
+          <div className="nav">
+            <NavLink
+              className={({ isActive }) =>
+                isActive ? 'link-item active' : 'link-item'
+              }
+              to={`/project/${slug}/account`}
+            >
+              Account
+            </NavLink>
+          </div>
+        )}
       </div>
       {/* {(phantomValid && <button>Connect Phantom</button>) || (
         <button>installPhantom</button>
@@ -73,8 +96,9 @@ export default function AsideNav() {
 const AsideBox = styled.aside`
   width: 200px;
   background: #f7f9f1;
-  padding: 0 10px;
+  padding: 10px;
   box-sizing: border-box;
+  padding-bottom: 30px;
 
   & > div {
     margin-top: 10px;
@@ -85,10 +109,24 @@ const AsideBox = styled.aside`
     display: flex;
     align-items: center;
   }
+  & .project-item {
+    &.active {
+      & .project {
+        background: #333333;
+        border-radius: 10px;
+        & span {
+          color: #fff;
+        }
+      }
+    }
+  }
   & .sec-title {
     cursor: pointer;
     & img {
       background: inherit;
+      &.trans {
+        transform: rotate(180deg);
+      }
     }
   }
 
@@ -109,7 +147,7 @@ const AsideBox = styled.aside`
 
   & .nav {
     display: flex;
-
+    margin-top: 10px;
     & .link-item {
       flex-grow: 1;
       width: 100%;

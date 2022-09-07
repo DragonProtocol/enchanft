@@ -10,6 +10,7 @@ import { uploadImage as uploadImageApi } from '../../api';
 import { DiscordBotCallback } from '../../utils/socialMedia';
 import IconDiscordWhite from '../Icons/IconDiscordWhite';
 import { useAppConfig } from '../../AppProvider';
+import numberInput from '../../utils/numberinput';
 
 export default function CreateTaskBasic({
   state,
@@ -31,6 +32,8 @@ export default function CreateTaskBasic({
       }
       setShowModal(true);
 
+      if (!account.info) return;
+
       try {
         const { data } = await uploadImageApi(file, account.info.token);
         updateState({
@@ -45,7 +48,7 @@ export default function CreateTaskBasic({
         setShowModal(false);
       }
     },
-    [account.info.token, state, updateState]
+    [account.info, state, updateState]
   );
 
   return (
@@ -156,6 +159,7 @@ export default function CreateTaskBasic({
                   title="total-winners"
                   type={'number'}
                   min={'0'}
+                  onKeyPress={numberInput}
                   value={
                     state.winnerNum === 0 ? '' : state.winnerNum.toString()
                   }
@@ -303,7 +307,9 @@ export default function CreateTaskBasic({
                     className="date"
                     value={dayjs(state.startTime).format('YYYY-MM-DD')}
                     onChange={(e) => {
-                      const startTime = dayjs(e.target.value)
+                      const startTime = dayjs(
+                        e.target.value || new Date().getTime()
+                      )
                         .toDate()
                         .getTime();
                       if (startTime > state.endTime) return;
@@ -320,7 +326,12 @@ export default function CreateTaskBasic({
                     className="date"
                     value={dayjs(state.endTime).format('YYYY-MM-DD')}
                     onChange={(e) => {
-                      const endTime = dayjs(e.target.value).toDate().getTime();
+                      const endTime = dayjs(
+                        e.target.value ||
+                          new Date().getTime() + 30 * 24 * 3600 * 1000
+                      )
+                        .toDate()
+                        .getTime();
                       if (endTime < state.startTime) return;
                       updateState({
                         ...state,
@@ -378,6 +389,8 @@ const BasicBox = styled.div`
         border-radius: 10px;
         overflow: hidden;
         border: 4px solid #333333;
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
         & button {
           border: none;
           outline: none;
@@ -385,14 +398,12 @@ const BasicBox = styled.div`
           border-radius: 0;
           font-size: 18px;
           line-height: 27px;
-          width: 33%;
           height: 50px;
           cursor: pointer;
         }
         & button:nth-child(2) {
           border-left: 4px solid #333333;
           border-right: 4px solid #333333;
-          width: 34%;
         }
         & button.active {
           background: #333333;
@@ -501,7 +512,8 @@ const BasicBox = styled.div`
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 253px;
+      height: 260px;
+      overflow: hidden;
       & .add-btn {
         cursor: pointer;
         text-align: center;

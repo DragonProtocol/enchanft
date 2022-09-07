@@ -9,9 +9,9 @@ import { AppProvider, useAppConfig } from './AppProvider';
 import Header from './Components/Header';
 import { ToastContainer } from 'react-toastify';
 
-import LayoutMain from './Components/LayoutMain';
-import LayoutProject from './Components/LayoutProject';
-import PPList from './Pages/PPList';
+import LayoutProject from './Pages/LayoutProject';
+import LayoutMain from './Pages/LayoutMain';
+import ProjectDetail from './Pages/ProjectDetail';
 import ProjectList from './Pages/ProjectList';
 import ProjectNew from './Pages/ProjectNew';
 import TaskNew from './Pages/TaskNew';
@@ -20,6 +20,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { store } from './redux/store';
 import NotFound from './Pages/NotFound';
 import Account from './Pages/Account';
+import { TaskDashboard } from './Pages/TaskDashboard';
 
 function App() {
   const { validLogin } = useAppConfig();
@@ -35,13 +36,14 @@ function App() {
     <div>
       <Header />
       <Routes>
-        <Route path="/" element={<LayoutProject />}>
+        <Route path="/" element={<LayoutMain />}>
           <Route index element={<ProjectList />} />
           <Route path="project/new" element={<ProjectNew />} />
         </Route>
-        <Route element={<LayoutMain />}>
-          <Route path="project/:slug" element={<PPList />} />
-          <Route path="project/:slug/task/new" element={<TaskNew />} />
+        <Route path="project/:slug" element={<LayoutProject />}>
+          <Route path="detail" element={<ProjectDetail />} />
+          <Route path="task/new" element={<TaskNew />} />
+          <Route path="task/:taskId" element={<TaskDashboard />} />
           <Route path="account" element={<Account />} />
         </Route>
         <Route path="*" element={<NotFound />} />
