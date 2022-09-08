@@ -13,8 +13,6 @@ export type CommunityItemDataType = {
   icon: string
   website: string
   description: string
-  discord: string
-  twitter: string
   memberNums?: number
   contribution?: number
   project?: {
@@ -48,7 +46,7 @@ const defaultViewConfig: CommunityItemViewConfigType = {
 
 const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollowChange }: CommunityItemProps) => {
   const navigate = useNavigate()
-  const { id, name, icon, website, description, discord, twitter, memberNums, contribution, project, isFollowed } = data
+  const { id, name, icon, website, description, memberNums, contribution, project, isFollowed } = data
   const { disabledFollow, displayFollow, loadingFollow } = {
     ...defaultViewConfig,
     ...viewConfig,

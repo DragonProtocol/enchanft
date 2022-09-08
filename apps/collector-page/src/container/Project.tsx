@@ -282,7 +282,7 @@ const Project: React.FC = () => {
                 navigate(
                   `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${
                     data.community?.discordId || ''
-                  }&communityName=${data.community?.name || ''}&communityTwitter=${data.community?.twitter || ''}`,
+                  }&communityName=${data.community?.name || ''}&communityTwitter=${data.community?.twitterId || ''}`,
                 )
               }}
             />

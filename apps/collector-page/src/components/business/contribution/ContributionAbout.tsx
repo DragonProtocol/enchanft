@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 19:09:47
+ * @LastEditTime: 2022-09-08 17:01:18
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -20,10 +20,8 @@ import CommunityCheckinButton, {
 export type ContributionAboutDataType = {
   name: string
   icon: string
-  twitter: string
   twitterId: string
   discordId: string
-  discord: string
   discordName: string
   discordMembers?: number
   discordInviteUrl: string
