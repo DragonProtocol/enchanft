@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-01 16:24:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 17:56:16
+ * @LastEditTime: 2022-09-07 19:01:21
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -45,23 +45,35 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
     <ProjectDetailCommunityWrapper>
       {/* <CommunityImg src={icon} /> */}
       {/* <CommunityName>{name}</CommunityName> */}
-      <CommunityLeftBox>
-        <ProjectLink href={website} target="_blank" rel="noopener noreferrer">
-          <IconWebsite />
-        </ProjectLink>
-        <ProjectLink href={twitterHomeLink} target="_blank" rel="noopener noreferrer">
-          <IconTwitterBlack />
-        </ProjectLink>
-        <ProjectLink href={discordInviteUrl} target="_blank" rel="noopener noreferrer">
-          <IconDiscordBlack />
-        </ProjectLink>
-      </CommunityLeftBox>
-      <FollowBtn
-        followStatusType={viewConfig?.followStatusType}
-        followBtnText={viewConfig?.followBtnText}
-        onFollow={onFollow}
-        onAccountOperation={onAccountOperation}
-      />
+      {(website || twitterId || twitterId) && (
+        <CommunityLeftBox>
+          {website && (
+            <ProjectLink href={website} target="_blank" rel="noopener noreferrer">
+              <IconWebsite />
+            </ProjectLink>
+          )}
+          {twitterId && (
+            <ProjectLink href={twitterHomeLink} target="_blank" rel="noopener noreferrer">
+              <IconTwitterBlack />
+            </ProjectLink>
+          )}
+
+          {discordInviteUrl && (
+            <ProjectLink href={discordInviteUrl} target="_blank" rel="noopener noreferrer">
+              <IconDiscordBlack />
+            </ProjectLink>
+          )}
+        </CommunityLeftBox>
+      )}
+
+      {viewConfig?.followStatusType && (
+        <FollowBtn
+          followStatusType={viewConfig.followStatusType}
+          followBtnText={viewConfig?.followBtnText}
+          onFollow={onFollow}
+          onAccountOperation={onAccountOperation}
+        />
+      )}
     </ProjectDetailCommunityWrapper>
   )
 }

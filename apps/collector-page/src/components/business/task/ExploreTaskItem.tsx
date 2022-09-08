@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 19:30:24
+ * @LastEditTime: 2022-09-08 14:19:13
  * @Description: file description
  */
 import React from 'react'
@@ -24,7 +24,7 @@ export type ExploreTaskItemDataType = {
   name: string
   startTime: number
   endTime: number
-  project: {
+  project?: {
     slug: string
     chainId: number
   }
@@ -58,11 +58,11 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
   const rewardValue = getTaskRewardTypeValue(reward)
   return (
     <ExploreTaskItemWrapper
-      onClick={() => navigate(`/${project.slug}/${id}`)}
+      onClick={() => navigate(`/${project?.slug}/${id}`)}
       animationType={CardItemBoxAnimationType.HOVER_MOVE_UP}
     >
       <TaskImageBox>
-        <ChainTag size={1} chainId={project.chainId} />
+        {project?.chainId && <ChainTag size={1} chainId={project.chainId} />}
         <TaskImage src={image} />
       </TaskImageBox>
       <TaskInfoBox>

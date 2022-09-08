@@ -2,15 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-05 11:22:04
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-05 13:23:48
+ * @LastEditTime: 2022-09-08 11:57:52
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { formatNumberToUnitString } from '../../../utils/number'
 import UserAvatar from '../user/UserAvatar'
-export type TaskDetailParticipantsDataType = {
-  userDetails: Array<{
+
+export type TaskDetailParticipantsDataViewType = {
+  items: Array<{
     name: string
     avatar: string
   }>
@@ -18,16 +19,15 @@ export type TaskDetailParticipantsDataType = {
   finishers: number
 }
 
-export type TaskDetailParticipantsDataViewType = {
-  data: TaskDetailParticipantsDataType
-}
-
 export type TaskDetailParticipantsProps = TaskDetailParticipantsDataViewType
 
-const TaskDetailParticipants: React.FC<TaskDetailParticipantsProps> = ({ data }: TaskDetailParticipantsProps) => {
-  const { userDetails, takers, finishers } = data
+const TaskDetailParticipants: React.FC<TaskDetailParticipantsProps> = ({
+  items,
+  takers,
+  finishers,
+}: TaskDetailParticipantsProps) => {
   const takersText = formatNumberToUnitString(takers)
-  const finishersText = formatNumberToUnitString(finishers)
+  // const finishersText = formatNumberToUnitString(finishers)
   return (
     <TaskDetailParticipantsWrapper>
       <ParticipantsHeader>
@@ -38,7 +38,7 @@ const TaskDetailParticipants: React.FC<TaskDetailParticipantsProps> = ({ data }:
         </ParticipantsNumText>
       </ParticipantsHeader>
       <ParticipantsListBox>
-        {userDetails.map((item, index) => (
+        {items.map((item, index) => (
           <AvatarItem src={item.avatar} key={index} title={item.name} />
         ))}
       </ParticipantsListBox>

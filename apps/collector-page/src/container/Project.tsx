@@ -17,7 +17,7 @@ import ProjectBasicInfo, {
   ProjectDetailBasicInfoDataViewType,
 } from '../components/business/project/ProjectDetailBasicInfo'
 import { AsyncRequestStatus } from '../types'
-import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
+import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
 import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import CardBox from '../components/common/card/CardBox'
 import ProjectDetailCommunity, {
@@ -61,8 +61,9 @@ const formatStoreDataToComponentDataByCommunityBasicInfo = (
   followCommunityStatus: AsyncRequestStatus,
   accountOperationType: AccountOperationType,
   accountOperationDesc: string,
-): ProjectDetailCommunityDataViewType => {
+): ProjectDetailCommunityDataViewType | null => {
   const { community } = data
+  if (!community) return null
   const viewConfig = {}
   let followStatusType = FollowStatusType.UNKNOWN
   //  账户未绑定
@@ -101,20 +102,24 @@ const formatStoreDataToComponentDataByProjectBasicInfo = (
 }
 // project tasks
 const formatStoreDataToComponentDataByTasks = (data: ProjectDetailEntity): ExploreTaskListItemsType => {
-  return data.tasks.map((task) => {
-    // TODO 待确认，这里先用task的whiteListTotalNum代替
-    // const winnerNum = task.whitelistTotalNum
-    return {
-      data: { ...task, project: { ...data } },
-    }
-  })
+  return (
+    data.tasks?.map((task) => {
+      // TODO 待确认，这里先用task的whiteListTotalNum代替
+      // const winnerNum = task.whitelistTotalNum
+      return {
+        data: { ...task, project: { ...data } },
+      }
+    }) || []
+  )
 }
 // project teamMembers
 const formatStoreDataToComponentDataByTeamMembers = (data: ProjectDetailEntity): ProjectTeamMemberListItemsType => {
-  return data.teamMembers.map((member) => ({
-    data: member,
-    viewConfig: {},
-  }))
+  return (
+    data.teamMembers?.map((member) => ({
+      data: member,
+      viewConfig: {},
+    })) || []
+  )
 }
 
 const Project: React.FC = () => {
@@ -156,7 +161,7 @@ const Project: React.FC = () => {
   const { contributionranks } = useContributionranks(projectSlug)
 
   // 用户关注的社区ID集合
-  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
+  const userFollowedCommunityIds = useAppSelector(selectIdsByUserFollowedCommunity)
 
   // 社区签到
   const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal } =
@@ -201,7 +206,7 @@ const Project: React.FC = () => {
 
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
     data,
-    userFollowedProjectIds,
+    userFollowedCommunityIds,
     followCommunityStatus,
     accountOperationType,
     accountOperationDesc,
@@ -222,7 +227,7 @@ const Project: React.FC = () => {
   //进入ranks页面，如果符合条件就自动关注
   const startContribute = () => {
     navigate(`/${projectSlug}/rank`)
-    if (communityDataView.viewConfig?.followStatusType === FollowStatusType.FOLLOW) handleFollow()
+    if (communityDataView && communityDataView.viewConfig?.followStatusType === FollowStatusType.FOLLOW) handleFollow()
   }
 
   // 社区签到
@@ -233,15 +238,18 @@ const Project: React.FC = () => {
     <ProjectWrapper>
       <ProjectLeftBox>
         <ProjectLeftBodyBox>
-          <ProjectImage src={data.image} />
+          {data.image && <ProjectImage src={data.image} />}
           <ProjectBasicInfoBox>
             <ProjectName>{data.name}</ProjectName>
-            <ProjectDetailCommunity
-              data={communityDataView.data}
-              viewConfig={communityDataView.viewConfig}
-              onFollow={handleFollow}
-              onAccountOperation={handleAccountOperation}
-            />
+            {communityDataView && (
+              <ProjectDetailCommunity
+                data={communityDataView.data}
+                viewConfig={communityDataView.viewConfig}
+                onFollow={handleFollow}
+                onAccountOperation={handleAccountOperation}
+              />
+            )}
+
             <ProjectDetailBasicInfo
               data={projectBasicInfoDataView.data}
               viewConfig={projectBasicInfoDataView.viewConfig}
@@ -273,8 +281,8 @@ const Project: React.FC = () => {
               onCreateTask={() => {
                 navigate(
                   `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${
-                    data.community.discordId || ''
-                  }&communityName=${data.community.name}&communityTwitter=${data.community.twitter}`,
+                    data.community?.discordId || ''
+                  }&communityName=${data.community?.name || ''}&communityTwitter=${data.community?.twitter || ''}`,
                 )
               }}
             />
