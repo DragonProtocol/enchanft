@@ -84,6 +84,7 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
   const [linkErr, setLinkErr] = useState(false);
   const [loading, setLoading] = useState(false);
   const [welcome, setWelcome] = useState(false);
+  const [loginErr, setLoginErr] = useState(false);
 
   const signerRef = useRef<() => Promise<any>>();
   const signerWithLogin = useRef<boolean>(false);
@@ -149,12 +150,10 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       let token = '';
       if (login) {
         setLoading(true);
-        try {
-          token = await loginWithSign(data);
-        } catch (error) {
-          toast.error('login error');
-          return null;
-        }
+        token = await loginWithSign(data);
+      }
+      if (!token) {
+        return;
       }
       return { ...data, token };
     },
@@ -172,6 +171,8 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       if (result) {
         setLoading(false);
         setWelcome(true);
+      } else {
+        setLoginErr(true);
       }
     }
   }, [account.lastLoginType, getPhantomAddr, signMsgLogin, signMsgWithPhantom]);
@@ -187,6 +188,8 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       if (result) {
         setLoading(false);
         setWelcome(true);
+      } else {
+        setLinkErr(true);
       }
     }
   }, [
@@ -204,6 +207,8 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       if (result) {
         setLoading(false);
         setWelcome(true);
+      } else {
+        setLoginErr(true);
       }
     }
     if (newAccountWith === TokenType.Solana) {
@@ -213,6 +218,8 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       if (result) {
         setLoading(false);
         setWelcome(true);
+      } else {
+        setLoginErr(true);
       }
     }
   }, [
@@ -352,6 +359,24 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
         </div>
         <p>MetaMask</p>
       </div>
+    );
+  }
+
+  if (loginErr) {
+    return (
+      <ModalBox>
+        <h3>Login Fail</h3>
+        <div className="btns">
+          <button
+            className="close"
+            onClick={() => {
+              closeModal();
+            }}
+          >
+            Close
+          </button>
+        </div>
+      </ModalBox>
     );
   }
 
