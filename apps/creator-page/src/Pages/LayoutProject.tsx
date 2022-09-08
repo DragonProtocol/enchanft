@@ -3,13 +3,14 @@ import { Outlet, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAppConfig } from '../AppProvider';
 import AsideNav from '../Components/AsideNav';
+import CreatorNeed from '../Components/CreatorNeed';
 import Loading from '../Components/Loading';
 import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 
 export default function MainLayout() {
   const { slug } = useParams();
-  const { account } = useAppConfig();
+  const { account, isCreator } = useAppConfig();
   const dispatch = useAppDispatch();
   const { data: project } = useAppSelector(selectProjectDetail);
 
@@ -26,6 +27,7 @@ export default function MainLayout() {
       </LoadingBox>
     );
   }
+  if (!isCreator) return <CreatorNeed />;
   return (
     <MainLayoutBox>
       <AsideNav project={project} />

@@ -10,7 +10,7 @@ export default function ProjectInfo({ project }: { project: ProjectDetail }) {
     <InfoBox>
       <div className="title">
         <h3>Project Information</h3>
-        <button>Edit</button>
+        {/* <button>Edit</button> */}
       </div>
       <div className="basic">
         <img src={project.image} alt="" />

@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import Modal from 'react-modal';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { ChainType, linkAccount, login } from '../api';
 import { SignMsgResult, useAppConfig } from '../AppProvider';
@@ -8,6 +9,7 @@ import {
   LAST_LOGIN_AVATAR,
   LAST_LOGIN_NAME,
   LAST_LOGIN_PUBKEY,
+  LAST_LOGIN_ROLES,
   LAST_LOGIN_TOKEN,
   LAST_LOGIN_TYPE,
   SIGN_MSG,
@@ -105,6 +107,7 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
         localStorage.setItem(LAST_LOGIN_TOKEN, resp.data.token);
         localStorage.setItem(DEFAULT_WALLET, data.walletType);
         localStorage.setItem(LAST_LOGIN_PUBKEY, data.pubkey);
+        localStorage.setItem(LAST_LOGIN_ROLES, JSON.stringify(resp.data.roles));
         updateAccount({
           info: {
             walletType: data.walletType,
@@ -230,17 +233,23 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       try {
         await linkAccount(
           {
-            walletType: newData.walletType,
+            type:
+              newData.walletType === TokenType.Solana
+                ? ChainType.SOLANA
+                : ChainType.EVM,
             signature: newData.signature,
             pubkey: newData.pubkey,
             payload: SIGN_MSG,
           },
           data.token
         );
+        toast.success('link account success');
+      } catch (error) {
+        // setLinkErr(true);
+        toast.error('link account error');
+      } finally {
         setLoading(false);
         setWelcome(true);
-      } catch (error) {
-        setLinkErr(true);
       }
     }
     if (newAccountWith === TokenType.Solana) {
@@ -255,17 +264,23 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       try {
         await linkAccount(
           {
-            walletType: newData.walletType,
+            type:
+              newData.walletType === TokenType.Solana
+                ? ChainType.SOLANA
+                : ChainType.EVM,
             signature: newData.signature,
             pubkey: newData.pubkey,
             payload: SIGN_MSG,
           },
           data.token
         );
+        toast.success('link account success');
+      } catch (error) {
+        // setLinkErr(true);
+        toast.error('link account error');
+      } finally {
         setLoading(false);
         setWelcome(true);
-      } catch (error) {
-        setLinkErr(true);
       }
     }
   }, [

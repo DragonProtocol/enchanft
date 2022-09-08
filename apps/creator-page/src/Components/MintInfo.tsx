@@ -8,7 +8,7 @@ export default function MintInfo({ project }: { project: ProjectDetail }) {
     <InfoBox>
       <div className="title">
         <h3>Mint Information</h3>
-        <button>Edit</button>
+        {/* <button>Edit</button> */}
       </div>
       <div className="info">
         {whitelist && (
@@ -44,9 +44,9 @@ export default function MintInfo({ project }: { project: ProjectDetail }) {
               {dayjs(project.publicSaleTime).format('YYYY/MM/DD HH:mm:ss')}
             </span>
           </span>
-          <span>
+          {/* <span>
             Max <span>{1} Tokens</span>
-          </span>
+          </span> */}
           <span>
             Mint Price <span>{project.publicSalePrice}</span>
           </span>

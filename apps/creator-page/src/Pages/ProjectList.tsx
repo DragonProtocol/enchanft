@@ -3,8 +3,19 @@ import { SearchBar } from '../Components/SearchBar';
 import { AddCard, ItemCard } from '../Components/ProjectCard';
 import { useNavigate } from 'react-router-dom';
 
+import { useAppSelector } from '../redux/store';
+import { selectProjectList } from '../redux/projectListSlice';
+import Loading from '../Components/Loading';
+import { AsyncRequestStatus } from '../api';
+
 export default function ProjectList() {
   const navigation = useNavigate();
+  const { data: projectList, status } = useAppSelector(selectProjectList);
+
+  if (status !== AsyncRequestStatus.FULFILLED) {
+    return <Loading />;
+  }
+
   return (
     <ListBox>
       <div className="title">
@@ -17,18 +28,26 @@ export default function ProjectList() {
             navigation('/project/new');
           }}
         />
-        <ItemCard />
-        <ItemCard />
-        <ItemCard />
-        <ItemCard />
-        <ItemCard />
+        {projectList?.map((item) => {
+          return <ItemCard key={item.id} project={item} />;
+        })}
       </div>
     </ListBox>
   );
 }
 
+const LoadingBox = styled.div`
+  text-align: center;
+  padding-top: 100px;
+  & img {
+    width: 100px;
+  }
+`;
+
 const ListBox = styled.div`
   padding: 20px;
+  background: #f7f9f1;
+  border: 4px solid #333333;
   & .title {
     display: flex;
     align-items: center;

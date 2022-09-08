@@ -14,14 +14,16 @@ import {
   LAST_LOGIN_AVATAR,
   LAST_LOGIN_NAME,
   LAST_LOGIN_PUBKEY,
+  LAST_LOGIN_ROLES,
   LAST_LOGIN_TOKEN,
   LAST_LOGIN_TYPE,
   SIGN_MSG,
   TokenType,
 } from './utils/token';
 import bs58 from 'bs58';
-import { AccountLink, ChainType, getProfile } from './api';
+import { AccountLink, ChainType, getProfile, linkSocial } from './api';
 import log from 'loglevel';
+import { toast } from 'react-toastify';
 
 // const connection = new Connection(clusterApiUrl('devnet'));
 // const metaplex = new Metaplex(connection);
@@ -104,7 +106,7 @@ const DefaultAccount: AppAccount = {
     name: localStorage.getItem(LAST_LOGIN_NAME) || '',
     avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
     accounts: [],
-    roles: [],
+    roles: JSON.parse(localStorage.getItem(LAST_LOGIN_ROLES) || 'null') || [],
     resourcePermissions: [],
   },
 };
@@ -160,18 +162,22 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   const getProfileWithToken = useCallback(
     async (token: string, walletType: TokenType, pubkey: string) => {
-      const resp = await getProfile(token);
+      try {
+        const resp = await getProfile(token);
 
-      const { data } = resp.data;
-      setAccount({
-        ...account,
-        info: {
-          walletType: walletType,
-          pubkey: pubkey,
-          ...data,
-          token,
-        } as AppAccountInfo,
-      });
+        const { data } = resp.data;
+        setAccount({
+          ...account,
+          info: {
+            walletType: walletType,
+            pubkey: pubkey,
+            ...data,
+            token,
+          } as AppAccountInfo,
+        });
+      } catch (error) {
+        setAccount({ ...account, info: null });
+      }
     },
     [account]
   );
@@ -235,11 +241,58 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
 
   const validLogin = useMemo(() => {
     return !!(account.info?.token && account.info.pubkey);
-  }, [account]);
+  }, [account.info?.token, account.info?.pubkey]);
 
   const isCreator = useMemo(() => {
-    return account.info?.roles.includes(RoleType.CREATOR) || false;
-  }, [account]);
+    return account.info?.roles?.includes(RoleType.CREATOR) || false;
+  }, [account.info?.roles]);
+
+  const linkUser = useCallback(
+    async (accountInfo: any) => {
+      if (!account.info?.token) return;
+      const code = accountInfo.code;
+      const type = accountInfo.type || 'TWITTER';
+      if (code && type) {
+        const resp = await linkSocial({ code, type }, account.info.token);
+        setAccount({
+          ...account,
+          info: {
+            ...account.info,
+            accounts: resp.data || [],
+          },
+        });
+      } else {
+        toast.error('account bind failed!');
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [account.info?.token]
+  );
+
+  useEffect(() => {
+    localStorage.setItem(
+      'social_auth',
+      JSON.stringify({ code: null, type: null })
+    );
+    const handleStorageChange = (e: StorageEvent) => {
+      const { newValue, key, url } = e;
+      if ('social_auth' === key) {
+        console.log('social_auth change url', url);
+        // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
+        const { code, type } = JSON.parse(newValue || '');
+        if (code && type) {
+          linkUser({ code, type });
+          localStorage.setItem(
+            'social_auth',
+            JSON.stringify({ code: null, type: null })
+          );
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [linkUser]);
 
   log.debug('account', account);
 

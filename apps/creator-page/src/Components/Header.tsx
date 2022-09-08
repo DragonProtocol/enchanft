@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { AsyncRequestStatus } from '../api';
+import log from 'loglevel';
 
 import { useAppConfig } from '../AppProvider';
+import { fetchProjectList, selectProjectList } from '../redux/projectListSlice';
+import { useAppDispatch, useAppSelector } from '../redux/store';
 import { LAST_LOGIN_PUBKEY, LAST_LOGIN_TOKEN } from '../utils/token';
 import ConnectModal from './ConnectModal';
 import IconPlus from './Icons/IconPlus';
@@ -14,13 +18,21 @@ export default function Header() {
   const { account, validLogin, updateAccount } = useAppConfig();
 
   const navigate = useNavigate();
-  const [showCommunityList, setShowCommunityList] = useState(false);
+  const [showProjectList, setShowProjectList] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showLoginInfo, setShowLoginInfo] = useState(false);
 
+  const dispatch = useAppDispatch();
+  const { data: projectList } = useAppSelector(selectProjectList);
+
+  useEffect(() => {
+    if (!validLogin) return;
+    dispatch(fetchProjectList({ token: account.info?.token! }));
+  }, [account.info?.token, dispatch, validLogin]);
+
   useEffect(() => {
     const windowClick = (e: MouseEvent) => {
-      setShowCommunityList(false);
+      setShowProjectList(false);
       setShowLoginInfo(false);
     };
     window.addEventListener('click', windowClick);
@@ -52,12 +64,12 @@ export default function Header() {
                 title="community-btn"
                 className="community-btn"
                 onClick={(e) => {
-                  setShowCommunityList(true);
+                  setShowProjectList(!showProjectList);
                 }}
               >
                 <img src={ULImg} alt="" />
               </button>
-              {showCommunityList && (
+              {showProjectList && (
                 <div className="community-list">
                   <div
                     className="community-item"
@@ -65,27 +77,20 @@ export default function Header() {
                   >
                     <IconPlus size="16px" /> Create Project
                   </div>
-                  <div className="community-item">
-                    <img
-                      src="https://ihsjifyh373rbw4xqsbf4u5gcj6rhojof47a25npn7cez47o7z4q.arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk"
-                      alt=""
-                    />
-                    <span>One Piece</span>
-                  </div>
-                  <div className="community-item">
-                    <img
-                      src="https://ihsjifyh373rbw4xqsbf4u5gcj6rhojof47a25npn7cez47o7z4q.arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk"
-                      alt=""
-                    />
-                    <span>One Piece</span>
-                  </div>
-                  <div className="community-item">
-                    <img
-                      src="https://ihsjifyh373rbw4xqsbf4u5gcj6rhojof47a25npn7cez47o7z4q.arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk"
-                      alt=""
-                    />
-                    <span>One Piece</span>
-                  </div>
+                  {projectList?.map((item) => {
+                    return (
+                      <div
+                        className="community-item"
+                        key={item.id}
+                        onClick={() => {
+                          navigate(`/project/${item.slug}/detail`);
+                        }}
+                      >
+                        <img src={item.image} alt="" />
+                        <span>{item.name}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               )}
             </div>
@@ -97,7 +102,7 @@ export default function Header() {
                 if (!validLogin) {
                   setShowModal(true);
                 } else {
-                  setShowLoginInfo(true);
+                  setShowLoginInfo(!showLoginInfo);
                 }
               }}
             >

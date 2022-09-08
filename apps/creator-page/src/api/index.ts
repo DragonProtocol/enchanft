@@ -3,6 +3,7 @@ import qs from 'qs';
 
 import { State as CreateTaskState } from '../Components/TaskCreate/type';
 
+const fileDownload = require('js-file-download');
 const ApiBaseUrl = process.env.REACT_APP_API_BASE_URL;
 console.log({ ApiBaseUrl });
 
@@ -100,7 +101,15 @@ export function checkTwitterNameValid(name: string, token: string) {
   });
 }
 
-export function linkAccount(params: any, token: string) {
+export function linkAccount(
+  params: {
+    type: ChainType;
+    signature: string;
+    payload: string;
+    pubkey: string;
+  },
+  token: string
+) {
   const data = qs.stringify(params);
   return axios({
     url: ApiBaseUrl + '/users/link',
@@ -184,6 +193,62 @@ export function saveWinnersApi(params: any, token: string) {
   const data = qs.stringify(params);
   return axios({
     url: ApiBaseUrl + '/creator/save/',
+    method: 'post',
+    data: data,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function downloadWinner(taskId: string, token: string) {
+  axios({
+    url: ApiBaseUrl + `/creator/download/${taskId}.csv`,
+    method: 'get',
+    responseType: 'blob',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((response) => {
+    fileDownload(response.data, 'winner.csv');
+  });
+}
+
+export function creatorProjectApi(token: string) {
+  return axios({
+    url: ApiBaseUrl + '/creator/projects',
+    method: 'get',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function projectBindBot({
+  projectId,
+  discordId,
+  token,
+}: {
+  projectId: number;
+  discordId: string;
+  token: string;
+}) {
+  return axios({
+    url: `/projects/${projectId}/binding`,
+    method: 'post',
+    data: {
+      discordId,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function linkSocial(params: any, token: string) {
+  const data = qs.stringify(params);
+  return axios({
+    url: ApiBaseUrl + '/users/link',
     method: 'post',
     data: data,
     headers: {

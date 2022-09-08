@@ -1,25 +1,27 @@
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import log from 'loglevel';
 
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import Dashboard from '../Components/TaskDashboard/Dashboard';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import {
   getCreatorDashboardData,
-  resetData,
+  saveWinnersData,
   selectCreator,
 } from '../redux/creatorDashboard';
 import { useAppConfig } from '../AppProvider';
 import Summary from '../Components/TaskDashboard/Summary';
 import Schedule from '../Components/TaskDashboard/Schedule';
-import { AsyncRequestStatus } from '../api';
-import Loading from '../Components/Loading';
+import { AsyncRequestStatus, downloadWinner } from '../api';
+import { Loading } from '../Components/Loading';
+import WinnerList from '../Components/TaskDashboard/WinnerList';
+import log from 'loglevel';
 
 export function TaskDashboard() {
   const { taskId } = useParams();
-  const { account, isCreator } = useAppConfig();
+  const { account, isCreator, validLogin } = useAppConfig();
   const dispatch = useAppDispatch();
+  const dashboardData = useAppSelector(selectCreator);
   const {
     status,
     participants,
@@ -31,17 +33,40 @@ export function TaskDashboard() {
     scheduleInfo,
     pickedWhiteList,
     reward,
-  } = useAppSelector(selectCreator);
+  } = dashboardData;
+
+  const downloadWinners = useCallback(() => {
+    if (!taskId || !account.info) return;
+    downloadWinner(taskId, account.info.token);
+  }, [taskId, account.info]);
+
+  const saveWinners = useCallback(
+    (list: Array<number>) => {
+      if (!account.info?.token || !isCreator || !validLogin) return;
+      dispatch(
+        saveWinnersData({
+          taskId: Number(taskId),
+          winners: list,
+          token: account.info.token,
+        })
+      );
+    },
+    [account.info?.token, isCreator, validLogin, dispatch, taskId]
+  );
 
   useEffect(() => {
-    if (!account.info || !isCreator) return;
+    if (!account.info?.token || !isCreator || !validLogin) return;
     dispatch(
       getCreatorDashboardData({
         taskId: Number(taskId),
         token: account.info.token,
       })
     );
-  }, [taskId, account.info, dispatch, isCreator]);
+  }, [taskId, account.info?.token, dispatch, isCreator, validLogin]);
+
+  if (status === AsyncRequestStatus.REJECTED) {
+    return <div>server error, please wait a minute.</div>;
+  }
 
   if (status !== AsyncRequestStatus.FULFILLED) {
     return (
@@ -52,6 +77,8 @@ export function TaskDashboard() {
       </DashboardBox>
     );
   }
+
+  log.debug(dashboardData);
 
   return (
     <DashboardBox>
@@ -65,7 +92,19 @@ export function TaskDashboard() {
               : ((winners * 100) / participants).toFixed(2)
           }
         />
-        <div>WinnerList</div>
+        <WinnerList
+          reward={reward}
+          winnerNum={taskInfo?.winnerNum || 0}
+          whitelistSaved={whitelistSaved}
+          winnerList={winnerList}
+          candidateList={candidateList}
+          pickedWhiteList={pickedWhiteList}
+          schedules={scheduleInfo}
+          uploadSelected={(ids: Array<number>) => {
+            saveWinners(ids);
+          }}
+          downloadWinners={downloadWinners}
+        />
       </div>
       <div className="right-box">
         <Summary info={taskInfo} reward={reward} />

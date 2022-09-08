@@ -21,14 +21,16 @@ import { store } from './redux/store';
 import NotFound from './Pages/NotFound';
 import Account from './Pages/Account';
 import { TaskDashboard } from './Pages/TaskDashboard';
+import styled from 'styled-components';
 
 function App() {
   const { validLogin } = useAppConfig();
+
   if (!validLogin) {
     return (
       <div>
         <Header />
-        <div>Connect Wallet First</div>
+        <ConnectBox>Connect Wallet First</ConnectBox>
       </div>
     );
   }
@@ -64,3 +66,13 @@ export default function Providers() {
     </BrowserRouter>
   );
 }
+
+const ConnectBox = styled.div`
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 50px;
+
+  font-size: 36px;
+  line-height: 40px;
+  color: #333333;
+`;

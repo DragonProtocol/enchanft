@@ -13,7 +13,7 @@ import PngIconDelete from '../Icons/PngIconDelete';
 import PngIconDone from '../Icons/PngIconDone';
 import { Action, ActionType, ActionTypeMore } from './type';
 import { useAppConfig } from '../../AppProvider';
-import numberInput from '../../utils/numberinput';
+import { numberInput } from '../../utils';
 import IconTwitterWhite from '../Icons/IconTwitterWhite';
 import IconTip from '../Icons/IconTip';
 
@@ -33,9 +33,6 @@ export default function Actions({
   updateStateFollowTwitters: (arg0: string[]) => void;
 }) {
   const { account } = useAppConfig();
-  const discord = account.info?.accounts.find(
-    (item) => item.accountType === ChainType.DISCORD
-  );
   const twitter = account.info?.accounts.find(
     (item) => item.accountType === ChainType.TWITTER
   );
@@ -71,7 +68,7 @@ export default function Actions({
     useState(20);
   const [custom, setCustom] = useState([
     {
-      type: ActionType.UNKNOWN,
+      type: ActionType.WL,
       name: '',
       typeMore: ActionTypeMore.CUSTOM,
       select: false,

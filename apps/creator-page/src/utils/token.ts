@@ -4,6 +4,7 @@ export const DEFAULT_WALLET = 'defaultWallet';
 export const LAST_LOGIN_TYPE = 'last_login_type';
 export const LAST_LOGIN_NAME = 'last_login_name';
 export const LAST_LOGIN_AVATAR = 'last_login_avatar';
+export const LAST_LOGIN_ROLES = 'last_login_roles';
 export const LAST_LOGIN_TOKEN = 'last_login_token';
 export const LAST_LOGIN_PUBKEY = 'last_login_pubkey';
 

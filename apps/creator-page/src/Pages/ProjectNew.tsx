@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import BackBtn from '../Components/BackBtn';
-import CommunityCreate from '../Components/ProjectCreate';
+import ProjectCreate from '../Components/ProjectCreate';
 
 export default function ProjectNew() {
   const navigation = useNavigate();
@@ -15,7 +15,7 @@ export default function ProjectNew() {
         />
         <h3>Create a New Project</h3>
       </div>
-      <CommunityCreate />
+      {/* <ProjectCreate /> */}
     </CreateBox>
   );
 }

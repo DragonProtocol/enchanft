@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export default function CommunityCreate() {
+export default function ProjectCreate() {
   return (
     <CreateBox>
       <div className="title">

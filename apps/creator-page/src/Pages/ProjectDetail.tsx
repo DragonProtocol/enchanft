@@ -1,19 +1,18 @@
-import { useParams } from 'react-router-dom';
-import log from 'loglevel';
-import { useAppConfig } from '../AppProvider';
 import { selectProjectDetail } from '../redux/projectSlice';
-import { useAppDispatch, useAppSelector } from '../redux/store';
+import { useAppSelector } from '../redux/store';
 import ProjectInfo from '../Components/ProjectInfo';
 import MintInfo from '../Components/MintInfo';
 import styled from 'styled-components';
 
+import Loading from '../Components/Loading';
+import { useParams } from 'react-router-dom';
+
 export default function ProjectDetail() {
-  const { account } = useAppConfig();
+  const { slug } = useParams();
   const { data: project } = useAppSelector(selectProjectDetail);
 
-  if (!project) {
-    return <div></div>;
-  }
+  if (project?.slug !== slug) return <Loading />;
+  if (!project) return null;
   return (
     <DetailBox>
       <ProjectInfo project={project} />

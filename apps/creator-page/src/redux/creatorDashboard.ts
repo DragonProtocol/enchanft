@@ -13,6 +13,7 @@ export type ScheduleInfo = {
 
 export type TaskInfo = {
   actions: Array<string>;
+  description: string;
   endTime: string;
   name: string;
   startTime: string;

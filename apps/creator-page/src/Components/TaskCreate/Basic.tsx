@@ -10,7 +10,7 @@ import { uploadImage as uploadImageApi } from '../../api';
 import { DiscordBotCallback } from '../../utils/socialMedia';
 import IconDiscordWhite from '../Icons/IconDiscordWhite';
 import { useAppConfig } from '../../AppProvider';
-import numberInput from '../../utils/numberinput';
+import { numberInput } from '../../utils';
 
 export default function CreateTaskBasic({
   state,
@@ -327,8 +327,7 @@ export default function CreateTaskBasic({
                     value={dayjs(state.endTime).format('YYYY-MM-DD')}
                     onChange={(e) => {
                       const endTime = dayjs(
-                        e.target.value ||
-                          new Date().getTime() + 30 * 24 * 3600 * 1000
+                        e.target.value || dayjs().add(1, 'M')
                       )
                         .toDate()
                         .getTime();

@@ -29,6 +29,7 @@ export enum TaskStatus {
 }
 export type TaskInfo = {
   actions: Array<string>;
+  description: string;
   endTime: string;
   name: string;
   startTime: string;
@@ -108,7 +109,7 @@ export const DefaultState: State = {
   },
   winnerNum: CREATE_TASK_DEFAULT_WINNER_NUM,
   startTime: Date.now(),
-  endTime: dayjs(Date.now()).add(30, 'day').toDate().getTime(),
+  endTime: dayjs(Date.now()).add(1, 'M').toDate().getTime(),
   actions: [],
   followTwitters: [],
 };

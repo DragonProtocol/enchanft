@@ -9,7 +9,7 @@ import PngIconAlarmClock from '../Icons/PngIconAlarmClock';
 import PngIconCaretLeft from '../Icons/PngIconCaretLeft';
 import PngIconGiftBox from '../Icons/PngIconGiftBox';
 import IconWL from '../Icons/IconWL';
-import { ActionType, RewardType, State } from './type';
+import { ActionType, ActionTypeMore, RewardType, State } from './type';
 import IconTip from '../Icons/IconTip';
 
 export default function Preview({
@@ -117,10 +117,19 @@ export default function Preview({
                   if (item.type === ActionType.WL) {
                     Icon = IconWL;
                   }
+                  if (
+                    item.typeMore === ActionTypeMore.CUSTOM &&
+                    item.description
+                  ) {
+                    Icon = IconTip;
+                  }
                   return (
                     <div key={idx} className="action-item">
                       <p>{item.name || item.description}</p>
-                      {Icon && <Icon />}
+                      <div className="desc">
+                        {item.description && <span>{item.description}</span>}
+                        {Icon && <Icon />}
+                      </div>
                     </div>
                   );
                 })}
@@ -317,6 +326,24 @@ const TaskPreviewWrapper = styled.div`
             margin: 0;
             margin-left: 10px;
             flex-grow: 1;
+          }
+
+          & div.desc {
+            position: relative;
+            & span {
+              display: none;
+              position: absolute;
+              top: -25px;
+              transform: translate(-70%);
+              padding: 3px 10px;
+              border-radius: 5px;
+              background: #f7f9f1;
+            }
+            &:hover {
+              & span {
+                display: block;
+              }
+            }
           }
         }
         & .action-item:last-child {

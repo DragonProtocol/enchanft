@@ -1,7 +1,11 @@
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAppConfig } from '../AppProvider';
+import CreatorNeed from '../Components/CreatorNeed';
 
 export default function ProjectLayout() {
+  const { isCreator } = useAppConfig();
+  if (!isCreator) return <CreatorNeed />;
   return (
     <MainBox id="main">
       <Outlet />
@@ -17,8 +21,6 @@ const MainBox = styled.main`
     margin: 20px auto;
     box-sizing: border-box;
     max-width: 1208px;
-    background: #f7f9f1;
-    border: 4px solid #333333;
     border-radius: 20px;
   }
 `;

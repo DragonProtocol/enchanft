@@ -1,7 +1,7 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-
+import log from 'loglevel';
 import {
   State as CreateTaskState,
   DefaultState,
@@ -15,24 +15,27 @@ import { useAppDispatch, useAppSelector } from '../redux/store';
 import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 import ConfirmModal from '../Components/TaskCreate/ConfirmModal';
 import { toast } from 'react-toastify';
-import { createTask } from '../api';
+import { createTask, projectBindBot } from '../api';
 
 export default function TaskNew() {
   const { slug } = useParams();
-  const { account } = useAppConfig();
+  const { account, validLogin } = useAppConfig();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { data: project } = useAppSelector(selectProjectDetail);
 
   const [openPreview, setOpenPreview] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [hasInviteBot, setHasInviteBot] = useState(
+    !!project?.community.discordId
+  );
 
   const [state, setState] = useState<CreateTaskState>({
     ...DefaultState,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submitTask = useCallback(async () => {
-    if (!slug || !account.info || !project) return;
+    if (!slug || !account.info?.token || !project || !validLogin) return;
     if (state.actions.length === 0) {
       toast.error('cannot create task without action!!!');
       return;
@@ -51,10 +54,46 @@ export default function TaskNew() {
     }
     setShowModal(false);
     setIsSubmitting(false);
-  }, [slug, account.info, project, state, isSubmitting, dispatch, navigate]);
+  }, [
+    slug,
+    account.info?.token,
+    project,
+    validLogin,
+    state,
+    isSubmitting,
+    dispatch,
+    navigate,
+  ]);
+
+  const projectBind = useCallback(
+    async (guildId: string) => {
+      if (!project?.id || !account.info?.token) return;
+      await projectBindBot({
+        projectId: project.id,
+        discordId: guildId,
+        token: account.info.token,
+      });
+      setHasInviteBot(true);
+    },
+    [project?.id, account.info?.token]
+  );
+
+  useEffect(() => {
+    localStorage.setItem('discord_guild_id', JSON.stringify({ guildId: null }));
+    const handleStorageChange = (e: StorageEvent) => {
+      const { newValue, key } = e;
+      if ('discord_guild_id' === key) {
+        const { guildId } = JSON.parse(newValue || '{}');
+        if (guildId) projectBind(guildId);
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [projectBind]);
 
   if (!project) return null;
 
+  log.debug({ project });
   return (
     <>
       <NewBox style={{ display: (openPreview && 'none') || '' }}>
@@ -67,7 +106,7 @@ export default function TaskNew() {
         />
 
         <Actions
-          hasInviteBot={true}
+          hasInviteBot={hasInviteBot || !!project.community.discordId}
           updateStateActions={(newStateActions) => {
             setState({ ...state, actions: newStateActions });
           }}

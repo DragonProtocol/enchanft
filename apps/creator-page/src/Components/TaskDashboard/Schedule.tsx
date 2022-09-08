@@ -84,7 +84,6 @@ export default function Schedule({
 
 const TimelineBox = styled.div`
   margin-top: 20px;
-
   & div.item {
     position: relative;
     padding-bottom: 10px;
@@ -122,7 +121,6 @@ const TimelineBox = styled.div`
 `;
 
 const ScheduleBox = styled.div`
-  margin-top: 20px;
   padding: 20px;
   & h3 {
     font-weight: 700;
