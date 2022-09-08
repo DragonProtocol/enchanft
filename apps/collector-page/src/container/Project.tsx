@@ -17,7 +17,7 @@ import ProjectBasicInfo, {
   ProjectDetailBasicInfoDataViewType,
 } from '../components/business/project/ProjectDetailBasicInfo'
 import { AsyncRequestStatus } from '../types'
-import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
+import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
 import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import CardBox from '../components/common/card/CardBox'
 import ProjectDetailCommunity, {
@@ -161,7 +161,7 @@ const Project: React.FC = () => {
   const { contributionranks } = useContributionranks(projectSlug)
 
   // 用户关注的社区ID集合
-  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
+  const userFollowedCommunityIds = useAppSelector(selectIdsByUserFollowedCommunity)
 
   // 社区签到
   const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal } =
@@ -206,7 +206,7 @@ const Project: React.FC = () => {
 
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
     data,
-    userFollowedProjectIds,
+    userFollowedCommunityIds,
     followCommunityStatus,
     accountOperationType,
     accountOperationDesc,

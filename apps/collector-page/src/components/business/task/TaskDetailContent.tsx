@@ -17,15 +17,7 @@ export type TaskDetailContentDataType = {
   type: TaskType
   startTime: number
   endTime: number
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  status: TaskTodoCompleteStatus
-  project: {
-    id: number
-    communityId: number
-    chainId: number
-    name: string
-  }
+  winnerNum?: number
   reward?: {
     name: string
     type: RewardType
@@ -41,7 +33,7 @@ export type TaskDetailContentDataViewType = {
 export type TaskDetailContentProps = TaskDetailContentDataViewType
 
 const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetailContentProps) => {
-  const { id, name, type, startTime, endTime, winnerNum, image, description, project, reward } = data
+  const { id, name, type, startTime, endTime, winnerNum, image, description, reward } = data
   const rewardTypeLabel = getTaskRewardTypeLabel(reward)
   const startDate = new Date(startTime).toLocaleDateString()
   const endDate = new Date(endTime).toLocaleDateString()
@@ -56,10 +48,12 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetai
             {startDate} -- {endDate}
           </TaskDateTime>
         </TaskDateAndWinnerItem>
-        <TaskDateAndWinnerItem>
-          <PngIconScissorHand size={'16px'} />
-          <TaskWinners>Winners : {winnerNum}</TaskWinners>
-        </TaskDateAndWinnerItem>
+        {winnerNum !== undefined && (
+          <TaskDateAndWinnerItem>
+            <PngIconScissorHand size={'16px'} />
+            <TaskWinners>Winners : {winnerNum}</TaskWinners>
+          </TaskDateAndWinnerItem>
+        )}
       </TaskDateAndWinnerBox>
       {reward && (
         <TaskRemarkBox>

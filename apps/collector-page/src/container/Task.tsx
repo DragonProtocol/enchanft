@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 16:42:06
+ * @LastEditTime: 2022-09-08 14:06:47
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -50,7 +50,7 @@ import TaskStatusButton, {
 } from '../components/business/task/TaskStatusButton'
 import TaskImageDefault from '../components/business/task/TaskImageDefault'
 import { follow as followCommunity } from '../features/user/communityHandlesSlice'
-import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
+import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
 import ButtonBase, { ButtonInfo } from '../components/common/button/ButtonBase'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import { toast } from 'react-toastify'
@@ -108,9 +108,9 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
 }
 const formatStoreDataToComponentDataByTaskActions = (
   task: TaskDetailEntity,
-  userFollowedProjectIds: number[],
+  userFollowedCommunityIds: number[],
 ): TaskActionItemsType => {
-  return [...task.actions]
+  return [...(task?.actions || [])]
     .sort((a, b) => a.orderNum - b.orderNum)
     .map((v) => {
       const action = { ...v, project: task.project }
@@ -118,7 +118,7 @@ const formatStoreDataToComponentDataByTaskActions = (
       // if (
       //   task.acceptedStatus === TaskAcceptedStatus.DONE &&
       //   action.type === ActionType.TURN_ON_NOTIFICATION &&
-      //   userFollowedProjectIds.includes(action.communityId)
+      //   userFollowedCommunityIds.includes(action.communityId)
       // ) {
       //   Object.assign(action, {
       //     status: UserActionStatus.DONE,
@@ -178,15 +178,13 @@ const Task: React.FC = () => {
 
   // 处理执行action操作
   const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
-  // 获取链的类型
-  const chainType = data?.project?.chainId ? getChainType(data?.project?.chainId) : ChainType.UNKNOWN
 
   // 关注社区
   const handleFollowCommunity = (communityId: number) => {
     dispatch(followCommunity({ id: communityId }))
   }
   // 用户关注的社区ID集合
-  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject).map((item) => Number(item))
+  const userFollowedCommunityIds = useAppSelector(selectIdsByUserFollowedCommunity).map((item) => Number(item))
 
   // verify task queue
   const verifingTaskIds = useAppSelector(selectIdsVerifyTaskQueue).map((item) => Number(item))
@@ -209,8 +207,7 @@ const Task: React.FC = () => {
   }
 
   const name = data.name || ''
-  const { projectId, image, participants } = data
-  const { name: projectName, chainId, communityId } = data.project
+  const { image, participants, project } = data
   // task status button
   const taskStatusButtonData = formatStoreDataToComponentDataByTaskStatusButton(
     data,
@@ -219,7 +216,7 @@ const Task: React.FC = () => {
     accountOperationDesc,
   )
   // task action and winnerList
-  const actionItems = formatStoreDataToComponentDataByTaskActions(data, userFollowedProjectIds)
+  const actionItems = formatStoreDataToComponentDataByTaskActions(data, userFollowedCommunityIds)
   const winnerList = data?.winnerList || []
   // 是否允许操作action
   const allowHandleAction =
@@ -236,7 +233,8 @@ const Task: React.FC = () => {
 
   // 后面如果带/，则去掉/
   const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
-  const displayParticipants = participants && participants.takers >= TASK_PARTICIPANTS_DISPLAY_MIN_NUM
+  const displayParticipants =
+    participants && participants.takers !== undefined && participants.takers >= TASK_PARTICIPANTS_DISPLAY_MIN_NUM
   return (
     <TaskDetailWrapper>
       <TaskDetailBodyBox>
@@ -262,12 +260,14 @@ const Task: React.FC = () => {
               <IconShare size="16px" />
             </ShareButton>
 
-            {data.project.id && checkProjectAllowed(Number(data.project.id)) && isCreator && (
+            {project && checkProjectAllowed(Number(project.id)) && isCreator && (
               <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
             )}
           </TaskDetailHeaderBox>
           <ProjectNameBox>
-            <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
+            <ProjectName onClick={() => project?.slug && navigate(`/${project.slug}`)}>
+              Project: {project?.name || 'Unknown Project'}
+            </ProjectName>
           </ProjectNameBox>
           <TaskDetailContentBox>
             <TaskDetailContentBoxLeft>
@@ -323,7 +323,11 @@ const Task: React.FC = () => {
           </TaskDetailContentBox>
           {displayParticipants && (
             <TaskDetailParticipantsBox>
-              <TaskDetailParticipants data={participants} />
+              <TaskDetailParticipants
+                items={participants?.userDetails || []}
+                takers={participants?.takers || 0}
+                finishers={participants?.finishers || 0}
+              />
             </TaskDetailParticipantsBox>
           )}
         </TaskDetailBodyMainBox>

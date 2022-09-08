@@ -15,9 +15,9 @@ export type CommunityItemDataType = {
   description: string
   discord: string
   twitter: string
-  memberNums: number
-  contribution: number
-  project: {
+  memberNums?: number
+  contribution?: number
+  project?: {
     slug: string
   }
   isFollowed: boolean
@@ -60,21 +60,25 @@ const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollo
   }
   return (
     <CommunityItemWrapper
-      onClick={() => navigate(`/${project.slug}`)}
+      onClick={() => project?.slug && navigate(`/${project.slug}`)}
       animationType={CardItemBoxAnimationType.HOVER_MOVE_UP}
     >
       <CommunityImage src={icon} />
       <CommunityInfoBox>
         <CommunityName>{name}</CommunityName>
         <NumberInfoBox>
-          <NumberRow>
-            <NumberLabel>members</NumberLabel>
-            <NumberValue>{formatNumberToUnitString(memberNums)}</NumberValue>
-          </NumberRow>
-          <NumberRow>
-            <NumberLabel>contribution Point</NumberLabel>
-            <NumberValue>{contribution}</NumberValue>
-          </NumberRow>
+          {memberNums !== undefined && (
+            <NumberRow>
+              <NumberLabel>members</NumberLabel>
+              <NumberValue>{formatNumberToUnitString(memberNums)}</NumberValue>
+            </NumberRow>
+          )}
+          {contribution !== undefined && (
+            <NumberRow>
+              <NumberLabel>contribution Point</NumberLabel>
+              <NumberValue>{contribution}</NumberValue>
+            </NumberRow>
+          )}
         </NumberInfoBox>
         {displayFollow && (
           <CommunityFollow disabled={disabledFollow} isFollowed={isFollowed} onClick={onFollowChangeClick}>

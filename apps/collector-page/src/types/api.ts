@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-07 19:24:48
+ * @LastEditTime: 2022-09-08 12:01:50
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -50,7 +50,7 @@ export type ExploreRecommendTaskItem = Task & {
 }
 
 // explore project
-export type TaskItem = Task & {
+export type ExploreProjectTaskItem = Task & {
   winnerNum?: number
   acceptedStatus?: TaskAcceptedStatus
   actions?: Action[]
@@ -61,12 +61,12 @@ export type ExploreSearchProjectsRequestParams = {
 }
 export type ExploreSearchProjectItem = Project & {
   community?: Community
-  tasks?: TaskItem[]
+  tasks?: ExploreProjectTaskItem[]
 }
 
 export type ExploreRecommendProjectItem = Project & {
   community?: Community
-  tasks?: TaskItem[]
+  tasks?: ExploreProjectTaskItem[]
 }
 
 // project detail
@@ -85,32 +85,18 @@ export type ProjectDetailResponse = Project & {
 }
 
 /** community api */
-export type CommunityDetailBasicInfo = Community & {
-  communityFollowerNum?: number
-}
-export type CommunityCollectionProjectItem = Project & {
-  tasks: TaskItem[]
-  teamMembers: Team[]
-  roadmap: Roadmap[]
-  whitelists: Whitelist[]
-}
-
-export type CommunityCollectionResponse = {
-  community: CommunityDetailBasicInfo
-  projects: CommunityCollectionProjectItem[]
-}
 
 export type CommunityBasicInfoResponse = Community & {
-  chainId: number
+  chainId?: number
 }
 
 export type CommunityContributionRankItem = ContributionRank
 export type CommunityContributionRankResponse = CommunityContributionRankItem[]
 
 export type FollowedCommunityItem = Community & {
-  memberNums: number
-  contribution: number
-  project: Project
+  memberNums?: number
+  contribution?: number
+  project?: Project
 }
 export type FollowedCommunitiesResponse = FollowedCommunityItem[]
 
@@ -136,10 +122,10 @@ export type TodoTaskActionItem = Action & {
 }
 
 export type TodoTaskItem = Task & {
-  status: TaskTodoCompleteStatus
-  actions: TodoTaskActionItem[]
-  project: Project
-  whitelist: Whitelist
+  status?: TaskTodoCompleteStatus
+  actions?: TodoTaskActionItem[]
+  project?: Project
+  whitelist?: Whitelist
   reward?: Reward
 }
 
@@ -147,28 +133,28 @@ export type TodoTaskResponse = TodoTaskItem[]
 
 /** task detail api */
 export type TaskParticipants = {
-  userDetails: User[]
-  takers: number
-  finishers: number
+  userDetails?: User[]
+  takers?: number
+  finishers?: number
 }
 export type TaskDetailResponse = Task & {
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  actions: TodoTaskActionItem[]
-  mintUrl: string
-  mintStartTime: number
-  status: TaskTodoCompleteStatus
-  project: Project
-  winnerList: User[]
+  winnerNum?: number
+  acceptedStatus?: TaskAcceptedStatus
+  actions?: TodoTaskActionItem[]
+  mintUrl?: string
+  mintStartTime?: number
+  status?: TaskTodoCompleteStatus
+  project?: Project
+  winnerList?: User[]
   reward?: Reward
   participants?: TaskParticipants
 }
 
 /** whitelist api */
 export type UserRewardItem = Reward & {
-  task: Task
-  community: Community
-  whitelist: Whitelist
-  project: Project
+  task?: Task
+  community?: Community
+  whitelist?: Whitelist
+  project?: Project
 }
 export type UserRewardsResponse = UserRewardItem[]

@@ -14,16 +14,16 @@ export type RewardItemDataType = {
   type: RewardType
   raffled: boolean
   data: RewardData
-  task: {
+  task?: {
     id: number
     image: string
     name: string
   }
-  community: {
+  community?: {
     id: number
     name: string
   }
-  whitelist: {
+  whitelist?: {
     id: number
     mintUrl: string
     mintPrice: string
@@ -32,7 +32,7 @@ export type RewardItemDataType = {
     mintMaxNum: number
     totalNum: number
   }
-  project: {
+  project?: {
     mintUrl: string
   }
 }
@@ -60,7 +60,6 @@ const defaultViewConfig: RewardItemViewConfigType = {
 
 const RewardItem: React.FC<RewardItemProps> = ({ data, viewConfig, onMint }: RewardItemProps) => {
   const { type, task, community, whitelist, project } = data
-  const { mintUrl } = project
 
   const { disabledMint, loadingMint } = {
     ...defaultViewConfig,
@@ -71,18 +70,18 @@ const RewardItem: React.FC<RewardItemProps> = ({ data, viewConfig, onMint }: Rew
     // if (onMint) {
     //   onMint(data)
     // }
-    window.open(mintUrl, '_blank', 'noopener,noreferrer')
+    window.open(project?.mintUrl, '_blank', 'noopener,noreferrer')
   }
   const rewardValue = getTaskRewardTypeValue(data)
   return (
     <RewardItemWrapper>
-      <ProjectImage src={task.image} />
+      <ProjectImage src={task?.image || ''} />
       <RewardInfoBox>
-        <TaskName>{task.name}</TaskName>
-        <CommunityName>{community.name}</CommunityName>
+        <TaskName>{task?.name || 'Unknown Task'}</TaskName>
+        <CommunityName>{community?.name || 'Unknown Community'}</CommunityName>
         <RewardTypeContentBox>
           <RewardTypeText>{rewardValue}</RewardTypeText>
-          {type === RewardType.WHITELIST && mintUrl && (
+          {type === RewardType.WHITELIST && project?.mintUrl && whitelist && (
             <RewardWhitelistMintButton
               data={whitelist}
               onMint={handleMint}
