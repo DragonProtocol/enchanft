@@ -149,7 +149,12 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       let token = '';
       if (login) {
         setLoading(true);
-        token = await loginWithSign(data);
+        try {
+          token = await loginWithSign(data);
+        } catch (error) {
+          toast.error('login error');
+          return null;
+        }
       }
       return { ...data, token };
     },
