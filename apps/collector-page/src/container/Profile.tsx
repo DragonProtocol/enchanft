@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-07 14:56:13
+ * @LastEditTime: 2022-09-08 16:40:16
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -35,6 +35,13 @@ import {
   ConnectModal,
   ChainType,
   userOtherWalletLink,
+  setLastLogin,
+  setLastLoginInfo,
+  setToken,
+  setPubkey,
+  setAvatar as setAvatarForSlice,
+  setName as setNameForSlice,
+  setIsLogin,
 } from '../features/user/accountSlice'
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
 import {
@@ -47,14 +54,14 @@ import { uploadAvatar } from '../services/api/login'
 import { connectionSocialMedia } from '../utils/socialMedia'
 import { sortPubKey } from '../utils/solana'
 import useWalletSign from '../hooks/useWalletSign'
-import { SIGN_MSG } from '../utils/token'
+import { clearLoginToken, SIGN_MSG } from '../utils/token'
 import {
   selectUserRewardsState,
   UserRewardForEntity,
   selectAll as selectAllForUserRewards,
 } from '../features/user/userRewardsSlice'
 import RewardList, { RewardListItemsType } from '../components/business/reward/RewardList'
-import ButtonBase, { ButtonInfo, ButtonPrimary } from '../components/common/button/ButtonBase'
+import ButtonBase, { ButtonInfo, ButtonPrimary, ButtonWarning } from '../components/common/button/ButtonBase'
 import IconTwitterWhite from '../components/common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
 import IconEmailWhite from '../components/common/icons/IconEmailWhite'
@@ -66,6 +73,7 @@ import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
 import { toast } from 'react-toastify'
 import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup'
 import { AVATAR_SIZE_LIMIT } from '../constants'
+import { useNavigate } from 'react-router-dom'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -98,6 +106,7 @@ const ProfileTabOptions = [
   },
 ]
 const Profile: React.FC = () => {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
   const account = useAppSelector(selectAccount)
@@ -106,6 +115,19 @@ const Profile: React.FC = () => {
   const [uploading, setUploading] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
 
+  const handleLogout = useCallback(async () => {
+    if (account.pubkey) {
+      clearLoginToken(account.pubkey, account.defaultWallet)
+      dispatch(setLastLogin(account.defaultWallet))
+      dispatch(setLastLoginInfo({ name: account.name, avatar: account.avatar }))
+      dispatch(setToken(''))
+      dispatch(setPubkey(''))
+      dispatch(setAvatarForSlice(''))
+      dispatch(setNameForSlice(''))
+      dispatch(setIsLogin(false))
+      navigate('/')
+    }
+  }, [account])
   const updateProfile = useCallback(() => {
     if (!account.token) return
     dispatch(
@@ -171,7 +193,7 @@ const Profile: React.FC = () => {
     <ProfileWrapper>
       <ProfileTopBox>
         <UserImg src={account.avatar} />
-        <ProfileRightBox>
+        <TopCenterBox>
           <UserName>
             <span>{account.name}</span>
             <IconButton onClick={() => setOpenDialog(true)}>
@@ -214,7 +236,8 @@ const Profile: React.FC = () => {
                   {'Connect Email'}
                 </EmailBindBtn> */}
           </UserAccountListBox>
-        </ProfileRightBox>
+        </TopCenterBox>
+        <LogoutBtn onClick={handleLogout}>Logout</LogoutBtn>
       </ProfileTopBox>
       <ProfileInfoTabsBox>
         <ButtonRadioGroupProfileTabs
@@ -292,17 +315,24 @@ export default Profile
 const ProfileWrapper = styled.div`
   width: 100%;
 `
+
 const ProfileTopBox = styled(CardBox)`
   border: 4px solid #333333;
   display: flex;
   gap: 20px;
+`
+const LogoutBtn = styled(ButtonWarning)`
+  font-weight: 700;
+  font-size: 18px;
+  height: 40px;
 `
 const UserImg = styled(UserAvatar)`
   width: 160px;
   height: 160px;
   object-fit: cover;
 `
-const ProfileRightBox = styled.div`
+const TopCenterBox = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
