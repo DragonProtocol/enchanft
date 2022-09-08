@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-29 16:47:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 13:57:19
+ * @LastEditTime: 2022-09-08 15:37:37
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react'
@@ -23,8 +23,8 @@ export default (communityId?: number, slug?: string) => {
   const { verifyCheckin: verifyCheckinState, checkin: checkinState } = useAppSelector(selectUserCommunityHandlesState)
 
   const handleCheckin = useCallback(
-    () => isLogin && communityId && dispatch(checkin(communityId)),
-    [isLogin, communityId],
+    () => isLogin && communityId && dispatch(checkin({ communityId, slug })),
+    [isLogin, communityId, slug],
   )
   const userCheckinCommunityIds = useAppSelector(selectIds)
   const userCheckedinCommunityData = useAppSelector((state) => selectById(state, communityId || 0))
@@ -38,7 +38,7 @@ export default (communityId?: number, slug?: string) => {
   // verify check in
   useEffect(() => {
     if (isLogin && communityId && !isCheckedin && verifyCheckinState.status === AsyncRequestStatus.IDLE) {
-      dispatch(verifyCheckin({ communityId, slug }))
+      dispatch(verifyCheckin(communityId))
     }
   }, [isLogin, communityId, isCheckedin, verifyCheckinState.status])
 
