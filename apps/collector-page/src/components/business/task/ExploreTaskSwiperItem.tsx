@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-07 17:46:53
+ * @LastEditTime: 2022-09-08 14:21:25
  * @Description: file description
  */
 import React from 'react'
@@ -68,7 +68,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
       <TaskInfoBox>
         <TaskInfoTopBox>
           <TaskName>{name}</TaskName>
-          <ProjectName>Project: {project?.name || 'Unknown'}</ProjectName>
+          <ProjectName>Project: {project?.name || 'Unknown Project'}</ProjectName>
         </TaskInfoTopBox>
         <TaskInfoBottomBox>
           <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
@@ -79,10 +79,12 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
                 {startDate} -- {endDate}
               </TaskDateTime>
             </TaskDateAndWinnerItem>
-            <TaskDateAndWinnerItem>
-              <PngIconScissorHand size={'16px'} />
-              <TaskWinners>Winners : {winnerNum}</TaskWinners>
-            </TaskDateAndWinnerItem>
+            {winnerNum !== undefined && (
+              <TaskDateAndWinnerItem>
+                <PngIconScissorHand size={'16px'} />
+                <TaskWinners>Winners : {winnerNum}</TaskWinners>
+              </TaskDateAndWinnerItem>
+            )}
           </TaskDateAndWinnerBox>
           {reward && (
             <TaskRewardBox>
