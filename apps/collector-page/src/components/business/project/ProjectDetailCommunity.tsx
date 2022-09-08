@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-01 16:24:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-07 19:01:21
+ * @LastEditTime: 2022-09-08 17:02:02
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -17,9 +17,7 @@ export type ProjectDetailCommunityDataType = {
   name: string
   icon: string
   website: string
-  twitter: string
   twitterId: string
-  discord: string
   discordInviteUrl: string
 }
 

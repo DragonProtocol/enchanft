@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 19:21:20
+ * @LastEditTime: 2022-09-08 16:56:14
  * @Description: 与后端entities type定义对应
  */
 
@@ -43,10 +43,8 @@ export type Community = {
   icon: string
   website: string
   description: string
-  discord: string
   discordId: string
   discordInviteUrl: string
-  twitter: string
   twitterId: string
 }
 
@@ -139,8 +137,6 @@ export type Project = {
   publicSaleTime: number
   publicSalePrice: string
   injectedCoins: number
-  discord: string
-  twitter: string
   chainId: number
   slug: string
 }
