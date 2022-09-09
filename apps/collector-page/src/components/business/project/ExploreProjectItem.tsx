@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 11:21:35
+ * @LastEditTime: 2022-09-09 11:26:38
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -67,28 +67,6 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
   //   ...defaultViewConfig,
   //   ...viewConfig,
   // }
-
-  let projectDescBottomText = ''
-  if (itemTotalNum) {
-    projectDescBottomText = `items ${itemTotalNum}`
-  }
-  switch (mintStage) {
-    case MintStage.FUTURE:
-      if (publicSalePrice) {
-        projectDescBottomText += ` . Mint Price ${publicSalePrice}`
-      }
-      if (publicSaleTime) {
-        // 预发售日期
-        const publicMintStartDate = new Date(publicSaleTime).toLocaleDateString()
-        projectDescBottomText += ` . ${publicMintStartDate}`
-      }
-      break
-    case MintStage.LIVE:
-      if (publicSalePrice) {
-        projectDescBottomText += ` . Mint Price ${publicSalePrice}`
-      }
-      break
-  }
   return (
     <ExploreProjectItemWrapper
       onClick={() => navigate(`/${slug}`)}
