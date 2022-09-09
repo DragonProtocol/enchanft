@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 11:26:38
+ * @LastEditTime: 2022-09-09 17:08:13
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -87,13 +87,9 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
         </ProjectTimeRow>
 
         <ProjectInfoBottomBox>
-          {itemTotalNum !== undefined && (
-            <>
-              <ProjectInfoBottomText>Items {itemTotalNum}</ProjectInfoBottomText>
-              <ProjectInfoBottomText>|</ProjectInfoBottomText>
-            </>
-          )}
-          {publicSalePrice && <ProjectInfoBottomText>Mint Price {publicSalePrice}</ProjectInfoBottomText>}
+          {itemTotalNum !== undefined && <ProjectInfoBottomText>Items {itemTotalNum}</ProjectInfoBottomText>}
+          {itemTotalNum !== undefined && !!publicSalePrice && <ProjectInfoBottomText>|</ProjectInfoBottomText>}
+          {!!publicSalePrice && <ProjectInfoBottomText>Mint Price {publicSalePrice}</ProjectInfoBottomText>}
         </ProjectInfoBottomBox>
       </ProjectInfoBox>
     </ExploreProjectItemWrapper>

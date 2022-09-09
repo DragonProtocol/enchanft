@@ -73,7 +73,7 @@ const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollo
           )}
           {contribution !== undefined && (
             <NumberRow>
-              <NumberLabel>contribution Point</NumberLabel>
+              <NumberLabel>contribution token</NumberLabel>
               <NumberValue>{contribution}</NumberValue>
             </NumberRow>
           )}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-01 16:24:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 12:05:53
+ * @LastEditTime: 2022-09-09 14:27:37
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -85,7 +85,7 @@ const ProjectDetailCommunityWrapper = styled.div`
 
 const CommunityLeftBox = styled.div`
   display: flex;
-  gap: 32px;
+  gap: 12px;
   align-items: center;
 `
 const ProjectLink = styled.a`

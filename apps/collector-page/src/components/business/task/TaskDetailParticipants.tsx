@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-05 11:22:04
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 11:57:52
+ * @LastEditTime: 2022-09-09 17:30:39
  * @Description: file description
  */
 import React from 'react'
@@ -73,6 +73,6 @@ const ParticipantsListBox = styled.div`
   margin-top: 20px;
 `
 const AvatarItem = styled(UserAvatar)`
-  width: 60px;
-  height: 60px;
+  width: 40px;
+  height: 40px;
 `
