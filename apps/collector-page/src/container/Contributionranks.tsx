@@ -98,11 +98,11 @@ const Contributionranks: React.FC = () => {
     useCommunityCheckin(community?.id, projectSlug)
 
   let checkinStatusType = CheckinStatusType.UNKNOWN
-  let checkinBtnText = ''
+  // let checkinBtnText = ''
   //  账户未绑定
   if (accountOperationType !== AccountOperationType.COMPLETED) {
     checkinStatusType = CheckinStatusType.ACCOUNT_OPERATION
-    checkinBtnText = accountOperationDesc
+    // checkinBtnText = accountOperationDesc
   } else {
     if (isCheckedin) {
       checkinStatusType = CheckinStatusType.CHECKEDIN
@@ -131,7 +131,7 @@ const Contributionranks: React.FC = () => {
   const communityInfo = {
     name: community?.name || '',
     icon: community?.icon || '',
-    twitterId: community?.twitterId || '',
+    twitterName: community?.twitterName || '',
     discordId: community?.discordId || '',
     discordInviteUrl: community?.discordInviteUrl || '',
     discordName: '',
@@ -181,7 +181,7 @@ const Contributionranks: React.FC = () => {
               data={communityInfo}
               viewConfig={{
                 checkinStatusType,
-                checkinBtnText,
+                // checkinBtnText,
               }}
               onCheckin={handleCheckin}
               onAccountOperation={handleAccountOperation}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 14:06:47
+ * @LastEditTime: 2022-09-09 14:02:45
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -71,7 +71,7 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
   if (accountOperationType !== AccountOperationType.COMPLETED) {
     return {
       type: TaskStatusButtonType.ACCOUNT_OPERATION,
-      btnText: accountOperationDesc,
+      // btnText: accountOperationDesc,
     }
   }
 
@@ -295,7 +295,7 @@ const Task: React.FC = () => {
                         type={taskStatusButtonData.type}
                         loading={taskStatusButtonData.loading}
                         disabled={taskStatusButtonData.disabled}
-                        btnText={taskStatusButtonData.btnText}
+                        // btnText={taskStatusButtonData.btnText}
                         onAccountOperation={handleAccountOperation}
                         onTake={handleTakeTask}
                       />

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-01 16:24:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 17:02:02
+ * @LastEditTime: 2022-09-09 12:05:53
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -17,7 +17,7 @@ export type ProjectDetailCommunityDataType = {
   name: string
   icon: string
   website: string
-  twitterId: string
+  twitterName: string
   discordInviteUrl: string
 }
 
@@ -37,20 +37,20 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
   onFollow,
   onAccountOperation,
 }: ProjectDetailCommunityProps) => {
-  const { name, icon, website, twitterId, discordInviteUrl } = data
-  const twitterHomeLink = getTwitterHomeLink(twitterId)
+  const { name, icon, website, twitterName, discordInviteUrl } = data
+  const twitterHomeLink = getTwitterHomeLink(twitterName)
   return (
     <ProjectDetailCommunityWrapper>
       {/* <CommunityImg src={icon} /> */}
       {/* <CommunityName>{name}</CommunityName> */}
-      {(website || twitterId || twitterId) && (
+      {(website || twitterName || twitterName) && (
         <CommunityLeftBox>
           {website && (
             <ProjectLink href={website} target="_blank" rel="noopener noreferrer">
               <IconWebsite />
             </ProjectLink>
           )}
-          {twitterId && (
+          {twitterName && (
             <ProjectLink href={twitterHomeLink} target="_blank" rel="noopener noreferrer">
               <IconTwitterBlack />
             </ProjectLink>

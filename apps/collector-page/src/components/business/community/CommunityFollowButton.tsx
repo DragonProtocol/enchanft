@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-06 17:34:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 17:48:51
+ * @LastEditTime: 2022-09-09 13:45:13
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -17,7 +17,7 @@ export enum FollowStatusType {
 }
 
 const followBtnTextMap = {
-  [FollowStatusType.ACCOUNT_OPERATION]: 'Account operation',
+  [FollowStatusType.ACCOUNT_OPERATION]: 'Join',
   [FollowStatusType.FOLLOW]: 'Join',
   [FollowStatusType.FOLLOWING]: 'Following ...',
   [FollowStatusType.FOLLOWED]: 'Joined',
@@ -58,9 +58,12 @@ const CommunityFollowButton: React.FC<CommunityFollowButtonProps> = ({
   switch (followStatusType) {
     case FollowStatusType.ACCOUNT_OPERATION:
       return (
-        <WalletBtn onClick={handleAccountOperation} {...buttonProps}>
+        <FollowBtn onClick={handleAccountOperation} {...buttonProps}>
           {_followBtnText}
-        </WalletBtn>
+        </FollowBtn>
+        // <WalletBtn onClick={handleAccountOperation} {...buttonProps}>
+        //   {_followBtnText}
+        // </WalletBtn>
       )
     case FollowStatusType.FOLLOW:
       return (

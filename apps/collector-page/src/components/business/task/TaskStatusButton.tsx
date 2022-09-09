@@ -11,7 +11,7 @@ export enum TaskStatusButtonType {
   MISSION_OFF = 'MISSION_OFF',
 }
 const buttonTextMap = {
-  [TaskStatusButtonType.ACCOUNT_OPERATION]: 'Account operation',
+  [TaskStatusButtonType.ACCOUNT_OPERATION]: 'Apply For WL',
   [TaskStatusButtonType.TAKE]: 'Apply For WL',
   [TaskStatusButtonType.COMPLETE]: 'Outcome Pending',
   [TaskStatusButtonType.MISSION_OFF]: 'Mission off',
