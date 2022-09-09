@@ -1,6 +1,4 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import Link from 'next/link'
-import { useRouter } from 'next/router'
 
 /** Import internal components */
 import { GroupDetails } from "./GroupDetails"
@@ -12,11 +10,6 @@ import { GlobalContext, ModalsContext } from "../contexts/GlobalContext";
 export function Navigation() {
   const { user, groups } = useContext(GlobalContext);
   const wrapperRef = useRef(null);
-
-  /** Manage router */
-  const router = useRouter()
-  const { asPath } = useRouter()
-  const { group_id, conversation_id } = router.query;
 
   return(
     <div className={"navigation-container"} ref={wrapperRef}>

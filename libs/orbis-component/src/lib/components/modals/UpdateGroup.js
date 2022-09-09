@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { useRouter } from 'next/router'
 import { sleep } from "../../utils"
 import { resizeFile, base64ToFile } from "../../utils"
 import { arweavePush } from "../../utils/arweave"
@@ -15,7 +14,6 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 /** Modal to send a message */
 export function UpdateGroupModal({visible, setVisible, group, callback}) {
   const { user, setUser, orbis } = useContext(GlobalContext);
-  const router = useRouter()
   const [name, setName] = useState(group?.content?.name);
   const [description, setDescription] = useState(group?.content?.description);
   const [pfp, setPfp] = useState(group?.content?.pfp);

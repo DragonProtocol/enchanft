@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import reactStringReplace from 'react-string-replace';
-import Link from 'next/link';
 import { isArray } from "../utils";
 
 /** Regex patterns to use */
@@ -65,7 +64,7 @@ function parseMarkdown(post, characterLimit) {
       let mention = mentions.find(obj => obj.username === _m);
       if(mention !== undefined) {
           body = reactStringReplace(body, _m, (match, i) => (
-              mention.did ? <Link href={"/profile/" + mention.did} key={match + i}>{mention.username}</Link> : <span className="link" key={i}>{mention.username}</span>
+              mention.did ? <a href={"/profile/" + mention.did} key={match + i}>{mention.username}</a> : <span className="link" key={i}>{mention.username}</span>
           ));
       }
     });

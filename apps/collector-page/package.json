@@ -43,7 +43,9 @@
     "react-toastify": "^9.0.8",
     "styled-components": "^5.3.5",
     "swiper": "^8.2.4",
-    "@ecnft/orbis-component": "*"
+    "@ecnft/orbis-component": "*",
+    "stream-http":"3.2.0",
+    "https-browserify":"1.0.0"
   },
   "scripts": {
     "start": "craco start",

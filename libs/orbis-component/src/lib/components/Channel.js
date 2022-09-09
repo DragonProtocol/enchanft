@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { getChannelIcon } from "../utils"
 
 /** Global component to display a channel, returns the channel icon and channel name */
@@ -11,7 +10,7 @@ export function Channel({id, group_id, details, isLink}) {
           </div>
 
           <div className="channel-name">
-            <Link href={"/group/" + group_id + "/" + id}>{details.name}</Link>
+            <a href={"/group/" + group_id + "/" + id}>{details.name}</a>
           </div>
         </div>
     )

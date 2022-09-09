@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import Link from 'next/link'
 import { shortAddress } from "../utils";
 import makeBlockie from 'ethereum-blockies-base64';
 import useGetUsername from "../hooks/useGetUsername";

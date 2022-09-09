@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { useRouter } from 'next/router'
 import { getChannelIcon } from "../utils";
 
 /** Internal components */
@@ -18,10 +17,6 @@ export function GroupDetails() {
   const [group, setGroup] = useState(null);
   const [loading, setLoading] = useState(false);
   const isAdmin = useIsGroupAdmin(user, group);
-
-  /** Use Next router to get group_id */
-  const router = useRouter();
-  const { channel_id } = router.query;
 
   /** Load group details */
   useEffect(() => {
@@ -131,7 +126,7 @@ export function GroupDetails() {
                 active={!channel_id ? true : false} />
 
               {/** Loop through all channels */}
-              <LoopChannels channels={group?.channels} />
+              <LoopChannels channels={group?.channels} channel_id=''/>
 
               {/** Create channel CTA */}
               {isAdmin &&
@@ -148,10 +143,8 @@ export function GroupDetails() {
 }
 
 /** Loop through all channels in this group */
-function LoopChannels({channels}) {
+function LoopChannels({channels,channel_id}) {
   const { group_id } = useContext(GlobalContext);
-  const router = useRouter();
-  const { channel_id } = router.query;
 
   return channels.map((channel, key) => {
     if(channel.content) {

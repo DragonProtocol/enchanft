@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 /** Global group component displaying the pfp and group name */
 export function Group({id, details, isLink, showPfp = true}) {
   if(isLink) {
@@ -15,7 +13,7 @@ export function Group({id, details, isLink, showPfp = true}) {
             </div>
           }
           <div className="group-name">
-            <Link href={"/group/" + id}>{details?.name ? details.name : "no-name"}</Link>
+            <a href={"/group/" + id}>{details?.name ? details.name : "no-name"}</a>
           </div>
         </div>
     )

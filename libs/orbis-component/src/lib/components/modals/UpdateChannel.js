@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { useRouter } from 'next/router'
 import { sleep } from "../../utils"
 
 /** Internal components */
@@ -14,7 +13,6 @@ import { GlobalContext } from "../../contexts/GlobalContext";
 /** Modal to send a message */
 export function UpdateChannelModal({ visible, setVisible, channel, callback }) {
   const { user, setUser, getUserGroups, orbis } = useContext(GlobalContext);
-  const router = useRouter()
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState("chat");
