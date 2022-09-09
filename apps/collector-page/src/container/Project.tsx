@@ -69,7 +69,7 @@ const formatStoreDataToComponentDataByCommunityBasicInfo = (
   //  账户未绑定
   if (accountOperationType !== AccountOperationType.COMPLETED) {
     followStatusType = FollowStatusType.ACCOUNT_OPERATION
-    Object.assign(viewConfig, { followBtnText: accountOperationDesc })
+    // Object.assign(viewConfig, { followBtnText: accountOperationDesc })
   } else {
     const isFollowed = followedCommunityIds.map((item) => String(item)).includes(String(community.id))
     if (isFollowed) {
@@ -282,7 +282,7 @@ const Project: React.FC = () => {
                 navigate(
                   `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${
                     data.community?.discordId || ''
-                  }&communityName=${data.community?.name || ''}&communityTwitter=${data.community?.twitterId || ''}`,
+                  }&communityName=${data.community?.name || ''}&communityTwitter=${data.community?.twitterName || ''}`,
                 )
               }}
             />

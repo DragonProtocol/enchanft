@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 16:56:14
+ * @LastEditTime: 2022-09-09 12:06:46
  * @Description: 与后端entities type定义对应
  */
 
@@ -46,6 +46,7 @@ export type Community = {
   discordId: string
   discordInviteUrl: string
   twitterId: string
+  twitterName: string
 }
 
 /** roadmap */
