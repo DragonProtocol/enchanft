@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { useRouter } from 'next/router'
 /** Import Orbis SDK */
 import { Orbis } from "@orbisclub/orbis-sdk";
 
@@ -25,10 +24,6 @@ export default function GroupHome() {
       setGroup(data);
     }
   }
-
-  /** Use Next router to get group_id */
-  const router = useRouter();
-  const { channel_id } = router.query;
 
   return(
     <>

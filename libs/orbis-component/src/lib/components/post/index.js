@@ -7,7 +7,6 @@ import { Group }  from "../Group"
 import { Channel } from "../Channel"
 import { FollowButton } from "../FollowButton"
 import { shortAddress, sleep, contractToCleanName, getChannelIcon } from "../../utils";
-import Link from 'next/link'
 
 /** Import custom hooks */
 import useCleanPostBody from "../../hooks/useCleanPostBody";
@@ -58,9 +57,9 @@ export function Post({post, type, showContext = true, replyTo, setReplyTo = fals
       const { address } = useDidToAddress(reaction.did);
 
       if(reaction.profile?.username) {
-        return <Link href={"/profile/" + reaction.did}>{reaction.profile.username}</Link>;
+        return <a href={"/profile/" + reaction.did}>{reaction.profile.username}</a>;
       } else {
-        return <Link href={"/profile/" + reaction.did}>{shortAddress(address)}</Link>;
+        return <a href={"/profile/" + reaction.did}>{shortAddress(address)}</a>;
       }
     }
 

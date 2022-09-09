@@ -4,7 +4,6 @@ import '../styles/utilities.css'
 import '../styles/responsive.css'
 import styles from '../styles/Home.module.css'
 // import Head from 'next/head'
-// import { useRouter } from 'next/router'
 
 /** Import some Orbis modules */
 import { Navigation } from "../components/Navigation";

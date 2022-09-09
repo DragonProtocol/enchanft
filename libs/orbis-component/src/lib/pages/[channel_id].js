@@ -10,21 +10,15 @@ import { RightSide } from "../components/RightSide";
 /** Import Context */
 import { GlobalContext, ModalsContext } from "../contexts/GlobalContext";
 
-import { useRouter } from 'next/router'
-
-export default function ChannelDetails() {
+export default function ChannelDetails(channel_id) {
   const [loading, setLoading] = useState(true);
   const [channel, setChannel] = useState();
 
   const { user, group_id, orbis } = useContext(GlobalContext);
 
-  /** Use Next router to get group_id */
-  const router = useRouter();
-  const { channel_id } = router.query;
-
   useEffect(() => {
     if(channel_id) {
-      loadChannelDetails();
+      loadChannelDetails(channel_id);
     }
   }, [channel_id])
 

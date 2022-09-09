@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef, useContext, useMemo } from 'react';
-import { useRouter } from 'next/router'
 import { useOutsideClick } from "../hooks/useOutsideClick";
-import Link from 'next/link'
 
 import { ConnectButton } from "./ConnectButton";
 import { User } from "./User";
@@ -57,7 +55,7 @@ const Content = ({type, details}) => {
     case "home":
       return <Default />;
     case "conversation-details":
-      return <ConversationDetails details={details} />
+      return <ConversationDetails details={details} conversation_id={''} />
     case "user-details":
       return <UserDetails did={details} />;
     case "group-members":
@@ -120,7 +118,7 @@ function Default() {
     <>
       <div className="community-banner">
         <h3>COMMUNITY NOTES</h3>
-        <p className="mtop-10">We just launched Orbis on mainnet 🥳 You can learn more about it using our <a href="https://twitter.com/OrbisClub/status/1549062199213268994" rel="noreferrer" target="_blank">Twitter thread</a> or the <Link href="/post/kjzl6cwe1jw14a9l1l49tv4u2e8qrj1sql5ox84xn5a7jm3yh3yhlw5a9layd1r">introduction post</Link>.</p>
+        <p className="mtop-10">We just launched Orbis on mainnet 🥳 You can learn more about it using our <a href="https://twitter.com/OrbisClub/status/1549062199213268994" rel="noreferrer" target="_blank">Twitter thread</a> or the <a href="/post/kjzl6cwe1jw14a9l1l49tv4u2e8qrj1sql5ox84xn5a7jm3yh3yhlw5a9layd1r">introduction post</a>.</p>
         <p className="center mtop-5 mbottom-5">
           <a className="btn white-border" href="https://twitter.com/OrbisClub/status/1549062199213268994" rel="noreferrer" target="_blank">ANNOUNCEMENT</a>
         </p>
@@ -188,14 +186,10 @@ function LoopActiveGroups({activeGroups}) {
 }
 
 /** Return the conversation details such as group members and conversation name */
-function ConversationDetails() {
+function ConversationDetails(conversation_id) {
   const [loading, setLoading] = useState(false);
   const [conversation, setConversation] = useState(null);
   const { user, orbis } = useContext(GlobalContext);
-
-  /** Use Next router to get group_id */
-  const router = useRouter();
-  const { conversation_id } = router.query;
 
   /** Load group details */
   useEffect(() => {
