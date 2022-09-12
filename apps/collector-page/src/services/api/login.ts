@@ -80,3 +80,17 @@ export function link(params: any) {
     },
   })
 }
+
+// 解绑社交账号
+export function unlink(params: any) {
+  const data = qs.stringify(params)
+  return request({
+    url: '/users/unlink',
+    method: 'post',
+    data: data,
+    headers: {
+      token: params.token,
+      needToken: true,
+    },
+  })
+}
