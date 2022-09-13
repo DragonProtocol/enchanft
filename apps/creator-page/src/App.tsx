@@ -1,8 +1,3 @@
-import React, { useState, useEffect } from 'react';
-
-import bs58 from 'bs58';
-import { Connection, clusterApiUrl } from '@solana/web3.js';
-
 import { Provider as ReduxProvider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { AppProvider, useAppConfig } from './AppProvider';
@@ -22,6 +17,9 @@ import NotFound from './Pages/NotFound';
 import Account from './Pages/Account';
 import { TaskDashboard } from './Pages/TaskDashboard';
 import styled from 'styled-components';
+import ProjectInfoEdit from './Pages/ProjectInfoEdit';
+import ProjectMintEdit from './Pages/ProjectMintEdit';
+import ProjectAnnouncementEdit from './Pages/ProjectAnnouncementEdit';
 
 function App() {
   const { validLogin } = useAppConfig();
@@ -44,6 +42,12 @@ function App() {
         </Route>
         <Route path="project/:slug" element={<LayoutProject />}>
           <Route path="detail" element={<ProjectDetail />} />
+          <Route path="info/edit" element={<ProjectInfoEdit />} />
+          <Route
+            path="announcement/edit"
+            element={<ProjectAnnouncementEdit />}
+          />
+          <Route path="mint/edit" element={<ProjectMintEdit />} />
           <Route path="task/new" element={<TaskNew />} />
           <Route path="task/:taskId" element={<TaskDashboard />} />
           <Route path="account" element={<Account />} />

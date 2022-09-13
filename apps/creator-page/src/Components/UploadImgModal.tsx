@@ -1,6 +1,6 @@
 import Modal from 'react-modal';
 import styled from 'styled-components';
-import { Loading } from '../Loading';
+import { Loading } from './Loading';
 
 Modal.setAppElement('#upload-img-modal');
 export default function UploadImgModal({

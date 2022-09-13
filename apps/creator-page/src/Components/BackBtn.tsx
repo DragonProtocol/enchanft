@@ -17,4 +17,8 @@ const Button = styled.button`
   border: 2px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   border-radius: 20px;
+  & img {
+    vertical-align: middle;
+    transform: translate(-10%);
+  }
 `;

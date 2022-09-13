@@ -1,14 +1,25 @@
 import dayjs from 'dayjs';
+import { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { ProjectDetail } from '../redux/projectSlice';
+import { ProjectDetail } from '../../redux/projectSlice';
 
 export default function MintInfo({ project }: { project: ProjectDetail }) {
-  const whitelist = project.whitelists && project.whitelists[0];
+  const navigate = useNavigate();
+  const whitelist = useMemo(() => {
+    return project.whitelists && project.whitelists[0];
+  }, [project.whitelists]);
   return (
     <InfoBox>
       <div className="title">
         <h3>Mint Information</h3>
-        {/* <button>Edit</button> */}
+        <button
+          onClick={() => {
+            navigate(`/project/${project.slug}/mint/edit`);
+          }}
+        >
+          Edit
+        </button>
       </div>
       <div className="info">
         {whitelist && (

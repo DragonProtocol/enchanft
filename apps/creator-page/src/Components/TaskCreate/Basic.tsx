@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { RewardType, State } from './type';
 import AddSvg from '../imgs/add.svg';
 import dayjs from 'dayjs';
-import UploadImgModal from './UploadImgModal';
+import UploadImgModal from '../UploadImgModal';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { TASK_IMAGE_SIZE_LIMIT } from '../../utils/constants';

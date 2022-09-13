@@ -1,7 +1,8 @@
 import { selectProjectDetail } from '../redux/projectSlice';
 import { useAppSelector } from '../redux/store';
-import ProjectInfo from '../Components/ProjectInfo';
-import MintInfo from '../Components/MintInfo';
+import ProjectInfo from '../Components/Project/Info';
+import ProjectAnnouncement from '../Components/Project/Announcement';
+import MintInfo from '../Components/Project/MintInfo';
 import styled from 'styled-components';
 
 import Loading from '../Components/Loading';
@@ -16,6 +17,7 @@ export default function ProjectDetail() {
   return (
     <DetailBox>
       <ProjectInfo project={project} />
+      <ProjectAnnouncement project={project} />
       <MintInfo project={project} />
     </DetailBox>
   );

@@ -1,16 +1,25 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { ProjectDetail } from '../redux/projectSlice';
-import { getTwitterHomeLink } from '../utils/twitter';
-import IconDiscordBlack from './Icons/IconDiscordBlack';
-import IconTwitterBlack from './Icons/IconTwitterBlack';
-import IconWebsite from './Icons/IconWebsite';
+import { ProjectDetail } from '../../redux/projectSlice';
+import { getTwitterHomeLink } from '../../utils/twitter';
+import IconDiscordBlack from '../Icons/IconDiscordBlack';
+import IconTwitterBlack from '../Icons/IconTwitterBlack';
+import IconWebsite from '../Icons/IconWebsite';
 
 export default function ProjectInfo({ project }: { project: ProjectDetail }) {
+  const navigate = useNavigate();
+
   return (
     <InfoBox>
       <div className="title">
         <h3>Project Information</h3>
-        {/* <button>Edit</button> */}
+        <button
+          onClick={() => {
+            navigate(`/project/${project.slug}/info/edit`);
+          }}
+        >
+          Edit
+        </button>
       </div>
       <div className="basic">
         <img src={project.image} alt="" />
