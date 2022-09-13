@@ -5,10 +5,14 @@ import GroupHome from './pages/index.js'
 
 import { FunctionComponent } from 'react';
 import React from 'react';
-interface OrbisComponentProps { }
+import ChannelDetails from './pages/channel.js';
+interface OrbisComponentProps {
+  group_id: string
+  channel_id?: string
+}
 export function OrbisComponent(props: OrbisComponentProps): FunctionComponent<OrbisComponentProps> {
   return (
-    <App Component={GroupHome} pageProps={undefined} />
+    <App Component={ChannelDetails} pageProps={props} />
   ) as unknown as FunctionComponent;
 }
 

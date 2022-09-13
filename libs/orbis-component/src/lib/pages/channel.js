@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+// import styles from '../styles/Home.module.css'
 import { getChannelIcon } from "../utils";
 import useIsGroupAdmin from "../hooks/useIsGroupAdmin";
 import { Feed } from "../components/Feed";
@@ -10,15 +8,15 @@ import { RightSide } from "../components/RightSide";
 /** Import Context */
 import { GlobalContext, ModalsContext } from "../contexts/GlobalContext";
 
-export default function ChannelDetails(channel_id) {
+export default function ChannelDetails() {
   const [loading, setLoading] = useState(true);
   const [channel, setChannel] = useState();
 
-  const { user, group_id, orbis } = useContext(GlobalContext);
+  const { user, group_id,channel_id, orbis } = useContext(GlobalContext);
 
   useEffect(() => {
     if(channel_id) {
-      loadChannelDetails(channel_id);
+      loadChannelDetails();
     }
   }, [channel_id])
 
@@ -83,7 +81,7 @@ export default function ChannelDetails(channel_id) {
         </div>
 
         {/** Right side */}
-        <RightSide type="group-members" details={group_id} />
+        {/* <RightSide type="group-members" details={group_id} /> */}
       </div>
     </>
   )

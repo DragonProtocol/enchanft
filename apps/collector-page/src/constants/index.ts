@@ -44,3 +44,4 @@ export const SHARE_EVENT_TWEET_CONTENTS = 'I am exploring on WL.xyz follow the l
 
 export const TASK_PARTICIPANTS_DISPLAY_MIN_NUM = 5
 export const TASK_PARTICIPANTS_FETCH_NUM = 30
+export const ORBIS_GROUP_ID = 'kjzl6cwe1jw146394sbocdl869ulvo5qpkviqm99ed1ms1ivun8shxpibfjot45'

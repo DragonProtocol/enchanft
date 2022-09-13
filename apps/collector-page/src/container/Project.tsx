@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import {OrbisComponent} from '@ecnft/orbis-component/'
+import { OrbisComponent } from '@ecnft/orbis-component/'
 import {
   ProjectDetailEntity,
   fetchProjectDetail,
@@ -47,6 +47,7 @@ import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
 import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
 import { FollowStatusType } from '../components/business/community/CommunityFollowButton'
+import { ORBIS_GROUP_ID } from '../constants'
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
 }
@@ -135,6 +136,8 @@ const Project: React.FC = () => {
   const [loadingView, setLoadingView] = useState(true)
   const { isCreator, checkProjectAllowed } = usePermissions()
   const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
+
+  const orbis_channel_id = 'kjzl6cwe1jw1497bb8n9s37seryr027ca9qubg75bnar12zkk91zi5rqlebv4rz'
 
   // 进入loading状态
   useEffect(() => {
@@ -283,15 +286,16 @@ const Project: React.FC = () => {
               maxColumns={3}
               onCreateTask={() => {
                 navigate(
-                  `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${
-                    data.community?.discordId || ''
+                  `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${data.community?.discordId || ''
                   }&communityName=${data.community?.name || ''}&communityTwitter=${data.community?.twitterName || ''}`,
                 )
               }}
             />
           </ExploreTaskListBox>
         </ProjectEventsBox>
-        <OrbisComponent/>
+        <OrbisBox>
+          <OrbisComponent group_id={ORBIS_GROUP_ID} channel_id={orbis_channel_id} />
+        </OrbisBox>
         {/* <ProjectOtherInfoBox>
             <ProjectOtherInfoLeftBox>
               <ProjectLabelBox>
@@ -405,7 +409,13 @@ const ProjectRightBox = styled.div`
 const ContributionListBox = styled(CardBox)`
   background: #fffbdb;
 `
+const OrbisBox = styled(CardBox)`
+  background: #000000;
+  height: 600px;
+`
+
 const ProjectEventsBox = styled(CardBox)``
+
 const ProjectOtherInfoBox = styled.div`
   display: flex;
   gap: 40px;
