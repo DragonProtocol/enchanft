@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 18:59:50
+ * @LastEditTime: 2022-09-13 10:01:55
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -267,7 +267,7 @@ const CommunityUserNumberItem = styled.div`
   width: 140px;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 4px;
   align-items: center;
 `
 const CommunityUserNumberLabelText = styled.div`
