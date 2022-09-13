@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-02 11:25:43
+ * @LastEditTime: 2022-09-08 13:51:53
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -18,7 +18,7 @@ import { selectAll, selectUserTodoTasksState, TodoTaskItemForEntity } from '../f
 import { useSearchParams } from 'react-router-dom'
 import useHandleAction from '../hooks/useHandleAction'
 import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
-import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
+import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
 import {
   completionAction,
   selectIdsVerifyActionQueue,
@@ -32,17 +32,17 @@ const formatStoreDataToComponentDataByTodoList = (
   tasks: TodoTaskItemForEntity[],
   taskId: number,
   followCommunityStatus: AsyncRequestStatus,
-  userFollowedProjectIds: number[],
+  userFollowedCommunityIds: number[],
   verifingTaskIds: number[],
   verifingActionIds: number[],
 ): TodoTaskListItemsType => {
   return tasks.map((task) => {
-    const actions = [...task.actions]
+    const actions = [...(task?.actions || [])]
       .sort((a, b) => a.orderNum - b.orderNum)
       .map((v) => {
-        const action = { ...v, project: task.project }
+        const action = { ...v, project: task?.project }
         // TODO 如果检索到当前action是关注社区的action，且在我关注的社区中，则将其状态改为已完成
-        // if (action.type === ActionType.TURN_ON_NOTIFICATION && userFollowedProjectIds.includes(action.communityId)) {
+        // if (action.type === ActionType.TURN_ON_NOTIFICATION && userFollowedCommunityIds.includes(action.communityId)) {
         //   Object.assign(action, {
         //     status: UserActionStatus.DONE,
         //   })
@@ -82,17 +82,17 @@ const formatStoreDataToComponentDataByInProgressList = (
   tasks: TodoTaskItemForEntity[],
   taskId: number,
   followCommunityStatus: AsyncRequestStatus,
-  userFollowedProjectIds: number[],
+  userFollowedCommunityIds: number[],
   verifingTaskIds: number[],
   verifingActionIds: number[],
 ): TodoTaskListItemsType => {
   return tasks.map((task) => {
-    const actions = [...task.actions]
+    const actions = [...(task?.actions || [])]
       .sort((a, b) => a.orderNum - b.orderNum)
       .map((v) => {
         const action = { ...v, project: task.project }
         // TODO 如果检索到当前action是关注社区的action，且在我关注的社区中，则将其状态改为已完成
-        // if (action.type === ActionType.TURN_ON_NOTIFICATION && userFollowedProjectIds.includes(action.communityId)) {
+        // if (action.type === ActionType.TURN_ON_NOTIFICATION && userFollowedCommunityIds.includes(action.communityId)) {
         //   Object.assign(action, {
         //     status: UserActionStatus.DONE,
         //   })
@@ -193,7 +193,7 @@ const TodoTask: React.FC = () => {
   }
 
   // 用户关注的社区ID集合
-  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject).map((item) => Number(item))
+  const userFollowedCommunityIds = useAppSelector(selectIdsByUserFollowedCommunity).map((item) => Number(item))
   // verify task queue
   const verifingTaskIds = useAppSelector(selectIdsVerifyTaskQueue).map((item) => Number(item))
   // verify action queue
@@ -212,7 +212,7 @@ const TodoTask: React.FC = () => {
     todoList,
     taskId,
     followCommunityStatus,
-    userFollowedProjectIds,
+    userFollowedCommunityIds,
     verifingTaskIds,
     verifingActionIds,
   )
@@ -220,7 +220,7 @@ const TodoTask: React.FC = () => {
     inProgressList,
     taskId,
     followCommunityStatus,
-    userFollowedProjectIds,
+    userFollowedCommunityIds,
     verifingTaskIds,
     verifingActionIds,
   )

@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 14:43:21
+ * @LastEditTime: 2022-09-09 19:09:02
  * @Description: 用户的账户信息
  */
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
 import { login, updateProfile, link, getProfile } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
@@ -72,6 +72,7 @@ export type ResourcePermission =
   | { resourceType: ResourceType.COMMUNITY; resourceIds: number[] }
 
 export type AccountState = {
+  isLogin: boolean
   status: AsyncRequestStatus
   linkStatus: AsyncRequestStatus
   errorMsg?: string
@@ -95,6 +96,7 @@ export type AccountState = {
 
 // 用户账户信息
 const initialState: AccountState = {
+  isLogin: !!localStorage.getItem(LAST_LOGIN_PUBKEY) && !!localStorage.getItem(LAST_LOGIN_TOKEN),
   status: AsyncRequestStatus.IDLE,
   linkStatus: AsyncRequestStatus.IDLE,
   defaultWallet: (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '',
@@ -160,6 +162,7 @@ export const userUpdateProfile = createAsyncThunk(
     })
     thunkAPI.dispatch(setAvatar(avatar))
     thunkAPI.dispatch(setName(name))
+    thunkAPI.dispatch(setLastLoginInfo({ name, avatar }))
     return resp.data
   },
 )
@@ -242,6 +245,8 @@ export const accountSlice = createSlice({
     },
     setLastLoginInfo: (state, action) => {
       state.lastLoginInfo = action.payload
+      localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.avatar || '')
+      localStorage.setItem(LAST_LOGIN_NAME, action.payload.name || '')
     },
     setConnectModal: (state, action) => {
       state.connectModal = action.payload
@@ -275,6 +280,9 @@ export const accountSlice = createSlice({
     setName: (state, action) => {
       state.name = action.payload
     },
+    setIsLogin: (state, action: PayloadAction<boolean>) => {
+      state.isLogin = action.payload
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -294,7 +302,7 @@ export const accountSlice = createSlice({
         state.roles = action.payload.roles
         state.defaultWallet = action.payload.walletType
         state.errorMsg = ''
-
+        state.isLogin = true
         localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.avatar || '')
         localStorage.setItem(LAST_LOGIN_NAME, action.payload.name || '')
         localStorage.setItem(LAST_LOGIN_TOKEN, action.payload.token || '')
@@ -346,7 +354,7 @@ export const accountSlice = createSlice({
         state.resourcePermissions = action.payload.data.resourcePermissions
         state.roles = action.payload.data.roles
         state.errorMsg = ''
-
+        state.isLogin = true
         localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.data.avatar || '')
         localStorage.setItem(LAST_LOGIN_NAME, action.payload.data.name || '')
       })
@@ -385,6 +393,7 @@ export const {
   setName,
   setLastLogin,
   setLastLoginInfo,
+  setIsLogin,
 } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer

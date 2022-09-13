@@ -32,12 +32,14 @@ import { downloadContributions } from '../services/api/community'
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
+import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
+import { CheckinStatusType } from '../components/business/community/CommunityCheckinButton'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
   const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
-  const { token, avatar, name } = useAppSelector(selectAccount)
+  const { avatar, name, isLogin } = useAppSelector(selectAccount)
   const { follow: followCommunityState, downloadContributionTokens: downloadContributionTokensState } = useAppSelector(
     selectUserCommunityHandlesState,
   )
@@ -51,6 +53,12 @@ const Contributionranks: React.FC = () => {
       dispatch(fetchContributionCommunityInfo(projectSlug))
     }
   }, [projectSlug])
+
+  // 按钮执行前要对账户进行的操作
+  const { accountOperationType, accountOperationDesc, handleAccountOperation } = useAccountOperationForChain(
+    community?.chainId,
+  )
+
   // 用户关注的社区ID集合
   const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
   const isFollowedCommunity =
@@ -66,10 +74,10 @@ const Contributionranks: React.FC = () => {
   // 获取用户在此社区的贡献值
   const { data: userContribution, status: userContributionStatus } = useAppSelector(selectUserContributon)
   useEffect(() => {
-    if (token && projectSlug && isFollowedCommunity) {
+    if (isLogin && projectSlug && isFollowedCommunity) {
       dispatch(fetchUserContributon(projectSlug))
     }
-  }, [projectSlug, token, isFollowedCommunity])
+  }, [projectSlug, isLogin, isFollowedCommunity])
 
   // 获取社区贡献等级排行
   const { contributionranks, contributionranksState } = useContributionranks(projectSlug)
@@ -89,9 +97,21 @@ const Contributionranks: React.FC = () => {
   const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal } =
     useCommunityCheckin(community?.id, projectSlug)
 
-  const loadingCheckin = checkinState.status === AsyncRequestStatus.PENDING
-  const disabledCheckin = loadingCheckin || isCheckedin
-
+  let checkinStatusType = CheckinStatusType.UNKNOWN
+  // let checkinBtnText = ''
+  //  账户未绑定
+  if (accountOperationType !== AccountOperationType.COMPLETED) {
+    checkinStatusType = CheckinStatusType.ACCOUNT_OPERATION
+    // checkinBtnText = accountOperationDesc
+  } else {
+    if (isCheckedin) {
+      checkinStatusType = CheckinStatusType.CHECKEDIN
+    } else if (checkinState.status === AsyncRequestStatus.PENDING) {
+      checkinStatusType = CheckinStatusType.CHECKING
+    } else {
+      checkinStatusType = CheckinStatusType.CHECKIN
+    }
+  }
   // 展示数据
 
   const contributionranksLoading = contributionranksState.status === AsyncRequestStatus.PENDING
@@ -111,10 +131,8 @@ const Contributionranks: React.FC = () => {
   const communityInfo = {
     name: community?.name || '',
     icon: community?.icon || '',
-    twitter: community?.twitter || '',
-    twitterId: community?.twitterId || '',
+    twitterName: community?.twitterName || '',
     discordId: community?.discordId || '',
-    discord: community?.discord || '',
     discordInviteUrl: community?.discordInviteUrl || '',
     discordName: '',
   }
@@ -148,7 +166,7 @@ const Contributionranks: React.FC = () => {
           )}
         </ContributionListBox>
         <ContributionRigtBox>
-          {token && (
+          {isLogin && (
             <ContributionMyBox>
               <ContributionMy
                 data={userContributionInfo.data}
@@ -162,12 +180,11 @@ const Contributionranks: React.FC = () => {
             <ContributionAbout
               data={communityInfo}
               viewConfig={{
-                displayCheckin: true,
-                loadingCheckin: loadingCheckin,
-                disabledCheckin: disabledCheckin,
-                isCheckedin: isCheckedin,
+                checkinStatusType,
+                // checkinBtnText,
               }}
-              onCommunityCheckin={handleCheckin}
+              onCheckin={handleCheckin}
+              onAccountOperation={handleAccountOperation}
             />
           </ContributionAboutBox>
         </ContributionRigtBox>
@@ -205,13 +222,13 @@ const ContributionMainBox = styled.div`
   gap: 20px;
 `
 const ContributionListBox = styled(CardBox)`
-  width: 760px;
+  flex: 1;
   padding: 20px;
   border: 4px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `
 const ContributionRigtBox = styled.div`
-  flex: 1;
+  width: 420px;
 `
 const ContributionMyBox = styled(CardBox)`
   width: 100%;

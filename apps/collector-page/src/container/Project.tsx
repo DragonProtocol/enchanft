@@ -17,11 +17,10 @@ import ProjectBasicInfo, {
   ProjectDetailBasicInfoDataViewType,
 } from '../components/business/project/ProjectDetailBasicInfo'
 import { AsyncRequestStatus } from '../types'
-import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
+import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
 import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import CardBox from '../components/common/card/CardBox'
 import ProjectDetailCommunity, {
-  FollowStatusType,
   ProjectDetailCommunityDataViewType,
 } from '../components/business/project/ProjectDetailCommunity'
 import ProjectDetailBasicInfo from '../components/business/project/ProjectDetailBasicInfo'
@@ -45,7 +44,8 @@ import { selectIds as selectIdsByUserCheckinCommunity } from '../features/user/c
 import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
-
+import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
+import { FollowStatusType } from '../components/business/community/CommunityFollowButton'
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
 }
@@ -57,60 +57,38 @@ export enum ProjectInfoTabsValue {
 // 处理社区基本信息
 const formatStoreDataToComponentDataByCommunityBasicInfo = (
   data: ProjectDetailEntity,
-  token: string,
   followedCommunityIds: Array<string | number>,
   followCommunityStatus: AsyncRequestStatus,
-  accountTypes: string[],
-): ProjectDetailCommunityDataViewType => {
-  const { community, chainId } = data
-
-  const chainType = getChainType(chainId)
-
+  accountOperationType: AccountOperationType,
+  accountOperationDesc: string,
+): ProjectDetailCommunityDataViewType | null => {
+  const { community } = data
+  if (!community) return null
+  const viewConfig = {}
   let followStatusType = FollowStatusType.UNKNOWN
-
-  if (token) {
+  //  账户未绑定
+  if (accountOperationType !== AccountOperationType.COMPLETED) {
+    followStatusType = FollowStatusType.ACCOUNT_OPERATION
+    // Object.assign(viewConfig, { followBtnText: accountOperationDesc })
+  } else {
     const isFollowed = followedCommunityIds.map((item) => String(item)).includes(String(community.id))
     if (isFollowed) {
       followStatusType = FollowStatusType.FOLLOWED
     } else if (followCommunityStatus === AsyncRequestStatus.PENDING) {
       followStatusType = FollowStatusType.FOLLOWING
     } else {
-      // 钱包是否跟用户系统绑定
-      let isBindWallet = false
-      switch (chainType) {
-        case ChainType.EVM:
-          if (accountTypes.includes('EVM')) {
-            isBindWallet = true
-          }
-          break
-        case ChainType.SOLANA:
-          if (accountTypes.includes('SOLANA')) {
-            isBindWallet = true
-          }
-          break
-      }
-      if (!isBindWallet) {
-        followStatusType = FollowStatusType.BIND_WALLET
-      } else {
-        followStatusType = FollowStatusType.FOLLOW
-      }
+      followStatusType = FollowStatusType.FOLLOW
     }
-  } else {
-    followStatusType = FollowStatusType.CONNECT_WALLET
   }
-
+  Object.assign(viewConfig, { followStatusType })
   return {
     data: community,
-    viewConfig: {
-      followStatusType,
-      bindWalletType: chainType,
-    },
+    viewConfig,
   }
 }
 // project basic info
 const formatStoreDataToComponentDataByProjectBasicInfo = (
   data: ProjectDetailEntity,
-  token: string,
 ): ProjectDetailBasicInfoDataViewType => {
   const displayMintInfo = true
   const displayTasks = true
@@ -123,30 +101,31 @@ const formatStoreDataToComponentDataByProjectBasicInfo = (
   }
 }
 // project tasks
-const formatStoreDataToComponentDataByTasks = (data: ProjectDetailEntity, token: string): ExploreTaskListItemsType => {
-  return data.tasks.map((task) => {
-    // TODO 待确认，这里先用task的whiteListTotalNum代替
-    // const winnerNum = task.whitelistTotalNum
-    return {
-      data: { ...task, project: { ...data } },
-    }
-  })
+const formatStoreDataToComponentDataByTasks = (data: ProjectDetailEntity): ExploreTaskListItemsType => {
+  return (
+    data.tasks?.map((task) => {
+      // TODO 待确认，这里先用task的whiteListTotalNum代替
+      // const winnerNum = task.whitelistTotalNum
+      return {
+        data: { ...task, project: { ...data } },
+      }
+    }) || []
+  )
 }
 // project teamMembers
-const formatStoreDataToComponentDataByTeamMembers = (
-  data: ProjectDetailEntity,
-  token: string,
-): ProjectTeamMemberListItemsType => {
-  return data.teamMembers.map((member) => ({
-    data: member,
-    viewConfig: {},
-  }))
+const formatStoreDataToComponentDataByTeamMembers = (data: ProjectDetailEntity): ProjectTeamMemberListItemsType => {
+  return (
+    data.teamMembers?.map((member) => ({
+      data: member,
+      viewConfig: {},
+    })) || []
+  )
 }
 
 const Project: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token, accounts } = useAppSelector(selectAccount)
+  const { token, accounts, isLogin } = useAppSelector(selectAccount)
   const accountTypes = accounts.map((account) => account.accountType)
 
   const { projectSlug } = useParams()
@@ -174,20 +153,19 @@ const Project: React.FC = () => {
     }
   }, [loadingView, status])
 
+  // 按钮执行前要对账户进行的操作
+  const { accountOperationType, accountOperationDesc, handleAccountOperation } = useAccountOperationForChain(
+    data?.chainId,
+  )
   // 获取社区贡献等级
   const { contributionranks } = useContributionranks(projectSlug)
 
   // 用户关注的社区ID集合
-  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
+  const userFollowedCommunityIds = useAppSelector(selectIdsByUserFollowedCommunity)
 
   // 社区签到
   const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal } =
     useCommunityCheckin(data?.communityId, projectSlug)
-
-  // 打开连接钱包的窗口
-  const handleOpenConnectWallet = useCallback(() => {
-    dispatch(setConnectWalletModalShow(true))
-  }, [])
 
   // tabs
   // const ProjectInfoTabs = [
@@ -228,17 +206,17 @@ const Project: React.FC = () => {
 
   const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
     data,
-    token,
-    userFollowedProjectIds,
+    userFollowedCommunityIds,
     followCommunityStatus,
-    accountTypes,
+    accountOperationType,
+    accountOperationDesc,
   )
 
-  const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data, token)
+  const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data)
   const showContributionranks = contributionranks.slice(0, 5)
   const contributionMembersTotal = contributionranks.length
   // const teamMembers = formatStoreDataToComponentDataByTeamMembers(data, token)
-  const tasks = formatStoreDataToComponentDataByTasks(data, token)
+  const tasks = formatStoreDataToComponentDataByTasks(data)
 
   // const ProjectInfoTabComponents = {
   //   [ProjectInfoTabsValue.TEAM]: <ProjectTeamMemberList items={teamMembers} />,
@@ -249,38 +227,37 @@ const Project: React.FC = () => {
   //进入ranks页面，如果符合条件就自动关注
   const startContribute = () => {
     navigate(`/${projectSlug}/rank`)
-    if (communityDataView.viewConfig?.followStatusType === FollowStatusType.FOLLOW) handleFollow()
-  }
-  // 打开绑定钱包账户的窗口
-  const handleOpenWalletBind = (chainType: ChainType) => {
-    const modalType = chainType === ChainType.SOLANA ? ConnectModal.PHANTOM : ConnectModal.METAMASK
-    dispatch(setConnectModal(modalType))
+    if (communityDataView && communityDataView.viewConfig?.followStatusType === FollowStatusType.FOLLOW) handleFollow()
   }
 
   // 社区签到
-  const displayCheckin = token && !isCheckedin && isVerifiedCheckin
+  const displayCheckin = isLogin && !isCheckedin && isVerifiedCheckin
   const loadingCheckin = checkinState.status === AsyncRequestStatus.PENDING
   const disabledCheckin = loadingCheckin || isCheckedin
   return (
     <ProjectWrapper>
       <ProjectLeftBox>
-        <ProjectLeftBodyBox>
-          <ProjectImage src={data.image} />
-          <ProjectBasicInfoBox>
-            <ProjectName>{data.name}</ProjectName>
-            <ProjectDetailCommunity
-              data={communityDataView.data}
-              viewConfig={communityDataView.viewConfig}
-              onFollow={handleFollow}
-              onBindWallet={handleOpenWalletBind}
-              onConnectWallet={handleOpenConnectWallet}
-            />
-            <ProjectDetailBasicInfo
-              data={projectBasicInfoDataView.data}
-              viewConfig={projectBasicInfoDataView.viewConfig}
-            />
-          </ProjectBasicInfoBox>
-        </ProjectLeftBodyBox>
+        <ProjectLeftInfo>
+          <ProjectLeftInfoTop>
+            {data.image && <ProjectImage src={data.image} />}
+            <ProjectLeftInfoTopRight>
+              <ProjectName>{data.name}</ProjectName>
+              {communityDataView && (
+                <ProjectDetailCommunity
+                  data={communityDataView.data}
+                  viewConfig={communityDataView.viewConfig}
+                  onFollow={handleFollow}
+                  onAccountOperation={handleAccountOperation}
+                />
+              )}
+            </ProjectLeftInfoTopRight>
+          </ProjectLeftInfoTop>
+
+          <ProjectDetailBasicInfo
+            data={projectBasicInfoDataView.data}
+            viewConfig={projectBasicInfoDataView.viewConfig}
+          />
+        </ProjectLeftInfo>
       </ProjectLeftBox>
 
       <ProjectRightBox>
@@ -306,8 +283,8 @@ const Project: React.FC = () => {
               onCreateTask={() => {
                 navigate(
                   `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${
-                    data.community.discordId || ''
-                  }&communityName=${data.community.name}&communityTwitter=${data.community.twitter}`,
+                    data.community?.discordId || ''
+                  }&communityName=${data.community?.name || ''}&communityTwitter=${data.community?.twitterName || ''}`,
                 )
               }}
             />
@@ -388,27 +365,33 @@ const ProjectLeftBox = styled.div`
   flex-shrink: 0;
   width: 420px;
 `
-const ProjectLeftBodyBox = styled(CardBox)`
-  padding: 0;
+const ProjectLeftInfo = styled(CardBox)`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `
+const ProjectLeftInfoTop = styled.div`
+  display: flex;
+  gap: 20px;
+`
 const ProjectImage = styled.img`
-  width: 420px;
-  height: 420px;
+  width: 140px;
+  height: 140px;
+  border-radius: 10px;
   object-fit: cover;
+`
+const ProjectLeftInfoTopRight = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `
 const ProjectName = styled.div`
   font-weight: 700;
-  font-size: 28px;
-  line-height: 42px;
+  font-size: 24px;
+  line-height: 36px;
   color: #333333;
-`
-const ProjectBasicInfoBox = styled.div`
-  padding: 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 `
 
 const ProjectRightBox = styled.div`

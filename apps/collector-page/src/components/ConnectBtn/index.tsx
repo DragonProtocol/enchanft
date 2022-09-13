@@ -17,6 +17,7 @@ import {
   userLogin,
   ChainType,
   setConnectWalletModalShow,
+  setIsLogin,
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
@@ -33,17 +34,18 @@ export default function ConnectBtn() {
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
 
-  const handleLogout = useCallback(async () => {
-    if (account.pubkey) {
-      clearLoginToken(account.pubkey, account.defaultWallet)
-      dispatch(setLastLogin(account.defaultWallet))
-      dispatch(setLastLoginInfo({ name: account.name, avatar: account.avatar }))
-      dispatch(setToken(''))
-      dispatch(setPubkey(''))
-      dispatch(setAvatar(''))
-      dispatch(setName(''))
-    }
-  }, [account])
+  // const handleLogout = useCallback(async () => {
+  //   if (account.pubkey) {
+  //     clearLoginToken(account.pubkey, account.defaultWallet)
+  //     dispatch(setLastLogin(account.defaultWallet))
+  //     dispatch(setLastLoginInfo({ name: account.name, avatar: account.avatar }))
+  //     dispatch(setToken(''))
+  //     dispatch(setPubkey(''))
+  //     dispatch(setAvatar(''))
+  //     dispatch(setName(''))
+  //     dispatch(setIsLogin(false))
+  //   }
+  // }, [account])
 
   const shortPubkey = useMemo(() => {
     if (account.pubkey) {
@@ -55,34 +57,38 @@ export default function ConnectBtn() {
   return (
     <>
       {(shortPubkey && account.token && (
-        <PopupState variant="popover" popupId="demo-popup-menu">
-          {(popupState) => (
-            <React.Fragment>
-              <ConnectBtnWrapper {...bindTrigger(popupState)}>
-                <UserAvatar src={account.avatar} />
-                {account.name || shortPubkey}
-              </ConnectBtnWrapper>
-              <Menu {...bindMenu(popupState)}>
-                <MenuItem
-                  onClick={() => {
-                    popupState.close()
-                    navigate('/profile')
-                  }}
-                >
-                  Profile
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    popupState.close()
-                    handleLogout()
-                  }}
-                >
-                  Logout
-                </MenuItem>
-              </Menu>
-            </React.Fragment>
-          )}
-        </PopupState>
+        // <PopupState variant="popover" popupId="demo-popup-menu">
+        //   {(popupState) => (
+        //     <React.Fragment>
+        //       <ConnectBtnWrapper {...bindTrigger(popupState)}>
+        //         <UserAvatar src={account.avatar} />
+        //         {account.name || shortPubkey}
+        //       </ConnectBtnWrapper>
+        //       <Menu {...bindMenu(popupState)}>
+        //         <MenuItem
+        //           onClick={() => {
+        //             popupState.close()
+        //             navigate('/profile')
+        //           }}
+        //         >
+        //           Profile
+        //         </MenuItem>
+        //         <MenuItem
+        //           onClick={() => {
+        //             popupState.close()
+        //             handleLogout()
+        //           }}
+        //         >
+        //           Logout
+        //         </MenuItem>
+        //       </Menu>
+        //     </React.Fragment>
+        //   )}
+        // </PopupState>
+        <ConnectBtnWrapper onClick={() => navigate('/profile')}>
+          <UserAvatar src={account.avatar} />
+          {account.name || shortPubkey}
+        </ConnectBtnWrapper>
       )) || (
         <ConnectBtnWrapper
           onClick={() => {

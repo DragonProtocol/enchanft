@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 16:58:49
+ * @LastEditTime: 2022-09-08 11:27:26
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -35,7 +35,7 @@ export type TaskActionItemDataType = {
   data: ActionData
   progress?: string
   status: UserActionStatus
-  project: {
+  project?: {
     slug: string
   }
 }

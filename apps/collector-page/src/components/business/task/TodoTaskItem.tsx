@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-02 12:01:05
+ * @LastEditTime: 2022-09-08 13:49:05
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -17,7 +17,7 @@ import MoodBadIcon from '@mui/icons-material/MoodBad'
 import TaskActionList, { TaskActionsListHandlesType } from './TaskActionList'
 import { todoTaskCompleteStatusMap } from './TodoTaskList'
 import { useNavigate } from 'react-router-dom'
-import TaskMintButton from './TaskMintButton'
+import ProjectMintButton from '../project/ProjectMintButton'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 
 export type TodoTaskItemDataType = {
@@ -30,10 +30,10 @@ export type TodoTaskItemDataType = {
   startTime: number
   endTime: number
   description: string
-  status: TaskTodoCompleteStatus
-  actions: TaskActionItemDataType[]
-  project: Project
-  whitelist: Whitelist
+  status?: TaskTodoCompleteStatus
+  actions?: TaskActionItemDataType[]
+  project?: Project
+  whitelist?: Whitelist
   reward?: Reward
 }
 
@@ -127,9 +127,6 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     whitelist,
     reward,
   } = data
-  const { name: projectName } = project
-  const { mintUrl, slug: projectSlug } = project
-  const { mintStartTime } = whitelist
   const {
     disabledMint,
     displayMint,
@@ -157,8 +154,8 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
         // 计算任务剩余天数
         const remainDays = Math.ceil((endTime - Date.now()) / (1000 * 60 * 60 * 24))
         // 计算所有action，和已完成的action数量
-        const allActionNum = actions.length
-        const actionDoneNum = actions.filter((action) => action.status === UserActionStatus.DONE).length
+        const allActionNum = actions?.length || 0
+        const actionDoneNum = (actions || []).filter((action) => action.status === UserActionStatus.DONE).length
         return (
           <TaskProgressBox>
             <ExcessTime>{remainDays} days left</ExcessTime>
@@ -184,7 +181,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     // if (onMint) {
     //   onMint(data)
     // }
-    window.open(mintUrl, '_blank', 'noopener,noreferrer')
+    window.open(project?.mintUrl, '_blank', 'noopener,noreferrer')
   }
 
   // 是否展开action
@@ -194,7 +191,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     if (allowOpenActions) {
       setIsOpenActions(!isOpenActions)
     } else if (allowNavigateToTask) {
-      navginate(`/${projectSlug}/${id}`)
+      navginate(`/${project?.slug}/${id}`)
     }
   }
   const onVerifyTaskClick = () => {
@@ -206,15 +203,19 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     if (reward) {
       switch (reward.type) {
         case RewardType.WHITELIST:
-          if (!project.mintUrl) return null
-          return <TaskMintButton startTimestamp={mintStartTime} onClick={onMintClick} disabled={disabledMint} />
+          if (!project?.mintUrl || !whitelist) return null
+          return (
+            <ProjectMintButton startTimestamp={whitelist.mintStartTime} onClick={onMintClick} disabled={disabledMint} />
+          )
         case RewardType.CONTRIBUTION_TOKEN:
           return (
             <RewardTextBox>
               <PngIconGiftBox size="16px" />
               <RewardText>
                 You got <RewardTextBold>{reward.data.token_num}</RewardTextBold> contribution token of{' '}
-                <RewardProjectTextBtn onClick={() => navginate(`/${projectSlug}`)}>{project.name}</RewardProjectTextBtn>
+                <RewardProjectTextBtn onClick={() => project?.slug && navginate(`/${project.slug}`)}>
+                  {project?.name || 'Unknown Project'}
+                </RewardProjectTextBtn>
               </RewardText>
             </RewardTextBox>
           )
@@ -224,7 +225,9 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
               <PngIconGiftBox size="16px" />
               <RewardText>
                 You got <RewardTextBold>{reward.name}</RewardTextBold> form{' '}
-                <RewardProjectTextBtn onClick={() => navginate(`/${projectSlug}`)}>{project.name}</RewardProjectTextBtn>
+                <RewardProjectTextBtn onClick={() => project?.slug && navginate(`/${project.slug}`)}>
+                  {project?.name || 'Unknown Project'}
+                </RewardProjectTextBtn>
                 . The team will contact you later
               </RewardText>
             </RewardTextBox>
@@ -239,14 +242,15 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   return (
     <TodoTaskItemWrapper>
       <TaskBasicInfoBox isAllowClick={allowOpenActions || allowNavigateToTask} onClick={onTaskClick}>
-        <TaskBasicInfoLeftImg src={project.image} />
+        {project && <TaskBasicInfoLeftImg src={project.image} />}
+
         <TaskBasicInfoRightBox>
           <TaskName>{name}</TaskName>
           {renderTaskStatusContent()}
         </TaskBasicInfoRightBox>
       </TaskBasicInfoBox>
       {displayReward && <TaskOpenBodyBox>{renderRewardContent()}</TaskOpenBodyBox>}
-      {isOpenActions && (
+      {actions && isOpenActions && (
         <TaskOpenBodyBox>
           <TaskActionList
             items={actions}

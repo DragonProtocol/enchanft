@@ -1,45 +1,41 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { fetchListForUserWhitelist } from '../../services/api/whitelist'
+import { fetchListForUserReward } from '../../services/api/reward'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
-import { UserWhitelistItem } from '../../types/api'
+import { UserRewardItem } from '../../types/api'
 
-export type UserWhitelistForEntity = UserWhitelistItem & {
-  id: number
-}
-type WhitelistListState = EntityState<UserWhitelistForEntity> & {
+export type UserRewardForEntity = UserRewardItem
+type RewardListState = EntityState<UserRewardForEntity> & {
   status: AsyncRequestStatus
   errorMsg: string
   currentRequestId: string | undefined // 当前正在请求的id(由createAsyncThunk生成的唯一id)
 }
-export const userWhitelistsEntity = createEntityAdapter<UserWhitelistForEntity>({
+export const userRewardsEntity = createEntityAdapter<UserRewardForEntity>({
   selectId: (item) => item.id,
 })
-const initTodoTasksState: WhitelistListState = userWhitelistsEntity.getInitialState({
+const initTodoTasksState: RewardListState = userRewardsEntity.getInitialState({
   status: AsyncRequestStatus.IDLE,
   errorMsg: '',
   currentRequestId: undefined,
 })
 
-type FetchWhitelistsResp = {
-  data: UserWhitelistItem[]
+type FetchRewardsResp = {
+  data: UserRewardItem[]
   errorMsg?: string
 }
 
-export const fetchUserWhitelists = createAsyncThunk<
-  FetchWhitelistsResp,
+export const fetchUserRewards = createAsyncThunk<
+  FetchRewardsResp,
   undefined,
   {
-    rejectValue: FetchWhitelistsResp
+    rejectValue: FetchRewardsResp
   }
 >(
-  'user/whitelists/fetchList',
+  'user/rewards/fetchList',
   async (params, { rejectWithValue }) => {
     try {
-      const resp = await fetchListForUserWhitelist()
-      const data = (resp.data.data || [])
-        .filter((item) => !!item.reward)
-        .map((item) => ({ ...item, id: item.reward?.id }))
+      const resp = await fetchListForUserReward()
+      const data = resp.data.data || []
       return { data }
     } catch (error: any) {
       if (!error.response) {
@@ -55,12 +51,12 @@ export const fetchUserWhitelists = createAsyncThunk<
     condition: (params, { getState }) => {
       const state = getState() as RootState
       const {
-        userWhitelists: { status },
-        account: { token },
+        userRewards: { status },
+        account: { isLogin },
       } = state
-      // 没有token ,则阻止新的请求
-      if (!token) {
-        userWhitelistsEntity.removeAll(state.userWhitelists)
+      // 没有登录,则阻止请求
+      if (!isLogin) {
+        userRewardsEntity.removeAll(state.userRewards)
         return false
       }
       // 之前的请求正在进行中,则阻止新的请求
@@ -72,50 +68,50 @@ export const fetchUserWhitelists = createAsyncThunk<
   },
 )
 
-export const userWhitelistsSlice = createSlice({
-  name: 'userWhitelists',
+export const userRewardsSlice = createSlice({
+  name: 'userRewards',
   initialState: initTodoTasksState,
   reducers: {
     addOne: (state, action) => {
       const one = action.payload
-      userWhitelistsEntity.addOne(state, one)
+      userRewardsEntity.addOne(state, one)
     },
     removeOne: (state, action) => {
       const id = action.payload
-      userWhitelistsEntity.removeOne(state, id)
+      userRewardsEntity.removeOne(state, id)
     },
     updateOne: (state, action) => {
       const one = action.payload
-      userWhitelistsEntity.upsertOne(state, one)
+      userRewardsEntity.upsertOne(state, one)
     },
     removeAll: (state) => {
-      userWhitelistsEntity.removeAll(state)
+      userRewardsEntity.removeAll(state)
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchUserWhitelists.pending, (state, action) => {
-        console.log('fetchUserWhitelists.pending', action)
+      .addCase(fetchUserRewards.pending, (state, action) => {
+        console.log('fetchUserRewards.pending', action)
         state.status = AsyncRequestStatus.PENDING
         state.errorMsg = ''
         state.currentRequestId = action.meta.requestId
       })
-      .addCase(fetchUserWhitelists.fulfilled, (state, action) => {
-        console.log('fetchUserWhitelists.fulfilled', action)
+      .addCase(fetchUserRewards.fulfilled, (state, action) => {
+        console.log('fetchUserRewards.fulfilled', action)
         const { requestId } = action.meta
         // 前后两次不同的请求，使用最后一次请求返回的数据
         if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
         state.status = AsyncRequestStatus.FULFILLED
         // set data
-        userWhitelistsEntity.setAll(state, action.payload.data)
+        userRewardsEntity.setAll(state, action.payload.data)
       })
-      .addCase(fetchUserWhitelists.rejected, (state, action) => {
-        console.log('fetchUserWhitelists.rejected', action)
+      .addCase(fetchUserRewards.rejected, (state, action) => {
+        console.log('fetchUserRewards.rejected', action)
         const { requestId } = action.meta
         // 前后两次不同的请求，使用最后一次请求返回的数据
         if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
         state.status = AsyncRequestStatus.REJECTED
-        userWhitelistsEntity.setAll(state, [])
+        userRewardsEntity.setAll(state, [])
         if (action.payload) {
           state.errorMsg = action.payload.errorMsg || ''
         } else {
@@ -125,8 +121,8 @@ export const userWhitelistsSlice = createSlice({
   },
 })
 
-const { actions, reducer } = userWhitelistsSlice
-export const selectUserWhitelistsState = (state: RootState) => state.userWhitelists
-export const { selectAll, selectIds } = userWhitelistsEntity.getSelectors((state: RootState) => state.userWhitelists)
+const { actions, reducer } = userRewardsSlice
+export const selectUserRewardsState = (state: RootState) => state.userRewards
+export const { selectAll, selectIds } = userRewardsEntity.getSelectors((state: RootState) => state.userRewards)
 export const { addOne, removeOne, updateOne, removeAll } = actions
 export default reducer

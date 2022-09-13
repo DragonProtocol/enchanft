@@ -2,22 +2,22 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 10:41:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-02 11:47:32
+ * @LastEditTime: 2022-09-07 11:24:48
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import ButtonBase, { ButtonPrimary, ButtonProps } from '../../common/button/ButtonBase'
 
-export type TaskMintButtonProps = ButtonProps & {
+export type ProjectMintButtonProps = ButtonProps & {
   startTimestamp: number
 }
 
-const TaskMintButton: React.FC<TaskMintButtonProps> = ({
+const ProjectMintButton: React.FC<ProjectMintButtonProps> = ({
   startTimestamp,
   disabled,
   ...btnOtherProps
-}: TaskMintButtonProps) => {
+}: ProjectMintButtonProps) => {
   const [mintTimeCountdown, setMintTimeCountdown] = useState({
     distance: 0,
     day: 0,
@@ -70,13 +70,13 @@ const TaskMintButton: React.FC<TaskMintButtonProps> = ({
   }
   const isDisabledMint = disabled || mintTimeCountdown.distance > 0
   return (
-    <TaskMintButtonWrapper disabled={isDisabledMint} {...btnOtherProps}>
+    <ProjectMintButtonWrapper disabled={isDisabledMint} {...btnOtherProps}>
       {mintText}
-    </TaskMintButtonWrapper>
+    </ProjectMintButtonWrapper>
   )
 }
-export default TaskMintButton
-const TaskMintButtonWrapper = styled(ButtonBase)`
+export default ProjectMintButton
+const ProjectMintButtonWrapper = styled(ButtonBase)`
   width: 100%;
   background-color: #e07031;
   font-weight: 700;

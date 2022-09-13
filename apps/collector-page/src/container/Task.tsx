@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-05 12:35:07
+ * @LastEditTime: 2022-09-09 17:43:25
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -50,7 +50,7 @@ import TaskStatusButton, {
 } from '../components/business/task/TaskStatusButton'
 import TaskImageDefault from '../components/business/task/TaskImageDefault'
 import { follow as followCommunity } from '../features/user/communityHandlesSlice'
-import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
+import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
 import ButtonBase, { ButtonInfo } from '../components/common/button/ButtonBase'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import { toast } from 'react-toastify'
@@ -71,7 +71,7 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
   if (accountOperationType !== AccountOperationType.COMPLETED) {
     return {
       type: TaskStatusButtonType.ACCOUNT_OPERATION,
-      btnText: accountOperationDesc,
+      // btnText: accountOperationDesc,
     }
   }
 
@@ -85,7 +85,7 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
         }
       case TaskTodoCompleteStatus.CLOSED: // 任务已关闭
         return {
-          type: TaskStatusButtonType.MISSION_OF,
+          type: TaskStatusButtonType.MISSION_OFF,
         }
     }
     return null
@@ -108,9 +108,9 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
 }
 const formatStoreDataToComponentDataByTaskActions = (
   task: TaskDetailEntity,
-  userFollowedProjectIds: number[],
+  userFollowedCommunityIds: number[],
 ): TaskActionItemsType => {
-  return [...task.actions]
+  return [...(task?.actions || [])]
     .sort((a, b) => a.orderNum - b.orderNum)
     .map((v) => {
       const action = { ...v, project: task.project }
@@ -118,7 +118,7 @@ const formatStoreDataToComponentDataByTaskActions = (
       // if (
       //   task.acceptedStatus === TaskAcceptedStatus.DONE &&
       //   action.type === ActionType.TURN_ON_NOTIFICATION &&
-      //   userFollowedProjectIds.includes(action.communityId)
+      //   userFollowedCommunityIds.includes(action.communityId)
       // ) {
       //   Object.assign(action, {
       //     status: UserActionStatus.DONE,
@@ -140,6 +140,7 @@ const Task: React.FC = () => {
   const [loadingView, setLoadingView] = useState(false)
   const { isCreator, checkTaskAllowed, checkProjectAllowed } = usePermissions()
 
+  // 按钮执行前要对账户进行的操作
   const { accountOperationType, accountOperationDesc, handleAccountOperation } = useAccountOperationForChain(
     data?.project?.chainId,
   )
@@ -177,24 +178,13 @@ const Task: React.FC = () => {
 
   // 处理执行action操作
   const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
-  // 获取链的类型
-  const chainType = data?.project?.chainId ? getChainType(data?.project?.chainId) : ChainType.UNKNOWN
-  // 打开连接钱包的窗口
-  const handleOpenConnectWallet = useCallback(() => {
-    dispatch(setConnectWalletModalShow(true))
-  }, [])
-  // 打开绑定钱包账户的窗口
-  const modalType = chainType === ChainType.SOLANA ? ConnectModal.PHANTOM : ConnectModal.METAMASK
-  const handleOpenWalletBind = useCallback(() => {
-    dispatch(setConnectModal(modalType))
-  }, [modalType])
 
   // 关注社区
   const handleFollowCommunity = (communityId: number) => {
     dispatch(followCommunity({ id: communityId }))
   }
   // 用户关注的社区ID集合
-  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject).map((item) => Number(item))
+  const userFollowedCommunityIds = useAppSelector(selectIdsByUserFollowedCommunity).map((item) => Number(item))
 
   // verify task queue
   const verifingTaskIds = useAppSelector(selectIdsVerifyTaskQueue).map((item) => Number(item))
@@ -217,8 +207,7 @@ const Task: React.FC = () => {
   }
 
   const name = data.name || ''
-  const { projectId, image, participants } = data
-  const { name: projectName, chainId, communityId } = data.project
+  const { image, participants, project } = data
   // task status button
   const taskStatusButtonData = formatStoreDataToComponentDataByTaskStatusButton(
     data,
@@ -227,7 +216,7 @@ const Task: React.FC = () => {
     accountOperationDesc,
   )
   // task action and winnerList
-  const actionItems = formatStoreDataToComponentDataByTaskActions(data, userFollowedProjectIds)
+  const actionItems = formatStoreDataToComponentDataByTaskActions(data, userFollowedCommunityIds)
   const winnerList = data?.winnerList || []
   // 是否允许操作action
   const allowHandleAction =
@@ -244,7 +233,8 @@ const Task: React.FC = () => {
 
   // 后面如果带/，则去掉/
   const taskShareUrl = TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`
-  const displayParticipants = participants && participants.takers >= TASK_PARTICIPANTS_DISPLAY_MIN_NUM
+  const displayParticipants =
+    participants && participants.takers !== undefined && participants.takers >= TASK_PARTICIPANTS_DISPLAY_MIN_NUM
   return (
     <TaskDetailWrapper>
       <TaskDetailBodyBox>
@@ -270,18 +260,21 @@ const Task: React.FC = () => {
               <IconShare size="16px" />
             </ShareButton>
 
-            {data.project.id && checkProjectAllowed(Number(data.project.id)) && isCreator && (
+            {project && checkProjectAllowed(Number(project.id)) && isCreator && (
               <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
             )}
           </TaskDetailHeaderBox>
           <ProjectNameBox>
-            <ProjectName onClick={() => navigate(`/${data.project.slug}`)}>Project: {projectName}</ProjectName>
+            <ProjectName onClick={() => project?.slug && navigate(`/${project.slug}`)}>
+              Project: {project?.name || 'Unknown Project'}
+            </ProjectName>
           </ProjectNameBox>
           <TaskDetailContentBox>
             <TaskDetailContentBoxLeft>
               <TaskImage src={image} />
               <TaskDetailContent data={data} />
             </TaskDetailContentBoxLeft>
+            <TaskDetailContentDividingLine />
             <TaskDetailContentBoxRight>
               {winnerList.length > 0 ? (
                 <TaskListBox>
@@ -303,7 +296,7 @@ const Task: React.FC = () => {
                         type={taskStatusButtonData.type}
                         loading={taskStatusButtonData.loading}
                         disabled={taskStatusButtonData.disabled}
-                        btnText={taskStatusButtonData.btnText}
+                        // btnText={taskStatusButtonData.btnText}
                         onAccountOperation={handleAccountOperation}
                         onTake={handleTakeTask}
                       />
@@ -327,13 +320,15 @@ const Task: React.FC = () => {
                   </TaskListBox>
                 </>
               )}
+              {displayParticipants && (
+                <TaskDetailParticipants
+                  items={participants?.userDetails || []}
+                  takers={participants?.takers || 0}
+                  finishers={participants?.finishers || 0}
+                />
+              )}
             </TaskDetailContentBoxRight>
           </TaskDetailContentBox>
-          {displayParticipants && (
-            <TaskDetailParticipantsBox>
-              <TaskDetailParticipants data={participants} />
-            </TaskDetailParticipantsBox>
-          )}
         </TaskDetailBodyMainBox>
       </TaskDetailBodyBox>
     </TaskDetailWrapper>
@@ -358,6 +353,7 @@ const TaskDetailBodyMainBanner = styled.div`
 `
 const TaskDetailBodyMainBox = styled.div`
   padding: 40px;
+  padding-bottom: 0px;
   box-sizing: border-box;
 `
 const TaskDetailHeaderBox = styled.div`
@@ -414,21 +410,31 @@ const TaskImage = styled(TaskImageDefault)`
 
 const TaskDetailContentBox = styled.div`
   width: 100%;
-  margin-top: 18px;
+  margin-top: 20px;
   display: flex;
   gap: 40px;
+  border-top: solid 2px #333333;
+  box-sizing: border-box;
+`
+const TaskDetailContentDividingLine = styled.div`
+  width: 2px;
+  background: #333333;
 `
 const TaskDetailContentBoxLeft = styled.div`
   flex: 1;
   box-sizing: border-box;
   overflow: hidden;
+  padding-top: 20px;
+  padding-bottom: 40px;
 `
 const TaskDetailContentBoxRight = styled.div`
   flex: 1;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 40px;
+  padding-top: 20px;
+  padding-bottom: 40px;
 `
 const TaskListBox = styled.div`
   width: 100%;
@@ -444,8 +450,4 @@ const TaskStartCountdownBox = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-`
-
-const TaskDetailParticipantsBox = styled.div`
-  margin-top: 40px;
 `

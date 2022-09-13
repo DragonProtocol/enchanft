@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-08 19:10:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 18:53:00
+ * @LastEditTime: 2022-09-08 10:20:26
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -11,28 +11,11 @@ import { ApiResp } from '../../types'
 import {
   CommunityBasicInfoResponse,
   CommunityCheckinResponse,
-  CommunityCollectionResponse,
   CommunityContributionRankResponse,
   FollowedCommunitiesResponse,
   UserContributionResponse,
   VerifyCommunityCheckinResponse,
 } from '../../types/api'
-import fileDownload from 'js-file-download'
-/** 获取 collection 详情 */
-export type fetchDetailForCommunityCollectionParams = {
-  communityId: number
-}
-export function fetchDetailForCommunityCollection(
-  params: fetchDetailForCommunityCollectionParams,
-): AxiosPromise<ApiResp<CommunityCollectionResponse>> {
-  return request({
-    url: `/communities/${params.communityId}`,
-    method: 'get',
-    headers: {
-      needToken: true,
-    },
-  })
-}
 /** 获取社区基本信息 */
 export function fetchDetailByCommunityBasicInfo(slug: string): AxiosPromise<ApiResp<CommunityBasicInfoResponse>> {
   return request({
@@ -120,6 +103,7 @@ export function fetchListForUserFollowedCommunity(): AxiosPromise<ApiResp<Follow
   })
 }
 
+/** 下载contributions token */
 export function downloadContributions(communityId: string | number): AxiosPromise<any> {
   return request({
     url: `/communities/download/${communityId}.csv`,

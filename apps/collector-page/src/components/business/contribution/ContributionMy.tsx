@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:30:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 13:54:57
+ * @LastEditTime: 2022-09-09 16:27:07
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -57,7 +57,7 @@ const ContributionMy: React.FC<ContributionMyProps> = ({
             {loadingFollowCommunity ? 'Loading ...' : 'Join'}
           </CommunityFollowBtn>
         ) : (
-          <UserScore>My Point : {score}</UserScore>
+          <UserScore>My Token : {score}</UserScore>
         )}
       </RightBox>
     </ContributionMyWrapper>
@@ -73,12 +73,13 @@ const ContributionMyWrapper = styled.div`
 const Avatar = styled(UserAvatar)`
   width: 80px;
   height: 80px;
+  border-radius: 10px;
 `
 const RightBox = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  justify-content: space-evenly;
 `
 
 const UserName = styled.span`
