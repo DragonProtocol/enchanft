@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 12:05:33
+ * @LastEditTime: 2022-09-13 10:01:55
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -10,8 +10,10 @@ import styled from 'styled-components'
 import ButtonBase, { ButtonPrimary } from '../../common/button/ButtonBase'
 import IconTwitterWhite from '../../common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../../common/icons/IconDiscordWhite'
-import likeRetweetImg from './imgs/like_retweet.png'
-import discordChatInviteImg from './imgs/discord_chat_invite.png'
+import IconLike from '../../common/icons/IconLike'
+import IconRetweet from '../../common/icons/IconRetweet'
+import IconChat from '../../common/icons/IconChat'
+import IconInvite from '../../common/icons/IconInvite'
 import { getTwitterHomeLink } from '../../../utils/twitter'
 import CommunityCheckinButton, {
   CommunityCheckinButtonHandlesType,
@@ -66,7 +68,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
   const DiscordLinkComponent = <LinkTextBtn onClick={onDiscord}>#{discordName || name}</LinkTextBtn>
   const questions = [
     {
-      title: 'Q: How to get contribution in this community?',
+      title: 'Q: How to get contribution token in this community?',
       answers: [
         {
           display: true,
@@ -95,8 +97,21 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
         {
           display: !!twitterName,
           type: QA_ANSWER_TYPE.TWITTER,
-          title: <>Like, retweet {TwitterLinkComponent} daily on Twitter to earn contribution point.</>,
-          content: <QusetionAnswerImg src={likeRetweetImg} />,
+          title: <>Like, retweet {TwitterLinkComponent} daily on Twitter to earn contribution token.</>,
+          content: (
+            <CommunityUserNumberBox>
+              <CommunityUserNumberItem>
+                <IconLike size={'20px'} />
+                <CommunityUserNumberLabelText>(Like)</CommunityUserNumberLabelText>
+                <CommunityUserNumberValueText>1 token</CommunityUserNumberValueText>
+              </CommunityUserNumberItem>
+              <CommunityUserNumberItem>
+                <IconRetweet size={'20px'} />
+                <CommunityUserNumberLabelText>(Retweet)</CommunityUserNumberLabelText>
+                <CommunityUserNumberValueText>3 token</CommunityUserNumberValueText>
+              </CommunityUserNumberItem>
+            </CommunityUserNumberBox>
+          ),
         },
         {
           display: !!discordId,
@@ -126,7 +141,20 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
           display: !!discordId,
           type: QA_ANSWER_TYPE.DISCORD,
           title: <>Chat in or invite friends to the {DiscordLinkComponent} daily on Discord.</>,
-          content: <QusetionAnswerImg src={discordChatInviteImg} />,
+          content: (
+            <CommunityUserNumberBox>
+              <CommunityUserNumberItem>
+                <IconChat size={'20px'} />
+                <CommunityUserNumberLabelText>(Chat)</CommunityUserNumberLabelText>
+                <CommunityUserNumberValueText>Max 1 token per hours</CommunityUserNumberValueText>
+              </CommunityUserNumberItem>
+              <CommunityUserNumberItem>
+                <IconInvite size={'20px'} />
+                <CommunityUserNumberLabelText>(Retweet)</CommunityUserNumberLabelText>
+                <CommunityUserNumberValueText>3 token</CommunityUserNumberValueText>
+              </CommunityUserNumberItem>
+            </CommunityUserNumberBox>
+          ),
         },
         {
           display: true,
@@ -221,15 +249,41 @@ const LinkTextBtn = styled.a`
   color: #4c91f0;
   cursor: pointer;
 `
-
-const CommunityBox = styled.div`
-  display: flex;
-  gap: 10px;
+const QusetionAnswerContentBox = styled.div`
   padding: 10px;
   box-sizing: border-box;
   background: #f8f2ca;
+`
+const CommunityBox = styled(QusetionAnswerContentBox)`
+  display: flex;
+  gap: 10px;
   align-items: center;
 `
+const CommunityUserNumberBox = styled(QusetionAnswerContentBox)`
+  display: flex;
+  justify-content: space-evenly;
+`
+const CommunityUserNumberItem = styled.div`
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+`
+const CommunityUserNumberLabelText = styled.div`
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+  color: #333333;
+`
+const CommunityUserNumberValueText = styled.div`
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  color: #333333;
+  white-space: nowrap;
+`
+
 const CommunityImg = styled.img<{ radius?: string }>`
   width: 48px;
   height: 48px;

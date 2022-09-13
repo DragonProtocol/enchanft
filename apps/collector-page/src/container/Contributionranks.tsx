@@ -222,13 +222,13 @@ const ContributionMainBox = styled.div`
   gap: 20px;
 `
 const ContributionListBox = styled(CardBox)`
-  width: 760px;
+  flex: 1;
   padding: 20px;
   border: 4px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `
 const ContributionRigtBox = styled.div`
-  flex: 1;
+  width: 420px;
 `
 const ContributionMyBox = styled(CardBox)`
   width: 100%;

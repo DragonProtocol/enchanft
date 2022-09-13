@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 14:02:45
+ * @LastEditTime: 2022-09-09 17:43:25
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -274,6 +274,7 @@ const Task: React.FC = () => {
               <TaskImage src={image} />
               <TaskDetailContent data={data} />
             </TaskDetailContentBoxLeft>
+            <TaskDetailContentDividingLine />
             <TaskDetailContentBoxRight>
               {winnerList.length > 0 ? (
                 <TaskListBox>
@@ -319,17 +320,15 @@ const Task: React.FC = () => {
                   </TaskListBox>
                 </>
               )}
+              {displayParticipants && (
+                <TaskDetailParticipants
+                  items={participants?.userDetails || []}
+                  takers={participants?.takers || 0}
+                  finishers={participants?.finishers || 0}
+                />
+              )}
             </TaskDetailContentBoxRight>
           </TaskDetailContentBox>
-          {displayParticipants && (
-            <TaskDetailParticipantsBox>
-              <TaskDetailParticipants
-                items={participants?.userDetails || []}
-                takers={participants?.takers || 0}
-                finishers={participants?.finishers || 0}
-              />
-            </TaskDetailParticipantsBox>
-          )}
         </TaskDetailBodyMainBox>
       </TaskDetailBodyBox>
     </TaskDetailWrapper>
@@ -354,6 +353,7 @@ const TaskDetailBodyMainBanner = styled.div`
 `
 const TaskDetailBodyMainBox = styled.div`
   padding: 40px;
+  padding-bottom: 0px;
   box-sizing: border-box;
 `
 const TaskDetailHeaderBox = styled.div`
@@ -410,21 +410,31 @@ const TaskImage = styled(TaskImageDefault)`
 
 const TaskDetailContentBox = styled.div`
   width: 100%;
-  margin-top: 18px;
+  margin-top: 20px;
   display: flex;
   gap: 40px;
+  border-top: solid 2px #333333;
+  box-sizing: border-box;
+`
+const TaskDetailContentDividingLine = styled.div`
+  width: 2px;
+  background: #333333;
 `
 const TaskDetailContentBoxLeft = styled.div`
   flex: 1;
   box-sizing: border-box;
   overflow: hidden;
+  padding-top: 20px;
+  padding-bottom: 40px;
 `
 const TaskDetailContentBoxRight = styled.div`
   flex: 1;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 40px;
+  padding-top: 20px;
+  padding-bottom: 40px;
 `
 const TaskListBox = styled.div`
   width: 100%;
@@ -440,8 +450,4 @@ const TaskStartCountdownBox = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-`
-
-const TaskDetailParticipantsBox = styled.div`
-  margin-top: 40px;
 `

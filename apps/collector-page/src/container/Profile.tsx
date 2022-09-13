@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 16:40:16
+ * @LastEditTime: 2022-09-09 16:53:43
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -74,6 +74,7 @@ import { toast } from 'react-toastify'
 import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup'
 import { AVATAR_SIZE_LIMIT } from '../constants'
 import { useNavigate } from 'react-router-dom'
+import OverflowEllipsisBox from '../components/common/text/OverflowEllipsisBox'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -110,8 +111,8 @@ const Profile: React.FC = () => {
   const dispatch = useAppDispatch()
 
   const account = useAppSelector(selectAccount)
-  const [name, setName] = useState('')
-  const [avatar, setAvatar] = useState('')
+  const [name, setName] = useState(account.name || '')
+  const [avatar, setAvatar] = useState(account.avatar || '')
   const [uploading, setUploading] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
 
@@ -194,12 +195,13 @@ const Profile: React.FC = () => {
       <ProfileTopBox>
         <UserImg src={account.avatar} />
         <TopCenterBox>
-          <UserName>
-            <span>{account.name}</span>
+          <UserNameRow>
+            <UserName>{account.name}</UserName>
             <IconButton onClick={() => setOpenDialog(true)}>
               <EditIcon />
             </IconButton>
-          </UserName>
+          </UserNameRow>
+
           <UserAddress>{account.pubkey}</UserAddress>
           <UserAccountListBox>
             <MetamaskBindBtn
@@ -338,14 +340,16 @@ const TopCenterBox = styled.div`
   gap: 20px;
   justify-content: space-between;
 `
-const UserName = styled.div`
+const UserNameRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 25px;
+`
+const UserName = styled(OverflowEllipsisBox)`
   font-weight: 700;
   font-size: 36px;
   line-height: 54px;
   color: #333333;
-  display: flex;
-  align-items: center;
-  gap: 25px;
 `
 const UserAddress = styled.div`
   font-size: 18px;
@@ -474,12 +478,14 @@ const EditNameBox = styled.div`
   & input {
     padding: 11.5px 18px;
     margin-top: 10px;
-    font-size: 18px;
-    line-height: 27px;
     border-radius: 10px;
     background: #ebeee4;
     border: none !important;
     outline: none !important;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 27px;
+    color: #333333;
   }
 `
 const EditNameLabel = styled.div`

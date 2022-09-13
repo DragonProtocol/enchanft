@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 14:40:34
+ * @LastEditTime: 2022-09-09 19:09:02
  * @Description: 用户的账户信息
  */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
@@ -162,6 +162,7 @@ export const userUpdateProfile = createAsyncThunk(
     })
     thunkAPI.dispatch(setAvatar(avatar))
     thunkAPI.dispatch(setName(name))
+    thunkAPI.dispatch(setLastLoginInfo({ name, avatar }))
     return resp.data
   },
 )
@@ -244,6 +245,8 @@ export const accountSlice = createSlice({
     },
     setLastLoginInfo: (state, action) => {
       state.lastLoginInfo = action.payload
+      localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.avatar || '')
+      localStorage.setItem(LAST_LOGIN_NAME, action.payload.name || '')
     },
     setConnectModal: (state, action) => {
       state.connectModal = action.payload

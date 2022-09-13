@@ -237,25 +237,27 @@ const Project: React.FC = () => {
   return (
     <ProjectWrapper>
       <ProjectLeftBox>
-        <ProjectLeftBodyBox>
-          {data.image && <ProjectImage src={data.image} />}
-          <ProjectBasicInfoBox>
-            <ProjectName>{data.name}</ProjectName>
-            {communityDataView && (
-              <ProjectDetailCommunity
-                data={communityDataView.data}
-                viewConfig={communityDataView.viewConfig}
-                onFollow={handleFollow}
-                onAccountOperation={handleAccountOperation}
-              />
-            )}
+        <ProjectLeftInfo>
+          <ProjectLeftInfoTop>
+            {data.image && <ProjectImage src={data.image} />}
+            <ProjectLeftInfoTopRight>
+              <ProjectName>{data.name}</ProjectName>
+              {communityDataView && (
+                <ProjectDetailCommunity
+                  data={communityDataView.data}
+                  viewConfig={communityDataView.viewConfig}
+                  onFollow={handleFollow}
+                  onAccountOperation={handleAccountOperation}
+                />
+              )}
+            </ProjectLeftInfoTopRight>
+          </ProjectLeftInfoTop>
 
-            <ProjectDetailBasicInfo
-              data={projectBasicInfoDataView.data}
-              viewConfig={projectBasicInfoDataView.viewConfig}
-            />
-          </ProjectBasicInfoBox>
-        </ProjectLeftBodyBox>
+          <ProjectDetailBasicInfo
+            data={projectBasicInfoDataView.data}
+            viewConfig={projectBasicInfoDataView.viewConfig}
+          />
+        </ProjectLeftInfo>
       </ProjectLeftBox>
 
       <ProjectRightBox>
@@ -363,27 +365,33 @@ const ProjectLeftBox = styled.div`
   flex-shrink: 0;
   width: 420px;
 `
-const ProjectLeftBodyBox = styled(CardBox)`
-  padding: 0;
+const ProjectLeftInfo = styled(CardBox)`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
 `
+const ProjectLeftInfoTop = styled.div`
+  display: flex;
+  gap: 20px;
+`
 const ProjectImage = styled.img`
-  width: 420px;
-  height: 420px;
+  width: 140px;
+  height: 140px;
+  border-radius: 10px;
   object-fit: cover;
+`
+const ProjectLeftInfoTopRight = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 `
 const ProjectName = styled.div`
   font-weight: 700;
-  font-size: 28px;
-  line-height: 42px;
+  font-size: 24px;
+  line-height: 36px;
   color: #333333;
-`
-const ProjectBasicInfoBox = styled.div`
-  padding: 20px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 `
 
 const ProjectRightBox = styled.div`
