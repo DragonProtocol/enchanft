@@ -7,10 +7,17 @@ import { useAppSelector } from '../redux/store';
 import { selectProjectList } from '../redux/projectListSlice';
 import Loading from '../Components/Loading';
 import { AsyncRequestStatus } from '../api';
+import { useAppConfig } from '../AppProvider';
+import { useMemo } from 'react';
 
 export default function ProjectList() {
   const navigation = useNavigate();
+  const { account } = useAppConfig();
   const { data: projectList, status } = useAppSelector(selectProjectList);
+
+  const isAdmin = useMemo(() => {
+    return account.info?.roles.includes('ADMIN');
+  }, [account.info]);
 
   if (status !== AsyncRequestStatus.FULFILLED) {
     return <Loading />;
@@ -23,11 +30,13 @@ export default function ProjectList() {
         <SearchBar search={(text) => {}} />
       </div>
       <div className="list">
-        <AddCard
-          addAction={() => {
-            navigation('/project/new');
-          }}
-        />
+        {isAdmin && (
+          <AddCard
+            addAction={() => {
+              navigation('/project/new');
+            }}
+          />
+        )}
         {projectList?.map((item) => {
           return <ItemCard key={item.id} project={item} />;
         })}

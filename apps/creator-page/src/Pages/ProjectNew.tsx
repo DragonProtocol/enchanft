@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -20,9 +20,14 @@ export default function ProjectNew() {
     navigate(-1);
   }, [navigate]);
 
+  const isAdmin = useMemo(() => {
+    return account.info?.roles.includes('ADMIN');
+  }, [account.info]);
+
   const createNewProject = useCallback(
     async (project: Project) => {
       console.log('createNewProject', project);
+      if (!isAdmin) return;
       if (!account.info?.token) return;
       let chainId = -1;
       if (project.blockchain === BlockchainType.Solana) {
@@ -50,7 +55,7 @@ export default function ProjectNew() {
         toast.error('create fail!');
       }
     },
-    [account.info?.token, dispatch]
+    [account.info?.token, dispatch, isAdmin]
   );
 
   return (

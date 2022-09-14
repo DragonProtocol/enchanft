@@ -139,7 +139,7 @@ export default function ProjectInfoEdit() {
           />
           <ProjectSymbol customUrl={project?.slug} setCustomUrl={() => {}} />
           <ProjectWebsite
-            websiteUrl={project.community.website}
+            websiteUrl={project.community.website || ''}
             setWebsiteUrl={(url) => {
               setProject({
                 ...project,

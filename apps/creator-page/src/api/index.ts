@@ -303,7 +303,34 @@ export function createProject(
   },
   token: string
 ) {
-  // TODO
-  console.log(params, token);
-  alert('TODO');
+  console.log('createProject', params, token);
+  return axios({
+    url: ApiBaseUrl + '/creator/project',
+    method: 'post',
+    data: params,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function updateProject(
+  params: {
+    name: string;
+    desc: string;
+    minted: boolean;
+    chainId: number;
+    image: string;
+  },
+  token: string
+) {
+  console.log('updateProject', params, token);
+  return axios({
+    url: ApiBaseUrl + '/creator/setProject',
+    method: 'post',
+    data: params,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
 }
