@@ -147,7 +147,7 @@ export default function WinnerList({
           </div>
         )) || (
           <div className="list">
-            {pickedWhiteList.map((item, idx) => {
+            {candidateList.map((item, idx) => {
               return <PickedList key={idx} idx={idx} data={item} />;
             })}
           </div>
