@@ -18,7 +18,11 @@ import ProjectBlockchain from '../Components/Project/Blockchain';
 import ProjectStatus from '../Components/Project/Status';
 import { EditBox, EditTitle } from '../Components/Project/EditTitle';
 
-import { uploadImage as uploadImageApi, getTwitterSubScriptions } from '../api';
+import {
+  uploadImage as uploadImageApi,
+  getTwitterSubScriptions,
+  bindTwitterSubScription,
+} from '../api';
 import { useAppConfig } from '../AppProvider';
 import TwitterInputModal from '../Components/Project/TwitterInputModal';
 import { TASK_IMAGE_SIZE_LIMIT } from '../utils/constants';
@@ -155,8 +159,29 @@ export default function ProjectInfoEdit() {
         closeModal={() => {
           setShowTwitterInputModal(false);
         }}
-        bindAction={(code: string) => {
-          console.log(code);
+        bindAction={async (code: string) => {
+          if (
+            !twitter?.oauthToken ||
+            !twitter.oauthTokenSecret ||
+            !account.info?.token
+          )
+            return;
+          try {
+            const resp = await bindTwitterSubScription(
+              {
+                pin: code,
+                oauthToken: twitter.oauthToken,
+                oauthTokenSecret: twitter.oauthTokenSecret,
+                communityId: project.community.id,
+              },
+              account.info.token
+            );
+            console.log(code, resp.data);
+            toast.success('bind success!');
+            setShowTwitterInputModal(false);
+          } catch (error) {
+            toast.error('bind fail! Please retry');
+          }
         }}
       />
     </EditBox>

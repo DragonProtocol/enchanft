@@ -32,10 +32,9 @@ export default function Actions({
   updateStateActions: (arg0: Action[]) => void;
   updateStateFollowTwitters: (arg0: string[]) => void;
 }) {
-  const { account } = useAppConfig();
-  const twitter = account.info?.accounts.find(
-    (item) => item.accountType === ChainType.TWITTER
-  );
+  // const { account } = useAppConfig();
+  const twitter = true;
+  // 'account.info?.accounts.find((item) => item.accountType === ChainType.TWITTER)';
   const [followTwitter, setFollowTwitter] = useState(false);
   const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<
     Array<string>

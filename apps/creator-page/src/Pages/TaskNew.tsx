@@ -112,7 +112,7 @@ export default function TaskNew() {
             setState({ ...state, actions: newStateActions });
           }}
           projectName={project.name}
-          projectTwitter={project.community.twitter}
+          projectTwitter={project.community.twitterName}
           followTwitters={state.followTwitters}
           updateStateFollowTwitters={(data) => {
             setState({ ...state, followTwitters: data });

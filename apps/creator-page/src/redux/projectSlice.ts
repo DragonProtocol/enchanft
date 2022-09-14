@@ -46,7 +46,7 @@ export type ProjectDetail = {
     website: string;
     discordInviteUrl: string;
     twitterId: string;
-    twitter: string;
+    twitterName: string;
     discordId: string;
   };
   publicSaleTime: number;

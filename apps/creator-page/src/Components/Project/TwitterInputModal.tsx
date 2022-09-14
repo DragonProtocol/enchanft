@@ -32,6 +32,7 @@ export default function TwitterInputModal({
       }}
     >
       <ContentBox>
+        <div>Please input the PIN code</div>
         <div>
           <input
             title="code"
@@ -40,9 +41,13 @@ export default function TwitterInputModal({
             onChange={(e) => setCode(e.target.value)}
           />
         </div>
-        <div>
-          <button onClick={closeModal}>cancel</button>
-          <button onClick={() => bindAction(code)}>bind</button>
+        <div className="btns">
+          <button className="cancel" onClick={closeModal}>
+            Cancel
+          </button>
+          <button className="confirm" onClick={() => bindAction(code)}>
+            Bind
+          </button>
         </div>
       </ContentBox>
     </Modal>
@@ -56,7 +61,7 @@ const ContentBox = styled.div`
   border-radius: 20px;
   width: 400px;
   padding: 30px 20px 20px 20px;
-  text-align: center;
+  text-align: start;
 
   & img {
     width: 80px;
@@ -64,5 +69,47 @@ const ContentBox = styled.div`
   & p {
     font-size: 20px;
     color: #333333;
+  }
+
+  & input {
+    border: none;
+    outline: none;
+
+    background: #ebeee4;
+    border-radius: 10px;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 27px;
+    font-family: inherit;
+    color: #333333;
+  }
+
+  & .btns {
+    margin-top: 20px;
+    justify-content: end;
+    display: flex;
+    gap: 20px;
+    & button {
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 27px;
+    }
+    & button.cancel {
+      background: #ebeee4;
+      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+      color: #333333;
+    }
+
+    & button.confirm {
+      background: #3dd606;
+      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+      color: #ffffff;
+    }
   }
 `;
