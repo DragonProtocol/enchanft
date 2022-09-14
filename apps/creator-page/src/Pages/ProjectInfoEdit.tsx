@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../Components/Loading';
-import { selectProjectDetail } from '../redux/projectSlice';
-import { useAppSelector } from '../redux/store';
+import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
+import { useAppDispatch, useAppSelector } from '../redux/store';
 import slugify from 'slugify';
 
 import ProjectName from '../Components/Project/Name';
@@ -23,6 +23,7 @@ import {
   getTwitterSubScriptions,
   bindTwitterSubScription,
   projectBindBot,
+  updateProject,
 } from '../api';
 import { useAppConfig } from '../AppProvider';
 import TwitterInputModal from '../Components/Project/TwitterInputModal';
@@ -35,7 +36,7 @@ export default function ProjectInfoEdit() {
   const { account } = useAppConfig();
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
-
+  const dispatch = useAppDispatch();
   // TODO fix any
   const [project, setProject] = useState<any>({ ...data });
   const [showTwitterInputModal, setShowTwitterInputModal] = useState(false);
@@ -78,10 +79,12 @@ export default function ProjectInfoEdit() {
     [account.info?.token, project]
   );
 
-  const saveProject = useCallback(() => {
-    if (!account.info?.token) return;
-    alert('coming soon');
-  }, [account.info?.token]);
+  const saveProject = useCallback(async () => {
+    if (!account.info?.token || !slug) return;
+    await updateProject(project, account.info?.token);
+    dispatch(fetchProjectDetail({ slug, token: account.info.token }));
+    toast.success('save success!');
+  }, [account.info?.token, dispatch, project, slug]);
 
   const projectBind = useCallback(
     async (guildId: string) => {
@@ -111,7 +114,7 @@ export default function ProjectInfoEdit() {
 
   if (data?.slug !== slug) return <Loading />;
 
-  // console.log(project);
+  console.log(project);
   return (
     <EditBox>
       <EditTitle title="Edit Project Information" save={saveProject} />
@@ -150,16 +153,24 @@ export default function ProjectInfoEdit() {
               });
             }}
           />
-          <ProjectTotalSupply supply="" setSupply={() => {}} />
-          <ProjectStatus
-            state={project.state}
-            setState={(state) => {
+          <ProjectTotalSupply
+            supply={project.itemTotalNum + ''}
+            setSupply={(value) => {
               setProject({
                 ...project,
-                state,
+                itemTotalNum: Number(value),
               });
             }}
           />
+          {/* <ProjectStatus
+            state={project.status}
+            setState={(state) => {
+              setProject({
+                ...project,
+                status: state,
+              });
+            }}
+          /> */}
         </div>
         <div className="right">
           <ProjectAttachFile

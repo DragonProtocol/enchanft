@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { EditBox, EditTitle } from '../Components/Project/EditTitle';
 import CalendarTime from '../Components/Project/Mint/CalendarTime';
 import TotalSupply from '../Components/Project/Mint/TotalSupply';
@@ -11,6 +11,9 @@ import { useParams } from 'react-router-dom';
 import { useAppSelector } from '../redux/store';
 import { selectProjectDetail } from '../redux/projectSlice';
 import WhitelistSupply from '../Components/Project/Mint/WhitelistSupply';
+import { BlockchainType } from '../Components/Project/types';
+import dayjs from 'dayjs';
+import { time } from 'console';
 
 export default function ProjectMintEdit() {
   const { account } = useAppConfig();
@@ -21,11 +24,25 @@ export default function ProjectMintEdit() {
   const [project, setProject] = useState<any>({ ...data });
   return (
     <ContentBox>
-      <EditTitle title="Mint Information" save={() => {}} />
+      <EditTitle
+        title="Mint Information"
+        save={() => {
+          // TODO
+          alert('coming soon');
+          console.log('project', project);
+        }}
+      />
       <div className="info">
         <div className="left">
-          <TotalSupply />
-          <MintPrice />
+          <TotalSupply supply={project.itemTotalNum} />
+          <MintPrice
+            mintPrice={'0'}
+            blockchain={
+              project.chainId === -1
+                ? BlockchainType.Solana
+                : BlockchainType.Ethereum
+            }
+          />
         </div>
         <div className="right">
           <CalendarTime />
@@ -33,42 +50,113 @@ export default function ProjectMintEdit() {
         </div>
       </div>
       <hr />
-      <div className="whitelist">
-        <div className="title">
-          <h3>Whitelist 1</h3>
-          <span>(Optional)</span>
-        </div>
-        <div className="info">
-          <div className="left">
-            <WhitelistSupply />
-            <MintPrice />
-          </div>
-          <div className="right">
-            <CalendarTime />
-            <MintLimit />
-          </div>
-        </div>
-      </div>
-      <hr />
-      <div className="whitelist">
-        <div className="title">
-          <h3>Whitelist 2</h3>
-          <span>(Optional)</span>
-        </div>
-        <div className="info">
-          <div className="left">
-            <WhitelistSupply />
-            <MintPrice />
-          </div>
-          <div className="right">
-            <CalendarTime />
-            <MintLimit />
-          </div>
-        </div>
-      </div>
-      <hr />
+      {project.whitelists.map((item: any, index: number) => {
+        return (
+          <React.Fragment key={index}>
+            <div className="whitelist">
+              <div className="title">
+                <h3>Whitelist {index + 1}</h3>
+                <span>(Optional)</span>
+              </div>
+              <div className="info">
+                <div className="left">
+                  <WhitelistSupply />
+                  <MintPrice
+                    mintPrice={item.mintPrice}
+                    updateMintPrice={(price: string) => {
+                      setProject({
+                        ...project,
+                        whitelists: [
+                          ...project.whitelists.slice(0, index),
+                          {
+                            ...project.whitelists[index],
+                            mintPrice: price,
+                          },
+                          ...project.whitelists.slice(index + 1),
+                        ],
+                      });
+                    }}
+                    blockchain={
+                      project.chainId === -1
+                        ? BlockchainType.Solana
+                        : BlockchainType.Ethereum
+                    }
+                  />
+                </div>
+                <div className="right">
+                  <CalendarTime
+                    startDate={item.mintStartTime}
+                    endDate={item.mintEndTime}
+                    updateStartDate={(time) => {
+                      setProject({
+                        ...project,
+                        whitelists: [
+                          ...project.whitelists.slice(0, index),
+                          {
+                            ...project.whitelists[index],
+                            mintStartTime: time,
+                          },
+                          ...project.whitelists.slice(index + 1),
+                        ],
+                      });
+                    }}
+                    updateEndDate={(time) => {
+                      setProject({
+                        ...project,
+                        whitelists: [
+                          ...project.whitelists.slice(0, index),
+                          {
+                            ...project.whitelists[index],
+                            mintEndTime: time,
+                          },
+                          ...project.whitelists.slice(index + 1),
+                        ],
+                      });
+                    }}
+                  />
+                  <MintLimit
+                    mintMaxNum={item.mintMaxNum}
+                    updateMintMaxNum={(v) => {
+                      setProject({
+                        ...project,
+                        whitelists: [
+                          ...project.whitelists.slice(0, index),
+                          {
+                            ...project.whitelists[index],
+                            mintMaxNum: v,
+                          },
+                          ...project.whitelists.slice(index + 1),
+                        ],
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+            <hr />
+          </React.Fragment>
+        );
+      })}
+
       <div className="add-btns">
-        <button>
+        <button
+          onClick={() => {
+            setProject({
+              ...project,
+              whitelists: [
+                ...project.whitelists,
+                {
+                  mintMaxNum: 1,
+                  mintPrice: '0',
+                  mintStartTime: Date.now(),
+                  mintEndTime: dayjs().add(1, 'M').toDate().getTime(),
+                  projectId: 13,
+                  totalNum: 3,
+                },
+              ], // TODO
+            });
+          }}
+        >
           <IconPlus size="16px" /> Add Whitelist
         </button>
       </div>

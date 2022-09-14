@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 import { Box } from './Box';
-export default function TotalSupply() {
+export default function TotalSupply({ supply }: { supply: number }) {
   return (
     <ContentBox>
       <h4>Total Supply</h4>
       <div className="area">
-        <span>60000</span>
+        <span>{supply}</span>
       </div>
     </ContentBox>
   );

@@ -314,16 +314,7 @@ export function createProject(
   });
 }
 
-export function updateProject(
-  params: {
-    name: string;
-    desc: string;
-    minted: boolean;
-    chainId: number;
-    image: string;
-  },
-  token: string
-) {
+export function updateProject(params: any, token: string) {
   console.log('updateProject', params, token);
   return axios({
     url: ApiBaseUrl + '/creator/setProject',

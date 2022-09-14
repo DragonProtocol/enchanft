@@ -19,6 +19,7 @@ export default function ProjectAnnouncementEdit() {
 
   const saveProject = useCallback(() => {
     if (!account.info?.token) return;
+    // TODO
     alert('coming soon');
   }, [account.info?.token]);
   return (

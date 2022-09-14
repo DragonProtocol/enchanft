@@ -1,3 +1,4 @@
+import { numberInput } from '../../utils';
 import { Box } from './ItemBox';
 
 export default function TotalSupply({
@@ -5,7 +6,7 @@ export default function TotalSupply({
   setSupply,
 }: {
   supply: string;
-  setSupply: (arg0: string) => void;
+  setSupply: (arg0: number) => void;
 }) {
   return (
     <Box>
@@ -16,8 +17,10 @@ export default function TotalSupply({
           type="text"
           placeholder="Input"
           value={supply}
+          onKeyPress={numberInput}
           onChange={(e) => {
-            setSupply(e.target.value);
+            const value = Number(e.target.value);
+            setSupply(value);
           }}
         />
       </div>

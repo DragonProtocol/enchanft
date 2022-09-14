@@ -4,8 +4,17 @@ import styled from 'styled-components';
 import ArrowDown from '../../Icons/svgs/arrow_down.svg';
 import { Box } from './Box';
 
-export default function CalendarTime() {
-  const [date, setDate] = useState(new Date());
+export default function CalendarTime({
+  startDate,
+  endDate,
+  updateStartDate,
+  updateEndDate,
+}: {
+  startDate?: Date;
+  endDate?: Date;
+  updateStartDate?: (arg0: number) => void;
+  updateEndDate?: (arg0: number) => void;
+}) {
   return (
     <TimeBox>
       <h4>Expect public mint calendar date and time(UTC)</h4>
@@ -15,9 +24,10 @@ export default function CalendarTime() {
             title="time"
             type="datetime-local"
             className="date"
-            value={dayjs(date).format('YYYY-MM-DD HH:mm')}
+            value={dayjs(startDate).format('YYYY-MM-DD HH:mm')}
             onChange={(e) => {
-              setDate(dayjs(e.target.value).toDate());
+              updateStartDate &&
+                updateStartDate(dayjs(e.target.value).toDate().getTime());
             }}
           />
         </div>
@@ -27,9 +37,10 @@ export default function CalendarTime() {
             title="time"
             type="datetime-local"
             className="date"
-            value={dayjs(date).format('YYYY-MM-DD HH:mm')}
+            value={dayjs(endDate).format('YYYY-MM-DD HH:mm')}
             onChange={(e) => {
-              setDate(dayjs(e.target.value).toDate());
+              updateEndDate &&
+                updateEndDate(dayjs(e.target.value).toDate().getTime());
             }}
           />
         </div>

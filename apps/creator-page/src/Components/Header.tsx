@@ -177,6 +177,7 @@ const HeaderBox = styled.header`
       position: relative;
       & .community-list {
         position: absolute;
+        z-index: 100;
         right: 0;
         top: 60px;
         width: 268px;
