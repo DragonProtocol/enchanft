@@ -56,9 +56,10 @@ export default function Summary({
             <PngIconGiftBox /> Reward: {getTaskRewardTypeValue(reward)}
           </span>
         </div>
+        <div className="desc">{info?.description || 'Task Statements'}</div>
         <hr />
-        {/* <h4>{info?.description || 'Task Statements'}</h4> */}
-        <h4>{'Task Statements'}</h4>
+
+        {/* <h4>{'Task Statements'}</h4> */}
 
         <div className="items">
           {info?.actions.map((item, idx) => {
@@ -153,6 +154,13 @@ const TaskTitleBox = styled.div`
       background: #d3ed85;
       padding: 2px 10px;
     }
+  }
+  & .desc {
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+    margin-top: 10px;
+    color: rgba(51, 51, 51, 0.6);
   }
   & .items {
     margin-top: 15px;
