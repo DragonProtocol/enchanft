@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { selectProjectDetail } from '../../redux/projectSlice';
 import { useAppSelector } from '../../redux/store';
+import { WL_HOST } from '../../utils/constants';
 import { getTaskRewardTypeLabel } from '../../utils/task';
 import PngIconAlarmClock from '../Icons/PngIconAlarmClock';
 import PngIconGiftBox from '../Icons/PngIconGiftBox';
@@ -16,14 +17,15 @@ export default function Summary({
   info: TaskInfo | null;
   reward: { raffled: boolean; type: RewardType };
 }) {
-  const { slug } = useParams();
+  const { slug, taskId } = useParams();
   const navigate = useNavigate();
   const { data: project } = useAppSelector(selectProjectDetail);
+  console.log('taskInfo', taskId);
   return (
     <TaskTitleBox>
       <div className="title">
-        <h3>{project?.name}</h3>
-        <button onClick={() => navigate(`/project/${slug}/detail`)}>
+        <h3>{info?.name}</h3>
+        <button onClick={() => window.open(`${WL_HOST}/${slug}/` + taskId)}>
           View
         </button>
       </div>

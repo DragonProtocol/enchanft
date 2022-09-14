@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-import ArrowDown from '../Icons/svgs/arrow_down.svg';
 import { Box } from './ItemBox';
 
 import { BlockchainType } from './types';

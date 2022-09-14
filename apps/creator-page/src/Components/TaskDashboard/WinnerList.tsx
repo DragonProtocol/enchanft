@@ -81,7 +81,7 @@ export default function WinnerList({
             >
               Entry List
             </span>
-            {reward.raffled && (
+            {reward.raffled && whitelistSaved && (
               <span
                 className={(activeList === 'candidate' && 'active') || ''}
                 onClick={() => {

@@ -1,28 +1,25 @@
 import { Box } from './ItemBox';
-
-import { BlockchainType } from './types';
+import { State } from './types';
 
 export default function Blockchain({
-  status,
-  setStatus,
+  state,
+  setState,
 }: {
-  status: BlockchainType;
-  setStatus: (type: BlockchainType) => void;
+  state: State;
+  setState: (type: State) => void;
 }) {
   return (
     <Box>
-      <h4>Project Status</h4>
+      <h4>Project State</h4>
       <select
         title="status"
-        value={status}
+        value={state}
         onChange={(e) => {
-          setStatus(e.target.value as BlockchainType);
+          setState(e.target.value as State);
         }}
       >
-        <option value={BlockchainType.Solana}>{BlockchainType.Solana}</option>
-        <option value={BlockchainType.Ethereum}>
-          {BlockchainType.Ethereum}
-        </option>
+        <option value={State.FUTURE}>{State.FUTURE}</option>
+        <option value={State.ACTIVE}>{State.ACTIVE}</option>
       </select>
     </Box>
   );

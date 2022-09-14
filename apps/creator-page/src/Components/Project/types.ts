@@ -1,3 +1,8 @@
+export enum State {
+  FUTURE = 'Future',
+  ACTIVE = 'Active',
+}
+
 export enum BlockchainType {
   Solana = 'Solana',
   Ethereum = 'Ethereum',

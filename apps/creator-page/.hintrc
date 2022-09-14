@@ -1,0 +1,16 @@
+{
+  "extends": [
+    "development"
+  ],
+  "hints": {
+    "compat-api/html": [
+      "default",
+      {
+        "ignore": [
+          "input[type=date]",
+          "input[type=datetime-local]"
+        ]
+      }
+    ]
+  }
+}

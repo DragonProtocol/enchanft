@@ -72,12 +72,16 @@ export default function Preview({
                 })}
               </h3>
               <div className="items">
-                <PngIconAlarmClock />
-                <span>
-                  {dayjs(state.startTime).format('YYYY/MM/DD')}——
-                  {dayjs(state.endTime).format('YYYY/MM/DD')}
-                </span>
-                <span>Winners: {state.winnerNum}</span>
+                <div className="alarm">
+                  <PngIconAlarmClock />
+                  <span>
+                    {dayjs(state.startTime).format('YYYY/MM/DD')}——
+                    {dayjs(state.endTime).format('YYYY/MM/DD')}
+                  </span>
+                </div>
+                <div className="winners">
+                  <span>Winners: {state.winnerNum}</span>
+                </div>
               </div>
               <div className="items">
                 <PngIconGiftBox />
@@ -291,8 +295,31 @@ const TaskPreviewWrapper = styled.div`
         box-sizing: border-box;
 
         & .items {
+          margin-bottom: 10px;
           & img {
             margin-bottom: 0;
+          }
+
+          & .alarm,
+          & .winners {
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            gap: 4px;
+            background: #d3ed85;
+            border-radius: 20px;
+            margin-right: 10px;
+          }
+
+          & span {
+            font-weight: 700;
+            font-size: 14px;
+            line-height: 21px;
+            color: #333333;
+          }
+
+          & .winners {
           }
         }
       }

@@ -99,6 +99,7 @@ export default function TaskNew() {
       <NewBox style={{ display: (openPreview && 'none') || '' }}>
         <h3 className="title">Create a New Task</h3>
         <Basic
+          hasInviteBot={hasInviteBot || !!project.community.discordId}
           state={state}
           updateState={(newState) => {
             setState({ ...newState });

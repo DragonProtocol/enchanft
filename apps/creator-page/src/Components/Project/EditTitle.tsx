@@ -22,7 +22,7 @@ export function EditTitle({
           </button>
         </div>
       </div>
-      <hr />
+      <hr className="title-hr" />
     </>
   );
 }
@@ -62,7 +62,12 @@ export const EditBox = styled.div`
     }
   }
 
+  & hr.title-hr {
+    margin-top: 0px;
+    border-color: #d9d9d9;
+  }
   & hr {
+    margin-top: 40px;
     border-color: #d9d9d9;
   }
 

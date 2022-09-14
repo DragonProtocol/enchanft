@@ -19,6 +19,7 @@ export const TASK_DEFAULT_IMAGE_URLS = [
 
 export const TASK_DEFAULT_IMAGE_URL = TASK_DEFAULT_IMAGE_URLS[1];
 export const TASK_SHARE_URI = process.env.REACT_APP_TASK_SHARE_URI;
+export const WL_HOST = process.env.REACT_APP_WL_HOST;
 
 export const CREATE_TASK_DEFAULT_WINNER_NUM = 20;
 export const CREATE_TASK_DEFAULT_INVITE_NUM = 5;

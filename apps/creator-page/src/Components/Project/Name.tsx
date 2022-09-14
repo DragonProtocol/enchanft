@@ -3,13 +3,15 @@ import { Box } from './ItemBox';
 export default function Name({
   name,
   setName,
+  title = 'Project Name',
 }: {
   name: string;
   setName: (arg0: string) => void;
+  title?: string;
 }) {
   return (
     <Box>
-      <h4>Project Name</h4>
+      <h4>{title}</h4>
       <div className="input-area">
         <input
           title="name"

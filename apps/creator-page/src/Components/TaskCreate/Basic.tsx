@@ -6,16 +6,19 @@ import UploadImgModal from '../UploadImgModal';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { TASK_IMAGE_SIZE_LIMIT } from '../../utils/constants';
-import { uploadImage as uploadImageApi } from '../../api';
+import { projectBindBot, uploadImage as uploadImageApi } from '../../api';
 import { DiscordBotCallback } from '../../utils/socialMedia';
 import IconDiscordWhite from '../Icons/IconDiscordWhite';
 import { useAppConfig } from '../../AppProvider';
 import { numberInput } from '../../utils';
+import RightIcon from '../Icons/IconRight';
 
 export default function CreateTaskBasic({
+  hasInviteBot,
   state,
   updateState,
 }: {
+  hasInviteBot: boolean;
   state: State;
   updateState: (arg0: State) => void;
 }) {
@@ -174,13 +177,14 @@ export default function CreateTaskBasic({
               </div>
               <div className="content-item">
                 <h4>Invite WL Bot</h4>
-                <button
-                  className="invite-bot"
-                  onClick={() => {
-                    window.open(
-                      DiscordBotCallback,
-                      '__blank',
-                      `width=480,
+                <div className="invite-bot-container">
+                  <button
+                    className="invite-bot"
+                    onClick={() => {
+                      window.open(
+                        DiscordBotCallback,
+                        '__blank',
+                        `width=480,
                         height=800,
                         top=0,
                         menubar=no,
@@ -191,11 +195,13 @@ export default function CreateTaskBasic({
                         directories=no,
                         status=no,
                         location=no`
-                    );
-                  }}
-                >
-                  <IconDiscordWhite size="28px" /> Invite WL Bot
-                </button>
+                      );
+                    }}
+                  >
+                    <IconDiscordWhite size="28px" /> Invite WL Bot
+                  </button>
+                  {hasInviteBot && <RightIcon />}
+                </div>
               </div>
             </div>
             <div>
@@ -455,6 +461,15 @@ const BasicBox = styled.div`
               left: 55px;
             }
           }
+        }
+      }
+
+      & .invite-bot-container {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        & button {
+          flex-grow: 1;
         }
       }
 

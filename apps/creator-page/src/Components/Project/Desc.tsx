@@ -3,13 +3,15 @@ import { Box } from './ItemBox';
 export default function Desc({
   desc,
   setDesc,
+  title = 'Project Description',
 }: {
   desc: string;
   setDesc: (arg0: string) => void;
+  title?: string;
 }) {
   return (
     <Box>
-      <h4>Project Description</h4>
+      <h4>{title}</h4>
       <div className="input-area">
         <textarea
           title="desc"

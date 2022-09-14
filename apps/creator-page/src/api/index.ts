@@ -256,3 +256,34 @@ export function linkSocial(params: any, token: string) {
     },
   });
 }
+
+export function getTwitterSubScriptions(token: string) {
+  return axios({
+    url: ApiBaseUrl + '/twitter/pin-urls',
+    method: 'post',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function bindTwitterSubScription(
+  params: {
+    pin: string;
+    oauthToken: string;
+    oauthTokenSecret: string;
+    communityId: number;
+  },
+  token: string
+) {
+  return axios({
+    url: ApiBaseUrl + '/twitter/subscriptions',
+    method: 'post',
+    data: {
+      ...params,
+    },
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
