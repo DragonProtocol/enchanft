@@ -11,6 +11,7 @@ import PngIconGiftBox from '../Icons/PngIconGiftBox';
 import IconWL from '../Icons/IconWL';
 import { ActionType, ActionTypeMore, RewardType, State } from './type';
 import IconTip from '../Icons/IconTip';
+import PngIconScissorHand from '../Icons/PngIconScissorHand';
 
 export default function Preview({
   state,
@@ -80,6 +81,7 @@ export default function Preview({
                   </span>
                 </div>
                 <div className="winners">
+                  <PngIconScissorHand />
                   <span>Winners: {state.winnerNum}</span>
                 </div>
               </div>
