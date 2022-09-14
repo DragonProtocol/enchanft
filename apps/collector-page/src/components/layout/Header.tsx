@@ -2,46 +2,21 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 10:28:11
+ * @LastEditTime: 2022-09-14 11:25:09
  * @Description: 站点头部
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { matchPath, matchRoutes, useLocation, useMatch, useNavigate } from 'react-router-dom'
+import React, { useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { isDesktop } from 'react-device-detect'
 import LogoImg from '../imgs/logo.svg'
 import ConnectBtn from '../ConnectBtn'
-import { CutomRouteObject, permissionRoutes, RouteKeys, routes } from './Main'
+import useRoute from '../../hooks/useRoute'
+import { navs } from '../../route/routes'
 
 const Header: React.FC = () => {
   const navigate = useNavigate()
-  const location = useLocation()
-  const [routeKey, setRouteKey] = useState<RouteKeys>(RouteKeys.noMatch)
-  useEffect(() => {
-    const match = matchRoutes([...permissionRoutes, ...routes], location)
-    if (!match) {
-      setRouteKey(RouteKeys.noMatch)
-    } else {
-      const { key } = match[0].route as CutomRouteObject
-      setRouteKey(key || RouteKeys.noMatch)
-    }
-  }, [location])
-
-  const navs = [
-    {
-      name: 'events',
-      link: '/',
-      activeRouteKeys: [RouteKeys.events, RouteKeys.todoTask, RouteKeys.task],
-    },
-    {
-      name: 'projects',
-      link: '/projects',
-      activeRouteKeys: [RouteKeys.projects, RouteKeys.project, RouteKeys.contributionranks],
-    },
-    // {
-    //   name: 'calendar',
-    //   link: '/calendar',
-    // },
-  ]
+  const { routeKey } = useRoute()
 
   const PcNav = useCallback(
     () => (
@@ -65,7 +40,7 @@ const Header: React.FC = () => {
         <HeaderLogo src={LogoImg} alt="" onClick={() => navigate('/')} />
       </HeaderLeft>
       <HeaderRight>
-        {PcNav()}
+        {isDesktop && PcNav()}
         <ConnectBtnBox>
           <ConnectBtn />
         </ConnectBtnBox>

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-10 13:01:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 18:26:49
+ * @LastEditTime: 2022-09-14 11:31:13
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
@@ -22,5 +22,8 @@ const MainInnerWrapper = styled.div`
   @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) {
     width: ${MEDIA_BREAK_POINTS.xxl}px;
     margin: 20px auto;
+  }
+  @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
+    padding: 0 20px;
   }
 `

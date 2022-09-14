@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:25:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-09 16:52:10
+ * @LastEditTime: 2022-09-14 14:07:36
  * @Description: file description
  */
 import React from 'react'
@@ -12,6 +12,7 @@ import ExploreTaskSwiperItem, {
   ExploreTaskSwiperItemHandlesType,
 } from './ExploreTaskSwiperItem'
 import RecommendSwiper, { RecommendSwiperItem } from '../../common/swiper/RecommendSwiper'
+import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../../../constants'
 export type ExploreTaskSwiperViewConfigType = {
   loading?: boolean
   loadingMsg?: string
@@ -54,4 +55,16 @@ const ExploreTaskSwiper: React.FC<ExploreTaskSwiperProps> = ({
 export default ExploreTaskSwiper
 const ExploreTaskSwiperWrapper = styled(RecommendSwiper)`
   width: 100%;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    .recommend-swiper-prev,
+    .recommend-swiper-next {
+      width: 40px;
+      height: 40px;
+      border-radius: 16px;
+      svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  }
 `

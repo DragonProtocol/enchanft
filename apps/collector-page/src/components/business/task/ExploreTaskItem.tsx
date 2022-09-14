@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 14:19:13
+ * @LastEditTime: 2022-09-14 14:44:32
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { RewardData } from '../../../types/entities'
 import { getTaskRewardTypeValue } from '../../../utils/task'
@@ -87,11 +88,17 @@ const ExploreTaskItemWrapper = styled(CardItemBox)`
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    height: 257px;
+  }
 `
 const TaskImageBox = styled.div`
   width: 100%;
   height: 130px;
   position: relative;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    height: 138px;
+  }
 `
 const TaskImage = styled(TaskImageDefault)`
   width: 100%;
@@ -111,11 +118,13 @@ const TaskInfoBox = styled.div`
 const TaskName = styled(OverflowEllipsisBox)`
   font-weight: 700;
   font-size: 18px;
+  line-height: 27px;
   color: #333333;
   flex-shrink: 0;
 `
 const TaskDateTime = styled.div`
   font-size: 12px;
+  line-height: 18px;
   color: rgba(51, 51, 51, 0.6);
 `
 const TaskRemarkBox = styled.div`
@@ -126,5 +135,6 @@ const TaskRemarkBox = styled.div`
 const TaskRemark = styled(OverflowEllipsisBox)`
   flex: 1;
   font-size: 12px;
+  line-height: 18px;
   color: #333333;
 `

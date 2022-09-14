@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 10:32:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 14:13:03
+ * @LastEditTime: 2022-09-14 14:31:53
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
@@ -49,15 +49,15 @@ const ButtonRadioGroupWrapper = styled.div`
   box-shadow: inset 0px 0px 0px 2px #333333;
   border-radius: 10px;
   overflow: hidden;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 27px;
 `
 const ButtonRadioGroupOption = styled.div<{ isActive?: boolean }>`
   flex: 1;
   height: 100%;
   padding: 10px 20px;
   box-sizing: border-box;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 27px;
   cursor: pointer;
   background: ${(props) => (props.isActive ? '#333333' : '')};
   color: ${(props) => (props.isActive ? '#FFFFFF' : '#333333')};
