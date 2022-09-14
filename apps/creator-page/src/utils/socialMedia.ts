@@ -10,7 +10,7 @@ const TWITTER_CALLBACK_URL = process.env.REACT_APP_TWITTER_CALLBACK_URL;
 const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID;
 const DISCORD_CALLBACK_URL = process.env.REACT_APP_DISCORD_CALLBACK_URL;
 
-export const DiscordBotCallback = `https://discord.com/oauth2/authorize?client_id=1003616859582627881&permissions=49&scope=bot&response_type=code&redirect_uri=${encodeURI(
+export const DiscordBotCallback = `https://discord.com/oauth2/authorize?client_id=${DISCORD_CLIENT_ID}&permissions=49&scope=bot&response_type=code&redirect_uri=${encodeURI(
   process.env.REACT_APP_DISCORD_CALLBACK_URL!
 )}`;
 
