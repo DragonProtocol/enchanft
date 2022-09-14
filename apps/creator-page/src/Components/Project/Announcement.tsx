@@ -28,4 +28,8 @@ const AnnouncementBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+
+  & h4 {
+    margin: 0;
+  }
 `;

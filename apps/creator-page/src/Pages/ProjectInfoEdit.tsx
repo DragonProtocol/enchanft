@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../Components/Loading';
@@ -22,12 +22,14 @@ import {
   uploadImage as uploadImageApi,
   getTwitterSubScriptions,
   bindTwitterSubScription,
+  projectBindBot,
 } from '../api';
 import { useAppConfig } from '../AppProvider';
 import TwitterInputModal from '../Components/Project/TwitterInputModal';
 import { TASK_IMAGE_SIZE_LIMIT } from '../utils/constants';
 import { toast } from 'react-toastify';
 import UploadImgModal from '../Components/UploadImgModal';
+import { BlockchainType } from '../Components/Project/types';
 
 export default function ProjectInfoEdit() {
   const { account } = useAppConfig();
@@ -35,13 +37,16 @@ export default function ProjectInfoEdit() {
   const { data } = useAppSelector(selectProjectDetail);
 
   // TODO fix any
-  const [project, setProject] = useState<any>(data);
+  const [project, setProject] = useState<any>({ ...data });
   const [showTwitterInputModal, setShowTwitterInputModal] = useState(false);
   const [twitter, setTwitter] = useState<{
     url: string;
     oauthToken: string;
     oauthTokenSecret: string;
   }>();
+  const [hasInviteBot, setHasInviteBot] = useState(
+    !!project?.community.discordId
+  );
   const [showModal, setShowModal] = useState(false);
 
   const uploadImageHandler = useCallback(
@@ -73,12 +78,43 @@ export default function ProjectInfoEdit() {
     [account.info?.token, project]
   );
 
+  const saveProject = useCallback(() => {
+    if (!account.info?.token) return;
+    alert('coming soon');
+  }, [account.info?.token]);
+
+  const projectBind = useCallback(
+    async (guildId: string) => {
+      if (!project?.id || !account.info?.token) return;
+      await projectBindBot({
+        projectId: project.id,
+        discordId: guildId,
+        token: account.info.token,
+      });
+      setHasInviteBot(true);
+    },
+    [project?.id, account.info?.token]
+  );
+
+  useEffect(() => {
+    localStorage.setItem('discord_guild_id', JSON.stringify({ guildId: null }));
+    const handleStorageChange = (e: StorageEvent) => {
+      const { newValue, key } = e;
+      if ('discord_guild_id' === key) {
+        const { guildId } = JSON.parse(newValue || '{}');
+        if (guildId) projectBind(guildId);
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [projectBind]);
+
   if (data?.slug !== slug) return <Loading />;
 
-  console.log(project);
+  // console.log(project);
   return (
     <EditBox>
-      <EditTitle title="Edit Project Information" save={() => {}} />
+      <EditTitle title="Edit Project Information" save={saveProject} />
       <div className="info">
         <div className="left">
           <ProjectName
@@ -141,13 +177,17 @@ export default function ProjectInfoEdit() {
               setShowTwitterInputModal(true);
             }}
           />
-          <ProjectInviteBot />
+          <ProjectInviteBot hasInviteBot={hasInviteBot} />
           <ProjectBlockchain
-            blockchain={project?.blockchain}
+            blockchain={
+              project?.chainId === -1
+                ? BlockchainType.Solana
+                : BlockchainType.Ethereum
+            }
             setBlockchain={(b) => {
               setProject({
                 ...project,
-                blockchain: b,
+                chainId: b === BlockchainType.Solana ? -1 : 1,
               });
             }}
           />

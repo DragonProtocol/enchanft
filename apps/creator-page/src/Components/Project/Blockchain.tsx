@@ -19,10 +19,10 @@ export default function Blockchain({
           setBlockchain(e.target.value as BlockchainType);
         }}
       >
-        <option value={BlockchainType.Solana}>{BlockchainType.Solana}</option>
         <option value={BlockchainType.Ethereum}>
           {BlockchainType.Ethereum}
         </option>
+        <option value={BlockchainType.Solana}>{BlockchainType.Solana}</option>
       </select>
     </Box>
   );

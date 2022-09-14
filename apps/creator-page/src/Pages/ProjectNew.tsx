@@ -1,22 +1,57 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import { createProject } from '../api';
+import { useAppConfig } from '../AppProvider';
 import BackBtn from '../Components/BackBtn';
-import { Project } from '../Components/Project/types';
+import { BlockchainType, Project } from '../Components/Project/types';
 
 import ProjectCreate from '../Components/ProjectCreate';
+import { fetchProjectList } from '../redux/projectListSlice';
+import { useAppDispatch } from '../redux/store';
 
 export default function ProjectNew() {
   const navigate = useNavigate();
+  const { account } = useAppConfig();
+  const dispatch = useAppDispatch();
 
   const cancelEdit = useCallback(() => {
     navigate(-1);
   }, [navigate]);
 
-  const createNewProject = (project: Project) => {
-    console.log('createNewProject', project);
-    // TODO api
-  };
+  const createNewProject = useCallback(
+    async (project: Project) => {
+      console.log('createNewProject', project);
+      if (!account.info?.token) return;
+      let chainId = -1;
+      if (project.blockchain === BlockchainType.Solana) {
+        chainId = -1;
+      }
+      if (project.blockchain === BlockchainType.Ethereum) {
+        chainId = 1;
+      }
+
+      try {
+        await createProject(
+          {
+            name: project.name,
+            desc: project.desc,
+            minted: project.minted,
+            chainId: chainId,
+            image: project.img,
+          },
+          account.info.token
+        );
+
+        dispatch(fetchProjectList({ token: account.info.token }));
+        toast.success('create success!');
+      } catch (error) {
+        toast.error('create fail!');
+      }
+    },
+    [account.info?.token, dispatch]
+  );
 
   return (
     <CreateBox>

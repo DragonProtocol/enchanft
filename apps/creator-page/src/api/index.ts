@@ -210,7 +210,12 @@ export function downloadWinner(taskId: string, token: string) {
       Authorization: `Bearer ${token}`,
     },
   }).then((response) => {
-    fileDownload(response.data, 'winner.csv');
+    fileDownload(
+      response.data,
+      'winner.csv',
+      'text/csv;charset=utf-8',
+      '\uFEFF'
+    );
   });
 }
 
@@ -299,4 +304,6 @@ export function createProject(
   token: string
 ) {
   // TODO
+  console.log(params, token);
+  alert('TODO');
 }

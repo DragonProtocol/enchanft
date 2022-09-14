@@ -1,18 +1,21 @@
 import { DiscordBotCallback } from '../../utils/socialMedia';
 import IconDiscordWhite from '../Icons/IconDiscordWhite';
 import { Box } from './ItemBox';
+import RightIcon from '../Icons/IconRight';
+import styled from 'styled-components';
 
-export default function InviteBot() {
+export default function InviteBot({ hasInviteBot }: { hasInviteBot: boolean }) {
   return (
-    <Box>
+    <ContentBox>
       <h4>Invite WL Bot</h4>
-      <button
-        className="invite-bot"
-        onClick={() => {
-          window.open(
-            DiscordBotCallback,
-            '__blank',
-            `width=480,
+      <div className="wl-bot">
+        <button
+          className="invite-bot"
+          onClick={() => {
+            window.open(
+              DiscordBotCallback,
+              '__blank',
+              `width=480,
                         height=800,
                         top=0,
                         menubar=no,
@@ -23,11 +26,21 @@ export default function InviteBot() {
                         directories=no,
                         status=no,
                         location=no`
-          );
-        }}
-      >
-        <IconDiscordWhite size="28px" /> Invite WL Bot
-      </button>
-    </Box>
+            );
+          }}
+        >
+          <IconDiscordWhite size="28px" /> Invite WL Bot
+        </button>
+        {hasInviteBot && <RightIcon />}
+      </div>
+    </ContentBox>
   );
 }
+
+const ContentBox = styled(Box)`
+  & .wl-bot {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+`;

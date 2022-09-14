@@ -4,10 +4,7 @@ interface Props {
   size?: string;
   opacity?: number;
 }
-const IconCheckboxChecked: React.FC<Props> = ({
-  size = '1.5rem',
-  opacity = 1,
-}) => {
+const IconRight: React.FC<Props> = ({ size = '1.5rem', opacity = 1 }) => {
   return <RightIcon width={size} height={size} opacity={opacity} />;
 };
-export default IconCheckboxChecked;
+export default IconRight;
