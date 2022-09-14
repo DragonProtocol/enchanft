@@ -199,6 +199,7 @@ function ListItem({
         <CustomCheckBox
           checked={checked}
           onChange={() => {
+            if (disabled) return;
             if (!couldSelect) return;
             if (selected.includes(data.id)) {
               const newArr = selected.filter((item) => {

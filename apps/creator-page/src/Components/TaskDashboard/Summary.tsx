@@ -4,18 +4,26 @@ import styled from 'styled-components';
 import { selectProjectDetail } from '../../redux/projectSlice';
 import { useAppSelector } from '../../redux/store';
 import { WL_HOST } from '../../utils/constants';
-import { getTaskRewardTypeLabel } from '../../utils/task';
+import {
+  getTaskRewardTypeLabel,
+  getTaskRewardTypeValue,
+} from '../../utils/task';
 import PngIconAlarmClock from '../Icons/PngIconAlarmClock';
 import PngIconGiftBox from '../Icons/PngIconGiftBox';
 import PngIconScissorHand from '../Icons/PngIconScissorHand';
-import { RewardType, TaskInfo } from '../TaskCreate/type';
+import { RewardData, RewardType, TaskInfo } from '../TaskCreate/type';
 
 export default function Summary({
   info,
   reward,
 }: {
   info: TaskInfo | null;
-  reward: { raffled: boolean; type: RewardType };
+  reward: {
+    raffled: boolean;
+    type: RewardType;
+    name: string;
+    data: RewardData;
+  };
 }) {
   const { slug, taskId } = useParams();
   const navigate = useNavigate();
@@ -45,7 +53,7 @@ export default function Summary({
         </div>
         <div className="reward">
           <span>
-            <PngIconGiftBox /> Reward: {getTaskRewardTypeLabel(reward)}
+            <PngIconGiftBox /> Reward: {getTaskRewardTypeValue(reward)}
           </span>
         </div>
         <hr />

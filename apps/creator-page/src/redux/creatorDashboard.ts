@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { AsyncRequestStatus, creatorApi, saveWinnersApi } from '../api';
-import { RewardType } from '../Components/TaskCreate/type';
+import { RewardType, RewardData } from '../Components/TaskCreate/type';
 import { RootState } from './store';
 
 export type ScheduleInfo = {
@@ -48,6 +48,7 @@ export type CreatorState = {
     name: string;
     type: RewardType;
     raffled: boolean;
+    data: RewardData;
   };
 };
 
@@ -67,6 +68,7 @@ const creatorState: CreatorState = {
     type: RewardType.WHITELIST,
     raffled: false,
     name: '',
+    data: {},
   },
 };
 

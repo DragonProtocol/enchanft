@@ -1,4 +1,4 @@
-import { RewardType } from '../Components/TaskCreate/type';
+import { RewardData, RewardType } from '../Components/TaskCreate/type';
 
 export const getTaskRewardTypeLabel = (reward?: {
   type: RewardType;
@@ -19,4 +19,27 @@ export const getTaskRewardTypeLabel = (reward?: {
     }
   }
   return rewardTypeLabel;
+};
+
+export const getTaskRewardTypeValue = (reward?: {
+  type: RewardType;
+  raffled: boolean;
+  name: string;
+  data: RewardData;
+}) => {
+  let rewardTypeValue = 'Unknown Reward';
+  if (reward) {
+    switch (reward.type) {
+      case RewardType.CONTRIBUTION_TOKEN:
+        rewardTypeValue = `${reward.data?.token_num || ''} Contribution Token`;
+        break;
+      case RewardType.WHITELIST:
+        rewardTypeValue = reward?.name || 'Whitelist';
+        break;
+      case RewardType.OTHERS:
+        rewardTypeValue = reward?.name || 'Others';
+        break;
+    }
+  }
+  return rewardTypeValue;
 };

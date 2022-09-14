@@ -10,6 +10,10 @@ export enum RewardType {
   CONTRIBUTION_TOKEN = 'CONTRIBUTION_TOKEN',
 }
 
+export type RewardData = {
+  token_num?: number;
+};
+
 export enum TaskType {
   WHITELIST_ORIENTED = 'Whitelist-Oriented',
   WHITELIST_LUCK_DRAW = 'Whitelist-luck-draw',

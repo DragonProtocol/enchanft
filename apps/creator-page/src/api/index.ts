@@ -287,3 +287,16 @@ export function bindTwitterSubScription(
     },
   });
 }
+
+export function createProject(
+  params: {
+    name: string;
+    desc: string;
+    minted: boolean;
+    chainId: number;
+    image: string;
+  },
+  token: string
+) {
+  // TODO
+}
