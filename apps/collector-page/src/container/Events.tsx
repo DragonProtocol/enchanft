@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 18:22:47
+ * @LastEditTime: 2022-09-14 16:39:13
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -79,9 +79,12 @@ const Events: React.FC = () => {
 
   return (
     <EventsWrapper>
-      <RecommendTasksBox>
-        <ExploreTaskSwiper items={recommendTaskItems} loading={recommendTasksLoading} />
-      </RecommendTasksBox>
+      {recommendTaskItems.length > 0 && (
+        <RecommendTasksBox>
+          <ExploreTaskSwiper items={recommendTaskItems} />
+        </RecommendTasksBox>
+      )}
+
       <SearchTasksBox>
         <ExploreTaskFilter data={searchTasksFilter} onChange={setTasksFilter} />
         <ExploreTaskList items={searchTaskItems} loading={searchTasksLoading} />
