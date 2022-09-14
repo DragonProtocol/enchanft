@@ -32,21 +32,27 @@ export default function TwitterInputModal({
       }}
     >
       <ContentBox>
-        <div>Please input the PIN code</div>
+        <div>
+          <h3>Twitter Authorization</h3>
+        </div>
         <div>
           <input
             title="code"
+            placeholder="Enter your PIN number"
             type="text"
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
+        </div>
+        <div>
+          <p className="tint">You‘ll grant access to wl.xyz.</p>
         </div>
         <div className="btns">
           <button className="cancel" onClick={closeModal}>
             Cancel
           </button>
           <button className="confirm" onClick={() => bindAction(code)}>
-            Bind
+            Authorize
           </button>
         </div>
       </ContentBox>
@@ -62,12 +68,28 @@ const ContentBox = styled.div`
   width: 400px;
   padding: 30px 20px 20px 20px;
   text-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 
   & img {
     width: 80px;
   }
-  & p {
+  & p.tint {
+    color: #333333;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
+
+    color: #333333;
+  }
+
+  & h3 {
+    font-weight: 700;
     font-size: 20px;
+    line-height: 30px;
+    margin: 0;
     color: #333333;
   }
 
