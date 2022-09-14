@@ -225,9 +225,10 @@ const Project: React.FC = () => {
   // }
 
   //进入ranks页面，如果符合条件就自动关注
+  const allowFollow = !!communityDataView && communityDataView.viewConfig?.followStatusType === FollowStatusType.FOLLOW
   const startContribute = () => {
     navigate(`/${projectSlug}/rank`)
-    if (communityDataView && communityDataView.viewConfig?.followStatusType === FollowStatusType.FOLLOW) handleFollow()
+    if (allowFollow) handleFollow()
   }
 
   // 社区签到
@@ -266,7 +267,7 @@ const Project: React.FC = () => {
             items={showContributionranks}
             membersTotal={contributionMembersTotal}
             displayMore={true}
-            moreText="Join and start contributing"
+            moreText={allowFollow ? 'Join and start contributing' : 'Start contributing'}
             onMore={startContribute}
           />
         </ContributionListBox>

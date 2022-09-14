@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 17:43:25
+ * @LastEditTime: 2022-09-14 16:28:22
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -240,7 +240,7 @@ const Task: React.FC = () => {
       <TaskDetailBodyBox>
         {data?.status === TaskTodoCompleteStatus.CLOSED && (
           <TaskDetailBodyMainBanner>
-            <PngIconForbidden size="20px" /> Whitelist Closed!
+            <PngIconForbidden size="20px" /> Task Closed!
           </TaskDetailBodyMainBanner>
         )}
 
