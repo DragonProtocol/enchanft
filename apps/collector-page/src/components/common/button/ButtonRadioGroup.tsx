@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 10:32:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 14:31:53
+ * @LastEditTime: 2022-09-14 17:44:27
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
@@ -56,7 +56,6 @@ const ButtonRadioGroupWrapper = styled.div`
 const ButtonRadioGroupOption = styled.div<{ isActive?: boolean }>`
   flex: 1;
   height: 100%;
-  padding: 10px 20px;
   box-sizing: border-box;
   cursor: pointer;
   background: ${(props) => (props.isActive ? '#333333' : '')};

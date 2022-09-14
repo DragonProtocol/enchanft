@@ -5,6 +5,7 @@ import { ProjectStatus, TaskType, Whitelist } from '../../../types/entities'
 import TaskContent, { TaskContentDataViewType, TaskContentHandlesType } from '../task/TaskContent'
 import RichTextBox from '../../common/text/RichTextBox'
 import TimeCountdown from '../../common/time/TimeCountdown'
+import { MOBILE_BREAK_POINT } from '../../../constants'
 export type ProjectDetailBasicInfoDataType = {
   id: number
   name: string
@@ -158,11 +159,18 @@ const PorjectNumbersItemBox = styled.div`
 const ProjectNumbersItemLabel = styled.span`
   font-size: 16px;
   color: rgba(51, 51, 51, 0.6);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+  }
 `
 const ProjectNumbersItemValue = styled.span`
   font-weight: 700;
   font-size: 16px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+    line-height: 21px;
+  }
 `
 const ProjectDescription = styled(RichTextBox)`
   max-height: 120px;
@@ -175,6 +183,10 @@ const ProjectDescription = styled(RichTextBox)`
   font-size: 14px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.6);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 18px;
+  }
 `
 
 const HorizontalLine = styled.div`
@@ -198,10 +210,18 @@ const ProjectMintInfoLabel = styled.div`
   font-weight: 700;
   font-size: 16px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+    line-height: 21px;
+  }
 `
 const ProjectMintInfoStartsInText = styled.div`
   font-size: 14px;
   color: rgba(51, 51, 51, 0.6);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 18px;
+  }
 `
 const PrjectMintInfoPriceText = styled.div`
   height: 40px;

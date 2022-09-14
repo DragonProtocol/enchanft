@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 16:04:08
+ * @LastEditTime: 2022-09-14 18:14:45
  * @Description: 站点布局入口
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -30,6 +30,7 @@ import useWalletSign from '../../hooks/useWalletSign'
 import { selectWebsite, setMobileNavDisplay } from '../../features/website'
 import useRoute from '../../hooks/useRoute'
 import { navs, RouteKeys } from '../../route/routes'
+import { MOBILE_BREAK_POINT } from '../../constants'
 const Layout: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -162,7 +163,7 @@ const Layout: React.FC = () => {
         </ScrollBox>
       </MainBox>
       {displayTodoFloating && <TodoFloatingWindow count={count} />}
-      {mobileNavDisplay && MobileNav()}
+      {isMobile && mobileNavDisplay && MobileNav()}
       <ToastContainer autoClose={2000} position="top-right" />
     </LayoutWrapper>
   )
@@ -194,7 +195,7 @@ const HeaderInner = styled.div`
     width: ${MEDIA_BREAK_POINTS.xxl}px;
     margin: 0 auto;
   }
-  @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
     padding: 0 20px;
   }
 `
@@ -214,7 +215,7 @@ const FooterInner = styled.div`
     width: ${MEDIA_BREAK_POINTS.xxl}px;
     margin: 0 auto;
   }
-  @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
     padding: 0 20px;
   }
 `
@@ -225,6 +226,7 @@ const MobileNavList = styled.div`
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   position: fixed;
   bottom: 0;
+  z-index: 2;
   height: 58px;
   border-top: 4px solid #333333;
   display: flex;

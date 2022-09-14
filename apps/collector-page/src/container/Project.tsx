@@ -46,6 +46,7 @@ import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
 import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
 import { FollowStatusType } from '../components/business/community/CommunityFollowButton'
+import { MOBILE_BREAK_POINT } from '../constants'
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
 }
@@ -331,6 +332,9 @@ export default Project
 const ProjectWrapper = styled.div`
   display: flex;
   gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+  }
 `
 const CommunityCheckinFloatingWindow = styled.div`
   position: fixed;
@@ -364,6 +368,9 @@ const CommunityCheckinBtn = styled(ButtonPrimary)`
 const ProjectLeftBox = styled.div`
   flex-shrink: 0;
   width: 420px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+  }
 `
 const ProjectLeftInfo = styled(CardBox)`
   display: flex;
@@ -374,24 +381,38 @@ const ProjectLeftInfo = styled(CardBox)`
 const ProjectLeftInfoTop = styled.div`
   display: flex;
   gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    gap: 10px;
+  }
 `
 const ProjectImage = styled.img`
   width: 140px;
   height: 140px;
   border-radius: 10px;
   object-fit: cover;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100px;
+    height: 100px;
+  }
 `
 const ProjectLeftInfoTopRight = styled.div`
   flex: 1;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 `
 const ProjectName = styled.div`
+  width: 100%;
   font-weight: 700;
   font-size: 24px;
   line-height: 36px;
   color: #333333;
+  word-wrap: break-word;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+    line-height: 30px;
+  }
 `
 
 const ProjectRightBox = styled.div`

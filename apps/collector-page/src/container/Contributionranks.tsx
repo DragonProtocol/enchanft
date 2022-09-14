@@ -12,7 +12,7 @@ import { selectIds as selectIdsByUserFollowedProject } from '../features/user/fo
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import IconCaretLeft from '../components/common/icons/IconCaretLeft'
 import CardBox from '../components/common/card/CardBox'
-import ContributionList, { ContributionListSize } from '../components/business/contribution/ContributionList'
+import ContributionList from '../components/business/contribution/ContributionList'
 import {
   fetchContributionCommunityInfo,
   selectContributionCommunityInfo,
@@ -154,7 +154,6 @@ const Contributionranks: React.FC = () => {
             </ContributionLoading>
           ) : (
             <ContributionList
-              size={ContributionListSize.large}
               items={contributionranks}
               membersTotal={contributionranks.length}
               displayMore={false}

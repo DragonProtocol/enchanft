@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 17:08:13
+ * @LastEditTime: 2022-09-14 18:00:26
  * @Description: file description
  */
 import React, { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { MintStage, ProjectStatus, TaskType } from '../../../types/entities'
 import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
@@ -80,7 +81,7 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
         <ProjectTimeRow>
-          <MintStageLabel mintStage={mintStage} />
+          <ProjectMintStageLabel mintStage={mintStage} />
           {mintStage === MintStage.FUTURE && publicSaleTime && (
             <ProjectTimeText>{new Date(publicSaleTime).toLocaleDateString()}</ProjectTimeText>
           )}
@@ -102,14 +103,20 @@ const ExploreProjectItemWrapper = styled(CardItemBox)`
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    height: 422px;
+  }
 `
 const ProjectImageBox = styled.div`
   height: 275px;
   position: relative;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    height: 295px;
+  }
 `
 const ProjectImage = styled.img`
   width: 100%;
-  height: 275px;
+  height: 100%;
   /* 图片不失真，不会出现拉伸 */
   object-fit: cover;
 `
@@ -129,6 +136,11 @@ const ProjectName = styled(OverflowEllipsisBox)`
   line-height: 25px;
   color: #333333;
   flex-shrink: 0;
+`
+const ProjectMintStageLabel = styled(MintStageLabel)`
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+  }
 `
 const ProjectTimeRow = styled.div`
   display: flex;
