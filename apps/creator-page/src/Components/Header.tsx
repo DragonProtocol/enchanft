@@ -93,6 +93,10 @@ export default function Header() {
                       </div>
                     );
                   })}
+                  <div className="community-item" onClick={() => {}}>
+                    <img src={''} alt="" />
+                    <span>fdaf fadsfad fdas fas fadsfasf fadsfasdf</span>
+                  </div>
                 </div>
               )}
             </div>
@@ -207,6 +211,12 @@ const HeaderBox = styled.header`
             width: 20px;
             height: 20px;
             margin-right: 10px;
+          }
+
+          & span {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
           }
         }
       }

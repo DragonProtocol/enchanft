@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import { Box } from './ItemBox';
 
 export default function Desc({
@@ -10,8 +11,11 @@ export default function Desc({
   title?: string;
 }) {
   return (
-    <Box>
-      <h4>{title}</h4>
+    <ContentBox>
+      <div>
+        <h4>{title}</h4>
+        <span>({desc.length}/250)</span>
+      </div>
       <div className="input-area">
         <textarea
           title="desc"
@@ -24,8 +28,21 @@ export default function Desc({
             setDesc(e.target.value);
           }}
         />
-        <span>{desc.length}/250</span>
       </div>
-    </Box>
+    </ContentBox>
   );
 }
+
+const ContentBox = styled(Box)`
+  > div {
+    &:first-child {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+      gap: 10px;
+      & h4 {
+        margin: 0;
+      }
+    }
+  }
+`;

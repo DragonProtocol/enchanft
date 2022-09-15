@@ -48,11 +48,12 @@ export default function ProjectNew() {
 
         dispatch(fetchProjectList({ token: account.info.token }));
         toast.success('create success!');
+        navigate('/');
       } catch (error) {
         toast.error('create fail!');
       }
     },
-    [account.info?.token, dispatch, isAdmin]
+    [account.info?.token, dispatch, isAdmin, navigate]
   );
 
   if (!isAdmin) {

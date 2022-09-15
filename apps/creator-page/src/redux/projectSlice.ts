@@ -53,6 +53,8 @@ export type ProjectDetail = {
   publicSalePrice: string;
   tasks: Task[];
   whitelists: Whitelist[];
+  announcementText?: string;
+  announcementTitle?: string;
 };
 
 const InitState: {

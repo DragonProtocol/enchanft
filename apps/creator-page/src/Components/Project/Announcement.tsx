@@ -18,7 +18,10 @@ export default function Announcement({ project }: { project: ProjectDetail }) {
         </button>
       </div>
       <div>
-        <h4>📣 WL RULES</h4>
+        <h4>📣 {project.announcementTitle || ''}</h4>
+        <div className="desc">
+          <p>{project.announcementText || ''}</p>
+        </div>
       </div>
     </AnnouncementBox>
   );
@@ -31,5 +34,19 @@ const AnnouncementBox = styled.div`
 
   & h4 {
     margin: 0;
+    margin-bottom: 20px;
+  }
+
+  & .desc {
+    height: auto;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    color: #333333;
+
+    & > p {
+      margin: 0;
+      white-space: pre-wrap;
+    }
   }
 `;
