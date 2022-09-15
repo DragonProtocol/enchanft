@@ -308,10 +308,10 @@ export default function CreateTaskBasic({
                 <h4>Task date</h4>
                 <div className="date-box">
                   <input
-                    type="date"
+                    type="datetime-local"
                     title="from-date"
                     className="date"
-                    value={dayjs(state.startTime).format('YYYY-MM-DD')}
+                    value={dayjs(state.startTime).format('YYYY-MM-DDTHH:mm')}
                     onChange={(e) => {
                       const startTime = dayjs(
                         e.target.value || new Date().getTime()
@@ -327,10 +327,10 @@ export default function CreateTaskBasic({
                   />
                   <span />
                   <input
-                    type="date"
+                    type="datetime-local"
                     title="to-date"
                     className="date"
-                    value={dayjs(state.endTime).format('YYYY-MM-DD')}
+                    value={dayjs(state.endTime).format('YYYY-MM-DDTHH:mm')}
                     onChange={(e) => {
                       const endTime = dayjs(
                         e.target.value || dayjs().add(1, 'M')

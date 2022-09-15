@@ -59,7 +59,7 @@ export default function MintInfo({ project }: { project: ProjectDetail }) {
             Max <span>{1} Tokens</span>
           </span> */}
           <span>
-            Mint Price <span>{project.publicSalePrice}</span>
+            Mint Price <span>{project.publicSalePrice || 0}</span>
           </span>
         </div>
       </div>

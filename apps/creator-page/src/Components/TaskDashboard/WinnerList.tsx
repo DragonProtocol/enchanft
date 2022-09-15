@@ -15,6 +15,8 @@ import { RewardType } from '../TaskCreate/type';
 import UserAvatar from '../UserAvatar';
 import ConfirmModal from './ComfirmModal';
 
+// TODO rebuild
+
 export default function WinnerList({
   reward,
   winnerNum,
@@ -36,7 +38,7 @@ export default function WinnerList({
   uploadSelected: (arg0: Array<number>) => void;
   downloadWinners: () => void;
 }) {
-  const [activeList, setActiveList] = useState('entry');
+  const label = getTaskRewardTypeLabel(reward);
   const [selected, setSelected] = useState<Array<number>>([]);
   const [disableSelect, setDisableSelect] = useState(false);
 
@@ -67,30 +69,77 @@ export default function WinnerList({
     : dateNow;
 
   const taskEnded = dateNow > schedulesEndTime;
+  const isFCFS = label === 'FCFS';
+
+  const [activeList, setActiveList] = useState(
+    isFCFS || whitelistSaved || taskEnded ? 'entry' : 'candidate'
+  );
+
+  if (isFCFS) {
+    return (
+      <>
+        <WinnerListBox>
+          <div className="title">
+            <h3>
+              <span
+                className={(activeList === 'entry' && 'active') || ''}
+                onClick={() => {
+                  setActiveList('entry');
+                }}
+              >
+                Entry List
+              </span>
+            </h3>
+            {(whitelistSaved || (!reward.raffled && taskEnded)) && (
+              <div>
+                <CustomBtn onClick={downloadWinners}>Download</CustomBtn>
+              </div>
+            )}
+          </div>
+          <div className="list">
+            {winnerList.map((item, idx) => {
+              return <PickedList key={idx} idx={idx} data={item} />;
+            })}
+          </div>
+        </WinnerListBox>
+
+        <ConfirmModal
+          show={confirmModalOpen}
+          closeModal={() => {
+            setConfirmModalOpen(false);
+          }}
+          confirmSubmit={() => {
+            uploadSelected(selected);
+            setConfirmModalOpen(false);
+          }}
+        />
+      </>
+    );
+  }
 
   return (
     <>
       <WinnerListBox>
         <div className="title">
           <h3>
-            <span
-              className={(activeList === 'entry' && 'active') || ''}
-              onClick={() => {
-                setActiveList('entry');
-              }}
-            >
-              Entry List
-            </span>
             {reward.raffled && whitelistSaved && (
               <span
-                className={(activeList === 'candidate' && 'active') || ''}
+                className={(activeList === 'entry' && 'active') || ''}
                 onClick={() => {
-                  setActiveList('candidate');
+                  setActiveList('entry');
                 }}
               >
-                Participants List
+                Entry List
               </span>
             )}
+            <span
+              className={(activeList === 'candidate' && 'active') || ''}
+              onClick={() => {
+                setActiveList('candidate');
+              }}
+            >
+              Candidate List
+            </span>
           </h3>
           {((whitelistSaved || (!reward.raffled && taskEnded)) && (
             <div>
@@ -113,7 +162,7 @@ export default function WinnerList({
             </>
           )}
         </div>
-        {(activeList === 'entry' && (
+        {(activeList !== 'entry' && (
           <div className="list">
             {winnerList.map((item, idx) => {
               const checked = whitelistSaved

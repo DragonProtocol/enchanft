@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { EditBox, EditTitle } from '../Components/Project/EditTitle';
 import CalendarTime from '../Components/Project/Mint/CalendarTime';
 import TotalSupply from '../Components/Project/Mint/TotalSupply';
@@ -8,35 +8,45 @@ import styled from 'styled-components';
 import IconPlus from '../Components/Icons/IconPlus';
 import { useAppConfig } from '../AppProvider';
 import { useParams } from 'react-router-dom';
-import { useAppSelector } from '../redux/store';
-import { selectProjectDetail } from '../redux/projectSlice';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 import WhitelistSupply from '../Components/Project/Mint/WhitelistSupply';
 import { BlockchainType } from '../Components/Project/types';
 import dayjs from 'dayjs';
 import { time } from 'console';
+import PublicSaleTime from '../Components/Project/Mint/PublicSaleTime';
+import { updateProject } from '../api';
+import { toast } from 'react-toastify';
 
 export default function ProjectMintEdit() {
   const { account } = useAppConfig();
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
+  const dispatch = useAppDispatch();
 
   // TODO fix any
   const [project, setProject] = useState<any>({ ...data });
+
+  const saveProject = useCallback(async () => {
+    if (!account.info?.token || !slug) return;
+    await updateProject(project, account.info?.token);
+    dispatch(fetchProjectDetail({ slug, token: account.info.token }));
+    toast.success('save success!');
+  }, [account.info?.token, dispatch, project, slug]);
   return (
     <ContentBox>
-      <EditTitle
-        title="Mint Information"
-        save={() => {
-          // TODO
-          alert('coming soon');
-          console.log('project', project);
-        }}
-      />
+      <EditTitle title="Mint Information" save={saveProject} />
       <div className="info">
         <div className="left">
           <TotalSupply supply={project.itemTotalNum} />
           <MintPrice
-            mintPrice={'0'}
+            mintPrice={project.publicSalePrice || '0'}
+            updateMintPrice={(price) => {
+              setProject({
+                ...project,
+                publicSalePrice: price,
+              });
+            }}
             blockchain={
               project.chainId === -1
                 ? BlockchainType.Solana
@@ -45,8 +55,28 @@ export default function ProjectMintEdit() {
           />
         </div>
         <div className="right">
-          <CalendarTime />
-          <MintLimit />
+          <PublicSaleTime
+            startDate={
+              project.publicSaleTime
+                ? new Date(project.publicSaleTime)
+                : new Date()
+            }
+            updateStartDate={(date) => {
+              setProject({
+                ...project,
+                publicSaleTime: date.getTime(),
+              });
+            }}
+          />
+          <MintLimit
+            mintMaxNum={project.mintLimited || 0}
+            updateMintMaxNum={(data) => {
+              setProject({
+                ...project,
+                mintLimited: data,
+              });
+            }}
+          />
         </div>
       </div>
       <hr />

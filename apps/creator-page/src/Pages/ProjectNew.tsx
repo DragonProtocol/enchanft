@@ -13,16 +13,12 @@ import { useAppDispatch } from '../redux/store';
 
 export default function ProjectNew() {
   const navigate = useNavigate();
-  const { account } = useAppConfig();
+  const { account, isAdmin } = useAppConfig();
   const dispatch = useAppDispatch();
 
   const cancelEdit = useCallback(() => {
     navigate(-1);
   }, [navigate]);
-
-  const isAdmin = useMemo(() => {
-    return account.info?.roles.includes('ADMIN');
-  }, [account.info]);
 
   const createNewProject = useCallback(
     async (project: Project) => {

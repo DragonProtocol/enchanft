@@ -51,6 +51,7 @@ export enum RoleType {
 
 type AppAccountInfo = {
   walletType: string;
+  email?: string;
   pubkey: string;
   token: string;
   id: 0;
@@ -88,6 +89,7 @@ export interface AppContextData {
   signMsgWithMetaMask: () => Promise<SignMsgResult | undefined>;
   validLogin: boolean;
   isCreator: boolean;
+  isAdmin: boolean;
 }
 
 const DefaultAccount: AppAccount = {
@@ -126,6 +128,7 @@ const DefaultCtxData: AppContextData = {
   signMsgWithPhantom,
   signMsgWithMetaMask,
   isCreator: false,
+  isAdmin: false,
 };
 
 export const AppContext = createContext<AppContextData>(DefaultCtxData);
@@ -247,6 +250,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     return account.info?.roles?.includes(RoleType.CREATOR) || false;
   }, [account.info?.roles]);
 
+  const isAdmin = useMemo(() => {
+    return account.info?.roles.includes('ADMIN') || false;
+  }, [account.info]);
+
   const linkUser = useCallback(
     async (accountInfo: any) => {
       if (!account.info?.token) return;
@@ -307,6 +314,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         phantom,
         account,
         isCreator,
+        isAdmin,
         updateAccount: (newAccount) => {
           setAccount({ ...account, ...newAccount });
         },

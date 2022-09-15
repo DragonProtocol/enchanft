@@ -4,16 +4,12 @@ import styled from 'styled-components';
 import ArrowDown from '../../Icons/svgs/arrow_down.svg';
 import { Box } from './Box';
 
-export default function CalendarTime({
+export default function PublicSaleTime({
   startDate,
-  endDate,
   updateStartDate,
-  updateEndDate,
 }: {
-  startDate?: Date;
-  endDate?: Date;
-  updateStartDate?: (arg0: number) => void;
-  updateEndDate?: (arg0: number) => void;
+  startDate: Date;
+  updateStartDate: (arg0: Date) => void;
 }) {
   return (
     <TimeBox>
@@ -27,20 +23,7 @@ export default function CalendarTime({
             value={dayjs(startDate).format('YYYY-MM-DDTHH:mm')}
             onChange={(e) => {
               updateStartDate &&
-                updateStartDate(dayjs(e.target.value).toDate().getTime());
-            }}
-          />
-        </div>
-        <span></span>
-        <div className="input-area">
-          <input
-            title="time"
-            type="datetime-local"
-            className="date"
-            value={dayjs(endDate).format('YYYY-MM-DDTHH:mm')}
-            onChange={(e) => {
-              updateEndDate &&
-                updateEndDate(dayjs(e.target.value).toDate().getTime());
+                updateStartDate(dayjs(e.target.value).toDate());
             }}
           />
         </div>

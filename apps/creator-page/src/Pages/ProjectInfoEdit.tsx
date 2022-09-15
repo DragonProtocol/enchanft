@@ -154,7 +154,7 @@ export default function ProjectInfoEdit() {
             }}
           />
           <ProjectTotalSupply
-            supply={project.itemTotalNum + ''}
+            supply={project.itemTotalNum || ''}
             setSupply={(value) => {
               setProject({
                 ...project,

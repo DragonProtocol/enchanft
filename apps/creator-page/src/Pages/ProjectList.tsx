@@ -12,12 +12,8 @@ import { useMemo } from 'react';
 
 export default function ProjectList() {
   const navigation = useNavigate();
-  const { account } = useAppConfig();
+  const { account, isAdmin } = useAppConfig();
   const { data: projectList, status } = useAppSelector(selectProjectList);
-
-  const isAdmin = useMemo(() => {
-    return account.info?.roles.includes('ADMIN');
-  }, [account.info]);
 
   if (status !== AsyncRequestStatus.FULFILLED) {
     return <Loading />;

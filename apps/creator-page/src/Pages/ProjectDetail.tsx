@@ -17,7 +17,7 @@ export default function ProjectDetail() {
   return (
     <DetailBox>
       <ProjectInfo project={project} />
-      <ProjectAnnouncement project={project} />
+      {/* <ProjectAnnouncement project={project} /> */}
       <MintInfo project={project} />
     </DetailBox>
   );
