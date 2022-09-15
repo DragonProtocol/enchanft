@@ -43,7 +43,10 @@ import {
   setName as setNameForSlice,
   setIsLogin,
 } from '../features/user/accountSlice'
+import { ActionType } from '../types/entities'
+
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
+import DisconnectModal from '../components/ConnectBtn/DisconnectModal'
 import {
   FollowedCommunitityForEntity,
   selectAll as selectAllForFollowedCommunity,
@@ -65,6 +68,7 @@ import ButtonBase, { ButtonInfo, ButtonPrimary, ButtonWarning } from '../compone
 import IconTwitterWhite from '../components/common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
 import IconEmailWhite from '../components/common/icons/IconEmailWhite'
+import IconUnlink from '../components/common/icons/IconUnlink'
 import CardBox from '../components/common/card/CardBox'
 import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
 import IconMetamask from '../components/common/icons/IconMetamask'
@@ -115,6 +119,8 @@ const Profile: React.FC = () => {
   const [avatar, setAvatar] = useState(account.avatar || '')
   const [uploading, setUploading] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
+  const [modalShow, setModalShow] = useState(false)
+  const [accountType, setAccountType] = useState('twitter')
 
   const handleLogout = useCallback(async () => {
     if (account.pubkey) {
@@ -225,13 +231,35 @@ const Profile: React.FC = () => {
               <IconPhantomWhite />
               {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
             </PhantomBindBtn>
-            <TwitterBindBtn onClick={() => connectionSocialMedia('twitter')}>
+            <TwitterBindBtn isConnect={twitter} onClick={() => connectionSocialMedia('twitter')}>
               <IconTwitterWhite />
               {twitter || 'Connect Twitter'}
+              {twitter && (
+                <DisconnectBox
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setAccountType(ChainType.TWITTER)
+                    setModalShow(true)
+                  }}
+                >
+                  <IconUnlink size="1.2rem" />
+                </DisconnectBox>
+              )}
             </TwitterBindBtn>
-            <DiscordBindBtn onClick={() => connectionSocialMedia('discord')}>
+            <DiscordBindBtn isConnect={discord} onClick={() => connectionSocialMedia('discord')}>
               <IconDiscordWhite />
               {discord || 'Connect Discord'}
+              {discord && (
+                <DisconnectBox
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    setAccountType(ChainType.DISCORD)
+                    setModalShow(true)
+                  }}
+                >
+                  <IconUnlink size="1.2rem" />
+                </DisconnectBox>
+              )}
             </DiscordBindBtn>
             {/* <EmailBindBtn>
                   <IconEmailWhite />
@@ -310,6 +338,7 @@ const Profile: React.FC = () => {
           </EditButtonBox>
         </EditProfileBox>
       </DialogBox>
+      <DisconnectModal modalShow={modalShow} setModalShow={setModalShow} type={accountType} />
     </ProfileWrapper>
   )
 }
@@ -361,7 +390,7 @@ const UserAccountListBox = styled.div`
   display: flex;
   gap: 10px;
 `
-const BindBtnBase = styled(ButtonBase)`
+const BindBtnBase = styled(ButtonBase)<{ isConnect?: string }>`
   height: 40px;
   display: flex;
   align-items: center;
@@ -370,6 +399,8 @@ const BindBtnBase = styled(ButtonBase)`
   font-size: 14px;
   color: #ffffff;
   font-weight: 700;
+
+  padding: ${(props) => (props.isConnect ? '16px 8px 16px 18px' : '16px 18px')};
 `
 const MetamaskBindBtn = styled(BindBtnBase)`
   background: #f6851b;
@@ -388,6 +419,13 @@ const TwitterBindBtn = styled(BindBtnBase)`
 const DiscordBindBtn = styled(BindBtnBase)`
   background: #5368ed;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+
+const DisconnectBox = styled.div`
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
 `
 const EmailBindBtn = styled(BindBtnBase)`
   background: #3dd606;
