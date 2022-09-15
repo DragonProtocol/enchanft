@@ -34,6 +34,8 @@ import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
 import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
 import { CheckinStatusType } from '../components/business/community/CommunityCheckinButton'
+import { MOBILE_BREAK_POINT } from '../constants'
+import { isDesktop, isMobile } from 'react-device-detect'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
@@ -137,33 +139,38 @@ const Contributionranks: React.FC = () => {
     discordName: '',
   }
 
+  const renderContributionList = () => {
+    return (
+      <ContributionListBox>
+        {contributionranksLoading ? (
+          <ContributionLoading>
+            <Loading />
+          </ContributionLoading>
+        ) : (
+          <ContributionList
+            items={contributionranks}
+            membersTotal={contributionranks.length}
+            displayMore={false}
+            displayDownload={displayDownload}
+            loadingDownload={loadingDownload}
+            disabledDownload={disabledDownload}
+            onDownload={handleDownload}
+          />
+        )}
+      </ContributionListBox>
+    )
+  }
   return (
     <ContributionWrapper>
       <ContributionHeader>
-        <ButtonNavigation onClick={() => navigate(-1)}>
+        <GoBackBtn onClick={() => navigate(-1)}>
           <IconCaretLeft />
-        </ButtonNavigation>
+        </GoBackBtn>
         <ContributionTitle>{communityInfo.name} Contribution</ContributionTitle>
       </ContributionHeader>
 
       <ContributionMainBox>
-        <ContributionListBox>
-          {contributionranksLoading ? (
-            <ContributionLoading>
-              <Loading />
-            </ContributionLoading>
-          ) : (
-            <ContributionList
-              items={contributionranks}
-              membersTotal={contributionranks.length}
-              displayMore={false}
-              displayDownload={displayDownload}
-              loadingDownload={loadingDownload}
-              disabledDownload={disabledDownload}
-              onDownload={handleDownload}
-            />
-          )}
-        </ContributionListBox>
+        {!isMobile && renderContributionList()}
         <ContributionRigtBox>
           {isLogin && (
             <ContributionMyBox>
@@ -174,7 +181,7 @@ const Contributionranks: React.FC = () => {
               />
             </ContributionMyBox>
           )}
-
+          {isMobile && renderContributionList()}
           <ContributionAboutBox>
             <ContributionAbout
               data={communityInfo}
@@ -208,17 +215,38 @@ const ContributionHeader = styled.div`
   display: flex;
   gap: 20px;
   align-items: center;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    gap: 10px;
+  }
+`
+const GoBackBtn = styled(ButtonNavigation)`
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 40px;
+    height: 40px;
+    border-radius: 16px;
+    svg {
+      width: 18px;
+      height: 18px;
+    }
+  }
 `
 const ContributionTitle = styled.div`
   font-weight: 700;
   font-size: 36px;
   line-height: 40px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+    line-height: 30px;
+  }
 `
 const ContributionMainBox = styled.div`
   width: 100%;
   margin-top: 20px;
   display: flex;
   gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+  }
 `
 const ContributionListBox = styled(CardBox)`
   flex: 1;
@@ -228,13 +256,18 @@ const ContributionListBox = styled(CardBox)`
 `
 const ContributionRigtBox = styled.div`
   width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+  }
 `
 const ContributionMyBox = styled(CardBox)`
   width: 100%;
   padding: 20px;
   border: 4px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-  margin-bottom: 20px;
 `
 const ContributionAboutBox = styled(CardBox)`
   width: 100%;

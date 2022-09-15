@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-01 16:24:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 19:15:44
+ * @LastEditTime: 2022-09-15 18:51:05
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -44,26 +44,24 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
     <ProjectDetailCommunityWrapper>
       {/* <CommunityImg src={icon} /> */}
       {/* <CommunityName>{name}</CommunityName> */}
-      {(website || twitterName || twitterName) && (
-        <CommunityLeftBox>
-          {website && (
-            <ProjectLink href={website} target="_blank" rel="noopener noreferrer">
-              <IconWebsite />
-            </ProjectLink>
-          )}
-          {twitterName && (
-            <ProjectLink href={twitterHomeLink} target="_blank" rel="noopener noreferrer">
-              <IconTwitterBlack />
-            </ProjectLink>
-          )}
+      <CommunityLeftBox>
+        {website && (
+          <ProjectLink href={website} target="_blank" rel="noopener noreferrer">
+            <IconWebsite />
+          </ProjectLink>
+        )}
+        {twitterName && (
+          <ProjectLink href={twitterHomeLink} target="_blank" rel="noopener noreferrer">
+            <IconTwitterBlack />
+          </ProjectLink>
+        )}
 
-          {discordInviteUrl && (
-            <ProjectLink href={discordInviteUrl} target="_blank" rel="noopener noreferrer">
-              <IconDiscordBlack />
-            </ProjectLink>
-          )}
-        </CommunityLeftBox>
-      )}
+        {discordInviteUrl && (
+          <ProjectLink href={discordInviteUrl} target="_blank" rel="noopener noreferrer">
+            <IconDiscordBlack />
+          </ProjectLink>
+        )}
+      </CommunityLeftBox>
 
       {viewConfig?.followStatusType && (
         <FollowBtn

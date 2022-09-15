@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:30:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 16:27:07
+ * @LastEditTime: 2022-09-15 13:45:31
  * @Description: file description
  */
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ButtonWarning } from '../../common/button/ButtonBase'
 import UserAvatar from '../user/UserAvatar'
 export type ContributionMyDataType = {
@@ -69,6 +70,9 @@ const ContributionMyWrapper = styled.div`
   width: 100%;
   display: flex;
   gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    gap: 10px;
+  }
 `
 const Avatar = styled(UserAvatar)`
   width: 80px;
@@ -85,17 +89,25 @@ const RightBox = styled.div`
 const UserName = styled.span`
   font-weight: 700;
   font-size: 20px;
-  line-height: 20px;
+  line-height: 30px;
   color: #333333;
 `
 const UserScore = styled.span`
   font-size: 16px;
   line-height: 24px;
   color: rgba(51, 51, 51, 0.6);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 18px;
+  }
 `
 const CommunityFollowBtn = styled(ButtonWarning)`
   min-width: 100px;
   height: 48px;
   font-weight: 700;
   font-size: 18px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+    height: 40px;
+  }
 `

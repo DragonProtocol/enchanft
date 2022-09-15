@@ -47,6 +47,7 @@ import CommunityCheckedinClaimModal from '../components/business/community/Commu
 import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
 import { FollowStatusType } from '../components/business/community/CommunityFollowButton'
 import { MOBILE_BREAK_POINT } from '../constants'
+import { isDesktop } from 'react-device-detect'
 export enum ProjectParamsVisibleType {
   CONTRIBUTION = 'contribution',
 }
@@ -279,7 +280,7 @@ const Project: React.FC = () => {
           <ExploreTaskListBox>
             <ExploreTaskList
               items={tasks}
-              displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
+              displayCreateTask={isDesktop && isCreator && checkProjectAllowed(Number(data.id))}
               maxColumns={3}
               onCreateTask={() => {
                 navigate(

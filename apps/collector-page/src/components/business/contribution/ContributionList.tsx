@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 19:45:36
+ * @LastEditTime: 2022-09-15 14:01:28
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -13,6 +13,7 @@ import PngIconTrophy from '../../common/icons/PngIconTrophy'
 import CrownImg from '../../imgs/crown.svg'
 import ButtonBase from '../../common/button/ButtonBase'
 import { MOBILE_BREAK_POINT } from '../../../constants'
+import { isDesktop } from 'react-device-detect'
 export type ContributionItemDataType = {
   ranking: number
   avatar: string
@@ -72,13 +73,15 @@ const ContributionList: React.FC<ContributionListProps> = ({
     <ContributionListWrapper>
       <ContributioHeaderBox>
         <PngIconTrophy />
-        <ContributionTitle>Contribution Token</ContributionTitle>
-        {displayMembersTotal && <CotributionMembersTotal>{membersTotal} members</CotributionMembersTotal>}
-        {displayDownload && (
-          <DownloadBtn onClick={handleDownload} disabled={disabledDownload}>
-            {loadingDownload ? 'Loading...' : 'Download'}
-          </DownloadBtn>
-        )}
+        <ContributioHeaderRigt>
+          <ContributionTitle>Contribution Token</ContributionTitle>
+          {displayMembersTotal && <CotributionMembersTotal>{membersTotal} members</CotributionMembersTotal>}
+          {isDesktop && displayDownload && (
+            <DownloadBtn onClick={handleDownload} disabled={disabledDownload}>
+              {loadingDownload ? 'Loading...' : 'Download'}
+            </DownloadBtn>
+          )}
+        </ContributioHeaderRigt>
       </ContributioHeaderBox>
       <ContributionListBox>
         {items.map((item, index) => (
@@ -111,19 +114,43 @@ const ContributioHeaderBox = styled.div`
   padding-bottom: 18px;
   border-bottom: 1px solid #d9d9d9;
   margin-bottom: 24px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+`
+const ContributioHeaderRigt = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+  }
 `
 const ContributionTitle = styled.div`
-  flex: 1;
   font-weight: 700;
   font-size: 24px;
   line-height: 24px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+    line-height: 30px;
+  }
 `
 const CotributionMembersTotal = styled.div`
   font-size: 16px;
   line-height: 21px;
   text-align: right;
   color: rgba(51, 51, 51, 0.5);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 18px;
+  }
 `
 const ContributionListBox = styled.div`
   flex: 1;
