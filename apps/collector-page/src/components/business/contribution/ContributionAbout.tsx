@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-15 14:05:52
+ * @LastEditTime: 2022-09-15 19:12:29
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -22,6 +22,7 @@ import CommunityCheckinButton, {
 export type ContributionAboutDataType = {
   name: string
   icon: string
+  twitterId: string
   twitterName: string
   discordId: string
   discordName: string
@@ -50,9 +51,9 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
   onCheckin,
   onAccountOperation,
 }: ContributionAboutProps) => {
-  const { name, icon, twitterName, discordId, discordInviteUrl, discordName, discordMembers } = data
+  const { name, icon, twitterId, twitterName, discordId, discordInviteUrl, discordName, discordMembers } = data
   const onTwitter = () => {
-    if (!twitterName) return
+    if (!twitterId || !twitterName) return
     const twitterHomeLink = getTwitterHomeLink(twitterName)
     const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
     width=1000,height=1000,left=0,top=0`
@@ -77,7 +78,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
           content: ``,
         },
         {
-          display: !!twitterName,
+          display: !!twitterId && !!twitterName,
           title: <>Follow {TwitterLinkComponent} on Twitter.</>,
           content: (
             <CommunityBox>
@@ -95,7 +96,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
           ),
         },
         {
-          display: !!twitterName,
+          display: !!twitterId && !!twitterName,
           type: QA_ANSWER_TYPE.TWITTER,
           title: <>Like, retweet {TwitterLinkComponent} daily on Twitter to earn contribution token.</>,
           content: (

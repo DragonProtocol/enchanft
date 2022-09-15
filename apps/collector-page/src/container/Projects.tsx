@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:58:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 17:03:54
+ * @LastEditTime: 2022-09-15 19:12:54
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -77,9 +77,12 @@ const Projects: React.FC = () => {
 
   return (
     <ProjectsWrapper>
-      <RecommendProjectsBox>
-        <ExploreProjectSwiper items={recommendProjectItems} loading={recommendProjectsLoading} />
-      </RecommendProjectsBox>
+      {recommendProjectItems.length > 0 && (
+        <RecommendProjectsBox>
+          <ExploreProjectSwiper items={recommendProjectItems} />
+        </RecommendProjectsBox>
+      )}
+
       <SearchProjectsBox>
         <ExploreProjectFilter data={searchProjectsFilter} onChange={setProjectsFilter} />
         <ExploreProjectList items={searchProjectItems} loading={searchProjectsLoading} />
