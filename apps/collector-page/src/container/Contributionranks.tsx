@@ -131,6 +131,7 @@ const Contributionranks: React.FC = () => {
   const communityInfo = {
     name: community?.name || '',
     icon: community?.icon || '',
+    twitterId: community?.twitterId || '',
     twitterName: community?.twitterName || '',
     discordId: community?.discordId || '',
     discordInviteUrl: community?.discordInviteUrl || '',
