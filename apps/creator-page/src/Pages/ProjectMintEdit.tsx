@@ -90,7 +90,22 @@ export default function ProjectMintEdit() {
               </div>
               <div className="info">
                 <div className="left">
-                  <WhitelistSupply />
+                  <WhitelistSupply
+                    totalNum={item.totalNum}
+                    updateTotalNum={(n) => {
+                      setProject({
+                        ...project,
+                        whitelists: [
+                          ...project.whitelists.slice(0, index),
+                          {
+                            ...project.whitelists[index],
+                            totalNum: n,
+                          },
+                          ...project.whitelists.slice(index + 1),
+                        ],
+                      });
+                    }}
+                  />
                   <MintPrice
                     mintPrice={item.mintPrice}
                     updateMintPrice={(price: string) => {
@@ -176,12 +191,11 @@ export default function ProjectMintEdit() {
               whitelists: [
                 ...project.whitelists,
                 {
-                  mintMaxNum: 1,
+                  mintMaxNum: 0,
                   mintPrice: '0',
                   mintStartTime: Date.now(),
                   mintEndTime: dayjs().add(1, 'M').toDate().getTime(),
-                  projectId: 13,
-                  totalNum: 3,
+                  totalNum: 0,
                 },
               ], // TODO
             });

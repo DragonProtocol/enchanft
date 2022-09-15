@@ -16,7 +16,7 @@ export default function MintLimit({
         <input
           title="limited"
           type="text"
-          value={mintMaxNum}
+          value={mintMaxNum || 0}
           onKeyPress={numberInput}
           onChange={(e) => {
             const value = Number(e.target.value);
