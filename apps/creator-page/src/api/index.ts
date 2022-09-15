@@ -239,7 +239,7 @@ export function projectBindBot({
   token: string;
 }) {
   return axios({
-    url: `/projects/${projectId}/binding`,
+    url: ApiBaseUrl + `/projects/${projectId}/binding`,
     method: 'post',
     data: {
       discordId,

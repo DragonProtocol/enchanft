@@ -4,24 +4,26 @@ import ProjectDesc from '../Components/Project/Desc';
 import { useCallback, useState } from 'react';
 import { useAppConfig } from '../AppProvider';
 import { useParams } from 'react-router-dom';
-import { useAppSelector } from '../redux/store';
-import { selectProjectDetail } from '../redux/projectSlice';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
+import { updateProject } from '../api';
+import { toast } from 'react-toastify';
 
 export default function ProjectAnnouncementEdit() {
   const { account } = useAppConfig();
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
-
+  const dispatch = useAppDispatch();
   // TODO fix any
   const [project, setProject] = useState<any>({ ...data });
-  const [name, setName] = useState('');
-  const [desc, setDesc] = useState('');
 
-  const saveProject = useCallback(() => {
-    if (!account.info?.token) return;
-    // TODO
-    alert('coming soon');
-  }, [account.info?.token]);
+  const saveProject = useCallback(async () => {
+    if (!account.info?.token || !slug) return;
+    await updateProject(project, account.info?.token);
+    dispatch(fetchProjectDetail({ slug, token: account.info.token }));
+    toast.success('save success!');
+  }, [account.info?.token, dispatch, project, slug]);
+
   return (
     <EditBox>
       <EditTitle title="Edit Announcement" save={saveProject} />
@@ -29,16 +31,22 @@ export default function ProjectAnnouncementEdit() {
         <div className="left">
           <ProjectName
             title="Announcement Title"
-            name={name || ''}
+            name={project.announcementTitle || ''}
             setName={(n) => {
-              setName(n);
+              setProject({
+                ...project,
+                announcementTitle: n,
+              });
             }}
           />
           <ProjectDesc
             title="Announcement"
-            desc={desc}
+            desc={project.announcementText || ''}
             setDesc={(d) => {
-              setDesc(d);
+              setProject({
+                ...project,
+                announcementText: d,
+              });
             }}
           />
         </div>
