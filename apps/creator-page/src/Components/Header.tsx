@@ -15,7 +15,7 @@ import ULImg from './imgs/ul.svg';
 import UserAvatar from './UserAvatar';
 
 export default function Header() {
-  const { account, validLogin, updateAccount } = useAppConfig();
+  const { account, validLogin, updateAccount, isAdmin } = useAppConfig();
 
   const navigate = useNavigate();
   const [showProjectList, setShowProjectList] = useState(false);
@@ -71,12 +71,14 @@ export default function Header() {
               </button>
               {showProjectList && (
                 <div className="community-list">
-                  <div
-                    className="community-item"
-                    onClick={() => navigate('/project/new')}
-                  >
-                    <IconPlus size="16px" /> Create Project
-                  </div>
+                  {isAdmin && (
+                    <div
+                      className="community-item"
+                      onClick={() => navigate('/project/new')}
+                    >
+                      <IconPlus size="16px" /> Create Project
+                    </div>
+                  )}
                   {projectList?.map((item) => {
                     return (
                       <div

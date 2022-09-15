@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-export default function CreatorNeed() {
-  return <Box>Must Be Creator</Box>;
+export default function RoleNeed({ content }: { content: string }) {
+  return <Box>{content}</Box>;
 }
 
 const Box = styled.div`

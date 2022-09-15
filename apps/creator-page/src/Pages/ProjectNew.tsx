@@ -8,6 +8,7 @@ import BackBtn from '../Components/BackBtn';
 import { BlockchainType, Project } from '../Components/Project/types';
 
 import ProjectCreate from '../Components/ProjectCreate';
+import RoleNeed from '../Components/RoleNeed';
 import { fetchProjectList } from '../redux/projectListSlice';
 import { useAppDispatch } from '../redux/store';
 
@@ -53,6 +54,10 @@ export default function ProjectNew() {
     },
     [account.info?.token, dispatch, isAdmin]
   );
+
+  if (!isAdmin) {
+    return <RoleNeed content="Must Be Admin" />;
+  }
 
   return (
     <CreateBox>

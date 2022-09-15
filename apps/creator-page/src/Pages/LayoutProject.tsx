@@ -3,7 +3,7 @@ import { Outlet, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAppConfig } from '../AppProvider';
 import AsideNav from '../Components/AsideNav';
-import CreatorNeed from '../Components/CreatorNeed';
+import CreatorNeed from '../Components/RoleNeed';
 import Loading from '../Components/Loading';
 import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -27,7 +27,7 @@ export default function MainLayout() {
       </LoadingBox>
     );
   }
-  if (!isCreator) return <CreatorNeed />;
+  if (!isCreator) return <CreatorNeed content="Must Be Creator" />;
   return (
     <MainLayoutBox>
       <AsideNav project={project} />
