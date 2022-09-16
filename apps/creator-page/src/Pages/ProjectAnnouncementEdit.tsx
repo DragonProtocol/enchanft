@@ -42,21 +42,27 @@ export default function ProjectAnnouncementEdit() {
         <div className="left">
           <ProjectName
             title="Announcement Title"
-            name={project.announcementTitle || ''}
+            name={project.announcement?.title || ''}
             setName={(n) => {
               setProject({
                 ...project,
-                announcementTitle: n,
+                announcement: {
+                  ...project.announcement,
+                  title: n,
+                },
               });
             }}
           />
           <ProjectDesc
             title="Announcement"
-            desc={project.announcementText || ''}
+            desc={project.announcement?.text || ''}
             setDesc={(d) => {
               setProject({
                 ...project,
-                announcementText: d,
+                announcement: {
+                  ...project.announcement,
+                  text: d,
+                },
               });
             }}
           />
