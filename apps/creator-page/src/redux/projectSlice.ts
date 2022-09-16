@@ -42,6 +42,10 @@ export type ProjectDetail = {
   twitter: string;
   injectedCoins: string;
   itemTotalNum: number;
+  announcement: {
+    title: string;
+    text: string;
+  };
   community: {
     website: string;
     discordInviteUrl: string;

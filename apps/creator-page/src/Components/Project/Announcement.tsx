@@ -18,9 +18,9 @@ export default function Announcement({ project }: { project: ProjectDetail }) {
         </button>
       </div>
       <div>
-        <h4>📣 {project.announcementTitle || ''}</h4>
+        <h4>📣 {project.announcement?.title || ''}</h4>
         <div className="desc">
-          <p>{project.announcementText || ''}</p>
+          <p>{project.announcement?.text || ''}</p>
         </div>
       </div>
     </AnnouncementBox>
