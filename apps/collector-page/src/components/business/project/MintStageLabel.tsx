@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-28 16:03:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 13:53:14
+ * @LastEditTime: 2022-09-14 17:24:56
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
@@ -22,30 +22,27 @@ export const MintStageLabels = {
 }
 type MintStageLabelProps = HTMLAttributes<HTMLDivElement> & {
   mintStage: MintStage
-  fontSize?: string
 }
-const MintStageLabel: React.FC<MintStageLabelProps> = ({ mintStage, fontSize = '12px' }: MintStageLabelProps) => {
+const MintStageLabel: React.FC<MintStageLabelProps> = ({ mintStage, ...divProps }: MintStageLabelProps) => {
   const mintStageLabel = MintStageLabels[mintStage] || 'Unknown Project Status'
   const mintStageColor = MintStageColors[mintStage] || '#000'
   return (
-    <MintStageLabelWrapper color={mintStageColor} fontSize={fontSize}>
+    <MintStageLabelWrapper color={mintStageColor} {...divProps}>
       <MintStageLabelLeft color={mintStageColor} />
       {mintStageLabel}
     </MintStageLabelWrapper>
   )
 }
 export default MintStageLabel
-const MintStageLabelWrapper = styled.div<{ color: string; fontSize?: string }>`
+const MintStageLabelWrapper = styled.div<{ color: string }>`
   display: flex;
   gap: 10px;
   align-items: center;
-  font-size: ${({ fontSize }) => fontSize};
   line-height: 18px;
   color: ${({ color }) => color};
 `
 const MintStageLabelLeft = styled.div<{ color: string }>`
   width: 12px;
   height: 12px;
-  line-height: 20px;
   background-color: ${({ color }) => color};
 `

@@ -8,6 +8,7 @@ import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
 import PngIconScissorHand from '../../common/icons/PngIconScissorHand'
 import { getTaskRewardTypeLabel, getTaskRewardTypeValue } from '../../../utils/task'
+import { MOBILE_BREAK_POINT } from '../../../constants'
 
 export type TaskDetailContentDataType = {
   id: number
@@ -72,12 +73,19 @@ const TaskDetailContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    gap: 8px;
+  }
 `
 const TaskTypeLabel = styled.div`
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+    line-height: 21px;
+  }
 `
 const TaskDateAndWinnerBox = styled.div`
   display: flex;
@@ -86,6 +94,13 @@ const TaskDateAndWinnerBox = styled.div`
   font-size: 14px;
   line-height: 21px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12px;
+    line-height: 18px;
+  }
 `
 const TaskDateAndWinnerItem = styled.div`
   display: flex;
@@ -110,6 +125,10 @@ const TaskRemark = styled.span`
   font-size: 14px;
   line-height: 21px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 18px;
+  }
 `
 const TaskDescription = styled(RichTextBox)`
   flex: 1;
@@ -119,4 +138,8 @@ const TaskDescription = styled(RichTextBox)`
   font-size: 14px;
   line-height: 21px;
   color: rgba(51, 51, 51, 0.6);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 18px;
+  }
 `

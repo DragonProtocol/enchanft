@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 11:42:15
+ * @LastEditTime: 2022-09-14 17:37:06
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { MintStage } from '../../../types/entities'
 import ScrollBox from '../../common/scroll/ScrollBox'
@@ -52,7 +53,7 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
 
       <ProjectInfoBox>
         <ProjectName>{name}</ProjectName>
-        <MintStageLabel mintStage={mintStage} fontSize="20px" />
+        <ProjectMintStageLabel mintStage={mintStage} />
         {/* <ProjectDescription number={9}>
           <RichTextToPlainTextSpan value={description} />
         </ProjectDescription> */}
@@ -67,12 +68,19 @@ const ExploreProjectSwiperItemWrapper = styled.div`
   height: 100%;
   display: flex;
   cursor: pointer;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+  }
 `
 const ProjectImageBox = styled.div`
   width: 360px;
   height: 360px;
   overflow: hidden;
   flex-shrink: 0;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+    height: 335px;
+  }
 `
 const ProjectImage = styled.img`
   width: 100%;
@@ -92,19 +100,34 @@ const ProjectImage = styled.img`
 `
 const ProjectInfoBox = styled.div`
   flex: 1;
-  height: 100%;
   padding: 40px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   justify-content: center;
   gap: 20px;
+  overflow: hidden;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+    padding: 20px;
+    gap: 10px;
+  }
 `
 const ProjectName = styled.div`
   font-weight: 700;
   font-size: 36px;
   line-height: 54px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+    line-height: 30px;
+  }
+`
+const ProjectMintStageLabel = styled(MintStageLabel)`
+  font-size: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+  }
 `
 
 // const ProjectDescription = styled(OverflowEllipsisBox)`
@@ -115,9 +138,6 @@ const ProjectName = styled.div`
 // `
 
 const ProjectDescription = styled(RichTextBox)`
-  /* flex: 1; */
-  height: auto;
-  max-height: 100%;
   overflow-y: auto;
   ${ScrollBarCss}
 
@@ -125,4 +145,9 @@ const ProjectDescription = styled(RichTextBox)`
   font-size: 16px;
   line-height: 24px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex: 1;
+    font-size: 14px;
+    line-height: 21px;
+  }
 `

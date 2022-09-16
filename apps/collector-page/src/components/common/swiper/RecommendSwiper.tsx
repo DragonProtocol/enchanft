@@ -52,10 +52,8 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
   return (
     <RecommendSwiperWrapper {...divProps}>
       {navigation && (
-        <RecommendSwiperLeft>
-          <ButtonNavigation className="recommend-swiper-prev">
-            <IconCaretLeft />
-          </ButtonNavigation>
+        <RecommendSwiperLeft className="recommend-swiper-prev">
+          <IconCaretLeft />
         </RecommendSwiperLeft>
       )}
       {loading ? (
@@ -86,10 +84,8 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
       )}
 
       {navigation && (
-        <RecommendSwiperRight>
-          <ButtonNavigation className="recommend-swiper-next">
-            <IconCaretRight />
-          </ButtonNavigation>
+        <RecommendSwiperRight className="recommend-swiper-next">
+          <IconCaretRight />
         </RecommendSwiperRight>
       )}
     </RecommendSwiperWrapper>
@@ -118,7 +114,7 @@ const RecommendSwiperBox = styled.div`
   border-radius: 20px;
   overflow: hidden;
 `
-const RecommendSwiperLeft = styled.div`
+const RecommendSwiperLeft = styled(ButtonNavigation)`
   position: absolute;
   top: 50%;
   left: 0;
@@ -126,7 +122,7 @@ const RecommendSwiperLeft = styled.div`
   cursor: pointer;
   z-index: 2;
 `
-const RecommendSwiperRight = styled.div`
+const RecommendSwiperRight = styled(ButtonNavigation)`
   position: absolute;
   top: 50%;
   right: 0;

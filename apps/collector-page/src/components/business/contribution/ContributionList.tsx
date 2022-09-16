@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 11:31:00
+ * @LastEditTime: 2022-09-15 14:01:28
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -12,6 +12,8 @@ import UserAvatar from '../user/UserAvatar'
 import PngIconTrophy from '../../common/icons/PngIconTrophy'
 import CrownImg from '../../imgs/crown.svg'
 import ButtonBase from '../../common/button/ButtonBase'
+import { MOBILE_BREAK_POINT } from '../../../constants'
+import { isDesktop } from 'react-device-detect'
 export type ContributionItemDataType = {
   ranking: number
   avatar: string
@@ -26,74 +28,6 @@ export enum ContributionColumns {
   pubkey = 'pubkey',
   score = 'score',
 }
-export enum ContributionListSize {
-  small = 'small',
-  medium = 'medium',
-  large = 'large',
-}
-
-const ContributionListFontSizeMap = {
-  [ContributionListSize.small]: {
-    title: '16px',
-    membersTotal: '12px',
-    ranking: '14px',
-    avatar: '40px',
-    userName: '14px',
-    pubkey: '14px',
-    score: '14px',
-  },
-  [ContributionListSize.medium]: {
-    title: '24px',
-    membersTotal: '16px',
-    ranking: '16px',
-    avatar: '40px',
-    userName: '16px',
-    pubkey: '16px',
-    score: '16px',
-  },
-  [ContributionListSize.large]: {
-    title: '24px',
-    membersTotal: '16px',
-    ranking: '16px',
-    avatar: '40px',
-    userName: '16px',
-    pubkey: '16px',
-    score: '16px',
-  },
-}
-
-const ContributionListFontWeightMap = {
-  [ContributionListSize.small]: {
-    title: '700',
-    membersTotal: '400',
-    ranking: '700',
-    userName: '700',
-    pubkey: 'normal',
-    score: '700',
-  },
-  [ContributionListSize.medium]: {
-    title: '700',
-    membersTotal: '400',
-    ranking: '700',
-    userName: '700',
-    pubkey: 'normal',
-    score: '700',
-  },
-  [ContributionListSize.large]: {
-    title: '700',
-    membersTotal: '400',
-    ranking: '700',
-    userName: '700',
-    pubkey: '400',
-    score: '700',
-  },
-}
-
-const ContributionListFlexGapMap = {
-  [ContributionListSize.small]: '8px',
-  [ContributionListSize.medium]: '20px',
-  [ContributionListSize.large]: '20px',
-}
 
 export type ContributionListProps = {
   items: ContributionItemDataType[]
@@ -107,7 +41,6 @@ export type ContributionListProps = {
   moreText?: string
   onDownload?: () => void
   onMore?: () => void
-  size?: ContributionListSize
 }
 
 const ContributionList: React.FC<ContributionListProps> = ({
@@ -122,16 +55,12 @@ const ContributionList: React.FC<ContributionListProps> = ({
   moreText = 'View More',
   onDownload,
   onMore,
-  size = ContributionListSize.medium,
 }: ContributionListProps) => {
   const displayRanking = !hiddenColumns.includes(ContributionColumns.ranking)
   const displayAvatar = !hiddenColumns.includes(ContributionColumns.avatar)
   const displayUserName = !hiddenColumns.includes(ContributionColumns.userName)
   const displayPubkey = !hiddenColumns.includes(ContributionColumns.pubkey)
   const displayScore = !hiddenColumns.includes(ContributionColumns.score)
-  const fontSize = ContributionListFontSizeMap[size]
-  const fontWeight = ContributionListFontWeightMap[size]
-  const flexGap = ContributionListFlexGapMap[size]
   const handleDownload = useCallback(() => {
     if (onDownload) {
       onDownload()
@@ -144,49 +73,26 @@ const ContributionList: React.FC<ContributionListProps> = ({
     <ContributionListWrapper>
       <ContributioHeaderBox>
         <PngIconTrophy />
-        <ContributionTitle style={{ fontSize: fontSize.title, fontWeight: fontWeight.title }}>
-          Contribution Token
-        </ContributionTitle>
-        {displayMembersTotal && (
-          <CotributionMembersTotal style={{ fontSize: fontSize.membersTotal, fontWeight: fontWeight.membersTotal }}>
-            {membersTotal} members
-          </CotributionMembersTotal>
-        )}
-        {displayDownload && (
-          <DownloadBtn onClick={handleDownload} disabled={disabledDownload}>
-            {loadingDownload ? 'Loading...' : 'Download'}
-          </DownloadBtn>
-        )}
+        <ContributioHeaderRigt>
+          <ContributionTitle>Contribution Token</ContributionTitle>
+          {displayMembersTotal && <CotributionMembersTotal>{membersTotal} members</CotributionMembersTotal>}
+          {isDesktop && displayDownload && (
+            <DownloadBtn onClick={handleDownload} disabled={disabledDownload}>
+              {loadingDownload ? 'Loading...' : 'Download'}
+            </DownloadBtn>
+          )}
+        </ContributioHeaderRigt>
       </ContributioHeaderBox>
       <ContributionListBox>
         {items.map((item, index) => (
-          <ContributionItemBox key={index} style={{ gap: flexGap }}>
+          <ContributionItemBox key={index}>
             {displayRanking && (
-              <ContributionItemRanking
-                style={{ fontSize: fontSize.ranking, fontWeight: fontWeight.ranking }}
-                topThree={item.ranking < 4}
-              >
-                {item.ranking}
-              </ContributionItemRanking>
+              <ContributionItemRanking topThree={item.ranking < 4}>{item.ranking}</ContributionItemRanking>
             )}
-            {displayAvatar && (
-              <ContributionItemAvatar src={item.avatar} style={{ width: fontSize.avatar, height: fontSize.avatar }} />
-            )}
-            {displayUserName && (
-              <ContributionItemUserName style={{ fontSize: fontSize.userName, fontWeight: fontWeight.userName }}>
-                {item.userName}
-              </ContributionItemUserName>
-            )}
-            {displayPubkey && (
-              <ContributionItemPubkey style={{ fontSize: fontSize.pubkey, fontWeight: fontWeight.pubkey }}>
-                {item.pubkey}
-              </ContributionItemPubkey>
-            )}
-            {displayScore && (
-              <ContributionItemScore style={{ fontSize: fontSize.score, fontWeight: fontWeight.score }}>
-                {item.score}
-              </ContributionItemScore>
-            )}
+            {displayAvatar && <ContributionItemAvatar src={item.avatar} />}
+            {displayUserName && <ContributionItemUserName>{item.userName}</ContributionItemUserName>}
+            {displayPubkey && <ContributionItemPubkey>{item.pubkey}</ContributionItemPubkey>}
+            {displayScore && <ContributionItemScore>{item.score}</ContributionItemScore>}
           </ContributionItemBox>
         ))}
       </ContributionListBox>
@@ -208,19 +114,43 @@ const ContributioHeaderBox = styled.div`
   padding-bottom: 18px;
   border-bottom: 1px solid #d9d9d9;
   margin-bottom: 24px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+  }
+`
+const ContributioHeaderRigt = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0;
+  }
 `
 const ContributionTitle = styled.div`
-  flex: 1;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 24px;
   line-height: 24px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+    line-height: 30px;
+  }
 `
 const CotributionMembersTotal = styled.div`
-  font-size: 14px;
+  font-size: 16px;
   line-height: 21px;
   text-align: right;
   color: rgba(51, 51, 51, 0.5);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 18px;
+  }
 `
 const ContributionListBox = styled.div`
   flex: 1;
@@ -231,7 +161,7 @@ const ContributionListBox = styled.div`
 const ContributionItemBox = styled.div`
   display: flex;
   gap: 20px;
-  font-size: 20px;
+  font-size: 16px;
   color: #333333;
   align-items: center;
   border-bottom: 1px solid #d9d9d9;
@@ -255,17 +185,20 @@ const ContributionItemRanking = styled.div<{ topThree?: boolean }>`
 `
 const ContributionItemAvatar = styled(UserAvatar)`
   width: 40px;
-  height: 40px;
 `
 const ContributionItemUserName = styled(OverflowEllipsisBox)`
   width: 160px;
   text-align: left;
   text-transform: capitalize;
+  font-weight: 700;
 `
 const ContributionItemPubkey = styled(OverflowEllipsisBox)`
   flex: 1;
   min-width: 45%;
   text-align: left;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    display: none;
+  }
 `
 const ContributionItemScore = styled.div`
   width: 86px;

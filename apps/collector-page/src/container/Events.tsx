@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 16:39:13
+ * @LastEditTime: 2022-09-15 19:12:41
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -26,6 +26,7 @@ import ExploreTaskSwiper, { ExplorTaskSwiperItemsType } from '../components/busi
 import ExploreTaskList, { ExploreTaskListItemsType } from '../components/business/task/ExploreTaskList'
 import ExploreTaskFilter, { ExploreTaskFilterDataType } from '../components/business/task/ExploreTaskFilter'
 import CardBox from '../components/common/card/CardBox'
+import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../constants'
 
 const formatStoreDataToComponentDataByRecommendTasks = (
   tasks: ExploreRecommendTaskItemEntity[],
@@ -98,6 +99,9 @@ const EventsWrapper = styled.div`
 `
 const RecommendTasksBox = styled.div`
   height: 308px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    height: 458px;
+  }
 `
 const SearchTasksBox = styled(CardBox)`
   margin-top: 20px;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:58:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 16:36:10
+ * @LastEditTime: 2022-09-15 19:12:54
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -28,6 +28,7 @@ import ExploreProjectFilter, {
   MintStageOther,
 } from '../components/business/project/ExploreProjectFilter'
 import CardBox from '../components/common/card/CardBox'
+import { MOBILE_BREAK_POINT } from '../constants'
 
 const formatStoreDataToComponentDataByRecommendProjects = (
   projects: ExploreRecommendProjectItemEntity[],
@@ -96,6 +97,9 @@ const ProjectsWrapper = styled.div`
 `
 const RecommendProjectsBox = styled.div`
   height: 368px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    height: 528px;
+  }
 `
 const SearchProjectsBox = styled(CardBox)`
   margin-top: 20px;

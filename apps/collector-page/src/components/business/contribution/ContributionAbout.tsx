@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-15 14:59:15
+ * @LastEditTime: 2022-09-15 19:12:29
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -151,7 +151,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
               </CommunityUserNumberItem>
               <CommunityUserNumberItem>
                 <IconInvite size={'20px'} />
-                <CommunityUserNumberLabelText>(Retweet)</CommunityUserNumberLabelText>
+                <CommunityUserNumberLabelText>(Invite)</CommunityUserNumberLabelText>
                 <CommunityUserNumberValueText>3 token</CommunityUserNumberValueText>
               </CommunityUserNumberItem>
             </CommunityUserNumberBox>
