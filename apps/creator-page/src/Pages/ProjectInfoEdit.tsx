@@ -266,6 +266,8 @@ export default function ProjectInfoEdit() {
             );
             console.log(code, resp.data);
             toast.success('bind success!');
+            if (slug)
+              dispatch(fetchProjectDetail({ slug, token: account.info.token }));
             setShowTwitterInputModal(false);
           } catch (error) {
             const err: AxiosError = error as any;
