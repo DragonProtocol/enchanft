@@ -91,10 +91,6 @@ export default function Header() {
                       </div>
                     );
                   })}
-                  <div className="community-item" onClick={() => {}}>
-                    <img src={''} alt="" />
-                    <span>fdaf fadsfad fdas fas fadsfasf fadsfasdf</span>
-                  </div>
                 </div>
               )}
             </div>
