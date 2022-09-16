@@ -7,7 +7,7 @@
  */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
-import { login, updateProfile, link,unlink, getProfile } from '../../services/api/login'
+import { login, updateProfile, link, unlink, getProfile } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
 import {
   DEFAULT_WALLET,
