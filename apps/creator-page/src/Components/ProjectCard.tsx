@@ -53,8 +53,10 @@ const ItemBox = styled.div`
   border-radius: 10px;
   height: 342px;
   cursor: pointer;
+  overflow: hidden;
   & img {
     width: 100%;
+    height: 271px;
   }
 
   & div {

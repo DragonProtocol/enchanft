@@ -41,7 +41,7 @@ export default function ProjectInfo({ project }: { project: ProjectDetail }) {
                 title="twitter"
                 onClick={() => {
                   window.open(
-                    getTwitterHomeLink(project.community.twitterId),
+                    getTwitterHomeLink(project.community.twitterName),
                     '_blank'
                   );
                 }}

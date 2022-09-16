@@ -203,6 +203,10 @@ export default function ProjectInfoEdit() {
             uploadImageHandler={uploadImageHandler}
           />
           <ProjectTwitterLink
+            hasTwitter={
+              project?.community?.twitterId && project?.community?.twitterName
+            }
+            twitterName={project?.community?.twitterName || ''}
             linkAction={async () => {
               if (!account.info?.token) return;
               try {
