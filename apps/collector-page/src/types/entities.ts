@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 12:06:46
+ * @LastEditTime: 2022-09-16 17:53:08
  * @Description: 与后端entities type定义对应
  */
 
@@ -186,4 +186,12 @@ export type User = {
   name: string
   pubkey: string
   avatar: string
+}
+
+/** announcement */
+export type Announcement = {
+  id: number
+  projectId: number
+  title: string
+  text: string
 }

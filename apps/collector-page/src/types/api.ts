@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 12:01:50
+ * @LastEditTime: 2022-09-16 17:53:17
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
 import {
   Action,
+  Announcement,
   Community,
   ContributionRank,
   MintStage,
@@ -82,6 +83,7 @@ export type ProjectDetailResponse = Project & {
   roadmap?: Roadmap[]
   whitelists?: Whitelist[]
   community?: Community
+  announcement?: Announcement
 }
 
 /** community api */
