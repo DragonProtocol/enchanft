@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-15 18:55:12
+ * @LastEditTime: 2022-09-16 10:56:58
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -43,7 +43,10 @@ import {
   setName as setNameForSlice,
   setIsLogin,
 } from '../features/user/accountSlice'
+import { ActionType } from '../types/entities'
+
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
+import DisconnectModal from '../components/ConnectBtn/DisconnectModal'
 import {
   FollowedCommunitityForEntity,
   selectAll as selectAllForFollowedCommunity,
@@ -65,6 +68,7 @@ import ButtonBase, { ButtonInfo, ButtonPrimary, ButtonWarning } from '../compone
 import IconTwitterWhite from '../components/common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
 import IconEmailWhite from '../components/common/icons/IconEmailWhite'
+import IconUnlink from '../components/common/icons/IconUnlink'
 import CardBox from '../components/common/card/CardBox'
 import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
 import IconMetamask from '../components/common/icons/IconMetamask'
@@ -116,6 +120,8 @@ const Profile: React.FC = () => {
   const [avatar, setAvatar] = useState(account.avatar || '')
   const [uploading, setUploading] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
+  const [modalShow, setModalShow] = useState(false)
+  const [accountType, setAccountType] = useState('twitter')
 
   const handleLogout = useCallback(async () => {
     if (account.pubkey) {
@@ -228,13 +234,51 @@ const Profile: React.FC = () => {
           <IconPhantomWhite />
           <BindBtnText>{accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}</BindBtnText>
         </PhantomBindBtn>
-        <TwitterBindBtn onClick={() => connectionSocialMedia('twitter')}>
+        <TwitterBindBtn
+          isConnect={twitter}
+          onClick={() => {
+            if (twitter) {
+              setAccountType(ChainType.TWITTER)
+              setModalShow(true)
+            } else {
+              connectionSocialMedia('twitter')
+            }
+          }}
+        >
           <IconTwitterWhite />
-          <BindBtnText>{twitter || 'Connect Twitter'}</BindBtnText>
+          {twitter ? (
+            <>
+              <BindBtnText>{twitter}</BindBtnText>
+              <DisconnectBox>
+                <IconUnlink size="1.2rem" />
+              </DisconnectBox>
+            </>
+          ) : (
+            <BindBtnText>Connect Twitter</BindBtnText>
+          )}
         </TwitterBindBtn>
-        <DiscordBindBtn onClick={() => connectionSocialMedia('discord')}>
+        <DiscordBindBtn
+          isConnect={discord}
+          onClick={() => {
+            if (discord) {
+              setAccountType(ChainType.DISCORD)
+              setModalShow(true)
+            } else {
+              connectionSocialMedia('discord')
+            }
+          }}
+        >
           <IconDiscordWhite />
-          <BindBtnText>{discord || 'Connect Discord'}</BindBtnText>
+          {discord ? (
+            <>
+              <BindBtnText>{discord}</BindBtnText>
+              <DisconnectBox>
+                <IconUnlink size="1.2rem" />
+              </DisconnectBox>
+            </>
+          ) : (
+            <BindBtnText>Connect Discord</BindBtnText>
+          )}
         </DiscordBindBtn>
         {/* <EmailBindBtn>
           <IconEmailWhite />
@@ -337,6 +381,7 @@ const Profile: React.FC = () => {
           </EditButtonBox>
         </EditProfileBox>
       </DialogBox>
+      <DisconnectModal modalShow={modalShow} setModalShow={setModalShow} type={accountType} />
     </ProfileWrapper>
   )
 }
@@ -428,13 +473,15 @@ const UserAccountListBox = styled.div`
   gap: 10px;
   flex-wrap: wrap;
 `
-const BindBtnBase = styled(ButtonBase)`
+const BindBtnBase = styled(ButtonBase)<{ isConnect?: string }>`
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: ${(props) => (props.isConnect ? '16px 8px 16px 18px' : '16px 18px')};
+  gap: 10px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    width: 40px;
+    min-width: 40px;
     height: 40px;
     padding: 0;
   }
@@ -460,11 +507,24 @@ const PhantomBindBtn = styled(BindBtnBase)`
 const TwitterBindBtn = styled(BindBtnBase)`
   background: #5368ed;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding: 8px;
+  }
 `
 
 const DiscordBindBtn = styled(BindBtnBase)`
   background: #5368ed;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding: 8px;
+  }
+`
+
+const DisconnectBox = styled.div`
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
 `
 const EmailBindBtn = styled(BindBtnBase)`
   background: #3dd606;
