@@ -12,6 +12,7 @@ import ProjectDesc from './Project/Desc';
 import ProjectAttachFile from './Project/AttachFile';
 import { BlockchainType, Project } from './Project/types';
 import Blockchain from './Project/Blockchain';
+import { AxiosError } from 'axios';
 
 export default function ProjectCreate({
   cancelEdit,
@@ -20,7 +21,7 @@ export default function ProjectCreate({
   cancelEdit: () => void;
   submitProject: (project: Project) => void;
 }) {
-  const { account } = useAppConfig();
+  const { account, updateAccount } = useAppConfig();
 
   const [showModal, setShowModal] = useState(false);
   const [project, setProject] = useState<Project>({
@@ -52,12 +53,18 @@ export default function ProjectCreate({
         e.target.value = '';
         toast.success('upload success');
       } catch (error) {
-        toast.error('upload fail');
+        const err: AxiosError = error as any;
+        if (err.response?.status === 401) {
+          toast.error('Login has expired,please log in again!');
+          updateAccount({ ...account, info: null });
+        } else {
+          toast.error('upload fail');
+        }
       } finally {
         setShowModal(false);
       }
     },
-    [account.info?.token, project]
+    [account, project, updateAccount]
   );
   return (
     <>

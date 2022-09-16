@@ -31,9 +31,10 @@ import { TASK_IMAGE_SIZE_LIMIT } from '../utils/constants';
 import { toast } from 'react-toastify';
 import UploadImgModal from '../Components/UploadImgModal';
 import { BlockchainType } from '../Components/Project/types';
+import { AxiosError } from 'axios';
 
 export default function ProjectInfoEdit() {
-  const { account } = useAppConfig();
+  const { account, updateAccount } = useAppConfig();
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
@@ -71,32 +72,54 @@ export default function ProjectInfoEdit() {
         e.target.value = '';
         toast.success('upload success');
       } catch (error) {
-        toast.error('upload fail');
+        const err: AxiosError = error as any;
+        if (err.response?.status === 401) {
+          toast.error('Login has expired,please log in again!');
+          updateAccount({ ...account, info: null });
+        } else {
+          toast.error('upload fail');
+        }
       } finally {
         setShowModal(false);
       }
     },
-    [account.info?.token, project]
+    [account, project, updateAccount]
   );
 
   const saveProject = useCallback(async () => {
     if (!account.info?.token || !slug) return;
-    await updateProject(project, account.info?.token);
-    dispatch(fetchProjectDetail({ slug, token: account.info.token }));
-    toast.success('save success!');
-  }, [account.info?.token, dispatch, project, slug]);
+    try {
+      await updateProject(project, account.info?.token);
+      dispatch(fetchProjectDetail({ slug, token: account.info.token }));
+      toast.success('save success!');
+    } catch (error) {
+      const err: AxiosError = error as any;
+      if (err.response?.status === 401) {
+        toast.error('Login has expired,please log in again!');
+        updateAccount({ ...account, info: null });
+      }
+    }
+  }, [account, dispatch, project, slug, updateAccount]);
 
   const projectBind = useCallback(
     async (guildId: string) => {
       if (!project?.id || !account.info?.token) return;
-      await projectBindBot({
-        projectId: project.id,
-        discordId: guildId,
-        token: account.info.token,
-      });
-      setHasInviteBot(true);
+      try {
+        await projectBindBot({
+          projectId: project.id,
+          discordId: guildId,
+          token: account.info.token,
+        });
+        setHasInviteBot(true);
+      } catch (error) {
+        const err: AxiosError = error as any;
+        if (err.response?.status === 401) {
+          toast.error('Login has expired,please log in again!');
+          updateAccount({ ...account, info: null });
+        }
+      }
     },
-    [project?.id, account.info?.token]
+    [project.id, account, updateAccount]
   );
 
   useEffect(() => {
@@ -180,12 +203,20 @@ export default function ProjectInfoEdit() {
           <ProjectTwitterLink
             linkAction={async () => {
               if (!account.info?.token) return;
-              const resp = await getTwitterSubScriptions(account.info.token);
-              const { data } = resp;
-              setTwitter(data.data);
-              const winParams = `width=480,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no`;
-              window.open(data.data.url, '__blank', winParams);
-              setShowTwitterInputModal(true);
+              try {
+                const resp = await getTwitterSubScriptions(account.info.token);
+                const { data } = resp;
+                setTwitter(data.data);
+                const winParams = `width=480,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no`;
+                window.open(data.data.url, '__blank', winParams);
+                setShowTwitterInputModal(true);
+              } catch (error) {
+                const err: AxiosError = error as any;
+                if (err.response?.status === 401) {
+                  toast.error('Login has expired,please log in again!');
+                  updateAccount({ ...account, info: null });
+                }
+              }
             }}
           />
           <ProjectInviteBot hasInviteBot={hasInviteBot} />
@@ -231,7 +262,13 @@ export default function ProjectInfoEdit() {
             toast.success('bind success!');
             setShowTwitterInputModal(false);
           } catch (error) {
-            toast.error('bind fail! Please retry');
+            const err: AxiosError = error as any;
+            if (err.response?.status === 401) {
+              toast.error('Login has expired,please log in again!');
+              updateAccount({ ...account, info: null });
+            } else {
+              toast.error('bind fail! Please retry');
+            }
           }
         }}
       />

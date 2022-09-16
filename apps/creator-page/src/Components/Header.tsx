@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { AsyncRequestStatus } from '../api';
-import log from 'loglevel';
 
 import { useAppConfig } from '../AppProvider';
 import { fetchProjectList, selectProjectList } from '../redux/projectListSlice';

@@ -168,7 +168,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     async (token: string, walletType: TokenType, pubkey: string) => {
       try {
         const resp = await getProfile(token);
-
         const { data } = resp.data;
         setAccount({
           ...account,

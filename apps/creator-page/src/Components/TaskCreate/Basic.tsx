@@ -12,6 +12,7 @@ import IconDiscordWhite from '../Icons/IconDiscordWhite';
 import { useAppConfig } from '../../AppProvider';
 import { numberInput } from '../../utils';
 import RightIcon from '../Icons/IconRight';
+import { AxiosError } from 'axios';
 
 export default function CreateTaskBasic({
   hasInviteBot,
@@ -22,7 +23,7 @@ export default function CreateTaskBasic({
   state: State;
   updateState: (arg0: State) => void;
 }) {
-  const { account } = useAppConfig();
+  const { account, updateAccount } = useAppConfig();
   const [showModal, setShowModal] = useState(false);
 
   const uploadImageHandler = useCallback(
@@ -46,12 +47,18 @@ export default function CreateTaskBasic({
         e.target.value = '';
         toast.success('upload success');
       } catch (error) {
-        toast.error('upload fail');
+        const err: AxiosError = error as any;
+        if (err.response?.status === 401) {
+          toast.error('Login has expired,please log in again!');
+          updateAccount({ ...account, info: null });
+        } else {
+          toast.error('upload fail');
+        }
       } finally {
         setShowModal(false);
       }
     },
-    [account.info, state, updateState]
+    [account, updateState, state, updateAccount]
   );
 
   return (

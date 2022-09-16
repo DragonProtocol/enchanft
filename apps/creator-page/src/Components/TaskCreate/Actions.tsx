@@ -16,6 +16,8 @@ import { useAppConfig } from '../../AppProvider';
 import { numberInput } from '../../utils';
 import IconTwitterWhite from '../Icons/IconTwitterWhite';
 import IconTip from '../Icons/IconTip';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
 
 export default function Actions({
   hasInviteBot,
@@ -629,7 +631,7 @@ function TweetIdInput({
   const timerRef = useRef<NodeJS.Timeout>();
   const [checked, setChecked] = useState(false);
   const [dataValid, setDataValid] = useState(true);
-  const { account } = useAppConfig();
+  const { account, updateAccount } = useAppConfig();
 
   const checkValid = useCallback(
     async (data: string) => {
@@ -639,12 +641,17 @@ function TweetIdInput({
         await checkTweetIdValid(checkData, account.info.token);
         setRetweetId(data);
       } catch (error) {
+        const err: AxiosError = error as any;
+        if (err.response?.status === 401) {
+          toast.error('Login has expired,please log in again!');
+          updateAccount({ ...account, info: null });
+        }
         setDataValid(false);
       } finally {
         setChecked(true);
       }
     },
-    [account.info, setRetweetId]
+    [account, setRetweetId, updateAccount]
   );
 
   return (
@@ -740,23 +747,31 @@ function AddTwitterToFollowed({
   const [checked, setChecked] = useState(false);
   const [dataValid, setDataValid] = useState(true);
   const [addNew, setAddNew] = useState(false);
-  const { account } = useAppConfig();
+  const { account, updateAccount } = useAppConfig();
 
-  const checkValid = async (data: string) => {
-    const checkData = data.trim();
-    if (!checkData || !account.info) return;
-    try {
-      await checkTwitterNameValid(checkData, account.info.token);
-      if (addTwitterToFollowedAlive) {
-        addValid(checkData);
-        setAddNew(false);
+  const checkValid = useCallback(
+    async (data: string) => {
+      const checkData = data.trim();
+      if (!checkData || !account.info) return;
+      try {
+        await checkTwitterNameValid(checkData, account.info.token);
+        if (addTwitterToFollowedAlive) {
+          addValid(checkData);
+          setAddNew(false);
+        }
+      } catch (error) {
+        if (addTwitterToFollowedAlive) setDataValid(false);
+        const err: AxiosError = error as any;
+        if (err.response?.status === 401) {
+          toast.error('Login has expired,please log in again!');
+          updateAccount({ ...account, info: null });
+        }
+      } finally {
+        if (addTwitterToFollowedAlive) setChecked(true);
       }
-    } catch (error) {
-      if (addTwitterToFollowedAlive) setDataValid(false);
-    } finally {
-      if (addTwitterToFollowedAlive) setChecked(true);
-    }
-  };
+    },
+    [account, addValid, updateAccount]
+  );
 
   const reset = () => {
     setData('');

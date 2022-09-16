@@ -16,10 +16,11 @@ import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 import ConfirmModal from '../Components/TaskCreate/ConfirmModal';
 import { toast } from 'react-toastify';
 import { createTask, projectBindBot } from '../api';
+import { AxiosError } from 'axios';
 
 export default function TaskNew() {
   const { slug } = useParams();
-  const { account, validLogin } = useAppConfig();
+  const { account, validLogin, updateAccount } = useAppConfig();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { data: project } = useAppSelector(selectProjectDetail);
@@ -50,32 +51,47 @@ export default function TaskNew() {
       dispatch(fetchProjectDetail({ slug, token: account.info.token }));
       navigate(`/project/${slug}/task/${resp.data.data.id}`);
     } catch (error) {
-      toast.error('create fail');
+      const err: AxiosError = error as any;
+      if (err.response?.status === 401) {
+        toast.error('Login has expired,please log in again!');
+        updateAccount({ ...account, info: null });
+      } else {
+        toast.error('create fail');
+      }
     }
     setShowModal(false);
     setIsSubmitting(false);
   }, [
     slug,
-    account.info?.token,
+    account,
     project,
     validLogin,
     state,
     isSubmitting,
     dispatch,
     navigate,
+    updateAccount,
   ]);
 
   const projectBind = useCallback(
     async (guildId: string) => {
       if (!project?.id || !account.info?.token) return;
-      await projectBindBot({
-        projectId: project.id,
-        discordId: guildId,
-        token: account.info.token,
-      });
-      setHasInviteBot(true);
+      try {
+        await projectBindBot({
+          projectId: project.id,
+          discordId: guildId,
+          token: account.info.token,
+        });
+        setHasInviteBot(true);
+      } catch (error) {
+        const err: AxiosError = error as any;
+        if (err.response?.status === 401) {
+          toast.error('Login has expired,please log in again!');
+          updateAccount({ ...account, info: null });
+        }
+      }
     },
-    [project?.id, account.info?.token]
+    [project?.id, account, updateAccount]
   );
 
   useEffect(() => {
@@ -175,3 +191,12 @@ const NewBox = styled.div`
     }
   }
 `;
+function updateAccount(arg0: {
+  info: null;
+  lastLoginToken: string;
+  lastPubkey: string;
+  lastLoginType: string;
+  lastLoginInfo: { avatar: string; name: string };
+}) {
+  throw new Error('Function not implemented.');
+}

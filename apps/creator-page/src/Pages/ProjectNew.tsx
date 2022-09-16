@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios';
 import { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -14,7 +15,7 @@ import { useAppDispatch } from '../redux/store';
 
 export default function ProjectNew() {
   const navigate = useNavigate();
-  const { account, isAdmin } = useAppConfig();
+  const { account, isAdmin, updateAccount } = useAppConfig();
   const dispatch = useAppDispatch();
 
   const cancelEdit = useCallback(() => {
@@ -50,10 +51,16 @@ export default function ProjectNew() {
         toast.success('create success!');
         navigate('/');
       } catch (error) {
-        toast.error('create fail!');
+        const err: AxiosError = error as any;
+        if (err.response?.status === 401) {
+          toast.error('Login has expired,please log in again!');
+          updateAccount({ ...account, info: null });
+        } else {
+          toast.error('create fail!');
+        }
       }
     },
-    [account.info?.token, dispatch, isAdmin, navigate]
+    [account, dispatch, isAdmin, navigate, updateAccount]
   );
 
   if (!isAdmin) {

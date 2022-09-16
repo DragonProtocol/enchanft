@@ -8,9 +8,10 @@ import { useAppDispatch, useAppSelector } from '../redux/store';
 import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 import { updateProject } from '../api';
 import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
 
 export default function ProjectAnnouncementEdit() {
-  const { account } = useAppConfig();
+  const { account, updateAccount } = useAppConfig();
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
@@ -19,10 +20,18 @@ export default function ProjectAnnouncementEdit() {
 
   const saveProject = useCallback(async () => {
     if (!account.info?.token || !slug) return;
-    await updateProject(project, account.info?.token);
-    dispatch(fetchProjectDetail({ slug, token: account.info.token }));
-    toast.success('save success!');
-  }, [account.info?.token, dispatch, project, slug]);
+    try {
+      await updateProject(project, account.info?.token);
+      dispatch(fetchProjectDetail({ slug, token: account.info.token }));
+      toast.success('save success!');
+    } catch (error) {
+      const err: AxiosError = error as any;
+      if (err.response?.status === 401) {
+        toast.error('Login has expired,please log in again!');
+        updateAccount({ ...account, info: null });
+      }
+    }
+  }, [account, dispatch, project, slug, updateAccount]);
 
   return (
     <EditBox>
