@@ -29,6 +29,8 @@ import PngIconCongratulate from '../common/icons/PngIconCongratulate'
 import IconPhantom from '../common/icons/IconPhantomWhite'
 import { AsyncRequestStatus } from '../../types'
 import styled from 'styled-components'
+import { isMobile } from 'react-device-detect'
+import { MOBILE_BREAK_POINT } from '../../constants'
 
 enum LoginStatus {
   INIT = 'init',
@@ -60,7 +62,7 @@ export default function DisconnectModal(props) {
             top: '40%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: '540px',
+            width: isMobile ? '335px' : '540px',
             boxShadow: 24,
             px: 0,
             background: '#F7F9F1',
@@ -105,12 +107,19 @@ const ModalBox = styled.div`
     font-size: 16px;
     line-height: 24px;
     color: #333333;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      font-size: 14px;
+      line-height: 21px;
+    }
   }
 
   & .btns {
     display: flex;
     gap: 20px;
     justify-content: end;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      justify-content: space-between;
+    }
     & button {
       padding: 10px 18px;
       gap: 10px;
@@ -122,6 +131,10 @@ const ModalBox = styled.div`
       font-size: 18px;
       line-height: 27px;
       color: #ffffff;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 16px;
+        line-height: 24px;
+      }
     }
     & .close {
       background: #ebeee4;
@@ -137,6 +150,9 @@ const ModalBox = styled.div`
       box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
       border-radius: 10px;
       cursor: pointer;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        white-space: nowrap;
+      }
     }
   }
 
