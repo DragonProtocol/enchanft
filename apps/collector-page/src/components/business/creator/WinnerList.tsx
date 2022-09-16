@@ -225,7 +225,7 @@ function ListItem({
       <div>
         <span className={idx < 3 ? 'index front-3' : 'index'}>{idx + 1}</span>
         <span>
-          <UserAvatar src={data.avatar} />
+          <UserAvatar src={data.avatar} multiavatarId={data.pubkey || data.name} />
         </span>
         <span className="name">{data.name}</span>
         <span className="pubkey">{sortPubKey(data.pubkey, 16)}</span>
@@ -257,7 +257,7 @@ function PickedList({ idx, data }: { idx: number; data: any }) {
       <div>
         <span className={idx < 3 ? 'index front-3' : 'index'}>{idx + 1}</span>
         <span>
-          <UserAvatar src={data.avatar} />
+          <UserAvatar src={data.avatar} multiavatarId={data.pubkey || data.name} />
         </span>
         <span className="name">{data.name}</span>
         <span className="pubkey">{sortPubKey(data.pubkey, 16)}</span>

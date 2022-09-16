@@ -86,7 +86,7 @@ export default function ConnectBtn() {
         //   )}
         // </PopupState>
         <ConnectBtnWrapper onClick={() => navigate('/profile')}>
-          <UserAvatar src={account.avatar} />
+          <UserAvatar src={account.avatar} multiavatarId={shortPubkey || account.name} />
           {account.name || shortPubkey}
         </ConnectBtnWrapper>
       )) || (
