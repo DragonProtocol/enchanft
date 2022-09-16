@@ -38,6 +38,8 @@ export default function ProjectMintEdit() {
       if (err.response?.status === 401) {
         toast.error('Login has expired,please log in again!');
         updateAccount({ ...account, info: null });
+      } else {
+        toast.error('save fail!');
       }
     }
   }, [account, dispatch, project, slug, updateAccount]);
