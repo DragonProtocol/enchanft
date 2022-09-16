@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-16 10:56:58
+ * @LastEditTime: 2022-09-16 15:40:51
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -290,7 +290,7 @@ const Profile: React.FC = () => {
   const renderUserInfoPc = () => {
     return (
       <ProfileTopBox>
-        <UserImg src={account.avatar} />
+        <UserImg src={account.avatar} multiavatarId={account.pubkey || account.name} />
         <TopRightBox>
           {renderUserBasicInfo()}
           {renderUserAccountList()}
@@ -302,7 +302,7 @@ const Profile: React.FC = () => {
     return (
       <ProfileTopBox>
         <TopRightBox>
-          <UserImg src={account.avatar} />
+          <UserImg src={account.avatar} multiavatarId={account.pubkey || account.name} />
           {renderUserBasicInfo()}
         </TopRightBox>
         {renderUserAccountList()}
@@ -365,7 +365,7 @@ const Profile: React.FC = () => {
                   <CircularProgress size="5rem" color="inherit" />
                   <p>Uploading Image</p>
                 </div>
-              )) || <EditAvatar src={avatar || account.avatar} />}
+              )) || <EditAvatar src={avatar || account.avatar} multiavatarId={account.pubkey || account.name} />}
             </EditAvatarBox>
 
             <EditNameBox>

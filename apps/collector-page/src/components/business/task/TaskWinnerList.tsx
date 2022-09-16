@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-17 19:06:41
+ * @LastEditTime: 2022-09-16 15:46:50
  * @Description: file description
  */
 import React from 'react'
@@ -30,7 +30,7 @@ const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items, highlightPubkeys
       <WinnerListBox>
         {items.map((item, index) => (
           <WinnerItemBox key={index}>
-            <WinnerItemAvatar src={item.avatar} />
+            <WinnerItemAvatar src={item.avatar} multiavatarId={item.pubkey || item.name} />
             <WinnerItemUserName highlight={highlightPubkeys.includes(item.pubkey)}>{item.name}</WinnerItemUserName>
             <WinnerItemPubkey number={1}>{item.pubkey}</WinnerItemPubkey>
           </WinnerItemBox>

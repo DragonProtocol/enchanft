@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:30:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-15 13:45:31
+ * @LastEditTime: 2022-09-16 15:44:06
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -14,6 +14,7 @@ export type ContributionMyDataType = {
   avatar: string
   userName: string
   score: number
+  pubkey: string
 }
 
 export type ContributionMyViewConfigType = {
@@ -42,14 +43,14 @@ const ContributionMy: React.FC<ContributionMyProps> = ({
   viewConfig,
   onFollowCommunity,
 }: ContributionMyProps) => {
-  const { avatar, userName, score } = data
+  const { avatar, userName, score, pubkey } = data
   const { displayFollowCommunity, loadingFollowCommunity, disabledFollowCommunity } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
   return (
     <ContributionMyWrapper>
-      <Avatar src={avatar} />
+      <Avatar src={avatar} multiavatarId={pubkey || userName} />
       <RightBox>
         <UserName>{userName}</UserName>
 

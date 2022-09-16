@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-05 11:22:04
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 17:30:39
+ * @LastEditTime: 2022-09-16 15:46:19
  * @Description: file description
  */
 import React from 'react'
@@ -14,6 +14,7 @@ export type TaskDetailParticipantsDataViewType = {
   items: Array<{
     name: string
     avatar: string
+    pubkey: string
   }>
   takers: number
   finishers: number
@@ -39,7 +40,7 @@ const TaskDetailParticipants: React.FC<TaskDetailParticipantsProps> = ({
       </ParticipantsHeader>
       <ParticipantsListBox>
         {items.map((item, index) => (
-          <AvatarItem src={item.avatar} key={index} title={item.name} />
+          <AvatarItem src={item.avatar} key={index} title={item.name} multiavatarId={item.pubkey || item.name} />
         ))}
       </ParticipantsListBox>
     </TaskDetailParticipantsWrapper>

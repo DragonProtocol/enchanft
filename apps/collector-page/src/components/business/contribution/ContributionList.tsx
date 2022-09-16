@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-15 14:01:28
+ * @LastEditTime: 2022-09-16 15:43:37
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -89,7 +89,7 @@ const ContributionList: React.FC<ContributionListProps> = ({
             {displayRanking && (
               <ContributionItemRanking topThree={item.ranking < 4}>{item.ranking}</ContributionItemRanking>
             )}
-            {displayAvatar && <ContributionItemAvatar src={item.avatar} />}
+            {displayAvatar && <ContributionItemAvatar src={item.avatar} multiavatarId={item.pubkey || item.userName} />}
             {displayUserName && <ContributionItemUserName>{item.userName}</ContributionItemUserName>}
             {displayPubkey && <ContributionItemPubkey>{item.pubkey}</ContributionItemPubkey>}
             {displayScore && <ContributionItemScore>{item.score}</ContributionItemScore>}
