@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Modal from 'react-modal';
 
@@ -12,19 +12,39 @@ export default function Account() {
   const { account } = useAppConfig();
   const [edit, setEdit] = useState(false);
   const [email, setEmail] = useState(account.info?.email || '');
+  const [showModal, setShowModal] = useState(false);
+
   const save = useCallback(() => {
-    if (!account.info?.token) return;
+    const result = email.trim();
+    if (!account.info?.token || !result) return;
     console.log(email);
+    alert('coming soon');
   }, [email, account.info?.token]);
+
+  const loadMembers = useCallback(() => {
+    console.log('loadMembers');
+  }, []);
 
   const addMember = useCallback(
     (wallet: string) => {
       if (!account.info?.token) return;
+      alert('coming soon');
     },
     [account.info?.token]
   );
 
-  const [showModal, setShowModal] = useState(false);
+  const delMember = useCallback(
+    (wallet: string) => {
+      if (!account.info?.token) return;
+      alert('coming soon');
+    },
+    [account.info?.token]
+  );
+
+  useEffect(() => {
+    loadMembers();
+  }, [loadMembers]);
+
   return (
     <>
       <ContentBox>
@@ -93,7 +113,10 @@ export default function Account() {
               </div>
               <div>7IN97wIHGhbjhwbdhwuHJGFBw</div>
               <div>
-                <button title="del">
+                <button
+                  title="del"
+                  onClick={() => delMember('7IN97wIHGhbjhwbdhwuHJGFBw')}
+                >
                   <PngIconDelete />
                 </button>
               </div>
