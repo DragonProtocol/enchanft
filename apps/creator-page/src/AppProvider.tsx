@@ -24,6 +24,7 @@ import bs58 from 'bs58';
 import { AccountLink, ChainType, getProfile, linkSocial } from './api';
 import log from 'loglevel';
 import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
 
 // const connection = new Connection(clusterApiUrl('devnet'));
 // const metaplex = new Metaplex(connection);
@@ -179,6 +180,12 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           } as AppAccountInfo,
         });
       } catch (error) {
+        // const err: AxiosError = error as any;
+        // if (err.response?.status === 401) {
+        toast.error('Login has expired,please log in again!');
+        // } else {
+        //   toast.error('Please log in again!');
+        // }
         setAccount({ ...account, info: null });
       }
     },
