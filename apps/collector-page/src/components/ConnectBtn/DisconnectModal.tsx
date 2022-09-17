@@ -70,7 +70,7 @@ export default function DisconnectModal(props) {
         >
           <ModalBox>
             <h3>Disconnect</h3>
-            <p>This Discord account cannot be connected within 24h after disconnection.</p>
+            <p>This {type} account cannot be connected within 24h after disconnection.</p>
             <div className="btns">
               <button className="close" onClick={() => handleClose()}>
                 Cancel
