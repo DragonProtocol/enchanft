@@ -38,6 +38,7 @@ export default function WinnerList({
   uploadSelected: (arg0: Array<number>) => void;
   downloadWinners: () => void;
 }) {
+  const tabs = ['winner', 'entry', 'participant'];
   const label = getTaskRewardTypeLabel(reward);
   const [selected, setSelected] = useState<Array<number>>([]);
   const [disableSelect, setDisableSelect] = useState(false);
@@ -71,9 +72,7 @@ export default function WinnerList({
   const taskEnded = dateNow > schedulesEndTime;
   const isFCFS = label === 'FCFS';
 
-  const [activeList, setActiveList] = useState(
-    isFCFS || whitelistSaved || taskEnded ? 'entry' : 'candidate'
-  );
+  const [activeList, setActiveList] = useState(isFCFS ? 'entry' : 'winner');
 
   if (isFCFS) {
     return (
@@ -89,17 +88,26 @@ export default function WinnerList({
               >
                 Entry List
               </span>
+              <span
+                className={(activeList === 'participant' && 'active') || ''}
+                onClick={() => {
+                  setActiveList('participant');
+                }}
+              >
+                Participant List
+              </span>
             </h3>
-            {(whitelistSaved || (!reward.raffled && taskEnded)) && (
-              <div>
-                <CustomBtn onClick={downloadWinners}>Download</CustomBtn>
-              </div>
-            )}
+
+            <div>
+              <CustomBtn onClick={() => downloadWinners()}>Download</CustomBtn>
+            </div>
           </div>
           <div className="list">
-            {winnerList.map((item, idx) => {
-              return <PickedList key={idx} idx={idx} data={item} />;
-            })}
+            {(activeList === 'entry' ? winnerList : winnerList).map(
+              (item, idx) => {
+                return <PickedList key={idx} idx={idx} data={item} />;
+              }
+            )}
           </div>
         </WinnerListBox>
 
@@ -122,45 +130,50 @@ export default function WinnerList({
       <WinnerListBox>
         <div className="title">
           <h3>
-            {reward.raffled && whitelistSaved && (
-              <span
-                className={(activeList === 'entry' && 'active') || ''}
-                onClick={() => {
-                  setActiveList('entry');
-                }}
-              >
-                Entry List
-              </span>
-            )}
             <span
-              className={(activeList === 'candidate' && 'active') || ''}
+              className={(activeList === 'winner' && 'active') || ''}
               onClick={() => {
-                setActiveList('candidate');
+                setActiveList('winner');
               }}
             >
-              Candidate List
+              Winner List
+            </span>
+            <span
+              style={{
+                borderLeft: '2px solid #333333',
+                borderRight: '2px solid #333333',
+              }}
+              className={(activeList === 'entry' && 'active') || ''}
+              onClick={() => {
+                setActiveList('entry');
+              }}
+            >
+              Entry List
+            </span>
+            <span
+              className={(activeList === 'participant' && 'active') || ''}
+              onClick={() => {
+                setActiveList('participant');
+              }}
+            >
+              Participant List
             </span>
           </h3>
-          {((whitelistSaved || (!reward.raffled && taskEnded)) && (
-            <div>
-              <CustomBtn onClick={downloadWinners}>Download</CustomBtn>
-            </div>
-          )) || (
-            <>
-              {reward.raffled && taskEnded && (
-                <div>
-                  <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
-                  <CustomBtn
-                    onClick={() => {
-                      setConfirmModalOpen(true);
-                    }}
-                  >
-                    Entries {selected.length}
-                  </CustomBtn>
-                </div>
-              )}
-            </>
-          )}
+          <div>
+            <CustomBtn onClick={downloadWinners}>Download</CustomBtn>
+            {activeList === 'entry' && !whitelistSaved && (
+              <>
+                <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
+                <CustomBtn
+                  onClick={() => {
+                    setConfirmModalOpen(true);
+                  }}
+                >
+                  Entries {selected.length}
+                </CustomBtn>
+              </>
+            )}
+          </div>
         </div>
         {(activeList !== 'entry' && (
           <div className="list">
@@ -300,7 +313,7 @@ function CustomCheckBox({
 }
 
 const CustomBtn = styled.button`
-  padding: 10px 18px;
+  padding: 10px;
   border-radius: 20px;
   background: #ebeee4;
   box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
@@ -346,11 +359,10 @@ const WinnerListBox = styled.div`
       & span {
         text-align: center;
         display: inline-block;
-        padding: 10px;
+        padding: 10px 15px;
         font-weight: 700;
         font-size: 18px;
         line-height: 27px;
-        width: 180px;
         background-color: #f7f9f1;
         color: #333333;
         cursor: pointer;
