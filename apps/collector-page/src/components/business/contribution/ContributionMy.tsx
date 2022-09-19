@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:30:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-16 15:44:06
+ * @LastEditTime: 2022-09-19 11:22:50
  * @Description: file description
  */
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { MOBILE_BREAK_POINT } from '../../../constants'
+import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
 import { ButtonWarning } from '../../common/button/ButtonBase'
 import UserAvatar from '../user/UserAvatar'
 export type ContributionMyDataType = {
@@ -50,7 +51,7 @@ const ContributionMy: React.FC<ContributionMyProps> = ({
   }
   return (
     <ContributionMyWrapper>
-      <Avatar src={avatar} multiavatarId={pubkey || userName} />
+      <Avatar src={avatar} multiavatarId={getMultiavatarIdByUser(data)} />
       <RightBox>
         <UserName>{userName}</UserName>
 

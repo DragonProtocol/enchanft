@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-05 11:22:04
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-16 15:46:19
+ * @LastEditTime: 2022-09-19 11:26:38
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
+import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
 import { formatNumberToUnitString } from '../../../utils/number'
 import UserAvatar from '../user/UserAvatar'
 
@@ -40,7 +41,7 @@ const TaskDetailParticipants: React.FC<TaskDetailParticipantsProps> = ({
       </ParticipantsHeader>
       <ParticipantsListBox>
         {items.map((item, index) => (
-          <AvatarItem src={item.avatar} key={index} title={item.name} multiavatarId={item.pubkey || item.name} />
+          <AvatarItem src={item.avatar} key={index} title={item.name} multiavatarId={getMultiavatarIdByUser(item)} />
         ))}
       </ParticipantsListBox>
     </TaskDetailParticipantsWrapper>

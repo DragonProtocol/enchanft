@@ -12,6 +12,7 @@ import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked'
 import IconCheckbox from '../../common/icons/IconCheckbox'
 import { RewardType } from '../task/create/state'
 import { getTaskRewardTypeLabel } from '../../../utils/task'
+import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
 
 export enum TaskStatus {
   SUBMIT,
@@ -225,7 +226,7 @@ function ListItem({
       <div>
         <span className={idx < 3 ? 'index front-3' : 'index'}>{idx + 1}</span>
         <span>
-          <UserAvatar src={data.avatar} multiavatarId={data.pubkey || data.name} />
+          <UserAvatar src={data.avatar} multiavatarId={getMultiavatarIdByUser(data)} />
         </span>
         <span className="name">{data.name}</span>
         <span className="pubkey">{sortPubKey(data.pubkey, 16)}</span>
@@ -257,7 +258,7 @@ function PickedList({ idx, data }: { idx: number; data: any }) {
       <div>
         <span className={idx < 3 ? 'index front-3' : 'index'}>{idx + 1}</span>
         <span>
-          <UserAvatar src={data.avatar} multiavatarId={data.pubkey || data.name} />
+          <UserAvatar src={data.avatar} multiavatarId={getMultiavatarIdByUser(data)} />
         </span>
         <span className="name">{data.name}</span>
         <span className="pubkey">{sortPubKey(data.pubkey, 16)}</span>
