@@ -104,8 +104,9 @@ export default function ConnectWalletModal() {
     const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
     if (accountPhantom && accountMetamask && twitter && discord) return
 
+    localStorage.setItem(`after-guide`, window.location.pathname)
     navigate('/guide')
-  }, [account])
+  }, [account, navigate])
 
   const handleSign = async (data: { walletType: TokenType; pubkey: string; signature: string }) => {
     setSignDone(true)
@@ -113,7 +114,9 @@ export default function ConnectWalletModal() {
     // dispatch(setDefaultWallet(walletType))
     dispatch(setPubkey(data.pubkey))
     handleClose()
-    navigateToGuide()
+    setTimeout(() => {
+      navigateToGuide()
+    }, 2000)
   }
 
   const signerRef = useRef<() => Promise<any>>()
@@ -364,7 +367,7 @@ export default function ConnectWalletModal() {
               )
             }
             console.log('account.status', account.status)
-            if (account.status == AsyncRequestStatus.FULFILLED) {
+            if (account.status == AsyncRequestStatus.FULFILLED || account.status == AsyncRequestStatus.IDLE) {
               setTimeout(resetStatus, 2500)
               return (
                 <ModalBox className="welcome">
