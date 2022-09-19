@@ -2,46 +2,41 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
-import {
-  fetchCommunityContributionRanks,
-  selectAll as selectAllForProjectContributionranks,
-  selecteContributionRanksState,
-} from '../features/community/contributionRanksSlice'
 import { useNavigate, useParams } from 'react-router-dom'
-import { selectIds as selectIdsByUserFollowedProject } from '../features/user/followedCommunitiesSlice'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import IconCaretLeft from '../components/common/icons/IconCaretLeft'
 import CardBox from '../components/common/card/CardBox'
 import ContributionList from '../components/business/contribution/ContributionList'
 import {
   fetchContributionCommunityInfo,
+  resetContributionCommunityInfo,
   selectContributionCommunityInfo,
 } from '../features/contribution/communityInfoSlice'
+import { downloadContributionTokens, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import {
-  downloadContributionTokens,
-  follow as followCommunity,
-  selectUserCommunityHandlesState,
-} from '../features/user/communityHandlesSlice'
-import { fetchUserContributon, selectUserContributon } from '../features/contribution/userContributionSlice'
+  fetchUserContributon,
+  resetCommunityUserContributionState,
+  selectUserContributon,
+} from '../features/contribution/userContributionSlice'
 import { AsyncRequestStatus } from '../types'
 import ContributionAbout from '../components/business/contribution/ContributionAbout'
 import ContributionMy, { ContributionMyDataViewType } from '../components/business/contribution/ContributionMy'
 import Loading from '../components/common/loading/Loading'
 import usePermissions from '../hooks/usePermissons'
-import { downloadContributions } from '../services/api/community'
-import useCommunityCheckin from '../hooks/useCommunityCheckin'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
 import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
 import { CheckinStatusType } from '../components/business/community/CommunityCheckinButton'
 import { MOBILE_BREAK_POINT } from '../constants'
 import { isDesktop, isMobile } from 'react-device-detect'
+import useUserHandlesForCommunity from '../hooks/useUserHandlesForCommunity'
+import { FollowStatusType } from '../components/business/community/CommunityFollowButton'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
   const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
-  const { avatar, name, isLogin } = useAppSelector(selectAccount)
+  const { id, pubkey, avatar, name, isLogin } = useAppSelector(selectAccount)
   const { follow: followCommunityState, downloadContributionTokens: downloadContributionTokensState } = useAppSelector(
     selectUserCommunityHandlesState,
   )
@@ -54,32 +49,45 @@ const Contributionranks: React.FC = () => {
     if (projectSlug) {
       dispatch(fetchContributionCommunityInfo(projectSlug))
     }
+    return () => {
+      dispatch(resetContributionCommunityInfo())
+    }
   }, [projectSlug])
-
+  // 用户在此社区的相关操作信息
+  const { handlesState, isFollowed, handleFollow, isVerifiedCheckin, isCheckedin, handleCheckin, checkinData } =
+    useUserHandlesForCommunity(community?.id, projectSlug)
   // 按钮执行前要对账户进行的操作
   const { accountOperationType, accountOperationDesc, handleAccountOperation } = useAccountOperationForChain(
     community?.chainId,
   )
+  const { follow, checkin } = handlesState
 
-  // 用户关注的社区ID集合
-  const userFollowedProjectIds = useAppSelector(selectIdsByUserFollowedProject)
-  const isFollowedCommunity =
-    !!community?.id && userFollowedProjectIds.map((item) => String(item)).includes(String(community.id))
-  // 关注社区
-  const { status: followCommunityStatus } = followCommunityState
-  const handleFollowCommunity = () => {
-    if (community?.id) {
-      dispatch(followCommunity({ id: community.id }))
+  let followStatusType = FollowStatusType.UNKNOWN
+  if (isFollowed) {
+    // 已关注
+    followStatusType = FollowStatusType.FOLLOWED
+  } else if (follow.status === AsyncRequestStatus.PENDING) {
+    // 正在执行关注
+    followStatusType = FollowStatusType.FOLLOWING
+  } else if (accountOperationType !== AccountOperationType.BIND_UNKNOWN) {
+    if (accountOperationType !== AccountOperationType.COMPLETED) {
+      //  账户未绑定
+      followStatusType = FollowStatusType.ACCOUNT_OPERATION
+    } else {
+      // 可关注
+      followStatusType = FollowStatusType.FOLLOW
     }
   }
-
   // 获取用户在此社区的贡献值
   const { data: userContribution, status: userContributionStatus } = useAppSelector(selectUserContributon)
   useEffect(() => {
-    if (isLogin && projectSlug && isFollowedCommunity) {
+    if (isLogin && projectSlug && isFollowed) {
       dispatch(fetchUserContributon(projectSlug))
     }
-  }, [projectSlug, isLogin, isFollowedCommunity])
+    return () => {
+      dispatch(resetCommunityUserContributionState())
+    }
+  }, [projectSlug, isLogin, isFollowed])
 
   // 获取社区贡献等级排行
   const { contributionranks, contributionranksState } = useContributionranks(projectSlug)
@@ -95,38 +103,34 @@ const Contributionranks: React.FC = () => {
     }
   }, [community])
 
-  // 社区签到
-  const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal } =
-    useCommunityCheckin(community?.id, projectSlug)
-
   let checkinStatusType = CheckinStatusType.UNKNOWN
   // let checkinBtnText = ''
-  //  账户未绑定
-  if (accountOperationType !== AccountOperationType.COMPLETED) {
-    checkinStatusType = CheckinStatusType.ACCOUNT_OPERATION
-    // checkinBtnText = accountOperationDesc
+  if (!isFollowed) {
+    checkinStatusType = CheckinStatusType.NOT_FOLLOWED
   } else {
     if (isCheckedin) {
       checkinStatusType = CheckinStatusType.CHECKEDIN
-    } else if (checkinState.status === AsyncRequestStatus.PENDING) {
+    } else if (checkin.status === AsyncRequestStatus.PENDING) {
       checkinStatusType = CheckinStatusType.CHECKING
     } else {
       checkinStatusType = CheckinStatusType.CHECKIN
     }
   }
-  // 展示数据
 
+  // 展示数据
+  const { status: followCommunityStatus } = follow
   const contributionranksLoading = contributionranksState.status === AsyncRequestStatus.PENDING
   const userContributionInfo: ContributionMyDataViewType = {
     data: {
-      avatar: avatar,
+      id,
+      pubkey,
+      avatar,
       userName: name,
       score: userContribution || 0,
     },
     viewConfig: {
-      displayFollowCommunity: !isFollowedCommunity,
-      loadingFollowCommunity: followCommunityStatus === AsyncRequestStatus.PENDING,
-      disabledFollowCommunity: followCommunityStatus === AsyncRequestStatus.PENDING,
+      displayFollowCommunity: isLogin && !isFollowed && followStatusType !== FollowStatusType.UNKNOWN,
+      followStatusType: followStatusType,
     },
   }
   // TODO 没有twitter名称字段
@@ -178,7 +182,8 @@ const Contributionranks: React.FC = () => {
               <ContributionMy
                 data={userContributionInfo.data}
                 viewConfig={userContributionInfo.viewConfig}
-                onFollowCommunity={handleFollowCommunity}
+                onFollow={handleFollow}
+                onAccountOperation={handleAccountOperation}
               />
             </ContributionMyBox>
           )}
@@ -197,7 +202,7 @@ const Contributionranks: React.FC = () => {
         </ContributionRigtBox>
       </ContributionMainBox>
 
-      <CommunityCheckedinClaimModal open={openClaimModal} data={checkinData} />
+      <CommunityCheckedinClaimModal open={!!checkin.openClaimModal} data={checkinData} />
     </ContributionWrapper>
   )
 }

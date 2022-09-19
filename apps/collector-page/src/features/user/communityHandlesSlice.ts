@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 15:36:46
+ * @LastEditTime: 2022-09-19 19:15:31
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -142,7 +142,7 @@ export const userCommunityHandlesSlice = createSlice({
   initialState: initUserCommunityHandlesState,
   reducers: {
     resetVerifyCheckin: (state) => {
-      state.verifyCheckin = initCommunityHandlestate
+      Object.assign(state.verifyCheckin, initCommunityHandlestate)
     },
     setCheckinOpenClaimModal: (state, action: PayloadAction<boolean>) => {
       state.checkin.openClaimModal = action.payload
