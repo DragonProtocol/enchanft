@@ -149,7 +149,8 @@ export default function Guide() {
             <button
               onClick={() => {
                 localStorage.setItem(`has-guide-${account.id}`, 'has-guide')
-                navigate('/')
+                const pathname = window.localStorage.getItem('after-guide') || '/'
+                navigate(pathname)
               }}
             >
               Skip
@@ -225,7 +226,8 @@ export default function Guide() {
                     pubkey: account.pubkey,
                   }),
                 )
-                navigate('/')
+                const pathname = window.localStorage.getItem('after-guide') || '/'
+                navigate(pathname)
               }}
             >
               Finish
