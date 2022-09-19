@@ -1,5 +1,6 @@
 import { useState } from 'react';
 
+import Image from 'next/image';
 import styled from 'styled-components';
 
 import Header from '../components/header';
@@ -7,81 +8,692 @@ import Header from '../components/header';
 export function Index() {
   const [isMute, setIsMute] = useState(true);
 
-  return (
-    <>
-      <StyledVideo
-        x5-video-player-type="h5"
-        x-webkit-airplay="true"
-        webkit-playsinline="true"
-        loop
-        autoPlay
-        muted={isMute}
-        onTimeUpdate={() => {
-        }}
-      >
-        <source
-          src={require('../public/static/preview.mp4')}
-          type="video/mp4"
+  const renderProfile = (imgPath: string, name: string, position: string,className?:string) => (
+    <div className={`profile-item ${className}`}>
+      <div className="profile">
+        <Image
+          src={imgPath}
+          layout="fill"
+          // objectFit='cover'
+          alt={'basic'}
         />
-      </StyledVideo>
-      <Header />
-      <StyledBottomRightRow>
-        {isMute ? (
-          <MuteIcon
-            onClick={() => {
-              setIsMute(false);
-            }}
-          />
-        ) : (
-          <VolIcon
-            onClick={() => {
-              setIsMute(true);
-            }}
-          />
-        )}
-      </StyledBottomRightRow>
+      </div>
+      <div className="name">{name}</div>
+      <div className="position">{position}</div>
+    </div>
+  );
 
-      <StyledBottomCenterRow>
-        {/* <PauseIcon /> */}
+  return (
+    <Wrapper>
+      <div className="logo">
+        <Image
+          src={'/static/images/logo.png'}
+          width={92}
+          height={52}
+          layout="fixed"
+          // objectFit='cover'
+          alt={'basic'}
+        />
+      </div>
 
-        <div className="links">
-          <TwitterIcon />
-          <DiscordIcon />
-          <InstagramIcon />
-          <OpenSeaIcon />
-          <MagicedenIcon />
+      <div className="nav-box">
+        <span className='twitter'>
+        <Image
+          src={'/static/images/twitter.png'}
+          width={24}
+          height={24}
+          layout="fixed"
+          // objectFit='cover'
+          alt={'basic'}
+        />
+        </span>
+        <Image
+          src={'/static/images/discord.png'}
+          width={24}
+          height={24}
+          layout="fixed"
+          // objectFit='cover'
+          alt={'basic'}
+        />
+        <Image
+          src={'/static/images/instagram.png'}
+          width={24}
+          height={24}
+          layout="fixed"
+          // objectFit='cover'
+          alt={'basic'}
+        />
+        <Image
+          src={'/static/images/OpenSea.png'}
+          width={24}
+          height={24}
+          layout="fixed"
+          // objectFit='cover'
+          alt={'basic'}
+        />
+        <Image
+          src={'/static/images/wl_xyz.png'}
+          width={58}
+          height={24}
+          layout="fixed"
+          // objectFit='cover'
+          alt={'basic'}
+        />
+        <Image
+          src={'/static/images/more.png'}
+          width={24}
+          height={24}
+          layout="fixed"
+          // objectFit='cover'
+          alt={'basic'}
+        />
+      </div>
+      <div className="cloud">
+        <Image
+          src={'/static/images/cloud.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+      </div>
+
+      <div className="flag">
+        <Image
+          src={'/static/images/CASKBAATAR.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+      </div>
+
+      <div className="home title-img">
+        <Image
+          src={'/static/images/home.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+      </div>
+      <div className="title text">
+        CaskBaatar is a perfect combination of whisky investment and art
+        collection.
+      </div>
+      <br />
+      <div className="text">
+        Each of the CaskBaatar’s NFT collections is bound to a single whisky
+        cask. Among them, the artworks are designed by the famous Mongolian
+        artist Yideer, and the single whisky cask are selected by professional
+        cask selectors. Each CaskBaatar NFT contains an NFT picture and at least
+        a bottle of whisky.
+        <br />
+        <br />
+        CaskBaatar NFT is created based on the image of a Mongolian man, and
+        matches the costumes of different periods from the 13th century to the
+        present.As a Mongolian in the 21st century, the artist Yieder, while
+        recalling the ancient history and culture, mostly conveys the concept of
+        "Mongolian in the 21st century", and shows the state of contemporary
+        Mongolian people from his perspective. Give the character visual
+        representation of tradition and future.
+      </div>
+
+      <div className="avatar-loop">
+        <Image
+          src={'/static/images/avatar_loop.png'}
+          layout="fill"
+          objectFit="contain"
+          objectPosition={'-110px 55px'}
+          alt={'basic'}
+        />
+        <Image
+          src={'/static/images/avatar_loop_front.png'}
+          layout="fill"
+          objectFit="contain"
+          // objectPosition={"130px 0px"}
+
+          alt={'basic'}
+        />
+      </div>
+
+      <div className="contract title-img">
+        <Image
+          src={'/static/images/caskbaatar-02.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+      </div>
+
+      <div className="contract-wrapper">
+        <div className="contract-row row">
+          <div className="contract-box">
+            1
+            <div className="dot-box">
+              <i className="dot" />
+            </div>
+          </div>
+          <div className="contract-box">
+            2
+            <div className="dot-box">
+              <i className="dot" />
+              <i className="dot" />
+            </div>
+          </div>
         </div>
-        <div className="copyright">
-          ©{' '}
-          <a
-            href="https://septime.net/en/agency/about"
-            data-item="agency/intro"
-            title="Septime Création"
-          >
-            Baatarverse
-          </a>{' '}
-          2022{' '}
+        <div className="contract-row row">
+          <div className="contract-box">
+            3
+            <div className="dot-box">
+              <i className="dot" />
+              <div className="dot-row row">
+                <i className="dot" />
+                <i className="dot" />
+              </div>
+            </div>
+          </div>
+          <div className="contract-box">
+            4
+            <div className="dot-box">
+              <div className="dot-row row">
+                <i className="dot" />
+                <i className="dot" />
+              </div>
+              <div className="dot-row row">
+                <i className="dot" />
+                <i className="dot" />
+              </div>
+            </div>
+          </div>
         </div>
-        {/* <div className="languages">
-          <span className="cur-lang">EN</span>
-          <span>ZH</span>
-        </div> */}
-      </StyledBottomCenterRow>
-    </>
+      </div>
+
+      <div className="about-box">
+        <div className="left-box">
+          <div className="about title-img">
+            <Image
+              src={'/static/images/about.png'}
+              layout="fill"
+              objectFit="contain"
+              alt={'basic'}
+            />
+          </div>
+          <div className="about-text">
+            The vision of CaskBaatar is to combine the art collection and the
+            investment in whisky through web3.
+            <br />
+            <br />
+            Only by integrating NFT with the real things can we create a
+            sustainable and stable NFT ecosystem, which is the most significant
+            value of this project.
+            <br />
+            <br />
+            The owners of CaskBaatar NFT also become contributors and investors
+            to our mission.
+          </div>
+        </div>
+        <div className="about-avatar-box">
+          <div className="about-avatar">
+            <Image
+              src={'/static/images/about-avatar.png'}
+              layout="fill"
+              objectFit="contain"
+              alt={'basic'}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="about-box">
+        <div className="left-box">
+          <div className="about title-img">
+            <Image
+              src={'/static/images/story.png'}
+              layout="fill"
+              objectFit="contain"
+              alt={'basic'}
+            />
+          </div>
+          <div className="about-text">
+            The vision of CaskBaatar is to combine the art collection and the
+            investment in whisky through web3.
+            <br />
+            <br />
+            Only by integrating NFT with the real things can we create a
+            sustainable and stable NFT ecosystem, which is the most significant
+            value of this project.
+            <br />
+            <br />
+            The owners of CaskBaatar NFT also become contributors and investors
+            to our mission.
+          </div>
+        </div>
+      </div>
+
+      <div className="roadmap title-img">
+        <Image
+          src={'/static/images/roadmap.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+      </div>
+      <div className="map">
+        <Image
+          src={'/static/images/map.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+      </div>
+
+      <div className="team title-img">
+        <Image
+          src={'/static/images/team.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+      </div>
+
+      <div className="profile-wrapper">
+        <div className="profile-inner">
+          <div className="row">
+            {renderProfile(
+              '/static/images/Oddie.png',
+              'Oddie',
+              'CEO，Founder. Whisky  collectors, investors.'
+            )}
+            {renderProfile(
+              '/static/images/Yideer.png',
+              'Yideer',
+              'Chief Artist，Mongolian painter / tattoo artist / trend designer'
+            )}
+            {renderProfile(
+              '/static/images/Tony.png',
+              'Tony',
+              'Project Advisor Early investors in Bitcoin, interested in blockchain and NFT development'
+            )}
+          </div>
+          <div className="row">
+          {renderProfile(
+              '/static/images/Katie.png',
+              'Katie',
+              'Marketing Manager'
+            )}
+            {renderProfile(
+              '/static/images/Oddie.png',
+              'Oddie',
+              'CEO，Founder. Whisky  collectors, investors.'
+            )}
+          </div>
+          <div className="row">
+          {renderProfile(
+              '/static/images/Ken.png',
+              'Mr.Ken',
+              'Professional Cask Selector'
+            )}
+          </div>
+          <div className="row">
+          {renderProfile(
+              '/static/images/Wl.png',
+              'EnchaNFT (wl.xyz)',
+              'A group of experienced web3 veterans, building tools and infrastructure for the NFT ecosystem. Our members are from Tsinghua, the National University of Singapore, UPenn, INSEAD, Bitmain, and Binance.',
+              'wl'
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="faq title-img">
+        <Image
+          src={'/static/images/faq.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+      </div>
+
+      <div className='faq-box'>
+        <div className='faq-item'>
+          <div className='ques'>Sounds awesome - How do I get involved?</div>
+          A great place to start is our Discord, home to a very large and very active community of CaskBaatar enthusiasts. You don't need to be a CaskBaatar holder to join us there! All are welcome to jump into the conversation, let us know your ideas, and hang out with many others who like the CaskBaatars.
+        </div>
+        <div className='faq-item'>
+          <div className='ques'>Is CaskBaatar a good investment?</div>
+          The success of the project depends on many factors. We do not have the magic to predict, so it is impossible to know how it will go, but we strongly believe in our project and think it has a bright future ahead, but ultimately you will have to decide for yourself.
+        </div>
+        <div className='faq-item'>
+          <div className='ques'>If I also like NFT and am a single cask whisky collector, can I contact you?</div>
+          Of course. Provide your relevant information, make an invoice in the community and contact us, and we will explore interesting things together.
+        </div>
+        <div className='faq-item'>
+          <div className='ques'>Can I use the picture commercially after purchasing it?</div>
+          Yes, you can use the image of CaskBaatar owned by you for commercial purpose. However, you are not allowed to modify the image.
+        </div>
+      </div>
+
+      {/* <div className="roadmap title-img">
+        <Image
+          src={'/static/images/roadmap.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+        <Image
+          src={'/static/images/map.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+      </div>
+
+      <div className="team title-img">
+        <Image
+          src={'/static/images/team.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+      </div>
+
+      <div className="faq title-img">
+        <Image
+          src={'/static/images/faq.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        /> */}
+      {/* </div> */}
+    </Wrapper>
   );
 }
 
 export default Index;
 
-const StyledVideo = styled.video`
-  width: 100%;
-  height: 100vh;
-  object-fit: cover;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 0;
-  opacity: 0.9;
+const Wrapper = styled.div`
+  width: 100vw;
+  min-height: 18000px;
+  background-image: url('/static/images/background-clip.png');
+  background-repeat: no-repeat;
+  background-color: #071726;
+  background-size: contain;
+  overflow: hidden;
+  /* padding-top: 45vw; */
+
+  .logo {
+    position: absolute;
+    top: 10px;
+    left: 0px;
+  }
+  .nav-box{
+    white-space: nowrap;
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    .twitter{
+      filter: grayscale(0%) brightness(55%);
+
+    }
+    span{
+      margin-left: 20px !important;
+      cursor: pointer;
+      &:hover{
+        filter: grayscale(100%) brightness(200%) !important;
+      }
+    }
+    & > * + * {
+      margin-left: 10px;
+    }
+  }
+  .cloud {
+    width: 120%;
+    margin-left: -10vw;
+    /* overflow: hidden; */
+    height: 170.5px;
+
+    position: relative;
+    padding-top: 115vw;
+    z-index: 1;
+  }
+  .flag {
+    width: 80%;
+    height: 309px;
+    margin: 0 auto;
+    margin-top: -60vmin;
+    /* margin-top: -60vmin; */
+    position: relative;
+  }
+
+  .home {
+    position: relative;
+    margin-top: 25vw;
+    margin-bottom: 50px;
+    height: 50px;
+  }
+
+  .title-img {
+    position: relative;
+    height: 50px;
+  }
+
+  .text {
+    width: 80%;
+    color: white;
+    margin: 0 auto;
+  }
+
+  .contract-wrapper {
+    position: relative;
+    width: 80%;
+    margin: 0 auto;
+    margin-top: 50px;
+    max-width: 1024px;
+    &::before {
+      content: '';
+      background: white;
+      width: 100%;
+      height: 2.5px;
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+    }
+    &::after {
+      content: '';
+      background: white;
+      width: 2.5px;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  }
+
+  .row {
+    display: flex;
+    /* align-items: center; */
+  }
+  .contract-row {
+    height: 200px;
+    color: white;
+    & > div {
+      width: 50%;
+      position: relative;
+    }
+    .dot-box {
+      position: absolute;
+      right: 15px;
+      bottom: -20px;
+      display: flex;
+      flex-wrap: wrap;
+      & > * + * {
+        margin-left: 8px;
+      }
+      /* width: 24px;
+      height: 24px; */
+    }
+    .dot-row {
+      margin-left: 0;
+      margin-top: 5px;
+      & > * + * {
+        margin-left: 8px;
+      }
+    }
+    .dot {
+      width: 7.5px;
+      height: 7.5px;
+      background: white;
+      border-radius: 50%;
+    }
+    &:nth-child(1) {
+      padding-bottom: 30px;
+      & > div:nth-of-type(1) {
+        padding-right: 15px;
+      }
+      & > div:nth-of-type(2) {
+        padding-left: 15px;
+
+        .dot-box {
+          left: 15px;
+        }
+      }
+    }
+    &:nth-child(2) {
+      padding-top: 35px;
+      & > div:nth-of-type(1) {
+        padding-right: 15px;
+
+        .dot-box {
+          top: -25px;
+          right: 9px;
+          flex-direction: column;
+          align-items: center;
+        }
+      }
+      & > div:nth-of-type(2) {
+        padding-left: 15px;
+
+        .dot-box {
+          top: -25px;
+          left: 15px;
+          flex-direction: column;
+          margin-top: -5px;
+        }
+      }
+    }
+  }
+  .avatar-loop {
+    width: calc(100% + 150px);
+    height: 700px;
+    position: relative;
+  }
+
+  .about-box {
+    width: 80%;
+    height: 450px;
+    margin: 0 auto;
+    margin-top: 100px;
+
+    position: relative;
+    .about-text {
+      margin-top: 10px;
+    }
+    .left-box {
+      position: absolute;
+      top: 80px;
+      left: -20px;
+      width: 300px;
+      z-index: 2;
+      .about {
+        width: 110px;
+      }
+    }
+    .about-avatar-box {
+      position: absolute;
+      right: -20px;
+      z-index: 1;
+      .about-avatar {
+        /* width: 80%; */
+        width: 300px;
+        height: 550px;
+        position: relative;
+      }
+    }
+  }
+
+  .map {
+    width: 80%;
+    height: 200px;
+    position: relative;
+    margin: 50px 0 80px 20px;
+  }
+
+  .profile-wrapper {
+    width: 90%;
+    margin: 20px 0 0 10px;
+    .profile-item{
+      width: 142px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .row{
+      display: flex;
+      margin-top: 15px;
+      justify-content: center;
+      align-items: center;
+      & > * + *{
+        margin-left: 15px;
+      }
+    }
+    .profile {
+      width: 142px;
+      height: 142px;
+      position: relative;
+    }
+    .name {
+      font-size: 25px;
+      font-family: Futura;
+      font-weight: bold;
+      color: #ffffff;
+      line-height: 65px;
+      white-space: nowrap;
+    }
+    .position{
+      height: 45px;
+      text-align: center;
+      overflow: hidden;
+    }
+  }
+
+  .wl{
+    width: 800px !important;
+
+  }
+
+  .faq{
+    margin: 60px 0 50px 0;
+  }
+
+  .faq-box{
+    width: 90%;
+    margin: 20px 0 0 10px;
+    .faq-item{
+      margin-bottom: 40px;
+      .ques{
+        font-weight: bolder;
+        margin-bottom: 10px;
+        font-size: 23px;
+      }
+    }
+  }
+`;
+
+const StyledImage = styled(Image)`
+  margin: 20px 20px;
+  display: none;
 `;
 
 const StyledBottomRightRow = styled.div`
@@ -319,3 +931,70 @@ const MagicedenIcon = (props) => (
     />
   </svg>
 );
+
+// export function Index() {
+//   const [isMute, setIsMute] = useState(true);
+
+//   return (
+//     <>
+//       <StyledVideo
+//         x5-video-player-type="h5"
+//         x-webkit-airplay="true"
+//         webkit-playsinline="true"
+//         loop
+//         autoPlay
+//         muted={isMute}
+//         onTimeUpdate={() => {
+//         }}
+//       >
+//         <source
+//           src={require('../public/static/preview.mp4')}
+//           type="video/mp4"
+//         />
+//       </StyledVideo>
+//       <Header />
+//       <StyledBottomRightRow>
+//         {isMute ? (
+//           <MuteIcon
+//             onClick={() => {
+//               setIsMute(false);
+//             }}
+//           />
+//         ) : (
+//           <VolIcon
+//             onClick={() => {
+//               setIsMute(true);
+//             }}
+//           />
+//         )}
+//       </StyledBottomRightRow>
+
+//       <StyledBottomCenterRow>
+//         {/* <PauseIcon /> */}
+
+//         <div className="links">
+//           <TwitterIcon />
+//           <DiscordIcon />
+//           <InstagramIcon />
+//           <OpenSeaIcon />
+//           <MagicedenIcon />
+//         </div>
+//         <div className="copyright">
+//           ©{' '}
+//           <a
+//             href="https://septime.net/en/agency/about"
+//             data-item="agency/intro"
+//             title="Septime Création"
+//           >
+//             Baatarverse
+//           </a>{' '}
+//           2022{' '}
+//         </div>
+//         {/* <div className="languages">
+//           <span className="cur-lang">EN</span>
+//           <span>ZH</span>
+//         </div> */}
+//       </StyledBottomCenterRow>
+//     </>
+//   );
+// }

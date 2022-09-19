@@ -6,6 +6,7 @@ html {
   line-height: 1.5;
   tab-size: 4;
   scroll-behavior: smooth;
+  color: white;
 }
 body {
   font-family: inherit;
