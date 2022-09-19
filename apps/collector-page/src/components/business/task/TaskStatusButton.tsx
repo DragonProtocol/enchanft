@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
+import { MOBILE_BREAK_POINT } from '../../../constants'
 import ButtonBase, { ButtonPrimary } from '../../common/button/ButtonBase'
 
 export type TaskStatusButtonDataType = {}
@@ -101,4 +102,8 @@ const TaskStatusDescBtn = styled(ButtonBase)`
   line-height: 27px;
   border-bottom: 1px solid #d9d9d9;
   color: #3dd606;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 16px;
+    line-height: 24px;
+  }
 `

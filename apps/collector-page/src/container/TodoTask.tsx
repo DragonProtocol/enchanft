@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 13:51:53
+ * @LastEditTime: 2022-09-15 14:20:32
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -26,6 +26,7 @@ import {
   verifyAction,
   verifyTask,
 } from '../features/user/taskHandlesSlice'
+import { MOBILE_BREAK_POINT } from '../constants'
 
 // TODO 将以下格式化函数合并为一个
 const formatStoreDataToComponentDataByTodoList = (
@@ -296,6 +297,10 @@ const TodoTaskGroupBox = styled.div`
   height: 850px;
   display: flex;
   gap: 10px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+    height: auto;
+  }
 `
 const TodoTaskGroupLeft = styled.div`
   flex: 1;
@@ -305,6 +310,9 @@ const TodoTaskGroupLeft = styled.div`
   justify-content: space-between;
   list-style-type: none;
   grid-template-columns: repeat(2, minmax(250px, 1fr));
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    grid-template-columns: repeat(1, minmax(250px, 1fr));
+  }
 `
 const TodoTaskGroupRight = styled.div`
   flex: 1;
@@ -314,4 +322,7 @@ const TodoTaskGroupRight = styled.div`
   justify-content: space-between;
   list-style-type: none;
   grid-template-columns: repeat(2, minmax(250px, 1fr));
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    grid-template-columns: repeat(1, minmax(250px, 1fr));
+  }
 `

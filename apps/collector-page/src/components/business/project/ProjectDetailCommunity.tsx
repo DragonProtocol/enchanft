@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-01 16:24:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 14:27:37
+ * @LastEditTime: 2022-09-15 18:51:05
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -12,6 +12,7 @@ import IconTwitterBlack from '../../common/icons/IconTwitterBlack'
 import IconDiscordBlack from '../../common/icons/IconDiscordBlack'
 import { getTwitterHomeLink } from '../../../utils/twitter'
 import CommunityFollowButton, { CommunityFollowButtonViewConfigType } from '../community/CommunityFollowButton'
+import { MOBILE_BREAK_POINT } from '../../../constants'
 export type ProjectDetailCommunityDataType = {
   id: number
   name: string
@@ -43,26 +44,24 @@ const ProjectDetailCommunity: React.FC<ProjectDetailCommunityProps> = ({
     <ProjectDetailCommunityWrapper>
       {/* <CommunityImg src={icon} /> */}
       {/* <CommunityName>{name}</CommunityName> */}
-      {(website || twitterName || twitterName) && (
-        <CommunityLeftBox>
-          {website && (
-            <ProjectLink href={website} target="_blank" rel="noopener noreferrer">
-              <IconWebsite />
-            </ProjectLink>
-          )}
-          {twitterName && (
-            <ProjectLink href={twitterHomeLink} target="_blank" rel="noopener noreferrer">
-              <IconTwitterBlack />
-            </ProjectLink>
-          )}
+      <CommunityLeftBox>
+        {website && (
+          <ProjectLink href={website} target="_blank" rel="noopener noreferrer">
+            <IconWebsite />
+          </ProjectLink>
+        )}
+        {twitterName && (
+          <ProjectLink href={twitterHomeLink} target="_blank" rel="noopener noreferrer">
+            <IconTwitterBlack />
+          </ProjectLink>
+        )}
 
-          {discordInviteUrl && (
-            <ProjectLink href={discordInviteUrl} target="_blank" rel="noopener noreferrer">
-              <IconDiscordBlack />
-            </ProjectLink>
-          )}
-        </CommunityLeftBox>
-      )}
+        {discordInviteUrl && (
+          <ProjectLink href={discordInviteUrl} target="_blank" rel="noopener noreferrer">
+            <IconDiscordBlack />
+          </ProjectLink>
+        )}
+      </CommunityLeftBox>
 
       {viewConfig?.followStatusType && (
         <FollowBtn
@@ -89,11 +88,19 @@ const CommunityLeftBox = styled.div`
   align-items: center;
 `
 const ProjectLink = styled.a`
-  width: 20px;
-  height: 20px;
-  cursor: pointer;
+  svg {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
 `
 const FollowBtn = styled(CommunityFollowButton)`
-  min-width: 100px;
+  width: 100px;
   height: 40px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 70px;
+    height: 30px;
+    font-size: 16px;
+    line-height: 24px;
+  }
 `

@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 11:17:31
+ * @LastEditTime: 2022-09-14 17:53:58
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
+import { MOBILE_BREAK_POINT } from '../../../constants'
 import { MintStage } from '../../../types/entities'
 import ButtonRadioGroup from '../../common/button/ButtonRadioGroup'
 import InputSearch from '../../common/input/InputSearch'
@@ -85,14 +86,10 @@ const ExploreProjectFilter: React.FC<ExploreProjectFilterProps> = ({
   return (
     <ExploreProjectFilterWrapper>
       {displayStatus && (
-        <FilterLeftBox>
-          <ButtonRadioGroup options={ExploreMintStageOptions} value={mintStage} onChange={handleStatusChange} />
-        </FilterLeftBox>
+        <ButtonRadioGroupSortBy options={ExploreMintStageOptions} value={mintStage} onChange={handleStatusChange} />
       )}
       {displayKeywords && (
-        <FilterRightBox>
-          <InputSearch value={keywords} onChange={handleKeywordsChange} placeholder="Search project keywords" />
-        </FilterRightBox>
+        <InputSearchKeywords value={keywords} onChange={handleKeywordsChange} placeholder="Search project keywords" />
       )}
     </ExploreProjectFilterWrapper>
   )
@@ -103,11 +100,23 @@ const ExploreProjectFilterWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 60px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+    gap: 20px;
+  }
 `
-const FilterLeftBox = styled.div`
-  /* width: 300px; */
+const ButtonRadioGroupSortBy = styled(ButtonRadioGroup)`
+  width: 400px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    max-width: 100%;
+    font-size: 14px;
+    line-height: 21px;
+  }
 `
-const FilterRightBox = styled.div`
+const InputSearchKeywords = styled(InputSearch)`
   flex: 1;
   max-width: 500px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+  }
 `

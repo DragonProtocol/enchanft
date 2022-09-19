@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:33:18
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-10 14:31:39
+ * @LastEditTime: 2022-09-16 15:34:56
  * @Description: file description
  */
 import React from 'react'
@@ -43,7 +43,7 @@ const ProjectTeamMemberItem: React.FC<ProjectTeamMemberItemProps> = ({
   return (
     <ProjectTeamMemberItemWrapper>
       <TeamMemberTopBox>
-        <TeamMemberAvatar src={avatar} />
+        <TeamMemberAvatar src={avatar} multiavatarId={partner} />
         <TeamMemberInfoBox>
           <TeamMemberName>{partner}</TeamMemberName>
           <TeamMemberRole>{role}</TeamMemberRole>

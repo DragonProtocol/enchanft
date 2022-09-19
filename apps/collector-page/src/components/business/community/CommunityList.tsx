@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 16:50:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 10:22:09
+ * @LastEditTime: 2022-09-15 14:29:41
  * @Description: file description
  */
 import React from 'react'
@@ -58,7 +58,7 @@ const CommunityListWrapper = styled.div`
   @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
     display: flex;
     flex-direction: column;
-    grid-gap: 12px;
+    grid-gap: 20px;
   }
 `
 const CommunityListLoading = styled.div`

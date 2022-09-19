@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-26 17:00:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-07 11:53:26
+ * @LastEditTime: 2022-09-15 14:29:59
  * @Description: file description
  */
 import React from 'react'
@@ -58,7 +58,7 @@ const RewardListWrapper = styled.div`
   @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
     display: flex;
     flex-direction: column;
-    grid-gap: 12px;
+    grid-gap: 20px;
   }
 `
 const RewardListLoading = styled.div`

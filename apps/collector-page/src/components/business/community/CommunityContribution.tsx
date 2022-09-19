@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-01 13:58:27
+ * @LastEditTime: 2022-09-16 15:41:23
  * @Description: file description
  */
 import React from 'react'
@@ -31,7 +31,7 @@ const CommunityContribution: React.FC<CommunityContributionProps> = ({ items }: 
             {items.map((item, index) => (
               <ContributionItemBox key={index}>
                 <ContributionItemRanking>{item.ranking}</ContributionItemRanking>
-                <ContributionItemAvatar src={item.avatar} />
+                <ContributionItemAvatar src={item.avatar} multiavatarId={item.pubkey || item.userName} />
                 <ContributionItemUserName>{item.userName}</ContributionItemUserName>
                 <ContributionItemPubkey number={1}>{item.pubkey}</ContributionItemPubkey>
                 <ContributionItemScore>{item.score}</ContributionItemScore>
