@@ -17,7 +17,7 @@ const Main: React.FC = () => {
   const { isLogin } = useAppSelector(selectAccount)
   const permissionRoutesMap = permissionRoutes.map((route) => ({
     ...route,
-    element: isLogin ? route.element : NoLogin,
+    element: isLogin ? route.element : <NoLogin>Need Login</NoLogin>,
   }))
   const renderRoutes = useRoutes([...routes, ...permissionRoutesMap])
   return <MainWrapper>{renderRoutes}</MainWrapper>
