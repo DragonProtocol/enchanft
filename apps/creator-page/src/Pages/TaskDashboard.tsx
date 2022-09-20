@@ -29,16 +29,21 @@ export function TaskDashboard() {
     whitelistSaved,
     winnerList,
     candidateList,
+    participantList,
     taskInfo,
     scheduleInfo,
     pickedWhiteList,
     reward,
   } = dashboardData;
+  console.log(dashboardData);
 
-  const downloadWinners = useCallback(() => {
-    if (!taskId || !account.info) return;
-    downloadWinner(taskId, account.info.token);
-  }, [taskId, account.info]);
+  const downloadWinners = useCallback(
+    (type: string) => {
+      if (!taskId || !account.info) return;
+      downloadWinner(type, taskId, account.info.token);
+    },
+    [taskId, account.info]
+  );
 
   const saveWinners = useCallback(
     (list: Array<number>) => {
@@ -98,6 +103,7 @@ export function TaskDashboard() {
           whitelistSaved={whitelistSaved}
           winnerList={winnerList}
           candidateList={candidateList}
+          participantList={participantList}
           pickedWhiteList={pickedWhiteList}
           schedules={scheduleInfo}
           uploadSelected={(ids: Array<number>) => {

@@ -23,6 +23,7 @@ export default function WinnerList({
   winnerList,
   candidateList,
   pickedWhiteList,
+  participantList,
   schedules,
   uploadSelected,
   whitelistSaved,
@@ -33,12 +34,13 @@ export default function WinnerList({
   whitelistSaved: boolean;
   winnerList: Array<Winner>;
   candidateList: Array<Winner>;
+  participantList: Array<Winner>;
   pickedWhiteList: Array<PickedWhiteList>;
   schedules: ScheduleInfo | null;
   uploadSelected: (arg0: Array<number>) => void;
-  downloadWinners: () => void;
+  downloadWinners: (arg0: string) => void;
 }) {
-  const tabs = ['winner', 'entry', 'participant'];
+  const tabs = ['whitelist', 'candidates', 'participants'];
   const label = getTaskRewardTypeLabel(reward);
   const [selected, setSelected] = useState<Array<number>>([]);
   const [disableSelect, setDisableSelect] = useState(false);
@@ -46,7 +48,7 @@ export default function WinnerList({
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const genRandom = useCallback(() => {
-    let tmpList = [...winnerList];
+    let tmpList = [...candidateList];
     let num = Math.min(winnerNum, tmpList.length);
     const result: Array<number> = [];
     while (num > 0) {
@@ -62,7 +64,7 @@ export default function WinnerList({
     }
     setSelected(result);
     setDisableSelect(true);
-  }, [winnerList, winnerNum]);
+  }, [candidateList, winnerNum]);
 
   const dateNow = new Date();
   const schedulesEndTime = schedules?.endTime
@@ -72,7 +74,9 @@ export default function WinnerList({
   const taskEnded = dateNow > schedulesEndTime;
   const isFCFS = label === 'FCFS';
 
-  const [activeList, setActiveList] = useState(isFCFS ? 'entry' : 'winner');
+  const [activeList, setActiveList] = useState(
+    isFCFS ? 'candidates' : 'whitelist'
+  );
 
   if (isFCFS) {
     return (
@@ -81,17 +85,17 @@ export default function WinnerList({
           <div className="title">
             <h3>
               <span
-                className={(activeList === 'entry' && 'active') || ''}
+                className={(activeList === 'candidates' && 'active') || ''}
                 onClick={() => {
-                  setActiveList('entry');
+                  setActiveList('candidates');
                 }}
               >
                 Entry List
               </span>
               <span
-                className={(activeList === 'participant' && 'active') || ''}
+                className={(activeList === 'participants' && 'active') || ''}
                 onClick={() => {
-                  setActiveList('participant');
+                  setActiveList('participants');
                 }}
               >
                 Participant List
@@ -99,15 +103,18 @@ export default function WinnerList({
             </h3>
 
             <div>
-              <CustomBtn onClick={() => downloadWinners()}>Download</CustomBtn>
+              <CustomBtn onClick={() => downloadWinners(activeList)}>
+                Download
+              </CustomBtn>
             </div>
           </div>
           <div className="list">
-            {(activeList === 'entry' ? winnerList : winnerList).map(
-              (item, idx) => {
-                return <PickedList key={idx} idx={idx} data={item} />;
-              }
-            )}
+            {(activeList === 'candidates'
+              ? candidateList
+              : participantList
+            ).map((item, idx) => {
+              return <PickedList key={idx} idx={idx} data={item} />;
+            })}
           </div>
         </WinnerListBox>
 
@@ -131,9 +138,9 @@ export default function WinnerList({
         <div className="title">
           <h3>
             <span
-              className={(activeList === 'winner' && 'active') || ''}
+              className={(activeList === 'whitelist' && 'active') || ''}
               onClick={() => {
-                setActiveList('winner');
+                setActiveList('whitelist');
               }}
             >
               Winner List
@@ -143,25 +150,27 @@ export default function WinnerList({
                 borderLeft: '2px solid #333333',
                 borderRight: '2px solid #333333',
               }}
-              className={(activeList === 'entry' && 'active') || ''}
+              className={(activeList === 'candidates' && 'active') || ''}
               onClick={() => {
-                setActiveList('entry');
+                setActiveList('candidates');
               }}
             >
               Entry List
             </span>
             <span
-              className={(activeList === 'participant' && 'active') || ''}
+              className={(activeList === 'participants' && 'active') || ''}
               onClick={() => {
-                setActiveList('participant');
+                setActiveList('participants');
               }}
             >
               Participant List
             </span>
           </h3>
           <div>
-            <CustomBtn onClick={downloadWinners}>Download</CustomBtn>
-            {activeList === 'entry' && !whitelistSaved && (
+            <CustomBtn onClick={() => downloadWinners(activeList)}>
+              Download
+            </CustomBtn>
+            {activeList === 'candidates' && !whitelistSaved && (
               <>
                 <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
                 <CustomBtn
@@ -175,9 +184,13 @@ export default function WinnerList({
             )}
           </div>
         </div>
-        {(activeList !== 'entry' && (
-          <div className="list">
-            {winnerList.map((item, idx) => {
+        <div className="list">
+          {activeList === 'whitelist' &&
+            winnerList.map((item, idx) => {
+              return <PickedList key={idx} idx={idx} data={item} />;
+            })}
+          {activeList === 'candidates' &&
+            candidateList.map((item, idx) => {
               const checked = whitelistSaved
                 ? pickedWhiteList.find(
                     (pickedItem) => pickedItem.user_id === item.id
@@ -198,22 +211,15 @@ export default function WinnerList({
                     setDisableSelect(newSelected.length >= winnerNum);
                     setSelected(newSelected);
                   }}
-                  couldSelect={
-                    getTaskRewardTypeLabel(reward) !== 'FCFS'
-                      ? !whitelistSaved && taskEnded
-                      : false
-                  }
+                  couldSelect={!isFCFS ? !whitelistSaved && taskEnded : false}
                 />
               );
             })}
-          </div>
-        )) || (
-          <div className="list">
-            {candidateList.map((item, idx) => {
+          {activeList === 'participants' &&
+            participantList.map((item, idx) => {
               return <PickedList key={idx} idx={idx} data={item} />;
             })}
-          </div>
-        )}
+        </div>
       </WinnerListBox>
 
       <ConfirmModal
@@ -354,12 +360,12 @@ const WinnerListBox = styled.div`
       border-radius: 10px;
       overflow: hidden;
       border: 2px solid #333333;
-      height: 50px;
+      height: 46px;
       box-sizing: border-box;
       & span {
         text-align: center;
         display: inline-block;
-        padding: 10px 15px;
+        padding: 8px 10px;
         font-weight: 700;
         font-size: 18px;
         line-height: 27px;
@@ -376,7 +382,7 @@ const WinnerListBox = styled.div`
 
     > div {
       display: flex;
-      gap: 10px;
+      gap: 6px;
       align-items: center;
       > button {
         border-radius: 10px;

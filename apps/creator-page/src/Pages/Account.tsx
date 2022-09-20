@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import Modal from 'react-modal';
 
@@ -7,12 +7,26 @@ import IconEdit from '../Components/Icons/IconEdit';
 import IconEditClose from '../Components/Icons/IconEditClose';
 import IconEditOk from '../Components/Icons/IconEditOk';
 import PngIconDelete from '../Components/Icons/PngIconDelete';
+import { useAppDispatch, useAppSelector } from '../redux/store';
+import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
+import { addAccount, delAccount } from '../api';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { AxiosError } from 'axios';
 
 export default function Account() {
-  const { account } = useAppConfig();
+  const { account, updateAccount } = useAppConfig();
   const [edit, setEdit] = useState(false);
   const [email, setEmail] = useState(account.info?.email || '');
   const [showModal, setShowModal] = useState(false);
+
+  const { slug } = useParams();
+  const { data } = useAppSelector(selectProjectDetail);
+  const dispatch = useAppDispatch();
+  // TODO fix any
+  const project = useMemo(() => {
+    return { ...data } as any;
+  }, [data]);
 
   const save = useCallback(() => {
     const result = email.trim();
@@ -21,29 +35,64 @@ export default function Account() {
     alert('coming soon');
   }, [email, account.info?.token]);
 
-  const loadMembers = useCallback(() => {
-    console.log('loadMembers');
-  }, []);
-
   const addMember = useCallback(
-    (wallet: string) => {
-      if (!account.info?.token) return;
-      alert('coming soon');
+    async (wallet: string) => {
+      if (!account.info?.token || !slug) return;
+      const data = {
+        ...project,
+        teamMembers: [
+          {
+            wallet,
+            addOrRemove: true,
+          },
+        ],
+      };
+      try {
+        await addAccount(data, account.info?.token);
+        dispatch(fetchProjectDetail({ slug, token: account.info.token }));
+        toast.success('save success!');
+        setShowModal(false);
+      } catch (error) {
+        const err: AxiosError = error as any;
+        if (err.response?.status === 401) {
+          toast.error('Login has expired,please log in again!');
+          updateAccount({ ...account, info: null });
+        } else {
+          toast.error('save fail!');
+        }
+      }
     },
-    [account.info?.token]
+    [account, dispatch, project, slug, updateAccount]
   );
 
   const delMember = useCallback(
-    (wallet: string) => {
-      if (!account.info?.token) return;
-      alert('coming soon');
+    async (userId: number, index: number) => {
+      if (!account.info?.token || !slug) return;
+      const data = {
+        ...project,
+        teamMembers: [
+          {
+            userId,
+            addOrRemove: false,
+          },
+        ],
+      };
+      try {
+        await delAccount(data, account.info?.token);
+        dispatch(fetchProjectDetail({ slug, token: account.info.token }));
+        toast.success('save success!');
+      } catch (error) {
+        const err: AxiosError = error as any;
+        if (err.response?.status === 401) {
+          toast.error('Login has expired,please log in again!');
+          updateAccount({ ...account, info: null });
+        } else {
+          toast.error('save fail!');
+        }
+      }
     },
-    [account.info?.token]
+    [account, dispatch, project, slug, updateAccount]
   );
-
-  useEffect(() => {
-    loadMembers();
-  }, [loadMembers]);
 
   return (
     <>
@@ -92,35 +141,27 @@ export default function Account() {
               <div>Wallet Address</div>
               <div>Action</div>
             </div>
-            <div className="item">
-              <div>
-                <img
-                  src="https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk"
-                  alt=""
-                />
-                <span>Nicole</span>
-              </div>
-              <div>7IN97wIHGhbjhwbdhwuHJGFBw</div>
-              <div></div>
-            </div>
-            <div className="item">
-              <div>
-                <img
-                  src="https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk"
-                  alt=""
-                />
-                <span>Nicole</span>
-              </div>
-              <div>7IN97wIHGhbjhwbdhwuHJGFBw</div>
-              <div>
-                <button
-                  title="del"
-                  onClick={() => delMember('7IN97wIHGhbjhwbdhwuHJGFBw')}
-                >
-                  <PngIconDelete />
-                </button>
-              </div>
-            </div>
+            {project.teamMembers.map((item: any, idx: number) => {
+              return (
+                <div className="item" key={item.userId}>
+                  <div>
+                    <img src={item.avatar} alt="" />
+                    <span>{item.name}</span>
+                  </div>
+                  <div>{item.wallet}</div>
+                  <div>
+                    {idx !== 0 && (
+                      <button
+                        title="del"
+                        onClick={() => delMember(item.userId, idx)}
+                      >
+                        <PngIconDelete />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </ContentBox>

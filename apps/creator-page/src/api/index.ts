@@ -201,9 +201,9 @@ export function saveWinnersApi(params: any, token: string) {
   });
 }
 
-export function downloadWinner(taskId: string, token: string) {
+export function downloadWinner(type: string, taskId: string, token: string) {
   axios({
-    url: ApiBaseUrl + `/creator/download/${taskId}.csv`,
+    url: ApiBaseUrl + `/creator/download/${type}/${taskId}.csv`,
     method: 'get',
     responseType: 'blob',
     headers: {
@@ -212,7 +212,7 @@ export function downloadWinner(taskId: string, token: string) {
   }).then((response) => {
     fileDownload(
       response.data,
-      'winner.csv',
+      `${type}.csv`,
       'text/csv;charset=utf-8',
       '\uFEFF'
     );
@@ -324,4 +324,12 @@ export function updateProject(params: any, token: string) {
       Authorization: `Bearer ${token}`,
     },
   });
+}
+
+export function addAccount(params: any, token: string) {
+  return updateProject(params, token);
+}
+
+export function delAccount(params: any, token: string) {
+  return updateProject(params, token);
 }

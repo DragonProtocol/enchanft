@@ -41,6 +41,7 @@ export type CreatorState = {
   whitelistSaved: boolean;
   winnerList: Array<Winner>;
   candidateList: Array<Winner>;
+  participantList: Array<Winner>;
   pickedWhiteList: Array<PickedWhiteList>;
   taskInfo: TaskInfo | null;
   scheduleInfo: ScheduleInfo | null;
@@ -61,6 +62,7 @@ const creatorState: CreatorState = {
   whitelistSaved: false,
   winnerList: [],
   candidateList: [],
+  participantList: [],
   pickedWhiteList: [],
   taskInfo: null,
   scheduleInfo: null,
@@ -82,19 +84,23 @@ export const getCreatorDashboardData = createAsyncThunk(
 
 export const saveWinnersData = createAsyncThunk(
   'creator/saveWinners',
-  async ({
-    taskId,
-    winners,
-    token,
-  }: {
-    token: string;
-    taskId: number;
-    winners: Array<number>;
-  }) => {
+  async (
+    {
+      taskId,
+      winners,
+      token,
+    }: {
+      token: string;
+      taskId: number;
+      winners: Array<number>;
+    },
+    ThunkAPI
+  ) => {
     const resp = await saveWinnersApi(
       { task: taskId, whitelist: winners },
       token
     );
+    ThunkAPI.dispatch(getCreatorDashboardData({ taskId, token }));
     return resp.data;
   }
 );
@@ -111,6 +117,7 @@ export const creatorSlice = createSlice({
       state.whitelistSaved = creatorState.whitelistSaved;
       state.winnerList = creatorState.winnerList;
       state.candidateList = creatorState.candidateList;
+      state.participantList = creatorState.participantList;
       state.scheduleInfo = creatorState.scheduleInfo;
       state.taskInfo = creatorState.taskInfo;
       state.reward = creatorState.reward;
@@ -124,6 +131,7 @@ export const creatorSlice = createSlice({
       .addCase(getCreatorDashboardData.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED;
         state.participants = action.payload.participants;
+        state.participantList = action.payload.participantList;
         state.winners = action.payload.winners;
         state.whitelistSaved = action.payload.whitelistSaved;
         state.winnerList = action.payload.winnerList;
