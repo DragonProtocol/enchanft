@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 17:23:36
+ * @LastEditTime: 2022-09-14 14:29:14
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
+import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ExploreTaskSortBy } from '../../../types/api'
 import ButtonRadioGroup from '../../common/button/ButtonRadioGroup'
 import InputSearch from '../../common/input/InputSearch'
@@ -73,14 +74,10 @@ const ExploreTaskFilter: React.FC<ExploreTaskFilterProps> = ({
   return (
     <ExploreTaskFilterWrapper>
       {displayStatus && (
-        <FilterLeftBox>
-          <ButtonRadioGroup options={ExploreTaskSortByOptions} value={sortBy} onChange={handleSortByChange} />
-        </FilterLeftBox>
+        <ButtonRadioGroupSortBy options={ExploreTaskSortByOptions} value={sortBy} onChange={handleSortByChange} />
       )}
       {displayKeywords && (
-        <FilterRightBox>
-          <InputSearch value={keywords} onChange={handleKeywordsChange} placeholder="Search task keywords" />
-        </FilterRightBox>
+        <InputSearchKeywords value={keywords} onChange={handleKeywordsChange} placeholder="Search task keywords" />
       )}
     </ExploreTaskFilterWrapper>
   )
@@ -91,11 +88,22 @@ const ExploreTaskFilterWrapper = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 60px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+    gap: 20px;
+  }
 `
-const FilterLeftBox = styled.div`
+const ButtonRadioGroupSortBy = styled(ButtonRadioGroup)`
   width: 200px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+    line-height: 21px;
+  }
 `
-const FilterRightBox = styled.div`
+const InputSearchKeywords = styled(InputSearch)`
   flex: 1;
   max-width: 650px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+  }
 `

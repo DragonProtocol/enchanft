@@ -2,57 +2,45 @@
 
 html {
   /** Fonts */
-  --font-primary: 'Ubuntu', sans-serif;
-
+  --font-primary: Poppins;
   /** Text color */
-  --color-text-primary:#efefef;
-  --color-text-secondary: #6e767d;
-  --color-text-tertiary: #acacb3;
-  --color-text-links:#fdee66;
-  --color-text-links-secondary: #f5f2c4;
-  --color-text-links-secondary:#3cb1e7;
-  --color-purple: #6C6AFB;
-  --color-green: #4aff8d;
+  --color-text-primary: #333333;
+  --color-text-secondary: #81827F;
+  --color-text-tertiary: #333333;
+  --color-text-links: #3DD606;
+  --color-text-links-secondary: #3DD606;
+  --color-text-links-secondary: #3DD606;
+  --color-purple: #6c6afb;
+  --color-green: #3DD606;
   --color-red: #ff4555;
-
   /** Selected color */
-  --color-selected: #b5ff71;
-
+  --color-selected: #3DD606;
   /** Background colors */
-  --color-background-primary:#101016;
-  --color-background-hover: #101010;
-  --color-background-secondary:#2e2e3f;
-  --color-background-tertiary: #20212c;
-
+  --color-background-primary: #F7F9F1;
+  --color-background-hover: #EBEEE4;
+  --color-background-secondary: #EBEEE4;
+  --color-background-tertiary: #EBEEE4;
   /** Borders */
-  --color-border-primary: #353d4c;
-  --color-border-secondary: #1a202d;
+  --color-border-primary: #D9D9D9;
+  --color-border-secondary: #D9D9D9;
   --color-border-focus: #bdb97f;
-
   /** Badges */
-  --badge-bg-grey: #F1F2F3;
-  --badge-color-grey: #79838E;
-
-  --badge-bg-green: #EDF9F6;
-  --badge-color-green: #5BC6A8;
-
-  --badge-bg-dark-green: #DFF6EE;
-  --badge-color-dark-green: #2E8A53;
-
-  --badge-bg-blue: #EDF5F9;
-  --badge-color-blue: #5B93C6;
-
-  --badge-bg-purple: #F5EDF9;
-  --badge-color-purple: #BA6CD6;
-
-  --badge-bg-yellow: #F9F9ED;
-  --badge-color-yellow: #E8BF30;
-
-  --badge-bg-orange: #F9F5ED;
-  --badge-color-orange: #E29A45;
-
-  --badge-bg-red: #FFEEEE;
-  --badge-color-red: #B83737;
+  --badge-bg-grey: #f1f2f3;
+  --badge-color-grey: #79838e;
+  --badge-bg-green: #edf9f6;
+  --badge-color-green: #5bc6a8;
+  --badge-bg-dark-green: #dff6ee;
+  --badge-color-dark-green: #2e8a53;
+  --badge-bg-blue: #edf5f9;
+  --badge-color-blue: #5b93c6;
+  --badge-bg-purple: #f5edf9;
+  --badge-color-purple: #ba6cd6;
+  --badge-bg-yellow: #f9f9ed;
+  --badge-color-yellow: #e8bf30;
+  --badge-bg-orange: #f9f5ed;
+  --badge-color-orange: #e29a45;
+  --badge-bg-red: #fee;
+  --badge-color-red: #b83737;
 }
 
 html,

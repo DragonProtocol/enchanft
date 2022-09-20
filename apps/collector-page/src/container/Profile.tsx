@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 16:53:43
+ * @LastEditTime: 2022-09-19 11:29:37
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -43,7 +43,10 @@ import {
   setName as setNameForSlice,
   setIsLogin,
 } from '../features/user/accountSlice'
+import { ActionType } from '../types/entities'
+
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
+import DisconnectModal from '../components/ConnectBtn/DisconnectModal'
 import {
   FollowedCommunitityForEntity,
   selectAll as selectAllForFollowedCommunity,
@@ -65,6 +68,7 @@ import ButtonBase, { ButtonInfo, ButtonPrimary, ButtonWarning } from '../compone
 import IconTwitterWhite from '../components/common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
 import IconEmailWhite from '../components/common/icons/IconEmailWhite'
+import IconUnlink from '../components/common/icons/IconUnlink'
 import CardBox from '../components/common/card/CardBox'
 import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
 import IconMetamask from '../components/common/icons/IconMetamask'
@@ -72,9 +76,11 @@ import UserAvatar from '../components/business/user/UserAvatar'
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
 import { toast } from 'react-toastify'
 import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup'
-import { AVATAR_SIZE_LIMIT } from '../constants'
+import { AVATAR_SIZE_LIMIT, MOBILE_BREAK_POINT } from '../constants'
 import { useNavigate } from 'react-router-dom'
 import OverflowEllipsisBox from '../components/common/text/OverflowEllipsisBox'
+import { isMobile } from 'react-device-detect'
+import { getMultiavatarIdByUser } from '../utils/multiavatar'
 
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -115,6 +121,8 @@ const Profile: React.FC = () => {
   const [avatar, setAvatar] = useState(account.avatar || '')
   const [uploading, setUploading] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
+  const [modalShow, setModalShow] = useState(false)
+  const [accountType, setAccountType] = useState('twitter')
 
   const handleLogout = useCallback(async () => {
     if (account.pubkey) {
@@ -190,57 +198,121 @@ const Profile: React.FC = () => {
       }),
     )
   }, [phantomValid])
+  const renderUserBasicInfo = () => {
+    return (
+      <UserBasicInfoBox>
+        <UserNameRow>
+          <UserName>{account.name}</UserName>
+          <IconButton onClick={() => setOpenDialog(true)}>
+            <EditIcon />
+          </IconButton>
+          <LogoutBtn onClick={handleLogout}>Logout</LogoutBtn>
+        </UserNameRow>
+        <UserAddress>{account.pubkey}</UserAddress>
+      </UserBasicInfoBox>
+    )
+  }
+  const renderUserAccountList = () => {
+    return (
+      <UserAccountListBox>
+        <MetamaskBindBtn
+          onClick={() => {
+            if (accountMetamask) return
+            bindMetamask()
+          }}
+        >
+          <ConnectIconBox>
+            <IconMetamask />
+          </ConnectIconBox>
+          <BindBtnText>{accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}</BindBtnText>
+        </MetamaskBindBtn>
+        <PhantomBindBtn
+          onClick={() => {
+            if (accountPhantom) return
+            bindPhantom()
+          }}
+        >
+          <IconPhantomWhite />
+          <BindBtnText>{accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}</BindBtnText>
+        </PhantomBindBtn>
+        <TwitterBindBtn
+          isConnect={twitter}
+          onClick={() => {
+            if (twitter) {
+              setAccountType(ChainType.TWITTER)
+              setModalShow(true)
+            } else {
+              connectionSocialMedia('twitter')
+            }
+          }}
+        >
+          <IconTwitterWhite />
+          {twitter ? (
+            <>
+              <BindBtnText>{twitter}</BindBtnText>
+              <DisconnectBox>
+                <IconUnlink size="1.2rem" />
+              </DisconnectBox>
+            </>
+          ) : (
+            <BindBtnText>Connect Twitter</BindBtnText>
+          )}
+        </TwitterBindBtn>
+        <DiscordBindBtn
+          isConnect={discord}
+          onClick={() => {
+            if (discord) {
+              setAccountType(ChainType.DISCORD)
+              setModalShow(true)
+            } else {
+              connectionSocialMedia('discord')
+            }
+          }}
+        >
+          <IconDiscordWhite />
+          {discord ? (
+            <>
+              <BindBtnText>{discord}</BindBtnText>
+              <DisconnectBox>
+                <IconUnlink size="1.2rem" />
+              </DisconnectBox>
+            </>
+          ) : (
+            <BindBtnText>Connect Discord</BindBtnText>
+          )}
+        </DiscordBindBtn>
+        {/* <EmailBindBtn>
+          <IconEmailWhite />
+          {'Connect Email'}
+        </EmailBindBtn> */}
+      </UserAccountListBox>
+    )
+  }
+  const renderUserInfoPc = () => {
+    return (
+      <ProfileTopBox>
+        <UserImg src={account.avatar} multiavatarId={getMultiavatarIdByUser(account)} />
+        <TopRightBox>
+          {renderUserBasicInfo()}
+          {renderUserAccountList()}
+        </TopRightBox>
+      </ProfileTopBox>
+    )
+  }
+  const renderUserInfoMobile = () => {
+    return (
+      <ProfileTopBox>
+        <TopRightBox>
+          <UserImg src={account.avatar} multiavatarId={getMultiavatarIdByUser(account)} />
+          {renderUserBasicInfo()}
+        </TopRightBox>
+        {renderUserAccountList()}
+      </ProfileTopBox>
+    )
+  }
   return (
     <ProfileWrapper>
-      <ProfileTopBox>
-        <UserImg src={account.avatar} />
-        <TopCenterBox>
-          <UserNameRow>
-            <UserName>{account.name}</UserName>
-            <IconButton onClick={() => setOpenDialog(true)}>
-              <EditIcon />
-            </IconButton>
-          </UserNameRow>
-
-          <UserAddress>{account.pubkey}</UserAddress>
-          <UserAccountListBox>
-            <MetamaskBindBtn
-              onClick={() => {
-                if (accountMetamask) return
-                bindMetamask()
-              }}
-            >
-              <ConnectIconBox>
-                <IconMetamask />
-              </ConnectIconBox>
-
-              {accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}
-            </MetamaskBindBtn>
-            <PhantomBindBtn
-              onClick={() => {
-                if (accountPhantom) return
-                bindPhantom()
-              }}
-            >
-              <IconPhantomWhite />
-              {accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}
-            </PhantomBindBtn>
-            <TwitterBindBtn onClick={() => connectionSocialMedia('twitter')}>
-              <IconTwitterWhite />
-              {twitter || 'Connect Twitter'}
-            </TwitterBindBtn>
-            <DiscordBindBtn onClick={() => connectionSocialMedia('discord')}>
-              <IconDiscordWhite />
-              {discord || 'Connect Discord'}
-            </DiscordBindBtn>
-            {/* <EmailBindBtn>
-                  <IconEmailWhite />
-                  {'Connect Email'}
-                </EmailBindBtn> */}
-          </UserAccountListBox>
-        </TopCenterBox>
-        <LogoutBtn onClick={handleLogout}>Logout</LogoutBtn>
-      </ProfileTopBox>
+      {isMobile ? renderUserInfoMobile() : renderUserInfoPc()}
       <ProfileInfoTabsBox>
         <ButtonRadioGroupProfileTabs
           options={ProfileTabOptions}
@@ -294,7 +366,7 @@ const Profile: React.FC = () => {
                   <CircularProgress size="5rem" color="inherit" />
                   <p>Uploading Image</p>
                 </div>
-              )) || <EditAvatar src={avatar || account.avatar} />}
+              )) || <EditAvatar src={avatar || account.avatar} multiavatarId={getMultiavatarIdByUser(account)} />}
             </EditAvatarBox>
 
             <EditNameBox>
@@ -310,6 +382,7 @@ const Profile: React.FC = () => {
           </EditButtonBox>
         </EditProfileBox>
       </DialogBox>
+      <DisconnectModal modalShow={modalShow} setModalShow={setModalShow} type={accountType} />
     </ProfileWrapper>
   )
 }
@@ -322,54 +395,106 @@ const ProfileTopBox = styled(CardBox)`
   border: 4px solid #333333;
   display: flex;
   gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+  }
 `
 const LogoutBtn = styled(ButtonWarning)`
   font-weight: 700;
   font-size: 18px;
   height: 40px;
+  margin-left: auto;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+    padding: 5px 10px;
+  }
 `
 const UserImg = styled(UserAvatar)`
   width: 160px;
   height: 160px;
   object-fit: cover;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 80px;
+    height: 80px;
+  }
 `
-const TopCenterBox = styled.div`
+const TopRightBox = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 20px;
   justify-content: space-between;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: row;
+    gap: 10px;
+  }
+`
+const UserBasicInfoBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: space-between;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex: 1;
+    justify-content: start;
+    gap: 10px;
+    overflow: hidden;
+  }
 `
 const UserNameRow = styled.div`
   display: flex;
   align-items: center;
   gap: 25px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    gap: 5px;
+  }
 `
 const UserName = styled(OverflowEllipsisBox)`
   font-weight: 700;
   font-size: 36px;
   line-height: 54px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+    line-height: 30px;
+  }
 `
 const UserAddress = styled.div`
   font-size: 18px;
   line-height: 24px;
   color: rgba(51, 51, 51, 0.6);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 18px;
+    word-wrap: break-word;
+  }
 `
-
 const UserAccountListBox = styled.div`
   display: flex;
   gap: 10px;
+  flex-wrap: wrap;
 `
-const BindBtnBase = styled(ButtonBase)`
+const BindBtnBase = styled(ButtonBase)<{ isConnect?: string }>`
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: ${(props) => (props.isConnect ? '16px 8px 16px 18px' : '16px 18px')};
+  gap: 10px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    min-width: 40px;
+    height: 40px;
+    padding: 0;
+  }
+`
+const BindBtnText = styled.span`
   gap: 12px;
   font-size: 14px;
   color: #ffffff;
   font-weight: 700;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    display: none;
+  }
 `
 const MetamaskBindBtn = styled(BindBtnBase)`
   background: #f6851b;
@@ -383,11 +508,24 @@ const PhantomBindBtn = styled(BindBtnBase)`
 const TwitterBindBtn = styled(BindBtnBase)`
   background: #5368ed;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding: 8px;
+  }
 `
 
 const DiscordBindBtn = styled(BindBtnBase)`
   background: #5368ed;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding: 8px;
+  }
+`
+
+const DisconnectBox = styled.div`
+  display: flex;
+  align-items: center;
+  padding-left: 5px;
+  border-left: 1px solid rgba(255, 255, 255, 0.4);
 `
 const EmailBindBtn = styled(BindBtnBase)`
   background: #3dd606;
@@ -408,6 +546,11 @@ const ProfileInfoTabsBox = styled(CardBox)`
 const ButtonRadioGroupProfileTabs = styled(ButtonRadioGroup)`
   width: 400px;
   margin: 0 auto;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+    font-size: 12px;
+    line-height: 18px;
+  }
 `
 const ProfileTabContentBox = styled.div`
   margin-top: 20px;
@@ -428,8 +571,11 @@ const EditProfileBox = styled.div`
   flex-direction: column;
   gap: 20px;
   padding: 20px;
-
+  box-sizing: border-box;
   background: #f7f9f1;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: auto;
+  }
 `
 const EditProfileTitle = styled.div`
   font-weight: 700;
@@ -447,6 +593,10 @@ const EditAvatarBox = styled.div`
   width: 160px;
   height: 160px;
   position: relative;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 80px;
+    height: 80px;
+  }
   &:hover {
     cursor: pointer;
     &::before {
@@ -462,12 +612,21 @@ const EditAvatarBox = styled.div`
   & .uploading {
     text-align: center;
     padding-top: 20px;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      padding-top: 0;
+      font-size: 12px;
+      line-height: 18px;
+    }
   }
 `
 const EditAvatar = styled(UserAvatar)`
   width: 160px;
   height: 160px;
   object-fit: cover;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 80px;
+    height: 80px;
+  }
 `
 const EditNameBox = styled.div`
   margin-top: 20px;
@@ -515,4 +674,7 @@ const EditButtonBox = styled.div`
   display: flex;
   justify-content: end;
   gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    justify-content: space-between;
+  }
 `

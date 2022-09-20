@@ -7,7 +7,7 @@
  */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
-import { login, updateProfile, link, getProfile } from '../../services/api/login'
+import { login, updateProfile, link, unlink, getProfile } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
 import {
   DEFAULT_WALLET,
@@ -192,6 +192,29 @@ export const userLink = createAsyncThunk(
   },
 )
 
+export const userUnlink = createAsyncThunk(
+  'user/userUnlink',
+  async ({ type }: { type: string }, thunkAPI) => {
+    const resp = await unlink({
+      type,
+    })
+    return resp.data
+  },
+  {
+    condition: (params, { getState }) => {
+      const state = getState() as RootState
+      const {
+        account: { linkStatus },
+      } = state
+      // 之前的请求正在进行中,则阻止新的请求
+      if (linkStatus === AsyncRequestStatus.PENDING) {
+        return false
+      }
+      return true
+    },
+  },
+)
+
 export const userOtherWalletLink = createAsyncThunk(
   'user/otherWalletLink',
   async (
@@ -328,6 +351,15 @@ export const accountSlice = createSlice({
         state.linkStatus = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
         console.log('link failed: ', state, action)
+        toast.error(action.error.message)
+      })
+      ///////
+      .addCase(userUnlink.fulfilled, (state, action) => {
+        state.accounts = action.payload || []
+        toast.success('unlink ' + action.meta.arg.type + ' successfully!')
+      })
+      .addCase(userUnlink.rejected, (state, action) => {
+        console.log('unlink failed: ', state, action)
         toast.error(action.error.message)
       })
       ///////

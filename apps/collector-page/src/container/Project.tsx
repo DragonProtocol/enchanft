@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
-import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
+import { selectAccount } from '../features/user/accountSlice'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { OrbisComponent } from '@ecnft/orbis-component/'
 import {
@@ -10,84 +10,44 @@ import {
   selectProjectDetail,
   resetProjectDetailState,
 } from '../features/project/projectDetailSlice'
-import {
-  fetchCommunityContributionRanks,
-  selectAll as selectAllForCommunityContributionranks,
-} from '../features/community/contributionRanksSlice'
+
 import ProjectBasicInfo, {
   ProjectDetailBasicInfoDataViewType,
 } from '../components/business/project/ProjectDetailBasicInfo'
 import { AsyncRequestStatus } from '../types'
-import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice'
-import { follow as followCommunity, selectUserCommunityHandlesState } from '../features/user/communityHandlesSlice'
 import CardBox from '../components/common/card/CardBox'
-import ProjectDetailCommunity, {
-  ProjectDetailCommunityDataViewType,
-} from '../components/business/project/ProjectDetailCommunity'
 import ProjectDetailBasicInfo from '../components/business/project/ProjectDetailBasicInfo'
 import ExploreTaskList, { ExploreTaskListItemsType } from '../components/business/task/ExploreTaskList'
 import ProjectTeamMemberList, {
   ProjectTeamMemberListItemsType,
 } from '../components/business/project/ProjectTeamMemberList'
-import ContributionList, {
-  ContributionColumns,
-  ContributionListSize,
-} from '../components/business/contribution/ContributionList'
+import ContributionList from '../components/business/contribution/ContributionList'
 import RichTextBox from '../components/common/text/RichTextBox'
 import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
 import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import PngIconNotebook from '../components/common/icons/PngIconNotebook'
-import { ChainType, getChainType } from '../utils/chain'
 import { ButtonPrimary } from '../components/common/button/ButtonBase'
-import { selectIds as selectIdsByUserCheckinCommunity } from '../features/user/checkinCommunitiesSlice'
-import useCommunityCheckin from '../hooks/useCommunityCheckin'
+import useUserHandlesForCommunity from '../hooks/useUserHandlesForCommunity'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
 import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
-import { FollowStatusType } from '../components/business/community/CommunityFollowButton'
+import CommunityFollowButton, { FollowStatusType } from '../components/business/community/CommunityFollowButton'
+import { MOBILE_BREAK_POINT } from '../constants'
+import { isDesktop } from 'react-device-detect'
+import IconWebsite from '../components/common/icons/IconWebsite'
+import IconTwitterBlack from '../components/common/icons/IconTwitterBlack'
+import IconDiscordBlack from '../components/common/icons/IconDiscordBlack'
+import { getTwitterHomeLink } from '../utils/twitter'
 import { ORBIS_GROUP_ID } from '../constants'
-export enum ProjectParamsVisibleType {
-  CONTRIBUTION = 'contribution',
-}
+
 export enum ProjectInfoTabsValue {
   TEAM = 'team',
   ROADMAP = 'roadmap',
   REVIEWS = 'reviews',
 }
-// 处理社区基本信息
-const formatStoreDataToComponentDataByCommunityBasicInfo = (
-  data: ProjectDetailEntity,
-  followedCommunityIds: Array<string | number>,
-  followCommunityStatus: AsyncRequestStatus,
-  accountOperationType: AccountOperationType,
-  accountOperationDesc: string,
-): ProjectDetailCommunityDataViewType | null => {
-  const { community } = data
-  if (!community) return null
-  const viewConfig = {}
-  let followStatusType = FollowStatusType.UNKNOWN
-  //  账户未绑定
-  if (accountOperationType !== AccountOperationType.COMPLETED) {
-    followStatusType = FollowStatusType.ACCOUNT_OPERATION
-    // Object.assign(viewConfig, { followBtnText: accountOperationDesc })
-  } else {
-    const isFollowed = followedCommunityIds.map((item) => String(item)).includes(String(community.id))
-    if (isFollowed) {
-      followStatusType = FollowStatusType.FOLLOWED
-    } else if (followCommunityStatus === AsyncRequestStatus.PENDING) {
-      followStatusType = FollowStatusType.FOLLOWING
-    } else {
-      followStatusType = FollowStatusType.FOLLOW
-    }
-  }
-  Object.assign(viewConfig, { followStatusType })
-  return {
-    data: community,
-    viewConfig,
-  }
-}
+
 // project basic info
 const formatStoreDataToComponentDataByProjectBasicInfo = (
   data: ProjectDetailEntity,
@@ -135,7 +95,6 @@ const Project: React.FC = () => {
   const dispatchFetchDetail = useCallback(() => projectSlug && dispatch(fetchProjectDetail(projectSlug)), [projectSlug])
   const [loadingView, setLoadingView] = useState(true)
   const { isCreator, checkProjectAllowed } = usePermissions()
-  const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
 
   const orbis_channel_id = 'kjzl6cwe1jw1497bb8n9s37seryr027ca9qubg75bnar12zkk91zi5rqlebv4rz'
 
@@ -157,19 +116,17 @@ const Project: React.FC = () => {
     }
   }, [loadingView, status])
 
-  // 按钮执行前要对账户进行的操作
-  const { accountOperationType, accountOperationDesc, handleAccountOperation } = useAccountOperationForChain(
-    data?.chainId,
-  )
   // 获取社区贡献等级
   const { contributionranks } = useContributionranks(projectSlug)
 
-  // 用户关注的社区ID集合
-  const userFollowedCommunityIds = useAppSelector(selectIdsByUserFollowedCommunity)
+  // 用户在此社区的相关操作信息
+  const { handlesState, isFollowed, handleFollow, isVerifiedCheckin, isCheckedin, handleCheckin, checkinData } =
+    useUserHandlesForCommunity(data?.communityId, projectSlug)
 
-  // 社区签到
-  const { isVerifiedCheckin, isCheckedin, handleCheckin, checkinState, checkinData, openClaimModal } =
-    useCommunityCheckin(data?.communityId, projectSlug)
+  // 用户在社区执行相关操作前检查账户绑定情况
+  const { accountOperationType, accountOperationDesc, handleAccountOperation } = useAccountOperationForChain(
+    data?.chainId,
+  )
 
   // tabs
   // const ProjectInfoTabs = [
@@ -199,23 +156,6 @@ const Project: React.FC = () => {
     return <MainInnerStatusBox>Can't find project {projectSlug}</MainInnerStatusBox>
   }
 
-  // 关注社区
-  const { communityId } = data
-  const { status: followCommunityStatus } = followCommunityState
-  const handleFollow = () => {
-    if (communityId) {
-      dispatch(followCommunity({ id: Number(communityId) }))
-    }
-  }
-
-  const communityDataView = formatStoreDataToComponentDataByCommunityBasicInfo(
-    data,
-    userFollowedCommunityIds,
-    followCommunityStatus,
-    accountOperationType,
-    accountOperationDesc,
-  )
-
   const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data)
   const showContributionranks = contributionranks.slice(0, 5)
   const contributionMembersTotal = contributionranks.length
@@ -228,16 +168,40 @@ const Project: React.FC = () => {
   //   // [ProjectInfoTabsValue.REVIEWS]: <span>Not yet developed</span>,
   // }
 
+  const { follow, checkin } = handlesState
+  // 关注社区
+  const { status: followCommunityStatus } = follow
+  // 检查账户绑定情况，关注按钮呈现不同视图
+  const { community } = data
+  let followStatusType: FollowStatusType | null = null
+  if (isFollowed) {
+    // 已关注
+    followStatusType = FollowStatusType.FOLLOWED
+  } else if (followCommunityStatus === AsyncRequestStatus.PENDING) {
+    // 正在执行关注
+    followStatusType = FollowStatusType.FOLLOWING
+  } else if (accountOperationType !== AccountOperationType.BIND_UNKNOWN) {
+    if (accountOperationType !== AccountOperationType.COMPLETED) {
+      //  账户未绑定
+      followStatusType = FollowStatusType.ACCOUNT_OPERATION
+    } else {
+      // 可关注
+      followStatusType = FollowStatusType.FOLLOW
+    }
+  }
+
   //进入ranks页面，如果符合条件就自动关注
+  const allowFollow = followStatusType === FollowStatusType.FOLLOW
   const startContribute = () => {
     navigate(`/${projectSlug}/rank`)
-    if (communityDataView && communityDataView.viewConfig?.followStatusType === FollowStatusType.FOLLOW) handleFollow()
+    if (allowFollow) handleFollow()
   }
 
   // 社区签到
-  const displayCheckin = isLogin && !isCheckedin && isVerifiedCheckin
-  const loadingCheckin = checkinState.status === AsyncRequestStatus.PENDING
+  const displayCheckin = isLogin && isFollowed && !isCheckedin && isVerifiedCheckin
+  const loadingCheckin = checkin.status === AsyncRequestStatus.PENDING
   const disabledCheckin = loadingCheckin || isCheckedin
+
   return (
     <ProjectWrapper>
       <ProjectLeftBox>
@@ -246,13 +210,38 @@ const Project: React.FC = () => {
             {data.image && <ProjectImage src={data.image} />}
             <ProjectLeftInfoTopRight>
               <ProjectName>{data.name}</ProjectName>
-              {communityDataView && (
-                <ProjectDetailCommunity
-                  data={communityDataView.data}
-                  viewConfig={communityDataView.viewConfig}
-                  onFollow={handleFollow}
-                  onAccountOperation={handleAccountOperation}
-                />
+              {community && (
+                <ProjectCommunityBox>
+                  <CommunityLeftBox>
+                    {community.website && (
+                      <ProjectLink href={community.website} target="_blank" rel="noopener noreferrer">
+                        <IconWebsite />
+                      </ProjectLink>
+                    )}
+                    {community.twitterName && (
+                      <ProjectLink
+                        href={getTwitterHomeLink(community.twitterName)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <IconTwitterBlack />
+                      </ProjectLink>
+                    )}
+
+                    {community.discordInviteUrl && (
+                      <ProjectLink href={community.discordInviteUrl} target="_blank" rel="noopener noreferrer">
+                        <IconDiscordBlack />
+                      </ProjectLink>
+                    )}
+                  </CommunityLeftBox>
+                  {!!followStatusType && (
+                    <FollowBtn
+                      followStatusType={followStatusType}
+                      onFollow={handleFollow}
+                      onAccountOperation={handleAccountOperation}
+                    />
+                  )}
+                </ProjectCommunityBox>
               )}
             </ProjectLeftInfoTopRight>
           </ProjectLeftInfoTop>
@@ -270,7 +259,7 @@ const Project: React.FC = () => {
             items={showContributionranks}
             membersTotal={contributionMembersTotal}
             displayMore={true}
-            moreText="Join and start contributing"
+            moreText={allowFollow ? 'Join and start contributing' : 'Start contributing'}
             onMore={startContribute}
           />
         </ContributionListBox>
@@ -282,7 +271,7 @@ const Project: React.FC = () => {
           <ExploreTaskListBox>
             <ExploreTaskList
               items={tasks}
-              displayCreateTask={isCreator && checkProjectAllowed(Number(data.id))}
+              displayCreateTask={isDesktop && isCreator && checkProjectAllowed(Number(data.id))}
               maxColumns={3}
               onCreateTask={() => {
                 navigate(
@@ -328,7 +317,7 @@ const Project: React.FC = () => {
           </CommunityCheckinBtn>
         </CommunityCheckinFloatingWindow>
       )}
-      <CommunityCheckedinClaimModal open={openClaimModal} data={checkinData} />
+      <CommunityCheckedinClaimModal open={!!checkin.openClaimModal} data={checkinData} />
     </ProjectWrapper>
   )
 }
@@ -336,6 +325,9 @@ export default Project
 const ProjectWrapper = styled.div`
   display: flex;
   gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+  }
 `
 const CommunityCheckinFloatingWindow = styled.div`
   position: fixed;
@@ -369,6 +361,9 @@ const CommunityCheckinBtn = styled(ButtonPrimary)`
 const ProjectLeftBox = styled.div`
   flex-shrink: 0;
   width: 420px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+  }
 `
 const ProjectLeftInfo = styled(CardBox)`
   display: flex;
@@ -379,24 +374,67 @@ const ProjectLeftInfo = styled(CardBox)`
 const ProjectLeftInfoTop = styled.div`
   display: flex;
   gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    gap: 10px;
+  }
 `
 const ProjectImage = styled.img`
   width: 140px;
   height: 140px;
   border-radius: 10px;
   object-fit: cover;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100px;
+    height: 100px;
+  }
 `
 const ProjectLeftInfoTopRight = styled.div`
   flex: 1;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 `
+const ProjectCommunityBox = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+const CommunityLeftBox = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
+`
+const ProjectLink = styled.a`
+  svg {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+  }
+`
+const FollowBtn = styled(CommunityFollowButton)`
+  width: 100px;
+  height: 40px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 70px;
+    height: 30px;
+    font-size: 16px;
+    line-height: 24px;
+  }
+`
 const ProjectName = styled.div`
+  width: 100%;
   font-weight: 700;
   font-size: 24px;
   line-height: 36px;
   color: #333333;
+  word-wrap: break-word;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+    line-height: 30px;
+  }
 `
 
 const ProjectRightBox = styled.div`

@@ -28,6 +28,7 @@ import ConnectModal from './ConnectModal'
 import ConnectWalletModal from './ConnectWalletModal'
 import { ButtonPrimary } from '../common/button/ButtonBase'
 import UserAvatar from '../business/user/UserAvatar'
+import { getMultiavatarIdByUser } from '../../utils/multiavatar'
 
 export default function ConnectBtn() {
   const navigate = useNavigate()
@@ -86,7 +87,7 @@ export default function ConnectBtn() {
         //   )}
         // </PopupState>
         <ConnectBtnWrapper onClick={() => navigate('/profile')}>
-          <UserAvatar src={account.avatar} />
+          <UserAvatar src={account.avatar} multiavatarId={getMultiavatarIdByUser(account)} />
           {account.name || shortPubkey}
         </ConnectBtnWrapper>
       )) || (

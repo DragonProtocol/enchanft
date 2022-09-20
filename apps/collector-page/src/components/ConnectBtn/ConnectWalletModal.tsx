@@ -28,6 +28,8 @@ import PngIconCongratulate from '../common/icons/PngIconCongratulate'
 import IconPhantom from '../common/icons/IconPhantomWhite'
 import { AsyncRequestStatus } from '../../types'
 import styled from 'styled-components'
+import { isMobile } from 'react-device-detect'
+import { MOBILE_BREAK_POINT } from '../../constants'
 
 enum LoginStatus {
   INIT = 'init',
@@ -102,8 +104,9 @@ export default function ConnectWalletModal() {
     const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
     if (accountPhantom && accountMetamask && twitter && discord) return
 
+    localStorage.setItem(`after-guide`, window.location.pathname)
     navigate('/guide')
-  }, [account])
+  }, [account, navigate])
 
   const handleSign = async (data: { walletType: TokenType; pubkey: string; signature: string }) => {
     setSignDone(true)
@@ -111,7 +114,9 @@ export default function ConnectWalletModal() {
     // dispatch(setDefaultWallet(walletType))
     dispatch(setPubkey(data.pubkey))
     handleClose()
-    navigateToGuide()
+    setTimeout(() => {
+      navigateToGuide()
+    }, 2000)
   }
 
   const signerRef = useRef<() => Promise<any>>()
@@ -292,7 +297,7 @@ export default function ConnectWalletModal() {
             top: '40%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: 384,
+            width: isMobile ? 335 : 384,
             bgcolor: 'background.paper',
             boxShadow: 24,
             py: '20px',
@@ -325,7 +330,7 @@ export default function ConnectWalletModal() {
             top: '40%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: '540px',
+            width: isMobile ? '335px' : '540px',
             boxShadow: 24,
             px: 0,
             background: '#F7F9F1',
@@ -362,7 +367,7 @@ export default function ConnectWalletModal() {
               )
             }
             console.log('account.status', account.status)
-            if (account.status == AsyncRequestStatus.FULFILLED) {
+            if (account.status == AsyncRequestStatus.FULFILLED || account.status == AsyncRequestStatus.IDLE) {
               setTimeout(resetStatus, 2500)
               return (
                 <ModalBox className="welcome">
@@ -418,12 +423,19 @@ const ModalBox = styled.div`
     font-size: 16px;
     line-height: 24px;
     color: #333333;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      font-size: 14px;
+      line-height: 21px;
+    }
   }
 
   & .btns {
     display: flex;
     gap: 20px;
     justify-content: end;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      justify-content: space-between;
+    }
     & button {
       padding: 10px 18px;
       gap: 10px;
@@ -435,6 +447,10 @@ const ModalBox = styled.div`
       font-size: 18px;
       line-height: 27px;
       color: #ffffff;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 16px;
+        line-height: 24px;
+      }
     }
     & .close {
       background: #ebeee4;
@@ -523,6 +539,10 @@ const ConnectBox = styled(Box)`
       width: 50%;
       width: 160px;
       height: 160px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        width: 138px;
+        height: 138px;
+      }
       /* padding: 10px; */
       text-align: center;
       color: #fff;
@@ -532,6 +552,10 @@ const ConnectBox = styled(Box)`
       & svg {
         width: 50px;
         height: 50px;
+        @media (max-width: ${MOBILE_BREAK_POINT}px) {
+          width: 60px;
+          height: 60px;
+        }
       }
       & p {
         margin: 10px;
@@ -544,6 +568,10 @@ const ConnectBox = styled(Box)`
           font-size: 18px;
           line-height: 27px;
           color: #ffffff;
+          @media (max-width: ${MOBILE_BREAK_POINT}px) {
+            font-size: 14px;
+            line-height: 21px;
+          }
         }
       }
 

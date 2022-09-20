@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 17:43:25
+ * @LastEditTime: 2022-09-15 19:13:03
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -55,12 +55,18 @@ import ButtonBase, { ButtonInfo } from '../components/common/button/ButtonBase'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import { toast } from 'react-toastify'
 import IconShare from '../components/common/icons/IconShare'
-import { SHARE_EVENT_TWEET_CONTENTS, TASK_PARTICIPANTS_DISPLAY_MIN_NUM, TASK_SHARE_URI } from '../constants'
+import {
+  MOBILE_BREAK_POINT,
+  SHARE_EVENT_TWEET_CONTENTS,
+  TASK_PARTICIPANTS_DISPLAY_MIN_NUM,
+  TASK_SHARE_URI,
+} from '../constants'
 import { tweetShare } from '../utils/twitter'
 import useTimeCountdown from '../hooks/useTimeCountdown'
 import TimeCountdown from '../components/common/time/TimeCountdown'
 import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
 import TaskDetailParticipants from '../components/business/task/TaskDetailParticipants'
+import { isDesktop, isMobile } from 'react-device-detect'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   takeTaskState: TaskHandle<TakeTaskParams>,
@@ -240,15 +246,18 @@ const Task: React.FC = () => {
       <TaskDetailBodyBox>
         {data?.status === TaskTodoCompleteStatus.CLOSED && (
           <TaskDetailBodyMainBanner>
-            <PngIconForbidden size="20px" /> Whitelist Closed!
+            <PngIconForbidden size="20px" /> Task Closed!
           </TaskDetailBodyMainBanner>
         )}
 
         <TaskDetailBodyMainBox>
           <TaskDetailHeaderBox>
-            <ButtonNavigation onClick={handleLeave}>
-              <IconCaretLeft />
-            </ButtonNavigation>
+            {isDesktop && (
+              <ButtonNavigation onClick={handleLeave}>
+                <IconCaretLeft />
+              </ButtonNavigation>
+            )}
+
             <TaskName>{name}</TaskName>
             {/* <CopyToClipboard text={taskShareUrl} onCopy={() => toast.success('Link copied.')}>
                 <ShareButton>
@@ -260,7 +269,7 @@ const Task: React.FC = () => {
               <IconShare size="16px" />
             </ShareButton>
 
-            {project && checkProjectAllowed(Number(project.id)) && isCreator && (
+            {isDesktop && project && checkProjectAllowed(Number(project.id)) && isCreator && (
               <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
             )}
           </TaskDetailHeaderBox>
@@ -274,7 +283,7 @@ const Task: React.FC = () => {
               <TaskImage src={image} />
               <TaskDetailContent data={data} />
             </TaskDetailContentBoxLeft>
-            <TaskDetailContentDividingLine />
+            {isDesktop && <TaskDetailContentDividingLine />}
             <TaskDetailContentBoxRight>
               {winnerList.length > 0 ? (
                 <TaskListBox>
@@ -321,11 +330,14 @@ const Task: React.FC = () => {
                 </>
               )}
               {displayParticipants && (
-                <TaskDetailParticipants
-                  items={participants?.userDetails || []}
-                  takers={participants?.takers || 0}
-                  finishers={participants?.finishers || 0}
-                />
+                <>
+                  {isMobile && <TaskDetailContentHorizontalDividingLine />}
+                  <TaskDetailParticipants
+                    items={participants?.userDetails || []}
+                    takers={participants?.takers || 0}
+                    finishers={participants?.finishers || 0}
+                  />
+                </>
               )}
             </TaskDetailContentBoxRight>
           </TaskDetailContentBox>
@@ -355,6 +367,10 @@ const TaskDetailBodyMainBox = styled.div`
   padding: 40px;
   padding-bottom: 0px;
   box-sizing: border-box;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding: 20px;
+    padding-bottom: 0px;
+  }
 `
 const TaskDetailHeaderBox = styled.div`
   display: flex;
@@ -367,16 +383,27 @@ const TaskName = styled.div`
   font-size: 36px;
   line-height: 40px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+    line-height: 30px;
+  }
 `
 const ProjectNameBox = styled.div`
   padding-top: 5px;
   padding-left: 70px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding-left: 0px;
+  }
 `
 const ProjectName = styled.span`
   font-size: 20px;
   line-height: 30px;
   color: #3dd606;
   cursor: pointer;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+    line-height: 21px;
+  }
 `
 const ShareButton = styled(ButtonInfo)`
   width: 48px;
@@ -406,6 +433,10 @@ const TaskImage = styled(TaskImageDefault)`
   object-fit: cover;
   margin-bottom: 26px;
   border-radius: 10px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    height: 138px;
+    margin-bottom: 20px;
+  }
 `
 
 const TaskDetailContentBox = styled.div`
@@ -415,9 +446,19 @@ const TaskDetailContentBox = styled.div`
   gap: 40px;
   border-top: solid 2px #333333;
   box-sizing: border-box;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+    gap: 20px;
+    border-top: none;
+    margin-top: 0;
+  }
 `
 const TaskDetailContentDividingLine = styled.div`
   width: 2px;
+  background: #333333;
+`
+const TaskDetailContentHorizontalDividingLine = styled.div`
+  height: 2px;
   background: #333333;
 `
 const TaskDetailContentBoxLeft = styled.div`
@@ -426,6 +467,9 @@ const TaskDetailContentBoxLeft = styled.div`
   overflow: hidden;
   padding-top: 20px;
   padding-bottom: 40px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding-bottom: 0;
+  }
 `
 const TaskDetailContentBoxRight = styled.div`
   flex: 1;
@@ -435,6 +479,11 @@ const TaskDetailContentBoxRight = styled.div`
   gap: 40px;
   padding-top: 20px;
   padding-bottom: 40px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding-top: 0px;
+    padding-bottom: 20px;
+    gap: 20px;
+  }
 `
 const TaskListBox = styled.div`
   width: 100%;
@@ -445,6 +494,11 @@ const TaskListBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    background: none;
+    border-radius: 0px;
+    padding: 0px;
+  }
 `
 const TaskStartCountdownBox = styled.div`
   display: flex;
