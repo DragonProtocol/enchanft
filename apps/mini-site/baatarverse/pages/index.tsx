@@ -8,7 +8,12 @@ import Header from '../components/header';
 export function Index() {
   const [isMute, setIsMute] = useState(true);
 
-  const renderProfile = (imgPath: string, name: string, position: string,className?:string) => (
+  const renderProfile = (
+    imgPath: string,
+    name: string,
+    position: string,
+    className?: string
+  ) => (
     <div className={`profile-item ${className}`}>
       <div className="profile">
         <Image
@@ -37,57 +42,64 @@ export function Index() {
       </div>
 
       <div className="nav-box">
-        <span className='twitter'>
-        <Image
-          src={'/static/images/twitter.png'}
-          width={24}
-          height={24}
-          layout="fixed"
-          // objectFit='cover'
-          alt={'basic'}
-        />
+        <span className="twitter nav-item">
+          <Image
+            src={'/static/images/twitter.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
         </span>
-        <Image
-          src={'/static/images/discord.png'}
-          width={24}
-          height={24}
-          layout="fixed"
-          // objectFit='cover'
-          alt={'basic'}
-        />
-        <Image
-          src={'/static/images/instagram.png'}
-          width={24}
-          height={24}
-          layout="fixed"
-          // objectFit='cover'
-          alt={'basic'}
-        />
-        <Image
-          src={'/static/images/OpenSea.png'}
-          width={24}
-          height={24}
-          layout="fixed"
-          // objectFit='cover'
-          alt={'basic'}
-        />
-        <Image
-          src={'/static/images/wl_xyz.png'}
-          width={58}
-          height={24}
-          layout="fixed"
-          // objectFit='cover'
-          alt={'basic'}
-        />
-        <Image
-          src={'/static/images/more.png'}
-          width={24}
-          height={24}
-          layout="fixed"
-          // objectFit='cover'
-          alt={'basic'}
-        />
+        <div className="nav-item">
+          <Image
+            src={'/static/images/discord.png'}
+            layout="fill"
+            objectFit="contain"
+            // objectFit='cover'
+            alt={'basic'}
+          />
+        </div>
+        <div className="nav-item">
+          <Image
+            src={'/static/images/instagram.png'}
+            layout="fill"
+            objectFit="contain"
+            // objectFit='cover'
+            alt={'basic'}
+          />
+        </div>
+
+        <div className="nav-item">
+          <Image
+            src={'/static/images/OpenSea.png'}
+            layout="fill"
+            objectFit="contain"
+            // objectFit='cover'
+            alt={'basic'}
+          />
+        </div>
+
+        <div className="nav-item wl-xyz">
+          <Image
+            src={'/static/images/wl_xyz.png'}
+            layout="fill"
+            // objectFit="contain"
+            // objectFit='cover'
+            alt={'basic'}
+          />
+        </div>
+
+        <div className="nav-item">
+          <Image
+            src={'/static/images/more.png'}
+            layout="fill"
+            objectFit="contain"
+            // objectFit='cover'
+            alt={'basic'}
+          />
+        </div>
       </div>
+
       <div className="cloud">
         <Image
           src={'/static/images/cloud.png'}
@@ -114,6 +126,7 @@ export function Index() {
           alt={'basic'}
         />
       </div>
+
       <div className="title text">
         CaskBaatar is a perfect combination of whisky investment and art
         collection.
@@ -136,14 +149,18 @@ export function Index() {
         representation of tradition and future.
       </div>
 
-      <div className="avatar-loop">
+      <div className="avatar-loop-box">
+        <div className='avatar-loop'>
         <Image
           src={'/static/images/avatar_loop.png'}
           layout="fill"
           objectFit="contain"
-          objectPosition={'-110px 55px'}
+          // objectPosition={'-110px 35vw'}
+          // objectPosition={'-110px 95px'}
           alt={'basic'}
         />
+        </div>
+        <div className='avatar-loop-front'>
         <Image
           src={'/static/images/avatar_loop_front.png'}
           layout="fill"
@@ -152,6 +169,7 @@ export function Index() {
 
           alt={'basic'}
         />
+        </div>
       </div>
 
       <div className="contract title-img">
@@ -166,13 +184,28 @@ export function Index() {
       <div className="contract-wrapper">
         <div className="contract-row row">
           <div className="contract-box">
-            1
+            Our technical team comes from EnchaNFT Company in Singapore, and we
+            use the ERC721 smart contract.
+            <br />
+            <br />
+            After your mint on our official website, 70% of the amount will be
+            stored in the contract, and the remaining 30% will be transferred to
+            the managing team for the operation of the project.
             <div className="dot-box">
               <i className="dot" />
             </div>
           </div>
           <div className="contract-box">
-            2
+            At the same time, the estimated bottling time and conversion time of
+            the whisky will also be announced.  Our technical team comes from
+            EnchaNFT Company in Singapore, and we use the ERC721 smart contract.
+            <br />
+            <br />
+            NFT holders will visit the official website for conversion within
+            the agreed time. After that, 70% of the crypto in the NFT will be
+            transferred to the managing team. You can also destroy the NFT
+            before the end of conversion time and get back the 70% amount
+            without the whisky.
             <div className="dot-box">
               <i className="dot" />
               <i className="dot" />
@@ -181,7 +214,15 @@ export function Index() {
         </div>
         <div className="contract-row row">
           <div className="contract-box">
-            3
+            Generally, the conversion time of whisky will last one year. If you
+            neither destroy nor convert the NFT during that, you will lose your
+            right to convert. At the same time, the managing team will gain the
+            70% amount in the NFT.
+            <br />
+            <br />
+            Since the whisky bound to CaskBaatar NFT has very good aging
+            potential, we usually bottle them within three to five years after
+            the release of NFT. 
             <div className="dot-box">
               <i className="dot" />
               <div className="dot-row row">
@@ -191,7 +232,13 @@ export function Index() {
             </div>
           </div>
           <div className="contract-box">
-            4
+            During this period, the holders can trade the NFT, when the crypto
+            in it at the time of minting would be transferred to the buyer. 
+            <br />
+            <br />
+            After bottling, we will deliver the whisky to you according to the
+            address you provided. After conversion, you still own all other
+            rights in the NFT artwork.
             <div className="dot-box">
               <div className="dot-row row">
                 <i className="dot" />
@@ -314,7 +361,7 @@ export function Index() {
             )}
           </div>
           <div className="row">
-          {renderProfile(
+            {renderProfile(
               '/static/images/Katie.png',
               'Katie',
               'Marketing Manager'
@@ -326,14 +373,14 @@ export function Index() {
             )}
           </div>
           <div className="row">
-          {renderProfile(
+            {renderProfile(
               '/static/images/Ken.png',
               'Mr.Ken',
               'Professional Cask Selector'
             )}
           </div>
           <div className="row">
-          {renderProfile(
+            {renderProfile(
               '/static/images/Wl.png',
               'EnchaNFT (wl.xyz)',
               'A group of experienced web3 veterans, building tools and infrastructure for the NFT ecosystem. Our members are from Tsinghua, the National University of Singapore, UPenn, INSEAD, Bitmain, and Binance.',
@@ -341,6 +388,15 @@ export function Index() {
             )}
           </div>
         </div>
+      </div>
+
+      <div className="bg-bottom">
+        <Image
+          src={'/static/images/bg-bottom.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
       </div>
 
       <div className="faq title-img">
@@ -352,22 +408,37 @@ export function Index() {
         />
       </div>
 
-      <div className='faq-box'>
-        <div className='faq-item'>
-          <div className='ques'>Sounds awesome - How do I get involved?</div>
-          A great place to start is our Discord, home to a very large and very active community of CaskBaatar enthusiasts. You don't need to be a CaskBaatar holder to join us there! All are welcome to jump into the conversation, let us know your ideas, and hang out with many others who like the CaskBaatars.
+      <div className="faq-box">
+        <div className="faq-item">
+          <div className="ques">Sounds awesome - How do I get involved?</div>A
+          great place to start is our Discord, home to a very large and very
+          active community of CaskBaatar enthusiasts. You don't need to be a
+          CaskBaatar holder to join us there! All are welcome to jump into the
+          conversation, let us know your ideas, and hang out with many others
+          who like the CaskBaatars.
         </div>
-        <div className='faq-item'>
-          <div className='ques'>Is CaskBaatar a good investment?</div>
-          The success of the project depends on many factors. We do not have the magic to predict, so it is impossible to know how it will go, but we strongly believe in our project and think it has a bright future ahead, but ultimately you will have to decide for yourself.
+        <div className="faq-item">
+          <div className="ques">Is CaskBaatar a good investment?</div>
+          The success of the project depends on many factors. We do not have the
+          magic to predict, so it is impossible to know how it will go, but we
+          strongly believe in our project and think it has a bright future
+          ahead, but ultimately you will have to decide for yourself.
         </div>
-        <div className='faq-item'>
-          <div className='ques'>If I also like NFT and am a single cask whisky collector, can I contact you?</div>
-          Of course. Provide your relevant information, make an invoice in the community and contact us, and we will explore interesting things together.
+        <div className="faq-item">
+          <div className="ques">
+            If I also like NFT and am a single cask whisky collector, can I
+            contact you?
+          </div>
+          Of course. Provide your relevant information, make an invoice in the
+          community and contact us, and we will explore interesting things
+          together.
         </div>
-        <div className='faq-item'>
-          <div className='ques'>Can I use the picture commercially after purchasing it?</div>
-          Yes, you can use the image of CaskBaatar owned by you for commercial purpose. However, you are not allowed to modify the image.
+        <div className="faq-item">
+          <div className="ques">
+            Can I use the picture commercially after purchasing it?
+          </div>
+          Yes, you can use the image of CaskBaatar owned by you for commercial
+          purpose. However, you are not allowed to modify the image.
         </div>
       </div>
 
@@ -411,7 +482,8 @@ export default Index;
 
 const Wrapper = styled.div`
   width: 100vw;
-  min-height: 18000px;
+  min-height: 1800px;
+  /* min-height: 18000px; */
   background-image: url('/static/images/background-clip.png');
   background-repeat: no-repeat;
   background-color: #071726;
@@ -424,28 +496,85 @@ const Wrapper = styled.div`
     top: 10px;
     left: 0px;
   }
-  .nav-box{
+
+  .nav-box {
     white-space: nowrap;
     position: absolute;
-    top: 200px;
+    top: 36vw;
     left: 50%;
+    width: 80%;
+    justify-content: center;
+    align-items: center;
+    display: flex;
     transform: translateX(-50%);
     z-index: 2;
-    .twitter{
+    .twitter {
       filter: grayscale(0%) brightness(55%);
-
     }
-    span{
+    span {
       margin-left: 20px !important;
       cursor: pointer;
-      &:hover{
+      &:hover {
         filter: grayscale(100%) brightness(200%) !important;
       }
     }
+    .nav-item {
+      width: 42px;
+      height: 42px;
+      
+      /* max-width: 62px;
+      max-height: 62px; */
+      /* object-fit: cover; */
+      position: relative;
+      
+    }
+    .wl-xyz{
+        width: 42px;
+        height: 22px;
+      }
     & > * + * {
       margin-left: 10px;
     }
+    @media (min-width: 700px) {
+      .nav-item {
+
+      width: 52px;
+      height: 52px;
+      }
+      .wl-xyz{
+        width: 52px;
+        height: 32px;
+      }
+    }
+    
+    @media (min-width: 850px) {
+      .nav-item {
+
+      width: 62px;
+      height: 62px;
+      }
+      .wl-xyz{
+        width: 72px;
+        height: 42px;
+      }
+      & > * + * {
+        margin-left: 20px;
+      }
+    }
+    
+
+
+    @media (min-width: 1600px) {
+      .nav-item {
+        width: 72px;
+        height: 72px;
+      }
+      & > * + * {
+        margin-left: 20px;
+      }
+    }
   }
+
   .cloud {
     width: 120%;
     margin-left: -10vw;
@@ -460,16 +589,26 @@ const Wrapper = styled.div`
     width: 80%;
     height: 309px;
     margin: 0 auto;
-    margin-top: -60vmin;
+    margin-top: -60vw;
+    /* margin-top: -60vmin; */
     /* margin-top: -60vmin; */
     position: relative;
+    @media (min-width: 700px) {
+      margin-top: -40vw;
+    }
   }
 
   .home {
     position: relative;
-    margin-top: 25vw;
-    margin-bottom: 50px;
+    margin-top: 12vw;
+    margin-bottom: 30px;
     height: 50px;
+    @media (min-width: 1200px) {
+      margin-top: 17vw;
+    }
+    @media (min-width: 1400px) {
+      margin-top: 20vw;
+    }
   }
 
   .title-img {
@@ -479,8 +618,15 @@ const Wrapper = styled.div`
 
   .text {
     width: 80%;
+    max-width: 1024px;
     color: white;
+    /* font-size: 13px; */
     margin: 0 auto;
+  }
+
+  .title {
+    font-size: 16px;
+    font-weight: bolder;
   }
 
   .contract-wrapper {
@@ -489,7 +635,7 @@ const Wrapper = styled.div`
     margin: 0 auto;
     margin-top: 50px;
     max-width: 1024px;
-    &::before {
+    /* &::before {
       content: '';
       background: white;
       width: 100%;
@@ -498,7 +644,7 @@ const Wrapper = styled.div`
       top: 50%;
       left: 0;
       transform: translateY(-50%);
-    }
+    } */
     &::after {
       content: '';
       background: white;
@@ -515,8 +661,13 @@ const Wrapper = styled.div`
     display: flex;
     /* align-items: center; */
   }
+
+  .contract {
+    margin-top: 50px;
+  }
+
   .contract-row {
-    height: 200px;
+    min-height: 200px;
     color: white;
     & > div {
       width: 50%;
@@ -526,6 +677,8 @@ const Wrapper = styled.div`
       position: absolute;
       right: 15px;
       bottom: -20px;
+      /* bottom: 15px; */
+      /* bottom: -20px; */
       display: flex;
       flex-wrap: wrap;
       & > * + * {
@@ -548,25 +701,27 @@ const Wrapper = styled.div`
       border-radius: 50%;
     }
     &:nth-child(1) {
-      padding-bottom: 30px;
+      padding-bottom: 35px;
+      /* margin-bottom: 30px; */
+      border-bottom: 2.5px solid white;
       & > div:nth-of-type(1) {
         padding-right: 15px;
+        /* padding-bottom: 30px; */
       }
       & > div:nth-of-type(2) {
         padding-left: 15px;
-
+        /* padding-bottom: 30px; */
         .dot-box {
           left: 15px;
         }
       }
     }
     &:nth-child(2) {
-      padding-top: 35px;
+      padding-top: 45px;
       & > div:nth-of-type(1) {
         padding-right: 15px;
-
         .dot-box {
-          top: -25px;
+          top: -35px;
           right: 9px;
           flex-direction: column;
           align-items: center;
@@ -576,7 +731,7 @@ const Wrapper = styled.div`
         padding-left: 15px;
 
         .dot-box {
-          top: -25px;
+          top: -35px;
           left: 15px;
           flex-direction: column;
           margin-top: -5px;
@@ -584,14 +739,40 @@ const Wrapper = styled.div`
       }
     }
   }
-  .avatar-loop {
-    width: calc(100% + 150px);
-    height: 700px;
+
+  .avatar-loop-box{
+    height: 400px;
     position: relative;
+    margin: 20vw auto;
   }
+
+  .avatar-loop {
+    width: calc(100vw + 150px);
+    position: absolute;
+    height: 400px;
+    top: -10vw;
+    @media (min-width: 800px) {
+      height: 500px;
+    }
+  }
+
+  .avatar-loop-front{
+    width: calc(100vw + 150px);
+    height: 400px;
+    right: -86vw;
+    transform: translateX(-50%);
+    position: absolute;
+    @media (min-width: 800px) {
+     right: -87vw;
+     top: -12vw;
+      height: 600px;
+    }
+  }
+
 
   .about-box {
     width: 80%;
+    max-width: 800px;
     height: 450px;
     margin: 0 auto;
     margin-top: 100px;
@@ -607,7 +788,8 @@ const Wrapper = styled.div`
       width: 300px;
       z-index: 2;
       .about {
-        width: 110px;
+        width: 130px;
+        max-width: 300px;
       }
     }
     .about-avatar-box {
@@ -616,42 +798,81 @@ const Wrapper = styled.div`
       z-index: 1;
       .about-avatar {
         /* width: 80%; */
-        width: 300px;
+        width: 60vw;
+        max-width: 600px;
+        /* width: 300px; */
         height: 550px;
         position: relative;
       }
     }
   }
 
+  .roadmap {
+    width: 180px;
+    margin: 0 auto;
+    margin-top: 100px;
+  }
+
   .map {
     width: 80%;
+    /* height: 20vw; */
     height: 200px;
     position: relative;
-    margin: 50px 0 80px 20px;
+    margin: 50px auto 80px auto;
+    @media (min-width: 800px) {
+     height: 400px;
+    }
   }
 
   .profile-wrapper {
     width: 90%;
-    margin: 20px 0 0 10px;
-    .profile-item{
-      width: 142px;
+    margin: 50px 0 0 10px;
+
+    .profile-item {
+      width: 44vmin;
+
+      /* width: 142px; */
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    .row{
+    .row {
       display: flex;
       margin-top: 15px;
       justify-content: center;
       align-items: center;
-      & > * + *{
+      & > * + * {
         margin-left: 15px;
       }
     }
     .profile {
-      width: 142px;
-      height: 142px;
+      width: 44vmin;
+      height: 44vmin;
+      /* max-width: 200px;
+      max-height: 200px; */
+      /* width: 142px;
+      height: 142px; */
       position: relative;
+    }
+    @media (min-width: 800px) {
+      .profile-item {
+        width: 55vmin;
+      }
+      .profile {
+        max-width: 300px;
+        max-height: 300px;
+        width: 55vmin;
+        height: 55vmin;
+      }
+    }
+    @media (max-width: 600px) {
+      .profile-item {
+        width: 142px;
+      }
+      .profile {
+        width: 142px;
+        height: 142px;
+      }
     }
     .name {
       font-size: 25px;
@@ -661,28 +882,35 @@ const Wrapper = styled.div`
       line-height: 65px;
       white-space: nowrap;
     }
-    .position{
+    .position {
       height: 45px;
       text-align: center;
       overflow: hidden;
     }
   }
 
-  .wl{
+  .wl {
     width: 800px !important;
-
   }
 
-  .faq{
-    margin: 60px 0 50px 0;
+  .bg-bottom {
+    width: 100%;
+    height: 100vw;
+    /* height: 400px; */
+    position: relative;
   }
 
-  .faq-box{
+  .faq {
+    margin: 00px 0 50px 0;
+  }
+
+  .faq-box {
     width: 90%;
-    margin: 20px 0 0 10px;
-    .faq-item{
+    max-width: 1024px;
+    margin: 20px auto 200px auto;
+    .faq-item {
       margin-bottom: 40px;
-      .ques{
+      .ques {
         font-weight: bolder;
         margin-bottom: 10px;
         font-size: 23px;
