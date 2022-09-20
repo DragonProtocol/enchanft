@@ -159,8 +159,8 @@ export default function CreateTaskBasic({
                 </div>
                 <p className="type-desc">
                   {(state.reward.raffled &&
-                    'Raffle task, the task will automatically close once it winners complete the task.') ||
-                    'FCFS task, we will randomly select  winners for you upon closing the task.'}
+                    'Raffle task, the winner will randomly or manually select from entries.') ||
+                    'FCFS task, first come, first served.'}
                 </p>
               </div>
               <div className="content-item">
