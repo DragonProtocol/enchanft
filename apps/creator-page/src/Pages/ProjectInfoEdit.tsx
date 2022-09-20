@@ -67,7 +67,7 @@ export default function ProjectInfoEdit() {
         const { data } = await uploadImageApi(file, account.info.token);
         setProject({
           ...project,
-          img: data.url,
+          image: data.url,
         });
         e.target.value = '';
         toast.success('upload success');
