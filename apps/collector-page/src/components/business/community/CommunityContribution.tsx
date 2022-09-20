@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-16 15:41:23
+ * @LastEditTime: 2022-09-19 10:50:08
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
+import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import UserAvatar from '../user/UserAvatar'
 export type ContributionItemDataType = {
@@ -15,6 +16,7 @@ export type ContributionItemDataType = {
   userName: string
   pubkey: string
   score: number
+  userId: number
 }
 
 export type CommunityContributionProps = {
@@ -31,7 +33,7 @@ const CommunityContribution: React.FC<CommunityContributionProps> = ({ items }: 
             {items.map((item, index) => (
               <ContributionItemBox key={index}>
                 <ContributionItemRanking>{item.ranking}</ContributionItemRanking>
-                <ContributionItemAvatar src={item.avatar} multiavatarId={item.pubkey || item.userName} />
+                <ContributionItemAvatar src={item.avatar} multiavatarId={getMultiavatarIdByUser(item)} />
                 <ContributionItemUserName>{item.userName}</ContributionItemUserName>
                 <ContributionItemPubkey number={1}>{item.pubkey}</ContributionItemPubkey>
                 <ContributionItemScore>{item.score}</ContributionItemScore>

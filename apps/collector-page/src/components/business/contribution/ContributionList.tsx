@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-16 15:43:37
+ * @LastEditTime: 2022-09-19 10:50:54
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -14,6 +14,7 @@ import CrownImg from '../../imgs/crown.svg'
 import ButtonBase from '../../common/button/ButtonBase'
 import { MOBILE_BREAK_POINT } from '../../../constants'
 import { isDesktop } from 'react-device-detect'
+import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
 export type ContributionItemDataType = {
   ranking: number
   avatar: string
@@ -89,7 +90,7 @@ const ContributionList: React.FC<ContributionListProps> = ({
             {displayRanking && (
               <ContributionItemRanking topThree={item.ranking < 4}>{item.ranking}</ContributionItemRanking>
             )}
-            {displayAvatar && <ContributionItemAvatar src={item.avatar} multiavatarId={item.pubkey || item.userName} />}
+            {displayAvatar && <ContributionItemAvatar src={item.avatar} multiavatarId={getMultiavatarIdByUser(item)} />}
             {displayUserName && <ContributionItemUserName>{item.userName}</ContributionItemUserName>}
             {displayPubkey && <ContributionItemPubkey>{item.pubkey}</ContributionItemPubkey>}
             {displayScore && <ContributionItemScore>{item.score}</ContributionItemScore>}

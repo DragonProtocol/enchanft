@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-28 15:36:41
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-28 15:39:41
+ * @LastEditTime: 2022-09-19 10:42:47
  * @Description: file description
  */
 // Omit intermediate strings
-export const omitIntermediateStr = (str: string, preNum: number, afterNum: number) => {
+export const omitIntermediateStr = (str: string, preNum: number, afterNum: number, symbolNum?: number) => {
   const len = str.length
   const front = str.substring(0, preNum)
   const back = str.substring(len - afterNum, len)
-  return `${front}${'*'.repeat(len - preNum - afterNum)}${back}`
+  const repeatNum = symbolNum || len - preNum - afterNum
+  return `${front}${'*'.repeat(repeatNum)}${back}`
 }

@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-16 15:46:50
+ * @LastEditTime: 2022-09-19 11:27:03
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
+import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
 import { omitIntermediateStr } from '../../../utils/string'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import UserAvatar from '../user/UserAvatar'
@@ -30,7 +31,7 @@ const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items, highlightPubkeys
       <WinnerListBox>
         {items.map((item, index) => (
           <WinnerItemBox key={index}>
-            <WinnerItemAvatar src={item.avatar} multiavatarId={item.pubkey || item.name} />
+            <WinnerItemAvatar src={item.avatar} multiavatarId={getMultiavatarIdByUser(item)} />
             <WinnerItemUserName highlight={highlightPubkeys.includes(item.pubkey)}>{item.name}</WinnerItemUserName>
             <WinnerItemPubkey number={1}>{item.pubkey}</WinnerItemPubkey>
           </WinnerItemBox>

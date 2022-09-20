@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-06 17:34:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 14:11:26
+ * @LastEditTime: 2022-09-19 17:07:11
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -10,6 +10,7 @@ import styled from 'styled-components'
 import { ButtonPrimary, ButtonProps } from '../../common/button/ButtonBase'
 export enum CheckinStatusType {
   ACCOUNT_OPERATION = 'ACCOUNT_OPERATION',
+  NOT_FOLLOWED = 'NOT_FOLLOWED',
   CHECKIN = 'CHECKIN',
   CHECKING = 'CHECKING',
   CHECKEDIN = 'CHECKEDIN',
@@ -18,6 +19,7 @@ export enum CheckinStatusType {
 
 const checkinBtnTextMap = {
   [CheckinStatusType.ACCOUNT_OPERATION]: 'Get Toady’s Contribution Token!',
+  [CheckinStatusType.NOT_FOLLOWED]: 'Get Toady’s Contribution Token!',
   [CheckinStatusType.CHECKIN]: 'Get Toady’s Contribution Token!',
   [CheckinStatusType.CHECKING]: 'Loading ...',
   [CheckinStatusType.CHECKEDIN]: 'Checked In!',
@@ -59,6 +61,12 @@ const CommunityCheckinButton: React.FC<CommunityCheckinButtonProps> = ({
     case CheckinStatusType.ACCOUNT_OPERATION:
       return (
         <CheckinBtn onClick={handleAccountOperation} {...buttonProps}>
+          {_checkinBtnText}
+        </CheckinBtn>
+      )
+    case CheckinStatusType.NOT_FOLLOWED:
+      return (
+        <CheckinBtn disabled {...buttonProps}>
           {_checkinBtnText}
         </CheckinBtn>
       )
