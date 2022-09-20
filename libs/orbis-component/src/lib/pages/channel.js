@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-// import styles from '../styles/Home.module.css'
+import styles from '../styles/Home.module.css'
 import { getChannelIcon } from "../utils";
 import useIsGroupAdmin from "../hooks/useIsGroupAdmin";
 import { Feed } from "../components/Feed";

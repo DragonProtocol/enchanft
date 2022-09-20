@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { OrbisComponent } from '@ecnft/orbis-component/'
+import { OrbisChannelComponent } from '@ecnft/orbis-component/'
 import {
   ProjectDetailEntity,
   fetchProjectDetail,
@@ -283,7 +283,7 @@ const Project: React.FC = () => {
           </ExploreTaskListBox>
         </ProjectEventsBox>
         <OrbisBox>
-          <OrbisComponent group_id={ORBIS_GROUP_ID} channel_id={orbis_channel_id} />
+          <OrbisChannelComponent group_id={ORBIS_GROUP_ID} channel_id={orbis_channel_id} />
         </OrbisBox>
         {/* <ProjectOtherInfoBox>
             <ProjectOtherInfoLeftBox>
@@ -448,7 +448,6 @@ const ContributionListBox = styled(CardBox)`
   background: #fffbdb;
 `
 const OrbisBox = styled(CardBox)`
-  background: #000000;
   height: 600px;
 `
 

@@ -10,10 +10,14 @@ interface OrbisComponentProps {
   group_id: string
   channel_id?: string
 }
-export function OrbisComponent(props: OrbisComponentProps): FunctionComponent<OrbisComponentProps> {
+export function OrbisChannelComponent(props: OrbisComponentProps): FunctionComponent<OrbisComponentProps> {
   return (
     <App Component={ChannelDetails} pageProps={props} />
   ) as unknown as FunctionComponent;
 }
 
-export default OrbisComponent;
+export function OrbisGroupComponent(props: OrbisComponentProps): FunctionComponent<OrbisComponentProps> {
+  return (
+    <App Component={GroupHome} pageProps={props} />
+  ) as unknown as FunctionComponent;
+}
