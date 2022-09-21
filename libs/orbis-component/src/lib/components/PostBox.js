@@ -284,7 +284,7 @@ export function PostBox({ type = "feed", action = "share-post", callback, placeh
             <label className="tertiary fs-12">Send by pressing enter</label>
           </div>
         }
-        <div className={type == "chat" ? "flex flex-row" : "flex flex-column" }>
+        {/* <div className={type == "chat" ? "flex flex-row" : "flex flex-column" }>
           <div className="editable-container">
             <div
               id="postbox-area"
@@ -302,7 +302,7 @@ export function PostBox({ type = "feed", action = "share-post", callback, placeh
               <ShareButtonContent type={type} status={status} share={share} />
             </div>
           }
-        </div>
+        </div> */}
         <div className="flex flex-1">
           {/** Show mentions box if state is true */}
           {mentionBoxVis &&

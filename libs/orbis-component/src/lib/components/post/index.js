@@ -195,10 +195,10 @@ export function Post({post, type, showContext = true, replyTo, setReplyTo = fals
             :
               <>
                 {/** Show reactions count */}
-                <div className="one-reaction" onClick={() => setModalVis("post-details", true, post.master ? post.master : post.stream_id)}>
+                {/* <div className="one-reaction" onClick={() => setModalVis("post-details", true, post.master ? post.master : post.stream_id)}>
                   <img src={"/img/icons/reaction-comment.png"} height="18" />
                   <span>{post.count_replies}</span>
-                </div>
+                </div> */}
               </>
             }
 
