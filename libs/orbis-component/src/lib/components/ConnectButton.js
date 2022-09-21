@@ -52,6 +52,7 @@ export function ConnectButton() {
         /** Save user details returned by the connect function in state */
         console.log("Connected to Ceramic: ", res);
         setUser(res.details);
+        localStorage.setItem("orbis-user", res.details)
 
         break;
       default:
