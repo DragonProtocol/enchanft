@@ -145,7 +145,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   const [account, setAccount] = useState<AppAccount>(DefaultCtxData.account);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    const cb = () => {
       let phantomValid = false;
       let metaMaskValid = false;
       if (windowObj.solana && windowObj.solana.isPhantom) {
@@ -157,9 +157,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
       setPhantomValid(phantomValid);
       setMetaMaskValid(metaMaskValid);
       walletCheck(metaMaskValid, phantomValid);
-    }, 0);
+    };
+    window.addEventListener('load', cb);
     return () => {
-      clearTimeout(timer);
+      window.removeEventListener('load', cb);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
