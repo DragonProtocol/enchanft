@@ -10,9 +10,9 @@ export default function Guide() {
   return (
     <NewsContainer>
       {orbis_channel_id ?
-       <OrbisChannelComponent group_id={ORBIS_GROUP_ID} channel_id={orbis_channel_id} routePrefix={'/news'} showNav={true} /> 
+       <OrbisChannelComponent group_id={ORBIS_GROUP_ID} channel_id={orbis_channel_id} routePrefix={'/news'} showNav={false} /> 
        :
-       <OrbisGroupComponent group_id={ORBIS_GROUP_ID} routePrefix={'/news'} showNav={true} />
+       <OrbisGroupComponent group_id={ORBIS_GROUP_ID} routePrefix={'/news'} showNav={false} />
       }
     </NewsContainer>
   )

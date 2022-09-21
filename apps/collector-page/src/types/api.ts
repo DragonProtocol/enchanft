@@ -84,6 +84,8 @@ export type ProjectDetailResponse = Project & {
   whitelists?: Whitelist[]
   community?: Community
   announcement?: Announcement
+  orbisGroupId?:string
+  orbisChannelId?:string
 }
 
 /** community api */

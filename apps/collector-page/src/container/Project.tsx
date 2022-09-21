@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { selectAccount } from '../features/user/accountSlice'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { OrbisChannelComponent } from '@ecnft/orbis-component/'
+import { OrbisChannelComponent } from '@ecnft/orbis-component'
 import {
   ProjectDetailEntity,
   fetchProjectDetail,
@@ -96,7 +96,11 @@ const Project: React.FC = () => {
   const [loadingView, setLoadingView] = useState(true)
   const { isCreator, checkProjectAllowed } = usePermissions()
 
-  const orbis_channel_id = 'kjzl6cwe1jw1497bb8n9s37seryr027ca9qubg75bnar12zkk91zi5rqlebv4rz'
+  // const orbis_channel_id = 'kjzl6cwe1jw1497bb8n9s37seryr027ca9qubg75bnar12zkk91zi5rqlebv4rz'
+  // if (data){
+  //   data?.orbisGroupId = ORBIS_GROUP_ID
+  //   data?.orbisChannelId = 'kjzl6cwe1jw1497bb8n9s37seryr027ca9qubg75bnar12zkk91zi5rqlebv4rz'
+  // }
 
   // 进入loading状态
   useEffect(() => {
@@ -282,9 +286,11 @@ const Project: React.FC = () => {
             />
           </ExploreTaskListBox>
         </ProjectEventsBox>
-        <OrbisBox>
-          <OrbisChannelComponent group_id={ORBIS_GROUP_ID} channel_id={orbis_channel_id} />
-        </OrbisBox>
+        {/* {data.orbisGroupId && data.orbisChannelId &&
+          <OrbisBox>
+            <OrbisChannelComponent group_id={data.orbisGroupId} channel_id={data.orbisChannelId} />
+          </OrbisBox>
+        } */}
         {/* <ProjectOtherInfoBox>
             <ProjectOtherInfoLeftBox>
               <ProjectLabelBox>
