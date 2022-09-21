@@ -253,67 +253,68 @@ export function PostBox({ type = "feed", action = "share-post", callback, placeh
   }
 
   return(
-    <div className="flex-column w-100">
-      {/** User doesn't have any activity on a blockchain */}
-      {user.nonces && user.nonces?.global <= 0 && user.a_r <= 1 &&
-        <div className="no-blockchain-activity">
-          <img src="/img/icons/eye-crossed-yellow.png" height="18" />
-          <p>It looks like you are joining from an inactive wallet so your posts might not be visible for other users for now. We recommend joining with an active wallet.</p>
-        </div>
-      }
+    // <div className="flex-column w-100">
+    //   {/** User doesn't have any activity on a blockchain */}
+    //   {user.nonces && user.nonces?.global <= 0 && user.a_r <= 1 &&
+    //     <div className="no-blockchain-activity">
+    //       <img src="/img/icons/eye-crossed-yellow.png" height="18" />
+    //       <p>It looks like you are joining from an inactive wallet so your posts might not be visible for other users for now. We recommend joining with an active wallet.</p>
+    //     </div>
+    //   }
 
 
-      {/** If user is replying to another post, we show the parent details here */}
-      {(reply_to && reply_to.stream_id != master ) &&
-        <div className="postbox-reply-to">
-          <p className="mright-5 tertiary">Replying to:</p>
-          <User details={reply_to.creator} showBadge={false} />
-        </div>
-      }
-      <div className={"postbox flex-column " + type}>
-        {/** If sharing an encrypted post */}
-        {encryptionRules &&
-          <EncryptedPostDetails encryptionRules={encryptionRules} />
-        }
+    //   {/** If user is replying to another post, we show the parent details here */}
+    //   {(reply_to && reply_to.stream_id != master ) &&
+    //     <div className="postbox-reply-to">
+    //       <p className="mright-5 tertiary">Replying to:</p>
+    //       <User details={reply_to.creator} showBadge={false} />
+    //     </div>
+    //   }
+    //   <div className={"postbox flex-column " + type}>
+    //     {/** If sharing an encrypted post */}
+    //     {encryptionRules &&
+    //       <EncryptedPostDetails encryptionRules={encryptionRules} />
+    //     }
 
 
-        {/** Allow send by pressing enter only if type is chat */}
-        {(type == "chat" || type == "reply") &&
-          <div className="flex-row v-align-items-center" style={{marginBottom: 8}}>
-            <input type="checkbox" checked={enterTrigger} value={enterTrigger} onChange={(e) => setEnterTrigger(e.target.checked)}/>
-            <label className="tertiary fs-12">Send by pressing enter</label>
-          </div>
-        }
-        {/* <div className={type == "chat" ? "flex flex-row" : "flex flex-column" }>
-          <div className="editable-container">
-            <div
-              id="postbox-area"
-              ref={postBoxArea}
-              autoFocus={true}
-              className="editable"
-              contentEditable={true}
-              data-placeholder={placeholder}
-              onInput={(e) => handleInput(e)}>
-            </div>
-          </div>
+    //     {/** Allow send by pressing enter only if type is chat */}
+    //     {(type == "chat" || type == "reply") &&
+    //       <div className="flex-row v-align-items-center" style={{marginBottom: 8}}>
+    //         <input type="checkbox" checked={enterTrigger} value={enterTrigger} onChange={(e) => setEnterTrigger(e.target.checked)}/>
+    //         <label className="tertiary fs-12">Send by pressing enter</label>
+    //       </div>
+    //     }
+    //     <div className={type == "chat" ? "flex flex-row" : "flex flex-column" }>
+    //       <div className="editable-container">
+    //         <div
+    //           id="postbox-area"
+    //           ref={postBoxArea}
+    //           autoFocus={true}
+    //           className="editable"
+    //           contentEditable={true}
+    //           data-placeholder={placeholder}
+    //           onInput={(e) => handleInput(e)}>
+    //         </div>
+    //       </div>
 
-          {(enterTrigger == false || ( enterTrigger == true && status != 0)) &&
-            <div className="share-btn-container">
-              <ShareButtonContent type={type} status={status} share={share} />
-            </div>
-          }
-        </div> */}
-        <div className="flex flex-1">
-          {/** Show mentions box if state is true */}
-          {mentionBoxVis &&
-            <MentionsBox
-              add={addMention}
-              hideMentionsBoxVis={hideMentionsBoxVis}
-              visible={mentionBoxVis}/>
-          }
-        </div>
-      </div>
-    </div>
+    //       {(enterTrigger == false || ( enterTrigger == true && status != 0)) &&
+    //         <div className="share-btn-container">
+    //           <ShareButtonContent type={type} status={status} share={share} />
+    //         </div>
+    //       }
+    //     </div>
+    //     <div className="flex flex-1">
+    //       {/** Show mentions box if state is true */}
+    //       {mentionBoxVis &&
+    //         <MentionsBox
+    //           add={addMention}
+    //           hideMentionsBoxVis={hideMentionsBoxVis}
+    //           visible={mentionBoxVis}/>
+    //       }
+    //     </div>
+    //   </div>
+    // </div>
+    <></>
   )
 }
 

@@ -709,11 +709,11 @@ p.tertiary, span.tertiary, label.tertiary, ul.tertiary li {
   color: var(--color-text-primary);
 }
 .btn.black {
-  background: rgb(255 255 255/5%);
+  background: var(--color-background-primary);
   color: var(--color-text-primary);
 }
 .btn.black:hover {
-  background: #21212d;
+  background: var(--color-background-secondary);
 }
 /** Easy access cards components */
 .dark-card {
