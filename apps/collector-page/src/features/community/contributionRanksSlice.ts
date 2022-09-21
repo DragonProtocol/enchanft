@@ -1,8 +1,10 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import { fetchListForCommunityContributionRank } from '../../services/api/community'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { CommunityContributionRankItem } from '../../types/api'
+import { setAvatar, setName, setPubkey, setToken } from '../user/accountSlice'
 
 export type CommunityContributionRanksItemForEntity = CommunityContributionRankItem
 type CommunitysState = EntityState<CommunityContributionRanksItemForEntity> & {
@@ -34,11 +36,18 @@ export const fetchCommunityContributionRanks = createAsyncThunk<
   }
 >(
   'community/fetchCommunityContributionRanks',
-  async (slug, { rejectWithValue }) => {
+  async (slug, { rejectWithValue, dispatch }) => {
     try {
       const resp = await fetchListForCommunityContributionRank(slug)
       return { data: resp.data.data || [] }
     } catch (error: any) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       if (!error.response) {
         throw error
       }

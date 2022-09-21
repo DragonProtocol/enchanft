@@ -1,8 +1,10 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import { fetchListForUserReward } from '../../services/api/reward'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { UserRewardItem } from '../../types/api'
+import { setAvatar, setName, setPubkey, setToken } from './accountSlice'
 
 export type UserRewardForEntity = UserRewardItem
 type RewardListState = EntityState<UserRewardForEntity> & {
@@ -32,12 +34,19 @@ export const fetchUserRewards = createAsyncThunk<
   }
 >(
   'user/rewards/fetchList',
-  async (params, { rejectWithValue }) => {
+  async (params, { rejectWithValue, dispatch }) => {
     try {
       const resp = await fetchListForUserReward()
       const data = resp.data.data || []
       return { data }
     } catch (error: any) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       if (!error.response) {
         throw error
       }

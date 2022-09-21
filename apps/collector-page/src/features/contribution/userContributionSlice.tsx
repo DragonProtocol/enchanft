@@ -6,10 +6,12 @@
  * @Description: file description
  */
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import { fetchOneByUserCommunityContributionRank, fetchOneByUserCommunityScore } from '../../services/api/community'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { UserContributionResponse } from '../../types/api'
+import { setAvatar, setName, setPubkey, setToken } from '../user/accountSlice'
 export type UserContributonForEntity = number
 type UserContributonState = {
   data: UserContributonForEntity
@@ -38,11 +40,18 @@ export const fetchUserContributon = createAsyncThunk<
   }
 >(
   'community/fetchUserContributon',
-  async (slug, { rejectWithValue }) => {
+  async (slug, { rejectWithValue, dispatch }) => {
     try {
       const resp = await fetchOneByUserCommunityScore(slug)
       return { data: resp.data.data || 0 }
     } catch (error: any) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       if (!error.response) {
         throw error
       }

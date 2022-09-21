@@ -1,8 +1,10 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import { fetchListForSearchProjects } from '../../services/api/explore'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { ExploreSearchProjectItem, ExploreSearchProjectsRequestParams } from '../../types/api'
+import { setAvatar, setName, setPubkey, setToken } from '../user/accountSlice'
 
 export type ExploreSearchProjectItemEntity = ExploreSearchProjectItem
 type ExploreSearchProjectsState = EntityState<ExploreSearchProjectItemEntity> & {
@@ -35,11 +37,18 @@ export const fetchExploreSearchProjects = createAsyncThunk<
   }
 >(
   'explore/searchProjects',
-  async (params, { rejectWithValue }) => {
+  async (params, { rejectWithValue, dispatch }) => {
     try {
       const resp = await fetchListForSearchProjects(params)
       return { data: resp.data.data || [] }
     } catch (error: any) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       if (!error.response) {
         throw error
       }

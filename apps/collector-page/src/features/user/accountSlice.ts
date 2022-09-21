@@ -20,6 +20,7 @@ import {
   TokenType,
 } from '../../utils/token'
 import { toast } from 'react-toastify'
+import { AxiosError } from 'axios'
 
 export enum ConnectModal {
   PHANTOM = 'phantom',
@@ -147,23 +148,41 @@ export const userLogin = createAsyncThunk(
   },
 )
 
-export const userGetProfile = createAsyncThunk('user/getProfile', async () => {
-  const resp = await getProfile()
-  return resp.data
+export const userGetProfile = createAsyncThunk('user/getProfile', async ({}, thunkAPI) => {
+  try {
+    const resp = await getProfile()
+    return resp.data
+  } catch (error) {
+    if (error.response?.status === 401) {
+      thunkAPI.dispatch(setAvatar(''))
+      thunkAPI.dispatch(setName(''))
+      thunkAPI.dispatch(setToken(''))
+      thunkAPI.dispatch(setPubkey(''))
+    }
+  }
 })
 
 export const userUpdateProfile = createAsyncThunk(
   'user/updateProfile',
   async ({ avatar, name, pubkey }: { avatar: string; name: string; pubkey: string }, thunkAPI) => {
-    const resp = await updateProfile({
-      userAvatar: avatar,
-      userName: name,
-      pubkey,
-    })
-    thunkAPI.dispatch(setAvatar(avatar))
-    thunkAPI.dispatch(setName(name))
-    thunkAPI.dispatch(setLastLoginInfo({ name, avatar }))
-    return resp.data
+    try {
+      const resp = await updateProfile({
+        userAvatar: avatar,
+        userName: name,
+        pubkey,
+      })
+      thunkAPI.dispatch(setAvatar(avatar))
+      thunkAPI.dispatch(setName(name))
+      thunkAPI.dispatch(setLastLoginInfo({ name, avatar }))
+      return resp.data
+    } catch (error) {
+      if (error.response?.status === 401) {
+        thunkAPI.dispatch(setAvatar(''))
+        thunkAPI.dispatch(setName(''))
+        thunkAPI.dispatch(setToken(''))
+        thunkAPI.dispatch(setPubkey(''))
+      }
+    }
   },
 )
 
@@ -195,10 +214,20 @@ export const userLink = createAsyncThunk(
 export const userUnlink = createAsyncThunk(
   'user/userUnlink',
   async ({ type }: { type: string }, thunkAPI) => {
-    const resp = await unlink({
-      type,
-    })
-    return resp.data
+    try {
+      const resp = await unlink({
+        type,
+      })
+      return resp.data
+    } catch (error) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        thunkAPI.dispatch(setAvatar(''))
+        thunkAPI.dispatch(setName(''))
+        thunkAPI.dispatch(setToken(''))
+        thunkAPI.dispatch(setPubkey(''))
+      }
+    }
   },
   {
     condition: (params, { getState }) => {
@@ -244,6 +273,13 @@ export const userOtherWalletLink = createAsyncThunk(
       })
       return { accounts: resp.data, walletType }
     } catch (error) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        thunkAPI.dispatch(setAvatar(''))
+        thunkAPI.dispatch(setName(''))
+        thunkAPI.dispatch(setToken(''))
+        thunkAPI.dispatch(setPubkey(''))
+      }
       if (error.response) {
         throw new Error(error.response.data.message)
       } else {

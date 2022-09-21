@@ -6,6 +6,7 @@
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import fileDownload from 'js-file-download'
 import { toast } from 'react-toastify'
 import {
@@ -19,6 +20,7 @@ import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { fetchCommunityContributionRanks } from '../community/contributionRanksSlice'
 import { fetchUserContributon } from '../contribution/userContributionSlice'
+import { setAvatar, setName, setPubkey, setToken } from './accountSlice'
 import { addOne as addOneForCheckinCommunities } from './checkinCommunitiesSlice'
 import { addOne as addOneForFollowedCommunities, fetchFollowedCommunities } from './followedCommunitiesSlice'
 // 每一种操作单独存储当前的数据状态
@@ -61,17 +63,31 @@ export const follow = createAsyncThunk(
       }
       return { errorMsg: '' }
     } catch (error) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       throw error
     }
   },
 )
 export const downloadContributionTokens = createAsyncThunk(
   'user/communityHandles/downloadContributionTokens',
-  async (communityId: number) => {
+  async (communityId: number, { dispatch }) => {
     try {
       const resp = await downloadContributions(communityId)
       fileDownload(resp.data, 'contribution_tokens.csv')
     } catch (error) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       throw error
     }
   },
@@ -92,6 +108,13 @@ export const verifyCheckin = createAsyncThunk(
       }
       return { errorMsg: '' }
     } catch (error) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       throw error
     }
   },
@@ -133,6 +156,13 @@ export const checkin = createAsyncThunk(
       }
       return { errorMsg: '' }
     } catch (error) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       throw error
     }
   },

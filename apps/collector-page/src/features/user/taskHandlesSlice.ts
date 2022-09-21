@@ -6,6 +6,7 @@
  * @Description: file description
  */
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import { toast } from 'react-toastify'
 import {
   completionOneAction,
@@ -17,6 +18,7 @@ import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { Action, Task, TaskAcceptedStatus, TaskTodoCompleteStatus } from '../../types/entities'
 import { fetchTaskDetail, updateTaskDetail, updateTaskDetailAction } from '../task/taskDetailSlice'
+import { setAvatar, setName, setPubkey, setToken } from './accountSlice'
 import { fetchFollowedCommunities } from './followedCommunitiesSlice'
 import { fetchTodoTasks, setOne as setOneForTodoTask, updateOneAction } from './todoTasksSlice'
 
@@ -81,6 +83,13 @@ export const takeTask = createAsyncThunk('user/taskHandles/takeTask', async (par
     }
     return { errorMsg: '' }
   } catch (error) {
+    const err: AxiosError = error as any
+    if (err.response?.status === 401) {
+      dispatch(setAvatar(''))
+      dispatch(setName(''))
+      dispatch(setToken(''))
+      dispatch(setPubkey(''))
+    }
     throw error
   }
 })
@@ -100,6 +109,13 @@ export const verifyTask = createAsyncThunk(
         throw new Error(resp.data.msg)
       }
     } catch (error) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       throw error
     } finally {
       dispatch(removeOneVerifyTaskQueue(id))
@@ -131,6 +147,13 @@ export const verifyAction = createAsyncThunk(
         throw new Error(resp.data.msg)
       }
     } catch (error) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       throw error
     } finally {
       dispatch(removeOneVerifyActionQueue(id))
@@ -162,6 +185,13 @@ export const completionAction = createAsyncThunk(
         throw new Error(resp.data.msg)
       }
     } catch (error) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       throw error
     } finally {
       dispatch(removeOneVerifyActionQueue(id))

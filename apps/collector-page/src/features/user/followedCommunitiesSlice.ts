@@ -1,8 +1,10 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import { fetchListForUserFollowedCommunity } from '../../services/api/community'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { FollowedCommunityItem } from '../../types/api'
+import { setAvatar, setName, setPubkey, setToken } from './accountSlice'
 
 export type FollowedCommunitityForEntity = FollowedCommunityItem
 type FollowedCommunityListState = EntityState<FollowedCommunitityForEntity> & {
@@ -32,11 +34,18 @@ export const fetchFollowedCommunities = createAsyncThunk<
   }
 >(
   'user/followedCommunities/fetchList',
-  async (params, { rejectWithValue }) => {
+  async (params, { rejectWithValue, dispatch }) => {
     try {
       const resp = await fetchListForUserFollowedCommunity()
       return { data: resp.data.data || [] }
     } catch (error: any) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       if (!error.response) {
         throw error
       }

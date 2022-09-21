@@ -6,10 +6,12 @@
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import { fetchDetailByProjectSlug } from '../../services/api/project'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { ProjectDetailResponse } from '../../types/api'
+import { setAvatar, setName, setPubkey, setToken } from '../user/accountSlice'
 
 export type ProjectDetailEntity = ProjectDetailResponse
 type ProjectState = {
@@ -37,11 +39,18 @@ export const fetchProjectDetail = createAsyncThunk<
   {
     rejectValue: FetchDetailResp
   }
->('project/fetchProjectDetail', async (slug, { rejectWithValue }) => {
+>('project/fetchProjectDetail', async (slug, { rejectWithValue, dispatch }) => {
   try {
     const resp = await fetchDetailByProjectSlug(slug)
     return { data: resp.data.data || null }
   } catch (error: any) {
+    const err: AxiosError = error as any
+    if (err.response?.status === 401) {
+      dispatch(setAvatar(''))
+      dispatch(setName(''))
+      dispatch(setToken(''))
+      dispatch(setPubkey(''))
+    }
     if (!error.response) {
       throw error
     }

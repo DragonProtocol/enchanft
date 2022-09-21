@@ -12,6 +12,8 @@ import { AsyncRequestStatus } from '../../types'
 import { TaskDetailResponse, TodoTaskActionItem } from '../../types/api'
 import { State as CreateTaskState } from '../../components/business/task/create/state'
 import { getTaskEntityForUpdateActionAfter } from '../../utils/task'
+import { AxiosError } from 'axios'
+import { setAvatar, setName, setPubkey, setToken } from '../user/accountSlice'
 
 export type TaskDetailEntity = TaskDetailResponse
 type TaskState = {
@@ -41,11 +43,18 @@ export const fetchTaskDetail = createAsyncThunk<
   {
     rejectValue: FetchDetailResp
   }
->('task/fetchTaskDetail', async (id, { rejectWithValue }) => {
+>('task/fetchTaskDetail', async (id, { rejectWithValue, dispatch }) => {
   try {
     const resp = await fetchDetail(id)
     return { data: resp.data.data || null }
   } catch (error: any) {
+    const err: AxiosError = error as any
+    if (err.response?.status === 401) {
+      dispatch(setAvatar(''))
+      dispatch(setName(''))
+      dispatch(setToken(''))
+      dispatch(setPubkey(''))
+    }
     if (!error.response) {
       throw error
     }
@@ -53,9 +62,19 @@ export const fetchTaskDetail = createAsyncThunk<
   }
 })
 
-export const createTask = createAsyncThunk('task/create', async (data: CreateTaskState) => {
-  const resp = await createTaskApi(data)
-  return resp.data
+export const createTask = createAsyncThunk('task/create', async (data: CreateTaskState, { dispatch }) => {
+  try {
+    const resp = await createTaskApi(data)
+    return resp.data
+  } catch (error) {
+    const err: AxiosError = error as any
+    if (err.response?.status === 401) {
+      dispatch(setAvatar(''))
+      dispatch(setName(''))
+      dispatch(setToken(''))
+      dispatch(setPubkey(''))
+    }
+  }
 })
 
 export const taskDetailSlice = createSlice({

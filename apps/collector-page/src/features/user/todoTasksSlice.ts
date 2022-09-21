@@ -1,10 +1,12 @@
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { AxiosError } from 'axios'
 import { fetchListForUserTodoTask, verifyOneTask, VerifyOneTaskParams } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { TodoTaskActionItem, TodoTaskItem, TodoTaskResponse, UserActionStatus } from '../../types/api'
 import { TaskTodoCompleteStatus } from '../../types/entities'
 import { getTaskEntityForUpdateActionAfter } from '../../utils/task'
+import { setAvatar, setName, setPubkey, setToken } from './accountSlice'
 
 export type TodoTaskItemForEntity = TodoTaskItem
 type TodoTaskListState = EntityState<TodoTaskItemForEntity> & {
@@ -34,11 +36,18 @@ export const fetchTodoTasks = createAsyncThunk<
   }
 >(
   'user/todoTasks/fetchList',
-  async (params, { rejectWithValue }) => {
+  async (params, { rejectWithValue, dispatch }) => {
     try {
       const resp = await fetchListForUserTodoTask()
       return { data: resp.data.data || [] }
     } catch (error: any) {
+      const err: AxiosError = error as any
+      if (err.response?.status === 401) {
+        dispatch(setAvatar(''))
+        dispatch(setName(''))
+        dispatch(setToken(''))
+        dispatch(setPubkey(''))
+      }
       if (!error.response) {
         throw error
       }
