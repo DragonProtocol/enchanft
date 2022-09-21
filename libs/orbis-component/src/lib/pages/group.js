@@ -48,7 +48,7 @@ export default function GroupHome() {
         </div>
 
         {/** Right side */}
-        {/* <RightSide type="group-members" details={group_id} /> */}
+        <RightSide type="group-members" details={group_id} />
       </div>
     </>
   )

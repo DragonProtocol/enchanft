@@ -4,6 +4,7 @@
   height: 100vh;
   max-width: 100vw;
   overflow-x: hidden;
+  gap:20px;
 }
 
 .main {

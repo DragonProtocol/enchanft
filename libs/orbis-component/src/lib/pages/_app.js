@@ -39,7 +39,7 @@ let tempCallback;
 function App({ Component, pageProps }) {
   const [user, setUser] = useState(null);
   // const group_id = GROUP_ID;
-  const {group_id,channel_id} = pageProps;
+  const {group_id,channel_id,routePrefix} = pageProps;
   // console.log('pass in params: ',group_id,channel_id)
   const [tempModalData, setTempModalData] = useState();
   const [navigationVis, setNavigationVis] = useState(false);
@@ -96,11 +96,11 @@ function App({ Component, pageProps }) {
           <meta name="viewport" content="initial-scale=1.0, width=device-width" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head> */}
-      <GlobalContext.Provider value={{ user, setUser, group_id, channel_id, orbis }}>
+      <GlobalContext.Provider value={{ user, setUser, group_id, channel_id, routePrefix, orbis }}>
         <ModalsContext.Provider value={{ setModalVis, navigationVis }}>
           <div className={styles.container}>
             {/** Show navigation on every pages */}
-            {/* <Navigation /> */}
+            { pageProps.showNav && <Navigation /> }
 
             {/** Show page content */}
             <Component {...pageProps} />

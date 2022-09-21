@@ -12,7 +12,8 @@ import { GlobalContext, ModalsContext } from '../contexts/GlobalContext';
 
 /** Second level navigation element displaying group details */
 export function GroupDetails() {
-  const { user, group_id, channel_id, orbis } = useContext(GlobalContext);
+  const { user, group_id, channel_id, routePrefix, orbis } =
+    useContext(GlobalContext);
   const { setModalVis } = useContext(ModalsContext);
   const [group, setGroup] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -165,12 +166,12 @@ export function GroupDetails() {
                 title="home"
                 image="/img/icons/group-home-grey.png"
                 imageActive="/img/icons/group-home-white.png"
-                route={'/'}
+                route={routePrefix || ''}
                 active={!channel_id ? true : false}
               />
 
               {/** Loop through all channels */}
-              <LoopChannels channels={group?.channels} />
+              <LoopChannels channels={group?.channels} routePrefix={routePrefix || ''}/>
 
               {/** Create channel CTA */}
               {isAdmin && (
@@ -194,17 +195,18 @@ export function GroupDetails() {
 }
 
 /** Loop through all channels in this group */
-function LoopChannels({ channels }) {
+function LoopChannels({ channels,routePrefix }) {
   const { group_id, channel_id } = useContext(GlobalContext);
 
   return channels.map((channel, key) => {
     if (channel.content) {
       return (
         <MenuItemLevel2
+          key={key}
           title={channel.content.name}
           image={getChannelIcon(channel, false)}
           imageActive={getChannelIcon(channel, true)}
-          route={'/' + channel.stream_id}
+          route={routePrefix + '/' + channel.stream_id}
           active={channel_id == channel.stream_id ? true : false}
         />
       );

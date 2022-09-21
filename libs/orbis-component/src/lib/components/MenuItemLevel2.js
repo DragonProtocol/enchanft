@@ -1,3 +1,4 @@
+import React from 'react';
 /** Simple component for menu items */
 export function MenuItemLevel2({title, image, imageActive, active, route , onClick, target = "_self"}) {
   if(route) {

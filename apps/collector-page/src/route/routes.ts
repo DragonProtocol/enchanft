@@ -15,6 +15,7 @@ export enum RouteKeys {
   creator = 'creator',
   todoTask = 'todoTask',
   guide = 'guide',
+  news = 'news',
   enchanftedDetail = 'enchanftedDetail',
   task = 'task',
   taskCreate = 'taskCreate',
@@ -36,6 +37,7 @@ const loadComponent = (importPath: string): ReactNode => {
 export const permissionRoutes: CutomRouteObject[] = [
   { path: '/profile', element: loadComponent('Profile'), key: RouteKeys.profile },
   { path: '/guide', element: loadComponent('Guide'), key: RouteKeys.guide },
+  { path: '/news', element: loadComponent('News'), key: RouteKeys.news },
   { path: '/towl', element: loadComponent('TodoTask'), key: RouteKeys.todoTask },
   { path: '/:projectSlug/task/create/:projectId', element: loadComponent('TaskCreate'), key: RouteKeys.taskCreate },
 ]
@@ -47,6 +49,7 @@ export const routes: CutomRouteObject[] = [
   { path: '/:projectSlug', element: loadComponent('Project'), key: RouteKeys.project },
   { path: '/:projectSlug/:taskId', element: loadComponent('Task'), key: RouteKeys.task },
   { path: '/ref/:refCode', element: loadComponent('Ref'), key: RouteKeys.ref },
+  { path: '/news/:orbis_channel_id', element: loadComponent('News'), key: RouteKeys.news },
   { path: '*', element: loadComponent('NoMatchRoute'), key: RouteKeys.noMatch },
 ]
 
@@ -65,5 +68,10 @@ export const navs: CutomNavObject[] = [
     name: 'projects',
     link: '/projects',
     activeRouteKeys: [RouteKeys.projects, RouteKeys.project, RouteKeys.contributionranks],
+  },
+  {
+    name: 'news',
+    link: '/news',
+    activeRouteKeys: [RouteKeys.news],
   },
 ]

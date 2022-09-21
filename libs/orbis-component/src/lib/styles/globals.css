@@ -83,6 +83,7 @@ p.tertiary, span.tertiary, label.tertiary, ul.tertiary li {
   flex-direction: row;
   overflow-y: scroll;
   flex: 1;
+  gap:20px;
   /* padding: 15px; */
   padding-left: 0px;
   padding-right: 0px;
@@ -572,11 +573,11 @@ p.tertiary, span.tertiary, label.tertiary, ul.tertiary li {
   color: var(--color-text-tertiary) !important;
 }
 .badge.black {
-  background: rgb(29 29 29);
+  background: var(--color-background-tertiary);
   color: var(--color-text-tertiary);
 }
 .badge.black-bis {
-  background: rgb(255 255 255 / 5%);
+  background: var(--color-background-tertiary);
   color: var(--color-text-primary);
 }
 .badge.dashed {
@@ -1658,9 +1659,9 @@ ul.parameters li {
   padding: 15px;
   padding-top: 0px;
   padding-left: 0px;
-  padding-right: 30px;
+  padding-right: 0px;
   display: flex;
-  width: 360px;
+  width: 240px;
   flex-direction: column;
   /*height: 100vh;*/
   overflow-y: scroll;
