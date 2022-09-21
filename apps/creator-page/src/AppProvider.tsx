@@ -254,11 +254,17 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   }, [account.info?.token, account.info?.pubkey]);
 
   const isCreator = useMemo(() => {
-    return account.info?.roles?.includes(RoleType.CREATOR) || false;
+    if (!account.info?.roles) {
+      return false;
+    }
+    return account.info.roles.includes(RoleType.CREATOR) || false;
   }, [account.info?.roles]);
 
   const isAdmin = useMemo(() => {
-    return account.info?.roles.includes('ADMIN') || false;
+    if (!account.info?.roles) {
+      return false;
+    }
+    return account.info.roles.includes('ADMIN') || false;
   }, [account.info]);
 
   const linkUser = useCallback(
