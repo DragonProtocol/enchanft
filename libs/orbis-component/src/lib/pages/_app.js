@@ -37,8 +37,8 @@ let tempCallback;
 
 /** Global App component */
 function App({ Component, pageProps }) {
-  const lastOrbisUser = localStorage.getItem("orbis-user")
-  const [user, setUser] = useState(lastOrbisUser);
+  // const lastOrbisUser = localStorage.getItem("orbis-user")
+  const [user, setUser] = useState(null);
   // const group_id = GROUP_ID;
   const {group_id,channel_id,routePrefix} = pageProps;
   // console.log('pass in params: ',group_id,channel_id)

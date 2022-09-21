@@ -32,13 +32,13 @@ export default function GroupHome() {
         <div className="main dashed-card">
           <div className="flex-column flex-1">
             {/** Show channel details */}
-            <div className="channel-details flex-column v-justify-content-center mbottom-15">
+            {/* <div className="channel-details flex-column v-justify-content-center mbottom-15">
               <div className="flex-row">
                 <img src="/img/icons/group-home-white.png" height="15" className="mright-5" />
                 <p className="m-0 fw-400">home</p>
               </div>
                 <p className="secondary m-0 mtop-5 fs-14">Home channel for this group.</p>
-            </div>
+            </div> */}
 
             {/** Show posts feed */}
             {group_id &&
@@ -48,7 +48,7 @@ export default function GroupHome() {
         </div>
 
         {/** Right side */}
-        <RightSide type="group-members" details={group_id} />
+        {/* <RightSide type="group-members" details={group_id} /> */}
       </div>
     </>
   )
