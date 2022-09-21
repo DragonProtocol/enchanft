@@ -13,6 +13,7 @@ export const SIGN_MSG =
 export enum TokenType {
   Solana = 'solana',
   Ethereum = 'ethereum',
+  Aptos = 'aptos',
 }
 export function setLoginToken(token: string, pubkey: string, type: TokenType) {
   const key = genTokenKey(pubkey, type);

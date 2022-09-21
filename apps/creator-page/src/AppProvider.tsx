@@ -38,6 +38,10 @@ type MetaMaskProvider = {
   provider: any;
   publicKeyStr: string;
 };
+type PetraProvider = {
+  provider: any;
+  publicKeyStr: string;
+};
 
 export type SignMsgResult = {
   walletType: TokenType;
@@ -138,25 +142,32 @@ export const AppContext = createContext<AppContextData>(DefaultCtxData);
 const DefaultWallet = (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '';
 
 export const AppProvider = ({ children }: PropsWithChildren) => {
+  const [petraValid, setPetraValid] = useState(false);
   const [phantomValid, setPhantomValid] = useState(false);
   const [metaMaskValid, setMetaMaskValid] = useState(false);
   const [metaMask, setMetaMask] = useState<MetaMaskProvider | null>(null);
   const [phantom, setPhantom] = useState<PhantomProvider | null>(null);
+  const [petra, setPetra] = useState<PetraProvider | null>(null);
   const [account, setAccount] = useState<AppAccount>(DefaultCtxData.account);
 
   useEffect(() => {
     const cb = () => {
       let phantomValid = false;
       let metaMaskValid = false;
+      let petraValid = false;
       if (windowObj.solana && windowObj.solana.isPhantom) {
         phantomValid = true;
       }
       if (windowObj.ethereum) {
         metaMaskValid = true;
       }
+      if (windowObj.aptos) {
+        petraValid = true;
+      }
       setPhantomValid(phantomValid);
       setMetaMaskValid(metaMaskValid);
-      walletCheck(metaMaskValid, phantomValid);
+      setPetraValid(petraValid);
+      walletCheck(metaMaskValid, phantomValid, petraValid);
     };
     window.addEventListener('load', cb);
     return () => {
@@ -193,10 +204,15 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   );
 
   const walletCheck = useCallback(
-    async (metamaskValid: boolean, phantomValid: boolean) => {
+    async (
+      metamaskValid: boolean,
+      phantomValid: boolean,
+      petraValid: boolean
+    ) => {
       console.log('walletCheck', {
         metamaskValid,
         phantomValid,
+        petraValid,
         DefaultWallet,
       });
       if (metamaskValid && DefaultWallet === TokenType.Ethereum) {
@@ -241,6 +257,30 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           await getProfileWithToken(
             account.lastLoginToken,
             TokenType.Solana,
+            addr.toString()
+          );
+        }
+      }
+      if (petraValid && DefaultWallet === TokenType.Aptos) {
+        if (windowObj.petraValidChecked) return;
+        windowObj.petraValidChecked = true;
+        console.log('getAptosProvider' + Date.now());
+        const provider = await getAptosProvider();
+        if (!provider) {
+          return;
+        }
+        const addr = await getAptosAddr();
+        setPetra({
+          provider: provider,
+          publicKeyStr: addr,
+        });
+        console.log('aptosValid', addr);
+        if (account.lastPubkey !== addr.toString()) {
+          setAccount({ ...account, info: null });
+        } else {
+          await getProfileWithToken(
+            account.lastLoginToken,
+            TokenType.Aptos,
             addr.toString()
           );
         }
@@ -359,6 +399,15 @@ async function getSolanaProvider() {
   }
 }
 
+async function getAptosProvider() {
+  if (windowObj.aptos) {
+    const provider = await windowObj.aptos.connect();
+    return provider;
+  } else {
+    return null;
+  }
+}
+
 async function getPhantomAddr() {
   const solanaProvider = await getSolanaProvider();
   if (!solanaProvider) return;
@@ -372,6 +421,13 @@ async function getMetaMaskAddr() {
   const signer = ethProvider.getSigner();
   const walletAddr = await signer.getAddress();
   return walletAddr;
+}
+
+async function getAptosAddr() {
+  const provider = await getAptosProvider();
+  if (!provider) return;
+  const { publicKey } = await provider.account();
+  return publicKey;
 }
 
 async function signMsgWithPhantom(): Promise<SignMsgResult | undefined> {
@@ -390,5 +446,15 @@ async function signMsgWithMetaMask(): Promise<SignMsgResult | undefined> {
   const signer = ethProvider.getSigner();
   const walletAddr = await signer.getAddress();
   const signature = await signer.signMessage(SIGN_MSG);
+  return { walletType: TokenType.Ethereum, pubkey: walletAddr, signature };
+}
+
+async function signMsgWithAptos(): Promise<SignMsgResult | undefined> {
+  const provider = await getAptosProvider();
+  if (!provider) return;
+  const walletAddr = await getAptosAddr();
+  const { signature } = await provider.signMessage({
+    SIGN_MSG,
+  });
   return { walletType: TokenType.Ethereum, pubkey: walletAddr, signature };
 }
