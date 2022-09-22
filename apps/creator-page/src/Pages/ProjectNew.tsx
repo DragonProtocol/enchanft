@@ -36,6 +36,9 @@ export default function ProjectNew() {
       if (project.blockchain === BlockchainType.Ethereum) {
         chainId = 1;
       }
+      if (project.blockchain === BlockchainType.Aptos) {
+        chainId = 2;
+      }
 
       log.debug('createNewProject', project);
       setCreating(true);

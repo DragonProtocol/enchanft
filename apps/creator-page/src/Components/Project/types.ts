@@ -6,6 +6,7 @@ export enum State {
 export enum BlockchainType {
   Solana = 'Solana',
   Ethereum = 'Ethereum',
+  Aptos = 'Aptos',
 }
 export type Project = {
   name: string;

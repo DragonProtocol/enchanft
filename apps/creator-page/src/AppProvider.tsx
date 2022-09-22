@@ -445,7 +445,7 @@ async function getMartianAddr() {
   const provider = await getAptosProvider();
   if (!provider) return;
   const { publicKey } = await provider.account();
-  return publicKey;
+  return publicKey.slice(2);
 }
 
 async function signMsgWithPhantom(): Promise<SignMsgResult | undefined> {
@@ -478,7 +478,7 @@ async function signMsgWithMartian(): Promise<SignMsgResult | undefined> {
   const { signature } = resp;
   return {
     walletType: TokenType.Aptos,
-    pubkey: walletAddr.slice(2),
+    pubkey: walletAddr,
     signature: signature.slice(2),
     payloadMsg: resp.fullMessage,
   };

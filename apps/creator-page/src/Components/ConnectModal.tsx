@@ -15,6 +15,7 @@ import {
   LAST_LOGIN_TYPE,
   SIGN_MSG,
   TokenType,
+  tokenTypeToChainType,
 } from '../utils/token';
 import IconClose from './Icons/IconClose';
 import IconMartian from './Icons/IconMartian';
@@ -96,33 +97,14 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
 
   const loginWithSign = useCallback(
     async (data: SignMsgResult) => {
-      let type;
-
-      if (data.walletType === TokenType.Ethereum) {
-        type = ChainType.EVM;
-      }
-      if (data.walletType === TokenType.Solana) {
-        type = ChainType.SOLANA;
-      }
+      let type = tokenTypeToChainType(data.walletType);
 
       const loginData = {
         signature: data.signature,
-        payload: data.payloadMsg ?? SIGN_MSG,
+        payload: data.payloadMsg ? data.payloadMsg : SIGN_MSG,
         pubkey: data.pubkey,
         type: type as ChainType,
       };
-
-      console.log(loginData);
-
-      if (!loginData.type) {
-        // const verified = nacl.sign.detached.verify(
-        //   Buffer.from(loginData.payload),
-        //   Buffer.from(loginData.signature, 'hex'),
-        //   Buffer.from(loginData.pubkey, 'hex')
-        // );
-        // console.log(verified);
-        return '';
-      }
 
       try {
         const resp = await login(loginData);
@@ -167,6 +149,7 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
         setSignErr(true);
         return;
       }
+      console.log('signer', login, data);
       if (!data) {
         return;
       }
@@ -175,9 +158,9 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       if (login) {
         setLoading(true);
         token = await loginWithSign(data);
-      }
-      if (!token) {
-        return;
+        if (!token) {
+          return;
+        }
       }
       return { ...data, token };
     },
@@ -210,7 +193,7 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
         setLoading(false);
         setWelcome(true);
       } else {
-        setLinkErr(true);
+        setLoginErr(true);
       }
     } else {
       setShowNewAccountBtn(true);
@@ -224,15 +207,17 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
   ]);
 
   const connectMartian = useCallback(async () => {
+    console.log('connectMartian');
     const pubkey = await getMartianAddr();
     if (!pubkey) return;
     if (account.lastLoginType === TokenType.Aptos) {
       const result = await signMsgLogin(signMsgWithMartian, true);
+      console.log({ result });
       if (result) {
         setLoading(false);
         setWelcome(true);
       } else {
-        setLinkErr(true);
+        setLoginErr(true);
       }
     } else {
       setShowNewAccountBtn(true);
@@ -287,26 +272,34 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
   ]);
 
   const loginWithLastLogin = useCallback(async () => {
+    console.log({ newAccountWith });
     if (newAccountWith === TokenType.Ethereum) {
       const pubkey = await getMetaMaskAddr();
       if (!pubkey) return;
 
-      const data = await signMsgLogin(signMsgWithPhantom, true);
+      let data;
+      if (account.lastLoginType === TokenType.Aptos) {
+        data = await signMsgLogin(signMsgWithMartian, true);
+      }
+      if (account.lastLoginType === TokenType.Solana) {
+        data = await signMsgLogin(signMsgWithPhantom, true);
+      }
+
       if (!data?.token) return;
 
       const newData = await signMsgLogin(signMsgWithMetaMask);
       if (!newData) return;
 
+      let type = tokenTypeToChainType(newData.walletType);
+      if (!type) return;
+
       try {
         await linkAccount(
           {
-            type:
-              newData.walletType === TokenType.Solana
-                ? ChainType.SOLANA
-                : ChainType.EVM,
+            type,
             signature: newData.signature,
             pubkey: newData.pubkey,
-            payload: SIGN_MSG,
+            payload: newData.payloadMsg ?? SIGN_MSG,
           },
           data.token
         );
@@ -323,21 +316,69 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       const pubkey = await getPhantomAddr();
       if (!pubkey) return;
 
-      const data = await signMsgLogin(signMsgWithMetaMask, true);
+      let data;
+      if (account.lastLoginType === TokenType.Aptos) {
+        data = await signMsgLogin(signMsgWithMartian, true);
+      }
+      if (account.lastLoginType === TokenType.Ethereum) {
+        data = await signMsgLogin(signMsgWithMetaMask, true);
+      }
+      if (!data?.token) return;
+
+      const newData = await signMsgLogin(signMsgWithPhantom);
+      console.log('newData', newData);
+      if (!newData) return;
+
+      let type = tokenTypeToChainType(newData.walletType);
+      console.log({ type }, newData);
+      if (!type) return;
+
+      try {
+        await linkAccount(
+          {
+            type,
+            signature: newData.signature,
+            pubkey: newData.pubkey,
+            payload: newData.payloadMsg ?? SIGN_MSG,
+          },
+          data.token
+        );
+        toast.success('link account success');
+      } catch (error) {
+        // setLinkErr(true);
+        toast.error('link account error');
+      } finally {
+        setLoading(false);
+        setWelcome(true);
+      }
+    }
+
+    if (newAccountWith === TokenType.Aptos) {
+      const pubkey = await getMartianAddr();
+      if (!pubkey) return;
+
+      let data;
+      if (account.lastLoginType === TokenType.Solana) {
+        data = await signMsgLogin(signMsgWithPhantom, true);
+      }
+      if (account.lastLoginType === TokenType.Ethereum) {
+        data = await signMsgLogin(signMsgWithMetaMask, true);
+      }
       if (!data?.token) return;
 
       const newData = await signMsgLogin(signMsgWithPhantom);
       if (!newData) return;
+
+      let type = tokenTypeToChainType(newData.walletType);
+      if (!type) return;
+
       try {
         await linkAccount(
           {
-            type:
-              newData.walletType === TokenType.Solana
-                ? ChainType.SOLANA
-                : ChainType.EVM,
+            type,
             signature: newData.signature,
             pubkey: newData.pubkey,
-            payload: SIGN_MSG,
+            payload: newData.payloadMsg ?? SIGN_MSG,
           },
           data.token
         );
@@ -351,19 +392,89 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       }
     }
   }, [
+    account.lastLoginType,
+    getMartianAddr,
     getMetaMaskAddr,
     getPhantomAddr,
     newAccountWith,
     signMsgLogin,
+    signMsgWithMartian,
     signMsgWithMetaMask,
     signMsgWithPhantom,
   ]);
 
-  const reSign = async () => {
+  const reSign = useCallback(async () => {
     setSignErr(false);
+    setLinkErr(false);
     if (!signerRef.current) return;
-    await signMsgLogin(signerRef.current, signerWithLogin.current);
-  };
+    const data = await signMsgLogin(signerRef.current, signerWithLogin.current);
+
+    // console.log('reSign', signerWithLogin.current, data);
+    // console.log('newAccountWith', newAccountWith);
+    if (!data) return;
+    if (signerWithLogin.current === true) {
+      let newData;
+      if (newAccountWith === TokenType.Solana) {
+        newData = await signMsgLogin(signMsgWithPhantom);
+      }
+      if (newAccountWith === TokenType.Ethereum) {
+        newData = await signMsgLogin(signMsgWithMetaMask);
+      }
+      if (newAccountWith === TokenType.Aptos) {
+        newData = await signMsgLogin(signMsgWithMartian);
+      }
+      if (!newData) return;
+      let type = tokenTypeToChainType(newData.walletType);
+      if (!type) return;
+
+      try {
+        await linkAccount(
+          {
+            type,
+            signature: newData.signature,
+            pubkey: newData.pubkey,
+            payload: newData.payloadMsg ?? SIGN_MSG,
+          },
+          data.token
+        );
+        toast.success('link account success');
+      } catch (error) {
+        toast.error('link account error');
+      } finally {
+        setLoading(false);
+        setWelcome(true);
+      }
+    }
+    if (signerWithLogin.current === false) {
+      let type = tokenTypeToChainType(data.walletType);
+      if (!type || !account.info?.token) return;
+      try {
+        await linkAccount(
+          {
+            type,
+            signature: data.signature,
+            pubkey: data.pubkey,
+            payload: data.payloadMsg ?? SIGN_MSG,
+          },
+          account.info?.token
+        );
+        toast.success('link account success');
+      } catch (error) {
+        // setLinkErr(true);
+        toast.error('link account error');
+      } finally {
+        setLoading(false);
+        setWelcome(true);
+      }
+    }
+  }, [
+    signMsgLogin,
+    newAccountWith,
+    signMsgWithPhantom,
+    signMsgWithMetaMask,
+    signMsgWithMartian,
+    account.info?.token,
+  ]);
 
   // console.log(account);
 
@@ -589,11 +700,22 @@ const ConnectBox = styled.div`
       display: flex;
       flex-direction: column;
       margin: 0 auto;
+      > div {
+        box-sizing: border-box;
+        height: 66px;
+        border-radius: 8px;
+        padding: 8px;
+      }
       > p {
         font-weight: 700;
         font-size: 18px;
         line-height: 27px;
         color: #333333;
+      }
+    }
+    & > .martian-select {
+      > div {
+        background-color: #222;
       }
     }
   }
@@ -649,7 +771,7 @@ const ConnectBox = styled.div`
 
     > div.martian {
       border-radius: 10px;
-      background: gray;
+      background: #222;
       box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25),
         inset 0px -4px 0px rgba(0, 0, 0, 0.25);
     }

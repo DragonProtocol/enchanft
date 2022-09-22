@@ -1,3 +1,5 @@
+import { ChainType } from '../api';
+
 const LOCAL_STORAGE_TOKEN = 'token';
 
 export const DEFAULT_WALLET = 'defaultWallet';
@@ -10,6 +12,7 @@ export const LAST_LOGIN_PUBKEY = 'last_login_pubkey';
 
 export const SIGN_MSG =
   'Sign this message to sign into ' + window.location.hostname;
+
 export enum TokenType {
   Solana = 'solana',
   Ethereum = 'ethereum',
@@ -40,4 +43,20 @@ function genTokenKey(pubkeyStr: string, type: TokenType) {
 
 function getLastLoginType() {
   return LAST_LOGIN_TYPE;
+}
+
+export function tokenTypeToChainType(tokenType: TokenType) {
+  let type;
+
+  if (tokenType === TokenType.Ethereum) {
+    type = ChainType.EVM;
+  }
+  if (tokenType === TokenType.Solana) {
+    type = ChainType.SOLANA;
+  }
+
+  if (tokenType === TokenType.Aptos) {
+    type = ChainType.APTOS;
+  }
+  return type;
 }
