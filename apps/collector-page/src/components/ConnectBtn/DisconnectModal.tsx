@@ -1,26 +1,7 @@
 import { Box, Button, Modal, Menu, MenuItem } from '@mui/material'
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state'
-import AvatarDefault from '../imgs/avatar.png'
 
-import {
-  selectAccount,
-  setConnectModal,
-  setAvatar,
-  setDefaultWallet,
-  setName,
-  setPubkey,
-  setToken,
-  userGetProfile,
-  userLogin,
-  resetLoginStatus,
-  ChainType,
-  setConnectWalletModalShow,
-  userOtherWalletLink,
-  ConnectModal,
-  userUnlink,
-} from '../../features/user/accountSlice'
+import { userUnlink } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
 import useWalletSign from '../../hooks/useWalletSign'

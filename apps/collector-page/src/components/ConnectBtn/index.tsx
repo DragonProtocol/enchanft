@@ -15,7 +15,6 @@ import {
   setToken,
   userGetProfile,
   userLogin,
-  ChainType,
   setConnectWalletModalShow,
   setIsLogin,
 } from '../../features/user/accountSlice'
@@ -57,7 +56,7 @@ export default function ConnectBtn() {
 
   return (
     <>
-      {(shortPubkey && account.token && (
+      {(account.isLogin && (
         // <PopupState variant="popover" popupId="demo-popup-menu">
         //   {(popupState) => (
         //     <React.Fragment>

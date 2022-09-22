@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 17:11:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 13:56:45
+ * @LastEditTime: 2022-09-22 13:42:24
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react'
 import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { AccountType } from '../types/entities'
 import { ChainType, getChainType } from '../utils/chain'
 
 export enum AccountOperationType {
@@ -47,12 +48,12 @@ export default (chainId?: number) => {
     const accountTypes = accounts.map((account) => account.accountType)
     switch (chainType) {
       case ChainType.EVM:
-        accountOperationType = accountTypes.includes('EVM')
+        accountOperationType = accountTypes.includes(AccountType.EVM)
           ? AccountOperationType.COMPLETED
           : AccountOperationType.BIND_METAMASK
         break
       case ChainType.SOLANA:
-        accountOperationType = accountTypes.includes('SOLANA')
+        accountOperationType = accountTypes.includes(AccountType.SOLANA)
           ? AccountOperationType.COMPLETED
           : AccountOperationType.BIND_PHANTOM
         break

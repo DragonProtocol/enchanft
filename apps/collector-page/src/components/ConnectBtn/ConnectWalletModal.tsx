@@ -15,10 +15,10 @@ import {
   userGetProfile,
   userLogin,
   resetLoginStatus,
-  ChainType,
   setConnectWalletModalShow,
   userOtherWalletLink,
   ConnectModal,
+  fetchTwitterOauthToken,
 } from '../../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { clearLoginToken, getLoginToken, SIGN_MSG, TokenType } from '../../utils/token'
@@ -30,6 +30,8 @@ import { AsyncRequestStatus } from '../../types'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
 import { MOBILE_BREAK_POINT } from '../../constants'
+import IconTwitter from '../common/icons/IconTwitter'
+import { AccountType } from '../../types/entities'
 
 enum LoginStatus {
   INIT = 'init',
@@ -53,11 +55,8 @@ export default function ConnectWalletModal() {
     useWalletSign()
 
   useEffect(() => {
-    if (!account.pubkey) {
-      return
-    }
-    if (account.pubkey) {
-      const existToken = getLoginToken(account.pubkey, account.defaultWallet)
+    if (account.isLogin) {
+      const existToken = getLoginToken(account.defaultWallet, account.pubkey)
       if (existToken) {
         dispatch(setToken(existToken))
         dispatch(userGetProfile())
@@ -67,7 +66,7 @@ export default function ConnectWalletModal() {
         dispatch(setName(''))
       }
     }
-  }, [account.pubkey, account.defaultWallet])
+  }, [account.isLogin, account.pubkey, account.defaultWallet])
 
   const handleLogin = async ({
     walletType,
@@ -98,10 +97,10 @@ export default function ConnectWalletModal() {
   const navigateToGuide = useCallback(() => {
     if (localStorage.getItem(`has-guide-${account.id}`)) return
     if (localStorage.getItem(`has-finish-${account.id}`)) return
-    const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
-    const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
-    const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
-    const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
+    const accountPhantom = account.accounts.find((item) => item.accountType === AccountType.SOLANA)
+    const accountMetamask = account.accounts.find((item) => item.accountType === AccountType.EVM)
+    const twitter = account.accounts.find((item) => item.accountType === AccountType.TWITTER)
+    const discord = account.accounts.find((item) => item.accountType === AccountType.DISCORD)
     if (accountPhantom && accountMetamask && twitter && discord) return
 
     navigate('/guide')
@@ -159,11 +158,21 @@ export default function ConnectWalletModal() {
     if (!signerRef.current) return
     await signMsg(signerRef.current)
   }
+  const connectTwitter = useCallback(() => {
+    if (!!account.lastLoginType && account.lastLoginType !== TokenType.Twitter) {
+      setShowNewAccountBtn(true)
+      setNewAccountWith(TokenType.Twitter)
+    } else {
+      setSignDone(true)
+      dispatch(fetchTwitterOauthToken())
+      handleClose()
+    }
+  }, [])
 
   const connectMetamask = useCallback(async () => {
     const pubkey = await getMetamaskAddr()
     if (!pubkey) return
-    if (account.lastLoginType === TokenType.Solana) {
+    if (!!account.lastLoginType && account.lastLoginType !== TokenType.Ethereum) {
       setShowNewAccountBtn(true)
       setNewAccountWith(TokenType.Ethereum)
     } else {
@@ -174,7 +183,7 @@ export default function ConnectWalletModal() {
   const connectPhantom = useCallback(async () => {
     const pubkey = await getPhantomAddr()
     if (!pubkey) return
-    if (account.lastLoginType === TokenType.Ethereum) {
+    if (!!account.lastLoginType && account.lastLoginType !== TokenType.Solana) {
       setShowNewAccountBtn(true)
       setNewAccountWith(TokenType.Solana)
     } else {
@@ -193,9 +202,17 @@ export default function ConnectWalletModal() {
       if (!pubkey) return
       await signMsg(signMsgWithPhantom)
     }
+    if (newAccountWith === TokenType.Twitter) {
+      dispatch(fetchTwitterOauthToken())
+      handleClose()
+    }
   }, [newAccountWith])
 
   const loginWithLastLogin = useCallback(async () => {
+    if (newAccountWith === TokenType.Twitter) {
+      dispatch(fetchTwitterOauthToken())
+      handleClose()
+    }
     if (newAccountWith === TokenType.Ethereum) {
       const pubkey = await getMetamaskAddr()
       if (!pubkey) return
@@ -255,6 +272,13 @@ export default function ConnectWalletModal() {
         </div>
         <p className="last-time">{account.lastLoginType === TokenType.Ethereum ? `(Last Time)` : ''}</p>
       </div>
+      <div onClick={connectTwitter} className={'twitter'}>
+        <div className="btn">
+          <IconTwitter />
+          <p>Twitter</p>
+        </div>
+        <p className="last-time">{account.lastLoginType === TokenType.Twitter ? `(Last Time)` : ''}</p>
+      </div>
     </>
   )
 
@@ -278,6 +302,16 @@ export default function ConnectWalletModal() {
       </div>
     )
   }
+  if (newAccountWith === TokenType.Twitter) {
+    walletElem = (
+      <div className="twitter-select">
+        <div>
+          <IconTwitter />
+        </div>
+        <p>Twitter</p>
+      </div>
+    )
+  }
 
   return (
     <>
@@ -294,7 +328,7 @@ export default function ConnectWalletModal() {
             top: '40%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: isMobile ? 335 : 384,
+            width: isMobile ? 335 : 576,
             bgcolor: 'background.paper',
             boxShadow: 24,
             py: '20px',
@@ -304,7 +338,7 @@ export default function ConnectWalletModal() {
           }}
         >
           <div className="title">
-            <p>Connect Wallet</p>
+            <p>Connect With</p>
           </div>
           <div className="wallet">{walletElem}</div>
           {showNewAccountBtn && (
@@ -509,7 +543,8 @@ const ConnectBox = styled(Box)`
       }
     }
     & > .metamask-select,
-    & > .phantom-select {
+    & > .phantom-select,
+    & > .twitter-select {
       height: 120px;
       display: flex;
       flex-direction: column;
@@ -525,6 +560,10 @@ const ConnectBox = styled(Box)`
   & .wallet {
     display: flex;
     justify-content: space-evenly;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      gap: 20px;
+      padding: 10px;
+    }
     > div.invalid {
       background-color: lightgray;
       cursor: not-allowed;
@@ -591,6 +630,17 @@ const ConnectBox = styled(Box)`
     > div.metamask {
       border-radius: 10px;
       background: #f6851b;
+      box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+      & svg,
+      & img {
+        padding: 3px;
+        background-color: #fff;
+        border-radius: 50%;
+      }
+    }
+    > div.twitter {
+      border-radius: 10px;
+      background: #5368ed;
       box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
       & svg,
       & img {

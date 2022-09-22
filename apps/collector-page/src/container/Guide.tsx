@@ -7,7 +7,6 @@ import {
   setConnectModal,
   ConnectModal,
   userOtherWalletLink,
-  ChainType,
   userUpdateProfile,
 } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
@@ -20,11 +19,12 @@ import EmailIcon from '../components/ConnectBtn/EmailIcon'
 import useWalletSign from '../hooks/useWalletSign'
 import AddIcon from '../components/common/icons/PngIconAdd'
 import { sortPubKey } from '../utils/solana'
-import { connectionSocialMedia } from '../utils/socialMedia'
+import { connectionSocialMedia, SocialMediaType } from '../utils/socialMedia'
 import { uploadAvatar } from '../services/api/login'
 import { toast } from 'react-toastify'
 import { AVATAR_SIZE_LIMIT, MOBILE_BREAK_POINT } from '../constants'
 import { Box, CircularProgress, Modal } from '@mui/material'
+import { AccountType } from '../types/entities'
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -49,8 +49,8 @@ export default function Guide() {
   const twitter = account.accounts.find((item) => item.accountType === 'TWITTER')?.thirdpartyName
   const discord = account.accounts.find((item) => item.accountType === 'DISCORD')?.thirdpartyName
 
-  const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
-  const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
+  const accountPhantom = account.accounts.find((item) => item.accountType === AccountType.SOLANA)
+  const accountMetamask = account.accounts.find((item) => item.accountType === AccountType.EVM)
 
   const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
   const [select, setSelect] = useState('tab1')
@@ -90,11 +90,11 @@ export default function Guide() {
   }, [phantomValid, accountPhantom])
 
   const bindTwitter = useCallback(async () => {
-    connectionSocialMedia('twitter')
+    connectionSocialMedia(SocialMediaType.TWITTER_OAUTH2_AUTHORIZE)
   }, [])
 
   const bindDiscord = useCallback(async () => {
-    connectionSocialMedia('discord')
+    connectionSocialMedia(SocialMediaType.DISCORD_OAUTH2_AUTHORIZE)
   }, [])
 
   const avatarIn = avatar || account.avatar
