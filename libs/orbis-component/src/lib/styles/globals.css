@@ -61,7 +61,7 @@ a {
   box-sizing: border-box;
 }
 p, input, ul, li {
-  font-size: 15px;
+  font-size: 16px;
   font-family: 'Ubuntu', sans-serif;
   color: var(--color-text-primary);
 }
@@ -358,7 +358,7 @@ p.tertiary, span.tertiary, label.tertiary, ul.tertiary li {
   color: var(--color-text-secondary);
   margin-left: 4px;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 16px;
 }
 .post .reactions .one-reaction.active {
   opacity: 1;
