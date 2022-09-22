@@ -36,8 +36,8 @@ export type TaskDetailContentProps = TaskDetailContentDataViewType
 const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetailContentProps) => {
   const { id, name, type, startTime, endTime, winnerNum, image, description, reward } = data
   const rewardTypeLabel = getTaskRewardTypeLabel(reward)
-  const startDate = new Date(startTime).toLocaleDateString()
-  const endDate = new Date(endTime).toLocaleDateString()
+  const startDate = new Date(startTime).toLocaleString('en-US', { hour12: false })
+  const endDate = new Date(endTime).toLocaleString('en-US', { hour12: false })
   const rewardValue = getTaskRewardTypeValue(reward)
   return (
     <TaskDetailContentWrapper>

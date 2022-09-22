@@ -20,6 +20,7 @@ export type ProjectDetailBasicInfoDataType = {
   chainId: number
   whitelists?: Whitelist[]
   announcement?: Announcement
+  mintLimited: number
 }
 
 export type ProjectDetailBasicInfoViewConfigType = {
@@ -55,6 +56,7 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
     chainId,
     whitelists,
     announcement,
+    mintLimited,
   } = data
   const { displayMintInfo } = {
     ...defaultViewConfig,
@@ -148,9 +150,10 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
                   </>
                 ))}
             </ProjectMintInfoBoxTop>
-            {publicSalePrice && (
-              <PrjectMintInfoPriceText>MAX 1 Tokens . Mint Price {publicSalePrice}</PrjectMintInfoPriceText>
-            )}
+            <PrjectMintInfoPriceText>
+              {mintLimited && `MAX ${mintLimited} Tokens .`}
+              {publicSalePrice && `Mint Price ${publicSalePrice}`}
+            </PrjectMintInfoPriceText>
           </ProjectMintInfoBox>
         </>
       )}
