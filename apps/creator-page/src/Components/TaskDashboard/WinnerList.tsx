@@ -90,7 +90,7 @@ export default function WinnerList({
                   setActiveList('candidates');
                 }}
               >
-                Entry List
+                Entries
               </span>
               <span
                 className={(activeList === 'participants' && 'active') || ''}
@@ -98,7 +98,7 @@ export default function WinnerList({
                   setActiveList('participants');
                 }}
               >
-                Participant List
+                Participants
               </span>
             </h3>
 
@@ -143,7 +143,7 @@ export default function WinnerList({
                 setActiveList('whitelist');
               }}
             >
-              Winner List
+              Winners
             </span>
             <span
               style={{
@@ -155,7 +155,7 @@ export default function WinnerList({
                 setActiveList('candidates');
               }}
             >
-              Entry List
+              Entries
             </span>
             <span
               className={(activeList === 'participants' && 'active') || ''}
@@ -163,7 +163,7 @@ export default function WinnerList({
                 setActiveList('participants');
               }}
             >
-              Participant List
+              Participants
             </span>
           </h3>
           <div>
@@ -178,7 +178,7 @@ export default function WinnerList({
                     setConfirmModalOpen(true);
                   }}
                 >
-                  Entries {selected.length}
+                  Confirm {selected.length}
                 </CustomBtn>
               </>
             )}
@@ -365,7 +365,9 @@ const WinnerListBox = styled.div`
       & span {
         text-align: center;
         display: inline-block;
-        padding: 8px 10px;
+        box-sizing: content-box;
+        width: 110px;
+        padding: 8px;
         font-weight: 700;
         font-size: 18px;
         line-height: 27px;
