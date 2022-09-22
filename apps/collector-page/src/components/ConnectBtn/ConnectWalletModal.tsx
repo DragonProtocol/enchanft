@@ -258,20 +258,25 @@ export default function ConnectWalletModal() {
 
   let walletElem = (
     <>
-      <div onClick={connectPhantom} className={phantomValid ? 'phantom' : 'phantom invalid'}>
-        <div className="btn">
-          <IconPhantom />
-          <p>Phantom</p>
-        </div>
-        <p className="last-time">{account.lastLoginType === TokenType.Solana ? `(Last Time)` : ''}</p>
-      </div>
-      <div onClick={connectMetamask} className={metamaskValid ? 'metamask' : 'metamask invalid'}>
-        <div className="btn">
-          <IconMetamask />
-          <p>MetaMask</p>
-        </div>
-        <p className="last-time">{account.lastLoginType === TokenType.Ethereum ? `(Last Time)` : ''}</p>
-      </div>
+      {!isMobile && (
+        <>
+          <div onClick={connectPhantom} className={phantomValid ? 'phantom' : 'phantom invalid'}>
+            <div className="btn">
+              <IconPhantom />
+              <p>Phantom</p>
+            </div>
+            <p className="last-time">{account.lastLoginType === TokenType.Solana ? `(Last Time)` : ''}</p>
+          </div>
+          <div onClick={connectMetamask} className={metamaskValid ? 'metamask' : 'metamask invalid'}>
+            <div className="btn">
+              <IconMetamask />
+              <p>MetaMask</p>
+            </div>
+            <p className="last-time">{account.lastLoginType === TokenType.Ethereum ? `(Last Time)` : ''}</p>
+          </div>
+        </>
+      )}
+
       <div onClick={connectTwitter} className={'twitter'}>
         <div className="btn">
           <IconTwitter />
