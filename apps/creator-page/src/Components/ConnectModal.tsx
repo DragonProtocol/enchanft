@@ -271,6 +271,19 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
     signMsgWithPhantom,
   ]);
 
+  const linkAccountProcess = useCallback(async (data: any, token: string) => {
+    try {
+      await linkAccount(data, token);
+      toast.success('link account success');
+    } catch (error) {
+      // setLinkErr(true);
+      toast.error('link account error');
+    } finally {
+      setLoading(false);
+      setWelcome(true);
+    }
+  }, []);
+
   const loginWithLastLogin = useCallback(async () => {
     console.log({ newAccountWith });
     if (newAccountWith === TokenType.Ethereum) {
@@ -293,24 +306,15 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       let type = tokenTypeToChainType(newData.walletType);
       if (!type) return;
 
-      try {
-        await linkAccount(
-          {
-            type,
-            signature: newData.signature,
-            pubkey: newData.pubkey,
-            payload: newData.payloadMsg ?? SIGN_MSG,
-          },
-          data.token
-        );
-        toast.success('link account success');
-      } catch (error) {
-        // setLinkErr(true);
-        toast.error('link account error');
-      } finally {
-        setLoading(false);
-        setWelcome(true);
-      }
+      await linkAccountProcess(
+        {
+          type,
+          signature: newData.signature,
+          pubkey: newData.pubkey,
+          payload: newData.payloadMsg ?? SIGN_MSG,
+        },
+        data.token
+      );
     }
     if (newAccountWith === TokenType.Solana) {
       const pubkey = await getPhantomAddr();
@@ -333,24 +337,15 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       console.log({ type }, newData);
       if (!type) return;
 
-      try {
-        await linkAccount(
-          {
-            type,
-            signature: newData.signature,
-            pubkey: newData.pubkey,
-            payload: newData.payloadMsg ?? SIGN_MSG,
-          },
-          data.token
-        );
-        toast.success('link account success');
-      } catch (error) {
-        // setLinkErr(true);
-        toast.error('link account error');
-      } finally {
-        setLoading(false);
-        setWelcome(true);
-      }
+      await linkAccountProcess(
+        {
+          type,
+          signature: newData.signature,
+          pubkey: newData.pubkey,
+          payload: newData.payloadMsg ?? SIGN_MSG,
+        },
+        data.token
+      );
     }
 
     if (newAccountWith === TokenType.Aptos) {
@@ -366,36 +361,28 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       }
       if (!data?.token) return;
 
-      const newData = await signMsgLogin(signMsgWithPhantom);
+      const newData = await signMsgLogin(signMsgWithMartian);
       if (!newData) return;
 
       let type = tokenTypeToChainType(newData.walletType);
       if (!type) return;
 
-      try {
-        await linkAccount(
-          {
-            type,
-            signature: newData.signature,
-            pubkey: newData.pubkey,
-            payload: newData.payloadMsg ?? SIGN_MSG,
-          },
-          data.token
-        );
-        toast.success('link account success');
-      } catch (error) {
-        // setLinkErr(true);
-        toast.error('link account error');
-      } finally {
-        setLoading(false);
-        setWelcome(true);
-      }
+      await linkAccountProcess(
+        {
+          type,
+          signature: newData.signature,
+          pubkey: newData.pubkey,
+          payload: newData.payloadMsg ?? SIGN_MSG,
+        },
+        data.token
+      );
     }
   }, [
     account.lastLoginType,
     getMartianAddr,
     getMetaMaskAddr,
     getPhantomAddr,
+    linkAccountProcess,
     newAccountWith,
     signMsgLogin,
     signMsgWithMartian,
@@ -427,49 +414,33 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       let type = tokenTypeToChainType(newData.walletType);
       if (!type) return;
 
-      try {
-        await linkAccount(
-          {
-            type,
-            signature: newData.signature,
-            pubkey: newData.pubkey,
-            payload: newData.payloadMsg ?? SIGN_MSG,
-          },
-          data.token
-        );
-        toast.success('link account success');
-      } catch (error) {
-        toast.error('link account error');
-      } finally {
-        setLoading(false);
-        setWelcome(true);
-      }
+      await linkAccountProcess(
+        {
+          type,
+          signature: newData.signature,
+          pubkey: newData.pubkey,
+          payload: newData.payloadMsg ?? SIGN_MSG,
+        },
+        data.token
+      );
     }
     if (signerWithLogin.current === false) {
       let type = tokenTypeToChainType(data.walletType);
       if (!type || !account.info?.token) return;
-      try {
-        await linkAccount(
-          {
-            type,
-            signature: data.signature,
-            pubkey: data.pubkey,
-            payload: data.payloadMsg ?? SIGN_MSG,
-          },
-          account.info?.token
-        );
-        toast.success('link account success');
-      } catch (error) {
-        // setLinkErr(true);
-        toast.error('link account error');
-      } finally {
-        setLoading(false);
-        setWelcome(true);
-      }
+      await linkAccountProcess(
+        {
+          type,
+          signature: data.signature,
+          pubkey: data.pubkey,
+          payload: data.payloadMsg ?? SIGN_MSG,
+        },
+        account.info?.token
+      );
     }
   }, [
     signMsgLogin,
     newAccountWith,
+    linkAccountProcess,
     signMsgWithPhantom,
     signMsgWithMetaMask,
     signMsgWithMartian,
