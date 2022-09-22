@@ -16,6 +16,7 @@ import {
   TokenType,
 } from '../utils/token';
 import IconClose from './Icons/IconClose';
+import IconMartian from './Icons/IconMartian';
 import IconPhantomWhite from './Icons/IconPhantomWhite';
 import PngIconCongratulate from './Icons/PngIconCongratulate';
 import PngIconMetaMask from './Icons/PngIconMetaMask';
@@ -68,10 +69,13 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
   const {
     phantomValid,
     metaMaskValid,
+    martianValid,
     getPhantomAddr,
     getMetaMaskAddr,
+    getMartianAddr,
     signMsgWithPhantom,
     signMsgWithMetaMask,
+    signMsgWithMartian,
     updateAccount,
     account,
   } = useAppConfig();
@@ -91,15 +95,28 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
 
   const loginWithSign = useCallback(
     async (data: SignMsgResult) => {
+      let type;
+
+      if (data.walletType === TokenType.Ethereum) {
+        type = ChainType.EVM;
+      }
+      if (data.walletType === TokenType.Solana) {
+        type = ChainType.SOLANA;
+      }
+
       const loginData = {
         signature: data.signature,
-        payload: SIGN_MSG,
+        payload: data.payloadMsg ?? SIGN_MSG,
         pubkey: data.pubkey,
-        type:
-          data.walletType === TokenType.Solana
-            ? ChainType.SOLANA
-            : ChainType.EVM,
+        type: type as ChainType,
       };
+
+      console.log(loginData);
+
+      if (!loginData.type) {
+        return '';
+      }
+
       try {
         const resp = await login(loginData);
         localStorage.setItem(LAST_LOGIN_TYPE, data.walletType);
@@ -163,10 +180,7 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
   const connectPhantom = useCallback(async () => {
     const pubkey = await getPhantomAddr();
     if (!pubkey) return;
-    if (account.lastLoginType === TokenType.Ethereum) {
-      setShowNewAccountBtn(true);
-      setNewAccountWith(TokenType.Solana);
-    } else {
+    if (account.lastLoginType === TokenType.Solana) {
       const result = await signMsgLogin(signMsgWithPhantom, true);
       if (result) {
         setLoading(false);
@@ -174,16 +188,16 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       } else {
         setLoginErr(true);
       }
+    } else {
+      setShowNewAccountBtn(true);
+      setNewAccountWith(TokenType.Solana);
     }
   }, [account.lastLoginType, getPhantomAddr, signMsgLogin, signMsgWithPhantom]);
 
   const connectMetamask = useCallback(async () => {
     const pubkey = await getMetaMaskAddr();
     if (!pubkey) return;
-    if (account.lastLoginType === TokenType.Solana) {
-      setShowNewAccountBtn(true);
-      setNewAccountWith(TokenType.Ethereum);
-    } else {
+    if (account.lastLoginType === TokenType.Ethereum) {
       const result = await signMsgLogin(signMsgWithMetaMask, true);
       if (result) {
         setLoading(false);
@@ -191,6 +205,9 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       } else {
         setLinkErr(true);
       }
+    } else {
+      setShowNewAccountBtn(true);
+      setNewAccountWith(TokenType.Ethereum);
     }
   }, [
     account.lastLoginType,
@@ -198,6 +215,23 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
     signMsgLogin,
     signMsgWithMetaMask,
   ]);
+
+  const connectMartian = useCallback(async () => {
+    const pubkey = await getMartianAddr();
+    if (!pubkey) return;
+    if (account.lastLoginType === TokenType.Aptos) {
+      const result = await signMsgLogin(signMsgWithMartian, true);
+      if (result) {
+        setLoading(false);
+        setWelcome(true);
+      } else {
+        setLinkErr(true);
+      }
+    } else {
+      setShowNewAccountBtn(true);
+      setNewAccountWith(TokenType.Aptos);
+    }
+  }, [account.lastLoginType, getMartianAddr, signMsgLogin, signMsgWithMartian]);
 
   const createNewAccount = useCallback(async () => {
     if (newAccountWith === TokenType.Ethereum) {
@@ -222,11 +256,25 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
         setLoginErr(true);
       }
     }
+
+    if (newAccountWith === TokenType.Aptos) {
+      const pubkey = await getMartianAddr();
+      if (!pubkey) return;
+      const result = await signMsgLogin(signMsgWithMartian, true);
+      if (result) {
+        setLoading(false);
+        setWelcome(true);
+      } else {
+        setLoginErr(true);
+      }
+    }
   }, [
+    getMartianAddr,
     getMetaMaskAddr,
     getPhantomAddr,
     newAccountWith,
     signMsgLogin,
+    signMsgWithMartian,
     signMsgWithMetaMask,
     signMsgWithPhantom,
   ]);
@@ -338,6 +386,18 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
           {account.lastLoginType === TokenType.Ethereum ? `(Last Time)` : ''}
         </p>
       </div>
+      <div
+        onClick={connectMartian}
+        className={martianValid ? 'martian' : 'martian invalid'}
+      >
+        <div className="btn">
+          <IconMartian />
+          <p>Martian</p>
+        </div>
+        <p className="last-time">
+          {account.lastLoginType === TokenType.Aptos ? `(Last Time)` : ''}
+        </p>
+      </div>
     </>
   );
 
@@ -358,6 +418,17 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
           <PngIconMetaMask />
         </div>
         <p>MetaMask</p>
+      </div>
+    );
+  }
+
+  if (newAccountWith === TokenType.Aptos) {
+    walletElem = (
+      <div className="martian-select">
+        <div>
+          <IconMartian />
+        </div>
+        <p>Martian</p>
       </div>
     );
   }
@@ -481,7 +552,7 @@ const ConnectBox = styled.div`
   justify-content: center;
   flex-direction: column;
   padding: 20px;
-  width: 384px;
+  width: 484px;
   box-sizing: border-box;
   /* border-radius: 10px; */
   & .title {
@@ -504,6 +575,7 @@ const ConnectBox = styled.div`
         background: #551ff4;
       }
     }
+    & > .martian-select,
     & > .metamask-select,
     & > .phantom-select {
       height: 120px;
@@ -520,6 +592,7 @@ const ConnectBox = styled.div`
   }
   & .wallet {
     display: flex;
+    gap: 20px;
     justify-content: space-between;
     > div.invalid {
       background-color: lightgray;
@@ -531,8 +604,8 @@ const ConnectBox = styled.div`
       justify-content: center;
       width: 50%;
       width: 160px;
-      height: 160px;
-      /* padding: 10px; */
+      height: 120px;
+      padding: 10px;
       text-align: center;
       color: #fff;
       cursor: pointer;
@@ -565,6 +638,13 @@ const ConnectBox = styled.div`
         line-height: 18px;
         color: #ffffff;
       }
+    }
+
+    > div.martian {
+      border-radius: 10px;
+      background: gray;
+      box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25),
+        inset 0px -4px 0px rgba(0, 0, 0, 0.25);
     }
 
     > div.phantom {
