@@ -20,7 +20,7 @@ import { AxiosError } from 'axios';
 
 export default function TaskNew() {
   const { slug } = useParams();
-  const { account, validLogin, updateAccount } = useAppConfig();
+  const { account, validLogin, updateAccount, isCreator } = useAppConfig();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { data: project } = useAppSelector(selectProjectDetail);
@@ -36,7 +36,9 @@ export default function TaskNew() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submitTask = useCallback(async () => {
-    if (!slug || !account.info?.token || !project || !validLogin) return;
+    if (!slug || !account.info?.token || !project || !validLogin || !isCreator)
+      return;
+
     if (state.actions.length === 0) {
       toast.error('cannot create task without action!!!');
       return;
