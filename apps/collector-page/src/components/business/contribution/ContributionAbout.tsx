@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-15 19:12:29
+ * @LastEditTime: 2022-09-22 16:13:21
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -69,7 +69,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
   const DiscordLinkComponent = <LinkTextBtn onClick={onDiscord}>#{discordName || name}</LinkTextBtn>
   const questions = [
     {
-      title: 'Q: How to get contribution token in this community?',
+      title: 'Q: How to get contribution scores in this community?',
       answers: [
         {
           display: true,
@@ -98,7 +98,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
         {
           display: !!twitterId && !!twitterName,
           type: QA_ANSWER_TYPE.TWITTER,
-          title: <>Like, retweet {TwitterLinkComponent} daily on Twitter to earn contribution token.</>,
+          title: <>Like, retweet {TwitterLinkComponent} daily on Twitter to earn contribution scores.</>,
           content: (
             <CommunityUserNumberBox>
               <CommunityUserNumberItem>

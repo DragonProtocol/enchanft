@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 10:50:54
+ * @LastEditTime: 2022-09-22 16:10:51
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -75,7 +75,7 @@ const ContributionList: React.FC<ContributionListProps> = ({
       <ContributioHeaderBox>
         <PngIconTrophy />
         <ContributioHeaderRigt>
-          <ContributionTitle>Contribution Token</ContributionTitle>
+          <ContributionTitle>Contribution Scores</ContributionTitle>
           {displayMembersTotal && <CotributionMembersTotal>{membersTotal} members</CotributionMembersTotal>}
           {isDesktop && displayDownload && (
             <DownloadBtn onClick={handleDownload} disabled={disabledDownload}>

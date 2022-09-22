@@ -79,7 +79,7 @@ export default function Preview({
                 {state.reward.type === RewardType.WHITELIST && <span>Reward: whitelist</span>}
                 {state.reward.type === RewardType.OTHERS && <span>Reward: {state.reward.name}</span>}
                 {state.reward.type === RewardType.CONTRIBUTION_TOKEN && (
-                  <span>Reward: contribution token {state.reward.token_num}</span>
+                  <span>Reward: contribution scores {state.reward.token_num}</span>
                 )}
               </div>
               <div className="desc">
