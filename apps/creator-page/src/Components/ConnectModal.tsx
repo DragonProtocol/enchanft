@@ -546,7 +546,7 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
             {account.lastLoginInfo.name}
           </button>
           <button className="new" onClick={createNewAccount}>
-            Create New Account
+            Continue With Another Account
           </button>
         </div>
       )}
