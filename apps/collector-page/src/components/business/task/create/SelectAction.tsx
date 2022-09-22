@@ -6,10 +6,10 @@ import CheckIcon from '@mui/icons-material/Check'
 import CloseIcon from '@mui/icons-material/Close'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 
-import { ChainType, selectAccount } from '../../../../features/user/accountSlice'
+import { selectAccount } from '../../../../features/user/accountSlice'
 import { useAppSelector } from '../../../../store/hooks'
 import { Action, ActionType, ActionTypeMore, State } from './state'
-import { connectionSocialMedia } from '../../../../utils/socialMedia'
+import { connectionSocialMedia, SocialMediaType } from '../../../../utils/socialMedia'
 import TwitterIcon from '../../../ConnectBtn/TwitterIcon'
 import DiscordIcon from '../../../ConnectBtn/DiscordIcon'
 import IconCheckboxChecked from '../../../common/icons/IconCheckboxChecked'
@@ -22,6 +22,7 @@ import { checkTwitterNameValid, checkTweetIdValid } from '../../../../services/a
 import PngIconDelete from '../../../common/icons/PngIconDelete'
 import PngIconDone from '../../../common/icons/PngIconDone'
 import { CREATE_TASK_DEFAULT_INVITE_NUM } from '../../../../constants'
+import { AccountType } from '../../../../types/entities'
 
 export default function SelectActions({
   hasInviteBot,
@@ -41,8 +42,8 @@ export default function SelectActions({
   const communityTwitterName = communityTwitter.split('/')[3]
   const account = useAppSelector(selectAccount)
 
-  const discord = account.accounts.find((item) => item.accountType === ChainType.DISCORD)
-  const twitter = account.accounts.find((item) => item.accountType === ChainType.TWITTER)
+  const discord = account.accounts.find((item) => item.accountType === AccountType.DISCORD)
+  const twitter = account.accounts.find((item) => item.accountType === AccountType.TWITTER)
 
   const [followTwitter, setFollowTwitter] = useState(false)
   const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<Array<string>>(
@@ -785,7 +786,7 @@ function CustomCheckBox({ checked, onChange }: { checked: boolean; onChange: () 
 
 function ConnectTwitter() {
   return (
-    <div className="btn twitter" onClick={() => connectionSocialMedia('twitter')}>
+    <div className="btn twitter" onClick={() => connectionSocialMedia(SocialMediaType.TWITTER_OAUTH2_AUTHORIZE)}>
       <TwitterIcon />
       <p>{'Connect Twitter First'}</p>
     </div>
