@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
-import { useCallback, useMemo } from 'react';
+import log from 'loglevel';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -17,6 +18,7 @@ export default function ProjectNew() {
   const navigate = useNavigate();
   const { account, isAdmin, updateAccount } = useAppConfig();
   const dispatch = useAppDispatch();
+  const [creating, setCreating] = useState(false);
 
   const cancelEdit = useCallback(() => {
     navigate(-1);
@@ -24,7 +26,7 @@ export default function ProjectNew() {
 
   const createNewProject = useCallback(
     async (project: Project) => {
-      console.log('createNewProject', project);
+      if (creating) return;
       if (!isAdmin) return;
       if (!account.info?.token) return;
       let chainId = -1;
@@ -35,6 +37,8 @@ export default function ProjectNew() {
         chainId = 1;
       }
 
+      log.debug('createNewProject', project);
+      setCreating(true);
       try {
         await createProject(
           {
@@ -58,9 +62,11 @@ export default function ProjectNew() {
         } else {
           toast.error('create fail!');
         }
+      } finally {
+        setCreating(false);
       }
     },
-    [account, dispatch, isAdmin, navigate, updateAccount]
+    [account, creating, dispatch, isAdmin, navigate, updateAccount]
   );
 
   if (!isAdmin) {

@@ -35,7 +35,6 @@ export function TaskDashboard() {
     pickedWhiteList,
     reward,
   } = dashboardData;
-  console.log(dashboardData);
 
   const downloadWinners = useCallback(
     (type: string) => {
@@ -82,8 +81,6 @@ export function TaskDashboard() {
       </DashboardBox>
     );
   }
-
-  log.debug(dashboardData);
 
   return (
     <DashboardBox>
