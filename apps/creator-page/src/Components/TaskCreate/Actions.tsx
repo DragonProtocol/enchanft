@@ -331,7 +331,7 @@ export default function Actions({
                 }}
               />
               <span id="invite-friends-msg" className="msg">
-                invite
+                Invite
                 <input
                   title="task-invite"
                   min={'1'}

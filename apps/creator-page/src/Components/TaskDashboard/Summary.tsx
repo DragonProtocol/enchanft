@@ -28,7 +28,6 @@ export default function Summary({
   const { slug, taskId } = useParams();
   const navigate = useNavigate();
   const { data: project } = useAppSelector(selectProjectDetail);
-  console.log('taskInfo', taskId);
   return (
     <TaskTitleBox>
       <div className="title">

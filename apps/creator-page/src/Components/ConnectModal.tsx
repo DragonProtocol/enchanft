@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+
 import { ChainType, linkAccount, login } from '../api';
 import { SignMsgResult, useAppConfig } from '../AppProvider';
 import {
@@ -114,6 +115,12 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
       console.log(loginData);
 
       if (!loginData.type) {
+        // const verified = nacl.sign.detached.verify(
+        //   Buffer.from(loginData.payload),
+        //   Buffer.from(loginData.signature, 'hex'),
+        //   Buffer.from(loginData.pubkey, 'hex')
+        // );
+        // console.log(verified);
         return '';
       }
 
@@ -682,7 +689,7 @@ const ConnectBox = styled.div`
       font-weight: 700;
       font-size: 18px;
       line-height: 27px;
-      width: 344px;
+      width: 100%;
       height: 48px;
     }
 
