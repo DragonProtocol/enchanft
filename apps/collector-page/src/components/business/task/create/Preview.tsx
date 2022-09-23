@@ -2,7 +2,7 @@ import { Box, Modal } from '@mui/material'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { ActionType, RewardType, State } from './state'
-import { ChainType, selectAccount } from '../../../../features/user/accountSlice'
+import { selectAccount } from '../../../../features/user/accountSlice'
 import { useAppSelector } from '../../../../store/hooks'
 import IconTip from '../../../common/icons/IconTip'
 import IconDiscord from '../../../common/icons/IconDiscord'
@@ -79,7 +79,7 @@ export default function Preview({
                 {state.reward.type === RewardType.WHITELIST && <span>Reward: whitelist</span>}
                 {state.reward.type === RewardType.OTHERS && <span>Reward: {state.reward.name}</span>}
                 {state.reward.type === RewardType.CONTRIBUTION_TOKEN && (
-                  <span>Reward: contribution token {state.reward.token_num}</span>
+                  <span>Reward: contribution scores {state.reward.token_num}</span>
                 )}
               </div>
               <div className="desc">

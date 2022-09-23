@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-06 17:34:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 17:07:11
+ * @LastEditTime: 2022-09-22 16:10:11
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -18,9 +18,9 @@ export enum CheckinStatusType {
 }
 
 const checkinBtnTextMap = {
-  [CheckinStatusType.ACCOUNT_OPERATION]: 'Get Toady’s Contribution Token!',
-  [CheckinStatusType.NOT_FOLLOWED]: 'Get Toady’s Contribution Token!',
-  [CheckinStatusType.CHECKIN]: 'Get Toady’s Contribution Token!',
+  [CheckinStatusType.ACCOUNT_OPERATION]: 'Get Toady’s Contribution Scores!',
+  [CheckinStatusType.NOT_FOLLOWED]: 'Get Toady’s Contribution Scores!',
+  [CheckinStatusType.CHECKIN]: 'Get Toady’s Contribution Scores!',
   [CheckinStatusType.CHECKING]: 'Loading ...',
   [CheckinStatusType.CHECKEDIN]: 'Checked In!',
   [CheckinStatusType.UNKNOWN]: 'Unknown Status',

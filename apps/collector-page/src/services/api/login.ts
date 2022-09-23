@@ -2,12 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-07-13 11:36:54
+ * @LastEditTime: 2022-09-22 10:52:15
  * @Description: 登录授权相关接口
  */
 
+import { AxiosPromise } from 'axios'
 import qs from 'qs'
 import request from '../../request/axios'
+import { ApiResp } from '../../types'
+import { FetchTwitterOauthTokenResponse } from '../../types/api'
+import { TWITTER_CALLBACK_URL } from '../../utils/socialMedia'
 
 export function login(params: any) {
   // console.log('loginParams', params)
@@ -92,5 +96,13 @@ export function unlink(params: any) {
       token: params.token,
       needToken: true,
     },
+  })
+}
+
+// 获取twittier request token
+export function getTwittierRequestToken(): AxiosPromise<ApiResp<FetchTwitterOauthTokenResponse>> {
+  return request({
+    url: `/users/twitter/oauth/request_token?callback=${TWITTER_CALLBACK_URL}`,
+    method: 'get',
   })
 }

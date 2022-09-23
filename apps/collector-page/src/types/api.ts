@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-16 17:53:17
+ * @LastEditTime: 2022-09-21 14:20:34
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -160,5 +160,10 @@ export type UserRewardItem = Reward & {
   community?: Community
   whitelist?: Whitelist
   project?: Project
+}
+/** user api */
+export type FetchTwitterOauthTokenResponse = {
+  oauthToken: string
+  oauthTokenSecret: string
 }
 export type UserRewardsResponse = UserRewardItem[]

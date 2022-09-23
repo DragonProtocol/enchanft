@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 13:49:05
+ * @LastEditTime: 2022-09-22 16:11:05
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -212,7 +212,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
             <RewardTextBox>
               <PngIconGiftBox size="16px" />
               <RewardText>
-                You got <RewardTextBold>{reward.data.token_num}</RewardTextBold> contribution token of{' '}
+                You got <RewardTextBold>{reward.data.token_num}</RewardTextBold> contribution scores of{' '}
                 <RewardProjectTextBtn onClick={() => project?.slug && navginate(`/${project.slug}`)}>
                   {project?.name || 'Unknown Project'}
                 </RewardProjectTextBtn>

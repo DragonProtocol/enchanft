@@ -318,7 +318,7 @@ const Project: React.FC = () => {
       {displayCheckin && (
         <CommunityCheckinFloatingWindow>
           <CommunityCheckinBtn onClick={handleCheckin} disabled={disabledCheckin}>
-            {loadingCheckin ? 'loading ...' : 'Get Contribution Token!'}
+            {loadingCheckin ? 'loading ...' : 'Get Contribution Scores!'}
           </CommunityCheckinBtn>
         </CommunityCheckinFloatingWindow>
       )}
