@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import Loading from '../Components/Loading';
 import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -17,7 +16,6 @@ import ProjectInviteBot from '../Components/Project/InviteBot';
 import ProjectInviteBotInput from '../Components/Project/InviteBotInput';
 import ProjectTotalSupply from '../Components/Project/TotalSupply';
 import ProjectBlockchain from '../Components/Project/Blockchain';
-import ProjectStatus from '../Components/Project/Status';
 import { EditBox, EditTitle } from '../Components/Project/EditTitle';
 
 import {
