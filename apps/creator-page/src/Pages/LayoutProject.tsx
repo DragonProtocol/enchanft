@@ -20,14 +20,14 @@ export default function MainLayout() {
   }, [account, dispatch, slug]);
 
   if (!project) {
-    if (!isCreator) return <CreatorNeed content="Must Be Creator" />;
-
     return (
       <LoadingBox>
         <Loading />
       </LoadingBox>
     );
   }
+
+  if (!isCreator) return <CreatorNeed content="Must Be Creator" />;
 
   return (
     <MainLayoutBox>

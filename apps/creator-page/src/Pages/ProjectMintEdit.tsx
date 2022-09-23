@@ -5,7 +5,6 @@ import TotalSupply from '../Components/Project/Mint/TotalSupply';
 import MintPrice from '../Components/Project/Mint/MintPrice';
 import MintLimit from '../Components/Project/Mint/MintLimit';
 import styled from 'styled-components';
-import IconPlus from '../Components/Icons/IconPlus';
 import { useAppConfig } from '../AppProvider';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -222,11 +221,11 @@ export default function ProjectMintEdit() {
                   mintEndTime: dayjs().add(1, 'M').toDate().getTime(),
                   totalNum: 0,
                 },
-              ], // TODO
+              ],
             });
           }}
         >
-          <IconPlus size="16px" /> Add Whitelist
+          + Add Whitelist
         </button>
       </div>
     </ContentBox>

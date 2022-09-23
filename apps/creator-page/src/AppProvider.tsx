@@ -363,7 +363,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [linkUser]);
 
-  console.log('account', account);
+  log.debug('account', account);
 
   return (
     <AppContext.Provider

@@ -33,6 +33,7 @@ import UploadImgModal from '../Components/UploadImgModal';
 import { BlockchainType } from '../Components/Project/types';
 import { AxiosError } from 'axios';
 import isEqual from '../utils/isEqual';
+import log from 'loglevel';
 
 export default function ProjectInfoEdit() {
   const { account, updateAccount, isAdmin } = useAppConfig();
@@ -152,7 +153,7 @@ export default function ProjectInfoEdit() {
 
   if (data?.slug !== slug) return <Loading />;
 
-  console.log(project);
+  log.debug('project', project);
   return (
     <EditBox>
       <EditTitle
