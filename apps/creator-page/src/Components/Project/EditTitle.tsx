@@ -4,9 +4,11 @@ import styled from 'styled-components';
 export function EditTitle({
   title,
   save,
+  couldSave,
 }: {
   title: string;
   save: () => void;
+  couldSave: boolean;
 }) {
   const navigate = useNavigate();
   return (
@@ -17,7 +19,12 @@ export function EditTitle({
           <button className="cancel" onClick={() => navigate(-1)}>
             Cancel
           </button>
-          <button className="save" onClick={save}>
+          <button
+            className={couldSave ? 'save' : 'save disable'}
+            onClick={() => {
+              if (couldSave) save();
+            }}
+          >
             Save
           </button>
         </div>
@@ -58,6 +65,11 @@ export const EditBox = styled.div`
         background: #3dd606;
         box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
         color: #ffffff;
+
+        &.disable {
+          cursor: not-allowed;
+          background: lightgrey;
+        }
       }
     }
   }

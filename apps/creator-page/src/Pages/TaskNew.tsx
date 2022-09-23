@@ -68,6 +68,7 @@ export default function TaskNew() {
     account,
     project,
     validLogin,
+    isCreator,
     state,
     isSubmitting,
     dispatch,

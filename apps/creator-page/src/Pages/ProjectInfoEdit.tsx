@@ -17,7 +17,6 @@ import ProjectInviteBot from '../Components/Project/InviteBot';
 import ProjectInviteBotInput from '../Components/Project/InviteBotInput';
 import ProjectTotalSupply from '../Components/Project/TotalSupply';
 import ProjectBlockchain from '../Components/Project/Blockchain';
-import ProjectStatus from '../Components/Project/Status';
 import { EditBox, EditTitle } from '../Components/Project/EditTitle';
 
 import {
@@ -34,6 +33,7 @@ import { toast } from 'react-toastify';
 import UploadImgModal from '../Components/UploadImgModal';
 import { BlockchainType } from '../Components/Project/types';
 import { AxiosError } from 'axios';
+import isEqual from '../utils/isEqual';
 
 export default function ProjectInfoEdit() {
   const { account, updateAccount, isAdmin } = useAppConfig();
@@ -52,6 +52,7 @@ export default function ProjectInfoEdit() {
     !!project?.community.discordId
   );
   const [showModal, setShowModal] = useState(false);
+  const [couldSave, setCouldSave] = useState(false);
 
   const uploadImageHandler = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,6 +128,14 @@ export default function ProjectInfoEdit() {
   );
 
   useEffect(() => {
+    if (!isEqual(data, project)) {
+      setCouldSave(true);
+    } else {
+      setCouldSave(false);
+    }
+  }, [data, project]);
+
+  useEffect(() => {
     setProject({ ...data });
   }, [data]);
   useEffect(() => {
@@ -147,7 +156,11 @@ export default function ProjectInfoEdit() {
   console.log(project);
   return (
     <EditBox>
-      <EditTitle title="Edit Project Information" save={saveProject} />
+      <EditTitle
+        title="Edit Project Information"
+        save={saveProject}
+        couldSave={couldSave}
+      />
       <div className="info">
         <div className="left">
           <ProjectName
