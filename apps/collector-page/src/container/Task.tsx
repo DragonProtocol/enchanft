@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 18:52:29
+ * @LastEditTime: 2022-09-23 15:21:07
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -67,6 +67,7 @@ import TimeCountdown from '../components/common/time/TimeCountdown'
 import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
 import TaskDetailParticipants from '../components/business/task/TaskDetailParticipants'
 import { isDesktop, isMobile } from 'react-device-detect'
+import { toWlModPageTaskDetail } from '../route/utils'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   takeTaskState: TaskHandle<TakeTaskParams>,
@@ -223,7 +224,7 @@ const Task: React.FC = () => {
   )
   // task action and winnerList
   const actionItems = formatStoreDataToComponentDataByTaskActions(data, userFollowedCommunityIds)
-  const winnerList = data?.winnerList || []
+  const winnerList = [...(data?.winnerList || [])]
   if (pubkey) {
     winnerList.sort((a, b) => {
       if (a.pubkey === pubkey) {
@@ -281,7 +282,7 @@ const Task: React.FC = () => {
             </ShareButton>
 
             {isDesktop && project && checkProjectAllowed(Number(project.id)) && isCreator && (
-              <ManageButton onClick={() => navigate(`/creator/${id}`)}>Tasks Management</ManageButton>
+              <ManageButton onClick={() => toWlModPageTaskDetail(data.id, project.slug)}>Tasks Management</ManageButton>
             )}
           </TaskDetailHeaderBox>
           <ProjectNameBox>

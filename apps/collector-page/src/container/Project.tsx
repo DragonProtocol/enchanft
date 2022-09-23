@@ -39,6 +39,7 @@ import IconWebsite from '../components/common/icons/IconWebsite'
 import IconTwitterBlack from '../components/common/icons/IconTwitterBlack'
 import IconDiscordBlack from '../components/common/icons/IconDiscordBlack'
 import { getTwitterHomeLink } from '../utils/twitter'
+import { toWlModPageTaskCreate } from '../route/utils'
 
 export enum ProjectInfoTabsValue {
   TEAM = 'team',
@@ -269,13 +270,7 @@ const Project: React.FC = () => {
               items={tasks}
               displayCreateTask={isDesktop && isCreator && checkProjectAllowed(Number(data.id))}
               maxColumns={3}
-              onCreateTask={() => {
-                navigate(
-                  `/${projectSlug}/task/create/${data.id}?projectName=${encodeURIComponent(data.name)}&discordId=${
-                    data.community?.discordId || ''
-                  }&communityName=${data.community?.name || ''}&communityTwitter=${data.community?.twitterName || ''}`,
-                )
-              }}
+              onCreateTask={() => projectSlug && toWlModPageTaskCreate(projectSlug)}
             />
           </ExploreTaskListBox>
         </ProjectEventsBox>
