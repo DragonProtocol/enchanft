@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 19:09:02
+ * @LastEditTime: 2022-09-22 14:08:43
  * @Description: 用户的账户信息
  */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../../store/store'
-import { login, updateProfile, link, unlink, getProfile } from '../../services/api/login'
+import { login, updateProfile, link, unlink, getProfile, getTwittierRequestToken } from '../../services/api/login'
 import { AsyncRequestStatus } from '../../types'
 import {
   DEFAULT_WALLET,
@@ -20,6 +20,9 @@ import {
   TokenType,
 } from '../../utils/token'
 import { toast } from 'react-toastify'
+import { FetchTwitterOauthTokenResponse } from '../../types/api'
+import { connectionSocialMedia, SocialMediaType } from '../../utils/socialMedia'
+import { AccountType } from '../../types/entities'
 
 export enum ConnectModal {
   PHANTOM = 'phantom',
@@ -29,30 +32,10 @@ export enum ConnectModal {
   EMAIL = 'email',
 }
 
-export enum ChainType {
-  SOLANA = 'SOLANA',
-  EVM = 'EVM',
-  TWITTER = 'TWITTER',
-  DISCORD = 'DISCORD',
-}
-
 type Account = {
-  accountType: 'SOLANA' | 'EVM' | any
+  accountType: AccountType
   thirdpartyId: string
   thirdpartyName: string
-}
-
-//this should be a global type for all api response
-type ResponseMessage = {
-  type: AlertSeverity
-  message: string | undefined
-}
-
-export enum AlertSeverity {
-  ERROR = 'error',
-  INFO = 'info',
-  SUCCESS = 'success',
-  WARNING = 'warning',
 }
 
 export enum RoleType {
@@ -92,11 +75,22 @@ export type AccountState = {
   linkErrMsg: string
   resourcePermissions: Array<ResourcePermission>
   roles: Array<RoleType>
+  fetchTwitterOauthToken: {
+    status: AsyncRequestStatus
+    data?: FetchTwitterOauthTokenResponse
+  }
 }
-
+const initIslogin = () => {
+  const lastLoginType = localStorage.getItem(LAST_LOGIN_TYPE) as TokenType
+  if (lastLoginType === TokenType.Twitter) {
+    return !!localStorage.getItem(LAST_LOGIN_TOKEN)
+  } else {
+    return !!localStorage.getItem(LAST_LOGIN_PUBKEY) && !!localStorage.getItem(LAST_LOGIN_TOKEN)
+  }
+}
 // 用户账户信息
 const initialState: AccountState = {
-  isLogin: !!localStorage.getItem(LAST_LOGIN_PUBKEY) && !!localStorage.getItem(LAST_LOGIN_TOKEN),
+  isLogin: initIslogin(),
   status: AsyncRequestStatus.IDLE,
   linkStatus: AsyncRequestStatus.IDLE,
   defaultWallet: (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '',
@@ -118,8 +112,19 @@ const initialState: AccountState = {
   resourcePermissions: [],
   roles: [],
   linkErrMsg: '',
+  fetchTwitterOauthToken: {
+    status: AsyncRequestStatus.IDLE,
+    data: {
+      oauthToken: '',
+      oauthTokenSecret: '',
+    },
+  },
 }
-
+const AccountTypeAdapter = {
+  [TokenType.Ethereum]: AccountType.EVM,
+  [TokenType.Solana]: AccountType.SOLANA,
+  [TokenType.Twitter]: AccountType.TWITTER,
+}
 export const userLogin = createAsyncThunk(
   'user/login',
   async ({
@@ -127,17 +132,23 @@ export const userLogin = createAsyncThunk(
     payload,
     pubkey,
     walletType,
+    twitterOauthToken,
+    twitterOauthVerifier,
   }: {
-    signature: string
-    payload: string
-    pubkey: string
+    signature?: string
+    payload?: string
+    pubkey?: string
     walletType: TokenType
+    twitterOauthToken?: string
+    twitterOauthVerifier?: string
   }) => {
     const resp = await login({
       signature,
       payload,
       pubkey,
-      type: walletType === TokenType.Solana ? ChainType.SOLANA : ChainType.EVM,
+      type: AccountTypeAdapter[walletType],
+      twitterOauthToken,
+      twitterOauthVerifier,
     })
     return {
       ...resp.data,
@@ -236,7 +247,7 @@ export const userOtherWalletLink = createAsyncThunk(
     const account = (thunkAPI.getState() as RootState).account
     try {
       const resp = await link({
-        type: walletType === TokenType.Solana ? ChainType.SOLANA : ChainType.EVM,
+        type: AccountTypeAdapter[walletType],
         signature,
         payload,
         pubkey,
@@ -250,6 +261,31 @@ export const userOtherWalletLink = createAsyncThunk(
         throw error
       }
     }
+  },
+)
+
+export const fetchTwitterOauthToken = createAsyncThunk(
+  'user/fetchTwitterOauthToken',
+  async () => {
+    const resp = await getTwittierRequestToken()
+    if (resp.data.code === 0) {
+      return resp.data.data
+    } else {
+      throw new Error(resp.data.msg)
+    }
+  },
+  {
+    condition: (params, { getState }) => {
+      const state = getState() as RootState
+      const {
+        account: { fetchTwitterOauthToken },
+      } = state
+      // 之前的请求正在进行中,则阻止新的请求
+      if (fetchTwitterOauthToken.status === AsyncRequestStatus.PENDING) {
+        return false
+      }
+      return true
+    },
   },
 )
 
@@ -313,7 +349,7 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.PENDING
       })
       .addCase(userLogin.fulfilled, (state, action) => {
-        setLoginToken(action.payload.token, action.payload.pubkey, action.payload.walletType)
+        setLoginToken(action.payload.walletType, action.payload.token, action.payload.pubkey)
         state.status = AsyncRequestStatus.FULFILLED
         state.pubkey = action.payload.pubkey
         state.token = action.payload.token
@@ -336,6 +372,7 @@ export const accountSlice = createSlice({
       .addCase(userLogin.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
         state.errorMsg = action.error.message || 'failed'
+        toast.error(action.error.message)
       })
       ///////
       .addCase(userLink.pending, (state) => {
@@ -406,6 +443,27 @@ export const accountSlice = createSlice({
       })
       .addCase(userOtherWalletLink.rejected, (state, action) => {
         state.linkStatus = AsyncRequestStatus.REJECTED
+        toast.error(action.error.message)
+      })
+      ///
+      .addCase(fetchTwitterOauthToken.pending, (state) => {
+        state.fetchTwitterOauthToken = {
+          status: AsyncRequestStatus.PENDING,
+          data: initialState.fetchTwitterOauthToken.data,
+        }
+      })
+      .addCase(fetchTwitterOauthToken.fulfilled, (state, action) => {
+        state.fetchTwitterOauthToken = {
+          status: AsyncRequestStatus.FULFILLED,
+          data: action.payload,
+        }
+        connectionSocialMedia(SocialMediaType.TWITTER_OAUTH_AUTHENTICATE, action.payload)
+      })
+      .addCase(fetchTwitterOauthToken.rejected, (state, action) => {
+        state.fetchTwitterOauthToken = {
+          status: AsyncRequestStatus.REJECTED,
+          data: initialState.fetchTwitterOauthToken.data,
+        }
         toast.error(action.error.message)
       })
   },

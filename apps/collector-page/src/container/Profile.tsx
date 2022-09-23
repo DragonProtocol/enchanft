@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 11:29:37
+ * @LastEditTime: 2022-09-22 14:09:56
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -33,7 +33,6 @@ import {
   userLink,
   setConnectModal,
   ConnectModal,
-  ChainType,
   userOtherWalletLink,
   setLastLogin,
   setLastLoginInfo,
@@ -43,7 +42,7 @@ import {
   setName as setNameForSlice,
   setIsLogin,
 } from '../features/user/accountSlice'
-import { ActionType } from '../types/entities'
+import { AccountType, ActionType } from '../types/entities'
 
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
 import DisconnectModal from '../components/ConnectBtn/DisconnectModal'
@@ -54,7 +53,7 @@ import {
 } from '../features/user/followedCommunitiesSlice'
 import { AsyncRequestStatus } from '../types'
 import { uploadAvatar } from '../services/api/login'
-import { connectionSocialMedia } from '../utils/socialMedia'
+import { connectionSocialMedia, SocialMediaType } from '../utils/socialMedia'
 import { sortPubKey } from '../utils/solana'
 import useWalletSign from '../hooks/useWalletSign'
 import { clearLoginToken, SIGN_MSG } from '../utils/token'
@@ -125,8 +124,8 @@ const Profile: React.FC = () => {
   const [accountType, setAccountType] = useState('twitter')
 
   const handleLogout = useCallback(async () => {
-    if (account.pubkey) {
-      clearLoginToken(account.pubkey, account.defaultWallet)
+    if (account.isLogin) {
+      clearLoginToken(account.defaultWallet, account.pubkey)
       dispatch(setLastLogin(account.defaultWallet))
       dispatch(setLastLoginInfo({ name: account.name, avatar: account.avatar }))
       dispatch(setToken(''))
@@ -163,10 +162,10 @@ const Profile: React.FC = () => {
   const loadingUserRewards = rewardsStatus === AsyncRequestStatus.PENDING
   const rewardItems = formatStoreDataToComponentDataByUserRewards(rewards)
 
-  const twitter = account.accounts.find((item) => item.accountType === 'TWITTER')?.thirdpartyName
-  const discord = account.accounts.find((item) => item.accountType === 'DISCORD')?.thirdpartyName
-  const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
-  const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
+  const twitter = account.accounts.find((item) => item.accountType === AccountType.TWITTER)
+  const discord = account.accounts.find((item) => item.accountType === AccountType.DISCORD)
+  const accountPhantom = account.accounts.find((item) => item.accountType === AccountType.SOLANA)
+  const accountMetamask = account.accounts.find((item) => item.accountType === AccountType.EVM)
 
   const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
   const bindMetamask = useCallback(async () => {
@@ -236,20 +235,20 @@ const Profile: React.FC = () => {
           <BindBtnText>{accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}</BindBtnText>
         </PhantomBindBtn>
         <TwitterBindBtn
-          isConnect={twitter}
+          isConnect={!!twitter}
           onClick={() => {
-            if (twitter) {
-              setAccountType(ChainType.TWITTER)
+            if (!!twitter) {
+              setAccountType(AccountType.TWITTER)
               setModalShow(true)
             } else {
-              connectionSocialMedia('twitter')
+              connectionSocialMedia(SocialMediaType.TWITTER_OAUTH2_AUTHORIZE)
             }
           }}
         >
           <IconTwitterWhite />
-          {twitter ? (
+          {!!twitter ? (
             <>
-              <BindBtnText>{twitter}</BindBtnText>
+              <BindBtnText>{twitter.thirdpartyName}</BindBtnText>
               <DisconnectBox>
                 <IconUnlink size="1.2rem" />
               </DisconnectBox>
@@ -259,20 +258,20 @@ const Profile: React.FC = () => {
           )}
         </TwitterBindBtn>
         <DiscordBindBtn
-          isConnect={discord}
+          isConnect={!!discord}
           onClick={() => {
-            if (discord) {
-              setAccountType(ChainType.DISCORD)
+            if (!!discord) {
+              setAccountType(AccountType.DISCORD)
               setModalShow(true)
             } else {
-              connectionSocialMedia('discord')
+              connectionSocialMedia(SocialMediaType.DISCORD_OAUTH2_AUTHORIZE)
             }
           }}
         >
           <IconDiscordWhite />
-          {discord ? (
+          {!!discord ? (
             <>
-              <BindBtnText>{discord}</BindBtnText>
+              <BindBtnText>{discord.thirdpartyName}</BindBtnText>
               <DisconnectBox>
                 <IconUnlink size="1.2rem" />
               </DisconnectBox>
@@ -474,7 +473,7 @@ const UserAccountListBox = styled.div`
   gap: 10px;
   flex-wrap: wrap;
 `
-const BindBtnBase = styled(ButtonBase)<{ isConnect?: string }>`
+const BindBtnBase = styled(ButtonBase)<{ isConnect?: boolean }>`
   height: 40px;
   display: flex;
   align-items: center;

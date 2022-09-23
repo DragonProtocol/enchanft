@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-15 19:13:03
+ * @LastEditTime: 2022-09-22 18:52:29
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -224,6 +224,17 @@ const Task: React.FC = () => {
   // task action and winnerList
   const actionItems = formatStoreDataToComponentDataByTaskActions(data, userFollowedCommunityIds)
   const winnerList = data?.winnerList || []
+  if (pubkey) {
+    winnerList.sort((a, b) => {
+      if (a.pubkey === pubkey) {
+        return -1
+      }
+      if (b.pubkey === pubkey) {
+        return 1
+      }
+      return 0
+    })
+  }
   // 是否允许操作action
   const allowHandleAction =
     data?.acceptedStatus === TaskAcceptedStatus.DONE && data?.status !== TaskTodoCompleteStatus.CLOSED

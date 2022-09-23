@@ -1,3 +1,10 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-09-01 16:24:28
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-09-22 14:07:13
+ * @Description: file description
+ */
 const LOCAL_STORAGE_TOKEN = 'token'
 
 export const DEFAULT_WALLET = 'defaultWallet'
@@ -11,19 +18,20 @@ export const SIGN_MSG = 'Sign this message to sign into ' + window.location.host
 export enum TokenType {
   Solana = 'solana',
   Ethereum = 'ethereum',
+  Twitter = 'twitter',
 }
-export function setLoginToken(token: string, pubkey: string, type: TokenType) {
-  const key = genTokenKey(pubkey, type)
+export function setLoginToken(type: TokenType, token: string, pubkey?: string) {
+  const key = genTokenKey(type, pubkey)
   localStorage.setItem(key, token)
 }
 
-export function getLoginToken(pubkey: string, type: TokenType) {
-  const key = genTokenKey(pubkey, type)
+export function getLoginToken(type: TokenType, pubkey?: string) {
+  const key = genTokenKey(type, pubkey)
   return localStorage.getItem(key)
 }
 
-export function clearLoginToken(pubkey: string, type: TokenType) {
-  const key = genTokenKey(pubkey, type)
+export function clearLoginToken(type: TokenType, pubkey?: string) {
+  const key = genTokenKey(type, pubkey)
   localStorage.removeItem(key)
   localStorage.removeItem(DEFAULT_WALLET)
   // record last login
@@ -31,8 +39,8 @@ export function clearLoginToken(pubkey: string, type: TokenType) {
   localStorage.setItem(lastLoginType, type)
 }
 
-function genTokenKey(pubkeyStr: string, type: TokenType) {
-  return `${type}:${LOCAL_STORAGE_TOKEN}:${pubkeyStr}`
+function genTokenKey(type: TokenType, pubkeyStr?: string) {
+  return `${type}:${LOCAL_STORAGE_TOKEN}:${pubkeyStr || ''}`
 }
 
 function getLastLoginType() {

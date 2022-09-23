@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 19:15:31
+ * @LastEditTime: 2022-09-22 16:12:16
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -123,7 +123,7 @@ export const checkin = createAsyncThunk(
           dispatch(fetchCommunityContributionRanks(slug))
           dispatch(fetchUserContributon(slug))
         }
-        toast.success(`Got ${addCheckinCommunity.contribution} contribution token!`)
+        toast.success(`Got ${addCheckinCommunity.contribution} contribution scores!`)
         dispatch(setCheckinOpenClaimModal(true))
         setTimeout(() => {
           dispatch(setCheckinOpenClaimModal(false))

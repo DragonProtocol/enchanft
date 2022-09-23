@@ -9,6 +9,7 @@ import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
 import PngIconScissorHand from '../../common/icons/PngIconScissorHand'
 import { getTaskRewardTypeLabel, getTaskRewardTypeValue } from '../../../utils/task'
 import { MOBILE_BREAK_POINT } from '../../../constants'
+import { formatDateTime } from '../../../utils/time'
 
 export type TaskDetailContentDataType = {
   id: number
@@ -36,8 +37,8 @@ export type TaskDetailContentProps = TaskDetailContentDataViewType
 const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetailContentProps) => {
   const { id, name, type, startTime, endTime, winnerNum, image, description, reward } = data
   const rewardTypeLabel = getTaskRewardTypeLabel(reward)
-  const startDate = new Date(startTime).toLocaleDateString()
-  const endDate = new Date(endTime).toLocaleDateString()
+  const startDate = formatDateTime(startTime)
+  const endDate = formatDateTime(endTime)
   const rewardValue = getTaskRewardTypeValue(reward)
   return (
     <TaskDetailContentWrapper>

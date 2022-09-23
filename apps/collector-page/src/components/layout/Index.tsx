@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 18:14:45
+ * @LastEditTime: 2022-09-21 18:57:01
  * @Description: 站点布局入口
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -19,7 +19,7 @@ import ScrollBox from '../common/scroll/ScrollBox'
 import MainInner from './MainInner'
 import { matchRoutes, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { selectAccount, setIsLogin, userLink } from '../../features/user/accountSlice'
+import { selectAccount, setIsLogin, userLink, userLogin } from '../../features/user/accountSlice'
 import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
 import { fetchUserRewards } from '../../features/user/userRewardsSlice'
 import { fetchTodoTasks, selectAll } from '../../features/user/todoTasksSlice'
@@ -31,6 +31,7 @@ import { selectWebsite, setMobileNavDisplay } from '../../features/website'
 import useRoute from '../../hooks/useRoute'
 import { navs, RouteKeys } from '../../route/routes'
 import { MOBILE_BREAK_POINT } from '../../constants'
+import { TokenType } from '../../utils/token'
 const Layout: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
@@ -70,15 +71,35 @@ const Layout: React.FC = () => {
   ).length
   //社媒账号授权 code 监听
   useEffect(() => {
-    localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
+    // localStorage.setItem(
+    //   'social_auth',
+    //   JSON.stringify({ code: null, type: null, oauthToken: null, oauthVerifier: null }),
+    // )
     const handleStorageChange = ({ newValue, key, url }) => {
+      console.log({ newValue })
       if ('social_auth' === key) {
         console.log('social_auth change url', url)
         // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
-        const { code, type } = JSON.parse(newValue || '')
+        const newValueObj = JSON.parse(newValue || '{}')
+        const { code, type, oauthToken, oauthVerifier } = newValueObj
+        console.log({ code, type, oauthToken, oauthVerifier })
+
         if (code && type) {
           linkUser({ code, type })
-          localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
+          localStorage.setItem('social_auth', JSON.stringify({ ...newValueObj, code: null, type: null }))
+        }
+        if (oauthToken && oauthVerifier && type === 'TWITTER') {
+          dispatch(
+            userLogin({
+              walletType: TokenType.Twitter,
+              twitterOauthToken: oauthToken,
+              twitterOauthVerifier: oauthVerifier,
+            }),
+          )
+          localStorage.setItem(
+            'social_auth',
+            JSON.stringify({ ...newValueObj, type: null, oauthToken: null, oauthVerifier: null }),
+          )
         }
       }
     }
