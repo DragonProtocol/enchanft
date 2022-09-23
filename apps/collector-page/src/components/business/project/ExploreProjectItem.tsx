@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 18:00:26
+ * @LastEditTime: 2022-09-23 11:26:58
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -11,6 +11,7 @@ import styled from 'styled-components'
 import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { MintStage, ProjectStatus, TaskType } from '../../../types/entities'
+import { formatDateTime } from '../../../utils/time'
 import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
@@ -83,7 +84,7 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
         <ProjectTimeRow>
           <ProjectMintStageLabel mintStage={mintStage} />
           {mintStage === MintStage.FUTURE && publicSaleTime && (
-            <ProjectTimeText>{new Date(publicSaleTime).toLocaleDateString()}</ProjectTimeText>
+            <ProjectTimeText>{formatDateTime(publicSaleTime)}</ProjectTimeText>
           )}
         </ProjectTimeRow>
 

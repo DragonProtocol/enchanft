@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 14:44:32
+ * @LastEditTime: 2022-09-23 11:26:26
  * @Description: file description
  */
 import React from 'react'
@@ -12,7 +12,9 @@ import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { RewardData } from '../../../types/entities'
 import { getTaskRewardTypeValue } from '../../../utils/task'
+import { formatDateTime } from '../../../utils/time'
 import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
+import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
@@ -54,8 +56,8 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
     ...defaultViewConfig,
     ...viewConfig,
   }
-  const startDate = new Date(startTime).toLocaleDateString()
-  const endDate = new Date(endTime).toLocaleDateString()
+  const startDate = formatDateTime(startTime)
+  const endDate = formatDateTime(endTime)
   const rewardValue = getTaskRewardTypeValue(reward)
   return (
     <ExploreTaskItemWrapper
@@ -68,14 +70,18 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
       </TaskImageBox>
       <TaskInfoBox>
         <TaskName>{name}</TaskName>
-        <TaskDateTime>
-          {startDate} —— {endDate}
-        </TaskDateTime>
+
+        <TaskInfoRow>
+          <PngIconAlarmClock size={'16px'} />
+          <TaskDateTime>
+            {startDate} — {endDate}
+          </TaskDateTime>
+        </TaskInfoRow>
         {reward && (
-          <TaskRemarkBox>
+          <TaskInfoRow>
             <PngIconGiftBox size={'16px'} />
             <TaskRemark>{rewardValue}</TaskRemark>
-          </TaskRemarkBox>
+          </TaskInfoRow>
         )}
       </TaskInfoBox>
     </ExploreTaskItemWrapper>
@@ -127,7 +133,7 @@ const TaskDateTime = styled.div`
   line-height: 18px;
   color: rgba(51, 51, 51, 0.6);
 `
-const TaskRemarkBox = styled.div`
+const TaskInfoRow = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
