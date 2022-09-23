@@ -1,7 +1,7 @@
 import { EditBox, EditTitle } from '../Components/Project/EditTitle';
 import ProjectName from '../Components/Project/Name';
 import ProjectDesc from '../Components/Project/Desc';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAppConfig } from '../AppProvider';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -9,6 +9,7 @@ import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 import { updateProject } from '../api';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
+import isEqual from '../utils/isEqual';
 
 export default function ProjectAnnouncementEdit() {
   const { account, updateAccount } = useAppConfig();
@@ -17,6 +18,7 @@ export default function ProjectAnnouncementEdit() {
   const dispatch = useAppDispatch();
   // TODO fix any
   const [project, setProject] = useState<any>({ ...data });
+  const [couldSave, setCouldSave] = useState(false);
 
   const saveProject = useCallback(async () => {
     if (!account.info?.token || !slug) return;
@@ -35,9 +37,21 @@ export default function ProjectAnnouncementEdit() {
     }
   }, [account, dispatch, project, slug, updateAccount]);
 
+  useEffect(() => {
+    if (!isEqual(data, project)) {
+      setCouldSave(true);
+    } else {
+      setCouldSave(false);
+    }
+  }, [data, project]);
+
   return (
     <EditBox>
-      <EditTitle title="Edit Announcement" save={saveProject} />
+      <EditTitle
+        title="Edit Announcement"
+        save={saveProject}
+        couldSave={couldSave}
+      />
       <div className="info">
         <div className="left">
           <ProjectName
