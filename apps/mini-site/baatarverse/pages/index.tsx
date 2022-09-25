@@ -30,6 +30,18 @@ export function Index() {
 
   return (
     <Wrapper>
+      <StyledVideo
+        x5-video-player-type="h5"
+        x-webkit-airplay="true"
+        webkit-playsinline="true"
+        loop
+        autoPlay
+        muted={isMute}
+        onTimeUpdate={() => {}}
+      >
+        <source src={require('../public/static/bg.mp4')} type="video/mp4" />
+      </StyledVideo>
+
       <div className="logo">
         <Image
           src={'/static/images/logo.png'}
@@ -100,217 +112,236 @@ export function Index() {
         </div>
       </div>
 
-      <div className="cloud">
+      <div className="image-container cloud">
         <Image
+          className={'image'}
           src={'/static/images/cloud.png'}
           layout="fill"
-          objectFit="contain"
           alt={'basic'}
         />
       </div>
 
-      <div className="flag">
-        <Image
-          src={'/static/images/CASKBAATAR.png'}
-          layout="fill"
-          objectFit="contain"
-          alt={'basic'}
-        />
-      </div>
-
-      <div className="home title-img">
-        <Image
-          src={'/static/images/home.png'}
-          layout="fill"
-          objectFit="contain"
-          alt={'basic'}
-        />
-      </div>
-
-      <div className="title text">
-        CaskBaatar is a perfect combination of whisky investment and art
-        collection.
-      </div>
-      <br />
-      <div className="text">
-        Each of the CaskBaatar’s NFT collections is bound to a single whisky
-        cask. Among them, the artworks are designed by the famous Mongolian
-        artist Yideer, and the single whisky cask are selected by professional
-        cask selectors. Each CaskBaatar NFT contains an NFT picture and at least
-        a bottle of whisky.
-        <br />
-        <br />
-        CaskBaatar NFT is created based on the image of a Mongolian man, and
-        matches the costumes of different periods from the 13th century to the
-        present.As a Mongolian in the 21st century, the artist Yieder, while
-        recalling the ancient history and culture, mostly conveys the concept of
-        "Mongolian in the 21st century", and shows the state of contemporary
-        Mongolian people from his perspective. Give the character visual
-        representation of tradition and future.
-      </div>
-
-      <div className="avatar-loop-box">
-        <div className='avatar-loop'>
-        <Image
-          src={'/static/images/avatar_loop.png'}
-          layout="fill"
-          objectFit="contain"
-          // objectPosition={'-110px 35vw'}
-          // objectPosition={'-110px 95px'}
-          alt={'basic'}
-        />
+      <div className="middle-bg">
+        <div className="image-container big-title">
+          <Image
+            src={'/static/images/CASKBAATAR.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
         </div>
-        <div className='avatar-loop-front'>
+        <div className="image-container title-gif">
+          <Image
+            src={'/static/images/title.gif'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
+        </div>
+      </div>
+      <div className="bg-texture">
+        <div className="home title-img">
+          <Image
+            src={'/static/images/home.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
+        </div>
+
+        <div className="title text">
+          CaskBaatar is a perfect combination of whisky investment and art
+          collection.
+        </div>
+        <br />
+        <div className="text">
+          Each of the CaskBaatar’s NFT collections is bound to a single whisky
+          cask. Among them, the artworks are designed by the famous Mongolian
+          artist Yideer, and the single whisky cask are selected by professional
+          cask selectors. Each CaskBaatar NFT contains an NFT picture and at
+          least a bottle of whisky.
+          <br />
+          <br />
+          CaskBaatar NFT is created based on the image of a Mongolian man, and
+          matches the costumes of different periods from the 13th century to the
+          present.As a Mongolian in the 21st century, the artist Yieder, while
+          recalling the ancient history and culture, mostly conveys the concept
+          of "Mongolian in the 21st century", and shows the state of
+          contemporary Mongolian people from his perspective. Give the character
+          visual representation of tradition and future.
+        </div>
+      </div>
+      <div className="image-container">
         <Image
+          className={'image avatar-loop-front'}
           src={'/static/images/avatar_loop_front.png'}
           layout="fill"
           objectFit="contain"
-          // objectPosition={"130px 0px"}
-
           alt={'basic'}
         />
+        <div className="avatar-loop">
+          <Image
+            className={'image'}
+            src={'/static/images/avatar_loop.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
         </div>
       </div>
-
-      <div className="contract title-img">
-        <Image
-          src={'/static/images/caskbaatar-02.png'}
-          layout="fill"
-          objectFit="contain"
-          alt={'basic'}
-        />
-      </div>
-
-      <div className="contract-wrapper">
-        <div className="contract-row row">
-          <div className="contract-box">
-            Our technical team comes from EnchaNFT Company in Singapore, and we
-            use the ERC721 smart contract.
-            <br />
-            <br />
-            After your mint on our official website, 70% of the amount will be
-            stored in the contract, and the remaining 30% will be transferred to
-            the managing team for the operation of the project.
-            <div className="dot-box">
-              <i className="dot" />
-            </div>
-          </div>
-          <div className="contract-box">
-            At the same time, the estimated bottling time and conversion time of
-            the whisky will also be announced.  Our technical team comes from
-            EnchaNFT Company in Singapore, and we use the ERC721 smart contract.
-            <br />
-            <br />
-            NFT holders will visit the official website for conversion within
-            the agreed time. After that, 70% of the crypto in the NFT will be
-            transferred to the managing team. You can also destroy the NFT
-            before the end of conversion time and get back the 70% amount
-            without the whisky.
-            <div className="dot-box">
-              <i className="dot" />
-              <i className="dot" />
-            </div>
-          </div>
+      <div className="bg-t">
+        <div className="contract title-img">
+          <Image
+            src={'/static/images/caskbaatar-02.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
         </div>
-        <div className="contract-row row">
-          <div className="contract-box">
-            Generally, the conversion time of whisky will last one year. If you
-            neither destroy nor convert the NFT during that, you will lose your
-            right to convert. At the same time, the managing team will gain the
-            70% amount in the NFT.
-            <br />
-            <br />
-            Since the whisky bound to CaskBaatar NFT has very good aging
-            potential, we usually bottle them within three to five years after
-            the release of NFT. 
-            <div className="dot-box">
-              <i className="dot" />
-              <div className="dot-row row">
+
+        <div className="contract-wrapper">
+          <div className="contract-row row">
+            <div className="contract-box">
+              Our technical team comes from EnchaNFT Company in Singapore, and
+              we use the ERC721 smart contract.
+              <br />
+              <br />
+              After your mint on our official website, 70% of the amount will be
+              stored in the contract, and the remaining 30% will be transferred
+              to the managing team for the operation of the project.
+              <div className="dot-box">
+                <i className="dot" />
+              </div>
+            </div>
+            <div className="contract-box">
+              At the same time, the estimated bottling time and conversion time
+              of the whisky will also be announced. Our technical team comes
+              from EnchaNFT Company in Singapore, and we use the ERC721 smart
+              contract.
+              <br />
+              <br />
+              NFT holders will visit the official website for conversion within
+              the agreed time. After that, 70% of the crypto in the NFT will be
+              transferred to the managing team. You can also destroy the NFT
+              before the end of conversion time and get back the 70% amount
+              without the whisky.
+              <div className="dot-box">
                 <i className="dot" />
                 <i className="dot" />
               </div>
             </div>
           </div>
-          <div className="contract-box">
-            During this period, the holders can trade the NFT, when the crypto
-            in it at the time of minting would be transferred to the buyer. 
-            <br />
-            <br />
-            After bottling, we will deliver the whisky to you according to the
-            address you provided. After conversion, you still own all other
-            rights in the NFT artwork.
-            <div className="dot-box">
-              <div className="dot-row row">
+          <div className="contract-row row">
+            <div className="contract-box">
+              Generally, the conversion time of whisky will last one year. If
+              you neither destroy nor convert the NFT during that, you will lose
+              your right to convert. At the same time, the managing team will
+              gain the 70% amount in the NFT.
+              <br />
+              <br />
+              Since the whisky bound to CaskBaatar NFT has very good aging
+              potential, we usually bottle them within three to five years after
+              the release of NFT.
+              <div className="dot-box">
                 <i className="dot" />
-                <i className="dot" />
+                <div className="dot-row row">
+                  <i className="dot" />
+                  <i className="dot" />
+                </div>
               </div>
-              <div className="dot-row row">
-                <i className="dot" />
-                <i className="dot" />
+            </div>
+            <div className="contract-box">
+              During this period, the holders can trade the NFT, when the crypto
+              in it at the time of minting would be transferred to the buyer.
+              <br />
+              <br />
+              After bottling, we will deliver the whisky to you according to the
+              address you provided. After conversion, you still own all other
+              rights in the NFT artwork.
+              <div className="dot-box">
+                <div className="dot-row row">
+                  <i className="dot" />
+                  <i className="dot" />
+                </div>
+                <div className="dot-row row">
+                  <i className="dot" />
+                  <i className="dot" />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="about-box">
-        <div className="left-box">
-          <div className="about title-img">
+        <div className="about-wrapper">
+          <div className="black-cloud black-cloud-1 image-container">
             <Image
-              src={'/static/images/about.png'}
+              className={'image'}
+              src={'/static/images/black-cloud-1.png'}
               layout="fill"
               objectFit="contain"
               alt={'basic'}
             />
           </div>
-          <div className="about-text">
-            The vision of CaskBaatar is to combine the art collection and the
-            investment in whisky through web3.
-            <br />
-            <br />
-            Only by integrating NFT with the real things can we create a
-            sustainable and stable NFT ecosystem, which is the most significant
-            value of this project.
-            <br />
-            <br />
-            The owners of CaskBaatar NFT also become contributors and investors
-            to our mission.
+          <div className="about-box">
+            <div className="left-box">
+              <div className="about title-img">
+                <Image
+                  src={'/static/images/about.png'}
+                  layout="fill"
+                  objectFit="contain"
+                  alt={'basic'}
+                />
+              </div>
+              <div className="about-text">
+                The vision of CaskBaatar is to combine the art collection and
+                the investment in whisky through web3.
+                <br />
+                <br />
+                Only by integrating NFT with the real things can we create a
+                sustainable and stable NFT ecosystem, which is the most
+                significant value of this project.
+                <br />
+                <br />
+                The owners of CaskBaatar NFT also become contributors and
+                investors to our mission.
+              </div>
+            </div>
+            <div className="about-avatar-box">
+              <div className="about-avatar">
+                <Image
+                  src={'/static/images/about-avatar.gif'}
+                  layout="fill"
+                  objectFit="contain"
+                  alt={'basic'}
+                />
+              </div>
+            </div>
           </div>
         </div>
-        <div className="about-avatar-box">
-          <div className="about-avatar">
-            <Image
-              src={'/static/images/about-avatar.png'}
-              layout="fill"
-              objectFit="contain"
-              alt={'basic'}
-            />
-          </div>
-        </div>
-      </div>
 
-      <div className="about-box">
-        <div className="left-box">
-          <div className="about title-img">
-            <Image
-              src={'/static/images/story.png'}
-              layout="fill"
-              objectFit="contain"
-              alt={'basic'}
-            />
-          </div>
-          <div className="about-text">
-            The vision of CaskBaatar is to combine the art collection and the
-            investment in whisky through web3.
-            <br />
-            <br />
-            Only by integrating NFT with the real things can we create a
-            sustainable and stable NFT ecosystem, which is the most significant
-            value of this project.
-            <br />
-            <br />
-            The owners of CaskBaatar NFT also become contributors and investors
-            to our mission.
+        <div className="about-box">
+          <div className="left-box">
+            <div className="about title-img">
+              <Image
+                src={'/static/images/story.png'}
+                layout="fill"
+                objectFit="contain"
+                alt={'basic'}
+              />
+            </div>
+            <div className="about-text">
+              The vision of CaskBaatar is to combine the art collection and the
+              investment in whisky through web3.
+              <br />
+              <br />
+              Only by integrating NFT with the real things can we create a
+              sustainable and stable NFT ecosystem, which is the most
+              significant value of this project.
+              <br />
+              <br />
+              The owners of CaskBaatar NFT also become contributors and
+              investors to our mission.
+            </div>
           </div>
         </div>
       </div>
@@ -323,14 +354,60 @@ export function Index() {
           alt={'basic'}
         />
       </div>
-      <div className="map">
+
+      <div className="image-container">
+        {/* <Image
+          src={'/static/images/roadmap.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        /> */}
+        <Image
+          className={'image map'}
+          src={'/static/images/map-text.png'}
+          layout="fill"
+          objectFit="contain"
+          alt={'basic'}
+        />
+        <div className="black-cloud image-container">
+          <Image
+            className={'image'}
+            src={'/static/images/black-cloud-2.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
+        </div>
+      </div>
+
+      {/* <div className="map-bg">
+        <div className="roadmap title-img">
+          <Image
+            src={'/static/images/roadmap.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
+        </div>
+
+        <div className="image-container map">
+          <Image
+            className={'image'}
+            src={'/static/images/map.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
+        </div>
+      </div> */}
+      {/* <div className="map">
         <Image
           src={'/static/images/map.png'}
           layout="fill"
           objectFit="contain"
           alt={'basic'}
         />
-      </div>
+      </div> */}
 
       <div className="team title-img">
         <Image
@@ -441,55 +518,78 @@ export function Index() {
           purpose. However, you are not allowed to modify the image.
         </div>
       </div>
-
-      {/* <div className="roadmap title-img">
+      {/* <div className="image-container">
+        <div className="image-container middle-bg">
+          <Image
+            className={'image'}
+            src={'/static/images/middle-bg.png'}
+            layout="fill"
+            alt={'basic'}
+          />
+        </div>
+        <div className="image-container">
         <Image
-          src={'/static/images/roadmap.png'}
+          src={'/static/images/title.gif'}
           layout="fill"
           objectFit="contain"
           alt={'basic'}
         />
-        <Image
-          src={'/static/images/map.png'}
-          layout="fill"
-          objectFit="contain"
-          alt={'basic'}
-        />
-      </div>
-
-      <div className="team title-img">
-        <Image
-          src={'/static/images/team.png'}
-          layout="fill"
-          objectFit="contain"
-          alt={'basic'}
-        />
-      </div>
-
-      <div className="faq title-img">
-        <Image
-          src={'/static/images/faq.png'}
-          layout="fill"
-          objectFit="contain"
-          alt={'basic'}
-        /> */}
-      {/* </div> */}
+        </div>
+      </div> */}
     </Wrapper>
   );
 }
 
 export default Index;
 
+const StyledVideo = styled.video`
+  /* top: 50%;
+    left: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    transform: translateX(-50%) translateY(-50%);
+    margin-top: -1px; */
+
+  position: absolute;
+  width: 100%;
+  height: 100vh;
+  object-fit: cover;
+  left: 0;
+  top: 0;
+  z-index: 0;
+  /* opacity: 0.9; */
+`;
+
 const Wrapper = styled.div`
   width: 100vw;
   min-height: 1800px;
   /* min-height: 18000px; */
-  background-image: url('/static/images/background-clip.png');
+  /* background-image: url('/static/images/background-clip.png'); */
   background-repeat: no-repeat;
   background-color: #071726;
   background-size: contain;
   overflow: hidden;
   /* padding-top: 45vw; */
+  .bg-t {
+    margin-top: -100px;
+    padding-top: 100px;
+    background-image: url('/static/images/texture.png');
+    /* background-repeat: no-repeat; */
+    background-size: 100%;
+  }
+  .image-container {
+    width: 100%;
+    position: relative;
+    > span {
+      position: unset !important;
+    }
+    .image {
+      object-fit: contain;
+      width: 100% !important;
+      position: relative !important;
+      height: unset !important;
+    }
+  }
 
   .logo {
     position: absolute;
@@ -497,10 +597,20 @@ const Wrapper = styled.div`
     left: 0px;
   }
 
+  .bg-texture {
+    width: 100vw;
+    /* min-height: 900px; */
+    margin-top: -415px;
+    padding-top: calc(60px + 0.1 * 100vw);
+    background-image: url('/static/images/bg-texture.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+  }
+
   .nav-box {
     white-space: nowrap;
     position: absolute;
-    top: 36vw;
+    bottom: 15vw;
     left: 50%;
     width: 80%;
     justify-content: center;
@@ -521,39 +631,36 @@ const Wrapper = styled.div`
     .nav-item {
       width: 42px;
       height: 42px;
-      
+
       /* max-width: 62px;
       max-height: 62px; */
       /* object-fit: cover; */
       position: relative;
-      
     }
-    .wl-xyz{
-        width: 42px;
-        height: 22px;
-      }
+    .wl-xyz {
+      width: 42px;
+      height: 22px;
+    }
     & > * + * {
       margin-left: 10px;
     }
     @media (min-width: 700px) {
       .nav-item {
-
-      width: 52px;
-      height: 52px;
+        width: 52px;
+        height: 52px;
       }
-      .wl-xyz{
+      .wl-xyz {
         width: 52px;
         height: 32px;
       }
     }
-    
+
     @media (min-width: 850px) {
       .nav-item {
-
-      width: 62px;
-      height: 62px;
+        width: 62px;
+        height: 62px;
       }
-      .wl-xyz{
+      .wl-xyz {
         width: 72px;
         height: 42px;
       }
@@ -561,8 +668,6 @@ const Wrapper = styled.div`
         margin-left: 20px;
       }
     }
-    
-
 
     @media (min-width: 1600px) {
       .nav-item {
@@ -576,22 +681,57 @@ const Wrapper = styled.div`
   }
 
   .cloud {
-    width: 120%;
+    /* opacity: 0.4; */
+    margin-top: calc(99vh - (0.1 * 100vw));
+    z-index: 99;
+
+    /* margin-top: calc(85vh + (0.01 * 100vw)); */
+    /* margin-top: calc(500px - (0.01 * 100vw)); */
+    /* margin-top: 550px; */
+
+    /* width: 120%;
     margin-left: -10vw;
-    /* overflow: hidden; */
     height: 170.5px;
 
     position: relative;
     padding-top: 115vw;
-    z-index: 1;
+    z-index: 1; */
   }
+
+  .middle-bg {
+    margin-top: -6vw;
+    /* margin-top: calc(-6vw + (0.1 * 100vw)); */
+    padding-top: 100px;
+    width: 100%;
+    height: 600px;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+      url('/static/images/middle-bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+
+  }
+
+  .title-gif {
+    width: 100%;
+    height: 100px;
+    transform: scale(2);
+    position: relative;
+    /* margin-top: calc(0.1 * 100vw); */
+  }
+
+  .big-title {
+    width: 80%;
+    height: 100px;
+    margin: 0 auto;
+    position: relative;
+    margin-top: calc(2vw);
+  }
+
   .flag {
     width: 80%;
     height: 309px;
     margin: 0 auto;
     margin-top: -60vw;
-    /* margin-top: -60vmin; */
-    /* margin-top: -60vmin; */
     position: relative;
     @media (min-width: 700px) {
       margin-top: -40vw;
@@ -601,8 +741,8 @@ const Wrapper = styled.div`
   .home {
     position: relative;
     margin-top: 12vw;
-    margin-bottom: 30px;
-    height: 50px;
+    margin-bottom: 20px;
+    height: 40px;
     @media (min-width: 1200px) {
       margin-top: 17vw;
     }
@@ -617,15 +757,16 @@ const Wrapper = styled.div`
   }
 
   .text {
-    width: 80%;
+    width: 90%;
     max-width: 1024px;
     color: white;
-    /* font-size: 13px; */
+    font-size: 13px;
+    padding-bottom: 30px;
     margin: 0 auto;
   }
 
   .title {
-    font-size: 16px;
+    font-size: 17px;
     font-weight: bolder;
   }
 
@@ -635,6 +776,8 @@ const Wrapper = styled.div`
     margin: 0 auto;
     margin-top: 50px;
     max-width: 1024px;
+    font-size: 12px;
+    z-index: 2;
     /* &::before {
       content: '';
       background: white;
@@ -740,35 +883,44 @@ const Wrapper = styled.div`
     }
   }
 
-  .avatar-loop-box{
+  .avatar-loop-box {
     height: 400px;
     position: relative;
     margin: 20vw auto;
   }
 
   .avatar-loop {
-    width: calc(100vw + 150px);
+    /* width: calc(100vw + 150px); */
     position: absolute;
-    height: 400px;
-    top: -10vw;
-    @media (min-width: 800px) {
+    top: calc(-0px + -0.1 * 100vw);
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    transform: scale(1.2);
+    /* height: 400px; */
+    /* top: -10vw; */
+    /* @media (min-width: 800px) {
       height: 500px;
-    }
+    } */
   }
 
-  .avatar-loop-front{
-    width: calc(100vw + 150px);
+  .avatar-loop-front {
+    z-index: 2;
+    /* width: calc(100vw + 150px);
     height: 400px;
     right: -86vw;
     transform: translateX(-50%);
     position: absolute;
     @media (min-width: 800px) {
-     right: -87vw;
-     top: -12vw;
+      right: -87vw;
+      top: -12vw;
       height: 600px;
-    }
+    } */
   }
 
+  .about-wrapper {
+    position: relative;
+  }
 
   .about-box {
     width: 80%;
@@ -809,19 +961,43 @@ const Wrapper = styled.div`
 
   .roadmap {
     width: 180px;
-    margin: 0 auto;
-    margin-top: 100px;
+    margin: 200px auto 50px;
+    z-index: 1;
   }
 
   .map {
-    width: 80%;
-    /* height: 20vw; */
-    height: 200px;
-    position: relative;
-    margin: 50px auto 80px auto;
-    @media (min-width: 800px) {
-     height: 400px;
-    }
+    z-index: 2;
+    width: 90% !important;
+    min-width: 90% !important;
+    max-width: 1024px !important;
+    margin: 20px auto 200px auto;
+  }
+
+  .team {
+    margin: 200px auto 50px;
+  }
+
+  .black-cloud {
+    position: absolute;
+    top: calc(-200px + -0.2 * 100vw);
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+  }
+
+  .black-cloud-1 {
+    top: calc(-300px + -0.1 * 100vw);
+  }
+
+  .map-bg {
+    width: 100%;
+    height: 900px;
+    /* object-fit: contain; */
+    /* opacity: 0.4; */
+    background-image: url('/static/images/black-cloud-2.png');
+    /* background-image: url('/static/images/middle-bg.png'); */
+    background-repeat: no-repeat;
+    background-size: 100%;
   }
 
   .profile-wrapper {
@@ -854,6 +1030,7 @@ const Wrapper = styled.div`
       height: 142px; */
       position: relative;
     }
+
     @media (min-width: 800px) {
       .profile-item {
         width: 55vmin;
@@ -863,6 +1040,15 @@ const Wrapper = styled.div`
         max-height: 300px;
         width: 55vmin;
         height: 55vmin;
+      }
+    }
+    @media (min-width: 600px) and (max-width: 900px) {
+      .profile-item {
+        width: 22vmin;
+      }
+      .profile {
+        width: 22vmin;
+        height: 22vmin;
       }
     }
     @media (max-width: 600px) {
@@ -913,7 +1099,7 @@ const Wrapper = styled.div`
       .ques {
         font-weight: bolder;
         margin-bottom: 10px;
-        font-size: 23px;
+        font-size: 21px;
       }
     }
   }
