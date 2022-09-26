@@ -19,7 +19,6 @@ export default function MainLayout() {
     dispatch(fetchProjectDetail({ slug, token: account.info.token }));
   }, [account, dispatch, slug]);
 
-  // log.debug(slug, project);
   if (!project) {
     return (
       <LoadingBox>
@@ -27,7 +26,9 @@ export default function MainLayout() {
       </LoadingBox>
     );
   }
+
   if (!isCreator) return <CreatorNeed content="Must Be Creator" />;
+
   return (
     <MainLayoutBox>
       <AsideNav project={project} />

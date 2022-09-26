@@ -16,6 +16,7 @@ export type ApiResp<T> = {
 export enum ChainType {
   SOLANA = 'SOLANA',
   EVM = 'EVM',
+  APTOS = 'APTOS',
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',
 }
@@ -49,12 +50,11 @@ export function login(params: {
   pubkey: string;
   type: ChainType;
 }): AxiosPromise<LoginResult> {
-  // console.log('loginParams', params)
-  const data = qs.stringify(params);
+  console.log('loginParams', params);
   return axios({
     url: `${ApiBaseUrl}/users/login`,
     method: 'post',
-    data: data,
+    data: params,
   });
 }
 

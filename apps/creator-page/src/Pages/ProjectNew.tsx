@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios';
 import log from 'loglevel';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -35,6 +35,9 @@ export default function ProjectNew() {
       }
       if (project.blockchain === BlockchainType.Ethereum) {
         chainId = 1;
+      }
+      if (project.blockchain === BlockchainType.Aptos) {
+        chainId = 2;
       }
 
       log.debug('createNewProject', project);

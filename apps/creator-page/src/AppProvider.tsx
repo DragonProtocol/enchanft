@@ -38,11 +38,16 @@ type MetaMaskProvider = {
   provider: any;
   publicKeyStr: string;
 };
+type MartianProvider = {
+  provider: any;
+  publicKeyStr: string;
+};
 
 export type SignMsgResult = {
   walletType: TokenType;
   pubkey: string;
   signature: string;
+  payloadMsg?: string;
 };
 
 export enum RoleType {
@@ -78,16 +83,20 @@ type AppAccount = {
 export interface AppContextData {
   phantomValid: boolean;
   metaMaskValid: boolean;
+  martianValid: boolean;
   phantom: PhantomProvider | null;
   metaMask: MetaMaskProvider | null;
+  martian: MartianProvider | null;
   account: AppAccount;
   updateAccount: (arg0: any) => void;
   getSolanaProvider: () => void;
   getEthProvider: () => void;
   getPhantomAddr: () => Promise<string | undefined>;
   getMetaMaskAddr: () => Promise<string | undefined>;
+  getMartianAddr: () => Promise<string | undefined>;
   signMsgWithPhantom: () => Promise<SignMsgResult | undefined>;
   signMsgWithMetaMask: () => Promise<SignMsgResult | undefined>;
+  signMsgWithMartian: () => Promise<SignMsgResult | undefined>;
   validLogin: boolean;
   isCreator: boolean;
   isAdmin: boolean;
@@ -117,8 +126,10 @@ const DefaultAccount: AppAccount = {
 const DefaultCtxData: AppContextData = {
   phantomValid: false,
   metaMaskValid: false,
+  martianValid: false,
   phantom: null,
   metaMask: null,
+  martian: null,
   validLogin: false,
   account: DefaultAccount,
   updateAccount: (arg0: any) => {},
@@ -126,8 +137,10 @@ const DefaultCtxData: AppContextData = {
   getEthProvider,
   getMetaMaskAddr,
   getPhantomAddr,
+  getMartianAddr,
   signMsgWithPhantom,
   signMsgWithMetaMask,
+  signMsgWithMartian,
   isCreator: false,
   isAdmin: false,
 };
@@ -138,25 +151,32 @@ export const AppContext = createContext<AppContextData>(DefaultCtxData);
 const DefaultWallet = (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '';
 
 export const AppProvider = ({ children }: PropsWithChildren) => {
+  const [martianValid, setMartianValid] = useState(false);
   const [phantomValid, setPhantomValid] = useState(false);
   const [metaMaskValid, setMetaMaskValid] = useState(false);
   const [metaMask, setMetaMask] = useState<MetaMaskProvider | null>(null);
   const [phantom, setPhantom] = useState<PhantomProvider | null>(null);
+  const [martian, setMartian] = useState<MartianProvider | null>(null);
   const [account, setAccount] = useState<AppAccount>(DefaultCtxData.account);
 
   useEffect(() => {
     const cb = () => {
       let phantomValid = false;
       let metaMaskValid = false;
+      let martianValid = false;
       if (windowObj.solana && windowObj.solana.isPhantom) {
         phantomValid = true;
       }
       if (windowObj.ethereum) {
         metaMaskValid = true;
       }
+      if (windowObj.martian) {
+        martianValid = true;
+      }
       setPhantomValid(phantomValid);
       setMetaMaskValid(metaMaskValid);
-      walletCheck(metaMaskValid, phantomValid);
+      setMartianValid(martianValid);
+      walletCheck(metaMaskValid, phantomValid, martianValid);
     };
     window.addEventListener('load', cb);
     return () => {
@@ -193,10 +213,15 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   );
 
   const walletCheck = useCallback(
-    async (metamaskValid: boolean, phantomValid: boolean) => {
+    async (
+      metamaskValid: boolean,
+      phantomValid: boolean,
+      martianValid: boolean
+    ) => {
       console.log('walletCheck', {
         metamaskValid,
         phantomValid,
+        martianValid,
         DefaultWallet,
       });
       if (metamaskValid && DefaultWallet === TokenType.Ethereum) {
@@ -241,6 +266,30 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
           await getProfileWithToken(
             account.lastLoginToken,
             TokenType.Solana,
+            addr.toString()
+          );
+        }
+      }
+      if (martianValid && DefaultWallet === TokenType.Aptos) {
+        if (windowObj.martianValidChecked) return;
+        windowObj.martianValidChecked = true;
+        console.log('getMartianProvider' + Date.now());
+        const provider = await getAptosProvider();
+        if (!provider) {
+          return;
+        }
+        const addr = await getMartianAddr();
+        setMartian({
+          provider: provider,
+          publicKeyStr: addr,
+        });
+        console.log('aptosValid', addr);
+        if (account.lastPubkey !== addr.toString()) {
+          setAccount({ ...account, info: null });
+        } else {
+          await getProfileWithToken(
+            account.lastLoginToken,
+            TokenType.Aptos,
             addr.toString()
           );
         }
@@ -314,7 +363,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [linkUser]);
 
-  console.log('account', account);
+  log.debug('account', account);
 
   return (
     <AppContext.Provider
@@ -323,8 +372,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         validLogin,
         phantomValid,
         metaMaskValid,
+        martianValid,
         metaMask,
         phantom,
+        martian,
         account,
         isCreator,
         isAdmin,
@@ -365,6 +416,16 @@ async function getSolanaProvider() {
   }
 }
 
+async function getAptosProvider() {
+  if (windowObj.martian) {
+    await windowObj.martian.connect();
+    const provider = windowObj.martian;
+    return provider;
+  } else {
+    return null;
+  }
+}
+
 async function getPhantomAddr() {
   const solanaProvider = await getSolanaProvider();
   if (!solanaProvider) return;
@@ -378,6 +439,13 @@ async function getMetaMaskAddr() {
   const signer = ethProvider.getSigner();
   const walletAddr = await signer.getAddress();
   return walletAddr;
+}
+
+async function getMartianAddr() {
+  const provider = await getAptosProvider();
+  if (!provider) return;
+  const { publicKey } = await provider.account();
+  return publicKey.slice(2);
 }
 
 async function signMsgWithPhantom(): Promise<SignMsgResult | undefined> {
@@ -397,4 +465,21 @@ async function signMsgWithMetaMask(): Promise<SignMsgResult | undefined> {
   const walletAddr = await signer.getAddress();
   const signature = await signer.signMessage(SIGN_MSG);
   return { walletType: TokenType.Ethereum, pubkey: walletAddr, signature };
+}
+
+async function signMsgWithMartian(): Promise<SignMsgResult | undefined> {
+  const provider = await getAptosProvider();
+  if (!provider) return;
+  const walletAddr = await getMartianAddr();
+  const resp = await provider.signMessage({
+    message: SIGN_MSG,
+  });
+  console.log('signMsgWithMartian', resp);
+  const { signature } = resp;
+  return {
+    walletType: TokenType.Aptos,
+    pubkey: walletAddr,
+    signature: signature.slice(2),
+    payloadMsg: resp.fullMessage,
+  };
 }

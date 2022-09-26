@@ -68,6 +68,7 @@ export default function TaskNew() {
     account,
     project,
     validLogin,
+    isCreator,
     state,
     isSubmitting,
     dispatch,
@@ -193,12 +194,3 @@ const NewBox = styled.div`
     }
   }
 `;
-function updateAccount(arg0: {
-  info: null;
-  lastLoginToken: string;
-  lastPubkey: string;
-  lastLoginType: string;
-  lastLoginInfo: { avatar: string; name: string };
-}) {
-  throw new Error('Function not implemented.');
-}

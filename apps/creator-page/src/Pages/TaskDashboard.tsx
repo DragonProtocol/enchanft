@@ -15,7 +15,6 @@ import Schedule from '../Components/TaskDashboard/Schedule';
 import { AsyncRequestStatus, downloadWinner } from '../api';
 import { Loading } from '../Components/Loading';
 import WinnerList from '../Components/TaskDashboard/WinnerList';
-import log from 'loglevel';
 
 export function TaskDashboard() {
   const { taskId } = useParams();

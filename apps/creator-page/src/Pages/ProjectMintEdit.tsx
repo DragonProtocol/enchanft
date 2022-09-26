@@ -1,11 +1,10 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { EditBox, EditTitle } from '../Components/Project/EditTitle';
 import CalendarTime from '../Components/Project/Mint/CalendarTime';
 import TotalSupply from '../Components/Project/Mint/TotalSupply';
 import MintPrice from '../Components/Project/Mint/MintPrice';
 import MintLimit from '../Components/Project/Mint/MintLimit';
 import styled from 'styled-components';
-import IconPlus from '../Components/Icons/IconPlus';
 import { useAppConfig } from '../AppProvider';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -17,6 +16,7 @@ import PublicSaleTime from '../Components/Project/Mint/PublicSaleTime';
 import { updateProject } from '../api';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
+import isEqual from '../utils/isEqual';
 
 export default function ProjectMintEdit() {
   const { account, updateAccount } = useAppConfig();
@@ -26,6 +26,7 @@ export default function ProjectMintEdit() {
 
   // TODO fix any
   const [project, setProject] = useState<any>({ ...data });
+  const [couldSave, setCouldSave] = useState(false);
 
   const saveProject = useCallback(async () => {
     if (!account.info?.token || !slug) return;
@@ -43,9 +44,22 @@ export default function ProjectMintEdit() {
       }
     }
   }, [account, dispatch, project, slug, updateAccount]);
+
+  useEffect(() => {
+    if (!isEqual(data, project)) {
+      setCouldSave(true);
+    } else {
+      setCouldSave(false);
+    }
+  }, [data, project]);
+
   return (
     <ContentBox>
-      <EditTitle title="Mint Information" save={saveProject} />
+      <EditTitle
+        title="Mint Information"
+        save={saveProject}
+        couldSave={couldSave}
+      />
       <div className="info">
         <div className="left">
           <TotalSupply supply={project.itemTotalNum} />
@@ -207,11 +221,11 @@ export default function ProjectMintEdit() {
                   mintEndTime: dayjs().add(1, 'M').toDate().getTime(),
                   totalNum: 0,
                 },
-              ], // TODO
+              ],
             });
           }}
         >
-          <IconPlus size="16px" /> Add Whitelist
+          + Add Whitelist
         </button>
       </div>
     </ContentBox>

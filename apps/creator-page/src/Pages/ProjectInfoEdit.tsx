@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import Loading from '../Components/Loading';
 import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -12,10 +11,11 @@ import ProjectSymbol from '../Components/Project/Symbol';
 import ProjectWebsite from '../Components/Project/Website';
 import ProjectAttachFile from '../Components/Project/AttachFile';
 import ProjectTwitterLink from '../Components/Project/TwitterLink';
+import ProjectTwitterLinkInput from '../Components/Project/TwitterLinkInput';
 import ProjectInviteBot from '../Components/Project/InviteBot';
+import ProjectInviteBotInput from '../Components/Project/InviteBotInput';
 import ProjectTotalSupply from '../Components/Project/TotalSupply';
 import ProjectBlockchain from '../Components/Project/Blockchain';
-import ProjectStatus from '../Components/Project/Status';
 import { EditBox, EditTitle } from '../Components/Project/EditTitle';
 
 import {
@@ -32,9 +32,11 @@ import { toast } from 'react-toastify';
 import UploadImgModal from '../Components/UploadImgModal';
 import { BlockchainType } from '../Components/Project/types';
 import { AxiosError } from 'axios';
+import isEqual from '../utils/isEqual';
+import log from 'loglevel';
 
 export default function ProjectInfoEdit() {
-  const { account, updateAccount } = useAppConfig();
+  const { account, updateAccount, isAdmin } = useAppConfig();
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
@@ -50,6 +52,7 @@ export default function ProjectInfoEdit() {
     !!project?.community.discordId
   );
   const [showModal, setShowModal] = useState(false);
+  const [couldSave, setCouldSave] = useState(false);
 
   const uploadImageHandler = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,6 +128,17 @@ export default function ProjectInfoEdit() {
   );
 
   useEffect(() => {
+    if (!isEqual(data, project)) {
+      setCouldSave(true);
+    } else {
+      setCouldSave(false);
+    }
+  }, [data, project]);
+
+  useEffect(() => {
+    setProject({ ...data });
+  }, [data]);
+  useEffect(() => {
     localStorage.setItem('discord_guild_id', JSON.stringify({ guildId: null }));
     const handleStorageChange = (e: StorageEvent) => {
       const { newValue, key } = e;
@@ -139,10 +153,14 @@ export default function ProjectInfoEdit() {
 
   if (data?.slug !== slug) return <Loading />;
 
-  console.log(project);
+  log.debug('project', project);
   return (
     <EditBox>
-      <EditTitle title="Edit Project Information" save={saveProject} />
+      <EditTitle
+        title="Edit Project Information"
+        save={saveProject}
+        couldSave={couldSave}
+      />
       <div className="info">
         <div className="left">
           <ProjectName
@@ -202,30 +220,60 @@ export default function ProjectInfoEdit() {
             img={project?.image}
             uploadImageHandler={uploadImageHandler}
           />
-          <ProjectTwitterLink
-            hasTwitter={
-              project?.community?.twitterId && project?.community?.twitterName
-            }
-            twitterName={project?.community?.twitterName || ''}
-            linkAction={async () => {
-              if (!account.info?.token) return;
-              try {
-                const resp = await getTwitterSubScriptions(account.info.token);
-                const { data } = resp;
-                setTwitter(data.data);
-                const winParams = `width=480,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no`;
-                window.open(data.data.url, '__blank', winParams);
-                setShowTwitterInputModal(true);
-              } catch (error) {
-                const err: AxiosError = error as any;
-                if (err.response?.status === 401) {
-                  toast.error('Login has expired,please log in again!');
-                  updateAccount({ ...account, info: null });
-                }
+          {(isAdmin && (
+            <ProjectTwitterLinkInput
+              twitterName={project?.community?.twitterName || ''}
+              setTwitterName={(name) => {
+                setProject({
+                  ...project,
+                  community: {
+                    ...project.community,
+                    twitterName: name,
+                  },
+                });
+              }}
+            />
+          )) || (
+            <ProjectTwitterLink
+              hasTwitter={
+                project?.community?.twitterId && project?.community?.twitterName
               }
-            }}
-          />
-          <ProjectInviteBot hasInviteBot={hasInviteBot} />
+              twitterName={project?.community?.twitterName || ''}
+              linkAction={async () => {
+                if (!account.info?.token) return;
+                try {
+                  const resp = await getTwitterSubScriptions(
+                    account.info.token
+                  );
+                  const { data } = resp;
+                  setTwitter(data.data);
+                  const winParams = `width=480,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no`;
+                  window.open(data.data.url, '__blank', winParams);
+                  setShowTwitterInputModal(true);
+                } catch (error) {
+                  const err: AxiosError = error as any;
+                  if (err.response?.status === 401) {
+                    toast.error('Login has expired,please log in again!');
+                    updateAccount({ ...account, info: null });
+                  }
+                }
+              }}
+            />
+          )}
+          {(isAdmin && (
+            <ProjectInviteBotInput
+              botUrl={project?.community?.discordInviteUrl || ''}
+              setBotUrl={(url) => {
+                setProject({
+                  ...project,
+                  community: {
+                    ...project.community,
+                    discordInviteUrl: url,
+                  },
+                });
+              }}
+            />
+          )) || <ProjectInviteBot hasInviteBot={hasInviteBot} />}
           <ProjectBlockchain
             blockchain={
               project?.chainId === -1

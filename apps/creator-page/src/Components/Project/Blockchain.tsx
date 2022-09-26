@@ -23,6 +23,7 @@ export default function Blockchain({
           {BlockchainType.Ethereum}
         </option>
         <option value={BlockchainType.Solana}>{BlockchainType.Solana}</option>
+        <option value={BlockchainType.Aptos}>{BlockchainType.Aptos}</option>
       </select>
     </Box>
   );
