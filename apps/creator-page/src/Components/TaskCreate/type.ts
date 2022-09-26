@@ -3,6 +3,7 @@ import {
   CREATE_TASK_DEFAULT_CONTRIBUTION_TOKEN,
   CREATE_TASK_DEFAULT_WINNER_NUM,
 } from '../../utils/constants';
+import { CoinType } from '../../utils/token';
 
 export enum RewardType {
   WHITELIST = 'WHITELIST',
@@ -46,6 +47,7 @@ export enum ActionType {
   DISCORD = 'discord',
   NOTIFY = 'notify',
   WL = 'wl',
+  COIN = 'coin',
 }
 
 export enum ActionTypeMore {
@@ -61,6 +63,8 @@ export enum ActionTypeMore {
   TURN_ON_NOTIFICATION = 'TURN_ON_NOTIFICATION',
   CUSTOM = 'CUSTOM',
   DISCORD_OBTAIN_ROLE = 'DISCORD_OBTAIN_ROLE',
+  NATIVE_BALANCE = 'NATIVE_BALANCE',
+  NFT_BALANCE = 'NFT_BALANCE',
 }
 
 export type Action = {
@@ -75,6 +79,7 @@ export type Action = {
   role?: string;
   accounts?: string[];
   tweet_id?: string;
+  coin_type?: CoinType;
 };
 
 export type Reward = {

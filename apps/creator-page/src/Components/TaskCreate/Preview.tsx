@@ -123,6 +123,9 @@ export default function Preview({
                   if (item.type === ActionType.WL) {
                     Icon = IconWL;
                   }
+                  if (item.type === ActionType.COIN) {
+                    Icon = IconWL;
+                  }
                   if (
                     item.typeMore === ActionTypeMore.CUSTOM &&
                     item.description
@@ -213,6 +216,7 @@ const TaskPreviewWrapper = styled.div`
         border-radius: 20px;
         /* transform: matrix(-1, 0, 0, 1, 0, 0); */
         & img {
+          vertical-align: middle;
           height: 18px;
           width: 12px;
         }

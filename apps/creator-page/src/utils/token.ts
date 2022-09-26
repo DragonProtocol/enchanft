@@ -13,6 +13,11 @@ export const LAST_LOGIN_PUBKEY = 'last_login_pubkey';
 export const SIGN_MSG =
   'Sign this message to sign into ' + window.location.hostname;
 
+export enum CoinType {
+  ETH = 'ETH',
+  SOL = 'SOL',
+}
+
 export enum TokenType {
   Solana = 'solana',
   Ethereum = 'ethereum',
