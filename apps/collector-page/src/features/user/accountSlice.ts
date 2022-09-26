@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 14:08:43
+ * @LastEditTime: 2022-09-26 15:31:53
  * @Description: 用户的账户信息
  */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
@@ -18,6 +18,7 @@ import {
   LAST_LOGIN_TYPE,
   setLoginToken,
   TokenType,
+  clearLoginToken,
 } from '../../utils/token'
 import { toast } from 'react-toastify'
 import { FetchTwitterOauthTokenResponse } from '../../types/api'
@@ -89,37 +90,40 @@ const initIslogin = () => {
   }
 }
 // 用户账户信息
-const initialState: AccountState = {
-  isLogin: initIslogin(),
-  status: AsyncRequestStatus.IDLE,
-  linkStatus: AsyncRequestStatus.IDLE,
-  defaultWallet: (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '',
-  lastLoginType: (localStorage.getItem(LAST_LOGIN_TYPE) as TokenType) || '',
-  lastLoginInfo: {
-    name: localStorage.getItem(LAST_LOGIN_NAME) || '',
-    avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
-  },
-  walletChecked: false,
-  pubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
-  lastPubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
-  token: localStorage.getItem(LAST_LOGIN_TOKEN) || '',
-  avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
-  name: localStorage.getItem(LAST_LOGIN_NAME) || '',
-  id: 0,
-  connectModal: null,
-  connectWalletModalShow: false,
-  accounts: [],
-  resourcePermissions: [],
-  roles: [],
-  linkErrMsg: '',
-  fetchTwitterOauthToken: {
+const getInitState = (): AccountState => {
+  return {
+    isLogin: initIslogin(),
     status: AsyncRequestStatus.IDLE,
-    data: {
-      oauthToken: '',
-      oauthTokenSecret: '',
+    linkStatus: AsyncRequestStatus.IDLE,
+    defaultWallet: (localStorage.getItem(DEFAULT_WALLET) as TokenType) || '',
+    lastLoginType: (localStorage.getItem(LAST_LOGIN_TYPE) as TokenType) || '',
+    lastLoginInfo: {
+      name: localStorage.getItem(LAST_LOGIN_NAME) || '',
+      avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
     },
-  },
+    walletChecked: false,
+    pubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
+    lastPubkey: localStorage.getItem(LAST_LOGIN_PUBKEY) || '',
+    token: localStorage.getItem(LAST_LOGIN_TOKEN) || '',
+    avatar: localStorage.getItem(LAST_LOGIN_AVATAR) || '',
+    name: localStorage.getItem(LAST_LOGIN_NAME) || '',
+    id: 0,
+    connectModal: null,
+    connectWalletModalShow: false,
+    accounts: [],
+    resourcePermissions: [],
+    roles: [],
+    linkErrMsg: '',
+    fetchTwitterOauthToken: {
+      status: AsyncRequestStatus.IDLE,
+      data: {
+        oauthToken: '',
+        oauthTokenSecret: '',
+      },
+    },
+  }
 }
+const initialState: AccountState = getInitState()
 const AccountTypeAdapter = {
   [TokenType.Ethereum]: AccountType.EVM,
   [TokenType.Solana]: AccountType.SOLANA,
@@ -342,6 +346,16 @@ export const accountSlice = createSlice({
     setIsLogin: (state, action: PayloadAction<boolean>) => {
       state.isLogin = action.payload
     },
+    logout: (state) => {
+      clearLoginToken(state.defaultWallet, state.pubkey)
+      localStorage.setItem(LAST_LOGIN_AVATAR, '')
+      localStorage.setItem(LAST_LOGIN_NAME, '')
+      localStorage.setItem(LAST_LOGIN_TOKEN, '')
+      // localStorage.setItem(DEFAULT_WALLET, '')
+      // localStorage.setItem(LAST_LOGIN_TYPE, '')
+      const resetState = getInitState()
+      Object.assign(state, resetState)
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -349,25 +363,26 @@ export const accountSlice = createSlice({
         state.status = AsyncRequestStatus.PENDING
       })
       .addCase(userLogin.fulfilled, (state, action) => {
-        setLoginToken(action.payload.walletType, action.payload.token, action.payload.pubkey)
+        const { walletType, token, pubkey, avatar, name, id, accounts, resourcePermissions, roles } = action.payload
+        setLoginToken(walletType, token, pubkey)
+        localStorage.setItem(LAST_LOGIN_AVATAR, avatar || '')
+        localStorage.setItem(LAST_LOGIN_NAME, name || '')
+        localStorage.setItem(LAST_LOGIN_TOKEN, token || '')
+        localStorage.setItem(DEFAULT_WALLET, walletType)
+        localStorage.setItem(LAST_LOGIN_TYPE, walletType)
+
         state.status = AsyncRequestStatus.FULFILLED
-        state.pubkey = action.payload.pubkey
-        state.token = action.payload.token
-        state.avatar = action.payload.avatar
-        state.name = action.payload.name
-        state.id = action.payload.id
-        state.accounts = action.payload.accounts
-        state.resourcePermissions = action.payload.resourcePermissions
-        state.roles = action.payload.roles
-        state.defaultWallet = action.payload.walletType
+        state.pubkey = pubkey
+        state.token = token
+        state.avatar = avatar
+        state.name = name
+        state.id = id
+        state.accounts = accounts
+        state.resourcePermissions = resourcePermissions
+        state.roles = roles
+        state.defaultWallet = walletType
         state.errorMsg = ''
         state.isLogin = true
-        localStorage.setItem(LAST_LOGIN_AVATAR, action.payload.avatar || '')
-        localStorage.setItem(LAST_LOGIN_NAME, action.payload.name || '')
-        localStorage.setItem(LAST_LOGIN_TOKEN, action.payload.token || '')
-
-        localStorage.setItem(DEFAULT_WALLET, action.payload.walletType)
-        localStorage.setItem(LAST_LOGIN_TYPE, action.payload.walletType)
       })
       .addCase(userLogin.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED
@@ -484,6 +499,7 @@ export const {
   setLastLogin,
   setLastLoginInfo,
   setIsLogin,
+  logout,
 } = actions
 export const selectAccount = (state: RootState) => state.account
 export default reducer
