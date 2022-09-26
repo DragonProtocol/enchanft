@@ -83,7 +83,7 @@ export default function Actions({
   const [walletBalance, setWalletBalance] = useState({
     type: ActionType.COIN,
     valid: false,
-    num: 0,
+    num: '',
     coinType: CoinType.ETH,
   });
 
@@ -214,22 +214,26 @@ export default function Actions({
         type: ActionType.COIN,
         typeMore: ActionTypeMore.NATIVE_BALANCE,
         description: `Minimum balance ${walletBalance.num} ${walletBalance.coinType}`,
-        // TODO action data
-        num: walletBalance.num,
+        min_native_balance: Number(walletBalance.num) || 0,
       });
     }
 
     if (nftHolder.valid) {
       const data = [...nftHolder.items];
-      const word = data.pop();
+      let word = data.pop()?.nftCollectionName || '';
+      if (data.length > 0) {
+        word = 'and ' + word;
+      }
       const words = data.map((item) => item.nftCollectionName).join('、');
       actions.push({
         name: ``,
         type: ActionType.COIN,
         typeMore: ActionTypeMore.NFT_BALANCE,
-        description: `Holding ${words} and ${word?.nftCollectionName} NFT`,
-        // TODO action data
-        num: walletBalance.num,
+        description: `Holding ${words} ${word} NFT`,
+        nft_accounts: nftHolder.items.map((item) => {
+          return item.nftContractAddr;
+        }),
+        nft_accounts_or_add: false,
       });
     }
 
@@ -1024,9 +1028,9 @@ function WalletBalanceInput({
   type,
   setNum,
 }: {
-  num: number;
+  num: string;
   type: CoinType;
-  setNum: (arg0: number) => void;
+  setNum: (arg0: string) => void;
 }) {
   return (
     <div className="help">
@@ -1035,17 +1039,16 @@ function WalletBalanceInput({
         <input
           type="number"
           title="wallet-balance"
-          min={'1'}
-          onKeyPress={numberInput}
-          value={num === 0 ? '' : num}
+          min={'0.001'}
+          value={num}
           onChange={(e) => {
             const dataValue = e.target.value;
-            setNum(Number(dataValue));
+            setNum(dataValue);
           }}
         />
         <select title="coins" name="" id="" defaultValue={type}>
           <option value={CoinType.ETH}>ETH</option>
-          <option value={CoinType.SOL}>SOL</option>
+          {/* <option value={CoinType.SOL}>SOL</option> */}
         </select>
       </div>
     </div>

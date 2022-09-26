@@ -164,6 +164,9 @@ export function createTask(data: CreateTaskState, token: string) {
           accounts: item.accounts,
           tweet_id: item.tweet_id,
           role: item.role,
+          min_native_balance: item.min_native_balance,
+          nft_accounts: item.nft_accounts,
+          nft_accounts_or_add: item.nft_accounts_or_add,
         },
       };
     }),

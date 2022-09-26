@@ -79,7 +79,9 @@ export type Action = {
   role?: string;
   accounts?: string[];
   tweet_id?: string;
-  coin_type?: CoinType;
+  min_native_balance?: number;
+  nft_accounts?: string[];
+  nft_accounts_or_add?: boolean;
 };
 
 export type Reward = {
