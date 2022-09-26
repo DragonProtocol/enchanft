@@ -34,6 +34,7 @@ export type RewardItemDataType = {
   }
   project?: {
     mintUrl: string
+    slug: string
   }
 }
 
@@ -59,6 +60,7 @@ const defaultViewConfig: RewardItemViewConfigType = {
 }
 
 const RewardItem: React.FC<RewardItemProps> = ({ data, viewConfig, onMint }: RewardItemProps) => {
+  const navigate = useNavigate()
   const { type, task, community, whitelist, project } = data
 
   const { disabledMint, loadingMint } = {
@@ -74,7 +76,7 @@ const RewardItem: React.FC<RewardItemProps> = ({ data, viewConfig, onMint }: Rew
   }
   const rewardValue = getTaskRewardTypeValue(data)
   return (
-    <RewardItemWrapper>
+    <RewardItemWrapper onClick={() => navigate(`/${project?.slug}/${task?.id}`)}>
       <ProjectImage src={task?.image || ''} />
       <RewardInfoBox>
         <TaskName>{task?.name || 'Unknown Task'}</TaskName>
