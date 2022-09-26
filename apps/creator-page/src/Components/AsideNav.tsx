@@ -47,20 +47,35 @@ export default function AsideNav({ project }: { project: ProjectDetail }) {
                 New Task
               </NavLink>
             </div>
-            {tasks.map((item) => {
-              return (
-                <div key={item.id} className="nav">
-                  <NavLink
-                    className={({ isActive }) =>
-                      isActive ? 'link-item active' : 'link-item'
-                    }
-                    to={`/project/${slug}/task/${item.id}`}
-                  >
-                    {item.name}
-                  </NavLink>
-                </div>
-              );
-            })}
+            {[...tasks]
+              .sort((a, b) => {
+                return a.endTime - b.endTime;
+              })
+              .map((item) => {
+                const { startTime, endTime } = item;
+                const dateNow = Date.now();
+                let statusClass = '';
+                if (startTime > dateNow) {
+                  statusClass = 'future';
+                } else if (endTime < dateNow) {
+                  statusClass = 'closed';
+                } else {
+                  statusClass = 'live';
+                }
+                return (
+                  <div key={item.id} className="nav">
+                    <NavLink
+                      className={({ isActive }) =>
+                        isActive ? 'link-item active' : 'link-item'
+                      }
+                      to={`/project/${slug}/task/${item.id}`}
+                    >
+                      <span className={`dot ${statusClass}`}></span>
+                      {item.name}
+                    </NavLink>
+                  </div>
+                );
+              })}
           </>
         )}
       </div>
@@ -160,9 +175,32 @@ const AsideBox = styled.aside`
       padding: 10px;
       padding-left: 38px;
       border-radius: 10px;
+      /* overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis; */
       &.active {
         color: #fff;
         background: #333333;
+      }
+      & .dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 10px;
+        background-color: #c4c4c4;
+
+        &.live {
+          background-color: #3dd606;
+        }
+
+        &.closed {
+          background-color: red;
+        }
+
+        &.future {
+          background-color: #ebb700;
+        }
       }
     }
   }
