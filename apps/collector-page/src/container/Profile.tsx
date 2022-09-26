@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 14:09:56
+ * @LastEditTime: 2022-09-26 12:14:15
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -41,6 +41,7 @@ import {
   setAvatar as setAvatarForSlice,
   setName as setNameForSlice,
   setIsLogin,
+  logout,
 } from '../features/user/accountSlice'
 import { AccountType, ActionType } from '../types/entities'
 
@@ -125,14 +126,7 @@ const Profile: React.FC = () => {
 
   const handleLogout = useCallback(async () => {
     if (account.isLogin) {
-      clearLoginToken(account.defaultWallet, account.pubkey)
-      dispatch(setLastLogin(account.defaultWallet))
-      dispatch(setLastLoginInfo({ name: account.name, avatar: account.avatar }))
-      dispatch(setToken(''))
-      dispatch(setPubkey(''))
-      dispatch(setAvatarForSlice(''))
-      dispatch(setNameForSlice(''))
-      dispatch(setIsLogin(false))
+      dispatch(logout())
       navigate('/')
     }
   }, [account])
