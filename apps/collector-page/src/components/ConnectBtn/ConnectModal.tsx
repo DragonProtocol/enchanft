@@ -73,7 +73,7 @@ export default function ConnectModal() {
     const twitter = account.accounts.find((item) => item.accountType === AccountType.TWITTER)
     if (
       (discord && account.connectModal === ConnectModalType.DISCORD) ||
-      (twitter && account.connectModal === ConnectModalType.TWITTER)
+      (twitter && account.connectModal === ConnectModalType.TWITTER && !!twitter.data)
     ) {
       handleCloseConnectModal()
     }
@@ -141,6 +141,7 @@ export default function ConnectModal() {
     default:
       break
   }
+  console.log({ connectModal: account.connectModal })
 
   return (
     <ConnectModalBox

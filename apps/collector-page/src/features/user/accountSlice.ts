@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-26 15:31:53
+ * @LastEditTime: 2022-09-26 15:42:16
  * @Description: 用户的账户信息
  */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
@@ -37,6 +37,7 @@ type Account = {
   accountType: AccountType
   thirdpartyId: string
   thirdpartyName: string
+  data?: unknown
 }
 
 export enum RoleType {
