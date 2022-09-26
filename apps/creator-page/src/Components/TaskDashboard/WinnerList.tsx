@@ -366,10 +366,10 @@ const WinnerListBox = styled.div`
         text-align: center;
         display: inline-block;
         box-sizing: content-box;
-        width: 110px;
+        min-width: 70px;
         padding: 8px;
         font-weight: 700;
-        font-size: 18px;
+        font-size: 16px;
         line-height: 27px;
         background-color: #f7f9f1;
         color: #333333;

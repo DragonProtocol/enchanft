@@ -15,7 +15,8 @@ export default function MintLimit({
         <span>Max</span>{' '}
         <input
           title="limited"
-          type="text"
+          type="number"
+          min={0}
           value={mintMaxNum || 0}
           onKeyPress={numberInput}
           onChange={(e) => {
@@ -25,6 +26,7 @@ export default function MintLimit({
         />
         <span>mints per wallet</span>
       </div>
+      <p className="desc">Please put 0 if there is no limited.</p>
     </ContentBox>
   );
 }
@@ -56,5 +58,13 @@ const ContentBox = styled(Box)`
       line-height: 27px;
       color: #333333;
     }
+  }
+  & .desc {
+    margin: 0;
+    margin-top: 10px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 21px;
+    color: rgba(51, 51, 51, 0.6);
   }
 `;
