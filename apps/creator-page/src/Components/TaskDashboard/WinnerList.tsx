@@ -66,6 +66,17 @@ export default function WinnerList({
     setDisableSelect(true);
   }, [candidateList, winnerNum]);
 
+  const tweetWinners = useCallback((winners: string[]) => {
+    const data = 'Winners 🏆 ' + (winners.join(' ') + ' ').repeat(660);
+    console.log((data + ' @longw '.repeat(11)).length);
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        data + ' @longw '.repeat(12)
+      )}`,
+      '_blank'
+    );
+  }, []);
+
   const dateNow = new Date();
   const schedulesEndTime = schedules?.endTime
     ? new Date(schedules?.endTime)
@@ -103,6 +114,11 @@ export default function WinnerList({
             </h3>
 
             <div>
+              {/* {whitelistSaved && (
+                <CustomBtn onClick={() => tweetWinners(['@haha', '@jsjs'])}>
+                  TweetWinner
+                </CustomBtn>
+              )} */}
               <CustomBtn onClick={() => downloadWinners(activeList)}>
                 Download
               </CustomBtn>
@@ -167,6 +183,11 @@ export default function WinnerList({
             </span>
           </h3>
           <div>
+            {/* {whitelistSaved && (
+              <CustomBtn onClick={() => tweetWinners(['@haha', '@jsjsc'])}>
+                TweetWinner
+              </CustomBtn>
+            )} */}
             <CustomBtn onClick={() => downloadWinners(activeList)}>
               Download
             </CustomBtn>

@@ -19,6 +19,9 @@ import IconTip from '../Icons/IconTip';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { CoinType, TokenType } from '../../utils/token';
+import IconNFT from '../Icons/IconNft';
+import IconWallet from '../Icons/IconWallet';
+import IconCustom from '../Icons/IconCustom';
 
 export default function Actions({
   hasInviteBot,
@@ -70,7 +73,7 @@ export default function Actions({
     useState(20);
   const [custom, setCustom] = useState([
     {
-      type: ActionType.WL,
+      type: ActionType.CUSTOM,
       name: '',
       typeMore: ActionTypeMore.CUSTOM,
       select: false,
@@ -94,6 +97,7 @@ export default function Actions({
       {
         nftCollectionName: '',
         nftContractAddr: '',
+        url: '',
       },
     ],
   });
@@ -227,15 +231,18 @@ export default function Actions({
       const words = data.map((item) => item.nftCollectionName).join('、');
       actions.push({
         name: `Holding ${words} ${word} NFT`,
-        type: ActionType.COIN,
+        type: ActionType.NFT,
         typeMore: ActionTypeMore.NFT_BALANCE,
         description: ``,
-        nft_accounts: nftHolder.items.map((item) => {
-          return {
-            name: item.nftCollectionName,
-            address: item.nftContractAddr,
-          };
-        }),
+        nft_accounts: nftHolder.items
+          .map((item) => {
+            return {
+              name: item.nftCollectionName,
+              address: item.nftContractAddr,
+              url: item.url,
+            };
+          })
+          .filter((item) => item.name && item.address),
         nft_accounts_or_add: false,
       });
     }
@@ -575,6 +582,7 @@ export default function Actions({
                   <span id="follow-twitter-msg" className="msg">
                     Custom action
                   </span>
+                  <IconCustom />
                 </div>
                 {item.select && (
                   <>
@@ -618,7 +626,7 @@ export default function Actions({
                       <span className="username custom">Description: </span>
                       <div className="input-box">
                         <input
-                          placeholder="optional"
+                          placeholder="Optional"
                           type="text"
                           title="task-like"
                           value={item.description}
@@ -638,7 +646,7 @@ export default function Actions({
                     </div>
                     {(idx === custom.length - 1 && (
                       <div
-                        className={'help add-btn custom'}
+                        className={'help add-btn custom custom-add'}
                         onClick={() => {
                           setCustom([
                             ...custom,
@@ -655,7 +663,7 @@ export default function Actions({
                           ]);
                         }}
                       >
-                        <IconPlus size="16px" />
+                        <IconPlus size="16px" /> Add
                       </div>
                     )) || (
                       <div
@@ -691,6 +699,7 @@ export default function Actions({
               <span id="wallet-balance" className="msg">
                 Wallet balance
               </span>
+              <IconWallet />
             </div>
             {walletBalance.valid && (
               <WalletBalanceInput
@@ -720,16 +729,18 @@ export default function Actions({
               <span id="nft-holder" className="msg">
                 NFT Holder
               </span>
+              <IconNFT />
             </div>
             <div>
               {nftHolder.valid &&
                 nftHolder.items.map((item, idx) => {
                   return (
                     <Fragment key={idx}>
-                      {idx > 0 && <div className="and">or</div>}
+                      {idx > 0 && <div className="and"></div>}
                       <NftHolderInput
                         name={item.nftCollectionName}
                         addr={item.nftContractAddr}
+                        url={item.url}
                         updateItem={(v) => {
                           setNftHolder({
                             ...nftHolder,
@@ -738,6 +749,7 @@ export default function Actions({
                               {
                                 nftCollectionName: v.name,
                                 nftContractAddr: v.addr,
+                                url: v.url,
                               },
                               ...nftHolder.items.slice(idx + 1),
                             ],
@@ -749,7 +761,7 @@ export default function Actions({
                 })}
               {nftHolder.valid && (
                 <div
-                  className={'help add-btn custom'}
+                  className={'help add-btn custom nft-add'}
                   onClick={() => {
                     setNftHolder({
                       ...nftHolder,
@@ -758,12 +770,13 @@ export default function Actions({
                         {
                           nftCollectionName: '',
                           nftContractAddr: '',
+                          url: '',
                         },
                       ],
                     });
                   }}
                 >
-                  <IconPlus size="16px" />
+                  <IconPlus size="16px" /> Add
                 </div>
               )}
             </div>
@@ -990,7 +1003,7 @@ function AddTwitterToFollowed({
         }}
       >
         <IconPlus size="16px" />
-        <span>Add Account</span>
+        Add Account
       </div>
     </>
   );
@@ -1061,16 +1074,18 @@ function WalletBalanceInput({
 function NftHolderInput({
   name,
   addr,
+  url,
   updateItem,
 }: {
   name: string;
   addr: string;
-  updateItem: (arg0: { name: string; addr: string }) => void;
+  url: string;
+  updateItem: (arg0: { name: string; addr: string; url: string }) => void;
 }) {
   return (
     <>
       <div className="help">
-        <span className="username ">NFT Collection name:</span>
+        <span className="username nft">NFT Collection name:</span>
         <div className={'input-box'}>
           <input
             title="nft-collection-name"
@@ -1080,13 +1095,14 @@ function NftHolderInput({
               updateItem({
                 name: e.target.value,
                 addr,
+                url,
               });
             }}
           />
         </div>
       </div>
       <div className="help">
-        <span className="username ">NFT Contract address:</span>
+        <span className="username nft">NFT Contract address:</span>
         <div className={'input-box'}>
           <input
             title="nft-contract-name"
@@ -1095,7 +1111,25 @@ function NftHolderInput({
             onChange={(e) => {
               updateItem({
                 name,
+                url,
                 addr: e.target.value,
+              });
+            }}
+          />
+        </div>
+      </div>
+      <div className="help">
+        <span className="username nft">URL:</span>
+        <div className={'input-box'}>
+          <input
+            title="nft-contract-name"
+            type="text"
+            placeholder="Optional"
+            onChange={(e) => {
+              updateItem({
+                name,
+                addr,
+                url: e.target.value,
               });
             }}
           />
@@ -1167,6 +1201,11 @@ const SelectActionsBox = styled.div`
             &.custom {
               text-align: end;
               width: 85px;
+            }
+
+            &.nft {
+              text-align: end;
+              width: 165px;
             }
           }
           & span.tint {
@@ -1262,7 +1301,14 @@ const SelectActionsBox = styled.div`
           cursor: pointer;
           padding-left: 90px;
           &.custom {
-            justify-content: end;
+            /* justify-content: end; */
+          }
+
+          &.custom-add {
+            margin-left: 40px;
+          }
+          &.nft-add {
+            margin-left: 120px;
           }
 
           & > svg {
@@ -1310,5 +1356,6 @@ const SelectActionsBox = styled.div`
   & .and {
     text-align: center;
     margin: 15px;
+    border-top: 1px solid #d9d9d9;
   }
 `;

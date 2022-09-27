@@ -48,6 +48,8 @@ export enum ActionType {
   NOTIFY = 'notify',
   WL = 'wl',
   COIN = 'coin',
+  NFT = 'nft',
+  CUSTOM = 'custom',
 }
 
 export enum ActionTypeMore {
