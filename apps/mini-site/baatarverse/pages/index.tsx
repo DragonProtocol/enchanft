@@ -54,14 +54,14 @@ export function Index() {
       </div>
 
       <div className="nav-box">
-        <span className="twitter nav-item">
+        <div className="nav-item">
           <Image
             src={'/static/images/twitter.png'}
             layout="fill"
             objectFit="contain"
             alt={'basic'}
           />
-        </span>
+        </div>
         <div className="nav-item">
           <Image
             src={'/static/images/discord.png'}
@@ -182,7 +182,7 @@ export function Index() {
         <div className="avatar-loop">
           <Image
             className={'image'}
-            src={'/static/images/avatar_loop.png'}
+            src={'/static/images/avatar_loop.gif'}
             layout="fill"
             objectFit="contain"
             alt={'basic'}
@@ -271,7 +271,9 @@ export function Index() {
             </div>
           </div>
         </div>
+      </div>
 
+      <div className="bg-b">
         <div className="about-wrapper">
           <div className="black-cloud black-cloud-1 image-container">
             <Image
@@ -344,39 +346,51 @@ export function Index() {
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="roadmap title-img">
-        <Image
-          src={'/static/images/roadmap.png'}
-          layout="fill"
-          objectFit="contain"
-          alt={'basic'}
-        />
-      </div>
+        <div className="roadmap title-img">
+          <Image
+            src={'/static/images/roadmap.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
+        </div>
 
-      <div className="image-container">
-        {/* <Image
+        <div className="image-container map-wrapper">
+          {/* <Image
           src={'/static/images/roadmap.png'}
           layout="fill"
           objectFit="contain"
           alt={'basic'}
         /> */}
-        <Image
-          className={'image map'}
-          src={'/static/images/map-text.png'}
-          layout="fill"
-          objectFit="contain"
-          alt={'basic'}
-        />
-        <div className="black-cloud image-container">
           <Image
-            className={'image'}
-            src={'/static/images/black-cloud-2.png'}
+            className={'image map'}
+            src={'/static/images/map.png'}
             layout="fill"
             objectFit="contain"
             alt={'basic'}
           />
+          <div className="map-text map-text-1">NFT collection 
+          <br/>
+          on sale</div>
+          <div className="map-text map-text-2">
+            Airdrop bonus whisky (if any) to<br/> the rare NFT owners
+          </div>
+          <div className="map-text map-text-3">
+            More interesting activities<br/> are waiting to be unlocked
+          </div>
+          <div className="map-text map-text-4">
+            Whitelist extraction of <br/>Exclusive NFT collection
+          </div>
+          <div className="black-cloud image-container">
+            <Image
+              className={'image'}
+              src={'/static/images/black-cloud-2.png'}
+              layout="fill"
+              objectFit="contain"
+              alt={'basic'}
+            />
+          </div>
         </div>
       </div>
 
@@ -577,6 +591,16 @@ const Wrapper = styled.div`
     /* background-repeat: no-repeat; */
     background-size: 100%;
   }
+  .bg-b {
+    background: #0d2c45;
+    background-image: url('/static/images/texture.png');
+    background-size: 100%;
+    /* padding-bottom: 400px; */
+  }
+  .map-wrapper {
+    background: #071726;
+    position: relative;
+  }
   .image-container {
     width: 100%;
     position: relative;
@@ -610,22 +634,20 @@ const Wrapper = styled.div`
   .nav-box {
     white-space: nowrap;
     position: absolute;
-    bottom: 15vw;
+    bottom: 1vw;
     left: 50%;
     width: 80%;
     justify-content: center;
     align-items: center;
     display: flex;
     transform: translateX(-50%);
-    z-index: 2;
-    .twitter {
-      filter: grayscale(0%) brightness(55%);
-    }
+    z-index: 999;
     span {
       margin-left: 20px !important;
       cursor: pointer;
+        filter: grayscale(100%) brightness(200%);
       &:hover {
-        filter: grayscale(100%) brightness(200%) !important;
+        filter: invert(47%) sepia(23%) saturate(2504%) hue-rotate(132deg) brightness(95%) contrast(101%);
       }
     }
     .nav-item {
@@ -638,8 +660,9 @@ const Wrapper = styled.div`
       position: relative;
     }
     .wl-xyz {
+      /* rio 2.6 */
       width: 42px;
-      height: 22px;
+      height: 16px;
     }
     & > * + * {
       margin-left: 10px;
@@ -651,7 +674,7 @@ const Wrapper = styled.div`
       }
       .wl-xyz {
         width: 52px;
-        height: 32px;
+        height: 20px;
       }
     }
 
@@ -662,7 +685,7 @@ const Wrapper = styled.div`
       }
       .wl-xyz {
         width: 72px;
-        height: 42px;
+        height: 27px;
       }
       & > * + * {
         margin-left: 20px;
@@ -708,7 +731,6 @@ const Wrapper = styled.div`
       url('/static/images/middle-bg.png');
     background-repeat: no-repeat;
     background-size: cover;
-
   }
 
   .title-gif {
@@ -761,7 +783,7 @@ const Wrapper = styled.div`
     max-width: 1024px;
     color: white;
     font-size: 13px;
-    padding-bottom: 30px;
+    padding-bottom: 26px;
     margin: 0 auto;
   }
 
@@ -920,6 +942,7 @@ const Wrapper = styled.div`
 
   .about-wrapper {
     position: relative;
+    padding-top: 100px;
   }
 
   .about-box {
@@ -927,7 +950,7 @@ const Wrapper = styled.div`
     max-width: 800px;
     height: 450px;
     margin: 0 auto;
-    margin-top: 100px;
+    /* margin-top: 100px; */
 
     position: relative;
     .about-text {
@@ -973,20 +996,58 @@ const Wrapper = styled.div`
     margin: 20px auto 200px auto;
   }
 
+  .map-text {
+    position: absolute;
+    color: #ff9d69;
+    z-index: 2;
+    white-space: pre-wrap;
+    font-size: 12px;
+  }
+
+  .map-text-1 {
+    position: absolute;
+    left: 9vw;
+    bottom: 16vw;
+    transform: translateX(-50%);
+  }
+
+  .map-text-2 {
+    position: absolute;
+    left: 30vw;
+    bottom: -5vw;
+    transform: translateX(-50%);
+  }
+
+  .map-text-3 {
+    position: absolute;
+    left: 60vw;
+    bottom: 30vw;
+    transform: translateX(-50%);
+  }
+
+  .map-text-4 {
+    position: absolute;
+    right: 0;
+    bottom: 30px;
+    transform: translateX(-50%);
+  }
+
   .team {
     margin: 200px auto 50px;
   }
 
   .black-cloud {
     position: absolute;
-    top: calc(-200px + -0.2 * 100vw);
+    top: -44vw;
+    /* top: calc(-200px + -0.2 * 100vw); */
     width: 100%;
     height: 100%;
     z-index: 0;
   }
 
   .black-cloud-1 {
-    top: calc(-300px + -0.1 * 100vw);
+    top: -44vw;
+    /* top: calc(-200px - 0.1 * 100vw); */
   }
 
   .map-bg {
