@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 15:10:22
+ * @LastEditTime: 2022-09-27 16:22:06
  * @Description: file description
  */
 import React from 'react'
@@ -13,6 +13,7 @@ import ActionIconBox from './ActionIconBox'
 import ActionNameSpan from './ActionNameSpan'
 import { NftInfo } from '../../../../types/entities'
 import IconWL from '../../../common/icons/IconWL'
+import { getNftCollectionUrl } from '../../../../utils/nft'
 
 export type ActionNftBalanceProps = {
   data: TaskActionItemDataType
@@ -24,10 +25,10 @@ const ActionNftBalance: React.FC<ActionNftBalanceProps> = ({ data, allowHandle }
   const isDone = status === UserActionStatus.DONE
   const accounts = actionData?.nft_accounts || []
   const clickAction = (nft: NftInfo) => {
-    if (!allowHandle || isDone || !nft.url) return
+    if (!allowHandle || isDone) return
     const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
       width=1000,height=1000,left=0,top=0`
-    window.open(nft.url, name, winParams)
+    window.open(nft.url || getNftCollectionUrl(nft.address), name, winParams)
   }
   return (
     <ActionNftBalanceWrapper>
