@@ -104,6 +104,7 @@ const RecommendSwiperWrapper = styled.div`
 `
 const RecommendSwiperBox = styled.div`
   width: calc(100% - 8px);
+  margin: 0 auto;
   height: calc(100% - 8px);
   outline: 4px solid #333333;
 
