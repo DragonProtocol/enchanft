@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-26 15:42:16
+ * @LastEditTime: 2022-09-27 17:57:31
  * @Description: 用户的账户信息
  */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
@@ -28,6 +28,7 @@ import { AccountType } from '../../types/entities'
 export enum ConnectModal {
   PHANTOM = 'phantom',
   METAMASK = 'metamask',
+  MARTIAN = 'martian',
   TWITTER = 'twitter',
   DISCORD = 'discord',
   EMAIL = 'email',
@@ -129,6 +130,7 @@ const AccountTypeAdapter = {
   [TokenType.Ethereum]: AccountType.EVM,
   [TokenType.Solana]: AccountType.SOLANA,
   [TokenType.Twitter]: AccountType.TWITTER,
+  [TokenType.Aptos]: AccountType.APTOS,
 }
 export const userLogin = createAsyncThunk(
   'user/login',

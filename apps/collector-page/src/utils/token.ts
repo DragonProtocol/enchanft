@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-01 16:24:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 14:07:13
+ * @LastEditTime: 2022-09-27 17:47:22
  * @Description: file description
  */
 const LOCAL_STORAGE_TOKEN = 'token'
@@ -19,6 +19,7 @@ export enum TokenType {
   Solana = 'solana',
   Ethereum = 'ethereum',
   Twitter = 'twitter',
+  Aptos = 'aptos',
 }
 export function setLoginToken(type: TokenType, token: string, pubkey?: string) {
   const key = genTokenKey(type, pubkey)

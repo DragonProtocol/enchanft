@@ -26,6 +26,7 @@ import useWalletSign from '../../hooks/useWalletSign'
 import IconMetamask from '../common/icons/PngIconMetaMask'
 import PngIconCongratulate from '../common/icons/PngIconCongratulate'
 import IconPhantom from '../common/icons/IconPhantomWhite'
+import IconMartian from '../common/icons/IconMartian'
 import { AsyncRequestStatus } from '../../types'
 import styled from 'styled-components'
 import { isMobile } from 'react-device-detect'
@@ -51,8 +52,17 @@ export default function ConnectWalletModal() {
   const [signErr, setSignErr] = useState(false)
   const [signDone, setSignDone] = useState(false)
 
-  const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom, getMetamaskAddr, getPhantomAddr } =
-    useWalletSign()
+  const {
+    phantomValid,
+    metamaskValid,
+    martianValid,
+    signMsgWithMetamask,
+    signMsgWithPhantom,
+    signMsgWithMartian,
+    getMetamaskAddr,
+    getPhantomAddr,
+    getMartianAddr,
+  } = useWalletSign()
 
   useEffect(() => {
     if (account.isLogin) {
@@ -72,15 +82,17 @@ export default function ConnectWalletModal() {
     walletType,
     pubkey,
     signature,
+    payloadMsg,
   }: {
     walletType: TokenType
     pubkey: string
     signature: string
+    payloadMsg?: string
   }) => {
     dispatch(
       userLogin({
         signature,
-        payload: SIGN_MSG,
+        payload: payloadMsg || SIGN_MSG,
         pubkey,
         walletType,
       }),
@@ -99,9 +111,10 @@ export default function ConnectWalletModal() {
     if (localStorage.getItem(`has-finish-${account.id}`)) return
     const accountPhantom = account.accounts.find((item) => item.accountType === AccountType.SOLANA)
     const accountMetamask = account.accounts.find((item) => item.accountType === AccountType.EVM)
+    const accountMartian = account.accounts.find((item) => item.accountType === AccountType.APTOS)
     const twitter = account.accounts.find((item) => item.accountType === AccountType.TWITTER)
     const discord = account.accounts.find((item) => item.accountType === AccountType.DISCORD)
-    if (accountPhantom && accountMetamask && twitter && discord) return
+    if (accountPhantom && accountMetamask && accountMartian && twitter && discord) return
 
     localStorage.setItem(`after-guide`, window.location.pathname)
     navigate('/guide')
@@ -145,6 +158,7 @@ export default function ConnectWalletModal() {
     let data
     try {
       data = await signer()
+      console.log('data================', data)
     } catch (error) {
       setSignErr(true)
     }
@@ -194,6 +208,17 @@ export default function ConnectWalletModal() {
     }
   }, [account])
 
+  const connectMartian = useCallback(async () => {
+    const pubkey = await getMartianAddr()
+    if (!pubkey) return
+    if (!!account.lastLoginType && account.lastLoginType !== TokenType.Aptos) {
+      setShowNewAccountBtn(true)
+      setNewAccountWith(TokenType.Aptos)
+    } else {
+      await signMsg(signMsgWithMartian)
+    }
+  }, [account])
+
   const createNewAccount = useCallback(async () => {
     if (newAccountWith === TokenType.Ethereum) {
       const pubkey = await getMetamaskAddr()
@@ -204,6 +229,11 @@ export default function ConnectWalletModal() {
       const pubkey = await getPhantomAddr()
       if (!pubkey) return
       await signMsg(signMsgWithPhantom)
+    }
+    if (newAccountWith === TokenType.Aptos) {
+      const pubkey = await getMartianAddr()
+      if (!pubkey) return
+      await signMsg(signMsgWithMartian, true)
     }
     if (newAccountWith === TokenType.Twitter) {
       dispatch(fetchTwitterOauthToken())
@@ -230,7 +260,7 @@ export default function ConnectWalletModal() {
           walletType: newData.walletType,
           signature: newData.signature,
           pubkey: newData.pubkey,
-          payload: SIGN_MSG,
+          payload: newData?.payloadMsg || SIGN_MSG,
         }),
       )
       handleClose()
@@ -257,6 +287,28 @@ export default function ConnectWalletModal() {
       handleClose()
       navigateToGuide()
     }
+    if (newAccountWith === TokenType.Aptos) {
+      const pubkey = await getMartianAddr()
+      if (!pubkey) return
+
+      const data = await signMsg(signMsgWithMartian, true)
+
+      data && dispatch(setPubkey(data.pubkey))
+
+      const newData = await signMsg(signMsgWithMartian)
+      if (!newData) return
+
+      dispatch(
+        userOtherWalletLink({
+          walletType: newData.walletType,
+          signature: newData.signature,
+          pubkey: newData.pubkey,
+          payload: newData?.payloadMsg || SIGN_MSG,
+        }),
+      )
+      handleClose()
+      navigateToGuide()
+    }
   }, [newAccountWith])
 
   let walletElem = (
@@ -276,6 +328,13 @@ export default function ConnectWalletModal() {
               <p>MetaMask</p>
             </div>
             <p className="last-time">{account.lastLoginType === TokenType.Ethereum ? `(Last Time)` : ''}</p>
+          </div>
+          <div onClick={connectMartian} className={martianValid ? 'martian' : 'martian invalid'}>
+            <div className="btn">
+              <IconMartian />
+              <p>Martian</p>
+            </div>
+            <p className="last-time">{account.lastLoginType === TokenType.Aptos ? `(Last Time)` : ''}</p>
           </div>
         </>
       )}
@@ -310,6 +369,16 @@ export default function ConnectWalletModal() {
       </div>
     )
   }
+  if (newAccountWith === TokenType.Aptos) {
+    walletElem = (
+      <div className="martian-select">
+        <div>
+          <IconMartian />
+        </div>
+        <p>Martian</p>
+      </div>
+    )
+  }
   if (newAccountWith === TokenType.Twitter) {
     walletElem = (
       <div className="twitter-select">
@@ -336,7 +405,7 @@ export default function ConnectWalletModal() {
             top: '40%',
             left: '50%',
             transform: 'translate(-50%, -50%)',
-            width: isMobile ? 335 : 576,
+            width: isMobile ? 335 : 192 * 4,
             bgcolor: 'background.paper',
             boxShadow: 24,
             py: '20px',
@@ -550,8 +619,14 @@ const ConnectBox = styled(Box)`
         background: #551ff4;
       }
     }
+    & > .martian-select {
+      > div {
+        background-color: #222;
+      }
+    }
     & > .metamask-select,
     & > .phantom-select,
+    & > .martian-select,
     & > .twitter-select {
       height: 120px;
       display: flex;
@@ -642,9 +717,16 @@ const ConnectBox = styled(Box)`
       & svg,
       & img {
         padding: 3px;
+        width: 44px;
+        height: 44px;
         background-color: #fff;
         border-radius: 50%;
       }
+    }
+    > div.martian {
+      border-radius: 10px;
+      background: #222;
+      box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
     }
     > div.twitter {
       border-radius: 10px;
@@ -653,6 +735,8 @@ const ConnectBox = styled(Box)`
       & svg,
       & img {
         padding: 3px;
+        width: 44px;
+        height: 44px;
         background-color: #fff;
         border-radius: 50%;
       }
