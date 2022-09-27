@@ -210,10 +210,10 @@ export default function Actions({
 
     if (walletBalance.valid) {
       actions.push({
-        name: ``,
+        name: `Minimum balance ${walletBalance.num} ${walletBalance.coinType}`,
         type: ActionType.COIN,
         typeMore: ActionTypeMore.NATIVE_BALANCE,
-        description: `Minimum balance ${walletBalance.num} ${walletBalance.coinType}`,
+        description: ``,
         min_native_balance: Number(walletBalance.num) || 0,
       });
     }
@@ -226,10 +226,10 @@ export default function Actions({
       }
       const words = data.map((item) => item.nftCollectionName).join('、');
       actions.push({
-        name: ``,
+        name: `Holding ${words} ${word} NFT`,
         type: ActionType.COIN,
         typeMore: ActionTypeMore.NFT_BALANCE,
-        description: `Holding ${words} ${word} NFT`,
+        description: ``,
         nft_accounts: nftHolder.items.map((item) => {
           return item.nftContractAddr;
         }),
