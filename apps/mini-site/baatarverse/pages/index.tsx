@@ -697,6 +697,10 @@ const Wrapper = styled.div`
         width: 72px;
         height: 72px;
       }
+      .wl-xyz {
+        width: 72px;
+        height: 27px;
+      }
       & > * + * {
         margin-left: 20px;
       }
