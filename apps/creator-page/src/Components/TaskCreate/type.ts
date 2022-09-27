@@ -80,7 +80,7 @@ export type Action = {
   accounts?: string[];
   tweet_id?: string;
   min_native_balance?: number;
-  nft_accounts?: string[];
+  nft_accounts?: { name: string; address: string }[];
   nft_accounts_or_add?: boolean;
 };
 

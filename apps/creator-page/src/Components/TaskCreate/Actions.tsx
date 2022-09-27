@@ -231,7 +231,10 @@ export default function Actions({
         typeMore: ActionTypeMore.NFT_BALANCE,
         description: ``,
         nft_accounts: nftHolder.items.map((item) => {
-          return item.nftContractAddr;
+          return {
+            name: item.nftCollectionName,
+            address: item.nftContractAddr,
+          };
         }),
         nft_accounts_or_add: false,
       });
@@ -723,7 +726,7 @@ export default function Actions({
                 nftHolder.items.map((item, idx) => {
                   return (
                     <Fragment key={idx}>
-                      {idx > 0 && <div className="and">and</div>}
+                      {idx > 0 && <div className="and">or</div>}
                       <NftHolderInput
                         name={item.nftCollectionName}
                         addr={item.nftContractAddr}
