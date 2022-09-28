@@ -27,6 +27,7 @@ import PhantomIcon from './PhantomIcon'
 import EmailIcon from './EmailIcon'
 import DiscordIcon from './DiscordIcon'
 import TwitterIcon from './TwitterIcon'
+import IconMartian from '../common/icons/IconMartian'
 import { AccountType } from '../../types/entities'
 
 export default function ConnectModal() {
@@ -129,7 +130,7 @@ export default function ConnectModal() {
     case ConnectModalType.MARTIAN:
       btn = (
         <div className="btn wallet" onClick={bindMartian}>
-          <PhantomIcon />
+          <IconMartian />
           <p>Connect Martian</p>
         </div>
       )
