@@ -23,7 +23,7 @@ export function About() {
   return (
     <Wrapper>
       asdasd
-      <div className={classnames('sidebar',{'expand': isExpand})}>
+      {/* <div className={classnames('sidebar',{'expand': isExpand})}>
         <div className="image-container more" onClick={() => setIsExpand(isExpand => !isExpand)}>
           <Image
             className='image'
@@ -41,7 +41,8 @@ export function About() {
       {
         ['Home', 'CaskBaatar contract', 'About', 'Story', 'Rodmap', 'Steam', 'FAQ']
           ?.map(key => <div className='box' id={key} key={key + '1'}></div>)
-      }
+      } */}
+       <div className='box' ></div>
       {/* <div className='box' ></div>
       <div className='box'></div>
       <div className='box'></div>
@@ -110,9 +111,13 @@ const Wrapper = styled.div`
 
 
 .box{
-  width: 100%;
-  height: 300px;
+  width: 100vw;
+  height: 900px;
   background: #00a791;
+  background-image: url('/static/images/bg-texture.png'),url('/static/images/texture-bottom.png');
+    background-repeat: no-repeat;
+    background-size: 100%, 100%;
+    background-position: top, 0% 12%;
   &:nth-child(2){
     background: red;
   }

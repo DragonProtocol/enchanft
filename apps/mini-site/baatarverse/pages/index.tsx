@@ -232,7 +232,24 @@ export function Index() {
           objectFit="contain"
           alt={'basic'}
         />
-        <div className="avatar-loop">
+        <div className='avatar-loop-box '>
+        <video
+          x5-video-player-type="h5"
+          x-webkit-airplay="true"
+          webkit-playsinline="true"
+          className="avatar-loop"
+          loop
+          autoPlay
+          muted={isMute}
+          onTimeUpdate={() => {}}
+        >
+          <source
+            src={require('../public/static/avatar_loop.mp4')}
+            type="video/mp4"
+          />
+        </video>
+        </div>
+        {/* <div className="avatar-loop">
           <Image
             className={'image'}
             src={'/static/images/avatar_loop.gif'}
@@ -240,7 +257,7 @@ export function Index() {
             objectFit="contain"
             alt={'basic'}
           />
-        </div>
+        </div> */}
       </div>
       <div className="bg-t">
         <div className="contract title-img" id="CaskBaatar contract">
@@ -364,7 +381,7 @@ export function Index() {
             <div className="about-avatar-box">
               <div className="about-avatar image-container">
                 <Image
-                  className='image'
+                  className="image"
                   src={'/static/images/about-avatar.gif'}
                   layout="fill"
                   objectFit="contain"
@@ -658,6 +675,10 @@ const Wrapper = styled.div`
     font-size: 0.5rem;
     transition: all 1.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     z-index: 999;
+    &:hover{
+      max-height: 800px;
+    background: #07142380;
+    }
     .sidebar-item {
       text-align: center;
       margin: 20px auto;
@@ -688,6 +709,7 @@ const Wrapper = styled.div`
   .bg-t {
     margin-top: -100px;
     padding-top: 100px;
+    padding-bottom: 15rem;
     background-image: url('/static/images/texture.png');
     /* background-repeat: no-repeat; */
     background-size: 100%;
@@ -711,12 +733,17 @@ const Wrapper = styled.div`
     /* min-height: 900px; */
     margin-top: -415px;
     padding-top: calc(60px + 0.1 * 100vw);
-    background-image: url('/static/images/bg-texture.png');
+    background-image: url('/static/images/bg-texture.png'),
+      url('/static/images/texture-bottom.png');
+    background-repeat: no-repeat;
+    background-size: 100%, 100%;
+    background-position: top, 0% 12%;
+    /* background-image: url('/static/images/bg-texture.png'); */
     /* url('/static/images/texture.png'); */
-    background-repeat: no-repeat, no-repeat;
+    /* background-repeat: no-repeat, no-repeat; */
     /* background-position: 0 0, bottom;  */
     /* background-size: cover; */
-    background-size: 100%, 40%;
+    /* background-size: 100%, 40%; */
   }
 
   .nav-box {
@@ -894,7 +921,7 @@ const Wrapper = styled.div`
   .title {
     font-size: 1.4rem;
     font-weight: bolder;
-    padding-bottom: calc(15px + .4vw);
+    padding-bottom: calc(15px + 0.4vw);
   }
 
   .contract-wrapper {
@@ -933,7 +960,8 @@ const Wrapper = styled.div`
   }
 
   .contract {
-    margin-top: 50px;
+    margin-top: calc(3.125rem + 2.2vw);
+    /* margin-top: 50px; */
   }
 
   .contract-row {
@@ -1011,19 +1039,29 @@ const Wrapper = styled.div`
   }
 
   .avatar-loop-box {
-    height: 400px;
+    position: absolute;
+    top: 0px;
+    object-fit: cover;
+    /* top: calc(-0px + -0.1 * 100vw); */
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    /* height: 400px;
     position: relative;
-    margin: 20vw auto;
+    margin: 20vw auto; */
   }
 
   .avatar-loop {
+    /* object-fit: cover; */
+    width: 100%;
     /* width: calc(100vw + 150px); */
-    position: absolute;
+    /* position: absolute;
     top: calc(-0px + -0.1 * 100vw);
     width: 100%;
     height: 100%;
     z-index: 1;
-    transform: scale(1.2);
+    transform: scale(1.2); */
+
     /* height: 400px; */
     /* top: -10vw; */
     /* @media (min-width: 800px) {
@@ -1047,10 +1085,8 @@ const Wrapper = styled.div`
 
   .about-wrapper {
     position: relative;
-    padding-top: 100px;
+    /* padding-top: 100px; */
   }
-
-  
 
   .about-box {
     width: 80%;
@@ -1066,16 +1102,22 @@ const Wrapper = styled.div`
     .about-text {
       margin-top: 10px;
       font-size: 1.2rem;
-      text-shadow: 4px 8px 25px rgba(13,44,69,.6);
+      text-shadow: 4px 8px 25px rgba(13, 44, 69, 0.6);
     }
     .left-box {
       position: absolute;
-      top: calc(150px - 13vw);;
+      top: 2vw;
+      /* top: clamp(0px, 0vw, 30%); */
+      /* top: calc(0 + 3vw); */
+      /* top: calc(150px - 13vw);; */
       /* top: 80px; */
       left: calc(0px + 1vw);
       width: calc(250px + 20vw);
       /* width: calc(300px + 8vw); */
       z-index: 2;
+      @media (min-width: 600px) {
+        top: 8vw;
+      }
       .about {
         width: 130px;
         max-width: 19rem;
@@ -1083,13 +1125,14 @@ const Wrapper = styled.div`
     }
     .about-avatar-box {
       position: absolute;
-      right: calc(0px + 1vw);;
+      right: calc(0px + 1vw);
       top: 50%;
       transform: translateY(-50%);
       z-index: 1;
       .about-avatar {
         /* width: 80%; */
-        width: 60vw;
+        /* width: 60vw; */
+        width: clamp(305px, 50vw, 800px);
         max-width: 800px;
         /* width: 300px; */
         /* height: 550px; */
@@ -1098,10 +1141,12 @@ const Wrapper = styled.div`
     }
   }
 
-  .top{
-    margin-top: calc( .14vw);
-    .left-box{
-      top: 150px;
+  .top {
+    margin-top: calc(200px - 10.14vw);
+    height: auto;
+    .left-box {
+      position: relative;
+      /* top: 150px; */
     }
   }
 
@@ -1134,7 +1179,7 @@ const Wrapper = styled.div`
 
   .map-text-1 {
     position: absolute;
-    left: max(9vw,80px);
+    left: max(9vw, 80px);
     bottom: calc(16vw - 30px);
     transform: translateX(-50%);
   }
