@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 14:35:20
+ * @LastEditTime: 2022-09-27 17:48:49
  * @Description: 与后端entities type定义对应
  */
 
@@ -212,4 +212,5 @@ export enum AccountType {
   DISCORD = 'DISCORD',
   SOLANA = 'SOLANA',
   EVM = 'EVM',
+  APTOS = 'APTOS',
 }

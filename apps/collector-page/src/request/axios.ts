@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-26 15:34:19
+ * @LastEditTime: 2022-09-28 14:56:26
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
@@ -88,7 +88,7 @@ axiosInstance.interceptors.response.use(
       }
     } else {
       // 对响应错误做点什么
-      Promise.reject(error.response?.data || error)
+      return Promise.reject(error.response?.data || error)
     }
   },
 )

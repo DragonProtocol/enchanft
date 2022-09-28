@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-22 11:34:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 18:04:36
+ * @LastEditTime: 2022-09-28 11:04:05
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
@@ -10,6 +10,7 @@ import styled from 'styled-components'
 import { ChainIds } from '../../../utils/chain'
 import IconEthereumWhite from '../../common/icons/IconEthereumWhite'
 import IconSolana from '../../common/icons/IconSolana'
+import IconMartian from '../../common/icons/IconMartian'
 export type ChainTag = {
   name: string
   icon: React.FC
@@ -26,6 +27,12 @@ export const chainMap: { [key in ChainIds]: ChainTag } = {
   [ChainIds.solana]: {
     name: 'solana',
     icon: IconSolana,
+    iconSize: '14px',
+    bgc: '#171F1C',
+  },
+  [ChainIds.aptos]: {
+    name: 'aptos',
+    icon: IconMartian,
     iconSize: '14px',
     bgc: '#171F1C',
   },

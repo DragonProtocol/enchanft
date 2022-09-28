@@ -33,7 +33,8 @@ export default function ConnectModal() {
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
 
-  const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
+  const { phantomValid, metamaskValid, martianValid, signMsgWithMetamask, signMsgWithPhantom, signMsgWithMartian } =
+    useWalletSign()
   const handleCloseConnectModal = useCallback(() => {
     dispatch(setConnectModal(null))
   }, [])
@@ -63,6 +64,21 @@ export default function ConnectModal() {
         signature: data.signature,
         pubkey: data.pubkey,
         payload: SIGN_MSG,
+      }),
+    )
+    handleCloseConnectModal()
+  }, [metamaskValid])
+
+  const bindMartian = useCallback(async () => {
+    if (!martianValid) alert('Install Martian first')
+    const data = await signMsgWithMartian()
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: data?.payloadMsg || SIGN_MSG,
       }),
     )
     handleCloseConnectModal()
@@ -109,6 +125,15 @@ export default function ConnectModal() {
         </div>
       )
       msg = `Phantom  is not connected. Please connect Phantom.`
+      break
+    case ConnectModalType.MARTIAN:
+      btn = (
+        <div className="btn wallet" onClick={bindMartian}>
+          <PhantomIcon />
+          <p>Connect Martian</p>
+        </div>
+      )
+      msg = `Martian is not connected. Please connect Martian.`
       break
     case ConnectModalType.TWITTER:
       btn = (
