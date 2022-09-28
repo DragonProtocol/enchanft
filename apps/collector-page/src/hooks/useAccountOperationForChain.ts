@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 17:11:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 13:42:24
+ * @LastEditTime: 2022-09-28 11:20:17
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react'
@@ -15,6 +15,7 @@ export enum AccountOperationType {
   CONNECT_WALLET = 'CONNECT_WALLET',
   BIND_PHANTOM = 'BIND_PHANTOM',
   BIND_METAMASK = 'BIND_METAMASK',
+  BIND_MARTIAN = 'BIND_MARTIAN',
   BIND_UNKNOWN = 'BIND_UNKNOWN',
   COMPLETED = 'COMPLETED',
 }
@@ -22,6 +23,7 @@ export const ccountOperationDescMap = {
   [AccountOperationType.CONNECT_WALLET]: 'Connect Wallet',
   [AccountOperationType.BIND_METAMASK]: 'Bind MetaMask Wallet',
   [AccountOperationType.BIND_PHANTOM]: 'Bind Phantom Wallet',
+  [AccountOperationType.BIND_MARTIAN]: 'Bind Martian Wallet',
   [AccountOperationType.BIND_UNKNOWN]: 'Unknown chain',
   [AccountOperationType.COMPLETED]: '',
 }
@@ -38,6 +40,9 @@ export default (chainId?: number) => {
     },
     [AccountOperationType.BIND_PHANTOM]: () => {
       dispatch(setConnectModal(ConnectModal.PHANTOM))
+    },
+    [AccountOperationType.BIND_MARTIAN]: () => {
+      dispatch(setConnectModal(ConnectModal.MARTIAN))
     },
     [AccountOperationType.BIND_UNKNOWN]: () => {},
     [AccountOperationType.COMPLETED]: () => {},
@@ -56,6 +61,11 @@ export default (chainId?: number) => {
         accountOperationType = accountTypes.includes(AccountType.SOLANA)
           ? AccountOperationType.COMPLETED
           : AccountOperationType.BIND_PHANTOM
+        break
+      case ChainType.APTOS:
+        accountOperationType = accountTypes.includes(AccountType.APTOS)
+          ? AccountOperationType.COMPLETED
+          : AccountOperationType.BIND_MARTIAN
         break
       default:
         accountOperationType = AccountOperationType.BIND_UNKNOWN

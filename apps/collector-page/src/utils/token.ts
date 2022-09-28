@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-01 16:24:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 17:47:22
+ * @LastEditTime: 2022-09-28 14:53:38
  * @Description: file description
  */
 const LOCAL_STORAGE_TOKEN = 'token'
@@ -41,7 +41,12 @@ export function clearLoginToken(type: TokenType, pubkey?: string) {
 }
 
 function genTokenKey(type: TokenType, pubkeyStr?: string) {
-  return `${type}:${LOCAL_STORAGE_TOKEN}:${pubkeyStr || ''}`
+  switch (type) {
+    case TokenType.Twitter:
+      return `${type}:${LOCAL_STORAGE_TOKEN}`
+    default:
+      return `${type}:${LOCAL_STORAGE_TOKEN}:${pubkeyStr || ''}`
+  }
 }
 
 function getLastLoginType() {
