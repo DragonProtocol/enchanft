@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Loading from '../Components/Loading';
 import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
@@ -34,9 +34,13 @@ import { BlockchainType } from '../Components/Project/types';
 import { AxiosError } from 'axios';
 import isEqual from '../utils/isEqual';
 import log from 'loglevel';
+import {
+  connectionSocialMedia,
+  TWITTER_CALLBACK_URL,
+} from '../utils/socialMedia';
 
 export default function ProjectInfoEdit() {
-  const { account, updateAccount, isAdmin } = useAppConfig();
+  const { account, updateAccount, isAdmin, isCreator, isVIP } = useAppConfig();
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
@@ -53,6 +57,7 @@ export default function ProjectInfoEdit() {
   );
   const [showModal, setShowModal] = useState(false);
   const [couldSave, setCouldSave] = useState(false);
+  const [twitterCode, setTwitterCode] = useState('');
 
   const uploadImageHandler = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -151,6 +156,30 @@ export default function ProjectInfoEdit() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [projectBind]);
 
+  useEffect(() => {
+    localStorage.setItem(
+      'social_auth',
+      JSON.stringify({ code: null, type: null })
+    );
+    const handleStorageChange = (e: StorageEvent) => {
+      const { newValue, key, url } = e;
+      if ('social_auth' === key) {
+        console.log('social_auth change url', url);
+        const { code, type } = JSON.parse(newValue || '');
+        if (code && type === 'TWITTER') {
+          // TWITTER_CALLBACK_URL
+          // setTwitterCode(code);
+          // setHasTwitter(true)
+          // TODO update project
+          // linkTwitter
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
   if (data?.slug !== slug) return <Loading />;
 
   log.debug('project', project);
@@ -220,46 +249,66 @@ export default function ProjectInfoEdit() {
             img={project?.image}
             uploadImageHandler={uploadImageHandler}
           />
-          {(isAdmin && (
-            <ProjectTwitterLinkInput
-              twitterName={project?.community?.twitterName || ''}
-              setTwitterName={(name) => {
-                setProject({
-                  ...project,
-                  community: {
-                    ...project.community,
-                    twitterName: name,
-                  },
-                });
-              }}
-            />
-          )) || (
-            <ProjectTwitterLink
-              hasTwitter={
-                project?.community?.twitterId && project?.community?.twitterName
-              }
-              twitterName={project?.community?.twitterName || ''}
-              linkAction={async () => {
-                if (!account.info?.token) return;
-                try {
-                  const resp = await getTwitterSubScriptions(
-                    account.info.token
-                  );
-                  const { data } = resp;
-                  setTwitter(data.data);
-                  const winParams = `width=480,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no`;
-                  window.open(data.data.url, '__blank', winParams);
-                  setShowTwitterInputModal(true);
-                } catch (error) {
-                  const err: AxiosError = error as any;
-                  if (err.response?.status === 401) {
-                    toast.error('Login has expired,please log in again!');
-                    updateAccount({ ...account, info: null });
+          {(() => {
+            if (isAdmin) {
+              return (
+                <ProjectTwitterLinkInput
+                  twitterName={project?.community?.twitterName || ''}
+                  setTwitterName={(name) => {
+                    setProject({
+                      ...project,
+                      community: {
+                        ...project.community,
+                        twitterName: name,
+                      },
+                    });
+                  }}
+                />
+              );
+            }
+            if (isVIP) {
+              return (
+                <ProjectTwitterLink
+                  hasTwitter={
+                    project?.community?.twitterId &&
+                    project?.community?.twitterName
                   }
+                  twitterName={project?.community?.twitterName || ''}
+                  linkAction={async () => {
+                    if (!account.info?.token) return;
+                    try {
+                      const resp = await getTwitterSubScriptions(
+                        account.info.token
+                      );
+                      const { data } = resp;
+                      setTwitter(data.data);
+                      const winParams = `width=480,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no`;
+                      window.open(data.data.url, '__blank', winParams);
+                      setShowTwitterInputModal(true);
+                    } catch (error) {
+                      const err: AxiosError = error as any;
+                      if (err.response?.status === 401) {
+                        toast.error('Login has expired,please log in again!');
+                        updateAccount({ ...account, info: null });
+                      }
+                    }
+                  }}
+                />
+              );
+            }
+            return (
+              <ProjectTwitterLink
+                hasTwitter={
+                  project?.community?.twitterId &&
+                  project?.community?.twitterName
                 }
-              }}
-            />
-          )}
+                twitterName={project?.community?.twitterName || ''}
+                linkAction={async () => {
+                  connectionSocialMedia('twitter');
+                }}
+              />
+            );
+          })()}
           {(isAdmin && (
             <ProjectInviteBotInput
               botUrl={project?.community?.discordInviteUrl || ''}
@@ -278,12 +327,19 @@ export default function ProjectInfoEdit() {
             blockchain={
               project?.chainId === -1
                 ? BlockchainType.Solana
-                : BlockchainType.Ethereum
+                : project?.chainId === 1
+                ? BlockchainType.Ethereum
+                : BlockchainType.Aptos
             }
             setBlockchain={(b) => {
               setProject({
                 ...project,
-                chainId: b === BlockchainType.Solana ? -1 : 1,
+                chainId:
+                  b === BlockchainType.Solana
+                    ? -1
+                    : b === BlockchainType.Ethereum
+                    ? 1
+                    : 2,
               });
             }}
           />
