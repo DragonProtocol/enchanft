@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import CrownImg from '../imgs/crown.svg';
@@ -67,12 +67,15 @@ export default function WinnerList({
   }, [candidateList, winnerNum]);
 
   const tweetWinners = useCallback((winners: string[]) => {
-    const data = 'Winners 🏆 ' + (winners.join(' ') + ' ').repeat(660);
-    console.log((data + ' @longw '.repeat(11)).length);
+    console.log({ winners });
+    if (winners.length === 0) return;
+    const data = 'Winners 🏆 ' + winners.join(' ');
+    if (data.length > 8000) {
+      console.log('data too large');
+      return;
+    }
     window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(
-        data + ' @longw '.repeat(12)
-      )}`,
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(data)}`,
       '_blank'
     );
   }, []);
@@ -88,6 +91,19 @@ export default function WinnerList({
   const [activeList, setActiveList] = useState(
     isFCFS ? 'candidates' : 'whitelist'
   );
+
+  const winners = useMemo(() => {
+    if (isFCFS) {
+      const data = candidateList
+        .map((item) => item.thirdpartyName)
+        .filter((item) => !!item);
+      return data;
+    }
+    const data = winnerList
+      .map((item) => item.thirdpartyName)
+      .filter((item) => !!item);
+    return data;
+  }, [winnerList, candidateList, isFCFS]);
 
   if (isFCFS) {
     return (
@@ -114,11 +130,12 @@ export default function WinnerList({
             </h3>
 
             <div>
-              {/* {whitelistSaved && (
-                <CustomBtn onClick={() => tweetWinners(['@haha', '@jsjs'])}>
-                  TweetWinner
+              {whitelistSaved && (
+                <CustomBtn onClick={() => tweetWinners(winners)}>
+                  Tweet Winners
                 </CustomBtn>
-              )} */}
+              )}
+
               <CustomBtn onClick={() => downloadWinners(activeList)}>
                 Download
               </CustomBtn>
@@ -183,11 +200,11 @@ export default function WinnerList({
             </span>
           </h3>
           <div>
-            {/* {whitelistSaved && (
-              <CustomBtn onClick={() => tweetWinners(['@haha', '@jsjsc'])}>
-                TweetWinner
+            {whitelistSaved && (
+              <CustomBtn onClick={() => tweetWinners(winners)}>
+                Tweet Winners
               </CustomBtn>
-            )} */}
+            )}
             <CustomBtn onClick={() => downloadWinners(activeList)}>
               Download
             </CustomBtn>
