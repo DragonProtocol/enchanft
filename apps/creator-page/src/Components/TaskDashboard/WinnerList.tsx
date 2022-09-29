@@ -13,7 +13,7 @@ import IconCheckbox from '../Icons/IconCheckbox';
 import IconCheckboxChecked from '../Icons/IconCheckboxChecked';
 import { RewardType } from '../TaskCreate/type';
 import UserAvatar from '../UserAvatar';
-import ConfirmModal from './ComfirmModal';
+import ConfirmModal from './ConfirmModal';
 import IconDownload from '../Icons/IconDownload';
 import IconTweet from '../Icons/IconTweet';
 import IconRandom from '../Icons/IconRandom';
