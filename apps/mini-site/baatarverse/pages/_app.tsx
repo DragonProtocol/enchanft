@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import './styles.css';
-import favicon from '../public/static/favicon.jpg'
+import favicon from '../public/static/favicon.png'
 
 function CustomApp({ Component, pageProps }: AppProps) {
   console.log(favicon,'favicon')

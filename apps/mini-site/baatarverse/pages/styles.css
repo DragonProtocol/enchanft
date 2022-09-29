@@ -2,6 +2,14 @@
   font-family: 'Futura';
   src: url('/static/Futura-Medium-6.ttf');
 }
+@font-face {
+  font-family: 'Futura Condensed';
+  src: url('/static/futura-condensed.otf');
+}
+
+*{
+  word-break: break-all;
+}
 
 html {
   /* font-size: min(max(1rem, 4vw), 22px); */
@@ -9,8 +17,9 @@ html {
   /* font-size: clamp(100%, 1rem + 2vw, 24px); */
 
   --minFontSize: 14px;
-  --maxFontSize: 200px;
-  --scaler: 1.5vw;
+  --maxFontSize: 28px;
+  /* --maxFontSize: 200px; */
+  --scaler: 1.3vw;
   font-size: clamp( var(--minFontSize), var(--scaler), var(--maxFontSize) );
 
   -webkit-text-size-adjust: 100%;

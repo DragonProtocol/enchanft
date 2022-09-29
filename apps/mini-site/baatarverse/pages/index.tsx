@@ -135,7 +135,7 @@ export function Index() {
         </div>
         {[
           'Home',
-          'CaskBaatar contract',
+          'CaskBaatar\ncontract',
           'About',
           'Story',
           'Rodmap',
@@ -232,22 +232,22 @@ export function Index() {
           objectFit="contain"
           alt={'basic'}
         />
-        <div className='avatar-loop-box '>
-        <video
-          x5-video-player-type="h5"
-          x-webkit-airplay="true"
-          webkit-playsinline="true"
-          className="avatar-loop"
-          loop
-          autoPlay
-          muted={isMute}
-          onTimeUpdate={() => {}}
-        >
-          <source
-            src={require('../public/static/avatar_loop.mp4')}
-            type="video/mp4"
-          />
-        </video>
+        <div className="avatar-loop-box ">
+          <video
+            x5-video-player-type="h5"
+            x-webkit-airplay="true"
+            webkit-playsinline="true"
+            className="avatar-loop"
+            loop
+            autoPlay
+            muted={isMute}
+            onTimeUpdate={() => {}}
+          >
+            <source
+              src={require('../public/static/avatar_loop.mp4')}
+              type="video/mp4"
+            />
+          </video>
         </div>
         {/* <div className="avatar-loop">
           <Image
@@ -672,17 +672,20 @@ const Wrapper = styled.div`
     max-height: 50px;
     overflow: hidden;
     border-radius: 55px;
-    font-size: 0.5rem;
+    font-size: 0.6rem;
     transition: all 1.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     z-index: 999;
-    &:hover{
+    font-family: 'Futura Condensed';
+
+    &:hover {
       max-height: 800px;
-    background: #07142380;
+      background: #07142380;
     }
     .sidebar-item {
       text-align: center;
       margin: 20px auto;
       cursor: pointer;
+      white-space: pre;
       &:hover {
         color: #00a791;
       }
@@ -863,9 +866,27 @@ const Wrapper = styled.div`
 
   .title-gif {
     width: 100%;
+    /* width: 100%; */
     height: 100px;
+    margin-top: -35px;
     transform: scale(2);
     position: relative;
+    @media (min-width: 700px) {
+      margin-top: -15px;
+      transform: scale(2.5);
+    }
+    @media (min-width: 800px) {
+      margin-top: 0px;
+      transform: scale(3);
+    }
+    @media (min-width: 1000px) {
+      margin-top: 0px;
+      transform: scale(4);
+    }
+    @media (min-width: 1200px) {
+      margin-top: 10px;
+      transform: scale(4.5);
+    }
     /* margin-top: calc(0.1 * 100vw); */
   }
 
@@ -905,6 +926,12 @@ const Wrapper = styled.div`
   .title-img {
     position: relative;
     height: 50px;
+    @media (min-width: 1200px) {
+      transform: scale(1.2);
+    }
+    @media (min-width: 1400px) {
+      transform: scale(1.3);
+    }
   }
 
   .text {
@@ -1261,7 +1288,7 @@ const Wrapper = styled.div`
       justify-content: center;
       align-items: flex-start;
       & > * + * {
-        margin-left: 15px;
+        margin-left: 1.9rem;
       }
     }
     .profile {
