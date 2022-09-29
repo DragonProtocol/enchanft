@@ -336,3 +336,17 @@ export function addAccount(params: any, token: string) {
 export function delAccount(params: any, token: string) {
   return updateProject(params, token);
 }
+
+export function creatorTwitter(
+  params: { code: string; callback: string },
+  token: string
+) {
+  return axios({
+    url: ApiBaseUrl + '/creator/twitter',
+    method: 'post',
+    data: params,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}

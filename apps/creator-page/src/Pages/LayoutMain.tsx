@@ -1,11 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import styled from 'styled-components';
-import { useAppConfig } from '../AppProvider';
-import CreatorNeed from '../Components/RoleNeed';
 
 export default function ProjectLayout() {
-  const { isCreator } = useAppConfig();
-  if (!isCreator) return <CreatorNeed content="Must Be Creator" />;
   return (
     <MainBox id="main">
       <Outlet />

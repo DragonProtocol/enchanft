@@ -27,7 +27,7 @@ export default function ProjectNew() {
   const createNewProject = useCallback(
     async (project: Project) => {
       if (creating) return;
-      if (!isAdmin) return;
+      // if (!isAdmin) return;
       if (!account.info?.token) return;
       let chainId = -1;
       if (project.blockchain === BlockchainType.Solana) {
@@ -69,12 +69,8 @@ export default function ProjectNew() {
         setCreating(false);
       }
     },
-    [account, creating, dispatch, isAdmin, navigate, updateAccount]
+    [account, creating, dispatch, navigate, updateAccount]
   );
-
-  if (!isAdmin) {
-    return <RoleNeed content="Must Be Admin" />;
-  }
 
   return (
     <CreateBox>

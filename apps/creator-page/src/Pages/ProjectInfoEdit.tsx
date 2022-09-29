@@ -24,6 +24,7 @@ import {
   bindTwitterSubScription,
   projectBindBot,
   updateProject,
+  creatorTwitter,
 } from '../api';
 import { useAppConfig } from '../AppProvider';
 import TwitterInputModal from '../Components/Project/TwitterInputModal';
@@ -57,7 +58,7 @@ export default function ProjectInfoEdit() {
   );
   const [showModal, setShowModal] = useState(false);
   const [couldSave, setCouldSave] = useState(false);
-  const [twitterCode, setTwitterCode] = useState('');
+  const [hasTwitter, setHasTwitter] = useState(false);
 
   const uploadImageHandler = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -162,23 +163,26 @@ export default function ProjectInfoEdit() {
       JSON.stringify({ code: null, type: null })
     );
     const handleStorageChange = (e: StorageEvent) => {
+      if (!account.info?.token || !TWITTER_CALLBACK_URL) return;
       const { newValue, key, url } = e;
       if ('social_auth' === key) {
-        console.log('social_auth change url', url);
         const { code, type } = JSON.parse(newValue || '');
+        console.log('social_auth change url', url, code, type);
         if (code && type === 'TWITTER') {
-          // TWITTER_CALLBACK_URL
+          creatorTwitter(
+            { code, callback: TWITTER_CALLBACK_URL },
+            account.info.token
+          ).then(() => {
+            setHasTwitter(true);
+          });
           // setTwitterCode(code);
-          // setHasTwitter(true)
-          // TODO update project
-          // linkTwitter
         }
       }
     };
     window.addEventListener('storage', handleStorageChange);
 
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
+  }, [account.info?.token]);
 
   if (data?.slug !== slug) return <Loading />;
 
@@ -299,8 +303,9 @@ export default function ProjectInfoEdit() {
             return (
               <ProjectTwitterLink
                 hasTwitter={
-                  project?.community?.twitterId &&
-                  project?.community?.twitterName
+                  hasTwitter ||
+                  (project?.community?.twitterId &&
+                    project?.community?.twitterName)
                 }
                 twitterName={project?.community?.twitterName || ''}
                 linkAction={async () => {

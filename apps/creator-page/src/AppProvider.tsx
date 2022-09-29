@@ -347,31 +347,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     [account.info?.token]
   );
 
-  useEffect(() => {
-    localStorage.setItem(
-      'social_auth',
-      JSON.stringify({ code: null, type: null })
-    );
-    const handleStorageChange = (e: StorageEvent) => {
-      const { newValue, key, url } = e;
-      if ('social_auth' === key) {
-        console.log('social_auth change url', url);
-        // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
-        const { code, type } = JSON.parse(newValue || '');
-        if (code && type) {
-          linkUser({ code, type });
-          localStorage.setItem(
-            'social_auth',
-            JSON.stringify({ code: null, type: null })
-          );
-        }
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [linkUser]);
-
   log.debug('account', account);
 
   return (
