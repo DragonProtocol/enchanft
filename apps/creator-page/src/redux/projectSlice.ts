@@ -47,6 +47,7 @@ export type ProjectDetail = {
     text: string;
   };
   community: {
+    id: number;
     website: string;
     discordInviteUrl: string;
     twitterId: string;

@@ -163,14 +163,19 @@ export default function ProjectInfoEdit() {
       JSON.stringify({ code: null, type: null })
     );
     const handleStorageChange = (e: StorageEvent) => {
-      if (!account.info?.token || !TWITTER_CALLBACK_URL) return;
+      if (!account.info?.token || !TWITTER_CALLBACK_URL || !data) return;
       const { newValue, key, url } = e;
       if ('social_auth' === key) {
         const { code, type } = JSON.parse(newValue || '');
         console.log('social_auth change url', url, code, type);
         if (code && type === 'TWITTER') {
           creatorTwitter(
-            { code, callback: TWITTER_CALLBACK_URL },
+            {
+              code,
+              callback: TWITTER_CALLBACK_URL,
+              projectId: data.id,
+              communityId: data.community.id,
+            },
             account.info.token
           ).then(() => {
             setHasTwitter(true);
@@ -182,7 +187,7 @@ export default function ProjectInfoEdit() {
     window.addEventListener('storage', handleStorageChange);
 
     return () => window.removeEventListener('storage', handleStorageChange);
-  }, [account.info?.token]);
+  }, [account.info?.token, data]);
 
   if (data?.slug !== slug) return <Loading />;
 

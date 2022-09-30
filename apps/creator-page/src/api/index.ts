@@ -338,7 +338,12 @@ export function delAccount(params: any, token: string) {
 }
 
 export function creatorTwitter(
-  params: { code: string; callback: string },
+  params: {
+    code: string;
+    callback: string;
+    projectId: number;
+    communityId: number;
+  },
   token: string
 ) {
   return axios({
