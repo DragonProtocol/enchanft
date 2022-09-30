@@ -18,6 +18,8 @@ import IconDownload from '../Icons/IconDownload';
 import IconTweet from '../Icons/IconTweet';
 import IconRandom from '../Icons/IconRandom';
 import AlarmModal from './AlarmModal';
+import { useParams } from 'react-router-dom';
+import { TASK_SHARE_URI } from '../../utils/constants';
 
 // TODO rebuild
 
@@ -48,6 +50,7 @@ export default function WinnerList({
   const label = getTaskRewardTypeLabel(reward);
   const [selected, setSelected] = useState<Array<number>>([]);
   const [disableSelect, setDisableSelect] = useState(false);
+  const { slug, taskId } = useParams();
 
   const [tweetAlarmModalShow, setTweetAlarmModalShow] = useState({
     show: false,
@@ -74,28 +77,38 @@ export default function WinnerList({
     setDisableSelect(true);
   }, [candidateList, winnerNum]);
 
-  const tweetWinners = useCallback((winners: string[]) => {
-    console.log({ winners });
-    if (winners.length === 0) {
-      setTweetAlarmModalShow({
-        show: true,
-        msg: '',
-      });
-      return;
-    }
-    const data = 'Winners 🏆 ' + winners.join(' ');
-    if (data.length > 8000) {
-      setTweetAlarmModalShow({
-        show: true,
-        msg: 'Too many tweet',
-      });
-      return;
-    }
-    window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(data)}`,
-      '_blank'
-    );
-  }, []);
+  const tweetWinners = useCallback(
+    (winners: string[]) => {
+      console.log({ winners });
+      if (winners.length === 0) {
+        setTweetAlarmModalShow({
+          show: true,
+          msg: '',
+        });
+        return;
+      }
+      const data =
+        'Winners 🏆 ' +
+        winners
+          .map((item) => {
+            return '@' + item;
+          })
+          .join(' ') +
+        ` \n${TASK_SHARE_URI}/${slug}/${taskId}`;
+      if (data.length > 8000) {
+        setTweetAlarmModalShow({
+          show: true,
+          msg: 'Too many tweet',
+        });
+        return;
+      }
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(data)}`,
+        '_blank'
+      );
+    },
+    [slug, taskId]
+  );
 
   const dateNow = new Date();
   const schedulesEndTime = schedules?.endTime
