@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-06 14:02:18
+ * @LastEditTime: 2022-09-28 14:56:26
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
 import qs from 'qs'
+import { toast } from 'react-toastify'
 import { API_BASE_URL } from '../constants'
 export type AxiosCustomHeaderType = {
   // 当前接口是否需要传递token
@@ -61,13 +62,35 @@ axiosInstance.interceptors.request.use(
 )
 
 // 添加响应拦截器
+let allowExecAuthFailed = true // 是否允许执行认证失效的逻辑
 axiosInstance.interceptors.response.use(
-  (response) =>
+  (response) => {
+    // 如果执行了登录，并且成功，设置下一次响应时允许执行认证失效的逻辑
+    if (response.config.url === '/users/login' && response.status >= 200 && response.status < 400) {
+      allowExecAuthFailed = true
+    }
     // 对响应数据做点什么
-    response,
-  (error) =>
-    // 对响应错误做点什么
-    Promise.reject(error.response?.data || error),
+    return response
+  },
+  (error) => {
+    if (error.response.status === 401) {
+      // 多个token失效的响应只执行一次logout,提示一次toast
+      if (allowExecAuthFailed) {
+        allowExecAuthFailed = false
+        store.dispatch({
+          type: 'account/logout',
+        })
+        store.dispatch({
+          type: 'account/setConnectWalletModalShow',
+          payload: true,
+        })
+        toast.error('authentication failed, log in again!')
+      }
+    } else {
+      // 对响应错误做点什么
+      return Promise.reject(error.response?.data || error)
+    }
+  },
 )
 
 export default axiosInstance

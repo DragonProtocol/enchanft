@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-21 17:30:48
+ * @LastEditTime: 2022-09-27 17:48:49
  * @Description: 与后端entities type定义对应
  */
 
@@ -76,6 +76,13 @@ export enum ActionType {
   MEET_CONTRIBUTION_SCORE = 'MEET_CONTRIBUTION_SCORE',
   TURN_ON_NOTIFICATION = 'TURN_ON_NOTIFICATION',
   CUSTOM = 'CUSTOM',
+  NATIVE_BALANCE = 'NATIVE_BALANCE',
+  NFT_BALANCE = 'NFT_BALANCE',
+}
+export type NftInfo = {
+  name: string
+  address: string
+  url: string
 }
 export type ActionData = {
   url?: string
@@ -85,6 +92,9 @@ export type ActionData = {
   require_score?: number
   num?: number
   accounts?: string[]
+  min_native_balance?: number
+  nft_accounts?: NftInfo[]
+  wallet_url?: string
 }
 export type Action = {
   id: number
@@ -202,4 +212,5 @@ export enum AccountType {
   DISCORD = 'DISCORD',
   SOLANA = 'SOLANA',
   EVM = 'EVM',
+  APTOS = 'APTOS',
 }

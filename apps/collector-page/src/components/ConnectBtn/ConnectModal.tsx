@@ -27,13 +27,15 @@ import PhantomIcon from './PhantomIcon'
 import EmailIcon from './EmailIcon'
 import DiscordIcon from './DiscordIcon'
 import TwitterIcon from './TwitterIcon'
+import IconMartian from '../common/icons/IconMartian'
 import { AccountType } from '../../types/entities'
 
 export default function ConnectModal() {
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
 
-  const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
+  const { phantomValid, metamaskValid, martianValid, signMsgWithMetamask, signMsgWithPhantom, signMsgWithMartian } =
+    useWalletSign()
   const handleCloseConnectModal = useCallback(() => {
     dispatch(setConnectModal(null))
   }, [])
@@ -68,12 +70,27 @@ export default function ConnectModal() {
     handleCloseConnectModal()
   }, [metamaskValid])
 
+  const bindMartian = useCallback(async () => {
+    if (!martianValid) alert('Install Martian first')
+    const data = await signMsgWithMartian()
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: data?.payloadMsg || SIGN_MSG,
+      }),
+    )
+    handleCloseConnectModal()
+  }, [metamaskValid])
+
   useEffect(() => {
     const discord = account.accounts.find((item) => item.accountType === AccountType.DISCORD)
     const twitter = account.accounts.find((item) => item.accountType === AccountType.TWITTER)
     if (
       (discord && account.connectModal === ConnectModalType.DISCORD) ||
-      (twitter && account.connectModal === ConnectModalType.TWITTER)
+      (twitter && account.connectModal === ConnectModalType.TWITTER && !!twitter.data)
     ) {
       handleCloseConnectModal()
     }
@@ -110,6 +127,15 @@ export default function ConnectModal() {
       )
       msg = `Phantom  is not connected. Please connect Phantom.`
       break
+    case ConnectModalType.MARTIAN:
+      btn = (
+        <div className="btn wallet" onClick={bindMartian}>
+          <IconMartian />
+          <p>Connect Martian</p>
+        </div>
+      )
+      msg = `Martian is not connected. Please connect Martian.`
+      break
     case ConnectModalType.TWITTER:
       btn = (
         <div className="btn twitter" onClick={bindTwitter}>
@@ -141,6 +167,7 @@ export default function ConnectModal() {
     default:
       break
   }
+  console.log({ connectModal: account.connectModal })
 
   return (
     <ConnectModalBox

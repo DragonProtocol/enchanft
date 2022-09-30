@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 14:09:56
+ * @LastEditTime: 2022-09-28 11:15:40
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -41,6 +41,7 @@ import {
   setAvatar as setAvatarForSlice,
   setName as setNameForSlice,
   setIsLogin,
+  logout,
 } from '../features/user/accountSlice'
 import { AccountType, ActionType } from '../types/entities'
 
@@ -71,6 +72,7 @@ import IconUnlink from '../components/common/icons/IconUnlink'
 import CardBox from '../components/common/card/CardBox'
 import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
 import IconMetamask from '../components/common/icons/IconMetamask'
+import IconMartian from '../components/common/icons/IconMartian'
 import UserAvatar from '../components/business/user/UserAvatar'
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
 import { toast } from 'react-toastify'
@@ -125,14 +127,7 @@ const Profile: React.FC = () => {
 
   const handleLogout = useCallback(async () => {
     if (account.isLogin) {
-      clearLoginToken(account.defaultWallet, account.pubkey)
-      dispatch(setLastLogin(account.defaultWallet))
-      dispatch(setLastLoginInfo({ name: account.name, avatar: account.avatar }))
-      dispatch(setToken(''))
-      dispatch(setPubkey(''))
-      dispatch(setAvatarForSlice(''))
-      dispatch(setNameForSlice(''))
-      dispatch(setIsLogin(false))
+      dispatch(logout())
       navigate('/')
     }
   }, [account])
@@ -166,8 +161,10 @@ const Profile: React.FC = () => {
   const discord = account.accounts.find((item) => item.accountType === AccountType.DISCORD)
   const accountPhantom = account.accounts.find((item) => item.accountType === AccountType.SOLANA)
   const accountMetamask = account.accounts.find((item) => item.accountType === AccountType.EVM)
+  const accountMartian = account.accounts.find((item) => item.accountType === AccountType.APTOS)
 
-  const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
+  const { phantomValid, metamaskValid, martianValid, signMsgWithMetamask, signMsgWithPhantom, signMsgWithMartian } =
+    useWalletSign()
   const bindMetamask = useCallback(async () => {
     if (!metamaskValid) alert('Install Metamask first')
     const data = await signMsgWithMetamask()
@@ -197,6 +194,20 @@ const Profile: React.FC = () => {
       }),
     )
   }, [phantomValid])
+  const bindMartian = useCallback(async () => {
+    if (!martianValid) alert('Install Martian first')
+    const data = await signMsgWithMartian()
+    console.log(data)
+    if (!data) return
+    dispatch(
+      userOtherWalletLink({
+        walletType: data.walletType,
+        signature: data.signature,
+        pubkey: data.pubkey,
+        payload: data?.payloadMsg || SIGN_MSG,
+      }),
+    )
+  }, [martianValid])
   const renderUserBasicInfo = () => {
     return (
       <UserBasicInfoBox>
@@ -234,6 +245,15 @@ const Profile: React.FC = () => {
           <IconPhantomWhite />
           <BindBtnText>{accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}</BindBtnText>
         </PhantomBindBtn>
+        <MartianBindBtn
+          onClick={() => {
+            if (accountMartian) return
+            bindMartian()
+          }}
+        >
+          <IconMartian />
+          <BindBtnText>{accountMartian ? sortPubKey(accountMartian.thirdpartyId) : 'Connect Martian'}</BindBtnText>
+        </MartianBindBtn>
         <TwitterBindBtn
           isConnect={!!twitter}
           onClick={() => {
@@ -501,6 +521,10 @@ const MetamaskBindBtn = styled(BindBtnBase)`
 `
 const PhantomBindBtn = styled(BindBtnBase)`
   background: #551ff4;
+  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
+`
+const MartianBindBtn = styled(BindBtnBase)`
+  background: #171f1c;
   box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
 `
 
