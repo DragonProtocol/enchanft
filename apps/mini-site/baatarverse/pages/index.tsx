@@ -11,15 +11,14 @@ export function Index() {
   const [isExpand, setIsExpand] = useState(false);
 
   const scrollToAnchor = (anchorName) => {
-    console.log('anchorName', anchorName);
     if (anchorName) {
-      // const tabBar = document.getElementById('tab-bar').offsetHeight
       let anchorElement = document.getElementById(anchorName);
       if (anchorElement) {
         anchorElement.scrollIntoView();
       }
     }
   };
+
   const renderProfile = (
     imgPath: string,
     name: string,
@@ -69,7 +68,7 @@ export function Index() {
         />
       </div>
 
-      <div className="nav-item">
+      {/* <div className="nav-item">
         <Image
           src={'/static/images/OpenSea.png'}
           layout="fill"
@@ -77,7 +76,7 @@ export function Index() {
           // objectFit='cover'
           alt={'basic'}
         />
-      </div>
+      </div> */}
 
       <div className="nav-item wl-xyz">
         <Image
@@ -158,7 +157,7 @@ export function Index() {
           width={92}
           height={52}
           layout="fixed"
-          // objectFit='cover'
+          objectFit='cover'
           alt={'basic'}
         />
       </div>
@@ -434,6 +433,7 @@ export function Index() {
           objectFit="contain"
           alt={'basic'}
         /> */}
+        <div className='image-container map-box'>
           <Image
             className={'image map'}
             src={'/static/images/map.png'}
@@ -441,7 +441,7 @@ export function Index() {
             objectFit="contain"
             alt={'basic'}
           />
-          <div className="map-text map-text-1">
+             <div className="map-text map-text-1">
             NFT collection
             <br />
             on sale
@@ -458,6 +458,8 @@ export function Index() {
             Whitelist extraction of <br />
             Exclusive NFT collection
           </div>
+          </div>
+       
           <div className="black-cloud image-container">
             <Image
               className={'image'}
@@ -534,14 +536,14 @@ export function Index() {
               'Professional Cask Selector'
             )}
           </div>
-          <div className="row">
+          {/* <div className="row">
             {renderProfile(
               '/static/images/Wl.png',
               'EnchaNFT (wl.xyz)',
               'A group of experienced web3 veterans, building tools and infrastructure for the NFT ecosystem. Our members are from Tsinghua, the National University of Singapore, UPenn, INSEAD, Bitmain, and Binance.',
               'wl'
             )}
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -672,7 +674,7 @@ const Wrapper = styled.div`
     max-height: 50px;
     overflow: hidden;
     border-radius: 55px;
-    font-size: 0.6rem;
+    font-size: 0.7rem;
     transition: all 1.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     z-index: 999;
     font-family: 'Futura Condensed';
@@ -699,7 +701,7 @@ const Wrapper = styled.div`
   }
 
   .more {
-    width: 0.8rem;
+    width: 0.9rem;
     filter: grayscale(100%) brightness(200%);
     margin: 20px auto;
     cursor: pointer;
@@ -713,9 +715,13 @@ const Wrapper = styled.div`
     margin-top: -100px;
     padding-top: 100px;
     padding-bottom: 15rem;
-    background-image: url('/static/images/texture.png');
+    background-image: url('/static/images/texture-top.png');
     /* background-repeat: no-repeat; */
     background-size: 100%;
+
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position-y: 200px;
   }
   .bg-b {
     background: #0d2c45;
@@ -769,27 +775,29 @@ const Wrapper = styled.div`
           brightness(95%) contrast(101%);
       }
     }
-    .nav-item {
-      width: 42px;
-      height: 42px;
 
-      /* max-width: 62px;
-      max-height: 62px; */
-      /* object-fit: cover; */
+    .nav-item {
+      width: 35px;
+      height: 35px;
+      /* width: 42px;
+      height: 42px; */
+
       position: relative;
     }
     .wl-xyz {
       /* rio 2.6 */
       width: 42px;
-      height: 16px;
+      height: 13px;
+      /* width: 42px;
+      height: 16px; */
     }
     & > * + * {
       margin-left: 10px;
     }
     @media (min-width: 700px) {
       .nav-item {
-        width: 52px;
-        height: 52px;
+        width: 42px;
+        height: 42px;
       }
       .wl-xyz {
         width: 52px;
@@ -799,8 +807,8 @@ const Wrapper = styled.div`
 
     @media (min-width: 1250px) {
       .nav-item {
-        width: 62px;
-        height: 62px;
+        width: 52px;
+        height: 52px;
       }
       .wl-xyz {
         width: 72px;
@@ -812,16 +820,16 @@ const Wrapper = styled.div`
     }
 
     @media (min-width: 1600px) {
-      .nav-item {
-        width: 72px;
-        height: 72px;
+      /* .nav-item {
+        width: 62px;
+        height: 62px;
       }
       .wl-xyz {
         width: 72px;
         height: 27px;
-      }
+      } */
       & > * + * {
-        margin-left: 20px;
+        margin-left: 30px;
       }
     }
   }
@@ -927,10 +935,10 @@ const Wrapper = styled.div`
     position: relative;
     height: 50px;
     @media (min-width: 1200px) {
-      transform: scale(1.2);
+      transform: scale(1.4);
     }
     @media (min-width: 1400px) {
-      transform: scale(1.3);
+      transform: scale(1.5);
     }
   }
 
@@ -1186,7 +1194,16 @@ const Wrapper = styled.div`
   .map-wrapper {
     background: #071726;
     position: relative;
+    /* & > span{
+    } */
   }
+
+  .map-box{
+    max-width: 1400px;
+    position: relative;
+    margin: 0 auto;
+  }
+
   .image-container {
     .map {
       z-index: 2;
@@ -1207,7 +1224,9 @@ const Wrapper = styled.div`
   .map-text-1 {
     position: absolute;
     left: max(9vw, 80px);
-    bottom: calc(16vw - 30px);
+    /* bottom: calc(25vw - 50px); */
+    /* bottom: calc(16vw - 30px); */
+    bottom: calc(20vw - 30px);
     transform: translateX(-50%);
   }
 
@@ -1215,16 +1234,28 @@ const Wrapper = styled.div`
     position: absolute;
     left: 30vw;
     bottom: calc(-5vw - 10px);
-
     transform: translateX(-50%);
   }
 
   .map-text-3 {
     position: absolute;
-    left: 60vw;
+    left: min(62vw,900px);
     /* bottom: min(30vw,180px); */
-    bottom: calc(25vw - 50px);
+    /* bottom: calc(25vw - 50px); */
+    bottom: calc(20vw - 30px);
+
+
     transform: translateX(-50%);
+
+    /* @media (min-width: 1400px) {
+      left: 50vw;
+      }
+    @media (min-width: 1500px) {
+      left: 55vw;
+      }
+    @media (min-width: 1700px) {
+      left: 55vw;
+      } */
   }
 
   .map-text-4 {
