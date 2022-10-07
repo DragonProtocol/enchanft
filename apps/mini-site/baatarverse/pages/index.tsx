@@ -21,27 +21,27 @@ export function Index() {
 
   const renderProfile = (
     imgPath: string,
-    name: string,
-    position: string,
+    name: string | null,
+    position: string | null,
     className?: string
   ) => (
     <div className={`profile-item ${className}`}>
       <div className="profile">
-        <Image
-          src={imgPath}
-          layout="fill"
-          // objectFit='cover'
-          alt={'basic'}
-        />
+        <Image src={imgPath} layout="fill" alt={'basic'} />
       </div>
-      <div className="name">{name}</div>
-      <div className="position">{position}</div>
+      {name && <div className="name">{name}</div>}
+      {position && <div className="position">{position}</div>}
     </div>
   );
 
   const renderNavComponents = (isBottom) => (
     <div className={classnames('nav-box', { isBottom: isBottom })}>
-      <div className="nav-item">
+      <div
+        className="nav-item"
+        onClick={() =>
+          window.open('https://twitter.com/mongols_nft', '__blank')
+        }
+      >
         <Image
           src={'/static/images/twitter.png'}
           layout="fill"
@@ -49,21 +49,28 @@ export function Index() {
           alt={'basic'}
         />
       </div>
-      <div className="nav-item">
+
+      <div
+        className="nav-item"
+        onClick={() => window.open('https://discord.gg/qsV323Tf6u', '__blank')}
+      >
         <Image
           src={'/static/images/discord.png'}
           layout="fill"
           objectFit="contain"
-          // objectFit='cover'
           alt={'basic'}
         />
       </div>
-      <div className="nav-item">
+      <div
+        className="nav-item"
+        // onClick={() =>
+        // window.open('https://twitter.com/mongols_nft', '__blank')
+        // }
+      >
         <Image
           src={'/static/images/instagram.png'}
           layout="fill"
           objectFit="contain"
-          // objectFit='cover'
           alt={'basic'}
         />
       </div>
@@ -73,17 +80,20 @@ export function Index() {
           src={'/static/images/OpenSea.png'}
           layout="fill"
           objectFit="contain"
-          // objectFit='cover'
+          
           alt={'basic'}
         />
       </div> */}
 
-      <div className="nav-item wl-xyz">
+      <div
+        className="nav-item wl-xyz"
+        onClick={() => window.open('https://wl.xyz/', '__blank')}
+      >
         <Image
           src={'/static/images/wl_xyz.png'}
           layout="fill"
           // objectFit="contain"
-          // objectFit='cover'
+
           alt={'basic'}
         />
       </div>
@@ -97,7 +107,6 @@ export function Index() {
             src={'/static/images/to-top.png'}
             layout="fill"
             objectFit="contain"
-            // objectFit='cover'
             alt={'basic'}
           />
         </div>
@@ -157,7 +166,7 @@ export function Index() {
           width={92}
           height={52}
           layout="fixed"
-          objectFit='cover'
+          objectFit="cover"
           alt={'basic'}
         />
       </div>
@@ -231,7 +240,7 @@ export function Index() {
           objectFit="contain"
           alt={'basic'}
         />
-        <div className="avatar-loop-box ">
+        <div className="avatar-loop-box">
           <video
             x5-video-player-type="h5"
             x-webkit-airplay="true"
@@ -376,22 +385,58 @@ export function Index() {
                 The owners of CaskBaatar NFT also become contributors and
                 investors to our mission.
               </div>
-            </div>
-            <div className="about-avatar-box">
-              <div className="about-avatar image-container">
+              <div className="about title-img top" id="Story">
                 <Image
-                  className="image"
-                  src={'/static/images/about-avatar.gif'}
+                  src={'/static/images/story.png'}
                   layout="fill"
                   objectFit="contain"
                   alt={'basic'}
                 />
               </div>
+              <div className="about-text">
+                The vision of CaskBaatar is to combine the art collection and
+                the investment in whisky through web3.
+                <br />
+                <br />
+                Only by integrating NFT with the real things can we create a
+                sustainable and stable NFT ecosystem, which is the most
+                significant value of this project.
+                <br />
+                <br />
+                The owners of CaskBaatar NFT also become contributors and
+                investors to our mission.
+              </div>
+            </div>
+            <div className="about-avatar-box">
+              <video
+                x5-video-player-type="h5"
+                x-webkit-airplay="true"
+                webkit-playsinline="true"
+                className="avatar-loop"
+                loop
+                autoPlay
+                muted={isMute}
+                onTimeUpdate={() => {}}
+              >
+                <source
+                  src={require('../public/static/images/about-avatar.mp4')}
+                  type="video/mp4"
+                />
+              </video>
+              {/* <div className="about-avatar image-container">
+                <Image
+                  className="image"
+                  src={'/static/images/about-avatar.png'}
+                  layout="fill"
+                  objectFit="contain"
+                  alt={'basic'}
+                />
+              </div> */}
             </div>
           </div>
         </div>
 
-        <div className="about-box top">
+        {/* <div className="about-box top">
           <div className="left-box">
             <div className="about title-img" id="Story">
               <Image
@@ -415,7 +460,7 @@ export function Index() {
               investors to our mission.
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="roadmap title-img" id="Rodmap">
           <Image
@@ -433,33 +478,33 @@ export function Index() {
           objectFit="contain"
           alt={'basic'}
         /> */}
-        <div className='image-container map-box'>
-          <Image
-            className={'image map'}
-            src={'/static/images/map.png'}
-            layout="fill"
-            objectFit="contain"
-            alt={'basic'}
-          />
-             <div className="map-text map-text-1">
-            NFT collection
-            <br />
-            on sale
+          <div className="image-container map-box">
+            <Image
+              className={'image map'}
+              src={'/static/images/map.png'}
+              layout="fill"
+              objectFit="contain"
+              alt={'basic'}
+            />
+            <div className="map-text map-text-1">
+              NFT collection
+              <br />
+              on sale
+            </div>
+            <div className="map-text map-text-2">
+              Airdrop bonus whisky (if any) to
+              <br /> the rare NFT owners
+            </div>
+            <div className="map-text map-text-3">
+              More interesting activities
+              <br /> are waiting to be unlocked
+            </div>
+            <div className="map-text map-text-4">
+              Whitelist extraction of <br />
+              Exclusive NFT collection
+            </div>
           </div>
-          <div className="map-text map-text-2">
-            Airdrop bonus whisky (if any) to
-            <br /> the rare NFT owners
-          </div>
-          <div className="map-text map-text-3">
-            More interesting activities
-            <br /> are waiting to be unlocked
-          </div>
-          <div className="map-text map-text-4">
-            Whitelist extraction of <br />
-            Exclusive NFT collection
-          </div>
-          </div>
-       
+
           <div className="black-cloud image-container">
             <Image
               className={'image'}
@@ -536,14 +581,15 @@ export function Index() {
               'Professional Cask Selector'
             )}
           </div>
-          {/* <div className="row">
+          <div className="row">
             {renderProfile(
               '/static/images/Wl.png',
               'EnchaNFT (wl.xyz)',
-              'A group of experienced web3 veterans, building tools and infrastructure for the NFT ecosystem. Our members are from Tsinghua, the National University of Singapore, UPenn, INSEAD, Bitmain, and Binance.',
+              null,
+              // 'A group of experienced web3 veterans, building tools and infrastructure for the NFT ecosystem. Our members are from Tsinghua, the National University of Singapore, UPenn, INSEAD, Bitmain, and Binance.',
               'wl'
             )}
-          </div> */}
+          </div>
         </div>
       </div>
 
@@ -643,13 +689,13 @@ const StyledVideo = styled.video`
 
 const Wrapper = styled.div`
   width: 100vw;
-  min-height: 1800px;
+  /* min-height: 1800px; */
   /* min-height: 18000px; */
   /* background-image: url('/static/images/background-clip.png'); */
   background-repeat: no-repeat;
   background-color: #071726;
   background-size: contain;
-  overflow: hidden;
+  /* overflow: hidden; */
   /* padding-top: 45vw; */
 
   .image-container {
@@ -836,7 +882,8 @@ const Wrapper = styled.div`
 
   .isBottom {
     position: relative;
-    margin: 100px auto 200px auto;
+    margin: 100px auto 0 auto;
+    padding-bottom: 200px;
     left: auto;
     bottom: auto;
     transform: none;
@@ -944,12 +991,11 @@ const Wrapper = styled.div`
 
   .text {
     width: 80%;
-    /* width: 90%; */
     max-width: 1400px;
     color: white;
-    /* font-size: 1rem; */
     font-size: 1.2rem;
-    padding-bottom: 80px;
+    /* padding-bottom: 80px; */
+    padding-bottom: 50px;
     margin: 0 auto;
   }
 
@@ -1079,8 +1125,10 @@ const Wrapper = styled.div`
     object-fit: cover;
     /* top: calc(-0px + -0.1 * 100vw); */
     width: 100%;
-    height: 100%;
+    height: 70%;
+    /* height: 100%; */
     z-index: 1;
+    overflow: hidden;
     /* height: 400px;
     position: relative;
     margin: 20vw auto; */
@@ -1088,6 +1136,8 @@ const Wrapper = styled.div`
 
   .avatar-loop {
     /* object-fit: cover; */
+    position: absolute;
+    top: -20px;
     width: 100%;
     /* width: calc(100vw + 150px); */
     /* position: absolute;
@@ -1126,49 +1176,66 @@ const Wrapper = styled.div`
   .about-box {
     width: 80%;
     max-width: 1400px;
-    height: calc(60vw);
-    max-height: 800px;
+    /* height: calc(160vw); */
+
+    /* height: calc(60vw); */
+    /* max-height: 800px; */
 
     /* height: calc(450px + 4vw); */
     margin: 0 auto;
     margin-top: 0px;
 
     position: relative;
+    /* display: flex; */
     .about-text {
+      width: 120%;
       margin-top: 10px;
       font-size: 1.2rem;
       text-shadow: 4px 8px 25px rgba(13, 44, 69, 0.6);
     }
     .left-box {
-      position: absolute;
+      display: inline-block;
+      width: 50%;
+      position: relative;
+      z-index: 2;
+
+      /* position: absolute;
       top: 2vw;
-      /* top: clamp(0px, 0vw, 30%); */
-      /* top: calc(0 + 3vw); */
-      /* top: calc(150px - 13vw);; */
-      /* top: 80px; */
       left: calc(0px + 1vw);
       width: calc(250px + 20vw);
-      /* width: calc(300px + 8vw); */
       z-index: 2;
       @media (min-width: 600px) {
         top: 8vw;
-      }
+      } */
       .about {
         width: 130px;
         max-width: 19rem;
       }
     }
     .about-avatar-box {
-      position: absolute;
+      position: sticky;
+      top: 0;
+      width: 50%;
+      z-index: 1;
+      display: inline-block;
+      vertical-align: top;
+      /* float: right; */
+
+      /* position: absolute;
       right: calc(0px + 1vw);
       top: 50%;
       transform: translateY(-50%);
-      z-index: 1;
+      z-index: 1; */
       .about-avatar {
         /* width: 80%; */
         /* width: 60vw; */
-        width: clamp(305px, 50vw, 800px);
+        /*         
         max-width: 800px;
+        width: clamp(305px, 30vw, 800px);
+        max-height: 800px;
+        height: clamp(305px, 30vw, 800px); */
+
+        /* width: clamp(305px, 50vw, 800px); */
         /* width: 300px; */
         /* height: 550px; */
         position: relative;
@@ -1177,12 +1244,15 @@ const Wrapper = styled.div`
   }
 
   .top {
-    margin-top: calc(200px - 10.14vw);
-    height: auto;
+    margin-top: 200px;
+    @media (max-width: 600px) {
+      margin-top: 100px;
+    }
+    /* margin-top: calc(200px - 10.14vw); */
+    /* height: auto;
     .left-box {
       position: relative;
-      /* top: 150px; */
-    }
+    } */
   }
 
   .roadmap {
@@ -1198,7 +1268,7 @@ const Wrapper = styled.div`
     } */
   }
 
-  .map-box{
+  .map-box {
     max-width: 1400px;
     position: relative;
     margin: 0 auto;
@@ -1239,11 +1309,10 @@ const Wrapper = styled.div`
 
   .map-text-3 {
     position: absolute;
-    left: min(62vw,900px);
+    left: min(62vw, 900px);
     /* bottom: min(30vw,180px); */
     /* bottom: calc(25vw - 50px); */
     bottom: calc(20vw - 30px);
-
 
     transform: translateX(-50%);
 
