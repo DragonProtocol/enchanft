@@ -913,6 +913,7 @@ const Wrapper = styled.div`
     padding-top: 100px;
     width: 100%;
     height: 600px;
+    overflow: hidden;
     background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
       url('/static/images/middle-bg.png');
     background-repeat: no-repeat;
@@ -1216,6 +1217,7 @@ const Wrapper = styled.div`
       position: sticky;
       top: 0;
       width: 50%;
+      height: calc(min(80vw,1400px) * .5);
       z-index: 1;
       display: inline-block;
       vertical-align: top;
