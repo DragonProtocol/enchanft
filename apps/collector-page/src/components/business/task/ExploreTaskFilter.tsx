@@ -2,28 +2,36 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 14:29:14
+ * @LastEditTime: 2022-10-08 14:59:23
  * @Description: file description
  */
 import React from 'react'
 import styled from 'styled-components'
 import { MOBILE_BREAK_POINT } from '../../../constants'
-import { ExploreTaskSortBy } from '../../../types/api'
+import { SearchTaskStatus } from '../../../types/api'
 import ButtonRadioGroup from '../../common/button/ButtonRadioGroup'
 import InputSearch from '../../common/input/InputSearch'
-export const ExploreTaskSortByOptions = [
+export const SearchTaskStatusOptions = [
   {
-    label: 'New',
-    value: ExploreTaskSortBy.NEW,
+    label: 'All',
+    value: SearchTaskStatus.ALL,
   },
   {
-    label: 'Hot',
-    value: ExploreTaskSortBy.HOT,
+    label: 'Live',
+    value: SearchTaskStatus.LIVE,
+  },
+  {
+    label: 'Future',
+    value: SearchTaskStatus.FUTURE,
+  },
+  {
+    label: 'Closed',
+    value: SearchTaskStatus.CLOSED,
   },
 ]
 
 export type ExploreTaskFilterDataType = {
-  sortBy: ExploreTaskSortBy
+  status: SearchTaskStatus
   keywords: string
 }
 
@@ -50,7 +58,7 @@ const ExploreTaskFilter: React.FC<ExploreTaskFilterProps> = ({
   viewConfig,
   onChange,
 }: ExploreTaskFilterProps) => {
-  const { sortBy, keywords } = data
+  const { status, keywords } = data
   const { displayStatus, displayKeywords } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -59,7 +67,7 @@ const ExploreTaskFilter: React.FC<ExploreTaskFilterProps> = ({
     if (onChange) {
       onChange({
         ...data,
-        sortBy: value,
+        status: value,
       })
     }
   }
@@ -74,7 +82,7 @@ const ExploreTaskFilter: React.FC<ExploreTaskFilterProps> = ({
   return (
     <ExploreTaskFilterWrapper>
       {displayStatus && (
-        <ButtonRadioGroupSortBy options={ExploreTaskSortByOptions} value={sortBy} onChange={handleSortByChange} />
+        <ButtonRadioGroupStatus options={SearchTaskStatusOptions} value={status} onChange={handleSortByChange} />
       )}
       {displayKeywords && (
         <InputSearchKeywords value={keywords} onChange={handleKeywordsChange} placeholder="Search task keywords" />
@@ -93,16 +101,17 @@ const ExploreTaskFilterWrapper = styled.div`
     gap: 20px;
   }
 `
-const ButtonRadioGroupSortBy = styled(ButtonRadioGroup)`
-  width: 200px;
+const ButtonRadioGroupStatus = styled(ButtonRadioGroup)`
+  width: 400px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    max-width: 100%;
     font-size: 14px;
     line-height: 21px;
   }
 `
 const InputSearchKeywords = styled(InputSearch)`
   flex: 1;
-  max-width: 650px;
+  max-width: 500px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     width: 100%;
   }

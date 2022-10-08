@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-21 14:20:34
+ * @LastEditTime: 2022-10-08 14:49:25
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -27,12 +27,14 @@ import {
 /** explore api */
 
 // explore task
-export enum ExploreTaskSortBy {
-  NEW = 'NEW',
-  HOT = 'HOT',
+export enum SearchTaskStatus {
+  ALL = 'ALL',
+  LIVE = 'LIVE',
+  FUTURE = 'FUTURE',
+  CLOSED = 'CLOSED',
 }
 export type ExploreSearchTasksRequestParams = {
-  orderType?: ExploreTaskSortBy
+  status?: SearchTaskStatus
   keywords?: string
 }
 export type ExploreSearchTaskItem = Task & {
