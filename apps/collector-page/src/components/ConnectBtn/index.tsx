@@ -95,7 +95,7 @@ export default function ConnectBtn() {
             dispatch(setConnectWalletModalShow(true))
           }}
         >
-          Connect Wallet
+          Login
         </ConnectBtnWrapper>
       )}
 
