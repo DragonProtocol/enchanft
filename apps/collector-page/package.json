@@ -62,7 +62,7 @@
     "serve": "npm start"
   },
   "devDependencies": {
-    "@craco/craco": "^7.0.0-alpha.6",
+    "@craco/craco": "^7.0.0-alpha.8",
     "@types/hammerjs": "^2.0.41",
     "@types/mockjs": "^1.0.6",
     "@types/react-lottie": "^1.2.6",
