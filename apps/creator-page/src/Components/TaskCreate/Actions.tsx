@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { ChainType, checkTweetIdValid, checkTwitterNameValid } from '../../api';
 import { CREATE_TASK_DEFAULT_INVITE_NUM } from '../../utils/constants';
@@ -18,6 +18,10 @@ import IconTwitterWhite from '../Icons/IconTwitterWhite';
 import IconTip from '../Icons/IconTip';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
+import { CoinType, TokenType } from '../../utils/token';
+import IconNFT from '../Icons/IconNft';
+import IconWallet from '../Icons/IconWallet';
+import IconCustom from '../Icons/IconCustom';
 
 export default function Actions({
   hasInviteBot,
@@ -69,7 +73,7 @@ export default function Actions({
     useState(20);
   const [custom, setCustom] = useState([
     {
-      type: ActionType.WL,
+      type: ActionType.CUSTOM,
       name: '',
       typeMore: ActionTypeMore.CUSTOM,
       select: false,
@@ -79,6 +83,24 @@ export default function Actions({
       err: false,
     },
   ]);
+  const [walletBalance, setWalletBalance] = useState({
+    type: ActionType.COIN,
+    valid: false,
+    num: '',
+    coinType: CoinType.ETH,
+  });
+
+  const [nftHolder, setNftHolder] = useState({
+    type: ActionType.COIN,
+    valid: false,
+    items: [
+      {
+        nftCollectionName: '',
+        nftContractAddr: '',
+        url: '',
+      },
+    ],
+  });
   useEffect(() => {
     const actions: Action[] = [];
     if (followTwitter && followTwitterLinkResult.length > 0) {
@@ -189,6 +211,42 @@ export default function Actions({
       (item) => item.select && item.name && item.url
     );
     actions.push(...resultCustom);
+
+    if (walletBalance.valid) {
+      actions.push({
+        name: `Minimum balance ${walletBalance.num} ${walletBalance.coinType}`,
+        type: ActionType.COIN,
+        typeMore: ActionTypeMore.NATIVE_BALANCE,
+        description: ``,
+        min_native_balance: Number(walletBalance.num) || 0,
+      });
+    }
+
+    if (nftHolder.valid) {
+      const data = [...nftHolder.items];
+      let word = data.pop()?.nftCollectionName || '';
+      if (data.length > 0) {
+        word = 'and ' + word;
+      }
+      const words = data.map((item) => item.nftCollectionName).join('、');
+      actions.push({
+        name: `Holding ${words} ${word} NFT`,
+        type: ActionType.NFT,
+        typeMore: ActionTypeMore.NFT_BALANCE,
+        description: ``,
+        nft_accounts: nftHolder.items
+          .map((item) => {
+            return {
+              name: item.nftCollectionName,
+              address: item.nftContractAddr,
+              url: item.url,
+            };
+          })
+          .filter((item) => item.name && item.address),
+        nft_accounts_or_add: false,
+      });
+    }
+
     updateStateActions(actions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -210,6 +268,8 @@ export default function Actions({
     discordRole,
     discordRoleDesc,
     custom,
+    walletBalance,
+    nftHolder,
   ]);
 
   return (
@@ -219,6 +279,7 @@ export default function Actions({
       </div>
       <div className="content">
         <div>
+          {/** Follow twitter */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -262,6 +323,7 @@ export default function Actions({
               </div>
             )}
           </div>
+          {/** Like twitter */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -291,6 +353,7 @@ export default function Actions({
               )}
             </div>
           </div>
+          {/** Retweet twitter */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -320,7 +383,7 @@ export default function Actions({
               )}
             </div>
           </div>
-
+          {/** Invite friends */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -349,7 +412,7 @@ export default function Actions({
               <IconWL />
             </div>
           </div>
-
+          {/** Community contribution */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -385,6 +448,7 @@ export default function Actions({
           </div>
         </div>
         <div>
+          {/** Join Discord */}
           {hasInviteBot && (
             <div className="content-item">
               <div className="desc">
@@ -401,6 +465,7 @@ export default function Actions({
               </div>
             </div>
           )}
+          {/** Invite Discord */}
           {hasInviteBot && (
             <div className="content-item">
               <div className="desc">
@@ -434,6 +499,7 @@ export default function Actions({
               {/* <div className="help">{discord ? null : <ConnectDiscord />}</div> */}
             </div>
           )}
+          {/** Discord bot */}
           {hasInviteBot && (
             <div className="content-item">
               <div className="desc">
@@ -481,7 +547,8 @@ export default function Actions({
               )}
             </div>
           )}
-          {/* <div className="content-item">
+          {/** Join the community
+          <div className="content-item">
             <div className="desc">
               <CustomCheckBox
                 checked={joinCommunity}
@@ -496,6 +563,7 @@ export default function Actions({
             </div>
           </div> */}
 
+          {/** Custom action */}
           {custom.map((item, idx) => {
             return (
               <div className="content-item" key={idx}>
@@ -514,6 +582,7 @@ export default function Actions({
                   <span id="follow-twitter-msg" className="msg">
                     Custom action
                   </span>
+                  <IconCustom />
                 </div>
                 {item.select && (
                   <>
@@ -557,7 +626,7 @@ export default function Actions({
                       <span className="username custom">Description: </span>
                       <div className="input-box">
                         <input
-                          placeholder="optional"
+                          placeholder="Optional"
                           type="text"
                           title="task-like"
                           value={item.description}
@@ -577,7 +646,7 @@ export default function Actions({
                     </div>
                     {(idx === custom.length - 1 && (
                       <div
-                        className={'help add-btn custom'}
+                        className={'help add-btn custom custom-add'}
                         onClick={() => {
                           setCustom([
                             ...custom,
@@ -594,7 +663,7 @@ export default function Actions({
                           ]);
                         }}
                       >
-                        <IconPlus size="16px" />
+                        <IconPlus size="16px" /> Add
                       </div>
                     )) || (
                       <div
@@ -614,6 +683,104 @@ export default function Actions({
               </div>
             );
           })}
+
+          {/** wallet balance */}
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={walletBalance.valid}
+                onChange={() => {
+                  setWalletBalance({
+                    ...walletBalance,
+                    valid: !walletBalance.valid,
+                  });
+                }}
+              />
+              <span id="wallet-balance" className="msg">
+                Wallet balance
+              </span>
+              <IconWallet />
+            </div>
+            {walletBalance.valid && (
+              <WalletBalanceInput
+                num={walletBalance.num}
+                type={walletBalance.coinType}
+                setNum={(v) => {
+                  setWalletBalance({
+                    ...walletBalance,
+                    num: v,
+                  });
+                }}
+              />
+            )}
+          </div>
+          {/** NFT Holder */}
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={nftHolder.valid}
+                onChange={() => {
+                  setNftHolder({
+                    ...nftHolder,
+                    valid: !nftHolder.valid,
+                  });
+                }}
+              />
+              <span id="nft-holder" className="msg">
+                NFT Holder
+              </span>
+              <IconNFT />
+            </div>
+            <div>
+              {nftHolder.valid &&
+                nftHolder.items.map((item, idx) => {
+                  return (
+                    <Fragment key={idx}>
+                      {idx > 0 && <div className="and"></div>}
+                      <NftHolderInput
+                        name={item.nftCollectionName}
+                        addr={item.nftContractAddr}
+                        url={item.url}
+                        updateItem={(v) => {
+                          setNftHolder({
+                            ...nftHolder,
+                            items: [
+                              ...nftHolder.items.slice(0, idx),
+                              {
+                                nftCollectionName: v.name,
+                                nftContractAddr: v.addr,
+                                url: v.url,
+                              },
+                              ...nftHolder.items.slice(idx + 1),
+                            ],
+                          });
+                        }}
+                      />
+                    </Fragment>
+                  );
+                })}
+              {nftHolder.valid && (
+                <div
+                  className={'help add-btn custom nft-add'}
+                  onClick={() => {
+                    setNftHolder({
+                      ...nftHolder,
+                      items: [
+                        ...nftHolder.items,
+                        {
+                          nftCollectionName: '',
+                          nftContractAddr: '',
+                          url: '',
+                        },
+                      ],
+                    });
+                  }}
+                >
+                  <IconPlus size="16px" /> Add
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </SelectActionsBox>
@@ -836,7 +1003,7 @@ function AddTwitterToFollowed({
         }}
       >
         <IconPlus size="16px" />
-        <span>Add Account</span>
+        Add Account
       </div>
     </>
   );
@@ -869,6 +1036,106 @@ function ConnectTwitter() {
       <IconTwitterWhite />
       <p>{'Connect Twitter First'}</p>
     </div>
+  );
+}
+
+function WalletBalanceInput({
+  num,
+  type,
+  setNum,
+}: {
+  num: string;
+  type: CoinType;
+  setNum: (arg0: string) => void;
+}) {
+  return (
+    <div className="help">
+      <span className="username tint">Minimum balance:</span>
+      <div className={'input-box'}>
+        <input
+          type="number"
+          title="wallet-balance"
+          min={'0.001'}
+          value={num}
+          onChange={(e) => {
+            const dataValue = e.target.value;
+            setNum(dataValue);
+          }}
+        />
+        <select title="coins" name="" id="" defaultValue={type}>
+          <option value={CoinType.ETH}>ETH</option>
+          {/* <option value={CoinType.SOL}>SOL</option> */}
+        </select>
+      </div>
+    </div>
+  );
+}
+
+function NftHolderInput({
+  name,
+  addr,
+  url,
+  updateItem,
+}: {
+  name: string;
+  addr: string;
+  url: string;
+  updateItem: (arg0: { name: string; addr: string; url: string }) => void;
+}) {
+  return (
+    <>
+      <div className="help">
+        <span className="username nft">NFT Collection name:</span>
+        <div className={'input-box'}>
+          <input
+            title="nft-collection-name"
+            type="text"
+            min={'1'}
+            onChange={(e) => {
+              updateItem({
+                name: e.target.value,
+                addr,
+                url,
+              });
+            }}
+          />
+        </div>
+      </div>
+      <div className="help">
+        <span className="username nft">NFT Contract address:</span>
+        <div className={'input-box'}>
+          <input
+            title="nft-contract-name"
+            type="text"
+            min={'1'}
+            onChange={(e) => {
+              updateItem({
+                name,
+                url,
+                addr: e.target.value,
+              });
+            }}
+          />
+        </div>
+      </div>
+      <div className="help">
+        <span className="username nft">URL:</span>
+        <div className={'input-box'}>
+          <input
+            title="nft-contract-name"
+            type="text"
+            placeholder="Optional"
+            onChange={(e) => {
+              updateItem({
+                name,
+                addr,
+                url: e.target.value,
+              });
+            }}
+          />
+        </div>
+      </div>
+    </>
   );
 }
 
@@ -935,6 +1202,11 @@ const SelectActionsBox = styled.div`
               text-align: end;
               width: 85px;
             }
+
+            &.nft {
+              text-align: end;
+              width: 165px;
+            }
           }
           & span.tint {
             display: flex;
@@ -983,6 +1255,11 @@ const SelectActionsBox = styled.div`
             &.adding {
               color: rgba(51, 51, 51, 0.3);
             }
+
+            & select {
+              border: none;
+              outline: none;
+            }
           }
 
           & div.tint-box {
@@ -1024,7 +1301,14 @@ const SelectActionsBox = styled.div`
           cursor: pointer;
           padding-left: 90px;
           &.custom {
-            justify-content: end;
+            /* justify-content: end; */
+          }
+
+          &.custom-add {
+            margin-left: 40px;
+          }
+          &.nft-add {
+            margin-left: 120px;
           }
 
           & > svg {
@@ -1067,5 +1351,11 @@ const SelectActionsBox = styled.div`
   }
   & div.discord {
     background-color: #5165f6;
+  }
+
+  & .and {
+    text-align: center;
+    margin: 15px;
+    border-top: 1px solid #d9d9d9;
   }
 `;

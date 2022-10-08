@@ -100,6 +100,7 @@ export interface AppContextData {
   validLogin: boolean;
   isCreator: boolean;
   isAdmin: boolean;
+  isVIP: boolean;
 }
 
 const DefaultAccount: AppAccount = {
@@ -143,6 +144,7 @@ const DefaultCtxData: AppContextData = {
   signMsgWithMartian,
   isCreator: false,
   isAdmin: false,
+  isVIP: false,
 };
 
 export const AppContext = createContext<AppContextData>(DefaultCtxData);
@@ -316,6 +318,13 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     return account.info.roles.includes('ADMIN') || false;
   }, [account.info]);
 
+  const isVIP = useMemo(() => {
+    if (!account.info?.roles) {
+      return false;
+    }
+    return account.info.roles.includes('VIP') || false;
+  }, [account.info]);
+
   const linkUser = useCallback(
     async (accountInfo: any) => {
       if (!account.info?.token) return;
@@ -338,31 +347,6 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
     [account.info?.token]
   );
 
-  useEffect(() => {
-    localStorage.setItem(
-      'social_auth',
-      JSON.stringify({ code: null, type: null })
-    );
-    const handleStorageChange = (e: StorageEvent) => {
-      const { newValue, key, url } = e;
-      if ('social_auth' === key) {
-        console.log('social_auth change url', url);
-        // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
-        const { code, type } = JSON.parse(newValue || '');
-        if (code && type) {
-          linkUser({ code, type });
-          localStorage.setItem(
-            'social_auth',
-            JSON.stringify({ code: null, type: null })
-          );
-        }
-      }
-    };
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, [linkUser]);
-
   log.debug('account', account);
 
   return (
@@ -379,6 +363,7 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
         account,
         isCreator,
         isAdmin,
+        isVIP,
         updateAccount: (newAccount) => {
           setAccount({ ...account, ...newAccount });
         },

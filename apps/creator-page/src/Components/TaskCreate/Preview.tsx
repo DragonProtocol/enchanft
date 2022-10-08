@@ -12,6 +12,9 @@ import IconWL from '../Icons/IconWL';
 import { ActionType, ActionTypeMore, RewardType, State } from './type';
 import IconTip from '../Icons/IconTip';
 import PngIconScissorHand from '../Icons/PngIconScissorHand';
+import IconCustom from '../Icons/IconCustom';
+import IconWallet from '../Icons/IconWallet';
+import IconNFT from '../Icons/IconNft';
 
 export default function Preview({
   state,
@@ -123,6 +126,15 @@ export default function Preview({
                   if (item.type === ActionType.WL) {
                     Icon = IconWL;
                   }
+                  if (item.type === ActionType.COIN) {
+                    Icon = IconWallet;
+                  }
+                  if (item.type === ActionType.NFT) {
+                    Icon = IconNFT;
+                  }
+                  if (item.type === ActionType.CUSTOM) {
+                    Icon = IconCustom;
+                  }
                   if (
                     item.typeMore === ActionTypeMore.CUSTOM &&
                     item.description
@@ -213,6 +225,7 @@ const TaskPreviewWrapper = styled.div`
         border-radius: 20px;
         /* transform: matrix(-1, 0, 0, 1, 0, 0); */
         & img {
+          vertical-align: middle;
           height: 18px;
           width: 12px;
         }

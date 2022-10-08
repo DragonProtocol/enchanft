@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 
 import CrownImg from '../imgs/crown.svg';
@@ -13,7 +13,13 @@ import IconCheckbox from '../Icons/IconCheckbox';
 import IconCheckboxChecked from '../Icons/IconCheckboxChecked';
 import { RewardType } from '../TaskCreate/type';
 import UserAvatar from '../UserAvatar';
-import ConfirmModal from './ComfirmModal';
+import ConfirmModal from './ConfirmModal';
+import IconDownload from '../Icons/IconDownload';
+import IconTweet from '../Icons/IconTweet';
+import IconRandom from '../Icons/IconRandom';
+import AlarmModal from './AlarmModal';
+import { useParams } from 'react-router-dom';
+import { TASK_SHARE_URI } from '../../utils/constants';
 
 // TODO rebuild
 
@@ -44,7 +50,12 @@ export default function WinnerList({
   const label = getTaskRewardTypeLabel(reward);
   const [selected, setSelected] = useState<Array<number>>([]);
   const [disableSelect, setDisableSelect] = useState(false);
+  const { slug, taskId } = useParams();
 
+  const [tweetAlarmModalShow, setTweetAlarmModalShow] = useState({
+    show: false,
+    msg: '',
+  });
   const [confirmModalOpen, setConfirmModalOpen] = useState(false);
 
   const genRandom = useCallback(() => {
@@ -66,6 +77,39 @@ export default function WinnerList({
     setDisableSelect(true);
   }, [candidateList, winnerNum]);
 
+  const tweetWinners = useCallback(
+    (winners: string[]) => {
+      console.log({ winners });
+      if (winners.length === 0) {
+        setTweetAlarmModalShow({
+          show: true,
+          msg: '',
+        });
+        return;
+      }
+      const data =
+        'Winners 🏆 ' +
+        winners
+          .map((item) => {
+            return '@' + item;
+          })
+          .join(' ') +
+        ` \n${TASK_SHARE_URI}/${slug}/${taskId}`;
+      if (data.length > 8000) {
+        setTweetAlarmModalShow({
+          show: true,
+          msg: 'Too many tweet',
+        });
+        return;
+      }
+      window.open(
+        `https://twitter.com/intent/tweet?text=${encodeURIComponent(data)}`,
+        '_blank'
+      );
+    },
+    [slug, taskId]
+  );
+
   const dateNow = new Date();
   const schedulesEndTime = schedules?.endTime
     ? new Date(schedules?.endTime)
@@ -77,6 +121,19 @@ export default function WinnerList({
   const [activeList, setActiveList] = useState(
     isFCFS ? 'candidates' : 'whitelist'
   );
+
+  const winners = useMemo(() => {
+    if (isFCFS) {
+      const data = candidateList
+        .map((item) => item.thirdpartyName)
+        .filter((item) => !!item);
+      return data;
+    }
+    const data = winnerList
+      .map((item) => item.thirdpartyName)
+      .filter((item) => !!item);
+    return data;
+  }, [winnerList, candidateList, isFCFS]);
 
   if (isFCFS) {
     return (
@@ -104,8 +161,13 @@ export default function WinnerList({
 
             <div>
               <CustomBtn onClick={() => downloadWinners(activeList)}>
-                Download
+                <IconDownload size="18px" />
               </CustomBtn>
+              {whitelistSaved && (
+                <CustomBtn onClick={() => tweetWinners(winners)}>
+                  <IconTweet size="18px" />
+                </CustomBtn>
+              )}
             </div>
           </div>
           <div className="list">
@@ -117,6 +179,17 @@ export default function WinnerList({
             })}
           </div>
         </WinnerListBox>
+
+        <AlarmModal
+          show={tweetAlarmModalShow.show}
+          msg={tweetAlarmModalShow.msg}
+          closeModal={() => {
+            setTweetAlarmModalShow({
+              show: false,
+              msg: '',
+            });
+          }}
+        />
 
         <ConfirmModal
           show={confirmModalOpen}
@@ -168,11 +241,18 @@ export default function WinnerList({
           </h3>
           <div>
             <CustomBtn onClick={() => downloadWinners(activeList)}>
-              Download
+              <IconDownload size="18px" />
             </CustomBtn>
+            {whitelistSaved && (
+              <CustomBtn onClick={() => tweetWinners(winners)}>
+                <IconTweet size="18px" />
+              </CustomBtn>
+            )}
             {activeList === 'candidates' && !whitelistSaved && (
               <>
-                <CustomBtn onClick={genRandom}>Randomly</CustomBtn>
+                <CustomBtn onClick={genRandom}>
+                  <IconRandom size="18px" />
+                </CustomBtn>
                 <CustomBtn
                   onClick={() => {
                     setConfirmModalOpen(true);
@@ -221,6 +301,17 @@ export default function WinnerList({
             })}
         </div>
       </WinnerListBox>
+
+      <AlarmModal
+        show={tweetAlarmModalShow.show}
+        msg={tweetAlarmModalShow.msg}
+        closeModal={() => {
+          setTweetAlarmModalShow({
+            show: false,
+            msg: '',
+          });
+        }}
+      />
 
       <ConfirmModal
         show={confirmModalOpen}
@@ -366,10 +457,10 @@ const WinnerListBox = styled.div`
         text-align: center;
         display: inline-block;
         box-sizing: content-box;
-        min-width: 70px;
+        min-width: 120px;
         padding: 8px;
         font-weight: 700;
-        font-size: 16px;
+        font-size: 18px;
         line-height: 27px;
         background-color: #f7f9f1;
         color: #333333;
@@ -388,10 +479,9 @@ const WinnerListBox = styled.div`
       align-items: center;
       > button {
         border-radius: 10px;
-        font-weight: 700;
-        font-size: 14px;
-        line-height: 21px;
-        color: #333333;
+        width: 40px;
+        height: 40px;
+
         cursor: pointer;
         &:first {
           margin: 0 10px;

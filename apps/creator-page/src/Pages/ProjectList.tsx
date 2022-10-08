@@ -15,10 +15,6 @@ export default function ProjectList() {
   const { account, isAdmin } = useAppConfig();
   const { data: projectList, status } = useAppSelector(selectProjectList);
 
-  if (status !== AsyncRequestStatus.FULFILLED) {
-    return <Loading />;
-  }
-
   return (
     <ListBox>
       <div className="title">
@@ -26,13 +22,11 @@ export default function ProjectList() {
         <SearchBar search={(text) => {}} />
       </div>
       <div className="list">
-        {isAdmin && (
-          <AddCard
-            addAction={() => {
-              navigation('/project/new');
-            }}
-          />
-        )}
+        <AddCard
+          addAction={() => {
+            navigation('/project/new');
+          }}
+        />
         {projectList?.map((item) => {
           return <ItemCard key={item.id} project={item} />;
         })}

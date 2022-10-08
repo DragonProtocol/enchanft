@@ -26,6 +26,7 @@ export type Winner = {
   avatar: string;
   name: string;
   pubkey: string;
+  thirdpartyName: string;
 };
 
 export type PickedWhiteList = {
