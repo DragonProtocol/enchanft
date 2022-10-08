@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-15 19:12:41
+ * @LastEditTime: 2022-10-08 14:50:40
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { AsyncRequestStatus } from '../types'
-import { ExploreTaskSortBy } from '../types/api'
+import { SearchTaskStatus } from '../types/api'
 import {
   ExploreRecommendTaskItemEntity,
   fetchExploreRecommendTasks,
@@ -60,13 +60,13 @@ const Events: React.FC = () => {
   const { status: searchTasksStatus } = useAppSelector(selectExploreSearchTasksState)
   const tasks = useAppSelector(selectAllForExploreSearchTasks)
   const [searchTasksFilter, setTasksFilter] = useState<ExploreTaskFilterDataType>({
-    sortBy: ExploreTaskSortBy.NEW,
+    status: SearchTaskStatus.ALL,
     keywords: '',
   })
   useEffect(() => {
     dispatch(
       fetchExploreSearchTasks({
-        orderType: searchTasksFilter.sortBy,
+        status: searchTasksFilter.status,
         keywords: searchTasksFilter.keywords,
       }),
     )

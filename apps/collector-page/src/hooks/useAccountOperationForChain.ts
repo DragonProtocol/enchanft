@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 17:11:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-28 11:20:17
+ * @LastEditTime: 2022-10-08 13:14:01
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react'
@@ -20,7 +20,7 @@ export enum AccountOperationType {
   COMPLETED = 'COMPLETED',
 }
 export const ccountOperationDescMap = {
-  [AccountOperationType.CONNECT_WALLET]: 'Connect Wallet',
+  [AccountOperationType.CONNECT_WALLET]: 'Login',
   [AccountOperationType.BIND_METAMASK]: 'Bind MetaMask Wallet',
   [AccountOperationType.BIND_PHANTOM]: 'Bind Phantom Wallet',
   [AccountOperationType.BIND_MARTIAN]: 'Bind Martian Wallet',
