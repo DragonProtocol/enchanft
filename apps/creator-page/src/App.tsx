@@ -28,7 +28,7 @@ function App() {
     return (
       <div>
         <Header />
-        <ConnectBox>Connect Wallet First</ConnectBox>
+        <ConnectBox>Login First</ConnectBox>
       </div>
     );
   }
