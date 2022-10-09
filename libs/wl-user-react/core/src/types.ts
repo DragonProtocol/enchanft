@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 18:31:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-30 18:24:27
+ * @LastEditTime: 2022-10-09 10:12:47
  * @Description: file description
  */
 
@@ -14,13 +14,6 @@ export enum AccountType {
   APTOS = 'APTOS',
 }
 
-export type AccountLink = {
-  accountType: AccountType;
-  id: number;
-  thirdpartyId: string;
-  thirdpartyName: string;
-  userId: number;
-};
 export enum RoleType {
   CREATOR = 'CREATOR',
   COLLECTOR = 'COLLECTOR',
@@ -31,31 +24,45 @@ export enum ResourceType {
   PROJECT = 'PROJECT',
   COMMUNITY = 'COMMUNITY',
 }
+
 export type ResourcePermission = {
   resourceType: ResourceType;
   resourceIds: number[];
 };
 
-export type LoginResult = {
-  token: string;
+export type Account = {
+  id: number;
+  accountType: AccountType;
+  thirdpartyId: string;
+  thirdpartyName: string;
+  userId: number;
+};
+
+export type User = {
   id: number;
   name: string;
   avatar: string;
-  pubkey: string;
-  accounts: AccountLink[];
+  accounts: Account[];
   roles: RoleType[];
   resourcePermissions: ResourcePermission[];
+  token: string;
 };
 
-export enum ErrorTypes {
-  TWITTER = 'TWITTER',
-  DISCORD = 'DISCORD',
-  METAMASK = 'METAMASK',
-  PHANTOM = 'PHANTOM',
-  APTOS = 'APTOS',
+export interface WlUserError extends Error {
+  code: number;
+  data?: unknown;
 }
+export abstract class Signer {
+  constructor(onError?: (error: WlUserError) => void) {
+    this.onError = onError;
+  }
+  protected onError?: (error: WlUserError) => void;
 
-export type Error = {
-  type: ErrorTypes;
-  message: string;
-};
+  public abstract login(...args: unknown[]): Promise<void> | void;
+
+  public abstract logout(...args: unknown[]): Promise<void> | void;
+
+  public abstract bindAccount(...args: unknown[]): Promise<void> | void;
+
+  public abstract unbindAccount(...args: unknown[]): Promise<void> | void;
+}

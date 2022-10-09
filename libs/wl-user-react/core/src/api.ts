@@ -2,11 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:51:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-29 19:20:14
+ * @LastEditTime: 2022-10-08 16:40:30
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
 import qs from 'qs';
+import {
+  AccountLink,
+  AccountType,
+  ResourcePermission,
+  RoleType,
+} from './types';
 const ApiBaseUrl = process.env['REACT_APP_API_BASE_URL'];
 
 export type ApiResp<T> = {
@@ -15,14 +21,6 @@ export type ApiResp<T> = {
   data: T;
 };
 
-export enum AccountType {
-  SOLANA = 'SOLANA',
-  EVM = 'EVM',
-  APTOS = 'APTOS',
-  TWITTER = 'TWITTER',
-  DISCORD = 'DISCORD',
-}
-
 export enum AsyncRequestStatus {
   IDLE = 'idle',
   PENDING = 'pending',
@@ -30,22 +28,17 @@ export enum AsyncRequestStatus {
   REJECTED = 'rejected',
 }
 
-export type AccountLink = {
-  accountType: AccountType;
-  id: 187;
-  thirdpartyId: '3VBhW51tUBzZfWpSv5fcZww3sMtcPoYq55k38rWPFsvi';
-  thirdpartyName: '';
-  userId: 63;
-};
 export type LoginResult = {
   token: string;
   id: number;
   name: string;
   avatar: string;
+  pubkey: string;
   accounts: AccountLink[];
-  roles: ['COLLECTOR'];
-  resourcePermissions: [];
+  roles: RoleType[];
+  resourcePermissions: ResourcePermission[];
 };
+
 export function login(params: {
   signature: string;
   payload: string;

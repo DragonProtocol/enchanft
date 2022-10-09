@@ -646,6 +646,7 @@ importers:
       axios: ^0.27.2
       babel-jest: 27.5.1
       core-js: ^3.6.5
+      ethers: ^5.6.9
       qs: ^6.11.0
       react: 18.2.0
       react-dom: 18.2.0
@@ -655,6 +656,7 @@ importers:
     dependencies:
       axios: 0.27.2
       core-js: 3.23.3
+      ethers: 5.6.9
       qs: 6.11.0
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
