@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-09 11:11:05
+ * @LastEditTime: 2022-10-09 11:29:25
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
@@ -34,7 +34,7 @@ import {
   selectAll as selectAllForExploreSearchProjects,
   ExploreSearchProjectItemEntity,
 } from '../features/explore/searchProjectsSlice'
-import { MintStageOther } from '../components/business/project/ExploreProjectFilter'
+import { MintStageOther } from '../components/business/project/ExploreProjectIndexFilter'
 import ExploreProjectList, { ExploreProjectListItemsType } from '../components/business/project/ExploreProjectList'
 import { useNavigate } from 'react-router-dom'
 
