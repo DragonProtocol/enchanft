@@ -112,7 +112,7 @@ export default function Header() {
                   {account.info?.name || shortPubkey}
                 </>
               )) ||
-                'Connect Wallet'}
+                'Login'}
             </button>
             {showLoginInfo && validLogin && (
               <div className="connect-list">

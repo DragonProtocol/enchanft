@@ -613,7 +613,7 @@ function ModalContent({ closeModal }: { closeModal: () => void }) {
   return (
     <ConnectBox>
       <div className="title">
-        <p>Connect Wallet</p>
+        <p>Login</p>
         <button title="close-modal" onClick={closeModal}>
           <IconClose size="18px" />
         </button>
