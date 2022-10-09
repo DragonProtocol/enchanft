@@ -479,7 +479,7 @@ const WinnerListBox = styled.div`
       align-items: center;
       > button {
         border-radius: 10px;
-        width: 40px;
+        min-width: 40px;
         height: 40px;
 
         cursor: pointer;
