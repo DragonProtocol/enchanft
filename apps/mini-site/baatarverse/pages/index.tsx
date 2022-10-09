@@ -39,7 +39,7 @@ export function Index() {
       <div
         className="nav-item"
         onClick={() =>
-          window.open('https://twitter.com/mongols_nft', '__blank')
+          window.open('https://twitter.com/CaskBaatar_NFT', '__blank')
         }
       >
         <Image
@@ -385,7 +385,7 @@ export function Index() {
                 The owners of CaskBaatar NFT also become contributors and
                 investors to our mission.
               </div>
-              <div className="about title-img top" id="Story">
+              <div className="about title-img top big-title-img" id="Story">
                 <Image
                   src={'/static/images/story.png'}
                   layout="fill"
@@ -412,7 +412,7 @@ export function Index() {
                 x5-video-player-type="h5"
                 x-webkit-airplay="true"
                 webkit-playsinline="true"
-                className="avatar-loop"
+                className="avatar-loop avatar-video"
                 loop
                 autoPlay
                 muted={isMute}
@@ -462,7 +462,7 @@ export function Index() {
           </div>
         </div> */}
 
-        <div className="roadmap title-img" id="Rodmap">
+        <div className="roadmap title-img big-title-img" id="Rodmap">
           <Image
             src={'/static/images/roadmap.png'}
             layout="fill"
@@ -720,7 +720,7 @@ const Wrapper = styled.div`
     max-height: 50px;
     overflow: hidden;
     border-radius: 55px;
-    font-size: 0.7rem;
+    font-size: 0.95rem;
     transition: all 1.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     z-index: 999;
     font-family: 'Futura Condensed';
@@ -747,7 +747,7 @@ const Wrapper = styled.div`
   }
 
   .more {
-    width: 0.9rem;
+    width: 1rem;
     filter: grayscale(100%) brightness(200%);
     margin: 20px auto;
     cursor: pointer;
@@ -1187,6 +1187,8 @@ const Wrapper = styled.div`
     margin-top: 0px;
 
     position: relative;
+    display: flex;
+    justify-content: space-between;
     /* display: flex; */
     .about-text {
       width: 120%;
@@ -1217,10 +1219,14 @@ const Wrapper = styled.div`
       position: sticky;
       top: 0;
       width: 50%;
-      height: calc(min(80vw,1400px) * .5);
+      height: calc(min(80vw, 1400px) * 0.5);
       z-index: 1;
       display: inline-block;
       vertical-align: top;
+      @media (min-width: 800px) {
+        width: 35%;
+        height: calc(min(80vw, 1400px) * 0.35);
+      }
       /* float: right; */
 
       /* position: absolute;
@@ -1258,7 +1264,7 @@ const Wrapper = styled.div`
   }
 
   .roadmap {
-    width: 180px;
+    width: 200px;
     margin: 200px auto 50px;
     z-index: 1;
   }
@@ -1471,6 +1477,14 @@ const Wrapper = styled.div`
 
   .faq {
     margin: 00px 0 50px 0;
+  }
+
+  .big-title-img {
+    height: 60px;
+  }
+
+  .avatar-video {
+    top: 0;
   }
 
   .faq-box {
