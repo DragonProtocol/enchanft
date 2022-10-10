@@ -278,6 +278,7 @@ export default function ProjectInfoEdit() {
             if (isVIP) {
               return (
                 <ProjectTwitterLink
+                  msg="Authorize Twitter"
                   hasTwitter={
                     project?.community?.twitterId &&
                     project?.community?.twitterName

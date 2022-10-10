@@ -65,7 +65,7 @@ const PreviewBox = styled.div`
     border: none;
     height: 48px;
     font-size: 20px;
-    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+    box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     font-weight: 700;
     font-size: 18px;

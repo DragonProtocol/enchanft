@@ -7,10 +7,12 @@ export default function TwitterLink({
   hasTwitter,
   twitterName,
   linkAction,
+  msg,
 }: {
   hasTwitter: boolean;
   twitterName: string;
   linkAction: () => void;
+  msg?: string;
 }) {
   return (
     <ContentBox>
@@ -18,7 +20,7 @@ export default function TwitterLink({
       <div className="wl-bot">
         <button className="twitter" onClick={linkAction}>
           <IconTwitterWhite size="28px" />{' '}
-          {hasTwitter ? `@${twitterName}` : 'Link Twitter'}
+          {hasTwitter ? `@${twitterName}` : msg || 'Link Twitter'}
         </button>
         {hasTwitter && <IconRightTwitter />}
       </div>

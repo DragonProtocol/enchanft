@@ -24,6 +24,18 @@ export default function AsideNav({ project }: { project: ProjectDetail }) {
           <span>{name}</span>
         </div>
       </NavLink>
+
+      {/* <NavLink
+        className={({ isActive }) =>
+          isActive ? 'link-item active' : 'link-item'
+        }
+        to={`/project/${slug}/members`}
+      >
+        <div className="project">
+          <span>{'members'}</span>
+        </div>
+      </NavLink> */}
+
       <div className="events">
         <div
           className="sec-title"
@@ -42,7 +54,7 @@ export default function AsideNav({ project }: { project: ProjectDetail }) {
                 className={({ isActive }) =>
                   isActive ? 'link-item active' : 'link-item'
                 }
-                to={`/project/${slug}/task/new`}
+                to={`/project/${slug}/task/pre`}
               >
                 New Task
               </NavLink>

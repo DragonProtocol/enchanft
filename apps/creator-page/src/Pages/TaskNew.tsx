@@ -17,6 +17,7 @@ import ConfirmModal from '../Components/TaskCreate/ConfirmModal';
 import { toast } from 'react-toastify';
 import { createTask, projectBindBot } from '../api';
 import { AxiosError } from 'axios';
+import IconDel from '../Components/Icons/IconDel';
 
 export default function TaskNew() {
   const { slug } = useParams();
@@ -116,7 +117,17 @@ export default function TaskNew() {
   return (
     <>
       <NewBox style={{ display: (openPreview && 'none') || '' }}>
-        <h3 className="title">Create a New Task</h3>
+        <div className="title">
+          <h3>Create a New Task</h3>
+          <button
+            title="del"
+            onClick={() => {
+              navigate(-1);
+            }}
+          >
+            <IconDel size="20px" />
+          </button>
+        </div>
         <Basic
           hasInviteBot={hasInviteBot || !!project.community.discordId}
           state={state}
@@ -175,10 +186,28 @@ const NewBox = styled.div`
     margin: 0;
   }
   & .title {
-    font-weight: 700;
-    font-size: 36px;
-    line-height: 40px;
-    color: #333333;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+
+    & h3 {
+      font-weight: 700;
+      font-size: 36px;
+      line-height: 40px;
+      color: #333333;
+    }
+
+    & button {
+      width: 48px;
+      height: 48px;
+      background: #ebeee4;
+      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+
+      & svg {
+        vertical-align: middle;
+      }
+    }
   }
 
   & .subtitle {

@@ -20,6 +20,7 @@ import styled from 'styled-components';
 import ProjectInfoEdit from './Pages/ProjectInfoEdit';
 import ProjectMintEdit from './Pages/ProjectMintEdit';
 import ProjectAnnouncementEdit from './Pages/ProjectAnnouncementEdit';
+import { TaskPre } from './Pages/TaskPre';
 
 function App() {
   const { validLogin } = useAppConfig();
@@ -48,6 +49,7 @@ function App() {
             element={<ProjectAnnouncementEdit />}
           />
           <Route path="mint/edit" element={<ProjectMintEdit />} />
+          <Route path="task/pre" element={<TaskPre />} />
           <Route path="task/new" element={<TaskNew />} />
           <Route path="task/:taskId" element={<TaskDashboard />} />
           <Route path="account" element={<Account />} />
