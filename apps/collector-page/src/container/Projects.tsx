@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:58:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-15 19:12:54
+ * @LastEditTime: 2022-10-09 11:47:56
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react'
@@ -22,11 +22,13 @@ import {
   selectAll as selectAllForExploreSearchProjects,
 } from '../features/explore/searchProjectsSlice'
 import ExploreProjectSwiper, { ExplorProjectSwiperItemsType } from '../components/business/project/ExploreProjectSwiper'
-import ExploreProjectList, { ExploreProjectListItemsType } from '../components/business/project/ExploreProjectList'
-import ExploreProjectFilter, {
-  ExploreProjectFilterDataType,
+import ExploreProjectIndexList, {
+  ExploreProjectIndexListItemsType,
+} from '../components/business/project/ExploreProjectIndexList'
+import ExploreProjectIndexFilter, {
+  ExploreProjectIndexFilterDataType,
   MintStageOther,
-} from '../components/business/project/ExploreProjectFilter'
+} from '../components/business/project/ExploreProjectIndexFilter'
 import CardBox from '../components/common/card/CardBox'
 import { MOBILE_BREAK_POINT } from '../constants'
 
@@ -42,7 +44,7 @@ const formatStoreDataToComponentDataByRecommendProjects = (
 
 const formatStoreDataToComponentDataByProjects = (
   projects: ExploreSearchProjectItemEntity[],
-): ExploreProjectListItemsType => {
+): ExploreProjectIndexListItemsType => {
   return projects.map((project) => {
     return {
       data: project,
@@ -61,7 +63,7 @@ const Projects: React.FC = () => {
   // search projects
   const { status: searchProjectsStatus } = useAppSelector(selectExploreSearchProjectsState)
   const projects = useAppSelector(selectAllForExploreSearchProjects)
-  const [searchProjectsFilter, setProjectsFilter] = useState<ExploreProjectFilterDataType>({
+  const [searchProjectsFilter, setProjectsFilter] = useState<ExploreProjectIndexFilterDataType>({
     mintStage: MintStageOther.All,
     keywords: '',
   })
@@ -84,8 +86,8 @@ const Projects: React.FC = () => {
       )}
 
       <SearchProjectsBox>
-        <ExploreProjectFilter data={searchProjectsFilter} onChange={setProjectsFilter} />
-        <ExploreProjectList items={searchProjectItems} loading={searchProjectsLoading} />
+        <ExploreProjectIndexFilter data={searchProjectsFilter} onChange={setProjectsFilter} />
+        <ExploreProjectIndexList items={searchProjectItems} loading={searchProjectsLoading} />
       </SearchProjectsBox>
     </ProjectsWrapper>
   )
@@ -101,9 +103,9 @@ const RecommendProjectsBox = styled.div`
     height: 528px;
   }
 `
-const SearchProjectsBox = styled(CardBox)`
-  margin-top: 20px;
+const SearchProjectsBox = styled.div`
+  margin-top: 40px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 40px;
 `
