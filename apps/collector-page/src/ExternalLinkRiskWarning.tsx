@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-09 14:54:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-10 18:22:39
+ * @LastEditTime: 2022-10-10 18:35:54
  * @Description: 外部链接风险提示
  */
 import React from 'react'
@@ -12,7 +12,7 @@ import LogoImg from './components/imgs/logo.svg'
 import GlobalStyle from './GlobalStyle'
 
 const ExternalLinkRiskWarningUri = `${location.origin}/link.html`
-const noWarningDomains = ['wl.xyz', 'twitter.com', 'discord.com']
+const noWarningDomains = ['wl.xyz', 'twitter.com', 'discord.com', 'discord.gg']
 const isHyperlink = (str: string) => {
   let regexp = /(http|https):\/\/[\w]+(.[\w]+)([\w\-\.,@?^=%&:/~\+#\u4e00-\u9fa5]*[\w\-\@?^=%&/~\+#])/
   return regexp.test(str)
