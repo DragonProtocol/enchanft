@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 15:07:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-11 10:06:35
+ * @LastEditTime: 2022-09-19 19:21:49
  * @Description: file description
  */
 import { EntityState, createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -67,7 +67,11 @@ export const fetchContributionCommunityInfo = createAsyncThunk<
 export const contributionCommunityInfoSlice = createSlice({
   name: 'contributionCommunityInfo',
   initialState: initContributionCommunityState,
-  reducers: {},
+  reducers: {
+    resetContributionCommunityInfo: (state) => {
+      Object.assign(state, initContributionCommunityState)
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchContributionCommunityInfo.pending, (state, action) => {
@@ -102,4 +106,5 @@ export const contributionCommunityInfoSlice = createSlice({
 
 const { actions, reducer } = contributionCommunityInfoSlice
 export const selectContributionCommunityInfo = (state: RootState) => state.contributionCommunityInfo
+export const { resetContributionCommunityInfo } = actions
 export default reducer

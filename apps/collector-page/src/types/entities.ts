@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 19:21:20
+ * @LastEditTime: 2022-09-27 17:48:49
  * @Description: 与后端entities type定义对应
  */
 
@@ -43,11 +43,10 @@ export type Community = {
   icon: string
   website: string
   description: string
-  discord: string
   discordId: string
   discordInviteUrl: string
-  twitter: string
   twitterId: string
+  twitterName: string
 }
 
 /** roadmap */
@@ -77,6 +76,13 @@ export enum ActionType {
   MEET_CONTRIBUTION_SCORE = 'MEET_CONTRIBUTION_SCORE',
   TURN_ON_NOTIFICATION = 'TURN_ON_NOTIFICATION',
   CUSTOM = 'CUSTOM',
+  NATIVE_BALANCE = 'NATIVE_BALANCE',
+  NFT_BALANCE = 'NFT_BALANCE',
+}
+export type NftInfo = {
+  name: string
+  address: string
+  url: string
 }
 export type ActionData = {
   url?: string
@@ -86,6 +92,9 @@ export type ActionData = {
   require_score?: number
   num?: number
   accounts?: string[]
+  min_native_balance?: number
+  nft_accounts?: NftInfo[]
+  wallet_url?: string
 }
 export type Action = {
   id: number
@@ -139,8 +148,6 @@ export type Project = {
   publicSaleTime: number
   publicSalePrice: string
   injectedCoins: number
-  discord: string
-  twitter: string
   chainId: number
   slug: string
 }
@@ -189,4 +196,21 @@ export type User = {
   name: string
   pubkey: string
   avatar: string
+}
+
+/** announcement */
+export type Announcement = {
+  id: number
+  projectId: number
+  title: string
+  text: string
+}
+
+/** account */
+export enum AccountType {
+  TWITTER = 'TWITTER',
+  DISCORD = 'DISCORD',
+  SOLANA = 'SOLANA',
+  EVM = 'EVM',
+  APTOS = 'APTOS',
 }

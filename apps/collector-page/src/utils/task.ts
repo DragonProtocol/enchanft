@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-15 15:37:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 19:28:42
+ * @LastEditTime: 2022-09-22 16:12:25
  * @Description: file description
  */
 import { TaskDetailEntity } from '../features/task/taskDetailSlice'
@@ -37,7 +37,7 @@ export const getTaskRewardTypeValue = (reward?: {
   if (reward) {
     switch (reward.type) {
       case RewardType.CONTRIBUTION_TOKEN:
-        rewardTypeValue = `${reward.data?.token_num || ''} Contribution Token`
+        rewardTypeValue = `${reward.data?.token_num || ''} Contribution Scores`
         break
       case RewardType.WHITELIST:
         rewardTypeValue = reward?.name || 'Whitelist'

@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 18:22:47
+ * @LastEditTime: 2022-10-08 14:50:40
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { AsyncRequestStatus } from '../types'
-import { ExploreTaskSortBy } from '../types/api'
+import { SearchTaskStatus } from '../types/api'
 import {
   ExploreRecommendTaskItemEntity,
   fetchExploreRecommendTasks,
@@ -26,6 +26,7 @@ import ExploreTaskSwiper, { ExplorTaskSwiperItemsType } from '../components/busi
 import ExploreTaskList, { ExploreTaskListItemsType } from '../components/business/task/ExploreTaskList'
 import ExploreTaskFilter, { ExploreTaskFilterDataType } from '../components/business/task/ExploreTaskFilter'
 import CardBox from '../components/common/card/CardBox'
+import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../constants'
 
 const formatStoreDataToComponentDataByRecommendTasks = (
   tasks: ExploreRecommendTaskItemEntity[],
@@ -59,13 +60,13 @@ const Events: React.FC = () => {
   const { status: searchTasksStatus } = useAppSelector(selectExploreSearchTasksState)
   const tasks = useAppSelector(selectAllForExploreSearchTasks)
   const [searchTasksFilter, setTasksFilter] = useState<ExploreTaskFilterDataType>({
-    sortBy: ExploreTaskSortBy.NEW,
+    status: SearchTaskStatus.ALL,
     keywords: '',
   })
   useEffect(() => {
     dispatch(
       fetchExploreSearchTasks({
-        orderType: searchTasksFilter.sortBy,
+        status: searchTasksFilter.status,
         keywords: searchTasksFilter.keywords,
       }),
     )
@@ -79,9 +80,12 @@ const Events: React.FC = () => {
 
   return (
     <EventsWrapper>
-      <RecommendTasksBox>
-        <ExploreTaskSwiper items={recommendTaskItems} loading={recommendTasksLoading} />
-      </RecommendTasksBox>
+      {recommendTaskItems.length > 0 && (
+        <RecommendTasksBox>
+          <ExploreTaskSwiper items={recommendTaskItems} />
+        </RecommendTasksBox>
+      )}
+
       <SearchTasksBox>
         <ExploreTaskFilter data={searchTasksFilter} onChange={setTasksFilter} />
         <ExploreTaskList items={searchTaskItems} loading={searchTasksLoading} />
@@ -95,6 +99,9 @@ const EventsWrapper = styled.div`
 `
 const RecommendTasksBox = styled.div`
   height: 308px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    height: 458px;
+  }
 `
 const SearchTasksBox = styled(CardBox)`
   margin-top: 20px;

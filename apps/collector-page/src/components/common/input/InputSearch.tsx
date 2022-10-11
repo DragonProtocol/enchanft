@@ -2,17 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:00:22
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 17:14:37
+ * @LastEditTime: 2022-09-14 17:51:16
  * @Description: file description
  */
 import InputBase from '@mui/material/InputBase'
-import React from 'react'
+import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
 import PngIconInputSearchEmoji from '../icons/PngIconInputSearchEmoji'
 
 import CancelIcon from '@mui/icons-material/Cancel'
 import IconButton from '@mui/material/IconButton'
-export type InputSearchProps = {
+export type InputSearchProps = HTMLAttributes<HTMLDivElement> & {
   value: string
   placeholder?: string
   onChange?: (value: string) => void
@@ -23,6 +23,7 @@ const InputSearch: React.FC<InputSearchProps> = ({
   placeholder = 'Search',
   onChange,
   displayClear = true,
+  ...divProps
 }: InputSearchProps) => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // TODO 防抖处理
@@ -38,7 +39,7 @@ const InputSearch: React.FC<InputSearchProps> = ({
     }
   }
   return (
-    <InputSearchWrapper>
+    <InputSearchWrapper {...divProps}>
       <PngIconInputSearchEmoji size="24px" />
       <InputBaseBox placeholder={placeholder} onChange={handleChange} value={value} />
       {displayClear && value && (
