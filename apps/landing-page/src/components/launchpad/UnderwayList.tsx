@@ -6,45 +6,51 @@
  * @FilePath: \synft-app\src\components\launchpad\UnderwayList.tsx
  * @Description: 正在进行的项目列表组件
  */
-import React, { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import { Navigation, Autoplay } from 'swiper'
-import { Swiper, SwiperSlide, useSwiper } from 'swiper/react'
-import 'swiper/css'
+import React, { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
+import { Navigation, Autoplay } from 'swiper';
+import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
+import 'swiper/css';
 
-import SwiperLeftIcon from '../icons/swiperLeft.svg'
-import SwiperRightIcon from '../icons/swiperRight.svg'
-import InternetIcon from '../icons/internet.svg'
-import TwitterIcon from '../icons/twitter.svg'
-import ProjectItemsIcon from '../icons/projectItems.svg'
-import ProjectPriceIcon from '../icons/projectPrice.svg'
-import ProjectEnchanftedIcon from '../icons/projectEnchanfted.svg'
-import SolanaIcon from '../icons/solana.png'
-import { CursorPointerUpCss } from '../../GlobalStyle'
-import { MOBILE_BREAK_POINT } from '../../utils/constants'
+import SwiperLeftIcon from '../icons/swiperLeft.svg';
+import SwiperRightIcon from '../icons/swiperRight.svg';
+import InternetIcon from '../icons/internet.svg';
+import TwitterIcon from '../icons/twitter.svg';
+import ProjectItemsIcon from '../icons/projectItems.svg';
+import ProjectPriceIcon from '../icons/projectPrice.svg';
+import ProjectEnchanftedIcon from '../icons/projectEnchanfted.svg';
+import SolanaIcon from '../icons/solana.png';
+import { CursorPointerUpCss } from '../../GlobalStyle';
+import { MOBILE_BREAK_POINT } from '../../utils/constants';
 
 export type LaunchpadUnderwayItemDataType = {
-  img: string
-  name: string
-  homeUrl: string
-  twitterUrl: string
-  discordUrl: string
-  desc: string
-  itemsNum: number
-  price: number
-  enchanfted: number
+  img: string;
+  name: string;
+  homeUrl: string;
+  twitterUrl: string;
+  discordUrl: string;
+  desc: string;
+  itemsNum: number;
+  price: number;
+  enchanfted: number;
   projectParty: {
-    name: string
-  }
-}
+    name: string;
+  };
+};
 interface UnderwayListProps {
-  data: LaunchpadUnderwayItemDataType[]
+  data: LaunchpadUnderwayItemDataType[];
 }
-const UnderwayList: React.FC<UnderwayListProps> = ({ data }: UnderwayListProps) => {
+const UnderwayList: React.FC<UnderwayListProps> = ({
+  data,
+}: UnderwayListProps) => {
   return (
     <UnderwayListWrapper>
       <UnderwayListSwiperLeft>
-        <img src={SwiperLeftIcon} alt="" className="launchpad-underway-list-swiper-prev" />
+        <img
+          src={SwiperLeftIcon}
+          alt=""
+          className="launchpad-underway-list-swiper-prev"
+        />
       </UnderwayListSwiperLeft>
       <Swiper
         className="launchpad-underway-list-swiper"
@@ -70,13 +76,17 @@ const UnderwayList: React.FC<UnderwayListProps> = ({ data }: UnderwayListProps) 
         ))}
       </Swiper>
       <UnderwayListSwiperRight>
-        <img src={SwiperRightIcon} alt="" className="launchpad-underway-list-swiper-next" />
+        <img
+          src={SwiperRightIcon}
+          alt=""
+          className="launchpad-underway-list-swiper-next"
+        />
       </UnderwayListSwiperRight>
     </UnderwayListWrapper>
-  )
-}
+  );
+};
 
-export default UnderwayList
+export default UnderwayList;
 
 /**
  * list style
@@ -86,27 +96,38 @@ const UnderwayListWrapper = styled.div`
   position: relative;
   border: 4px solid #222222;
   box-sizing: border-box;
-`
+`;
 const UnderwayListSwiperLeft = styled.div`
   position: absolute;
   top: 50%;
   transform: translate(-100%, -50%);
   left: -16px;
   ${CursorPointerUpCss}
-`
+`;
 const UnderwayListSwiperRight = styled.div`
   position: absolute;
   top: 50%;
   transform: translate(100%, -50%);
   right: -16px;
   ${CursorPointerUpCss}
-`
+`;
 
 interface UnderwayListItemProps {
-  data: LaunchpadUnderwayItemDataType
+  data: LaunchpadUnderwayItemDataType;
 }
 const UnderwayListItem = ({ data }: UnderwayListItemProps) => {
-  const { img, name, projectParty, homeUrl, twitterUrl, discordUrl, desc, itemsNum, price, enchanfted } = data
+  const {
+    img,
+    name,
+    projectParty,
+    homeUrl,
+    twitterUrl,
+    discordUrl,
+    desc,
+    itemsNum,
+    price,
+    enchanfted,
+  } = data;
   return (
     <UnderwayListItemWrapper>
       {/* left */}
@@ -121,7 +142,11 @@ const UnderwayListItem = ({ data }: UnderwayListItemProps) => {
         <ProjectTopBox>
           <ProjectName>{name}</ProjectName>
           <ProjectPartyBox>
-            <ProjectPartyName href={discordUrl} target="_blank" rel="noopener noreferrer">
+            <ProjectPartyName
+              href={discordUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {projectParty.name}
             </ProjectPartyName>
             <ProjectPartyLinks>
@@ -174,8 +199,8 @@ const UnderwayListItem = ({ data }: UnderwayListItemProps) => {
         </ProjectDetailBox>
       </UnderwayListItemRight>
     </UnderwayListItemWrapper>
-  )
-}
+  );
+};
 /**
  * item style
  */
@@ -190,7 +215,7 @@ const UnderwayListItemWrapper = styled.div`
     flex-direction: column;
     height: auto;
   }
-`
+`;
 
 // left
 const UnderwayListItemLeft = styled.div`
@@ -208,7 +233,7 @@ const UnderwayListItemLeft = styled.div`
       height: auto;
     }
   }
-`
+`;
 const VerticalDividingLine = styled.div`
   width: 4px;
   height: 100%;
@@ -216,7 +241,7 @@ const VerticalDividingLine = styled.div`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     display: none;
   }
-`
+`;
 
 // right
 const UnderwayListItemRight = styled.div`
@@ -230,11 +255,11 @@ const UnderwayListItemRight = styled.div`
     flex: 0;
     height: auto;
   }
-`
+`;
 // top
 const ProjectTopBox = styled.div`
   border-bottom: 1px solid #d9d9d9;
-`
+`;
 const ProjectName = styled.div`
   font-weight: 400;
   font-size: 24px;
@@ -242,21 +267,21 @@ const ProjectName = styled.div`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     font-size: 16px;
   }
-`
+`;
 const ProjectPartyBox = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 8px;
   margin-bottom: 16px;
-`
+`;
 const ProjectPartyName = styled.a`
   font-size: 12px;
   line-height: 12px;
   color: #3dd606;
   text-decoration: none;
   ${CursorPointerUpCss}
-`
+`;
 const ProjectPartyLinks = styled.div`
   display: flex;
   gap: 26px;
@@ -266,7 +291,7 @@ const ProjectPartyLinks = styled.div`
     height: 20px;
     ${CursorPointerUpCss}
   }
-`
+`;
 // detail
 const ProjectDetailBox = styled.div`
   flex: 1;
@@ -274,7 +299,7 @@ const ProjectDetailBox = styled.div`
   flex-direction: column;
   gap: 16px;
   overflow-y: auto;
-`
+`;
 const ProjectDesc = styled.div`
   flex: 1;
   padding-top: 16px;
@@ -282,12 +307,12 @@ const ProjectDesc = styled.div`
   font-size: 12px;
   line-height: 24px;
   color: rgba(34, 34, 34, 0.6);
-`
+`;
 const ProjectNumListBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-`
+`;
 const ProjectNumItemBox = styled.div`
   height: 60px;
   border: 2px solid #222222;
@@ -298,14 +323,14 @@ const ProjectNumItemBox = styled.div`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     font-size: 12px;
   }
-`
+`;
 const ProjectNumItemLeft = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-`
+`;
 const ProjectNumItemRight = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-`
+`;
