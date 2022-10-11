@@ -10,31 +10,46 @@ import { useState } from 'react';
 export default function AsideNav({ project }: { project: ProjectDetail }) {
   const [showTasks, setShowTasks] = useState(true);
   const [showSetting, setShowSetting] = useState(true);
+  const [showProject, setShowProject] = useState(true);
   const { slug, image, name, tasks } = project;
   return (
     <AsideBox>
-      <NavLink
-        className={({ isActive }) =>
-          isActive ? 'project-item active' : 'project-item'
-        }
-        to={`/project/${slug}/detail`}
-      >
-        <div className="project">
+      <div className="project-nav">
+        <div
+          className="sec-title"
+          onClick={() => {
+            setShowProject(!showProject);
+          }}
+        >
           <img src={image} alt="" />
           <span>{name}</span>
+          <img src={UpSvg} alt="" className={showProject ? '' : 'trans'} />
         </div>
-      </NavLink>
-
-      {/* <NavLink
-        className={({ isActive }) =>
-          isActive ? 'link-item active' : 'link-item'
-        }
-        to={`/project/${slug}/members`}
-      >
-        <div className="project">
-          <span>{'members'}</span>
-        </div>
-      </NavLink> */}
+        {showProject && (
+          <>
+            <div className="nav">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? 'link-item active' : 'link-item'
+                }
+                to={`/project/${slug}/detail`}
+              >
+                <span>Information</span>
+              </NavLink>
+            </div>
+            {/* <div className="nav">
+              <NavLink
+                className={({ isActive }) =>
+                  isActive ? 'link-item active' : 'link-item'
+                }
+                to={`/project/${slug}/members`}
+              >
+                <span>Member List</span>
+              </NavLink>
+            </div> */}
+          </>
+        )}
+      </div>
 
       <div className="events">
         <div
@@ -56,38 +71,9 @@ export default function AsideNav({ project }: { project: ProjectDetail }) {
                 }
                 to={`/project/${slug}/task/pre`}
               >
-                New Task
+                Task
               </NavLink>
             </div>
-            {[...tasks]
-              .sort((a, b) => {
-                return a.endTime - b.endTime;
-              })
-              .map((item) => {
-                const { startTime, endTime } = item;
-                const dateNow = Date.now();
-                let statusClass = '';
-                if (startTime > dateNow) {
-                  statusClass = 'future';
-                } else if (endTime < dateNow) {
-                  statusClass = 'closed';
-                } else {
-                  statusClass = 'live';
-                }
-                return (
-                  <div key={item.id} className="nav">
-                    <NavLink
-                      className={({ isActive }) =>
-                        isActive ? 'link-item active' : 'link-item'
-                      }
-                      to={`/project/${slug}/task/${item.id}`}
-                    >
-                      <span className={`dot ${statusClass}`}></span>
-                      {item.name}
-                    </NavLink>
-                  </div>
-                );
-              })}
           </>
         )}
       </div>
@@ -155,6 +141,12 @@ const AsideBox = styled.aside`
         transform: rotate(180deg);
       }
     }
+
+    & span {
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
   }
 
   & img {
@@ -193,6 +185,9 @@ const AsideBox = styled.aside`
       &.active {
         color: #fff;
         background: #333333;
+        & span {
+          color: inherit;
+        }
       }
       & .dot {
         display: inline-block;
