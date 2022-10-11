@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 19:28:11
+ * @LastEditTime: 2022-09-14 14:33:20
  * @Description: file description
  */
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
+import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { RewardData, RewardType } from '../../../types/entities'
 import { getTaskRewardTypeLabel, getTaskRewardTypeValue } from '../../../utils/task'
@@ -24,9 +25,9 @@ export type ExploreTaskSwiperItemDataType = {
   image: string
   startTime: number
   endTime: number
-  winnerNum: number
   description: string
-  project: {
+  winnerNum?: number
+  project?: {
     slug: string
     chainId: number
     name: string
@@ -59,7 +60,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
   const endDate = new Date(endTime).toLocaleDateString()
   const rewardValue = getTaskRewardTypeValue(reward)
   return (
-    <ExploreTaskSwiperItemWrapper onClick={() => navigate(`/${project.slug}/${id}`)}>
+    <ExploreTaskSwiperItemWrapper onClick={() => navigate(`/${project?.slug}/${id}`)}>
       {/* <ChainTag size={2} chainId={project.chainId} /> */}
       <TaskImageBox>
         <TaskImage src={image} />
@@ -68,7 +69,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
       <TaskInfoBox>
         <TaskInfoTopBox>
           <TaskName>{name}</TaskName>
-          <ProjectName>Project: {project.name || 'Unknown'}</ProjectName>
+          <ProjectName>Project: {project?.name || 'Unknown Project'}</ProjectName>
         </TaskInfoTopBox>
         <TaskInfoBottomBox>
           <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
@@ -79,10 +80,12 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
                 {startDate} -- {endDate}
               </TaskDateTime>
             </TaskDateAndWinnerItem>
-            <TaskDateAndWinnerItem>
-              <PngIconScissorHand size={'16px'} />
-              <TaskWinners>Winners : {winnerNum}</TaskWinners>
-            </TaskDateAndWinnerItem>
+            {winnerNum !== undefined && (
+              <TaskDateAndWinnerItem>
+                <PngIconScissorHand size={'16px'} />
+                <TaskWinners>Winners : {winnerNum}</TaskWinners>
+              </TaskDateAndWinnerItem>
+            )}
           </TaskDateAndWinnerBox>
           {reward && (
             <TaskRewardBox>
@@ -105,11 +108,18 @@ const ExploreTaskSwiperItemWrapper = styled.div`
   display: flex;
   overflow: hidden;
   cursor: pointer;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+  }
 `
 const TaskImageBox = styled.div`
   width: 50%;
   height: 100%;
   overflow: hidden;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+    height: 158px;
+  }
 `
 const TaskImage = styled(TaskImageDefault)`
   width: 100%;
@@ -134,12 +144,40 @@ const TaskInfoBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 15px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+    padding: 20px;
+  }
 `
 const TaskInfoTopBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 4px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    gap: 0px;
+  }
 `
+const TaskName = styled(OverflowEllipsisBox)`
+  font-weight: 700;
+  font-size: 32px;
+  line-height: 40px;
+  color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+    line-height: 30px;
+  }
+`
+const ProjectName = styled.div`
+  font-size: 18px;
+  line-height: 27px;
+  color: #3dd606;
+
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+    line-height: 21px;
+  }
+`
+
 const TaskInfoBottomBox = styled.div`
   flex: 1;
   display: flex;
@@ -150,22 +188,17 @@ const TaskInfoBottomBox = styled.div`
   border-bottom: 1px solid #e6e6e6;
   box-sizing: border-box;
 `
-const TaskName = styled(OverflowEllipsisBox)`
-  font-weight: 700;
-  font-size: 32px;
-  line-height: 40px;
-  color: #333333;
-`
-const ProjectName = styled.div`
-  font-size: 18px;
-  line-height: 27px;
-  color: #3dd606;
-`
+
 const TaskTypeLabel = styled.div`
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
   color: #333333;
+
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+    line-height: 21px;
+  }
 `
 const TaskDateAndWinnerBox = styled.div`
   display: flex;
@@ -174,6 +207,13 @@ const TaskDateAndWinnerBox = styled.div`
   font-size: 14px;
   line-height: 21px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 12px;
+    line-height: 18px;
+  }
 `
 const TaskDateAndWinnerItem = styled.div`
   display: flex;
@@ -185,11 +225,6 @@ const TaskDateAndWinnerItem = styled.div`
   background: #d3ed85;
   border-radius: 20px;
 `
-const TaskDateTimeBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`
 const TaskDateTime = styled.span``
 const TaskWinners = styled.span``
 const TaskRewardBox = styled.div`
@@ -199,12 +234,22 @@ const TaskRewardBox = styled.div`
 `
 const TaskReward = styled(OverflowEllipsisBox)`
   flex: 1;
+  font-weight: 700;
   font-size: 14px;
   line-height: 21px;
   color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 18px;
+  }
 `
 const TaskDescription = styled(OverflowEllipsisBox)`
   font-size: 14px;
   line-height: 21px;
   color: rgba(51, 51, 51, 0.6);
+
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 18px;
+  }
 `

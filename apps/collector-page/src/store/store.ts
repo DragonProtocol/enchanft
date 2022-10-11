@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 14:51:51
+ * @LastEditTime: 2022-09-08 10:15:17
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
@@ -25,7 +25,6 @@ import contributionCommunityInfoReducer from '../features/contribution/community
 import userCommunityContributionReducer from '../features/contribution/userContributionSlice'
 
 // community
-import communityCollectionDetailReducer from '../features/community/collectionDetailSlice'
 import communityContributionRanksReducer from '../features/community/contributionRanksSlice'
 
 // user
@@ -33,7 +32,7 @@ import userTaskHandlesReducer from '../features/user/taskHandlesSlice'
 import userTodoTasksReducer from '../features/user/todoTasksSlice'
 import userFollowedCommunitiesReducer from '../features/user/followedCommunitiesSlice'
 import userCheckinCommunitiesReducer from '../features/user/checkinCommunitiesSlice'
-import userWhitelistsReducer from '../features/user/userWhitelistsSlice'
+import userRewardsReducer from '../features/user/userRewardsSlice'
 import userCommunityHandlesReducer from '../features/user/communityHandlesSlice'
 
 import creatorReducer from '../features/creator'
@@ -54,14 +53,13 @@ export const store = configureStore({
     contributionCommunityInfo: contributionCommunityInfoReducer,
     userCommunityContribution: userCommunityContributionReducer,
 
-    communityCollectionDetail: communityCollectionDetailReducer,
     communityContributionRanks: communityContributionRanksReducer,
 
     userTaskHandles: userTaskHandlesReducer,
     userTodoTasks: userTodoTasksReducer,
     userFollowedCommunities: userFollowedCommunitiesReducer,
     userCheckinCommunities: userCheckinCommunitiesReducer,
-    userWhitelists: userWhitelistsReducer,
+    userRewards: userRewardsReducer,
     userCommunityHandles: userCommunityHandlesReducer,
 
     creator: creatorReducer,

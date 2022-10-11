@@ -7,7 +7,6 @@ import {
   setConnectModal,
   ConnectModal,
   userOtherWalletLink,
-  ChainType,
   userUpdateProfile,
 } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
@@ -20,11 +19,12 @@ import EmailIcon from '../components/ConnectBtn/EmailIcon'
 import useWalletSign from '../hooks/useWalletSign'
 import AddIcon from '../components/common/icons/PngIconAdd'
 import { sortPubKey } from '../utils/solana'
-import { connectionSocialMedia } from '../utils/socialMedia'
+import { connectionSocialMedia, SocialMediaType } from '../utils/socialMedia'
 import { uploadAvatar } from '../services/api/login'
 import { toast } from 'react-toastify'
-import { AVATAR_SIZE_LIMIT } from '../constants'
+import { AVATAR_SIZE_LIMIT, MOBILE_BREAK_POINT } from '../constants'
 import { Box, CircularProgress, Modal } from '@mui/material'
+import { AccountType } from '../types/entities'
 
 const style = {
   position: 'absolute' as 'absolute',
@@ -49,8 +49,8 @@ export default function Guide() {
   const twitter = account.accounts.find((item) => item.accountType === 'TWITTER')?.thirdpartyName
   const discord = account.accounts.find((item) => item.accountType === 'DISCORD')?.thirdpartyName
 
-  const accountPhantom = account.accounts.find((item) => item.accountType === ChainType.SOLANA)
-  const accountMetamask = account.accounts.find((item) => item.accountType === ChainType.EVM)
+  const accountPhantom = account.accounts.find((item) => item.accountType === AccountType.SOLANA)
+  const accountMetamask = account.accounts.find((item) => item.accountType === AccountType.EVM)
 
   const { phantomValid, metamaskValid, signMsgWithMetamask, signMsgWithPhantom } = useWalletSign()
   const [select, setSelect] = useState('tab1')
@@ -90,11 +90,11 @@ export default function Guide() {
   }, [phantomValid, accountPhantom])
 
   const bindTwitter = useCallback(async () => {
-    connectionSocialMedia('twitter')
+    connectionSocialMedia(SocialMediaType.TWITTER_OAUTH2_AUTHORIZE)
   }, [])
 
   const bindDiscord = useCallback(async () => {
-    connectionSocialMedia('discord')
+    connectionSocialMedia(SocialMediaType.DISCORD_OAUTH2_AUTHORIZE)
   }, [])
 
   const avatarIn = avatar || account.avatar
@@ -149,7 +149,8 @@ export default function Guide() {
             <button
               onClick={() => {
                 localStorage.setItem(`has-guide-${account.id}`, 'has-guide')
-                navigate('/')
+                const pathname = window.localStorage.getItem('after-guide') || '/'
+                navigate(pathname)
               }}
             >
               Skip
@@ -225,7 +226,8 @@ export default function Guide() {
                     pubkey: account.pubkey,
                   }),
                 )
-                navigate('/')
+                const pathname = window.localStorage.getItem('after-guide') || '/'
+                navigate(pathname)
               }}
             >
               Finish
@@ -234,10 +236,10 @@ export default function Guide() {
         </div>
       )}
       <Modal open={modalOpen}>
-        <Box sx={{ ...style }}>
+        <UploadingImageBox sx={{ ...style }}>
           <CircularProgress size="6rem" color="inherit" />
           <p>Uploading Image</p>
-        </Box>
+        </UploadingImageBox>
       </Modal>
     </GuideContainer>
   )
@@ -256,12 +258,19 @@ const GuideContainer = styled.div`
   & .title {
     text-align: center;
     color: #333333;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      padding: 0 20px;
+    }
     h1 {
       margin: 0;
       margin-top: 20px;
       font-weight: 700;
       font-size: 36px;
       line-height: 40px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 20px;
+        line-height: 30px;
+      }
     }
     p {
       font-weight: 400;
@@ -269,6 +278,10 @@ const GuideContainer = styled.div`
       line-height: 30px;
       margin: 0;
       margin-top: 10px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 12px;
+        line-height: 18px;
+      }
     }
   }
 
@@ -277,20 +290,30 @@ const GuideContainer = styled.div`
     display: flex;
     border-bottom: 1px solid #d9d9d9;
     justify-content: center;
-
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      padding: 0 20px;
+      justify-content: space-between;
+    }
     > div {
       cursor: pointer;
       text-align: center;
       margin: 0 82px;
       width: 278px;
       position: relative;
-
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        width: auto;
+        margin: 0;
+      }
       > h3 {
         margin: 0;
         font-weight: 700;
         font-size: 24px;
         line-height: 36px;
         color: #3dd60699;
+        @media (max-width: ${MOBILE_BREAK_POINT}px) {
+          font-size: 12px;
+          line-height: 18px;
+        }
       }
       > p {
         margin: 0 0 10px 0;
@@ -298,6 +321,10 @@ const GuideContainer = styled.div`
         font-size: 24px;
         line-height: 36px;
         color: #33333399;
+        @media (max-width: ${MOBILE_BREAK_POINT}px) {
+          font-size: 12px;
+          line-height: 21px;
+        }
       }
 
       &.active {
@@ -325,7 +352,10 @@ const GuideContainer = styled.div`
     flex-direction: column;
 
     padding-top: 40px;
-
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      padding: 0 20px;
+      padding-top: 10px;
+    }
     & > div {
       margin: 10px auto 10px auto;
       display: flex;
@@ -336,7 +366,9 @@ const GuideContainer = styled.div`
       height: 48px;
       cursor: pointer;
       border-radius: 10px;
-
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        width: 100%;
+      }
       &.twitter {
         background-color: #4d93f1;
         box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
@@ -375,7 +407,12 @@ const GuideContainer = styled.div`
     display: flex;
     justify-content: center;
     margin-top: 40px;
-
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      margin-top: 0;
+      padding: 20px;
+      padding-bottom: 0px;
+      flex-direction: column;
+    }
     > div.avatar {
       width: 160px;
       height: 160px;
@@ -388,7 +425,9 @@ const GuideContainer = styled.div`
       flex-direction: column;
       justify-content: center;
       align-items: center;
-
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        margin: 0 auto;
+      }
       & img.avatar {
         width: 100%;
         height: 100%;
@@ -404,10 +443,19 @@ const GuideContainer = styled.div`
         font-size: 18px;
         line-height: 27px;
         color: #333333;
+        @media (max-width: ${MOBILE_BREAK_POINT}px) {
+          font-size: 14px;
+          line-height: 21px;
+        }
       }
     }
 
     > div.name {
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
       > p {
         font-style: normal;
         font-weight: 700;
@@ -427,6 +475,9 @@ const GuideContainer = styled.div`
         line-height: 27px;
         background: #ebeee4;
         border-radius: 10px;
+        @media (max-width: ${MOBILE_BREAK_POINT}px) {
+          width: 100%;
+        }
       }
     }
   }
@@ -435,6 +486,9 @@ const GuideContainer = styled.div`
     margin: 40px;
     display: flex;
     justify-content: space-between;
+    @media (max-width: ${MOBILE_BREAK_POINT}px) {
+      margin: 20px;
+    }
     > button {
       cursor: pointer;
       border: none;
@@ -447,7 +501,9 @@ const GuideContainer = styled.div`
       font-size: 18px;
       line-height: 27px;
       border-radius: 10px;
-
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        width: 100px;
+      }
       &.active {
         background: #3dd606;
         color: #fff;
@@ -457,5 +513,11 @@ const GuideContainer = styled.div`
     &.tab2 {
       justify-content: flex-end;
     }
+  }
+`
+const UploadingImageBox = styled(Box)`
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+    line-height: 21px;
   }
 `

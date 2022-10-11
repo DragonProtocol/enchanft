@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
+import { formatNumberToUnitString } from '../../../utils/number'
 
 export type CommunityItemDataType = {
   id: number
@@ -12,11 +13,9 @@ export type CommunityItemDataType = {
   icon: string
   website: string
   description: string
-  discord: string
-  twitter: string
-  memberNums: number
-  contribution: number
-  project: {
+  memberNums?: number
+  contribution?: number
+  project?: {
     slug: string
   }
   isFollowed: boolean
@@ -47,7 +46,7 @@ const defaultViewConfig: CommunityItemViewConfigType = {
 
 const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollowChange }: CommunityItemProps) => {
   const navigate = useNavigate()
-  const { id, name, icon, website, description, discord, twitter, memberNums, contribution, project, isFollowed } = data
+  const { id, name, icon, website, description, memberNums, contribution, project, isFollowed } = data
   const { disabledFollow, displayFollow, loadingFollow } = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -59,21 +58,25 @@ const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollo
   }
   return (
     <CommunityItemWrapper
-      onClick={() => navigate(`/${project.slug}`)}
+      onClick={() => project?.slug && navigate(`/${project.slug}`)}
       animationType={CardItemBoxAnimationType.HOVER_MOVE_UP}
     >
       <CommunityImage src={icon} />
       <CommunityInfoBox>
         <CommunityName>{name}</CommunityName>
         <NumberInfoBox>
-          <NumberRow>
-            <NumberLabel>members</NumberLabel>
-            <NumberValue>{memberNums}</NumberValue>
-          </NumberRow>
-          <NumberRow>
-            <NumberLabel>contribution Point</NumberLabel>
-            <NumberValue>{contribution}</NumberValue>
-          </NumberRow>
+          {memberNums !== undefined && (
+            <NumberRow>
+              <NumberLabel>members</NumberLabel>
+              <NumberValue>{formatNumberToUnitString(memberNums)}</NumberValue>
+            </NumberRow>
+          )}
+          {contribution !== undefined && (
+            <NumberRow>
+              <NumberLabel>contribution scores</NumberLabel>
+              <NumberValue>{contribution}</NumberValue>
+            </NumberRow>
+          )}
         </NumberInfoBox>
         {displayFollow && (
           <CommunityFollow disabled={disabledFollow} isFollowed={isFollowed} onClick={onFollowChangeClick}>

@@ -51,10 +51,10 @@ export const fetchFollowedCommunities = createAsyncThunk<
       const state = getState() as RootState
       const {
         userFollowedCommunities: { status },
-        account: { token },
+        account: { isLogin },
       } = state
-      // 没有token ,则阻止新的请求
-      if (!token) {
+      // 没有登录,则阻止请求
+      if (!isLogin) {
         userFollowedCommunitiesEntity.removeAll(state.userFollowedCommunities)
         return false
       }
