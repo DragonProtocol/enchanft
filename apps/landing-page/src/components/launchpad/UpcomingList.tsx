@@ -1,34 +1,36 @@
-import React, { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../../utils/constants'
+import React, { useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
+import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../../utils/constants';
 export type LaunchpadUpcomingItemDataType = {
-  img: string
-  name: string
-  homeUrl: string
-  twitterUrl: string
-  discordUrl: string
-  desc: string
-  itemsNum: number
-  price: number
-  enchanfted: number
+  img: string;
+  name: string;
+  homeUrl: string;
+  twitterUrl: string;
+  discordUrl: string;
+  desc: string;
+  itemsNum: number;
+  price: number;
+  enchanfted: number;
   projectParty: {
-    name: string
-  }
-}
+    name: string;
+  };
+};
 interface UpcomingListProps {
-  data: LaunchpadUpcomingItemDataType[]
+  data: LaunchpadUpcomingItemDataType[];
 }
-const UpcomingList: React.FC<UpcomingListProps> = ({ data }: UpcomingListProps) => {
+const UpcomingList: React.FC<UpcomingListProps> = ({
+  data,
+}: UpcomingListProps) => {
   return (
     <UpcomingListWrapper>
       {data.map((item) => (
         <UpcomingListItem data={item} />
       ))}
     </UpcomingListWrapper>
-  )
-}
+  );
+};
 
-export default UpcomingList
+export default UpcomingList;
 
 /**
  * list style
@@ -51,13 +53,24 @@ const UpcomingListWrapper = styled.div`
     flex-direction: column;
     grid-gap: 12px;
   }
-`
+`;
 
 interface UpcomingListItemProps {
-  data: LaunchpadUpcomingItemDataType
+  data: LaunchpadUpcomingItemDataType;
 }
 const UpcomingListItem = ({ data }: UpcomingListItemProps) => {
-  const { img, name, projectParty, homeUrl, twitterUrl, discordUrl, desc, itemsNum, price, enchanfted } = data
+  const {
+    img,
+    name,
+    projectParty,
+    homeUrl,
+    twitterUrl,
+    discordUrl,
+    desc,
+    itemsNum,
+    price,
+    enchanfted,
+  } = data;
   return (
     <UpcomingListItemWrapper>
       {/* top */}
@@ -89,8 +102,8 @@ const UpcomingListItem = ({ data }: UpcomingListItemProps) => {
         </ProjectNumItemBox>
       </UpcomingListItemBottom>
     </UpcomingListItemWrapper>
-  )
-}
+  );
+};
 /**
  * item style
  */
@@ -106,7 +119,7 @@ const UpcomingListItemWrapper = styled.div`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     height: auto;
   }
-`
+`;
 
 // top
 const UpcomingListItemTop = styled.div`
@@ -117,12 +130,12 @@ const UpcomingListItemTop = styled.div`
     width: 100%;
     height: 100%;
   }
-`
+`;
 const HorizontalDividingLine = styled.div`
   width: 100%;
   height: 2px;
   background-color: #222222;
-`
+`;
 // center
 const UpcomingListItemCenter = styled.div`
   box-sizing: border-box;
@@ -130,18 +143,18 @@ const UpcomingListItemCenter = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
-`
+`;
 const ProjectName = styled.div`
   font-weight: 400;
   font-size: 16px;
   line-height: 16px;
   color: #222222;
-`
+`;
 const ProjectPartyName = styled.div`
   font-size: 12px;
   line-height: 12px;
   color: #3dd606;
-`
+`;
 // bottom
 const UpcomingListItemBottom = styled.div`
   box-sizing: border-box;
@@ -150,18 +163,18 @@ const UpcomingListItemBottom = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 const ProjectNumItemBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
   align-items: center;
-`
+`;
 const ProjectNumItemTop = styled.div`
   font-size: 8px;
   line-height: 8px;
   color: rgba(34, 34, 34, 0.5);
-`
+`;
 const ProjectNumItemBottom = styled.div`
   font-size: 14px;
   line-height: 14px;
@@ -169,9 +182,9 @@ const ProjectNumItemBottom = styled.div`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     font-size: 12px;
   }
-`
+`;
 const ProjectNumItemLine = styled.div`
   width: 1px;
   height: 20px;
   background: #222222;
-`
+`;

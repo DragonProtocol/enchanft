@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:49:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 17:56:09
+ * @LastEditTime: 2022-10-09 11:03:05
  * @Description: file description
  */
 import React from 'react'
@@ -50,12 +50,12 @@ const ExploreProjectListWrapper = styled.div`
   grid-gap: 20px;
   justify-content: space-between;
   list-style-type: none;
-  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
   @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
-    grid-template-columns: repeat(3, minmax(250px, 1fr));
+    grid-template-columns: repeat(3, minmax(220px, 1fr));
   }
   @media (min-width: ${MEDIA_BREAK_POINTS.sm}px) and (max-width: ${MEDIA_BREAK_POINTS.md}px) {
-    grid-template-columns: repeat(2, minmax(250px, 1fr));
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
   }
   @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
     display: flex;

@@ -6,10 +6,10 @@
  * @Description: 提醒链接钱包的可复用布局组件
  * @FilePath: \synft-app\src\components\RemindConnectWallet.tsx
  */
-import styled from 'styled-components'
-import { MOBILE_BREAK_POINT } from '../utils/constants'
-import ButtonConnectWallect from './common/ButtonConnectWallet'
-import WalletTextIcon from './icons/walletText.svg'
+import styled from 'styled-components';
+import { MOBILE_BREAK_POINT } from '../utils/constants';
+import ButtonConnectWallect from './common/ButtonConnectWallet';
+import WalletTextIcon from './icons/walletText.svg';
 const RemindConnectWallet: React.FC = () => {
   return (
     <RemindConnectWalletWrapper>
@@ -21,28 +21,28 @@ const RemindConnectWallet: React.FC = () => {
         }}
       />
     </RemindConnectWalletWrapper>
-  )
-}
-export default RemindConnectWallet
+  );
+};
+export default RemindConnectWallet;
 const RemindConnectWalletWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
   align-items: center;
-`
+`;
 const WalletIcon = styled.img`
   font-style: normal;
   font-size: 40px;
   line-height: 40px;
   color: #000000;
-`
+`;
 const ConnectDesc = styled.span`
   font-size: 20px;
   line-height: 40px;
   text-transform: uppercase;
   color: #333333;
   text-align: center;
-`
+`;
 
 // v1.0 code
 

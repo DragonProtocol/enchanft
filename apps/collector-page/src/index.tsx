@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 10:00:43
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-13 11:26:59
+ * @LastEditTime: 2022-10-10 17:42:47
  * @Description: file description
  */
 import React from 'react'
@@ -11,12 +11,22 @@ import ReactDOM from 'react-dom/client'
 import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
+import ExternalLinkRiskWarning, {
+  isExternalLinkRiskWarningUrl,
+  startExternalLinkNavigationListener,
+} from './ExternalLinkRiskWarning'
+
+// 当前地址是否是外链警告地址，不是的话开启外链跳转监听器
+if (!isExternalLinkRiskWarningUrl) {
+  startExternalLinkNavigationListener()
+}
 // import MobileRedirect from './MobileRedirect'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <App />
+    {isExternalLinkRiskWarningUrl ? <ExternalLinkRiskWarning /> : <App />}
+
     {/* <BrowserView>
       <App />
     </BrowserView>

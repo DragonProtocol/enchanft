@@ -1,25 +1,29 @@
-import React from 'react'
-import { useParams } from 'react-router-dom'
-import styled from 'styled-components'
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
 
-import NFTHandler from '../components/NFTHandler'
+import NFTHandler from '../components/NFTHandler';
 
-import NFTShower from '../components/NFTShower'
-import useInjectTree from '../hooks/useInjectTree'
-import LoadingIcon from '../components/imgs/Loading.gif'
-import { MOBILE_BREAK_POINT } from '../utils/constants'
+import NFTShower from '../components/NFTShower';
+import useInjectTree from '../hooks/useInjectTree';
+import LoadingIcon from '../components/imgs/Loading.gif';
+import { MOBILE_BREAK_POINT } from '../utils/constants';
 
-import { useInfoFromMint, useValidNFT } from '../hooks'
+import { useInfoFromMint, useValidNFT } from '../hooks';
 
 const Info: React.FC = () => {
-  const params = useParams()
+  const params = useParams();
 
-  const { info, loading: infoLoading } = useInfoFromMint(params.mint)
-  const { valid: validNFT, checking: validChecking } = useValidNFT(params.mint)
-  const { injectTree, loading: injectTreeLoading, refresh: reloadInjectTree } = useInjectTree(params.mint)
+  const { info, loading: infoLoading } = useInfoFromMint(params.mint);
+  const { valid: validNFT, checking: validChecking } = useValidNFT(params.mint);
+  const {
+    injectTree,
+    loading: injectTreeLoading,
+    refresh: reloadInjectTree,
+  } = useInjectTree(params.mint);
 
-  const metadata = info?.metadata
-  const loading = validChecking || infoLoading
+  const metadata = info?.metadata;
+  const loading = validChecking || infoLoading;
 
   return (
     <InfoWrapper>
@@ -32,7 +36,10 @@ const Info: React.FC = () => {
           <>
             <div className="left">
               <div className="img-box">
-                <img src={info?.externalMetadata?.image} alt={info?.externalMetadata?.image || ''} />
+                <img
+                  src={info?.externalMetadata?.image}
+                  alt={info?.externalMetadata?.image || ''}
+                />
               </div>
               {/* <NFTShower
                 data={{
@@ -70,9 +77,9 @@ const Info: React.FC = () => {
         )) || <div className="tip">invalid NFT</div>}
       {/* {!injectTreeLoading && <ReactJson src={injectTree} />} */}
     </InfoWrapper>
-  )
-}
-export default Info
+  );
+};
+export default Info;
 const InfoWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -110,4 +117,4 @@ const InfoWrapper = styled.div`
     margin: 0 auto;
     margin-top: 40%;
   }
-`
+`;

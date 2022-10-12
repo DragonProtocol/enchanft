@@ -8,20 +8,20 @@
  */
 // 项目方信息
 export type ProjectPartyItem = {
-  id: string
-  name: string
-}
+  id: string;
+  name: string;
+};
 // 项目信息
 export type ProjectItem = {
-  id: string
-  img: string
-  name: string
-  homeUrl: string
-  twitterUrl: string
-  discordUrl: string
-  desc: string
-  itemsNum: number
-  price: number
-  enchanfted: number
-  projectParty: ProjectPartyItem
-}
+  id: string;
+  img: string;
+  name: string;
+  homeUrl: string;
+  twitterUrl: string;
+  discordUrl: string;
+  desc: string;
+  itemsNum: number;
+  price: number;
+  enchanfted: number;
+  projectParty: ProjectPartyItem;
+};

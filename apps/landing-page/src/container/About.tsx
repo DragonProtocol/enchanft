@@ -2,302 +2,557 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-21 16:57:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-06-28 14:17:06
+ * @LastEditTime: 2022-08-08 11:35:05
  * @FilePath: \synft-app\src\container\AboutEnchaNFT.tsx
  * @Description: about container
  */
-import Timeline from '@mui/lab/Timeline'
-import TimelineConnector from '@mui/lab/TimelineConnector'
-import TimelineContent from '@mui/lab/TimelineContent'
-import TimelineDot from '@mui/lab/TimelineDot'
-import TimelineItem from '@mui/lab/TimelineItem'
-import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent'
-import TimelineSeparator from '@mui/lab/TimelineSeparator'
-import React, { useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import { CursorPointerUpCss, FontFamilyCss } from '../GlobalStyle'
-import { CONTACT_US_EMAIL, MOBILE_BREAK_POINT } from '../utils/constants'
-import BannerImg from './images/banner.svg'
-import CombineNftWithTokensImg from './images/combine_nft_with_tokens.svg'
-import NftPlusSolImg from './images/nft_plus_sol.png'
-import NftPlusStSolImg from './images/nft_plus_stsol.png'
-import NftPlusOtherImg from './images/nft_plus_other.png'
+import React from 'react';
+import styled from 'styled-components';
+import { ButtonPrimary, ButtonWarning } from '../components/common/ButtonBase';
+import {
+  APPLY_FORM_URL,
+  CONTACT_US_EMAIL,
+  EVENTS_URL,
+  MOBILE_BREAK_POINT,
+  TWITTER_URL,
+} from '../utils/constants';
+import BannerIconImg from './images/banner_icon.png';
+import BannerImg from './images/banner.jpg';
+import EnchanftWhitelist from './images/enchanft_whitelist.png';
+import TasksAutomation from './images/tasks_automation.png';
+import UnifyCommunity from './images/unify_community.png';
+import WhyEnchanftCreator from './images/why_enchanft_creator.png';
+import WhyEnchanftCollector from './images/why_enchanft_collector.png';
+import NftPlusSolImg from './images/nft_plus_sol.png';
+import TwitterIcon from './images/twitter.svg';
+import WL_LOGO from './images/wl.svg';
+import { CursorPointerUpCss } from '../GlobalStyle';
 
 function About() {
-  const roadmap = [
+  const whitelist = {
+    icon: EnchanftWhitelist,
+    title: 'EnchaNFT Whitelist',
+    subTitle: 'whitelist management, no more manual wallet collection ',
+    items: [
+      'Save time for project team',
+      'Identify the best members',
+      'Fast organic growth of community',
+    ],
+  };
+  const tasksAutomation = {
+    icon: TasksAutomation,
+    title: 'tasks automation',
+    subTitle: 'automation of whitelist task verification, no more screenshots',
+    items: [
+      'Automatic collection of wallet addresses',
+      'Automatic verification of user task completion',
+    ],
+  };
+  const unifyCommunity = {
+    icon: UnifyCommunity,
+    title: 'Unify Your Community',
+    subTitle: '',
+    items: [
+      'Tracking social engagement (RT, Like) as contribution point even when you are not running contests or giveaway',
+      'Bring your community together with a unified contribution points sysyem',
+      'Reward your best contributors everywhere',
+    ],
+  };
+
+  const why_enchanft = [
     {
-      title: 'v1',
-      content: 'EnchaNFT Tools',
-      status: true,
+      icon: WhyEnchanftCreator,
+      title: 'creator',
+      items: [
+        'Unbreakable launch floor price with SOL injects',
+        'Create upward price momentum with rising floor',
+        'Incentivise holding with real SOL staking return',
+      ],
     },
     {
-      title: 'v2',
-      content: 'EnchaNFT Launchpad',
-      status: false,
+      icon: WhyEnchanftCollector,
+      title: 'collector',
+      items: [
+        'Injected with SOL; so no “worthless” JPEG, but gold plated JPEG',
+        'Part of royalty goes into NFT itself. So the floor is also rising',
+        'Real staking return from staked SOL. So you are rewarded as a holder',
+      ],
+    },
+  ];
+
+  const problems = [
+    {
+      icon: '📉',
+      text: 'Crashing floor price leads to vicious downtrend cycle',
     },
     {
-      title: 'v3',
-      content: 'EnchaNFT Marketplace',
-      status: false,
+      icon: '😩',
+      text: 'Limited Token Utility & Staking using governance token as yield is difficult to attract user',
     },
-    {
-      title: 'v4',
-      content: 'Lending (EnchaNFT can be liquidated liked Fungible token)',
-      status: false,
-    },
-  ]
-  const nnchanftSolvesThisItems = [
+  ];
+
+  const problemSolves = [
     {
       apparentTitle: 'nft + sol',
       minorTitle: 'to fix floor price',
       nftPlusTokenImg: NftPlusSolImg,
     },
-    {
-      apparentTitle: 'nft + stsol',
-      minorTitle: 'to create real yield',
-      nftPlusTokenImg: NftPlusStSolImg,
-    },
-    {
-      apparentTitle: 'nft + other utility tokens',
-      minorTitle: '',
-      nftPlusTokenImg: NftPlusOtherImg,
-    },
-  ]
-  const openEmail = () => {
-    // eslint-disable-next-line no-restricted-globals
-    parent.location.href = `mailto:${CONTACT_US_EMAIL}`
-  }
+  ];
+
+  const openTwitter = () => {
+    window.open(TWITTER_URL, '__blank');
+  };
+  const openEvents = () => {
+    window.open(EVENTS_URL, '__blank');
+  };
+  const openApplyForm = () => {
+    window.open(APPLY_FORM_URL, '__blank');
+  };
+
   return (
     <AboutWrapper>
-      <div className="about-row banner">
-        <img src={BannerImg} alt="" />
-      </div>
-      <div className="about-title">the pfp problem</div>
-      <div className="about-row the-pfp-problem">
-        <div className="the-pfp-problem-item">
-          <span>📉</span>
-          <span>Crashing floor price leads to vicious downtrend cycle</span>
-        </div>
-        <div className="the-pfp-problem-item">
-          <span>😩</span>
-          <span>Limited Token Utility & Staking using governance token as yield is difficult to attract user</span>
-        </div>
-      </div>
-      <div className="about-title">enchanft solves this</div>
-      {/* <EnchanftSolvesThisItemNftPlusTokenImg src={CombineNftWithTokensImg} /> */}
-      <EnchanftSolvesThisBox>
-        <EnchanftSolvesThisDesc>
-          <span>Combine NFT with other Tokens</span>
-          <span>Intrinsic value + Rarity value!</span>
-        </EnchanftSolvesThisDesc>
-        <EnchanftSolvesThisItems>
-          {nnchanftSolvesThisItems.map((item) => (
-            <EnchanftSolvesThisItem>
-              <EnchanftSolvesThisItemTitle>
-                <EnchanftSolvesThisItemTitleIcon>👉</EnchanftSolvesThisItemTitleIcon>
-                <EnchanftSolvesThisItemTitleApparentText>{item.apparentTitle}</EnchanftSolvesThisItemTitleApparentText>
-                <EnchanftSolvesThisItemTitleMinorText>{item.minorTitle}</EnchanftSolvesThisItemTitleMinorText>
-              </EnchanftSolvesThisItemTitle>
-              <EnchanftSolvesThisItemNftPlusTokenImg src={item.nftPlusTokenImg} />
-            </EnchanftSolvesThisItem>
-          ))}
-        </EnchanftSolvesThisItems>
-      </EnchanftSolvesThisBox>
+      <BannerBox url={BannerImg}>
+        <BannerIcon src={BannerIconImg} />
+        <BannerText>
+          Supercharged NFT allow lists
+          <br />
+          with EnchaNFT
+        </BannerText>
+        <BannerButtonBox>
+          <BannerButtonStartCommunity onClick={openApplyForm}>
+            Start your community
+          </BannerButtonStartCommunity>
+          <BannerButtonExplore onClick={openEvents}>
+            Explore
+          </BannerButtonExplore>
+        </BannerButtonBox>
+      </BannerBox>
 
-      <div className="about-row roadmap-enchanft-ecosystem">
-        <div className="about-title">roadmap enchanft ecosystem</div>
-        <Timeline position="alternate">
-          {roadmap.map((item) => (
-            <TimelineItem position="left">
-              <TimelineOppositeContent color="text.secondary">
-                <span className="roadmap-item-content">{item.content}</span>
-                <span className="roadmap-item-status">{item.status && '✅'}</span>
-              </TimelineOppositeContent>
-              <TimelineSeparator>
-                <TimelineDot
-                  variant={item.status ? 'filled' : 'outlined'}
-                  sx={{
-                    borderRadius: '0%',
-                    borderColor: '#222222',
-                    backgroundColor: item.status ? '#222222' : '',
-                  }}
-                />
-                <TimelineConnector />
-              </TimelineSeparator>
-              <TimelineContent
-                sx={{
-                  flex: 0,
-                }}
-              >
-                <span className="roadmap-item-title">{item.title}</span>
-              </TimelineContent>
-            </TimelineItem>
-          ))}
-        </Timeline>
-      </div>
-      <div className="about-title">why composable nfts?</div>
-      <div className="about-row why-composable-nfts">
-        <div className="why-composable-nfts-item">
-          <div>NFT 1.0</div>
+      <TextAndImgBox>
+        <TextBox>
+          <WLLogoBox src={WL_LOGO}></WLLogoBox>
+          <TextTitleBox>
+            <TextTitle>{whitelist.title}</TextTitle>
+            <MobileImgBox src={whitelist.icon} />
+          </TextTitleBox>
+
+          <TextSubTitle>{whitelist.subTitle}</TextSubTitle>
+          <TextContent>
+            {whitelist.items.map((item, index) => (
+              <TextContentItem key={index}>{item}</TextContentItem>
+            ))}
+          </TextContent>
+        </TextBox>
+        <PcImgBox src={whitelist.icon}></PcImgBox>
+      </TextAndImgBox>
+
+      <TextAndImgBox>
+        <PcImgBox src={tasksAutomation.icon}></PcImgBox>
+        <TextBox>
+          <TextTitleBox>
+            <MobileImgBox src={whitelist.icon} />
+            <TextTitle>{tasksAutomation.title}</TextTitle>
+          </TextTitleBox>
+          <TextSubTitle>{tasksAutomation.subTitle}</TextSubTitle>
+          <TextContent>
+            {tasksAutomation.items.map((item, index) => (
+              <TextContentItem key={index}>{item}</TextContentItem>
+            ))}
+          </TextContent>
+        </TextBox>
+      </TextAndImgBox>
+
+      <TextAndImgBox>
+        <TextBox>
+          <TextTitleBox>
+            <TextTitle>{unifyCommunity.title}</TextTitle>
+            <MobileImgBox src={unifyCommunity.icon} />
+          </TextTitleBox>
+
+          <TextSubTitle>{unifyCommunity.subTitle}</TextSubTitle>
+          <TextContent>
+            {unifyCommunity.items.map((item, index) => (
+              <TextContentItem key={index}>{item}</TextContentItem>
+            ))}
+          </TextContent>
+        </TextBox>
+        <PcImgBox src={unifyCommunity.icon}></PcImgBox>
+      </TextAndImgBox>
+
+      <InfoBox>
+        <InfoBoxItemInner>
+          <InfoTitle>Why EnchaNFT Hardfloor NFT</InfoTitle>
+          <InfoSubTitle uppercase={true}>
+            (Asset-Backed NFT Launch)
+          </InfoSubTitle>
+          <WhyBox>
+            {why_enchanft.map((item, index) => (
+              <WhyRowBox key={index}>
+                <PcWhyRowIcon src={item.icon} />
+                <WhyRowRightBox>
+                  <WhyRowTitleBox>
+                    <WhyRowTitle>{item.title}</WhyRowTitle>
+                    <MobileWhyRowIcon src={item.icon} />
+                  </WhyRowTitleBox>
+
+                  <WhyRowContent>
+                    {item.items.map((item, index) => (
+                      <WhyRowContentItem key={index}>{item}</WhyRowContentItem>
+                    ))}
+                  </WhyRowContent>
+                </WhyRowRightBox>
+              </WhyRowBox>
+            ))}
+          </WhyBox>
+        </InfoBoxItemInner>
+
+        <InfoBoxHorizontalLine></InfoBoxHorizontalLine>
+
+        <InfoBoxItemInner>
+          <InfoTitle>The PFP Problem</InfoTitle>
+          <ProblemBox>
+            {problems.map((item, index) => (
+              <ProblemItemBox key={index}>
+                <ProblemItemIcon>{item.icon}</ProblemItemIcon>
+                <ProblemItemText>{item.text}</ProblemItemText>
+              </ProblemItemBox>
+            ))}
+          </ProblemBox>
+          <ProblemSolvePointerIcon>👇</ProblemSolvePointerIcon>
+          <InfoTitle>EnchaNFT solves this</InfoTitle>
+          <InfoSubTitle>
+            Combine NFT with other Tokens, Intrinsic value + Rarity value!
+          </InfoSubTitle>
+          <ProblemSolvesBox>
+            {problemSolves.map((item, index) => (
+              <ProblemSolveItem key={index}>
+                <ProblemSolveItemTitle>
+                  <ProblemSolveItemTitleApparentText>
+                    {item.apparentTitle}
+                  </ProblemSolveItemTitleApparentText>
+                  <ProblemSolveItemTitleMinorText>
+                    {item.minorTitle}
+                  </ProblemSolveItemTitleMinorText>
+                </ProblemSolveItemTitle>
+                <ProblemSolveItemNftPlusTokenImg src={item.nftPlusTokenImg} />
+              </ProblemSolveItem>
+            ))}
+          </ProblemSolvesBox>
+        </InfoBoxItemInner>
+      </InfoBox>
+      <EmailUsBox>
+        <div
+          className="about-row lets-enchnft"
+          aria-hidden
+          onClick={openApplyForm}
+        >
+          <span className="text-icon">✉️</span>
           <div>
-            <li>Visual Representation</li>
-            <li>Functionality</li>
+            <span className="text-icon">👉</span>
+            <span>Start your community</span>
+            <span className="text-icon">👈</span>
           </div>
         </div>
-        <div className="why-composable-nfts-item">
-          <div>NFT 2.0</div>
-          <div>
-            <li>Objects on the Internet</li>
-            <li>Programmable</li>
-            <li>Interoperable</li>
-          </div>
+        <div className="contact-us" aria-hidden onClick={() => openTwitter()}>
+          <img src={TwitterIcon} />
+          <span>contact</span>
+          <span>us</span>
         </div>
-      </div>
-      <div className="about-title">remember defi lego?</div>
-      <div className="about-row remember-defi-lego">Composability Unlocks Power</div>
-      <div className="about-row lets-enchnft" aria-hidden onClick={() => openEmail()}>
-        <span className="text-icon">✉️</span>
-        <div>
-          <span className="text-icon">👉</span>
-          <span>Let's EnchaNFT!</span>
-          <span className="text-icon">👈</span>
-        </div>
-      </div>
-      <div className="contact-us" aria-hidden onClick={() => openEmail()}>
-        <span>✉️</span>
-        <span>contact</span>
-        <span>us</span>
-      </div>
+      </EmailUsBox>
     </AboutWrapper>
-  )
+  );
 }
 
-export default About
+export default About;
 
-const AboutWrapper = styled.div`
-  .banner {
-    img {
-      width: 100%;
-    }
-  }
-  .about-title {
-    text-transform: uppercase;
-    font-size: 24px;
-    line-height: 40px;
-    text-align: center;
-    color: #3dd606;
-    margin-top: 60px;
-    margin-bottom: 24px;
-    @media (max-width: ${MOBILE_BREAK_POINT}px) {
-      font-size: 16px;
-    }
-  }
-  .the-pfp-problem {
-    display: flex;
-    justify-content: space-between;
-    gap: 80px;
-    @media (max-width: ${MOBILE_BREAK_POINT}px) {
-      flex-direction: column;
-      gap: 60px;
-    }
-    .the-pfp-problem-item {
-      display: flex;
-      flex-direction: row;
-      align-items: flex-start;
-      padding: 0px;
-      gap: 12px;
-      & > span:first-child {
-        font-size: 40px;
-        line-height: 40px;
-      }
-      & > span:last-child {
-        font-size: 12px;
-        line-height: 24px;
-        color: #333333;
-      }
-    }
-  }
-  .enchanft-solves-this {
-    background: #fffbdb;
-    border: 4px solid #222222;
-    box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-    img {
-      width: 100%;
-    }
-  }
-  .roadmap-enchanft-ecosystem {
-    margin-top: 60px;
-    background: #f8f8f8;
-    padding: 40px 126px;
-    @media (max-width: ${MOBILE_BREAK_POINT}px) {
-      padding: 40px 0px;
-    }
-    .about-title {
-      margin: 0;
-    }
-    .roadmap-item-title,
-    .roadmap-item-content {
-      font-size: 12px;
-      color: #000000;
-      ${FontFamilyCss}
-    }
-    .roadmap-item-title {
-      text-transform: uppercase;
-    }
-    .roadmap-item-content {
-    }
-    .roadmap-item-status {
-      font-size: 24px;
-      line-height: 24px;
-      margin-left: 10px;
-    }
-  }
-  .why-composable-nfts {
-    display: flex;
-    @media (max-width: ${MOBILE_BREAK_POINT}px) {
-      flex-direction: column;
-    }
-    .why-composable-nfts-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      padding: 16px 28px;
-      gap: 24px;
-      &:first-child {
-        background: #f8f8f8;
-      }
-      &:last-child {
-        background: #e4ffdb;
-      }
-      & > div {
-        &:first-child {
-          font-size: 18px;
-          line-height: 40px;
-          text-transform: uppercase;
-          @media (max-width: ${MOBILE_BREAK_POINT}px) {
-            font-size: 14px;
-            line-height: 30px;
-          }
-        }
-        li {
-          font-size: 12px;
-          line-height: 24px;
-        }
-      }
-    }
-  }
-  .remember-defi-lego {
-    text-align: center;
-    font-size: 24px;
-    line-height: 40px;
+const AboutWrapper = styled.div``;
 
-    text-align: center;
-    text-transform: uppercase;
-    @media (max-width: ${MOBILE_BREAK_POINT}px) {
-      font-size: 16px;
-    }
+const BannerBox = styled.div<{ url: any }>`
+  box-sizing: border-box;
+  width: 100%;
+  height: 400px;
+  background: linear-gradient(
+      0deg,
+      rgba(32, 72, 18, 0.2),
+      rgba(32, 72, 18, 0.2)
+    ),
+    url(${(props) => props.url});
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  border: 4px solid #333333;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
+  align-items: center;
+`;
+const BannerIcon = styled.img`
+  width: 104px;
+  height: 45.22px;
+`;
+const BannerText = styled.div`
+  font-style: normal;
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 40px;
+  text-align: center;
+  text-transform: uppercase;
+  color: #ffffff;
+`;
+const BannerButtonBox = styled.div`
+  display: flex;
+  gap: 24px;
+`;
+const BannerButtonStartCommunity = styled(ButtonPrimary)`
+  padding: 18px;
+`;
+const BannerButtonExplore = styled(ButtonWarning)`
+  padding: 18px;
+`;
+
+const TextAndImgBox = styled.div`
+  display: flex;
+  margin-top: 100px;
+  gap: 40px;
+`;
+const TextBox = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+const TextTitleBox = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+`;
+const TextTitle = styled.div`
+  font-style: normal;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 40px;
+  text-transform: uppercase;
+  color: #333333;
+`;
+const TextSubTitle = styled.div`
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 36px;
+  color: #333333;
+  margin-top: 12px;
+`;
+const TextContent = styled.div`
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+const TextContentItem = styled.div`
+  max-width: 472px;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+  color: #333333;
+  &:before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #00b300;
+    margin-right: 14px;
+    line-height: 20px;
+    vertical-align: middle;
   }
+`;
+const PcImgBox = styled.img`
+  width: 474px;
+  height: 350px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    display: none;
+  }
+`;
+const MobileImgBox = styled.img`
+  width: 120px;
+  object-fit: cover;
+  @media (min-width: ${MOBILE_BREAK_POINT}px) {
+    display: none;
+  }
+`;
+const WLLogoBox = styled.img`
+  width: 100px;
+  margin-bottom: 20px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100px;
+    height: 100px;
+  }
+`;
+const InfoBox = styled.div`
+  width: 100%;
+  background: #f8f8f8;
+  margin-top: 100px;
+`;
+const InfoBoxItemInner = styled.div`
+  width: 100%;
+  padding: 40px 20px;
+  box-sizing: border-box;
+`;
+
+const InfoTitle = styled.div`
+  font-size: 20px;
+  line-height: 40px;
+  text-transform: uppercase;
+  color: #333333;
+  text-align: center;
+`;
+const InfoSubTitle = styled.div<{ uppercase?: Boolean }>`
+  font-size: 12px;
+  line-height: 24px;
+  text-align: center;
+  color: #333333;
+  margin-top: 20px;
+  text-align: center;
+  ${(props) => props.uppercase && 'text-transform: uppercase;'}
+`;
+const InfoBoxHorizontalLine = styled.div`
+  width: 100%;
+  height: 1px;
+  background: #d9d9d9;
+`;
+
+const WhyBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  margin-top: 20px;
+`;
+const WhyRowBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+const MobileWhyRowIcon = styled.img`
+  width: 100px;
+  object-fit: cover;
+  @media (min-width: ${MOBILE_BREAK_POINT}px) {
+    display: none;
+  }
+`;
+const PcWhyRowIcon = styled.img`
+  width: 138px;
+  height: 90px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    display: none;
+  }
+`;
+const WhyRowRightBox = styled.div`
+  flex: 1;
+`;
+const WhyRowTitleBox = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+`;
+const WhyRowTitle = styled.div`
+  font-size: 14px;
+  line-height: 14px;
+  text-transform: uppercase;
+  color: #3dd606;
+`;
+const WhyRowContent = styled.div`
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+const WhyRowContentItem = styled.li`
+  font-size: 12px;
+  line-height: 20px;
+  color: #333333;
+`;
+
+const ProblemBox = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+`;
+const ProblemItemBox = styled.div`
+  display: flex;
+  gap: 24px;
+  align-items: center;
+`;
+const ProblemItemIcon = styled.div`
+  width: 40px;
+  height: 40px;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 40px;
+`;
+const ProblemItemText = styled.div`
+  flex: 1;
+  font-size: 12px;
+  line-height: 24px;
+  color: #333333;
+`;
+
+const ProblemSolvePointerIcon = styled.div`
+  width: 100%;
+  font-size: 40px;
+  text-align: center;
+  margin-bottom: 20px;
+`;
+const ProblemSolvesBox = styled.div`
+  margin-top: 20px;
+  padding: 0 70px;
+  box-sizing: border-box;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    margin-top: 12px;
+    padding: 0;
+  }
+`;
+const ProblemSolveItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    gap: 12px;
+  }
+`;
+const ProblemSolveItemTitle = styled.div`
+  font-size: 16px;
+  line-height: 24px;
+  text-transform: uppercase;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+  }
+`;
+const ProblemSolveItemTitleIcon = styled.span`
+  font-size: 40px;
+  line-height: 40px;
+  color: #000000;
+  margin-right: 24px;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 20px;
+  }
+`;
+const ProblemSolveItemTitleApparentText = styled.span`
+  color: #3dd606;
+  margin-right: 24px;
+`;
+const ProblemSolveItemTitleMinorText = styled.span`
+  color: #333333;
+`;
+const ProblemSolveItemNftPlusTokenImg = styled.img`
+  width: 100%;
+`;
+const EmailUsBox = styled.div`
   .lets-enchnft {
     background: #fffbdb;
     border: 4px solid #222222;
@@ -316,17 +571,25 @@ const AboutWrapper = styled.div`
       align-items: center;
       padding: 0px;
       gap: 24px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        gap: 12px;
+      }
       span {
         font-size: 18px;
         line-height: 40px;
         @media (max-width: ${MOBILE_BREAK_POINT}px) {
-          font-size: 14px;
+          line-height: 30px;
+          font-size: 12px;
         }
       }
     }
     .text-icon {
       font-size: 40px;
       line-height: 40px;
+      @media (max-width: ${MOBILE_BREAK_POINT}px) {
+        font-size: 30px;
+        line-height: 30px;
+      }
     }
   }
   .contact-us {
@@ -342,6 +605,7 @@ const AboutWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     gap: 4px;
     ${CursorPointerUpCss}
     span {
@@ -356,72 +620,4 @@ const AboutWrapper = styled.div`
       transform: scale(0.6) translateX(20%);
     }
   }
-`
-const EnchanftSolvesThisBox = styled.div`
-  background: #fffbdb;
-  border: 4px solid #222222;
-  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-  padding: 0 72px;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    padding: 0 24px;
-    border-width: 2px;
-  }
-`
-const EnchanftSolvesThisDesc = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border-bottom: solid #222222 2px;
-  font-size: 20px;
-  line-height: 40px;
-  text-align: center;
-  color: #333333;
-  padding: 24px 0;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    font-size: 12px;
-    line-height: 30px;
-  }
-`
-const EnchanftSolvesThisItems = styled.div`
-  margin-top: 24px;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    margin-top: 12px;
-  }
-`
-const EnchanftSolvesThisItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-bottom: 60px;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-`
-const EnchanftSolvesThisItemTitle = styled.div`
-  font-size: 16px;
-  line-height: 24px;
-  text-transform: uppercase;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    font-size: 12px;
-  }
-`
-const EnchanftSolvesThisItemTitleIcon = styled.span`
-  font-size: 40px;
-  line-height: 40px;
-  color: #000000;
-  margin-right: 24px;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    font-size: 20px;
-  }
-`
-const EnchanftSolvesThisItemTitleApparentText = styled.span`
-  color: #3dd606;
-  margin-right: 24px;
-`
-const EnchanftSolvesThisItemTitleMinorText = styled.span`
-  color: #333333;
-`
-const EnchanftSolvesThisItemNftPlusTokenImg = styled.img`
-  width: 100%;
-`
+`;

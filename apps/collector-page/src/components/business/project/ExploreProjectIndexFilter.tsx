@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 17:53:58
+ * @LastEditTime: 2022-10-09 11:44:36
  * @Description: file description
  */
 import React from 'react'
@@ -34,34 +34,35 @@ export const ExploreMintStageOptions = [
   },
 ]
 
-export type ExploreProjectFilterDataType = {
+export type ExploreProjectIndexFilterDataType = {
   mintStage: ExploreMintStageType
   keywords: string
 }
 
-export type ExploreProjectFilterViewConfigType = {
+export type ExploreProjectIndexFilterViewConfigType = {
   displayStatus?: boolean
   displayKeywords?: boolean
 }
 
-export type ExploreProjectFilterDataViewType = {
-  data: ExploreProjectFilterDataType
-  viewConfig?: ExploreProjectFilterViewConfigType
+export type ExploreProjectIndexFilterDataViewType = {
+  data: ExploreProjectIndexFilterDataType
+  viewConfig?: ExploreProjectIndexFilterViewConfigType
 }
-export type ExploreProjectFilterHandlesType = {
-  onChange?: (filter: ExploreProjectFilterDataType) => void
+export type ExploreProjectIndexFilterHandlesType = {
+  onChange?: (filter: ExploreProjectIndexFilterDataType) => void
 }
-export type ExploreProjectFilterProps = ExploreProjectFilterDataViewType & ExploreProjectFilterHandlesType
+export type ExploreProjectIndexFilterProps = ExploreProjectIndexFilterDataViewType &
+  ExploreProjectIndexFilterHandlesType
 
 const defaultViewConfig = {
   displayStatus: true,
   displayKeywords: true,
 }
-const ExploreProjectFilter: React.FC<ExploreProjectFilterProps> = ({
+const ExploreProjectIndexFilter: React.FC<ExploreProjectIndexFilterProps> = ({
   data,
   viewConfig,
   onChange,
-}: ExploreProjectFilterProps) => {
+}: ExploreProjectIndexFilterProps) => {
   const { mintStage, keywords } = data
   const { displayStatus, displayKeywords } = {
     ...defaultViewConfig,
@@ -84,20 +85,24 @@ const ExploreProjectFilter: React.FC<ExploreProjectFilterProps> = ({
     }
   }
   return (
-    <ExploreProjectFilterWrapper>
-      {displayStatus && (
+    <ExploreProjectIndexFilterWrapper>
+      {/* {displayStatus && (
         <ButtonRadioGroupSortBy options={ExploreMintStageOptions} value={mintStage} onChange={handleStatusChange} />
-      )}
+      )} */}
       {displayKeywords && (
-        <InputSearchKeywords value={keywords} onChange={handleKeywordsChange} placeholder="Search project keywords" />
+        <InputSearchKeywords
+          value={keywords}
+          onChange={handleKeywordsChange}
+          placeholder="Search Keywords, Communities or Projects"
+        />
       )}
-    </ExploreProjectFilterWrapper>
+    </ExploreProjectIndexFilterWrapper>
   )
 }
-export default ExploreProjectFilter
-const ExploreProjectFilterWrapper = styled.div`
+export default ExploreProjectIndexFilter
+const ExploreProjectIndexFilterWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   gap: 60px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
@@ -114,8 +119,10 @@ const ButtonRadioGroupSortBy = styled(ButtonRadioGroup)`
   }
 `
 const InputSearchKeywords = styled(InputSearch)`
-  flex: 1;
-  max-width: 500px;
+  width: 600px;
+  height: 50px;
+  background: #f7f9f1;
+  border: 2px solid #333333;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     width: 100%;
   }
