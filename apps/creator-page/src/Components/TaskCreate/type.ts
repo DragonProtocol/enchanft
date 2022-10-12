@@ -50,6 +50,7 @@ export enum ActionType {
   COIN = 'coin',
   NFT = 'nft',
   CUSTOM = 'custom',
+  SURVEY = 'survey',
 }
 
 export enum ActionTypeMore {
@@ -67,6 +68,7 @@ export enum ActionTypeMore {
   DISCORD_OBTAIN_ROLE = 'DISCORD_OBTAIN_ROLE',
   NATIVE_BALANCE = 'NATIVE_BALANCE',
   NFT_BALANCE = 'NFT_BALANCE',
+  SURVEY = 'SURVEY',
 }
 
 export type Action = {

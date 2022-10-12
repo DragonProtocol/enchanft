@@ -15,6 +15,7 @@ import PngIconScissorHand from '../Icons/PngIconScissorHand';
 import IconCustom from '../Icons/IconCustom';
 import IconWallet from '../Icons/IconWallet';
 import IconNFT from '../Icons/IconNft';
+import IconQuestion from '../Icons/IconQuestion';
 
 export default function Preview({
   state,
@@ -134,6 +135,9 @@ export default function Preview({
                   }
                   if (item.type === ActionType.CUSTOM) {
                     Icon = IconCustom;
+                  }
+                  if (item.type === ActionType.SURVEY) {
+                    Icon = IconQuestion;
                   }
                   if (
                     item.typeMore === ActionTypeMore.CUSTOM &&

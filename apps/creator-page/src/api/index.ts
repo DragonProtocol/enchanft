@@ -1,5 +1,6 @@
 import axios, { AxiosPromise } from 'axios';
 import qs from 'qs';
+import { URLQueryParams } from 'object-in-queryparams';
 
 import { State as CreateTaskState } from '../Components/TaskCreate/type';
 
@@ -353,5 +354,104 @@ export function creatorTwitter(
     headers: {
       Authorization: `Bearer ${token}`,
     },
+  });
+}
+
+export function creatorMembers(projectId: number, token: string) {
+  return axios({
+    url: ApiBaseUrl + `/creator/members/${projectId}`,
+    method: 'get',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export type MemberFilter = {
+  contributionToken?: number;
+  hasWhiteList?: boolean;
+  isNftHolder?: boolean;
+  walletConnected?: boolean;
+  twitterConnected?: boolean;
+  discordConnected?: boolean;
+  walletBalance?: string;
+  twitterFollowerNum?: number;
+  isTwitterFollower?: boolean;
+  discordRole?: string;
+  isDiscordMember?: boolean;
+  nftWhales?: string[];
+  walletSearch?: string;
+};
+
+export function creatorMembersWithFilter(
+  projectId: number,
+  params: MemberFilter,
+  token: string
+) {
+  let data = '';
+  for (const key in params) {
+    let v = '';
+    if (key === 'nftWhales' && params['nftWhales']) {
+      v = new URLQueryParams({
+        nftWhales: params['nftWhales'],
+      }).toString();
+    } else {
+      v = `${key}=${params[key as keyof MemberFilter]}`;
+    }
+    data += v + '&';
+  }
+
+  return axios({
+    url: ApiBaseUrl + `/creator/filterMembers/${projectId}?${data}`,
+    method: 'get',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function creatorMembersInsert(
+  projectId: number,
+  file: File,
+  token: string
+) {
+  const form = new FormData();
+  form.append('file', file);
+  return axios({
+    url: ApiBaseUrl + `/creator/members/${projectId}`,
+    method: 'post',
+    data: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function creatorMembersDownload(
+  projectId: number,
+  list: number[],
+  token: string
+) {
+  const dataQuery = new URLQueryParams({
+    list,
+  });
+
+  axios({
+    url:
+      ApiBaseUrl +
+      `/creator/download/members/${projectId}.csv&${dataQuery.toString()}`,
+    method: 'get',
+    // : list,
+    responseType: 'blob',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((response) => {
+    fileDownload(
+      response.data,
+      `members.csv`,
+      'text/csv;charset=utf-8',
+      '\uFEFF'
+    );
   });
 }
