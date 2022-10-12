@@ -16,6 +16,11 @@ export type Task = {
   startTime: number;
   endTime: number;
   description: string;
+  reward: {
+    name: string;
+    type: string;
+    raffled: boolean;
+  };
 };
 export type Whitelist = {
   id: 4;

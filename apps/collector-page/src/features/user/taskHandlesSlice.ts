@@ -208,7 +208,7 @@ export const userTaskHandlesSlice = createSlice({
         state.takeTask.params = null
         state.takeTask.status = AsyncRequestStatus.FULFILLED
         state.takeTask.errorMsg = ''
-        toast.success('take task success')
+        toast.success('Applied.')
       })
       .addCase(takeTask.rejected, (state, action) => {
         console.log('takeTask rejected', action)
@@ -228,7 +228,7 @@ export const userTaskHandlesSlice = createSlice({
         state.verifyTask.params = null
         state.verifyTask.status = AsyncRequestStatus.FULFILLED
         state.verifyTask.errorMsg = ''
-        toast.success('verifyTask task success')
+        toast.success('Verified.')
       })
       .addCase(verifyTask.rejected, (state, action) => {
         console.log('verifyTask rejected', action)
@@ -248,7 +248,7 @@ export const userTaskHandlesSlice = createSlice({
         state.verifyAction.params = null
         state.verifyAction.status = AsyncRequestStatus.FULFILLED
         state.verifyAction.errorMsg = ''
-        toast.success('verify action success')
+        toast.success('Verified.')
       })
       .addCase(verifyAction.rejected, (state, action) => {
         console.log('verifyAction rejected', action)

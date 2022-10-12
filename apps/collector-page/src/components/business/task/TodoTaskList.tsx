@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 19:17:35
+ * @LastEditTime: 2022-09-15 14:18:55
  * @Description: file description
  */
 import React from 'react'
@@ -61,7 +61,7 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
   items,
   loading,
   loadingMsg = 'loading...',
-  emptyMsg,
+  emptyMsg = 'no task',
   onMint,
   onVerifyTask,
   onVerifyAction,
@@ -109,7 +109,6 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
 export default TodoTaskList
 const TodoTaskListWrapper = styled.div`
   width: 100%;
-  min-height: 100%;
   box-sizing: border-box;
   overflow: hidden;
   display: flex;
@@ -148,6 +147,9 @@ const TodoTaskListLoading = styled.div`
   align-items: center;
 `
 const TodoTaskListEmpty = styled.div`
-  text-align: center;
-  margin-top: 20px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(51, 51, 51, 0.6);
 `

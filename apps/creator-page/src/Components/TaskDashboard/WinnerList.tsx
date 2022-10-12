@@ -20,6 +20,7 @@ import IconRandom from '../Icons/IconRandom';
 import AlarmModal from './AlarmModal';
 import { useParams } from 'react-router-dom';
 import { TASK_SHARE_URI } from '../../utils/constants';
+import IconConfirm from '../Icons/IconConfirm';
 
 // TODO rebuild
 
@@ -258,7 +259,7 @@ export default function WinnerList({
                     setConfirmModalOpen(true);
                   }}
                 >
-                  Confirm {selected.length}
+                  <IconConfirm size="18px" />
                 </CustomBtn>
               </>
             )}
@@ -479,7 +480,7 @@ const WinnerListBox = styled.div`
       align-items: center;
       > button {
         border-radius: 10px;
-        width: 40px;
+        min-width: 40px;
         height: 40px;
 
         cursor: pointer;

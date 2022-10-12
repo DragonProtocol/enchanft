@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-31 18:54:38
+ * @LastEditTime: 2022-09-22 16:13:21
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -10,16 +10,21 @@ import styled from 'styled-components'
 import ButtonBase, { ButtonPrimary } from '../../common/button/ButtonBase'
 import IconTwitterWhite from '../../common/icons/IconTwitterWhite'
 import IconDiscordWhite from '../../common/icons/IconDiscordWhite'
-import likeReplyRetweetImg from './imgs/like_reply_retweet.png'
-import discordChatInviteImg from './imgs/discord_chat_invite.png'
+import IconLike from '../../common/icons/IconLike'
+import IconRetweet from '../../common/icons/IconRetweet'
+import IconChat from '../../common/icons/IconChat'
+import IconInvite from '../../common/icons/IconInvite'
 import { getTwitterHomeLink } from '../../../utils/twitter'
+import CommunityCheckinButton, {
+  CommunityCheckinButtonHandlesType,
+  CommunityCheckinButtonViewConfigType,
+} from '../community/CommunityCheckinButton'
 export type ContributionAboutDataType = {
   name: string
   icon: string
-  twitter: string
   twitterId: string
+  twitterName: string
   discordId: string
-  discord: string
   discordName: string
   discordMembers?: number
   discordInviteUrl: string
@@ -30,45 +35,29 @@ const enum QA_ANSWER_TYPE {
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',
 }
-export type ContributionAboutViewConfigType = {
-  displayCheckin: boolean
-  loadingCheckin: boolean
-  disabledCheckin: boolean
-  isCheckedin: boolean
-}
+export type ContributionAboutViewConfigType = CommunityCheckinButtonViewConfigType & {}
 
 export type ContributionAboutDataViewType = {
   data: ContributionAboutDataType
   viewConfig?: ContributionAboutViewConfigType
 }
-export type ContributionAboutHandlesType = {
-  onCommunityCheckin?: () => void
-}
+export type ContributionAboutHandlesType = CommunityCheckinButtonHandlesType & {}
 
 export type ContributionAboutProps = ContributionAboutDataViewType & ContributionAboutHandlesType
 
-const defaultViewConfig = {
-  displayCheckin: false,
-  loadingCheckin: false,
-  disabledCheckin: false,
-  isCheckedin: false,
-}
 const ContributionAbout: React.FC<ContributionAboutProps> = ({
   data,
   viewConfig,
-  onCommunityCheckin,
+  onCheckin,
+  onAccountOperation,
 }: ContributionAboutProps) => {
-  const { name, icon, twitterId, discordId, discordInviteUrl, discordName, discordMembers } = data
-  const { displayCheckin, loadingCheckin, disabledCheckin, isCheckedin } = {
-    ...defaultViewConfig,
-    ...viewConfig,
-  }
+  const { name, icon, twitterId, twitterName, discordId, discordInviteUrl, discordName, discordMembers } = data
   const onTwitter = () => {
-    if (!twitterId) return
-    const twitterHomeLink = getTwitterHomeLink(twitterId)
+    if (!twitterId || !twitterName) return
+    const twitterHomeLink = getTwitterHomeLink(twitterName)
     const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
     width=1000,height=1000,left=0,top=0`
-    window.open(twitterHomeLink, twitterId, winParams)
+    window.open(twitterHomeLink, twitterName, winParams)
   }
   const onDiscord = () => {
     if (!discordInviteUrl) return
@@ -76,12 +65,11 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
     width=1000,height=1000,left=0,top=0`
     window.open(discordInviteUrl, discordName, winParams)
   }
-  const TwitterLinkComponent = <LinkTextBtn onClick={onTwitter}>@{twitterId || name}</LinkTextBtn>
+  const TwitterLinkComponent = <LinkTextBtn onClick={onTwitter}>@{twitterName || name}</LinkTextBtn>
   const DiscordLinkComponent = <LinkTextBtn onClick={onDiscord}>#{discordName || name}</LinkTextBtn>
-  const checkinBtnText = isCheckedin ? `Checked In ! ` : 'Get Toady’s Contribution Token !'
   const questions = [
     {
-      title: 'Q: How to get contribution in this community?',
+      title: 'Q: How to get contribution scores in this community?',
       answers: [
         {
           display: true,
@@ -90,16 +78,16 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
           content: ``,
         },
         {
-          display: !!twitterId,
+          display: !!twitterId && !!twitterName,
           title: <>Follow {TwitterLinkComponent} on Twitter.</>,
           content: (
             <CommunityBox>
               <CommunityImg src={icon} />
               <CommunityCenter>
                 <CommunityName>{name}</CommunityName>
-                {twitterId && <CommunityLinkName>@{twitterId || name}</CommunityLinkName>}
+                {twitterName && <CommunityLinkName>@{twitterName || name}</CommunityLinkName>}
               </CommunityCenter>
-              {twitterId && (
+              {twitterName && (
                 <LinkBtnTwitter onClick={onTwitter}>
                   <IconTwitterWhite />
                 </LinkBtnTwitter>
@@ -108,12 +96,26 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
           ),
         },
         {
-          display: !!twitterId,
+          display: !!twitterId && !!twitterName,
           type: QA_ANSWER_TYPE.TWITTER,
-          title: <>Like, retweet or replay {TwitterLinkComponent} daily on Twitter to earn contribution point.</>,
-          content: <QusetionAnswerImg src={likeReplyRetweetImg} />,
+          title: <>Like, retweet {TwitterLinkComponent} daily on Twitter to earn contribution scores.</>,
+          content: (
+            <CommunityUserNumberBox>
+              <CommunityUserNumberItem>
+                <IconLike size={'20px'} />
+                <CommunityUserNumberLabelText>(Like)</CommunityUserNumberLabelText>
+                <CommunityUserNumberValueText>1 token</CommunityUserNumberValueText>
+              </CommunityUserNumberItem>
+              <CommunityUserNumberItem>
+                <IconRetweet size={'20px'} />
+                <CommunityUserNumberLabelText>(Retweet)</CommunityUserNumberLabelText>
+                <CommunityUserNumberValueText>3 token</CommunityUserNumberValueText>
+              </CommunityUserNumberItem>
+            </CommunityUserNumberBox>
+          ),
         },
         {
+          display: !!discordId,
           title: <>Join {DiscordLinkComponent} server on Discord.</>,
           type: QA_ANSWER_TYPE.DISCORD,
           content: (
@@ -140,16 +142,32 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
           display: !!discordId,
           type: QA_ANSWER_TYPE.DISCORD,
           title: <>Chat in or invite friends to the {DiscordLinkComponent} daily on Discord.</>,
-          content: <QusetionAnswerImg src={discordChatInviteImg} />,
+          content: (
+            <CommunityUserNumberBox>
+              <CommunityUserNumberItem>
+                <IconChat size={'20px'} />
+                <CommunityUserNumberLabelText>(Chat)</CommunityUserNumberLabelText>
+                <CommunityUserNumberValueText>Max 1 token per hours</CommunityUserNumberValueText>
+              </CommunityUserNumberItem>
+              <CommunityUserNumberItem>
+                <IconInvite size={'20px'} />
+                <CommunityUserNumberLabelText>(Invite)</CommunityUserNumberLabelText>
+                <CommunityUserNumberValueText>3 token</CommunityUserNumberValueText>
+              </CommunityUserNumberItem>
+            </CommunityUserNumberBox>
+          ),
         },
         {
-          display: displayCheckin,
-          type: QA_ANSWER_TYPE.DISCORD,
+          display: true,
+          type: QA_ANSWER_TYPE.WL,
           title: `Daily Click.`,
           content: (
-            <GetContributionTokenBtn disabled={disabledCheckin} onClick={onCommunityCheckin}>
-              {loadingCheckin ? 'loading ...' : checkinBtnText}
-            </GetContributionTokenBtn>
+            <GetContributionTokenBtn
+              checkinStatusType={viewConfig?.checkinStatusType}
+              checkinBtnText={viewConfig?.checkinBtnText}
+              onCheckin={onCheckin}
+              onAccountOperation={onAccountOperation}
+            />
           ),
         },
       ],
@@ -166,7 +184,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
         {
           display: true,
           type: QA_ANSWER_TYPE.WL,
-          title: 'Community events',
+          title: 'Project events',
           content: '',
         },
       ],
@@ -232,15 +250,41 @@ const LinkTextBtn = styled.a`
   color: #4c91f0;
   cursor: pointer;
 `
-
-const CommunityBox = styled.div`
-  display: flex;
-  gap: 10px;
+const QusetionAnswerContentBox = styled.div`
   padding: 10px;
   box-sizing: border-box;
   background: #f8f2ca;
+`
+const CommunityBox = styled(QusetionAnswerContentBox)`
+  display: flex;
+  gap: 10px;
   align-items: center;
 `
+const CommunityUserNumberBox = styled(QusetionAnswerContentBox)`
+  display: flex;
+  justify-content: space-evenly;
+`
+const CommunityUserNumberItem = styled.div`
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+`
+const CommunityUserNumberLabelText = styled.div`
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 20px;
+  color: #333333;
+`
+const CommunityUserNumberValueText = styled.div`
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 20px;
+  color: #333333;
+  white-space: nowrap;
+`
+
 const CommunityImg = styled.img<{ radius?: string }>`
   width: 48px;
   height: 48px;
@@ -300,7 +344,7 @@ const LinkBtnDiscord = styled(LinkBtn)`
 const QusetionAnswerImg = styled.img`
   width: 100%;
 `
-const GetContributionTokenBtn = styled(ButtonPrimary)`
+const GetContributionTokenBtn = styled(CommunityCheckinButton)`
   height: 48px;
   font-weight: 700;
   font-size: 16px;

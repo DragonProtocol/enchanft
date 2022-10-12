@@ -2,26 +2,37 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 10:00:43
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-22 11:14:24
+ * @LastEditTime: 2022-10-10 17:42:47
  * @Description: file description
  */
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { BrowserView, MobileView } from 'react-device-detect'
+// import { BrowserView, MobileView } from 'react-device-detect'
 import './index.css'
 import App from './App'
 import reportWebVitals from './reportWebVitals'
-import MobileRedirect from './MobileRedirect'
+import ExternalLinkRiskWarning, {
+  isExternalLinkRiskWarningUrl,
+  startExternalLinkNavigationListener,
+} from './ExternalLinkRiskWarning'
+
+// 当前地址是否是外链警告地址，不是的话开启外链跳转监听器
+if (!isExternalLinkRiskWarningUrl) {
+  startExternalLinkNavigationListener()
+}
+// import MobileRedirect from './MobileRedirect'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <BrowserView>
+    {isExternalLinkRiskWarningUrl ? <ExternalLinkRiskWarning /> : <App />}
+
+    {/* <BrowserView>
       <App />
     </BrowserView>
     <MobileView>
       <MobileRedirect />
-    </MobileView>
+    </MobileView> */}
   </React.StrictMode>,
 )
 
