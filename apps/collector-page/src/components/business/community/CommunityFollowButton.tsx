@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-06 17:34:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 13:45:13
+ * @LastEditTime: 2022-10-13 15:16:02
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -17,10 +17,10 @@ export enum FollowStatusType {
 }
 
 const followBtnTextMap = {
-  [FollowStatusType.ACCOUNT_OPERATION]: 'Join',
-  [FollowStatusType.FOLLOW]: 'Join',
-  [FollowStatusType.FOLLOWING]: 'Following ...',
-  [FollowStatusType.FOLLOWED]: 'Joined',
+  [FollowStatusType.ACCOUNT_OPERATION]: 'Apply for WL',
+  [FollowStatusType.FOLLOW]: 'Apply for WL',
+  [FollowStatusType.FOLLOWING]: 'Loading ...',
+  [FollowStatusType.FOLLOWED]: 'Applied',
   [FollowStatusType.UNKNOWN]: 'Unknown Status',
 }
 
