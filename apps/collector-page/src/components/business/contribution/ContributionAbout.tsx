@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 16:13:21
+ * @LastEditTime: 2022-10-13 15:29:14
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -104,12 +104,12 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
               <CommunityUserNumberItem>
                 <IconLike size={'20px'} />
                 <CommunityUserNumberLabelText>(Like)</CommunityUserNumberLabelText>
-                <CommunityUserNumberValueText>1 token</CommunityUserNumberValueText>
+                <CommunityUserNumberValueText>1 score</CommunityUserNumberValueText>
               </CommunityUserNumberItem>
               <CommunityUserNumberItem>
                 <IconRetweet size={'20px'} />
                 <CommunityUserNumberLabelText>(Retweet)</CommunityUserNumberLabelText>
-                <CommunityUserNumberValueText>3 token</CommunityUserNumberValueText>
+                <CommunityUserNumberValueText>3 score</CommunityUserNumberValueText>
               </CommunityUserNumberItem>
             </CommunityUserNumberBox>
           ),
@@ -147,12 +147,12 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
               <CommunityUserNumberItem>
                 <IconChat size={'20px'} />
                 <CommunityUserNumberLabelText>(Chat)</CommunityUserNumberLabelText>
-                <CommunityUserNumberValueText>Max 1 token per hours</CommunityUserNumberValueText>
+                <CommunityUserNumberValueText>Max 1 score per hours</CommunityUserNumberValueText>
               </CommunityUserNumberItem>
               <CommunityUserNumberItem>
                 <IconInvite size={'20px'} />
                 <CommunityUserNumberLabelText>(Invite)</CommunityUserNumberLabelText>
-                <CommunityUserNumberValueText>3 token</CommunityUserNumberValueText>
+                <CommunityUserNumberValueText>3 score</CommunityUserNumberValueText>
               </CommunityUserNumberItem>
             </CommunityUserNumberBox>
           ),
