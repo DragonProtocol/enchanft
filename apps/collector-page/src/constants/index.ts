@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 11:39:04
+ * @LastEditTime: 2022-09-05 11:17:58
  * @Description: 系统相关常量定义
  */
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -24,7 +24,7 @@ export const TASK_DEFAULT_IMAGE_URLS = [
   'https://res.cloudinary.com/wl-xyz/image/upload/v1661230579/assets/3.jpg',
 ]
 
-export const TASK_DEFAULT_IMAGE_URL = TASK_DEFAULT_IMAGE_URLS[1]
+export const TASK_DEFAULT_IMAGE_URL = TASK_DEFAULT_IMAGE_URLS[0]
 export const TASK_SHARE_URI = process.env.REACT_APP_TASK_SHARE_URI
 
 export const CREATE_TASK_DEFAULT_WINNER_NUM = 20
@@ -41,3 +41,6 @@ export const TASK_IMAGE_SIZE_LIMIT = 1 * 1024 * 1024
 export const AVATAR_SIZE_LIMIT = 200 * 1024
 
 export const SHARE_EVENT_TWEET_CONTENTS = 'I am exploring on WL.xyz follow the link to find answer with me.\n'
+
+export const TASK_PARTICIPANTS_DISPLAY_MIN_NUM = 5
+export const TASK_PARTICIPANTS_FETCH_NUM = 30

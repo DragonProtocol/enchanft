@@ -219,7 +219,7 @@ export default function Basic({ state, updateState }: { state: State; updateStat
                       })
                     }}
                   >
-                    Contribution Token
+                    Contribution Scores
                   </button>
                 </div>
                 {state.reward.type === RewardType.OTHERS && (

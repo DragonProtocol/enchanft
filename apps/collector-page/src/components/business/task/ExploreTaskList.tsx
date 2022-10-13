@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-20 18:19:09
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 11:57:29
+ * @LastEditTime: 2022-09-14 15:27:28
  * @Description: file description
  */
 import React from 'react'
@@ -75,7 +75,7 @@ const ExploreTaskListWrapper = styled.div<{ maxColumns?: number }>`
   @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
     display: flex;
     flex-direction: column;
-    grid-gap: 12px;
+    grid-gap: 20px;
   }
 `
 const ListStatusBox = styled.div`
