@@ -2,10 +2,9 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 18:31:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-09 10:12:47
+ * @LastEditTime: 2022-10-13 12:17:15
  * @Description: file description
  */
-
 export enum AccountType {
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',
@@ -17,6 +16,8 @@ export enum AccountType {
 export enum RoleType {
   CREATOR = 'CREATOR',
   COLLECTOR = 'COLLECTOR',
+  ADMIN = 'ADMIN',
+  VIP = 'VIP',
 }
 
 export enum ResourceType {
@@ -47,22 +48,3 @@ export type User = {
   resourcePermissions: ResourcePermission[];
   token: string;
 };
-
-export interface WlUserError extends Error {
-  code: number;
-  data?: unknown;
-}
-export abstract class Signer {
-  constructor(onError?: (error: WlUserError) => void) {
-    this.onError = onError;
-  }
-  protected onError?: (error: WlUserError) => void;
-
-  public abstract login(...args: unknown[]): Promise<void> | void;
-
-  public abstract logout(...args: unknown[]): Promise<void> | void;
-
-  public abstract bindAccount(...args: unknown[]): Promise<void> | void;
-
-  public abstract unbindAccount(...args: unknown[]): Promise<void> | void;
-}

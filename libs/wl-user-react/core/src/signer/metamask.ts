@@ -2,36 +2,103 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-09 10:24:44
+ * @LastEditTime: 2022-10-13 11:40:19
  * @Description: file description
  */
-import { Signer, WlUserError } from '../types';
-import { windowObj } from '../utils';
-import { ethers } from 'ethers';
-type MetaMaskProvider = typeof ethers.providers.Web3Provider & {
-  provider: any;
-  publicKeyStr: string;
-};
-export interface MetaMaskConstructorArgs {
-  onError?: (error: WlUserError) => void;
+import {
+  bindAccount,
+  BindResult,
+  LoginResult,
+  unbindAccount,
+  UnBindResult,
+} from '../api';
+import { signMsgWithMetaMask } from '../utils/web3';
+import { SignerType, Signer, SignerAccountTypeMap } from './index';
+
+export enum MetamaskEventType {
+  METAMASK_BIND_OAUTH_CALLBACK = 'METAMASK_BIND_OAUTH_CALLBACK',
 }
-export class MetaMask extends Signer {
-  constructor({ onError }: MetaMaskConstructorArgs) {
-    super(onError);
+export type MetamaskBindCallbackParams = {
+  code: string;
+};
+
+export enum MetamaskErrorName {
+  FETCH_METAMASK_BIND_ERROR = 'FETCH_METAMASK_BIND_ERROR',
+  FETCH_METAMASK_UNBIND_ERROR = 'FETCH_METAMASK_UNBIND_ERROR',
+}
+const MetamaskErrorMessageMap: { [name in MetamaskErrorName]: string } = {
+  [MetamaskErrorName.FETCH_METAMASK_BIND_ERROR]: 'FETCH_METAMASK_BIND_ERROR',
+  [MetamaskErrorName.FETCH_METAMASK_UNBIND_ERROR]:
+    'FETCH_METAMASK_UNBIND_ERROR',
+};
+export class MetamaskError extends Error {
+  public constructor(name: MetamaskErrorName, message?: string) {
+    super();
+    this.name = name;
+    this.message = message || MetamaskErrorMessageMap[name];
+  }
+}
+
+export class Metamask extends Signer {
+  public get signerType() {
+    return SignerType.METAMASK;
+  }
+  constructor() {
+    super();
   }
 
-  private provider?: MetaMaskProvider;
-
-  private async getProvider() {
-    if (windowObj?.ethereum) {
-      const provider = new ethers.providers.Web3Provider(windowObj.ethereum);
-      await provider.send('eth_requestAccounts', []);
-    } else {
-      return null;
-    }
+  public login(): Promise<LoginResult> {
+    return new Promise(async (resolve, reject) => {
+      reject('Currently not supported');
+    });
   }
-  public async login(): Promise<void> {}
-  public async logout(): Promise<void> {}
-  public async bindAccount(): Promise<void> {}
-  public async unbindAccount(): Promise<void> {}
+  public bind(token: string): Promise<BindResult> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const signData = await signMsgWithMetaMask();
+        if (signData) {
+          const result = await bindAccount(token, {
+            type: SignerAccountTypeMap[this.signerType],
+            signature: signData.signature,
+            payload: signData.signMsg,
+            pubkey: signData.pubkey,
+          });
+          if (result.data.code === 0) {
+            resolve(result.data.data);
+          } else {
+            reject(
+              new MetamaskError(
+                MetamaskErrorName.FETCH_METAMASK_BIND_ERROR,
+                result.data.msg
+              )
+            );
+          }
+        }
+      } catch (error) {
+        throw error;
+      }
+    });
+  }
+  public unbind(token: string): Promise<UnBindResult> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const result = await unbindAccount(
+          token,
+          SignerAccountTypeMap[this.signerType]
+        );
+        if (result.data.code === 0) {
+          resolve(result.data.data);
+        } else {
+          reject(
+            new MetamaskError(
+              MetamaskErrorName.FETCH_METAMASK_UNBIND_ERROR,
+              result.data.msg
+            )
+          );
+        }
+      } catch (error) {
+        throw error;
+      }
+    });
+  }
 }

@@ -2,26 +2,25 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-30 11:45:27
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-08 11:03:33
+ * @LastEditTime: 2022-10-11 17:55:51
  * @Description: file description
  */
-import { AccountType, LoginResult, RoleType } from '../types';
+import { SignerType } from '../signer';
+import { LoginResult } from '../api';
 
-enum StorageKey {
-  LAST_LOGIN_TYPE = 'last_login_type',
+export enum StorageKey {
+  LAST_LOGIN_SIGNER_TYPE = 'last_login_signer_type',
   LAST_LOGIN_TOKEN = 'last_login_token',
   LAST_LOGIN_NAME = 'last_login_name',
   LAST_LOGIN_AVATAR = 'last_login_avatar',
   LAST_LOGIN_PUBKEY = 'last_login_pubkey',
-  LAST_LOGIN_ROLES = 'last_login_roles',
 }
 type StorageKeyValue = {
-  [StorageKey.LAST_LOGIN_TYPE]: AccountType;
+  [StorageKey.LAST_LOGIN_SIGNER_TYPE]: SignerType;
   [StorageKey.LAST_LOGIN_TOKEN]: string;
   [StorageKey.LAST_LOGIN_NAME]: string;
   [StorageKey.LAST_LOGIN_AVATAR]: string;
   [StorageKey.LAST_LOGIN_PUBKEY]: string;
-  [StorageKey.LAST_LOGIN_ROLES]: RoleType[];
 };
 type StorageValueReturnType<T extends StorageKey> = ReturnType<
   () => StorageKeyValue[T]
@@ -33,12 +32,11 @@ type StorageKeyValuePick<T extends StorageKey[]> = Pick<
 >;
 
 const storageDefaultValues: StorageKeyValue = {
-  [StorageKey.LAST_LOGIN_TYPE]: AccountType.TWITTER,
+  [StorageKey.LAST_LOGIN_SIGNER_TYPE]: SignerType.TWITTER,
   [StorageKey.LAST_LOGIN_TOKEN]: '',
   [StorageKey.LAST_LOGIN_NAME]: '',
   [StorageKey.LAST_LOGIN_AVATAR]: '',
   [StorageKey.LAST_LOGIN_PUBKEY]: '',
-  [StorageKey.LAST_LOGIN_ROLES]: [],
 };
 
 export function getStorageValue<T extends StorageKey>(
@@ -81,15 +79,14 @@ export function getStorageValues<T extends StorageKey[]>(
 }
 
 export function updateStorageByLogin(
-  accountType: AccountType,
+  accountType: SignerType,
   data: LoginResult
 ): void {
-  setStorageValue(StorageKey.LAST_LOGIN_TYPE, accountType);
+  setStorageValue(StorageKey.LAST_LOGIN_SIGNER_TYPE, accountType);
   setStorageValue(StorageKey.LAST_LOGIN_TOKEN, data.token);
   setStorageValue(StorageKey.LAST_LOGIN_NAME, data.name);
   setStorageValue(StorageKey.LAST_LOGIN_AVATAR, data.avatar);
   setStorageValue(StorageKey.LAST_LOGIN_PUBKEY, data.pubkey);
-  setStorageValue(StorageKey.LAST_LOGIN_ROLES, data.roles);
 }
 
 export function updateStorageByLogout(): void {
@@ -97,7 +94,6 @@ export function updateStorageByLogout(): void {
   resetStorageValue(StorageKey.LAST_LOGIN_NAME);
   resetStorageValue(StorageKey.LAST_LOGIN_AVATAR);
   resetStorageValue(StorageKey.LAST_LOGIN_PUBKEY);
-  resetStorageValue(StorageKey.LAST_LOGIN_ROLES);
 }
 
 export function updateStorageByUserInfo(data: {

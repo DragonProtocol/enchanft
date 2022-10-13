@@ -640,27 +640,37 @@ importers:
 
   libs/wl-user-react/core:
     specifiers:
+      '@multiavatar/multiavatar': ^1.0.7
       '@types/qs': ^6.9.7
       '@types/react': 18.0.13
       '@types/react-dom': 18.0.5
+      '@types/styled-components': ^5.1.26
       axios: ^0.27.2
       babel-jest: 27.5.1
+      bs58: ^5.0.0
       core-js: ^3.6.5
       ethers: ^5.6.9
       qs: ^6.11.0
       react: 18.2.0
+      react-device-detect: ^2.2.2
       react-dom: 18.2.0
       react-test-renderer: 18.2.0
       regenerator-runtime: 0.13.7
+      styled-components: ^5.3.5
       tslib: ^2.3.0
     dependencies:
+      '@multiavatar/multiavatar': 1.0.7
+      '@types/styled-components': 5.1.26
       axios: 0.27.2
+      bs58: 5.0.0
       core-js: 3.23.3
       ethers: 5.6.9
       qs: 6.11.0
       react: 18.2.0
+      react-device-detect: 2.2.2_biqbaboplfbrettd7655fr4n2y
       react-dom: 18.2.0_react@18.2.0
       regenerator-runtime: 0.13.7
+      styled-components: 5.3.5_7i5myeigehqah43i5u7wbekgba
       tslib: 2.4.0
     devDependencies:
       '@types/qs': 6.9.7
@@ -3823,6 +3833,10 @@ packages:
       rifm: 0.12.1_react@18.2.0
     dev: false
 
+  /@multiavatar/multiavatar/1.0.7:
+    resolution: {integrity: sha512-Yg9Uw57bmlErsWL0CSv4d6D4ZqVBE00OZmYr9MRgygoXZdboNtsEI6FbBRw1AY8l88Sm1ARcyojtlm2uwUn0Zg==}
+    dev: false
+
   /@next/env/12.1.6:
     resolution: {integrity: sha512-Te/OBDXFSodPU6jlXYPAXpmZr/AkG6DCATAxttQxqOWaq6eDFX25Db3dK0120GZrSZmv4QCe9KsZmJKDbWs4OA==}
 
@@ -6874,6 +6888,14 @@ packages:
 
   /@types/styled-components/5.1.25:
     resolution: {integrity: sha512-fgwl+0Pa8pdkwXRoVPP9JbqF0Ivo9llnmsm+7TCI330kbPIFd9qv1Lrhr37shf4tnxCOSu+/IgqM7uJXLWZZNQ==}
+    dependencies:
+      '@types/hoist-non-react-statics': 3.3.1
+      '@types/react': 18.0.14
+      csstype: 3.1.0
+    dev: false
+
+  /@types/styled-components/5.1.26:
+    resolution: {integrity: sha512-KuKJ9Z6xb93uJiIyxo/+ksS7yLjS1KzG6iv5i78dhVg/X3u5t1H7juRWqVmodIdz6wGVaIApo1u01kmFRdJHVw==}
     dependencies:
       '@types/hoist-non-react-statics': 3.3.1
       '@types/react': 18.0.14
