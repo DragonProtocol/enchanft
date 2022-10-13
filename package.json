@@ -6,7 +6,20 @@
     "start": "nx serve",
     "build": "nx build",
     "test": "nx test",
-    "nx": "nx"
+    "nx": "nx",
+    "lint:check": "nx lint",
+    "lint:fix": "nx lint --fix"
+  },
+  "lint-staged": {
+    "apps/**/*.{js,ts,tsx}": [
+      "pnpm lint:fix"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged --allow-empty",
+      "pre-push": "pnpm lint:check"
+    }
   },
   "private": true,
   "devDependencies": {
@@ -32,6 +45,7 @@
     "babel-jest": "27.5.1",
     "cypress": "^9.1.0",
     "eslint": "~8.15.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
@@ -40,8 +54,10 @@
     "eslint-plugin-react": "7.30.0",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-sort-destructure-keys": "^1.4.0",
+    "husky": "^8.0.0",
     "jest": "27.5.1",
     "jest-watch-typeahead": "^1.1.0",
+    "lint-staged": "^13.0.3",
     "nx": "14.3.6",
     "prettier": "^2.6.2",
     "react-test-renderer": "18.2.0",

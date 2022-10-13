@@ -4,15 +4,14 @@ import Image from 'next/image';
 import styled from 'styled-components';
 import classnames from 'classnames';
 
-import Header from '../components/header';
-
 export function Index() {
-  const [isMute, setIsMute] = useState(true);
+  const isMute = true;
+  // const [isMute, setIsMute] = useState(true);
   const [isExpand, setIsExpand] = useState(false);
 
-  const scrollToAnchor = (anchorName) => {
+  const scrollToAnchor = (anchorName: string) => {
     if (anchorName) {
-      let anchorElement = document.getElementById(anchorName);
+      const anchorElement = document.getElementById(anchorName);
       if (anchorElement) {
         anchorElement.scrollIntoView();
       }
@@ -23,30 +22,29 @@ export function Index() {
     imgPath: string,
     name: string | null,
     position: string | null,
-    className?: string
+    className?: string,
   ) => (
     <div className={`profile-item ${className}`}>
       <div className="profile">
-        <Image src={imgPath} layout="fill" alt={'basic'} />
+        <Image src={imgPath} layout="fill" alt="basic" />
       </div>
       {name && <div className="name">{name}</div>}
       {position && <div className="position">{position}</div>}
     </div>
   );
 
-  const renderNavComponents = (isBottom) => (
-    <div className={classnames('nav-box', { isBottom: isBottom })}>
+  const renderNavComponents = (isBottom:boolean) => (
+    // eslint-disable-next-line
+    <div className={classnames(`nav-box ${isBottom ? 'isBottom' : ''}`)}>
       <div
         className="nav-item"
-        onClick={() =>
-          window.open('https://twitter.com/CaskBaatar_NFT', '__blank')
-        }
+        onClick={() => window.open('https://twitter.com/CaskBaatar_NFT', '__blank')}
       >
         <Image
-          src={'/static/images/twitter.png'}
+          src="/static/images/twitter.png"
           layout="fill"
           objectFit="contain"
-          alt={'basic'}
+          alt="basic"
         />
       </div>
 
@@ -55,10 +53,10 @@ export function Index() {
         onClick={() => window.open('https://discord.gg/qsV323Tf6u', '__blank')}
       >
         <Image
-          src={'/static/images/discord.png'}
+          src="/static/images/discord.png"
           layout="fill"
           objectFit="contain"
-          alt={'basic'}
+          alt="basic"
         />
       </div>
       <div
@@ -68,10 +66,10 @@ export function Index() {
         // }
       >
         <Image
-          src={'/static/images/instagram.png'}
+          src="/static/images/instagram.png"
           layout="fill"
           objectFit="contain"
-          alt={'basic'}
+          alt="basic"
         />
       </div>
 
@@ -80,7 +78,7 @@ export function Index() {
           src={'/static/images/OpenSea.png'}
           layout="fill"
           objectFit="contain"
-          
+
           alt={'basic'}
         />
       </div> */}
@@ -90,11 +88,10 @@ export function Index() {
         onClick={() => window.open('https://wl.xyz/', '__blank')}
       >
         <Image
-          src={'/static/images/wl_xyz.png'}
+          src="/static/images/wl_xyz.png"
           layout="fill"
           // objectFit="contain"
-
-          alt={'basic'}
+          alt="basic"
         />
       </div>
 
@@ -104,10 +101,10 @@ export function Index() {
           onClick={() => window?.scrollTo({ top: 0, behavior: 'smooth' })}
         >
           <Image
-            src={'/static/images/to-top.png'}
+            src="/static/images/to-top.png"
             layout="fill"
             objectFit="contain"
-            alt={'basic'}
+            alt="basic"
           />
         </div>
       )}
@@ -125,20 +122,21 @@ export function Index() {
         muted={isMute}
         onTimeUpdate={() => {}}
       >
+        {/* eslint-disable-next-line */}
         <source src={require('../public/static/bg.mp4')} type="video/mp4" />
       </StyledVideo>
-
+      {/* eslint-disable-next-line */}
       <div className={classnames('sidebar', { expand: isExpand })}>
         <div
           className="image-container more"
-          onClick={() => setIsExpand((isExpand) => !isExpand)}
+          onClick={() => setIsExpand((oldIsExpand) => !oldIsExpand)}
         >
           <Image
             className="image"
-            src={'/static/images/more.png'}
+            src="/static/images/more.png"
             layout="fill"
             objectFit="contain"
-            alt={'basic'}
+            alt="basic"
           />
         </div>
         {[
@@ -162,12 +160,12 @@ export function Index() {
 
       <div className="logo">
         <Image
-          src={'/static/images/logo.png'}
+          src="/static/images/logo.png"
           width={92}
           height={52}
           layout="fixed"
           objectFit="cover"
-          alt={'basic'}
+          alt="basic"
         />
       </div>
 
@@ -175,38 +173,38 @@ export function Index() {
 
       <div className="image-container cloud">
         <Image
-          className={'image'}
-          src={'/static/images/cloud.png'}
+          className="image"
+          src="/static/images/cloud.png"
           layout="fill"
-          alt={'basic'}
+          alt="basic"
         />
       </div>
 
       <div className="middle-bg">
         <div className="image-container big-title">
           <Image
-            src={'/static/images/CASKBAATAR.png'}
+            src="/static/images/CASKBAATAR.png"
             layout="fill"
             objectFit="contain"
-            alt={'basic'}
+            alt="basic"
           />
         </div>
         <div className="image-container title-gif">
           <Image
-            src={'/static/images/title.gif'}
+            src="/static/images/title.gif"
             layout="fill"
             objectFit="contain"
-            alt={'basic'}
+            alt="basic"
           />
         </div>
       </div>
       <div className="bg-texture">
         <div className="home title-img" id="Home">
           <Image
-            src={'/static/images/home.png'}
+            src="/static/images/home.png"
             layout="fill"
             objectFit="contain"
-            alt={'basic'}
+            alt="basic"
           />
         </div>
 
@@ -227,18 +225,18 @@ export function Index() {
           matches the costumes of different periods from the 13th century to the
           present.As a Mongolian in the 21st century, the artist Yieder, while
           recalling the ancient history and culture, mostly conveys the concept
-          of "Mongolian in the 21st century", and shows the state of
+          of &quot;Mongolian in the 21st century&quot;, and shows the state of
           contemporary Mongolian people from his perspective. Give the character
           visual representation of tradition and future.
         </div>
       </div>
       <div className="image-container">
         <Image
-          className={'image avatar-loop-front'}
-          src={'/static/images/avatar_loop_front.png'}
+          className="image avatar-loop-front"
+          src="/static/images/avatar_loop_front.png"
           layout="fill"
           objectFit="contain"
-          alt={'basic'}
+          alt="basic"
         />
         <div className="avatar-loop-box">
           <video
@@ -252,6 +250,7 @@ export function Index() {
             onTimeUpdate={() => {}}
           >
             <source
+              // eslint-disable-next-line
               src={require('../public/static/avatar_loop.mp4')}
               type="video/mp4"
             />
@@ -270,10 +269,10 @@ export function Index() {
       <div className="bg-t">
         <div className="contract title-img" id="CaskBaatar contract">
           <Image
-            src={'/static/images/caskbaatar-02.png'}
+            src="/static/images/caskbaatar-02.png"
             layout="fill"
             objectFit="contain"
-            alt={'basic'}
+            alt="basic"
           />
         </div>
 
@@ -355,21 +354,21 @@ export function Index() {
         <div className="about-wrapper">
           <div className="black-cloud black-cloud-1 image-container">
             <Image
-              className={'image'}
-              src={'/static/images/black-cloud-1.png'}
+              className="image"
+              src="/static/images/black-cloud-1.png"
               layout="fill"
               objectFit="contain"
-              alt={'basic'}
+              alt="basic"
             />
           </div>
           <div className="about-box">
             <div className="left-box">
               <div className="about title-img" id="About">
                 <Image
-                  src={'/static/images/about.png'}
+                  src="/static/images/about.png"
                   layout="fill"
                   objectFit="contain"
-                  alt={'basic'}
+                  alt="basic"
                 />
               </div>
               <div className="about-text">
@@ -387,10 +386,10 @@ export function Index() {
               </div>
               <div className="about title-img top big-title-img" id="Story">
                 <Image
-                  src={'/static/images/story.png'}
+                  src="/static/images/story.png"
                   layout="fill"
                   objectFit="contain"
-                  alt={'basic'}
+                  alt="basic"
                 />
               </div>
               <div className="about-text">
@@ -419,6 +418,7 @@ export function Index() {
                 onTimeUpdate={() => {}}
               >
                 <source
+                  // eslint-disable-next-line
                   src={require('../public/static/images/about-avatar.mp4')}
                   type="video/mp4"
                 />
@@ -464,10 +464,10 @@ export function Index() {
 
         <div className="roadmap title-img big-title-img" id="Rodmap">
           <Image
-            src={'/static/images/roadmap.png'}
+            src="/static/images/roadmap.png"
             layout="fill"
             objectFit="contain"
-            alt={'basic'}
+            alt="basic"
           />
         </div>
 
@@ -480,11 +480,11 @@ export function Index() {
         /> */}
           <div className="image-container map-box">
             <Image
-              className={'image map'}
-              src={'/static/images/map.png'}
+              className="image map"
+              src="/static/images/map.png"
               layout="fill"
               objectFit="contain"
-              alt={'basic'}
+              alt="basic"
             />
             <div className="map-text map-text-1">
               NFT collection
@@ -493,25 +493,28 @@ export function Index() {
             </div>
             <div className="map-text map-text-2">
               Airdrop bonus whisky (if any) to
-              <br /> the rare NFT owners
+              <br />
+              the rare NFT owners
             </div>
             <div className="map-text map-text-3">
               More interesting activities
-              <br /> are waiting to be unlocked
+              <br />
+              are waiting to be unlocked
             </div>
             <div className="map-text map-text-4">
-              Whitelist extraction of <br />
+              Whitelist extraction of
+              <br />
               Exclusive NFT collection
             </div>
           </div>
 
           <div className="black-cloud image-container">
             <Image
-              className={'image'}
-              src={'/static/images/black-cloud-2.png'}
+              className="image"
+              src="/static/images/black-cloud-2.png"
               layout="fill"
               objectFit="contain"
-              alt={'basic'}
+              alt="basic"
             />
           </div>
         </div>
@@ -548,10 +551,10 @@ export function Index() {
 
       <div className="team title-img" id="Team">
         <Image
-          src={'/static/images/team.png'}
+          src="/static/images/team.png"
           layout="fill"
           objectFit="contain"
-          alt={'basic'}
+          alt="basic"
         />
       </div>
 
@@ -562,12 +565,12 @@ export function Index() {
             {renderProfile(
               '/static/images/Yideer.png',
               'Yideer',
-              'Chief Artist'
+              'Chief Artist',
             )}
             {renderProfile(
               '/static/images/Tony.png',
               'Tony',
-              'Project Advisor'
+              'Project Advisor',
             )}
           </div>
           <div className="row">
@@ -578,7 +581,7 @@ export function Index() {
             {renderProfile(
               '/static/images/Ken.png',
               'Mr.Ken',
-              'Professional Cask Selector'
+              'Professional Cask Selector',
             )}
           </div>
           <div className="row">
@@ -586,8 +589,7 @@ export function Index() {
               '/static/images/Wl.png',
               'EnchaNFT (wl.xyz)',
               null,
-              // 'A group of experienced web3 veterans, building tools and infrastructure for the NFT ecosystem. Our members are from Tsinghua, the National University of Singapore, UPenn, INSEAD, Bitmain, and Binance.',
-              'wl'
+              'wl',
             )}
           </div>
         </div>
@@ -595,27 +597,27 @@ export function Index() {
 
       <div className="bg-bottom">
         <Image
-          src={'/static/images/bg-bottom.png'}
+          src="/static/images/bg-bottom.png"
           layout="fill"
           objectFit="contain"
-          alt={'basic'}
+          alt="basic"
         />
       </div>
 
       <div className="faq title-img" id="FAQ">
         <Image
-          src={'/static/images/faq.png'}
+          src="/static/images/faq.png"
           layout="fill"
           objectFit="contain"
-          alt={'basic'}
+          alt="basic"
         />
       </div>
 
       <div className="faq-box">
         <div className="faq-item">
-          <div className="ques">Sounds awesome - How do I get involved?</div>A
-          great place to start is our Discord, home to a very large and very
-          active community of CaskBaatar enthusiasts. You don't need to be a
+          <div className="ques">Sounds awesome - How do I get involved?</div>
+          A great place to start is our Discord, home to a very large and very
+          active community of CaskBaatar enthusiasts. You don&apos;t need to be a
           CaskBaatar holder to join us there! All are welcome to jump into the
           conversation, let us know your ideas, and hang out with many others
           who like the CaskBaatars.
@@ -670,13 +672,6 @@ export function Index() {
 export default Index;
 
 const StyledVideo = styled.video`
-  /* top: 50%;
-    left: 50%;
-    min-width: 100%;
-    min-height: 100%;
-    transform: translateX(-50%) translateY(-50%);
-    margin-top: -1px; */
-
   position: absolute;
   width: 100%;
   height: 100vh;
@@ -684,7 +679,6 @@ const StyledVideo = styled.video`
   left: 0;
   top: 0;
   z-index: 0;
-  /* opacity: 0.9; */
 `;
 
 const Wrapper = styled.div`
