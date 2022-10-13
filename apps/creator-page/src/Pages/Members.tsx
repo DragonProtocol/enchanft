@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import DataTable from 'react-data-table-component';
+import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import {
-  creatorMembers,
-  creatorMembersDownload,
+  creatorMembersDownloadWithFilter,
   creatorMembersInsert,
   creatorMembersWithFilter,
+  creatorMemberTempDownload,
+  PageSize,
+  Member,
   MemberFilter,
 } from '../api';
 import { useAppConfig } from '../AppProvider';
@@ -21,59 +23,52 @@ import { useAppSelector } from '../redux/store';
 import { CoinType } from '../utils/token';
 import Pagination from '../Components/Pagination';
 
-import data from './mock-data.json';
+import convertToCSV from '../utils/convertToCsv';
+import Loading from '../Components/Loading';
+import { Whales } from '../utils/constants';
+import UserAvatar from '../Components/UserAvatar';
 
-let PageSize = 20;
-
-const columns = [
-  {
-    name: 'NAME',
-    selector: (row: any) => row.title,
-  },
-  {
-    name: 'TWITTER',
-    selector: (row: any) => row.title,
-  },
-  {
-    name: 'TWITTER ID',
-    selector: (row: any) => row.title,
-  },
-  {
-    name: 'DISCORD',
-    selector: (row: any) => row.title,
-  },
-  {
-    name: 'DISCORD ID',
-    selector: (row: any) => row.year,
-    // sortable: true,
-  },
-  {
-    name: 'ETH ADDRESS',
-    selector: (row: any) => row.year,
-    // sortable: true,
-  },
-];
+const fileDownload = require('js-file-download');
 
 export default function Members() {
   const { slug } = useParams();
   const [showFilter, setShowFilter] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  // const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);
   const { data: project } = useAppSelector(selectProjectDetail);
   const [loading, setLoading] = useState(false);
-  const [select, setSelect] = useState([]);
+  const [select, setSelect] = useState<Member[]>([]);
   const { account } = useAppConfig();
-  // const [data, setData] = useState([
-  //   data
-  // ]);
+  const [data, setData] = useState<Member[]>([]);
+  const [total, setTotal] = useState(0);
+  const [filter, setFilter] = useState<MemberFilter>({});
+  const [loaded, setLoaded] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  const currentTableData = useMemo(() => {
-    const firstPageIndex = (currentPage - 1) * PageSize;
-    const lastPageIndex = firstPageIndex + PageSize;
-    return data.slice(firstPageIndex, lastPageIndex);
-  }, [currentPage]);
+  useEffect(() => {
+    if (!project?.id || !account.info?.token) return;
+
+    // console.log({ currentPage });
+    setLoading(true);
+
+    creatorMembersWithFilter(
+      project.id,
+      filter,
+      account.info.token,
+      currentPage - 1,
+      PageSize
+    )
+      .then((resp) => {
+        const { data } = resp.data;
+        const { totalNumber, members } = data;
+        setTotal(totalNumber);
+        setData(members);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [currentPage, project, account.info?.token, filter]);
 
   useEffect(() => {
     const windowClick = (e: MouseEvent) => {
@@ -85,44 +80,34 @@ export default function Members() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!project?.id || !account.info?.token) return;
-
-    console.log('creatorMembers');
-    creatorMembers(project.id, account.info.token).then((resp) => {
-      const { data } = resp;
-      console.log(data);
-    });
-  }, [project?.id, account.info?.token]);
-
   const search = useCallback(
-    async (text: MemberFilter) => {
+    async (filter: MemberFilter) => {
       if (!account.info?.token || !project) return;
-      const resp = await creatorMembersWithFilter(
-        project.id,
-        text,
-        account.info.token
-      );
-      const { data } = resp;
-      console.log(data);
+      setFilter(filter);
+      setCurrentPage(1);
+      setShowFilter(false);
     },
     [account.info?.token, project]
   );
 
-  const downloadList = useCallback(() => {
+  const downloadList = useCallback(async () => {
     if (!account.info?.token || !project) return;
     if (slug !== project.slug) return;
     if (select.length > 0) {
-      // TODO
+      const data = select.map((item) => ({
+        wallet: item.wallet,
+      }));
+      const csv = convertToCSV(data);
+      fileDownload(csv, `member.csv`, 'text/csv;charset=utf-8', '\uFEFF');
     } else {
-      creatorMembersDownload(project.id, [], account.info.token);
+      creatorMembersDownloadWithFilter(project.id, filter, account.info.token);
     }
-  }, [project, slug, account.info?.token, select]);
+  }, [project, slug, account.info?.token, select, filter]);
 
   const downloadTemp = useCallback(() => {
     if (!account.info?.token || !project) return;
     if (slug !== project.slug) return;
-    creatorMembersDownload(project.id, [0], account.info.token);
+    creatorMemberTempDownload(account.info.token);
   }, [project, slug, account.info?.token]);
 
   const uploadCsvFile = useCallback(
@@ -130,13 +115,9 @@ export default function Members() {
       if (!project) return;
       if (!account.info?.token) return;
       if (slug !== project.slug) return;
-      const resp = await creatorMembersInsert(
-        project?.id,
-        file,
-        account.info?.token
-      );
-      const { data } = resp;
-      console.log(data);
+      await creatorMembersInsert(project?.id, file, account.info?.token);
+      toast.success('upload success');
+      setShowModal(false);
     },
     [project, account, slug]
   );
@@ -145,8 +126,8 @@ export default function Members() {
     <ContentBox>
       <div className="title">
         <div className="search">
-          {/* <span>Members</span> */}
-          <div>
+          <span>Members ({total})</span>
+          {/* <div>
             <input
               title="search-input"
               type="text"
@@ -158,7 +139,7 @@ export default function Members() {
             <button title="filter" onClick={() => {}}>
               <IconInputSearch />
             </button>
-          </div>
+          </div> */}
         </div>
         <div className="btns">
           <button title="download" onClick={downloadList}>
@@ -179,41 +160,76 @@ export default function Members() {
           <button onClick={() => setShowModal(true)}>+Add Member</button>
         </div>
       </div>
-      <div className="body">
-        <table>
-          <thead>
-            <tr>
-              {/* <th>ID</th> */}
-              <th>NAME</th>
-              <th>TWITTER</th>
-              <th>TWITTER ID</th>
-              <th>DISCORD</th>
-              <th>DISCORD ID</th>
-              <th>ETH ADDRESS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentTableData.map((item) => {
-              return (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.first_name}</td>
-                  <td>{item.last_name}</td>
-                  <td>{item.email}</td>
-                  <td>{item.phone}</td>
-                  <td>{item.phone}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      {(loading && (
+        <div className="loading">
+          <Loading />
+        </div>
+      )) || (
+        <div className="body">
+          <table>
+            <thead>
+              <tr>
+                <th></th>
+                <th>NAME</th>
+                <th>TWITTER</th>
+                <th>TWITTER ID</th>
+                <th>DISCORD</th>
+                <th>DISCORD ID</th>
+                <th>ETH ADDRESS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((item) => {
+                return (
+                  <tr key={item.id}>
+                    <td>
+                      {(select.find((s) => s.id === item.id) && (
+                        <span
+                          onClick={() => {
+                            const ss = select.find((s) => s.id === item.id);
+                            const idx = select.indexOf(ss!);
+                            setSelect([
+                              ...select.slice(0, idx),
+                              ...select.slice(idx + 1),
+                            ]);
+                          }}
+                        >
+                          <IconCheckboxChecked />
+                        </span>
+                      )) || (
+                        <span
+                          onClick={() => {
+                            setSelect([...select, { ...item }]);
+                          }}
+                        >
+                          <IconCheckbox />
+                        </span>
+                      )}
+                    </td>
+                    {/* <td>{item.userId}</td> */}
+                    <td>
+                      <UserAvatar src={item.userAvatar} />
+                      {item.userName || 'X'}
+                    </td>
+                    <td>{item.twitterName || 'X'}</td>
+                    <td>{item.twitterId || 'X'}</td>
+                    <td>{item.discordName || 'X'}</td>
+                    <td>{item.discordId || 'X'}</td>
+                    <td>{item.wallet || 'X'}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
       <Pagination
         currentPage={currentPage}
-        totalCount={data.length}
+        totalCount={total}
         pageSize={PageSize}
         onPageChange={(page: number) => setCurrentPage(page)}
       />
+
       <AddMemberModal
         show={showModal}
         closeModal={() => {
@@ -237,6 +253,7 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
   const [discordMember, setDiscordMember] = useState(false);
   const [discordVerified, setDiscordVerified] = useState(false);
   const [discordRole, setDiscordRole] = useState('');
+  const [whales, setWhales] = useState('');
 
   return (
     <SearchFilterBox
@@ -267,13 +284,28 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
             }}
           >
             <option value={CoinType.ETH}>ETH</option>
-            <option value={CoinType.SOL}>SOL</option>
+            {/* <option value={CoinType.SOL}>SOL</option> */}
           </select>
         </div>
         <p>NFT Holder</p>
         <div className="nft">
-          <select title="nft-holder" name="" id="">
+          <select
+            title="nft-holder"
+            name=""
+            id=""
+            value={whales}
+            onChange={(e) => {
+              setWhales(e.target.value);
+            }}
+          >
             <option value="">Select</option>
+            {Object.keys(Whales).map((item) => {
+              return (
+                <option key={item} value={Whales[item]}>
+                  {item}
+                </option>
+              );
+            })}
           </select>
         </div>
         <div>
@@ -343,6 +375,7 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
           if (discordMember) data.isDiscordMember = discordMember;
           if (discordVerified) data.discordConnected = discordVerified;
           if (discordRole) data.discordRole = discordRole;
+          if (whales) data.nftWhales = [whales];
           search(data);
         }}
       >
@@ -479,10 +512,27 @@ const ContentBox = styled.div`
       background: #f7f9f1;
     }
 
+    & img {
+      border-radius: 20%;
+      width: 30px;
+      height: 30px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    table tr {
+      height: 50px;
+    }
+
     thead tr th {
       font-weight: 500;
       text-align: left;
       /* background-color: #fafafa; */
+    }
+
+    & span,
+    & svg {
+      vertical-align: middle;
     }
 
     tbody tr:nth-child(odd) {
@@ -496,16 +546,5 @@ const ContentBox = styled.div`
       padding: 8px;
       overflow-wrap: break-word;
     }
-  }
-`;
-
-const Table = styled(DataTable)`
-  border-radius: 20px;
-  border: 4px solid black;
-  box-sizing: border-box;
-
-  & .rdt_TableHeadRow,
-  & .rdt_TableRow {
-    background: #f7f9f1;
   }
 `;

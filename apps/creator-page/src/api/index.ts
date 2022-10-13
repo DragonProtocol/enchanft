@@ -3,6 +3,7 @@ import qs from 'qs';
 import { URLQueryParams } from 'object-in-queryparams';
 
 import { State as CreateTaskState } from '../Components/TaskCreate/type';
+import { PerPageSize } from '../utils/constants';
 
 const fileDownload = require('js-file-download');
 const ApiBaseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -357,15 +358,22 @@ export function creatorTwitter(
   });
 }
 
-export function creatorMembers(projectId: number, token: string) {
-  return axios({
-    url: ApiBaseUrl + `/creator/members/${projectId}`,
-    method: 'get',
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-}
+export type Member = {
+  contributionToken: 0;
+  discordConnected: false;
+  discordId: null;
+  discordName: null;
+  hasWhiteList: true;
+  id: 1;
+  twitterConnected: false;
+  twitterId: null;
+  twitterName: null;
+  userAvatar: '';
+  userId: 106;
+  userName: '';
+  wallet: string;
+  walletConnected: true;
+};
 
 export type MemberFilter = {
   contributionToken?: number;
@@ -383,11 +391,21 @@ export type MemberFilter = {
   walletSearch?: string;
 };
 
+export const PageSize = PerPageSize;
 export function creatorMembersWithFilter(
   projectId: number,
   params: MemberFilter,
-  token: string
-) {
+  token: string,
+  pageNumber = 0,
+  pageSize = PageSize
+): AxiosPromise<{
+  code: number;
+  msg: string;
+  data: {
+    members: Member[];
+    totalNumber: number;
+  };
+}> {
   let data = '';
   for (const key in params) {
     let v = '';
@@ -400,9 +418,10 @@ export function creatorMembersWithFilter(
     }
     data += v + '&';
   }
+  data += `pageNumber=${pageNumber}&pageSize=${pageSize}`;
 
   return axios({
-    url: ApiBaseUrl + `/creator/filterMembers/${projectId}?${data}`,
+    url: ApiBaseUrl + `/creator/members/${projectId}?${data}`,
     method: 'get',
     headers: {
       Authorization: `Bearer ${token}`,
@@ -427,19 +446,26 @@ export function creatorMembersInsert(
   });
 }
 
-export function creatorMembersDownload(
+export function creatorMembersDownloadWithFilter(
   projectId: number,
-  list: number[],
+  params: MemberFilter,
   token: string
 ) {
-  const dataQuery = new URLQueryParams({
-    list,
-  });
+  let data = '';
+  for (const key in params) {
+    let v = '';
+    if (key === 'nftWhales' && params['nftWhales']) {
+      v = new URLQueryParams({
+        nftWhales: params['nftWhales'],
+      }).toString();
+    } else {
+      v = `${key}=${params[key as keyof MemberFilter]}`;
+    }
+    data += v + '&';
+  }
 
   axios({
-    url:
-      ApiBaseUrl +
-      `/creator/download/members/${projectId}.csv&${dataQuery.toString()}`,
+    url: ApiBaseUrl + `/creator/members/${projectId}/csv&${data}`,
     method: 'get',
     // : list,
     responseType: 'blob',
@@ -450,6 +476,24 @@ export function creatorMembersDownload(
     fileDownload(
       response.data,
       `members.csv`,
+      'text/csv;charset=utf-8',
+      '\uFEFF'
+    );
+  });
+}
+
+export function creatorMemberTempDownload(token: string) {
+  axios({
+    url: ApiBaseUrl + `/creator/members/0/csv`,
+    method: 'get',
+    responseType: 'blob',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((response) => {
+    fileDownload(
+      response.data,
+      `members-template.csv`,
       'text/csv;charset=utf-8',
       '\uFEFF'
     );

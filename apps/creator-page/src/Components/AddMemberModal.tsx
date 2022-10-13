@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import IconClose from './Icons/IconClose';
@@ -86,8 +86,12 @@ export default function AddMemberModal({
             <button onClick={downloadTemp}>Download template file</button>
           </div>
           <div className="upload-area">
+            <label htmlFor="upload-csv" id="upload-csv-label">
+              <p>Click to choose a file </p>
+              <p>CSV only</p>
+              {csvFile && <p>{csvFile.name}</p>}
+            </label>
             <input
-              title="upload-csv"
               id="upload-csv"
               type="file"
               accept=".csv"
@@ -95,22 +99,20 @@ export default function AddMemberModal({
                 const file = e.target.files && e.target.files[0];
                 if (!file) return;
                 setCsvFile(file);
-                uploadCsvFile(file);
               }}
             />
-            <label htmlFor="upload-csv">
-              <p>Click to choose a file </p>
-              <p>CSV only</p>
-            </label>
           </div>
           <div className="quick-upload">
-            <p
+            {/* <p
               onClick={() => {
                 setQuickUpload(!quickUpload);
               }}
             >
               Quick upload,bulk filling add wallet address.
-            </p>
+            </p> */}
+            <button onClick={() => csvFile && uploadCsvFile(csvFile)}>
+              Upload
+            </button>
           </div>
         </ContentBox>
       )}
@@ -159,20 +161,21 @@ const ContentBox = styled.div`
   & .download-temp {
     text-align: end;
     margin: 20px 0;
-    & button {
-      height: 48px;
-      padding: 0 10px;
+  }
 
-      background: #3dd606;
-      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
+  & button:not([title='close']) {
+    height: 48px;
+    padding: 0 10px;
 
-      font-weight: 700;
-      font-size: 18px;
-      line-height: 27px;
+    background: #3dd606;
+    box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 
-      color: #ffffff;
-    }
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 27px;
+
+    color: #ffffff;
   }
 
   & .upload-area {

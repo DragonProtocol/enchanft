@@ -501,7 +501,7 @@ export default function Actions({
             </div>
           </div>
 
-          {/** Question */}
+          {/** Question 
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -572,6 +572,7 @@ export default function Actions({
               </>
             )}
           </div>
+          */}
         </div>
         <div>
           {/** Join Discord */}
