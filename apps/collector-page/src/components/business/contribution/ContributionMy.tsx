@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:30:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 18:19:26
+ * @LastEditTime: 2022-10-13 15:28:19
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -60,7 +60,7 @@ const ContributionMy: React.FC<ContributionMyProps> = ({
         {displayFollowCommunity ? (
           <FollowBtn followStatusType={followStatusType} onFollow={onFollow} onAccountOperation={onAccountOperation} />
         ) : (
-          <UserScore>My Token : {score}</UserScore>
+          <UserScore>My Score : {score}</UserScore>
         )}
       </RightBox>
     </ContributionMyWrapper>

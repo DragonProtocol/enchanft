@@ -99,17 +99,6 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
     setCollapsePanelDxpanded({ ...collapsePanelDxpanded, [`${key}`]: !collapsePanelDxpanded[key] })
   return (
     <ProjectDetailBasicInfoWrapper>
-      {/* <ProjectName>{name}</ProjectName> */}
-      <PorjectNumbersBox>
-        <PorjectNumbersItemBox>
-          <ProjectNumbersItemLabel>items</ProjectNumbersItemLabel>
-          <ProjectNumbersItemValue>{itemTotalNum || 0}</ProjectNumbersItemValue>
-        </PorjectNumbersItemBox>
-        <PorjectNumbersItemBox>
-          <ProjectNumbersItemLabel>EnchaNFT</ProjectNumbersItemLabel>
-          <ProjectNumbersItemValue>{injectedCoins || 0}</ProjectNumbersItemValue>
-        </PorjectNumbersItemBox>
-      </PorjectNumbersBox>
       {!!description && (
         <CollapsePanel
           header={<ProjectAnnouncementTitleBox>Description</ProjectAnnouncementTitleBox>}
@@ -164,49 +153,10 @@ export default ProjectDetailBasicInfo
 const ProjectDetailBasicInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  border-top: 1px solid #d9d9d9;
 `
 const MintTimeCountdown = styled(TimeCountdown)`
   margin-left: 10px;
-`
-const ProjectName = styled.div`
-  font-weight: 700;
-  font-size: 28px;
-  line-height: 42px;
-  color: #333333;
-`
-const PorjectNumbersBox = styled.div`
-  display: flex;
-  gap: 10px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #d9d9d9;
-`
-const PorjectNumbersItemBox = styled.div`
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  gap: 12px;
-  width: 185px;
-  height: 40px;
-  background: #ebeee4;
-  border-radius: 10px;
-`
-const ProjectNumbersItemLabel = styled.span`
-  font-size: 16px;
-  color: rgba(51, 51, 51, 0.6);
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    font-size: 12px;
-  }
-`
-const ProjectNumbersItemValue = styled.span`
-  font-weight: 700;
-  font-size: 16px;
-  color: #333333;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    font-size: 14px;
-    line-height: 21px;
-  }
 `
 const ProjectDescription = styled(RichTextBox)`
   max-height: 120px;
