@@ -20,6 +20,7 @@
       "pre-commit": "lint-staged --allow-empty",
       "pre-push": "pnpm lint:check"
     }
+    
   },
   "private": true,
   "devDependencies": {
