@@ -36,16 +36,25 @@ export default function TwitterInputModal({
           <h3>Twitter Authorization</h3>
         </div>
         <div>
+          <p className="tint">
+            <b>Step 1</b>: Enter your Twitter username (begins with the “@”
+            symbol) and password to authorize wl.xyz to access your Twitter
+            account. Please check that your browser's firewall blocks the
+            authorization popover.
+          </p>
+          <p className="tint">
+            <b>Step 2</b>: Enter the Pin Number from Step 1 in the input box.
+            You‘ll be granted access to wl.xyz.
+          </p>
+        </div>
+        <div>
           <input
             title="code"
-            placeholder="Enter your PIN number"
+            placeholder="Enter your PIN Number"
             type="text"
             value={code}
             onChange={(e) => setCode(e.target.value)}
           />
-        </div>
-        <div>
-          <p className="tint">You‘ll grant access to wl.xyz.</p>
         </div>
         <div className="btns">
           <button className="cancel" onClick={closeModal}>
@@ -65,7 +74,7 @@ const ContentBox = styled.div`
   text-align: start;
   background: #f7f9f1;
   border-radius: 20px;
-  width: 400px;
+  width: 600px;
   padding: 30px 20px 20px 20px;
   text-align: start;
   display: flex;
