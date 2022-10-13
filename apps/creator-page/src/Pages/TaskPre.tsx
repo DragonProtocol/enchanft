@@ -72,12 +72,14 @@ export function TaskPre() {
                   {item.name}
                 </NavLink>
               </span>
-              <span>{reward.raffled ? 'Raffles' : 'FCFS'}</span>
+              <span>{reward && reward.raffled ? 'Raffles' : 'FCFS'}</span>
               <span>
                 {dayjs(item.startTime).format('YYYY/MM/DD HH:mm')} —{' '}
                 {dayjs(item.endTime).format('YYYY/MM/DD HH:mm')}
               </span>
-              <span>{reward.type.toLowerCase().replace('_', ' ')}</span>
+              <span>
+                {reward && reward.type.toLowerCase().replace('_', ' ')}
+              </span>
             </div>
           );
         })}
