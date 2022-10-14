@@ -136,7 +136,7 @@ export default function Preview({
                   if (item.type === ActionType.CUSTOM) {
                     Icon = IconCustom;
                   }
-                  if (item.type === ActionType.SURVEY) {
+                  if (item.type === ActionType.QUESTIONNAIRE) {
                     Icon = IconQuestion;
                   }
                   if (

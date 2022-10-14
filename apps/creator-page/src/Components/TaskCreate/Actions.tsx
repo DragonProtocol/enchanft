@@ -109,7 +109,7 @@ export default function Actions({
     ],
   });
   const [questionnaire, setQuestionnaire] = useState({
-    type: ActionType.SURVEY,
+    type: ActionType.QUESTIONNAIRE,
     valid: false,
     manualCheck: false,
     question: '',
@@ -264,9 +264,11 @@ export default function Actions({
     if (questionnaire.valid) {
       actions.push({
         name: questionnaire.question,
-        type: ActionType.SURVEY,
-        typeMore: ActionTypeMore.SURVEY,
+        type: ActionType.QUESTIONNAIRE,
+        typeMore: ActionTypeMore.QUESTIONNAIRE,
         description: ``,
+        question: questionnaire.question,
+        answer: questionnaire.answer,
       });
     }
 
@@ -501,7 +503,7 @@ export default function Actions({
             </div>
           </div>
 
-          {/** Question 
+          {/** Question */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -553,7 +555,7 @@ export default function Actions({
                     />
                   </div>
                 </div>
-                <div className="switch-btn-box">
+                {/* <div className="switch-btn-box">
                   <span>Manual check?</span>
                   <SwitchBtn
                     width={80}
@@ -568,11 +570,10 @@ export default function Actions({
                       });
                     }}
                   />
-                </div>
+                </div> */}
               </>
             )}
           </div>
-          */}
         </div>
         <div>
           {/** Join Discord */}

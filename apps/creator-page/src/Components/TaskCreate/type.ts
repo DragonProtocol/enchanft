@@ -50,7 +50,7 @@ export enum ActionType {
   COIN = 'coin',
   NFT = 'nft',
   CUSTOM = 'custom',
-  SURVEY = 'survey',
+  QUESTIONNAIRE = 'QUESTIONNAIRE',
 }
 
 export enum ActionTypeMore {
@@ -68,7 +68,7 @@ export enum ActionTypeMore {
   DISCORD_OBTAIN_ROLE = 'DISCORD_OBTAIN_ROLE',
   NATIVE_BALANCE = 'NATIVE_BALANCE',
   NFT_BALANCE = 'NFT_BALANCE',
-  SURVEY = 'SURVEY',
+  QUESTIONNAIRE = 'QUESTIONNAIRE',
 }
 
 export type Action = {
@@ -86,6 +86,8 @@ export type Action = {
   min_native_balance?: number;
   nft_accounts?: { name: string; address: string }[];
   nft_accounts_or_add?: boolean;
+  question?: string;
+  answer?: string;
 };
 
 export type Reward = {
