@@ -27,6 +27,7 @@ import convertToCSV from '../utils/convertToCsv';
 import Loading from '../Components/Loading';
 import { Whales } from '../utils/constants';
 import UserAvatar from '../Components/UserAvatar';
+import { sortPubKey } from '../utils';
 
 const fileDownload = require('js-file-download');
 
@@ -215,7 +216,9 @@ export default function Members() {
                     <td>{item.twitterId || 'X'}</td>
                     <td>{item.discordName || 'X'}</td>
                     <td>{item.discordId || 'X'}</td>
-                    <td>{item.wallet || 'X'}</td>
+                    <td>
+                      {(item.wallet && sortPubKey(item.wallet, 8)) || 'X'}
+                    </td>
                   </tr>
                 );
               })}
