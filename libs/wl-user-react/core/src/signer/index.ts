@@ -2,16 +2,27 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-11 10:33:25
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-13 13:35:48
+ * @LastEditTime: 2022-10-14 17:28:27
  * @Description: file description
  */
-export { Twitter } from './twitter';
-export { Discord } from './discord';
-export { Metamask } from './metamask';
-export { Phantom } from './phantom';
-export { Martian } from './martian';
-import { AccountType, User } from '../types';
-import { LoginResult, BindResult, UnBindResult } from '../api';
+export { Twitter, TwitterError, TwitterErrorName } from './twitter';
+export { Discord, DiscordError, DiscordErrorName } from './discord';
+export { Metamask, MetamaskError, MetamaskErrorName } from './metamask';
+export { Phantom, PhantomError, PhantomErrorName } from './phantom';
+export { Martian, MartianError, MartianErrorName } from './martian';
+import {
+  LoginResult,
+  BindResult,
+  UnBindResult,
+  unbindAccount,
+  ApiErrorName,
+} from '../api';
+import { signerTypeToAccountTyp } from '../utils';
+import { TwitterError } from './twitter';
+import { DiscordError } from './discord';
+import { MetamaskError } from './metamask';
+import { PhantomError } from './phantom';
+import { MartianError } from './martian';
 
 export enum SignerType {
   TWITTER = 'TWITTER',
@@ -20,74 +31,66 @@ export enum SignerType {
   PHANTOM = 'PHANTOM',
   MARTIAN = 'MARTIAN',
 }
+const SignerErrorMap = {
+  [SignerType.TWITTER]: TwitterError,
+  [SignerType.DISCORD]: DiscordError,
+  [SignerType.METAMASK]: MetamaskError,
+  [SignerType.PHANTOM]: PhantomError,
+  [SignerType.MARTIAN]: MartianError,
+};
+export enum SignerProcessStatus {
+  IDLE = 'IDLE',
+  SIGNATURE_PENDING = 'SIGNATURE_PENDING',
+  SIGNATURE_REJECTED = 'SIGNATURE_REJECTED',
+  LOGIN_PENDING = 'LOGIN_PENDING',
+  LOGIN_FULFILLED = 'LOGIN_FULFILLED',
+  LOGIN_REJECTED = 'LOGIN_REJECTED',
+  BIND_PENDING = 'BIND_PENDING',
+  BIND_FULFILLED = 'BIND_FULFILLED',
+  BIND_REJECTED = 'BIND_REJECTED',
+  UNBIND_PENDING = 'UNBIND_PENDING',
+  UNBIND_FULFILLED = 'UNBIND_FULFILLED',
+  UNBIND_REJECTED = 'UNBIND_REJECTED',
+}
+export type SignerProcessStatusChange = (
+  signerProcessStatus: SignerProcessStatus
+) => void;
 export abstract class Signer {
   constructor() {}
-
-  public abstract get signerType(): SignerType;
-
+  abstract readonly signerType: SignerType;
+  protected signerProcessStatusChange: SignerProcessStatusChange = () => {};
+  public signerProcessStatusChangeListener(
+    signerProcessStatusChange: SignerProcessStatusChange
+  ) {
+    this.signerProcessStatusChange = signerProcessStatusChange;
+  }
   public abstract login(): Promise<LoginResult>;
 
   public abstract bind(token: string): Promise<BindResult>;
 
-  public abstract unbind(token: string): Promise<UnBindResult>;
-}
-
-// type SignerTypeInstanceTypes = {
-//   [SignerType.TWITTER]: Twitter;
-//   [SignerType.DISCORD]: Discord;
-//   [SignerType.METAMASK]: Metamask;
-//   [SignerType.PHANTOM]: Phantom;
-//   [SignerType.MARTIAN]: Martian;
-// };
-
-// type SignerTypeReturnInstanceType<T extends SignerType> = ReturnType<
-//   () => SignerTypeInstanceTypes[T]
-// >;
-
-// const signerInstances: SignerTypeInstanceTypes = {
-//   [SignerType.TWITTER]: new Twitter(),
-//   [SignerType.DISCORD]: new Discord(),
-//   [SignerType.METAMASK]: new Metamask(),
-//   [SignerType.PHANTOM]: new Phantom(),
-//   [SignerType.APTOS]: new Aptos(),
-// };
-
-// export function getSigner<T extends SignerType>(
-//   signerType: T
-// ): SignerTypeReturnInstanceType<T> | null {
-//   return signerInstances[signerType] || null;
-// }
-
-export const SignerAccountTypeMap: {
-  [signerType in SignerType]: AccountType;
-} = {
-  [SignerType.TWITTER]: AccountType.TWITTER,
-  [SignerType.DISCORD]: AccountType.DISCORD,
-  [SignerType.METAMASK]: AccountType.EVM,
-  [SignerType.PHANTOM]: AccountType.SOLANA,
-  [SignerType.MARTIAN]: AccountType.APTOS,
-};
-export function isWeb2Signer(signerType: SignerType) {
-  return [SignerType.TWITTER, SignerType.DISCORD].includes(signerType);
-}
-export function isWeb3Signer(signerType: SignerType) {
-  return [SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN].includes(
-    signerType
-  );
-}
-export const getDisplayUserName = (signerType: SignerType, user: User) => {
-  if (user.name) return user.name;
-  const account = user.accounts.find(
-    (item) => item.accountType === SignerAccountTypeMap[signerType]
-  );
-  if (account) {
-    if (isWeb2Signer(signerType) && account.thirdpartyName) {
-      return account.thirdpartyName;
-    } else if (isWeb3Signer(signerType) && account.thirdpartyId) {
-      return (
-        account.thirdpartyId.slice(0, 4) + '..' + account.thirdpartyId.slice(-4)
-      );
-    }
+  public unbind(token: string): Promise<UnBindResult> {
+    return new Promise(async (resolve, reject) => {
+      this.signerProcessStatusChange(SignerProcessStatus.UNBIND_PENDING);
+      try {
+        const accountType = signerTypeToAccountTyp(this.signerType);
+        const result = await unbindAccount(token, accountType);
+        if (result.data.code === 0) {
+          this.signerProcessStatusChange(SignerProcessStatus.UNBIND_FULFILLED);
+          resolve(result.data.data);
+        } else {
+          this.signerProcessStatusChange(SignerProcessStatus.UNBIND_REJECTED);
+          const CurrError = SignerErrorMap[this.signerType];
+          reject(
+            new CurrError(
+              ApiErrorName.API_REQUEST_UNBIND_ERROR,
+              result.data.msg
+            )
+          );
+        }
+      } catch (error) {
+        this.signerProcessStatusChange(SignerProcessStatus.UNBIND_REJECTED);
+        throw error;
+      }
+    });
   }
-  return `wl user ${user.id}`;
-};
+}

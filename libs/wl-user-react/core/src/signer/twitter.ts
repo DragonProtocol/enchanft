@@ -2,20 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-13 11:39:24
+ * @LastEditTime: 2022-10-14 17:52:26
  * @Description: file description
  */
 import {
+  ApiErrorMessageMap,
+  ApiErrorName,
   bindAccount,
   BindResult,
   getTwittierOauth1RequestToken,
   login,
   LoginResult,
-  unbindAccount,
-  UnBindResult,
 } from '../api';
-import { openOauthWindow } from '../utils';
-import { SignerType, Signer, SignerAccountTypeMap } from './index';
+import { openOauthWindow, SignerAccountTypeMap } from '../utils';
+import { SignerType, Signer, SignerProcessStatus } from './index';
 export interface TwitterConstructorArgs {
   twitterClientId: string;
   oauthCallbackUri: string;
@@ -48,20 +48,18 @@ interface TwitterOauthWindow extends Window {
   ): void;
 }
 export enum TwitterErrorName {
-  FETCH_TWITTER_REQUEST_TOKEN_ERROR = 'FETCH_TWITTER_REQUEST_TOKEN_ERROR',
-  FETCH_TWITTER_LOGIN_ERROR = 'FETCH_TWITTER_LOGIN_ERROR',
-  FETCH_TWITTER_BIND_ERROR = 'FETCH_TWITTER_BIND_ERROR',
-  FETCH_TWITTER_UNBIND_ERROR = 'FETCH_TWITTER_UNBIND_ERROR',
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
 }
-const TwitterErrorMessageMap: { [name in TwitterErrorName]: string } = {
-  [TwitterErrorName.FETCH_TWITTER_REQUEST_TOKEN_ERROR]:
-    'FETCH_TWITTER_REQUEST_TOKEN_ERROR',
-  [TwitterErrorName.FETCH_TWITTER_LOGIN_ERROR]: 'FETCH_TWITTER_LOGIN_ERROR',
-  [TwitterErrorName.FETCH_TWITTER_BIND_ERROR]: 'FETCH_TWITTER_BIND_ERROR',
-  [TwitterErrorName.FETCH_TWITTER_UNBIND_ERROR]: 'FETCH_TWITTER_UNBIND_ERROR',
+type ErrorName = TwitterErrorName | ApiErrorName;
+const ErrorName = { ...TwitterErrorName, ...ApiErrorName };
+const TwitterErrorMessageMap: {
+  [name in keyof typeof ErrorName]: string;
+} = {
+  [ErrorName.UNKNOWN_ERROR]: 'UNKNOWN_ERROR',
+  ...ApiErrorMessageMap,
 };
 export class TwitterError extends Error {
-  public constructor(name: TwitterErrorName, message?: string) {
+  public constructor(name: keyof typeof ErrorName, message?: string) {
     super();
     this.name = name;
     this.message = message || TwitterErrorMessageMap[name];
@@ -83,11 +81,36 @@ code_challenge=challenge&
 code_challenge_method=plain`;
 
 export class Twitter extends Signer {
-  public get signerType() {
-    return SignerType.TWITTER;
+  readonly signerType = SignerType.TWITTER;
+  private twitterClientId = '';
+  private oauthCallbackUri = '';
+  private loginOauthCallbackUrlListener() {
+    if (location.href.startsWith(this.oauthCallbackUri)) {
+      const urlParams = new URLSearchParams(location.search);
+      const oauthToken = urlParams.get('oauth_token');
+      const oauthVerifier = urlParams.get('oauth_verifier');
+      if (oauthToken && oauthVerifier) {
+        window.dispatchEvent(
+          new CustomEvent(TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK, {
+            detail: { oauthToken, oauthVerifier },
+          })
+        );
+      }
+    }
   }
-  public twitterClientId = '';
-  public oauthCallbackUri = '';
+  private bindOauthCallbackUrlListener() {
+    if (location.href.startsWith(this.oauthCallbackUri)) {
+      const urlParams = new URLSearchParams(location.search);
+      const code = urlParams.get('code');
+      if (code) {
+        window.dispatchEvent(
+          new CustomEvent(TwitterEventType.TWITTER_BIND_OAUTH_CALLBACK, {
+            detail: { code },
+          })
+        );
+      }
+    }
+  }
 
   constructor({ twitterClientId, oauthCallbackUri }: TwitterConstructorArgs) {
     super();
@@ -99,6 +122,7 @@ export class Twitter extends Signer {
 
   public login(): Promise<LoginResult> {
     return new Promise(async (resolve, reject) => {
+      this.signerProcessStatusChange(SignerProcessStatus.LOGIN_PENDING);
       try {
         // 1. get twitter request token
         const result = await getTwittierOauth1RequestToken(
@@ -124,11 +148,17 @@ export class Twitter extends Signer {
               twitterOauthVerifier: oauthVerifier,
             });
             if (loginResult.data.code === 0) {
+              this.signerProcessStatusChange(
+                SignerProcessStatus.LOGIN_FULFILLED
+              );
               resolve(loginResult.data.data);
             } else {
+              this.signerProcessStatusChange(
+                SignerProcessStatus.LOGIN_REJECTED
+              );
               reject(
                 new TwitterError(
-                  TwitterErrorName.FETCH_TWITTER_LOGIN_ERROR,
+                  ErrorName.API_REQUEST_LOGIN_ERROR,
                   loginResult.data.msg
                 )
               );
@@ -140,20 +170,23 @@ export class Twitter extends Signer {
             handleTwitterCallback
           );
         } else {
+          this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
           reject(
             new TwitterError(
-              TwitterErrorName.FETCH_TWITTER_REQUEST_TOKEN_ERROR,
+              ErrorName.API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR,
               msg
             )
           );
         }
       } catch (error) {
+        this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
         throw error;
       }
     });
   }
   public bind(token: string): Promise<BindResult> {
     return new Promise(async (resolve, reject) => {
+      this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
       try {
         const url = getApiTwitterOauth2Url(
           this.twitterClientId,
@@ -175,11 +208,13 @@ export class Twitter extends Signer {
             code,
           });
           if (result.data.code === 0) {
+            this.signerProcessStatusChange(SignerProcessStatus.BIND_FULFILLED);
             resolve(result.data.data);
           } else {
+            this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
             reject(
               new TwitterError(
-                TwitterErrorName.FETCH_TWITTER_BIND_ERROR,
+                ErrorName.API_REQUEST_BIND_ERROR,
                 result.data.msg
               )
             );
@@ -191,58 +226,9 @@ export class Twitter extends Signer {
           handleTwitterCallback
         );
       } catch (error) {
+        this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
         throw error;
       }
     });
-  }
-  public unbind(token: string): Promise<UnBindResult> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const result = await unbindAccount(
-          token,
-          SignerAccountTypeMap[this.signerType]
-        );
-        if (result.data.code === 0) {
-          resolve(result.data.data);
-        } else {
-          reject(
-            new TwitterError(
-              TwitterErrorName.FETCH_TWITTER_UNBIND_ERROR,
-              result.data.msg
-            )
-          );
-        }
-      } catch (error) {
-        throw error;
-      }
-    });
-  }
-
-  public loginOauthCallbackUrlListener() {
-    if (location.href.startsWith(this.oauthCallbackUri)) {
-      const urlParams = new URLSearchParams(location.search);
-      const oauthToken = urlParams.get('oauth_token');
-      const oauthVerifier = urlParams.get('oauth_verifier');
-      if (oauthToken && oauthVerifier) {
-        window.dispatchEvent(
-          new CustomEvent(TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK, {
-            detail: { oauthToken, oauthVerifier },
-          })
-        );
-      }
-    }
-  }
-  public bindOauthCallbackUrlListener() {
-    if (location.href.startsWith(this.oauthCallbackUri)) {
-      const urlParams = new URLSearchParams(location.search);
-      const code = urlParams.get('code');
-      if (code) {
-        window.dispatchEvent(
-          new CustomEvent(TwitterEventType.TWITTER_BIND_OAUTH_CALLBACK, {
-            detail: { code },
-          })
-        );
-      }
-    }
   }
 }

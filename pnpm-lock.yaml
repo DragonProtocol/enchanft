@@ -644,6 +644,7 @@ importers:
       '@types/qs': ^6.9.7
       '@types/react': 18.0.13
       '@types/react-dom': 18.0.5
+      '@types/react-modal': ^3.13.1
       '@types/styled-components': ^5.1.26
       axios: ^0.27.2
       babel-jest: 27.5.1
@@ -654,12 +655,14 @@ importers:
       react: 18.2.0
       react-device-detect: ^2.2.2
       react-dom: 18.2.0
+      react-modal: ^3.15.1
       react-test-renderer: 18.2.0
       regenerator-runtime: 0.13.7
       styled-components: ^5.3.5
       tslib: ^2.3.0
     dependencies:
       '@multiavatar/multiavatar': 1.0.7
+      '@types/react-modal': 3.13.1
       '@types/styled-components': 5.1.26
       axios: 0.27.2
       bs58: 5.0.0
@@ -669,6 +672,7 @@ importers:
       react: 18.2.0
       react-device-detect: 2.2.2_biqbaboplfbrettd7655fr4n2y
       react-dom: 18.2.0_react@18.2.0
+      react-modal: 3.15.1_biqbaboplfbrettd7655fr4n2y
       regenerator-runtime: 0.13.7
       styled-components: 5.3.5_7i5myeigehqah43i5u7wbekgba
       tslib: 2.4.0
@@ -6786,6 +6790,12 @@ packages:
       '@types/react': 18.0.14
     dev: true
 
+  /@types/react-modal/3.13.1:
+    resolution: {integrity: sha512-iY/gPvTDIy6Z+37l+ibmrY+GTV4KQTHcCyR5FIytm182RQS69G5ps4PH2FxtC7bAQ2QRHXMevsBgck7IQruHNg==}
+    dependencies:
+      '@types/react': 18.0.14
+    dev: false
+
   /@types/react-reconciler/0.26.7:
     resolution: {integrity: sha512-mBDYl8x+oyPX/VBb3E638N0B7xG+SPk/EAMcVPeexqus/5aTpTphQi0curhhshOqRrc9t6OPoJfEUkbymse/lQ==}
     dependencies:
@@ -11438,6 +11448,10 @@ packages:
     dependencies:
       pify: 2.3.0
     dev: true
+
+  /exenv/1.2.2:
+    resolution: {integrity: sha512-Z+ktTxTwv9ILfgKCk32OX3n/doe+OcLTRtqK9pcL+JsP3J1/VW8Uvl4ZjLlKqeW4rzK4oesDOGMEMRIZqtP4Iw==}
+    dev: false
 
   /exit-hook/1.1.1:
     resolution: {integrity: sha512-MsG3prOVw1WtLXAZbM3KiYtooKR1LvxHh3VHsVtIy0uiUu8usxgB/94DP2HxtD/661lLdB6yzQ09lGJSQr6nkg==}
@@ -17668,6 +17682,10 @@ packages:
       scheduler: 0.13.6
     dev: false
 
+  /react-lifecycles-compat/3.0.4:
+    resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
+    dev: false
+
   /react-lottie/1.2.3_react@18.2.0:
     resolution: {integrity: sha512-qLCERxUr8M+4mm1LU0Ruxw5Y5Fn/OmYkGfnA+JDM/dZb3oKwVAJCjwnjkj9TMHtzR2U6sMEUD3ZZ1RaHagM7kA==}
     engines: {npm: ^3.0.0}
@@ -17677,6 +17695,21 @@ packages:
       babel-runtime: 6.26.0
       lottie-web: 5.9.6
       react: 18.2.0
+    dev: false
+
+  /react-modal/3.15.1_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-duB9bxOaYg7Zt6TMFldIFxQRtSP+Dg3F1ZX3FXxSUn+3tZZ/9JCgeAQKDg7rhZSAqopq8TFRw3yIbnx77gyFTw==}
+    engines: {node: '>=8'}
+    peerDependencies:
+      react: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18
+      react-dom: ^0.14.0 || ^15.0.0 || ^16 || ^17 || ^18
+    dependencies:
+      exenv: 1.2.2
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-lifecycles-compat: 3.0.4
+      warning: 4.0.3
     dev: false
 
   /react-native-codegen/0.69.1:
@@ -21163,6 +21196,12 @@ packages:
     resolution: {integrity: sha512-ts/8E8l5b7kY0vlWLewOkDXMmPdLcVV4GmOQLyxuSswIJsweeFZtAsMF7k1Nszz+TYBQrlYRmzOnr398y1JemQ==}
     dependencies:
       makeerror: 1.0.12
+
+  /warning/4.0.3:
+    resolution: {integrity: sha512-rpJyN222KWIvHJ/F53XSZv0Zl/accqHR8et1kpaMTD/fLCRxtV8iX8czMzY7sVZupTI3zcUTg8eycS2kNF9l6w==}
+    dependencies:
+      loose-envify: 1.4.0
+    dev: false
 
   /watchpack-chokidar2/2.0.1:
     resolution: {integrity: sha512-nCFfBIPKr5Sh61s4LPpy1Wtfi0HE8isJ3d2Yb5/Ppw2P2B/3eVSEBjKfN0fmHJSK14+31KwMKmcrzs2GM4P0Ww==}

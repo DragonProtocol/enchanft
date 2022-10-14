@@ -2,18 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-13 11:39:46
+ * @LastEditTime: 2022-10-14 17:52:02
  * @Description: file description
  */
 import {
+  ApiErrorMessageMap,
+  ApiErrorName,
   bindAccount,
   BindResult,
   LoginResult,
-  unbindAccount,
-  UnBindResult,
 } from '../api';
-import { openOauthWindow } from '../utils';
-import { SignerType, Signer, SignerAccountTypeMap } from './index';
+import { openOauthWindow, SignerAccountTypeMap } from '../utils';
+import { SignerType, Signer, SignerProcessStatus } from './index';
 export interface DiscordConstructorArgs {
   discordClientId: string;
   oauthCallbackUri: string;
@@ -40,15 +40,18 @@ interface DiscordOauthWindow extends Window {
   ): void;
 }
 export enum DiscordErrorName {
-  FETCH_DISCORD_BIND_ERROR = 'FETCH_DISCORD_BIND_ERROR',
-  FETCH_DISCORD_UNBIND_ERROR = 'FETCH_DISCORD_UNBIND_ERROR',
+  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
 }
-const DiscordErrorMessageMap: { [name in DiscordErrorName]: string } = {
-  [DiscordErrorName.FETCH_DISCORD_BIND_ERROR]: 'FETCH_DISCORD_BIND_ERROR',
-  [DiscordErrorName.FETCH_DISCORD_UNBIND_ERROR]: 'FETCH_DISCORD_UNBIND_ERROR',
+type ErrorName = DiscordErrorName | ApiErrorName;
+const ErrorName = { ...DiscordErrorName, ...ApiErrorName };
+const DiscordErrorMessageMap: {
+  [name in keyof typeof ErrorName]: string;
+} = {
+  [ErrorName.UNKNOWN_ERROR]: 'UNKNOWN_ERROR',
+  ...ApiErrorMessageMap,
 };
 export class DiscordError extends Error {
-  public constructor(name: DiscordErrorName, message?: string) {
+  public constructor(name: keyof typeof ErrorName, message?: string) {
     super();
     this.name = name;
     this.message = message || DiscordErrorMessageMap[name];
@@ -67,12 +70,22 @@ redirect_uri=${oauthCallbackUri}&
 prompt=consent`;
 
 export class Discord extends Signer {
-  public get signerType() {
-    return SignerType.DISCORD;
+  readonly signerType = SignerType.DISCORD;
+  private discordClientId = '';
+  private oauthCallbackUri = '';
+  private bindOauthCallbackUrlListener() {
+    if (location.href.startsWith(this.oauthCallbackUri)) {
+      const urlParams = new URLSearchParams(location.search);
+      const code = urlParams.get('code');
+      if (code) {
+        window.dispatchEvent(
+          new CustomEvent(DiscordEventType.DISCORD_BIND_OAUTH_CALLBACK, {
+            detail: { code },
+          })
+        );
+      }
+    }
   }
-  public discordClientId = '';
-  public oauthCallbackUri = '';
-
   constructor({ discordClientId, oauthCallbackUri }: DiscordConstructorArgs) {
     super();
     this.discordClientId = discordClientId;
@@ -82,11 +95,13 @@ export class Discord extends Signer {
 
   public login(): Promise<LoginResult> {
     return new Promise(async (resolve, reject) => {
+      this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
       reject('Currently not supported');
     });
   }
   public bind(token: string): Promise<BindResult> {
     return new Promise(async (resolve, reject) => {
+      this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
       try {
         const url = getApiDiscordOauth2Url(
           this.discordClientId,
@@ -108,11 +123,13 @@ export class Discord extends Signer {
             code,
           });
           if (result.data.code === 0) {
+            this.signerProcessStatusChange(SignerProcessStatus.BIND_FULFILLED);
             resolve(result.data.data);
           } else {
+            this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
             reject(
               new DiscordError(
-                DiscordErrorName.FETCH_DISCORD_BIND_ERROR,
+                ErrorName.API_REQUEST_BIND_ERROR,
                 result.data.msg
               )
             );
@@ -124,43 +141,9 @@ export class Discord extends Signer {
           handleDiscordCallback
         );
       } catch (error) {
+        this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
         throw error;
       }
     });
-  }
-  public unbind(token: string): Promise<UnBindResult> {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const result = await unbindAccount(
-          token,
-          SignerAccountTypeMap[this.signerType]
-        );
-        if (result.data.code === 0) {
-          resolve(result.data.data);
-        } else {
-          reject(
-            new DiscordError(
-              DiscordErrorName.FETCH_DISCORD_UNBIND_ERROR,
-              result.data.msg
-            )
-          );
-        }
-      } catch (error) {
-        throw error;
-      }
-    });
-  }
-  public bindOauthCallbackUrlListener() {
-    if (location.href.startsWith(this.oauthCallbackUri)) {
-      const urlParams = new URLSearchParams(location.search);
-      const code = urlParams.get('code');
-      if (code) {
-        window.dispatchEvent(
-          new CustomEvent(DiscordEventType.DISCORD_BIND_OAUTH_CALLBACK, {
-            detail: { code },
-          })
-        );
-      }
-    }
   }
 }

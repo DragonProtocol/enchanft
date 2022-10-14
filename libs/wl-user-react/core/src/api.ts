@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:51:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-12 18:42:52
+ * @LastEditTime: 2022-10-14 15:41:33
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
@@ -17,6 +17,26 @@ import {
 const API_BASE_URL = process.env['REACT_APP_API_BASE_URL'];
 const axiosInstance = axios.create();
 axiosInstance.defaults.baseURL = API_BASE_URL;
+export enum ApiErrorName {
+  API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR = 'API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR',
+  API_REQUEST_LOGIN_ERROR = 'API_REQUEST_LOGIN_ERROR',
+  API_REQUEST_BIND_ERROR = 'API_REQUEST_BIND_ERROR',
+  API_REQUEST_UNBIND_ERROR = 'API_REQUEST_UNBIND_ERROR',
+}
+export const ApiErrorMessageMap: { [name in ApiErrorName]: string } = {
+  [ApiErrorName.API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR]:
+    'API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR',
+  [ApiErrorName.API_REQUEST_LOGIN_ERROR]: 'API_REQUEST_LOGIN_ERROR',
+  [ApiErrorName.API_REQUEST_BIND_ERROR]: 'API_REQUEST_BIND_ERROR',
+  [ApiErrorName.API_REQUEST_UNBIND_ERROR]: 'API_REQUEST_UNBIND_ERROR',
+};
+export class ApiError extends Error {
+  public constructor(name: ApiErrorName, message?: string) {
+    super();
+    this.name = name;
+    this.message = message || ApiErrorMessageMap[name];
+  }
+}
 export type ApiResp<T> = {
   code: number;
   msg: string;
