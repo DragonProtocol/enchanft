@@ -150,7 +150,7 @@ export default function Account() {
                   </div>
                   <div>{item.wallet}</div>
                   <div>
-                    {project.teamMembers.length > 0 && (
+                    {project.teamMembers.length > 1 && (
                       <button
                         title="del"
                         onClick={() => delMember(item.userId, idx)}
