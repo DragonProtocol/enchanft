@@ -169,6 +169,8 @@ export function createTask(data: CreateTaskState, token: string) {
           min_native_balance: item.min_native_balance,
           nft_accounts: item.nft_accounts,
           nft_accounts_or_add: item.nft_accounts_or_add,
+          question: item.question,
+          answer: item.answer,
         },
       };
     }),
@@ -465,7 +467,7 @@ export function creatorMembersDownloadWithFilter(
   }
 
   axios({
-    url: ApiBaseUrl + `/creator/members/${projectId}/csv&${data}`,
+    url: ApiBaseUrl + `/creator/members/${projectId}/csv?${data}`,
     method: 'get',
     // : list,
     responseType: 'blob',
