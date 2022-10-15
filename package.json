@@ -8,19 +8,13 @@
     "test": "nx test",
     "nx": "nx",
     "lint:check": "nx lint",
-    "lint:fix": "nx lint --fix"
+    "lint:fix": "nx lint --fix",
+    "prepare": "husky install"
   },
   "lint-staged": {
     "apps/**/*.{js,ts,tsx}": [
       "pnpm lint:fix"
     ]
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged --allow-empty",
-      "pre-push": "pnpm lint:check"
-    }
-    
   },
   "private": true,
   "devDependencies": {
