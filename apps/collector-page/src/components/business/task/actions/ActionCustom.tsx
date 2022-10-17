@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 13:57:46
+ * @LastEditTime: 2022-09-01 18:05:02
  * @Description: file description
  */
 import React from 'react'
@@ -10,7 +10,7 @@ import styled, { css } from 'styled-components'
 import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper'
-import PngIconWL from '../../../common/icons/PngIconWL'
+import IconWL from '../../../common/icons/IconWL'
 import ActionNameSpan from './ActionNameSpan'
 import ActionIconBox from './ActionIconBox'
 export type ActionCustomProps = {
@@ -34,7 +34,7 @@ const ActionCustom: React.FC<ActionCustomProps> = ({ data, allowHandle, onCustom
       <ActionCustomRow>
         <ActionIconBox allowHandle={allowHandle} isDone={isDone} onClick={handleAction}>
           <TooltipWrapper title={description}>
-            <PngIconWL style={{ opacity: isDone ? 0.5 : 1 }} />
+            <IconWL opacity={isDone ? 0.5 : 1} />
           </TooltipWrapper>
         </ActionIconBox>
         <ActionContentBox onClick={handleAction}>

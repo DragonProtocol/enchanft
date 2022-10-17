@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 13:57:49
+ * @LastEditTime: 2022-09-08 11:28:24
  * @Description: file description
  */
 import React from 'react'
@@ -10,7 +10,7 @@ import styled, { css } from 'styled-components'
 import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper'
-import PngIconWL from '../../../common/icons/PngIconWL'
+import IconWL from '../../../common/icons/IconWL'
 import { useNavigate } from 'react-router-dom'
 import ActionNameSpan from './ActionNameSpan'
 import ActionIconBox from './ActionIconBox'
@@ -27,7 +27,7 @@ const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({
   const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status, project } = data
   const isDone = status === UserActionStatus.DONE ? true : false
   const handleAction = () => {
-    if (!allowHandle || isDone) return
+    if (!project?.slug || !allowHandle || isDone) return
     navigate(`/${project.slug}/rank`)
   }
   return (
@@ -35,7 +35,7 @@ const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({
       <ActionContributionScoreRow>
         <ActionIconBox allowHandle={allowHandle} isDone={isDone} onClick={handleAction}>
           <TooltipWrapper title={description}>
-            <PngIconWL style={{ opacity: isDone ? 0.5 : 1 }} />
+            <IconWL opacity={isDone ? 0.5 : 1} />
           </TooltipWrapper>
         </ActionIconBox>
         <ActionContentBox onClick={handleAction}>

@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 import bs58 from 'bs58'
 import { useNavigate } from 'react-router-dom'
 
-import { selectAccount, setDefaultWallet, setPubkey, setWalletChecked } from '../features/user/accountSlice'
+import { selectAccount, setDefaultWallet, setIsLogin, setPubkey, setWalletChecked } from '../features/user/accountSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { DEFAULT_WALLET, SIGN_MSG, TokenType } from '../utils/token'
 
@@ -14,6 +14,7 @@ export default function useWalletSign() {
 
   const [phantomValid, setPhantomValid] = useState(false)
   const [metamaskValid, setMetamaskValid] = useState(false)
+  const [martianValid, setMartianValid] = useState(false)
 
   const dispatch = useAppDispatch()
   const account = useAppSelector(selectAccount)
@@ -41,21 +42,34 @@ export default function useWalletSign() {
       alert('Phantom required')
     }
   }
-
+  async function getAptosProvider() {
+    if (windowObj.martian) {
+      await windowObj.martian.connect()
+      const provider = windowObj.martian
+      return provider
+    } else {
+      return null
+    }
+  }
   useEffect(() => {
     const timer = setTimeout(() => {
       let phantomValid = false
       let metamaskValid = false
+      let martianValid = false
       if (windowObj.solana && windowObj.solana.isPhantom) {
         phantomValid = true
       }
       if (windowObj.ethereum) {
         metamaskValid = true
       }
+      if (windowObj.martian) {
+        martianValid = true
+      }
       setPhantomValid(phantomValid)
       setMetamaskValid(metamaskValid)
+      setMartianValid(martianValid)
       console.log({ phantomValid, metamaskValid })
-      walletCheck(phantomValid, metamaskValid).finally(() => {
+      walletCheck(phantomValid, metamaskValid, martianValid).finally(() => {
         dispatch(setWalletChecked())
       })
     }, 0)
@@ -64,16 +78,22 @@ export default function useWalletSign() {
     }
   }, [])
 
-  const walletCheck = async (metamaskValid: boolean, phantomValid: boolean) => {
+  const walletCheck = async (metamaskValid: boolean, phantomValid: boolean, martianValid: boolean) => {
     const defaultWallet = (localStorage.getItem(DEFAULT_WALLET) as TokenType) || ''
     if (defaultWallet === TokenType.Ethereum && metamaskValid) {
       if (windowObj.metaMaskValidChecked) return
       windowObj.metaMaskValidChecked = true
       const ethProvider = await getEthProvider()
-      if (!ethProvider) return
+      if (!ethProvider) {
+        dispatch(setIsLogin(false))
+        return
+      }
       const signer = ethProvider.getSigner()
       const addr = await signer.getAddress()
-      if (!addr) return
+      if (!addr) {
+        dispatch(setIsLogin(false))
+        return
+      }
       dispatch(setPubkey(addr))
     }
     if (defaultWallet === TokenType.Solana && phantomValid) {
@@ -82,11 +102,28 @@ export default function useWalletSign() {
       console.log('getSolanaProvider' + Date.now())
       const provider = await getSolanaProvider()
       if (!provider) {
+        dispatch(setIsLogin(false))
         return
       }
       const addr = provider.publicKey.toString()
 
       if (!addr) {
+        dispatch(setIsLogin(false))
+        return
+      }
+      dispatch(setPubkey(addr))
+    }
+    if (martianValid && defaultWallet === TokenType.Aptos) {
+      if (windowObj.martianValidChecked) return
+      windowObj.martianValidChecked = true
+      console.log('getMartianProvider' + Date.now())
+      const provider = await getAptosProvider()
+      if (!provider) {
+        return
+      }
+      const addr = await getMartianAddr()
+      if (!addr) {
+        dispatch(setIsLogin(false))
         return
       }
       dispatch(setPubkey(addr))
@@ -109,6 +146,22 @@ export default function useWalletSign() {
     const signature = await signer.signMessage(SIGN_MSG)
     return { walletType: TokenType.Ethereum, pubkey: walletAddr, signature }
   }
+  const signMsgWithMartian = async () => {
+    const provider = await getAptosProvider()
+    if (!provider) return
+    const walletAddr = await getMartianAddr()
+    const resp = await provider.signMessage({
+      message: SIGN_MSG,
+    })
+    console.log('signMsgWithMartian', resp)
+    const { signature } = resp
+    return {
+      walletType: TokenType.Aptos,
+      pubkey: walletAddr,
+      signature: signature.slice(2),
+      payloadMsg: resp.fullMessage,
+    }
+  }
 
   const getPhantomAddr = async () => {
     const solanaProvider = await getSolanaProvider()
@@ -125,12 +178,21 @@ export default function useWalletSign() {
     return walletAddr
   }
 
+  const getMartianAddr = async () => {
+    const provider = await getAptosProvider()
+    if (!provider) return
+    const { publicKey } = await provider.account()
+    return publicKey.slice(2)
+  }
   return {
     phantomValid,
     metamaskValid,
+    martianValid,
     signMsgWithPhantom,
     signMsgWithMetamask,
+    signMsgWithMartian,
     getPhantomAddr,
     getMetamaskAddr,
+    getMartianAddr,
   }
 }

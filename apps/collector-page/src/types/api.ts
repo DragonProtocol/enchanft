@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 18:59:30
+ * @LastEditTime: 2022-10-09 13:22:34
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
 import {
   Action,
+  Announcement,
   Community,
   ContributionRank,
   MintStage,
@@ -26,89 +27,82 @@ import {
 /** explore api */
 
 // explore task
-export enum ExploreTaskSortBy {
-  NEW = 'NEW',
-  HOT = 'HOT',
+export enum SearchTaskStatus {
+  ALL = 'ALL',
+  LIVE = 'LIVE',
+  FUTURE = 'FUTURE',
+  CLOSED = 'CLOSED',
 }
 export type ExploreSearchTasksRequestParams = {
-  orderType?: ExploreTaskSortBy
+  status?: SearchTaskStatus
   keywords?: string
 }
 export type ExploreSearchTaskItem = Task & {
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  actions: Action[]
-  project: Project
+  winnerNum?: number
+  acceptedStatus?: TaskAcceptedStatus
+  actions?: Action[]
+  project?: Project
   reward?: Reward
 }
 export type ExploreRecommendTaskItem = Task & {
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  actions: Action[]
-  project: Project
+  winnerNum?: number
+  acceptedStatus?: TaskAcceptedStatus
+  actions?: Action[]
+  project?: Project
   reward?: Reward
 }
 
 // explore project
-export type TaskItem = Task & {
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  actions: Action[]
+export type ExploreProjectTaskItem = Task & {
+  winnerNum?: number
+  acceptedStatus?: TaskAcceptedStatus
+  actions?: Action[]
 }
 export type ExploreSearchProjectsRequestParams = {
   mintStage?: MintStage | ''
   keywords?: string
 }
 export type ExploreSearchProjectItem = Project & {
-  community: Community
-  tasks: TaskItem[]
+  community?: Community & {
+    memberNum?: number
+  }
+  tasks?: ExploreProjectTaskItem[]
 }
 
 export type ExploreRecommendProjectItem = Project & {
-  community: Community
-  tasks: TaskItem[]
+  community?: Community
+  tasks?: ExploreProjectTaskItem[]
 }
 
 // project detail
 export type ProjectDetailTaskItem = Task & {
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  actions: Action[]
+  winnerNum?: number
+  acceptedStatus?: TaskAcceptedStatus
+  actions?: Action[]
   reward?: Reward
 }
 export type ProjectDetailResponse = Project & {
-  tasks: ProjectDetailTaskItem[]
-  teamMembers: Team[]
-  roadmap: Roadmap[]
-  whitelists: Whitelist[]
-  community: Community
+  tasks?: ProjectDetailTaskItem[]
+  teamMembers?: Team[]
+  roadmap?: Roadmap[]
+  whitelists?: Whitelist[]
+  community?: Community
+  announcement?: Announcement
 }
 
 /** community api */
-export type CommunityDetailBasicInfo = Community & {
-  communityFollowerNum: number
-}
-export type CommunityCollectionProjectItem = Project & {
-  tasks: TaskItem[]
-  teamMembers: Team[]
-  roadmap: Roadmap[]
-  whitelists: Whitelist[]
-}
 
-export type CommunityCollectionResponse = {
-  community: CommunityDetailBasicInfo
-  projects: CommunityCollectionProjectItem[]
+export type CommunityBasicInfoResponse = Community & {
+  chainId?: number
 }
-
-export type CommunityBasicInfoResponse = Community
 
 export type CommunityContributionRankItem = ContributionRank
 export type CommunityContributionRankResponse = CommunityContributionRankItem[]
 
 export type FollowedCommunityItem = Community & {
-  memberNums: number
-  contribution: number
-  project: Project
+  memberNums?: number
+  contribution?: number
+  project?: Project
 }
 export type FollowedCommunitiesResponse = FollowedCommunityItem[]
 
@@ -134,32 +128,44 @@ export type TodoTaskActionItem = Action & {
 }
 
 export type TodoTaskItem = Task & {
-  status: TaskTodoCompleteStatus
-  actions: TodoTaskActionItem[]
-  project: Project
-  whitelist: Whitelist
+  status?: TaskTodoCompleteStatus
+  actions?: TodoTaskActionItem[]
+  project?: Project
+  whitelist?: Whitelist
+  reward?: Reward
 }
 
 export type TodoTaskResponse = TodoTaskItem[]
 
 /** task detail api */
+export type TaskParticipants = {
+  userDetails?: User[]
+  takers?: number
+  finishers?: number
+}
 export type TaskDetailResponse = Task & {
-  winnerNum: number
-  acceptedStatus: TaskAcceptedStatus
-  actions: TodoTaskActionItem[]
-  mintUrl: string
-  mintStartTime: number
-  status: TaskTodoCompleteStatus
-  project: Project
-  winnerList: User[]
+  winnerNum?: number
+  acceptedStatus?: TaskAcceptedStatus
+  actions?: TodoTaskActionItem[]
+  mintUrl?: string
+  mintStartTime?: number
+  status?: TaskTodoCompleteStatus
+  project?: Project
+  winnerList?: User[]
   reward?: Reward
+  participants?: TaskParticipants
 }
 
 /** whitelist api */
-export type UserWhitelistItem = {
-  task: Task
-  community: Community
-  whitelist: Whitelist
-  reward?: Reward
+export type UserRewardItem = Reward & {
+  task?: Task
+  community?: Community
+  whitelist?: Whitelist
+  project?: Project
 }
-export type UserWhitelistsResponse = UserWhitelistItem[]
+/** user api */
+export type FetchTwitterOauthTokenResponse = {
+  oauthToken: string
+  oauthTokenSecret: string
+}
+export type UserRewardsResponse = UserRewardItem[]

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 16:58:49
+ * @LastEditTime: 2022-09-27 14:39:59
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -22,6 +22,8 @@ import ActionRetweetTwitter from './actions/ActionRetweetTwitter'
 import ActionLikeTwitter from './actions/ActionLikeTwitter'
 import ActionCustom from './actions/ActionCustom'
 import ActionDiscordObtainRole from './actions/ActionDiscordObtainRole'
+import ActionNativeBalance from './actions/ActionNativeBalance'
+import ActionNftBalance from './actions/ActionNftBalance'
 
 export type TaskActionItemDataType = {
   id: number
@@ -35,7 +37,7 @@ export type TaskActionItemDataType = {
   data: ActionData
   progress?: string
   status: UserActionStatus
-  project: {
+  project?: {
     slug: string
   }
 }
@@ -101,6 +103,12 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.CUSTOM:
         // 自定义action
         return <ActionCustom data={data} allowHandle={allowHandle} onCustomAction={onCustomAction} />
+      case ActionType.NATIVE_BALANCE:
+        // 钱包余额
+        return <ActionNativeBalance data={data} allowHandle={allowHandle} />
+      case ActionType.NFT_BALANCE:
+        // 持有指定nft
+        return <ActionNftBalance data={data} allowHandle={allowHandle} />
       default:
         return name
     }

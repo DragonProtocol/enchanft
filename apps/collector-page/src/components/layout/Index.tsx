@@ -2,79 +2,104 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 17:55:42
+ * @LastEditTime: 2022-09-21 18:57:01
  * @Description: 站点布局入口
  */
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { ToastContainer } from 'react-toastify'
+import Hammer from 'hammerjs'
+import { isMobile, isDesktop } from 'react-device-detect'
 import 'react-toastify/dist/ReactToastify.min.css'
 import { MEDIA_BREAK_POINTS } from 'constants/index'
-import Main, { CutomRouteObject, permissionRoutes, RouteKeys, routes } from './Main'
+import Main from './Main'
 import Header from './Header'
 import TodoFloatingWindow from './TodoFloatingWindow'
 import ScrollBox from '../common/scroll/ScrollBox'
 import MainInner from './MainInner'
-import { matchRoutes, useLocation } from 'react-router-dom'
+import { matchRoutes, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { selectAccount, userLink } from '../../features/user/accountSlice'
+import { selectAccount, setIsLogin, userLink, userLogin } from '../../features/user/accountSlice'
 import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
-import { fetchUserWhitelists } from '../../features/user/userWhitelistsSlice'
+import { fetchUserRewards } from '../../features/user/userRewardsSlice'
 import { fetchTodoTasks, selectAll } from '../../features/user/todoTasksSlice'
 import { TaskTodoCompleteStatus } from '../../types/entities'
 import { useGAPageView } from '../../hooks'
 import Footer from './Footer'
 import useWalletSign from '../../hooks/useWalletSign'
+import { selectWebsite, setMobileNavDisplay } from '../../features/website'
+import useRoute from '../../hooks/useRoute'
+import { navs, RouteKeys } from '../../route/routes'
+import { MOBILE_BREAK_POINT } from '../../constants'
+import { TokenType } from '../../utils/token'
 const Layout: React.FC = () => {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token, walletChecked } = useAppSelector(selectAccount)
+  const { isLogin } = useAppSelector(selectAccount)
+  const { mobileNavDisplay } = useAppSelector(selectWebsite)
   useGAPageView()
   useWalletSign()
-  // TODO 后面对路由优化时，这个matchRoutes重复代码可封装成hooks
-  const location = useLocation()
+
+  const { routeKey } = useRoute()
   const [displayTodoFloating, setDisplayTodoFloating] = useState(false)
   useEffect(() => {
-    if (!token) {
+    if (!isLogin) {
       setDisplayTodoFloating(false)
       return
     }
-    const match = matchRoutes([...permissionRoutes, ...routes], location)
-    if (!match) {
+    if (routeKey === RouteKeys.noMatch) {
+      setDisplayTodoFloating(false)
+    } else if (routeKey === RouteKeys.taskCreate) {
       setDisplayTodoFloating(false)
     } else {
-      const { key } = match[0].route as CutomRouteObject
-      if (key === RouteKeys.taskCreate) {
-        setDisplayTodoFloating(false)
-      } else {
-        setDisplayTodoFloating(true)
-      }
+      setDisplayTodoFloating(true)
     }
-  }, [location, token])
+  }, [isLogin, routeKey])
 
   // 获取用户相关信息
   useEffect(() => {
-    if (!token) {
+    if (!isLogin) {
       return
     }
     dispatch(fetchFollowedCommunities())
-    dispatch(fetchUserWhitelists())
+    dispatch(fetchUserRewards())
     dispatch(fetchTodoTasks())
-  }, [token])
+  }, [isLogin])
   const todoTasks = useAppSelector(selectAll)
-  const count = todoTasks.filter((item) =>
-    [TaskTodoCompleteStatus.TODO, TaskTodoCompleteStatus.IN_PRGRESS].includes(item.status),
+  const count = todoTasks.filter(
+    (item) => item.status && [TaskTodoCompleteStatus.TODO, TaskTodoCompleteStatus.IN_PRGRESS].includes(item.status),
   ).length
   //社媒账号授权 code 监听
   useEffect(() => {
-    localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
+    // localStorage.setItem(
+    //   'social_auth',
+    //   JSON.stringify({ code: null, type: null, oauthToken: null, oauthVerifier: null }),
+    // )
     const handleStorageChange = ({ newValue, key, url }) => {
+      console.log({ newValue })
       if ('social_auth' === key) {
         console.log('social_auth change url', url)
         // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
-        const { code, type } = JSON.parse(newValue || '')
+        const newValueObj = JSON.parse(newValue || '{}')
+        const { code, type, oauthToken, oauthVerifier } = newValueObj
+        console.log({ code, type, oauthToken, oauthVerifier })
+
         if (code && type) {
           linkUser({ code, type })
-          localStorage.setItem('social_auth', JSON.stringify({ code: null, type: null }))
+          localStorage.setItem('social_auth', JSON.stringify({ ...newValueObj, code: null, type: null }))
+        }
+        if (oauthToken && oauthVerifier && type === 'TWITTER') {
+          dispatch(
+            userLogin({
+              walletType: TokenType.Twitter,
+              twitterOauthToken: oauthToken,
+              twitterOauthVerifier: oauthVerifier,
+            }),
+          )
+          localStorage.setItem(
+            'social_auth',
+            JSON.stringify({ ...newValueObj, type: null, oauthToken: null, oauthVerifier: null }),
+          )
         }
       }
     }
@@ -93,9 +118,56 @@ const Layout: React.FC = () => {
     }
   }
 
+  useEffect(() => {
+    if (isMobile) {
+      // Get a reference to an element
+      const hammerEl = document.querySelector('#scroll-box')
+      if (hammerEl) {
+        // Create a manager to manager the element
+        const hammerManager = new Hammer.Manager(hammerEl, {
+          touchAction: 'pan-y',
+        })
+        // Create a recognizer
+        const Pan = new Hammer.Pan({
+          threshold: 1,
+          velocity: 0,
+        })
+        // Add the recognizer to the manager
+        hammerManager.add(Pan)
+        // Subscribe to a desired event
+        hammerManager.on('pan', function (e) {
+          if (e.direction === Hammer.DIRECTION_UP) {
+            dispatch(setMobileNavDisplay(false))
+          } else if (e.direction === Hammer.DIRECTION_DOWN) {
+            dispatch(setMobileNavDisplay(true))
+          }
+        })
+      }
+    }
+  }, [isMobile])
+
+  const MobileNav = useCallback(
+    () => (
+      <MobileNavList>
+        {navs.map((item, index) => (
+          <>
+            {index !== 0 && <MobileNavLine />}
+            <MobileNavItemBox
+              key={item.link}
+              isActive={item.activeRouteKeys.includes(routeKey)}
+              onClick={() => navigate(item.link)}
+            >
+              <MobileNavItemText>{item.name}</MobileNavItemText>
+            </MobileNavItemBox>
+          </>
+        ))}
+      </MobileNavList>
+    ),
+    [navs, routeKey],
+  )
   // if (!walletChecked) return null
   return (
-    <LayoutWrapper>
+    <LayoutWrapper id="layout-wrapper">
       <HeaderBox>
         <HeaderInner>
           <Header />
@@ -112,6 +184,7 @@ const Layout: React.FC = () => {
         </ScrollBox>
       </MainBox>
       {displayTodoFloating && <TodoFloatingWindow count={count} />}
+      {isMobile && mobileNavDisplay && MobileNav()}
       <ToastContainer autoClose={2000} position="top-right" />
     </LayoutWrapper>
   )
@@ -143,6 +216,9 @@ const HeaderInner = styled.div`
     width: ${MEDIA_BREAK_POINTS.xxl}px;
     margin: 0 auto;
   }
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding: 0 20px;
+  }
 `
 const MainBox = styled.div`
   width: 100%;
@@ -160,4 +236,42 @@ const FooterInner = styled.div`
     width: ${MEDIA_BREAK_POINTS.xxl}px;
     margin: 0 auto;
   }
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    padding: 0 20px;
+  }
+`
+
+const MobileNavList = styled.div`
+  width: 100%;
+  background: #f7f9f1;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed;
+  bottom: 0;
+  z-index: 2;
+  height: 58px;
+  border-top: 4px solid #333333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 46px;
+`
+const MobileNavItemBox = styled.div<{ isActive: boolean }>`
+  height: 40px;
+  display: flex;
+  align-items: center;
+  box-shadow: ${(props) => (props.isActive ? '0 4px #3DD606' : 'none')};
+  transition: all 1s ease-out;
+`
+const MobileNavLine = styled.div`
+  height: 40px;
+  width: 1px;
+  background: #d9d9d9;
+`
+const MobileNavItemText = styled.span`
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  text-transform: uppercase;
+  color: #333333;
+  transition: all 0.5s ease-out;
 `

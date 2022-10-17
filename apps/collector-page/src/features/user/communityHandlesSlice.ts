@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-31 19:10:52
+ * @LastEditTime: 2022-10-13 15:17:57
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -18,6 +18,7 @@ import {
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
 import { fetchCommunityContributionRanks } from '../community/contributionRanksSlice'
+import { fetchUserContributon } from '../contribution/userContributionSlice'
 import { addOne as addOneForCheckinCommunities } from './checkinCommunitiesSlice'
 import { addOne as addOneForFollowedCommunities, fetchFollowedCommunities } from './followedCommunitiesSlice'
 // 每一种操作单独存储当前的数据状态
@@ -78,16 +79,13 @@ export const downloadContributionTokens = createAsyncThunk(
 
 export const verifyCheckin = createAsyncThunk(
   'user/communityHandles/verifyCheckin',
-  async ({ communityId, slug }: { communityId: number; slug?: string }, { dispatch, getState }) => {
+  async (communityId: number, { dispatch, getState }) => {
     try {
       const resp = await verifyCommunityCheckin(communityId)
       if (resp.data.code === 0) {
         if (resp.data.data === 1) {
           const addCheckinCommunity = { communityId, seqDays: 1, contribution: 0 }
           dispatch(addOneForCheckinCommunities(addCheckinCommunity))
-          if (slug) {
-            dispatch(fetchCommunityContributionRanks(slug))
-          }
         }
       } else {
         throw new Error(resp.data.msg)
@@ -97,34 +95,54 @@ export const verifyCheckin = createAsyncThunk(
       throw error
     }
   },
+  {
+    condition: (params, { getState }) => {
+      const state = getState() as RootState
+      const {
+        account: { isLogin },
+      } = state
+      // 没有登录,则阻止请求
+      if (!isLogin) {
+        return false
+      }
+      return true
+    },
+  },
 )
 
-export const checkin = createAsyncThunk('user/communityHandles/checkin', async (communityId: number, { dispatch }) => {
-  try {
-    const resp = await checkinCommunity(communityId)
-    if (resp.data.code === 0) {
-      const { seqDays, contribution } = resp.data.data
-      const addCheckinCommunity = { communityId, seqDays: seqDays || 0, contribution: contribution || 0 }
-      dispatch(addOneForCheckinCommunities(addCheckinCommunity))
-      toast.success(`Got ${addCheckinCommunity.contribution} contribution token!`)
-      dispatch(setCheckinOpenClaimModal(true))
-      setTimeout(() => {
-        dispatch(setCheckinOpenClaimModal(false))
-      }, 3000)
-    } else {
-      throw new Error(resp.data.msg)
+export const checkin = createAsyncThunk(
+  'user/communityHandles/checkin',
+  async ({ communityId, slug }: { communityId: number; slug?: string }, { dispatch }) => {
+    try {
+      const resp = await checkinCommunity(communityId)
+      if (resp.data.code === 0) {
+        const { seqDays, contribution } = resp.data.data
+        const addCheckinCommunity = { communityId, seqDays: seqDays || 0, contribution: contribution || 0 }
+        dispatch(addOneForCheckinCommunities(addCheckinCommunity))
+        if (slug) {
+          dispatch(fetchCommunityContributionRanks(slug))
+          dispatch(fetchUserContributon(slug))
+        }
+        toast.success(`Got ${addCheckinCommunity.contribution} contribution scores!`)
+        dispatch(setCheckinOpenClaimModal(true))
+        setTimeout(() => {
+          dispatch(setCheckinOpenClaimModal(false))
+        }, 3000)
+      } else {
+        throw new Error(resp.data.msg)
+      }
+      return { errorMsg: '' }
+    } catch (error) {
+      throw error
     }
-    return { errorMsg: '' }
-  } catch (error) {
-    throw error
-  }
-})
+  },
+)
 export const userCommunityHandlesSlice = createSlice({
   name: 'CommunityHandles',
   initialState: initUserCommunityHandlesState,
   reducers: {
     resetVerifyCheckin: (state) => {
-      state.verifyCheckin = initCommunityHandlestate
+      Object.assign(state.verifyCheckin, initCommunityHandlestate)
     },
     setCheckinOpenClaimModal: (state, action: PayloadAction<boolean>) => {
       state.checkin.openClaimModal = action.payload
@@ -143,7 +161,7 @@ export const userCommunityHandlesSlice = createSlice({
         state.follow.params = null
         state.follow.status = AsyncRequestStatus.FULFILLED
         state.follow.errorMsg = ''
-        toast.success('follow success')
+        toast.success('apply success')
       })
       .addCase(follow.rejected, (state, action) => {
         console.log('follow rejected', action)

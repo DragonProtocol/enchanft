@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-31 17:06:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-31 19:06:50
+ * @LastEditTime: 2022-09-22 16:09:42
  * @Description: file description
  */
 import React from 'react'
@@ -36,7 +36,7 @@ const CommunityCheckedinClaimModal: React.FC<CommunityCheckedinClaimModalProps> 
     <CommunityCheckedinClaimModalWrapper style={{ display: open ? 'block' : 'none' }}>
       <ClaimTextBox>
         <ClaimTextPlusNum>+ {contribution}</ClaimTextPlusNum>
-        <ClaimTextDesc>Got {contribution} contribution token!</ClaimTextDesc>
+        <ClaimTextDesc>Got {contribution} contribution scores!</ClaimTextDesc>
       </ClaimTextBox>
       <LottieBox>
         <Lottie options={defaultOptions} />

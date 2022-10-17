@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-18 13:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 18:25:41
+ * @LastEditTime: 2022-09-08 11:28:51
  * @Description: file description
  */
 import React from 'react'
@@ -28,7 +28,7 @@ const ActionFollowCommunity: React.FC<ActionFollowCommunityProps> = ({
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status, description, project } = data
   const isDone = status === UserActionStatus.DONE
   const handleAction = () => {
-    if (!allowHandle || isDone) return
+    if (!project?.slug || !allowHandle || isDone) return
     navigate(`/${project.slug}`)
   }
   const handleFollowCommunity = () => {

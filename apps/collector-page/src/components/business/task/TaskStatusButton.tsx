@@ -1,20 +1,21 @@
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { ButtonPrimary } from '../../common/button/ButtonBase'
+import { MOBILE_BREAK_POINT } from '../../../constants'
+import ButtonBase, { ButtonPrimary } from '../../common/button/ButtonBase'
 
 export type TaskStatusButtonDataType = {}
 
 export enum TaskStatusButtonType {
-  CONNECT_WALLET = 'CONNECT_WALLET',
-  BIND_WALLET = 'BIND_WALLET',
+  ACCOUNT_OPERATION = 'ACCOUNT_OPERATION',
   TAKE = 'TAKE',
   COMPLETE = 'COMPLETE',
+  MISSION_OFF = 'MISSION_OFF',
 }
 const buttonTextMap = {
-  [TaskStatusButtonType.CONNECT_WALLET]: 'Connect Wallet',
-  [TaskStatusButtonType.BIND_WALLET]: 'Bind Wallet',
+  [TaskStatusButtonType.ACCOUNT_OPERATION]: 'Apply For WL',
   [TaskStatusButtonType.TAKE]: 'Apply For WL',
   [TaskStatusButtonType.COMPLETE]: 'Outcome Pending',
+  [TaskStatusButtonType.MISSION_OFF]: 'Mission off',
 }
 export type TaskStatusButtonDataViewType = {
   type: TaskStatusButtonType
@@ -25,8 +26,7 @@ export type TaskStatusButtonDataViewType = {
 }
 
 export type TaskStatusButtonProps = TaskStatusButtonDataViewType & {
-  onConnectWallet?: () => void
-  onBindWallet?: () => void
+  onAccountOperation?: () => void
   onTake?: () => void
 }
 
@@ -36,53 +36,43 @@ const TaskStatusButton: React.FC<TaskStatusButtonProps> = ({
   loadingText = 'loading ...',
   disabled = false,
   btnText,
-  onConnectWallet,
-  onBindWallet,
+  onAccountOperation,
   onTake,
 }: TaskStatusButtonProps) => {
   const _btnText = btnText || buttonTextMap[type]
-  const isCompleteStatusBtn = [TaskStatusButtonType.TODO, TaskStatusButtonType.COMPLETE].includes(type)
+
+  const handleAccountOperation = () => {
+    if (onAccountOperation) {
+      onAccountOperation()
+    }
+  }
   const handleTake = () => {
     if (onTake) {
       onTake()
     }
   }
-  const handleWalletBind = () => {
-    if (onBindWallet) {
-      onBindWallet()
-    }
-  }
-  const handleConnectWallet = () => {
-    if (onConnectWallet) {
-      onConnectWallet()
-    }
-  }
-  const handleClick = useCallback(() => {
+
+  const renderStatusContent = () => {
     switch (type) {
+      case TaskStatusButtonType.ACCOUNT_OPERATION:
+        return (
+          <TaskBtn onClick={handleAccountOperation} disabled={disabled}>
+            {_btnText}
+          </TaskBtn>
+        )
       case TaskStatusButtonType.TAKE:
-        handleTake()
-        break
-      case TaskStatusButtonType.BIND_WALLET:
-        handleWalletBind()
-        break
-      case TaskStatusButtonType.CONNECT_WALLET:
-        handleConnectWallet()
-        break
-      default:
-        break
+        return (
+          <TaskBtn onClick={handleTake} disabled={disabled}>
+            {loading ? loadingText : _btnText}
+          </TaskBtn>
+        )
+      case TaskStatusButtonType.COMPLETE:
+        return <TaskStatusDescBtn>{_btnText}</TaskStatusDescBtn>
+      case TaskStatusButtonType.MISSION_OFF:
+        return <TaskBtn disabled={true}>{_btnText}</TaskBtn>
     }
-  }, [type])
-  return (
-    <TaskStatusButtonWrapper>
-      {isCompleteStatusBtn ? (
-        <TaskCompleteStatusBtn type={type}>{_btnText}</TaskCompleteStatusBtn>
-      ) : (
-        <TaskBtn onClick={handleClick} disabled={disabled}>
-          {loading ? loadingText : _btnText}
-        </TaskBtn>
-      )}
-    </TaskStatusButtonWrapper>
-  )
+  }
+  return <TaskStatusButtonWrapper>{renderStatusContent()}</TaskStatusButtonWrapper>
 }
 export default TaskStatusButton
 const TaskStatusButtonWrapper = styled.div`
@@ -97,7 +87,7 @@ const TaskBtn = styled(ButtonPrimary)`
   font-size: 18px;
 `
 
-const TaskCompleteStatusBtn = styled.div<{ type: TaskStatusButtonType }>`
+const TaskStatusDescBtn = styled(ButtonBase)`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -110,6 +100,10 @@ const TaskCompleteStatusBtn = styled.div<{ type: TaskStatusButtonType }>`
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
-  color: ${({ type }) => (type === TaskStatusButtonType.COMPLETE ? '#3DD606' : '#333333')};
   border-bottom: 1px solid #d9d9d9;
+  color: #3dd606;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 16px;
+    line-height: 24px;
+  }
 `

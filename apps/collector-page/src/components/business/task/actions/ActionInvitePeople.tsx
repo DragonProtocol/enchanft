@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 13:57:56
+ * @LastEditTime: 2022-09-01 18:05:13
  * @Description: file description
  */
 import React from 'react'
@@ -12,7 +12,7 @@ import { TaskActionItemDataType } from '../TaskActionItem'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import OverflowEllipsisBox from '../../../common/text/OverflowEllipsisBox'
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper'
-import PngIconWL from '../../../common/icons/PngIconWL'
+import IconWL from '../../../common/icons/IconWL'
 import IconCopy from '../../../common/icons/IconCopy'
 import { getTakeTaskRefLink } from '../../../../container/Ref'
 import { useAppSelector } from '../../../../store/hooks'
@@ -60,7 +60,7 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
     <ActionInvitePeopleWrapper>
       <ActionIconBox allowHandle={allowHandle} isDone={isDone}>
         <TooltipWrapper title={description}>
-          <PngIconWL style={{ opacity: isDone ? 0.5 : 1 }} />
+          <IconWL opacity={isDone ? 0.5 : 1} />
         </TooltipWrapper>
       </ActionIconBox>
       <ActionContentBox>
