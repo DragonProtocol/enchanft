@@ -1400,7 +1400,7 @@ const SelectActionsBox = styled.div`
 
             &.question {
               text-align: end;
-              width: 65px;
+              width: 80px;
               margin-right: 10px;
             }
           }
