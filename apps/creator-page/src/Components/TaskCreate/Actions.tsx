@@ -583,23 +583,22 @@ export default function Actions({
                   );
                 })}
                 <div className="and"></div>
-                <div className={'help add-btn custom question-add'}>
-                  <button
-                    onClick={() =>
-                      setQuestionnaire({
-                        ...questionnaire,
-                        data: [
-                          ...questionnaire.data,
-                          {
-                            question: '',
-                            answer: '',
-                          },
-                        ],
-                      })
-                    }
-                  >
-                    +Add
-                  </button>
+                <div
+                  className={'help add-btn custom question-add'}
+                  onClick={() =>
+                    setQuestionnaire({
+                      ...questionnaire,
+                      data: [
+                        ...questionnaire.data,
+                        {
+                          question: '',
+                          answer: '',
+                        },
+                      ],
+                    })
+                  }
+                >
+                  <IconPlus size="16px" /> Add
                 </div>
               </>
             )}
@@ -953,7 +952,7 @@ export default function Actions({
                     });
                   }}
                 >
-                  +Add
+                  <IconPlus size="16px" /> Add
                 </div>
               )}
             </div>
