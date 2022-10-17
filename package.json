@@ -7,13 +7,14 @@
     "build": "nx build",
     "test": "nx test",
     "nx": "nx",
-    "lint:check": "nx lint",
+    "lint:check": "nx run mini-site-baatarverse:lint && nx run collector-page:lint",
     "lint:fix": "nx lint --fix",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "format:staged": "lint-staged"
   },
   "lint-staged": {
-    "apps/**/*.{js,ts,tsx}": [
-      "pnpm lint:fix"
+    "{apps,libs}/**/*.{js,ts,tsx}": [
+      "pnpm lint:fix --lintFilePatterns"
     ]
   },
   "private": true,
