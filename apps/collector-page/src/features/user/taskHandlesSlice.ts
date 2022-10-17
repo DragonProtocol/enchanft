@@ -2,19 +2,22 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 19:02:07
+ * @LastEditTime: 2022-10-17 16:07:05
  * @Description: file description
  */
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify'
 import {
   completionOneAction,
+  confirmQuestionAction,
+  ResponseBizErrCode,
   takeTask as takeTaskRquest,
   verifyOneAction,
   verifyOneTask,
 } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
+import { UserActionStatus } from '../../types/api'
 import { Action, Task, TaskAcceptedStatus, TaskTodoCompleteStatus } from '../../types/entities'
 import { fetchTaskDetail, updateTaskDetail, updateTaskDetailAction } from '../task/taskDetailSlice'
 import { fetchFollowedCommunities } from './followedCommunitiesSlice'
@@ -169,6 +172,53 @@ export const completionAction = createAsyncThunk(
   },
   {
     condition: (action: Action, { getState }) => {
+      const state = getState() as RootState
+      const { selectById } = verifyActionQueueEntity.getSelectors()
+      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
+      return !item
+    },
+  },
+)
+
+// question confirm action
+export const questionConfirmAction = createAsyncThunk(
+  'user/taskHandles/questionConfirmAction',
+  async (params: { action: Action; answer: string; callback: (assertAnswer: boolean) => void }, { dispatch }) => {
+    const { action, answer, callback } = params
+    const { id, taskId } = action
+    try {
+      dispatch(addOneVerifyActionQueue(action))
+      const resp = await confirmQuestionAction({ id, taskId, answer })
+      if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
+        callback(true)
+        dispatch(
+          updateTaskDetailAction({
+            ...action,
+            status: UserActionStatus.DONE,
+            progress: '',
+          }),
+        )
+        dispatch(
+          updateOneAction({
+            ...action,
+            status: UserActionStatus.DONE,
+            progress: '',
+          }),
+        )
+        toast.success('Verified.')
+      } else {
+        callback(false)
+      }
+    } catch (error) {
+      throw error
+    } finally {
+      dispatch(removeOneVerifyActionQueue(id))
+    }
+  },
+  {
+    condition: (params: { action: Action; answer: string }, { getState }) => {
+      const { action, answer } = params
       const state = getState() as RootState
       const { selectById } = verifyActionQueueEntity.getSelectors()
       const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)

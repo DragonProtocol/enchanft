@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 18:51:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-09 16:19:28
+ * @LastEditTime: 2022-10-17 16:04:29
  * @Description: file description
  */
 import { useCallback, useEffect, useRef } from 'react'
 import { ConnectModal, selectAccount, setConnectModal } from '../features/user/accountSlice'
+import { questionConfirmAction } from '../features/user/taskHandlesSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { AccountType } from '../types/entities'
 
@@ -46,6 +47,9 @@ export default () => {
     },
     [accountTypes],
   )
+  const handleActionQuestionConfirm = useCallback((action, answer, callback) => {
+    dispatch(questionConfirmAction({ action, answer, callback }))
+  }, [])
 
   useEffect(() => {
     if (accountTypes.includes(AccountType.TWITTER) && toTwitterCallback.current) {
@@ -62,5 +66,5 @@ export default () => {
     }
   }, [toDiscordCallback, toTwitterCallback, accountTypes])
 
-  return { handleActionToDiscord, handleActionToTwitter }
+  return { handleActionToDiscord, handleActionToTwitter, handleActionQuestionConfirm }
 }
