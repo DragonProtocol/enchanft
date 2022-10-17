@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 16:11:05
+ * @LastEditTime: 2022-10-17 14:50:17
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -61,8 +61,6 @@ export type TodoTaskItemDataViewType = {
 export type TodoTaskItemHandlesType = TaskActionsListHandlesType & {
   onMint?: (task: TodoTaskItemDataType) => void
   onVerifyTask?: (task: TodoTaskItemDataType) => void
-  onVerifyAction?: (action: TaskActionItemDataType) => void
-  onCustomAction?: (action: TaskActionItemDataType) => void
 }
 
 export type TodoTaskItemProps = TodoTaskItemDataViewType & TodoTaskItemHandlesType
@@ -106,11 +104,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   viewConfig,
   onMint,
   onVerifyTask,
-  onVerifyAction,
-  onTwitter,
-  onDiscord,
-  onFollowCommunity,
-  onCustomAction,
+  ...taskActionItemStaticProps
 }: TodoTaskItemProps) => {
   const navginate = useNavigate()
   const {
@@ -254,17 +248,13 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
         <TaskOpenBodyBox>
           <TaskActionList
             items={actions}
-            onDiscord={onDiscord}
-            onTwitter={onTwitter}
-            onFollowCommunity={onFollowCommunity}
             allowHandle={allowHandleActions}
             displayVerify={displayRefresh}
             loadingVerify={loadingRefresh}
             disabledVerify={disabledRefresh}
             onVerifyActions={onVerifyTaskClick}
             verifyingActions={verifyingActions}
-            onVerifyAction={onVerifyAction}
-            onCustomAction={onCustomAction}
+            {...taskActionItemStaticProps}
           ></TaskActionList>
         </TaskOpenBodyBox>
       )}
