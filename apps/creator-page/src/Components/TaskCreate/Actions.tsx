@@ -112,8 +112,12 @@ export default function Actions({
     type: ActionType.QUESTIONNAIRE,
     valid: false,
     manualCheck: false,
-    question: '',
-    answer: '',
+    data: [
+      {
+        question: '',
+        answer: '',
+      },
+    ],
   });
   useEffect(() => {
     const actions: Action[] = [];
@@ -262,13 +266,15 @@ export default function Actions({
     }
 
     if (questionnaire.valid) {
-      actions.push({
-        name: questionnaire.question,
-        type: ActionType.QUESTIONNAIRE,
-        typeMore: ActionTypeMore.QUESTIONNAIRE,
-        description: ``,
-        question: questionnaire.question,
-        answer: questionnaire.answer,
+      questionnaire.data.forEach((item) => {
+        actions.push({
+          name: item.question,
+          type: ActionType.QUESTIONNAIRE,
+          typeMore: ActionTypeMore.QUESTIONNAIRE,
+          description: ``,
+          question: item.question,
+          answer: item.answer,
+        });
       });
     }
 
@@ -522,40 +528,84 @@ export default function Actions({
             </div>
             {questionnaire.valid && (
               <>
-                <div className="help">
-                  <span className="username question">Question:</span>
-                  <div className={'input-box'}>
-                    <input
-                      title="question"
-                      type="text"
-                      value={questionnaire.question}
-                      onChange={(e) => {
-                        setQuestionnaire({
-                          ...questionnaire,
-                          question: e.target.value,
-                        });
-                      }}
-                    />
-                  </div>
+                {questionnaire.data.map((item, idx) => {
+                  return (
+                    <Fragment key={idx}>
+                      {idx > 0 && <div className="and"></div>}
+                      <div className="help">
+                        <span className="username question">Question:</span>
+                        <div className={'input-box'}>
+                          <input
+                            title="question"
+                            type="text"
+                            value={item.question}
+                            onChange={(e) => {
+                              setQuestionnaire({
+                                ...questionnaire,
+                                data: [
+                                  ...questionnaire.data.slice(0, idx),
+                                  {
+                                    ...item,
+                                    question: e.target.value,
+                                  },
+                                  ...questionnaire.data.slice(idx + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="help">
+                        <span className="username question">Answer:</span>
+                        <div className={'input-box'}>
+                          <input
+                            title="answer"
+                            type="text"
+                            placeholder="Case insensitive"
+                            value={item.answer}
+                            onChange={(e) => {
+                              setQuestionnaire({
+                                ...questionnaire,
+                                data: [
+                                  ...questionnaire.data.slice(0, idx),
+                                  {
+                                    ...item,
+                                    answer: e.target.value,
+                                  },
+                                  ...questionnaire.data.slice(idx + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </Fragment>
+                  );
+                })}
+                <div className="and"></div>
+                <div className={'help add-btn custom question-add'}>
+                  <button
+                    onClick={() =>
+                      setQuestionnaire({
+                        ...questionnaire,
+                        data: [
+                          ...questionnaire.data,
+                          {
+                            question: '',
+                            answer: '',
+                          },
+                        ],
+                      })
+                    }
+                  >
+                    +Add
+                  </button>
                 </div>
-                <div className="help">
-                  <span className="username question">Answer:</span>
-                  <div className={'input-box'}>
-                    <input
-                      title="answer"
-                      type="text"
-                      placeholder="Case insensitive"
-                      value={questionnaire.answer}
-                      onChange={(e) => {
-                        setQuestionnaire({
-                          ...questionnaire,
-                          answer: e.target.value,
-                        });
-                      }}
-                    />
-                  </div>
-                </div>
-                {/* <div className="switch-btn-box">
+              </>
+            )}
+
+            {/* <>
+                <div className="switch-btn-box">
                   <span>Manual check?</span>
                   <SwitchBtn
                     width={80}
@@ -570,9 +620,8 @@ export default function Actions({
                       });
                     }}
                   />
-                </div> */}
-              </>
-            )}
+                </div> 
+              </>*/}
           </div>
         </div>
         <div>
@@ -904,7 +953,7 @@ export default function Actions({
                     });
                   }}
                 >
-                  <IconPlus size="16px" /> Add
+                  +Add
                 </div>
               )}
             </div>
@@ -1353,6 +1402,7 @@ const SelectActionsBox = styled.div`
             &.question {
               text-align: end;
               width: 65px;
+              margin-right: 10px;
             }
           }
           & span.tint {
@@ -1458,6 +1508,10 @@ const SelectActionsBox = styled.div`
             margin-left: 120px;
           }
 
+          &.question-add {
+            margin-left: 18px;
+          }
+
           & > svg {
             margin-right: 5px;
             & path {
@@ -1533,7 +1587,7 @@ const SelectActionsBox = styled.div`
 
   & .and {
     text-align: center;
-    margin: 15px;
+    margin: 15px 0;
     border-top: 1px solid #d9d9d9;
   }
 `;
