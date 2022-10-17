@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-11 10:33:25
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-14 17:28:27
+ * @LastEditTime: 2022-10-16 20:17:53
  * @Description: file description
  */
 export { Twitter, TwitterError, TwitterErrorName } from './twitter';
@@ -60,9 +60,9 @@ export abstract class Signer {
   abstract readonly signerType: SignerType;
   protected signerProcessStatusChange: SignerProcessStatusChange = () => {};
   public signerProcessStatusChangeListener(
-    signerProcessStatusChange: SignerProcessStatusChange
+    callback: SignerProcessStatusChange
   ) {
-    this.signerProcessStatusChange = signerProcessStatusChange;
+    this.signerProcessStatusChange = callback;
   }
   public abstract login(): Promise<LoginResult>;
 

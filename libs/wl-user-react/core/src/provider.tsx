@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-14 19:11:26
+ * @LastEditTime: 2022-10-17 03:44:59
  * @Description: file description
  */
 import {
@@ -21,27 +21,28 @@ import { getStorageValues, StorageKey } from './utils/storage';
 import LoginModal from './components/LoginModal';
 import SignatureModal from './components/SignatureModal';
 import BindModal from './components/BindModal';
-
-export enum WlUserAction {
-  LOGIN = 'LOGIN',
-  BIND = 'BIND',
+export enum WlUserActionType {
+  OPEN_LOGIN_MODAL = 'OPEN_LOGIN_MODAL',
+  OPEN_BIND_MODAL = 'OPEN_BIND_MODAL',
+  UPDATE_USER_STATE = 'UPDATE_USER_STATE',
 }
-type ModalStatus = {
-  [k in WlUserAction]: boolean;
+type WlUserDispatchParams =
+  | {
+      type: WlUserActionType.OPEN_LOGIN_MODAL;
+    }
+  | {
+      type: WlUserActionType.OPEN_BIND_MODAL;
+      payload: SignerType;
+    }
+  | {
+      type: WlUserActionType.UPDATE_USER_STATE;
+      payload: Partial<User>;
+    };
+const defaultUserActionState = {
+  type: null,
+  signer: null,
+  processStatus: SignerProcessStatus.IDLE,
 };
-const defaultModalStatus: ModalStatus = {
-  [WlUserAction.LOGIN]: false,
-  [WlUserAction.BIND]: false,
-};
-type DispatchUserActions = {
-  [WlUserAction.LOGIN]: (action: WlUserAction) => void;
-  [WlUserAction.BIND]: (action: WlUserAction, signerType: SignerType) => void;
-};
-
-type DispatchUserActionReturnType<T extends WlUserAction> = ReturnType<
-  () => DispatchUserActions[T]
->;
-type DispatchUserAction = () => void;
 const lastLoginInfo = getStorageValues();
 const volidOpenSignatureModal = (status: SignerProcessStatus) => {
   return [
@@ -60,12 +61,8 @@ export type WlUserContextType = {
   isAdmin: boolean;
   isVIP: boolean;
   setSigner: (signer: Signer) => void;
-  updateUser: (values: Partial<User>) => void;
   volidBindAccount: (accountType: AccountType) => boolean;
-  dispatchUserAction: (
-    actionType: WlUserAction,
-    signerType: SignerType
-  ) => void;
+  wlUserDispatch: (params: WlUserDispatchParams) => void;
 };
 const WlUserContext = createContext<WlUserContextType | undefined>(undefined);
 
@@ -88,31 +85,6 @@ export function WlUserReactProvider({
     throw new Error(
       'The signers prop passed to WlUserReactProvider must be referentially static.'
     );
-
-  // 提供一个用户行为的触发器
-  const [modalStatus, setModalStatus] =
-    useState<ModalStatus>(defaultModalStatus);
-  const [userActionSignerType, setUserActionSignerType] = useState<SignerType>(
-    SignerType.TWITTER
-  );
-  const dispatchUserAction = useCallback(
-    (action: WlUserAction, signerType: SignerType) => {
-      setModalStatus({ ...modalStatus, [action]: true });
-      setUserActionSignerType(signerType);
-    },
-    [modalStatus]
-  );
-  // 用户系统流程状态监控
-  const [signerProcessStatus, setSignerProcessStatus] =
-    useState<SignerProcessStatus>(SignerProcessStatus.IDLE);
-  useEffect(() => {
-    for (const signer of signers) {
-      signer.signerProcessStatusChangeListener((status) => {
-        setSignerProcessStatus(status);
-      });
-    }
-  }, [signers]);
-  const isOpenSignerModal = volidOpenSignatureModal(signerProcessStatus);
 
   const [signer, setSigner] = useState<Signer | null | undefined>(
     cachedSigners.current.find(
@@ -139,10 +111,6 @@ export function WlUserReactProvider({
     [user.roles]
   );
   const isVIP = useMemo(() => user.roles.includes(RoleType.VIP), [user.roles]);
-  const updateUser = useCallback(
-    (values: Partial<User>) => setUser({ ...user, ...values }),
-    [user]
-  );
   const volidBindAccount = useCallback(
     (accountType: AccountType): boolean => {
       switch (accountType) {
@@ -160,6 +128,59 @@ export function WlUserReactProvider({
     [user]
   );
 
+  // 用户行为及流程状态监控
+  const [userActionState, setUserActionState] = useState<{
+    type: WlUserActionType | null;
+    signer: Signer | null;
+    processStatus: SignerProcessStatus;
+  }>(defaultUserActionState);
+  const resetUserActionState = useCallback(() => {
+    setUserActionState(defaultUserActionState);
+  }, []);
+  // 提供一个用户行为的触发器
+  const wlUserDispatch = useCallback(
+    (params: WlUserDispatchParams) => {
+      const { type } = params;
+      const state = {
+        type,
+      };
+      switch (type) {
+        case WlUserActionType.OPEN_BIND_MODAL:
+          Object.assign(state, {
+            signer: signers.find((item) => item.signerType === params.payload),
+          });
+          break;
+        case WlUserActionType.UPDATE_USER_STATE:
+          setUser({ ...user, ...params.payload });
+          break;
+      }
+      setUserActionState({ ...userActionState, ...state });
+    },
+    [user]
+  );
+  const isOpenLoginModal = useMemo(
+    () => userActionState.type === WlUserActionType.OPEN_LOGIN_MODAL,
+    [userActionState]
+  );
+  const isOpenBindModal = useMemo(
+    () => userActionState.type === WlUserActionType.OPEN_BIND_MODAL,
+    [userActionState]
+  );
+
+  useEffect(() => {
+    for (const signer of signers) {
+      signer.signerProcessStatusChangeListener((processStatus) => {
+        setUserActionState({
+          ...userActionState,
+          processStatus,
+        });
+      });
+    }
+  }, [signers, userActionState]);
+
+  const isOpenSignatureModal = volidOpenSignatureModal(
+    userActionState.processStatus
+  );
   return (
     <WlUserContext.Provider
       value={{
@@ -167,32 +188,39 @@ export function WlUserReactProvider({
         signer,
         setSigner,
         user,
-        updateUser,
         isLogin,
         isCreator,
         isAdmin,
         isVIP,
         volidBindAccount,
-        dispatchUserAction,
+        wlUserDispatch,
       }}
     >
       {children}
       <LoginModal
-        isOpen={modalStatus[WlUserAction.LOGIN]}
-        onLoginEnd={() =>
-          setModalStatus({ ...modalStatus, [WlUserAction.LOGIN]: false })
-        }
+        isOpen={isOpenLoginModal}
+        onLoginEnd={() => resetUserActionState()}
       />
       <BindModal
-        isOpen={modalStatus[WlUserAction.BIND] && !!userActionSignerType}
-        signerType={userActionSignerType}
-        onBindEnd={() =>
-          setModalStatus({ ...modalStatus, [WlUserAction.BIND]: false })
-        }
+        isOpen={isOpenBindModal}
+        signerType={userActionState.signer?.signerType || SignerType.METAMASK}
+        onBindEnd={() => resetUserActionState()}
       />
       <SignatureModal
-        isOpen={isOpenSignerModal}
-        signerProcessStatus={signerProcessStatus}
+        isOpen={isOpenSignatureModal}
+        signerProcessStatus={userActionState.processStatus}
+        onClose={() => {
+          resetUserActionState();
+        }}
+        onRetry={() => {
+          if (userActionState?.type === WlUserActionType.OPEN_LOGIN_MODAL) {
+            userActionState.signer?.login();
+          } else if (
+            userActionState?.type === WlUserActionType.OPEN_BIND_MODAL
+          ) {
+            userActionState.signer?.bind(user.token);
+          }
+        }}
       />
     </WlUserContext.Provider>
   );

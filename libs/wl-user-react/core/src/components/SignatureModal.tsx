@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-14 18:13:14
+ * @LastEditTime: 2022-10-16 22:14:52
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
 import ModalBase from './common/modal/ModalBase';
 import { isMobile } from 'react-device-detect';
-import { SignerProcessStatus, SignerType } from '../signer';
+import { SignerProcessStatus } from '../signer';
 import { ButtonPrimary, ButtonInfo } from './common/button/ButtonBase';
 export type SignatureModalProps = {
   isOpen: boolean;
