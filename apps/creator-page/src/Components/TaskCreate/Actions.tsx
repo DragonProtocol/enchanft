@@ -1508,7 +1508,7 @@ const SelectActionsBox = styled.div`
           }
 
           &.question-add {
-            margin-left: 18px;
+            margin-left: 30px;
           }
 
           & > svg {
