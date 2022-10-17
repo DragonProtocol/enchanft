@@ -3,7 +3,7 @@ import { RewardType, State } from './type';
 import AddSvg from '../imgs/add.svg';
 import dayjs from 'dayjs';
 import UploadImgModal from '../UploadImgModal';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
@@ -14,30 +14,6 @@ import { useAppConfig } from '../../AppProvider';
 import { numberInput } from '../../utils';
 import { AxiosError } from 'axios';
 import SwitchBtn from '../SwitchBtn';
-
-const modules = {
-  toolbar: [
-    [{ header: [1, 2, false] }],
-    ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-    [{ list: 'ordered' }, { list: 'bullet' }],
-    ['link', 'image'],
-    // ['clean'],
-  ],
-};
-
-const formats = [
-  'header',
-  'bold',
-  'italic',
-  'underline',
-  'strike',
-  'blockquote',
-  'list',
-  'bullet',
-  'indent',
-  'link',
-  'image',
-];
 
 export default function CreateTaskBasic({
   hasInviteBot,
@@ -50,7 +26,9 @@ export default function CreateTaskBasic({
 }) {
   const { account, updateAccount } = useAppConfig();
   const [showModal, setShowModal] = useState(false);
-  const [value, setValue] = useState('');
+  const [richText, setRichText] = useState('');
+
+  const quillRef = useRef<ReactQuill>(null);
 
   const uploadImageHandler = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -86,6 +64,8 @@ export default function CreateTaskBasic({
     },
     [account, updateState, state, updateAccount]
   );
+
+  console.log({ richText });
 
   return (
     <>
@@ -137,12 +117,25 @@ export default function CreateTaskBasic({
             </div>
             <div className="statement">
               <h4>Task statement</h4>
-              <div>
+              <div data-text-editor="name">
                 <ReactQuill
-                  value={value}
-                  onChange={setValue}
-                  modules={modules}
-                  formats={formats}
+                  value={richText}
+                  onChange={setRichText}
+                  ref={quillRef}
+                  bounds={`[data-text-editor="name"]`}
+                  modules={{
+                    toolbar: {
+                      container: [
+                        [{ header: [1, 2, 3, false] }],
+                        [{ align: [] }],
+                        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        ['link'],
+                        // ['clean'],
+                        // [{ color: [] }],
+                      ],
+                    },
+                  }}
                 />
               </div>
             </div>
@@ -499,7 +492,6 @@ const BasicBox = styled.div`
   & input,
   & textarea {
     font-family: inherit;
-    background-color: #f8f8f8;
     border: none;
     outline: none;
     padding: 12px 20px;
@@ -555,6 +547,24 @@ const BasicBox = styled.div`
 
       & .ql-snow {
         border: none;
+      }
+
+      .ql-tooltip {
+        border-radius: 10px;
+        border: none;
+        background: #f7f9f1;
+      }
+
+      & .ql-toolbar {
+        border-bottom: 1px solid rgba(51, 51, 51, 0.1);
+        font-family: inherit;
+      }
+
+      & .ql-picker-options {
+        background-color: #f7f9f1 !important;
+        border: none;
+        border-bottom-right-radius: 5px;
+        border-bottom-left-radius: 5px;
       }
 
       & .ql-container {
