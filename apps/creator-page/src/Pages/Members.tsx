@@ -28,13 +28,17 @@ import Loading from '../Components/Loading';
 import { Whales } from '../utils/constants';
 import UserAvatar from '../Components/UserAvatar';
 import { sortPubKey } from '../utils';
+import IconPngSearch from '../Components/Icons/IconPngSearch';
+import IconTweet from '../Components/Icons/IconTweet';
+import IconTwitter from '../Components/Icons/IconTwitter';
+import IconDiscord from '../Components/Icons/IconDiscord';
 
 const fileDownload = require('js-file-download');
 
 export default function Members() {
   const { slug } = useParams();
   const [showFilter, setShowFilter] = useState(false);
-  // const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState('');
   const [showModal, setShowModal] = useState(false);
   const { data: project } = useAppSelector(selectProjectDetail);
   const [loading, setLoading] = useState(false);
@@ -123,24 +127,42 @@ export default function Members() {
     [project, account, slug]
   );
 
+  const searchTextData = useMemo(() => {
+    const text = searchText.trim();
+    if (text) {
+      return data.filter((item) => {
+        const reg = new RegExp(text);
+        return (
+          reg.test(item.userName) ||
+          reg.test(item.discordName || '') ||
+          reg.test(item.twitterName || '') ||
+          reg.test(item.twitterId || '') ||
+          reg.test(item.discordId || '') ||
+          reg.test(item.wallet || '')
+        );
+      });
+    } else {
+      return data;
+    }
+  }, [searchText, data]);
+
   return (
     <ContentBox>
+      <h3>Member List ({total})</h3>
       <div className="title">
         <div className="search">
-          <span>Members ({total})</span>
-          {/* <div>
-            <input
-              title="search-input"
-              type="text"
-              value={searchText}
-              onChange={(e) => {
-                setSearchText(e.target.value);
-              }}
-            />
-            <button title="filter" onClick={() => {}}>
-              <IconInputSearch />
-            </button>
-          </div> */}
+          <button title="filter" onClick={() => {}}>
+            <IconPngSearch size="20px" />
+          </button>
+          <input
+            title="search-input"
+            placeholder="Search"
+            type="text"
+            value={searchText}
+            onChange={(e) => {
+              setSearchText(e.target.value);
+            }}
+          />
         </div>
         <div className="btns">
           <button title="download" onClick={downloadList}>
@@ -148,7 +170,8 @@ export default function Members() {
           </button>
           <div className="filter">
             <button
-              title="random"
+              title={'random'}
+              className={showFilter ? 'active' : ''}
               onClick={(e) => {
                 e.stopPropagation();
                 setShowFilter(!showFilter);
@@ -158,7 +181,9 @@ export default function Members() {
             </button>
             {showFilter && <SearchFilter search={search} />}
           </div>
-          <button onClick={() => setShowModal(true)}>+Add Member</button>
+          <button className="add-member" onClick={() => setShowModal(true)}>
+            +Add Member
+          </button>
         </div>
       </div>
       {(loading && (
@@ -170,20 +195,20 @@ export default function Members() {
           <table>
             <thead>
               <tr>
-                <th></th>
-                <th>NAME</th>
-                <th>TWITTER</th>
-                <th>TWITTER ID</th>
-                <th>DISCORD</th>
-                <th>DISCORD ID</th>
-                <th>ETH ADDRESS</th>
+                {/* <th></th> */}
+                <th>Name</th>
+                <th>Twitter</th>
+                <th>Twitter ID</th>
+                <th>Discord</th>
+                <th>Discord ID</th>
+                <th>ETH Address</th>
               </tr>
             </thead>
             <tbody>
-              {data.map((item) => {
+              {searchTextData.map((item) => {
                 return (
                   <tr key={item.id}>
-                    <td>
+                    {/*<td>
                       {(select.find((s) => s.id === item.id) && (
                         <span
                           onClick={() => {
@@ -206,18 +231,44 @@ export default function Members() {
                           <IconCheckbox />
                         </span>
                       )}
-                    </td>
+                    </td>*/}
                     {/* <td>{item.userId}</td> */}
                     <td>
                       <UserAvatar src={item.userAvatar} />
-                      {item.userName || 'X'}
+                      {item.userName || '❌'}
                     </td>
-                    <td>{item.twitterName || 'X'}</td>
-                    <td>{item.twitterId || 'X'}</td>
-                    <td>{item.discordName || 'X'}</td>
-                    <td>{item.discordId || 'X'}</td>
                     <td>
-                      {(item.wallet && sortPubKey(item.wallet, 8)) || 'X'}
+                      {(item.twitterName && (
+                        <>
+                          <IconTwitter /> {item.twitterName}
+                        </>
+                      )) || (
+                        <>
+                          <span className="twitter-obs">
+                            <IconTwitter />
+                          </span>{' '}
+                          ❌
+                        </>
+                      )}
+                    </td>
+                    <td>{item.twitterId || '❌'}</td>
+                    <td>
+                      {(item.discordName && (
+                        <>
+                          <IconDiscord /> {item.discordName}
+                        </>
+                      )) || (
+                        <>
+                          <span className="twitter-obs">
+                            <IconDiscord />
+                          </span>
+                          ❌
+                        </>
+                      )}
+                    </td>
+                    <td>{item.discordId || '❌'}</td>
+                    <td>
+                      {(item.wallet && sortPubKey(item.wallet, 8)) || '❌'}
                     </td>
                   </tr>
                 );
@@ -264,9 +315,9 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
         e.stopPropagation();
       }}
     >
-      <div>Filter your result</div>
+      <h3>Filter your result</h3>
       <div className="filter-item">
-        <p>On chain</p>
+        <h4>On chain</h4>
         <p>Wallet Balance (Minimum):</p>
         <div className="wallet">
           <input
@@ -290,7 +341,7 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
             {/* <option value={CoinType.SOL}>SOL</option> */}
           </select>
         </div>
-        <p>NFT Holder</p>
+        <p>Holding blue chip NFTs:</p>
         <div className="nft">
           <select
             title="nft-holder"
@@ -313,17 +364,25 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
         </div>
         <div>
           <p onClick={() => setHasPhantom(!hasPhantom)}>
-            {hasPhantom ? <IconCheckboxChecked /> : <IconCheckbox />}
+            {hasPhantom ? (
+              <IconCheckboxChecked size="18px" />
+            ) : (
+              <IconCheckbox size="18px" />
+            )}
             <span>Connect Phantom Wallet</span>
           </p>
           <p onClick={() => setHasMetaMask(!hasMetaMask)}>
-            {hasMetaMask ? <IconCheckboxChecked /> : <IconCheckbox />}
+            {hasMetaMask ? (
+              <IconCheckboxChecked size="18px" />
+            ) : (
+              <IconCheckbox size="18px" />
+            )}
             <span>Connect MetaMask Wallet</span>
           </p>
         </div>
       </div>
       <div className="filter-item">
-        <p>Twitter</p>
+        <h4>Twitter</h4>
         <p>Twitter followers number (Minimum):</p>
         <div className="twitter">
           <input
@@ -337,16 +396,25 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
         </div>
         <div>
           <p onClick={() => setTwitterFollow(!twitterFollow)}>
-            {twitterFollow ? <IconCheckboxChecked /> : <IconCheckbox />}
+            {twitterFollow ? (
+              <IconCheckboxChecked size="18px" />
+            ) : (
+              <IconCheckbox size="18px" />
+            )}
             <span>Twitter follower</span>
           </p>
           <p onClick={() => setTwitterVerified(!twitterVerified)}>
-            {twitterVerified ? <IconCheckboxChecked /> : <IconCheckbox />}
+            {twitterVerified ? (
+              <IconCheckboxChecked size="18px" />
+            ) : (
+              <IconCheckbox size="18px" />
+            )}
             <span>Twitter verified</span>
           </p>
         </div>
       </div>
       <div className="filter-item">
+        <h4>Discord</h4>
         <p>Discord Role</p>
         <div className="discord">
           <input
@@ -358,11 +426,19 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
         </div>
         <div>
           <p onClick={() => setDiscordMember(!discordMember)}>
-            {discordMember ? <IconCheckboxChecked /> : <IconCheckbox />}
+            {discordMember ? (
+              <IconCheckboxChecked size="18px" />
+            ) : (
+              <IconCheckbox size="18px" />
+            )}
             <span>Discord member</span>
           </p>
           <p onClick={() => setDiscordVerified(!discordVerified)}>
-            {discordVerified ? <IconCheckboxChecked /> : <IconCheckbox />}
+            {discordVerified ? (
+              <IconCheckboxChecked size="18px" />
+            ) : (
+              <IconCheckbox size="18px" />
+            )}
             <span>Discord verified</span>
           </p>
         </div>
@@ -389,23 +465,51 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
 }
 
 const SearchFilterBox = styled.div`
+  width: 440px;
+  & > h3 {
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 30px;
+    color: #333333;
+    margin: 0;
+    margin-bottom: 20px;
+  }
   & .filter-item {
     margin-top: 10px;
-    border-top: 1px dotted black;
+    border-top: 1px solid #d9d9d9;
+
+    & > h4 {
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 24px;
+      margin: 20px 0;
+      color: #333333;
+    }
+
+    & p {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
+      margin: 0;
+      margin: 10px 0;
+      color: #333333;
+    }
 
     & .wallet,
     & .nft,
     & .discord,
     & .twitter {
       border-radius: 10px;
-      background: #f7f9f1;
+      background: #ebeee4;
       display: flex;
       gap: 10px;
       padding: 5px 10px;
       margin-bottom: 10px;
     }
 
-    & .wallet {
+    & .wallet,
+    & .discord,
+    & .twitter {
       & input {
         flex-grow: 1;
       }
@@ -428,6 +532,7 @@ const SearchFilterBox = styled.div`
   & select {
     font-size: 18px;
     line-height: 27px;
+    height: 30px;
     border: none;
     outline: none;
     background: none;
@@ -448,6 +553,18 @@ const SearchFilterBox = styled.div`
 `;
 
 const ContentBox = styled.div`
+  border-radius: 20px;
+  border: 4px solid black;
+  box-sizing: border-box;
+  padding: 40px;
+  background-color: #f7f9f1;
+  & > h3 {
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 36px;
+    color: #333333;
+    margin: 0 0 20px 0;
+  }
   & .title {
     margin: 10px 0;
     display: flex;
@@ -457,19 +574,24 @@ const ContentBox = styled.div`
     & .search {
       display: inline-flex;
       align-items: center;
+      width: 500px;
+      height: 48px;
 
-      & > div {
-        background: #ebeee4;
-        padding: 0 10px;
-        border-radius: 10px;
-        & input {
-          border: none;
-          outline: none;
-          height: 30px;
-          background: none;
-        }
+      background: #ebeee4;
+      padding: 0 20px;
+      border-radius: 10px;
+      & input {
+        border: none;
+        outline: none;
+        background: none;
+        font-weight: 400;
+        font-size: 18px;
+        flex-grow: 1;
+      }
 
-        & svg {
+      & button {
+        margin-right: 10px;
+        & img {
           vertical-align: middle;
         }
       }
@@ -485,18 +607,37 @@ const ContentBox = styled.div`
         background: #ebeee4;
         box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
+
+        &.add-member {
+          background: #3dd606;
+          box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+          font-weight: 700;
+          font-size: 18px;
+          line-height: 27px;
+          color: #ffffff;
+        }
+
+        &.active {
+          background: #333333;
+
+          & svg path {
+            fill: #fff;
+          }
+        }
       }
 
       & .filter {
         position: relative;
         & > div {
-          width: 300px;
-          background-color: #ebeee4;
+          width: 440px;
+          box-sizing: border-box;
+          background-color: #f7f9f1;
           border: 2px solid black;
           border-radius: 10px;
           padding: 20px;
           z-index: 100;
-          right: 0;
+          top: 50px;
+          right: -160px;
           position: absolute;
         }
       }
@@ -504,33 +645,51 @@ const ContentBox = styled.div`
   }
 
   & .body {
-    border-radius: 20px;
-    border: 4px solid black;
+    border-radius: 10px;
+    /* border: 4px solid black; */
     box-sizing: border-box;
     overflow: hidden;
+    margin-top: 20px;
+    padding: 0 10px;
+    background: #ebeee4;
     table {
       width: 100%;
       border-collapse: collapse;
       position: relative;
-      background: #f7f9f1;
     }
 
     & img {
       border-radius: 20%;
-      width: 30px;
-      height: 30px;
+      width: 40px;
+      height: 40px;
       vertical-align: middle;
       margin-right: 8px;
     }
 
-    table tr {
-      height: 50px;
+    table thead tr {
+      height: 60px;
     }
 
-    thead tr th {
+    table tbody tr {
+      height: 80px;
+    }
+
+    table {
+      & .twitter-obs {
+        visibility: hidden;
+      }
+    }
+
+    thead tr th,
+    tbody tr td {
       font-weight: 500;
       text-align: left;
-      /* background-color: #fafafa; */
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 20px;
+      /* identical to box height, or 125% */
+
+      color: rgba(51, 51, 51, 0.6);
     }
 
     & span,
@@ -538,10 +697,10 @@ const ContentBox = styled.div`
       vertical-align: middle;
     }
 
-    tbody tr:nth-child(odd) {
+    tbody tr {
       /* background-color: #fafafa; */
       border-top: 1px solid #d9d9d9;
-      border-bottom: 1px solid #d9d9d9;
+      /* border-bottom: 1px solid #d9d9d9; */
     }
 
     th,

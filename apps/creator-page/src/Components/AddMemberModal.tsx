@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import IconClose from './Icons/IconClose';
+import PngIconAdd from './Icons/PngIconAdd';
 
 Modal.setAppElement('#add-member-modal');
 export default function AddMemberModal({
@@ -60,23 +61,34 @@ export default function AddMemberModal({
             </button>
           </div>
           <div className="upload-area">
-            <textarea title="quick-upload" name="" id=""></textarea>
+            <textarea
+              title="quick-upload"
+              name=""
+              id=""
+              placeholder="e.g. 0x983snwdbueji9348953454353"
+            ></textarea>
           </div>
           <div className="quick-upload">
-            <button>Add</button>
+            <button
+              onClick={() => {
+                csvFile && uploadCsvFile(csvFile);
+              }}
+            >
+              Add
+            </button>
           </div>
         </ContentBox>
       )) || (
         <ContentBox>
           <div className="header">
-            <h3>UPLOAD FILE</h3>
+            <h3>Upload File</h3>
             <button title="close" onClick={closeModal}>
-              <IconClose size="20px" />
+              <IconClose size="18px" />
             </button>
           </div>
           <div className="intro">
             <p>
-              You will need to upload one of the Twitter Name, Discord ID, and
+              You will need to upload one of the Twitter name, Discord ID, and
               Wallet Address information, we can connect your uploaded user with
               the existing users.
             </p>
@@ -87,8 +99,8 @@ export default function AddMemberModal({
           </div>
           <div className="upload-area">
             <label htmlFor="upload-csv" id="upload-csv-label">
-              <p>Click to choose a file </p>
-              <p>CSV only</p>
+              <PngIconAdd />
+              <p>Click to choose a file (CSV only)</p>
               {csvFile && <p>{csvFile.name}</p>}
             </label>
             <input
@@ -108,7 +120,7 @@ export default function AddMemberModal({
                 setQuickUpload(!quickUpload);
               }}
             >
-              Quick upload,bulk filling add wallet address.
+              Quick upload, bulk filling add wallet addresses👉
             </p> */}
             <button onClick={() => csvFile && uploadCsvFile(csvFile)}>
               Upload
@@ -139,6 +151,10 @@ const ContentBox = styled.div`
 
     & h3 {
       margin: 0;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 30px;
+      color: #333333;
     }
   }
 
@@ -155,11 +171,16 @@ const ContentBox = styled.div`
     margin: 20px 0 10px 0;
     & p {
       font-size: 15px;
+      text-decoration: underline;
+    }
+
+    & button {
+      width: 240px;
     }
   }
 
   & .download-temp {
-    text-align: end;
+    text-align: start;
     margin: 20px 0;
   }
 
@@ -180,11 +201,13 @@ const ContentBox = styled.div`
 
   & .upload-area {
     height: 200px;
-    border: 1px dotted gray;
+    /* border: 1px dotted gray; */
+    background-color: #ebeee4;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 10px;
     > input {
       display: none;
     }
@@ -196,6 +219,17 @@ const ContentBox = styled.div`
       outline: none;
       background: none;
       resize: none;
+    }
+
+    & img {
+      width: 40px;
+    }
+
+    & p {
+      font-weight: 400;
+      font-size: 18px;
+      line-height: 27px;
+      color: #333333;
     }
   }
 
