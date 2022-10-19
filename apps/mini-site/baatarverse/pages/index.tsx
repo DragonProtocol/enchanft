@@ -737,6 +737,8 @@ const StyledVideo = styled.video`
   left: 0;
   top: 0;
   z-index: 0;
+  background-color: #071726;
+
   /* opacity: 0.9; */
 `;
 
