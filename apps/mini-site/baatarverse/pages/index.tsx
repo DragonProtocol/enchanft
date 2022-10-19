@@ -1257,7 +1257,7 @@ const Wrapper = styled.div`
       width: 100%;
       /* width: 120%; */
       /* word-break: break-word; */
-      text-align: justify;
+      /* text-align: justify; */
       margin-top: 10px;
       font-size: 1.2rem;
       text-shadow: 4px 8px 25px rgba(13, 44, 69, 0.6);
