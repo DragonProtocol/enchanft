@@ -116,7 +116,7 @@ export function Index() {
   );
 
   return (
-    <Wrapper>
+    <Wrapper lang="en">
       <StyledVideo
         x5-video-player-type="h5"
         x-webkit-airplay="true"
@@ -154,7 +154,7 @@ export function Index() {
           <div
             className="sidebar-item"
             key={key}
-            onClick={() => scrollToAnchor(key)}
+            onClick={() => scrollToAnchor(key.replace('\n',' '))}
           >
             {key}
           </div>
@@ -265,7 +265,7 @@ export function Index() {
         </div> */}
       </div>
       <div className="bg-t">
-        <div className="contract title-img" id="CaskBaatar\ncontract">
+        <div className="contract title-img" id="CaskBaatar contract">
           <Image
             src={'/static/images/caskbaatar-02.png'}
             layout="fill"
@@ -887,7 +887,7 @@ const Wrapper = styled.div`
     .wl-xyz {
       /* rio 2.6 */
       width: 42px;
-      height: 13px;
+      height: 10px;
       /* width: 42px;
       height: 16px; */
     }
@@ -901,7 +901,7 @@ const Wrapper = styled.div`
       }
       .wl-xyz {
         width: 52px;
-        height: 20px;
+        height: 17px;
       }
     }
 
@@ -912,7 +912,7 @@ const Wrapper = styled.div`
       }
       .wl-xyz {
         width: 72px;
-        height: 27px;
+        height: 24px;
       }
       & > * + * {
         margin-left: 20px;
