@@ -164,7 +164,9 @@ export function Index() {
       <div className="logo">
         <Image
           src={'/static/images/logo.png'}
-          width={92}
+          width={62}
+          // width={92}
+          // height={76}
           height={52}
           layout="fixed"
           objectFit="cover"
@@ -832,7 +834,7 @@ const Wrapper = styled.div`
   .logo {
     position: absolute;
     top: 10px;
-    left: 0px;
+    left: 40px;
   }
 
   .bg-texture {
@@ -1262,9 +1264,12 @@ const Wrapper = styled.div`
     }
     .left-box {
       display: inline-block;
-      width: 43%;
+      width: 50%;
       position: relative;
       z-index: 2;
+      @media (min-width: 800px) {
+        width: 43%;
+      }
 
       /* position: absolute;
       top: 2vw;
