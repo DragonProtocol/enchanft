@@ -144,9 +144,9 @@ export function Index() {
         {[
           'Home',
           'CaskBaatar\ncontract',
-          'About',
-          'Story',
           'Rodmap',
+          // 'About',
+          'Story',
           'Team',
           'FAQ',
         ]?.map((key) => (
@@ -216,20 +216,14 @@ export function Index() {
         </div>
         <br />
         <div className="text">
-          Each of the CaskBaatar’s NFT collections is bound to a single whisky
-          cask. Among them, the artworks are designed by the famous Mongolian
-          artist Yideer, and the single whisky cask are selected by professional
-          cask selectors. Each CaskBaatar NFT contains an NFT picture and at
-          least a bottle of whisky.
+          Cask refers to the aged barrrels of whisky,rum and other spirits.
+          Baatar means hero in Mongolian.
           <br />
           <br />
-          CaskBaatar NFT is created based on the image of a Mongolian man, and
-          matches the costumes of different periods from the 13th century to the
-          present.As a Mongolian in the 21st century, the artist Yieder, while
-          recalling the ancient history and culture, mostly conveys the concept
-          of "Mongolian in the 21st century", and shows the state of
-          contemporary Mongolian people from his perspective. Give the character
-          visual representation of tradition and future.
+          Each of the CaskBaatar NFT collections is bound to a single whisky
+          cask. In another words, CaskBaatar has 2 layers,the artwork layer
+          designed by top Mongolian artist Yideer,and the whisky cask layer
+          selected by top cask experts.
         </div>
       </div>
       <div className="image-container">
@@ -276,8 +270,30 @@ export function Index() {
             alt={'basic'}
           />
         </div>
+        <div className="title text">we use the ERC721 smart contract.</div>
+        <br />
+        <div className="text">
+          50% of the crypto you spend will be pledged in the contract, and the
+          remaining 50% will be transferred to the managing team.
+          <br />
+          <br />
+          We will sell the cask bound to the NFT in 2 to 5 years, when you would
+          receive the earnings proportionally, and the managing team will
+          withdraw the pledged crypto.
+          <br />
+          <br />
+          You can trade or burn the NFT before we sell the cask.
+          <br />
+          <br />
+          <div className='text-show'>
+            If you trade, the crypto pledged in it would be transferred to the
+            buyer.
+            <br />
+            If you burn, the crypto pledged in it would be transferred to you.
+          </div>
+        </div>
 
-        <div className="contract-wrapper">
+        {/* <div className="contract-wrapper">
           <div className="contract-row row">
             <div className="contract-box">
               Our technical team comes from EnchaNFT Company in Singapore, and
@@ -348,6 +364,23 @@ export function Index() {
               </div>
             </div>
           </div>
+        </div> */}
+        <div className="roadmap title-img big-title-img" id="Rodmap">
+          <Image
+            src={'/static/images/roadmap.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
+        </div>
+        <div className="image-container map-box">
+          <Image
+            className={'image map'}
+            src={'/static/images/new-map.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
         </div>
       </div>
 
@@ -364,7 +397,7 @@ export function Index() {
           </div>
           <div className="about-box">
             <div className="left-box">
-              <div className="about title-img" id="About">
+              {/* <div className="about title-img" id="About">
                 <Image
                   src={'/static/images/about.png'}
                   layout="fill"
@@ -384,8 +417,8 @@ export function Index() {
                 <br />
                 The owners of CaskBaatar NFT also become contributors and
                 investors to our mission.
-              </div>
-              <div className="about title-img top big-title-img" id="Story">
+              </div> */}
+              <div className="about title-img big-title-img" id="Story">
                 <Image
                   src={'/static/images/story.png'}
                   layout="fill"
@@ -462,7 +495,7 @@ export function Index() {
           </div>
         </div> */}
 
-        <div className="roadmap title-img big-title-img" id="Rodmap">
+        {/* <div className="roadmap title-img big-title-img" id="Rodmap">
           <Image
             src={'/static/images/roadmap.png'}
             layout="fill"
@@ -470,6 +503,7 @@ export function Index() {
             alt={'basic'}
           />
         </div>
+         */}
 
         <div className="image-container map-wrapper">
           {/* <Image
@@ -478,7 +512,7 @@ export function Index() {
           objectFit="contain"
           alt={'basic'}
         /> */}
-          <div className="image-container map-box">
+          {/* <div className="image-container map-box">
             <Image
               className={'image map'}
               src={'/static/images/map.png'}
@@ -503,7 +537,7 @@ export function Index() {
               Whitelist extraction of <br />
               Exclusive NFT collection
             </div>
-          </div>
+          </div> */}
 
           <div className="black-cloud image-container">
             <Image
@@ -760,7 +794,8 @@ const Wrapper = styled.div`
   .bg-t {
     margin-top: -100px;
     padding-top: 100px;
-    padding-bottom: 15rem;
+    padding-bottom: 5rem;
+    /* padding-bottom: 15rem; */
     background-image: url('/static/images/texture-top.png');
     /* background-repeat: no-repeat; */
     background-size: 100%;
@@ -952,6 +987,9 @@ const Wrapper = styled.div`
     margin: 0 auto;
     position: relative;
     margin-top: calc(2vw);
+    @media (max-width: 700px) {
+      margin-top: -20px;
+    }
   }
 
   .flag {
@@ -1044,6 +1082,10 @@ const Wrapper = styled.div`
   .contract {
     margin-top: calc(3.125rem + 2.2vw);
     /* margin-top: 50px; */
+    margin-bottom: calc(2.125rem + 2.2vw);
+  }
+  .text-show{
+    color: #FF9D69;
   }
 
   .contract-row {
@@ -1189,9 +1231,13 @@ const Wrapper = styled.div`
     position: relative;
     display: flex;
     justify-content: space-between;
+    padding-bottom: 20rem;
+    /* padding-bottom: 15rem; */
     /* display: flex; */
     .about-text {
-      width: 120%;
+      width: 100%;
+      /* width: 120%; */
+      word-break: break-word;
       margin-top: 10px;
       font-size: 1.2rem;
       text-shadow: 4px 8px 25px rgba(13, 44, 69, 0.6);
@@ -1265,7 +1311,8 @@ const Wrapper = styled.div`
 
   .roadmap {
     width: 200px;
-    margin: 200px auto 50px;
+    margin: 00px auto 20px;
+    /* margin: 100px auto 20px; */
     z-index: 1;
   }
 
@@ -1343,7 +1390,8 @@ const Wrapper = styled.div`
   }
 
   .team {
-    margin: 200px auto 50px;
+    margin: -180px auto 50px;
+    /* margin: -100px auto 50px; */
   }
 
   .black-cloud {
