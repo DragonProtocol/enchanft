@@ -267,14 +267,17 @@ export default function Actions({
 
     if (questionnaire.valid) {
       questionnaire.data.forEach((item) => {
-        actions.push({
-          name: item.question,
-          type: ActionType.QUESTIONNAIRE,
-          typeMore: ActionTypeMore.QUESTIONNAIRE,
-          description: ``,
-          question: item.question,
-          answer: item.answer,
-        });
+        const { question, answer } = item;
+        if (question.trim() && answer.trim()) {
+          actions.push({
+            name: question,
+            type: ActionType.QUESTIONNAIRE,
+            typeMore: ActionTypeMore.QUESTIONNAIRE,
+            description: ``,
+            question,
+            answer,
+          });
+        }
       });
     }
 
