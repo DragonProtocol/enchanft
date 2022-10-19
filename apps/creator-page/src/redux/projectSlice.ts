@@ -65,6 +65,8 @@ export type ProjectDetail = {
   whitelists: Whitelist[];
   announcementText?: string;
   announcementTitle?: string;
+  isVIP?: boolean;
+  level?: number;
 };
 
 const InitState: {

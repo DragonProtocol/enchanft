@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Loading from '../Components/Loading';
 import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store';
@@ -41,10 +41,11 @@ import {
 } from '../utils/socialMedia';
 
 export default function ProjectInfoEdit() {
-  const { account, updateAccount, isAdmin, isCreator, isVIP } = useAppConfig();
+  const { account, updateAccount, isAdmin, isVIP } = useAppConfig();
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   // TODO fix any
   const [project, setProject] = useState<any>({ ...data });
   const [showTwitterInputModal, setShowTwitterInputModal] = useState(false);
@@ -99,8 +100,8 @@ export default function ProjectInfoEdit() {
     if (!account.info?.token || !slug) return;
     try {
       await updateProject(project, account.info?.token);
-      dispatch(fetchProjectDetail({ slug, token: account.info.token }));
       toast.success('save success!');
+      navigate(`/project/${project.slug}/info/edit`);
     } catch (error) {
       const err: AxiosError = error as any;
       if (err.response?.status === 401) {
@@ -110,7 +111,7 @@ export default function ProjectInfoEdit() {
         toast.error('save fail!');
       }
     }
-  }, [account, dispatch, project, slug, updateAccount]);
+  }, [account, navigate, project, slug, updateAccount]);
 
   const projectBind = useCallback(
     async (guildId: string) => {
@@ -189,7 +190,9 @@ export default function ProjectInfoEdit() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [account.info?.token, data]);
 
-  if (data?.slug !== slug) return <Loading />;
+  // const isVIP = useMemo(() => {
+  //   return data?.isVIP || false;
+  // }, [data]);
 
   log.debug('project', project);
   return (
@@ -205,11 +208,18 @@ export default function ProjectInfoEdit() {
             name={project?.name || ''}
             setName={(n) => {
               const slug = slugify(n.toLowerCase());
-              setProject({
-                ...project,
-                name: n,
-                slug: slug,
-              });
+              if (!data?.slug) {
+                setProject({
+                  ...project,
+                  name: n,
+                  slug: slug,
+                });
+              } else {
+                setProject({
+                  ...project,
+                  name: n,
+                });
+              }
             }}
           />
           <ProjectDesc
@@ -221,7 +231,15 @@ export default function ProjectInfoEdit() {
               });
             }}
           />
-          <ProjectSymbol customUrl={project?.slug} setCustomUrl={() => {}} />
+          <ProjectSymbol
+            customUrl={project?.slug}
+            setCustomUrl={(s) => {
+              setProject({
+                ...project,
+                slug: s,
+              });
+            }}
+          />
           <ProjectWebsite
             websiteUrl={project.community.website || ''}
             setWebsiteUrl={(url) => {
