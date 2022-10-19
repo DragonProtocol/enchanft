@@ -61,7 +61,8 @@ export function Index() {
           alt={'basic'}
         />
       </div>
-      <div
+
+      {/* <div
         className="nav-item"
         // onClick={() =>
         // window.open('https://twitter.com/mongols_nft', '__blank')
@@ -73,7 +74,7 @@ export function Index() {
           objectFit="contain"
           alt={'basic'}
         />
-      </div>
+      </div> */}
 
       {/* <div className="nav-item">
         <Image
@@ -262,7 +263,7 @@ export function Index() {
         </div> */}
       </div>
       <div className="bg-t">
-        <div className="contract title-img" id="CaskBaatar contract">
+        <div className="contract title-img" id="CaskBaatar\ncontract">
           <Image
             src={'/static/images/caskbaatar-02.png'}
             layout="fill"
@@ -285,7 +286,7 @@ export function Index() {
           You can trade or burn the NFT before we sell the cask.
           <br />
           <br />
-          <div className='text-show'>
+          <div className="text-show">
             If you trade, the crypto pledged in it would be transferred to the
             buyer.
             <br />
@@ -427,8 +428,15 @@ export function Index() {
                 />
               </div>
               <div className="about-text">
-                The vision of CaskBaatar is to combine the art collection and
-                the investment in whisky through web3.
+                The images of CaskBaatar are created by Yideer.
+                <br />
+                <br />
+                A Mongolian artist who try to convey the concept of "Mongolians
+                in the 21st century", and show the state of contemporary
+                Mongolian people and cultural diversity from his perspective.
+                <br />
+                <br />
+                We are a group of people who love NFT and whisky.
                 <br />
                 <br />
                 Only by integrating NFT with the real things can we create a
@@ -436,8 +444,12 @@ export function Index() {
                 significant value of this project.
                 <br />
                 <br />
-                The owners of CaskBaatar NFT also become contributors and
-                investors to our mission.
+                We find that NFT and whisky share the same characteristics such
+                as unique identity and mobility.
+                <br />
+                <br />
+                Therefore, Let’s make NFT and the whisky investment more
+                interesting!
               </div>
             </div>
             <div className="about-avatar-box">
@@ -593,11 +605,7 @@ export function Index() {
         <div className="profile-inner">
           <div className="row">
             {renderProfile('/static/images/Oddie.png', 'Oddie', 'Founder')}
-            {renderProfile(
-              '/static/images/Yideer.png',
-              'Yideer',
-              'Chief Artist'
-            )}
+            {renderProfile('/static/images/Yideer.png', 'Yideer', 'Artist')}
             {renderProfile(
               '/static/images/Tony.png',
               'Tony',
@@ -612,7 +620,7 @@ export function Index() {
             {renderProfile(
               '/static/images/Ken.png',
               'Mr.Ken',
-              'Professional Cask Selector'
+              'Senior Whisky Consultants'
             )}
           </div>
           <div className="row">
@@ -657,9 +665,10 @@ export function Index() {
         <div className="faq-item">
           <div className="ques">Is CaskBaatar a good investment?</div>
           The success of the project depends on many factors. We do not have the
-          magic to predict, so it is impossible to know how it will go, but we
-          strongly believe in our project and think it has a bright future
-          ahead, but ultimately you will have to decide for yourself.
+          magic to predict, so it is impossible to know how it will go, but
+          whiskey cask is a good investment, we strongly believe in our project
+          and think it has a bright future ahead, but ultimately you will have
+          to decide for yourself.
         </div>
         <div className="faq-item">
           <div className="ques">
@@ -676,6 +685,14 @@ export function Index() {
           </div>
           Yes, you can use the image of CaskBaatar owned by you for commercial
           purpose. However, you are not allowed to modify the image.
+        </div>
+        <div className="faq-item">
+          <div className="ques">
+            If the cask is traded in currency, how do we calculate the profit?
+          </div>
+          Holders buy the NFT with crypto. If the cask is purchased and sold in
+          currency, we will calculate the growth rate of the cask price and
+          return the crypto with profit to the holder.
         </div>
       </div>
       {renderNavComponents(true)}
@@ -986,7 +1003,7 @@ const Wrapper = styled.div`
     height: 100px;
     margin: 0 auto;
     position: relative;
-    margin-top: calc(2vw);
+    margin-top: calc(4vw);
     @media (max-width: 700px) {
       margin-top: -20px;
     }
@@ -1084,8 +1101,8 @@ const Wrapper = styled.div`
     /* margin-top: 50px; */
     margin-bottom: calc(2.125rem + 2.2vw);
   }
-  .text-show{
-    color: #FF9D69;
+  .text-show {
+    color: #ff9d69;
   }
 
   .contract-row {
@@ -1237,14 +1254,15 @@ const Wrapper = styled.div`
     .about-text {
       width: 100%;
       /* width: 120%; */
-      word-break: break-word;
+      /* word-break: break-word; */
+      text-align: justify;
       margin-top: 10px;
       font-size: 1.2rem;
       text-shadow: 4px 8px 25px rgba(13, 44, 69, 0.6);
     }
     .left-box {
       display: inline-block;
-      width: 50%;
+      width: 43%;
       position: relative;
       z-index: 2;
 
