@@ -833,8 +833,8 @@ const Wrapper = styled.div`
 
   .logo {
     position: absolute;
-    top: 10px;
-    left: 40px;
+    top: 20px;
+    left: 32px;
   }
 
   .bg-texture {
@@ -1264,7 +1264,7 @@ const Wrapper = styled.div`
     }
     .left-box {
       display: inline-block;
-      width: 50%;
+      width: 49%;
       position: relative;
       z-index: 2;
       @media (min-width: 800px) {
@@ -1287,7 +1287,7 @@ const Wrapper = styled.div`
     .about-avatar-box {
       position: sticky;
       top: 0;
-      width: 50%;
+      width: 49%;
       height: calc(min(80vw, 1400px) * 0.5);
       z-index: 1;
       display: inline-block;
