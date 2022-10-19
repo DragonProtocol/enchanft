@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-17 03:44:12
+ * @LastEditTime: 2022-10-19 11:04:06
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useCallback } from 'react';
 import styled from 'styled-components';
-import { useWlUserReact, WlUserActionType } from '../provider';
-import { getUserDisplayName, SignerAccountTypeMap } from '../utils';
+import { useWlUserReact, WlUserModalType } from '../provider';
+import { getUserDisplayName } from '../utils';
 import UserAvatar from './common/avatar/UserAvatar';
 import { ButtonPrimary } from './common/button/ButtonBase';
 
@@ -19,18 +19,16 @@ const LoginButton: React.FC<LoginButtonProps> = ({
   onClick,
   ...otherProps
 }: LoginButtonProps) => {
-  const { signer, user, isLogin, wlUserDispatch } = useWlUserReact();
+  const { signer, user, isLogin, dispatchModal } = useWlUserReact();
   const nameStr = signer && getUserDisplayName(user, signer.signerType);
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       if (onClick) {
         onClick(e);
       } else {
-        if (!isLogin) {
-          wlUserDispatch({
-            type: WlUserActionType.OPEN_LOGIN_MODAL,
-          });
-        }
+        dispatchModal({
+          type: WlUserModalType.LOGIN,
+        });
       }
     },
     [onClick, isLogin]
@@ -60,7 +58,6 @@ const LoginButton: React.FC<LoginButtonProps> = ({
 export default LoginButton;
 
 const LoginButtonWrapper = styled(ButtonPrimary)`
-  width: 200px;
   height: 48px;
 `;
 const LoginButtonBody = styled.div`

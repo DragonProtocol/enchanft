@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-01 18:05:13
+ * @LastEditTime: 2022-10-19 18:03:09
  * @Description: file description
  */
 import React from 'react'
@@ -16,7 +16,6 @@ import IconWL from '../../../common/icons/IconWL'
 import IconCopy from '../../../common/icons/IconCopy'
 import { getTakeTaskRefLink } from '../../../../container/Ref'
 import { useAppSelector } from '../../../../store/hooks'
-import { selectAccount } from '../../../../features/user/accountSlice'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import ActionIconBox from './ActionIconBox'
@@ -24,6 +23,7 @@ import ActionNameSpan from './ActionNameSpan'
 import { toast } from 'react-toastify'
 import { tweetShare } from '../../../../utils/twitter'
 import { SHARE_EVENT_TWEET_CONTENTS } from '../../../../constants'
+import { useWlUserReact } from '../../../../../../../libs/wl-user-react/core/src'
 
 export type ActionInvitePeopleProps = {
   data: TaskActionItemDataType
@@ -38,16 +38,16 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
   onCopy,
   copyBgc,
 }: ActionInvitePeopleProps) => {
-  const account = useAppSelector(selectAccount)
+  const { user } = useWlUserReact()
   const { name, progress, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
   const [refUrl, setRefUrl] = useState('')
 
   useEffect(() => {
-    if (account.id > 0) {
-      const url = getTakeTaskRefLink(account.id, taskId)
+    if (user.id > 0) {
+      const url = getTakeTaskRefLink(user.id, taskId)
       setRefUrl(url)
     }
-  }, [account])
+  }, [user])
 
   const isDone = status === UserActionStatus.DONE
   const handleCopySuccess = () => {

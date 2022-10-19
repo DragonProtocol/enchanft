@@ -26,13 +26,13 @@ import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import { TASK_DEFAULT_IMAGE_URLS } from '../constants'
 import { createTask, selectTaskDetail } from '../features/task/taskDetailSlice'
 import { RoleType, selectAccount } from '../features/user/accountSlice'
-import usePermissions from '../hooks/usePermissons'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { AsyncRequestStatus } from '../types'
 import PngIconCaretLeft from '../components/common/icons/PngIconCaretLeft'
 import { fetchDetail, createTask as createTaskApi, projectBindBot } from '../services/api/task'
 import PngIconDone from '../components/common/icons/PngIconDone'
 import { toast } from 'react-toastify'
+import { usePermissions } from '../../../../libs/wl-user-react/core/src'
 
 const discordBotCallback = `https://discord.com/oauth2/authorize?client_id=1003616859582627881&permissions=49&scope=bot&response_type=code&redirect_uri=${encodeURI(
   process.env.REACT_APP_DISCORD_CALLBACK_URL!,

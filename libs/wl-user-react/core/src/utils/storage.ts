@@ -2,18 +2,19 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-30 11:45:27
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-11 17:55:51
+ * @LastEditTime: 2022-10-18 20:08:52
  * @Description: file description
  */
-import { SignerType } from '../signer';
+import { SignerType } from '../signer/types';
 import { LoginResult } from '../api';
+import { isWeb3Signer, signerTypeToAccountTyp } from '.';
 
 export enum StorageKey {
-  LAST_LOGIN_SIGNER_TYPE = 'last_login_signer_type',
-  LAST_LOGIN_TOKEN = 'last_login_token',
-  LAST_LOGIN_NAME = 'last_login_name',
-  LAST_LOGIN_AVATAR = 'last_login_avatar',
-  LAST_LOGIN_PUBKEY = 'last_login_pubkey',
+  LAST_LOGIN_SIGNER_TYPE = 'wl_user_last_login_signer_type',
+  LAST_LOGIN_TOKEN = 'wl_user_last_login_token',
+  LAST_LOGIN_NAME = 'wl_user_last_login_name',
+  LAST_LOGIN_AVATAR = 'wl_user_last_login_avatar',
+  LAST_LOGIN_PUBKEY = 'wl_user_last_login_pubkey',
 }
 type StorageKeyValue = {
   [StorageKey.LAST_LOGIN_SIGNER_TYPE]: SignerType;
@@ -61,6 +62,10 @@ export function setStorageValue<T extends StorageKey>(
 }
 
 export function resetStorageValue(key: StorageKey): void {
+  console.log({
+    key: key,
+    value: storageDefaultValues[key],
+  });
   setStorageValue(key, storageDefaultValues[key]);
 }
 
@@ -68,7 +73,7 @@ export function getStorageValues<T extends StorageKey[]>(
   keys?: T
 ): StorageKeyValuePick<T> {
   const keyAry = keys || [...Object.values(StorageKey)];
-  const keyValues = storageDefaultValues;
+  const keyValues = { ...storageDefaultValues };
   for (const key of keyAry) {
     const value = getStorageValue(key);
     Object.assign(keyValues, {
@@ -79,14 +84,20 @@ export function getStorageValues<T extends StorageKey[]>(
 }
 
 export function updateStorageByLogin(
-  accountType: SignerType,
+  signerType: SignerType,
   data: LoginResult
 ): void {
-  setStorageValue(StorageKey.LAST_LOGIN_SIGNER_TYPE, accountType);
+  setStorageValue(StorageKey.LAST_LOGIN_SIGNER_TYPE, signerType);
   setStorageValue(StorageKey.LAST_LOGIN_TOKEN, data.token);
   setStorageValue(StorageKey.LAST_LOGIN_NAME, data.name);
   setStorageValue(StorageKey.LAST_LOGIN_AVATAR, data.avatar);
-  setStorageValue(StorageKey.LAST_LOGIN_PUBKEY, data.pubkey);
+  if (isWeb3Signer(signerType)) {
+    const accountType = signerTypeToAccountTyp(signerType);
+    const account = data.accounts.find(
+      (item) => item.accountType === accountType
+    );
+    setStorageValue(StorageKey.LAST_LOGIN_PUBKEY, account?.thirdpartyId || '');
+  }
 }
 
 export function updateStorageByLogout(): void {

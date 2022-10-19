@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:51:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-14 15:41:33
+ * @LastEditTime: 2022-10-19 23:13:17
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
 import qs from 'qs';
+import { toast } from 'react-toastify';
 import {
   Account,
   AccountType,
@@ -14,8 +15,9 @@ import {
   RoleType,
   User,
 } from './types';
+// TODO 这个考虑是否需要采用新的环境变量 如： REACT_APP_WL_USER_API_BASE_URL
 const API_BASE_URL = process.env['REACT_APP_API_BASE_URL'];
-const axiosInstance = axios.create();
+export const axiosInstance = axios.create();
 axiosInstance.defaults.baseURL = API_BASE_URL;
 export enum ApiErrorName {
   API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR = 'API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR',
@@ -37,6 +39,50 @@ export class ApiError extends Error {
     this.message = message || ApiErrorMessageMap[name];
   }
 }
+let wlUserContextValue: any;
+export const injectWlUserContextValue = (value: any) => {
+  wlUserContextValue = value;
+};
+
+// 添加响应拦截器
+let allowExecAuthFailed = true; // 是否允许执行认证失效的逻辑
+export const handleAxiosResponse401 = () => {
+  // 多个token失效的响应只执行一次logout
+  if (allowExecAuthFailed) {
+    allowExecAuthFailed = false;
+    wlUserContextValue.dispatchAction({
+      type: 'LOGOUT',
+    });
+    wlUserContextValue.dispatchModal({
+      type: 'LOGIN',
+    });
+    toast.error('authentication failed, log in again!');
+  }
+};
+axiosInstance.interceptors.response.use(
+  (response) => {
+    // 如果执行了登录，并且成功，设置下一次响应时允许执行认证失效的逻辑
+    if (
+      response.config.url === '/users/login' &&
+      response.status >= 200 &&
+      response.status < 400
+    ) {
+      allowExecAuthFailed = true;
+    }
+    // 对响应数据做点什么
+    return response;
+  },
+  (error: any) => {
+    if (error.response.status === 401) {
+      handleAxiosResponse401();
+    } else {
+      // 对响应错误做点什么
+      return Promise.reject(error.response?.data || error);
+    }
+  }
+);
+
+// TODO 这个 ApiResp 接口返回的类型考虑是否需要与后端协商统一（在这个用户系统中只有一个接口符合这个规则）
 export type ApiResp<T> = {
   code: number;
   msg: string;
@@ -82,7 +128,7 @@ export type LoginResult = {
 };
 export function login<K extends keyof LoginParamsMap>(
   params: { type: K } & LoginParamsMap[K]
-): AxiosPromise<ApiResp<LoginResult>> {
+): AxiosPromise<LoginResult> {
   const data = qs.stringify(params);
   return axiosInstance({
     url: `/users/login`,
@@ -112,7 +158,7 @@ export type BindResult = Account[];
 export function bindAccount<K extends keyof BindAccountParamsMap>(
   token: string,
   params: { type: K } & BindAccountParamsMap[K]
-): AxiosPromise<ApiResp<BindResult>> {
+): AxiosPromise<BindResult> {
   const data = qs.stringify(params);
   return axiosInstance({
     url: '/users/link',
@@ -129,7 +175,7 @@ export type UnBindResult = Account[];
 export function unbindAccount(
   token: string,
   type: AccountType
-): AxiosPromise<ApiResp<UnBindResult>> {
+): AxiosPromise<UnBindResult> {
   const data = qs.stringify({ type });
   return axiosInstance({
     url: '/users/link',
@@ -155,6 +201,39 @@ export function getUserInfo(
   });
 }
 
+// get user info ==================================
+export type UpdateUserInfoResult = unknown;
+export function updateUserInfo(
+  token: string,
+  data: Partial<User>
+): AxiosPromise<ApiResp<UpdateUserInfoResult>> {
+  return axiosInstance({
+    url: '/users/profile',
+    method: 'post',
+    data: qs.stringify(data),
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+export type UploadUserAvatarResult = {
+  url: string;
+};
+export function uploadUserAvatar(
+  token: string,
+  file: File
+): AxiosPromise<UploadUserAvatarResult> {
+  const form = new FormData();
+  form.append('file', file);
+  return axiosInstance({
+    url: '/medium/upload',
+    method: 'post',
+    data: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
 // get twittier oauth1 request token ==================================
 type GetTwitterOauth1RequestTokenResult = {
   oauthToken: string;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-14 17:52:02
+ * @LastEditTime: 2022-10-18 16:00:18
  * @Description: file description
  */
 import {
@@ -12,8 +12,9 @@ import {
   BindResult,
   LoginResult,
 } from '../api';
-import { openOauthWindow, SignerAccountTypeMap } from '../utils';
-import { SignerType, Signer, SignerProcessStatus } from './index';
+import { AccountType } from '../types';
+import { openOauthWindow } from '../utils';
+import { SignerType, Signer, SignerProcessStatus } from './types';
 export interface DiscordConstructorArgs {
   discordClientId: string;
   oauthCallbackUri: string;
@@ -71,6 +72,7 @@ prompt=consent`;
 
 export class Discord extends Signer {
   readonly signerType = SignerType.DISCORD;
+  readonly accountType = AccountType.DISCORD;
   private discordClientId = '';
   private oauthCallbackUri = '';
   private bindOauthCallbackUrlListener() {
@@ -111,7 +113,7 @@ export class Discord extends Signer {
         const handleDiscordCallback = async (
           e: DiscordEventMap[DiscordEventType.DISCORD_BIND_OAUTH_CALLBACK]
         ) => {
-          authWindow?.removeEventListener(
+          (window as DiscordOauthWindow).removeEventListener(
             DiscordEventType.DISCORD_BIND_OAUTH_CALLBACK,
             handleDiscordCallback
           );
@@ -119,24 +121,19 @@ export class Discord extends Signer {
           // 2. fetch discord bind
           const { code } = e.detail;
           const result = await bindAccount(token, {
-            type: SignerAccountTypeMap[this.signerType],
+            type: this.accountType,
             code,
           });
-          if (result.data.code === 0) {
+          if (result.data) {
             this.signerProcessStatusChange(SignerProcessStatus.BIND_FULFILLED);
-            resolve(result.data.data);
+            resolve(result.data);
           } else {
             this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
-            reject(
-              new DiscordError(
-                ErrorName.API_REQUEST_BIND_ERROR,
-                result.data.msg
-              )
-            );
+            reject(new DiscordError(ErrorName.API_REQUEST_BIND_ERROR));
           }
         };
         // 1. listen discord bind oauth callback
-        authWindow?.addEventListener(
+        (window as DiscordOauthWindow).addEventListener(
           DiscordEventType.DISCORD_BIND_OAUTH_CALLBACK,
           handleDiscordCallback
         );

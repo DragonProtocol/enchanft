@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 17:57:31
+ * @LastEditTime: 2022-10-19 18:47:34
  * @Description: 用户的账户信息
  */
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
@@ -172,12 +172,12 @@ export const userGetProfile = createAsyncThunk('user/getProfile', async () => {
 
 export const userUpdateProfile = createAsyncThunk(
   'user/updateProfile',
-  async ({ avatar, name, pubkey }: { avatar: string; name: string; pubkey: string }, thunkAPI) => {
+  async ({ avatar, name, callback }: { avatar: string; name: string; callback: () => void }, thunkAPI) => {
     const resp = await updateProfile({
       userAvatar: avatar,
       userName: name,
-      pubkey,
     })
+    callback()
     thunkAPI.dispatch(setAvatar(avatar))
     thunkAPI.dispatch(setName(name))
     thunkAPI.dispatch(setLastLoginInfo({ name, avatar }))

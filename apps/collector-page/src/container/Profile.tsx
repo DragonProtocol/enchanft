@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-13 15:30:55
+ * @LastEditTime: 2022-10-19 23:27:48
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -10,40 +10,10 @@ import { useCallback } from 'react'
 import useInterval from '../hooks/useInterval'
 import { useAppDispatch, useAppSelector } from 'store/hooks'
 import styled from 'styled-components'
-import {
-  Box,
-  Button,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  Divider,
-  FormControl,
-  IconButton,
-  TextField,
-  Tabs,
-  Tab,
-  CircularProgress,
-} from '@mui/material'
+import { Dialog, FormControl, IconButton, CircularProgress } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 
-import {
-  selectAccount,
-  userUpdateProfile,
-  userLink,
-  setConnectModal,
-  ConnectModal,
-  userOtherWalletLink,
-  setLastLogin,
-  setLastLoginInfo,
-  setToken,
-  setPubkey,
-  setAvatar as setAvatarForSlice,
-  setName as setNameForSlice,
-  setIsLogin,
-  logout,
-} from '../features/user/accountSlice'
-import { AccountType, ActionType } from '../types/entities'
+import { userUpdateProfile } from '../features/user/accountSlice'
 
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
 import DisconnectModal from '../components/ConnectBtn/DisconnectModal'
@@ -54,10 +24,6 @@ import {
 } from '../features/user/followedCommunitiesSlice'
 import { AsyncRequestStatus } from '../types'
 import { uploadAvatar } from '../services/api/login'
-import { connectionSocialMedia, SocialMediaType } from '../utils/socialMedia'
-import { sortPubKey } from '../utils/solana'
-import useWalletSign from '../hooks/useWalletSign'
-import { clearLoginToken, SIGN_MSG } from '../utils/token'
 import {
   selectUserRewardsState,
   UserRewardForEntity,
@@ -65,14 +31,7 @@ import {
 } from '../features/user/userRewardsSlice'
 import RewardList, { RewardListItemsType } from '../components/business/reward/RewardList'
 import ButtonBase, { ButtonInfo, ButtonPrimary, ButtonWarning } from '../components/common/button/ButtonBase'
-import IconTwitterWhite from '../components/common/icons/IconTwitterWhite'
-import IconDiscordWhite from '../components/common/icons/IconDiscordWhite'
-import IconEmailWhite from '../components/common/icons/IconEmailWhite'
-import IconUnlink from '../components/common/icons/IconUnlink'
 import CardBox from '../components/common/card/CardBox'
-import IconPhantomWhite from '../components/common/icons/IconPhantomWhite'
-import IconMetamask from '../components/common/icons/IconMetamask'
-import IconMartian from '../components/common/icons/IconMartian'
 import UserAvatar from '../components/business/user/UserAvatar'
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
 import { toast } from 'react-toastify'
@@ -82,7 +41,8 @@ import { useNavigate } from 'react-router-dom'
 import OverflowEllipsisBox from '../components/common/text/OverflowEllipsisBox'
 import { isMobile } from 'react-device-detect'
 import { getMultiavatarIdByUser } from '../utils/multiavatar'
-
+import { useWlUserReact, WlUserActionType, BindWithSignerButton } from '../../../../libs/wl-user-react/core/src'
+import { SignerType } from '../../../../libs/wl-user-react/core/src/signer'
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {
@@ -114,34 +74,32 @@ const ProfileTabOptions = [
   },
 ]
 const Profile: React.FC = () => {
+  const { isLogin, user, dispatchAction } = useWlUserReact()
   const navigate = useNavigate()
-  const dispatch = useAppDispatch()
-
-  const account = useAppSelector(selectAccount)
-  const [name, setName] = useState(account.name || '')
-  const [avatar, setAvatar] = useState(account.avatar || '')
+  const [name, setName] = useState(user.name || '')
+  const [avatar, setAvatar] = useState(user.avatar || '')
   const [uploading, setUploading] = useState(false)
   const [openDialog, setOpenDialog] = useState(false)
-  const [modalShow, setModalShow] = useState(false)
-  const [accountType, setAccountType] = useState('twitter')
 
   const handleLogout = useCallback(async () => {
-    if (account.isLogin) {
-      dispatch(logout())
+    if (isLogin) {
+      dispatchAction({ type: WlUserActionType.LOGOUT })
       navigate('/')
     }
-  }, [account])
+  }, [isLogin])
   const updateProfile = useCallback(() => {
-    if (!account.token) return
-    dispatch(
-      userUpdateProfile({
-        avatar: avatar,
-        name: name,
-        pubkey: account.pubkey,
-      }),
-    )
-    setOpenDialog(false)
-  }, [account.token, account.pubkey, name, avatar])
+    if (!isLogin) return
+    dispatchAction({
+      type: WlUserActionType.UPDATE_USER_PROFILE,
+      payload: { name, avatar },
+      then: () => {
+        setOpenDialog(false)
+      },
+      catch: (error) => {
+        toast.error(error.message)
+      },
+    })
+  }, [isLogin, name, avatar])
 
   // profile展示信息切换
   const [curProfileTab, setCurProfileTab] = useState(ProfileTabOptions[0].value)
@@ -157,160 +115,35 @@ const Profile: React.FC = () => {
   const loadingUserRewards = rewardsStatus === AsyncRequestStatus.PENDING
   const rewardItems = formatStoreDataToComponentDataByUserRewards(rewards)
 
-  const twitter = account.accounts.find((item) => item.accountType === AccountType.TWITTER)
-  const discord = account.accounts.find((item) => item.accountType === AccountType.DISCORD)
-  const accountPhantom = account.accounts.find((item) => item.accountType === AccountType.SOLANA)
-  const accountMetamask = account.accounts.find((item) => item.accountType === AccountType.EVM)
-  const accountMartian = account.accounts.find((item) => item.accountType === AccountType.APTOS)
-
-  const { phantomValid, metamaskValid, martianValid, signMsgWithMetamask, signMsgWithPhantom, signMsgWithMartian } =
-    useWalletSign()
-  const bindMetamask = useCallback(async () => {
-    if (!metamaskValid) alert('Install Metamask first')
-    const data = await signMsgWithMetamask()
-    console.log(data)
-    if (!data) return
-    dispatch(
-      userOtherWalletLink({
-        walletType: data.walletType,
-        signature: data.signature,
-        pubkey: data.pubkey,
-        payload: SIGN_MSG,
-      }),
-    )
-  }, [metamaskValid])
-
-  const bindPhantom = useCallback(async () => {
-    if (!phantomValid) alert('Install Phantom first')
-    const data = await signMsgWithPhantom()
-    console.log(data)
-    if (!data) return
-    dispatch(
-      userOtherWalletLink({
-        walletType: data.walletType,
-        signature: data.signature,
-        pubkey: data.pubkey,
-        payload: SIGN_MSG,
-      }),
-    )
-  }, [phantomValid])
-  const bindMartian = useCallback(async () => {
-    if (!martianValid) alert('Install Martian first')
-    const data = await signMsgWithMartian()
-    console.log(data)
-    if (!data) return
-    dispatch(
-      userOtherWalletLink({
-        walletType: data.walletType,
-        signature: data.signature,
-        pubkey: data.pubkey,
-        payload: data?.payloadMsg || SIGN_MSG,
-      }),
-    )
-  }, [martianValid])
   const renderUserBasicInfo = () => {
     return (
       <UserBasicInfoBox>
         <UserNameRow>
-          <UserName>{account.name}</UserName>
+          <UserName>{user.name}</UserName>
           <IconButton onClick={() => setOpenDialog(true)}>
             <EditIcon />
           </IconButton>
           <LogoutBtn onClick={handleLogout}>Logout</LogoutBtn>
         </UserNameRow>
-        <UserAddress>{account.pubkey}</UserAddress>
+        {/* <UserAddress>{user.pubkey}</UserAddress> */}
       </UserBasicInfoBox>
     )
   }
   const renderUserAccountList = () => {
     return (
       <UserAccountListBox>
-        <MetamaskBindBtn
-          onClick={() => {
-            if (accountMetamask) return
-            bindMetamask()
-          }}
-        >
-          <ConnectIconBox>
-            <IconMetamask />
-          </ConnectIconBox>
-          <BindBtnText>{accountMetamask ? sortPubKey(accountMetamask.thirdpartyId) : 'Connect Metamask'}</BindBtnText>
-        </MetamaskBindBtn>
-        <PhantomBindBtn
-          onClick={() => {
-            if (accountPhantom) return
-            bindPhantom()
-          }}
-        >
-          <IconPhantomWhite />
-          <BindBtnText>{accountPhantom ? sortPubKey(accountPhantom.thirdpartyId) : 'Connect Phantom'}</BindBtnText>
-        </PhantomBindBtn>
-        <MartianBindBtn
-          onClick={() => {
-            if (accountMartian) return
-            bindMartian()
-          }}
-        >
-          <IconMartian />
-          <BindBtnText>{accountMartian ? sortPubKey(accountMartian.thirdpartyId) : 'Connect Martian'}</BindBtnText>
-        </MartianBindBtn>
-        <TwitterBindBtn
-          isConnect={!!twitter}
-          onClick={() => {
-            if (!!twitter) {
-              setAccountType(AccountType.TWITTER)
-              setModalShow(true)
-            } else {
-              connectionSocialMedia(SocialMediaType.TWITTER_OAUTH2_AUTHORIZE)
-            }
-          }}
-        >
-          <IconTwitterWhite />
-          {!!twitter ? (
-            <>
-              <BindBtnText>{twitter.thirdpartyName}</BindBtnText>
-              <DisconnectBox>
-                <IconUnlink size="1.2rem" />
-              </DisconnectBox>
-            </>
-          ) : (
-            <BindBtnText>Connect Twitter</BindBtnText>
-          )}
-        </TwitterBindBtn>
-        <DiscordBindBtn
-          isConnect={!!discord}
-          onClick={() => {
-            if (!!discord) {
-              setAccountType(AccountType.DISCORD)
-              setModalShow(true)
-            } else {
-              connectionSocialMedia(SocialMediaType.DISCORD_OAUTH2_AUTHORIZE)
-            }
-          }}
-        >
-          <IconDiscordWhite />
-          {!!discord ? (
-            <>
-              <BindBtnText>{discord.thirdpartyName}</BindBtnText>
-              <DisconnectBox>
-                <IconUnlink size="1.2rem" />
-              </DisconnectBox>
-            </>
-          ) : (
-            <BindBtnText>Connect Discord</BindBtnText>
-          )}
-        </DiscordBindBtn>
-        {/* <EmailBindBtn>
-          <IconEmailWhite />
-          {'Connect Email'}
-        </EmailBindBtn> */}
+        <BindWithSignerButton signerType={SignerType.METAMASK} />
+        <BindWithSignerButton signerType={SignerType.PHANTOM} />
+        <BindWithSignerButton signerType={SignerType.MARTIAN} />
+        <BindWithSignerButton signerType={SignerType.TWITTER} />
+        <BindWithSignerButton signerType={SignerType.DISCORD} />
       </UserAccountListBox>
     )
   }
   const renderUserInfoPc = () => {
     return (
       <ProfileTopBox>
-        <UserImg src={account.avatar} multiavatarId={getMultiavatarIdByUser(account)} />
+        <UserImg src={user.avatar} multiavatarId={getMultiavatarIdByUser(user)} />
         <TopRightBox>
           {renderUserBasicInfo()}
           {renderUserAccountList()}
@@ -322,7 +155,7 @@ const Profile: React.FC = () => {
     return (
       <ProfileTopBox>
         <TopRightBox>
-          <UserImg src={account.avatar} multiavatarId={getMultiavatarIdByUser(account)} />
+          <UserImg src={user.avatar} multiavatarId={getMultiavatarIdByUser(user)} />
           {renderUserBasicInfo()}
         </TopRightBox>
         {renderUserAccountList()}
@@ -369,15 +202,19 @@ const Profile: React.FC = () => {
                   }
 
                   setUploading(true)
-                  try {
-                    const { data } = await uploadAvatar(file)
-                    setAvatar(data.url)
-                    toast.success('upload success')
-                  } catch (error) {
-                    toast.error('upload fail')
-                  } finally {
-                    setUploading(false)
-                  }
+                  dispatchAction({
+                    type: WlUserActionType.UPLOAD_USER_AVATAR,
+                    payload: file,
+                    then: (data) => {
+                      setAvatar(data.url)
+                      toast.success('upload success')
+                      setUploading(false)
+                    },
+                    catch: () => {
+                      toast.error('upload fail')
+                      setUploading(false)
+                    },
+                  })
                 }}
               />
               {(uploading && (
@@ -385,13 +222,13 @@ const Profile: React.FC = () => {
                   <CircularProgress size="5rem" color="inherit" />
                   <p>Uploading Image</p>
                 </div>
-              )) || <EditAvatar src={avatar || account.avatar} multiavatarId={getMultiavatarIdByUser(account)} />}
+              )) || <EditAvatar src={avatar || user.avatar} multiavatarId={getMultiavatarIdByUser(user)} />}
             </EditAvatarBox>
 
             <EditNameBox>
               <FormControl variant="standard">
                 <EditNameLabel>Name</EditNameLabel>
-                <input title="name" id="name" value={name || account.name} onChange={(e) => setName(e.target.value)} />
+                <input title="name" id="name" value={name || user.name} onChange={(e) => setName(e.target.value)} />
               </FormControl>
             </EditNameBox>
           </EditFormBox>
@@ -401,7 +238,6 @@ const Profile: React.FC = () => {
           </EditButtonBox>
         </EditProfileBox>
       </DialogBox>
-      <DisconnectModal modalShow={modalShow} setModalShow={setModalShow} type={accountType} />
     </ProfileWrapper>
   )
 }
@@ -492,76 +328,6 @@ const UserAccountListBox = styled.div`
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-`
-const BindBtnBase = styled(ButtonBase)<{ isConnect?: boolean }>`
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: ${(props) => (props.isConnect ? '16px 8px 16px 18px' : '16px 18px')};
-  gap: 10px;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    min-width: 40px;
-    height: 40px;
-    padding: 0;
-  }
-`
-const BindBtnText = styled.span`
-  gap: 12px;
-  font-size: 14px;
-  color: #ffffff;
-  font-weight: 700;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    display: none;
-  }
-`
-const MetamaskBindBtn = styled(BindBtnBase)`
-  background: #f6851b;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-`
-const PhantomBindBtn = styled(BindBtnBase)`
-  background: #551ff4;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-`
-const MartianBindBtn = styled(BindBtnBase)`
-  background: #171f1c;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-`
-
-const TwitterBindBtn = styled(BindBtnBase)`
-  background: #5368ed;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    padding: 8px;
-  }
-`
-
-const DiscordBindBtn = styled(BindBtnBase)`
-  background: #5368ed;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    padding: 8px;
-  }
-`
-
-const DisconnectBox = styled.div`
-  display: flex;
-  align-items: center;
-  padding-left: 5px;
-  border-left: 1px solid rgba(255, 255, 255, 0.4);
-`
-const EmailBindBtn = styled(BindBtnBase)`
-  background: #3dd606;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-`
-const ConnectIconBox = styled.div`
-  width: 1.5rem;
-  height: 1.5rem;
-  padding: 2px;
-  background: #ffffff;
-  border-radius: 50%;
-  text-align: center;
-  line-height: 1.5rem;
 `
 const ProfileInfoTabsBox = styled(CardBox)`
   margin-top: 20px;

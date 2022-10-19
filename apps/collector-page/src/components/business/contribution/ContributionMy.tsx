@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:30:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-13 15:28:19
+ * @LastEditTime: 2022-10-19 18:05:42
  * @Description: file description
  */
 import React, { useState } from 'react'
@@ -17,7 +17,6 @@ export type ContributionMyDataType = {
   avatar: string
   userName: string
   score: number
-  pubkey: string
 }
 
 export type ContributionMyViewConfigType = {
@@ -46,7 +45,7 @@ const ContributionMy: React.FC<ContributionMyProps> = ({
   onFollow,
   onAccountOperation,
 }: ContributionMyProps) => {
-  const { avatar, userName, score, pubkey } = data
+  const { avatar, userName, score } = data
   const { displayFollowCommunity, followStatusType } = {
     ...defaultViewConfig,
     ...viewConfig,

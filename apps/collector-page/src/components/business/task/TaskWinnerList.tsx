@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 11:27:03
+ * @LastEditTime: 2022-10-19 16:29:05
  * @Description: file description
  */
 import React from 'react'
@@ -21,10 +21,10 @@ export type WinnerItemDataType = {
 
 export type TaskWinnerListProps = {
   items: WinnerItemDataType[]
-  highlightPubkeys?: string[]
+  highlightIds?: number[]
 }
 
-const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items, highlightPubkeys = [] }: TaskWinnerListProps) => {
+const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items, highlightIds = [] }: TaskWinnerListProps) => {
   return (
     <TaskWinnerListWrapper>
       <WinnerTitleBox>Winner List</WinnerTitleBox>
@@ -32,7 +32,7 @@ const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items, highlightPubkeys
         {items.map((item, index) => (
           <WinnerItemBox key={index}>
             <WinnerItemAvatar src={item.avatar} multiavatarId={getMultiavatarIdByUser(item)} />
-            <WinnerItemUserName highlight={highlightPubkeys.includes(item.pubkey)}>{item.name}</WinnerItemUserName>
+            <WinnerItemUserName highlight={highlightIds.includes(item.id)}>{item.name}</WinnerItemUserName>
             <WinnerItemPubkey number={1}>{item.pubkey}</WinnerItemPubkey>
           </WinnerItemBox>
         ))}

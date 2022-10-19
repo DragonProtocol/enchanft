@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 18:19:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-14 14:26:25
+ * @LastEditTime: 2022-10-19 12:11:38
  * @Description: file description
  */
-import { SignerType } from '../signer';
+import { SignerProcessStatus, SignerType } from '../signer/types';
 import { AccountType, User } from '../types';
 export const openOauthWindow = (url: string): WindowProxy | null => {
   return window.open(
@@ -45,7 +45,7 @@ export function isWeb2Signer(signerType: SignerType) {
   return [SignerType.TWITTER, SignerType.DISCORD].includes(signerType);
 }
 export function isWeb3Signer(signerType: SignerType) {
-  return [SignerType.MARTIAN, SignerType.PHANTOM, SignerType.MARTIAN].includes(
+  return [SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN].includes(
     signerType
   );
 }
@@ -69,4 +69,18 @@ export const getUserDisplayName = (user: User, signerType: SignerType) => {
   if (user.name) return user.name;
   const accountName = getAccountDisplayName(user, signerType);
   return accountName || `wl user ${user.id}`;
+};
+export const volidSignerPending = (
+  signerType: SignerType,
+  processStatus: SignerProcessStatus
+) => {
+  const pendingProcessStatus = [
+    SignerProcessStatus.LOGIN_PENDING,
+    SignerProcessStatus.BIND_PENDING,
+    SignerProcessStatus.UNBIND_PENDING,
+  ];
+  if (isWeb3Signer(signerType)) {
+    pendingProcessStatus.push(SignerProcessStatus.SIGNATURE_PENDING);
+  }
+  return pendingProcessStatus.includes(processStatus);
 };

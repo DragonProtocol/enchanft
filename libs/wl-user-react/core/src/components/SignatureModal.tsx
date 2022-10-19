@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-16 22:14:52
+ * @LastEditTime: 2022-10-19 14:48:50
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
-import ModalBase from './common/modal/ModalBase';
+import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
 import { isMobile } from 'react-device-detect';
-import { SignerProcessStatus } from '../signer';
+import { SignerProcessStatus } from '../signer/types';
 import { ButtonPrimary, ButtonInfo } from './common/button/ButtonBase';
 export type SignatureModalProps = {
   isOpen: boolean;
@@ -63,7 +63,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
   return (
     <SignatureModalWrapper isOpen={isOpen}>
       <SignatureModalBody className="wl-user-modal-signature_body">
-        <SignatureModalTitle isMobile={isMobile}>{title}</SignatureModalTitle>
+        <ModalBaseTitle>{title}</ModalBaseTitle>
         <SignatureModalDesc className="wl-user-modal-signature_title">
           {desc}
         </SignatureModalDesc>
@@ -77,29 +77,15 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
 };
 export default SignatureModal;
 
-const SignatureModalWrapper = styled(ModalBase)`
-  width: 200px;
-  height: 48px;
-`;
+const SignatureModalWrapper = styled(ModalBase)``;
 const SignatureModalBody = styled.div`
+  width: 540px;
   display: flex;
   flex-direction: column;
   gap: 20px;
   padding: 20px;
   background: #f7f9f1;
-`;
-const SignatureModalTitle = styled.p<{ isMobile: boolean }>`
-  margin: 0;
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 30px;
-  color: #333333;
-  ${({ isMobile }) =>
-    isMobile &&
-    `
-    font-size: 14px;
-    line-height: 21px;
-  `}
+  border-radius: 20px;
 `;
 const SignatureModalDesc = styled.div`
   font-weight: 400;

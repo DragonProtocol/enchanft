@@ -11,10 +11,10 @@ import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { selectCreator, getCreatorDashboardData, saveWinnersData, resetData } from '../features/creator'
 import { useNavigate, useParams } from 'react-router-dom'
 import { downloadWinner } from '../services/api/creator'
-import usePermissions from '../hooks/usePermissons'
 import { selectAccount } from '../features/user/accountSlice'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import PngIconCaretLeft from '../components/common/icons/PngIconCaretLeft'
+import { usePermissions } from '../../../../libs/wl-user-react/core/src'
 
 export default function Creator() {
   const { taskId } = useParams()

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-14 17:52:09
+ * @LastEditTime: 2022-10-18 18:42:17
  * @Description: file description
  */
 import {
@@ -12,16 +12,9 @@ import {
   BindResult,
   LoginResult,
 } from '../api';
-import { SignerAccountTypeMap } from '../utils';
+import { AccountType } from '../types';
 import { signMsgWithMetaMask } from '../utils/web3';
-import { SignerType, Signer, SignerProcessStatus } from './index';
-
-export enum MetamaskEventType {
-  METAMASK_BIND_OAUTH_CALLBACK = 'METAMASK_BIND_OAUTH_CALLBACK',
-}
-export type MetamaskBindCallbackParams = {
-  code: string;
-};
+import { SignerType, Signer, SignerProcessStatus } from './types';
 
 export enum MetamaskErrorName {
   METAMASK_SIGNATURE_REQUEST_ERROR = 'METAMASK_SIGNATURE_REQUEST_ERROR',
@@ -45,6 +38,7 @@ export class MetamaskError extends Error {
 
 export class Metamask extends Signer {
   readonly signerType = SignerType.METAMASK;
+  readonly accountType = AccountType.EVM;
   constructor() {
     super();
   }
@@ -57,35 +51,39 @@ export class Metamask extends Signer {
   }
   public bind(token: string): Promise<BindResult> {
     return new Promise(async (resolve, reject) => {
-      this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
+      this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
       const signMsgCatch = () => {
         this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_REJECTED);
         reject(new MetamaskError(ErrorName.METAMASK_SIGNATURE_REQUEST_ERROR));
+      };
+      const apiCatch = (msg: string) => {
+        this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
+        reject(new MetamaskError(ErrorName.API_REQUEST_BIND_ERROR, msg));
       };
 
       signMsgWithMetaMask()
         .then(async (signData) => {
           if (signData) {
-            const result = await bindAccount(token, {
-              type: SignerAccountTypeMap[this.signerType],
+            this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
+            bindAccount(token, {
+              type: this.accountType,
               signature: signData.signature,
               payload: signData.signMsg,
               pubkey: signData.pubkey,
-            });
-            if (result.data.code === 0) {
-              this.signerProcessStatusChange(
-                SignerProcessStatus.BIND_FULFILLED
-              );
-              resolve(result.data.data);
-            } else {
-              this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
-              reject(
-                new MetamaskError(
-                  ErrorName.API_REQUEST_BIND_ERROR,
-                  result.data.msg
-                )
-              );
-            }
+            })
+              .then((result) => {
+                if (result.data) {
+                  this.signerProcessStatusChange(
+                    SignerProcessStatus.BIND_FULFILLED
+                  );
+                  resolve(result.data);
+                } else {
+                  apiCatch('result data is null');
+                }
+              })
+              .catch((error) => {
+                apiCatch(error.message);
+              });
           } else {
             signMsgCatch();
           }
