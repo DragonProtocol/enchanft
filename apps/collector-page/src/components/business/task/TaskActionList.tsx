@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:45:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 19:12:31
+ * @LastEditTime: 2022-10-17 14:25:55
  * @Description: file description
  */
 import React from 'react'
@@ -10,25 +10,28 @@ import styled from 'styled-components'
 import ButtonBase from '../../common/button/ButtonBase'
 import Loading from '../../common/loading/Loading'
 
-import TaskActionItem, { TaskActionItemDataType, TaskActionItemHandlesType } from './TaskActionItem'
+import TaskActionItem, {
+  TaskActionItemDataType,
+  TaskActionItemStaticAttrGetters,
+  TaskActionItemStaticFuncGetters,
+} from './TaskActionItem'
 export type TaskActionListViewConfigType = {
   loading?: boolean
   loadingMsg?: string
   emptyMsg?: string
-  allowHandle?: boolean
   displayVerify?: boolean
   disabledVerify?: boolean
   loadingVerify?: boolean
   loadingVerifyMsg?: string
   verifyingActions?: number[]
-  copyBgc?: string
   verifyBgc?: string
 }
 export type TaskActionItemsType = TaskActionItemDataType[]
-export type TaskActionsListHandlesType = TaskActionItemHandlesType & {
+export type TaskActionsListHandlesType = TaskActionItemStaticFuncGetters & {
   onVerifyActions?: () => void
 }
 export type TaskActionListProps = TaskActionListViewConfigType &
+  TaskActionItemStaticAttrGetters &
   TaskActionsListHandlesType & {
     items: TaskActionItemsType
   }
@@ -37,20 +40,14 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
   loading,
   loadingMsg = 'loading...',
   emptyMsg,
-  allowHandle,
-  onTwitter,
-  onDiscord,
-  onFollowCommunity,
   onVerifyActions,
-  onVerifyAction,
-  onCustomAction,
   displayVerify,
   disabledVerify,
   loadingVerify,
   loadingVerifyMsg = 'verifying...',
   verifyingActions = [],
-  copyBgc,
   verifyBgc,
+  ...taskActionItemStaticProps
 }: TaskActionListProps) => {
   const itemLen = items.length
   const onVerifyActionsClick = () => {
@@ -76,14 +73,8 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
             <TaskActionItem
               key={item.id}
               data={item}
-              onDiscord={onDiscord}
-              onTwitter={onTwitter}
-              onFollowCommunity={onFollowCommunity}
-              onVerifyAction={onVerifyAction}
-              onCustomAction={onCustomAction}
-              allowHandle={allowHandle}
-              copyBgc={copyBgc}
               verifying={verifyingActions.includes(item.id)}
+              {...taskActionItemStaticProps}
             />
           ))}
         </>
