@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 23:25:17
+ * @LastEditTime: 2022-10-20 10:16:22
  * @Description: file description
  */
 import {
@@ -39,7 +39,7 @@ import {
   UploadUserAvatarResult,
 } from './api';
 import UnbindConfirmModal from './components/UnbindConfirmModal';
-import { ToastContainer } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 Modal.setAppElement('#root');
 export enum WlUserModalType {
   LOGIN = 'LOGIN',
@@ -280,36 +280,45 @@ export function WlUserReactProvider({
             signer: getSigner(params.payload),
           });
           updateUserActionStateAndListenProcess(state);
-          state.signer?.login().then((result) => {
-            setUser(result);
-            setSigner(state.signer);
-            setIsOpenLoginModal(false);
-            resetUserActionState();
-            state.signer &&
-              updateStorageByLogin(state.signer.signerType, result);
-          });
+          state.signer
+            ?.login()
+            .then((result) => {
+              setUser(result);
+              setSigner(state.signer);
+              setIsOpenLoginModal(false);
+              resetUserActionState();
+              state.signer &&
+                updateStorageByLogin(state.signer.signerType, result);
+            })
+            .catch((error) => toast.error(error.message));
           break;
         case WlUserActionType.BIND:
           Object.assign(state, {
             signer: getSigner(params.payload),
           });
           updateUserActionStateAndListenProcess(state);
-          state.signer?.bind(user.token).then((result) => {
-            setUser({ ...user, accounts: result });
-            setIsOpenBindModal(false);
-            resetUserActionState();
-          });
+          state.signer
+            ?.bind(user.token)
+            .then((result) => {
+              setUser({ ...user, accounts: result });
+              setIsOpenBindModal(false);
+              resetUserActionState();
+            })
+            .catch((error) => toast.error(error.message));
           break;
         case WlUserActionType.UNBIND:
           Object.assign(state, {
             signer: getSigner(params.payload),
           });
           updateUserActionStateAndListenProcess(state);
-          state.signer?.unbind(user.token).then((result) => {
-            setUser({ ...user, accounts: result });
-            setIsOpenUnbindConfirmModal(false);
-            resetUserActionState();
-          });
+          state.signer
+            ?.unbind(user.token)
+            .then((result) => {
+              setUser({ ...user, accounts: result });
+              setIsOpenUnbindConfirmModal(false);
+              resetUserActionState();
+            })
+            .catch((error) => toast.error(error.message));
           break;
         case WlUserActionType.UPDATE_USER_PROFILE:
           setUserActionState({ ...userActionState, ...state });
@@ -434,6 +443,12 @@ export function WlUserReactProvider({
           isOpenUnbindConfirmModal && !!userActionState.signer?.signerType
         }
         signerType={userActionState.signer?.signerType || SignerType.METAMASK}
+        onConfirm={(signerType) => {
+          dispatchAction({
+            type: WlUserActionType.UNBIND,
+            payload: signerType,
+          });
+        }}
         onClose={() => {
           setIsOpenUnbindConfirmModal(false);
           resetUserActionState();

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 15:35:17
+ * @LastEditTime: 2022-10-20 10:13:23
  * @Description: file description
  */
 import React from 'react';
@@ -14,7 +14,7 @@ import { ButtonInfo, ButtonDanger } from './common/button/ButtonBase';
 export type UnbindConfirmModalProps = {
   isOpen: boolean;
   signerType: SignerType;
-  onConfirm?: () => void;
+  onConfirm?: (signerType: SignerType) => void;
   onClose?: () => void;
 };
 const UnbindConfirmModal: React.FC<UnbindConfirmModalProps> = ({
@@ -33,7 +33,9 @@ const UnbindConfirmModal: React.FC<UnbindConfirmModalProps> = ({
         </UnbindConfirmModalDesc>
         <UnbindConfirmModalBtns className="wl-user-modal-unbind-confirm_btns">
           <CloseBtn onClick={onClose}>Cancel</CloseBtn>
-          <ConfirmBtn onClick={onConfirm}>Still to Disconnect</ConfirmBtn>
+          <ConfirmBtn onClick={() => onConfirm && onConfirm(signerType)}>
+            Still to Disconnect
+          </ConfirmBtn>
         </UnbindConfirmModalBtns>
       </UnbindConfirmModalBody>
     </UnbindConfirmModalWrapper>
