@@ -3,6 +3,13 @@ export enum State {
   ACTIVE = 'Active',
 }
 
+export enum MintStage {
+  FUTURE = 'FUTURE',
+  LIVE = 'LIVE',
+  SOLDOUT = 'SOLDOUT',
+  // LAUNCHED = 'LAUNCHED',
+}
+
 export enum BlockchainType {
   Solana = 'Solana',
   Ethereum = 'Ethereum',

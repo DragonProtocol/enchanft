@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { AsyncRequestStatus, fetchDetailByProjectSlug } from '../api';
+import { MintStage } from '../Components/Project/types';
 import { RootState } from './store';
 
 export enum TaskType {
@@ -23,12 +24,13 @@ export type Task = {
   };
 };
 export type Whitelist = {
-  id: 4;
-  mintMaxNum: 1;
-  mintPrice: '0 SOL';
-  mintStartTime: 1662739200000;
-  projectId: 13;
-  totalNum: 3;
+  id?: number;
+  mintMaxNum: number;
+  mintPrice: string;
+  mintStartTime: number;
+  mintEndTime: number;
+  projectId?: number;
+  totalNum: number;
 };
 export enum ProjectStatus {
   DEFAULT = 'DEFAULT',
@@ -43,10 +45,14 @@ export type ProjectDetail = {
   name: string;
   description: string;
   status: ProjectStatus;
+  mintStage: MintStage;
+  mintUrl: string;
+  mintLimited: number;
   discord: string;
   twitter: string;
   injectedCoins: string;
   itemTotalNum: number;
+  tokenContract: string;
   announcement: {
     title: string;
     text: string;
@@ -59,7 +65,8 @@ export type ProjectDetail = {
     twitterName: string;
     discordId: string;
   };
-  publicSaleTime: number;
+  publicSaleStartTime: number;
+  publicSaleEndTime: number;
   publicSalePrice: string;
   tasks: Task[];
   whitelists: Whitelist[];
@@ -67,6 +74,8 @@ export type ProjectDetail = {
   announcementTitle?: string;
   isVIP?: boolean;
   level?: number;
+  //
+  chainId?: number;
 };
 
 const InitState: {

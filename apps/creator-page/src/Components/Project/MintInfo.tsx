@@ -52,7 +52,7 @@ export default function MintInfo({ project }: { project: ProjectDetail }) {
           <span>
             Start in{' '}
             <span>
-              {dayjs(project.publicSaleTime).format('YYYY/MM/DD HH:mm:ss')}
+              {dayjs(project.publicSaleStartTime).format('YYYY/MM/DD HH:mm:ss')}
             </span>
           </span>
           {/* <span>

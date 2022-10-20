@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Loading from '../Components/Loading';
-import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
+import {
+  fetchProjectDetail,
+  ProjectDetail,
+  selectProjectDetail,
+} from '../redux/projectSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import slugify from 'slugify';
 
@@ -39,6 +43,8 @@ import {
   connectionSocialMedia,
   TWITTER_CALLBACK_URL,
 } from '../utils/socialMedia';
+import { fetchProjectList } from '../redux/projectListSlice';
+import ProjectState from '../Components/Project/State';
 
 export default function ProjectInfoEdit() {
   const { account, updateAccount, isAdmin, isVIP } = useAppConfig();
@@ -46,8 +52,10 @@ export default function ProjectInfoEdit() {
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  // TODO fix any
-  const [project, setProject] = useState<any>({ ...data });
+
+  const [project, setProject] = useState<ProjectDetail | null>(
+    data && { ...data }
+  );
   const [showTwitterInputModal, setShowTwitterInputModal] = useState(false);
   const [twitter, setTwitter] = useState<{
     url: string;
@@ -71,7 +79,7 @@ export default function ProjectInfoEdit() {
       }
       setShowModal(true);
 
-      if (!account.info?.token) return;
+      if (!account.info?.token || !project) return;
 
       try {
         const { data } = await uploadImageApi(file, account.info.token);
@@ -97,11 +105,15 @@ export default function ProjectInfoEdit() {
   );
 
   const saveProject = useCallback(async () => {
-    if (!account.info?.token || !slug) return;
+    if (!account.info?.token || !slug || !project) return;
     try {
       await updateProject(project, account.info?.token);
       toast.success('save success!');
       navigate(`/project/${project.slug}/info/edit`);
+      dispatch(
+        fetchProjectDetail({ slug: project.slug, token: account.info.token })
+      );
+      dispatch(fetchProjectList({ token: account.info?.token! }));
     } catch (error) {
       const err: AxiosError = error as any;
       if (err.response?.status === 401) {
@@ -111,7 +123,7 @@ export default function ProjectInfoEdit() {
         toast.error('save fail!');
       }
     }
-  }, [account, navigate, project, slug, updateAccount]);
+  }, [account, dispatch, navigate, project, slug, updateAccount]);
 
   const projectBind = useCallback(
     async (guildId: string) => {
@@ -131,7 +143,7 @@ export default function ProjectInfoEdit() {
         }
       }
     },
-    [project.id, account, updateAccount]
+    [project?.id, account, updateAccount]
   );
 
   useEffect(() => {
@@ -143,7 +155,7 @@ export default function ProjectInfoEdit() {
   }, [data, project]);
 
   useEffect(() => {
-    setProject({ ...data });
+    setProject(data && { ...data });
   }, [data]);
   useEffect(() => {
     localStorage.setItem('discord_guild_id', JSON.stringify({ guildId: null }));
@@ -194,7 +206,7 @@ export default function ProjectInfoEdit() {
   //   return data?.isVIP || false;
   // }, [data]);
 
-  log.debug('project', project);
+  if (!project) return null;
   return (
     <EditBox>
       <EditTitle
@@ -253,7 +265,7 @@ export default function ProjectInfoEdit() {
             }}
           />
           <ProjectTotalSupply
-            supply={project.itemTotalNum || ''}
+            supply={project.itemTotalNum + '' || ''}
             setSupply={(value) => {
               setProject({
                 ...project,
@@ -261,15 +273,15 @@ export default function ProjectInfoEdit() {
               });
             }}
           />
-          {/* <ProjectStatus
-            state={project.status}
+          <ProjectState
+            state={project.mintStage}
             setState={(state) => {
               setProject({
                 ...project,
-                status: state,
+                mintStage: state,
               });
             }}
-          /> */}
+          />
         </div>
         <div className="right">
           <ProjectAttachFile
@@ -298,8 +310,10 @@ export default function ProjectInfoEdit() {
                 <ProjectTwitterLink
                   msg="Authorize Twitter"
                   hasTwitter={
-                    project?.community?.twitterId &&
-                    project?.community?.twitterName
+                    !!(
+                      project?.community?.twitterId &&
+                      project?.community?.twitterName
+                    )
                   }
                   twitterName={project?.community?.twitterName || ''}
                   linkAction={async () => {
@@ -328,8 +342,10 @@ export default function ProjectInfoEdit() {
               <ProjectTwitterLink
                 hasTwitter={
                   hasTwitter ||
-                  (project?.community?.twitterId &&
-                    project?.community?.twitterName)
+                  !!(
+                    project?.community?.twitterId &&
+                    project?.community?.twitterName
+                  )
                 }
                 twitterName={project?.community?.twitterName || ''}
                 linkAction={async () => {
