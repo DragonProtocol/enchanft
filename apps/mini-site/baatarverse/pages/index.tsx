@@ -10,9 +10,18 @@ export function Index() {
   const [isMute, setIsMute] = useState(true);
   const [isExpand, setIsExpand] = useState(false);
 
+  const offset = (el) =>  {
+    const rect = el.getBoundingClientRect(),
+    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
+}
+
   const scrollToAnchor = (anchorName) => {
+    // window.story = document.getElementById(anchorName)
+    // console.log('anchorName',anchorName,document.getElementById(anchorName).offsetParent)
     window.scrollTo({
-      top: document.getElementById(anchorName).offsetTop - 60,
+      top: offset(document.getElementById(anchorName)).top - 60,
       behavior: 'smooth',
     });
     // if (anchorName) {
@@ -372,7 +381,7 @@ export function Index() {
             </div>
           </div>
         </div> */}
-        <div className="roadmap title-img big-title-img" id="Rodmap">
+        <div className="roadmap title-img big-title-img" id="Roadmap">
           <Image
             src={'/static/images/roadmap.png'}
             layout="fill"
