@@ -149,7 +149,7 @@ export function Index() {
         {[
           'Home',
           'CaskBaatar\ncontract',
-          'Rodmap',
+          'Roadmap',
           // 'About',
           'Story',
           'Team',
