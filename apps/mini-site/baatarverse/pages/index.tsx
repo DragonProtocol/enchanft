@@ -11,12 +11,16 @@ export function Index() {
   const [isExpand, setIsExpand] = useState(false);
 
   const scrollToAnchor = (anchorName) => {
-    if (anchorName) {
-      let anchorElement = document.getElementById(anchorName);
-      if (anchorElement) {
-        anchorElement.scrollIntoView({behavior:'smooth'});
-      }
-    }
+    window.scrollTo({
+      top: document.getElementById(anchorName).offsetTop - 60,
+      behavior: 'smooth',
+    });
+    // if (anchorName) {
+    //   let anchorElement = document.getElementById(anchorName);
+    //   if (anchorElement) {
+    //     anchorElement.scrollIntoView({behavior:'smooth'});
+    //   }
+    // }
   };
 
   const renderProfile = (
