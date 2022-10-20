@@ -18,8 +18,6 @@ export function Index() {
 }
 
   const scrollToAnchor = (anchorName) => {
-    // window.story = document.getElementById(anchorName)
-    // console.log('anchorName',anchorName,document.getElementById(anchorName).offsetParent)
     window.scrollTo({
       top: offset(document.getElementById(anchorName)).top - 60,
       behavior: 'smooth',
