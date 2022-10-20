@@ -14,7 +14,7 @@ export function Index() {
     if (anchorName) {
       let anchorElement = document.getElementById(anchorName);
       if (anchorElement) {
-        anchorElement.scrollIntoView();
+        anchorElement.scrollIntoView({behavior:'smooth'});
       }
     }
   };
@@ -124,7 +124,7 @@ export function Index() {
         loop
         autoPlay
         muted={isMute}
-        onTimeUpdate={() => {}}
+        // onTimeUpdate={() => {}}
       >
         <source src={require('../public/static/bg.mp4')} type="video/mp4" />
       </StyledVideo>
@@ -246,7 +246,7 @@ export function Index() {
             loop
             autoPlay
             muted={isMute}
-            onTimeUpdate={() => {}}
+            // onTimeUpdate={() => {}}
           >
             <source
               src={require('../public/static/avatar_loop.mp4')}
@@ -463,7 +463,7 @@ export function Index() {
                 loop
                 autoPlay
                 muted={isMute}
-                onTimeUpdate={() => {}}
+                // onTimeUpdate={() => {}}
               >
                 <source
                   src={require('../public/static/images/about-avatar.mp4')}

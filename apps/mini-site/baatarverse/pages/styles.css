@@ -11,7 +11,7 @@
   /* word-break: break-all; */
   /* hyphens:auto; */
 }
-
+html, body { scroll-behavior:smooth; }
 html {
   /* font-size: min(max(1rem, 4vw), 22px); */
   
@@ -29,7 +29,7 @@ html {
     Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   line-height: 1.5;
   tab-size: 4;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
   color: white;
 }
 body {
