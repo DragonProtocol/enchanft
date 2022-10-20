@@ -2,14 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 14:47:31
+ * @LastEditTime: 2022-10-20 10:59:42
  * @Description: 基础按钮
  */
 import React from 'react';
 import styled, { css } from 'styled-components';
 import ReactModal from 'react-modal';
 import { isMobile } from 'react-device-detect';
-export type ModalBaseProps = ReactModal.Props;
+export type ModalBaseProps = ReactModal.Props & {
+  backdropFilter?: boolean;
+};
 const customStyles = {
   overlay: {
     position: 'fixed',
@@ -26,7 +28,7 @@ const customStyles = {
     height: 'auto',
     padding: 0,
     margin: 0,
-    top: '40px',
+    top: '30%',
     left: '50%',
     overflow: 'auto',
     WebkitOverflowScrolling: 'touch',
@@ -35,12 +37,25 @@ const customStyles = {
 };
 const ModalBase: React.FC<ModalBaseProps> = ({
   children,
+  backdropFilter,
   ...otherProps
-}: ModalBaseProps) => (
-  <ReactModal style={customStyles} {...otherProps}>
-    {children}
-  </ReactModal>
-);
+}: ModalBaseProps) => {
+  const overlay = customStyles.overlay;
+  if (backdropFilter) {
+    Object.assign(overlay, {
+      backdropFilter: 'blur(12px)',
+    });
+  }
+  const styles = {
+    overlay: overlay,
+    content: customStyles.content,
+  };
+  return (
+    <ReactModal style={styles} {...otherProps}>
+      {children}
+    </ReactModal>
+  );
+};
 export default ModalBase;
 export const ModalBaseTitle = styled.p`
   margin: 0;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 14:48:50
+ * @LastEditTime: 2022-10-20 10:58:37
  * @Description: file description
  */
 import React from 'react';
@@ -61,7 +61,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
       break;
   }
   return (
-    <SignatureModalWrapper isOpen={isOpen}>
+    <SignatureModalWrapper backdropFilter={true} isOpen={isOpen}>
       <SignatureModalBody className="wl-user-modal-signature_body">
         <ModalBaseTitle>{title}</ModalBaseTitle>
         <SignatureModalDesc className="wl-user-modal-signature_title">

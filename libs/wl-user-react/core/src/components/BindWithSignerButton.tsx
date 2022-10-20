@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 14:39:05
+ * @LastEditTime: 2022-10-20 11:08:44
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
@@ -56,6 +56,7 @@ const BindWithSignerButton: React.FC<BindWithSignerButtonProps> = ({
       bgColor={signerStyle.bgColor}
       disabled={!isLogin || isLoading}
       onClick={() =>
+        !isBind &&
         dispatchAction({
           type: WlUserActionType.BIND,
           payload: signerType,
