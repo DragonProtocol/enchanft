@@ -8,7 +8,11 @@ import IconEditClose from '../Components/Icons/IconEditClose';
 import IconEditOk from '../Components/Icons/IconEditOk';
 import PngIconDelete from '../Components/Icons/PngIconDelete';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
+import {
+  fetchProjectDetail,
+  ProjectDetail,
+  selectProjectDetail,
+} from '../redux/projectSlice';
 import { addAccount, delAccount } from '../api';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -23,9 +27,9 @@ export default function Account() {
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
-  // TODO fix any
+
   const project = useMemo(() => {
-    return { ...data } as any;
+    return { ...data } as ProjectDetail;
   }, [data]);
 
   const save = useCallback(() => {

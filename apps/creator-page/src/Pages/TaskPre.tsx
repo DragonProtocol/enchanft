@@ -14,7 +14,6 @@ export function TaskPre() {
   const [tab, setTab] = useState<Tab>('Future');
   const { data: project } = useAppSelector(selectProjectDetail);
 
-  console.log(project);
   const list = useMemo(() => {
     if (!project) return [];
     const { tasks } = project;
@@ -32,6 +31,7 @@ export function TaskPre() {
     }
     return [];
   }, [project, tab]);
+
   return (
     <ContentBox>
       <div className="tab-header">

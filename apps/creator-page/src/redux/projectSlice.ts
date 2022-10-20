@@ -70,6 +70,7 @@ export type ProjectDetail = {
   publicSalePrice: string;
   tasks: Task[];
   whitelists: Whitelist[];
+  teamMembers: any[];
   announcementText?: string;
   announcementTitle?: string;
   isVIP?: boolean;
