@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:51:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 23:13:17
+ * @LastEditTime: 2022-10-20 16:10:13
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
@@ -15,10 +15,11 @@ import {
   RoleType,
   User,
 } from './types';
-// TODO 这个考虑是否需要采用新的环境变量 如： REACT_APP_WL_USER_API_BASE_URL
-const API_BASE_URL = process.env['REACT_APP_API_BASE_URL'];
 export const axiosInstance = axios.create();
-axiosInstance.defaults.baseURL = API_BASE_URL;
+
+export const setApiBaseUrl = (url: string) => {
+  axiosInstance.defaults.baseURL = url;
+};
 export enum ApiErrorName {
   API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR = 'API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR',
   API_REQUEST_LOGIN_ERROR = 'API_REQUEST_LOGIN_ERROR',
@@ -72,9 +73,10 @@ axiosInstance.interceptors.response.use(
     // 对响应数据做点什么
     return response;
   },
-  (error: any) => {
-    if (error.response.status === 401) {
+  (error) => {
+    if (error.response?.status === 401) {
       handleAxiosResponse401();
+      return;
     } else {
       // 对响应错误做点什么
       return Promise.reject(error.response?.data || error);

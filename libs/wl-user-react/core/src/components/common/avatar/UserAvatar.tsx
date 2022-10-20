@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:41:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-13 14:25:27
+ * @LastEditTime: 2022-10-20 16:13:12
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react';
@@ -25,7 +25,9 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
         'data:image/svg+xml;utf-8,' +
           encodeURIComponent(multiavatar(multiavatarId || 'user avatar'))
       }
-      onError={(el) => (el.currentTarget.src = AvatarDefault)}
+      onError={(el: React.SyntheticEvent<HTMLImageElement, Event>) =>
+        (el.currentTarget.src = AvatarDefault)
+      }
       {...otherProps}
     />
   );

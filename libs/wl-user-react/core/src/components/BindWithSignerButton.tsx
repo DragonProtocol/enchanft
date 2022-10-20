@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-20 11:08:44
+ * @LastEditTime: 2022-10-20 16:12:00
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
@@ -77,7 +77,7 @@ const BindWithSignerButton: React.FC<BindWithSignerButtonProps> = ({
       {unbindDisplay && (
         <SignerUnbindBox
           color={signerStyle.nameColor}
-          onClick={(e) => {
+          onClick={(e: any) => {
             e.stopPropagation();
             dispatchModal({
               type: WlUserModalType.UNBIND_CONFIRM,
