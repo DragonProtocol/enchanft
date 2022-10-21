@@ -51,7 +51,7 @@ export default function Members() {
 
   const [currentPage, setCurrentPage] = useState(1);
 
-  useEffect(() => {
+  const loadData = useCallback(() => {
     if (!project?.id || !account.info?.token) return;
 
     // console.log({ currentPage });
@@ -74,6 +74,10 @@ export default function Members() {
         setLoading(false);
       });
   }, [currentPage, project, account.info?.token, filter]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   useEffect(() => {
     const windowClick = (e: MouseEvent) => {
@@ -121,10 +125,11 @@ export default function Members() {
       if (!account.info?.token) return;
       if (slug !== project.slug) return;
       await creatorMembersInsert(project?.id, file, account.info?.token);
+      loadData();
       toast.success('upload success');
       setShowModal(false);
     },
-    [project, account, slug]
+    [project, account, slug, loadData]
   );
 
   const searchTextData = useMemo(() => {
