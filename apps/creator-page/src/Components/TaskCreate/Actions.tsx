@@ -1338,6 +1338,9 @@ const SelectActionsBox = styled.div`
   & .content {
     display: flex;
     justify-content: space-between;
+    & input {
+      font-family: inherit;
+    }
     > div {
       width: 540px;
       & .content-item {
