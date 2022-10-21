@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Box } from './ItemBox';
 
 import { BlockchainType } from './types';
@@ -9,6 +10,21 @@ export default function Blockchain({
   blockchain: BlockchainType;
   setBlockchain?: (type: BlockchainType) => void;
 }) {
+  const showEVM = useMemo(() => {
+    if (setBlockchain) return true;
+    if (blockchain === BlockchainType.Ethereum) return true;
+    return false;
+  }, [setBlockchain, blockchain]);
+  const showSOL = useMemo(() => {
+    if (setBlockchain) return true;
+    if (blockchain === BlockchainType.Solana) return true;
+    return false;
+  }, [setBlockchain, blockchain]);
+  const showAPTOS = useMemo(() => {
+    if (setBlockchain) return true;
+    if (blockchain === BlockchainType.Aptos) return true;
+    return false;
+  }, [setBlockchain, blockchain]);
   return (
     <Box>
       <h4>Blockchain</h4>
@@ -19,28 +35,17 @@ export default function Blockchain({
           setBlockchain && setBlockchain(e.target.value as BlockchainType);
         }}
       >
-        <option
-          value={BlockchainType.Ethereum}
-          disabled={
-            setBlockchain ? false : blockchain !== BlockchainType.Ethereum
-          }
-        >
-          {BlockchainType.Ethereum}
-        </option>
-        <option
-          value={BlockchainType.Solana}
-          disabled={
-            setBlockchain ? false : blockchain !== BlockchainType.Solana
-          }
-        >
-          {BlockchainType.Solana}
-        </option>
-        <option
-          value={BlockchainType.Aptos}
-          disabled={setBlockchain ? false : blockchain !== BlockchainType.Aptos}
-        >
-          {BlockchainType.Aptos}
-        </option>
+        {showEVM && (
+          <option value={BlockchainType.Ethereum}>
+            {BlockchainType.Ethereum}
+          </option>
+        )}
+        {showSOL && (
+          <option value={BlockchainType.Solana}>{BlockchainType.Solana}</option>
+        )}
+        {showAPTOS && (
+          <option value={BlockchainType.Aptos}>{BlockchainType.Aptos}</option>
+        )}
       </select>
     </Box>
   );
