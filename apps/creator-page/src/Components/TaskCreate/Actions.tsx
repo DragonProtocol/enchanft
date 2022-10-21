@@ -582,6 +582,22 @@ export default function Actions({
                           />
                         </div>
                       </div>
+                      {idx !== questionnaire.data.length - 1 && (
+                        <div
+                          className={'help add-btn custom'}
+                          onClick={() => {
+                            setQuestionnaire({
+                              ...questionnaire,
+                              data: [
+                                ...questionnaire.data.slice(0, idx),
+                                ...questionnaire.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        >
+                          <PngIconDelete />
+                        </div>
+                      )}
                     </Fragment>
                   );
                 })}
