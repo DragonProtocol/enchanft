@@ -247,22 +247,27 @@ export default function Actions({
         word = 'and ' + word;
       }
       const words = data.map((item) => item.nftCollectionName).join('、');
-      actions.push({
-        name: `Holding ${words} ${word} NFT`,
-        type: ActionType.NFT,
-        typeMore: ActionTypeMore.NFT_BALANCE,
-        description: ``,
-        nft_accounts: nftHolder.items
-          .map((item) => {
-            return {
-              name: item.nftCollectionName,
-              address: item.nftContractAddr,
-              url: item.url,
-            };
-          })
-          .filter((item) => item.name && item.address),
-        nft_accounts_or_add: false,
-      });
+      const validItems = nftHolder.items.filter(
+        (item) => item.nftContractAddr.trim() !== ''
+      );
+      if (validItems.length > 0) {
+        actions.push({
+          name: `Holding ${words} ${word} NFT`,
+          type: ActionType.NFT,
+          typeMore: ActionTypeMore.NFT_BALANCE,
+          description: ``,
+          nft_accounts: nftHolder.items
+            .map((item) => {
+              return {
+                name: item.nftCollectionName.trim(),
+                address: item.nftContractAddr.trim(),
+                url: item.url.trim(),
+              };
+            })
+            .filter((item) => item.name && item.address),
+          nft_accounts_or_add: false,
+        });
+      }
     }
 
     if (questionnaire.valid) {
@@ -951,6 +956,23 @@ export default function Actions({
                           });
                         }}
                       />
+                      {idx !== nftHolder.items.length - 1 && (
+                        <div
+                          className={'help add-btn custom nft-add'}
+                          onClick={() => {
+                            console.log({ nftHolder, idx });
+                            setNftHolder({
+                              ...nftHolder,
+                              items: [
+                                ...nftHolder.items.slice(0, idx),
+                                ...nftHolder.items.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        >
+                          <PngIconDelete />
+                        </div>
+                      )}
                     </Fragment>
                   );
                 })}
@@ -1285,7 +1307,7 @@ function NftHolderInput({
           <input
             title="nft-collection-name"
             type="text"
-            min={'1'}
+            value={name}
             onChange={(e) => {
               updateItem({
                 name: e.target.value,
@@ -1302,7 +1324,7 @@ function NftHolderInput({
           <input
             title="nft-contract-name"
             type="text"
-            min={'1'}
+            value={addr}
             onChange={(e) => {
               updateItem({
                 name,
@@ -1320,6 +1342,7 @@ function NftHolderInput({
             title="nft-contract-name"
             type="text"
             placeholder="Optional"
+            value={url}
             onChange={(e) => {
               updateItem({
                 name,
