@@ -328,6 +328,7 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
           <input
             title="wallet-balance"
             type="number"
+            min={0}
             value={walletBalance}
             onChange={(e) => {
               setWalletBalance(e.target.value);
