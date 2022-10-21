@@ -19,7 +19,7 @@
     "bs58": "^5.0.0",
     "classnames": "^2.3.2",
     "dayjs": "^1.11.5",
-    "ethers": "^5.7.0",
+    "ethers": "^5.7.2",
     "js-file-download": "^0.4.12",
     "loglevel": "^1.8.0",
     "object-in-queryparams": "^1.0.2",

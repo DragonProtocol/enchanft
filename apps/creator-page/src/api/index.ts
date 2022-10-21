@@ -1,6 +1,7 @@
 import axios, { AxiosPromise } from 'axios';
 import qs from 'qs';
 import { URLQueryParams } from 'object-in-queryparams';
+import { ethers } from 'ethers';
 
 import { State as CreateTaskState } from '../Components/TaskCreate/type';
 import { PerPageSize } from '../utils/constants';
@@ -415,6 +416,10 @@ export function creatorMembersWithFilter(
       v = new URLQueryParams({
         nftWhales: params['nftWhales'],
       }).toString();
+    } else if (key === 'walletBalance' && params['walletBalance']) {
+      const wei = ethers.utils.parseUnits(params['walletBalance'], 'ether');
+      // console.log(params['walletBalance'], wei);
+      v = `${key}=${wei.toString()}`;
     } else {
       v = `${key}=${params[key as keyof MemberFilter]}`;
     }
