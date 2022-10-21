@@ -21,6 +21,7 @@ import ProjectInviteBot from '../Components/Project/InviteBot';
 import ProjectInviteBotInput from '../Components/Project/InviteBotInput';
 import ProjectTotalSupply from '../Components/Project/TotalSupply';
 import ProjectBlockchain from '../Components/Project/Blockchain';
+import ProjectContract from '../Components/Project/Contract';
 import { EditBox, EditTitle } from '../Components/Project/EditTitle';
 
 import {
@@ -207,6 +208,13 @@ export default function ProjectInfoEdit() {
     return data?.grade === GradeType.VIP || false;
   }, [data]);
 
+  const blockchain =
+    project?.chainId === -1
+      ? BlockchainType.Solana
+      : project?.chainId === 1
+      ? BlockchainType.Ethereum
+      : BlockchainType.Aptos;
+
   if (!project) return null;
   return (
     <EditBox>
@@ -369,15 +377,18 @@ export default function ProjectInfoEdit() {
               }}
             />
           )) || <ProjectInviteBot hasInviteBot={hasInviteBot} />}
-          <ProjectBlockchain
-            blockchain={
-              project?.chainId === -1
-                ? BlockchainType.Solana
-                : project?.chainId === 1
-                ? BlockchainType.Ethereum
-                : BlockchainType.Aptos
-            }
-          />
+          <ProjectBlockchain blockchain={blockchain} />
+          {blockchain === BlockchainType.Ethereum && (
+            <ProjectContract
+              tokenContract={project.tokenContract || ''}
+              setTokenContract={(value) => {
+                setProject({
+                  ...project,
+                  tokenContract: value,
+                });
+              }}
+            />
+          )}
         </div>
       </div>
       <UploadImgModal show={showModal} closeModal={() => setShowModal(false)} />
