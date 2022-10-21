@@ -7,7 +7,7 @@ export default function Blockchain({
   setBlockchain,
 }: {
   blockchain: BlockchainType;
-  setBlockchain: (type: BlockchainType) => void;
+  setBlockchain?: (type: BlockchainType) => void;
 }) {
   return (
     <Box>
@@ -16,14 +16,31 @@ export default function Blockchain({
         title="blockchain"
         value={blockchain}
         onChange={(e) => {
-          setBlockchain(e.target.value as BlockchainType);
+          setBlockchain && setBlockchain(e.target.value as BlockchainType);
         }}
       >
-        <option value={BlockchainType.Ethereum}>
+        <option
+          value={BlockchainType.Ethereum}
+          disabled={
+            setBlockchain ? false : blockchain !== BlockchainType.Ethereum
+          }
+        >
           {BlockchainType.Ethereum}
         </option>
-        <option value={BlockchainType.Solana}>{BlockchainType.Solana}</option>
-        <option value={BlockchainType.Aptos}>{BlockchainType.Aptos}</option>
+        <option
+          value={BlockchainType.Solana}
+          disabled={
+            setBlockchain ? false : blockchain !== BlockchainType.Solana
+          }
+        >
+          {BlockchainType.Solana}
+        </option>
+        <option
+          value={BlockchainType.Aptos}
+          disabled={setBlockchain ? false : blockchain !== BlockchainType.Aptos}
+        >
+          {BlockchainType.Aptos}
+        </option>
       </select>
     </Box>
   );

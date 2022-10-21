@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Loading from '../Components/Loading';
 import {
   fetchProjectDetail,
+  GradeType,
   ProjectDetail,
   selectProjectDetail,
 } from '../redux/projectSlice';
@@ -47,7 +48,7 @@ import { fetchProjectList } from '../redux/projectListSlice';
 import ProjectState from '../Components/Project/State';
 
 export default function ProjectInfoEdit() {
-  const { account, updateAccount, isAdmin, isVIP } = useAppConfig();
+  const { account, updateAccount, isAdmin } = useAppConfig();
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
@@ -202,9 +203,9 @@ export default function ProjectInfoEdit() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [account.info?.token, data]);
 
-  // const isVIP = useMemo(() => {
-  //   return data?.isVIP || false;
-  // }, [data]);
+  const isVIP = useMemo(() => {
+    return data?.grade === GradeType.VIP || false;
+  }, [data]);
 
   if (!project) return null;
   return (
@@ -376,17 +377,6 @@ export default function ProjectInfoEdit() {
                 ? BlockchainType.Ethereum
                 : BlockchainType.Aptos
             }
-            setBlockchain={(b) => {
-              setProject({
-                ...project,
-                chainId:
-                  b === BlockchainType.Solana
-                    ? -1
-                    : b === BlockchainType.Ethereum
-                    ? 1
-                    : 2,
-              });
-            }}
           />
         </div>
       </div>

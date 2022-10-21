@@ -37,7 +37,11 @@ export enum ProjectStatus {
   ACTIVE = 'ACTIVE',
   INACTIVE = 'INACTIVE',
 }
-
+export enum GradeType {
+  UNOFFICIAL = 'UNOFFICIAL',
+  OFFICIAL = 'OFFICIAL',
+  VIP = 'VIP',
+}
 export type ProjectDetail = {
   slug: string;
   id: number;
@@ -48,6 +52,7 @@ export type ProjectDetail = {
   mintStage: MintStage;
   mintUrl: string;
   mintLimited: number;
+  grade: GradeType;
   discord: string;
   twitter: string;
   injectedCoins: string;
