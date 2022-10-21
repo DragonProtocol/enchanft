@@ -14,7 +14,7 @@ export type ProjectDetailBasicInfoDataType = {
   status: ProjectStatus
   image: string
   itemTotalNum: number
-  publicSaleTime: number
+  publicSaleStartTime: number
   publicSalePrice: string
   injectedCoins: number
   chainId: number
@@ -50,7 +50,7 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
     status,
     image,
     itemTotalNum,
-    publicSaleTime,
+    publicSaleStartTime,
     publicSalePrice,
     injectedCoins,
     chainId,
@@ -129,13 +129,13 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
           <ProjectMintInfoBox>
             <ProjectMintInfoBoxTop>
               <ProjectMintInfoLabel>Public</ProjectMintInfoLabel>
-              {publicSaleTime &&
-                (publicSaleTime < new Date().getTime() ? (
+              {publicSaleStartTime &&
+                (publicSaleStartTime < new Date().getTime() ? (
                   <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
                 ) : (
                   <>
                     <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
-                    <MintTimeCountdown timestamp={publicSaleTime} />
+                    <MintTimeCountdown timestamp={publicSaleStartTime} />
                   </>
                 ))}
             </ProjectMintInfoBoxTop>

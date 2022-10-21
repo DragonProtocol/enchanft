@@ -148,7 +148,7 @@ export type Project = {
   mintUrl: string
   mintStartTime: number
   whitelistTotalNum: number
-  publicSaleTime: number
+  publicSaleStartTime: number
   publicSalePrice: string
   injectedCoins: number
   chainId: number

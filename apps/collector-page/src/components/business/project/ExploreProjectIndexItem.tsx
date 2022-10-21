@@ -28,7 +28,7 @@ export type ExploreProjectIndexItemDataType = {
   itemTotalNum: number
   mintStage: MintStage
   mintStartTime: number
-  publicSaleTime: number
+  publicSaleStartTime: number
   publicSalePrice: string
   communityId: number
   chainId: number
@@ -68,7 +68,7 @@ const ExploreProjectIndexItem: React.FC<ExploreProjectIndexItemProps> = ({
     itemTotalNum,
     communityId,
     tasks,
-    publicSaleTime,
+    publicSaleStartTime,
     chainId,
     slug,
     community,
