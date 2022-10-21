@@ -20,6 +20,7 @@ import styled from 'styled-components';
 import ProjectInfoEdit from './Pages/ProjectInfoEdit';
 import ProjectMintEdit from './Pages/ProjectMintEdit';
 import ProjectAnnouncementEdit from './Pages/ProjectAnnouncementEdit';
+import Members from './Pages/Members';
 import { TaskPre } from './Pages/TaskPre';
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
           <Route path="project/new" element={<ProjectNew />} />
         </Route>
         <Route path="project/:slug" element={<LayoutProject />}>
+          <Route path="members" element={<Members />} />
           <Route path="detail" element={<ProjectDetail />} />
           <Route path="info/edit" element={<ProjectInfoEdit />} />
           <Route

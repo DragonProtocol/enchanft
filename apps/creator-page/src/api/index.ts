@@ -1,7 +1,9 @@
 import axios, { AxiosPromise } from 'axios';
 import qs from 'qs';
+import { URLQueryParams } from 'object-in-queryparams';
 
 import { State as CreateTaskState } from '../Components/TaskCreate/type';
+import { PerPageSize } from '../utils/constants';
 
 const fileDownload = require('js-file-download');
 const ApiBaseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -167,6 +169,8 @@ export function createTask(data: CreateTaskState, token: string) {
           min_native_balance: item.min_native_balance,
           nft_accounts: item.nft_accounts,
           nft_accounts_or_add: item.nft_accounts_or_add,
+          question: item.question,
+          answer: item.answer,
         },
       };
     }),
@@ -353,5 +357,147 @@ export function creatorTwitter(
     headers: {
       Authorization: `Bearer ${token}`,
     },
+  });
+}
+
+export type Member = {
+  contributionToken: 0;
+  discordConnected: false;
+  discordId: null;
+  discordName: null;
+  hasWhiteList: true;
+  id: 1;
+  twitterConnected: false;
+  twitterId: null;
+  twitterName: null;
+  userAvatar: '';
+  userId: 106;
+  userName: '';
+  wallet: string;
+  walletConnected: true;
+};
+
+export type MemberFilter = {
+  contributionToken?: number;
+  hasWhiteList?: boolean;
+  isNftHolder?: boolean;
+  walletConnected?: boolean;
+  twitterConnected?: boolean;
+  discordConnected?: boolean;
+  walletBalance?: string;
+  twitterFollowerNum?: number;
+  isTwitterFollower?: boolean;
+  discordRole?: string;
+  isDiscordMember?: boolean;
+  nftWhales?: string[];
+  walletSearch?: string;
+};
+
+export const PageSize = PerPageSize;
+export function creatorMembersWithFilter(
+  projectId: number,
+  params: MemberFilter,
+  token: string,
+  pageNumber = 0,
+  pageSize = PageSize
+): AxiosPromise<{
+  code: number;
+  msg: string;
+  data: {
+    members: Member[];
+    totalNumber: number;
+  };
+}> {
+  let data = '';
+  for (const key in params) {
+    let v = '';
+    if (key === 'nftWhales' && params['nftWhales']) {
+      v = new URLQueryParams({
+        nftWhales: params['nftWhales'],
+      }).toString();
+    } else {
+      v = `${key}=${params[key as keyof MemberFilter]}`;
+    }
+    data += v + '&';
+  }
+  data += `pageNumber=${pageNumber}&pageSize=${pageSize}`;
+
+  return axios({
+    url: ApiBaseUrl + `/creator/members/${projectId}?${data}`,
+    method: 'get',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function creatorMembersInsert(
+  projectId: number,
+  file: File,
+  token: string
+) {
+  const form = new FormData();
+  form.append('file', file);
+  return axios({
+    url: ApiBaseUrl + `/creator/members/${projectId}`,
+    method: 'post',
+    data: form,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export function creatorMembersDownloadWithFilter(
+  projectId: number,
+  params: MemberFilter,
+  token: string
+) {
+  let data = '';
+  for (const key in params) {
+    let v = '';
+    if (key === 'nftWhales' && params['nftWhales']) {
+      v = new URLQueryParams({
+        nftWhales: params['nftWhales'],
+      }).toString();
+    } else {
+      v = `${key}=${params[key as keyof MemberFilter]}`;
+    }
+    data += v + '&';
+  }
+
+  axios({
+    url: ApiBaseUrl + `/creator/members/${projectId}/csv?${data}`,
+    method: 'get',
+    // : list,
+    responseType: 'blob',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((response) => {
+    fileDownload(
+      response.data,
+      `members.csv`,
+      'text/csv;charset=utf-8',
+      '\uFEFF'
+    );
+  });
+}
+
+export function creatorMemberTempDownload(token: string) {
+  axios({
+    url: ApiBaseUrl + `/creator/members/0/csv`,
+    method: 'get',
+    responseType: 'blob',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then((response) => {
+    fileDownload(
+      response.data,
+      `members-template.csv`,
+      'text/csv;charset=utf-8',
+      '\uFEFF'
+    );
   });
 }

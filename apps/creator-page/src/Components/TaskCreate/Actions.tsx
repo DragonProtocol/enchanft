@@ -2,7 +2,10 @@ import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { ChainType, checkTweetIdValid, checkTwitterNameValid } from '../../api';
 import { CREATE_TASK_DEFAULT_INVITE_NUM } from '../../utils/constants';
-import { connectionSocialMedia } from '../../utils/socialMedia';
+import {
+  connectionSocialMedia,
+  DiscordBotCallback,
+} from '../../utils/socialMedia';
 import IconCheckbox from '../Icons/IconCheckbox';
 import IconCheckboxChecked from '../Icons/IconCheckboxChecked';
 import IconDiscord from '../Icons/IconDiscord';
@@ -22,6 +25,10 @@ import { CoinType, TokenType } from '../../utils/token';
 import IconNFT from '../Icons/IconNft';
 import IconWallet from '../Icons/IconWallet';
 import IconCustom from '../Icons/IconCustom';
+import IconDiscordWhite from '../Icons/IconDiscordWhite';
+import RightIcon from '../Icons/IconRight';
+import IconQuestion from '../Icons/IconQuestion';
+import SwitchBtn from '../SwitchBtn';
 
 export default function Actions({
   hasInviteBot,
@@ -98,6 +105,17 @@ export default function Actions({
         nftCollectionName: '',
         nftContractAddr: '',
         url: '',
+      },
+    ],
+  });
+  const [questionnaire, setQuestionnaire] = useState({
+    type: ActionType.QUESTIONNAIRE,
+    valid: false,
+    manualCheck: false,
+    data: [
+      {
+        question: '',
+        answer: '',
       },
     ],
   });
@@ -247,6 +265,22 @@ export default function Actions({
       });
     }
 
+    if (questionnaire.valid) {
+      questionnaire.data.forEach((item) => {
+        const { question, answer } = item;
+        if (question.trim() && answer.trim()) {
+          actions.push({
+            name: question,
+            type: ActionType.QUESTIONNAIRE,
+            typeMore: ActionTypeMore.QUESTIONNAIRE,
+            description: ``,
+            question,
+            answer,
+          });
+        }
+      });
+    }
+
     updateStateActions(actions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
@@ -270,12 +304,43 @@ export default function Actions({
     custom,
     walletBalance,
     nftHolder,
+    questionnaire,
   ]);
 
   return (
     <SelectActionsBox>
       <div className="subtitle">
         <span>Select actions</span>
+      </div>
+      <div className="invite">
+        <div className="content-item">
+          <h4>Invite WL Bot</h4>
+          <div className="invite-bot-container">
+            <button
+              className="invite-bot"
+              onClick={() => {
+                window.open(
+                  DiscordBotCallback,
+                  '__blank',
+                  `width=480,
+                        height=800,
+                        top=0,
+                        menubar=no,
+                        toolbar=no,
+                        status=no,
+                        scrollbars=no,
+                        resizable=yes,
+                        directories=no,
+                        status=no,
+                        location=no`
+                );
+              }}
+            >
+              <IconDiscordWhite size="28px" /> Invite WL Bot
+            </button>
+            {hasInviteBot && <RightIcon />}
+          </div>
+        </div>
       </div>
       <div className="content">
         <div>
@@ -445,6 +510,136 @@ export default function Actions({
               </span>
               <IconWL />
             </div>
+          </div>
+
+          {/** Question */}
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={questionnaire.valid}
+                onChange={() => {
+                  setQuestionnaire({
+                    ...questionnaire,
+                    valid: !questionnaire.valid,
+                  });
+                }}
+              />
+              <span id="questionnaire" className="msg">
+                Questionnaire
+              </span>
+              <IconQuestion />
+            </div>
+            {questionnaire.valid && (
+              <>
+                {questionnaire.data.map((item, idx) => {
+                  return (
+                    <Fragment key={idx}>
+                      {idx > 0 && <div className="and"></div>}
+                      <div className="help">
+                        <span className="username question">Question:</span>
+                        <div className={'input-box'}>
+                          <input
+                            title="question"
+                            type="text"
+                            value={item.question}
+                            onChange={(e) => {
+                              setQuestionnaire({
+                                ...questionnaire,
+                                data: [
+                                  ...questionnaire.data.slice(0, idx),
+                                  {
+                                    ...item,
+                                    question: e.target.value,
+                                  },
+                                  ...questionnaire.data.slice(idx + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="help">
+                        <span className="username question">Answer:</span>
+                        <div className={'input-box'}>
+                          <input
+                            title="answer"
+                            type="text"
+                            placeholder="Case insensitive"
+                            value={item.answer}
+                            onChange={(e) => {
+                              setQuestionnaire({
+                                ...questionnaire,
+                                data: [
+                                  ...questionnaire.data.slice(0, idx),
+                                  {
+                                    ...item,
+                                    answer: e.target.value,
+                                  },
+                                  ...questionnaire.data.slice(idx + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+                      {idx !== questionnaire.data.length - 1 && (
+                        <div
+                          className={'help add-btn custom'}
+                          onClick={() => {
+                            setQuestionnaire({
+                              ...questionnaire,
+                              data: [
+                                ...questionnaire.data.slice(0, idx),
+                                ...questionnaire.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        >
+                          <PngIconDelete />
+                        </div>
+                      )}
+                    </Fragment>
+                  );
+                })}
+                <div className="and"></div>
+                <div
+                  className={'help add-btn custom question-add'}
+                  onClick={() =>
+                    setQuestionnaire({
+                      ...questionnaire,
+                      data: [
+                        ...questionnaire.data,
+                        {
+                          question: '',
+                          answer: '',
+                        },
+                      ],
+                    })
+                  }
+                >
+                  <IconPlus size="16px" /> Add
+                </div>
+              </>
+            )}
+
+            {/* <>
+                <div className="switch-btn-box">
+                  <span>Manual check?</span>
+                  <SwitchBtn
+                    width={80}
+                    height={40}
+                    dotHeight={32}
+                    dotWidth={32}
+                    open={questionnaire.manualCheck}
+                    onChange={(v) => {
+                      setQuestionnaire({
+                        ...questionnaire,
+                        manualCheck: v,
+                      });
+                    }}
+                  />
+                </div> 
+              </>*/}
           </div>
         </div>
         <div>
@@ -1143,6 +1338,9 @@ const SelectActionsBox = styled.div`
   & .content {
     display: flex;
     justify-content: space-between;
+    & input {
+      font-family: inherit;
+    }
     > div {
       width: 540px;
       & .content-item {
@@ -1188,6 +1386,20 @@ const SelectActionsBox = styled.div`
           }
         }
 
+        & .switch-btn-box {
+          display: flex;
+          justify-content: end;
+          align-items: center;
+          gap: 10px;
+          margin-top: 10px;
+          & span {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 20px;
+            color: #333333;
+          }
+        }
+
         & .help {
           margin: 0 0 5px 30px;
           display: flex;
@@ -1206,6 +1418,12 @@ const SelectActionsBox = styled.div`
             &.nft {
               text-align: end;
               width: 165px;
+            }
+
+            &.question {
+              text-align: end;
+              width: 80px;
+              margin-right: 10px;
             }
           }
           & span.tint {
@@ -1311,6 +1529,10 @@ const SelectActionsBox = styled.div`
             margin-left: 120px;
           }
 
+          &.question-add {
+            margin-left: 30px;
+          }
+
           & > svg {
             margin-right: 5px;
             & path {
@@ -1318,6 +1540,37 @@ const SelectActionsBox = styled.div`
             }
           }
         }
+      }
+    }
+  }
+
+  & .invite {
+    width: 540px;
+    margin-bottom: 20px;
+    & h4 {
+      margin: 20px 0 10px 0;
+    }
+    & .invite-bot-container {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      & button {
+        flex-grow: 1;
+      }
+    }
+
+    & button.invite-bot {
+      height: 50px;
+      background: #5368ed;
+      box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 18px;
+      line-height: 27px;
+      color: #ffffff;
+      & svg {
+        vertical-align: bottom;
+        margin-right: 10px;
       }
     }
   }
@@ -1355,7 +1608,7 @@ const SelectActionsBox = styled.div`
 
   & .and {
     text-align: center;
-    margin: 15px;
+    margin: 15px 0;
     border-top: 1px solid #d9d9d9;
   }
 `;

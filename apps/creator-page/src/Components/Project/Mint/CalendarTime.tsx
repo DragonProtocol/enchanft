@@ -17,7 +17,7 @@ export default function CalendarTime({
 }) {
   return (
     <TimeBox>
-      <h4>Expect public mint calendar date and time(UTC)</h4>
+      <h4>Expect Whitelist mint calendar date and time(UTC)</h4>
       <div className="area">
         <div className="input-area">
           <input

@@ -22,8 +22,6 @@ import { useParams } from 'react-router-dom';
 import { TASK_SHARE_URI } from '../../utils/constants';
 import IconConfirm from '../Icons/IconConfirm';
 
-// TODO rebuild
-
 export default function WinnerList({
   reward,
   winnerNum,
