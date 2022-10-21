@@ -27,7 +27,7 @@ export type ExploreProjectItemDataType = {
   itemTotalNum: number
   mintStage: MintStage
   mintStartTime: number
-  publicSaleTime: number
+  publicSaleStartTime: number
   publicSalePrice: string
   communityId: number
   chainId: number
@@ -61,7 +61,7 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
     itemTotalNum,
     communityId,
     tasks,
-    publicSaleTime,
+    publicSaleStartTime,
     chainId,
     slug,
   } = data
@@ -83,8 +83,8 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
         <ProjectName>{name}</ProjectName>
         <ProjectTimeRow>
           <ProjectMintStageLabel mintStage={mintStage} />
-          {mintStage === MintStage.FUTURE && publicSaleTime && (
-            <ProjectTimeText>{formatDateTime(publicSaleTime)}</ProjectTimeText>
+          {mintStage === MintStage.FUTURE && publicSaleStartTime && (
+            <ProjectTimeText>{formatDateTime(publicSaleStartTime)}</ProjectTimeText>
           )}
         </ProjectTimeRow>
 

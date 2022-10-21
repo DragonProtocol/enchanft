@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 17:48:49
+ * @LastEditTime: 2022-10-17 11:47:50
  * @Description: 与后端entities type定义对应
  */
 
@@ -78,6 +78,7 @@ export enum ActionType {
   CUSTOM = 'CUSTOM',
   NATIVE_BALANCE = 'NATIVE_BALANCE',
   NFT_BALANCE = 'NFT_BALANCE',
+  QUESTIONNAIRE = 'QUESTIONNAIRE',
 }
 export type NftInfo = {
   name: string
@@ -95,6 +96,8 @@ export type ActionData = {
   min_native_balance?: number
   nft_accounts?: NftInfo[]
   wallet_url?: string
+  question?: string
+  answer?: string
 }
 export type Action = {
   id: number
@@ -145,7 +148,7 @@ export type Project = {
   mintUrl: string
   mintStartTime: number
   whitelistTotalNum: number
-  publicSaleTime: number
+  publicSaleStartTime: number
   publicSalePrice: string
   injectedCoins: number
   chainId: number

@@ -448,7 +448,7 @@ const ProjectLink = styled.a`
 `
 const FollowBtn = styled(CommunityFollowButton)`
   width: 100%;
-  height: 40px;
+  height: 60px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     width: 70px;
     height: 30px;
