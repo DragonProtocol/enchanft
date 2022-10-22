@@ -828,7 +828,7 @@ const Wrapper = styled.div`
     overflow: hidden;
     border-radius: 55px;
     font-size: 0.95rem;
-    transition: all 1.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+    transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
     z-index: 999;
     font-family: 'Futura Condensed';
 
@@ -933,6 +933,12 @@ const Wrapper = styled.div`
     position: absolute;
     top: 20px;
     left: 32px;
+    @media (max-width: 800px) {
+      span {
+        width: 42px !important;
+        height: 32px !important;
+      }
+    }
   }
 
   .bg-texture {
@@ -1353,12 +1359,15 @@ const Wrapper = styled.div`
     /* display: flex; */
     .about-text {
       width: 100%;
+      @media (max-width: 800px) {
+        width: 120%;
+      }
       /* width: 120%; */
       /* word-break: break-word; */
       /* text-align: justify; */
       margin-top: 10px;
       font-size: 1.2rem;
-      text-shadow: 4px 8px 25px rgba(13, 44, 69, 0.6);
+      text-shadow: 4px 8px 25px rgba(13, 44, 69, 1);
     }
     .left-box {
       display: inline-block;
