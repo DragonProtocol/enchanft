@@ -38,10 +38,6 @@ body {
   margin: 0;
 }
 
-a{
-  text-decoration: underline;
-}
-
 /* a:hover{
   text-decoration: underline;
 } */
@@ -67,7 +63,7 @@ h2 {
 }
 a {
   color: inherit;
-  text-decoration: inherit;
+  text-decoration: underline;
 }
 pre {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
