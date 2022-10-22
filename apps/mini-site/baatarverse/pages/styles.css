@@ -37,6 +37,15 @@ body {
   line-height: inherit;
   margin: 0;
 }
+
+a{
+  text-decoration: underline;
+}
+
+/* a:hover{
+  text-decoration: underline;
+} */
+
 h1,
 h2,
 /* p, */

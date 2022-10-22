@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Image from 'next/image';
 import styled from 'styled-components';
@@ -10,18 +10,19 @@ export function Index() {
   const [isMute, setIsMute] = useState(true);
   const [isExpand, setIsExpand] = useState(false);
 
-  const offset = (el) =>  {
+  const offset = (el) => {
     const rect = el.getBoundingClientRect(),
-    scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
-    scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    return { top: rect.top + scrollTop, left: rect.left + scrollLeft }
-}
+      scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+      scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
+  };
 
   const scrollToAnchor = (anchorName) => {
     window.scrollTo({
       top: offset(document.getElementById(anchorName)).top - 60,
       behavior: 'smooth',
     });
+    setIsExpand(false);
     // if (anchorName) {
     //   let anchorElement = document.getElementById(anchorName);
     //   if (anchorElement) {
@@ -126,6 +127,10 @@ export function Index() {
     </div>
   );
 
+  // useEffect(() => {
+  //   document.body.addEventListener('‘touchstart’', function(){ });
+  // },[])
+
   return (
     <Wrapper lang="en">
       <StyledVideo
@@ -135,9 +140,26 @@ export function Index() {
         loop
         autoPlay
         muted={isMute}
+        poster={require('../public/static/images/bg.png')}
         // onTimeUpdate={() => {}}
       >
         <source src={require('../public/static/bg.mp4')} type="video/mp4" />
+      </StyledVideo>
+      <StyledVideo
+        className="bg-mobile"
+        x5-video-player-type="h5"
+        x-webkit-airplay="true"
+        webkit-playsinline="true"
+        loop
+        autoPlay
+        muted={isMute}
+        poster={require('../public/static/images/bg.png')}
+        // onTimeUpdate={() => {}}
+      >
+        <source
+          src={require('../public/static/bg-mobile.mp4')}
+          type="video/mp4"
+        />
       </StyledVideo>
 
       <div className={classnames('sidebar', { expand: isExpand })}>
@@ -146,8 +168,15 @@ export function Index() {
           onClick={() => setIsExpand((isExpand) => !isExpand)}
         >
           <Image
-            className="image"
+            className="image more-icon"
             src={'/static/images/more.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
+          <Image
+            className="image close-icon"
+            src={'/static/images/close.png'}
             layout="fill"
             objectFit="contain"
             alt={'basic'}
@@ -165,7 +194,7 @@ export function Index() {
           <div
             className="sidebar-item"
             key={key}
-            onClick={() => scrollToAnchor(key.replace('\n',' '))}
+            onClick={() => scrollToAnchor(key.replace('\n', ' '))}
           >
             {key}
           </div>
@@ -284,7 +313,13 @@ export function Index() {
             alt={'basic'}
           />
         </div>
-        <div className="title text">we use the ERC721 smart contract.</div>
+        <div className="title text">
+          we use the{' '}
+          <a href="https://erc721r.org" target="__blank">
+            ERC721R
+          </a>{' '}
+          smart contract.
+        </div>
         <br />
         <div className="text">
           50% of the crypto you spend will be pledged in the contract, and the
@@ -764,6 +799,12 @@ const Wrapper = styled.div`
   /* overflow: hidden; */
   /* padding-top: 45vw; */
 
+  .bg-mobile {
+    @media (min-width: 700px) {
+      display: none;
+    }
+  }
+
   .image-container {
     width: 100%;
     position: relative;
@@ -795,6 +836,11 @@ const Wrapper = styled.div`
       max-height: 800px;
       background: #07142380;
     }
+
+    .close-icon {
+      display: none !important;
+    }
+
     .sidebar-item {
       text-align: center;
       margin: 20px auto;
@@ -806,8 +852,46 @@ const Wrapper = styled.div`
     }
   }
 
+  @media (max-width: 960px) {
+    .sidebar {
+      width: 100%;
+      top: 0;
+      left: 0;
+      border-radius: 0;
+      font-size: 1.1rem;
+      padding: 0 32px;
+      .sidebar-item {
+        text-align: left;
+        border-bottom: 1px solid #606263;
+        white-space: nowrap;
+        &:last-of-type {
+          border-bottom: none;
+        }
+      }
+      .more {
+        width: 1.5rem;
+        margin-right: 0px;
+        margin-top: 30px;
+        filter: grayscale(100%) brightness(200%) !important;
+      }
+      &:hover {
+        max-height: 50px;
+        background: transparent;
+      }
+    }
+
+    .expand {
+      background: black !important;
+      .more-icon {
+        display: none !important;
+      }
+      .close-icon {
+        display: block !important;
+      }
+    }
+  }
   .expand {
-    max-height: 800px;
+    max-height: 800px !important;
     background: #07142380;
     /* background: #07142366; */
   }
@@ -823,6 +907,7 @@ const Wrapper = styled.div`
         brightness(95%) contrast(101%);
     }
   }
+
   .bg-t {
     margin-top: -100px;
     padding-top: 100px;
