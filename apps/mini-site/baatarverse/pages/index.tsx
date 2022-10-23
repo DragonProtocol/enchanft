@@ -127,13 +127,17 @@ export function Index() {
     </div>
   );
 
-  // useEffect(() => {
-  //   document.body.addEventListener('‘touchstart’', function(){ });
-  // },[])
+  useEffect(() => {
+   //--创建页面监听，等待微信端页面加载完毕 触发视频播放
+document.addEventListener('WeixinJSBridgeReady', function() {
+  document.getElementById('video').play()
+})
+  },[])
 
   return (
     <Wrapper lang="en">
       <StyledVideo
+        id="video"
         x5-video-player-type="h5"
         x5-video-orientation="h5"
         x-webkit-airplay="true"
@@ -143,7 +147,7 @@ export function Index() {
         width="100%"
         height="100%"
         controls
-        preload={"true"}
+        preload={"auto"}
 
         loop
         autoPlay
