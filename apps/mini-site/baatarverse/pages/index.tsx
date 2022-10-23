@@ -135,8 +135,16 @@ export function Index() {
     <Wrapper lang="en">
       <StyledVideo
         x5-video-player-type="h5"
+        x5-video-orientation="h5"
         x-webkit-airplay="true"
+        playsinline="true"
         webkit-playsinline="true"
+
+        width="100%"
+        height="100%"
+        controls
+        preload={"true"}
+
         loop
         autoPlay
         muted={isMute}
