@@ -828,7 +828,7 @@ const Wrapper = styled.div`
     overflow: hidden;
     border-radius: 55px;
     font-size: 0.95rem;
-    transition: all .5s cubic-bezier(0.075, 0.82, 0.165, 1);
+    transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     z-index: 999;
     font-family: 'Futura Condensed';
 
@@ -1074,8 +1074,15 @@ const Wrapper = styled.div`
     overflow: hidden;
     background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
       url('/static/images/middle-bg.png');
+
     background-repeat: no-repeat;
     background-size: cover;
+    @media (max-width: 800px) {
+      background-image: url('/static/images/middle-bg-mobile.png');
+      background-position-x: center;
+      background-position-y: -60px;
+      background-size: auto;
+    }
   }
 
   .title-gif {
