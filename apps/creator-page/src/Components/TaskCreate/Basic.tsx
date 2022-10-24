@@ -3,10 +3,8 @@ import { RewardType, State } from './type';
 import AddSvg from '../imgs/add.svg';
 import dayjs from 'dayjs';
 import UploadImgModal from '../UploadImgModal';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 
 import { TASK_IMAGE_SIZE_LIMIT } from '../../utils/constants';
 import { uploadImage as uploadImageApi } from '../../api';
@@ -14,6 +12,7 @@ import { useAppConfig } from '../../AppProvider';
 import { numberInput } from '../../utils';
 import { AxiosError } from 'axios';
 import SwitchBtn from '../SwitchBtn';
+import RichText from '../RichText';
 
 export default function CreateTaskBasic({
   hasInviteBot,
@@ -26,9 +25,6 @@ export default function CreateTaskBasic({
 }) {
   const { account, updateAccount } = useAppConfig();
   const [showModal, setShowModal] = useState(false);
-  const [richText, setRichText] = useState('');
-
-  const quillRef = useRef<ReactQuill>(null);
 
   const uploadImageHandler = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,8 +60,6 @@ export default function CreateTaskBasic({
     },
     [account, updateState, state, updateAccount]
   );
-
-  console.log({ richText });
 
   return (
     <>
@@ -117,27 +111,15 @@ export default function CreateTaskBasic({
             </div>
             <div className="statement">
               <h4>Task statement</h4>
-              <div data-text-editor="name">
-                <ReactQuill
-                  value={richText}
-                  onChange={setRichText}
-                  ref={quillRef}
-                  bounds={`[data-text-editor="name"]`}
-                  modules={{
-                    toolbar: {
-                      container: [
-                        [{ header: [1, 2, 3, false] }],
-                        [{ align: [] }],
-                        ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                        [{ list: 'ordered' }, { list: 'bullet' }],
-                        ['link'],
-                        // ['clean'],
-                        // [{ color: [] }],
-                      ],
-                    },
-                  }}
-                />
-              </div>
+              <RichText
+                text={state.description}
+                setText={(v) => {
+                  updateState({
+                    ...state,
+                    description: v,
+                  });
+                }}
+              />
             </div>
           </div>
         </div>
@@ -544,43 +526,6 @@ const BasicBox = styled.div`
       background: #ebeee4;
       border-radius: 10px;
       overflow: hidden;
-
-      & .ql-snow {
-        border: none;
-      }
-
-      .ql-tooltip {
-        border-radius: 10px;
-        border: none;
-        background: #f7f9f1;
-      }
-
-      & .ql-toolbar {
-        border-bottom: 1px solid rgba(51, 51, 51, 0.1);
-        font-family: inherit;
-      }
-
-      & .ql-picker-options {
-        background-color: #f7f9f1 !important;
-        border: none;
-        border-bottom-right-radius: 5px;
-        border-bottom-left-radius: 5px;
-      }
-
-      & .ql-container {
-        height: 338px;
-        font-family: inherit;
-        position: relative;
-      }
-
-      & .ql-editor {
-        font-size: 18px;
-        line-height: 27px;
-        font-family: inherit;
-        & * {
-          font-family: inherit;
-        }
-      }
     }
   }
 `;

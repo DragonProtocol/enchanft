@@ -25,7 +25,6 @@
     "object-in-queryparams": "^1.0.2",
     "qs": "^6.11.0",
     "react": "^18.2.0",
-    "react-data-table-component": "^7.5.3",
     "react-dom": "^18.2.0",
     "react-modal": "^3.15.1",
     "react-paginate": "^8.1.3",
