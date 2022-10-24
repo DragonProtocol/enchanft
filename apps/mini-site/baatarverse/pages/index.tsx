@@ -128,11 +128,13 @@ export function Index() {
   );
 
   useEffect(() => {
-   //--创建页面监听，等待微信端页面加载完毕 触发视频播放
-document.addEventListener('WeixinJSBridgeReady', function() {
-  document.getElementById('video').play()
-})
-  },[])
+    // document.addEventListener('WeixinJSBridgeReady', function () {
+      let video = document.getElementById('video') as HTMLVideoElement | null;
+      if (video != null) {
+        video.play();
+      }
+    // });
+  }, []);
 
   return (
     <Wrapper lang="en">
@@ -143,16 +145,15 @@ document.addEventListener('WeixinJSBridgeReady', function() {
         x-webkit-airplay="true"
         playsinline="true"
         webkit-playsinline="true"
-
         width="100%"
         height="100%"
         controls
-        preload={"auto"}
-
+        preload={'auto'}
+        
         loop
         autoPlay
         muted={isMute}
-        poster={require('../public/static/images/bg.png')}
+        poster={require('../public/static/images/loading.png')}
         // onTimeUpdate={() => {}}
       >
         <source src={require('../public/static/bg.mp4')} type="video/mp4" />
