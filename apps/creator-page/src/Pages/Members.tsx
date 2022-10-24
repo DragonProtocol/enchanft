@@ -27,11 +27,12 @@ import convertToCSV from '../utils/convertToCsv';
 import Loading from '../Components/Loading';
 import { Whales } from '../utils/constants';
 import UserAvatar from '../Components/UserAvatar';
-import { sortPubKey } from '../utils';
+import { chainIdToChain, sortPubKey } from '../utils';
 import IconPngSearch from '../Components/Icons/IconPngSearch';
 import IconTweet from '../Components/Icons/IconTweet';
 import IconTwitter from '../Components/Icons/IconTwitter';
 import IconDiscord from '../Components/Icons/IconDiscord';
+import { BlockchainType } from '../Components/Project/types';
 
 const fileDownload = require('js-file-download');
 
@@ -151,6 +152,8 @@ export default function Members() {
     }
   }, [searchText, data]);
 
+  const blockchain = chainIdToChain(project?.chainId);
+
   return (
     <ContentBox>
       <h3>Member List ({total})</h3>
@@ -184,7 +187,9 @@ export default function Members() {
             >
               <IconRandom size="16px" />
             </button>
-            {showFilter && <SearchFilter search={search} />}
+            {showFilter && (
+              <SearchFilter search={search} blockchain={blockchain} />
+            )}
           </div>
           <button className="add-member" onClick={() => setShowModal(true)}>
             +Add Member
@@ -301,7 +306,13 @@ export default function Members() {
   );
 }
 
-function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
+function SearchFilter({
+  search,
+  blockchain,
+}: {
+  blockchain: BlockchainType;
+  search: (arg0: MemberFilter) => void;
+}) {
   const [walletBalance, setWalletBalance] = useState('');
   const [walletBalanceUnit, setWalletBalanceUnit] = useState(CoinType.SOL);
   const [twitterNum, setTwitterNum] = useState('');
@@ -369,22 +380,26 @@ function SearchFilter({ search }: { search: (arg0: MemberFilter) => void }) {
           </select>
         </div>
         <div>
-          <p onClick={() => setHasPhantom(!hasPhantom)}>
-            {hasPhantom ? (
-              <IconCheckboxChecked size="18px" />
-            ) : (
-              <IconCheckbox size="18px" />
-            )}
-            <span>Connect Phantom Wallet</span>
-          </p>
-          <p onClick={() => setHasMetaMask(!hasMetaMask)}>
-            {hasMetaMask ? (
-              <IconCheckboxChecked size="18px" />
-            ) : (
-              <IconCheckbox size="18px" />
-            )}
-            <span>Connect MetaMask Wallet</span>
-          </p>
+          {blockchain === BlockchainType.Solana && (
+            <p onClick={() => setHasPhantom(!hasPhantom)}>
+              {hasPhantom ? (
+                <IconCheckboxChecked size="18px" />
+              ) : (
+                <IconCheckbox size="18px" />
+              )}
+              <span>Connect Phantom Wallet</span>
+            </p>
+          )}
+          {blockchain === BlockchainType.Ethereum && (
+            <p onClick={() => setHasMetaMask(!hasMetaMask)}>
+              {hasMetaMask ? (
+                <IconCheckboxChecked size="18px" />
+              ) : (
+                <IconCheckbox size="18px" />
+              )}
+              <span>Connect MetaMask Wallet</span>
+            </p>
+          )}
         </div>
       </div>
       <div className="filter-item">

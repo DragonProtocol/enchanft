@@ -22,6 +22,7 @@ import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import isEqual from '../utils/isEqual';
 import MintAddress from '../Components/Project/Mint/MintAddress';
+import { chainIdToChain } from '../utils';
 
 export default function ProjectMintEdit() {
   const { account, updateAccount } = useAppConfig();
@@ -84,11 +85,7 @@ export default function ProjectMintEdit() {
                 publicSalePrice: price,
               });
             }}
-            blockchain={
-              project.chainId === -1
-                ? BlockchainType.Solana
-                : BlockchainType.Ethereum
-            }
+            blockchain={chainIdToChain(project.chainId)}
           />
           <MintAddress
             addr={project.mintUrl || ''}
@@ -178,11 +175,7 @@ export default function ProjectMintEdit() {
                         ],
                       });
                     }}
-                    blockchain={
-                      project.chainId === -1
-                        ? BlockchainType.Solana
-                        : BlockchainType.Ethereum
-                    }
+                    blockchain={chainIdToChain(project.chainId)}
                   />
                 </div>
                 <div className="right">

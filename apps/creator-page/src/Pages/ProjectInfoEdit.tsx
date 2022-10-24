@@ -47,6 +47,7 @@ import {
 } from '../utils/socialMedia';
 import { fetchProjectList } from '../redux/projectListSlice';
 import ProjectState from '../Components/Project/State';
+import { chainIdToChain } from '../utils';
 
 export default function ProjectInfoEdit() {
   const { account, updateAccount, isAdmin } = useAppConfig();
@@ -208,12 +209,7 @@ export default function ProjectInfoEdit() {
     return data?.grade === GradeType.VIP || false;
   }, [data]);
 
-  const blockchain =
-    project?.chainId === -1
-      ? BlockchainType.Solana
-      : project?.chainId === 1
-      ? BlockchainType.Ethereum
-      : BlockchainType.Aptos;
+  const blockchain = chainIdToChain(project?.chainId);
 
   if (!project) return null;
   return (
