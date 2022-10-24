@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-24 10:14:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 10:25:18
+ * @LastEditTime: 2022-10-24 11:43:52
  * @Description: file description
 -->
 
@@ -12,7 +12,7 @@
 
 1. 直接引入使用
    ```typescript
-   import { ... } from "@ecnft/wl-user-react";
+   import { ... } from "@ecnft/wl-user-core";
    ```
 2. 如果引入找不到模块，检查项目目录下的 tsconfig.app.json 是否如下配置，检查并按如下配置修改
    ```json
