@@ -2,11 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 17:11:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 18:40:46
+ * @LastEditTime: 2022-10-24 00:09:00
  * @Description: file description
  */
-import { AccountType, useWlUserReact, WlUserModalType } from '../../../../libs/wl-user-react/core/src'
-import { SignerType } from '../../../../libs/wl-user-react/core/src/signer'
+import { useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
+import { SignerType, AccountType } from '@ecnft/wl-user-core'
 import { ChainType, getChainType } from '../utils/chain'
 
 export enum AccountOperationType {
@@ -26,7 +26,7 @@ export const ccountOperationDescMap = {
   [AccountOperationType.COMPLETED]: '',
 }
 export default (chainId?: number) => {
-  const { isLogin, volidBindAccount, dispatchModal } = useWlUserReact()
+  const { isLogin, validateBindAccount, dispatchModal } = useWlUserReact()
   let accountOperationType = AccountOperationType.CONNECT_WALLET
   const handleAccountOperationMap = {
     [AccountOperationType.CONNECT_WALLET]: () => {
@@ -49,17 +49,17 @@ export default (chainId?: number) => {
     const chainType = chainId ? getChainType(chainId) : ChainType.UNKNOWN
     switch (chainType) {
       case ChainType.EVM:
-        accountOperationType = volidBindAccount(AccountType.EVM)
+        accountOperationType = validateBindAccount(AccountType.EVM)
           ? AccountOperationType.COMPLETED
           : AccountOperationType.BIND_METAMASK
         break
       case ChainType.SOLANA:
-        accountOperationType = volidBindAccount(AccountType.SOLANA)
+        accountOperationType = validateBindAccount(AccountType.SOLANA)
           ? AccountOperationType.COMPLETED
           : AccountOperationType.BIND_PHANTOM
         break
       case ChainType.APTOS:
-        accountOperationType = volidBindAccount(AccountType.APTOS)
+        accountOperationType = validateBindAccount(AccountType.APTOS)
           ? AccountOperationType.COMPLETED
           : AccountOperationType.BIND_MARTIAN
         break

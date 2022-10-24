@@ -38,7 +38,7 @@ import IconTwitterBlack from '../components/common/icons/IconTwitterBlack'
 import IconDiscordBlack from '../components/common/icons/IconDiscordBlack'
 import { getTwitterHomeLink } from '../utils/twitter'
 import { toWlModPageTaskCreate } from '../route/utils'
-import { usePermissions, useWlUserReact } from '../../../../libs/wl-user-react/core/src'
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react'
 
 export enum ProjectInfoTabsValue {
   TEAM = 'team',

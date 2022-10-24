@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 18:40:26
+ * @LastEditTime: 2022-10-24 00:08:24
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -66,7 +66,7 @@ import useAccountOperationForChain, { AccountOperationType } from '../hooks/useA
 import TaskDetailParticipants from '../components/business/task/TaskDetailParticipants'
 import { isDesktop, isMobile } from 'react-device-detect'
 import { toWlModPageTaskDetail } from '../route/utils'
-import { usePermissions, useWlUserReact } from '../../../../libs/wl-user-react/core/src'
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   takeTaskState: TaskHandle<TakeTaskParams>,

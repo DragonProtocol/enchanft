@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 16:11:45
+ * @LastEditTime: 2022-10-24 00:06:48
  * @Description: 站点头部
  */
 import React, { useCallback } from 'react'
@@ -12,7 +12,7 @@ import { isDesktop } from 'react-device-detect'
 import LogoImg from '../imgs/logo.svg'
 import useRoute from '../../hooks/useRoute'
 import { navs } from '../../route/routes'
-import { LoginButton, useWlUserReact, WlUserModalType } from '../../../../../libs/wl-user-react/core/src'
+import { LoginButton, useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
 const Header: React.FC = () => {
   const { isLogin, dispatchModal } = useWlUserReact()
   const navigate = useNavigate()

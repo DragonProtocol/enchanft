@@ -17,7 +17,8 @@
     "baseUrl": ".",
     "jsx": "react-jsx",
     "paths": {
-      "@ecnft/wl-user-react": ["libs/wl-user-react/core/src/index.ts"]
+      "@ecnft/wl-user-core": ["libs/wl-user/core/src/index.ts"],
+      "@ecnft/wl-user-react": ["libs/wl-user/react/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

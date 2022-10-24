@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-29 16:47:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 18:41:33
+ * @LastEditTime: 2022-10-24 00:09:42
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react'
@@ -17,7 +17,7 @@ import {
 } from '../features/user/communityHandlesSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { AsyncRequestStatus } from '../types'
-import { useWlUserReact } from '../../../../libs/wl-user-react/core/src'
+import { useWlUserReact } from '@ecnft/wl-user-react'
 
 export default (communityId?: number, slug?: string) => {
   const { isLogin } = useWlUserReact()

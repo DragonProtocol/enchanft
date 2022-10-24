@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 17:48:49
+ * @LastEditTime: 2022-10-24 08:46:07
  * @Description: 与后端entities type定义对应
  */
 
@@ -204,13 +204,4 @@ export type Announcement = {
   projectId: number
   title: string
   text: string
-}
-
-/** account */
-export enum AccountType {
-  TWITTER = 'TWITTER',
-  DISCORD = 'DISCORD',
-  SOLANA = 'SOLANA',
-  EVM = 'EVM',
-  APTOS = 'APTOS',
 }

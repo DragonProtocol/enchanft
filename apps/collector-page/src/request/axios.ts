@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 22:31:48
+ * @LastEditTime: 2022-10-23 19:07:53
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
 import qs from 'qs'
-import { toast } from 'react-toastify'
+import { WlUserReactContextType } from '@ecnft/wl-user-react'
 import { API_BASE_URL } from '../constants'
 export type AxiosCustomHeaderType = {
   // 当前接口是否需要传递token
@@ -22,11 +22,11 @@ let store
 export const injectStore = (storeInstance: any) => {
   store = storeInstance
 }
-let wlUserContextValue
-export const injectWlUserContextValue = (value: any) => {
-  wlUserContextValue = value
+let wlUserReactContextValue: WlUserReactContextType | undefined
+export const injectWlUserReactContextValue = (value: any) => {
+  wlUserReactContextValue = value
 }
-let handleAxiosResponse401
+let handleAxiosResponse401: () => void | undefined
 export const injectHandleAxiosResponse401 = (func: () => void) => {
   handleAxiosResponse401 = func
 }
@@ -54,7 +54,7 @@ axiosInstance.interceptors.request.use(
     if (!config.headers) config.headers = {}
     config.headers.Authorization = `Bearer `
     if (needToken) {
-      const { isLogin, user } = wlUserContextValue
+      const { isLogin, user } = wlUserReactContextValue
 
       const token = config.headers?.token || (isLogin ? user.token : '') // token从store中获取
       config.headers.Authorization = `Bearer ${token}`
@@ -78,7 +78,8 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      handleAxiosResponse401()
+      if (handleAxiosResponse401) handleAxiosResponse401()
+      return
     } else {
       // 对响应错误做点什么
       return Promise.reject(error.response?.data || error)

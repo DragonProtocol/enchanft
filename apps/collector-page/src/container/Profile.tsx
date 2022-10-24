@@ -2,21 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 23:27:48
+ * @LastEditTime: 2022-10-24 02:44:15
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
 import { useCallback } from 'react'
 import useInterval from '../hooks/useInterval'
-import { useAppDispatch, useAppSelector } from 'store/hooks'
+import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { Dialog, FormControl, IconButton, CircularProgress } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
-
-import { userUpdateProfile } from '../features/user/accountSlice'
-
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
-import DisconnectModal from '../components/ConnectBtn/DisconnectModal'
 import {
   FollowedCommunitityForEntity,
   selectAll as selectAllForFollowedCommunity,
@@ -41,8 +37,8 @@ import { useNavigate } from 'react-router-dom'
 import OverflowEllipsisBox from '../components/common/text/OverflowEllipsisBox'
 import { isMobile } from 'react-device-detect'
 import { getMultiavatarIdByUser } from '../utils/multiavatar'
-import { useWlUserReact, WlUserActionType, BindWithSignerButton } from '../../../../libs/wl-user-react/core/src'
-import { SignerType } from '../../../../libs/wl-user-react/core/src/signer'
+import { useWlUserReact, WlUserActionType, BindWithSignerButton } from '@ecnft/wl-user-react'
+import { SignerType } from '@ecnft/wl-user-core'
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {

@@ -29,7 +29,7 @@ import { MOBILE_BREAK_POINT } from '../constants'
 import { isDesktop, isMobile } from 'react-device-detect'
 import useUserHandlesForCommunity from '../hooks/useUserHandlesForCommunity'
 import { FollowStatusType } from '../components/business/community/CommunityFollowButton'
-import { usePermissions, useWlUserReact } from '../../../../libs/wl-user-react/core/src'
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()

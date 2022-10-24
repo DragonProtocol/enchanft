@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 18:03:09
+ * @LastEditTime: 2022-10-21 19:53:15
  * @Description: file description
  */
 import React from 'react'
@@ -23,7 +23,7 @@ import ActionNameSpan from './ActionNameSpan'
 import { toast } from 'react-toastify'
 import { tweetShare } from '../../../../utils/twitter'
 import { SHARE_EVENT_TWEET_CONTENTS } from '../../../../constants'
-import { useWlUserReact } from '../../../../../../../libs/wl-user-react/core/src'
+import { useWlUserReact } from '@ecnft/wl-user-react'
 
 export type ActionInvitePeopleProps = {
   data: TaskActionItemDataType
