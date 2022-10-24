@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-21 15:03:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 03:05:52
+ * @LastEditTime: 2022-10-24 10:44:14
  * @Description: file description
 -->
 
@@ -167,3 +167,47 @@
     <BindWithSignerButton signerType={SignerType.DISCORD} />
 
     ```
+
+## 工具
+
+- handleAuthFailed
+
+  wl-user-react 内部处理 token 授权失效的过程，可以导出放到当前项目中，让当前项目认证失效的反馈与 wl-user-react 处理的一致
+
+  - 案例 ：将 wl-user-react 注入到项目的 axios 封装中
+
+  ```typescript
+
+  // **/utils/axiosInstance.ts
+
+  // 处理401响应
+  let handleAxiosResponse401: () => void | undefined
+  export const injectHandleAxiosResponse401 = (func: () => void) => {
+    handleAxiosResponse401 = func
+  }
+  // 添加响应拦截器
+  axiosInstance.interceptors.response.use(
+    (response) => {
+      // 对响应数据做点什么
+      return response
+    },
+    (error) => {
+      if (error.response.status === 401) {
+        if (handleAxiosResponse401) handleAxiosResponse401()
+        return
+      } else {
+        // 对响应错误做点什么
+        return Promise.reject(error.response?.data || error)
+      }
+    },
+  )
+
+  ......
+
+  // app.ts
+  import { handleAuthFailed } from '@ecnft/wl-user-react'
+  import { injectHandleAxiosResponse401 } from '**/utils/axiosInstance.ts'
+  // 将wl-user-react的内部处理认证失效的逻辑注入到 当前项目axios的401处理程序中
+  injectHandleAxiosResponse401(handleAuthFailed)
+
+  ```

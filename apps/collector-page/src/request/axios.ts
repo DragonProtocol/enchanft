@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-23 19:07:53
+ * @LastEditTime: 2022-10-24 10:32:20
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
@@ -53,7 +53,7 @@ axiosInstance.interceptors.request.use(
     // TODO 这里先默认加Authorization，后续优化
     if (!config.headers) config.headers = {}
     config.headers.Authorization = `Bearer `
-    if (needToken) {
+    if (needToken && wlUserReactContextValue) {
       const { isLogin, user } = wlUserReactContextValue
 
       const token = config.headers?.token || (isLogin ? user.token : '') // token从store中获取
