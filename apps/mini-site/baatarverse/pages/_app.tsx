@@ -11,7 +11,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
       <Head>
       <link rel="icon" href={favicon.src}/>
       {/* <link rel="icon" href="/static/favicon.ico"/> */}
-        <title>CASKBAATAR-test</title>
+        <title>CASKBAATAR</title>
       </Head>
       <main className="app">
         <Component {...pageProps} />
