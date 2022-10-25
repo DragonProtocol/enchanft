@@ -27,6 +27,7 @@ export type Winner = {
   name: string;
   pubkey: string;
   thirdpartyName: string;
+  luckydrawWeightTotal?: number;
 };
 
 export type PickedWhiteList = {
