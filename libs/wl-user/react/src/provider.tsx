@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 17:42:43
+ * @LastEditTime: 2022-10-25 19:15:27
  * @Description: file description
  */
 import {
@@ -35,12 +35,8 @@ import BindModal from './components/BindModal';
 import UnbindConfirmModal from './components/UnbindConfirmModal';
 import Modal from 'react-modal';
 import {
-  ApiResp,
   getUserInfo,
   updateUserInfo,
-  UpdateUserInfoResult,
-  uploadUserAvatar,
-  UploadUserAvatarResult,
   setAuthFailedCallback,
 } from '@ecnft/wl-user-core';
 import { toast, ToastContainer } from 'react-toastify';

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 00:08:24
+ * @LastEditTime: 2022-10-25 18:49:22
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -182,7 +182,7 @@ const Task: React.FC = () => {
   }
 
   // 处理执行action操作
-  const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
+  const { handleActionToDiscord, handleActionToTwitter, handleActionQuestionConfirm } = useHandleAction()
 
   // 关注社区
   const handleFollowCommunity = (communityId: number) => {
@@ -333,6 +333,7 @@ const Task: React.FC = () => {
                       onVerifyActions={() => dispatch(verifyTask(data))}
                       onVerifyAction={(action) => dispatch(verifyAction(action))}
                       onCustomAction={(action) => dispatch(completionAction(action))}
+                      onQuestionConfirm={handleActionQuestionConfirm}
                       copyBgc="#FFFFFF"
                       verifyBgc="#FFFFFF"
                     />

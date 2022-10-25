@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 18:40:37
+ * @LastEditTime: 2022-10-25 18:49:41
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -184,7 +184,7 @@ const TodoTask: React.FC = () => {
   const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
 
   // 执行action操作
-  const { handleActionToDiscord, handleActionToTwitter } = useHandleAction()
+  const { handleActionToDiscord, handleActionToTwitter, handleActionQuestionConfirm } = useHandleAction()
 
   // 关注社区
   const { status: followCommunityStatus } = followCommunityState
@@ -244,6 +244,7 @@ const TodoTask: React.FC = () => {
             onTwitter={handleActionToTwitter}
             onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
             onCustomAction={(action) => dispatch(completionAction(action))}
+            onQuestionConfirm={handleActionQuestionConfirm}
           />
           <TodoTaskList
             status={TaskTodoCompleteStatus.IN_PRGRESS}
@@ -255,6 +256,7 @@ const TodoTask: React.FC = () => {
             onTwitter={handleActionToTwitter}
             onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
             onCustomAction={(action) => dispatch(completionAction(action))}
+            onQuestionConfirm={handleActionQuestionConfirm}
           />
         </TodoTaskGroupLeft>
         <TodoTaskGroupRight>

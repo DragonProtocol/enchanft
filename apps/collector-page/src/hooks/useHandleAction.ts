@@ -2,14 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 18:51:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 00:09:19
+ * @LastEditTime: 2022-10-25 18:58:52
  * @Description: file description
  */
 import { useCallback, useEffect, useRef } from 'react'
 import { useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
 import { SignerType, AccountType } from '@ecnft/wl-user-core'
+import { questionConfirmAction } from '../features/user/taskHandlesSlice'
+import { useAppDispatch } from '../store/hooks'
 export default () => {
   const { validateBindAccount, dispatchModal } = useWlUserReact()
+  const dispatch = useAppDispatch()
   const toDiscordCallback = useRef<Function | null>(null)
   const toTwitterCallback = useRef<Function | null>(null)
   const handleActionToDiscord = useCallback((callback) => {
@@ -28,6 +31,9 @@ export default () => {
       dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.TWITTER })
     }
   }, [])
+  const handleActionQuestionConfirm = useCallback((action, answer, callback) => {
+    dispatch(questionConfirmAction({ action, answer, callback }))
+  }, [])
 
   useEffect(() => {
     if (validateBindAccount(AccountType.TWITTER) && toTwitterCallback.current) {
@@ -44,5 +50,5 @@ export default () => {
     }
   }, [toDiscordCallback, toTwitterCallback])
 
-  return { handleActionToDiscord, handleActionToTwitter }
+  return { handleActionToDiscord, handleActionToTwitter, handleActionQuestionConfirm }
 }
