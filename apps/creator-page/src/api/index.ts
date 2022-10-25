@@ -150,6 +150,7 @@ export function createTask(data: CreateTaskState, token: string) {
       type: data.reward.type,
       raffled: data.reward.raffled,
       name: data.reward.name,
+      luckyDraw: data.reward.luckyDraw,
       data: {
         token_num: data.reward.token_num,
       },
@@ -172,6 +173,7 @@ export function createTask(data: CreateTaskState, token: string) {
           nft_accounts_or_add: item.nft_accounts_or_add,
           question: item.question,
           answer: item.answer,
+          lucky_draw_weight: item.lucky_draw_weight,
         },
       };
     }),

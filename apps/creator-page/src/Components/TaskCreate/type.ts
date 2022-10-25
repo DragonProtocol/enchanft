@@ -3,7 +3,6 @@ import {
   CREATE_TASK_DEFAULT_CONTRIBUTION_TOKEN,
   CREATE_TASK_DEFAULT_WINNER_NUM,
 } from '../../utils/constants';
-import { CoinType } from '../../utils/token';
 
 export enum RewardType {
   WHITELIST = 'WHITELIST',
@@ -88,11 +87,13 @@ export type Action = {
   nft_accounts_or_add?: boolean;
   question?: string;
   answer?: string;
+  lucky_draw_weight?: number;
 };
 
 export type Reward = {
   type: RewardType;
   raffled: boolean;
+  luckyDraw: boolean;
   name?: string;
   token_num?: number;
 };
@@ -121,6 +122,7 @@ export const DefaultState: State = {
   reward: {
     type: RewardType.WHITELIST,
     raffled: false,
+    luckyDraw: false,
     name: '',
     token_num: CREATE_TASK_DEFAULT_CONTRIBUTION_TOKEN,
   },

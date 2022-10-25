@@ -146,6 +146,7 @@ export default function CreateTaskBasic({
                         reward: {
                           ...state.reward,
                           raffled: v,
+                          luckyDraw: !v,
                         },
                       });
                     }}
@@ -159,6 +160,34 @@ export default function CreateTaskBasic({
                     </p>
                   </div>
                 </div>
+                {state.reward.raffled && (
+                  <div className="raffle-switch-box">
+                    <SwitchBtn
+                      width={80}
+                      height={40}
+                      dotWidth={32}
+                      dotHeight={32}
+                      open={state.reward.luckyDraw}
+                      onChange={(v) => {
+                        updateState({
+                          ...state,
+                          reward: {
+                            ...state.reward,
+                            luckyDraw: v,
+                          },
+                        });
+                      }}
+                    />
+                    <div className="desc">
+                      <p>Lucky draw</p>
+                      <p className="type-desc">
+                        {(state.reward.luckyDraw &&
+                          'The more actions completed,the higher chance to win.') ||
+                          'Complete all actions to get entry.'}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="content-item">
                 <h4>Total winners</h4>
@@ -424,6 +453,7 @@ const BasicBox = styled.div`
         display: flex;
         align-items: center;
         gap: 10px;
+        margin: 10px;
 
         > .desc {
           & p {

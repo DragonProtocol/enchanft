@@ -28,7 +28,6 @@ import IconCustom from '../Icons/IconCustom';
 import IconDiscordWhite from '../Icons/IconDiscordWhite';
 import RightIcon from '../Icons/IconRight';
 import IconQuestion from '../Icons/IconQuestion';
-import SwitchBtn from '../SwitchBtn';
 
 export default function Actions({
   hasInviteBot,
@@ -48,7 +47,10 @@ export default function Actions({
   // const { account } = useAppConfig();
   const twitter = true;
   // 'account.info?.accounts.find((item) => item.accountType === ChainType.TWITTER)';
-  const [followTwitter, setFollowTwitter] = useState(false);
+  const [followTwitter, setFollowTwitter] = useState({
+    valid: false,
+    luckyDrawWeight: '1',
+  });
   const [followTwitterLinkResult, setFollowTwitterLinkResult] = useState<
     Array<string>
   >(
@@ -59,25 +61,46 @@ export default function Actions({
       : []
   );
 
-  const [hasDiscordRole, setHasDiscordRole] = useState(false);
-  const [discordRole, setDiscordRole] = useState('');
-  const [discordRoleDesc, setDiscordRoleDesc] = useState('');
-  const [joinDiscord, setJoinDiscord] = useState(false);
-  const [inviteDiscord, setInviteDiscord] = useState(false);
-  const [inviteDiscordNum, setInviteDiscordNum] = useState(
-    CREATE_TASK_DEFAULT_INVITE_NUM
-  );
-  const [inviteFriends, setInvalidFriends] = useState(false);
-  const [inviteNum, setInviteNum] = useState(CREATE_TASK_DEFAULT_INVITE_NUM);
-  const [likeTwitter, setLikeTwitter] = useState(false);
-  const [likeTwitterLink, setLikeTwitterLink] = useState('');
-  const [retweetTwitter, setRetweetTwitter] = useState(false);
-  const [retweetId, setRetweetId] = useState('');
-  const [joinCommunity, setJoinCommunity] = useState(false);
-  const [joinCommunityContribution, setJoinCommunityContribution] =
-    useState(false);
-  const [joinCommunityContributionNum, setJoinCommunityContributionNum] =
-    useState(20);
+  const [discordRole, setDiscordRole] = useState({
+    valid: false,
+    role: '',
+    desc: '',
+    luckyDrawWeight: '1',
+  });
+
+  const [joinDiscord, setJoinDiscord] = useState({
+    valid: false,
+    luckyDrawWeight: '1',
+  });
+  const [inviteDiscord, setInviteDiscord] = useState({
+    valid: false,
+    num: CREATE_TASK_DEFAULT_INVITE_NUM,
+    luckyDrawWeight: '1',
+  });
+
+  const [inviteFriends, setInvalidFriends] = useState({
+    valid: false,
+    num: CREATE_TASK_DEFAULT_INVITE_NUM,
+    luckyDrawWeight: '1',
+  });
+
+  const [likeTwitter, setLikeTwitter] = useState({
+    valid: false,
+    link: '',
+    luckyDrawWeight: '1',
+  });
+  const [retweetTwitter, setRetweetTwitter] = useState({
+    valid: false,
+    id: '',
+    luckyDrawWeight: '1',
+  });
+
+  const [joinCommunityContribution, setJoinCommunityContribution] = useState({
+    valid: false,
+    num: 20,
+    luckyDrawWeight: '1',
+  });
+
   const [custom, setCustom] = useState([
     {
       type: ActionType.CUSTOM,
@@ -88,6 +111,7 @@ export default function Actions({
       url: '',
       prompt: '',
       err: false,
+      luckyDrawWeight: '1',
     },
   ]);
   const [walletBalance, setWalletBalance] = useState({
@@ -95,6 +119,7 @@ export default function Actions({
     valid: false,
     num: '',
     coinType: CoinType.ETH,
+    luckyDrawWeight: '1',
   });
 
   const [nftHolder, setNftHolder] = useState({
@@ -107,6 +132,7 @@ export default function Actions({
         url: '',
       },
     ],
+    luckyDrawWeight: '1',
   });
   const [questionnaire, setQuestionnaire] = useState({
     type: ActionType.QUESTIONNAIRE,
@@ -116,24 +142,24 @@ export default function Actions({
       {
         question: '',
         answer: '',
+        luckyDrawWeight: '1',
       },
     ],
   });
   useEffect(() => {
     const actions: Action[] = [];
-    if (followTwitter && followTwitterLinkResult.length > 0) {
+    if (followTwitter.valid && followTwitterLinkResult.length > 0) {
       actions.push({
         name: `Follow @${followTwitterLinkResult.join('@')} on Twitter`,
         type: ActionType.TWITTER,
         typeMore: ActionTypeMore.FOLLOW_TWITTER,
         description: '',
         accounts: followTwitterLinkResult,
+        lucky_draw_weight: Number(followTwitter.luckyDrawWeight) || 1,
       });
       updateStateFollowTwitters(followTwitterLinkResult);
-      // } else if (communityTwitterName) {
-      //   updateStateFollowTwitters([communityTwitterName])
     }
-    if (joinDiscord) {
+    if (joinDiscord.valid) {
       const msg = document.getElementById('join-discord-msg')?.textContent;
       msg &&
         actions.push({
@@ -141,9 +167,10 @@ export default function Actions({
           type: ActionType.DISCORD,
           typeMore: ActionTypeMore.JOIN_DISCORD,
           description: '',
+          lucky_draw_weight: Number(joinDiscord.luckyDrawWeight) || 1,
         });
     }
-    if (inviteFriends && inviteNum) {
+    if (inviteFriends.valid && inviteFriends.num) {
       const msg = document.getElementById('invite-friends-msg')?.textContent;
       msg &&
         actions.push({
@@ -151,11 +178,12 @@ export default function Actions({
           type: ActionType.WL,
           typeMore: ActionTypeMore.INVITE_PEOPLE,
           description: '',
-          num: inviteNum,
+          num: inviteFriends.num,
+          lucky_draw_weight: Number(inviteFriends.luckyDrawWeight) || 1,
         });
     }
 
-    if (inviteDiscord && inviteDiscordNum) {
+    if (inviteDiscord.valid && inviteDiscord.num) {
       const msg = document.getElementById('invite-discord-msg')?.textContent;
       msg &&
         actions.push({
@@ -163,11 +191,12 @@ export default function Actions({
           type: ActionType.DISCORD,
           typeMore: ActionTypeMore.DISCORD_INVITES_PEOPLE,
           description: '',
-          num: inviteDiscordNum,
+          num: inviteDiscord.num,
+          lucky_draw_weight: Number(inviteDiscord.luckyDrawWeight) || 1,
         });
     }
 
-    if (likeTwitter && likeTwitterLink) {
+    if (likeTwitter.valid && likeTwitter.link) {
       const msg = document.getElementById('like-twitter-msg')?.textContent;
       msg &&
         actions.push({
@@ -175,11 +204,12 @@ export default function Actions({
           type: ActionType.TWITTER,
           typeMore: ActionTypeMore.LIKE_TWEET,
           description: '',
-          url: `https://twitter.com/intent/like?tweet_id=${likeTwitterLink}`,
-          tweet_id: likeTwitterLink,
+          url: `https://twitter.com/intent/like?tweet_id=${likeTwitter.link}`,
+          tweet_id: likeTwitter.link,
+          lucky_draw_weight: Number(likeTwitter.luckyDrawWeight) || 1,
         });
     }
-    if (retweetId && retweetTwitter) {
+    if (retweetTwitter.valid && retweetTwitter.id) {
       const msg = document.getElementById('retweet-twitter-msg')?.textContent;
       msg &&
         actions.push({
@@ -187,21 +217,12 @@ export default function Actions({
           type: ActionType.TWITTER,
           typeMore: ActionTypeMore.RETWEET,
           description: '',
-          url: `https://twitter.com/intent/retweet?tweet_id=${retweetId}`,
-          tweet_id: retweetId,
+          url: `https://twitter.com/intent/retweet?tweet_id=${retweetTwitter.id}`,
+          tweet_id: retweetTwitter.id,
+          lucky_draw_weight: Number(retweetTwitter.luckyDrawWeight) || 1,
         });
     }
-    if (joinCommunity) {
-      const msg = document.getElementById('join-community-msg')?.textContent;
-      msg &&
-        actions.push({
-          name: msg,
-          type: ActionType.NOTIFY,
-          typeMore: ActionTypeMore.TURN_ON_NOTIFICATION,
-          description: '',
-        });
-    }
-    if (joinCommunityContribution && joinCommunityContributionNum) {
+    if (joinCommunityContribution.valid && joinCommunityContribution.num) {
       const msg = document.getElementById(
         'join-community-contribution-msg'
       )?.textContent;
@@ -211,24 +232,34 @@ export default function Actions({
           type: ActionType.WL,
           typeMore: ActionTypeMore.MEET_CONTRIBUTION_SCORE,
           description: '',
-          require_score: joinCommunityContributionNum,
+          require_score: joinCommunityContribution.num,
+          lucky_draw_weight:
+            Number(joinCommunityContribution.luckyDrawWeight) || 1,
         });
     }
 
-    if (hasDiscordRole && discordRole.trim()) {
+    if (discordRole.valid && discordRole.role.trim()) {
       actions.push({
-        name: `Get【${discordRole.trim()}】Role on Discord`,
+        name: `Get【${discordRole.role.trim()}】Role on Discord`,
         type: ActionType.DISCORD,
         typeMore: ActionTypeMore.DISCORD_OBTAIN_ROLE,
-        description: discordRoleDesc.trim(),
-        role: discordRole.trim(),
+        description: discordRole.desc.trim(),
+        role: discordRole.role.trim(),
+        lucky_draw_weight: Number(discordRole.luckyDrawWeight) || 1,
       });
     }
 
     const resultCustom = custom.filter(
       (item) => item.select && item.name && item.url
     );
-    actions.push(...resultCustom);
+    actions.push(
+      ...resultCustom.map((item) => {
+        return {
+          ...item,
+          lucky_draw_weight: Number(item.luckyDrawWeight) || 1,
+        };
+      })
+    );
 
     if (walletBalance.valid) {
       actions.push({
@@ -237,6 +268,7 @@ export default function Actions({
         typeMore: ActionTypeMore.NATIVE_BALANCE,
         description: ``,
         min_native_balance: Number(walletBalance.num) || 0,
+        lucky_draw_weight: Number(walletBalance.luckyDrawWeight) || 1,
       });
     }
 
@@ -266,13 +298,14 @@ export default function Actions({
             })
             .filter((item) => item.name && item.address),
           nft_accounts_or_add: false,
+          lucky_draw_weight: Number(nftHolder.luckyDrawWeight) || 1,
         });
       }
     }
 
     if (questionnaire.valid) {
       questionnaire.data.forEach((item) => {
-        const { question, answer } = item;
+        const { question, answer, luckyDrawWeight } = item;
         if (question.trim() && answer.trim()) {
           actions.push({
             name: question,
@@ -281,6 +314,7 @@ export default function Actions({
             description: ``,
             question,
             answer,
+            lucky_draw_weight: Number(luckyDrawWeight) || 1,
           });
         }
       });
@@ -293,19 +327,11 @@ export default function Actions({
     followTwitter,
     joinDiscord,
     inviteDiscord,
-    inviteDiscordNum,
     inviteFriends,
-    inviteNum,
     likeTwitter,
-    likeTwitterLink,
     retweetTwitter,
-    retweetId,
-    joinCommunity,
     joinCommunityContribution,
-    joinCommunityContributionNum,
-    hasDiscordRole,
     discordRole,
-    discordRoleDesc,
     custom,
     walletBalance,
     nftHolder,
@@ -353,9 +379,12 @@ export default function Actions({
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
-                checked={followTwitter}
+                checked={followTwitter.valid}
                 onChange={() => {
-                  setFollowTwitter(!followTwitter);
+                  setFollowTwitter({
+                    ...followTwitter,
+                    valid: !followTwitter.valid,
+                  });
                 }}
               />
               <span id="follow-twitter-msg" className="msg">
@@ -365,7 +394,7 @@ export default function Actions({
             </div>
             {twitter ? (
               <>
-                {followTwitter && (
+                {followTwitter.valid && (
                   <>
                     <TwitterFollowed
                       followTwitterLinkResult={followTwitterLinkResult}
@@ -392,15 +421,29 @@ export default function Actions({
                 <ConnectTwitter />
               </div>
             )}
+            {twitter && followTwitter.valid && (
+              <LuckyDraw
+                weight={followTwitter.luckyDrawWeight}
+                setWeight={(w) => {
+                  setFollowTwitter({
+                    ...followTwitter,
+                    luckyDrawWeight: w,
+                  });
+                }}
+              />
+            )}
           </div>
           {/** Like twitter */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
-                checked={likeTwitter}
+                checked={likeTwitter.valid}
                 onChange={() => {
                   if (!twitter) return;
-                  setLikeTwitter(!likeTwitter);
+                  setLikeTwitter({
+                    ...likeTwitter,
+                    valid: !likeTwitter.valid,
+                  });
                 }}
               />
               <span id="like-twitter-msg" className="msg">
@@ -410,11 +453,14 @@ export default function Actions({
             </div>
             <div className="help">
               {twitter ? (
-                likeTwitter && (
+                likeTwitter.valid && (
                   <TweetIdInput
-                    retweetId={likeTwitterLink}
+                    retweetId={likeTwitter.link}
                     setRetweetId={(id) => {
-                      setLikeTwitterLink(id);
+                      setLikeTwitter({
+                        ...likeTwitter,
+                        link: id,
+                      });
                     }}
                   />
                 )
@@ -422,15 +468,29 @@ export default function Actions({
                 <ConnectTwitter />
               )}
             </div>
+            {twitter && likeTwitter.valid && (
+              <LuckyDraw
+                weight={likeTwitter.luckyDrawWeight}
+                setWeight={(w) => {
+                  setLikeTwitter({
+                    ...likeTwitter,
+                    luckyDrawWeight: w,
+                  });
+                }}
+              />
+            )}
           </div>
           {/** Retweet twitter */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
-                checked={retweetTwitter}
+                checked={retweetTwitter.valid}
                 onChange={() => {
                   if (!twitter) return;
-                  setRetweetTwitter(!retweetTwitter);
+                  setRetweetTwitter({
+                    ...retweetTwitter,
+                    valid: !retweetTwitter.valid,
+                  });
                 }}
               />
               <span id="retweet-twitter-msg" className="msg">
@@ -440,11 +500,14 @@ export default function Actions({
             </div>
             <div className="help">
               {twitter ? (
-                retweetTwitter && (
+                retweetTwitter.valid && (
                   <TweetIdInput
-                    retweetId={retweetId}
+                    retweetId={retweetTwitter.id}
                     setRetweetId={(id) => {
-                      setRetweetId(id);
+                      setRetweetTwitter({
+                        ...retweetTwitter,
+                        id,
+                      });
                     }}
                   />
                 )
@@ -452,15 +515,29 @@ export default function Actions({
                 <ConnectTwitter />
               )}
             </div>
+            {twitter && retweetTwitter.valid && (
+              <LuckyDraw
+                weight={retweetTwitter.luckyDrawWeight}
+                setWeight={(w) => {
+                  setRetweetTwitter({
+                    ...retweetTwitter,
+                    luckyDrawWeight: w,
+                  });
+                }}
+              />
+            )}
           </div>
           {/** Invite friends */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
-                checked={inviteFriends}
+                checked={inviteFriends.valid}
                 onChange={() => {
-                  const nextValue = !inviteFriends;
-                  setInvalidFriends(nextValue);
+                  const nextValue = !inviteFriends.valid;
+                  setInvalidFriends({
+                    ...inviteFriends,
+                    valid: nextValue,
+                  });
                 }}
               />
               <span id="invite-friends-msg" className="msg">
@@ -469,27 +546,48 @@ export default function Actions({
                   title="task-invite"
                   min={'1'}
                   type="number"
-                  value={inviteNum === 0 ? '' : inviteNum.toString()}
+                  value={
+                    inviteFriends.num === 0 ? '' : inviteFriends.num.toString()
+                  }
                   placeholder="X"
                   onKeyPress={numberInput}
                   onChange={(e) => {
-                    if (inviteFriends) setInviteNum(Number(e.target.value));
+                    if (inviteFriends.valid) {
+                      setInvalidFriends({
+                        ...inviteFriends,
+                        num: Number(e.target.value),
+                      });
+                    }
                   }}
                 />
-                <span>{` ${inviteNum} `}</span>
+                <span>{` ${inviteFriends.num} `}</span>
                 friends to take the Task
               </span>
               <IconWL />
             </div>
+            {inviteFriends.valid && (
+              <LuckyDraw
+                weight={inviteFriends.luckyDrawWeight}
+                setWeight={(w) => {
+                  setInvalidFriends({
+                    ...inviteFriends,
+                    luckyDrawWeight: w,
+                  });
+                }}
+              />
+            )}
           </div>
           {/** Community contribution */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
-                checked={joinCommunityContribution}
+                checked={joinCommunityContribution.valid}
                 onChange={() => {
-                  const nextValue = !joinCommunityContribution;
-                  setJoinCommunityContribution(nextValue);
+                  const nextValue = !joinCommunityContribution.valid;
+                  setJoinCommunityContribution({
+                    ...joinCommunityContribution,
+                    valid: nextValue,
+                  });
                 }}
               />
               <span id="join-community-contribution-msg" className="msg">
@@ -499,22 +597,36 @@ export default function Actions({
                   min={'1'}
                   type="number"
                   value={
-                    joinCommunityContributionNum === 0
+                    joinCommunityContribution.num === 0
                       ? ''
-                      : joinCommunityContributionNum.toString()
+                      : joinCommunityContribution.num.toString()
                   }
                   placeholder="X"
                   onKeyPress={numberInput}
                   onChange={(e) => {
                     if (!joinCommunityContribution) return;
                     const value = Number(e.target.value);
-                    setJoinCommunityContributionNum(value);
+                    setJoinCommunityContribution({
+                      ...joinCommunityContribution,
+                      num: value,
+                    });
                   }}
                 />
-                <span>{` ${joinCommunityContributionNum} `}</span>
+                <span>{` ${joinCommunityContribution.num} `}</span>
               </span>
               <IconWL />
             </div>
+            {joinCommunityContribution.valid && (
+              <LuckyDraw
+                weight={joinCommunityContribution.luckyDrawWeight}
+                setWeight={(w) => {
+                  setJoinCommunityContribution({
+                    ...joinCommunityContribution,
+                    luckyDrawWeight: w,
+                  });
+                }}
+              />
+            )}
           </div>
 
           {/** Question */}
@@ -587,6 +699,27 @@ export default function Actions({
                           />
                         </div>
                       </div>
+
+                      {questionnaire.valid && (
+                        <LuckyDraw
+                          borderNoTop
+                          weight={item.luckyDrawWeight}
+                          setWeight={(w) => {
+                            setQuestionnaire({
+                              ...questionnaire,
+                              data: [
+                                ...questionnaire.data.slice(0, idx),
+                                {
+                                  ...item,
+                                  luckyDrawWeight: w,
+                                },
+                                ...questionnaire.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        />
+                      )}
+
                       {idx !== questionnaire.data.length - 1 && (
                         <div
                           className={'help add-btn custom'}
@@ -617,6 +750,7 @@ export default function Actions({
                         {
                           question: '',
                           answer: '',
+                          luckyDrawWeight: '1',
                         },
                       ],
                     })
@@ -653,9 +787,12 @@ export default function Actions({
             <div className="content-item">
               <div className="desc">
                 <CustomCheckBox
-                  checked={joinDiscord}
+                  checked={joinDiscord.valid}
                   onChange={() => {
-                    setJoinDiscord(!joinDiscord);
+                    setJoinDiscord({
+                      ...joinDiscord,
+                      valid: !joinDiscord.valid,
+                    });
                   }}
                 />{' '}
                 <span id="join-discord-msg" className="msg">
@@ -663,6 +800,17 @@ export default function Actions({
                 </span>
                 <IconDiscord />
               </div>
+              {joinDiscord.valid && (
+                <LuckyDraw
+                  weight={joinDiscord.luckyDrawWeight}
+                  setWeight={(w) => {
+                    setJoinDiscord({
+                      ...joinDiscord,
+                      luckyDrawWeight: w,
+                    });
+                  }}
+                />
+              )}
             </div>
           )}
           {/** Invite Discord */}
@@ -670,9 +818,12 @@ export default function Actions({
             <div className="content-item">
               <div className="desc">
                 <CustomCheckBox
-                  checked={inviteDiscord}
+                  checked={inviteDiscord.valid}
                   onChange={() => {
-                    setInviteDiscord(!inviteDiscord);
+                    setInviteDiscord({
+                      ...inviteDiscord,
+                      valid: !inviteDiscord.valid,
+                    });
                   }}
                 />
                 <span id="invite-discord-msg" className="msg">
@@ -683,19 +834,36 @@ export default function Actions({
                     type="number"
                     title="invite-discord"
                     value={
-                      inviteDiscordNum === 0 ? '' : inviteDiscordNum.toString()
+                      inviteDiscord.num === 0
+                        ? ''
+                        : inviteDiscord.num.toString()
                     }
                     onKeyPress={numberInput}
                     onChange={(e) => {
-                      if (inviteDiscord)
-                        setInviteDiscordNum(Number(e.target.value));
+                      if (inviteDiscord) {
+                        setInviteDiscord({
+                          ...inviteDiscord,
+                          num: Number(e.target.value),
+                        });
+                      }
                     }}
                   />
-                  <span>{` ${inviteDiscordNum} `}</span>
+                  <span>{` ${inviteDiscord.num} `}</span>
                   Friends to Discord Server
                 </span>
                 <IconDiscord />
               </div>
+              {inviteDiscord.valid && (
+                <LuckyDraw
+                  weight={inviteDiscord.luckyDrawWeight}
+                  setWeight={(w) => {
+                    setInviteDiscord({
+                      ...inviteDiscord,
+                      luckyDrawWeight: w,
+                    });
+                  }}
+                />
+              )}
               {/* <div className="help">{discord ? null : <ConnectDiscord />}</div> */}
             </div>
           )}
@@ -704,9 +872,12 @@ export default function Actions({
             <div className="content-item">
               <div className="desc">
                 <CustomCheckBox
-                  checked={hasDiscordRole}
+                  checked={discordRole.valid}
                   onChange={() => {
-                    setHasDiscordRole(!hasDiscordRole);
+                    setDiscordRole({
+                      ...discordRole,
+                      valid: !discordRole.valid,
+                    });
                   }}
                 />
                 <span id="discord-role-msg" className="msg">
@@ -714,7 +885,7 @@ export default function Actions({
                 </span>
                 <IconDiscord />
               </div>
-              {hasDiscordRole && (
+              {discordRole.valid && (
                 <>
                   <div className="help">
                     <span className="username tint">Role name:</span>
@@ -723,9 +894,12 @@ export default function Actions({
                       <input
                         type="text"
                         title="discord-role"
-                        value={discordRole}
+                        value={discordRole.role}
                         onChange={(e) => {
-                          setDiscordRole(e.target.value);
+                          setDiscordRole({
+                            ...discordRole,
+                            role: e.target.value,
+                          });
                         }}
                       />
                     </div>
@@ -736,32 +910,30 @@ export default function Actions({
                       <input
                         type="text"
                         title="discord-role"
-                        value={discordRoleDesc}
+                        value={discordRole.desc}
                         onChange={(e) => {
-                          setDiscordRoleDesc(e.target.value);
+                          setDiscordRole({
+                            ...discordRole,
+                            desc: e.target.value,
+                          });
                         }}
                       />
                     </div>
                   </div>
+                  <LuckyDraw
+                    borderNoTop
+                    weight={discordRole.luckyDrawWeight}
+                    setWeight={(w) => {
+                      setDiscordRole({
+                        ...discordRole,
+                        luckyDrawWeight: w,
+                      });
+                    }}
+                  />
                 </>
               )}
             </div>
           )}
-          {/** Join the community
-          <div className="content-item">
-            <div className="desc">
-              <CustomCheckBox
-                checked={joinCommunity}
-                onChange={() => {
-                  setJoinCommunity(!joinCommunity)
-                }}
-              />
-              <span id="join-community-msg" className="msg">
-                Join the community
-              </span>
-              <IconNotify />
-            </div>
-          </div> */}
 
           {/** Custom action */}
           {custom.map((item, idx) => {
@@ -844,6 +1016,21 @@ export default function Actions({
                         />
                       </div>
                     </div>
+                    <LuckyDraw
+                      borderNoTop
+                      weight={item.luckyDrawWeight}
+                      setWeight={(w) => {
+                        const curr = {
+                          ...item,
+                          luckyDrawWeight: w,
+                        };
+                        setCustom([
+                          ...custom.slice(0, idx),
+                          curr,
+                          ...custom.slice(idx + 1),
+                        ]);
+                      }}
+                    />
                     {(idx === custom.length - 1 && (
                       <div
                         className={'help add-btn custom custom-add'}
@@ -859,6 +1046,7 @@ export default function Actions({
                               url: '',
                               prompt: '',
                               err: false,
+                              luckyDrawWeight: '1',
                             },
                           ]);
                         }}
@@ -909,6 +1097,17 @@ export default function Actions({
                   setWalletBalance({
                     ...walletBalance,
                     num: v,
+                  });
+                }}
+              />
+            )}
+            {walletBalance.valid && (
+              <LuckyDraw
+                weight={walletBalance.luckyDrawWeight}
+                setWeight={(w) => {
+                  setWalletBalance({
+                    ...walletBalance,
+                    luckyDrawWeight: w,
                   });
                 }}
               />
@@ -996,11 +1195,49 @@ export default function Actions({
                   <IconPlus size="16px" /> Add
                 </div>
               )}
+              {nftHolder.valid && (
+                <LuckyDraw
+                  weight={nftHolder.luckyDrawWeight}
+                  setWeight={(w) => {
+                    setNftHolder({
+                      ...nftHolder,
+                      luckyDrawWeight: w,
+                    });
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>
       </div>
     </SelectActionsBox>
+  );
+}
+
+function LuckyDraw({
+  weight,
+  setWeight,
+  borderNoTop,
+}: {
+  weight: string;
+  setWeight: (arg0: string) => void;
+  borderNoTop?: boolean;
+}) {
+  return (
+    <div className={borderNoTop ? 'lucky-draw-no-top' : 'lucky-draw'}>
+      <span>LuckyDraw:</span>{' '}
+      <input
+        title="lucky-draw"
+        type="number"
+        min={'1'}
+        max={'99'}
+        step={'1'}
+        value={weight}
+        onChange={(e) => {
+          setWeight(e.target.value);
+        }}
+      />
+    </div>
   );
 }
 
@@ -1353,6 +1590,7 @@ function NftHolderInput({
           />
         </div>
       </div>
+      {/* <LuckyDraw borderNoTop weight="1" setWeight={() => {}} /> */}
     </>
   );
 }
@@ -1363,6 +1601,9 @@ const SelectActionsBox = styled.div`
     justify-content: space-between;
     & input {
       font-family: inherit;
+      border: none;
+      outline: none;
+      border-radius: 10px;
     }
     > div {
       width: 540px;
@@ -1392,15 +1633,13 @@ const SelectActionsBox = styled.div`
             color: #333333;
             > input {
               margin: 0 10px;
-              border: none;
-              outline: none;
               background-color: #fff;
               height: 40px;
               width: 60px;
               text-align: center;
               font-size: 14px;
               line-height: 20px;
-              border-radius: 10px;
+              box-sizing: border-box;
             }
 
             > span {
@@ -1562,6 +1801,35 @@ const SelectActionsBox = styled.div`
               fill: #3dd606;
             }
           }
+        }
+
+        & .lucky-draw,
+        & .lucky-draw-no-top {
+          display: flex;
+          gap: 10px;
+          justify-content: end;
+          align-items: center;
+          border-top: 1px solid #d9d9d9;
+          margin: 20px 0 10px 0;
+          padding-top: 20px;
+          > span {
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 20px;
+
+            color: #333333;
+          }
+          > input {
+            width: 200px;
+            height: 40px;
+            padding: 10px;
+            box-sizing: border-box;
+          }
+        }
+        & .lucky-draw-no-top {
+          border-top: none;
+          padding-top: 0px;
+          margin: 0px 0 10px 0;
         }
       }
     }
