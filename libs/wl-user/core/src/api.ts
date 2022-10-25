@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:51:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-23 19:21:24
+ * @LastEditTime: 2022-10-25 14:58:39
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
@@ -122,12 +122,6 @@ export type ApiResp<T> = {
   msg: string;
   data: T;
 };
-export enum AsyncRequestStatus {
-  IDLE = 'idle',
-  PENDING = 'pending',
-  FULFILLED = 'fulfilled',
-  REJECTED = 'rejected',
-}
 type HandleAccountParamsForWeb3Account = {
   type: AccountType;
   signature: string;
@@ -175,10 +169,12 @@ export function login<K extends keyof LoginParamsMap>(
 type BindAccountParamsForTwitterAccount = {
   type: AccountType;
   code: string;
+  callback: string;
 };
 type BindAccountParamsForDiscordAccount = {
   type: AccountType;
   code: string;
+  callback: string;
 };
 type BindAccountParamsMap = {
   [AccountType.TWITTER]: BindAccountParamsForTwitterAccount;
@@ -212,7 +208,7 @@ export function unbindAccount(
 ): AxiosPromise<UnBindResult> {
   const data = qs.stringify({ type });
   return axiosInstance({
-    url: '/users/link',
+    url: '/users/unlink',
     method: 'post',
     data: data,
     headers: {
@@ -239,7 +235,10 @@ export function getUserInfo(
 export type UpdateUserInfoResult = unknown;
 export function updateUserInfo(
   token: string,
-  data: Partial<User>
+  data: {
+    userName: string;
+    userAvatar: string;
+  }
 ): AxiosPromise<ApiResp<UpdateUserInfoResult>> {
   return axiosInstance({
     url: '/users/profile',

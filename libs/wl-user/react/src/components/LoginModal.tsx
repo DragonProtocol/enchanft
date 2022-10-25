@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 17:20:19
+ * @LastEditTime: 2022-10-25 17:53:22
  * @Description: file description
  */
 import React, { useState } from 'react';
@@ -12,7 +12,7 @@ import ModalBase, {
   ModalBaseProps,
   ModalBaseTitle,
 } from './common/modal/ModalBase';
-import { isMobile } from 'react-device-detect';
+import { isDesktop, isMobile } from 'react-device-detect';
 import LoginWithSignerButton from './LoginWithSignerButton';
 import { SignerType } from '@ecnft/wl-user-core';
 export type LoginModalProps = ModalBaseProps;
@@ -22,10 +22,13 @@ const LoginModal: React.FC<LoginModalProps> = ({
   ...modalProps
 }: LoginModalProps) => {
   const { signers, getSigner } = useWlUserReact();
-  // TODO： 推荐signer暂时先默认使用Twitter (后续改为上次签名使用的 signer)
+  // 推荐signer暂时先默认使用Twitter
   const recommendSigner = getSigner(SignerType.TWITTER);
-  // TODO: 后期可将支持的otherSigners作为登录选项
-  const otherSigners = signers.filter((item) => item !== recommendSigner);
+  // 将支持的otherSigners作为登录选项
+  const excloudOtherSigners = [SignerType.TWITTER, SignerType.DISCORD];
+  const otherSigners = signers.filter(
+    (item) => !excloudOtherSigners.includes(item.signerType)
+  );
   const [otherSignersDisplay, setOtherSignersDisplay] = useState(false);
   return (
     <LoginModalWrapper isOpen={isOpen} {...modalProps}>
@@ -38,20 +41,25 @@ const LoginModal: React.FC<LoginModalProps> = ({
             ></LoginWithSignerButton>
           )}
         </LoginSignerRecommendBox>
-        {/* <OtherSignersDisplayBtn
-          onClick={() => setOtherSignersDisplay(!otherSignersDisplay)}
-        >
-          others signer {otherSignersDisplay ? '▲' : '▼'}
-        </OtherSignersDisplayBtn>
-        {otherSignersDisplay && (
-          <LoginSignerOthersBox>
-            {otherSigners.map((signer) => (
-              <LoginWithSignerButton
-                signerType={signer.signerType}
-              ></LoginWithSignerButton>
-            ))}
-          </LoginSignerOthersBox>
-        )} */}
+        {isDesktop && (
+          <>
+            <OtherSignersDisplayBtn
+              onClick={() => setOtherSignersDisplay(!otherSignersDisplay)}
+            >
+              other signatories {otherSignersDisplay ? '▲' : '▼'}
+            </OtherSignersDisplayBtn>
+            {otherSignersDisplay && (
+              <LoginSignerOthersBox>
+                {otherSigners.map((signer) => (
+                  <LoginWithSignerButton
+                    key={signer.signerType}
+                    signerType={signer.signerType}
+                  ></LoginWithSignerButton>
+                ))}
+              </LoginSignerOthersBox>
+            )}
+          </>
+        )}
       </LoginModalBody>
     </LoginModalWrapper>
   );
@@ -68,6 +76,9 @@ const LoginModalBody = styled.div`
   background: #f7f9f1;
   border-radius: 20px;
   min-width: 200px;
+  max-width: 560px;
+  max-height: 560px;
+  transition: all 2s linear;
 `;
 const LoginSignerRecommendBox = styled.div`
   display: flex;

@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-23 19:32:03
+ * @LastEditTime: 2022-10-25 12:53:11
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useWlUserReact, WlUserActionType, WlUserModalType } from '../provider';
-import { SignerType } from '@ecnft/wl-user-core';
+import { SignerProcessStatus, SignerType } from '@ecnft/wl-user-core';
 import { getAccountDisplayName, validateSignerPending } from '../utils';
 import ButtonBase from './common/button/ButtonBase';
 import IconUnlink from './common/icons/IconUnlink';
@@ -46,7 +46,7 @@ const BindWithSignerButton: React.FC<BindWithSignerButtonProps> = ({
     return (
       type === WlUserActionType.BIND &&
       signer?.signerType === signerType &&
-      validateSignerPending(signerType, processStatus)
+      validateSignerPending(signerType, processStatus as SignerProcessStatus)
     );
   }, [signerType, userActionState]);
 

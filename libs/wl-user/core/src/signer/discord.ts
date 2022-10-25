@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 00:45:42
+ * @LastEditTime: 2022-10-25 11:12:00
  * @Description: file description
  */
 import {
@@ -25,7 +25,7 @@ export enum DiscordEventType {
 export type DiscordBindCallbackParams = {
   code: string;
 };
-interface DiscordEventMap {
+interface DiscordEventMap extends WindowEventMap {
   [DiscordEventType.DISCORD_BIND_OAUTH_CALLBACK]: CustomEvent<DiscordBindCallbackParams>;
 }
 interface DiscordOauthWindow extends Window {
@@ -70,6 +70,46 @@ state=15773059ghq9183habn&
 redirect_uri=${oauthCallbackUri}&
 prompt=consent`;
 
+enum ListenDiscordOauthStorageKey {
+  LISTEN_DISCORD_OAUTH_STATUS = 'LISTEN_DISCORD_OAUTH_STATUS',
+  LISTEN_DISCORD_OAUTH_CODE = 'LISTEN_DISCORD_OAUTH_CODE',
+}
+enum ListenDiscordOauthStatus {
+  START = 'START',
+  END = 'END',
+}
+
+const clearListenDiscordOauthStorage = () => {
+  localStorage.removeItem(
+    ListenDiscordOauthStorageKey.LISTEN_DISCORD_OAUTH_STATUS
+  );
+  localStorage.removeItem(
+    ListenDiscordOauthStorageKey.LISTEN_DISCORD_OAUTH_CODE
+  );
+};
+const startListenDiscordOauthStorage = () => {
+  localStorage.setItem(
+    ListenDiscordOauthStorageKey.LISTEN_DISCORD_OAUTH_STATUS,
+    ListenDiscordOauthStatus.START
+  );
+};
+const endListenDiscordOauthStorage = () => {
+  localStorage.setItem(
+    ListenDiscordOauthStorageKey.LISTEN_DISCORD_OAUTH_STATUS,
+    ListenDiscordOauthStatus.END
+  );
+};
+const setDiscordOauthCodeStorage = (code: string) => {
+  localStorage.setItem(
+    ListenDiscordOauthStorageKey.LISTEN_DISCORD_OAUTH_CODE,
+    code
+  );
+};
+const isStartListenDiscordOauthStorage = () =>
+  localStorage.getItem(
+    ListenDiscordOauthStorageKey.LISTEN_DISCORD_OAUTH_STATUS
+  ) === ListenDiscordOauthStatus.START;
+
 export class Discord extends Signer {
   readonly signerType = SignerType.DISCORD;
   readonly accountType = AccountType.DISCORD;
@@ -77,14 +117,13 @@ export class Discord extends Signer {
   private oauthCallbackUri = '';
   private bindOauthCallbackUrlListener() {
     if (location.href.startsWith(this.oauthCallbackUri)) {
+      if (!isStartListenDiscordOauthStorage()) return;
       const urlParams = new URLSearchParams(location.search);
       const code = urlParams.get('code');
       if (code) {
-        window.dispatchEvent(
-          new CustomEvent(DiscordEventType.DISCORD_BIND_OAUTH_CALLBACK, {
-            detail: { code },
-          })
-        );
+        endListenDiscordOauthStorage();
+        setDiscordOauthCodeStorage(code);
+        window.close();
       }
     }
   }
@@ -96,55 +135,56 @@ export class Discord extends Signer {
   }
 
   public login(): Promise<LoginResult> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
       reject('Currently not supported');
     });
   }
   public bind(token: string): Promise<BindResult> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
       try {
+        startListenDiscordOauthStorage();
         const url = getApiDiscordOauth2Url(
           this.discordClientId,
           this.oauthCallbackUri
         );
-        const authWindow = openOauthWindow(url) as DiscordOauthWindow;
-        const handleDiscordCallback = async (
-          e: DiscordEventMap[DiscordEventType.DISCORD_BIND_OAUTH_CALLBACK]
-        ) => {
-          (window as DiscordOauthWindow).removeEventListener(
-            DiscordEventType.DISCORD_BIND_OAUTH_CALLBACK,
-            handleDiscordCallback
-          );
-          authWindow?.close();
-          // 2. fetch discord bind
-          const { code } = e.detail;
-          bindAccount(token, {
-            type: this.accountType,
-            code,
-          })
-            .then((result) => {
-              this.signerProcessStatusChange(
-                SignerProcessStatus.BIND_FULFILLED
-              );
-              resolve(result.data);
+        openOauthWindow(url);
+        const handleDiscordCallback = (e: StorageEvent) => {
+          const { key, newValue } = e;
+          if (
+            key === ListenDiscordOauthStorageKey.LISTEN_DISCORD_OAUTH_CODE &&
+            newValue
+          ) {
+            window.removeEventListener('storage', handleDiscordCallback);
+            clearListenDiscordOauthStorage();
+            // 2. fetch twitter bind
+            bindAccount(token, {
+              type: this.accountType,
+              code: newValue,
+              callback: this.oauthCallbackUri,
             })
-            .catch((error) => {
-              this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
-              reject(
-                new DiscordError(
-                  ErrorName.API_REQUEST_BIND_ERROR,
-                  error.message
-                )
-              );
-            });
+              .then((result) => {
+                this.signerProcessStatusChange(
+                  SignerProcessStatus.BIND_FULFILLED
+                );
+                resolve(result.data);
+              })
+              .catch((error) => {
+                this.signerProcessStatusChange(
+                  SignerProcessStatus.BIND_REJECTED
+                );
+                reject(
+                  new DiscordError(
+                    ErrorName.API_REQUEST_BIND_ERROR,
+                    error.message
+                  )
+                );
+              });
+          }
         };
-        // 1. listen discord bind oauth callback
-        (window as DiscordOauthWindow).addEventListener(
-          DiscordEventType.DISCORD_BIND_OAUTH_CALLBACK,
-          handleDiscordCallback
-        );
+        // 1. listen twitter bind oauth callback
+        window.addEventListener('storage', handleDiscordCallback);
       } catch (error) {
         this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
         reject(error);

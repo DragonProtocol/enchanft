@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 00:06:59
+ * @LastEditTime: 2022-10-25 17:57:10
  * @Description: 站点布局入口
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -200,9 +200,8 @@ const MobileNavList = styled.div`
   height: 58px;
   border-top: 4px solid #333333;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  gap: 46px;
 `
 const MobileNavItemBox = styled.div<{ isActive: boolean }>`
   height: 40px;

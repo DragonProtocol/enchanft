@@ -2,15 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 02:44:15
+ * @LastEditTime: 2022-10-25 18:09:27
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
 import { useCallback } from 'react'
-import useInterval from '../hooks/useInterval'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
+import { useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
-import { Dialog, FormControl, IconButton, CircularProgress } from '@mui/material'
+import { IconButton } from '@mui/material'
 import EditIcon from '@mui/icons-material/Edit'
 import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
 import {
@@ -19,25 +18,26 @@ import {
   selectUserFollowedCommunitiesState,
 } from '../features/user/followedCommunitiesSlice'
 import { AsyncRequestStatus } from '../types'
-import { uploadAvatar } from '../services/api/login'
 import {
   selectUserRewardsState,
   UserRewardForEntity,
   selectAll as selectAllForUserRewards,
 } from '../features/user/userRewardsSlice'
 import RewardList, { RewardListItemsType } from '../components/business/reward/RewardList'
-import ButtonBase, { ButtonInfo, ButtonPrimary, ButtonWarning } from '../components/common/button/ButtonBase'
+import { ButtonWarning } from '../components/common/button/ButtonBase'
 import CardBox from '../components/common/card/CardBox'
-import UserAvatar from '../components/business/user/UserAvatar'
-import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg'
-import { toast } from 'react-toastify'
 import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup'
-import { AVATAR_SIZE_LIMIT, MOBILE_BREAK_POINT } from '../constants'
+import { MOBILE_BREAK_POINT } from '../constants'
 import { useNavigate } from 'react-router-dom'
 import OverflowEllipsisBox from '../components/common/text/OverflowEllipsisBox'
 import { isMobile } from 'react-device-detect'
-import { getMultiavatarIdByUser } from '../utils/multiavatar'
-import { useWlUserReact, WlUserActionType, BindWithSignerButton } from '@ecnft/wl-user-react'
+import {
+  useWlUserReact,
+  WlUserActionType,
+  WlUserModalType,
+  BindWithSignerButton,
+  UserAvatar,
+} from '@ecnft/wl-user-react'
 import { SignerType } from '@ecnft/wl-user-core'
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
@@ -70,32 +70,15 @@ const ProfileTabOptions = [
   },
 ]
 const Profile: React.FC = () => {
-  const { isLogin, user, dispatchAction } = useWlUserReact()
+  const { isLogin, user, dispatchAction, dispatchModal } = useWlUserReact()
   const navigate = useNavigate()
-  const [name, setName] = useState(user.name || '')
-  const [avatar, setAvatar] = useState(user.avatar || '')
-  const [uploading, setUploading] = useState(false)
-  const [openDialog, setOpenDialog] = useState(false)
 
-  const handleLogout = useCallback(async () => {
+  const handleLogout = useCallback(() => {
     if (isLogin) {
       dispatchAction({ type: WlUserActionType.LOGOUT })
       navigate('/')
     }
   }, [isLogin])
-  const updateProfile = useCallback(() => {
-    if (!isLogin) return
-    dispatchAction({
-      type: WlUserActionType.UPDATE_USER_PROFILE,
-      payload: { name, avatar },
-      then: () => {
-        setOpenDialog(false)
-      },
-      catch: (error) => {
-        toast.error(error.message)
-      },
-    })
-  }, [isLogin, name, avatar])
 
   // profile展示信息切换
   const [curProfileTab, setCurProfileTab] = useState(ProfileTabOptions[0].value)
@@ -116,11 +99,11 @@ const Profile: React.FC = () => {
       <UserBasicInfoBox>
         <UserNameRow>
           <UserName>{user.name}</UserName>
-          <IconButton onClick={() => setOpenDialog(true)}>
+          <IconButton onClick={() => dispatchModal({ type: WlUserModalType.EDIT_PROFILE })}>
             <EditIcon />
           </IconButton>
-          <LogoutBtn onClick={handleLogout}>Logout</LogoutBtn>
         </UserNameRow>
+        <LogoutBtn onClick={handleLogout}>Logout</LogoutBtn>
         {/* <UserAddress>{user.pubkey}</UserAddress> */}
       </UserBasicInfoBox>
     )
@@ -139,7 +122,7 @@ const Profile: React.FC = () => {
   const renderUserInfoPc = () => {
     return (
       <ProfileTopBox>
-        <UserImg src={user.avatar} multiavatarId={getMultiavatarIdByUser(user)} />
+        <ProfileUserAvatar />
         <TopRightBox>
           {renderUserBasicInfo()}
           {renderUserAccountList()}
@@ -151,7 +134,7 @@ const Profile: React.FC = () => {
     return (
       <ProfileTopBox>
         <TopRightBox>
-          <UserImg src={user.avatar} multiavatarId={getMultiavatarIdByUser(user)} />
+          <ProfileUserAvatar />
           {renderUserBasicInfo()}
         </TopRightBox>
         {renderUserAccountList()}
@@ -174,66 +157,6 @@ const Profile: React.FC = () => {
           {curProfileTab === 'myRewards' && <RewardList items={rewardItems} loading={loadingUserRewards} />}
         </ProfileTabContentBox>
       </ProfileInfoTabsBox>
-      <DialogBox open={openDialog}>
-        <EditProfileBox>
-          <EditProfileTitle>Edit Profile</EditProfileTitle>
-          <EditFormBox>
-            <EditAvatarBox
-              onClick={() => {
-                document.getElementById('uploadinput')?.click()
-              }}
-            >
-              <input
-                title="uploadinput"
-                id="uploadinput"
-                style={{ display: 'none' }}
-                type="file"
-                accept="image/png, image/gif, image/jpeg"
-                onChange={async (e) => {
-                  const file = e.target.files && e.target.files[0]
-                  if (!file) return
-                  if (file.size > AVATAR_SIZE_LIMIT) {
-                    toast.error('File Too Large, 200k limit')
-                    return
-                  }
-
-                  setUploading(true)
-                  dispatchAction({
-                    type: WlUserActionType.UPLOAD_USER_AVATAR,
-                    payload: file,
-                    then: (data) => {
-                      setAvatar(data.url)
-                      toast.success('upload success')
-                      setUploading(false)
-                    },
-                    catch: () => {
-                      toast.error('upload fail')
-                      setUploading(false)
-                    },
-                  })
-                }}
-              />
-              {(uploading && (
-                <div className="uploading">
-                  <CircularProgress size="5rem" color="inherit" />
-                  <p>Uploading Image</p>
-                </div>
-              )) || <EditAvatar src={avatar || user.avatar} multiavatarId={getMultiavatarIdByUser(user)} />}
-            </EditAvatarBox>
-
-            <EditNameBox>
-              <FormControl variant="standard">
-                <EditNameLabel>Name</EditNameLabel>
-                <input title="name" id="name" value={name || user.name} onChange={(e) => setName(e.target.value)} />
-              </FormControl>
-            </EditNameBox>
-          </EditFormBox>
-          <EditButtonBox>
-            <EditProfileBtnCancel onClick={() => setOpenDialog(false)}>Cancel</EditProfileBtnCancel>
-            <EditProfileBtnSave onClick={() => updateProfile()}>Save</EditProfileBtnSave>
-          </EditButtonBox>
-        </EditProfileBox>
-      </DialogBox>
     </ProfileWrapper>
   )
 }
@@ -260,7 +183,7 @@ const LogoutBtn = styled(ButtonWarning)`
     padding: 5px 10px;
   }
 `
-const UserImg = styled(UserAvatar)`
+const ProfileUserAvatar = styled(UserAvatar)`
   width: 160px;
   height: 160px;
   object-fit: cover;
@@ -282,12 +205,13 @@ const TopRightBox = styled.div`
 `
 const UserBasicInfoBox = styled.div`
   display: flex;
-  flex-direction: column;
   gap: 20px;
   justify-content: space-between;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     flex: 1;
-    justify-content: start;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
     gap: 10px;
     overflow: hidden;
   }
@@ -339,127 +263,4 @@ const ButtonRadioGroupProfileTabs = styled(ButtonRadioGroup)`
 `
 const ProfileTabContentBox = styled.div`
   margin-top: 20px;
-`
-
-const DialogBox = styled(Dialog)`
-  & div[role='dialog'] {
-    border-radius: 20px;
-  }
-`
-
-// Edit Form
-const EditProfileBox = styled.div`
-  width: 540px;
-  border-radius: 20px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 20px;
-  box-sizing: border-box;
-  background: #f7f9f1;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    width: auto;
-  }
-`
-const EditProfileTitle = styled.div`
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 24px;
-  color: #222222;
-`
-const EditFormBox = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-`
-const EditAvatarBox = styled.div`
-  margin: 0 auto;
-  width: 160px;
-  height: 160px;
-  position: relative;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    width: 80px;
-    height: 80px;
-  }
-  &:hover {
-    cursor: pointer;
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url(${UploadImgMaskImg});
-    }
-  }
-  & .uploading {
-    text-align: center;
-    padding-top: 20px;
-    @media (max-width: ${MOBILE_BREAK_POINT}px) {
-      padding-top: 0;
-      font-size: 12px;
-      line-height: 18px;
-    }
-  }
-`
-const EditAvatar = styled(UserAvatar)`
-  width: 160px;
-  height: 160px;
-  object-fit: cover;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    width: 80px;
-    height: 80px;
-  }
-`
-const EditNameBox = styled.div`
-  margin-top: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-
-  & input {
-    padding: 11.5px 18px;
-    margin-top: 10px;
-    border-radius: 10px;
-    background: #ebeee4;
-    border: none !important;
-    outline: none !important;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 27px;
-    color: #333333;
-  }
-`
-const EditNameLabel = styled.div`
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 27px;
-  color: #333333;
-`
-const EditProfileBtnSave = styled(ButtonPrimary)`
-  width: 120px;
-  height: 48px;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 27px;
-`
-const EditProfileBtnCancel = styled(ButtonBase)`
-  width: 120px;
-  height: 48px;
-  font-weight: 700;
-  font-size: 18px;
-  line-height: 27px;
-  color: #333333;
-  background: #f8f8f8;
-  box-shadow: inset 0px 4px 0px rgba(255, 255, 255, 0.25), inset 0px -4px 0px rgba(0, 0, 0, 0.25);
-`
-const EditButtonBox = styled.div`
-  display: flex;
-  justify-content: end;
-  gap: 20px;
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    justify-content: space-between;
-  }
 `

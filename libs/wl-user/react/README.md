@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-21 15:03:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 10:44:14
+ * @LastEditTime: 2022-10-25 18:20:59
  * @Description: file description
 -->
 
@@ -165,6 +165,32 @@
     <BindWithSignerButton signerType={SignerType.MARTIAN} />
     <BindWithSignerButton signerType={SignerType.TWITTER} />
     <BindWithSignerButton signerType={SignerType.DISCORD} />
+
+    ```
+
+- UserAvatar
+
+  - 用户头像
+  - 参数
+    - {...Image.Props}
+    - user : 头像所属用户信息，如果传了则展示指定用户头像，没传则展示当前用户头像
+    - src : 传入 src 强制显示此 src 对应的图片 (不采用 user 配置)
+  - 案例
+
+    展示不同的签名者绑定按钮
+
+    ```typescript
+    import { UserAvatar } from  "@ecnft/wl-user-react";
+
+    ......
+    // 显示当前登录用户头像
+    <UserAvatar />
+
+    // 显示指定用户头像
+    <UserAvatar user={{id,avatar}} />
+
+    // 显示指定图片
+    <UserAvatar src={src} />
 
     ```
 

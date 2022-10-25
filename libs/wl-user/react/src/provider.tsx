@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 00:30:54
+ * @LastEditTime: 2022-10-25 17:42:43
  * @Description: file description
  */
 import {
@@ -44,11 +44,14 @@ import {
   setAuthFailedCallback,
 } from '@ecnft/wl-user-core';
 import { toast, ToastContainer } from 'react-toastify';
+import EditProfileModal from './components/EditProfileModal';
+import { getUserDisplayName } from './utils';
 Modal.setAppElement('#root');
 export enum WlUserModalType {
   LOGIN = 'LOGIN',
   BIND = 'BIND',
   UNBIND_CONFIRM = 'UNBIND_CONFIRM',
+  EDIT_PROFILE = 'EDIT_PROFILE',
 }
 export enum WlUserActionType {
   LOGIN = 'LOGIN',
@@ -56,7 +59,12 @@ export enum WlUserActionType {
   UNBIND = 'UNBIND',
   LOGOUT = 'LOGOUT',
   UPDATE_USER_PROFILE = 'UPDATE_USER_PROFILE',
-  UPLOAD_USER_AVATAR = 'UPLOAD_USER_AVATAR',
+}
+export enum AsyncRequestStatus {
+  IDLE = 'idle',
+  PENDING = 'pending',
+  FULFILLED = 'fulfilled',
+  REJECTED = 'rejected',
 }
 type DispatchActionModalParams =
   | {
@@ -69,6 +77,9 @@ type DispatchActionModalParams =
   | {
       type: WlUserModalType.UNBIND_CONFIRM;
       payload: SignerType;
+    }
+  | {
+      type: WlUserModalType.EDIT_PROFILE;
     };
 type DispatchActionParams =
   | {
@@ -86,22 +97,15 @@ type DispatchActionParams =
   | {
       type: WlUserActionType.UPDATE_USER_PROFILE;
       payload: Partial<User>;
-      then?: (result: ApiResp<UpdateUserInfoResult>) => void;
-      catch?: (error: Error) => void;
-    }
-  | {
-      type: WlUserActionType.UPLOAD_USER_AVATAR;
-      payload: File;
-      then?: (result: UploadUserAvatarResult) => void;
-      catch?: (error: Error) => void;
     }
   | {
       type: WlUserActionType.LOGOUT;
     };
+type WlUserActionProcessStatus = SignerProcessStatus | AsyncRequestStatus;
 type WlUserActionState = {
   type: WlUserActionType | null;
   signer: Signer | null;
-  processStatus: SignerProcessStatus;
+  processStatus: WlUserActionProcessStatus;
 };
 const defaultUserActionState = {
   type: null,
@@ -118,11 +122,11 @@ const defaultUserData = {
   token: '',
 };
 const lastLoginInfo = getStorageValues();
-const validateOpenSignatureModal = (status: SignerProcessStatus) => {
+const validateOpenSignatureModal = (status: WlUserActionProcessStatus) => {
   return [
     SignerProcessStatus.SIGNATURE_PENDING,
     SignerProcessStatus.SIGNATURE_REJECTED,
-  ].includes(status);
+  ].includes(status as SignerProcessStatus);
 };
 
 export type WlUserReactContextType = {
@@ -196,8 +200,13 @@ export function WlUserReactProvider({
     if (user.token) {
       getUserInfo(user.token).then((result) => {
         const { data } = result.data;
-        setUser({ ...user, ...data });
-        updateStorageByUserInfo(data);
+        const newUser = { ...user, ...data };
+        setUser(newUser);
+        const name = getUserDisplayName(
+          newUser,
+          lastLoginInfo[StorageKey.LAST_LOGIN_SIGNER_TYPE]
+        );
+        updateStorageByUserInfo({ ...newUser, name });
       });
     }
   }, []);
@@ -240,6 +249,7 @@ export function WlUserReactProvider({
   const isOpenSignatureModal = validateOpenSignatureModal(
     userActionState.processStatus
   );
+  const [isOpenEditProfileModal, setIsOpenEditProfileModal] = useState(false);
   const getSigner = useCallback(
     (signerType: SignerType): Signer | undefined => {
       return signers.find((signer) => signer.signerType === signerType);
@@ -277,6 +287,11 @@ export function WlUserReactProvider({
             signer: getSigner(params.payload),
           });
           break;
+        case WlUserModalType.EDIT_PROFILE:
+          setIsOpenEditProfileModal(true);
+          Object.assign(state, {
+            type: WlUserActionType.UPDATE_USER_PROFILE,
+          });
       }
       setUserActionState({ ...userActionState, ...state });
     },
@@ -350,35 +365,27 @@ export function WlUserReactProvider({
             .catch((error) => toast.error(error.message));
           break;
         case WlUserActionType.UPDATE_USER_PROFILE:
-          setUserActionState({ ...userActionState, ...state });
-          updateUserInfo(user.token, params.payload)
+          setUserActionState({
+            ...userActionState,
+            ...state,
+            processStatus: AsyncRequestStatus.PENDING,
+          });
+          updateUserInfo(user.token, {
+            userName: params.payload.name,
+            userAvatar: params.payload.avatar,
+          })
             .then((result) => {
               setUser({ ...user, ...params.payload });
               updateStorageByUserInfo(params.payload);
-              if (params?.then) {
-                params?.then(result.data);
-              }
+              setIsOpenEditProfileModal(false);
             })
-            .catch((error) => {
-              if (params?.catch) {
-                params?.catch(error);
-              }
-            });
-          break;
-        case WlUserActionType.UPLOAD_USER_AVATAR:
-          setUserActionState({ ...userActionState, ...state });
-          uploadUserAvatar(user.token, params.payload)
-            .then((result) => {
-              setUser({ ...user, avatar: result.data.url });
-              updateStorageByUserInfo({ avatar: result.data.url });
-              if (params?.then) {
-                params?.then(result.data);
-              }
-            })
-            .catch((error) => {
-              if (params?.catch) {
-                params?.catch(error);
-              }
+            .catch((error) => toast.error(error.message))
+            .finally(() => {
+              setUserActionState({
+                ...userActionState,
+                ...state,
+                processStatus: AsyncRequestStatus.IDLE,
+              });
             });
           break;
         case WlUserActionType.LOGOUT:
@@ -389,22 +396,6 @@ export function WlUserReactProvider({
     },
     [userActionState, user]
   );
-
-  // 重试刚才的操作
-  const handleRetry = useCallback(() => {
-    if (userActionState.signer) {
-      switch (userActionState.type) {
-        case WlUserActionType.LOGIN:
-        case WlUserActionType.BIND:
-        case WlUserActionType.UNBIND:
-          dispatchAction({
-            type: userActionState.type,
-            payload: userActionState.signer.signerType,
-          });
-          break;
-      }
-    }
-  }, [userActionState]);
 
   // 监听value变化（将provider内部的能力提供给provider外部）
   useEffect(() => {
@@ -470,6 +461,7 @@ export function WlUserReactProvider({
           isOpenUnbindConfirmModal && !!userActionState.signer?.signerType
         }
         isLoading={
+          userActionState.type === WlUserActionType.UNBIND &&
           userActionState.processStatus === SignerProcessStatus.UNBIND_PENDING
         }
         signerType={userActionState.signer?.signerType || SignerType.METAMASK}
@@ -486,11 +478,45 @@ export function WlUserReactProvider({
       />
       <SignatureModal
         isOpen={isOpenSignatureModal}
-        signerProcessStatus={userActionState.processStatus}
+        signerActionType={userActionState.type}
+        signerProcessStatus={
+          userActionState.processStatus as SignerProcessStatus
+        }
         onClose={() => {
           resetUserActionState();
         }}
-        onRetry={handleRetry}
+        onRetry={() => {
+          // 重试刚才的操作
+          if (userActionState.signer) {
+            switch (userActionState.type) {
+              case WlUserActionType.LOGIN:
+              case WlUserActionType.BIND:
+              case WlUserActionType.UNBIND:
+                dispatchAction({
+                  type: userActionState.type,
+                  payload: userActionState.signer.signerType,
+                });
+                break;
+            }
+          }
+        }}
+      />
+      <EditProfileModal
+        isOpen={isOpenEditProfileModal}
+        isLoading={
+          userActionState.type === WlUserActionType.UPDATE_USER_PROFILE &&
+          userActionState.processStatus === AsyncRequestStatus.PENDING
+        }
+        onClose={() => {
+          setIsOpenEditProfileModal(false);
+          resetUserActionState();
+        }}
+        onSave={(form) => {
+          dispatchAction({
+            type: WlUserActionType.UPDATE_USER_PROFILE,
+            payload: form,
+          });
+        }}
       />
       <ToastContainer
         autoClose={2000}

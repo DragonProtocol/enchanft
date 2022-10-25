@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 17:21:11
+ * @LastEditTime: 2022-10-25 17:35:24
  * @Description: file description
  */
 import React from 'react';
@@ -11,31 +11,39 @@ import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
 import { isMobile } from 'react-device-detect';
 import { SignerProcessStatus } from '@ecnft/wl-user-core';
 import { ButtonPrimary, ButtonInfo } from './common/button/ButtonBase';
+import { WlUserActionType } from '../provider';
 export type SignatureModalProps = {
   isOpen: boolean;
+  signerActionType: WlUserActionType;
   signerProcessStatus: SignerProcessStatus;
   onRetry?: () => void;
   onClose?: () => void;
 };
+
 const SignatureModal: React.FC<SignatureModalProps> = ({
   isOpen,
+  signerActionType,
   signerProcessStatus,
   onRetry,
   onClose,
 }: SignatureModalProps) => {
+  const SignerActionNames = {
+    [WlUserActionType.LOGIN]: 'login',
+    [WlUserActionType.BIND]: 'bind',
+  };
   let title = '';
   let desc = '';
+  let actionName = SignerActionNames[signerActionType];
   let closeBtnDisplay = false;
   let retryBtnDisplay = false;
   switch (signerProcessStatus) {
     case SignerProcessStatus.SIGNATURE_PENDING:
       title = '🕹 Signature Request';
-      desc =
-        'Please sign the message in your wallet to bind WL, we use this signature to verify that you‘re theowner.';
+      desc = `Please sign the message in your wallet to ${actionName} WL, we use this signature to verify that you‘re theowner.`;
       break;
     case SignerProcessStatus.SIGNATURE_REJECTED:
       title = '❌ Signature Rejected';
-      desc = 'Please sign the message in your wallet to bind.';
+      desc = `Please sign the message in your wallet to ${actionName}.`;
       closeBtnDisplay = true;
       retryBtnDisplay = true;
       break;

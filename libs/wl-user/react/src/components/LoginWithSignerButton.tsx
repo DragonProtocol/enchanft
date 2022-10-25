@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 17:20:38
+ * @LastEditTime: 2022-10-25 16:36:22
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useWlUserReact, WlUserActionType } from '../provider';
-import { SignerType } from '@ecnft/wl-user-core';
+import { SignerProcessStatus, SignerType } from '@ecnft/wl-user-core';
 import { validateSignerPending } from '../utils';
 import { ButtonPrimary } from './common/button/ButtonBase';
 import { SignerStyleMap } from './signerStyle';
@@ -30,7 +30,7 @@ const LoginWithSignerButton: React.FC<LoginWithSignerButtonProps> = ({
     return (
       type === WlUserActionType.LOGIN &&
       signer?.signerType === signerType &&
-      validateSignerPending(signerType, processStatus)
+      validateSignerPending(signerType, processStatus as SignerProcessStatus)
     );
   }, [signerType, userActionState]);
   return (
@@ -78,6 +78,10 @@ const SignerSignerButtonIconBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  svg {
+    width: 50px;
+    height: 50px;
+  }
 `;
 const SignerButtonName = styled.span<{ color: string }>`
   font-weight: 700;

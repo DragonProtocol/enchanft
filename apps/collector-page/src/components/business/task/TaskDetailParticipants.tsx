@@ -2,20 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-05 11:22:04
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 11:26:38
+ * @LastEditTime: 2022-10-25 17:02:57
  * @Description: file description
  */
+import { UserAvatar } from '@ecnft/wl-user-react'
 import React from 'react'
 import styled from 'styled-components'
-import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
 import { formatNumberToUnitString } from '../../../utils/number'
-import UserAvatar from '../user/UserAvatar'
 
 export type TaskDetailParticipantsDataViewType = {
   items: Array<{
     name: string
     avatar: string
     pubkey: string
+    id: number
   }>
   takers: number
   finishers: number
@@ -41,7 +41,7 @@ const TaskDetailParticipants: React.FC<TaskDetailParticipantsProps> = ({
       </ParticipantsHeader>
       <ParticipantsListBox>
         {items.map((item, index) => (
-          <AvatarItem src={item.avatar} key={index} title={item.name} multiavatarId={getMultiavatarIdByUser(item)} />
+          <AvatarItem key={index} title={item.name} user={item} />
         ))}
       </ParticipantsListBox>
     </TaskDetailParticipantsWrapper>

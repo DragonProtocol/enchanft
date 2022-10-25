@@ -2,15 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:33:18
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 11:26:03
+ * @LastEditTime: 2022-10-25 17:01:12
  * @Description: file description
  */
+import { UserAvatar } from '@ecnft/wl-user-react'
 import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
-import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
 import RichTextBox from '../../common/text/RichTextBox'
-import UserAvatar from '../user/UserAvatar'
 
 export type ProjectTeamMemberItemDataType = {
   id: number
@@ -44,7 +43,7 @@ const ProjectTeamMemberItem: React.FC<ProjectTeamMemberItemProps> = ({
   return (
     <ProjectTeamMemberItemWrapper>
       <TeamMemberTopBox>
-        <TeamMemberAvatar src={avatar} multiavatarId={getMultiavatarIdByUser(data)} />
+        <TeamMemberAvatar user={data} />
         <TeamMemberInfoBox>
           <TeamMemberName>{partner}</TeamMemberName>
           <TeamMemberRole>{role}</TeamMemberRole>

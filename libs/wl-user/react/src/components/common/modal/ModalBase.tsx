@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-22 18:07:41
+ * @LastEditTime: 2022-10-25 16:42:49
  * @Description: 基础按钮
  */
 import React from 'react';
@@ -28,11 +28,11 @@ const customStyles = {
     height: 'auto',
     padding: 0,
     margin: 0,
-    top: '30%',
+    top: '40%',
     left: '50%',
     overflow: 'auto',
     WebkitOverflowScrolling: 'touch',
-    transform: 'translateX(-50%)',
+    transform: 'translate(-50%,-50%)',
   },
 };
 const ModalBase: React.FC<ModalBaseProps> = ({

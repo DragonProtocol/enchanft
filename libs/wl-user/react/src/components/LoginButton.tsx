@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 11:04:06
+ * @LastEditTime: 2022-10-25 13:34:36
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useCallback } from 'react';
 import styled from 'styled-components';
 import { useWlUserReact, WlUserModalType } from '../provider';
 import { getUserDisplayName } from '../utils';
-import UserAvatar from './common/avatar/UserAvatar';
+import UserAvatar from './UserAvatar';
 import { ButtonPrimary } from './common/button/ButtonBase';
 
 export type LoginButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 10:32:20
+ * @LastEditTime: 2022-10-25 16:54:03
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
@@ -22,6 +22,8 @@ let store
 export const injectStore = (storeInstance: any) => {
   store = storeInstance
 }
+
+// 从外部注入wlUserReactProvider提供的功能数据 （为了在此文件中访问token等信息）
 let wlUserReactContextValue: WlUserReactContextType | undefined
 export const injectWlUserReactContextValue = (value: any) => {
   wlUserReactContextValue = value

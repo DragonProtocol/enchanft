@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 18:19:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 17:22:53
+ * @LastEditTime: 2022-10-25 16:14:16
  * @Description: file description
  */
 import {
@@ -71,8 +71,7 @@ export const getAccountDisplayName = (user: User, signerType: SignerType) => {
 };
 export const getUserDisplayName = (user: User, signerType: SignerType) => {
   if (user.name) return user.name;
-  const accountName = getAccountDisplayName(user, signerType);
-  return accountName || `wl user ${user.id}`;
+  return getAccountDisplayName(user, signerType);
 };
 export const validateSignerPending = (
   signerType: SignerType,

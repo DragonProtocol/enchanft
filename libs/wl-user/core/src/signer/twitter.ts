@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 00:47:40
+ * @LastEditTime: 2022-10-25 10:34:34
  * @Description: file description
  */
 import {
@@ -32,7 +32,7 @@ export type TwitterLoginCallbackParams = {
 export type TwitterBindCallbackParams = {
   code: string;
 };
-interface TwitterEventMap {
+interface TwitterEventMap extends WindowEventMap {
   [TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK]: CustomEvent<TwitterLoginCallbackParams>;
   [TwitterEventType.TWITTER_BIND_OAUTH_CALLBACK]: CustomEvent<TwitterBindCallbackParams>;
 }
@@ -80,6 +80,45 @@ scope=bookmark.read+block.read+like.read+list.read+follows.read+space.read+mute.
 state=3063390848298.8647&
 code_challenge=challenge&
 code_challenge_method=plain`;
+enum ListenTwitterOauthStorageKey {
+  LISTEN_TWITTER_OAUTH_STATUS = 'LISTEN_TWITTER_OAUTH_STATUS',
+  LISTEN_TWITTER_OAUTH_CODE = 'LISTEN_TWITTER_OAUTH_CODE',
+}
+enum ListenTwitterOauthStatus {
+  START = 'START',
+  END = 'END',
+}
+
+const clearListenTwitterOauthStorage = () => {
+  localStorage.removeItem(
+    ListenTwitterOauthStorageKey.LISTEN_TWITTER_OAUTH_STATUS
+  );
+  localStorage.removeItem(
+    ListenTwitterOauthStorageKey.LISTEN_TWITTER_OAUTH_CODE
+  );
+};
+const startListenTwitterOauthStorage = () => {
+  localStorage.setItem(
+    ListenTwitterOauthStorageKey.LISTEN_TWITTER_OAUTH_STATUS,
+    ListenTwitterOauthStatus.START
+  );
+};
+const endListenTwitterOauthStorage = () => {
+  localStorage.setItem(
+    ListenTwitterOauthStorageKey.LISTEN_TWITTER_OAUTH_STATUS,
+    ListenTwitterOauthStatus.END
+  );
+};
+const setTwitterOauthCodeStorage = (code: string) => {
+  localStorage.setItem(
+    ListenTwitterOauthStorageKey.LISTEN_TWITTER_OAUTH_CODE,
+    code
+  );
+};
+const isStartListenTwitterOauthStorage = () =>
+  localStorage.getItem(
+    ListenTwitterOauthStorageKey.LISTEN_TWITTER_OAUTH_STATUS
+  ) === ListenTwitterOauthStatus.START;
 
 export class Twitter extends Signer {
   readonly signerType = SignerType.TWITTER;
@@ -88,6 +127,7 @@ export class Twitter extends Signer {
   private oauthCallbackUri = '';
   private loginOauthCallbackUrlListener() {
     if (location.href.startsWith(this.oauthCallbackUri)) {
+      if (!isStartListenTwitterOauthStorage()) return;
       const urlParams = new URLSearchParams(location.search);
       const oauthToken = urlParams.get('oauth_token');
       const oauthVerifier = urlParams.get('oauth_verifier');
@@ -102,14 +142,13 @@ export class Twitter extends Signer {
   }
   private bindOauthCallbackUrlListener() {
     if (location.href.startsWith(this.oauthCallbackUri)) {
+      if (!isStartListenTwitterOauthStorage()) return;
       const urlParams = new URLSearchParams(location.search);
       const code = urlParams.get('code');
       if (code) {
-        window.opener.dispatchEvent(
-          new CustomEvent(TwitterEventType.TWITTER_BIND_OAUTH_CALLBACK, {
-            detail: { code },
-          })
-        );
+        endListenTwitterOauthStorage();
+        setTwitterOauthCodeStorage(code);
+        window.close();
       }
     }
   }
@@ -123,16 +162,18 @@ export class Twitter extends Signer {
   }
 
   public login(): Promise<LoginResult> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.signerProcessStatusChange(SignerProcessStatus.LOGIN_PENDING);
       // 1. get twitter request token
       getTwittierOauth1RequestToken(this.oauthCallbackUri)
         .then((result) => {
           const { code, data, msg } = result.data;
           if (code === 0) {
+            startListenTwitterOauthStorage();
+
             const url = getApiTwitterOauth1Url(data.oauthToken);
             const authWindow = openOauthWindow(url) as TwitterOauthWindow;
-            const handleTwitterCallback = async (
+            const handleTwitterCallback = (
               e: TwitterEventMap[TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK]
             ) => {
               (window as TwitterOauthWindow).removeEventListener(
@@ -140,9 +181,11 @@ export class Twitter extends Signer {
                 handleTwitterCallback
               );
               authWindow.close();
+              clearListenTwitterOauthStorage();
+
               // 3. fetch twitter login
               const { oauthToken, oauthVerifier } = e.detail;
-              await login({
+              login({
                 type: this.accountType,
                 twitterOauthToken: oauthToken,
                 twitterOauthVerifier: oauthVerifier,
@@ -192,49 +235,50 @@ export class Twitter extends Signer {
     });
   }
   public bind(token: string): Promise<BindResult> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
       try {
+        startListenTwitterOauthStorage();
         const url = getApiTwitterOauth2Url(
           this.twitterClientId,
           this.oauthCallbackUri
         );
-        const authWindow = openOauthWindow(url) as TwitterOauthWindow;
-        const handleTwitterCallback = async (
-          e: TwitterEventMap[TwitterEventType.TWITTER_BIND_OAUTH_CALLBACK]
-        ) => {
-          (window as TwitterOauthWindow).removeEventListener(
-            TwitterEventType.TWITTER_BIND_OAUTH_CALLBACK,
-            handleTwitterCallback
-          );
-          authWindow.close();
-          // 2. fetch twitter bind
-          const { code } = e.detail;
-          bindAccount(token, {
-            type: this.accountType,
-            code,
-          })
-            .then((result) => {
-              this.signerProcessStatusChange(
-                SignerProcessStatus.BIND_FULFILLED
-              );
-              resolve(result.data);
+        openOauthWindow(url);
+        const handleTwitterCallback = (e: StorageEvent) => {
+          const { key, newValue } = e;
+          if (
+            key === ListenTwitterOauthStorageKey.LISTEN_TWITTER_OAUTH_CODE &&
+            newValue
+          ) {
+            window.removeEventListener('storage', handleTwitterCallback);
+            clearListenTwitterOauthStorage();
+            // 2. fetch twitter bind
+            bindAccount(token, {
+              type: this.accountType,
+              code: newValue,
+              callback: this.oauthCallbackUri,
             })
-            .catch((error) => {
-              this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
-              reject(
-                new TwitterError(
-                  ErrorName.API_REQUEST_BIND_ERROR,
-                  error.message
-                )
-              );
-            });
+              .then((result) => {
+                this.signerProcessStatusChange(
+                  SignerProcessStatus.BIND_FULFILLED
+                );
+                resolve(result.data);
+              })
+              .catch((error) => {
+                this.signerProcessStatusChange(
+                  SignerProcessStatus.BIND_REJECTED
+                );
+                reject(
+                  new TwitterError(
+                    ErrorName.API_REQUEST_BIND_ERROR,
+                    error.message
+                  )
+                );
+              });
+          }
         };
         // 1. listen twitter bind oauth callback
-        (window as TwitterOauthWindow).addEventListener(
-          TwitterEventType.TWITTER_BIND_OAUTH_CALLBACK,
-          handleTwitterCallback
-        );
+        window.addEventListener('storage', handleTwitterCallback);
       } catch (error) {
         this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
         reject(error);

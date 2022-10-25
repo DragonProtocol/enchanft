@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 17:25:59
+ * @LastEditTime: 2022-10-25 16:25:16
  * @Description: file description
  */
 import {
@@ -12,6 +12,7 @@ import {
   BindResult,
   LoginResult,
   AccountType,
+  login,
 } from '../api';
 import { SignerType, Signer, SignerProcessStatus } from './types';
 import { signMsgWithMartian } from '../utils/web3';
@@ -45,13 +46,47 @@ export class Martian extends Signer {
   }
 
   public login(): Promise<LoginResult> {
-    return new Promise(async (resolve, reject) => {
-      this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
-      reject('Currently not supported');
+    return new Promise((resolve, reject) => {
+      this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
+      const signMsgCatch = () => {
+        this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_REJECTED);
+        reject(new MartianError(ErrorName.MARTIAN_SIGNATURE_REQUEST_ERROR));
+      };
+      const apiCatch = (msg: string) => {
+        this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
+        reject(new MartianError(ErrorName.API_REQUEST_LOGIN_ERROR, msg));
+      };
+
+      signMsgWithMartian()
+        .then((signData) => {
+          if (signData) {
+            this.signerProcessStatusChange(SignerProcessStatus.LOGIN_PENDING);
+            login({
+              type: this.accountType,
+              signature: signData.signature,
+              payload: signData.signMsg,
+              pubkey: signData.pubkey,
+            })
+              .then((result) => {
+                this.signerProcessStatusChange(
+                  SignerProcessStatus.LOGIN_FULFILLED
+                );
+                resolve(result.data);
+              })
+              .catch((error) => {
+                apiCatch(error.message);
+              });
+          } else {
+            signMsgCatch();
+          }
+        })
+        .catch(() => {
+          signMsgCatch();
+        });
     });
   }
   public bind(token: string): Promise<BindResult> {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
       const signMsgCatch = () => {
         this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_REJECTED);
@@ -62,7 +97,7 @@ export class Martian extends Signer {
         reject(new MartianError(ErrorName.API_REQUEST_BIND_ERROR, msg));
       };
       signMsgWithMartian()
-        .then(async (signData) => {
+        .then((signData) => {
           if (signData) {
             this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
             bindAccount(token, {
