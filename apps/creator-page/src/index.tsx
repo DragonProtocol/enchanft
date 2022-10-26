@@ -4,10 +4,13 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import log from 'loglevel';
+import Modal from 'react-modal';
 
 console.log(`${process.env.REACT_APP_NAME}:v${process.env.REACT_APP_VERSION}`);
 
 log.setLevel(process.env.NODE_ENV === 'production' ? 'WARN' : 'DEBUG');
+
+Modal.setAppElement('#root');
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

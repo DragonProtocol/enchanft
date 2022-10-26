@@ -229,9 +229,11 @@ const HeaderBox = styled.header`
       position: relative;
       margin-left: 20px;
       & .connect-list {
-        background: #fff;
+        background: #f7f9f1;
         width: 100%;
         position: absolute;
+        border-bottom-right-radius: 10px;
+        border-bottom-left-radius: 10px;
         & button {
           height: 35px;
         }

@@ -24,7 +24,6 @@ import PngIconCongratulate from './Icons/PngIconCongratulate';
 import PngIconMetaMask from './Icons/PngIconMetaMask';
 import AvatarDefault from './imgs/avatar.png';
 
-Modal.setAppElement('#connect-wallet-modal');
 export default function ConnectModal({
   show,
   closeModal,

@@ -1,7 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Loading from '../Components/Loading';
-import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
+import {
+  fetchProjectDetail,
+  GradeType,
+  ProjectDetail,
+  selectProjectDetail,
+} from '../redux/projectSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import slugify from 'slugify';
 
@@ -16,6 +21,7 @@ import ProjectInviteBot from '../Components/Project/InviteBot';
 import ProjectInviteBotInput from '../Components/Project/InviteBotInput';
 import ProjectTotalSupply from '../Components/Project/TotalSupply';
 import ProjectBlockchain from '../Components/Project/Blockchain';
+import ProjectContract from '../Components/Project/Contract';
 import { EditBox, EditTitle } from '../Components/Project/EditTitle';
 
 import {
@@ -39,14 +45,20 @@ import {
   connectionSocialMedia,
   TWITTER_CALLBACK_URL,
 } from '../utils/socialMedia';
+import { fetchProjectList } from '../redux/projectListSlice';
+import ProjectState from '../Components/Project/State';
+import { chainIdToChain } from '../utils';
 
 export default function ProjectInfoEdit() {
-  const { account, updateAccount, isAdmin, isCreator, isVIP } = useAppConfig();
+  const { account, updateAccount, isAdmin } = useAppConfig();
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
-  // TODO fix any
-  const [project, setProject] = useState<any>({ ...data });
+  const navigate = useNavigate();
+
+  const [project, setProject] = useState<ProjectDetail | null>(
+    data && { ...data }
+  );
   const [showTwitterInputModal, setShowTwitterInputModal] = useState(false);
   const [twitter, setTwitter] = useState<{
     url: string;
@@ -70,7 +82,7 @@ export default function ProjectInfoEdit() {
       }
       setShowModal(true);
 
-      if (!account.info?.token) return;
+      if (!account.info?.token || !project) return;
 
       try {
         const { data } = await uploadImageApi(file, account.info.token);
@@ -96,11 +108,15 @@ export default function ProjectInfoEdit() {
   );
 
   const saveProject = useCallback(async () => {
-    if (!account.info?.token || !slug) return;
+    if (!account.info?.token || !slug || !project) return;
     try {
       await updateProject(project, account.info?.token);
-      dispatch(fetchProjectDetail({ slug, token: account.info.token }));
       toast.success('save success!');
+      navigate(`/project/${project.slug}/info/edit`);
+      dispatch(
+        fetchProjectDetail({ slug: project.slug, token: account.info.token })
+      );
+      dispatch(fetchProjectList({ token: account.info?.token! }));
     } catch (error) {
       const err: AxiosError = error as any;
       if (err.response?.status === 401) {
@@ -110,7 +126,7 @@ export default function ProjectInfoEdit() {
         toast.error('save fail!');
       }
     }
-  }, [account, dispatch, project, slug, updateAccount]);
+  }, [account, dispatch, navigate, project, slug, updateAccount]);
 
   const projectBind = useCallback(
     async (guildId: string) => {
@@ -130,7 +146,7 @@ export default function ProjectInfoEdit() {
         }
       }
     },
-    [project.id, account, updateAccount]
+    [project?.id, account, updateAccount]
   );
 
   useEffect(() => {
@@ -142,7 +158,7 @@ export default function ProjectInfoEdit() {
   }, [data, project]);
 
   useEffect(() => {
-    setProject({ ...data });
+    setProject(data && { ...data });
   }, [data]);
   useEffect(() => {
     localStorage.setItem('discord_guild_id', JSON.stringify({ guildId: null }));
@@ -189,9 +205,13 @@ export default function ProjectInfoEdit() {
     return () => window.removeEventListener('storage', handleStorageChange);
   }, [account.info?.token, data]);
 
-  if (data?.slug !== slug) return <Loading />;
+  const isVIP = useMemo(() => {
+    return data?.grade === GradeType.VIP || false;
+  }, [data]);
 
-  log.debug('project', project);
+  const blockchain = chainIdToChain(project?.chainId);
+
+  if (!project) return null;
   return (
     <EditBox>
       <EditTitle
@@ -205,11 +225,18 @@ export default function ProjectInfoEdit() {
             name={project?.name || ''}
             setName={(n) => {
               const slug = slugify(n.toLowerCase());
-              setProject({
-                ...project,
-                name: n,
-                slug: slug,
-              });
+              if (!data?.slug) {
+                setProject({
+                  ...project,
+                  name: n,
+                  slug: slug,
+                });
+              } else {
+                setProject({
+                  ...project,
+                  name: n,
+                });
+              }
             }}
           />
           <ProjectDesc
@@ -221,7 +248,15 @@ export default function ProjectInfoEdit() {
               });
             }}
           />
-          <ProjectSymbol customUrl={project?.slug} setCustomUrl={() => {}} />
+          <ProjectSymbol
+            customUrl={project?.slug}
+            setCustomUrl={(s) => {
+              setProject({
+                ...project,
+                slug: s,
+              });
+            }}
+          />
           <ProjectWebsite
             websiteUrl={project.community.website || ''}
             setWebsiteUrl={(url) => {
@@ -235,7 +270,7 @@ export default function ProjectInfoEdit() {
             }}
           />
           <ProjectTotalSupply
-            supply={project.itemTotalNum || ''}
+            supply={project.itemTotalNum + '' || ''}
             setSupply={(value) => {
               setProject({
                 ...project,
@@ -243,15 +278,15 @@ export default function ProjectInfoEdit() {
               });
             }}
           />
-          {/* <ProjectStatus
-            state={project.status}
+          <ProjectState
+            state={project.mintStage}
             setState={(state) => {
               setProject({
                 ...project,
-                status: state,
+                mintStage: state,
               });
             }}
-          /> */}
+          />
         </div>
         <div className="right">
           <ProjectAttachFile
@@ -280,8 +315,10 @@ export default function ProjectInfoEdit() {
                 <ProjectTwitterLink
                   msg="Authorize Twitter"
                   hasTwitter={
-                    project?.community?.twitterId &&
-                    project?.community?.twitterName
+                    !!(
+                      project?.community?.twitterId &&
+                      project?.community?.twitterName
+                    )
                   }
                   twitterName={project?.community?.twitterName || ''}
                   linkAction={async () => {
@@ -310,8 +347,10 @@ export default function ProjectInfoEdit() {
               <ProjectTwitterLink
                 hasTwitter={
                   hasTwitter ||
-                  (project?.community?.twitterId &&
-                    project?.community?.twitterName)
+                  !!(
+                    project?.community?.twitterId &&
+                    project?.community?.twitterName
+                  )
                 }
                 twitterName={project?.community?.twitterName || ''}
                 linkAction={async () => {
@@ -334,26 +373,18 @@ export default function ProjectInfoEdit() {
               }}
             />
           )) || <ProjectInviteBot hasInviteBot={hasInviteBot} />}
-          <ProjectBlockchain
-            blockchain={
-              project?.chainId === -1
-                ? BlockchainType.Solana
-                : project?.chainId === 1
-                ? BlockchainType.Ethereum
-                : BlockchainType.Aptos
-            }
-            setBlockchain={(b) => {
-              setProject({
-                ...project,
-                chainId:
-                  b === BlockchainType.Solana
-                    ? -1
-                    : b === BlockchainType.Ethereum
-                    ? 1
-                    : 2,
-              });
-            }}
-          />
+          <ProjectBlockchain blockchain={blockchain} />
+          {blockchain === BlockchainType.Ethereum && (
+            <ProjectContract
+              tokenContract={project.tokenContract || ''}
+              setTokenContract={(value) => {
+                setProject({
+                  ...project,
+                  tokenContract: value,
+                });
+              }}
+            />
+          )}
         </div>
       </div>
       <UploadImgModal show={showModal} closeModal={() => setShowModal(false)} />

@@ -6,10 +6,14 @@ import { Box } from './Box';
 
 export default function PublicSaleTime({
   startDate,
+  endDate,
   updateStartDate,
+  updateEndDate,
 }: {
   startDate: Date;
+  endDate: Date;
   updateStartDate: (arg0: Date) => void;
+  updateEndDate: (arg0: Date) => void;
 }) {
   return (
     <TimeBox>
@@ -24,6 +28,18 @@ export default function PublicSaleTime({
             onChange={(e) => {
               updateStartDate &&
                 updateStartDate(dayjs(e.target.value).toDate());
+            }}
+          />
+        </div>
+        <span></span>
+        <div className="input-area">
+          <input
+            title="time"
+            type="datetime-local"
+            className="date"
+            value={dayjs(endDate).format('YYYY-MM-DDTHH:mm')}
+            onChange={(e) => {
+              updateEndDate && updateEndDate(dayjs(e.target.value).toDate());
             }}
           />
         </div>

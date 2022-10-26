@@ -50,6 +50,7 @@ export enum ActionType {
   COIN = 'coin',
   NFT = 'nft',
   CUSTOM = 'custom',
+  QUESTIONNAIRE = 'QUESTIONNAIRE',
 }
 
 export enum ActionTypeMore {
@@ -67,6 +68,7 @@ export enum ActionTypeMore {
   DISCORD_OBTAIN_ROLE = 'DISCORD_OBTAIN_ROLE',
   NATIVE_BALANCE = 'NATIVE_BALANCE',
   NFT_BALANCE = 'NFT_BALANCE',
+  QUESTIONNAIRE = 'QUESTIONNAIRE',
 }
 
 export type Action = {
@@ -84,11 +86,16 @@ export type Action = {
   min_native_balance?: number;
   nft_accounts?: { name: string; address: string }[];
   nft_accounts_or_add?: boolean;
+  question?: string;
+  answer?: string;
+  lucky_draw_weight?: number;
+  coin_type?: CoinType;
 };
 
 export type Reward = {
   type: RewardType;
   raffled: boolean;
+  luckyDraw: boolean;
   name?: string;
   token_num?: number;
 };
@@ -117,6 +124,7 @@ export const DefaultState: State = {
   reward: {
     type: RewardType.WHITELIST,
     raffled: false,
+    luckyDraw: false,
     name: '',
     token_num: CREATE_TASK_DEFAULT_CONTRIBUTION_TOKEN,
   },

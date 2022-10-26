@@ -6,13 +6,11 @@ import UploadImgModal from '../UploadImgModal';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 import { TASK_IMAGE_SIZE_LIMIT } from '../../utils/constants';
-import { projectBindBot, uploadImage as uploadImageApi } from '../../api';
-import { DiscordBotCallback } from '../../utils/socialMedia';
-import IconDiscordWhite from '../Icons/IconDiscordWhite';
+import { uploadImage as uploadImageApi } from '../../api';
 import { useAppConfig } from '../../AppProvider';
 import { numberInput } from '../../utils';
-import RightIcon from '../Icons/IconRight';
 import { AxiosError } from 'axios';
+import SwitchBtn from '../SwitchBtn';
 
 export default function CreateTaskBasic({
   hasInviteBot,
@@ -136,32 +134,60 @@ export default function CreateTaskBasic({
               <div className="content-item">
                 <h4>Task type</h4>
                 <div className="raffle-switch-box">
-                  <span>Raffle:</span>
-                  <div
-                    className={
-                      state.reward.raffled
-                        ? 'raffle-switch active'
-                        : 'raffle-switch'
-                    }
-                  >
-                    <span
-                      onClick={() => {
+                  <SwitchBtn
+                    width={80}
+                    height={40}
+                    dotWidth={32}
+                    dotHeight={32}
+                    open={state.reward.raffled}
+                    onChange={(v) => {
+                      updateState({
+                        ...state,
+                        reward: {
+                          ...state.reward,
+                          raffled: v,
+                          luckyDraw: !v,
+                        },
+                      });
+                    }}
+                  />
+                  <div className="desc">
+                    <p>Raffle</p>
+                    <p className="type-desc">
+                      {(state.reward.raffled &&
+                        'Raffle task, the winner will randomly or manually select from entries.') ||
+                        'FCFS task, first come, first served.'}
+                    </p>
+                  </div>
+                </div>
+                {state.reward.raffled && (
+                  <div className="raffle-switch-box">
+                    <SwitchBtn
+                      width={80}
+                      height={40}
+                      dotWidth={32}
+                      dotHeight={32}
+                      open={state.reward.luckyDraw}
+                      onChange={(v) => {
                         updateState({
                           ...state,
                           reward: {
                             ...state.reward,
-                            raffled: !state.reward.raffled,
+                            luckyDraw: v,
                           },
                         });
                       }}
-                    ></span>
+                    />
+                    <div className="desc">
+                      <p>Lucky draw</p>
+                      <p className="type-desc">
+                        {(state.reward.luckyDraw &&
+                          'The more actions completed,the higher chance to win.') ||
+                          'Complete all actions to get entry.'}
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <p className="type-desc">
-                  {(state.reward.raffled &&
-                    'Raffle task, the winner will randomly or manually select from entries.') ||
-                    'FCFS task, first come, first served.'}
-                </p>
+                )}
               </div>
               <div className="content-item">
                 <h4>Total winners</h4>
@@ -182,7 +208,7 @@ export default function CreateTaskBasic({
                   }}
                 />
               </div>
-              <div className="content-item">
+              {/* <div className="content-item">
                 <h4>Invite WL Bot</h4>
                 <div className="invite-bot-container">
                   <button
@@ -209,7 +235,7 @@ export default function CreateTaskBasic({
                   </button>
                   {hasInviteBot && <RightIcon />}
                 </div>
-              </div>
+              </div> */}
             </div>
             <div>
               <div className="content-item">
@@ -423,52 +449,30 @@ const BasicBox = styled.div`
         }
       }
 
-      & p.type-desc {
-        font-size: 14px;
-        line-height: 21px;
-        color: rgba(51, 51, 51, 0.6);
-        margin-bottom: 0px;
-        margin-top: 10px;
-      }
-
       & div.raffle-switch-box {
         display: flex;
         align-items: center;
-        margin-top: 10px;
-        > span {
+        gap: 10px;
+        margin: 10px;
+
+        > .desc {
+          & p {
+            margin: 0;
+            &.type-desc {
+              font-weight: 400;
+              font-size: 12px;
+              line-height: 18px;
+              color: rgba(51, 51, 51, 0.6);
+              margin-bottom: 0px;
+            }
+          }
+        }
+        /* > span {
           font-weight: 400;
           font-size: 18px;
           line-height: 27px;
           margin-right: 10px;
-        }
-        & .raffle-switch {
-          display: inline-block;
-          position: relative;
-          width: 100px;
-          height: 50px;
-          padding: 5px;
-          border-radius: 25px;
-          background: #ebeee4;
-          transition: all 0.1s ease-out;
-          box-sizing: border-box;
-          & > span {
-            cursor: pointer;
-            display: inline-block;
-            position: absolute;
-            left: 5px;
-            width: 40px;
-            height: 40px;
-            border-radius: 20px;
-            background-color: #fff;
-            transition: all 0.1s ease-out;
-          }
-          &.active {
-            background-color: #3dd606;
-            & > span {
-              left: 55px;
-            }
-          }
-        }
+        } */
       }
 
       & .invite-bot-container {
