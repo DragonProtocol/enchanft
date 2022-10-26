@@ -2,13 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 10:15:17
+ * @LastEditTime: 2022-10-24 08:39:26
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
 
 import websiteReducer from '../features/website/index'
-import accountReducer from '../features/user/accountSlice'
 
 // project
 import exploreRecommendProjectsReducer from '../features/explore/recommendProjectsSlice'
@@ -40,7 +39,6 @@ import creatorReducer from '../features/creator'
 export const store = configureStore({
   reducer: {
     website: websiteReducer,
-    account: accountReducer,
 
     exploreSearchProjects: exploreSearchProjectsReducer,
     exploreRecommendProjects: exploreRecommendProjectsReducer,

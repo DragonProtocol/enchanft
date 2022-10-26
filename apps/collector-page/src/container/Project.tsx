@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
-import { selectAccount } from '../features/user/accountSlice'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   ProjectDetailEntity,
@@ -23,7 +22,6 @@ import ProjectTeamMemberList, {
 import ContributionList from '../components/business/contribution/ContributionList'
 import RichTextBox from '../components/common/text/RichTextBox'
 import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
-import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import PngIconNotebook from '../components/common/icons/PngIconNotebook'
@@ -40,6 +38,7 @@ import IconTwitterBlack from '../components/common/icons/IconTwitterBlack'
 import IconDiscordBlack from '../components/common/icons/IconDiscordBlack'
 import { getTwitterHomeLink } from '../utils/twitter'
 import { toWlModPageTaskCreate } from '../route/utils'
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react'
 
 export enum ProjectInfoTabsValue {
   TEAM = 'team',
@@ -86,8 +85,8 @@ const formatStoreDataToComponentDataByTeamMembers = (data: ProjectDetailEntity):
 const Project: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token, accounts, isLogin } = useAppSelector(selectAccount)
-  const accountTypes = accounts.map((account) => account.accountType)
+  const { user, isLogin } = useWlUserReact()
+  const { token } = user
 
   const { projectSlug } = useParams()
   const { data, status, errorMsg } = useAppSelector(selectProjectDetail)

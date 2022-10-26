@@ -2,11 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-29 16:47:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 19:07:56
+ * @LastEditTime: 2022-10-24 00:09:42
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react'
-import { selectAccount } from '../features/user/accountSlice'
 import { selectIds as selectIdsForFollowedCommunities } from '../features/user/followedCommunitiesSlice'
 import { removeAll, selectById, selectIds } from '../features/user/checkinCommunitiesSlice'
 import {
@@ -18,9 +17,11 @@ import {
 } from '../features/user/communityHandlesSlice'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import { AsyncRequestStatus } from '../types'
+import { useWlUserReact } from '@ecnft/wl-user-react'
 
 export default (communityId?: number, slug?: string) => {
-  const { isLogin } = useAppSelector(selectAccount)
+  const { isLogin } = useWlUserReact()
+
   const dispatch = useAppDispatch()
   const handlesState = useAppSelector(selectUserCommunityHandlesState)
   const { follow: followState, verifyCheckin: verifyCheckinState, checkin: checkinState } = handlesState

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-17 16:10:18
+ * @LastEditTime: 2022-10-25 19:11:06
  * @Description: file description
  */
 import React from 'react'
@@ -11,8 +11,6 @@ import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper'
 import IconQuestion from '../../../common/icons/IconQuestion'
-import { useAppSelector } from '../../../../store/hooks'
-import { selectAccount } from '../../../../features/user/accountSlice'
 import { useEffect } from 'react'
 import { useState } from 'react'
 import ActionIconBox from './ActionIconBox'
@@ -35,7 +33,6 @@ const ActionQuestionnaire: React.FC<ActionQuestionnaireProps> = ({
   allowHandle,
   onQuestionConfirm,
 }: ActionQuestionnaireProps) => {
-  const account = useAppSelector(selectAccount)
   const { name, progress, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
   const [answer, setAnswer] = useState({
     text: '',
