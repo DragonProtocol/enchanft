@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 16:48:56
+ * @LastEditTime: 2022-10-26 17:23:06
  * @Description: file description
  */
 import {
@@ -253,7 +253,7 @@ export class Twitter extends Signer {
   }
   public bind(token: string): Promise<BindResult> {
     return new Promise((resolve, reject) => {
-      this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
+      // this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
       try {
         startListenTwitterOauthStorage();
         const url = getApiTwitterOauth2Url(
@@ -297,16 +297,16 @@ export class Twitter extends Signer {
         };
         // 1. listen twitter bind oauth callback
         window.addEventListener('storage', handleTwitterCallback);
-        listenWindowClose(authWindow, () => {
-          if (isStartListenTwitterOauthStorage()) {
-            window.removeEventListener('storage', handleTwitterCallback);
-            clearListenTwitterOauthStorage();
-            this.signerProcessStatusChange(
-              SignerProcessStatus.SIGNATURE_REJECTED
-            );
-            reject(new TwitterError(ErrorName.OAUTH_WINDOW_CLOSE));
-          }
-        });
+        // listenWindowClose(authWindow, () => {
+        //   if (isStartListenTwitterOauthStorage()) {
+        //     window.removeEventListener('storage', handleTwitterCallback);
+        //     clearListenTwitterOauthStorage();
+        //     this.signerProcessStatusChange(
+        //       SignerProcessStatus.SIGNATURE_REJECTED
+        //     );
+        //     reject(new TwitterError(ErrorName.OAUTH_WINDOW_CLOSE));
+        //   }
+        // });
       } catch (error) {
         this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
         reject(error);

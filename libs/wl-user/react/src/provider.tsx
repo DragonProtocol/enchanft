@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 16:19:14
+ * @LastEditTime: 2022-10-26 17:34:33
  * @Description: file description
  */
 import {
@@ -21,6 +21,8 @@ import {
   Signer,
   SignerProcessStatus,
   SignerType,
+  TwitterErrorName,
+  DiscordErrorName,
 } from '@ecnft/wl-user-core';
 import {
   getStorageValues,
@@ -334,7 +336,13 @@ export function WlUserReactProvider({
               setIsOpenLoginModal(false);
               resetUserActionState();
             })
-            .catch((error) => toast.error(error.message));
+            .catch(
+              (error) =>
+                ![
+                  TwitterErrorName.OAUTH_WINDOW_CLOSE,
+                  DiscordErrorName.OAUTH_WINDOW_CLOSE,
+                ].includes(error.name) && toast.error(error.message)
+            );
           break;
         case WlUserActionType.BIND:
           Object.assign(state, {
@@ -348,7 +356,13 @@ export function WlUserReactProvider({
               setIsOpenBindModal(false);
               resetUserActionState();
             })
-            .catch((error) => toast.error(error.message));
+            .catch(
+              (error) =>
+                ![
+                  TwitterErrorName.OAUTH_WINDOW_CLOSE,
+                  DiscordErrorName.OAUTH_WINDOW_CLOSE,
+                ].includes(error.name) && toast.error(error.message)
+            );
           break;
         case WlUserActionType.UNBIND:
           Object.assign(state, {

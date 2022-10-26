@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-30 11:45:27
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 13:19:02
+ * @LastEditTime: 2022-10-26 17:39:07
  * @Description: file description
  */
 import { SignerType, LoginResult } from '@ecnft/wl-user-core';
@@ -61,10 +61,6 @@ export function setStorageValue<T extends StorageKey>(
 }
 
 export function resetStorageValue(key: StorageKey): void {
-  console.log({
-    key: key,
-    value: storageDefaultValues[key],
-  });
   setStorageValue(key, storageDefaultValues[key]);
 }
 
