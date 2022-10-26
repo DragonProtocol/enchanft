@@ -5,6 +5,7 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
+    "build:collector": "nx run collector-page:build",
     "test": "nx test",
     "nx": "nx"
   },
