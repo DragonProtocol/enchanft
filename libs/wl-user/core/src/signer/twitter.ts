@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 10:34:34
+ * @LastEditTime: 2022-10-26 16:08:54
  * @Description: file description
  */
 import {
@@ -16,7 +16,7 @@ import {
   AccountType,
 } from '../api';
 import { SignerType, Signer, SignerProcessStatus } from './types';
-import { openOauthWindow } from '../utils';
+import { listenWindowClose, openOauthWindow } from '../utils';
 export interface TwitterConstructorArgs {
   twitterClientId: string;
   oauthCallbackUri: string;
@@ -49,14 +49,14 @@ interface TwitterOauthWindow extends Window {
   ): void;
 }
 export enum TwitterErrorName {
-  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
+  OAUTH_WINDOW_CLOSE = 'OAUTH_WINDOW_CLOSE',
 }
 type ErrorName = TwitterErrorName | ApiErrorName;
 const ErrorName = { ...TwitterErrorName, ...ApiErrorName };
 const TwitterErrorMessageMap: {
   [name in keyof typeof ErrorName]: string;
 } = {
-  [ErrorName.UNKNOWN_ERROR]: 'UNKNOWN_ERROR',
+  [ErrorName.OAUTH_WINDOW_CLOSE]: 'twitter authorization window closes',
   ...ApiErrorMessageMap,
 };
 export class TwitterError extends Error {
@@ -137,6 +137,7 @@ export class Twitter extends Signer {
             detail: { oauthToken, oauthVerifier },
           })
         );
+        window.close();
       }
     }
   }
@@ -163,7 +164,7 @@ export class Twitter extends Signer {
 
   public login(): Promise<LoginResult> {
     return new Promise((resolve, reject) => {
-      this.signerProcessStatusChange(SignerProcessStatus.LOGIN_PENDING);
+      this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
       // 1. get twitter request token
       getTwittierOauth1RequestToken(this.oauthCallbackUri)
         .then((result) => {
@@ -173,6 +174,7 @@ export class Twitter extends Signer {
 
             const url = getApiTwitterOauth1Url(data.oauthToken);
             const authWindow = openOauthWindow(url) as TwitterOauthWindow;
+
             const handleTwitterCallback = (
               e: TwitterEventMap[TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK]
             ) => {
@@ -180,11 +182,11 @@ export class Twitter extends Signer {
                 TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK,
                 handleTwitterCallback
               );
-              authWindow.close();
               clearListenTwitterOauthStorage();
 
               // 3. fetch twitter login
               const { oauthToken, oauthVerifier } = e.detail;
+              this.signerProcessStatusChange(SignerProcessStatus.LOGIN_PENDING);
               login({
                 type: this.accountType,
                 twitterOauthToken: oauthToken,
@@ -213,6 +215,18 @@ export class Twitter extends Signer {
               TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK,
               handleTwitterCallback
             );
+
+            listenWindowClose(authWindow, () => {
+              (window as TwitterOauthWindow).removeEventListener(
+                TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK,
+                handleTwitterCallback
+              );
+              clearListenTwitterOauthStorage();
+              this.signerProcessStatusChange(
+                SignerProcessStatus.SIGNATURE_REJECTED
+              );
+              reject(new TwitterError(ErrorName.OAUTH_WINDOW_CLOSE));
+            });
           } else {
             this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
             reject(
@@ -236,14 +250,14 @@ export class Twitter extends Signer {
   }
   public bind(token: string): Promise<BindResult> {
     return new Promise((resolve, reject) => {
-      this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
+      this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
       try {
         startListenTwitterOauthStorage();
         const url = getApiTwitterOauth2Url(
           this.twitterClientId,
           this.oauthCallbackUri
         );
-        openOauthWindow(url);
+        const authWindow = openOauthWindow(url);
         const handleTwitterCallback = (e: StorageEvent) => {
           const { key, newValue } = e;
           if (
@@ -252,6 +266,7 @@ export class Twitter extends Signer {
           ) {
             window.removeEventListener('storage', handleTwitterCallback);
             clearListenTwitterOauthStorage();
+            this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
             // 2. fetch twitter bind
             bindAccount(token, {
               type: this.accountType,
@@ -279,6 +294,14 @@ export class Twitter extends Signer {
         };
         // 1. listen twitter bind oauth callback
         window.addEventListener('storage', handleTwitterCallback);
+        listenWindowClose(authWindow, () => {
+          window.removeEventListener('storage', handleTwitterCallback);
+          clearListenTwitterOauthStorage();
+          this.signerProcessStatusChange(
+            SignerProcessStatus.SIGNATURE_REJECTED
+          );
+          reject(new TwitterError(ErrorName.OAUTH_WINDOW_CLOSE));
+        });
       } catch (error) {
         this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
         reject(error);

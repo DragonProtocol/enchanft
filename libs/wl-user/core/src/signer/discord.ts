@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 11:12:00
+ * @LastEditTime: 2022-10-26 16:09:49
  * @Description: file description
  */
 import {
@@ -142,7 +142,7 @@ export class Discord extends Signer {
   }
   public bind(token: string): Promise<BindResult> {
     return new Promise((resolve, reject) => {
-      this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
+      this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
       try {
         startListenDiscordOauthStorage();
         const url = getApiDiscordOauth2Url(
@@ -158,6 +158,7 @@ export class Discord extends Signer {
           ) {
             window.removeEventListener('storage', handleDiscordCallback);
             clearListenDiscordOauthStorage();
+            this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
             // 2. fetch twitter bind
             bindAccount(token, {
               type: this.accountType,

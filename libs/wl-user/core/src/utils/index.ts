@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 18:19:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 17:18:37
+ * @LastEditTime: 2022-10-26 15:09:29
  * @Description: file description
  */
 export const openOauthWindow = (url: string): WindowProxy | null => {
@@ -11,4 +11,12 @@ export const openOauthWindow = (url: string): WindowProxy | null => {
     '__blank',
     `width=480,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no`
   );
+};
+export const listenWindowClose = (win: Window, closeCallback: () => void) => {
+  const interval = setInterval(function () {
+    if (win.closed) {
+      clearInterval(interval);
+      closeCallback();
+    }
+  }, 250);
 };

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 10:00:31
+ * @LastEditTime: 2022-10-26 16:19:14
  * @Description: file description
  */
 import {
@@ -478,6 +478,7 @@ export function WlUserReactProvider({
       />
       <SignatureModal
         isOpen={isOpenSignatureModal}
+        signerType={userActionState.signer?.signerType}
         signerActionType={userActionState.type}
         signerProcessStatus={
           userActionState.processStatus as SignerProcessStatus

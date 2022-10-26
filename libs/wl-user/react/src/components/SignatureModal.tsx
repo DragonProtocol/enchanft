@@ -2,18 +2,21 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 17:35:24
+ * @LastEditTime: 2022-10-26 16:19:54
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
 import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
 import { isMobile } from 'react-device-detect';
-import { SignerProcessStatus } from '@ecnft/wl-user-core';
+import { SignerProcessStatus, SignerType } from '@ecnft/wl-user-core';
 import { ButtonPrimary, ButtonInfo } from './common/button/ButtonBase';
 import { WlUserActionType } from '../provider';
+import { isWeb2Signer, isWeb3Signer } from '../utils';
+import { SignerStyleMap } from './signerStyle';
 export type SignatureModalProps = {
   isOpen: boolean;
+  signerType: SignerType;
   signerActionType: WlUserActionType;
   signerProcessStatus: SignerProcessStatus;
   onRetry?: () => void;
@@ -22,6 +25,7 @@ export type SignatureModalProps = {
 
 const SignatureModal: React.FC<SignatureModalProps> = ({
   isOpen,
+  signerType,
   signerActionType,
   signerProcessStatus,
   onRetry,
@@ -36,19 +40,30 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
   let actionName = SignerActionNames[signerActionType];
   let closeBtnDisplay = false;
   let retryBtnDisplay = false;
+  const signerName = SignerStyleMap[signerType]?.name;
   switch (signerProcessStatus) {
     case SignerProcessStatus.SIGNATURE_PENDING:
-      title = '🕹 Signature Request';
-      desc = `Please sign the message in your wallet to ${actionName} WL, we use this signature to verify that you‘re theowner.`;
+      if (isWeb3Signer(signerType)) {
+        title = '🕹 Signature Request';
+        desc = `Please sign the message in your wallet to ${actionName} WL, we use this signature to verify that you‘re theowner.`;
+      } else if (isWeb2Signer(signerType)) {
+        title = '🕹 Authorize Request';
+        desc = ` Please authorize your ${signerName} account.`;
+      }
       break;
     case SignerProcessStatus.SIGNATURE_REJECTED:
-      title = '❌ Signature Rejected';
-      desc = `Please sign the message in your wallet to ${actionName}.`;
+      if (isWeb3Signer(signerType)) {
+        title = '❌ Signature Rejected';
+        desc = `Please sign the message in your wallet to ${actionName}.`;
+      } else if (isWeb2Signer(signerType)) {
+        title = '❌ Authorize Rejected';
+        desc = ` Please authorize your ${signerName} account.`;
+      }
       closeBtnDisplay = true;
       retryBtnDisplay = true;
       break;
     case SignerProcessStatus.LOGIN_PENDING:
-      title = '⏳ Loading';
+      title = '⏳ Logging';
       desc = 'Logging in now, Please wait...';
       break;
     case SignerProcessStatus.LOGIN_REJECTED:
@@ -58,7 +73,7 @@ const SignatureModal: React.FC<SignatureModalProps> = ({
       retryBtnDisplay = true;
       break;
     case SignerProcessStatus.BIND_PENDING:
-      title = '⏳ Loading';
+      title = '⏳ Binding';
       desc = 'Binding in now, Please wait...';
       break;
     case SignerProcessStatus.BIND_REJECTED:
