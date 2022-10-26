@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-30 11:45:27
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 17:23:16
+ * @LastEditTime: 2022-10-26 13:19:02
  * @Description: file description
  */
 import { SignerType, LoginResult } from '@ecnft/wl-user-core';
@@ -68,9 +68,42 @@ export function resetStorageValue(key: StorageKey): void {
   setStorageValue(key, storageDefaultValues[key]);
 }
 
+// TODO 兼容旧版C，B端用户系统的localstorge, 后期要删除
+const oldVersionLastLoginSignerTypeMap = {
+  twitter: SignerType.TWITTER,
+  ethereum: SignerType.METAMASK,
+  solana: SignerType.PHANTOM,
+  aptos: SignerType.MARTIAN,
+};
+function oldVersionLastLoginSignerTypeAdapter() {
+  // c端旧版LastLoginSignerType
+  const c_oldVersionLoginSignerType = localStorage.getItem('lastLoginType');
+  // b端旧版LastLoginSignerType
+  const b_oldVersionLoginSignerType = localStorage.getItem('last_login_type');
+  let newLastLoginSignerType = '';
+  if (c_oldVersionLoginSignerType) {
+    newLastLoginSignerType =
+      oldVersionLastLoginSignerTypeMap[c_oldVersionLoginSignerType];
+    localStorage.removeItem('lastLoginType');
+  } else if (b_oldVersionLoginSignerType) {
+    newLastLoginSignerType =
+      oldVersionLastLoginSignerTypeMap[b_oldVersionLoginSignerType];
+    localStorage.removeItem('last_login_type');
+  }
+  if (newLastLoginSignerType) {
+    localStorage.setItem(
+      StorageKey.LAST_LOGIN_SIGNER_TYPE,
+      newLastLoginSignerType
+    );
+  }
+}
+
 export function getStorageValues<T extends StorageKey[]>(
   keys?: T
 ): StorageKeyValuePick<T> {
+  // TODO 兼容旧版C，B端用户系统的localstorge, 后期要删除
+  oldVersionLastLoginSignerTypeAdapter();
+
   const keyAry = keys || [...Object.values(StorageKey)];
   const keyValues = { ...storageDefaultValues };
   for (const key of keyAry) {
