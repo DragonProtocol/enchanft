@@ -53,10 +53,13 @@ applications:
       phases:
         preBuild:
           commands:
-             - npm i
+             - cd ../../
+             - npm i -g pnpm
+             - pnpm i
+             - cd ./apps/collector-page
         build:
           commands:
-            - npm run build
+            - pnpm run build
       artifacts:
         baseDirectory: build
         files:
