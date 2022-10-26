@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 13:34:36
+ * @LastEditTime: 2022-10-26 10:43:31
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useCallback } from 'react';
@@ -39,11 +39,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
         {children ||
           (isLogin ? (
             <>
-              <LoginButtonAvatar
-                src={user.avatar}
-                multiavatarId={'wl_user_id_' + user.id}
-                className="wl-user-button_login-avatar"
-              />
+              <LoginButtonAvatar className="wl-user-button_login-avatar" />
               <LoginButtonName className="wl-user-button_login-name">
                 {nameStr}
               </LoginButtonName>

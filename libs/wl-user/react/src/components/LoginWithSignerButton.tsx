@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 19:27:53
+ * @LastEditTime: 2022-10-26 10:42:38
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
@@ -45,7 +45,7 @@ const LoginWithSignerButton: React.FC<LoginWithSignerButtonProps> = ({
       bgColor={signerStyle.bgColor}
       {...otherProps}
     >
-      <SignerSignerButtonIconBox className="wl-user-button-login_signer-icon-box">
+      <SignerSignerButtonIconBox className={`wl-user-button-login_signer-icon`}>
         {signerStyle.icon}
       </SignerSignerButtonIconBox>
 

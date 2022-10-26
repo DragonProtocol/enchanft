@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 19:35:41
+ * @LastEditTime: 2022-10-26 11:00:15
  * @Description: file description
  */
 import React, { useState } from 'react';
@@ -36,16 +36,18 @@ const LoginModal: React.FC<LoginModalProps> = ({
         <ModalBaseTitle>Login With</ModalBaseTitle>
         <LoginSignerList>
           {recommendSigner && (
-            <LoginButton signerType={recommendSigner.signerType}></LoginButton>
+            <RecommendLoginButton
+              signerType={recommendSigner.signerType}
+            ></RecommendLoginButton>
           )}
           {isDesktop && (
             <>
               {otherSignersDisplay &&
                 otherSigners.map((signer) => (
-                  <LoginButton
+                  <MoreLoginButton
                     key={signer.signerType}
                     signerType={signer.signerType}
-                  ></LoginButton>
+                  ></MoreLoginButton>
                 ))}
               <OtherSignersDisplayBtn
                 onClick={() => setOtherSignersDisplay(!otherSignersDisplay)}
@@ -70,22 +72,33 @@ const LoginModalBody = styled.div`
   position: relative;
   background: #f7f9f1;
   border-radius: 20px;
-  min-width: 200px;
-  max-width: 560px;
-  max-height: 560px;
-  transition: all 2s linear;
 `;
 const LoginSignerList = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
+  padding: 0 20px;
 `;
 const OtherSignersDisplayBtn = styled.div`
   width: 100%;
   text-align: end;
   cursor: pointer;
+  font-size: 12px;
 `;
-const LoginButton = styled(LoginWithSignerButton)`
-  width: 260px;
+const RecommendLoginButton = styled(LoginWithSignerButton)`
+  width: 138px;
+  height: 138px;
+  flex-direction: column;
+  .wl-user-button-login_signer-icon {
+    width: 50px;
+    height: 50px;
+    & > svg {
+      width: 50px;
+      height: 50px;
+    }
+  }
+`;
+const MoreLoginButton = styled(LoginWithSignerButton)`
+  width: 138px;
 `;
