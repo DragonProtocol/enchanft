@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 16:08:54
+ * @LastEditTime: 2022-10-26 16:48:56
  * @Description: file description
  */
 import {
@@ -137,6 +137,7 @@ export class Twitter extends Signer {
             detail: { oauthToken, oauthVerifier },
           })
         );
+        endListenTwitterOauthStorage();
         window.close();
       }
     }
@@ -217,15 +218,17 @@ export class Twitter extends Signer {
             );
 
             listenWindowClose(authWindow, () => {
-              (window as TwitterOauthWindow).removeEventListener(
-                TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK,
-                handleTwitterCallback
-              );
-              clearListenTwitterOauthStorage();
-              this.signerProcessStatusChange(
-                SignerProcessStatus.SIGNATURE_REJECTED
-              );
-              reject(new TwitterError(ErrorName.OAUTH_WINDOW_CLOSE));
+              if (isStartListenTwitterOauthStorage()) {
+                (window as TwitterOauthWindow).removeEventListener(
+                  TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK,
+                  handleTwitterCallback
+                );
+                clearListenTwitterOauthStorage();
+                this.signerProcessStatusChange(
+                  SignerProcessStatus.SIGNATURE_REJECTED
+                );
+                reject(new TwitterError(ErrorName.OAUTH_WINDOW_CLOSE));
+              }
             });
           } else {
             this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
@@ -295,12 +298,14 @@ export class Twitter extends Signer {
         // 1. listen twitter bind oauth callback
         window.addEventListener('storage', handleTwitterCallback);
         listenWindowClose(authWindow, () => {
-          window.removeEventListener('storage', handleTwitterCallback);
-          clearListenTwitterOauthStorage();
-          this.signerProcessStatusChange(
-            SignerProcessStatus.SIGNATURE_REJECTED
-          );
-          reject(new TwitterError(ErrorName.OAUTH_WINDOW_CLOSE));
+          if (isStartListenTwitterOauthStorage()) {
+            window.removeEventListener('storage', handleTwitterCallback);
+            clearListenTwitterOauthStorage();
+            this.signerProcessStatusChange(
+              SignerProcessStatus.SIGNATURE_REJECTED
+            );
+            reject(new TwitterError(ErrorName.OAUTH_WINDOW_CLOSE));
+          }
         });
       } catch (error) {
         this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);

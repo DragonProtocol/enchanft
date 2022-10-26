@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 16:09:49
+ * @LastEditTime: 2022-10-26 16:47:24
  * @Description: file description
  */
 import {
@@ -14,7 +14,7 @@ import {
   AccountType,
 } from '../api';
 import { SignerType, Signer, SignerProcessStatus } from './types';
-import { openOauthWindow } from '../utils';
+import { listenWindowClose, openOauthWindow } from '../utils';
 export interface DiscordConstructorArgs {
   discordClientId: string;
   oauthCallbackUri: string;
@@ -41,14 +41,14 @@ interface DiscordOauthWindow extends Window {
   ): void;
 }
 export enum DiscordErrorName {
-  UNKNOWN_ERROR = 'UNKNOWN_ERROR',
+  OAUTH_WINDOW_CLOSE = 'OAUTH_WINDOW_CLOSE',
 }
 type ErrorName = DiscordErrorName | ApiErrorName;
 const ErrorName = { ...DiscordErrorName, ...ApiErrorName };
 const DiscordErrorMessageMap: {
   [name in keyof typeof ErrorName]: string;
 } = {
-  [ErrorName.UNKNOWN_ERROR]: 'UNKNOWN_ERROR',
+  [ErrorName.OAUTH_WINDOW_CLOSE]: 'twitter authorization window closes',
   ...ApiErrorMessageMap,
 };
 export class DiscordError extends Error {
@@ -149,7 +149,7 @@ export class Discord extends Signer {
           this.discordClientId,
           this.oauthCallbackUri
         );
-        openOauthWindow(url);
+        const authWindow = openOauthWindow(url);
         const handleDiscordCallback = (e: StorageEvent) => {
           const { key, newValue } = e;
           if (
@@ -159,7 +159,7 @@ export class Discord extends Signer {
             window.removeEventListener('storage', handleDiscordCallback);
             clearListenDiscordOauthStorage();
             this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
-            // 2. fetch twitter bind
+            // 2. fetch discord bind
             bindAccount(token, {
               type: this.accountType,
               code: newValue,
@@ -184,8 +184,18 @@ export class Discord extends Signer {
               });
           }
         };
-        // 1. listen twitter bind oauth callback
+        // 1. listen discord bind oauth callback
         window.addEventListener('storage', handleDiscordCallback);
+        listenWindowClose(authWindow, () => {
+          if (isStartListenDiscordOauthStorage()) {
+            window.removeEventListener('storage', handleDiscordCallback);
+            clearListenDiscordOauthStorage();
+            this.signerProcessStatusChange(
+              SignerProcessStatus.SIGNATURE_REJECTED
+            );
+            reject(new DiscordError(ErrorName.OAUTH_WINDOW_CLOSE));
+          }
+        });
       } catch (error) {
         this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
         reject(error);
