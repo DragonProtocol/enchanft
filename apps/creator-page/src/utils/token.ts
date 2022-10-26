@@ -16,6 +16,7 @@ export const SIGN_MSG =
 export enum CoinType {
   ETH = 'ETH',
   SOL = 'SOL',
+  APT = 'APT',
 }
 
 export enum TokenType {

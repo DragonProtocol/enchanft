@@ -5,6 +5,7 @@ import { ethers } from 'ethers';
 
 import { State as CreateTaskState } from '../Components/TaskCreate/type';
 import { PerPageSize } from '../utils/constants';
+import { CoinType } from '../utils/token';
 
 const fileDownload = require('js-file-download');
 const ApiBaseUrl = process.env.REACT_APP_API_BASE_URL;
@@ -137,6 +138,12 @@ export function fetchDetailByProjectSlug(
   });
 }
 
+export enum Chain {
+  EVM = 'EVM',
+  SOLANA = 'SOLANA',
+  APTOS = 'APTOS',
+}
+
 export function createTask(data: CreateTaskState, token: string) {
   const postData = {
     projectId: data.projectId,
@@ -156,6 +163,16 @@ export function createTask(data: CreateTaskState, token: string) {
       },
     },
     actions: data.actions.map((item) => {
+      let chain;
+      if (item.coin_type === CoinType.APT) {
+        chain = Chain.APTOS;
+      }
+      if (item.coin_type === CoinType.ETH) {
+        chain = Chain.EVM;
+      }
+      if (item.coin_type === CoinType.SOL) {
+        chain = Chain.SOLANA;
+      }
       return {
         name: item.name,
         type: item.typeMore,
@@ -174,6 +191,7 @@ export function createTask(data: CreateTaskState, token: string) {
           question: item.question,
           answer: item.answer,
           lucky_draw_weight: item.lucky_draw_weight,
+          chain,
         },
       };
     }),

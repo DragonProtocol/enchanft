@@ -269,6 +269,7 @@ export default function Actions({
         description: ``,
         min_native_balance: Number(walletBalance.num) || 0,
         lucky_draw_weight: Number(walletBalance.luckyDrawWeight) || 1,
+        coin_type: walletBalance.coinType,
       });
     }
 
@@ -1099,6 +1100,12 @@ export default function Actions({
                     num: v,
                   });
                 }}
+                setType={(t) => {
+                  setWalletBalance({
+                    ...walletBalance,
+                    coinType: t,
+                  });
+                }}
               />
             )}
             {walletBalance.valid && (
@@ -1497,9 +1504,11 @@ function WalletBalanceInput({
   num,
   type,
   setNum,
+  setType,
 }: {
   num: string;
   type: CoinType;
+  setType: (arg0: CoinType) => void;
   setNum: (arg0: string) => void;
 }) {
   return (
@@ -1516,9 +1525,19 @@ function WalletBalanceInput({
             setNum(dataValue);
           }}
         />
-        <select title="coins" name="" id="" defaultValue={type}>
+        <select
+          title="coins"
+          name=""
+          id=""
+          value={type}
+          onChange={(e) => {
+            const value = e.target.value as CoinType;
+            setType(value);
+          }}
+        >
           <option value={CoinType.ETH}>ETH</option>
-          {/* <option value={CoinType.SOL}>SOL</option> */}
+          <option value={CoinType.SOL}>SOL</option>
+          <option value={CoinType.APT}>APT</option>
         </select>
       </div>
     </div>

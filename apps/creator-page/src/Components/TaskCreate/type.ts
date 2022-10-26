@@ -3,6 +3,7 @@ import {
   CREATE_TASK_DEFAULT_CONTRIBUTION_TOKEN,
   CREATE_TASK_DEFAULT_WINNER_NUM,
 } from '../../utils/constants';
+import { CoinType } from '../../utils/token';
 
 export enum RewardType {
   WHITELIST = 'WHITELIST',
@@ -88,6 +89,7 @@ export type Action = {
   question?: string;
   answer?: string;
   lucky_draw_weight?: number;
+  coin_type?: CoinType;
 };
 
 export type Reward = {
