@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 19:15:27
+ * @LastEditTime: 2022-10-26 10:00:31
  * @Description: file description
  */
 import {
@@ -122,6 +122,10 @@ const validateOpenSignatureModal = (status: WlUserActionProcessStatus) => {
   return [
     SignerProcessStatus.SIGNATURE_PENDING,
     SignerProcessStatus.SIGNATURE_REJECTED,
+    SignerProcessStatus.LOGIN_PENDING,
+    SignerProcessStatus.LOGIN_REJECTED,
+    SignerProcessStatus.BIND_PENDING,
+    SignerProcessStatus.BIND_REJECTED,
   ].includes(status as SignerProcessStatus);
 };
 
