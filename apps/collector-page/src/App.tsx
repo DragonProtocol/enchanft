@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-23 22:49:30
+ * @LastEditTime: 2022-10-26 16:33:40
  * @Description:
  */
 import { Provider as ReduxProvider } from 'react-redux'
@@ -21,6 +21,7 @@ import { API_BASE_URL } from './constants'
 injectStore(store)
 setApiBaseUrl(API_BASE_URL || '')
 injectHandleAxiosResponse401(handleAuthFailed)
+
 const appsignal = new Appsignal({
   key: process.env['APPSIGNAL_FRONTEND_API_KEY'],
 })
