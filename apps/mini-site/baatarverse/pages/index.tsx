@@ -1379,9 +1379,9 @@ const Wrapper = styled.div`
     /* display: flex; */
     .about-text {
       width: 100%;
-      @media (max-width: 800px) {
-        width: 120%;
-      }
+      /* @media (max-width: 800px) {
+        width: 100%;
+      } */
       /* width: 120%; */
       /* word-break: break-word; */
       /* text-align: justify; */
@@ -1391,7 +1391,7 @@ const Wrapper = styled.div`
     }
     .left-box {
       display: inline-block;
-      width: 49%;
+      width: 100%;
       position: relative;
       z-index: 2;
       @media (min-width: 800px) {
@@ -1417,9 +1417,10 @@ const Wrapper = styled.div`
       width: 49%;
       height: calc(min(80vw, 1400px) * 0.5);
       z-index: 1;
-      display: inline-block;
       vertical-align: top;
+      display: none;
       @media (min-width: 800px) {
+      display: inline-block;
         width: 35%;
         height: calc(min(80vw, 1400px) * 0.35);
       }
