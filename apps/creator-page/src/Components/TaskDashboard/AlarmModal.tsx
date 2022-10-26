@@ -1,7 +1,6 @@
 import Modal from 'react-modal';
 import styled from 'styled-components';
 
-Modal.setAppElement('#tweet-alarm-modal');
 export default function AlarmModal({
   show,
   msg,

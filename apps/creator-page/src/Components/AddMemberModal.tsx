@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import IconClose from './Icons/IconClose';
 import PngIconAdd from './Icons/PngIconAdd';
 
-Modal.setAppElement('#add-member-modal');
 export default function AddMemberModal({
   show,
   closeModal,

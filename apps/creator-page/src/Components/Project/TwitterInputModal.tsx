@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 
-Modal.setAppElement('#twitter-input-modal');
 export default function TwitterInputModal({
   show,
   closeModal,

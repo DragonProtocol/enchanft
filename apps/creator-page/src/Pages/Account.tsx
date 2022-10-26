@@ -180,7 +180,6 @@ export default function Account() {
   );
 }
 
-Modal.setAppElement('#add-modal');
 function AddModal({
   show,
   closeModal,
