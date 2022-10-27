@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 18:59:10
+ * @LastEditTime: 2022-10-27 15:54:20
  * @Description: 与后端entities type定义对应
  */
 
@@ -134,6 +134,11 @@ export enum MintStage {
   SOLDOUT = 'SOLDOUT',
   CLOSED = 'CLOSED',
 }
+export enum GradeType {
+  UNOFFICIAL = 'UNOFFICIAL',
+  OFFICIAL = 'OFFICIAL',
+  VIP = 'VIP',
+}
 export type Project = {
   id: number
   name: string
@@ -153,6 +158,7 @@ export type Project = {
   injectedCoins: number
   chainId: number
   slug: string
+  grade: GradeType
 }
 
 export type ContributionRank = {

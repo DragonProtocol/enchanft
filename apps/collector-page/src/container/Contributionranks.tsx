@@ -135,6 +135,7 @@ const Contributionranks: React.FC = () => {
   // TODO 没有twitter名称字段
   const communityInfo = {
     name: community?.name || '',
+    // TODO 目前community.icon 指向 project.img, 后面要彻底换成获取project.img
     icon: community?.icon || '',
     twitterId: community?.twitterId || '',
     twitterName: community?.twitterName || '',

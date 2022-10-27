@@ -41,6 +41,7 @@ import { toWlModPageTaskCreate } from '../route/utils'
 import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react'
 import { selectAll as selectAllForTodoTasks } from '../features/user/todoTasksSlice'
 import { TodoTaskItem } from '../types/api'
+import ProjectGradeTag from '../components/business/project/ProjectGradeTag'
 
 export enum ProjectInfoTabsValue {
   TEAM = 'team',
@@ -207,7 +208,11 @@ const Project: React.FC = () => {
       <ProjectLeftBox>
         <ProjectLeftInfo>
           <ProjectLeftInfoTop>
-            {data.image && <ProjectImage src={data.image} />}
+            <ProjectImageBox>
+              <ProjectGradeTag grade={data.grade} />
+              <ProjectImage src={data.image} />
+            </ProjectImageBox>
+
             <ProjectLeftInfoTopRight>
               <ProjectName>{data.name}</ProjectName>
               {community && (
@@ -412,6 +417,9 @@ const ProjectNumbersItemValue = styled.span`
     font-size: 14px;
     line-height: 21px;
   }
+`
+const ProjectImageBox = styled.div`
+  position: relative;
 `
 const ProjectImage = styled.img`
   width: 140px;

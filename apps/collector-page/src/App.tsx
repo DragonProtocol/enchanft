@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 17:39:24
+ * @LastEditTime: 2022-10-27 17:40:46
  * @Description:
  */
 import { Provider as ReduxProvider } from 'react-redux'
@@ -16,7 +16,6 @@ import { ErrorBoundary } from '@appsignal/react'
 import { setApiBaseUrl } from '@ecnft/wl-user-core'
 import { WlUserReactProvider, handleAuthFailed } from '@ecnft/wl-user-react'
 import { signers } from './utils/wlUserReact'
-import './mock/index'
 import { API_BASE_URL } from './constants'
 injectStore(store)
 setApiBaseUrl(API_BASE_URL || '')
