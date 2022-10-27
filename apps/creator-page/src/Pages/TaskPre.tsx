@@ -186,9 +186,10 @@ const ContentBox = styled.div`
         }
       }
       & span {
-        min-width: 200px;
+        width: 200px;
         &:nth-child(3) {
           flex-grow: 1;
+          width: 300px;
         }
       }
     }
