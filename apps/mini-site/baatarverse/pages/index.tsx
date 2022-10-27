@@ -142,8 +142,8 @@ export function Index() {
         x5-video-player-type="h5"
         x5-video-orientation="h5"
         x-webkit-airplay="true"
-        playsinline="true"
-        webkit-playsinline="true"
+        webkit-playsInline="true"
+        playsInline
         width="100%"
         height="100%"
         controls
@@ -151,6 +151,7 @@ export function Index() {
         loop
         autoPlay
         muted={isMute}
+        preload="metadata"
         poster='/static/images/loading.png'
         // onTimeUpdate={() => {}}
       >
