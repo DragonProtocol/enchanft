@@ -129,17 +129,16 @@ export function Index() {
 
   useEffect(() => {
     // document.addEventListener('WeixinJSBridgeReady', function () {
-      let video = document.getElementById('video') as HTMLVideoElement | null;
-      if (video != null) {
-        video.play();
-      }
+    let video = document.getElementById('video') as HTMLVideoElement | null;
+    if (video != null) {
+      video.play();
+    }
     // });
   }, []);
 
   return (
     <Wrapper lang="en">
       <StyledVideo
-        id="video"
         x5-video-player-type="h5"
         x5-video-orientation="h5"
         x-webkit-airplay="true"
@@ -149,24 +148,41 @@ export function Index() {
         height="100%"
         controls
         preload={'auto'}
-        
         loop
         autoPlay
         muted={isMute}
-        poster={require('../public/static/images/loading.png')}
+        poster='/static/images/loading.png'
         // onTimeUpdate={() => {}}
       >
         <source src={require('../public/static/bg.mp4')} type="video/mp4" />
       </StyledVideo>
+
+      {/* <picture className="bg-mobile">
+        <source
+        media="(max-width:650px)"
+          srcSet={
+            // '/static/videos/bg-mobile.mp4'
+            'https://caskbaatar.com/_next/static/videos/bg-mobile-95f39e8b2801b4844e665ed1d4f81dd1.mp4'
+          }
+          type="video/mp4"
+        />
+        <img
+          src={'/static/images/loading.png'}
+          alt="An image of an explosion."
+        />
+      </picture> */}
       <StyledVideo
+        id="video"
         className="bg-mobile"
         x5-video-player-type="h5"
         x-webkit-airplay="true"
-        webkit-playsinline="true"
+        webkit-playsInline="true"
         loop
         autoPlay
+        playsInline
         muted={isMute}
-        poster={require('../public/static/images/bg.png')}
+        preload="metadata"
+        poster={'/static/images/bg.png'}
         // onTimeUpdate={() => {}}
       >
         <source
@@ -813,6 +829,17 @@ const Wrapper = styled.div`
   /* padding-top: 45vw; */
 
   .bg-mobile {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    left: 0;
+    top: 0;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
     @media (min-width: 700px) {
       display: none;
     }
