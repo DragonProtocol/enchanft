@@ -152,7 +152,7 @@ export function Index() {
         autoPlay
         muted={isMute}
         preload="metadata"
-        poster='/static/images/loading.png'
+        poster="/static/images/loading.png"
         // onTimeUpdate={() => {}}
       >
         <source src={require('../public/static/bg.mp4')} type="video/mp4" />
@@ -172,7 +172,17 @@ export function Index() {
           alt="An image of an explosion."
         />
       </picture> */}
-      <StyledVideo
+
+      <div className="bg-mobile">
+        <Image
+          className="image more-icon"
+          src={'/static/images/bg.jpeg'}
+          layout="fill"
+          objectFit="cover"
+          alt={'basic'}
+        />
+      </div>
+      {/* <StyledVideo
         id="video"
         className="bg-mobile"
         x5-video-player-type="h5"
@@ -190,7 +200,7 @@ export function Index() {
           src={require('../public/static/bg-mobile.mp4')}
           type="video/mp4"
         />
-      </StyledVideo>
+      </StyledVideo> */}
 
       <div className={classnames('sidebar', { expand: isExpand })}>
         <div
@@ -1448,7 +1458,7 @@ const Wrapper = styled.div`
       vertical-align: top;
       display: none;
       @media (min-width: 800px) {
-      display: inline-block;
+        display: inline-block;
         width: 35%;
         height: calc(min(80vw, 1400px) * 0.35);
       }
