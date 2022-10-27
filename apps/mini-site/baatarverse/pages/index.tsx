@@ -175,7 +175,7 @@ export function Index() {
 
       <div className="bg-mobile">
         <Image
-          className="image more-icon"
+          className="image"
           src={'/static/images/bg.jpeg'}
           layout="fill"
           objectFit="cover"
