@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 18:59:10
+ * @LastEditTime: 2022-10-26 18:40:01
  * @Description: 与后端entities type定义对应
  */
 
@@ -85,6 +85,11 @@ export type NftInfo = {
   address: string
   url: string
 }
+export enum Chain {
+  EVM = 'EVM',
+  SOLANA = 'SOLANA',
+  APTOS = 'APTOS',
+}
 export type ActionData = {
   url?: string
   tweet_id?: string
@@ -98,6 +103,8 @@ export type ActionData = {
   wallet_url?: string
   question?: string
   answer?: string
+  lucky_draw_weight?: number
+  chain?: Chain
 }
 export type Action = {
   id: number
