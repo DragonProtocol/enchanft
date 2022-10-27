@@ -452,9 +452,10 @@ export default function Actions({
               </span>
               <IconTwitter />
             </div>
-            <div className="help">
-              {twitter ? (
-                likeTwitter.valid && (
+
+            {twitter ? (
+              likeTwitter.valid && (
+                <div className="help">
                   <TweetIdInput
                     retweetId={likeTwitter.link}
                     setRetweetId={(id) => {
@@ -464,11 +465,14 @@ export default function Actions({
                       });
                     }}
                   />
-                )
-              ) : (
+                </div>
+              )
+            ) : (
+              <div className="help">
                 <ConnectTwitter />
-              )}
-            </div>
+              </div>
+            )}
+
             {twitter && likeTwitter.valid && (
               <LuckyDraw
                 weight={likeTwitter.luckyDrawWeight}
@@ -499,9 +503,10 @@ export default function Actions({
               </span>
               <IconTwitter />
             </div>
-            <div className="help">
-              {twitter ? (
-                retweetTwitter.valid && (
+
+            {twitter ? (
+              retweetTwitter.valid && (
+                <div className="help">
                   <TweetIdInput
                     retweetId={retweetTwitter.id}
                     setRetweetId={(id) => {
@@ -511,11 +516,13 @@ export default function Actions({
                       });
                     }}
                   />
-                )
-              ) : (
+                </div>
+              )
+            ) : (
+              <div className="help">
                 <ConnectTwitter />
-              )}
-            </div>
+              </div>
+            )}
             {twitter && retweetTwitter.valid && (
               <LuckyDraw
                 weight={retweetTwitter.luckyDrawWeight}
