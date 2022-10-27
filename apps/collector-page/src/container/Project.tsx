@@ -39,6 +39,8 @@ import IconDiscordBlack from '../components/common/icons/IconDiscordBlack'
 import { getTwitterHomeLink } from '../utils/twitter'
 import { toWlModPageTaskCreate } from '../route/utils'
 import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react'
+import { selectAll as selectAllForTodoTasks } from '../features/user/todoTasksSlice'
+import { TodoTaskItem } from '../types/api'
 
 export enum ProjectInfoTabsValue {
   TEAM = 'team',
@@ -61,13 +63,15 @@ const formatStoreDataToComponentDataByProjectBasicInfo = (
   }
 }
 // project tasks
-const formatStoreDataToComponentDataByTasks = (data: ProjectDetailEntity): ExploreTaskListItemsType => {
+const formatStoreDataToComponentDataByTasks = (
+  data: ProjectDetailEntity,
+  todoTasks: TodoTaskItem[],
+): ExploreTaskListItemsType => {
   return (
     data.tasks?.map((task) => {
-      // TODO 待确认，这里先用task的whiteListTotalNum代替
-      // const winnerNum = task.whitelistTotalNum
+      const findTask = todoTasks.find((item) => item.id === task.id)
       return {
-        data: { ...task, project: { ...data } },
+        data: { ...task, project: { ...data }, status: findTask?.status },
       }
     }) || []
   )
@@ -93,7 +97,7 @@ const Project: React.FC = () => {
   const dispatchFetchDetail = useCallback(() => projectSlug && dispatch(fetchProjectDetail(projectSlug)), [projectSlug])
   const [loadingView, setLoadingView] = useState(true)
   const { isCreator, checkProjectAllowed } = usePermissions()
-
+  const todoTasks = useAppSelector(selectAllForTodoTasks)
   // 进入loading状态
   useEffect(() => {
     setLoadingView(true)
@@ -156,7 +160,7 @@ const Project: React.FC = () => {
   const showContributionranks = contributionranks.slice(0, 5)
   const contributionMembersTotal = contributionranks.length
   // const teamMembers = formatStoreDataToComponentDataByTeamMembers(data, token)
-  const tasks = formatStoreDataToComponentDataByTasks(data)
+  const tasks = formatStoreDataToComponentDataByTasks(data, todoTasks)
 
   // const ProjectInfoTabComponents = {
   //   [ProjectInfoTabsValue.TEAM]: <ProjectTeamMemberList items={teamMembers} />,

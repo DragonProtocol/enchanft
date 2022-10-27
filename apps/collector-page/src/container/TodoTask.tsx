@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 18:49:41
+ * @LastEditTime: 2022-10-27 14:19:56
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -26,6 +26,7 @@ import {
   verifyTask,
 } from '../features/user/taskHandlesSlice'
 import { MOBILE_BREAK_POINT } from '../constants'
+import useTodoTasksGroup from '../hooks/useTodoTasksGroup'
 
 // TODO 将以下格式化函数合并为一个
 const formatStoreDataToComponentDataByTodoList = (
@@ -175,11 +176,13 @@ const formatStoreDataToComponentDataByClosedList = (tasks: TodoTaskItemForEntity
 }
 
 const TodoTask: React.FC = () => {
+  const dispatch = useAppDispatch()
+  const { todoItems, inProgressItems, completedItems, wonItems, lostItems, closedItems } = useTodoTasksGroup()
+
   const [searchParams, setSearchParams] = useSearchParams()
   const hasTaskId = searchParams.has('taskId')
   const taskId = hasTaskId ? Number(searchParams.get('taskId')) : -1
-  const dispatch = useAppDispatch()
-  const todoTasks = useAppSelector(selectAll)
+
   const { status } = useAppSelector(selectUserTodoTasksState)
   const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
 
@@ -199,35 +202,27 @@ const TodoTask: React.FC = () => {
   // verify action queue
   const verifingActionIds = useAppSelector(selectIdsVerifyActionQueue).map((item) => Number(item))
 
-  // 数据分组
-  const todoList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.TODO)
-  const inProgressList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.IN_PRGRESS)
-  const completedList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.COMPLETED)
-  const wonList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.WON)
-  const lostList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.LOST)
-  const closedList = todoTasks.filter((task) => task.status === TaskTodoCompleteStatus.CLOSED)
-
   // 数据展示
-  const todoItems = formatStoreDataToComponentDataByTodoList(
-    todoList,
+  const todoList = formatStoreDataToComponentDataByTodoList(
+    todoItems,
     taskId,
     followCommunityStatus,
     userFollowedCommunityIds,
     verifingTaskIds,
     verifingActionIds,
   )
-  const inProgressItems = formatStoreDataToComponentDataByInProgressList(
-    inProgressList,
+  const inProgressList = formatStoreDataToComponentDataByInProgressList(
+    inProgressItems,
     taskId,
     followCommunityStatus,
     userFollowedCommunityIds,
     verifingTaskIds,
     verifingActionIds,
   )
-  const completedItems = formatStoreDataToComponentDataByCompletedList(completedList)
-  const wonItems = formatStoreDataToComponentDataByWonList(wonList)
-  const lostItems = formatStoreDataToComponentDataByLostList(lostList)
-  const closedItems = formatStoreDataToComponentDataByClosedList(closedList)
+  const completedList = formatStoreDataToComponentDataByCompletedList(completedItems)
+  const wonList = formatStoreDataToComponentDataByWonList(wonItems)
+  const lostList = formatStoreDataToComponentDataByLostList(lostItems)
+  const closedList = formatStoreDataToComponentDataByClosedList(closedItems)
   const loading = status === AsyncRequestStatus.PENDING
 
   return (
@@ -236,7 +231,7 @@ const TodoTask: React.FC = () => {
         <TodoTaskGroupLeft>
           <TodoTaskList
             status={TaskTodoCompleteStatus.TODO}
-            items={todoItems}
+            items={todoList}
             loading={loading}
             onVerifyTask={(task) => dispatch(verifyTask(task))}
             onVerifyAction={(action) => dispatch(verifyAction(action))}
@@ -248,7 +243,7 @@ const TodoTask: React.FC = () => {
           />
           <TodoTaskList
             status={TaskTodoCompleteStatus.IN_PRGRESS}
-            items={inProgressItems}
+            items={inProgressList}
             loading={loading}
             onVerifyTask={(task) => dispatch(verifyTask(task))}
             onVerifyAction={(action) => dispatch(verifyAction(action))}
@@ -262,25 +257,25 @@ const TodoTask: React.FC = () => {
         <TodoTaskGroupRight>
           <TodoTaskList
             status={TaskTodoCompleteStatus.COMPLETED}
-            items={completedItems}
+            items={completedList}
             loading={loading}
             onVerifyTask={(task) => dispatch(verifyTask(task))}
           />
           <TodoTaskList
             status={TaskTodoCompleteStatus.WON}
-            items={wonItems}
+            items={wonList}
             loading={loading}
             onVerifyTask={(task) => dispatch(verifyTask(task))}
           />
           <TodoTaskList
             status={TaskTodoCompleteStatus.CLOSED}
-            items={closedItems}
+            items={closedList}
             loading={loading}
             onVerifyTask={(task) => dispatch(verifyTask(task))}
           />
           <TodoTaskList
             status={TaskTodoCompleteStatus.LOST}
-            items={lostItems}
+            items={lostList}
             loading={loading}
             onVerifyTask={(task) => dispatch(verifyTask(task))}
           />

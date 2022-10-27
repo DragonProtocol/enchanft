@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-23 11:26:26
+ * @LastEditTime: 2022-10-27 15:30:43
  * @Description: file description
  */
 import React from 'react'
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { RewardData } from '../../../types/entities'
+import { RewardData, TaskTodoCompleteStatus } from '../../../types/entities'
 import { getTaskRewardTypeValue } from '../../../utils/task'
 import { formatDateTime } from '../../../utils/time'
 import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
@@ -37,6 +37,7 @@ export type ExploreTaskItemDataType = {
     raffled: boolean
     data: RewardData
   }
+  status?: TaskTodoCompleteStatus
 }
 
 export type ExploreTaskItemViewConfigType = {}
@@ -51,7 +52,7 @@ export type ExploreTaskItemProps = ExploreTaskItemDataViewType
 const defaultViewConfig = {}
 const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: ExploreTaskItemProps) => {
   const navigate = useNavigate()
-  const { id, name, image, startTime, endTime, project, reward } = data
+  const { id, name, image, startTime, endTime, project, reward, status } = data
   const {} = {
     ...defaultViewConfig,
     ...viewConfig,
@@ -59,6 +60,18 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
   const startDate = formatDateTime(startTime)
   const endDate = formatDateTime(endTime)
   const rewardValue = getTaskRewardTypeValue(reward)
+  const displayStatusTagAccepted =
+    !!status && [TaskTodoCompleteStatus.TODO, TaskTodoCompleteStatus.IN_PRGRESS].includes(status)
+  const displayStatusTagComplete =
+    !!status &&
+    [TaskTodoCompleteStatus.COMPLETED, TaskTodoCompleteStatus.WON, TaskTodoCompleteStatus.LOST].includes(status)
+  const statusTag = displayStatusTagAccepted ? (
+    <TaskStatusTagAccepted>Accepted</TaskStatusTagAccepted>
+  ) : displayStatusTagComplete ? (
+    <TaskStatusTagComplete>Complete</TaskStatusTagComplete>
+  ) : (
+    ''
+  )
   return (
     <ExploreTaskItemWrapper
       onClick={() => navigate(`/${project?.slug}/${id}`)}
@@ -69,27 +82,30 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
         <TaskImage src={image} />
       </TaskImageBox>
       <TaskInfoBox>
-        <TaskName>{name}</TaskName>
-
-        <TaskInfoRow>
-          <PngIconAlarmClock size={'16px'} />
-          <TaskDateTime>
-            {startDate} — {endDate}
-          </TaskDateTime>
-        </TaskInfoRow>
-        {reward && (
+        <TaskName number={2}>
+          {statusTag} {name}
+        </TaskName>
+        <TaskInfoBottom>
           <TaskInfoRow>
-            <PngIconGiftBox size={'16px'} />
-            <TaskRemark>{rewardValue}</TaskRemark>
+            <PngIconAlarmClock size={'16px'} />
+            <TaskDateTime>
+              {startDate} — {endDate}
+            </TaskDateTime>
           </TaskInfoRow>
-        )}
+          {reward && (
+            <TaskInfoRow>
+              <PngIconGiftBox size={'16px'} />
+              <TaskRemark>{rewardValue}</TaskRemark>
+            </TaskInfoRow>
+          )}
+        </TaskInfoBottom>
       </TaskInfoBox>
     </ExploreTaskItemWrapper>
   )
 }
 export default ExploreTaskItem
 const ExploreTaskItemWrapper = styled(CardItemBox)`
-  height: 250px;
+  height: 275px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -102,6 +118,7 @@ const TaskImageBox = styled.div`
   width: 100%;
   height: 130px;
   position: relative;
+  flex-shrink: 0;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     height: 138px;
   }
@@ -119,6 +136,7 @@ const TaskInfoBox = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  justify-content: space-between;
   gap: 8px;
 `
 const TaskName = styled(OverflowEllipsisBox)`
@@ -127,6 +145,12 @@ const TaskName = styled(OverflowEllipsisBox)`
   line-height: 27px;
   color: #333333;
   flex-shrink: 0;
+`
+const TaskInfoBottom = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
 `
 const TaskDateTime = styled.div`
   font-size: 12px;
@@ -143,4 +167,23 @@ const TaskRemark = styled(OverflowEllipsisBox)`
   font-size: 12px;
   line-height: 18px;
   color: #333333;
+`
+const TaskStatusTag = styled.span`
+  display: inline-block;
+  font-weight: 700;
+  font-size: 12px;
+  height: 18px;
+  line-height: 18px;
+  border-radius: 4px;
+  padding: 0px 4px;
+  box-sizing: border-box;
+  text-align: center;
+  color: #ffffff;
+  vertical-align: middle;
+`
+const TaskStatusTagAccepted = styled(TaskStatusTag)`
+  background: #333333;
+`
+const TaskStatusTagComplete = styled(TaskStatusTag)`
+  background: #3dd606;
 `

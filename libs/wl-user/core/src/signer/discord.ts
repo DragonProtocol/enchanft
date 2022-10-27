@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 16:00:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 16:47:24
+ * @LastEditTime: 2022-10-27 11:33:03
  * @Description: file description
  */
 import {
@@ -48,7 +48,7 @@ const ErrorName = { ...DiscordErrorName, ...ApiErrorName };
 const DiscordErrorMessageMap: {
   [name in keyof typeof ErrorName]: string;
 } = {
-  [ErrorName.OAUTH_WINDOW_CLOSE]: 'twitter authorization window closes',
+  [ErrorName.OAUTH_WINDOW_CLOSE]: 'discord authorization window closes',
   ...ApiErrorMessageMap,
 };
 export class DiscordError extends Error {
