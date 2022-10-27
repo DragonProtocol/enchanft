@@ -231,17 +231,27 @@ const Project: React.FC = () => {
                       </ProjectLink>
                     )}
                   </CommunityLeftBox>
-                  {!!followStatusType && (
-                    <FollowBtn
-                      followStatusType={followStatusType}
-                      onFollow={handleFollow}
-                      onAccountOperation={handleAccountOperation}
-                    />
-                  )}
                 </ProjectCommunityBox>
               )}
             </ProjectLeftInfoTopRight>
           </ProjectLeftInfoTop>
+          <PorjectNumbersBox>
+            <PorjectNumbersItemBox>
+              <ProjectNumbersItemLabel>items</ProjectNumbersItemLabel>
+              <ProjectNumbersItemValue>{projectBasicInfoDataView.data.itemTotalNum || 0}</ProjectNumbersItemValue>
+            </PorjectNumbersItemBox>
+            <PorjectNumbersItemBox>
+              <ProjectNumbersItemLabel>EnchaNFT</ProjectNumbersItemLabel>
+              <ProjectNumbersItemValue>{projectBasicInfoDataView.data.injectedCoins || 0}</ProjectNumbersItemValue>
+            </PorjectNumbersItemBox>
+          </PorjectNumbersBox>
+          {!!followStatusType && (
+            <FollowBtn
+              followStatusType={followStatusType}
+              onFollow={handleFollow}
+              onAccountOperation={handleAccountOperation}
+            />
+          )}
 
           <ProjectDetailBasicInfo
             data={projectBasicInfoDataView.data}
@@ -256,7 +266,7 @@ const Project: React.FC = () => {
             items={showContributionranks}
             membersTotal={contributionMembersTotal}
             displayMore={true}
-            moreText={allowFollow ? 'Join and start contributing' : 'Start contributing'}
+            moreText={allowFollow ? 'Apply for WL and start contributing' : 'Start contributing'}
             onMore={startContribute}
           />
         </ContributionListBox>
@@ -368,6 +378,38 @@ const ProjectLeftInfoTop = styled.div`
     gap: 10px;
   }
 `
+const PorjectNumbersBox = styled.div`
+  display: flex;
+  gap: 10px;
+`
+const PorjectNumbersItemBox = styled.div`
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 12px;
+  width: 185px;
+  height: 40px;
+  background: #ebeee4;
+  border-radius: 10px;
+`
+const ProjectNumbersItemLabel = styled.span`
+  font-size: 16px;
+  color: rgba(51, 51, 51, 0.6);
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 12px;
+  }
+`
+const ProjectNumbersItemValue = styled.span`
+  font-weight: 700;
+  font-size: 16px;
+  color: #333333;
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    font-size: 14px;
+    line-height: 21px;
+  }
+`
 const ProjectImage = styled.img`
   width: 140px;
   height: 140px;
@@ -405,7 +447,7 @@ const ProjectLink = styled.a`
   }
 `
 const FollowBtn = styled(CommunityFollowButton)`
-  width: 100px;
+  width: 100%;
   height: 40px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     width: 70px;
