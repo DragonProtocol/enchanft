@@ -5,12 +5,14 @@ import dayjs from 'dayjs';
 import UploadImgModal from '../UploadImgModal';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
+
 import { TASK_IMAGE_SIZE_LIMIT } from '../../utils/constants';
 import { uploadImage as uploadImageApi } from '../../api';
 import { useAppConfig } from '../../AppProvider';
 import { numberInput } from '../../utils';
 import { AxiosError } from 'axios';
 import SwitchBtn from '../SwitchBtn';
+import RichText from '../RichText';
 
 export default function CreateTaskBasic({
   hasInviteBot,
@@ -83,45 +85,41 @@ export default function CreateTaskBasic({
                 />
               </div>
 
-              <div className="content-item">
-                <h4>Task statement</h4>
-                <textarea
-                  title="task-statement"
-                  placeholder="Input"
-                  cols={30}
-                  rows={10}
-                  value={state.description}
-                  onChange={(e) => {
-                    updateState({
-                      ...state,
-                      description: e.target.value,
-                    });
+              <div className="content-item attach-file">
+                <h4>Task banner (640 * 300)</h4>
+                <input
+                  title="task-banner"
+                  id="task-banner"
+                  type="file"
+                  accept="image/png, image/gif, image/jpeg"
+                  onChange={uploadImageHandler}
+                />
+                <div
+                  onClick={() => {
+                    document.getElementById('task-banner')?.click();
                   }}
-                ></textarea>
+                >
+                  {(state.image && <img src={state.image} alt="" />) || (
+                    <div className="add-btn">
+                      <img className="add" src={AddSvg} alt="" />
+                      <br />
+                      <span>Attach file</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="attach-file">
-              <h4>Task banner (640 * 300)</h4>
-              <input
-                title="task-banner"
-                id="task-banner"
-                type="file"
-                accept="image/png, image/gif, image/jpeg"
-                onChange={uploadImageHandler}
-              />
-              <div
-                onClick={() => {
-                  document.getElementById('task-banner')?.click();
+            <div className="statement">
+              <h4>Task statement</h4>
+              <RichText
+                text={state.description}
+                setText={(v) => {
+                  updateState({
+                    ...state,
+                    description: v,
+                  });
                 }}
-              >
-                {(state.image && <img src={state.image} alt="" />) || (
-                  <div className="add-btn">
-                    <img className="add" src={AddSvg} alt="" />
-                    <br />
-                    <span>Attach file</span>
-                  </div>
-                )}
-              </div>
+              />
             </div>
           </div>
         </div>
@@ -506,7 +504,6 @@ const BasicBox = styled.div`
   & input,
   & textarea {
     font-family: inherit;
-    background-color: #f8f8f8;
     border: none;
     outline: none;
     padding: 12px 20px;
@@ -551,6 +548,14 @@ const BasicBox = styled.div`
 
     > #task-banner {
       display: none;
+    }
+  }
+
+  & .statement {
+    > div {
+      background: #ebeee4;
+      border-radius: 10px;
+      overflow: hidden;
     }
   }
 `;

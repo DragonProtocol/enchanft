@@ -40,7 +40,6 @@ import UploadImgModal from '../Components/UploadImgModal';
 import { BlockchainType } from '../Components/Project/types';
 import { AxiosError } from 'axios';
 import isEqual from '../utils/isEqual';
-import log from 'loglevel';
 import {
   connectionSocialMedia,
   TWITTER_CALLBACK_URL,
