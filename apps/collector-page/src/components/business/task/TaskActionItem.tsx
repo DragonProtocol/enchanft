@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-17 14:22:40
+ * @LastEditTime: 2022-10-26 19:14:04
  * @Description: file description
  */
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { ActionData, ActionType, Project, TaskType } from '../../../types/entities'
+import { ActionData, ActionType, Chain, Project, TaskType } from '../../../types/entities'
 import { UserActionStatus } from '../../../types/api'
 import ActionContributionScore from './actions/ActionContributionScore'
 import ActionFollowCommunity from './actions/ActionFollowCommunity'
@@ -58,6 +58,7 @@ export type TaskActionItemStaticFuncGetters = {
     answer: string,
     confirmCallback: (assertAnswer: boolean) => void,
   ) => void
+  onWallet?: (chain: Chain, callback: () => void) => void
 }
 export type TaskActionItemProps = TaskActionItemStaticAttrGetters &
   TaskActionItemStaticFuncGetters & {
@@ -74,6 +75,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   onVerifyAction,
   onCustomAction,
   onQuestionConfirm,
+  onWallet,
   verifying,
   copyBgc,
 }: TaskActionItemProps) => {
@@ -116,7 +118,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         return <ActionCustom data={data} allowHandle={allowHandle} onCustomAction={onCustomAction} />
       case ActionType.NATIVE_BALANCE:
         // 钱包余额
-        return <ActionNativeBalance data={data} allowHandle={allowHandle} />
+        return <ActionNativeBalance data={data} allowHandle={allowHandle} onWallet={onWallet} />
       case ActionType.NFT_BALANCE:
         // 持有指定nft
         return <ActionNftBalance data={data} allowHandle={allowHandle} />

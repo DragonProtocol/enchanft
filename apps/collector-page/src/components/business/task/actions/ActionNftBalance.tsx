@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 16:22:06
+ * @LastEditTime: 2022-10-26 18:19:22
  * @Description: file description
  */
 import React from 'react'
@@ -36,16 +36,16 @@ const ActionNftBalance: React.FC<ActionNftBalanceProps> = ({ data, allowHandle }
         <IconWL opacity={isDone ? 0.5 : 1} />
       </ActionIconBox>
       <ActionContentBox>
-        <FollowTwitterTitle allowHandle={allowHandle} isDone={isDone}>
+        <ActionTitle allowHandle={allowHandle} isDone={isDone}>
           Holding {accounts.length > 2 && ' one of '}
           {accounts.map((item, index) => (
-            <TwitterLinkBox key={index}>
+            <ActionLinkBox key={index}>
               {accounts.length > 1 && (index === accounts.length - 1 ? ' or ' : index > 0 ? ' 、' : '')}
-              <TwitterLink onClick={() => clickAction(item)}>{item.name}</TwitterLink>
-            </TwitterLinkBox>
+              <ActionLink onClick={() => clickAction(item)}>{item.name}</ActionLink>
+            </ActionLinkBox>
           ))}{' '}
           NFT
-        </FollowTwitterTitle>
+        </ActionTitle>
       </ActionContentBox>
     </ActionNftBalanceWrapper>
   )
@@ -61,7 +61,7 @@ const ActionNftBalanceWrapper = styled.div`
 const ActionContentBox = styled.div`
   flex: 1;
 `
-const FollowTwitterTitle = styled(ActionNameSpan)`
+const ActionTitle = styled(ActionNameSpan)`
   cursor: auto;
   /* 鼠标浮上加下划线 */
   &:hover {
@@ -72,8 +72,8 @@ const FollowTwitterTitle = styled(ActionNameSpan)`
     color: inherit;
   }
 `
-const TwitterLinkBox = styled.span``
-const TwitterLink = styled.a`
+const ActionLinkBox = styled.span``
+const ActionLink = styled.a`
   cursor: pointer;
   &:hover {
     /* color: #4c91f0; */

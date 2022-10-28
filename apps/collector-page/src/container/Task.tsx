@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 18:49:22
+ * @LastEditTime: 2022-10-26 19:14:14
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -182,7 +182,12 @@ const Task: React.FC = () => {
   }
 
   // 处理执行action操作
-  const { handleActionToDiscord, handleActionToTwitter, handleActionQuestionConfirm } = useHandleAction()
+  const {
+    handleActionToDiscord,
+    handleActionToTwitter,
+    handleActionQuestionConfirm,
+    handleActionVolidBindWalletForChain,
+  } = useHandleAction()
 
   // 关注社区
   const handleFollowCommunity = (communityId: number) => {
@@ -324,6 +329,7 @@ const Task: React.FC = () => {
                       items={actionItems}
                       onDiscord={handleActionToDiscord}
                       onTwitter={handleActionToTwitter}
+                      onWallet={handleActionVolidBindWalletForChain}
                       onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
                       allowHandle={allowHandleAction}
                       displayVerify={displayVerify}
