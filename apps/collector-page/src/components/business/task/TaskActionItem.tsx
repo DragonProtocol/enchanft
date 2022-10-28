@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 14:39:59
+ * @LastEditTime: 2022-10-26 19:14:04
  * @Description: file description
  */
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { ActionData, ActionType, Project, TaskType } from '../../../types/entities'
+import { ActionData, ActionType, Chain, Project, TaskType } from '../../../types/entities'
 import { UserActionStatus } from '../../../types/api'
 import ActionContributionScore from './actions/ActionContributionScore'
 import ActionFollowCommunity from './actions/ActionFollowCommunity'
@@ -24,6 +24,7 @@ import ActionCustom from './actions/ActionCustom'
 import ActionDiscordObtainRole from './actions/ActionDiscordObtainRole'
 import ActionNativeBalance from './actions/ActionNativeBalance'
 import ActionNftBalance from './actions/ActionNftBalance'
+import ActionQuestionnaire from './actions/ActionQuestionnaire'
 
 export type TaskActionItemDataType = {
   id: number
@@ -41,19 +42,29 @@ export type TaskActionItemDataType = {
     slug: string
   }
 }
-export type TaskActionItemHandlesType = {
+
+export type TaskActionItemStaticAttrGetters = {
+  allowHandle?: boolean
+  copyBgc?: string
+}
+export type TaskActionItemStaticFuncGetters = {
   onTwitter?: (callback: () => void) => void
   onDiscord?: (callback: () => void) => void
   onFollowCommunity?: (action: TaskActionItemDataType) => void
   onVerifyAction?: (action: TaskActionItemDataType) => void
   onCustomAction?: (action: TaskActionItemDataType) => void
+  onQuestionConfirm?: (
+    action: TaskActionItemDataType,
+    answer: string,
+    confirmCallback: (assertAnswer: boolean) => void,
+  ) => void
+  onWallet?: (chain: Chain, callback: () => void) => void
 }
-export type TaskActionItemProps = TaskActionItemHandlesType & {
-  data: TaskActionItemDataType
-  allowHandle?: boolean
-  verifying?: boolean
-  copyBgc?: string
-}
+export type TaskActionItemProps = TaskActionItemStaticAttrGetters &
+  TaskActionItemStaticFuncGetters & {
+    data: TaskActionItemDataType
+    verifying?: boolean
+  }
 
 const TaskActionItem: React.FC<TaskActionItemProps> = ({
   data,
@@ -63,6 +74,8 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   onFollowCommunity,
   onVerifyAction,
   onCustomAction,
+  onQuestionConfirm,
+  onWallet,
   verifying,
   copyBgc,
 }: TaskActionItemProps) => {
@@ -105,10 +118,13 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         return <ActionCustom data={data} allowHandle={allowHandle} onCustomAction={onCustomAction} />
       case ActionType.NATIVE_BALANCE:
         // 钱包余额
-        return <ActionNativeBalance data={data} allowHandle={allowHandle} />
+        return <ActionNativeBalance data={data} allowHandle={allowHandle} onWallet={onWallet} />
       case ActionType.NFT_BALANCE:
         // 持有指定nft
         return <ActionNftBalance data={data} allowHandle={allowHandle} />
+      case ActionType.QUESTIONNAIRE:
+        // 问卷调查
+        return <ActionQuestionnaire data={data} allowHandle={allowHandle} onQuestionConfirm={onQuestionConfirm} />
       default:
         return name
     }

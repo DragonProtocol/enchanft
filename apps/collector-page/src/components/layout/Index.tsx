@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-21 18:57:01
+ * @LastEditTime: 2022-10-27 12:49:41
  * @Description: 站点布局入口
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -11,7 +11,7 @@ import { ToastContainer } from 'react-toastify'
 import Hammer from 'hammerjs'
 import { isMobile, isDesktop } from 'react-device-detect'
 import 'react-toastify/dist/ReactToastify.min.css'
-import { MEDIA_BREAK_POINTS } from 'constants/index'
+import { MEDIA_BREAK_POINTS } from '../../constants/index'
 import Main from './Main'
 import Header from './Header'
 import TodoFloatingWindow from './TodoFloatingWindow'
@@ -19,26 +19,26 @@ import ScrollBox from '../common/scroll/ScrollBox'
 import MainInner from './MainInner'
 import { matchRoutes, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { selectAccount, setIsLogin, userLink, userLogin } from '../../features/user/accountSlice'
-import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
-import { fetchUserRewards } from '../../features/user/userRewardsSlice'
-import { fetchTodoTasks, selectAll } from '../../features/user/todoTasksSlice'
+import {
+  fetchFollowedCommunities,
+  removeAll as removeAllFollowedCommunities,
+} from '../../features/user/followedCommunitiesSlice'
+import { fetchUserRewards, removeAll as removeAllUserRewards } from '../../features/user/userRewardsSlice'
+import { fetchTodoTasks, selectAll, removeAll as removeAllTodoTasks } from '../../features/user/todoTasksSlice'
 import { TaskTodoCompleteStatus } from '../../types/entities'
 import { useGAPageView } from '../../hooks'
 import Footer from './Footer'
-import useWalletSign from '../../hooks/useWalletSign'
 import { selectWebsite, setMobileNavDisplay } from '../../features/website'
 import useRoute from '../../hooks/useRoute'
 import { navs, RouteKeys } from '../../route/routes'
 import { MOBILE_BREAK_POINT } from '../../constants'
-import { TokenType } from '../../utils/token'
+import { useWlUserReact } from '@ecnft/wl-user-react'
 const Layout: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { isLogin } = useAppSelector(selectAccount)
+  const { isLogin } = useWlUserReact()
   const { mobileNavDisplay } = useAppSelector(selectWebsite)
   useGAPageView()
-  useWalletSign()
 
   const { routeKey } = useRoute()
   const [displayTodoFloating, setDisplayTodoFloating] = useState(false)
@@ -59,6 +59,9 @@ const Layout: React.FC = () => {
   // 获取用户相关信息
   useEffect(() => {
     if (!isLogin) {
+      dispatch(removeAllFollowedCommunities())
+      dispatch(removeAllUserRewards())
+      dispatch(removeAllTodoTasks())
       return
     }
     dispatch(fetchFollowedCommunities())
@@ -69,54 +72,6 @@ const Layout: React.FC = () => {
   const count = todoTasks.filter(
     (item) => item.status && [TaskTodoCompleteStatus.TODO, TaskTodoCompleteStatus.IN_PRGRESS].includes(item.status),
   ).length
-  //社媒账号授权 code 监听
-  useEffect(() => {
-    // localStorage.setItem(
-    //   'social_auth',
-    //   JSON.stringify({ code: null, type: null, oauthToken: null, oauthVerifier: null }),
-    // )
-    const handleStorageChange = ({ newValue, key, url }) => {
-      console.log({ newValue })
-      if ('social_auth' === key) {
-        console.log('social_auth change url', url)
-        // if ("social_auth" === key && url.includes("https://launch.enchanft.xyz/#/callback")) {
-        const newValueObj = JSON.parse(newValue || '{}')
-        const { code, type, oauthToken, oauthVerifier } = newValueObj
-        console.log({ code, type, oauthToken, oauthVerifier })
-
-        if (code && type) {
-          linkUser({ code, type })
-          localStorage.setItem('social_auth', JSON.stringify({ ...newValueObj, code: null, type: null }))
-        }
-        if (oauthToken && oauthVerifier && type === 'TWITTER') {
-          dispatch(
-            userLogin({
-              walletType: TokenType.Twitter,
-              twitterOauthToken: oauthToken,
-              twitterOauthVerifier: oauthVerifier,
-            }),
-          )
-          localStorage.setItem(
-            'social_auth',
-            JSON.stringify({ ...newValueObj, type: null, oauthToken: null, oauthVerifier: null }),
-          )
-        }
-      }
-    }
-    window.addEventListener('storage', handleStorageChange)
-
-    return () => window.removeEventListener('storage', handleStorageChange)
-  }, [])
-
-  const linkUser = (accountInfo) => {
-    const code = accountInfo.code
-    const type = accountInfo.type || 'TWITTER'
-    if (code && type) {
-      dispatch(userLink({ code, type }))
-    } else {
-      alert('account bind failed!')
-    }
-  }
 
   useEffect(() => {
     if (isMobile) {
@@ -251,9 +206,8 @@ const MobileNavList = styled.div`
   height: 58px;
   border-top: 4px solid #333333;
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
   align-items: center;
-  gap: 46px;
 `
 const MobileNavItemBox = styled.div<{ isActive: boolean }>`
   height: 40px;

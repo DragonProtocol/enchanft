@@ -7,6 +7,7 @@ import styled from 'styled-components';
 
 import Loading from '../Components/Loading';
 import { useParams } from 'react-router-dom';
+import { MintStage } from '../Components/Project/types';
 
 export default function ProjectDetail() {
   const { slug } = useParams();
@@ -18,7 +19,9 @@ export default function ProjectDetail() {
     <DetailBox>
       <ProjectInfo project={project} />
       <ProjectAnnouncement project={project} />
-      <MintInfo project={project} />
+      {project.mintStage === MintStage.SOLDOUT ? null : (
+        <MintInfo project={project} />
+      )}
     </DetailBox>
   );
 }

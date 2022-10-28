@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 15:45:38
+ * @LastEditTime: 2022-10-17 13:03:06
  * @Description: 基础按钮
  */
 import React, { ButtonHTMLAttributes } from 'react'
@@ -26,6 +26,7 @@ export const ButtonDanger = styled(ButtonBase)`
 `
 export const ButtonInfo = styled(ButtonBase)`
   background-color: #ebeee4;
+  color: #333333;
 `
 
 export const ButtonBaseCss = css`

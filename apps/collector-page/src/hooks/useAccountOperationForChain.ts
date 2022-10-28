@@ -2,13 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 17:11:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-08 13:14:01
+ * @LastEditTime: 2022-10-24 00:09:00
  * @Description: file description
  */
-import { useCallback, useEffect, useState } from 'react'
-import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
-import { useAppDispatch, useAppSelector } from '../store/hooks'
-import { AccountType } from '../types/entities'
+import { useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
+import { SignerType, AccountType } from '@ecnft/wl-user-core'
 import { ChainType, getChainType } from '../utils/chain'
 
 export enum AccountOperationType {
@@ -28,21 +26,20 @@ export const ccountOperationDescMap = {
   [AccountOperationType.COMPLETED]: '',
 }
 export default (chainId?: number) => {
-  const dispatch = useAppDispatch()
-  const { accounts, isLogin } = useAppSelector(selectAccount)
+  const { isLogin, validateBindAccount, dispatchModal } = useWlUserReact()
   let accountOperationType = AccountOperationType.CONNECT_WALLET
   const handleAccountOperationMap = {
     [AccountOperationType.CONNECT_WALLET]: () => {
-      dispatch(setConnectWalletModalShow(true))
+      dispatchModal({ type: WlUserModalType.LOGIN })
     },
     [AccountOperationType.BIND_METAMASK]: () => {
-      dispatch(setConnectModal(ConnectModal.METAMASK))
+      dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.METAMASK })
     },
     [AccountOperationType.BIND_PHANTOM]: () => {
-      dispatch(setConnectModal(ConnectModal.PHANTOM))
+      dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.PHANTOM })
     },
     [AccountOperationType.BIND_MARTIAN]: () => {
-      dispatch(setConnectModal(ConnectModal.MARTIAN))
+      dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.MARTIAN })
     },
     [AccountOperationType.BIND_UNKNOWN]: () => {},
     [AccountOperationType.COMPLETED]: () => {},
@@ -50,20 +47,19 @@ export default (chainId?: number) => {
 
   if (isLogin) {
     const chainType = chainId ? getChainType(chainId) : ChainType.UNKNOWN
-    const accountTypes = accounts.map((account) => account.accountType)
     switch (chainType) {
       case ChainType.EVM:
-        accountOperationType = accountTypes.includes(AccountType.EVM)
+        accountOperationType = validateBindAccount(AccountType.EVM)
           ? AccountOperationType.COMPLETED
           : AccountOperationType.BIND_METAMASK
         break
       case ChainType.SOLANA:
-        accountOperationType = accountTypes.includes(AccountType.SOLANA)
+        accountOperationType = validateBindAccount(AccountType.SOLANA)
           ? AccountOperationType.COMPLETED
           : AccountOperationType.BIND_PHANTOM
         break
       case ChainType.APTOS:
-        accountOperationType = accountTypes.includes(AccountType.APTOS)
+        accountOperationType = validateBindAccount(AccountType.APTOS)
           ? AccountOperationType.COMPLETED
           : AccountOperationType.BIND_MARTIAN
         break

@@ -1,7 +1,6 @@
 import Modal from 'react-modal';
 import styled from 'styled-components';
 
-Modal.setAppElement('#task-confirm-modal');
 export default function ConfirmModal({
   show,
   closeModal,

@@ -13,6 +13,7 @@ import ProjectCreate from '../Components/ProjectCreate';
 import RoleNeed from '../Components/RoleNeed';
 import { fetchProjectList } from '../redux/projectListSlice';
 import { useAppDispatch } from '../redux/store';
+import { chainToChainId } from '../utils';
 
 export default function ProjectNew() {
   const navigate = useNavigate();
@@ -29,16 +30,7 @@ export default function ProjectNew() {
       if (creating) return;
       // if (!isAdmin) return;
       if (!account.info?.token) return;
-      let chainId = -1;
-      if (project.blockchain === BlockchainType.Solana) {
-        chainId = -1;
-      }
-      if (project.blockchain === BlockchainType.Ethereum) {
-        chainId = 1;
-      }
-      if (project.blockchain === BlockchainType.Aptos) {
-        chainId = 2;
-      }
+      const chainId = chainToChainId(project.blockchain);
 
       log.debug('createNewProject', project);
       setCreating(true);

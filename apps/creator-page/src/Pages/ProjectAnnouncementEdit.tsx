@@ -5,7 +5,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useAppConfig } from '../AppProvider';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
+import {
+  fetchProjectDetail,
+  ProjectDetail,
+  selectProjectDetail,
+} from '../redux/projectSlice';
 import { updateProject } from '../api';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
@@ -16,8 +20,10 @@ export default function ProjectAnnouncementEdit() {
   const { slug } = useParams();
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
-  // TODO fix any
-  const [project, setProject] = useState<any>({ ...data });
+
+  const [project, setProject] = useState<ProjectDetail | null>(
+    data && { ...data }
+  );
   const [couldSave, setCouldSave] = useState(false);
 
   const saveProject = useCallback(async () => {
@@ -44,6 +50,8 @@ export default function ProjectAnnouncementEdit() {
       setCouldSave(false);
     }
   }, [data, project]);
+
+  if (!project) return null;
 
   return (
     <EditBox>

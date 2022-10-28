@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-28 14:56:26
+ * @LastEditTime: 2022-10-25 16:54:03
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios'
 import qs from 'qs'
-import { toast } from 'react-toastify'
+import { WlUserReactContextType } from '@ecnft/wl-user-react'
 import { API_BASE_URL } from '../constants'
 export type AxiosCustomHeaderType = {
   // 当前接口是否需要传递token
@@ -21,6 +21,16 @@ export type AxiosCustomConfigType = AxiosRequestConfig & { headers?: AxiosReques
 let store
 export const injectStore = (storeInstance: any) => {
   store = storeInstance
+}
+
+// 从外部注入wlUserReactProvider提供的功能数据 （为了在此文件中访问token等信息）
+let wlUserReactContextValue: WlUserReactContextType | undefined
+export const injectWlUserReactContextValue = (value: any) => {
+  wlUserReactContextValue = value
+}
+let handleAxiosResponse401: () => void | undefined
+export const injectHandleAxiosResponse401 = (func: () => void) => {
+  handleAxiosResponse401 = func
 }
 // axios 实例
 const axiosInstance = axios.create()
@@ -45,9 +55,10 @@ axiosInstance.interceptors.request.use(
     // TODO 这里先默认加Authorization，后续优化
     if (!config.headers) config.headers = {}
     config.headers.Authorization = `Bearer `
-    if (needToken) {
-      const { account } = store.getState()
-      const token = config.headers?.token || (account.isLogin ? account.token : '') // token从store中获取
+    if (needToken && wlUserReactContextValue) {
+      const { isLogin, user } = wlUserReactContextValue
+
+      const token = config.headers?.token || (isLogin ? user.token : '') // token从store中获取
       config.headers.Authorization = `Bearer ${token}`
     }
     // 2、get请求，params参数序列化
@@ -62,30 +73,15 @@ axiosInstance.interceptors.request.use(
 )
 
 // 添加响应拦截器
-let allowExecAuthFailed = true // 是否允许执行认证失效的逻辑
 axiosInstance.interceptors.response.use(
   (response) => {
-    // 如果执行了登录，并且成功，设置下一次响应时允许执行认证失效的逻辑
-    if (response.config.url === '/users/login' && response.status >= 200 && response.status < 400) {
-      allowExecAuthFailed = true
-    }
     // 对响应数据做点什么
     return response
   },
   (error) => {
     if (error.response.status === 401) {
-      // 多个token失效的响应只执行一次logout,提示一次toast
-      if (allowExecAuthFailed) {
-        allowExecAuthFailed = false
-        store.dispatch({
-          type: 'account/logout',
-        })
-        store.dispatch({
-          type: 'account/setConnectWalletModalShow',
-          payload: true,
-        })
-        toast.error('authentication failed, log in again!')
-      }
+      if (handleAxiosResponse401) handleAxiosResponse401()
+      return
     } else {
       // 对响应错误做点什么
       return Promise.reject(error.response?.data || error)

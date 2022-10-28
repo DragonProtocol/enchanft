@@ -8,7 +8,11 @@ import styled from 'styled-components';
 import { useAppConfig } from '../AppProvider';
 import { useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { fetchProjectDetail, selectProjectDetail } from '../redux/projectSlice';
+import {
+  fetchProjectDetail,
+  ProjectDetail,
+  selectProjectDetail,
+} from '../redux/projectSlice';
 import WhitelistSupply from '../Components/Project/Mint/WhitelistSupply';
 import { BlockchainType } from '../Components/Project/types';
 import dayjs from 'dayjs';
@@ -17,6 +21,8 @@ import { updateProject } from '../api';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import isEqual from '../utils/isEqual';
+import MintAddress from '../Components/Project/Mint/MintAddress';
+import { chainIdToChain } from '../utils';
 
 export default function ProjectMintEdit() {
   const { account, updateAccount } = useAppConfig();
@@ -24,8 +30,14 @@ export default function ProjectMintEdit() {
   const { data } = useAppSelector(selectProjectDetail);
   const dispatch = useAppDispatch();
 
-  // TODO fix any
-  const [project, setProject] = useState<any>({ ...data });
+  const [project, setProject] = useState<ProjectDetail | null>(
+    data && {
+      ...data,
+      publicSaleStartTime: data.publicSaleStartTime || Date.now(),
+      publicSaleEndTime:
+        data.publicSaleEndTime || dayjs().add(1, 'M').toDate().getTime(),
+    }
+  );
   const [couldSave, setCouldSave] = useState(false);
 
   const saveProject = useCallback(async () => {
@@ -53,6 +65,8 @@ export default function ProjectMintEdit() {
     }
   }, [data, project]);
 
+  if (!project) return null;
+
   return (
     <ContentBox>
       <EditTitle
@@ -71,24 +85,40 @@ export default function ProjectMintEdit() {
                 publicSalePrice: price,
               });
             }}
-            blockchain={
-              project.chainId === -1
-                ? BlockchainType.Solana
-                : BlockchainType.Ethereum
-            }
+            blockchain={chainIdToChain(project.chainId)}
+          />
+          <MintAddress
+            addr={project.mintUrl || ''}
+            updateAddr={(v) => {
+              setProject({
+                ...project,
+                mintUrl: v,
+              });
+            }}
           />
         </div>
         <div className="right">
           <PublicSaleTime
             startDate={
-              project.publicSaleTime
-                ? new Date(project.publicSaleTime)
+              project.publicSaleStartTime
+                ? new Date(project.publicSaleStartTime)
+                : new Date()
+            }
+            endDate={
+              project.publicSaleEndTime
+                ? new Date(project.publicSaleEndTime)
                 : new Date()
             }
             updateStartDate={(date) => {
               setProject({
                 ...project,
-                publicSaleTime: date.getTime(),
+                publicSaleStartTime: date.getTime(),
+              });
+            }}
+            updateEndDate={(date) => {
+              setProject({
+                ...project,
+                publicSaleEndTime: date.getTime(),
               });
             }}
           />
@@ -145,11 +175,7 @@ export default function ProjectMintEdit() {
                         ],
                       });
                     }}
-                    blockchain={
-                      project.chainId === -1
-                        ? BlockchainType.Solana
-                        : BlockchainType.Ethereum
-                    }
+                    blockchain={chainIdToChain(project.chainId)}
                   />
                 </div>
                 <div className="right">

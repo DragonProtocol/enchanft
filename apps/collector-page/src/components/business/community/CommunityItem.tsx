@@ -78,18 +78,18 @@ const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollo
             </NumberRow>
           )}
         </NumberInfoBox>
-        {displayFollow && (
+        {/* {displayFollow && (
           <CommunityFollow disabled={disabledFollow} isFollowed={isFollowed} onClick={onFollowChangeClick}>
             {isFollowed ? 'Joined' : 'Join'}
           </CommunityFollow>
-        )}
+        )} */}
       </CommunityInfoBox>
     </CommunityItemWrapper>
   )
 }
 export default CommunityItem
 const CommunityItemWrapper = styled(CardItemBox)`
-  height: 450px;
+  height: 400px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

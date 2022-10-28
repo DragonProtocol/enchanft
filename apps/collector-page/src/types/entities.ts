@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 17:48:49
+ * @LastEditTime: 2022-10-28 12:46:32
  * @Description: 与后端entities type定义对应
  */
 
@@ -78,11 +78,17 @@ export enum ActionType {
   CUSTOM = 'CUSTOM',
   NATIVE_BALANCE = 'NATIVE_BALANCE',
   NFT_BALANCE = 'NFT_BALANCE',
+  QUESTIONNAIRE = 'QUESTIONNAIRE',
 }
 export type NftInfo = {
   name: string
   address: string
   url: string
+}
+export enum Chain {
+  EVM = 'EVM',
+  SOLANA = 'SOLANA',
+  APTOS = 'APTOS',
 }
 export type ActionData = {
   url?: string
@@ -95,6 +101,10 @@ export type ActionData = {
   min_native_balance?: number
   nft_accounts?: NftInfo[]
   wallet_url?: string
+  question?: string
+  answer?: string
+  lucky_draw_weight?: number
+  chain?: Chain
 }
 export type Action = {
   id: number
@@ -131,6 +141,11 @@ export enum MintStage {
   SOLDOUT = 'SOLDOUT',
   CLOSED = 'CLOSED',
 }
+export enum GradeType {
+  UNOFFICIAL = 'UNOFFICIAL',
+  OFFICIAL = 'OFFICIAL',
+  VIP = 'VIP',
+}
 export type Project = {
   id: number
   name: string
@@ -145,11 +160,12 @@ export type Project = {
   mintUrl: string
   mintStartTime: number
   whitelistTotalNum: number
-  publicSaleTime: number
+  publicSaleStartTime: number
   publicSalePrice: string
   injectedCoins: number
   chainId: number
   slug: string
+  grade: GradeType
 }
 
 export type ContributionRank = {
@@ -204,13 +220,4 @@ export type Announcement = {
   projectId: number
   title: string
   text: string
-}
-
-/** account */
-export enum AccountType {
-  TWITTER = 'TWITTER',
-  DISCORD = 'DISCORD',
-  SOLANA = 'SOLANA',
-  EVM = 'EVM',
-  APTOS = 'APTOS',
 }

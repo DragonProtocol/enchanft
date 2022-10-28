@@ -22,8 +22,6 @@ import { useParams } from 'react-router-dom';
 import { TASK_SHARE_URI } from '../../utils/constants';
 import IconConfirm from '../Icons/IconConfirm';
 
-// TODO rebuild
-
 export default function WinnerList({
   reward,
   winnerNum,
@@ -63,9 +61,23 @@ export default function WinnerList({
     let tmpList = [...candidateList];
     let num = Math.min(winnerNum, tmpList.length);
     const result: Array<number> = [];
+
     while (num > 0) {
-      const arrLen = tmpList.length;
-      const randomNum = getRandomInt(0, arrLen);
+      let totalWeight: number = 0;
+      tmpList.forEach((element) => {
+        totalWeight += element.luckydrawWeightTotal || 1;
+      });
+      let randomNum = 0;
+      let randVal: number = rand(1, totalWeight);
+      for (let index = 0; index < tmpList.length; index++) {
+        if (randVal <= (tmpList[index].luckydrawWeightTotal || 1)) {
+          randomNum = index;
+          break;
+        } else {
+          randVal -= tmpList[index].luckydrawWeightTotal || 1;
+        }
+      }
+
       const item = tmpList[randomNum];
       result.push(item.id);
       tmpList = [
@@ -568,4 +580,9 @@ function getRandomInt(min: number, max: number) {
   min = Math.ceil(min);
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min)) + min;
+}
+
+function rand(min: number, max: number): number {
+  let n: number = max - min;
+  return min + Math.round(Math.random() * n);
 }

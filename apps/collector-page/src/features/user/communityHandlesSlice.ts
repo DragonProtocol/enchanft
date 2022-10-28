@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 16:12:16
+ * @LastEditTime: 2022-10-27 12:42:34
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
@@ -95,19 +95,6 @@ export const verifyCheckin = createAsyncThunk(
       throw error
     }
   },
-  {
-    condition: (params, { getState }) => {
-      const state = getState() as RootState
-      const {
-        account: { isLogin },
-      } = state
-      // 没有登录,则阻止请求
-      if (!isLogin) {
-        return false
-      }
-      return true
-    },
-  },
 )
 
 export const checkin = createAsyncThunk(
@@ -161,7 +148,7 @@ export const userCommunityHandlesSlice = createSlice({
         state.follow.params = null
         state.follow.status = AsyncRequestStatus.FULFILLED
         state.follow.errorMsg = ''
-        toast.success('follow success')
+        toast.success('apply success')
       })
       .addCase(follow.rejected, (state, action) => {
         console.log('follow rejected', action)
