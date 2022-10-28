@@ -151,7 +151,6 @@ export function Index() {
         loop
         autoPlay
         muted={isMute}
-        preload="metadata"
         poster="/static/images/loading.png"
         // onTimeUpdate={() => {}}
       >
