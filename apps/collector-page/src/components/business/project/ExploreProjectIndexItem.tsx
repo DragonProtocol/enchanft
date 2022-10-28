@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-09 13:22:17
+ * @LastEditTime: 2022-10-28 12:35:08
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -10,13 +10,14 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { MintStage, ProjectStatus, TaskType } from '../../../types/entities'
+import { GradeType, MintStage, ProjectStatus, TaskType } from '../../../types/entities'
 import { formatNumberToUnitString } from '../../../utils/number'
 import { formatDateTime } from '../../../utils/time'
 import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
 import MintStageLabel from './MintStageLabel'
+import ProjectGradeTag from './ProjectGradeTag'
 
 export type ExploreProjectIndexItemDataType = {
   id: number
@@ -33,6 +34,7 @@ export type ExploreProjectIndexItemDataType = {
   communityId: number
   chainId: number
   slug: string
+  grade: GradeType
   tasks?: Array<{
     type: TaskType
     startTime: number
@@ -72,6 +74,7 @@ const ExploreProjectIndexItem: React.FC<ExploreProjectIndexItemProps> = ({
     chainId,
     slug,
     community,
+    grade,
   } = data
   // const {} = {
   //   ...defaultViewConfig,
@@ -82,6 +85,7 @@ const ExploreProjectIndexItem: React.FC<ExploreProjectIndexItemProps> = ({
       onClick={() => navigate(`/${slug}`)}
       animationType={CardItemBoxAnimationType.HOVER_MOVE_UP}
     >
+      <ProjectGradeTag grade={grade} />
       <ProjectImage src={image} />
 
       <ProjectInfoBox>
@@ -109,6 +113,7 @@ const ExploreProjectIndexItemWrapper = styled(CardItemBox)`
   gap: 20px;
   cursor: pointer;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+  position: relative;
 `
 const ProjectImage = styled.img`
   width: 100px;

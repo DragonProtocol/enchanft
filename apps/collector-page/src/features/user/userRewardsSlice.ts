@@ -30,43 +30,21 @@ export const fetchUserRewards = createAsyncThunk<
   {
     rejectValue: FetchRewardsResp
   }
->(
-  'user/rewards/fetchList',
-  async (params, { rejectWithValue }) => {
-    try {
-      const resp = await fetchListForUserReward()
-      const data = resp.data.data || []
-      return { data }
-    } catch (error: any) {
-      if (!error.response) {
-        throw error
-      }
-      return rejectWithValue({
-        data: [],
-        errorMsg: error.response.data,
-      })
+>('user/rewards/fetchList', async (params, { rejectWithValue }) => {
+  try {
+    const resp = await fetchListForUserReward()
+    const data = resp.data.data || []
+    return { data }
+  } catch (error: any) {
+    if (!error.response) {
+      throw error
     }
-  },
-  {
-    condition: (params, { getState }) => {
-      const state = getState() as RootState
-      const {
-        userRewards: { status },
-        account: { isLogin },
-      } = state
-      // 没有登录,则阻止请求
-      if (!isLogin) {
-        userRewardsEntity.removeAll(state.userRewards)
-        return false
-      }
-      // 之前的请求正在进行中,则阻止新的请求
-      // if (status === AsyncRequestStatus.PENDING) {
-      //   return false
-      // }
-      return true
-    },
-  },
-)
+    return rejectWithValue({
+      data: [],
+      errorMsg: error.response.data,
+    })
+  }
+})
 
 export const userRewardsSlice = createSlice({
   name: 'userRewards',

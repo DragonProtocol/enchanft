@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 17:57:10
+ * @LastEditTime: 2022-10-27 12:49:41
  * @Description: 站点布局入口
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -19,9 +19,12 @@ import ScrollBox from '../common/scroll/ScrollBox'
 import MainInner from './MainInner'
 import { matchRoutes, useLocation, useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { fetchFollowedCommunities } from '../../features/user/followedCommunitiesSlice'
-import { fetchUserRewards } from '../../features/user/userRewardsSlice'
-import { fetchTodoTasks, selectAll } from '../../features/user/todoTasksSlice'
+import {
+  fetchFollowedCommunities,
+  removeAll as removeAllFollowedCommunities,
+} from '../../features/user/followedCommunitiesSlice'
+import { fetchUserRewards, removeAll as removeAllUserRewards } from '../../features/user/userRewardsSlice'
+import { fetchTodoTasks, selectAll, removeAll as removeAllTodoTasks } from '../../features/user/todoTasksSlice'
 import { TaskTodoCompleteStatus } from '../../types/entities'
 import { useGAPageView } from '../../hooks'
 import Footer from './Footer'
@@ -56,6 +59,9 @@ const Layout: React.FC = () => {
   // 获取用户相关信息
   useEffect(() => {
     if (!isLogin) {
+      dispatch(removeAllFollowedCommunities())
+      dispatch(removeAllUserRewards())
+      dispatch(removeAllTodoTasks())
       return
     }
     dispatch(fetchFollowedCommunities())
