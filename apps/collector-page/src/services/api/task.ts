@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 15:36:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-05 11:20:58
+ * @LastEditTime: 2022-10-17 15:37:01
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -112,6 +112,35 @@ export function completionOneAction(params: CompletionOneActionParams): AxiosPro
     method: 'post',
     headers: {
       needToken: true,
+    },
+  })
+}
+
+/** 问卷调查提交 */
+export type ConfirmQuestionActionParams = {
+  id: number
+  taskId: number
+  answer: string
+}
+export enum ResponseBizErrCode {
+  ACTION_ANSWER_CORRECT = 1001,
+  ACTION_ANSWER_WRONG = 1002,
+}
+export type ConfirmQuestionActionApiResp = {
+  code: ResponseBizErrCode
+}
+export function confirmQuestionAction(params: ConfirmQuestionActionParams): AxiosPromise<ConfirmQuestionActionApiResp> {
+  const { taskId, id, answer } = params
+  const gaEvent = useGAEvent(TASK_CATALOG_GA)
+  gaEvent(TaskActionGA.VERIFY_ONE_ACTION, id)
+  return request({
+    url: `/tasks/${taskId}/actions/${id}/doing`,
+    method: 'post',
+    headers: {
+      needToken: true,
+    },
+    data: {
+      answer,
     },
   })
 }

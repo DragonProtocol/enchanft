@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-08 14:50:40
+ * @LastEditTime: 2022-10-27 15:23:51
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
 import { AsyncRequestStatus } from '../types'
-import { SearchTaskStatus } from '../types/api'
+import { SearchTaskStatus, TodoTaskItem } from '../types/api'
 import {
   ExploreRecommendTaskItemEntity,
   fetchExploreRecommendTasks,
@@ -27,6 +27,7 @@ import ExploreTaskList, { ExploreTaskListItemsType } from '../components/busines
 import ExploreTaskFilter, { ExploreTaskFilterDataType } from '../components/business/task/ExploreTaskFilter'
 import CardBox from '../components/common/card/CardBox'
 import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../constants'
+import { selectAll as selectAllForTodoTasks } from '../features/user/todoTasksSlice'
 
 const formatStoreDataToComponentDataByRecommendTasks = (
   tasks: ExploreRecommendTaskItemEntity[],
@@ -40,15 +41,20 @@ const formatStoreDataToComponentDataByRecommendTasks = (
   })
 }
 
-const formatStoreDataToComponentDataByTasks = (tasks: ExploreSearchTaskItemEntity[]): ExploreTaskListItemsType => {
+const formatStoreDataToComponentDataByTasks = (
+  tasks: ExploreSearchTaskItemEntity[],
+  todoTasks: TodoTaskItem[],
+): ExploreTaskListItemsType => {
   return tasks.map((task) => {
+    const findTask = todoTasks.find((item) => item.id === task.id)
     return {
-      data: task,
+      data: findTask ? { ...task, status: findTask.status } : task,
     }
   })
 }
 const Events: React.FC = () => {
   const dispatch = useAppDispatch()
+  const todoTasks = useAppSelector(selectAllForTodoTasks)
   // recommend tasks
   const { status: recommendTasksStatus } = useAppSelector(selectExploreRecommendTasksState)
   const recommendTasks = useAppSelector(selectAllForExploreRecommendTasks)
@@ -75,7 +81,7 @@ const Events: React.FC = () => {
   // 展示数据
   const recommendTaskItems = formatStoreDataToComponentDataByRecommendTasks(recommendTasks)
   const recommendTasksLoading = recommendTasksStatus === AsyncRequestStatus.PENDING ? true : false
-  const searchTaskItems = formatStoreDataToComponentDataByTasks(tasks)
+  const searchTaskItems = formatStoreDataToComponentDataByTasks(tasks, todoTasks)
   const searchTasksLoading = searchTasksStatus === AsyncRequestStatus.PENDING ? true : false
 
   return (

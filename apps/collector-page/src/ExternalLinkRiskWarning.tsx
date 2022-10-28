@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-09 14:54:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-10 18:35:54
+ * @LastEditTime: 2022-10-18 14:27:43
  * @Description: 外部链接风险提示
  */
 import React from 'react'
@@ -54,9 +54,9 @@ export const startExternalLinkNavigationListener = () => {
       var hostname = url.split('/')[2]
       if (hostname && !noWarningDomains.some((domain) => hostname.endsWith(domain))) {
         const newUrl = generateExternalLinkRiskWarningUrl(url)
-        open(newUrl, ...args)
+        return open(newUrl, ...args)
       } else {
-        open(url, ...args)
+        return open(url, ...args)
       }
     } as WindowOpen
   })(window.open)

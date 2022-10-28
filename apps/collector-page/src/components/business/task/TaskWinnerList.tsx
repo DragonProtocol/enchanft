@@ -2,15 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 11:27:03
+ * @LastEditTime: 2022-10-25 17:03:43
  * @Description: file description
  */
+import { UserAvatar } from '@ecnft/wl-user-react'
 import React from 'react'
 import styled from 'styled-components'
-import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
-import { omitIntermediateStr } from '../../../utils/string'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import UserAvatar from '../user/UserAvatar'
 
 export type WinnerItemDataType = {
   id: number
@@ -21,18 +19,18 @@ export type WinnerItemDataType = {
 
 export type TaskWinnerListProps = {
   items: WinnerItemDataType[]
-  highlightPubkeys?: string[]
+  highlightIds?: number[]
 }
 
-const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items, highlightPubkeys = [] }: TaskWinnerListProps) => {
+const TaskWinnerList: React.FC<TaskWinnerListProps> = ({ items, highlightIds = [] }: TaskWinnerListProps) => {
   return (
     <TaskWinnerListWrapper>
       <WinnerTitleBox>Winner List</WinnerTitleBox>
       <WinnerListBox>
         {items.map((item, index) => (
           <WinnerItemBox key={index}>
-            <WinnerItemAvatar src={item.avatar} multiavatarId={getMultiavatarIdByUser(item)} />
-            <WinnerItemUserName highlight={highlightPubkeys.includes(item.pubkey)}>{item.name}</WinnerItemUserName>
+            <WinnerItemAvatar user={item} />
+            <WinnerItemUserName highlight={highlightIds.includes(item.id)}>{item.name}</WinnerItemUserName>
             <WinnerItemPubkey number={1}>{item.pubkey}</WinnerItemPubkey>
           </WinnerItemBox>
         ))}

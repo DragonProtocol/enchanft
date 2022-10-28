@@ -32,42 +32,20 @@ export const fetchTodoTasks = createAsyncThunk<
   {
     rejectValue: FetchTodoTasksResp
   }
->(
-  'user/todoTasks/fetchList',
-  async (params, { rejectWithValue }) => {
-    try {
-      const resp = await fetchListForUserTodoTask()
-      return { data: resp.data.data || [] }
-    } catch (error: any) {
-      if (!error.response) {
-        throw error
-      }
-      return rejectWithValue({
-        data: [],
-        errorMsg: error.response.data,
-      })
+>('user/todoTasks/fetchList', async (params, { rejectWithValue }) => {
+  try {
+    const resp = await fetchListForUserTodoTask()
+    return { data: resp.data.data || [] }
+  } catch (error: any) {
+    if (!error.response) {
+      throw error
     }
-  },
-  {
-    condition: (params, { getState }) => {
-      const state = getState() as RootState
-      const {
-        userTodoTasks: { status },
-        account: { isLogin },
-      } = state
-      // 没有登录,则阻止请求
-      if (!isLogin) {
-        todoTasksEntity.removeAll(state.userTodoTasks)
-        return false
-      }
-      // 之前的请求正在进行中,则阻止新的请求
-      // if (status === AsyncRequestStatus.PENDING) {
-      //   return false
-      // }
-      return true
-    },
-  },
-)
+    return rejectWithValue({
+      data: [],
+      errorMsg: error.response.data,
+    })
+  }
+})
 
 export const userTodoTasksSlice = createSlice({
   name: 'UserTodoTasks',
@@ -75,6 +53,9 @@ export const userTodoTasksSlice = createSlice({
   reducers: {
     updateOne: todoTasksEntity.updateOne,
     setOne: todoTasksEntity.setOne,
+    removeAll: (state) => {
+      todoTasksEntity.removeAll(state)
+    },
     updateOneAction: (state, action: PayloadAction<TodoTaskActionItem>) => {
       const { taskId } = action.payload
       const { selectById } = todoTasksEntity.getSelectors()
@@ -121,5 +102,5 @@ export const userTodoTasksSlice = createSlice({
 const { actions, reducer } = userTodoTasksSlice
 export const selectUserTodoTasksState = (state: RootState) => state.userTodoTasks
 export const { selectAll, selectById } = todoTasksEntity.getSelectors((state: RootState) => state.userTodoTasks)
-export const { updateOne, setOne, updateOneAction } = actions
+export const { updateOne, setOne, updateOneAction, removeAll } = actions
 export default reducer
