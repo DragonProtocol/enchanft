@@ -43,3 +43,4 @@ Thumbs.db
 
 # lock Files
 pnpm-lock.yaml
+yarn.lock
