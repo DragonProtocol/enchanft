@@ -8,9 +8,10 @@
 }
 
 *{
-  word-break: break-all;
+  /* word-break: break-all; */
+  /* hyphens:auto; */
 }
-
+html, body { scroll-behavior:smooth; }
 html {
   /* font-size: min(max(1rem, 4vw), 22px); */
   
@@ -28,7 +29,7 @@ html {
     Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
   line-height: 1.5;
   tab-size: 4;
-  scroll-behavior: smooth;
+  /* scroll-behavior: smooth; */
   color: white;
 }
 body {
@@ -36,6 +37,11 @@ body {
   line-height: inherit;
   margin: 0;
 }
+
+/* a:hover{
+  text-decoration: underline;
+} */
+
 h1,
 h2,
 /* p, */
@@ -57,7 +63,7 @@ h2 {
 }
 a {
   color: inherit;
-  text-decoration: inherit;
+  text-decoration: underline;
 }
 pre {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,

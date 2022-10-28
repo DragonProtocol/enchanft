@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import Image from 'next/image';
 import styled from 'styled-components';
@@ -10,13 +10,25 @@ export function Index() {
   const [isMute, setIsMute] = useState(true);
   const [isExpand, setIsExpand] = useState(false);
 
+  const offset = (el) => {
+    const rect = el.getBoundingClientRect(),
+      scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
+      scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return { top: rect.top + scrollTop, left: rect.left + scrollLeft };
+  };
+
   const scrollToAnchor = (anchorName) => {
-    if (anchorName) {
-      let anchorElement = document.getElementById(anchorName);
-      if (anchorElement) {
-        anchorElement.scrollIntoView();
-      }
-    }
+    window.scrollTo({
+      top: offset(document.getElementById(anchorName)).top - 60,
+      behavior: 'smooth',
+    });
+    setIsExpand(false);
+    // if (anchorName) {
+    //   let anchorElement = document.getElementById(anchorName);
+    //   if (anchorElement) {
+    //     anchorElement.scrollIntoView({behavior:'smooth'});
+    //   }
+    // }
   };
 
   const renderProfile = (
@@ -61,7 +73,8 @@ export function Index() {
           alt={'basic'}
         />
       </div>
-      <div
+
+      {/* <div
         className="nav-item"
         // onClick={() =>
         // window.open('https://twitter.com/mongols_nft', '__blank')
@@ -73,7 +86,7 @@ export function Index() {
           objectFit="contain"
           alt={'basic'}
         />
-      </div>
+      </div> */}
 
       {/* <div className="nav-item">
         <Image
@@ -114,19 +127,79 @@ export function Index() {
     </div>
   );
 
+  useEffect(() => {
+    // document.addEventListener('WeixinJSBridgeReady', function () {
+    let video = document.getElementById('video') as HTMLVideoElement | null;
+    if (video != null) {
+      video.play();
+    }
+    // });
+  }, []);
+
   return (
-    <Wrapper>
+    <Wrapper lang="en">
       <StyledVideo
         x5-video-player-type="h5"
+        x5-video-orientation="h5"
         x-webkit-airplay="true"
-        webkit-playsinline="true"
+        webkit-playsInline="true"
+        playsInline
+        width="100%"
+        height="100%"
+        controls
+        preload={'auto'}
         loop
         autoPlay
         muted={isMute}
-        onTimeUpdate={() => {}}
+        poster="/static/images/loading.png"
+        // onTimeUpdate={() => {}}
       >
         <source src={require('../public/static/bg.mp4')} type="video/mp4" />
       </StyledVideo>
+
+      {/* <picture className="bg-mobile">
+        <source
+        media="(max-width:650px)"
+          srcSet={
+            // '/static/videos/bg-mobile.mp4'
+            'https://caskbaatar.com/_next/static/videos/bg-mobile-95f39e8b2801b4844e665ed1d4f81dd1.mp4'
+          }
+          type="video/mp4"
+        />
+        <img
+          src={'/static/images/loading.png'}
+          alt="An image of an explosion."
+        />
+      </picture> */}
+
+      <div className="bg-mobile">
+        <Image
+          className="image"
+          src={'/static/images/bg.jpeg'}
+          layout="fill"
+          objectFit="cover"
+          alt={'basic'}
+        />
+      </div>
+      {/* <StyledVideo
+        id="video"
+        className="bg-mobile"
+        x5-video-player-type="h5"
+        x-webkit-airplay="true"
+        webkit-playsInline="true"
+        loop
+        autoPlay
+        playsInline
+        muted={isMute}
+        preload="metadata"
+        poster={'/static/images/bg.png'}
+        // onTimeUpdate={() => {}}
+      >
+        <source
+          src={require('../public/static/bg-mobile.mp4')}
+          type="video/mp4"
+        />
+      </StyledVideo> */}
 
       <div className={classnames('sidebar', { expand: isExpand })}>
         <div
@@ -134,8 +207,15 @@ export function Index() {
           onClick={() => setIsExpand((isExpand) => !isExpand)}
         >
           <Image
-            className="image"
+            className="image more-icon"
             src={'/static/images/more.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
+          <Image
+            className="image close-icon"
+            src={'/static/images/close.png'}
             layout="fill"
             objectFit="contain"
             alt={'basic'}
@@ -144,16 +224,16 @@ export function Index() {
         {[
           'Home',
           'CaskBaatar\ncontract',
-          'About',
+          'Roadmap',
+          // 'About',
           'Story',
-          'Rodmap',
           'Team',
           'FAQ',
         ]?.map((key) => (
           <div
             className="sidebar-item"
             key={key}
-            onClick={() => scrollToAnchor(key)}
+            onClick={() => scrollToAnchor(key.replace('\n', ' '))}
           >
             {key}
           </div>
@@ -163,7 +243,9 @@ export function Index() {
       <div className="logo">
         <Image
           src={'/static/images/logo.png'}
-          width={92}
+          width={62}
+          // width={92}
+          // height={76}
           height={52}
           layout="fixed"
           objectFit="cover"
@@ -216,20 +298,14 @@ export function Index() {
         </div>
         <br />
         <div className="text">
-          Each of the CaskBaatar’s NFT collections is bound to a single whisky
-          cask. Among them, the artworks are designed by the famous Mongolian
-          artist Yideer, and the single whisky cask are selected by professional
-          cask selectors. Each CaskBaatar NFT contains an NFT picture and at
-          least a bottle of whisky.
+          Cask refers to the aged barrrels of whisky,rum and other spirits.
+          Baatar means hero in Mongolian.
           <br />
           <br />
-          CaskBaatar NFT is created based on the image of a Mongolian man, and
-          matches the costumes of different periods from the 13th century to the
-          present.As a Mongolian in the 21st century, the artist Yieder, while
-          recalling the ancient history and culture, mostly conveys the concept
-          of "Mongolian in the 21st century", and shows the state of
-          contemporary Mongolian people from his perspective. Give the character
-          visual representation of tradition and future.
+          Each of the CaskBaatar NFT collections is bound to a single whisky
+          cask. In another words, CaskBaatar has 2 layers,the artwork layer
+          designed by top Mongolian artist Yideer,and the whisky cask layer
+          selected by top cask experts.
         </div>
       </div>
       <div className="image-container">
@@ -249,7 +325,7 @@ export function Index() {
             loop
             autoPlay
             muted={isMute}
-            onTimeUpdate={() => {}}
+            // onTimeUpdate={() => {}}
           >
             <source
               src={require('../public/static/avatar_loop.mp4')}
@@ -276,8 +352,36 @@ export function Index() {
             alt={'basic'}
           />
         </div>
+        <div className="title text">
+          we use the{' '}
+          <a href="https://erc721r.org" target="__blank">
+            ERC721R
+          </a>{' '}
+          smart contract.
+        </div>
+        <br />
+        <div className="text">
+          50% of the crypto you spend will be pledged in the contract, and the
+          remaining 50% will be transferred to the managing team.
+          <br />
+          <br />
+          We will sell the cask bound to the NFT in 2 to 5 years, when you would
+          receive the earnings proportionally, and the managing team will
+          withdraw the pledged crypto.
+          <br />
+          <br />
+          You can trade or burn the NFT before we sell the cask.
+          <br />
+          <br />
+          <div className="text-show">
+            If you trade, the crypto pledged in it would be transferred to the
+            buyer.
+            <br />
+            If you burn, the crypto pledged in it would be transferred to you.
+          </div>
+        </div>
 
-        <div className="contract-wrapper">
+        {/* <div className="contract-wrapper">
           <div className="contract-row row">
             <div className="contract-box">
               Our technical team comes from EnchaNFT Company in Singapore, and
@@ -348,6 +452,23 @@ export function Index() {
               </div>
             </div>
           </div>
+        </div> */}
+        <div className="roadmap title-img big-title-img" id="Roadmap">
+          <Image
+            src={'/static/images/roadmap.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
+        </div>
+        <div className="image-container map-box">
+          <Image
+            className={'image map'}
+            src={'/static/images/new-map.png'}
+            layout="fill"
+            objectFit="contain"
+            alt={'basic'}
+          />
         </div>
       </div>
 
@@ -364,7 +485,7 @@ export function Index() {
           </div>
           <div className="about-box">
             <div className="left-box">
-              <div className="about title-img" id="About">
+              {/* <div className="about title-img" id="About">
                 <Image
                   src={'/static/images/about.png'}
                   layout="fill"
@@ -384,8 +505,8 @@ export function Index() {
                 <br />
                 The owners of CaskBaatar NFT also become contributors and
                 investors to our mission.
-              </div>
-              <div className="about title-img top big-title-img" id="Story">
+              </div> */}
+              <div className="about title-img big-title-img" id="Story">
                 <Image
                   src={'/static/images/story.png'}
                   layout="fill"
@@ -394,8 +515,15 @@ export function Index() {
                 />
               </div>
               <div className="about-text">
-                The vision of CaskBaatar is to combine the art collection and
-                the investment in whisky through web3.
+                The images of CaskBaatar are created by Yideer.
+                <br />
+                <br />
+                A Mongolian artist who try to convey the concept of "Mongolians
+                in the 21st century", and show the state of contemporary
+                Mongolian people and cultural diversity from his perspective.
+                <br />
+                <br />
+                We are a group of people who love NFT and whisky.
                 <br />
                 <br />
                 Only by integrating NFT with the real things can we create a
@@ -403,8 +531,12 @@ export function Index() {
                 significant value of this project.
                 <br />
                 <br />
-                The owners of CaskBaatar NFT also become contributors and
-                investors to our mission.
+                We find that NFT and whisky share the same characteristics such
+                as unique identity and mobility.
+                <br />
+                <br />
+                Therefore, Let’s make NFT and the whisky investment more
+                interesting!
               </div>
             </div>
             <div className="about-avatar-box">
@@ -416,7 +548,7 @@ export function Index() {
                 loop
                 autoPlay
                 muted={isMute}
-                onTimeUpdate={() => {}}
+                // onTimeUpdate={() => {}}
               >
                 <source
                   src={require('../public/static/images/about-avatar.mp4')}
@@ -462,7 +594,7 @@ export function Index() {
           </div>
         </div> */}
 
-        <div className="roadmap title-img big-title-img" id="Rodmap">
+        {/* <div className="roadmap title-img big-title-img" id="Rodmap">
           <Image
             src={'/static/images/roadmap.png'}
             layout="fill"
@@ -470,6 +602,7 @@ export function Index() {
             alt={'basic'}
           />
         </div>
+         */}
 
         <div className="image-container map-wrapper">
           {/* <Image
@@ -478,7 +611,7 @@ export function Index() {
           objectFit="contain"
           alt={'basic'}
         /> */}
-          <div className="image-container map-box">
+          {/* <div className="image-container map-box">
             <Image
               className={'image map'}
               src={'/static/images/map.png'}
@@ -503,7 +636,7 @@ export function Index() {
               Whitelist extraction of <br />
               Exclusive NFT collection
             </div>
-          </div>
+          </div> */}
 
           <div className="black-cloud image-container">
             <Image
@@ -559,11 +692,7 @@ export function Index() {
         <div className="profile-inner">
           <div className="row">
             {renderProfile('/static/images/Oddie.png', 'Oddie', 'Founder')}
-            {renderProfile(
-              '/static/images/Yideer.png',
-              'Yideer',
-              'Chief Artist'
-            )}
+            {renderProfile('/static/images/Yideer.png', 'Yideer', 'Artist')}
             {renderProfile(
               '/static/images/Tony.png',
               'Tony',
@@ -578,7 +707,7 @@ export function Index() {
             {renderProfile(
               '/static/images/Ken.png',
               'Mr.Ken',
-              'Professional Cask Selector'
+              'Senior Whisky Consultants'
             )}
           </div>
           <div className="row">
@@ -623,9 +752,10 @@ export function Index() {
         <div className="faq-item">
           <div className="ques">Is CaskBaatar a good investment?</div>
           The success of the project depends on many factors. We do not have the
-          magic to predict, so it is impossible to know how it will go, but we
-          strongly believe in our project and think it has a bright future
-          ahead, but ultimately you will have to decide for yourself.
+          magic to predict, so it is impossible to know how it will go, but
+          whiskey cask is a good investment, we strongly believe in our project
+          and think it has a bright future ahead, but ultimately you will have
+          to decide for yourself.
         </div>
         <div className="faq-item">
           <div className="ques">
@@ -642,6 +772,14 @@ export function Index() {
           </div>
           Yes, you can use the image of CaskBaatar owned by you for commercial
           purpose. However, you are not allowed to modify the image.
+        </div>
+        <div className="faq-item">
+          <div className="ques">
+            If the cask is traded in currency, how do we calculate the profit?
+          </div>
+          Holders buy the NFT with crypto. If the cask is purchased and sold in
+          currency, we will calculate the growth rate of the cask price and
+          return the crypto with profit to the holder.
         </div>
       </div>
       {renderNavComponents(true)}
@@ -683,7 +821,9 @@ const StyledVideo = styled.video`
   object-fit: cover;
   left: 0;
   top: 0;
-  z-index: 0;
+  /* z-index: 0; */
+  background-color: #071726;
+
   /* opacity: 0.9; */
 `;
 
@@ -697,6 +837,23 @@ const Wrapper = styled.div`
   background-size: contain;
   /* overflow: hidden; */
   /* padding-top: 45vw; */
+
+  .bg-mobile {
+    position: absolute;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    left: 0;
+    top: 0;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    @media (min-width: 700px) {
+      display: none;
+    }
+  }
 
   .image-container {
     width: 100%;
@@ -721,7 +878,7 @@ const Wrapper = styled.div`
     overflow: hidden;
     border-radius: 55px;
     font-size: 0.95rem;
-    transition: all 1.5s cubic-bezier(0.075, 0.82, 0.165, 1);
+    transition: all 0.5s cubic-bezier(0.075, 0.82, 0.165, 1);
     z-index: 999;
     font-family: 'Futura Condensed';
 
@@ -729,6 +886,11 @@ const Wrapper = styled.div`
       max-height: 800px;
       background: #07142380;
     }
+
+    .close-icon {
+      display: none !important;
+    }
+
     .sidebar-item {
       text-align: center;
       margin: 20px auto;
@@ -740,8 +902,46 @@ const Wrapper = styled.div`
     }
   }
 
+  @media (max-width: 960px) {
+    .sidebar {
+      width: 100%;
+      top: 0;
+      left: 0;
+      border-radius: 0;
+      font-size: 1.1rem;
+      padding: 0 32px;
+      .sidebar-item {
+        text-align: left;
+        border-bottom: 1px solid #606263;
+        white-space: nowrap;
+        &:last-of-type {
+          border-bottom: none;
+        }
+      }
+      .more {
+        width: 1.5rem;
+        margin-right: 0px;
+        margin-top: 30px;
+        filter: grayscale(100%) brightness(200%) !important;
+      }
+      &:hover {
+        max-height: 50px;
+        background: transparent;
+      }
+    }
+
+    .expand {
+      background: black !important;
+      .more-icon {
+        display: none !important;
+      }
+      .close-icon {
+        display: block !important;
+      }
+    }
+  }
   .expand {
-    max-height: 800px;
+    max-height: 800px !important;
     background: #07142380;
     /* background: #07142366; */
   }
@@ -757,10 +957,12 @@ const Wrapper = styled.div`
         brightness(95%) contrast(101%);
     }
   }
+
   .bg-t {
     margin-top: -100px;
     padding-top: 100px;
-    padding-bottom: 15rem;
+    padding-bottom: 5rem;
+    /* padding-bottom: 15rem; */
     background-image: url('/static/images/texture-top.png');
     /* background-repeat: no-repeat; */
     background-size: 100%;
@@ -779,8 +981,14 @@ const Wrapper = styled.div`
 
   .logo {
     position: absolute;
-    top: 10px;
-    left: 0px;
+    top: 20px;
+    left: 32px;
+    @media (max-width: 800px) {
+      span {
+        width: 42px !important;
+        height: 32px !important;
+      }
+    }
   }
 
   .bg-texture {
@@ -833,7 +1041,7 @@ const Wrapper = styled.div`
     .wl-xyz {
       /* rio 2.6 */
       width: 42px;
-      height: 13px;
+      height: 10px;
       /* width: 42px;
       height: 16px; */
     }
@@ -847,7 +1055,7 @@ const Wrapper = styled.div`
       }
       .wl-xyz {
         width: 52px;
-        height: 20px;
+        height: 17px;
       }
     }
 
@@ -858,7 +1066,7 @@ const Wrapper = styled.div`
       }
       .wl-xyz {
         width: 72px;
-        height: 27px;
+        height: 24px;
       }
       & > * + * {
         margin-left: 20px;
@@ -916,8 +1124,15 @@ const Wrapper = styled.div`
     overflow: hidden;
     background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
       url('/static/images/middle-bg.png');
+
     background-repeat: no-repeat;
     background-size: cover;
+    @media (max-width: 800px) {
+      background-image: url('/static/images/middle-bg-mobile.png');
+      background-position-x: center;
+      background-position-y: -60px;
+      background-size: auto;
+    }
   }
 
   .title-gif {
@@ -951,7 +1166,10 @@ const Wrapper = styled.div`
     height: 100px;
     margin: 0 auto;
     position: relative;
-    margin-top: calc(2vw);
+    margin-top: calc(4vw);
+    @media (max-width: 700px) {
+      margin-top: -20px;
+    }
   }
 
   .flag {
@@ -1044,6 +1262,10 @@ const Wrapper = styled.div`
   .contract {
     margin-top: calc(3.125rem + 2.2vw);
     /* margin-top: 50px; */
+    margin-bottom: calc(2.125rem + 2.2vw);
+  }
+  .text-show {
+    color: #ff9d69;
   }
 
   .contract-row {
@@ -1189,18 +1411,29 @@ const Wrapper = styled.div`
     position: relative;
     display: flex;
     justify-content: space-between;
+    padding-bottom: 20rem;
+    /* padding-bottom: 15rem; */
     /* display: flex; */
     .about-text {
-      width: 120%;
+      width: 100%;
+      /* @media (max-width: 800px) {
+        width: 100%;
+      } */
+      /* width: 120%; */
+      /* word-break: break-word; */
+      /* text-align: justify; */
       margin-top: 10px;
       font-size: 1.2rem;
-      text-shadow: 4px 8px 25px rgba(13, 44, 69, 0.6);
+      text-shadow: 4px 8px 25px rgba(13, 44, 69, 1);
     }
     .left-box {
       display: inline-block;
-      width: 50%;
+      width: 100%;
       position: relative;
       z-index: 2;
+      @media (min-width: 800px) {
+        width: 43%;
+      }
 
       /* position: absolute;
       top: 2vw;
@@ -1218,12 +1451,13 @@ const Wrapper = styled.div`
     .about-avatar-box {
       position: sticky;
       top: 0;
-      width: 50%;
+      width: 49%;
       height: calc(min(80vw, 1400px) * 0.5);
       z-index: 1;
-      display: inline-block;
       vertical-align: top;
+      display: none;
       @media (min-width: 800px) {
+        display: inline-block;
         width: 35%;
         height: calc(min(80vw, 1400px) * 0.35);
       }
@@ -1265,7 +1499,8 @@ const Wrapper = styled.div`
 
   .roadmap {
     width: 200px;
-    margin: 200px auto 50px;
+    margin: 00px auto 20px;
+    /* margin: 100px auto 20px; */
     z-index: 1;
   }
 
@@ -1343,7 +1578,8 @@ const Wrapper = styled.div`
   }
 
   .team {
-    margin: 200px auto 50px;
+    margin: -180px auto 50px;
+    /* margin: -100px auto 50px; */
   }
 
   .black-cloud {

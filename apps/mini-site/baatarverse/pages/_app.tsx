@@ -6,7 +6,6 @@ import './styles.css';
 import favicon from '../public/static/favicon.png'
 
 function CustomApp({ Component, pageProps }: AppProps) {
-  console.log(favicon,'favicon')
   return (
     <>
       <Head>
