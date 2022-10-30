@@ -137,6 +137,7 @@ type LoginParamsForTwitterAccount = {
 type LoginParamsForDiscordAccount = {
   type: AccountType;
   code: string;
+  callback?: string;
 };
 type LoginParamsMap = {
   [AccountType.TWITTER]: LoginParamsForTwitterAccount;
