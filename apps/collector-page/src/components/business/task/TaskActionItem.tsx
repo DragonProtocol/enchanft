@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 19:14:04
+ * @LastEditTime: 2022-10-31 12:03:24
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -25,7 +25,7 @@ import ActionDiscordObtainRole from './actions/ActionDiscordObtainRole'
 import ActionNativeBalance from './actions/ActionNativeBalance'
 import ActionNftBalance from './actions/ActionNftBalance'
 import ActionQuestionnaire from './actions/ActionQuestionnaire'
-
+import SubtractImg from '../../imgs/subtract.svg'
 export type TaskActionItemDataType = {
   id: number
   name: string
@@ -134,6 +134,12 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       onVerifyAction(data)
     }
   }, [])
+  const renderWeight = useCallback(() => {
+    if (actionData.lucky_draw_weight) {
+      return <TaskActionLuckyDrawWeight>+{actionData.lucky_draw_weight}</TaskActionLuckyDrawWeight>
+    }
+    return null
+  }, [actionData])
   const renderStatus = () => {
     if (allowHandle) {
       switch (status) {
@@ -154,7 +160,10 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   return (
     <TaskActionItemWrapper>
       <TaskActionContent>{renderAction()}</TaskActionContent>
-      {renderStatus()}
+      <TaskActionRight>
+        {renderWeight()}
+        {renderStatus()}
+      </TaskActionRight>
     </TaskActionItemWrapper>
   )
 }
@@ -172,6 +181,25 @@ const TaskActionItemWrapper = styled.div`
 const TaskActionContent = styled.div`
   flex: 1;
 `
+const TaskActionRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`
 const TaskActionStatusTodo = styled.div`
   cursor: pointer;
+  height: 24px;
+`
+const TaskActionLuckyDrawWeight = styled.div`
+  width: 20px;
+  height: 16px;
+  text-align: center;
+  background-image: url(${SubtractImg});
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 16px;
+  color: #f7f9f1;
 `
