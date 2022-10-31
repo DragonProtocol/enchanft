@@ -307,7 +307,7 @@ export default function Actions({
     if (questionnaire.valid) {
       questionnaire.data.forEach((item) => {
         const { question, answer, luckyDrawWeight } = item;
-        if (question.trim() && answer.trim()) {
+        if (question.trim() && answer.trim() && answer.trim()) {
           actions.push({
             name: question,
             type: ActionType.QUESTIONNAIRE,
@@ -650,7 +650,7 @@ export default function Actions({
                 }}
               />
               <span id="questionnaire" className="msg">
-                Questionnaire
+                Verify the answer
               </span>
               <IconQuestion />
             </div>
