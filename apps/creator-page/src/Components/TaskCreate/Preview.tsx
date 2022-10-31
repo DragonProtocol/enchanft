@@ -103,8 +103,14 @@ export default function Preview({
                   </span>
                 )}
               </div>
+
               <div className="desc">
-                <p>{state.description}</p>
+                <div className="ql-snow">
+                  <div
+                    className="ql-editor"
+                    dangerouslySetInnerHTML={{ __html: state.description }}
+                  ></div>
+                </div>
               </div>
             </div>
             <div className="right">
@@ -298,6 +304,7 @@ const TaskPreviewWrapper = styled.div`
           font-weight: 400;
           font-size: 14px;
           line-height: 21px;
+          display: initial;
 
           color: rgba(51, 51, 51, 0.6);
 
