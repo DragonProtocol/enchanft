@@ -160,6 +160,7 @@ export function createTask(data: CreateTaskState, token: string) {
       luckyDraw: data.reward.luckyDraw,
       data: {
         token_num: data.reward.token_num,
+        whitelist_id: data.reward.whitelist_id,
       },
     },
     actions: data.actions.map((item) => {

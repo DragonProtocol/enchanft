@@ -5,6 +5,7 @@ import log from 'loglevel';
 import {
   State as CreateTaskState,
   DefaultState,
+  RewardType,
 } from '../Components/TaskCreate/type';
 import Basic from '../Components/TaskCreate/Basic';
 import Actions from '../Components/TaskCreate/Actions';
@@ -34,6 +35,16 @@ export default function TaskNew() {
 
   const [state, setState] = useState<CreateTaskState>({
     ...DefaultState,
+    reward:
+      project?.whitelists && project?.whitelists.length > 0
+        ? {
+            ...DefaultState.reward,
+            whitelist_id: project?.whitelists[0].id,
+          }
+        : {
+            ...DefaultState.reward,
+            type: RewardType.OTHERS,
+          },
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const submitTask = useCallback(async () => {
@@ -113,7 +124,7 @@ export default function TaskNew() {
 
   if (!project) return null;
 
-  log.debug({ project });
+  log.debug({ state });
   return (
     <>
       <NewBox style={{ display: (openPreview && 'none') || '' }}>
@@ -131,6 +142,7 @@ export default function TaskNew() {
         <Basic
           hasInviteBot={hasInviteBot || !!project.community.discordId}
           state={state}
+          whitelist={project.whitelists}
           updateState={(newState) => {
             setState({ ...newState });
           }}

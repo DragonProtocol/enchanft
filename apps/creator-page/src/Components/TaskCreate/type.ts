@@ -98,6 +98,7 @@ export type Reward = {
   luckyDraw: boolean;
   name?: string;
   token_num?: number;
+  whitelist_id?: number;
 };
 
 export type State = {

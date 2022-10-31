@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { RewardType, State } from './type';
 import AddSvg from '../imgs/add.svg';
+import ArrowDown from '../Icons/svgs/arrow_down.svg';
 import dayjs from 'dayjs';
 import UploadImgModal from '../UploadImgModal';
 import { useCallback, useState } from 'react';
@@ -13,14 +14,17 @@ import { numberInput } from '../../utils';
 import { AxiosError } from 'axios';
 import SwitchBtn from '../SwitchBtn';
 import RichText from '../RichText';
+import { Whitelist } from '../../redux/projectSlice';
 
 export default function CreateTaskBasic({
   hasInviteBot,
   state,
   updateState,
+  whitelist,
 }: {
   hasInviteBot: boolean;
   state: State;
+  whitelist: Whitelist[];
   updateState: (arg0: State) => void;
 }) {
   const { account, updateAccount } = useAppConfig();
@@ -238,24 +242,33 @@ export default function CreateTaskBasic({
             <div>
               <div className="content-item">
                 <h4>Reward</h4>
-                <div className="reward-btn-group">
-                  <button
-                    className={
-                      state.reward.type === RewardType.WHITELIST ? 'active' : ''
-                    }
-                    onClick={() => {
-                      updateState({
-                        ...state,
-                        reward: {
-                          ...state.reward,
-                          name: '',
-                          type: RewardType.WHITELIST,
-                        },
-                      });
-                    }}
-                  >
-                    Whitelist
-                  </button>
+                <div
+                  className={
+                    'reward-btn-group ' +
+                    (whitelist.length > 0 ? 'three' : 'two')
+                  }
+                >
+                  {whitelist.length > 0 && (
+                    <button
+                      className={
+                        state.reward.type === RewardType.WHITELIST
+                          ? 'active'
+                          : ''
+                      }
+                      onClick={() => {
+                        updateState({
+                          ...state,
+                          reward: {
+                            ...state.reward,
+                            name: '',
+                            type: RewardType.WHITELIST,
+                          },
+                        });
+                      }}
+                    >
+                      Whitelist
+                    </button>
+                  )}
                   <button
                     className={
                       state.reward.type === RewardType.OTHERS ? 'active' : ''
@@ -292,6 +305,29 @@ export default function CreateTaskBasic({
                     Contribution Token
                   </button>
                 </div>
+                {state.reward.type === RewardType.WHITELIST && (
+                  <select
+                    title="whitelist"
+                    value={state.reward.whitelist_id}
+                    onChange={(e) => {
+                      updateState({
+                        ...state,
+                        reward: {
+                          ...state.reward,
+                          whitelist_id: Number(e.target.value),
+                        },
+                      });
+                    }}
+                  >
+                    {whitelist.map((item, idx) => {
+                      return (
+                        <option key={item.id} value={item.id}>
+                          Whitelist {idx + 1}
+                        </option>
+                      );
+                    })}
+                  </select>
+                )}
                 {state.reward.type === RewardType.OTHERS && (
                   <input
                     type="text"
@@ -426,7 +462,17 @@ const BasicBox = styled.div`
         overflow: hidden;
         border: 4px solid #333333;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+
+        &.three {
+          grid-template-columns: 1fr 1fr 1fr;
+          & button:nth-child(2) {
+            border-left: 4px solid #333333;
+            border-right: 4px solid #333333;
+          }
+        }
+        &.two {
+          grid-template-columns: 1fr 1fr;
+        }
         & button {
           border: none;
           outline: none;
@@ -437,10 +483,7 @@ const BasicBox = styled.div`
           height: 50px;
           cursor: pointer;
         }
-        & button:nth-child(2) {
-          border-left: 4px solid #333333;
-          border-right: 4px solid #333333;
-        }
+
         & button.active {
           background: #333333;
           color: #fff;
@@ -498,9 +541,8 @@ const BasicBox = styled.div`
       }
     }
   }
-  & select {
-    width: 100%;
-  }
+
+  & select,
   & input,
   & textarea {
     font-family: inherit;
@@ -511,6 +553,17 @@ const BasicBox = styled.div`
     line-height: 27px;
     background: #ebeee4;
     border-radius: 10px;
+  }
+
+  & select {
+    width: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image: url(${ArrowDown});
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 20px);
+    background-position-y: 19px;
   }
 
   & textarea {
