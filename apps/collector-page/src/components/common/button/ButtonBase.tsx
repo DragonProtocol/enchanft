@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-17 13:03:06
+ * @LastEditTime: 2022-11-01 14:50:54
  * @Description: 基础按钮
  */
 import React, { ButtonHTMLAttributes } from 'react'
@@ -34,7 +34,8 @@ export const ButtonBaseCss = css`
   justify-content: center;
   align-items: center;
   box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
-  font-size: 12px;
+  font-weight: 700;
+  font-size: 16px;
   color: #ffffff;
   border: none;
   cursor: pointer;
