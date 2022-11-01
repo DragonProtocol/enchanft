@@ -25,7 +25,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
   // 推荐signer暂时先默认使用Twitter
   const recommendSigner = signer || getSigner(SignerType.TWITTER);
   // 将支持的otherSigners作为登录选项
-  const excloudOtherSigners = [recommendSigner.signerType, SignerType.DISCORD];
+  const excloudOtherSigners = [recommendSigner.signerType];
   const otherSigners = signers.filter(
     (item) => !excloudOtherSigners.includes(item.signerType)
   );

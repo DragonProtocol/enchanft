@@ -12,6 +12,7 @@ import {
   BindResult,
   LoginResult,
   AccountType,
+  login
 } from '../api';
 import { SignerType, Signer, SignerProcessStatus } from './types';
 import { listenWindowClose, openOauthWindow } from '../utils';
@@ -127,6 +128,7 @@ export class Discord extends Signer {
       }
     }
   }
+
   constructor({ discordClientId, oauthCallbackUri }: DiscordConstructorArgs) {
     super();
     this.discordClientId = discordClientId;
@@ -136,10 +138,67 @@ export class Discord extends Signer {
 
   public login(): Promise<LoginResult> {
     return new Promise((resolve, reject) => {
-      this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
-      reject('Currently not supported');
+      this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
+      try {
+        startListenDiscordOauthStorage();
+        const url = getApiDiscordOauth2Url(
+          this.discordClientId,
+          this.oauthCallbackUri
+        );
+        const authWindow = openOauthWindow(url);
+        const handleDiscordCallback = (e: StorageEvent) => {
+          const { key, newValue } = e;
+          if (
+            key === ListenDiscordOauthStorageKey.LISTEN_DISCORD_OAUTH_CODE &&
+            newValue
+          ) {
+            window.removeEventListener('storage', handleDiscordCallback);
+            clearListenDiscordOauthStorage();
+            this.signerProcessStatusChange(SignerProcessStatus.LOGIN_PENDING);
+            // 2. fetch discord bind
+            login({
+              type: this.accountType,
+              code: newValue,
+              callback: this.oauthCallbackUri,
+            })
+              .then((result) => {
+                this.signerProcessStatusChange(
+                  SignerProcessStatus.LOGIN_FULFILLED
+                );
+                resolve(result.data);
+              })
+              .catch((error) => {
+                this.signerProcessStatusChange(
+                  SignerProcessStatus.LOGIN_REJECTED
+                );
+                reject(
+                  new DiscordError(
+                    ErrorName.API_REQUEST_LOGIN_ERROR,
+                    error.message
+                  )
+                );
+              });
+          }
+        };
+        // 1. listen discord login oauth callback
+        window.addEventListener('storage', handleDiscordCallback);
+        listenWindowClose(authWindow, () => {
+          if (isStartListenDiscordOauthStorage()) {
+            window.removeEventListener('storage', handleDiscordCallback);
+            clearListenDiscordOauthStorage();
+            this.signerProcessStatusChange(
+              SignerProcessStatus.SIGNATURE_REJECTED
+            );
+            reject(new DiscordError(ErrorName.OAUTH_WINDOW_CLOSE));
+          }
+        });
+      } catch (error) {
+        this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
+        reject(error);
+      }
     });
   }
+
   public bind(token: string): Promise<BindResult> {
     return new Promise((resolve, reject) => {
       this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
