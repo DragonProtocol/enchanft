@@ -30,42 +30,20 @@ export const fetchFollowedCommunities = createAsyncThunk<
   {
     rejectValue: FetchFollowedCommunitiesResp
   }
->(
-  'user/followedCommunities/fetchList',
-  async (params, { rejectWithValue }) => {
-    try {
-      const resp = await fetchListForUserFollowedCommunity()
-      return { data: resp.data.data || [] }
-    } catch (error: any) {
-      if (!error.response) {
-        throw error
-      }
-      return rejectWithValue({
-        data: [],
-        errorMsg: error.response.data,
-      })
+>('user/followedCommunities/fetchList', async (params, { rejectWithValue }) => {
+  try {
+    const resp = await fetchListForUserFollowedCommunity()
+    return { data: resp.data.data || [] }
+  } catch (error: any) {
+    if (!error.response) {
+      throw error
     }
-  },
-  {
-    condition: (params, { getState }) => {
-      const state = getState() as RootState
-      const {
-        userFollowedCommunities: { status },
-        account: { isLogin },
-      } = state
-      // 没有登录,则阻止请求
-      if (!isLogin) {
-        userFollowedCommunitiesEntity.removeAll(state.userFollowedCommunities)
-        return false
-      }
-      // 之前的请求正在进行中,则阻止新的请求
-      // if (status === AsyncRequestStatus.PENDING) {
-      //   return false
-      // }
-      return true
-    },
-  },
-)
+    return rejectWithValue({
+      data: [],
+      errorMsg: error.response.data,
+    })
+  }
+})
 
 export const userFollowedCommunitiesSlice = createSlice({
   name: 'userFollowedCommunities',
