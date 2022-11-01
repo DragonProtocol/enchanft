@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
-import { selectAccount } from '../features/user/accountSlice'
 import { useNavigate, useParams } from 'react-router-dom'
 import ButtonNavigation from '../components/common/button/ButtonNavigation'
 import IconCaretLeft from '../components/common/icons/IconCaretLeft'
@@ -22,7 +21,6 @@ import { AsyncRequestStatus } from '../types'
 import ContributionAbout from '../components/business/contribution/ContributionAbout'
 import ContributionMy, { ContributionMyDataViewType } from '../components/business/contribution/ContributionMy'
 import Loading from '../components/common/loading/Loading'
-import usePermissions from '../hooks/usePermissons'
 import useContributionranks from '../hooks/useContributionranks'
 import CommunityCheckedinClaimModal from '../components/business/community/CommunityCheckedinClaimModal'
 import useAccountOperationForChain, { AccountOperationType } from '../hooks/useAccountOperationForChain'
@@ -31,12 +29,14 @@ import { MOBILE_BREAK_POINT } from '../constants'
 import { isDesktop, isMobile } from 'react-device-detect'
 import useUserHandlesForCommunity from '../hooks/useUserHandlesForCommunity'
 import { FollowStatusType } from '../components/business/community/CommunityFollowButton'
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react'
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate()
   const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
-  const { id, pubkey, avatar, name, isLogin } = useAppSelector(selectAccount)
+  const { user, isLogin } = useWlUserReact()
+  const { id: userId, avatar, name } = user
   const { follow: followCommunityState, downloadContributionTokens: downloadContributionTokensState } = useAppSelector(
     selectUserCommunityHandlesState,
   )
@@ -79,7 +79,7 @@ const Contributionranks: React.FC = () => {
     }
   }
   // 获取用户在此社区的贡献值
-  const { data: userContribution, status: userContributionStatus } = useAppSelector(selectUserContributon)
+  const { data: userContributionScore, status: userContributionStatus } = useAppSelector(selectUserContributon)
   useEffect(() => {
     if (isLogin && projectSlug && isFollowed) {
       dispatch(fetchUserContributon(projectSlug))
@@ -91,6 +91,8 @@ const Contributionranks: React.FC = () => {
 
   // 获取社区贡献等级排行
   const { contributionranks, contributionranksState } = useContributionranks(projectSlug)
+
+  const userContributionRanking = contributionranks.find((item) => item.userId === userId)?.ranking
 
   // download contribution tokens
   const { status: downloadContributionTokensStatus } = downloadContributionTokensState
@@ -122,11 +124,10 @@ const Contributionranks: React.FC = () => {
   const contributionranksLoading = contributionranksState.status === AsyncRequestStatus.PENDING
   const userContributionInfo: ContributionMyDataViewType = {
     data: {
-      id,
-      pubkey,
       avatar,
       userName: name,
-      score: userContribution || 0,
+      score: userContributionScore || 0,
+      ranking: userContributionRanking || 0,
     },
     viewConfig: {
       displayFollowCommunity: isLogin && !isFollowed && followStatusType !== FollowStatusType.UNKNOWN,
@@ -136,6 +137,7 @@ const Contributionranks: React.FC = () => {
   // TODO 没有twitter名称字段
   const communityInfo = {
     name: community?.name || '',
+    // TODO 目前community.icon 指向 project.img, 后面要彻底换成获取project.img
     icon: community?.icon || '',
     twitterId: community?.twitterId || '',
     twitterName: community?.twitterName || '',
@@ -160,6 +162,7 @@ const Contributionranks: React.FC = () => {
             loadingDownload={loadingDownload}
             disabledDownload={disabledDownload}
             onDownload={handleDownload}
+            highlightIds={[userId]}
           />
         )}
       </ContributionListBox>

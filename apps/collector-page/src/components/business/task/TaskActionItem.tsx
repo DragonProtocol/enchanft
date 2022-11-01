@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-17 14:22:40
+ * @LastEditTime: 2022-10-31 12:03:24
  * @Description: file description
  */
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { ActionData, ActionType, Project, TaskType } from '../../../types/entities'
+import { ActionData, ActionType, Chain, Project, TaskType } from '../../../types/entities'
 import { UserActionStatus } from '../../../types/api'
 import ActionContributionScore from './actions/ActionContributionScore'
 import ActionFollowCommunity from './actions/ActionFollowCommunity'
@@ -25,7 +25,7 @@ import ActionDiscordObtainRole from './actions/ActionDiscordObtainRole'
 import ActionNativeBalance from './actions/ActionNativeBalance'
 import ActionNftBalance from './actions/ActionNftBalance'
 import ActionQuestionnaire from './actions/ActionQuestionnaire'
-
+import SubtractImg from '../../imgs/subtract.svg'
 export type TaskActionItemDataType = {
   id: number
   name: string
@@ -58,6 +58,7 @@ export type TaskActionItemStaticFuncGetters = {
     answer: string,
     confirmCallback: (assertAnswer: boolean) => void,
   ) => void
+  onWallet?: (chain: Chain, callback: () => void) => void
 }
 export type TaskActionItemProps = TaskActionItemStaticAttrGetters &
   TaskActionItemStaticFuncGetters & {
@@ -74,6 +75,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   onVerifyAction,
   onCustomAction,
   onQuestionConfirm,
+  onWallet,
   verifying,
   copyBgc,
 }: TaskActionItemProps) => {
@@ -116,7 +118,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         return <ActionCustom data={data} allowHandle={allowHandle} onCustomAction={onCustomAction} />
       case ActionType.NATIVE_BALANCE:
         // 钱包余额
-        return <ActionNativeBalance data={data} allowHandle={allowHandle} />
+        return <ActionNativeBalance data={data} allowHandle={allowHandle} onWallet={onWallet} />
       case ActionType.NFT_BALANCE:
         // 持有指定nft
         return <ActionNftBalance data={data} allowHandle={allowHandle} />
@@ -132,6 +134,12 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       onVerifyAction(data)
     }
   }, [])
+  const renderWeight = useCallback(() => {
+    if (actionData.lucky_draw_weight) {
+      return <TaskActionLuckyDrawWeight>+{actionData.lucky_draw_weight}</TaskActionLuckyDrawWeight>
+    }
+    return null
+  }, [actionData])
   const renderStatus = () => {
     if (allowHandle) {
       switch (status) {
@@ -152,7 +160,10 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   return (
     <TaskActionItemWrapper>
       <TaskActionContent>{renderAction()}</TaskActionContent>
-      {renderStatus()}
+      <TaskActionRight>
+        {renderWeight()}
+        {renderStatus()}
+      </TaskActionRight>
     </TaskActionItemWrapper>
   )
 }
@@ -170,6 +181,25 @@ const TaskActionItemWrapper = styled.div`
 const TaskActionContent = styled.div`
   flex: 1;
 `
+const TaskActionRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`
 const TaskActionStatusTodo = styled.div`
   cursor: pointer;
+  height: 24px;
+`
+const TaskActionLuckyDrawWeight = styled.div`
+  width: 20px;
+  height: 16px;
+  text-align: center;
+  background-image: url(${SubtractImg});
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 16px;
+  color: #f7f9f1;
 `

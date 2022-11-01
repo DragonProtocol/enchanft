@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-17 15:30:51
+ * @LastEditTime: 2022-10-26 19:14:14
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -32,7 +32,6 @@ import {
   verifyAction,
   completionAction,
 } from '../features/user/taskHandlesSlice'
-import { ConnectModal, selectAccount, setConnectModal, setConnectWalletModalShow } from '../features/user/accountSlice'
 import useHandleAction from '../hooks/useHandleAction'
 import { ChainType, getChainType } from '../utils/chain'
 import TaskWinnerList from '../components/business/task/TaskWinnerList'
@@ -42,7 +41,6 @@ import PngIconForbidden from '../components/common/icons/PngIconForbidden'
 import PngIconHourglass from '../components/common/icons/PngIconHourglass'
 import Button from '@mui/material/Button'
 import CardBox from '../components/common/card/CardBox'
-import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
 import TaskStatusButton, {
   TaskStatusButtonDataViewType,
@@ -68,6 +66,7 @@ import useAccountOperationForChain, { AccountOperationType } from '../hooks/useA
 import TaskDetailParticipants from '../components/business/task/TaskDetailParticipants'
 import { isDesktop, isMobile } from 'react-device-detect'
 import { toWlModPageTaskDetail } from '../route/utils'
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react'
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   takeTaskState: TaskHandle<TakeTaskParams>,
@@ -138,9 +137,8 @@ const Task: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
 
-  const { token, accounts, pubkey } = useAppSelector(selectAccount)
-  const accountTypes = accounts.map((account) => account.accountType)
-
+  const { user } = useWlUserReact()
+  const { token, id: userId } = user
   const { taskId: id, projectSlug } = useParams()
   const { status, data } = useAppSelector(selectTaskDetail)
   const dispatchFetchTaskDetail = useCallback(() => id && dispatch(fetchTaskDetail(Number(id))), [id])
@@ -184,7 +182,12 @@ const Task: React.FC = () => {
   }
 
   // 处理执行action操作
-  const { handleActionToDiscord, handleActionToTwitter, handleActionQuestionConfirm } = useHandleAction()
+  const {
+    handleActionToDiscord,
+    handleActionToTwitter,
+    handleActionQuestionConfirm,
+    handleActionVolidBindWalletForChain,
+  } = useHandleAction()
 
   // 关注社区
   const handleFollowCommunity = (communityId: number) => {
@@ -225,12 +228,12 @@ const Task: React.FC = () => {
   // task action and winnerList
   const actionItems = formatStoreDataToComponentDataByTaskActions(data, userFollowedCommunityIds)
   const winnerList = [...(data?.winnerList || [])]
-  if (pubkey) {
+  if (userId) {
     winnerList.sort((a, b) => {
-      if (a.pubkey === pubkey) {
+      if (a.id === userId) {
         return -1
       }
-      if (b.pubkey === pubkey) {
+      if (b.id === userId) {
         return 1
       }
       return 0
@@ -299,7 +302,7 @@ const Task: React.FC = () => {
             <TaskDetailContentBoxRight>
               {winnerList.length > 0 ? (
                 <TaskListBox>
-                  <TaskWinnerList items={winnerList} highlightPubkeys={[pubkey]} />
+                  <TaskWinnerList items={winnerList} highlightIds={[userId]} />
                 </TaskListBox>
               ) : (
                 <>
@@ -326,6 +329,7 @@ const Task: React.FC = () => {
                       items={actionItems}
                       onDiscord={handleActionToDiscord}
                       onTwitter={handleActionToTwitter}
+                      onWallet={handleActionVolidBindWalletForChain}
                       onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
                       allowHandle={allowHandleAction}
                       displayVerify={displayVerify}

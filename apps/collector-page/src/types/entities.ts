@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-17 11:47:50
+ * @LastEditTime: 2022-10-31 13:54:49
  * @Description: 与后端entities type定义对应
  */
 
@@ -85,6 +85,11 @@ export type NftInfo = {
   address: string
   url: string
 }
+export enum Chain {
+  EVM = 'EVM',
+  SOLANA = 'SOLANA',
+  APTOS = 'APTOS',
+}
 export type ActionData = {
   url?: string
   tweet_id?: string
@@ -98,6 +103,8 @@ export type ActionData = {
   wallet_url?: string
   question?: string
   answer?: string
+  lucky_draw_weight?: number
+  chain?: Chain
 }
 export type Action = {
   id: number
@@ -134,6 +141,11 @@ export enum MintStage {
   SOLDOUT = 'SOLDOUT',
   CLOSED = 'CLOSED',
 }
+export enum GradeType {
+  UNOFFICIAL = 'UNOFFICIAL',
+  OFFICIAL = 'OFFICIAL',
+  VIP = 'VIP',
+}
 export type Project = {
   id: number
   name: string
@@ -153,6 +165,7 @@ export type Project = {
   injectedCoins: number
   chainId: number
   slug: string
+  grade: GradeType
 }
 
 export type ContributionRank = {
@@ -161,6 +174,7 @@ export type ContributionRank = {
   userName: string
   pubkey: string
   score: number
+  userId: number
 }
 
 /** whitelist */
@@ -207,13 +221,4 @@ export type Announcement = {
   projectId: number
   title: string
   text: string
-}
-
-/** account */
-export enum AccountType {
-  TWITTER = 'TWITTER',
-  DISCORD = 'DISCORD',
-  SOLANA = 'SOLANA',
-  EVM = 'EVM',
-  APTOS = 'APTOS',
 }

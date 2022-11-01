@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
-import { selectAccount } from '../features/user/accountSlice'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   ProjectDetailEntity,
@@ -23,7 +22,6 @@ import ProjectTeamMemberList, {
 import ContributionList from '../components/business/contribution/ContributionList'
 import RichTextBox from '../components/common/text/RichTextBox'
 import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
-import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import PngIconNotebook from '../components/common/icons/PngIconNotebook'
@@ -40,6 +38,10 @@ import IconTwitterBlack from '../components/common/icons/IconTwitterBlack'
 import IconDiscordBlack from '../components/common/icons/IconDiscordBlack'
 import { getTwitterHomeLink } from '../utils/twitter'
 import { toWlModPageTaskCreate } from '../route/utils'
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react'
+import { selectAll as selectAllForTodoTasks } from '../features/user/todoTasksSlice'
+import { TodoTaskItem } from '../types/api'
+import ProjectGradeTag from '../components/business/project/ProjectGradeTag'
 
 export enum ProjectInfoTabsValue {
   TEAM = 'team',
@@ -62,13 +64,15 @@ const formatStoreDataToComponentDataByProjectBasicInfo = (
   }
 }
 // project tasks
-const formatStoreDataToComponentDataByTasks = (data: ProjectDetailEntity): ExploreTaskListItemsType => {
+const formatStoreDataToComponentDataByTasks = (
+  data: ProjectDetailEntity,
+  todoTasks: TodoTaskItem[],
+): ExploreTaskListItemsType => {
   return (
     data.tasks?.map((task) => {
-      // TODO 待确认，这里先用task的whiteListTotalNum代替
-      // const winnerNum = task.whitelistTotalNum
+      const findTask = todoTasks.find((item) => item.id === task.id)
       return {
-        data: { ...task, project: { ...data } },
+        data: { ...task, project: { ...data }, status: findTask?.status },
       }
     }) || []
   )
@@ -86,15 +90,15 @@ const formatStoreDataToComponentDataByTeamMembers = (data: ProjectDetailEntity):
 const Project: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token, accounts, isLogin } = useAppSelector(selectAccount)
-  const accountTypes = accounts.map((account) => account.accountType)
+  const { user, isLogin } = useWlUserReact()
+  const { token } = user
 
   const { projectSlug } = useParams()
   const { data, status, errorMsg } = useAppSelector(selectProjectDetail)
   const dispatchFetchDetail = useCallback(() => projectSlug && dispatch(fetchProjectDetail(projectSlug)), [projectSlug])
   const [loadingView, setLoadingView] = useState(true)
   const { isCreator, checkProjectAllowed } = usePermissions()
-
+  const todoTasks = useAppSelector(selectAllForTodoTasks)
   // 进入loading状态
   useEffect(() => {
     setLoadingView(true)
@@ -157,7 +161,7 @@ const Project: React.FC = () => {
   const showContributionranks = contributionranks.slice(0, 5)
   const contributionMembersTotal = contributionranks.length
   // const teamMembers = formatStoreDataToComponentDataByTeamMembers(data, token)
-  const tasks = formatStoreDataToComponentDataByTasks(data)
+  const tasks = formatStoreDataToComponentDataByTasks(data, todoTasks)
 
   // const ProjectInfoTabComponents = {
   //   [ProjectInfoTabsValue.TEAM]: <ProjectTeamMemberList items={teamMembers} />,
@@ -204,7 +208,11 @@ const Project: React.FC = () => {
       <ProjectLeftBox>
         <ProjectLeftInfo>
           <ProjectLeftInfoTop>
-            {data.image && <ProjectImage src={data.image} />}
+            <ProjectImageBox>
+              <ProjectGradeTag grade={data.grade} />
+              <ProjectImage src={data.image} />
+            </ProjectImageBox>
+
             <ProjectLeftInfoTopRight>
               <ProjectName>{data.name}</ProjectName>
               {community && (
@@ -409,6 +417,9 @@ const ProjectNumbersItemValue = styled.span`
     font-size: 14px;
     line-height: 21px;
   }
+`
+const ProjectImageBox = styled.div`
+  position: relative;
 `
 const ProjectImage = styled.img`
   width: 140px;

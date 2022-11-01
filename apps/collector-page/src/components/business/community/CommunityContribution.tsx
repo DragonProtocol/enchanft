@@ -2,14 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 10:50:08
+ * @LastEditTime: 2022-10-25 17:04:33
  * @Description: file description
  */
+import { UserAvatar } from '@ecnft/wl-user-react'
 import React from 'react'
 import styled from 'styled-components'
-import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import UserAvatar from '../user/UserAvatar'
 export type ContributionItemDataType = {
   ranking: number
   avatar: string
@@ -33,7 +32,7 @@ const CommunityContribution: React.FC<CommunityContributionProps> = ({ items }: 
             {items.map((item, index) => (
               <ContributionItemBox key={index}>
                 <ContributionItemRanking>{item.ranking}</ContributionItemRanking>
-                <ContributionItemAvatar src={item.avatar} multiavatarId={getMultiavatarIdByUser(item)} />
+                <ContributionItemAvatar user={{ id: item.userId, avatar: item.avatar }} />
                 <ContributionItemUserName>{item.userName}</ContributionItemUserName>
                 <ContributionItemPubkey number={1}>{item.pubkey}</ContributionItemPubkey>
                 <ContributionItemScore>{item.score}</ContributionItemScore>

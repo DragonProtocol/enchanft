@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-23 11:26:58
+ * @LastEditTime: 2022-10-27 16:37:34
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -10,12 +10,13 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
-import { MintStage, ProjectStatus, TaskType } from '../../../types/entities'
+import { GradeType, MintStage, ProjectStatus, TaskType } from '../../../types/entities'
 import { formatDateTime } from '../../../utils/time'
 import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import ChainTag from '../chain/ChainTag'
 import MintStageLabel from './MintStageLabel'
+import ProjectGradeTag from './ProjectGradeTag'
 
 export type ExploreProjectItemDataType = {
   id: number
@@ -32,6 +33,7 @@ export type ExploreProjectItemDataType = {
   communityId: number
   chainId: number
   slug: string
+  grade: GradeType
   tasks?: Array<{
     type: TaskType
     startTime: number
@@ -64,6 +66,7 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
     publicSaleStartTime,
     chainId,
     slug,
+    grade,
   } = data
   // const {} = {
   //   ...defaultViewConfig,
@@ -74,6 +77,7 @@ const ExploreProjectItem: React.FC<ExploreProjectItemProps> = ({ data, viewConfi
       onClick={() => navigate(`/${slug}`)}
       animationType={CardItemBoxAnimationType.HOVER_MOVE_UP}
     >
+      <ProjectGradeTag grade={grade} />
       <ProjectImageBox>
         <ChainTag size={1} chainId={chainId} />
         <ProjectImage src={image} />
@@ -104,6 +108,7 @@ const ExploreProjectItemWrapper = styled(CardItemBox)`
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
+  position: relative;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     height: 422px;
   }
