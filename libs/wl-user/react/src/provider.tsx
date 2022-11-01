@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 17:34:33
+ * @LastEditTime: 2022-11-01 10:56:14
  * @Description: file description
  */
 import {
@@ -148,7 +148,7 @@ export type WlUserReactContextType = {
   validateBindAccount: (accountType: AccountType) => boolean;
   // 打开modal的触发器
   dispatchModal: (params: DispatchActionModalParams) => void;
-  // 直接开始签名认证流程的触发器（省去打开modal的步骤）
+  // 指定行为的触发器
   dispatchAction: (params: DispatchActionParams) => void;
 };
 const WlUserReactContext = createContext<WlUserReactContextType | undefined>(
