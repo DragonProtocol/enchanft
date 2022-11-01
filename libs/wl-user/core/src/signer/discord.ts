@@ -154,7 +154,7 @@ export class Discord extends Signer {
           ) {
             window.removeEventListener('storage', handleDiscordCallback);
             clearListenDiscordOauthStorage();
-            this.signerProcessStatusChange(SignerProcessStatus.BIND_PENDING);
+            this.signerProcessStatusChange(SignerProcessStatus.LOGIN_PENDING);
             // 2. fetch discord bind
             login({
               type: this.accountType,
@@ -163,17 +163,17 @@ export class Discord extends Signer {
             })
               .then((result) => {
                 this.signerProcessStatusChange(
-                  SignerProcessStatus.BIND_FULFILLED
+                  SignerProcessStatus.LOGIN_FULFILLED
                 );
                 resolve(result.data);
               })
               .catch((error) => {
                 this.signerProcessStatusChange(
-                  SignerProcessStatus.BIND_REJECTED
+                  SignerProcessStatus.LOGIN_REJECTED
                 );
                 reject(
                   new DiscordError(
-                    ErrorName.API_REQUEST_BIND_ERROR,
+                    ErrorName.API_REQUEST_LOGIN_ERROR,
                     error.message
                   )
                 );
@@ -193,7 +193,7 @@ export class Discord extends Signer {
           }
         });
       } catch (error) {
-        this.signerProcessStatusChange(SignerProcessStatus.BIND_REJECTED);
+        this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
         reject(error);
       }
     });
