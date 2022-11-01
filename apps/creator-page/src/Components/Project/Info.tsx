@@ -1,12 +1,38 @@
+import { id } from 'ethers/lib/utils';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { useAppConfig } from '../../AppProvider';
 import { ProjectDetail } from '../../redux/projectSlice';
+import { connectionSocialMedia } from '../../utils/socialMedia';
 import { getTwitterHomeLink } from '../../utils/twitter';
 import IconDiscordBlack from '../Icons/IconDiscordBlack';
+import IconDiscordWhite from '../Icons/IconDiscordWhite';
 import IconTwitterBlack from '../Icons/IconTwitterBlack';
+import IconTwitterWhite from '../Icons/IconTwitterWhite';
 import IconWebsite from '../Icons/IconWebsite';
+import IconWebsiteWhite from '../Icons/IconWebsiteWhite';
+import { InviteBotBtn } from './InviteBot';
+import { TwitterLinkBtn } from './TwitterLink';
 
-export default function ProjectInfo({ project }: { project: ProjectDetail }) {
+export default function ProjectInfo({
+  isAdmin,
+  isVIP,
+  hasInviteBot,
+  hasTwitter,
+  linkAction,
+  project,
+  setProject,
+  saveAction,
+}: {
+  isAdmin: boolean;
+  isVIP: boolean;
+  hasTwitter: boolean;
+  hasInviteBot: boolean;
+  project: ProjectDetail;
+  setProject: (arg0: any) => void;
+  saveAction: () => void;
+  linkAction: () => void;
+}) {
   const navigate = useNavigate();
 
   return (
@@ -25,41 +51,128 @@ export default function ProjectInfo({ project }: { project: ProjectDetail }) {
         <img src={project.image} alt="" />
         <div className="info">
           <h3>{project.name}</h3>
-          <div className="links">
-            {project.community.website && (
-              <button
-                title="website"
-                onClick={() => {
-                  window.open(project.community.website, '_blank');
+          <div className="links admin">
+            {(() => {
+              if (isAdmin) {
+                return (
+                  <div className="twitter">
+                    <span>
+                      <IconTwitterWhite />
+                    </span>
+                    <span>@</span>
+                    <input
+                      title="admin-twitter"
+                      type="text"
+                      value={project?.community?.twitterName || ''}
+                      onChange={(e) => {
+                        setProject({
+                          ...project,
+                          community: {
+                            ...project.community,
+                            twitterName: e.target.value,
+                          },
+                        });
+                      }}
+                    />
+                  </div>
+                );
+              }
+              if (isVIP) {
+                return (
+                  <div className="twitter">
+                    <TwitterLinkBtn
+                      msg="Authorize Twitter"
+                      hasTwitter={
+                        !!(
+                          project?.community?.twitterId &&
+                          project?.community?.twitterName
+                        )
+                      }
+                      twitterName={project?.community?.twitterName || ''}
+                      linkAction={linkAction}
+                    />
+                  </div>
+                );
+              }
+              return (
+                <div className="twitter">
+                  <TwitterLinkBtn
+                    hasTwitter={
+                      hasTwitter ||
+                      !!(
+                        project?.community?.twitterId &&
+                        project?.community?.twitterName
+                      )
+                    }
+                    twitterName={project?.community?.twitterName || ''}
+                    linkAction={async () => {
+                      connectionSocialMedia('twitter');
+                    }}
+                  />
+                </div>
+              );
+            })()}
+
+            {(() => {
+              if (isAdmin) {
+                return (
+                  <div className="discord">
+                    <span>
+                      <IconDiscordWhite />
+                    </span>
+                    <span>https://</span>
+                    <input
+                      title="admin-discord"
+                      type="text"
+                      value={project?.community?.discordInviteUrl || ''}
+                      onChange={(e) => {
+                        setProject({
+                          ...project,
+                          community: {
+                            ...project.community,
+                            discordInviteUrl: e.target.value,
+                          },
+                        });
+                      }}
+                    />
+                  </div>
+                );
+              }
+
+              return (
+                <div className="discord">
+                  <InviteBotBtn hasInviteBot={hasInviteBot} />
+                </div>
+              );
+            })()}
+
+            <div className="website">
+              <span>
+                <IconWebsiteWhite />
+              </span>
+              <span>https://</span>
+              <input
+                title="admin-website"
+                type="text"
+                value={project?.community?.website || ''}
+                onChange={(e) => {
+                  setProject({
+                    ...project,
+                    community: {
+                      ...project.community,
+                      website: e.target.value,
+                    },
+                  });
                 }}
-              >
-                <IconWebsite />
+              />
+            </div>
+            <div>
+              <button className="save" onClick={saveAction}>
+                Save
               </button>
-            )}
-            {project.community.twitterId && (
-              <button
-                title="twitter"
-                onClick={() => {
-                  window.open(
-                    getTwitterHomeLink(project.community.twitterName),
-                    '_blank'
-                  );
-                }}
-              >
-                <IconTwitterBlack />
-              </button>
-            )}
-            {project.community.discordInviteUrl && (
-              <button
-                title="discord"
-                onClick={() => {
-                  window.open(project.community.discordInviteUrl, '_blank');
-                }}
-              >
-                <IconDiscordBlack />
-              </button>
-            )}
+            </div>
           </div>
+
           <div className="effect">
             <span>
               Items <span>{project.itemTotalNum}</span>
@@ -104,6 +217,74 @@ const InfoBox = styled.div`
       & .links {
         display: flex;
         gap: 20px;
+      }
+
+      & .links.admin {
+        > div {
+          display: inline-flex;
+          align-items: center;
+          border-radius: 10px;
+          overflow: hidden;
+          font-size: 16px;
+          & span {
+            height: 100%;
+            line-height: 30px;
+            color: #fff;
+            padding-left: 5px;
+            &:nth-child(2) {
+              padding-right: 3px;
+            }
+          }
+          & svg {
+            vertical-align: middle;
+          }
+          & input {
+            font-family: inherit;
+            font-size: inherit;
+            line-height: 30px;
+            border: none;
+            outline: none;
+          }
+          &.twitter {
+            & span {
+              background-color: #4d93f1;
+            }
+            border: 1px solid #4d93f1;
+            & .wl-bot {
+              background-color: #4d93f1;
+            }
+          }
+          &.discord {
+            & span {
+              background-color: #5368ed;
+            }
+            border: 1px solid #5368ed;
+            & .wl-bot {
+              background-color: #5368ed;
+            }
+          }
+          &.website {
+            & span {
+              background-color: rgb(56, 210, 10);
+            }
+            border: 1px solid rgb(56, 210, 10);
+          }
+        }
+
+        & button {
+          padding-left: 10px;
+          padding-right: 10px;
+          height: 32px;
+
+          border-radius: 10px;
+          font-weight: 700;
+          /* font-size: 18px; */
+          line-height: 30px;
+          color: #ffffff;
+          &.save {
+            background: #3dd606;
+          }
+        }
       }
 
       & .effect {
