@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-21 15:03:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-01 11:32:56
+ * @LastEditTime: 2022-11-01 13:32:14
  * @Description: file description
 -->
 
@@ -55,7 +55,7 @@ const TWITTER_CLIENT_ID = process.env.REACT_APP_TWITTER_CLIENT_ID;
 const TWITTER_CALLBACK_URL = process.env.REACT_APP_TWITTER_CALLBACK_URL;
 const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID;
 const DISCORD_CALLBACK_URL = process.env.REACT_APP_DISCORD_CALLBACK_URL;
-export const signers = [
+const signers = [
   new Twitter({
     twitterClientId: TWITTER_CLIENT_ID,
     oauthCallbackUri: TWITTER_CALLBACK_URL,
@@ -70,7 +70,7 @@ export const signers = [
 ];
 
 function App() {
-  // 当你需要在WlUserReactProvider外面使用内部能力时，可以尝试存储此wlUserReactValue
+  // 当需要在WlUserReactProvider外面使用内部能力时，可以尝试存储此wlUserReactValue
   const [wlUserReactValue, setWlUserReactValue] = useState<
     WlUserReactContextType | undefind
   >(undefind);
