@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 12:53:11
+ * @LastEditTime: 2022-11-02 11:21:45
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
@@ -105,6 +105,11 @@ const BindWithSignerButtonWrapper = styled(ButtonBase)<{ bgColor: string }>`
 const SignerButtonIconBox = styled.div`
   width: 24px;
   height: 24px;
+  svg,
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 const SignerButtonName = styled.span<{ color: string }>`
   font-weight: 700;
