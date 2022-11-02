@@ -1,16 +1,25 @@
 import { id } from 'ethers/lib/utils';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useAppConfig } from '../../AppProvider';
 import { ProjectDetail } from '../../redux/projectSlice';
 import { connectionSocialMedia } from '../../utils/socialMedia';
 import { getTwitterHomeLink } from '../../utils/twitter';
+import IconClose from '../Icons/IconClose';
+import IconCloseRed from '../Icons/IconCloseRed';
 import IconDiscordBlack from '../Icons/IconDiscordBlack';
 import IconDiscordWhite from '../Icons/IconDiscordWhite';
+import IconEdit from '../Icons/IconEdit';
+import IconEditGray from '../Icons/IconEditGray';
+import IconRight from '../Icons/IconRight';
+import IconRightTwitter from '../Icons/IconRightTwitter';
+import IconRightWebsite from '../Icons/IconRightWebsite';
 import IconTwitterBlack from '../Icons/IconTwitterBlack';
 import IconTwitterWhite from '../Icons/IconTwitterWhite';
 import IconWebsite from '../Icons/IconWebsite';
 import IconWebsiteWhite from '../Icons/IconWebsiteWhite';
+import PngIconDone from '../Icons/PngIconDone';
 import { InviteBotBtn } from './InviteBot';
 import { TwitterLinkBtn } from './TwitterLink';
 
@@ -51,30 +60,23 @@ export default function ProjectInfo({
         <img src={project.image} alt="" />
         <div className="info">
           <h3>{project.name}</h3>
-          <div className="links admin">
+          <div className="links">
             {(() => {
               if (isAdmin) {
                 return (
-                  <div className="twitter">
-                    <span>
-                      <IconTwitterWhite />
-                    </span>
-                    <span>@</span>
-                    <input
-                      title="admin-twitter"
-                      type="text"
-                      value={project?.community?.twitterName || ''}
-                      onChange={(e) => {
-                        setProject({
-                          ...project,
-                          community: {
-                            ...project.community,
-                            twitterName: e.target.value,
-                          },
-                        });
-                      }}
-                    />
-                  </div>
+                  <TwitterEdit
+                    twitterName={project?.community?.twitterName || ''}
+                    updateTwitterName={(v) => {
+                      setProject({
+                        ...project,
+                        community: {
+                          ...project.community,
+                          twitterName: v,
+                        },
+                      });
+                    }}
+                    saveAction={saveAction}
+                  />
                 );
               }
               if (isVIP) {
@@ -116,26 +118,21 @@ export default function ProjectInfo({
             {(() => {
               if (isAdmin) {
                 return (
-                  <div className="discord">
-                    <span>
-                      <IconDiscordWhite />
-                    </span>
-                    <span>https://</span>
-                    <input
-                      title="admin-discord"
-                      type="text"
-                      value={project?.community?.discordInviteUrl || ''}
-                      onChange={(e) => {
-                        setProject({
-                          ...project,
-                          community: {
-                            ...project.community,
-                            discordInviteUrl: e.target.value,
-                          },
-                        });
-                      }}
-                    />
-                  </div>
+                  <DiscordEdit
+                    discordInviteUrl={
+                      project?.community?.discordInviteUrl || ''
+                    }
+                    updateDiscordInviteUrl={(v) => {
+                      setProject({
+                        ...project,
+                        community: {
+                          ...project.community,
+                          discordInviteUrl: v,
+                        },
+                      });
+                    }}
+                    saveAction={saveAction}
+                  />
                 );
               }
 
@@ -146,31 +143,19 @@ export default function ProjectInfo({
               );
             })()}
 
-            <div className="website">
-              <span>
-                <IconWebsiteWhite />
-              </span>
-              <span>https://</span>
-              <input
-                title="admin-website"
-                type="text"
-                value={project?.community?.website || ''}
-                onChange={(e) => {
-                  setProject({
-                    ...project,
-                    community: {
-                      ...project.community,
-                      website: e.target.value,
-                    },
-                  });
-                }}
-              />
-            </div>
-            <div>
-              <button className="save" onClick={saveAction}>
-                Save
-              </button>
-            </div>
+            <WebsiteEdit
+              website={project?.community?.website || ''}
+              updateWebsite={(v) => {
+                setProject({
+                  ...project,
+                  community: {
+                    ...project.community,
+                    website: v,
+                  },
+                });
+              }}
+              saveAction={saveAction}
+            />
           </div>
 
           <div className="effect">
@@ -185,6 +170,187 @@ export default function ProjectInfo({
       </div>
       <div className="desc">{project.description}</div>
     </InfoBox>
+  );
+}
+
+function TwitterEdit({
+  twitterName,
+  updateTwitterName,
+  saveAction,
+}: {
+  twitterName: string;
+  updateTwitterName: (arg0: string) => void;
+  saveAction: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  return (
+    <div className="twitter">
+      <span>
+        <IconTwitterWhite />
+      </span>
+      {(editing && (
+        <>
+          <span>@</span>
+          <div className="edit-box">
+            <input
+              title="admin-twitter"
+              type="text"
+              value={twitterName}
+              onChange={(e) => {
+                updateTwitterName(e.target.value);
+              }}
+            />
+            <span
+              onClick={() => {
+                saveAction();
+                setEditing(false);
+              }}
+            >
+              <IconRightTwitter size="20px" />
+            </span>
+            <span
+              onClick={() => {
+                setEditing(false);
+              }}
+            >
+              <IconCloseRed size="16px" />
+            </span>
+          </div>
+        </>
+      )) || (
+        <>
+          <span>@{twitterName}</span>
+          <span
+            onClick={() => {
+              setEditing(true);
+            }}
+          >
+            <IconEditGray size="18px" />
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+
+function DiscordEdit({
+  discordInviteUrl,
+  updateDiscordInviteUrl,
+  saveAction,
+}: {
+  discordInviteUrl: string;
+  updateDiscordInviteUrl: (arg0: string) => void;
+  saveAction: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  return (
+    <div className="discord">
+      <span>
+        <IconDiscordWhite />
+      </span>
+      {(editing && (
+        <>
+          <span>https://</span>
+          <div className="edit-box">
+            <input
+              title="admin-discord"
+              type="text"
+              value={discordInviteUrl}
+              onChange={(e) => {
+                updateDiscordInviteUrl(e.target.value);
+              }}
+            />
+            <span
+              onClick={() => {
+                saveAction();
+                setEditing(false);
+              }}
+            >
+              <IconRight size="20px" />
+            </span>
+            <span
+              onClick={() => {
+                setEditing(false);
+              }}
+            >
+              <IconCloseRed size="16px" />
+            </span>
+          </div>
+        </>
+      )) || (
+        <>
+          <span>https://{discordInviteUrl}</span>
+          <span
+            onClick={() => {
+              setEditing(true);
+            }}
+          >
+            <IconEditGray size="18px" />
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+
+function WebsiteEdit({
+  website,
+  updateWebsite,
+  saveAction,
+}: {
+  website: string;
+  updateWebsite: (arg0: string) => void;
+  saveAction: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  return (
+    <div className="website">
+      <span>
+        <IconWebsiteWhite />
+      </span>
+
+      {(editing && (
+        <>
+          <span>https://</span>
+          <div className="edit-box">
+            <input
+              title="admin-website"
+              type="text"
+              value={website}
+              onChange={(e) => {
+                updateWebsite(e.target.value);
+              }}
+            />
+            <span
+              onClick={() => {
+                saveAction();
+                setEditing(false);
+              }}
+            >
+              <IconRightWebsite size="20px" />
+            </span>
+            <span
+              onClick={() => {
+                setEditing(false);
+              }}
+            >
+              <IconCloseRed size="16px" />
+            </span>
+          </div>
+        </>
+      )) || (
+        <>
+          <span>https://{website}</span>
+          <span
+            onClick={() => {
+              setEditing(true);
+            }}
+          >
+            <IconEditGray size="18px" />
+          </span>
+        </>
+      )}
+    </div>
   );
 }
 
@@ -219,7 +385,7 @@ const InfoBox = styled.div`
         gap: 20px;
       }
 
-      & .links.admin {
+      & .links {
         > div {
           display: inline-flex;
           align-items: center;
@@ -234,40 +400,61 @@ const InfoBox = styled.div`
             &:nth-child(2) {
               padding-right: 3px;
             }
+            &:last-child {
+              padding-right: 5px;
+              cursor: pointer;
+            }
           }
           & svg {
             vertical-align: middle;
           }
-          & input {
-            font-family: inherit;
-            font-size: inherit;
-            line-height: 30px;
-            border: none;
-            outline: none;
-          }
-          &.twitter {
-            & span {
-              background-color: #4d93f1;
+          & .edit-box {
+            background: #fff;
+            height: 32px;
+            border-radius: 5px;
+            padding-right: 5px;
+            & input {
+              font-family: inherit;
+              font-size: inherit;
+              line-height: 30px;
+              border-radius: 5px;
+              font-weight: 700;
+              font-size: 14px;
+              border: none;
+              outline: none;
+              padding-left: 5px;
             }
-            border: 1px solid #4d93f1;
+            & span {
+              cursor: pointer;
+              margin: 0 5px;
+            }
+          }
+
+          padding: 4px;
+          box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
+          &.twitter {
+            background-color: #4d93f1;
+            & span {
+            }
+            border-color: #4d93f1;
             & .wl-bot {
               background-color: #4d93f1;
             }
           }
           &.discord {
+            background-color: #5368ed;
             & span {
-              background-color: #5368ed;
             }
-            border: 1px solid #5368ed;
+            border-color: #5368ed;
             & .wl-bot {
               background-color: #5368ed;
             }
           }
           &.website {
+            background-color: #3dd606;
             & span {
-              background-color: rgb(56, 210, 10);
             }
-            border: 1px solid rgb(56, 210, 10);
+            border-color: #3dd606;
           }
         }
 
