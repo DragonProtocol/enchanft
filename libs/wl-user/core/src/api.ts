@@ -131,8 +131,10 @@ type HandleAccountParamsForWeb3Account = {
 // login ==================================
 type LoginParamsForTwitterAccount = {
   type: AccountType;
-  twitterOauthToken: string;
-  twitterOauthVerifier: string;
+  code: string;
+  callback?: string;
+  // twitterOauthToken: string;
+  // twitterOauthVerifier: string;
 };
 type LoginParamsForDiscordAccount = {
   type: AccountType;
