@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-21 15:03:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-01 13:32:14
+ * @LastEditTime: 2022-11-02 13:38:02
  * @Description: file description
 -->
 
@@ -72,8 +72,8 @@ const signers = [
 function App() {
   // 当需要在WlUserReactProvider外面使用内部能力时，可以尝试存储此wlUserReactValue
   const [wlUserReactValue, setWlUserReactValue] = useState<
-    WlUserReactContextType | undefind
-  >(undefind);
+    WlUserReactContextType | undefined
+  >(undefined);
   console.log({ wlUserReactValue });
 
   return (
@@ -207,7 +207,7 @@ function View() {
        * 下方值替换到payload
        * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
       */
-      <button onClick={() => dispatchAction({ type: WlUserActionType.LOGIN， payload: SignerType.TWITTER })}>
+      <button onClick={() => dispatchAction({ type: WlUserActionType.LOGIN, payload: SignerType.TWITTER })}>
         login with twitter
       </button>
       /**
@@ -223,7 +223,7 @@ function View() {
        * 下方值替换到payload
        * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
       */
-      <button onClick={() =>dispatchAction({ type: WlUserActionType.UNBIND_CONFIRM, payload: SignerType.TWITTER })}>
+      <button onClick={() =>dispatchAction({ type: WlUserActionType.UNBIND, payload: SignerType.TWITTER })}>
         unbind twitter
       </button>
       /**
