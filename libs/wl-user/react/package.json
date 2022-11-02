@@ -22,6 +22,6 @@
     "styled-components": "^5.3.5"
   },
   "peerDependencies": {
-    "@ecnft/wl-user-core": "*"
+    "@ecnft/wl-user-core": "0.0.1"
   }
 }

@@ -2,214 +2,293 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-21 15:03:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 18:20:59
+ * @LastEditTime: 2022-11-01 13:32:14
  * @Description: file description
 -->
 
 # wl-user-react
 
-## 如何引入
+## Installation
 
-1. 直接引入使用
-   ```typescript
-   import { ... } from "@ecnft/wl-user-react";
-   ```
-2. 如果引入找不到模块，检查项目目录下的 tsconfig.app.json 是否如下配置，检查并按如下配置修改
-   ```json
-   {
-     "extends": "./tsconfig.json",
-     "compilerOptions": {
-       "outDir": "../../dist/out-tsc",
-       "types": ["node"]
-     },
-     "files": [
-       "../../node_modules/@nrwl/react/typings/cssmodule.d.ts",
-       "../../node_modules/@nrwl/react/typings/image.d.ts"
-     ],
-     "exclude": [
-       "jest.config.ts",
-       "**/*.spec.ts",
-       "**/*.test.ts",
-       "**/*.spec.tsx",
-       "**/*.test.tsx",
-       "**/*.spec.js",
-       "**/*.test.js",
-       "**/*.spec.jsx",
-       "**/*.test.jsx"
-     ],
-     "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
-   }
-   ```
+**npm**
 
-## Hooks
+```
+npm install @ecnft/wl-user-core @ecnft/wl-user-react
+```
 
-- useWlUserReact
+**yarn**
 
-  provider 提供的信息及工具
+```
+yarn add @ecnft/wl-user-core @ecnft/wl-user-react
+```
 
-  ```typescript
-  {
-    // 所有注入的signer实例
-    signers: Signer[];
-    // 当前登录的signer
-    signer: Signer | null | undefined;
-    // 用户信息
-    user: User;
-    // 是否登录
-    isLogin: boolean;
-    // 当前执行的action状态数据
-    userActionState: WlUserActionState;
-    // 获取指定的签名者对象
-    getSigner: (signerType: SignerType) => Signer | undefined;
-    // 验证是否绑定了某个账号
-    validateBindAccount: (accountType: AccountType) => boolean;
-    // 打开modal的触发器
-    dispatchModal: (params: DispatchActionModalParams) => void;
-    // 直接开始签名认证流程的触发器（省去打开modal的步骤）
-    dispatchAction: (params: DispatchActionParams) => void;
-  }
-  ```
+**pnpm**
 
-- usePermissions
+```
+pnpm add @ecnft/wl-user-core @ecnft/wl-user-react
+```
 
-  所有权限相关的信息及工具
+## Getting started
 
-  ```typescript
-  {
-    isCreator: boolean;
-    isAdmin: boolean;
-    isVIP: boolean;
-    checkTaskAllowed: (taskId: number) => boolean;
-    checkProjectAllowed: (projectId: number) => boolean;
-    checkContributionAllowed: (communityId: number) => boolean;
-  }
-  ```
+**app.tsx**
 
-## Components
+```typescript
+import {
+  Twitter,
+  Discord,
+  Metamask,
+  Phantom,
+  Martian,
+  setApiBaseUrl,
+} from '@ecnft/wl-user-core';
+import {
+  WlUserReactProvider,
+  WlUserReactContextType,
+} from '@ecnft/wl-user-react';
+import View from './view';
 
-- WlUserReactProvider
+// 设定不同环境使用的api基础路径
+setApiBaseUrl(process.env.REACT_APP_API_BASE_URL);
 
-  - 参数
-    - signers ：签名者的实例对象数组
-    - valueChange (可选): provider 的 value 变化时触发
-  - 案例
+// 初始化要使用的signers(签名授权者)
+const TWITTER_CLIENT_ID = process.env.REACT_APP_TWITTER_CLIENT_ID;
+const TWITTER_CALLBACK_URL = process.env.REACT_APP_TWITTER_CALLBACK_URL;
+const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID;
+const DISCORD_CALLBACK_URL = process.env.REACT_APP_DISCORD_CALLBACK_URL;
+const signers = [
+  new Twitter({
+    twitterClientId: TWITTER_CLIENT_ID,
+    oauthCallbackUri: TWITTER_CALLBACK_URL,
+  }),
+  new Discord({
+    discordClientId: DISCORD_CLIENT_ID,
+    oauthCallbackUri: DISCORD_CALLBACK_URL,
+  }),
+  new Metamask(),
+  new Phantom(),
+  new Martian(),
+];
 
-    ```typescript
-    import { Twitter, Discord, Metamask, Phantom, Martian } from '@ecnft/wl-user-core'
-    import { WlUserReactProvider } from "@ecnft/wl-user-react";
+function App() {
+  // 当需要在WlUserReactProvider外面使用内部能力时，可以尝试存储此wlUserReactValue
+  const [wlUserReactValue, setWlUserReactValue] = useState<
+    WlUserReactContextType | undefind
+  >(undefind);
+  console.log({ wlUserReactValue });
 
-    const TWITTER_CLIENT_ID = process.env.REACT_APP_TWITTER_CLIENT_ID || ''
-    const TWITTER_CALLBACK_URL = process.env.REACT_APP_TWITTER_CALLBACK_URL || ''
-    const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID || ''
-    const DISCORD_CALLBACK_URL = process.env.REACT_APP_DISCORD_CALLBACK_URL || ''
-
-    const signers = [
-        new Twitter({ twitterClientId: TWITTER_CLIENT_ID, oauthCallbackUri: TWITTER_CALLBACK_URL }),
-        new Discord({ discordClientId: DISCORD_CLIENT_ID, oauthCallbackUri: DISCORD_CALLBACK_URL }),
-        new Metamask(),
-        new Phantom(),
-        new Martian(),
-    ]
-
-    ......
-
-    <WlUserReactProvider signers={signers}>
-
-    ......
-
+  return (
+    <WlUserReactProvider
+      signers={signers}
+      valueChange={(value) => setWlUserReactValue(value)}
+    >
+      <View />
     </WlUserReactProvider>
-    ```
+  );
+}
 
-- LoginButton
+export default App;
+```
 
-  - 登录按钮, 显示登录前后用户状态
-  - 参数
-    - {...Button.Props}
-    - onClick ：未传递则每次点击打开登录 modal，传递则阻止打开 modal，调用此事件回调
-  - 案例
+**view.tsx**
 
-    如果登录了就去 profile, 没登录就打开登录 model
+```typescript
+import { SignerType, AccountType } from '@ecnft/wl-user-core';
+import {
+  useWlUserReact,
+  usePermissions,
+  LoginButton,
+  BindWithSignerButton,
+  UserAvatar,
+  WlUserModalType,
+  WlUserActionType
+} from '@ecnft/wl-user-react';
 
-    ```typescript
-    import { useWlUserReact, LoginButton, WlUserModalType } from  "@ecnft/wl-user-react";
+function View() {
+  const {
+    // 所有注入的signer实例
+    signers,
+    // 当前登录的signer
+    signer,
+    // 用户信息
+    user,
+    // 是否登录
+    isLogin,
+    // 当前执行的action状态数据
+    userActionState,
+    // 获取指定的签名者对象
+    getSigner,
+    // 验证是否绑定了某个账号
+    validateBindAccount,
+    // 打开modal的触发器
+    dispatchModal,
+    // 指定行为的触发器
+    dispatchAction,
+  } = useWlUserReact();
 
-    ......
+  const {
+    // 当前登录用户 是否是 creator
+    isCreator,
+    // 当前登录用户 是否是 admin
+    isAdmin,
+    // 当前登录用户 是否是 vip
+    isVIP,
+    // 检测当前登录用户 是否有指定 task 的资源获取权限
+    checkTaskAllowed,
+    // 检测当前登录用户 是否有指定 project 的资源获取权限
+    checkProjectAllowed,
+    // 检测当前登录用户 是否有指定 community 的资源获取权限
+    checkContributionAllowed,
+  } = usePermissions();
+  return (
+    <div>
+      <h2>data ————————————————————————————————————————</h2>
+      <p>token: {user.token}</p>
+      <p>userinfo: {JSON.stringify(user)}</p>
+      <p>isLogin: {isLogin}</p>
+      <p>isCreator: {isCreator}</p>
+      <p>isAdmin: {isAdmin}</p>
+      <p>isVIP: {isVIP}</p>
+      <p>isBindTwitter: {validateBindAccount(AccountType.TWITTER)}</p>
+      <p>isBindDiscord: {validateBindAccount(AccountType.DISCORD)}</p>
+      <p>isBindSolana: {validateBindAccount(AccountType.SOLANA)}</p>
+      <p>isBindEvm: {validateBindAccount(AccountType.EVM)}</p>
+      <p>isBindAptos: {validateBindAccount(AccountType.APTOS)}</p>
 
-    const { isLogin, dispatchModal } = useWlUserReact()
+      <h2>button components ————————————————————————————————————————</h2>
+      /** 登录按钮-默认行为：点击始终打开登录modal */
+      <LoginButton />
+      /**
+       * 登录按钮-自定义行为
+       * 未登录：点击打开登录modal
+       * 已登录：点击跳转到profile页面
+      */
+      <LoginButton onClick={() => isLogin ? navigate('/profile') : dispatchModal({ type: WlUserModalType.LOGIN })} />
+      /** * 根据SignerType 渲染指定的绑定按钮，自带绑定和解绑功能 */
+      <BindWithSignerButton signerType={SignerType.METAMASK} />
+      <BindWithSignerButton signerType={SignerType.PHANTOM} />
+      <BindWithSignerButton signerType={SignerType.MARTIAN} />
+      <BindWithSignerButton signerType={SignerType.TWITTER} />
+      <BindWithSignerButton signerType={SignerType.DISCORD} />
 
-    ......
+      <h2>other components ————————————————————————————————————————</h2>
+      // 显示当前登录的用户头像
+      <UserAvatar />
+      // 显示指定用户头像
+      <UserAvatar user={{ id, avatar }} />
+      // 显示指定图片
+      <UserAvatar src={src} />
 
-    <LoginButton
-        onClick={() => (isLogin ? navigate('/profile') : dispatchModal({ type: WlUserModalType.LOGIN }))}
-    />
-    ```
+      <h2>使用dispatchModal，手动打开modal ————————————————————————————————————————</h2>
+      <button onClick={() => dispatchModal({ type: WlUserModalType.LOGIN })}>
+        打开登录modal
+      </button>
+      /**
+       * 打开使用 指定方式 进行绑定的modal，下方值替换到payload
+       * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
+      */
+      <button onClick={() => dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.TWITTER})}>
+        打开使用 twitter 进行绑定的modal
+      </button>
+      /**
+       * 打开取消绑定 指定账户 的确认框，下方值替换到payload
+       * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
+      */
+      <button onClick={() => dispatchModal({ type: WlUserModalType.UNBIND_CONFIRM, payload: SignerType.TWITTER })}>
+        打开取消绑定 twitter 的确认框
+      </button>
 
-- BindWithSignerButton
+      <button onClick={() => dispatchModal({ type: WlUserModalType.EDIT_PROFILE})}>
+        打开编辑 用户profile 信息的modal
+      </button>
 
-  - 绑定按钮, 显示当前签名者的绑定状态信息
-  - 参数
-    - {...Button.Props}
-    - signerType : 签名者的类型，从@ecnft/wl-user-core 中获取
-  - 案例
+      <h2> 使用dispatchAction，直接触发数据的变更行为 ————————————————————————————————————————</h2>
+      /**
+       * 触发登录流程
+       * 下方值替换到payload
+       * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
+      */
+      <button onClick={() => dispatchAction({ type: WlUserActionType.LOGIN， payload: SignerType.TWITTER })}>
+        login with twitter
+      </button>
+      /**
+       * 触发绑定流程
+       * 下方值替换到payload
+       * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
+      */
+      <button onClick={() => dispatchAction({ type: WlUserActionType.BIND, payload: SignerType.TWITTER })}>
+        bind with twitter
+      </button>
+      /**
+       * 触发解绑
+       * 下方值替换到payload
+       * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
+      */
+      <button onClick={() =>dispatchAction({ type: WlUserActionType.UNBIND_CONFIRM, payload: SignerType.TWITTER })}>
+        unbind twitter
+      </button>
+      /**
+       * 更新用户profile信息
+      */
+      <button
+        onClick={() =>
+          dispatchAction({
+            type: WlUserActionType.UPDATE_USER_PROFILE,
+            payload: { name: "zhang san", avatar:"https://img.xxxxx.jpg"}
+          })
+        }
+      >
+        update profile
+      </button>
+      /**
+       * 退出登录
+      */
+      <button onClick={() => dispatchAction({ type: WlUserActionType.LOGOUT })}>
+        logout
+      </button>
+    </div>
+  );
+}
 
-    展示不同的签名者绑定按钮
+export default View;
+```
 
-    ```typescript
-    import { BindWithSignerButton } from  "@ecnft/wl-user-react";
-    import { SignerType } from  "@ecnft/wl-user-core";
-
-    ......
-
-    <BindWithSignerButton signerType={SignerType.METAMASK} />
-    <BindWithSignerButton signerType={SignerType.PHANTOM} />
-    <BindWithSignerButton signerType={SignerType.MARTIAN} />
-    <BindWithSignerButton signerType={SignerType.TWITTER} />
-    <BindWithSignerButton signerType={SignerType.DISCORD} />
-
-    ```
-
-- UserAvatar
-
-  - 用户头像
-  - 参数
-    - {...Image.Props}
-    - user : 头像所属用户信息，如果传了则展示指定用户头像，没传则展示当前用户头像
-    - src : 传入 src 强制显示此 src 对应的图片 (不采用 user 配置)
-  - 案例
-
-    展示不同的签名者绑定按钮
-
-    ```typescript
-    import { UserAvatar } from  "@ecnft/wl-user-react";
-
-    ......
-    // 显示当前登录用户头像
-    <UserAvatar />
-
-    // 显示指定用户头像
-    <UserAvatar user={{id,avatar}} />
-
-    // 显示指定图片
-    <UserAvatar src={src} />
-
-    ```
-
-## 工具
+### 工具
 
 - handleAuthFailed
 
-  wl-user-react 内部处理 token 授权失效的过程，可以导出放到当前项目中，让当前项目认证失效的反馈与 wl-user-react 处理的一致
+  wl-user-react 内部对于接口 token 认证失效的默认处理手段
 
-  - 案例 ：将 wl-user-react 注入到项目的 axios 封装中
+  - 内部处理过程
+    1. 退出登录: dispatchAction({ type: WlUserActionType.LOGOUT })
+    2. 打开登录 modal：dispatchModal({ type: WlUserModalType.LOGIN })
+    3. toast 提示：toast.error('authentication failed, log in again!')
+
+  如果需要让当前项目认证失效的反馈与 wl-user-react 处理的一致
+
+  可以导出放到当前项目中使用
+
+  - 案例 1 : 在单个接口中使用
+
+  ```
+    import { handleAuthFailed } from '@ecnft/wl-user-react'
+
+    ......
+
+    editApi()
+    .then(()=>alert('edit success'))
+    .catch((error)=>error.response.status === 401 ? handleAuthFailed() : alert(error.message))
+  ```
+
+  - 案例 2 ：注入到项目的 axios 封装中
 
   ```typescript
 
-  // **/utils/axiosInstance.ts
+  // utils/axiosInstance.ts
 
-  // 处理401响应
-  let handleAxiosResponse401: () => void | undefined
-  export const injectHandleAxiosResponse401 = (func: () => void) => {
-    handleAxiosResponse401 = func
+  // 当前项目axios处理认证失效
+  let handleAuthFailed: () => void | undefined
+  export const injectHandleAuthFailed = (func: () => void) => {
+    handleAuthFailed = func
   }
   // 添加响应拦截器
   axiosInstance.interceptors.response.use(
@@ -219,7 +298,7 @@
     },
     (error) => {
       if (error.response.status === 401) {
-        if (handleAxiosResponse401) handleAxiosResponse401()
+        if (handleAuthFailed) handleAuthFailed()
         return
       } else {
         // 对响应错误做点什么
@@ -232,8 +311,7 @@
 
   // app.ts
   import { handleAuthFailed } from '@ecnft/wl-user-react'
-  import { injectHandleAxiosResponse401 } from '**/utils/axiosInstance.ts'
-  // 将wl-user-react的内部处理认证失效的逻辑注入到 当前项目axios的401处理程序中
-  injectHandleAxiosResponse401(handleAuthFailed)
+  import { injectHandleAuthFailed } from 'utils/axiosInstance.ts'
+  injectHandleAuthFailed(handleAuthFailed)
 
   ```
