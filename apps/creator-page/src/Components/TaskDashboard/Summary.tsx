@@ -55,7 +55,16 @@ export default function Summary({
             <PngIconGiftBox /> Reward: {getTaskRewardTypeValue(reward)}
           </span>
         </div>
-        <div className="desc">{info?.description || 'Task Statements'}</div>
+        <div className="desc">
+          <div className="ql-snow">
+            <div
+              className="ql-editor"
+              dangerouslySetInnerHTML={{
+                __html: info?.description || 'Task Statements',
+              }}
+            ></div>
+          </div>
+        </div>
         <hr />
 
         {/* <h4>{'Task Statements'}</h4> */}
@@ -160,6 +169,10 @@ const TaskTitleBox = styled.div`
     line-height: 21px;
     margin-top: 10px;
     color: rgba(51, 51, 51, 0.6);
+    & .ql-editor {
+      margin: 0;
+      padding: 0;
+    }
   }
   & .items {
     margin-top: 15px;
