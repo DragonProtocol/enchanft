@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 17:10:43
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-01 16:42:38
+ * @LastEditTime: 2022-11-02 10:05:35
  * @Description: file description
  */
 import { AxiosPromise } from 'axios'
@@ -21,8 +21,8 @@ export function fetchDetailByProjectSlug(slug: string): AxiosPromise<ApiResp<Pro
 }
 export function applyForVerificationByProjectId(id: number): AxiosPromise<ApiResp<null>> {
   return request({
-    url: `/projects/${id}/applyForVerification`,
-    method: 'get',
+    url: `/projects/${id}/claim`,
+    method: 'post',
     headers: {
       needToken: true,
     },

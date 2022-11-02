@@ -125,7 +125,10 @@ const Project: React.FC = () => {
   // 用户显示 apply for verification
   const { applyForVerification } = useAppSelector(selectUserProjectHandlesState)
   const applyForVerificationLoading = applyForVerification.status === AsyncRequestStatus.PENDING
-  const displayApplyForVerification = useMemo(() => !!data && data.grade === GradeType.UNOFFICIAL, [data])
+  const displayApplyForVerification = useMemo(
+    () => !!data && data.grade === GradeType.UNOFFICIAL && !!data?.community.twitterName,
+    [data],
+  )
   const handleApplyForVerification = useCallback(() => {
     if (!isLogin) {
       dispatchModal({ type: WlUserModalType.LOGIN })
@@ -139,7 +142,7 @@ const Project: React.FC = () => {
         toast.warn('The bound twitter is inconsistent with the current project community twitter')
       }
     }
-  }, [isLogin, user, validateBindAccount])
+  }, [isLogin, user, data, validateBindAccount])
 
   if (loadingView)
     return (
