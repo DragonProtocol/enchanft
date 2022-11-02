@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 08:39:26
+ * @LastEditTime: 2022-11-01 17:30:58
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
@@ -33,8 +33,7 @@ import userFollowedCommunitiesReducer from '../features/user/followedCommunities
 import userCheckinCommunitiesReducer from '../features/user/checkinCommunitiesSlice'
 import userRewardsReducer from '../features/user/userRewardsSlice'
 import userCommunityHandlesReducer from '../features/user/communityHandlesSlice'
-
-import creatorReducer from '../features/creator'
+import userProjectHandlesReducer from '../features/user/projectHandlesSlice'
 
 export const store = configureStore({
   reducer: {
@@ -59,8 +58,7 @@ export const store = configureStore({
     userCheckinCommunities: userCheckinCommunitiesReducer,
     userRewards: userRewardsReducer,
     userCommunityHandles: userCommunityHandlesReducer,
-
-    creator: creatorReducer,
+    userProjectHandles: userProjectHandlesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
