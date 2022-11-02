@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 11:00:15
+ * @LastEditTime: 2022-11-02 11:18:04
  * @Description: file description
  */
 import React, { useState } from 'react';
@@ -65,6 +65,7 @@ export default LoginModal;
 
 const LoginModalWrapper = styled(ModalBase)``;
 const LoginModalBody = styled.div`
+  width: 384px;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -76,29 +77,25 @@ const LoginModalBody = styled.div`
 const LoginSignerList = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 20px;
-  padding: 0 20px;
 `;
 const OtherSignersDisplayBtn = styled.div`
-  width: 100%;
-  text-align: end;
   cursor: pointer;
-  font-size: 12px;
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 27px;
+  color: #333333;
 `;
 const RecommendLoginButton = styled(LoginWithSignerButton)`
-  width: 138px;
-  height: 138px;
+  width: 100%;
+  height: 160px;
   flex-direction: column;
   .wl-user-button-login_signer-icon {
     width: 50px;
     height: 50px;
-    & > svg {
-      width: 50px;
-      height: 50px;
-    }
   }
 `;
 const MoreLoginButton = styled(LoginWithSignerButton)`
-  width: 138px;
+  width: 100%;
 `;
