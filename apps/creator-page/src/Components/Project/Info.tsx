@@ -243,6 +243,7 @@ function DiscordEdit({
   saveAction: () => void;
 }) {
   const [editing, setEditing] = useState(false);
+  const value = discordInviteUrl.replace('https://discord.gg/', '');
   return (
     <div className="discord">
       <span>
@@ -250,14 +251,15 @@ function DiscordEdit({
       </span>
       {(editing && (
         <>
-          <span>https://</span>
+          <span>https://discord.gg/</span>
           <div className="edit-box">
             <input
               title="admin-discord"
               type="text"
-              value={discordInviteUrl}
+              value={value}
               onChange={(e) => {
-                updateDiscordInviteUrl(e.target.value);
+                const value = `https://discord.gg/` + e.target.value;
+                updateDiscordInviteUrl(value);
               }}
             />
             <span
@@ -279,7 +281,10 @@ function DiscordEdit({
         </>
       )) || (
         <>
-          <span>https://{discordInviteUrl}</span>
+          <span>
+            https://discord.gg/
+            {value}
+          </span>
           <span
             onClick={() => {
               setEditing(true);
@@ -311,7 +316,7 @@ function WebsiteEdit({
 
       {(editing && (
         <>
-          <span>https://</span>
+          <span></span>
           <div className="edit-box">
             <input
               title="admin-website"
@@ -340,7 +345,7 @@ function WebsiteEdit({
         </>
       )) || (
         <>
-          <span>https://{website}</span>
+          <span>{website}</span>
           <span
             onClick={() => {
               setEditing(true);
@@ -399,6 +404,8 @@ const InfoBox = styled.div`
             padding-left: 5px;
             &:nth-child(2) {
               padding-right: 3px;
+              max-width: 200px;
+              overflow: hidden;
             }
             &:last-child {
               padding-right: 5px;
@@ -423,6 +430,7 @@ const InfoBox = styled.div`
               border: none;
               outline: none;
               padding-left: 5px;
+              /* width: 80px; */
             }
             & span {
               cursor: pointer;
@@ -448,6 +456,9 @@ const InfoBox = styled.div`
             border-color: #5368ed;
             & .wl-bot {
               background-color: #5368ed;
+            }
+            & input {
+              width: 80px;
             }
           }
           &.website {
