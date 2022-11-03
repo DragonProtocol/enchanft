@@ -1,3 +1,10 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-11-02 12:50:32
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-11-03 11:55:03
+ * @Description: file description
+ */
 /**
  * This is a minimal script to publish your package to "npm".
  * This is meant to be used as-is or customize as you see fit.
@@ -19,17 +26,10 @@ function invariant(condition, message) {
   }
 }
 
-// Executing publish script: node path/to/publish.mjs {name} --version {version} --tag {tag}
-// Default "tag" to "next" so we won't publish the "latest" tag by accident.
-const [, , name, version, tag = 'next'] = process.argv;
-
-// A simple SemVer validation to validate the version
-const validVersion = /^\d+\.\d+\.\d+(-\w+\.\d+)?/;
-invariant(
-  version && validVersion.test(version),
-  `No version provided or version did not match Semantic Versioning, expected: #.#.#-tag.# or #.#.#, got ${version}.`
-);
-
+// Executing publish script: node path/to/publish.mjs {name} --tag {tag}
+// Default "tag" to "latest"
+let [, , name, tag] = process.argv;
+tag = tag === 'undefined' ? 'latest' : tag;
 const graph = readCachedProjectGraph();
 const project = graph.nodes[name];
 
@@ -46,16 +46,19 @@ invariant(
 
 process.chdir(outputPath);
 
-// Updating the version in "package.json" before publishing
 try {
   const json = JSON.parse(readFileSync(`package.json`).toString());
-  json.version = version;
-  writeFileSync(`package.json`, JSON.stringify(json, null, 2));
+  const { version } = json;
+  // A simple SemVer validation to validate the version
+  const validVersion = /^\d+\.\d+\.\d+(-\w+\.\d+)?/;
+  invariant(
+    version && validVersion.test(version),
+    `No version provided or version did not match Semantic Versioning, expected: #.#.#-tag.# or #.#.#, got ${version}.`
+  );
 } catch (e) {
   console.error(
     chalk.bold.red(`Error reading package.json file from library build output.`)
   );
 }
-
 // Execute "npm publish" to publish
-execSync(`npm publish --access public --tag ${tag}`);
+// execSync(`npm publish --access public --tag ${tag}`);

@@ -30,7 +30,7 @@
     "publish": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "node tools/scripts/publish.mjs wl-user-react {args.ver} {args.tag}"
+        "command": "pnpm nx build wl-user-react & node tools/scripts/publish.mjs wl-user-react {args.tag}"
       },
       "dependsOn": [
         {
