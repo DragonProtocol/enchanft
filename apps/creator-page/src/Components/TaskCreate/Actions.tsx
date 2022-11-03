@@ -93,7 +93,7 @@ export default function Actions({
   const [retweetTwitter, setRetweetTwitter] = useState({
     valid: false,
     id: '',
-    tag: '',
+    tag_friends_num: '',
     luckyDrawWeight: '1',
   });
 
@@ -238,6 +238,7 @@ export default function Actions({
           description: '',
           url: `https://twitter.com/intent/retweet?tweet_id=${retweetTwitter.id}`,
           tweet_id: retweetTwitter.id,
+          tag_friends_num: Number(retweetTwitter.tag_friends_num) || 0,
           lucky_draw_weight: Number(retweetTwitter.luckyDrawWeight) || 1,
         });
     }
@@ -345,27 +346,27 @@ export default function Actions({
         const { question, luckyDrawWeight } = item;
         if (question.trim()) {
           // TODO
-          actions.push({
-            name: question,
-            type: ActionType.QUESTION,
-            typeMore: ActionTypeMore.QUESTIONNAIRE,
-            description: ``,
-            question,
-            lucky_draw_weight: Number(luckyDrawWeight) || 1,
-          });
+          // actions.push({
+          //   name: question,
+          //   type: ActionType.QUESTION,
+          //   typeMore: ActionTypeMore.QUESTIONNAIRE,
+          //   description: ``,
+          //   question,
+          //   lucky_draw_weight: Number(luckyDrawWeight) || 1,
+          // });
         }
       });
     }
 
     if (uploadImage.valid && uploadImage.desc.trim()) {
       // TODO
-      actions.push({
-        name: uploadImage.desc,
-        type: ActionType.UPLOADIMAGE,
-        typeMore: ActionTypeMore.QUESTIONNAIRE,
-        description: uploadImage.desc,
-        lucky_draw_weight: Number(uploadImage.luckyDrawWeight) || 1,
-      });
+      // actions.push({
+      //   name: uploadImage.desc,
+      //   type: ActionType.UPLOADIMAGE,
+      //   typeMore: ActionTypeMore.QUESTIONNAIRE,
+      //   description: uploadImage.desc,
+      //   lucky_draw_weight: Number(uploadImage.luckyDrawWeight) || 1,
+      // });
     }
 
     updateStateActions(actions);
@@ -575,11 +576,11 @@ export default function Actions({
                         type="number"
                         min={0}
                         step={1}
-                        value={retweetTwitter.tag}
+                        value={retweetTwitter.tag_friends_num}
                         onChange={(e) => {
                           setRetweetTwitter({
                             ...retweetTwitter,
-                            tag: e.target.value,
+                            tag_friends_num: e.target.value,
                           });
                         }}
                       />
@@ -840,28 +841,9 @@ export default function Actions({
                 </div>
               </>
             )}
-
-            {/* <>
-                <div className="switch-btn-box">
-                  <span>Manual check?</span>
-                  <SwitchBtn
-                    width={80}
-                    height={40}
-                    dotHeight={32}
-                    dotWidth={32}
-                    open={questionnaire.manualCheck}
-                    onChange={(v) => {
-                      setQuestionnaire({
-                        ...questionnaire,
-                        manualCheck: v,
-                      });
-                    }}
-                  />
-                </div> 
-              </>*/}
           </div>
 
-          {/** Question2 */}
+          {/** Question2 
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -967,26 +949,8 @@ export default function Actions({
                 </div>
               </>
             )}
-
-            {/* <>
-                <div className="switch-btn-box">
-                  <span>Manual check?</span>
-                  <SwitchBtn
-                    width={80}
-                    height={40}
-                    dotHeight={32}
-                    dotWidth={32}
-                    open={questionnaire.manualCheck}
-                    onChange={(v) => {
-                      setQuestionnaire({
-                        ...questionnaire,
-                        manualCheck: v,
-                      });
-                    }}
-                  />
-                </div> 
-              </>*/}
           </div>
+          */}
         </div>
         <div>
           {/** Join Discord */}
@@ -1421,7 +1385,7 @@ export default function Actions({
               )}
             </div>
           </div>
-          {/** upload Image */}
+          {/** upload Image 
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -1463,6 +1427,7 @@ export default function Actions({
               />
             )}
           </div>
+          */}
         </div>
       </div>
     </SelectActionsBox>

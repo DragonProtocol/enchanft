@@ -1,3 +1,4 @@
+import log from 'loglevel';
 import styled from 'styled-components';
 import RichText from '../RichText';
 
@@ -10,7 +11,7 @@ export default function Desc({
   setDesc: (arg0: string) => void;
   title?: string;
 }) {
-  console.log({ desc });
+  log.debug({ desc });
   return (
     <ContentBox>
       <div>

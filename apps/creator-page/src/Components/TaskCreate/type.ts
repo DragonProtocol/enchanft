@@ -90,6 +90,7 @@ export type Action = {
   nft_accounts_or_add?: boolean;
   question?: string;
   answer?: string;
+  tag_friends_num?: number;
   lucky_draw_weight?: number;
   coin_type?: CoinType;
 };

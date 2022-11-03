@@ -195,6 +195,7 @@ export function createTask(
           nft_accounts_or_add: item.nft_accounts_or_add,
           question: item.question,
           answer: item.answer,
+          tag_friends_num: item.tag_friends_num,
           lucky_draw_weight: item.lucky_draw_weight,
           chain,
         },
