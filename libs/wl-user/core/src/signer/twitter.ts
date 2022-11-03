@@ -165,90 +165,64 @@ export class Twitter extends Signer {
 
   public login(): Promise<LoginResult> {
     return new Promise((resolve, reject) => {
-      this.signerProcessStatusChange(SignerProcessStatus.SIGNATURE_PENDING);
-      // 1. get twitter request token
-      getTwittierOauth1RequestToken(this.oauthCallbackUri)
-        .then((result) => {
-          const { code, data, msg } = result.data;
-          if (code === 0) {
-            startListenTwitterOauthStorage();
 
-            const url = getApiTwitterOauth1Url(data.oauthToken);
-            const authWindow = openOauthWindow(url) as TwitterOauthWindow;
-
-            const handleTwitterCallback = (
-              e: TwitterEventMap[TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK]
-            ) => {
-              (window as TwitterOauthWindow).removeEventListener(
-                TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK,
-                handleTwitterCallback
-              );
-              clearListenTwitterOauthStorage();
-
-              // 3. fetch twitter login
-              const { oauthToken, oauthVerifier } = e.detail;
-              this.signerProcessStatusChange(SignerProcessStatus.LOGIN_PENDING);
-              login({
-                type: this.accountType,
-                twitterOauthToken: oauthToken,
-                twitterOauthVerifier: oauthVerifier,
-              })
-                .then((result) => {
-                  this.signerProcessStatusChange(
-                    SignerProcessStatus.LOGIN_FULFILLED
-                  );
-                  resolve(result.data);
-                })
-                .catch((error) => {
-                  this.signerProcessStatusChange(
-                    SignerProcessStatus.LOGIN_REJECTED
-                  );
-                  reject(
-                    new TwitterError(
-                      ErrorName.API_REQUEST_LOGIN_ERROR,
-                      error.message
-                    )
-                  );
-                });
-            };
-            // 2. listen twitter login oauth callback
-            (window as TwitterOauthWindow).addEventListener(
-              TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK,
-              handleTwitterCallback
-            );
-
-            listenWindowClose(authWindow, () => {
-              if (isStartListenTwitterOauthStorage()) {
-                (window as TwitterOauthWindow).removeEventListener(
-                  TwitterEventType.TWITTER_LOGIN_OAUTH_CALLBACK,
-                  handleTwitterCallback
-                );
-                clearListenTwitterOauthStorage();
+      try {
+        startListenTwitterOauthStorage();
+        const url = getApiTwitterOauth2Url(
+          this.twitterClientId,
+          this.oauthCallbackUri
+        );
+        const authWindow = openOauthWindow(url);
+        const handleTwitterCallback = (e: StorageEvent) => {
+          const { key, newValue } = e;
+          if (
+            key === ListenTwitterOauthStorageKey.LISTEN_TWITTER_OAUTH_CODE &&
+            newValue
+          ) {
+            window.removeEventListener('storage', handleTwitterCallback);
+            clearListenTwitterOauthStorage();
+            this.signerProcessStatusChange(SignerProcessStatus.LOGIN_PENDING);
+            // 2. fetch twitter bind
+            login({
+              type: this.accountType,
+              code: newValue,
+              callback: this.oauthCallbackUri,
+            })
+              .then((result) => {
                 this.signerProcessStatusChange(
-                  SignerProcessStatus.SIGNATURE_REJECTED
+                  SignerProcessStatus.LOGIN_FULFILLED
                 );
-                reject(new TwitterError(ErrorName.OAUTH_WINDOW_CLOSE));
-              }
-            });
-          } else {
-            this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
-            reject(
-              new TwitterError(
-                ErrorName.API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR,
-                msg
-              )
-            );
+                resolve(result.data);
+              })
+              .catch((error) => {
+                this.signerProcessStatusChange(
+                  SignerProcessStatus.LOGIN_REJECTED
+                );
+                reject(
+                  new TwitterError(
+                    ErrorName.API_REQUEST_LOGIN_ERROR,
+                    error.message
+                  )
+                );
+              });
           }
-        })
-        .catch((error) => {
-          this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
-          reject(
-            new TwitterError(
-              ErrorName.API_REQUEST_TWITTER_REQUEST_TOKEN_ERROR,
-              error.message
-            )
-          );
-        });
+        };
+        // 1. listen twitter bind oauth callback
+        window.addEventListener('storage', handleTwitterCallback);
+        // listenWindowClose(authWindow, () => {
+        //   if (isStartListenTwitterOauthStorage()) {
+        //     window.removeEventListener('storage', handleTwitterCallback);
+        //     clearListenTwitterOauthStorage();
+        //     this.signerProcessStatusChange(
+        //       SignerProcessStatus.SIGNATURE_REJECTED
+        //     );
+        //     reject(new TwitterError(ErrorName.OAUTH_WINDOW_CLOSE));
+        //   }
+        // });
+      } catch (error) {
+        this.signerProcessStatusChange(SignerProcessStatus.LOGIN_REJECTED);
+        reject(error);
+      }
     });
   }
   public bind(token: string): Promise<BindResult> {
