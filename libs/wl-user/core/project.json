@@ -16,7 +16,7 @@
     "publish": {
       "executor": "@nrwl/workspace:run-commands",
       "options": {
-        "command": "node tools/scripts/publish.mjs wl-user-core {args.ver} {args.tag}"
+        "command": "pnpm nx build wl-user-core & node tools/scripts/publish.mjs wl-user-core {args.tag}"
       },
       "dependsOn": [
         {
