@@ -41,6 +41,10 @@ const RichTextBox = styled.div`
   background: #ebeee4;
   border-radius: 10px;
 
+  & .quill {
+    height: 100%;
+  }
+
   & .ql-snow {
     border: none;
   }
@@ -64,9 +68,9 @@ const RichTextBox = styled.div`
   }
 
   & .ql-container {
-    height: 335px;
     font-family: inherit;
     position: relative;
+    height: calc(100% - 45px);
   }
 
   & .ql-editor {

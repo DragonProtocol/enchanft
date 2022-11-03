@@ -166,7 +166,6 @@ export default function ProjectDetailPage() {
   if (!project) return null;
   if (project?.slug !== slug) return <Loading />;
 
-  console.log({ project });
   return (
     <DetailBox>
       <ProjectInfo
@@ -208,7 +207,7 @@ export default function ProjectDetailPage() {
               },
               account.info.token
             );
-            console.log(code, resp.data);
+
             toast.success('bind success!');
             if (slug)
               dispatch(fetchProjectDetail({ slug, token: account.info.token }));

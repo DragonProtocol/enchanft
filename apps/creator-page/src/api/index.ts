@@ -144,7 +144,11 @@ export enum Chain {
   APTOS = 'APTOS',
 }
 
-export function createTask(data: CreateTaskState, token: string) {
+export function createTask(
+  data: CreateTaskState,
+  noEndTime: boolean,
+  token: string
+) {
   const postData = {
     projectId: data.projectId,
     name: data.name,
@@ -152,7 +156,7 @@ export function createTask(data: CreateTaskState, token: string) {
     image: data.image,
     winNum: data.winnerNum,
     startTime: data.startTime,
-    endTime: data.endTime,
+    endTime: noEndTime ? null : data.endTime,
     reward: {
       type: data.reward.type,
       raffled: data.reward.raffled,
@@ -191,6 +195,7 @@ export function createTask(data: CreateTaskState, token: string) {
           nft_accounts_or_add: item.nft_accounts_or_add,
           question: item.question,
           answer: item.answer,
+          tag_friends_num: item.tag_friends_num,
           lucky_draw_weight: item.lucky_draw_weight,
           chain,
         },

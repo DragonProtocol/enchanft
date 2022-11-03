@@ -16,6 +16,7 @@ import IconCustom from '../Icons/IconCustom';
 import IconWallet from '../Icons/IconWallet';
 import IconNFT from '../Icons/IconNft';
 import IconQuestion from '../Icons/IconQuestion';
+import IconImage from '../Icons/IconImage';
 
 export default function Preview({
   state,
@@ -142,8 +143,14 @@ export default function Preview({
                   if (item.type === ActionType.CUSTOM) {
                     Icon = IconCustom;
                   }
-                  if (item.type === ActionType.QUESTIONNAIRE) {
+                  if (
+                    item.type === ActionType.QUESTIONNAIRE ||
+                    item.type === ActionType.QUESTION
+                  ) {
                     Icon = IconQuestion;
+                  }
+                  if (item.type === ActionType.UPLOADIMAGE) {
+                    Icon = IconImage;
                   }
                   if (
                     item.typeMore === ActionTypeMore.CUSTOM &&
