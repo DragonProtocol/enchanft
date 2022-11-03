@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-21 15:03:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-02 13:38:02
+ * @LastEditTime: 2022-11-03 10:17:05
  * @Description: file description
 -->
 
@@ -119,6 +119,8 @@ function View() {
     getSigner,
     // 验证是否绑定了某个账号
     validateBindAccount,
+    // 获取绑定的账号
+    getBindAccount,
     // 打开modal的触发器
     dispatchModal,
     // 指定行为的触发器

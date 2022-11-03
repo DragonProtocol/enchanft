@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-01 10:56:14
+ * @LastEditTime: 2022-11-03 10:16:01
  * @Description: file description
  */
 import {
@@ -23,6 +23,7 @@ import {
   SignerType,
   TwitterErrorName,
   DiscordErrorName,
+  Account,
 } from '@ecnft/wl-user-core';
 import {
   getStorageValues,
@@ -146,6 +147,8 @@ export type WlUserReactContextType = {
   getSigner: (signerType: SignerType) => Signer | undefined;
   // 验证是否绑定了某个账号
   validateBindAccount: (accountType: AccountType) => boolean;
+  // 获取绑定的账号
+  getBindAccount: (accountType: AccountType) => Account | undefined;
   // 打开modal的触发器
   dispatchModal: (params: DispatchActionModalParams) => void;
   // 指定行为的触发器
@@ -215,25 +218,13 @@ export function WlUserReactProvider({
 
   const isLogin = useMemo(() => !!user.token, [user.token]);
   const validateBindAccount = useCallback(
-    (accountType: AccountType): boolean => {
-      switch (accountType) {
-        case AccountType.TWITTER:
-          /**
-           * !!account.data 的检查是为了确定后端可以使用Twitter接口，可使用接口才允许Twitter相关操作
-           * outh1.0a 的授权没有data
-           * outh2.0 的授权有data (有data才说明可以使用Twitter)
-           * 现在twitter login 走的outh1.0a授权, 再没有执行过twitter link程序(outh2.0 的授权)前，data就不会有值
-           */
-          return user.accounts.some(
-            (account) =>
-              account.accountType === AccountType.TWITTER && !!account.data
-          );
-        default:
-          return user.accounts.some(
-            (account) => account.accountType === accountType
-          );
-      }
-    },
+    (accountType: AccountType): boolean =>
+      user.accounts.some((account) => account.accountType === accountType),
+    [user]
+  );
+  const getBindAccount = useCallback(
+    (accountType: AccountType): Account | undefined =>
+      user.accounts.find((account) => account.accountType === accountType),
     [user]
   );
 
@@ -421,6 +412,7 @@ export function WlUserReactProvider({
       userActionState,
       getSigner,
       validateBindAccount,
+      getBindAccount,
       dispatchModal,
       dispatchAction,
     };
@@ -449,6 +441,7 @@ export function WlUserReactProvider({
         userActionState,
         getSigner,
         validateBindAccount,
+        getBindAccount,
         dispatchModal,
         dispatchAction,
       }}
