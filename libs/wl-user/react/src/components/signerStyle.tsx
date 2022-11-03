@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-13 19:04:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 17:21:23
+ * @LastEditTime: 2022-11-02 11:06:06
  * @Description: file description
  */
 import { SignerType } from '@ecnft/wl-user-core';
 import IconTwitterWhite from './common/icons/IconTwitterWhite';
 import IconDiscordWhite from './common/icons/IconDiscordWhite';
-import IconMetamask from './common/icons/IconMetamask';
+import PngIconMetaMaskBgcWhite from './common/icons/PngIconMetaMaskBgcWhite';
 import IconPhantomWhite from './common/icons/IconPhantomWhite';
 import IconMartian from './common/icons/IconMartian';
 
@@ -35,7 +35,7 @@ export const SignerStyleMap: { [k in SignerType]: SignerStyle } = {
     name: 'MetaMask',
     bgColor: '#F6851B',
     nameColor: '#FFFFFF',
-    icon: <IconMetamask />,
+    icon: <PngIconMetaMaskBgcWhite />,
   },
   [SignerType.PHANTOM]: {
     name: 'Phantom',
