@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 10:42:38
+ * @LastEditTime: 2022-11-02 11:19:07
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
@@ -63,7 +63,7 @@ export default LoginWithSignerButton;
 const LoginWithSignerButtonWrapper = styled(ButtonPrimary)<{
   bgColor: string;
 }>`
-  height: 40px;
+  height: 48px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -73,10 +73,15 @@ const LoginWithSignerButtonWrapper = styled(ButtonPrimary)<{
 const SignerSignerButtonIconBox = styled.div`
   width: 24px;
   height: 24px;
+  svg,
+  img {
+    width: 100%;
+    height: 100%;
+  }
 `;
 const SignerButtonName = styled.span<{ color: string }>`
   font-weight: 700;
-  font-size: 14px;
-  line-height: 21px;
+  font-size: 18px;
+  line-height: 27px;
   color: ${({ color }) => color};
 `;
