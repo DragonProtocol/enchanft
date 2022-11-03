@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-19 14:20:42
+ * @LastEditTime: 2022-11-02 15:51:59
  * @Description: 基础按钮
  */
 import React, { ButtonHTMLAttributes } from 'react';
@@ -49,6 +49,7 @@ export const ButtonBaseCss = css`
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
+  font-family: inherit;
 `;
 const ButtonBaseWrapper = styled.button`
   ${ButtonBaseCss}
