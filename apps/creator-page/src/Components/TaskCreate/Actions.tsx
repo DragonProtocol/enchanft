@@ -28,6 +28,7 @@ import IconCustom from '../Icons/IconCustom';
 import IconDiscordWhite from '../Icons/IconDiscordWhite';
 import RightIcon from '../Icons/IconRight';
 import IconQuestion from '../Icons/IconQuestion';
+import IconImage from '../Icons/IconImage';
 
 export default function Actions({
   hasInviteBot,
@@ -92,6 +93,7 @@ export default function Actions({
   const [retweetTwitter, setRetweetTwitter] = useState({
     valid: false,
     id: '',
+    tag: '',
     luckyDrawWeight: '1',
   });
 
@@ -146,6 +148,23 @@ export default function Actions({
       },
     ],
   });
+  const [question, setQuestion] = useState({
+    type: ActionType.QUESTION,
+    valid: false,
+    data: [
+      {
+        question: '',
+        luckyDrawWeight: '1',
+      },
+    ],
+  });
+  const [uploadImage, setUploadImage] = useState({
+    type: ActionType.UPLOADIMAGE,
+    valid: false,
+    desc: '',
+    luckyDrawWeight: '1',
+  });
+
   useEffect(() => {
     const actions: Action[] = [];
     if (followTwitter.valid && followTwitterLinkResult.length > 0) {
@@ -307,7 +326,7 @@ export default function Actions({
     if (questionnaire.valid) {
       questionnaire.data.forEach((item) => {
         const { question, answer, luckyDrawWeight } = item;
-        if (question.trim() && answer.trim() && answer.trim()) {
+        if (question.trim() && answer.trim()) {
           actions.push({
             name: question,
             type: ActionType.QUESTIONNAIRE,
@@ -318,6 +337,34 @@ export default function Actions({
             lucky_draw_weight: Number(luckyDrawWeight) || 1,
           });
         }
+      });
+    }
+
+    if (question.valid) {
+      question.data.forEach((item) => {
+        const { question, luckyDrawWeight } = item;
+        if (question.trim()) {
+          // TODO
+          actions.push({
+            name: question,
+            type: ActionType.QUESTION,
+            typeMore: ActionTypeMore.QUESTIONNAIRE,
+            description: ``,
+            question,
+            lucky_draw_weight: Number(luckyDrawWeight) || 1,
+          });
+        }
+      });
+    }
+
+    if (uploadImage.valid && uploadImage.desc.trim()) {
+      // TODO
+      actions.push({
+        name: uploadImage.desc,
+        type: ActionType.UPLOADIMAGE,
+        typeMore: ActionTypeMore.QUESTIONNAIRE,
+        description: uploadImage.desc,
+        lucky_draw_weight: Number(uploadImage.luckyDrawWeight) || 1,
       });
     }
 
@@ -337,13 +384,15 @@ export default function Actions({
     walletBalance,
     nftHolder,
     questionnaire,
+    question,
+    uploadImage,
   ]);
 
   return (
     <SelectActionsBox>
-      <div className="subtitle">
+      {/* <div className="subtitle">
         <span>Select actions</span>
-      </div>
+      </div> */}
       <div className="invite">
         <div className="content-item">
           <h4>Invite WL Bot</h4>
@@ -448,7 +497,7 @@ export default function Actions({
                 }}
               />
               <span id="like-twitter-msg" className="msg">
-                Like the tweet
+                Like the Tweet on Twitter
               </span>
               <IconTwitter />
             </div>
@@ -499,24 +548,47 @@ export default function Actions({
                 }}
               />
               <span id="retweet-twitter-msg" className="msg">
-                Retweet the tweet
+                Retweet & @ friends the Tweet
               </span>
               <IconTwitter />
             </div>
 
             {twitter ? (
               retweetTwitter.valid && (
-                <div className="help">
-                  <TweetIdInput
-                    retweetId={retweetTwitter.id}
-                    setRetweetId={(id) => {
-                      setRetweetTwitter({
-                        ...retweetTwitter,
-                        id,
-                      });
-                    }}
-                  />
-                </div>
+                <>
+                  <div className="help">
+                    <TweetIdInput
+                      retweetId={retweetTwitter.id}
+                      setRetweetId={(id) => {
+                        setRetweetTwitter({
+                          ...retweetTwitter,
+                          id,
+                        });
+                      }}
+                    />
+                  </div>
+                  <div className="help">
+                    <span>@</span>
+                    <div className="input-box retweet">
+                      <input
+                        title="retweet-num"
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={retweetTwitter.tag}
+                        onChange={(e) => {
+                          setRetweetTwitter({
+                            ...retweetTwitter,
+                            tag: e.target.value,
+                          });
+                        }}
+                      />
+                    </div>
+                    <span className="username">
+                      friends (Please fill in 0 if don't need tag)
+                    </span>
+                  </div>
+                </>
               )
             ) : (
               <div className="help">
@@ -758,6 +830,133 @@ export default function Actions({
                         {
                           question: '',
                           answer: '',
+                          luckyDrawWeight: '1',
+                        },
+                      ],
+                    })
+                  }
+                >
+                  <IconPlus size="16px" /> Add
+                </div>
+              </>
+            )}
+
+            {/* <>
+                <div className="switch-btn-box">
+                  <span>Manual check?</span>
+                  <SwitchBtn
+                    width={80}
+                    height={40}
+                    dotHeight={32}
+                    dotWidth={32}
+                    open={questionnaire.manualCheck}
+                    onChange={(v) => {
+                      setQuestionnaire({
+                        ...questionnaire,
+                        manualCheck: v,
+                      });
+                    }}
+                  />
+                </div> 
+              </>*/}
+          </div>
+
+          {/** Question2 */}
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={question.valid}
+                onChange={() => {
+                  setQuestion({
+                    ...question,
+                    valid: !question.valid,
+                  });
+                }}
+              />
+              <span id="questionnaire" className="msg">
+                Questionnaire
+              </span>
+              <IconQuestion />
+            </div>
+            {question.valid && (
+              <>
+                {question.data.map((item, idx) => {
+                  return (
+                    <Fragment key={idx}>
+                      {idx > 0 && <div className="and"></div>}
+                      <div className="help">
+                        <span className="username question">Question:</span>
+                        <div className={'input-box'}>
+                          <input
+                            title="question"
+                            type="text"
+                            value={item.question}
+                            onChange={(e) => {
+                              setQuestion({
+                                ...question,
+                                data: [
+                                  ...question.data.slice(0, idx),
+                                  {
+                                    ...item,
+                                    question: e.target.value,
+                                  },
+                                  ...question.data.slice(idx + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {question.valid && (
+                        <LuckyDraw
+                          borderNoTop
+                          weight={item.luckyDrawWeight}
+                          setWeight={(w) => {
+                            setQuestion({
+                              ...question,
+                              data: [
+                                ...question.data.slice(0, idx),
+                                {
+                                  ...item,
+                                  luckyDrawWeight: w,
+                                },
+                                ...question.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        />
+                      )}
+
+                      {idx !== question.data.length - 1 && (
+                        <div
+                          className={'help add-btn custom'}
+                          onClick={() => {
+                            setQuestion({
+                              ...question,
+                              data: [
+                                ...question.data.slice(0, idx),
+                                ...question.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        >
+                          <PngIconDelete />
+                        </div>
+                      )}
+                    </Fragment>
+                  );
+                })}
+                <div className="and"></div>
+                <div
+                  className={'help add-btn custom question-add'}
+                  onClick={() =>
+                    setQuestion({
+                      ...question,
+                      data: [
+                        ...question.data,
+                        {
+                          question: '',
                           luckyDrawWeight: '1',
                         },
                       ],
@@ -1221,6 +1420,48 @@ export default function Actions({
                 />
               )}
             </div>
+          </div>
+          {/** upload Image */}
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={uploadImage.valid}
+                onChange={() => {
+                  setUploadImage({
+                    ...uploadImage,
+                    valid: !uploadImage.valid,
+                  });
+                }}
+              />
+              <span className="msg">Upload Image</span>
+              <IconImage />
+            </div>
+            {uploadImage.valid && (
+              <div className="help">
+                <span className="username custom">Description: </span>
+                <div className="input-box">
+                  <input
+                    type="text"
+                    title="task-like"
+                    value={uploadImage.desc}
+                    onChange={(e) => {
+                      setUploadImage({ ...uploadImage, desc: e.target.value });
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+            {uploadImage.valid && (
+              <LuckyDraw
+                weight={uploadImage.luckyDrawWeight}
+                setWeight={(w) => {
+                  setUploadImage({
+                    ...uploadImage,
+                    luckyDrawWeight: w,
+                  });
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -1760,6 +2001,18 @@ const SelectActionsBox = styled.div`
             }
             &.adding {
               color: rgba(51, 51, 51, 0.3);
+            }
+
+            &.retweet {
+              margin: 0 10px;
+              font-weight: 400;
+              font-size: 14px;
+              line-height: 20px;
+              color: #333333;
+              flex-grow: initial;
+              & input {
+                width: 102px;
+              }
             }
 
             & select {

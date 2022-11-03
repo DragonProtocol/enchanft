@@ -19,6 +19,10 @@ import { toast } from 'react-toastify';
 import { createTask, projectBindBot } from '../api';
 import { AxiosError } from 'axios';
 import IconDel from '../Components/Icons/IconDel';
+import Information from '../Components/TaskCreate/Information';
+import TaskReward from '../Components/TaskCreate/TaskReward';
+import StepOne from '../Components/TaskCreate/StepOne';
+import StepTwo from '../Components/TaskCreate/StepTwo';
 
 export default function TaskNew() {
   const { slug } = useParams();
@@ -26,7 +30,9 @@ export default function TaskNew() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { data: project } = useAppSelector(selectProjectDetail);
+  const [step, setStep] = useState(1);
 
+  const [noEndTime, setNoEndTime] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [hasInviteBot, setHasInviteBot] = useState(
@@ -60,6 +66,7 @@ export default function TaskNew() {
     try {
       const resp = await createTask(
         { ...state, projectId: project.id },
+        noEndTime,
         account.info.token
       );
       dispatch(fetchProjectDetail({ slug, token: account.info.token }));
@@ -82,6 +89,7 @@ export default function TaskNew() {
     validLogin,
     isCreator,
     state,
+    noEndTime,
     isSubmitting,
     dispatch,
     navigate,
@@ -139,36 +147,86 @@ export default function TaskNew() {
             <IconDel size="20px" />
           </button>
         </div>
-        <Basic
-          hasInviteBot={hasInviteBot || !!project.community.discordId}
-          state={state}
-          whitelist={project.whitelists}
-          updateState={(newState) => {
-            setState({ ...newState });
-          }}
-        />
+        <div className="tar-bar">
+          <div className={step === 1 ? 'active' : ''}>1. Information</div>
+          <div className={step === 2 ? 'active' : ''}>2. Task Reward</div>
+          <div className={step === 3 ? 'active' : ''}>3. Task Action</div>
+        </div>
 
-        <Actions
-          hasInviteBot={hasInviteBot || !!project.community.discordId}
-          updateStateActions={(newStateActions) => {
-            setState({ ...state, actions: newStateActions });
-          }}
-          projectName={project.name}
-          projectTwitter={project.community.twitterName}
-          followTwitters={state.followTwitters}
-          updateStateFollowTwitters={(data) => {
-            setState({ ...state, followTwitters: data });
-          }}
-        />
-        <PreviewBtn
-          state={state}
-          updateState={(newState) => {
-            setState({ ...newState });
-          }}
-          passAction={() => {
-            setOpenPreview(true);
-          }}
-        />
+        {step === 1 && (
+          <>
+            <Information
+              noEndTime={noEndTime}
+              updateNoEndTime={(v) => {
+                setNoEndTime(v);
+              }}
+              hasInviteBot={hasInviteBot || !!project.community.discordId}
+              state={state}
+              whitelist={project.whitelists}
+              updateState={(newState) => {
+                setState({ ...newState });
+              }}
+            />
+            <StepOne
+              nextAction={() => {
+                setStep(step + 1);
+              }}
+              cancelAction={() => {
+                navigate(-1);
+              }}
+            />
+          </>
+        )}
+
+        {step === 2 && (
+          <>
+            <TaskReward
+              hasInviteBot={hasInviteBot || !!project.community.discordId}
+              state={state}
+              whitelist={project.whitelists}
+              updateState={(newState) => {
+                setState({ ...newState });
+              }}
+            />
+            <StepTwo
+              nextAction={() => {
+                setStep(step + 1);
+              }}
+              backAction={() => {
+                setStep(step - 1);
+              }}
+            />
+          </>
+        )}
+
+        {step === 3 && (
+          <>
+            <Actions
+              hasInviteBot={hasInviteBot || !!project.community.discordId}
+              updateStateActions={(newStateActions) => {
+                setState({ ...state, actions: newStateActions });
+              }}
+              projectName={project.name}
+              projectTwitter={project.community.twitterName}
+              followTwitters={state.followTwitters}
+              updateStateFollowTwitters={(data) => {
+                setState({ ...state, followTwitters: data });
+              }}
+            />
+            <PreviewBtn
+              state={state}
+              updateState={(newState) => {
+                setState({ ...newState });
+              }}
+              backAction={() => {
+                setStep(step - 1);
+              }}
+              passAction={() => {
+                setOpenPreview(true);
+              }}
+            />
+          </>
+        )}
       </NewBox>
       <Preview
         state={state}
@@ -218,6 +276,27 @@ const NewBox = styled.div`
 
       & svg {
         vertical-align: middle;
+      }
+    }
+  }
+
+  & .tar-bar {
+    border-bottom: 1px solid #d9d9d9;
+    width: calc(100% + 80px);
+    margin-left: -40px;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 80px;
+    margin-top: 40px;
+    > div {
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 40px;
+      color: #333333;
+      padding: 10px;
+      &.active {
+        border-bottom: 4px solid #3dd606;
       }
     }
   }

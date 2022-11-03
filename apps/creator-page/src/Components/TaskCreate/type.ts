@@ -51,6 +51,8 @@ export enum ActionType {
   NFT = 'nft',
   CUSTOM = 'custom',
   QUESTIONNAIRE = 'QUESTIONNAIRE',
+  QUESTION = 'QUESTION',
+  UPLOADIMAGE = 'UPLOADIMAGE',
 }
 
 export enum ActionTypeMore {
