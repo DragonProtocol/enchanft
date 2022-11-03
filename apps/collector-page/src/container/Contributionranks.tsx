@@ -36,7 +36,7 @@ const Contributionranks: React.FC = () => {
   const { projectSlug } = useParams()
   const dispatch = useAppDispatch()
   const { user, isLogin } = useWlUserReact()
-  const { id, avatar, name } = user
+  const { id: userId, avatar, name } = user
   const { follow: followCommunityState, downloadContributionTokens: downloadContributionTokensState } = useAppSelector(
     selectUserCommunityHandlesState,
   )
@@ -79,7 +79,7 @@ const Contributionranks: React.FC = () => {
     }
   }
   // 获取用户在此社区的贡献值
-  const { data: userContribution, status: userContributionStatus } = useAppSelector(selectUserContributon)
+  const { data: userContributionScore, status: userContributionStatus } = useAppSelector(selectUserContributon)
   useEffect(() => {
     if (isLogin && projectSlug && isFollowed) {
       dispatch(fetchUserContributon(projectSlug))
@@ -91,6 +91,8 @@ const Contributionranks: React.FC = () => {
 
   // 获取社区贡献等级排行
   const { contributionranks, contributionranksState } = useContributionranks(projectSlug)
+
+  const userContributionRanking = contributionranks.find((item) => item.userId === userId)?.ranking
 
   // download contribution tokens
   const { status: downloadContributionTokensStatus } = downloadContributionTokensState
@@ -122,10 +124,10 @@ const Contributionranks: React.FC = () => {
   const contributionranksLoading = contributionranksState.status === AsyncRequestStatus.PENDING
   const userContributionInfo: ContributionMyDataViewType = {
     data: {
-      id,
       avatar,
       userName: name,
-      score: userContribution || 0,
+      score: userContributionScore || 0,
+      ranking: userContributionRanking || 0,
     },
     viewConfig: {
       displayFollowCommunity: isLogin && !isFollowed && followStatusType !== FollowStatusType.UNKNOWN,
@@ -160,6 +162,7 @@ const Contributionranks: React.FC = () => {
             loadingDownload={loadingDownload}
             disabledDownload={disabledDownload}
             onDownload={handleDownload}
+            highlightIds={[userId]}
           />
         )}
       </ContributionListBox>

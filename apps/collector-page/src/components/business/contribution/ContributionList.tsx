@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 17:05:04
+ * @LastEditTime: 2022-10-31 14:12:35
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -40,6 +40,7 @@ export type ContributionListProps = {
   disabledDownload?: boolean
   displayMore?: boolean
   moreText?: string
+  highlightIds?: number[]
   onDownload?: () => void
   onMore?: () => void
 }
@@ -54,6 +55,7 @@ const ContributionList: React.FC<ContributionListProps> = ({
   disabledDownload = false,
   displayMore,
   moreText = 'View More',
+  highlightIds = [],
   onDownload,
   onMore,
 }: ContributionListProps) => {
@@ -91,8 +93,16 @@ const ContributionList: React.FC<ContributionListProps> = ({
               <ContributionItemRanking topThree={item.ranking < 4}>{item.ranking}</ContributionItemRanking>
             )}
             {displayAvatar && <ContributionItemAvatar user={{ id: item.userId, avatar: item.avatar }} />}
-            {displayUserName && <ContributionItemUserName>{item.userName}</ContributionItemUserName>}
-            {displayPubkey && <ContributionItemPubkey>{item.pubkey}</ContributionItemPubkey>}
+            {displayUserName && (
+              <ContributionItemUserName highlight={highlightIds.includes(item.userId)}>
+                {item.userName}
+              </ContributionItemUserName>
+            )}
+            {displayPubkey && (
+              <ContributionItemPubkey highlight={highlightIds.includes(item.userId)}>
+                {item.pubkey}
+              </ContributionItemPubkey>
+            )}
             {displayScore && <ContributionItemScore>{item.score}</ContributionItemScore>}
           </ContributionItemBox>
         ))}
@@ -187,16 +197,18 @@ const ContributionItemRanking = styled.div<{ topThree?: boolean }>`
 const ContributionItemAvatar = styled(UserAvatar)`
   width: 40px;
 `
-const ContributionItemUserName = styled(OverflowEllipsisBox)`
+const ContributionItemUserName = styled(OverflowEllipsisBox)<{ highlight?: boolean }>`
   width: 160px;
   text-align: left;
   text-transform: capitalize;
   font-weight: 700;
+  color: ${(props) => (props.highlight ? '#3DD606' : '#333333')};
 `
-const ContributionItemPubkey = styled(OverflowEllipsisBox)`
+const ContributionItemPubkey = styled(OverflowEllipsisBox)<{ highlight?: boolean }>`
   flex: 1;
   min-width: 45%;
   text-align: left;
+  color: ${(props) => (props.highlight ? '#3DD606' : '#333333')};
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     display: none;
   }

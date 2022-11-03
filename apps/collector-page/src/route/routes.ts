@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-09 10:36:46
+ * @LastEditTime: 2022-11-01 16:26:21
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom'
@@ -13,7 +13,6 @@ export enum RouteKeys {
   home = 'home',
   profile = 'profile',
   events = 'events',
-  creator = 'creator',
   todoTask = 'todoTask',
   guide = 'guide',
   enchanftedDetail = 'enchanftedDetail',
@@ -43,7 +42,6 @@ export const permissionRoutes: CutomRouteObject[] = [
 export const routes: CutomRouteObject[] = [
   { path: '/', element: loadComponent('Home'), key: RouteKeys.home },
   { path: '/events', element: loadComponent('Events'), key: RouteKeys.events },
-  { path: '/creator/:taskId', element: loadComponent('Creator'), key: RouteKeys.creator },
   { path: '/projects', element: loadComponent('Projects'), key: RouteKeys.projects },
   { path: '/:projectSlug/rank', element: loadComponent('Contributionranks'), key: RouteKeys.contributionranks },
   { path: '/:projectSlug', element: loadComponent('Project'), key: RouteKeys.project },

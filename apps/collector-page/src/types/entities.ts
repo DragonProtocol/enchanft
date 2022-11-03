@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-28 12:46:32
+ * @LastEditTime: 2022-10-31 13:54:49
  * @Description: 与后端entities type定义对应
  */
 
@@ -174,6 +174,7 @@ export type ContributionRank = {
   userName: string
   pubkey: string
   score: number
+  userId: number
 }
 
 /** whitelist */
