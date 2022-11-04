@@ -5,7 +5,7 @@
   "dependencies": {
     "@craco/craco": "^6.4.5",
     "@ecnft/wl-user-core": "^0.0.4",
-    "@ecnft/wl-user-react": "^0.0.4",
+    "@ecnft/wl-user-react": "^0.0.5",
     "@reduxjs/toolkit": "^1.8.5",
     "@solana/web3.js": "^1.56.2",
     "@testing-library/jest-dom": "^5.14.1",
