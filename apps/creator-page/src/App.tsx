@@ -51,14 +51,14 @@ if (
 }
 
 const signers = [
-  new Twitter({
-    twitterClientId: TWITTER_CLIENT_ID,
-    oauthCallbackUri: TWITTER_CALLBACK_URL,
-  }),
-  new Discord({
-    discordClientId: DISCORD_CLIENT_ID,
-    oauthCallbackUri: DISCORD_CALLBACK_URL,
-  }),
+  // new Twitter({
+  //   twitterClientId: TWITTER_CLIENT_ID,
+  //   oauthCallbackUri: TWITTER_CALLBACK_URL,
+  // }),
+  // new Discord({
+  //   discordClientId: DISCORD_CLIENT_ID,
+  //   oauthCallbackUri: DISCORD_CALLBACK_URL,
+  // }),
   new Metamask(),
   new Phantom(),
   new Martian(),

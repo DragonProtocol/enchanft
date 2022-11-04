@@ -1,4 +1,10 @@
-import { createContext, PropsWithChildren, useContext, useState } from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import { TokenType } from './utils/token';
 import log from 'loglevel';
 
@@ -56,6 +62,10 @@ export const AppProvider = ({ children }: PropsWithChildren) => {
   });
 
   const { isCreator, isAdmin, isVIP } = usePermissions();
+
+  useEffect(() => {
+    setAccount({ info: { ...user } });
+  }, [user]);
 
   log.debug('account', user);
 
