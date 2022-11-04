@@ -25,12 +25,12 @@ import Pagination from '../Components/Pagination';
 import convertToCSV from '../utils/convertToCsv';
 import Loading from '../Components/Loading';
 import { Whales } from '../utils/constants';
-import UserAvatar from '../Components/UserAvatar';
 import { chainIdToChain, sortPubKey } from '../utils';
 import IconPngSearch from '../Components/Icons/IconPngSearch';
 import IconTwitter from '../Components/Icons/IconTwitter';
 import IconDiscord from '../Components/Icons/IconDiscord';
 import { BlockchainType } from '../Components/Project/types';
+import { UserAvatar } from '@ecnft/wl-user-react';
 
 const fileDownload = require('js-file-download');
 
@@ -242,7 +242,9 @@ export default function Members() {
                     </td>*/}
                     {/* <td>{item.userId}</td> */}
                     <td>
-                      <UserAvatar src={item.userAvatar} />
+                      <UserAvatar
+                        user={{ avatar: item.userAvatar, id: item.id }}
+                      />
                       {item.userName || '❌'}
                     </td>
                     <td>

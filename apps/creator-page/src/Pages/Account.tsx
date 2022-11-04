@@ -17,11 +17,12 @@ import { addAccount, delAccount } from '../api';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
+import { UserAvatar } from '@ecnft/wl-user-react';
 
 export default function Account() {
   const { account, updateAccount } = useAppConfig();
   const [edit, setEdit] = useState(false);
-  const [email, setEmail] = useState(account.info?.email || '');
+  // const [email, setEmail] = useState(account.info?.email || '');
   const [showModal, setShowModal] = useState(false);
 
   const { slug } = useParams();
@@ -32,12 +33,12 @@ export default function Account() {
     return { ...data } as ProjectDetail;
   }, [data]);
 
-  const save = useCallback(() => {
-    const result = email.trim();
-    if (!account.info?.token || !result) return;
-    console.log(email);
-    alert('coming soon');
-  }, [email, account.info?.token]);
+  // const save = useCallback(() => {
+  //   const result = email.trim();
+  //   if (!account.info?.token || !result) return;
+  //   console.log(email);
+  //   alert('coming soon');
+  // }, [email, account.info?.token]);
 
   const addMember = useCallback(
     async (wallet: string) => {
@@ -106,7 +107,12 @@ export default function Account() {
 
           {(!edit && (
             <div className="desc">
-              <span>{account.info?.email || 'Email has not set'}</span>{' '}
+              <span>
+                {
+                  //account.info?.email ||
+                  'Email has not set'
+                }
+              </span>{' '}
               <button
                 title="edit"
                 onClick={() => {
@@ -121,12 +127,12 @@ export default function Account() {
               <input
                 title="email"
                 type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                // value={email}
+                // onChange={(e) => setEmail(e.target.value)}
               />
-              <button title="save" onClick={save}>
+              {/* <button title="save" onClick={save}>
                 <IconEditOk />
-              </button>
+              </button> */}
               <button title="close" onClick={() => setEdit(false)}>
                 <IconEditClose />
               </button>
@@ -149,7 +155,9 @@ export default function Account() {
               return (
                 <div className="item" key={item.userId}>
                   <div>
-                    <img src={item.avatar} alt="" />
+                    <UserAvatar
+                      user={{ avatar: item.avatar, id: item.userId }}
+                    />
                     <span>{item.name}</span>
                   </div>
                   <div>{item.wallet}</div>

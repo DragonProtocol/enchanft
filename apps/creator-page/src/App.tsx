@@ -23,6 +23,47 @@ import ProjectAnnouncementEdit from './Pages/ProjectAnnouncementEdit';
 import Members from './Pages/Members';
 import { TaskPre } from './Pages/TaskPre';
 
+import {
+  Twitter,
+  Discord,
+  Metamask,
+  Phantom,
+  Martian,
+} from '@ecnft/wl-user-core';
+import {
+  WlUserReactProvider,
+  WlUserReactContextType,
+} from '@ecnft/wl-user-react';
+import { useState } from 'react';
+
+const TWITTER_CLIENT_ID = process.env.REACT_APP_TWITTER_CLIENT_ID;
+const TWITTER_CALLBACK_URL = process.env.REACT_APP_TWITTER_CALLBACK_URL;
+const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID;
+const DISCORD_CALLBACK_URL = process.env.REACT_APP_DISCORD_CALLBACK_URL;
+
+if (
+  !TWITTER_CLIENT_ID ||
+  !TWITTER_CALLBACK_URL ||
+  !DISCORD_CLIENT_ID ||
+  !DISCORD_CALLBACK_URL
+) {
+  throw new Error('config required!!!');
+}
+
+const signers = [
+  new Twitter({
+    twitterClientId: TWITTER_CLIENT_ID,
+    oauthCallbackUri: TWITTER_CALLBACK_URL,
+  }),
+  new Discord({
+    discordClientId: DISCORD_CLIENT_ID,
+    oauthCallbackUri: DISCORD_CALLBACK_URL,
+  }),
+  new Metamask(),
+  new Phantom(),
+  new Martian(),
+];
+
 function App() {
   const { validLogin } = useAppConfig();
 
@@ -64,14 +105,23 @@ function App() {
 }
 
 export default function Providers() {
+  const [wlUserReactValue, setWlUserReactValue] = useState<
+    WlUserReactContextType | undefined
+  >(undefined);
+
   return (
-    <BrowserRouter>
-      <ReduxProvider store={store}>
-        <AppProvider>
-          <App />
-        </AppProvider>
-      </ReduxProvider>
-    </BrowserRouter>
+    <WlUserReactProvider
+      signers={signers}
+      valueChange={(value) => setWlUserReactValue(value)}
+    >
+      <BrowserRouter>
+        <ReduxProvider store={store}>
+          <AppProvider>
+            <App />
+          </AppProvider>
+        </ReduxProvider>
+      </BrowserRouter>
+    </WlUserReactProvider>
   );
 }
 

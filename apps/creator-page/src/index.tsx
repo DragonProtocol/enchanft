@@ -6,10 +6,22 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import log from 'loglevel';
 import Modal from 'react-modal';
+import {
+  Twitter,
+  Discord,
+  Metamask,
+  Phantom,
+  Martian,
+  setApiBaseUrl,
+} from '@ecnft/wl-user-core';
 
 console.log(`${process.env.REACT_APP_NAME}:v${process.env.REACT_APP_VERSION}`);
 
 log.setLevel(process.env.NODE_ENV === 'production' ? 'WARN' : 'DEBUG');
+
+if (!process.env.REACT_APP_API_BASE_URL) throw new Error('config required');
+
+setApiBaseUrl(process.env.REACT_APP_API_BASE_URL);
 
 Modal.setAppElement('#root');
 const root = ReactDOM.createRoot(

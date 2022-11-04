@@ -5,23 +5,29 @@ import styled from 'styled-components';
 import { useAppConfig } from '../AppProvider';
 import { fetchProjectList, selectProjectList } from '../redux/projectListSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { LAST_LOGIN_PUBKEY, LAST_LOGIN_TOKEN } from '../utils/token';
-import ConnectModal from './ConnectModal';
+
 import IconPlus from './Icons/IconPlus';
 import Logo from './imgs/logo.png';
 import ULImg from './imgs/ul.svg';
-import UserAvatar from './UserAvatar';
+
+import {
+  useWlUserReact,
+  LoginButton,
+  WlUserModalType,
+  WlUserActionType,
+} from '@ecnft/wl-user-react';
 
 export default function Header() {
   const { account, validLogin, updateAccount, isAdmin } = useAppConfig();
 
   const navigate = useNavigate();
   const [showProjectList, setShowProjectList] = useState(false);
-  const [showModal, setShowModal] = useState(false);
   const [showLoginInfo, setShowLoginInfo] = useState(false);
 
   const dispatch = useAppDispatch();
   const { data: projectList } = useAppSelector(selectProjectList);
+
+  const { isLogin, dispatchModal, dispatchAction } = useWlUserReact();
 
   useEffect(() => {
     if (!validLogin) return;
@@ -38,15 +44,6 @@ export default function Header() {
       window.removeEventListener('click', windowClick);
     };
   });
-
-  const shortPubkey = useMemo(() => {
-    if (account.info?.pubkey) {
-      return (
-        account.info.pubkey.slice(0, 4) + '..' + account.info.pubkey.slice(-4)
-      );
-    }
-    return '';
-  }, [account.info?.pubkey]);
 
   return (
     <>
@@ -96,34 +93,18 @@ export default function Header() {
             </div>
           )}
           <div className="connect-box" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="connect-btn"
-              onClick={() => {
-                if (!validLogin) {
-                  setShowModal(true);
-                } else {
-                  setShowLoginInfo(!showLoginInfo);
-                }
-              }}
-            >
-              {(validLogin && (
-                <>
-                  <UserAvatar src={account.info?.avatar} />
-                  {account.info?.name || shortPubkey}
-                </>
-              )) ||
-                'Login'}
-            </button>
-            {showLoginInfo && validLogin && (
+            <LoginButton
+              onClick={() =>
+                isLogin
+                  ? setShowLoginInfo(true)
+                  : dispatchModal({ type: WlUserModalType.LOGIN })
+              }
+            />
+            {showLoginInfo && isLogin && (
               <div className="connect-list">
                 <button
                   onClick={() => {
-                    localStorage.setItem(LAST_LOGIN_TOKEN, '');
-                    localStorage.setItem(LAST_LOGIN_PUBKEY, '');
-                    updateAccount({
-                      ...account,
-                      info: {},
-                    });
+                    dispatchAction({ type: WlUserActionType.LOGOUT });
                   }}
                 >
                   Logout
@@ -133,12 +114,6 @@ export default function Header() {
           </div>
         </div>
       </HeaderBox>
-      <ConnectModal
-        show={showModal}
-        closeModal={() => {
-          setShowModal(false);
-        }}
-      />
     </>
   );
 }
