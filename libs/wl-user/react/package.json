@@ -1,6 +1,6 @@
 {
   "name": "@ecnft/wl-user-react",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "devDependencies": {
     "@rollup/plugin-url": "^8.0.0",
     "@types/react": "18.0.13",
