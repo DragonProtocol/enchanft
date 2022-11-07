@@ -1,6 +1,6 @@
 {
   "name": "@ecnft/wl-user-react",
-  "version": "0.0.3",
+  "version": "0.0.5",
   "devDependencies": {
     "@rollup/plugin-url": "^8.0.0",
     "@types/react": "18.0.13",
@@ -22,6 +22,6 @@
     "styled-components": "^5.3.5"
   },
   "peerDependencies": {
-    "@ecnft/wl-user-core": "0.0.3"
+    "@ecnft/wl-user-core": "0.0.4"
   }
 }
