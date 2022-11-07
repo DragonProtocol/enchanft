@@ -50,8 +50,6 @@ const BindWithSignerButton: React.FC<BindWithSignerButtonProps> = ({
     );
   }, [signerType, userActionState]);
 
-  const unbindDisplay =
-    isBind && [SignerType.TWITTER, SignerType.DISCORD].includes(signerType);
   return (
     <BindWithSignerButtonWrapper
       bgColor={signerStyle.bgColor}
@@ -75,7 +73,7 @@ const BindWithSignerButton: React.FC<BindWithSignerButtonProps> = ({
       >
         {isLoading ? 'Binding ...' : nameStr}
       </SignerButtonName>
-      {unbindDisplay && (
+      {isBind && (
         <SignerUnbindBox
           color={signerStyle.nameColor}
           onClick={(e: any) => {
