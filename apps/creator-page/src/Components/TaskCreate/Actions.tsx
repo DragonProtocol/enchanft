@@ -93,10 +93,14 @@ export default function Actions({
   const [retweetTwitter, setRetweetTwitter] = useState({
     valid: false,
     id: '',
-    tag_friends_num: '',
     luckyDrawWeight: '1',
   });
-
+  const [quoteTwitter, setQuoteTwitter] = useState({
+    valid: false,
+    id: '',
+    tag_friends_num: 3,
+    luckyDrawWeight: '1',
+  });
   const [joinCommunityContribution, setJoinCommunityContribution] = useState({
     valid: false,
     num: 20,
@@ -238,8 +242,21 @@ export default function Actions({
           description: '',
           url: `https://twitter.com/intent/retweet?tweet_id=${retweetTwitter.id}`,
           tweet_id: retweetTwitter.id,
-          tag_friends_num: Number(retweetTwitter.tag_friends_num) || 0,
           lucky_draw_weight: Number(retweetTwitter.luckyDrawWeight) || 1,
+        });
+    }
+    if (quoteTwitter.valid && quoteTwitter.id) {
+      const msg = document.getElementById('quote-twitter-msg')?.textContent;
+      msg &&
+        actions.push({
+          name: msg,
+          type: ActionType.TWITTER,
+          typeMore: ActionTypeMore.QUOTE_TWEET,
+          description: '',
+          url: `https://twitter.com/intent/retweet?tweet_id=${quoteTwitter.id}`,
+          tweet_id: quoteTwitter.id,
+          tag_friends_num: Number(quoteTwitter.tag_friends_num) || 0,
+          lucky_draw_weight: Number(quoteTwitter.luckyDrawWeight) || 1,
         });
     }
     if (joinCommunityContribution.valid && joinCommunityContribution.num) {
@@ -379,6 +396,7 @@ export default function Actions({
     inviteFriends,
     likeTwitter,
     retweetTwitter,
+    quoteTwitter,
     joinCommunityContribution,
     discordRole,
     custom,
@@ -507,8 +525,8 @@ export default function Actions({
               likeTwitter.valid && (
                 <div className="help">
                   <TweetIdInput
-                    retweetId={likeTwitter.link}
-                    setRetweetId={(id) => {
+                    tweetId={likeTwitter.link}
+                    setTweetId={(id) => {
                       setLikeTwitter({
                         ...likeTwitter,
                         link: id,
@@ -549,7 +567,7 @@ export default function Actions({
                 }}
               />
               <span id="retweet-twitter-msg" className="msg">
-                Retweet & @ friends the Tweet
+                Retweet the Tweet
               </span>
               <IconTwitter />
             </div>
@@ -559,10 +577,63 @@ export default function Actions({
                 <>
                   <div className="help">
                     <TweetIdInput
-                      retweetId={retweetTwitter.id}
-                      setRetweetId={(id) => {
+                      tweetId={retweetTwitter.id}
+                      setTweetId={(id) => {
                         setRetweetTwitter({
                           ...retweetTwitter,
+                          id,
+                        });
+                      }}
+                    />
+                  </div>
+                </>
+              )
+            ) : (
+              <div className="help">
+                <ConnectTwitter />
+              </div>
+            )}
+            {twitter && retweetTwitter.valid && (
+              <LuckyDraw
+                weight={retweetTwitter.luckyDrawWeight}
+                setWeight={(w) => {
+                  setRetweetTwitter({
+                    ...retweetTwitter,
+                    luckyDrawWeight: w,
+                  });
+                }}
+              />
+            )}
+          </div>
+          
+          {/** quote twitter */}
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={quoteTwitter.valid}
+                onChange={() => {
+                  if (!twitter) return;
+                  setQuoteTwitter({
+                    ...quoteTwitter,
+                    valid: !quoteTwitter.valid,
+                  });
+                }}
+              />
+              <span id="quote-twitter-msg" className="msg">
+                Quote the Tweet {quoteTwitter.tag_friends_num>0 && <b>& @ {quoteTwitter.tag_friends_num} friends</b>}
+              </span>
+              <IconTwitter />
+            </div>
+
+            {twitter ? (
+              quoteTwitter.valid && (
+                <>
+                  <div className="help">
+                    <TweetIdInput
+                      tweetId={quoteTwitter.id}
+                      setTweetId={(id) => {
+                        setQuoteTwitter({
+                          ...quoteTwitter,
                           id,
                         });
                       }}
@@ -572,15 +643,15 @@ export default function Actions({
                     <span>@</span>
                     <div className="input-box retweet">
                       <input
-                        title="retweet-num"
+                        title="quote-num"
                         type="number"
                         min={0}
                         step={1}
-                        value={retweetTwitter.tag_friends_num}
+                        value={quoteTwitter.tag_friends_num}
                         onChange={(e) => {
-                          setRetweetTwitter({
-                            ...retweetTwitter,
-                            tag_friends_num: e.target.value,
+                          setQuoteTwitter({
+                            ...quoteTwitter,
+                            tag_friends_num: Number(e.target.value),
                           });
                         }}
                       />
@@ -596,12 +667,12 @@ export default function Actions({
                 <ConnectTwitter />
               </div>
             )}
-            {twitter && retweetTwitter.valid && (
+            {twitter && quoteTwitter.valid && (
               <LuckyDraw
-                weight={retweetTwitter.luckyDrawWeight}
+                weight={quoteTwitter.luckyDrawWeight}
                 setWeight={(w) => {
-                  setRetweetTwitter({
-                    ...retweetTwitter,
+                  setQuoteTwitter({
+                    ...quoteTwitter,
                     luckyDrawWeight: w,
                   });
                 }}
@@ -1462,13 +1533,13 @@ function LuckyDraw({
 }
 
 function TweetIdInput({
-  retweetId,
-  setRetweetId,
+  tweetId,
+  setTweetId,
 }: {
-  retweetId: string;
-  setRetweetId: (id: string) => void;
+  tweetId: string;
+  setTweetId: (id: string) => void;
 }) {
-  const [value, setValue] = useState(retweetId);
+  const [value, setValue] = useState(tweetId);
   const timerRef = useRef<NodeJS.Timeout>();
   const [checked, setChecked] = useState(false);
   const [dataValid, setDataValid] = useState(true);
@@ -1480,7 +1551,7 @@ function TweetIdInput({
       if (!checkData || !account.info) return;
       try {
         await checkTweetIdValid(checkData, account.info.token);
-        setRetweetId(data);
+        setTweetId(data);
       } catch (error) {
         const err: AxiosError = error as any;
         if (err.response?.status === 401) {
@@ -1492,7 +1563,7 @@ function TweetIdInput({
         setChecked(true);
       }
     },
-    [account, setRetweetId, updateAccount]
+    [account, setTweetId, updateAccount]
   );
 
   return (
