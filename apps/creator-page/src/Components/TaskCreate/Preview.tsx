@@ -146,11 +146,11 @@ export default function Preview({
                   }
                   if (
                     item.type === ActionType.QUESTIONNAIRE ||
-                    item.type === ActionType.QUESTION
+                    item.type === ActionType.ANSWER_VERIFY
                   ) {
                     Icon = IconQuestion;
                   }
-                  if (item.type === ActionType.UPLOADIMAGE) {
+                  if (item.type === ActionType.UPLOAD_IMAGE) {
                     Icon = IconImage;
                   }
                   if (

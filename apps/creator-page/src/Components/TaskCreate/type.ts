@@ -51,8 +51,8 @@ export enum ActionType {
   NFT = 'nft',
   CUSTOM = 'custom',
   QUESTIONNAIRE = 'QUESTIONNAIRE',
-  QUESTION = 'QUESTION',
-  UPLOADIMAGE = 'UPLOADIMAGE',
+  ANSWER_VERIFY = 'ANSWER_VERIFY',
+  UPLOAD_IMAGE = 'UPLOAD_IMAGE',
 }
 
 export enum ActionTypeMore {
@@ -72,6 +72,8 @@ export enum ActionTypeMore {
   NATIVE_BALANCE = 'NATIVE_BALANCE',
   NFT_BALANCE = 'NFT_BALANCE',
   QUESTIONNAIRE = 'QUESTIONNAIRE',
+  ANSWER_VERIFY = 'ANSWER_VERIFY',
+  UPLOAD_IMAGE = 'UPLOAD_IMAGE',
 }
 
 export type Action = {

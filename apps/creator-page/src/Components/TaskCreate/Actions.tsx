@@ -147,23 +147,23 @@ export default function Actions({
     data: [
       {
         question: '',
+        luckyDrawWeight: '1',
+      },
+    ],
+  });
+  const [verifyAnswer, setVerifyAnswer] = useState({
+    type: ActionType.ANSWER_VERIFY,
+    valid: false,
+    data: [
+      {
+        question: '',
         answer: '',
         luckyDrawWeight: '1',
       },
     ],
   });
-  const [question, setQuestion] = useState({
-    type: ActionType.QUESTION,
-    valid: false,
-    data: [
-      {
-        question: '',
-        luckyDrawWeight: '1',
-      },
-    ],
-  });
   const [uploadImage, setUploadImage] = useState({
-    type: ActionType.UPLOADIMAGE,
+    type: ActionType.UPLOAD_IMAGE,
     valid: false,
     desc: '',
     luckyDrawWeight: '1',
@@ -343,34 +343,33 @@ export default function Actions({
 
     if (questionnaire.valid) {
       questionnaire.data.forEach((item) => {
-        const { question, answer, luckyDrawWeight } = item;
-        if (question.trim() && answer.trim()) {
+        const { question, luckyDrawWeight } = item;
+        if (question.trim()) {
           actions.push({
-            name: question,
+            name: question.trim(),
             type: ActionType.QUESTIONNAIRE,
             typeMore: ActionTypeMore.QUESTIONNAIRE,
             description: ``,
             question,
-            answer,
             lucky_draw_weight: Number(luckyDrawWeight) || 1,
           });
         }
       });
     }
 
-    if (question.valid) {
-      question.data.forEach((item) => {
-        const { question, luckyDrawWeight } = item;
-        if (question.trim()) {
-          // TODO
-          // actions.push({
-          //   name: question,
-          //   type: ActionType.QUESTION,
-          //   typeMore: ActionTypeMore.QUESTIONNAIRE,
-          //   description: ``,
-          //   question,
-          //   lucky_draw_weight: Number(luckyDrawWeight) || 1,
-          // });
+    if (verifyAnswer.valid) {
+      verifyAnswer.data.forEach((item) => {
+        const { question, answer, luckyDrawWeight } = item;
+        if (question.trim() && answer.trim()) {
+          actions.push({
+            name: question.trim(),
+            type: ActionType.ANSWER_VERIFY,
+            typeMore: ActionTypeMore.ANSWER_VERIFY,
+            description: ``,
+            question,
+            answer: answer.trim(),
+            lucky_draw_weight: Number(luckyDrawWeight) || 1,
+          });
         }
       });
     }
@@ -403,7 +402,7 @@ export default function Actions({
     walletBalance,
     nftHolder,
     questionnaire,
-    question,
+    verifyAnswer,
     uploadImage,
   ]);
 
@@ -606,7 +605,7 @@ export default function Actions({
             )}
           </div>
           
-          {/** quote twitter */}
+          {/** Quote twitter */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -781,7 +780,7 @@ export default function Actions({
             )}
           </div>
 
-          {/** Question */}
+          {/* Questionnaire */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -794,7 +793,7 @@ export default function Actions({
                 }}
               />
               <span id="questionnaire" className="msg">
-                Verify the answer
+                Questionnaire
               </span>
               <IconQuestion />
             </div>
@@ -808,7 +807,7 @@ export default function Actions({
                         <span className="username question">Question:</span>
                         <div className={'input-box'}>
                           <input
-                            title="question"
+                            title="questionnaire"
                             type="text"
                             value={item.question}
                             onChange={(e) => {
@@ -819,30 +818,6 @@ export default function Actions({
                                   {
                                     ...item,
                                     question: e.target.value,
-                                  },
-                                  ...questionnaire.data.slice(idx + 1),
-                                ],
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div className="help">
-                        <span className="username question">Answer:</span>
-                        <div className={'input-box'}>
-                          <input
-                            title="answer"
-                            type="text"
-                            placeholder="Case insensitive"
-                            value={item.answer}
-                            onChange={(e) => {
-                              setQuestionnaire({
-                                ...questionnaire,
-                                data: [
-                                  ...questionnaire.data.slice(0, idx),
-                                  {
-                                    ...item,
-                                    answer: e.target.value,
                                   },
                                   ...questionnaire.data.slice(idx + 1),
                                 ],
@@ -901,7 +876,6 @@ export default function Actions({
                         ...questionnaire.data,
                         {
                           question: '',
-                          answer: '',
                           luckyDrawWeight: '1',
                         },
                       ],
@@ -914,26 +888,26 @@ export default function Actions({
             )}
           </div>
 
-          {/** Question2 
+          {/* Question (verify the answer) */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
-                checked={question.valid}
+                checked={verifyAnswer.valid}
                 onChange={() => {
-                  setQuestion({
-                    ...question,
-                    valid: !question.valid,
+                  setVerifyAnswer({
+                    ...verifyAnswer,
+                    valid: !verifyAnswer.valid,
                   });
                 }}
               />
-              <span id="questionnaire" className="msg">
-                Questionnaire
+              <span id="question" className="msg">
+                Verify the answer 
               </span>
               <IconQuestion />
             </div>
-            {question.valid && (
+            {verifyAnswer.valid && (
               <>
-                {question.data.map((item, idx) => {
+                {verifyAnswer.data.map((item, idx) => {
                   return (
                     <Fragment key={idx}>
                       {idx > 0 && <div className="and"></div>}
@@ -945,15 +919,15 @@ export default function Actions({
                             type="text"
                             value={item.question}
                             onChange={(e) => {
-                              setQuestion({
-                                ...question,
+                              setVerifyAnswer({
+                                ...verifyAnswer,
                                 data: [
-                                  ...question.data.slice(0, idx),
+                                  ...verifyAnswer.data.slice(0, idx),
                                   {
                                     ...item,
                                     question: e.target.value,
                                   },
-                                  ...question.data.slice(idx + 1),
+                                  ...verifyAnswer.data.slice(idx + 1),
                                 ],
                               });
                             }}
@@ -961,35 +935,60 @@ export default function Actions({
                         </div>
                       </div>
 
-                      {question.valid && (
+                      <div className="help">
+                        <span className="username question">Answer:</span>
+                        <div className={'input-box'}>
+                          <input
+                            title="answer"
+                            type="text"
+                            placeholder="Case insensitive"
+                            value={item.answer}
+                            onChange={(e) => {
+                              setVerifyAnswer({
+                                ...verifyAnswer,
+                                data: [
+                                  ...verifyAnswer.data.slice(0, idx),
+                                  {
+                                    ...item,
+                                    answer: e.target.value,
+                                  },
+                                  ...verifyAnswer.data.slice(idx + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {verifyAnswer.valid && (
                         <LuckyDraw
                           borderNoTop
                           weight={item.luckyDrawWeight}
                           setWeight={(w) => {
-                            setQuestion({
-                              ...question,
+                            setVerifyAnswer({
+                              ...verifyAnswer,
                               data: [
-                                ...question.data.slice(0, idx),
+                                ...verifyAnswer.data.slice(0, idx),
                                 {
                                   ...item,
                                   luckyDrawWeight: w,
                                 },
-                                ...question.data.slice(idx + 1),
+                                ...verifyAnswer.data.slice(idx + 1),
                               ],
                             });
                           }}
                         />
                       )}
 
-                      {idx !== question.data.length - 1 && (
+                      {idx !== verifyAnswer.data.length - 1 && (
                         <div
                           className={'help add-btn custom'}
                           onClick={() => {
-                            setQuestion({
-                              ...question,
+                            setVerifyAnswer({
+                              ...verifyAnswer,
                               data: [
-                                ...question.data.slice(0, idx),
-                                ...question.data.slice(idx + 1),
+                                ...verifyAnswer.data.slice(0, idx),
+                                ...verifyAnswer.data.slice(idx + 1),
                               ],
                             });
                           }}
@@ -1004,12 +1003,13 @@ export default function Actions({
                 <div
                   className={'help add-btn custom question-add'}
                   onClick={() =>
-                    setQuestion({
-                      ...question,
+                    setVerifyAnswer({
+                      ...verifyAnswer,
                       data: [
-                        ...question.data,
+                        ...verifyAnswer.data,
                         {
                           question: '',
+                          answer: '',
                           luckyDrawWeight: '1',
                         },
                       ],
@@ -1021,7 +1021,6 @@ export default function Actions({
               </>
             )}
           </div>
-          */}
         </div>
         <div>
           {/** Join Discord */}
