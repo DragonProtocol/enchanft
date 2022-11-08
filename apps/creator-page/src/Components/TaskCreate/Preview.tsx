@@ -17,6 +17,7 @@ import IconWallet from '../Icons/IconWallet';
 import IconNFT from '../Icons/IconNft';
 import IconQuestion from '../Icons/IconQuestion';
 import IconImage from '../Icons/IconImage';
+import { YEAR_3000 } from '../../utils/constants';
 
 export default function Preview({
   state,
@@ -82,7 +83,7 @@ export default function Preview({
                   <PngIconAlarmClock />
                   <span>
                     {dayjs(state.startTime).format('YYYY/MM/DD')}——
-                    {dayjs(state.endTime).format('YYYY/MM/DD')}
+                    {state.endTime!==YEAR_3000 && dayjs(state.endTime).format('YYYY/MM/DD')}
                   </span>
                 </div>
                 <div className="winners">

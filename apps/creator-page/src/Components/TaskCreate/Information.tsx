@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { RewardType, State } from './type';
+import { DefaultState, RewardType, State } from './type';
 import AddSvg from '../imgs/add.svg';
 import ArrowDown from '../Icons/svgs/arrow_down.svg';
 import dayjs from 'dayjs';
@@ -7,7 +7,7 @@ import UploadImgModal from '../UploadImgModal';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { TASK_IMAGE_SIZE_LIMIT } from '../../utils/constants';
+import { TASK_IMAGE_SIZE_LIMIT, YEAR_3000 } from '../../utils/constants';
 import { uploadImage as uploadImageApi } from '../../api';
 import { useAppConfig } from '../../AppProvider';
 import { numberInput } from '../../utils';
@@ -18,14 +18,10 @@ import { Whitelist } from '../../redux/projectSlice';
 
 export default function Information({
   hasInviteBot,
-  noEndTime,
   state,
   updateState,
-  updateNoEndTime,
   whitelist,
 }: {
-  noEndTime: boolean;
-  updateNoEndTime: (arg0: boolean) => void;
   hasInviteBot: boolean;
   state: State;
   whitelist: Whitelist[];
@@ -33,6 +29,7 @@ export default function Information({
 }) {
   const { account, updateAccount } = useAppConfig();
   const [showModal, setShowModal] = useState(false);
+  const [noEndTime, setNoEndTime] = useState(false);
 
   const uploadImageHandler = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,6 +138,7 @@ export default function Information({
                     title="to-date"
                     className="date"
                     value={dayjs(state.endTime).format('YYYY-MM-DDTHH:mm')}
+                    hidden={noEndTime}
                     onChange={(e) => {
                       const endTime = dayjs(
                         e.target.value || dayjs().add(1, 'M')
@@ -162,7 +160,11 @@ export default function Information({
                     dotHeight={32}
                     dotWidth={32}
                     open={noEndTime}
-                    onChange={updateNoEndTime}
+                    onChange={(v) => {
+                      setNoEndTime(v)
+                      const endTime = v ? YEAR_3000 : DefaultState.endTime
+                      updateState({ ...state, endTime });
+                    }}
                   />
                   <span>No end Time</span>
                 </div>
@@ -209,12 +211,13 @@ const BasicBox = styled.div`
       & div.date-box {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        justify-content: flex-start;
         & span {
           display: inline-block;
           width: 10px;
           height: 2px;
           background: black;
+          margin:4px;
         }
         & input.date {
           box-sizing: border-box;

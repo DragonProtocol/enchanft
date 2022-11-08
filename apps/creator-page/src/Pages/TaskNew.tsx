@@ -32,7 +32,6 @@ export default function TaskNew() {
   const { data: project } = useAppSelector(selectProjectDetail);
   const [step, setStep] = useState(1);
 
-  const [noEndTime, setNoEndTime] = useState(false);
   const [openPreview, setOpenPreview] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [hasInviteBot, setHasInviteBot] = useState(
@@ -66,7 +65,6 @@ export default function TaskNew() {
     try {
       const resp = await createTask(
         { ...state, projectId: project.id },
-        noEndTime,
         account.info.token
       );
       dispatch(fetchProjectDetail({ slug, token: account.info.token }));
@@ -89,7 +87,6 @@ export default function TaskNew() {
     validLogin,
     isCreator,
     state,
-    noEndTime,
     isSubmitting,
     dispatch,
     navigate,
@@ -156,10 +153,6 @@ export default function TaskNew() {
         {step === 1 && (
           <>
             <Information
-              noEndTime={noEndTime}
-              updateNoEndTime={(v) => {
-                setNoEndTime(v);
-              }}
               hasInviteBot={hasInviteBot || !!project.community.discordId}
               state={state}
               whitelist={project.whitelists}
