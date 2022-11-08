@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { selectProjectDetail } from '../../redux/projectSlice';
 import { useAppSelector } from '../../redux/store';
-import { WL_HOST } from '../../utils/constants';
+import { WL_HOST, YEAR_3000 } from '../../utils/constants';
 import {
   getTaskRewardTypeLabel,
   getTaskRewardTypeValue,
@@ -42,8 +42,8 @@ export default function Summary({
         <div className="alarm-clock">
           <span>
             <PngIconAlarmClock />{' '}
-            {info?.startTime && new Date(info?.startTime).toLocaleDateString()}—
-            {info?.endTime && new Date(info?.endTime).toLocaleDateString()}
+            {info?.startTime && new Date(info?.startTime).toLocaleDateString()} — {' '}
+            {info?.endTime && new Date(info?.endTime).getTime() !==YEAR_3000 && new Date(info.endTime).toLocaleDateString()}
           </span>
           <span>
             <PngIconScissorHand />

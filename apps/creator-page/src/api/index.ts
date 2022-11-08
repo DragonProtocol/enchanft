@@ -146,7 +146,6 @@ export enum Chain {
 
 export function createTask(
   data: CreateTaskState,
-  noEndTime: boolean,
   token: string
 ) {
   const postData = {
@@ -156,7 +155,7 @@ export function createTask(
     image: data.image,
     winNum: data.winnerNum,
     startTime: data.startTime,
-    endTime: noEndTime ? null : data.endTime,
+    endTime: data.endTime, //if no end time, set endTime to year 3000 in Information
     reward: {
       type: data.reward.type,
       raffled: data.reward.raffled,

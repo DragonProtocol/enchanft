@@ -79,3 +79,5 @@ export const Whales: { [index: string]: string } = {
   Autoglyphs: '0xd4e4078ca3495DE5B1d4dB434BEbc5a986197782',
   'Murakami.Flowers Official': '0x7D8820FA92EB1584636f4F5b8515B5476B75171a',
 };
+
+export const YEAR_3000 = 32503651200000
