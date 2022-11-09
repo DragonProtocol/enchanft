@@ -18,7 +18,7 @@ import ActionNameSpan from './ActionNameSpan'
 import { ButtonInfo } from '../../../common/button/ButtonBase'
 import InputBase from '@mui/material/InputBase'
 
-export type ActionQuestionnaireProps = {
+export type ActionVerifyAnswerProps = {
   data: TaskActionItemDataType
   allowHandle?: boolean
   onQuestionConfirm?: (
@@ -28,11 +28,11 @@ export type ActionQuestionnaireProps = {
   ) => void
 }
 
-const ActionQuestionnaire: React.FC<ActionQuestionnaireProps> = ({
+const ActionVerifyAnswer: React.FC<ActionVerifyAnswerProps> = ({
   data,
   allowHandle,
   onQuestionConfirm,
-}: ActionQuestionnaireProps) => {
+}: ActionVerifyAnswerProps) => {
   const { name, progress, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
   const [answer, setAnswer] = useState({
     text: '',
@@ -51,7 +51,7 @@ const ActionQuestionnaire: React.FC<ActionQuestionnaireProps> = ({
     }
   }
   return (
-    <ActionQuestionnaireWrapper>
+    <ActionVerifyAnswerWrapper>
       <ActionIconBox allowHandle={allowHandle} isDone={isDone}>
         <TooltipWrapper title={description}>
           <IconQuestion opacity={isDone ? 0.5 : 1} />
@@ -74,11 +74,11 @@ const ActionQuestionnaire: React.FC<ActionQuestionnaireProps> = ({
         )}
         {answer.displayError && <ConfirmErrorText>Not correct answer</ConfirmErrorText>}
       </ActionContentBox>
-    </ActionQuestionnaireWrapper>
+    </ActionVerifyAnswerWrapper>
   )
 }
-export default ActionQuestionnaire
-const ActionQuestionnaireWrapper = styled.div`
+export default ActionVerifyAnswer
+const ActionVerifyAnswerWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;

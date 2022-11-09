@@ -14,17 +14,17 @@ import ActionIconBox from './ActionIconBox'
 import ActionNameSpan from './ActionNameSpan'
 import { getTwitterRetweetLink } from '../../../../utils/twitter'
 
-export type ActionRetweetTwitterProps = {
+export type ActionQuoteTwitterProps = {
   data: TaskActionItemDataType
   allowHandle?: boolean
   onTwitter?: (callback: () => void) => void
 }
 
-const ActionRetweetTwitter: React.FC<ActionRetweetTwitterProps> = ({
+const ActionQuoteTwitter: React.FC<ActionQuoteTwitterProps> = ({
   data,
   allowHandle,
   onTwitter,
-}: ActionRetweetTwitterProps) => {
+}: ActionQuoteTwitterProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
   const isDone = status === UserActionStatus.DONE
   const handleAction = () => {
@@ -38,7 +38,7 @@ const ActionRetweetTwitter: React.FC<ActionRetweetTwitterProps> = ({
     onTwitter && onTwitter(handleAction)
   }
   return (
-    <ActionRetweetTwitterWrapper>
+    <ActionQuoteTwitterWrapper>
       <ActionIconBox allowHandle={allowHandle} isDone={isDone} onClick={clickAction}>
         <IconTwitter opacity={isDone ? 0.5 : 1} />
       </ActionIconBox>
@@ -47,11 +47,11 @@ const ActionRetweetTwitter: React.FC<ActionRetweetTwitterProps> = ({
           {name}
         </ActionNameSpan>
       </ActionContentBox>
-    </ActionRetweetTwitterWrapper>
+    </ActionQuoteTwitterWrapper>
   )
 }
-export default ActionRetweetTwitter
-const ActionRetweetTwitterWrapper = styled.div`
+export default ActionQuoteTwitter
+const ActionQuoteTwitterWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
