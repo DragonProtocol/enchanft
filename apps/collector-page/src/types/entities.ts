@@ -79,6 +79,7 @@ export enum ActionType {
   NATIVE_BALANCE = 'NATIVE_BALANCE',
   NFT_BALANCE = 'NFT_BALANCE',
   QUESTIONNAIRE = 'QUESTIONNAIRE',
+  ANSWER_VERIFY = 'ANSWER_VERIFY',
 }
 export type NftInfo = {
   name: string
