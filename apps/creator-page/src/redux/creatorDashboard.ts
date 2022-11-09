@@ -53,8 +53,23 @@ export type CreatorState = {
     raffled: boolean;
     data: RewardData;
   };
+  workProofs: WorkProofInfo[];
 };
 
+export type WorkProofInfo = {
+  userId: string;
+  userName: string;
+  userAvatar: string;
+  actionId: number;
+  actionType: string;
+  actionData: {
+    question: string,
+    answer: string,
+    lucky_draw_weight: number,
+  },
+  passed: boolean;
+  submitTime: string;
+}
 // 站点状态信息
 const creatorState: CreatorState = {
   status: AsyncRequestStatus.IDLE,
@@ -74,6 +89,7 @@ const creatorState: CreatorState = {
     name: '',
     data: {},
   },
+  workProofs: []
 };
 
 export const getCreatorDashboardData = createAsyncThunk(
@@ -111,7 +127,7 @@ export const creatorSlice = createSlice({
   name: 'website',
   initialState: creatorState,
   reducers: {
-    some: (state) => {},
+    some: (state) => { },
     resetData: (state) => {
       state.status = AsyncRequestStatus.FULFILLED;
       state.participants = creatorState.participants;
@@ -123,6 +139,7 @@ export const creatorSlice = createSlice({
       state.scheduleInfo = creatorState.scheduleInfo;
       state.taskInfo = creatorState.taskInfo;
       state.reward = creatorState.reward;
+      state.workProofs = creatorState.workProofs;
     },
   },
   extraReducers: (builder) => {
@@ -142,6 +159,7 @@ export const creatorSlice = createSlice({
         state.scheduleInfo = action.payload.scheduleInfo;
         state.taskInfo = action.payload.taskInfo;
         state.reward = action.payload.reward;
+        state.workProofs = action.payload.workProofs;
       })
       .addCase(getCreatorDashboardData.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED;

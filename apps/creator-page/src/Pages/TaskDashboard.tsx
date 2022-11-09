@@ -15,6 +15,7 @@ import Schedule from '../Components/TaskDashboard/Schedule';
 import { AsyncRequestStatus, downloadWinner } from '../api';
 import { Loading } from '../Components/Loading';
 import WinnerList from '../Components/TaskDashboard/WinnerList';
+import WorkProof from '../Components/TaskDashboard/WorkProof';
 
 export function TaskDashboard() {
   const { taskId } = useParams();
@@ -33,6 +34,7 @@ export function TaskDashboard() {
     scheduleInfo,
     pickedWhiteList,
     reward,
+    workProofs,
   } = dashboardData;
 
   const downloadWinners = useCallback(
@@ -111,6 +113,7 @@ export function TaskDashboard() {
       <div className="right-box">
         <Summary info={taskInfo} reward={reward} />
         <Schedule schedules={scheduleInfo} reward={reward} />
+        <WorkProof workProofs={workProofs}/>
       </div>
     </DashboardBox>
   );
