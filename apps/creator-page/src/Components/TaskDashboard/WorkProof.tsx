@@ -1,16 +1,31 @@
+import { AxiosPromise } from 'axios';
+import { useState } from 'react';
 import styled from 'styled-components';
+import { ReviewWorkProofParam } from '../../api';
 import { WorkProofInfo } from '../../redux/creatorDashboard';
 import { ActionTypeMore } from '../TaskCreate/type';
+import PassModal from './PassModal';
 
 export default function WorkProof({
   workProofs,
+  submitReview,
+  viewAllWorkProofs,
 }: {
   workProofs: WorkProofInfo[];
+  submitReview:(data:ReviewWorkProofParam) => void;
+  viewAllWorkProofs:()=>void
 }) {
+  const [passModalData, setPassModalData] = useState<WorkProofInfo | undefined>(undefined);
   const dateNow = new Date();
   return (workProofs && workProofs.length>0) ? (
+    <>
     <WorkProofBox>
-      <h3>WorkProof</h3>
+    <div className="header">
+          <h3>Work Proof</h3>
+          <button title="close" onClick={viewAllWorkProofs}>
+            view all
+          </button>
+        </div>
       <WorkProofListBox>
         {workProofs.map((item, idx) => {
           const text =
@@ -40,7 +55,7 @@ export default function WorkProof({
                 Math.floor(timeDiff / 1000) + 's'
           console.log(item.actionType, new Date(item.submitTime), text, timeDiff)
           return (
-              <div className="item" key={idx}>
+              <div className="item" key={idx} onClick={()=>setPassModalData(item)}>
                 <span className="text">{text}</span>
                 <span className="time">{timeDiffText}</span>
               </div>
@@ -48,6 +63,19 @@ export default function WorkProof({
         })}
       </WorkProofListBox>
     </WorkProofBox>
+    <PassModal
+          data={passModalData}
+          closeModal={() => {
+            setPassModalData(undefined)
+          }}
+          submit={(passed:boolean) => {
+            if (passModalData){
+              const result:ReviewWorkProofParam = { userId: passModalData.userId, actionId: passModalData.actionId, passed: passed }
+              submitReview(result)
+              setPassModalData(undefined)}
+          }}
+        />
+    </>
   ) :
     <></>
 }
@@ -64,20 +92,25 @@ const WorkProofListBox = styled.div`
     flex-direction: row;
     justify-content: space-between;
     margin-top:20px;
+    cursor: pointer;
   }
-
-  & .text {
-  }
-  & .time {
+  .green{
+    color: #3dd606;;
   }
 `;
 
 const WorkProofBox = styled.div`
   padding: 20px;
-  & h3 {
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 30px;
-    color: #333333;
+  & .header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    & h3 {
+      margin: 0px;
+      font-weight: 700;
+      font-size: 20px;
+      line-height: 30px;
+      color: #333333;
+    }
   }
 `;

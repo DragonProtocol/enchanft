@@ -35,6 +35,7 @@ import {
   WlUserReactContextType,
 } from '@ecnft/wl-user-react';
 import { useState } from 'react';
+import { WorkProofList } from './Pages/WorkProofList';
 
 const TWITTER_CLIENT_ID = process.env.REACT_APP_TWITTER_CLIENT_ID;
 const TWITTER_CALLBACK_URL = process.env.REACT_APP_TWITTER_CALLBACK_URL;
@@ -94,6 +95,7 @@ function App() {
           <Route path="mint/edit" element={<ProjectMintEdit />} />
           <Route path="task/pre" element={<TaskPre />} />
           <Route path="task/new" element={<TaskNew />} />
+          <Route path="task/:taskId/workProofs" element={<WorkProofList />} />
           <Route path="task/:taskId" element={<TaskDashboard />} />
           <Route path="account" element={<Account />} />
         </Route>
