@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 14:17:41
+ * @LastEditTime: 2022-11-11 15:48:29
  * @Description: file description
  */
 import {
@@ -243,30 +243,29 @@ export function WlUserReactProvider({
   }, [getAuthorizer]);
 
   // 监控成功回调，更新数据
-  for (const item of authorizers) {
-    item.action.loginListener({
-      process: (status) => {
-        console.log({ status });
-      },
-      success: (result) => {
-        setUser(result);
-        setAuthorizer(item);
-        updateStorageByLogin(item, result);
-        setLoginModal({
-          isOpen: false,
-        });
-      },
-    });
-    item.action.bindListener({
-      success: (result) => {
-        setUser({ ...user, accounts: result });
-        setBindModal({
-          isOpen: false,
-          authorizer: null,
-        });
-      },
-    });
-  }
+  useEffect(() => {
+    for (const item of authorizers) {
+      item.action.loginListener({
+        success: (result) => {
+          setUser(result);
+          setAuthorizer(item);
+          updateStorageByLogin(item, result);
+          setLoginModal({
+            isOpen: false,
+          });
+        },
+      });
+      item.action.bindListener({
+        success: (result) => {
+          setUser({ ...user, accounts: result });
+          setBindModal({
+            isOpen: false,
+            authorizer: null,
+          });
+        },
+      });
+    }
+  }, [authorizers, user]);
 
   // 触发器
   const dispatchModal = useCallback(

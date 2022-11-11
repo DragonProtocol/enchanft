@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 01:29:40
+ * @LastEditTime: 2022-11-11 14:28:08
  * @Description: file description
  */
 import React from 'react';
@@ -43,9 +43,11 @@ export type AuthorizerAction = {
   loginListener: AuthActionListener<LoginResult>;
   bindListener: AuthActionListener<BindResult>;
 };
+
 export type AuthProcessComponentProps = {
   authorizer: Authorizer;
 };
+
 export type ActionProviderComponentProps = {
   onLoginProcess: (status: AuthActionProcessStatus) => void;
   onLoginSuccess: (result: LoginResult) => void;
@@ -56,6 +58,7 @@ export type ActionProviderComponentProps = {
   setLoginAction: (fn: () => void) => void;
   setBindAction: (fn: () => void) => void;
 };
+
 export type Authorizer = {
   type: AuthorizerType;
   accountType: AccountType;
@@ -69,42 +72,6 @@ export type Authorizer = {
   authProcessComponent?: React.FC<AuthProcessComponentProps>;
 };
 
-export const getActionPropertiesByActionProviderComponent = (
-  ActionProviderComponent: React.FC<ActionProviderComponentProps>
-): {
-  action: AuthorizerAction;
-  actionProviderElement?: React.FunctionComponentElement<ActionProviderComponentProps>;
-} => {
-  const pubsub = new Pubsub();
-  const action: AuthorizerAction = {
-    login: () => {},
-    bind: () => {},
-    loginListener: ({ process, success, error }) => {
-      pubsub.listen('loginProcess', process);
-      pubsub.listen('loginSuccess', success);
-      pubsub.listen('loginError', error);
-    },
-    bindListener: ({ process, success, error }) => {
-      pubsub.listen('bindProcess', process);
-      pubsub.listen('bindSuccess', success);
-      pubsub.listen('bindError', error);
-    },
-  };
-  const actionProviderElement = React.createElement(ActionProviderComponent, {
-    onLoginProcess: (status) => pubsub.trigger('loginProcess', status),
-    onLoginSuccess: (result) => pubsub.trigger('loginSuccess', result),
-    onLoginError: (error) => pubsub.trigger('loginError', error),
-    onBindProcess: (status) => pubsub.trigger('bindProcess', status),
-    onBindSuccess: (result) => pubsub.trigger('bindSuccess', result),
-    onBindError: (error) => pubsub.trigger('bindError', error),
-    setLoginAction: (fn) => (action.login = fn),
-    setBindAction: (fn) => (action.bind = fn),
-  });
-  return {
-    action,
-    actionProviderElement,
-  };
-};
 export type LoginActionStaticFunction = (
   onLoginProcess: (status: AuthActionProcessStatus) => void,
   onLoginSuccess: (result: LoginResult) => void,
@@ -145,5 +112,41 @@ export const getActionByActionStaticFunction = (
       pubsub.listen('bindSuccess', success);
       pubsub.listen('bindError', error);
     },
+  };
+};
+export const getActionPropertiesByActionProviderComponent = (
+  ActionProviderComponent: React.FC<ActionProviderComponentProps>
+): {
+  action: AuthorizerAction;
+  actionProviderElement?: React.FunctionComponentElement<ActionProviderComponentProps>;
+} => {
+  const pubsub = new Pubsub();
+  const action: AuthorizerAction = {
+    login: () => {},
+    bind: () => {},
+    loginListener: ({ process, success, error }) => {
+      pubsub.listen('loginProcess', process);
+      pubsub.listen('loginSuccess', success);
+      pubsub.listen('loginError', error);
+    },
+    bindListener: ({ process, success, error }) => {
+      pubsub.listen('bindProcess', process);
+      pubsub.listen('bindSuccess', success);
+      pubsub.listen('bindError', error);
+    },
+  };
+  const actionProviderElement = React.createElement(ActionProviderComponent, {
+    onLoginProcess: (status) => pubsub.trigger('loginProcess', status),
+    onLoginSuccess: (result) => pubsub.trigger('loginSuccess', result),
+    onLoginError: (error) => pubsub.trigger('loginError', error),
+    onBindProcess: (status) => pubsub.trigger('bindProcess', status),
+    onBindSuccess: (result) => pubsub.trigger('bindSuccess', result),
+    onBindError: (error) => pubsub.trigger('bindError', error),
+    setLoginAction: (fn) => (action.login = fn),
+    setBindAction: (fn) => (action.bind = fn),
+  });
+  return {
+    action,
+    actionProviderElement,
   };
 };

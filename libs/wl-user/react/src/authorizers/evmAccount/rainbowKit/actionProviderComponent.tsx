@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 15:29:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 12:32:04
+ * @LastEditTime: 2022-11-11 15:50:05
  * @Description: file description
  */
 import '@rainbow-me/rainbowkit/styles.css';
@@ -10,12 +10,8 @@ import {
   RainbowKitProvider,
   getDefaultWallets,
   connectorsForWallets,
-  createAuthenticationAdapter,
-  RainbowKitAuthenticationProvider,
   AuthenticationStatus,
   useConnectModal,
-  useAccountModal,
-  useChainModal,
 } from '@rainbow-me/rainbowkit';
 import {
   argentWallet,
@@ -33,17 +29,8 @@ import {
   useSignMessage,
   useDisconnect,
 } from 'wagmi';
-import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
-import { SiweMessage } from 'siwe';
-import {
-  ReactNode,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   AccountType,
   BindResult,
@@ -222,21 +209,9 @@ export function ActionProviderComponent({
     },
     [onLoginError, onBindError]
   );
-  // useEffect(() => {
-  //   if (!isLogin) setAuthStatus('unauthenticated');
-  // }, [isLogin]);
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitAuthenticationProvider
-        adapter={{
-          getNonce: () => Promise.resolve(''),
-          createMessage: () => '',
-          getMessageBody: () => '',
-          verify: () => Promise.resolve(true),
-          signOut: async () => {},
-        }}
-        status={authStatus}
-      >
+      {!isLogin ? (
         <RainbowKitProvider appInfo={appInfo} chains={chains}>
           <RainbowKitAuth
             setOpenConnectModal={setOpenConnectModal}
@@ -245,7 +220,7 @@ export function ActionProviderComponent({
             onSignError={onSignError}
           />
         </RainbowKitProvider>
-      </RainbowKitAuthenticationProvider>
+      ) : null}
     </WagmiConfig>
   );
 }
@@ -261,41 +236,50 @@ const RainbowKitAuth: React.FC<RainbowKitAuthProps> = ({
   onSignSuccess,
   onSignError,
 }) => {
+  const allowSignMessage = useRef(false);
   const { isLogin } = useWlUserReact();
   const { disconnect } = useDisconnect();
   const { openConnectModal } = useConnectModal();
   useEffect(() => {
-    if (!isLogin) disconnect();
+    if (isLogin) {
+      allowSignMessage.current = false;
+    } else {
+      disconnect();
+    }
   }, [isLogin]);
-  const { isConnected, isConnecting, address } = useAccount({
-    onConnect({ address, connector, isReconnected }) {
-      console.log('Connected', { address, connector, isReconnected });
-    },
-    onDisconnect() {
-      console.log('Disconnected');
-    },
-  });
-  const { signMessage } = useSignMessage({
-    message: SIGN_MSG,
-    onSuccess(data) {
-      onSignSuccess(data, SIGN_MSG, address);
-    },
-    onError(error) {
-      console.log({ error });
-      onSignError(error);
-    },
-  });
+  const { isConnected, isConnecting, address } = useAccount();
+  const { signMessage, isSuccess, isError, isLoading, data, error } =
+    useSignMessage({
+      message: SIGN_MSG,
+    });
 
   useEffect(() => {
-    if (isConnecting && onSignStart) {
+    if ((isConnecting || isLoading) && onSignStart) {
       onSignStart();
     }
-  }, [isConnecting, onSignStart]);
+  }, [isConnecting, isLoading, onSignStart]);
   useEffect(() => {
-    if (isConnected && signMessage) {
+    if (allowSignMessage.current && isConnected && signMessage) {
       signMessage();
     }
   }, [isConnected, signMessage]);
-  useEffect(() => setOpenConnectModal(openConnectModal), [openConnectModal]);
+  useEffect(() => {
+    if (isSuccess && data && address && onSignSuccess) {
+      onSignSuccess(data, SIGN_MSG, address);
+    }
+  }, [isSuccess, data, address, onSignSuccess]);
+  useEffect(() => {
+    if (isError && error && onSignError) {
+      onSignError(error);
+    }
+  }, [isError, error, onSignError]);
+  const openConnectModalFn = useCallback(() => {
+    allowSignMessage.current = true;
+    openConnectModal();
+  }, [openConnectModal]);
+  useEffect(
+    () => setOpenConnectModal(openConnectModalFn),
+    [openConnectModalFn]
+  );
   return null;
 };
