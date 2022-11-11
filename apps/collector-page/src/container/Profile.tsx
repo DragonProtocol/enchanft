@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 18:48:26
+ * @LastEditTime: 2022-11-11 18:19:21
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -70,7 +70,7 @@ const ProfileTabOptions = [
   },
 ]
 const Profile: React.FC = () => {
-  const { isLogin, user, dispatchAction, dispatchModal } = useWlUserReact()
+  const { isLogin, user, dispatchAction, dispatchModal, authorizers } = useWlUserReact()
   const navigate = useNavigate()
 
   const handleLogout = useCallback(() => {
@@ -111,12 +111,9 @@ const Profile: React.FC = () => {
   const renderUserAccountList = () => {
     return (
       <UserAccountListBox>
-        <BindWithAuthorizerButton authorizerType={AuthorizerType.TWITTER} />
-        <BindWithAuthorizerButton authorizerType={AuthorizerType.DISCORD} />
-        <BindWithAuthorizerButton authorizerType={AuthorizerType.METAMASK_WALLET} />
-        <BindWithAuthorizerButton authorizerType={AuthorizerType.PHANTOM_WALLET} />
-        <BindWithAuthorizerButton authorizerType={AuthorizerType.MARTIAN_WALLET} />
-        <BindWithAuthorizerButton authorizerType={AuthorizerType.EVM_WALLET_KIT} />
+        {authorizers.map((authorizer) => (
+          <BindWithAuthorizerButton authorizerType={authorizer.type} key={authorizer.type} />
+        ))}
       </UserAccountListBox>
     )
   }

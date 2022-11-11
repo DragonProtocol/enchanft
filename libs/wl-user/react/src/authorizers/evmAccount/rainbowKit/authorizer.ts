@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 02:20:19
+ * @LastEditTime: 2022-11-11 17:37:48
  * @Description: file description
  */
 import { AccountType } from '../../../api';
@@ -21,7 +21,7 @@ export default (): Authorizer => {
     accountType: AccountType.EVM,
     webVersion: AuthorizerWebVersion.web3,
     name: 'Evm Wallet Kit',
-    bgColor: '#333333',
+    bgColor: '#F6851B',
     nameColor: '#FFFFFF',
     iconUrl,
     authProcessComponent: AuthProcessModal,

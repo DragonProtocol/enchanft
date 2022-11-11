@@ -2,13 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-17 19:13:25
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 18:43:19
+ * @LastEditTime: 2022-11-11 17:37:04
  * @Description: file description
  */
 import {
   twitterAuthorizer,
   discordAuthorizer,
-  metamaskAuthorizer,
   phantomAuthorizer,
   martianAuthorizer,
   rainbowKitAuthorizer,
@@ -20,8 +19,7 @@ const DISCORD_CALLBACK_URL = process.env.REACT_APP_DISCORD_CALLBACK_URL || ''
 export const authorizers = [
   twitterAuthorizer({ twitterClientId: TWITTER_CLIENT_ID, oauthCallbackUri: TWITTER_CALLBACK_URL }),
   discordAuthorizer({ discordClientId: DISCORD_CLIENT_ID, oauthCallbackUri: DISCORD_CALLBACK_URL }),
-  metamaskAuthorizer(),
+  rainbowKitAuthorizer(),
   phantomAuthorizer(),
   martianAuthorizer(),
-  rainbowKitAuthorizer(),
 ]

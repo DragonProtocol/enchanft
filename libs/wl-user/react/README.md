@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-21 15:03:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-03 10:17:05
+ * @LastEditTime: 2022-11-11 17:10:35
  * @Description: file description
 -->
 
@@ -13,19 +13,19 @@
 **npm**
 
 ```
-npm install @ecnft/wl-user-core @ecnft/wl-user-react
+npm install @ecnft/wl-user-react
 ```
 
 **yarn**
 
 ```
-yarn add @ecnft/wl-user-core @ecnft/wl-user-react
+yarn add @ecnft/wl-user-react
 ```
 
 **pnpm**
 
 ```
-pnpm add @ecnft/wl-user-core @ecnft/wl-user-react
+pnpm add @ecnft/wl-user-react
 ```
 
 ## Getting started
@@ -34,14 +34,12 @@ pnpm add @ecnft/wl-user-core @ecnft/wl-user-react
 
 ```typescript
 import {
-  Twitter,
-  Discord,
-  Metamask,
-  Phantom,
-  Martian,
+  twitterAuthorizer,
+  discordAuthorizer,
+  metamaskAuthorizer,
+  phantomAuthorizer,
+  martianAuthorizer,
   setApiBaseUrl,
-} from '@ecnft/wl-user-core';
-import {
   WlUserReactProvider,
   WlUserReactContextType,
 } from '@ecnft/wl-user-react';
@@ -56,17 +54,17 @@ const TWITTER_CALLBACK_URL = process.env.REACT_APP_TWITTER_CALLBACK_URL;
 const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID;
 const DISCORD_CALLBACK_URL = process.env.REACT_APP_DISCORD_CALLBACK_URL;
 const authorizers = [
-  new Twitter({
+  twitterAuthorizer({
     twitterClientId: TWITTER_CLIENT_ID,
     oauthCallbackUri: TWITTER_CALLBACK_URL,
   }),
-  new Discord({
+  discordAuthorizer({
     discordClientId: DISCORD_CLIENT_ID,
     oauthCallbackUri: DISCORD_CALLBACK_URL,
   }),
-  new Metamask(),
-  new Phantom(),
-  new Martian(),
+  metamaskAuthorizer(),
+  phantomAuthorizer(),
+  martianAuthorizer(),
 ];
 
 function App() {
@@ -92,8 +90,9 @@ export default App;
 **view.tsx**
 
 ```typescript
-import { AuthorizerType, AccountType } from '@ecnft/wl-user-core';
 import {
+  AuthorizerType,
+  AccountType,
   useWlUserReact,
   usePermissions,
   LoginButton,
@@ -107,14 +106,12 @@ function View() {
   const {
     // 所有注入的authorizer实例
     authorizers,
-    // 当前登录的authorizer
+    // 当前登录使用的authorizer
     authorizer,
     // 用户信息
     user,
     // 是否登录
     isLogin,
-    // 当前执行的action状态数据
-    userActionState,
     // 获取指定的签名者对象
     getAuthorizer,
     // 验证是否绑定了某个账号
@@ -168,9 +165,18 @@ function View() {
         }
       />
       /** * 根据AuthorizerType 渲染指定的绑定按钮，自带绑定和解绑功能 */
-      <BindWithAuthorizerButton authorizerType={AuthorizerType.METAMASK} />
-      <BindWithAuthorizerButton authorizerType={AuthorizerType.PHANTOM} />
-      <BindWithAuthorizerButton authorizerType={AuthorizerType.MARTIAN} />
+      <BindWithAuthorizerButton
+        authorizerType={AuthorizerType.EVM_WALLET_KIT}
+      />
+      <BindWithAuthorizerButton
+        authorizerType={AuthorizerType.METAMASK_WALLET}
+      />
+      <BindWithAuthorizerButton
+        authorizerType={AuthorizerType.PHANTOM_WALLET}
+      />
+      <BindWithAuthorizerButton
+        authorizerType={AuthorizerType.MARTIAN_WALLET}
+      />
       <BindWithAuthorizerButton authorizerType={AuthorizerType.TWITTER} />
       <BindWithAuthorizerButton authorizerType={AuthorizerType.DISCORD} />
       <h2>other components ————————————————————————————————————————</h2>
@@ -187,9 +193,8 @@ function View() {
       <button onClick={() => dispatchModal({ type: WlUserModalType.LOGIN })}>
         打开登录modal
       </button>
-      /** * 打开使用 指定方式 进行绑定的modal，下方值替换到payload *
-      AuthorizerType.DISCORD, AuthorizerType.METAMASK, AuthorizerType.PHANTOM,
-      AuthorizerType.MARTIAN */
+      /** * 打开使用 指定方式 进行绑定的modal，下方值替换到payload * AuthorizerType.DISCORD,
+      AuthorizerType.METAMASK, AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
       <button
         onClick={() =>
           dispatchModal({
@@ -200,9 +205,8 @@ function View() {
       >
         打开使用 twitter 进行绑定的modal
       </button>
-      /** * 打开取消绑定 指定账户 的确认框，下方值替换到payload *
-      AuthorizerType.DISCORD, AuthorizerType.METAMASK, AuthorizerType.PHANTOM,
-      AuthorizerType.MARTIAN */
+      /** * 打开取消绑定 指定账户 的确认框，下方值替换到payload * AuthorizerType.DISCORD,
+      AuthorizerType.METAMASK, AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
       <button
         onClick={() =>
           dispatchModal({
@@ -222,8 +226,8 @@ function View() {
         {' '}
         使用dispatchAction，直接触发数据的变更行为 ————————————————————————————————————————
       </h2>
-      /** * 触发登录流程 * 下方值替换到payload * AuthorizerType.DISCORD,
-      AuthorizerType.METAMASK, AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
+      /** * 触发登录流程 * 下方值替换到payload * AuthorizerType.DISCORD, AuthorizerType.METAMASK,
+      AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
       <button
         onClick={() =>
           dispatchAction({
@@ -234,8 +238,8 @@ function View() {
       >
         login with twitter
       </button>
-      /** * 触发绑定流程 * 下方值替换到payload * AuthorizerType.DISCORD,
-      AuthorizerType.METAMASK, AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
+      /** * 触发绑定流程 * 下方值替换到payload * AuthorizerType.DISCORD, AuthorizerType.METAMASK,
+      AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
       <button
         onClick={() =>
           dispatchAction({
@@ -246,8 +250,8 @@ function View() {
       >
         bind with twitter
       </button>
-      /** * 触发解绑 * 下方值替换到payload * AuthorizerType.DISCORD,
-      AuthorizerType.METAMASK, AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
+      /** * 触发解绑 * 下方值替换到payload * AuthorizerType.DISCORD, AuthorizerType.METAMASK,
+      AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
       <button
         onClick={() =>
           dispatchAction({

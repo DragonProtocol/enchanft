@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 14:28:08
+ * @LastEditTime: 2022-11-11 18:14:18
  * @Description: file description
  */
 import React from 'react';
 import { AccountType, BindResult, LoginResult } from '../api';
 import { Pubsub } from '../utils/pubsub';
-export const SIGN_MSG =
-  'Sign this message to sign into ' + window.location.hostname;
+export const SIGN_MSG = `Please sign this message.
+We cannot initiate a transfer of any of your cryptocurrency or digital assets or otherwise access your digital assets.`;
 export enum AuthorizerType {
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',

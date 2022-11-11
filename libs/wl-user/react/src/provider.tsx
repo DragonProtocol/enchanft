@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 15:58:36
+ * @LastEditTime: 2022-11-11 17:26:15
  * @Description: file description
  */
 import {
@@ -33,9 +33,7 @@ import { Authorizer, AuthorizerType } from './authorizers';
 import {
   Account,
   AccountType,
-  BindResult,
   getUserInfo,
-  LoginResult,
   setAuthFailedCallback,
   unbindAccount,
   updateUserInfo,
@@ -160,7 +158,12 @@ export function WlUserReactProvider({
   const cachedAuthorizers: MutableRefObject<
     WlUserReactProviderProps['authorizers']
   > = useRef(authorizers);
-  // 确保授权对象都是静态传入的
+  // 确保传入授权对象，且都是静态传入的
+  if (authorizers.length === 0) {
+    throw new Error(
+      'The list of authorizers is empty, please make sure to pass in at least one authorizer.'
+    );
+  }
   if (
     authorizers.length != cachedAuthorizers.current.length ||
     authorizers.some(
