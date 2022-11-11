@@ -26,6 +26,8 @@ import ActionNativeBalance from './actions/ActionNativeBalance'
 import ActionNftBalance from './actions/ActionNftBalance'
 import ActionQuestionnaire from './actions/ActionQuestionnaire'
 import SubtractImg from '../../imgs/subtract.svg'
+import ActionVerifyAnswer from './actions/ActionVerifyAnswer'
+import ActionQuoteTwitter from './actions/ActionQuoteTwitter'
 export type TaskActionItemDataType = {
   id: number
   name: string
@@ -103,6 +105,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.RETWEET:
         // 转发twitter
         return <ActionRetweetTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
+        case ActionType.QUOTE_TWEET:
+          // 转发twitter
+          return <ActionQuoteTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.LIKE_TWEET:
         // 点赞twitter
         return <ActionLikeTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
@@ -122,6 +127,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.NFT_BALANCE:
         // 持有指定nft
         return <ActionNftBalance data={data} allowHandle={allowHandle} />
+      case ActionType.ANSWER_VERIFY:
+        // 问答
+        return <ActionVerifyAnswer data={data} allowHandle={allowHandle} onQuestionConfirm={onQuestionConfirm} />
       case ActionType.QUESTIONNAIRE:
         // 问卷调查
         return <ActionQuestionnaire data={data} allowHandle={allowHandle} onQuestionConfirm={onQuestionConfirm} />
