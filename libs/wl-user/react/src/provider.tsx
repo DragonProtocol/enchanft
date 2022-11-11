@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 10:10:53
+ * @LastEditTime: 2022-11-11 14:17:41
  * @Description: file description
  */
 import {
@@ -15,7 +15,6 @@ import {
   useState,
 } from 'react';
 import React, { createContext, useContext, useRef } from 'react';
-import { AccountType, User, Account } from '@ecnft/wl-user-core';
 import {
   getStorageValues,
   StorageKey,
@@ -27,16 +26,21 @@ import LoginModal from './components/LoginModal';
 import BindModal from './components/BindModal';
 import UnbindConfirmModal from './components/UnbindConfirmModal';
 import Modal from 'react-modal';
-import {
-  getUserInfo,
-  updateUserInfo,
-  setAuthFailedCallback,
-} from '@ecnft/wl-user-core';
 import { toast, ToastContainer } from 'react-toastify';
 import EditProfileModal from './components/EditProfileModal';
 import { getUserDisplayName } from './utils';
 import { Authorizer, AuthorizerType } from './authorizers';
-import { BindResult, LoginResult, unbindAccount } from './api';
+import {
+  Account,
+  AccountType,
+  BindResult,
+  getUserInfo,
+  LoginResult,
+  setAuthFailedCallback,
+  unbindAccount,
+  updateUserInfo,
+  User,
+} from './api';
 Modal.setAppElement('#root');
 export enum WlUserModalType {
   LOGIN = 'LOGIN',
