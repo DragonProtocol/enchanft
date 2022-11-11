@@ -2,19 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 18:51:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 19:21:10
+ * @LastEditTime: 2022-11-10 18:53:42
  * @Description: file description
  */
 import { useCallback, useEffect, useRef } from 'react'
-import { useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
-import { SignerType, AccountType } from '@ecnft/wl-user-core'
+import { AccountType, AuthorizerType, useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
 import { questionConfirmAction } from '../features/user/taskHandlesSlice'
 import { useAppDispatch } from '../store/hooks'
 import { Chain } from '../types/entities'
-const ChainToSignerTypeMap = {
-  [Chain.EVM]: SignerType.METAMASK,
-  [Chain.SOLANA]: SignerType.PHANTOM,
-  [Chain.APTOS]: SignerType.MARTIAN,
+const ChainToAuthorizerTypeMap = {
+  [Chain.EVM]: AuthorizerType.METAMASK_WALLET,
+  [Chain.SOLANA]: AuthorizerType.PHANTOM_WALLET,
+  [Chain.APTOS]: AuthorizerType.MARTIAN_WALLET,
 }
 const ChainToAccountTypeMap = {
   [Chain.EVM]: AccountType.EVM,
@@ -29,7 +28,7 @@ export default () => {
       if (validateBindAccount(AccountType.DISCORD)) {
         callback()
       } else {
-        dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.DISCORD })
+        dispatchModal({ type: WlUserModalType.BIND, payload: AuthorizerType.DISCORD })
       }
     },
     [validateBindAccount, dispatchModal],
@@ -39,7 +38,7 @@ export default () => {
       if (validateBindAccount(AccountType.TWITTER)) {
         callback()
       } else {
-        dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.TWITTER })
+        dispatchModal({ type: WlUserModalType.BIND, payload: AuthorizerType.TWITTER })
       }
     },
     [validateBindAccount, dispatchModal],
@@ -54,7 +53,7 @@ export default () => {
       if (validateBindAccount(accountType)) {
         callback()
       } else {
-        const signerType = ChainToSignerTypeMap[chain]
+        const signerType = ChainToAuthorizerTypeMap[chain]
         console.log({
           chain,
           accountType,

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 18:09:27
+ * @LastEditTime: 2022-11-10 18:48:26
  * @Description: 个人信息
  */
 import React, { useEffect, useRef, useState } from 'react'
@@ -35,10 +35,10 @@ import {
   useWlUserReact,
   WlUserActionType,
   WlUserModalType,
-  BindWithSignerButton,
+  BindWithAuthorizerButton,
   UserAvatar,
+  AuthorizerType,
 } from '@ecnft/wl-user-react'
-import { SignerType } from '@ecnft/wl-user-core'
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[],
 ): CommunityListItemsType => {
@@ -111,11 +111,12 @@ const Profile: React.FC = () => {
   const renderUserAccountList = () => {
     return (
       <UserAccountListBox>
-        <BindWithSignerButton signerType={SignerType.METAMASK} />
-        <BindWithSignerButton signerType={SignerType.PHANTOM} />
-        <BindWithSignerButton signerType={SignerType.MARTIAN} />
-        <BindWithSignerButton signerType={SignerType.TWITTER} />
-        <BindWithSignerButton signerType={SignerType.DISCORD} />
+        <BindWithAuthorizerButton authorizerType={AuthorizerType.TWITTER} />
+        <BindWithAuthorizerButton authorizerType={AuthorizerType.DISCORD} />
+        <BindWithAuthorizerButton authorizerType={AuthorizerType.METAMASK_WALLET} />
+        <BindWithAuthorizerButton authorizerType={AuthorizerType.PHANTOM_WALLET} />
+        <BindWithAuthorizerButton authorizerType={AuthorizerType.MARTIAN_WALLET} />
+        <BindWithAuthorizerButton authorizerType={AuthorizerType.EVM_WALLET_KIT} />
       </UserAccountListBox>
     )
   }

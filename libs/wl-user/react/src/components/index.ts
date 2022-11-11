@@ -6,5 +6,5 @@
  * @Description: file description
  */
 export { default as LoginButton } from './LoginButton';
-export { default as BindWithSignerButton } from './BindWithSignerButton';
+export { default as BindWithAuthorizerButton } from './BindWithAuthorizerButton';
 export { default as UserAvatar } from './UserAvatar';

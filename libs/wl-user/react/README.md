@@ -50,12 +50,12 @@ import View from './view';
 // 设定不同环境使用的api基础路径
 setApiBaseUrl(process.env.REACT_APP_API_BASE_URL);
 
-// 初始化要使用的signers(签名授权者)
+// 初始化要使用的authorizers(签名授权者)
 const TWITTER_CLIENT_ID = process.env.REACT_APP_TWITTER_CLIENT_ID;
 const TWITTER_CALLBACK_URL = process.env.REACT_APP_TWITTER_CALLBACK_URL;
 const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID;
 const DISCORD_CALLBACK_URL = process.env.REACT_APP_DISCORD_CALLBACK_URL;
-const signers = [
+const authorizers = [
   new Twitter({
     twitterClientId: TWITTER_CLIENT_ID,
     oauthCallbackUri: TWITTER_CALLBACK_URL,
@@ -78,7 +78,7 @@ function App() {
 
   return (
     <WlUserReactProvider
-      signers={signers}
+      authorizers={authorizers}
       valueChange={(value) => setWlUserReactValue(value)}
     >
       <View />
@@ -92,23 +92,23 @@ export default App;
 **view.tsx**
 
 ```typescript
-import { SignerType, AccountType } from '@ecnft/wl-user-core';
+import { AuthorizerType, AccountType } from '@ecnft/wl-user-core';
 import {
   useWlUserReact,
   usePermissions,
   LoginButton,
-  BindWithSignerButton,
+  BindWithAuthorizerButton,
   UserAvatar,
   WlUserModalType,
-  WlUserActionType
+  WlUserActionType,
 } from '@ecnft/wl-user-react';
 
 function View() {
   const {
-    // 所有注入的signer实例
-    signers,
-    // 当前登录的signer
-    signer,
+    // 所有注入的authorizer实例
+    authorizers,
+    // 当前登录的authorizer
+    authorizer,
     // 用户信息
     user,
     // 是否登录
@@ -116,7 +116,7 @@ function View() {
     // 当前执行的action状态数据
     userActionState,
     // 获取指定的签名者对象
-    getSigner,
+    getAuthorizer,
     // 验证是否绑定了某个账号
     validateBindAccount,
     // 获取绑定的账号
@@ -155,23 +155,24 @@ function View() {
       <p>isBindSolana: {validateBindAccount(AccountType.SOLANA)}</p>
       <p>isBindEvm: {validateBindAccount(AccountType.EVM)}</p>
       <p>isBindAptos: {validateBindAccount(AccountType.APTOS)}</p>
-
       <h2>button components ————————————————————————————————————————</h2>
       /** 登录按钮-默认行为：点击始终打开登录modal */
       <LoginButton />
-      /**
-       * 登录按钮-自定义行为
-       * 未登录：点击打开登录modal
-       * 已登录：点击跳转到profile页面
+      /** * 登录按钮-自定义行为 * 未登录：点击打开登录modal * 已登录：点击跳转到profile页面
       */
-      <LoginButton onClick={() => isLogin ? navigate('/profile') : dispatchModal({ type: WlUserModalType.LOGIN })} />
-      /** * 根据SignerType 渲染指定的绑定按钮，自带绑定和解绑功能 */
-      <BindWithSignerButton signerType={SignerType.METAMASK} />
-      <BindWithSignerButton signerType={SignerType.PHANTOM} />
-      <BindWithSignerButton signerType={SignerType.MARTIAN} />
-      <BindWithSignerButton signerType={SignerType.TWITTER} />
-      <BindWithSignerButton signerType={SignerType.DISCORD} />
-
+      <LoginButton
+        onClick={() =>
+          isLogin
+            ? navigate('/profile')
+            : dispatchModal({ type: WlUserModalType.LOGIN })
+        }
+      />
+      /** * 根据AuthorizerType 渲染指定的绑定按钮，自带绑定和解绑功能 */
+      <BindWithAuthorizerButton authorizerType={AuthorizerType.METAMASK} />
+      <BindWithAuthorizerButton authorizerType={AuthorizerType.PHANTOM} />
+      <BindWithAuthorizerButton authorizerType={AuthorizerType.MARTIAN} />
+      <BindWithAuthorizerButton authorizerType={AuthorizerType.TWITTER} />
+      <BindWithAuthorizerButton authorizerType={AuthorizerType.DISCORD} />
       <h2>other components ————————————————————————————————————————</h2>
       // 显示当前登录的用户头像
       <UserAvatar />
@@ -179,71 +180,96 @@ function View() {
       <UserAvatar user={{ id, avatar }} />
       // 显示指定图片
       <UserAvatar src={src} />
-
-      <h2>使用dispatchModal，手动打开modal ————————————————————————————————————————</h2>
+      <h2>
+        使用dispatchModal，手动打开modal
+        ————————————————————————————————————————
+      </h2>
       <button onClick={() => dispatchModal({ type: WlUserModalType.LOGIN })}>
         打开登录modal
       </button>
-      /**
-       * 打开使用 指定方式 进行绑定的modal，下方值替换到payload
-       * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
-      */
-      <button onClick={() => dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.TWITTER})}>
+      /** * 打开使用 指定方式 进行绑定的modal，下方值替换到payload *
+      AuthorizerType.DISCORD, AuthorizerType.METAMASK, AuthorizerType.PHANTOM,
+      AuthorizerType.MARTIAN */
+      <button
+        onClick={() =>
+          dispatchModal({
+            type: WlUserModalType.BIND,
+            payload: AuthorizerType.TWITTER,
+          })
+        }
+      >
         打开使用 twitter 进行绑定的modal
       </button>
-      /**
-       * 打开取消绑定 指定账户 的确认框，下方值替换到payload
-       * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
-      */
-      <button onClick={() => dispatchModal({ type: WlUserModalType.UNBIND_CONFIRM, payload: SignerType.TWITTER })}>
+      /** * 打开取消绑定 指定账户 的确认框，下方值替换到payload *
+      AuthorizerType.DISCORD, AuthorizerType.METAMASK, AuthorizerType.PHANTOM,
+      AuthorizerType.MARTIAN */
+      <button
+        onClick={() =>
+          dispatchModal({
+            type: WlUserModalType.UNBIND_CONFIRM,
+            payload: AuthorizerType.TWITTER,
+          })
+        }
+      >
         打开取消绑定 twitter 的确认框
       </button>
-
-      <button onClick={() => dispatchModal({ type: WlUserModalType.EDIT_PROFILE})}>
+      <button
+        onClick={() => dispatchModal({ type: WlUserModalType.EDIT_PROFILE })}
+      >
         打开编辑 用户profile 信息的modal
       </button>
-
-      <h2> 使用dispatchAction，直接触发数据的变更行为 ————————————————————————————————————————</h2>
-      /**
-       * 触发登录流程
-       * 下方值替换到payload
-       * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
-      */
-      <button onClick={() => dispatchAction({ type: WlUserActionType.LOGIN, payload: SignerType.TWITTER })}>
+      <h2>
+        {' '}
+        使用dispatchAction，直接触发数据的变更行为 ————————————————————————————————————————
+      </h2>
+      /** * 触发登录流程 * 下方值替换到payload * AuthorizerType.DISCORD,
+      AuthorizerType.METAMASK, AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
+      <button
+        onClick={() =>
+          dispatchAction({
+            type: WlUserActionType.LOGIN,
+            payload: AuthorizerType.TWITTER,
+          })
+        }
+      >
         login with twitter
       </button>
-      /**
-       * 触发绑定流程
-       * 下方值替换到payload
-       * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
-      */
-      <button onClick={() => dispatchAction({ type: WlUserActionType.BIND, payload: SignerType.TWITTER })}>
+      /** * 触发绑定流程 * 下方值替换到payload * AuthorizerType.DISCORD,
+      AuthorizerType.METAMASK, AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
+      <button
+        onClick={() =>
+          dispatchAction({
+            type: WlUserActionType.BIND,
+            payload: AuthorizerType.TWITTER,
+          })
+        }
+      >
         bind with twitter
       </button>
-      /**
-       * 触发解绑
-       * 下方值替换到payload
-       * SignerType.DISCORD, SignerType.METAMASK, SignerType.PHANTOM, SignerType.MARTIAN
-      */
-      <button onClick={() =>dispatchAction({ type: WlUserActionType.UNBIND, payload: SignerType.TWITTER })}>
+      /** * 触发解绑 * 下方值替换到payload * AuthorizerType.DISCORD,
+      AuthorizerType.METAMASK, AuthorizerType.PHANTOM, AuthorizerType.MARTIAN */
+      <button
+        onClick={() =>
+          dispatchAction({
+            type: WlUserActionType.UNBIND,
+            payload: AuthorizerType.TWITTER,
+          })
+        }
+      >
         unbind twitter
       </button>
-      /**
-       * 更新用户profile信息
-      */
+      /** * 更新用户profile信息 */
       <button
         onClick={() =>
           dispatchAction({
             type: WlUserActionType.UPDATE_USER_PROFILE,
-            payload: { name: "zhang san", avatar:"https://img.xxxxx.jpg"}
+            payload: { name: 'zhang san', avatar: 'https://img.xxxxx.jpg' },
           })
         }
       >
         update profile
       </button>
-      /**
-       * 退出登录
-      */
+      /** * 退出登录 */
       <button onClick={() => dispatchAction({ type: WlUserActionType.LOGOUT })}>
         logout
       </button>
