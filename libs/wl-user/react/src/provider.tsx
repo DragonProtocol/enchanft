@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 15:48:29
+ * @LastEditTime: 2022-11-11 15:58:36
  * @Description: file description
  */
 import {
@@ -318,9 +318,15 @@ export function WlUserReactProvider({
                 status: AsyncRequestStatus.IDLE,
               });
             })
-            .catch((error) => {});
+            .catch((error) => {
+              toast.error(error.message);
+            });
           break;
         case WlUserActionType.UPDATE_USER_PROFILE:
+          setEditProfileModal({
+            ...editProfileModal,
+            status: AsyncRequestStatus.PENDING,
+          });
           updateUserInfo(user.token, {
             userName: params.payload.name,
             userAvatar: params.payload.avatar,
@@ -333,8 +339,8 @@ export function WlUserReactProvider({
                 status: AsyncRequestStatus.IDLE,
               });
             })
-            .catch((error) => toast.error(error.message))
-            .finally(() => {
+            .catch((error) => {
+              toast.error(error.message);
               setEditProfileModal({
                 ...editProfileModal,
                 status: AsyncRequestStatus.IDLE,
@@ -347,7 +353,7 @@ export function WlUserReactProvider({
           break;
       }
     },
-    [user]
+    [user, editProfileModal]
   );
 
   // 监听value变化（将provider内部的能力提供给provider外部）
