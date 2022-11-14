@@ -58,8 +58,8 @@ export default function Actions({
     followTwitters.length > 0
       ? [...followTwitters]
       : projectTwitter
-      ? [projectTwitter]
-      : []
+        ? [projectTwitter]
+        : []
   );
 
   const [discordRole, setDiscordRole] = useState({
@@ -143,7 +143,6 @@ export default function Actions({
   const [questionnaire, setQuestionnaire] = useState({
     type: ActionType.QUESTIONNAIRE,
     valid: false,
-    manualCheck: false,
     data: [
       {
         question: '',
@@ -165,8 +164,12 @@ export default function Actions({
   const [uploadImage, setUploadImage] = useState({
     type: ActionType.UPLOAD_IMAGE,
     valid: false,
-    desc: '',
-    luckyDrawWeight: '1',
+    data: [
+      {
+        desc: '',
+        luckyDrawWeight: '1',
+      },
+    ],
   });
 
   useEffect(() => {
@@ -374,15 +377,19 @@ export default function Actions({
       });
     }
 
-    if (uploadImage.valid && uploadImage.desc.trim()) {
-      // TODO
-      // actions.push({
-      //   name: uploadImage.desc,
-      //   type: ActionType.UPLOADIMAGE,
-      //   typeMore: ActionTypeMore.QUESTIONNAIRE,
-      //   description: uploadImage.desc,
-      //   lucky_draw_weight: Number(uploadImage.luckyDrawWeight) || 1,
-      // });
+    if (uploadImage.valid && uploadImage.data) {
+      uploadImage.data.forEach((item) => {
+        const { desc, luckyDrawWeight } = item;
+        if (desc.trim()) {
+          actions.push({
+            name: desc.trim(),
+            type: ActionType.UPLOAD_IMAGE,
+            typeMore: ActionTypeMore.UPLOAD_IMAGE,
+            description: desc,
+            lucky_draw_weight: Number(luckyDrawWeight) || 1,
+          });
+        }
+      });
     }
 
     updateStateActions(actions);
@@ -604,7 +611,7 @@ export default function Actions({
               />
             )}
           </div>
-          
+
           {/** Quote twitter */}
           <div className="content-item">
             <div className="desc">
@@ -619,7 +626,7 @@ export default function Actions({
                 }}
               />
               <span id="quote-twitter-msg" className="msg">
-                Quote the Tweet {quoteTwitter.tag_friends_num>0 && <b>& @ {quoteTwitter.tag_friends_num} friends</b>}
+                Quote the Tweet {quoteTwitter.tag_friends_num > 0 && <b>& @ {quoteTwitter.tag_friends_num} friends</b>}
               </span>
               <IconTwitter />
             </div>
@@ -901,7 +908,7 @@ export default function Actions({
                 }}
               />
               <span id="question" className="msg">
-                Verify the answer 
+                Verify the answer
               </span>
               <IconQuestion />
             </div>
@@ -1295,18 +1302,18 @@ export default function Actions({
                         <IconPlus size="16px" /> Add
                       </div>
                     )) || (
-                      <div
-                        className={'help add-btn custom'}
-                        onClick={() => {
-                          setCustom([
-                            ...custom.slice(0, idx),
-                            ...custom.slice(idx + 1),
-                          ]);
-                        }}
-                      >
-                        <PngIconDelete />
-                      </div>
-                    )}
+                        <div
+                          className={'help add-btn custom'}
+                          onClick={() => {
+                            setCustom([
+                              ...custom.slice(0, idx),
+                              ...custom.slice(idx + 1),
+                            ]);
+                          }}
+                        >
+                          <PngIconDelete />
+                        </div>
+                      )}
                   </>
                 )}
               </div>
@@ -1455,7 +1462,7 @@ export default function Actions({
               )}
             </div>
           </div>
-          {/** upload Image 
+          {/* upload Image */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -1471,33 +1478,96 @@ export default function Actions({
               <IconImage />
             </div>
             {uploadImage.valid && (
-              <div className="help">
-                <span className="username custom">Description: </span>
-                <div className="input-box">
-                  <input
-                    type="text"
-                    title="task-like"
-                    value={uploadImage.desc}
-                    onChange={(e) => {
-                      setUploadImage({ ...uploadImage, desc: e.target.value });
-                    }}
-                  />
+              <>
+                {uploadImage.data.map((item, idx) => {
+                  return (
+                    <Fragment key={idx}>
+                      {idx > 0 && <div className="and"></div>}
+                      <div className="help">
+                        <span className="username custom">Description: </span>
+                        <div className="input-box">
+                          <input
+                            type="text"
+                            title="upload image"
+                            value={item.desc}
+                            onChange={(e) => {
+                              setUploadImage({
+                                ...uploadImage,
+                                data: [
+                                  ...uploadImage.data.slice(0, idx),
+                                  {
+                                    ...item,
+                                    desc: e.target.value,
+                                  },
+                                  ...uploadImage.data.slice(idx + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {uploadImage.valid && (
+                        <LuckyDraw
+                          borderNoTop
+                          weight={item.luckyDrawWeight}
+                          setWeight={(w) => {
+                            setUploadImage({
+                              ...uploadImage,
+                              data: [
+                                ...uploadImage.data.slice(0, idx),
+                                {
+                                  ...item,
+                                  luckyDrawWeight: w,
+                                },
+                                ...uploadImage.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        />
+                      )}
+
+                      {idx !== uploadImage.data.length - 1 && (
+                        <div
+                          className={'help add-btn custom'}
+                          onClick={() => {
+                            setUploadImage({
+                              ...uploadImage,
+                              data: [
+                                ...uploadImage.data.slice(0, idx),
+                                ...uploadImage.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        >
+                          <PngIconDelete />
+                        </div>
+                      )}
+                    </Fragment>
+                  );
+                })}
+                <div className="and"></div>
+                <div
+                  className={'help add-btn custom question-add'}
+                  onClick={() =>
+                    setUploadImage({
+                      ...uploadImage,
+                      data: [
+                        ...uploadImage.data,
+                        {
+                          desc: '',
+                          luckyDrawWeight: '1',
+                        },
+                      ],
+                    })
+                  }
+                >
+                  <IconPlus size="16px" /> Add
                 </div>
-              </div>
+              </>
             )}
-            {uploadImage.valid && (
-              <LuckyDraw
-                weight={uploadImage.luckyDrawWeight}
-                setWeight={(w) => {
-                  setUploadImage({
-                    ...uploadImage,
-                    luckyDrawWeight: w,
-                  });
-                }}
-              />
-            )}
+
           </div>
-          */}
         </div>
       </div>
     </SelectActionsBox>
@@ -1624,7 +1694,7 @@ function TwitterFollowed({
                 type="text"
                 title="task-like"
                 value={item}
-                onChange={() => {}}
+                onChange={() => { }}
               />
             </div>
 
