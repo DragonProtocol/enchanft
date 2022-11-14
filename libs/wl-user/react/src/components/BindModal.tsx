@@ -2,29 +2,29 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 17:19:44
+ * @LastEditTime: 2022-11-10 19:09:02
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
 import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
 import { isMobile } from 'react-device-detect';
-import BindWithSignerButton from './BindWithSignerButton';
-import { SignerType } from '@ecnft/wl-user-core';
+import BindWithAuthorizerButton from './BindWithAuthorizerButton';
 import IconClose from './common/icons/IconClose';
-import { SignerStyleMap } from './signerStyle';
+import { Authorizer } from '../authorizers';
 export type BindModalProps = {
   isOpen: boolean;
-  signerType: SignerType;
+  authorizer: Authorizer | null;
   onClose?: () => void;
 };
 
 const BindModal: React.FC<BindModalProps> = ({
   isOpen,
-  signerType,
+  authorizer,
   onClose,
 }: BindModalProps) => {
-  const { name } = SignerStyleMap[signerType];
+  if (!authorizer) return null;
+  const { name, type } = authorizer;
   return (
     <BindModalWrapper isOpen={isOpen}>
       <BindModalBody className="wl-user-modal_login-body">
@@ -35,7 +35,7 @@ const BindModal: React.FC<BindModalProps> = ({
         <BindModalDesc>
           {name} is not connected. Please connect {name}.
         </BindModalDesc>
-        <BindButton signerType={signerType} />
+        <BindButton authorizerType={type} />
       </BindModalBody>
     </BindModalWrapper>
   );
@@ -65,7 +65,7 @@ const BindModalDesc = styled.div`
   line-height: 24px;
   color: #333333;
 `;
-const BindButton = styled(BindWithSignerButton)`
+const BindButton = styled(BindWithAuthorizerButton)`
   width: 100%;
   height: 60px;
 `;

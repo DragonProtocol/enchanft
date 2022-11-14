@@ -105,9 +105,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.RETWEET:
         // 转发twitter
         return <ActionRetweetTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
-        case ActionType.QUOTE_TWEET:
-          // 转发twitter
-          return <ActionQuoteTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
+      case ActionType.QUOTE_TWEET:
+        // 转发twitter
+        return <ActionQuoteTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.LIKE_TWEET:
         // 点赞twitter
         return <ActionLikeTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />

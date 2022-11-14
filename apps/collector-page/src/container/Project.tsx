@@ -34,8 +34,7 @@ import IconTwitterBlack from '../components/common/icons/IconTwitterBlack'
 import IconDiscordBlack from '../components/common/icons/IconDiscordBlack'
 import { getTwitterHomeLink } from '../utils/twitter'
 import { toWlModPageTaskCreate } from '../route/utils'
-import { SignerType, AccountType } from '@ecnft/wl-user-core'
-import { usePermissions, useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
+import { AccountType, AuthorizerType, usePermissions, useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
 import { selectAll as selectAllForTodoTasks } from '../features/user/todoTasksSlice'
 import { TodoTaskItem } from '../types/api'
 import ProjectGradeTag from '../components/business/project/ProjectGradeTag'
@@ -133,7 +132,7 @@ const Project: React.FC = () => {
     if (!isLogin) {
       dispatchModal({ type: WlUserModalType.LOGIN })
     } else if (!validateBindAccount(AccountType.TWITTER)) {
-      dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.TWITTER })
+      dispatchModal({ type: WlUserModalType.BIND, payload: AuthorizerType.TWITTER })
     } else {
       const account = user.accounts.find((item) => item.thirdpartyName === data?.community.twitterName)
       if (account) {

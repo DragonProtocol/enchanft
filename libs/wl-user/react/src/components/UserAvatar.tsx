@@ -2,15 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:41:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 16:09:22
+ * @LastEditTime: 2022-11-11 14:18:48
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import multiavatar from '@multiavatar/multiavatar';
 import AvatarDefault from './imgs/avatar.png';
-import { User } from '@ecnft/wl-user-core';
 import { useWlUserReact } from '../provider';
+import { User } from '../api';
 type UserAvatarProps = HTMLAttributes<HTMLImageElement> & {
   src?: string;
   user?: Pick<User, 'id' | 'avatar'>;
