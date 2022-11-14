@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 19:11:06
+ * @LastEditTime: 2022-11-14 15:00:47
  * @Description: file description
  */
 import React from 'react'
@@ -21,7 +21,7 @@ import InputBase from '@mui/material/InputBase'
 export type ActionVerifyAnswerProps = {
   data: TaskActionItemDataType
   allowHandle?: boolean
-  onQuestionConfirm?: (
+  onQuestionVerifyConfirm?: (
     action: TaskActionItemDataType,
     answer: string,
     confirmCallback: (assertAnswer: boolean) => void,
@@ -31,7 +31,7 @@ export type ActionVerifyAnswerProps = {
 const ActionVerifyAnswer: React.FC<ActionVerifyAnswerProps> = ({
   data,
   allowHandle,
-  onQuestionConfirm,
+  onQuestionVerifyConfirm,
 }: ActionVerifyAnswerProps) => {
   const { name, progress, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
   const [answer, setAnswer] = useState({
@@ -46,8 +46,8 @@ const ActionVerifyAnswer: React.FC<ActionVerifyAnswerProps> = ({
     setAnswer({ ...answer, displayError: !assertAnswer })
   }
   const handleConfim = () => {
-    if (onQuestionConfirm && answer.text) {
-      onQuestionConfirm(data, answer.text, handleConfirmCallback)
+    if (onQuestionVerifyConfirm && answer.text) {
+      onQuestionVerifyConfirm(data, answer.text, handleConfirmCallback)
     }
   }
   return (

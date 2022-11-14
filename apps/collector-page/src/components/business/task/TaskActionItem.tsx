@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-31 12:03:24
+ * @LastEditTime: 2022-11-14 15:24:33
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -55,7 +55,8 @@ export type TaskActionItemStaticFuncGetters = {
   onFollowCommunity?: (action: TaskActionItemDataType) => void
   onVerifyAction?: (action: TaskActionItemDataType) => void
   onCustomAction?: (action: TaskActionItemDataType) => void
-  onQuestionConfirm?: (
+  onQuestionConfirm?: (action: TaskActionItemDataType, answer: string) => void
+  onQuestionVerifyConfirm?: (
     action: TaskActionItemDataType,
     answer: string,
     confirmCallback: (assertAnswer: boolean) => void,
@@ -77,6 +78,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   onVerifyAction,
   onCustomAction,
   onQuestionConfirm,
+  onQuestionVerifyConfirm,
   onWallet,
   verifying,
   copyBgc,
@@ -105,9 +107,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.RETWEET:
         // 转发twitter
         return <ActionRetweetTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
-        case ActionType.QUOTE_TWEET:
-          // 转发twitter
-          return <ActionQuoteTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
+      case ActionType.QUOTE_TWEET:
+        // 转发twitter
+        return <ActionQuoteTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.LIKE_TWEET:
         // 点赞twitter
         return <ActionLikeTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
@@ -129,7 +131,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         return <ActionNftBalance data={data} allowHandle={allowHandle} />
       case ActionType.ANSWER_VERIFY:
         // 问答
-        return <ActionVerifyAnswer data={data} allowHandle={allowHandle} onQuestionConfirm={onQuestionConfirm} />
+        return (
+          <ActionVerifyAnswer data={data} allowHandle={allowHandle} onQuestionVerifyConfirm={onQuestionVerifyConfirm} />
+        )
       case ActionType.QUESTIONNAIRE:
         // 问卷调查
         return <ActionQuestionnaire data={data} allowHandle={allowHandle} onQuestionConfirm={onQuestionConfirm} />

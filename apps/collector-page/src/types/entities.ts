@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-31 13:54:49
+ * @LastEditTime: 2022-11-14 15:06:02
  * @Description: 与后端entities type定义对应
  */
 
@@ -107,6 +107,7 @@ export type ActionData = {
   answer?: string
   lucky_draw_weight?: number
   chain?: Chain
+  nopassReason?: string
 }
 export type Action = {
   id: number

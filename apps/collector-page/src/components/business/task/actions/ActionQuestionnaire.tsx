@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 19:11:06
+ * @LastEditTime: 2022-11-14 15:44:44
  * @Description: file description
  */
 import React from 'react'
@@ -17,15 +17,10 @@ import ActionIconBox from './ActionIconBox'
 import ActionNameSpan from './ActionNameSpan'
 import { ButtonInfo } from '../../../common/button/ButtonBase'
 import InputBase from '@mui/material/InputBase'
-
 export type ActionQuestionnaireProps = {
   data: TaskActionItemDataType
   allowHandle?: boolean
-  onQuestionConfirm?: (
-    action: TaskActionItemDataType,
-    answer: string,
-    confirmCallback: (assertAnswer: boolean) => void,
-  ) => void
+  onQuestionConfirm?: (action: TaskActionItemDataType, answer: string) => void
 }
 
 const ActionQuestionnaire: React.FC<ActionQuestionnaireProps> = ({
@@ -34,22 +29,15 @@ const ActionQuestionnaire: React.FC<ActionQuestionnaireProps> = ({
   onQuestionConfirm,
 }: ActionQuestionnaireProps) => {
   const { name, progress, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
-  const [answer, setAnswer] = useState({
-    text: '',
-    displayError: false,
-  })
-  useEffect(() => {
-    setAnswer({ ...answer, displayError: false })
-  }, [answer.text])
+  const [answer, setAnswer] = useState(actionData?.answer)
   const isDone = status === UserActionStatus.DONE
-  const handleConfirmCallback = (assertAnswer: boolean) => {
-    setAnswer({ ...answer, displayError: !assertAnswer })
-  }
   const handleConfim = () => {
-    if (onQuestionConfirm && answer.text) {
-      onQuestionConfirm(data, answer.text, handleConfirmCallback)
+    if (onQuestionConfirm && answer) {
+      onQuestionConfirm(data, answer)
     }
   }
+  const displayConfim =
+    allowHandle && !isDone && (!actionData?.answer || (!!actionData?.answer && !!actionData?.nopassReason))
   return (
     <ActionQuestionnaireWrapper>
       <ActionIconBox allowHandle={allowHandle} isDone={isDone}>
@@ -61,18 +49,18 @@ const ActionQuestionnaire: React.FC<ActionQuestionnaireProps> = ({
         <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
           {name} {progress && progress != '' && <ProgressSpan>({progress})</ProgressSpan>}
         </ActionNameSpan>
-
-        {allowHandle && !isDone && (
+        {displayConfim && (
           <ActionFormBox>
             <AnswerInput
               placeholder="Please enter the answer"
-              onChange={(e) => setAnswer({ ...answer, text: e.target.value })}
-              value={answer.text}
+              onChange={(e) => setAnswer(e.target.value)}
+              value={answer}
             />
             <ConfirmBtn onClick={handleConfim}>Confirm</ConfirmBtn>
           </ActionFormBox>
         )}
-        {answer.displayError && <ConfirmErrorText>Not correct answer</ConfirmErrorText>}
+        {!displayConfim && actionData?.answer && <ConfirmAnswerText>{actionData?.answer}</ConfirmAnswerText>}
+        {actionData?.nopassReason && <ConfirmErrorText>{actionData?.nopassReason}</ConfirmErrorText>}
       </ActionContentBox>
     </ActionQuestionnaireWrapper>
   )
@@ -117,6 +105,11 @@ const ConfirmBtn = styled(ButtonInfo)`
   color: #ebeee4;
   font-size: 14px;
 `
-const ConfirmErrorText = styled.span`
+const ConfirmAnswerText = styled.p`
+  color: rgba(51, 51, 51, 0.5);
+  margin: 0;
+`
+const ConfirmErrorText = styled.p`
   color: #d60606;
+  margin: 0;
 `

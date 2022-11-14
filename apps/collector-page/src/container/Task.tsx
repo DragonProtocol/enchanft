@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 19:14:14
+ * @LastEditTime: 2022-11-14 15:01:21
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -187,6 +187,7 @@ const Task: React.FC = () => {
     handleActionToTwitter,
     handleActionQuestionConfirm,
     handleActionVolidBindWalletForChain,
+    handleActionQuestionVerifyConfirm,
   } = useHandleAction()
 
   // 关注社区
@@ -340,6 +341,7 @@ const Task: React.FC = () => {
                       onVerifyAction={(action) => dispatch(verifyAction(action))}
                       onCustomAction={(action) => dispatch(completionAction(action))}
                       onQuestionConfirm={handleActionQuestionConfirm}
+                      onQuestionVerifyConfirm={handleActionQuestionVerifyConfirm}
                       copyBgc="#FFFFFF"
                       verifyBgc="#FFFFFF"
                     />

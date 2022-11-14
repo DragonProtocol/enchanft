@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 18:51:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 19:21:10
+ * @LastEditTime: 2022-11-14 15:21:08
  * @Description: file description
  */
 import { useCallback, useEffect, useRef } from 'react'
 import { useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
 import { SignerType, AccountType } from '@ecnft/wl-user-core'
-import { questionConfirmAction } from '../features/user/taskHandlesSlice'
+import { questionConfirmAction, questionVerifyConfirmAction } from '../features/user/taskHandlesSlice'
 import { useAppDispatch } from '../store/hooks'
 import { Chain } from '../types/entities'
 const ChainToSignerTypeMap = {
@@ -44,8 +44,8 @@ export default () => {
     },
     [validateBindAccount, dispatchModal],
   )
-  const handleActionQuestionConfirm = useCallback((action, answer, callback) => {
-    dispatch(questionConfirmAction({ action, answer, callback }))
+  const handleActionQuestionConfirm = useCallback((action, answer) => {
+    dispatch(questionConfirmAction({ action, answer }))
   }, [])
   const handleActionVolidBindWalletForChain = useCallback(
     (chain: Chain, callback) => {
@@ -65,11 +65,14 @@ export default () => {
     },
     [validateBindAccount, dispatchModal],
   )
-
+  const handleActionQuestionVerifyConfirm = useCallback((action, answer, callback) => {
+    dispatch(questionVerifyConfirmAction({ action, answer, callback }))
+  }, [])
   return {
     handleActionToDiscord,
     handleActionToTwitter,
     handleActionQuestionConfirm,
+    handleActionQuestionVerifyConfirm,
     handleActionVolidBindWalletForChain,
   }
 }

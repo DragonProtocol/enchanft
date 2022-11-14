@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-17 16:07:05
+ * @LastEditTime: 2022-11-14 15:35:39
  * @Description: file description
  */
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
@@ -181,9 +181,9 @@ export const completionAction = createAsyncThunk(
   },
 )
 
-// question confirm action
-export const questionConfirmAction = createAsyncThunk(
-  'user/taskHandles/questionConfirmAction',
+// question verify confirm action
+export const questionVerifyConfirmAction = createAsyncThunk(
+  'user/taskHandles/questionConfirmVerifyAction',
   async (params: { action: Action; answer: string; callback: (assertAnswer: boolean) => void }, { dispatch }) => {
     const { action, answer, callback } = params
     const { id, taskId } = action
@@ -214,6 +214,58 @@ export const questionConfirmAction = createAsyncThunk(
       throw error
     } finally {
       dispatch(removeOneVerifyActionQueue(id))
+    }
+  },
+  {
+    condition: (params: { action: Action; answer: string }, { getState }) => {
+      const { action, answer } = params
+      const state = getState() as RootState
+      const { selectById } = verifyActionQueueEntity.getSelectors()
+      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
+      return !item
+    },
+  },
+)
+// question confirm action
+export const questionConfirmAction = createAsyncThunk(
+  'user/taskHandles/questionConfirmAction',
+  async (params: { action: Action; answer: string }, { dispatch }) => {
+    const { action, answer } = params
+    const { id, taskId } = action
+    try {
+      const resp = await confirmQuestionAction({ id, taskId, answer })
+      if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
+        dispatch(
+          updateTaskDetailAction({
+            ...action,
+            status: UserActionStatus.TODO,
+            progress: '',
+            data: {
+              ...action.data,
+              answer: answer,
+              nopassReason: '',
+            },
+          }),
+        )
+        dispatch(
+          updateOneAction({
+            ...action,
+            status: UserActionStatus.DONE,
+            progress: '',
+            data: {
+              ...action.data,
+              answer: answer,
+              nopassReason: '',
+            },
+          }),
+        )
+        toast.success('Saved.')
+      } else {
+        toast.error('save error')
+      }
+    } catch (error) {
+      throw error
     }
   },
   {
