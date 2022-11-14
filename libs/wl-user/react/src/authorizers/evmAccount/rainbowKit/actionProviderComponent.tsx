@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 15:29:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-13 12:39:11
+ * @LastEditTime: 2022-11-14 13:24:36
  * @Description: file description
  */
 import '@rainbow-me/rainbowkit/styles.css';
@@ -28,7 +28,7 @@ import {
   useDisconnect,
 } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { AccountType, login, bindAccount } from '../../../api';
 import { useWlUserReact } from '../../../provider';
 import {
@@ -86,7 +86,7 @@ export function ActionProviderComponent({
   setBindAction,
 }: AuthorizerActionProviderComponentProps) {
   const currentActionType = useRef<CurrentActionType>(CurrentActionType.NONE);
-  const { user, isLogin } = useWlUserReact();
+  const { user } = useWlUserReact();
 
   const setOpenConnectModal = (fn: () => void) => {
     setLoginAction(() => {
@@ -188,91 +188,84 @@ export function ActionProviderComponent({
     },
     [onLoginError, onBindError]
   );
-  const [renderRainbowKitProvider, setRenderRainbowKitProvider] =
-    useState(false);
-  useEffect(() => {
-    setRenderRainbowKitProvider(!isLogin);
-  }, [isLogin]);
   return (
     <WagmiConfig client={wagmiClient}>
-      {renderRainbowKitProvider ? (
-        <RainbowKitProvider appInfo={appInfo} chains={chains}>
-          <RainbowKitAuth
-            setRenderRainbowKitProvider={setRenderRainbowKitProvider}
-            setOpenConnectModal={setOpenConnectModal}
-            onSignStart={onSignStart}
-            onSignSuccess={onSignSuccess}
-            onSignError={onSignError}
-          />
-        </RainbowKitProvider>
-      ) : null}
+      <RainbowKitProvider appInfo={appInfo} chains={chains}>
+        <RainbowKitAuth
+          setOpenConnectModal={setOpenConnectModal}
+          onSignStart={onSignStart}
+          onSignSuccess={onSignSuccess}
+          onSignError={onSignError}
+        />
+      </RainbowKitProvider>
     </WagmiConfig>
   );
 }
 type RainbowKitAuthProps = {
-  setRenderRainbowKitProvider: (bool: boolean) => void;
   setOpenConnectModal: (fn: () => void) => void;
   onSignStart: () => void;
   onSignSuccess: (signature: string, message: string, pubkey: string) => void;
   onSignError: (error: Error) => void;
 };
 const RainbowKitAuth: React.FC<RainbowKitAuthProps> = ({
-  setRenderRainbowKitProvider,
   setOpenConnectModal,
   onSignStart,
   onSignSuccess,
   onSignError,
 }) => {
-  const allowSignMessage = useRef(false);
   const { isLogin } = useWlUserReact();
   const { disconnect } = useDisconnect();
   const { openConnectModal } = useConnectModal();
-  const closeConnectModal = useCallback(() => {
-    disconnect();
-    setRenderRainbowKitProvider(false);
-    setTimeout(() => {
-      setRenderRainbowKitProvider(true);
-    }, 50);
-  }, [disconnect, setRenderRainbowKitProvider]);
-  useEffect(() => {
-    if (isLogin) {
-      allowSignMessage.current = false;
-    }
-  }, [isLogin]);
   const { isConnected, isConnecting, address } = useAccount();
-  const { signMessage, isSuccess, isError, isLoading, data, error } =
-    useSignMessage({
-      message: SIGN_MSG,
-    });
-
+  const {
+    signMessage,
+    isSuccess: isSignSuccess,
+    isError: isSignError,
+    isLoading: isSignLoading,
+    data: signData,
+    error: signError,
+    reset: resetSign,
+  } = useSignMessage({
+    message: SIGN_MSG,
+  });
+  const handleReset = useCallback(() => {
+    if (resetSign) resetSign();
+    if (disconnect) disconnect();
+  }, [resetSign, disconnect]);
   useEffect(() => {
-    if ((isConnecting || isLoading) && onSignStart) {
-      onSignStart();
+    if (isConnecting || isSignLoading) {
+      onSignStart && onSignStart();
+    } else if (isConnected) {
+      if (!isSignSuccess && !isSignError) {
+        signMessage && signMessage();
+      } else if (isSignSuccess) {
+        if (signData && address && onSignSuccess)
+          onSignSuccess(signData, SIGN_MSG, address);
+      } else if (isSignError) {
+        if (signError && onSignError && handleReset) {
+          handleReset();
+          onSignError(signError);
+        }
+      }
     }
-  }, [isConnecting, isLoading, onSignStart]);
+  }, [
+    isConnected,
+    isConnecting,
+    isSignLoading,
+    isSignSuccess,
+    isSignError,
+    signError,
+    signData,
+    address,
+    onSignError,
+    onSignStart,
+    signMessage,
+    onSignSuccess,
+    handleReset,
+  ]);
   useEffect(() => {
-    if (allowSignMessage.current && isConnected && signMessage) {
-      signMessage();
-    }
-  }, [isConnected, signMessage]);
-  useEffect(() => {
-    if (isSuccess && data && address && onSignSuccess) {
-      onSignSuccess(data, SIGN_MSG, address);
-    }
-  }, [isSuccess, data, address, onSignSuccess]);
-  useEffect(() => {
-    if (isError && error && onSignError) {
-      closeConnectModal();
-      onSignError(error);
-    }
-  }, [isError, error, onSignError, setRenderRainbowKitProvider]);
-  const openConnectModalFn = useCallback(() => {
-    allowSignMessage.current = true;
-    openConnectModal();
-  }, [openConnectModal]);
-  useEffect(
-    () => setOpenConnectModal(openConnectModalFn),
-    [openConnectModalFn]
-  );
+    handleReset();
+  }, [isLogin, handleReset]);
+  useEffect(() => setOpenConnectModal(openConnectModal), [openConnectModal]);
   return null;
 };
