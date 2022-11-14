@@ -110,7 +110,7 @@ export function WorkProofList() {
                   <button className="nopass" onClick={() => setPassModalData(item)}>
                     No Pass
                   </button>
-                  <button className="pass" onClick={() => submitReview({ userId: item.userId, actionId: item.actionId, passed: true })}>
+                  <button className="pass" onClick={() => submitReview({ userId: item.userId, actionId: item.actionId, passed: true, nopassReason:'' })}>
                     Pass
                   </button>
                 </div>

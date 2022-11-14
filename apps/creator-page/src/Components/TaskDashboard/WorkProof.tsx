@@ -17,7 +17,7 @@ export default function WorkProof({
 }) {
   const [passModalData, setPassModalData] = useState<WorkProofInfo | undefined>(undefined);
   const dateNow = new Date();
-  return (workProofs && workProofs.length>0) ? (
+  return (workProofs) ? (
     <>
     <WorkProofBox>
     <div className="header">
