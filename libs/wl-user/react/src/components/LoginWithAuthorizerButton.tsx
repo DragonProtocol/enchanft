@@ -7,7 +7,7 @@
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { AuthActionProcessStatus, AuthorizerType } from '../authorizers';
+import { AuthorizerActionProcessStatus, AuthorizerType } from '../authorizers';
 import { useWlUserReact, WlUserActionType } from '../provider';
 import { ButtonPrimary } from './common/button/ButtonBase';
 
@@ -30,8 +30,8 @@ const LoginWithAuthorizerButton: React.FC<LoginWithAuthorizerButtonProps> = ({
     process: (status) =>
       setLoading(
         [
-          AuthActionProcessStatus.SIGNATURE_PENDING,
-          AuthActionProcessStatus.API_PENDING,
+          AuthorizerActionProcessStatus.SIGNATURE_PENDING,
+          AuthorizerActionProcessStatus.API_PENDING,
         ].includes(status)
       ),
   });

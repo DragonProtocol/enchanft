@@ -2,14 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 18:14:18
+ * @LastEditTime: 2022-11-13 12:38:14
  * @Description: file description
  */
 import React from 'react';
 import { AccountType, BindResult, LoginResult } from '../api';
-import { Pubsub } from '../utils/pubsub';
-export const SIGN_MSG = `Please sign this message.
-We cannot initiate a transfer of any of your cryptocurrency or digital assets or otherwise access your digital assets.`;
 export enum AuthorizerType {
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',
@@ -18,7 +15,11 @@ export enum AuthorizerType {
   MARTIAN_WALLET = 'MARTIAN_WALLET',
   EVM_WALLET_KIT = 'EVM_WALLET_KIT',
 }
-export enum AuthActionProcessStatus {
+export enum AuthorizerWebVersion {
+  web2 = 'web2',
+  web3 = 'web3',
+}
+export enum AuthorizerActionProcessStatus {
   IDLE = 'IDLE',
   SIGNATURE_PENDING = 'SIGNATURE_PENDING',
   SIGNATURE_FULFILLED = 'SIGNATURE_FULFILLED',
@@ -27,12 +28,8 @@ export enum AuthActionProcessStatus {
   API_FULFILLED = 'API_FULFILLED',
   API_REJECTED = 'API_REJECTED',
 }
-export enum AuthorizerWebVersion {
-  web2 = 'web2',
-  web3 = 'web3',
-}
-export type AuthActionListener<SuccessResult> = (listeners: {
-  process?: (status: AuthActionProcessStatus) => void;
+export type AuthorizerActionListener<SuccessResult> = (listeners: {
+  process?: (status: AuthorizerActionProcessStatus) => void;
   success?: (result: SuccessResult) => void;
   error?: (error: Error) => void;
 }) => void;
@@ -40,113 +37,50 @@ export type AuthActionListener<SuccessResult> = (listeners: {
 export type AuthorizerAction = {
   login: () => void;
   bind: (token: string) => void;
-  loginListener: AuthActionListener<LoginResult>;
-  bindListener: AuthActionListener<BindResult>;
+  loginListener: AuthorizerActionListener<LoginResult>;
+  bindListener: AuthorizerActionListener<BindResult>;
 };
 
-export type AuthProcessComponentProps = {
+export type AuthorizerActionProcessComponentProps = {
   authorizer: Authorizer;
 };
 
-export type ActionProviderComponentProps = {
-  onLoginProcess: (status: AuthActionProcessStatus) => void;
+export type AuthorizerActionProviderComponentProps = {
+  onLoginProcess: (status: AuthorizerActionProcessStatus) => void;
   onLoginSuccess: (result: LoginResult) => void;
   onLoginError: (error: Error) => void;
-  onBindProcess: (status: AuthActionProcessStatus) => void;
+  onBindProcess: (status: AuthorizerActionProcessStatus) => void;
   onBindSuccess: (result: BindResult) => void;
   onBindError: (error: Error) => void;
   setLoginAction: (fn: () => void) => void;
   setBindAction: (fn: () => void) => void;
 };
 
-export type Authorizer = {
-  type: AuthorizerType;
-  accountType: AccountType;
-  webVersion: AuthorizerWebVersion;
-  name: string;
-  bgColor: string;
-  nameColor: string;
-  iconUrl: string;
-  action: AuthorizerAction;
-  actionProviderElement?: React.FunctionComponentElement<ActionProviderComponentProps>;
-  authProcessComponent?: React.FC<AuthProcessComponentProps>;
-};
+export type AuthorizerActionProviderElement =
+  React.FunctionComponentElement<AuthorizerActionProviderComponentProps>;
 
-export type LoginActionStaticFunction = (
-  onLoginProcess: (status: AuthActionProcessStatus) => void,
-  onLoginSuccess: (result: LoginResult) => void,
-  onLoginError: (error: Error) => void
-) => void;
-export type BindActionStaticFunction = (
-  token: string,
-  onLoginProcess: (status: AuthActionProcessStatus) => void,
-  onLoginSuccess: (result: BindResult) => void,
-  onLoginError: (error: Error) => void
-) => void;
-export const getActionByActionStaticFunction = (
-  loginAction: LoginActionStaticFunction,
-  bindAction: BindActionStaticFunction
-): AuthorizerAction => {
-  const pubsub = new Pubsub();
-  return {
-    login: () =>
-      loginAction(
-        (status) => pubsub.trigger('loginProcess', status),
-        (result) => pubsub.trigger('loginSuccess', result),
-        (error) => pubsub.trigger('loginError', error)
-      ),
-    bind: (token) =>
-      bindAction(
-        token,
-        (status) => pubsub.trigger('bindProcess', status),
-        (result) => pubsub.trigger('bindSuccess', result),
-        (error) => pubsub.trigger('bindError', error)
-      ),
-    loginListener: ({ process, success, error }) => {
-      pubsub.listen('loginProcess', process);
-      pubsub.listen('loginSuccess', success);
-      pubsub.listen('loginError', error);
-    },
-    bindListener: ({ process, success, error }) => {
-      pubsub.listen('bindProcess', process);
-      pubsub.listen('bindSuccess', success);
-      pubsub.listen('bindError', error);
-    },
-  };
-};
-export const getActionPropertiesByActionProviderComponent = (
-  ActionProviderComponent: React.FC<ActionProviderComponentProps>
-): {
+export type AuthorizerActionProcessComponent =
+  React.FC<AuthorizerActionProcessComponentProps>;
+
+export type Authorizer = {
+  // 授权者类型,标志着使用什么方式授权
+  type: AuthorizerType;
+  // 账户类型
+  accountType: AccountType;
+  // web 版本，为处理数据提供的约束/协议
+  webVersion: AuthorizerWebVersion;
+  // 授权者名称
+  name: string;
+  // 符合授权者的背景色
+  bgColor: string;
+  // 符合授权者名称的文字颜色
+  nameColor: string;
+  // 符合授权者的图标地址
+  iconUrl: string;
+  // 授权者具备的行为
   action: AuthorizerAction;
-  actionProviderElement?: React.FunctionComponentElement<ActionProviderComponentProps>;
-} => {
-  const pubsub = new Pubsub();
-  const action: AuthorizerAction = {
-    login: () => {},
-    bind: () => {},
-    loginListener: ({ process, success, error }) => {
-      pubsub.listen('loginProcess', process);
-      pubsub.listen('loginSuccess', success);
-      pubsub.listen('loginError', error);
-    },
-    bindListener: ({ process, success, error }) => {
-      pubsub.listen('bindProcess', process);
-      pubsub.listen('bindSuccess', success);
-      pubsub.listen('bindError', error);
-    },
-  };
-  const actionProviderElement = React.createElement(ActionProviderComponent, {
-    onLoginProcess: (status) => pubsub.trigger('loginProcess', status),
-    onLoginSuccess: (result) => pubsub.trigger('loginSuccess', result),
-    onLoginError: (error) => pubsub.trigger('loginError', error),
-    onBindProcess: (status) => pubsub.trigger('bindProcess', status),
-    onBindSuccess: (result) => pubsub.trigger('bindSuccess', result),
-    onBindError: (error) => pubsub.trigger('bindError', error),
-    setLoginAction: (fn) => (action.login = fn),
-    setBindAction: (fn) => (action.bind = fn),
-  });
-  return {
-    action,
-    actionProviderElement,
-  };
+  // 如果授权者的行为不能直接通过普通函数赋予，而需要某些特定的react组件提供，则需要预先创建行为提供者元素
+  actionProviderElement?: AuthorizerActionProviderElement;
+  // 行为执行流程组件
+  actionProcessComponent?: AuthorizerActionProcessComponent;
 };

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 19:42:29
+ * @LastEditTime: 2022-11-13 12:19:48
  * @Description: file description
  */
 import {
@@ -15,13 +15,15 @@ import {
 import AuthProcessModal from '../../components/AuthProcessModal/AuthProcessModal';
 import { listenWindowClose, openOauthWindow } from '../../utils';
 import {
-  AuthActionProcessStatus,
+  LoginActionStaticFunction,
+  BindActionStaticFunction,
+  createActionConfigByStaticFunction,
+} from '../actionConfig';
+import {
+  AuthorizerActionProcessStatus,
   Authorizer,
   AuthorizerType,
   AuthorizerWebVersion,
-  BindActionStaticFunction,
-  getActionByActionStaticFunction,
-  LoginActionStaticFunction,
 } from '../authorizer';
 import iconUrl from './icon.svg';
 export interface DiscordConstructorArgs {
@@ -124,7 +126,7 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
     bgColor: '#5368ED',
     nameColor: '#FFFFFF',
     iconUrl,
-    authProcessComponent: AuthProcessModal,
+    actionProcessComponent: AuthProcessModal,
   };
   oauthCallbackUrlListener(oauthCallbackUri);
   // login action
@@ -133,7 +135,7 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
     onLoginSuccess,
     onLoginError
   ) => {
-    onLoginProcess(AuthActionProcessStatus.SIGNATURE_PENDING);
+    onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_PENDING);
     try {
       startListenDiscordOauthStorage();
       const url = getApiDiscordOauth2Url(discordClientId, oauthCallbackUri);
@@ -146,7 +148,7 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
         ) {
           window.removeEventListener('storage', handleDiscordCallback);
           clearListenDiscordOauthStorage();
-          onLoginProcess(AuthActionProcessStatus.API_PENDING);
+          onLoginProcess(AuthorizerActionProcessStatus.API_PENDING);
           // 2. fetch discord bind
           login({
             type: authorizer.accountType,
@@ -154,11 +156,11 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
             callback: oauthCallbackUri,
           })
             .then((result) => {
-              onLoginProcess(AuthActionProcessStatus.API_FULFILLED);
+              onLoginProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onLoginSuccess(result.data);
             })
             .catch((error) => {
-              onLoginProcess(AuthActionProcessStatus.API_REJECTED);
+              onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
               onLoginError(
                 new DiscordError(
                   ErrorName.API_REQUEST_LOGIN_ERROR,
@@ -174,12 +176,12 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
         if (isStartListenDiscordOauthStorage()) {
           window.removeEventListener('storage', handleDiscordCallback);
           clearListenDiscordOauthStorage();
-          onLoginProcess(AuthActionProcessStatus.SIGNATURE_REJECTED);
+          onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
           onLoginError(new DiscordError(ErrorName.OAUTH_WINDOW_CLOSE));
         }
       });
     } catch (error) {
-      onLoginProcess(AuthActionProcessStatus.API_REJECTED);
+      onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
       onLoginError(error);
     }
   };
@@ -190,7 +192,7 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
     onBindSuccess,
     onBindError
   ) => {
-    onBindProcess(AuthActionProcessStatus.SIGNATURE_PENDING);
+    onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_PENDING);
     try {
       startListenDiscordOauthStorage();
       const url = getApiDiscordOauth2Url(discordClientId, oauthCallbackUri);
@@ -203,7 +205,7 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
         ) {
           window.removeEventListener('storage', handleDiscordCallback);
           clearListenDiscordOauthStorage();
-          onBindProcess(AuthActionProcessStatus.API_PENDING);
+          onBindProcess(AuthorizerActionProcessStatus.API_PENDING);
           // 2. fetch discord bind
           bindAccount(token, {
             type: authorizer.accountType,
@@ -211,11 +213,11 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
             callback: oauthCallbackUri,
           })
             .then((result) => {
-              onBindProcess(AuthActionProcessStatus.API_FULFILLED);
+              onBindProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onBindSuccess(result.data);
             })
             .catch((error) => {
-              onBindProcess(AuthActionProcessStatus.API_REJECTED);
+              onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
               onBindError(
                 new DiscordError(
                   ErrorName.API_REQUEST_BIND_ERROR,
@@ -231,17 +233,17 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
         if (isStartListenDiscordOauthStorage()) {
           window.removeEventListener('storage', handleDiscordCallback);
           clearListenDiscordOauthStorage();
-          onBindProcess(AuthActionProcessStatus.SIGNATURE_REJECTED);
+          onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
           onBindError(new DiscordError(ErrorName.OAUTH_WINDOW_CLOSE));
         }
       });
     } catch (error) {
-      onBindProcess(AuthActionProcessStatus.API_REJECTED);
+      onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
       onBindError(error);
     }
   };
   return {
     ...authorizer,
-    action: getActionByActionStaticFunction(loginAction, bindAction),
+    action: createActionConfigByStaticFunction(loginAction, bindAction),
   };
 };

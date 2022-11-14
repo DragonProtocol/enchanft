@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 15:29:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 18:49:25
+ * @LastEditTime: 2022-11-13 12:39:11
  * @Description: file description
  */
 import '@rainbow-me/rainbowkit/styles.css';
@@ -10,13 +10,11 @@ import {
   RainbowKitProvider,
   getDefaultWallets,
   connectorsForWallets,
-  AuthenticationStatus,
   useConnectModal,
 } from '@rainbow-me/rainbowkit';
 import {
   argentWallet,
   trustWallet,
-  ledgerWallet,
   omniWallet,
   imTokenWallet,
 } from '@rainbow-me/rainbowkit/wallets';
@@ -31,21 +29,16 @@ import {
 } from 'wagmi';
 import { publicProvider } from 'wagmi/providers/public';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import {
-  AccountType,
-  BindResult,
-  login,
-  bindAccount,
-  LoginResult,
-} from '../../../api';
+import { AccountType, login, bindAccount } from '../../../api';
 import { useWlUserReact } from '../../../provider';
-import { AuthActionProcessStatus, SIGN_MSG } from '../../authorizer';
+import {
+  AuthorizerActionProcessStatus,
+  AuthorizerActionProviderComponentProps,
+} from '../../authorizer';
+import { SIGN_MSG } from '../../../constants';
 const { chains, provider, webSocketProvider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
-  [
-    // alchemyProvider({ apiKey: '_gg7wSSi0KMBsdKnGVfHDueq6xMB9EkC' }),
-    publicProvider(),
-  ]
+  [publicProvider()]
 );
 const appInfo = {
   appName: 'Login With Evm Wallets',
@@ -76,16 +69,6 @@ const wagmiClient = createClient({
   webSocketProvider,
 });
 
-export type ActionProviderComponentProps = {
-  onLoginProcess: (status: AuthActionProcessStatus) => void;
-  onLoginSuccess: (result: LoginResult) => void;
-  onLoginError: (error: Error) => void;
-  onBindProcess: (status: AuthActionProcessStatus) => void;
-  onBindSuccess: (result: BindResult) => void;
-  onBindError: (error: Error) => void;
-  setLoginAction: (fn: () => void) => void;
-  setBindAction: (fn: () => void) => void;
-};
 enum CurrentActionType {
   NONE = 'NONE',
   LOGIN = 'LOGIN',
@@ -101,7 +84,7 @@ export function ActionProviderComponent({
   onBindError,
   setLoginAction,
   setBindAction,
-}: ActionProviderComponentProps) {
+}: AuthorizerActionProviderComponentProps) {
   const currentActionType = useRef<CurrentActionType>(CurrentActionType.NONE);
   const { user, isLogin } = useWlUserReact();
 
@@ -125,15 +108,15 @@ export function ActionProviderComponent({
   };
   const onSignStart = useCallback(() => {
     if (currentActionType.current === CurrentActionType.LOGIN) {
-      onLoginProcess(AuthActionProcessStatus.SIGNATURE_PENDING);
+      onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_PENDING);
     } else if (currentActionType.current === CurrentActionType.BIND) {
-      onBindProcess(AuthActionProcessStatus.SIGNATURE_PENDING);
+      onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_PENDING);
     }
   }, [onLoginProcess, onBindProcess]);
   const onSignSuccess = useCallback(
     (signature: string, message: string, pubkey: string) => {
       if (currentActionType.current === CurrentActionType.LOGIN) {
-        onLoginProcess(AuthActionProcessStatus.API_PENDING);
+        onLoginProcess(AuthorizerActionProcessStatus.API_PENDING);
         login({
           type: AccountType.EVM,
           signature: signature,
@@ -143,22 +126,22 @@ export function ActionProviderComponent({
           .then((result) => {
             const authenticated = !!result.data.token;
             if (authenticated) {
-              onLoginProcess(AuthActionProcessStatus.API_FULFILLED);
+              onLoginProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onLoginSuccess(result.data);
             } else {
-              onLoginProcess(AuthActionProcessStatus.API_REJECTED);
+              onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
               onLoginError(new Error('Login Failed'));
             }
           })
           .catch((error) => {
-            onLoginProcess(AuthActionProcessStatus.API_REJECTED);
+            onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
             onLoginError(error);
           })
           .finally(() => {
             currentActionType.current = CurrentActionType.NONE;
           });
       } else if (currentActionType.current === CurrentActionType.BIND) {
-        onBindProcess(AuthActionProcessStatus.API_PENDING);
+        onBindProcess(AuthorizerActionProcessStatus.API_PENDING);
         bindAccount(user.token, {
           type: AccountType.EVM,
           signature: signature,
@@ -168,15 +151,15 @@ export function ActionProviderComponent({
           .then((result) => {
             const authenticated = !!result.data;
             if (authenticated) {
-              onBindProcess(AuthActionProcessStatus.API_FULFILLED);
+              onBindProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onBindSuccess(result.data);
             } else {
-              onBindProcess(AuthActionProcessStatus.API_REJECTED);
+              onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
               onBindError(new Error('Bind Failed'));
             }
           })
           .catch((error) => {
-            onBindProcess(AuthActionProcessStatus.API_REJECTED);
+            onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
             onBindError(error);
           })
           .finally(() => {
@@ -196,10 +179,10 @@ export function ActionProviderComponent({
   const onSignError = useCallback(
     (error: Error) => {
       if (currentActionType.current === CurrentActionType.LOGIN) {
-        onLoginProcess(AuthActionProcessStatus.SIGNATURE_REJECTED);
+        onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
         onLoginError(error);
       } else if (currentActionType.current === CurrentActionType.BIND) {
-        onBindProcess(AuthActionProcessStatus.SIGNATURE_REJECTED);
+        onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
         onBindError(error);
       }
     },

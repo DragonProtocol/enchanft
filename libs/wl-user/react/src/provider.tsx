@@ -391,8 +391,8 @@ export function WlUserReactProvider({
     return authorizers.map((item) => (
       <React.Fragment key={item.type}>
         {item.actionProviderElement ? item.actionProviderElement : null}
-        {item.authProcessComponent ? (
-          <item.authProcessComponent authorizer={item} />
+        {item.actionProcessComponent ? (
+          <item.actionProcessComponent authorizer={item} />
         ) : null}
       </React.Fragment>
     ));

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 19:45:13
+ * @LastEditTime: 2022-11-13 12:39:21
  * @Description: file description
  */
 import * as bs58 from 'bs58';
@@ -15,21 +15,21 @@ import {
   login,
 } from '../../../api';
 import AuthProcessModal from '../../../components/AuthProcessModal/AuthProcessModal';
+import { SIGN_MSG } from '../../../constants';
 import {
-  AuthActionProcessStatus,
+  LoginActionStaticFunction,
+  BindActionStaticFunction,
+  createActionConfigByStaticFunction,
+} from '../../actionConfig';
+import {
+  AuthorizerActionProcessStatus,
   Authorizer,
   AuthorizerType,
   AuthorizerWebVersion,
-  BindActionStaticFunction,
-  getActionByActionStaticFunction,
-  LoginActionStaticFunction,
-  SIGN_MSG,
 } from '../../authorizer';
 import iconUrl from './icon.svg';
 export const web3Window: typeof window & {
-  ethereum?: any;
   solana?: any;
-  martian?: any;
 } = window;
 export type SignMsgResult = {
   signature: string;
@@ -97,7 +97,7 @@ export default (): Authorizer => {
     bgColor: '#551FF4',
     nameColor: '#FFFFFF',
     iconUrl,
-    authProcessComponent: AuthProcessModal,
+    actionProcessComponent: AuthProcessModal,
   };
   // login action
   const loginAction: LoginActionStaticFunction = (
@@ -105,20 +105,20 @@ export default (): Authorizer => {
     onLoginSuccess,
     onLoginError
   ) => {
-    onLoginProcess(AuthActionProcessStatus.SIGNATURE_PENDING);
+    onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_PENDING);
     const signMsgCatch = () => {
-      onLoginProcess(AuthActionProcessStatus.SIGNATURE_REJECTED);
+      onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
       onLoginError(new PhantomError(ErrorName.PHANTOM_SIGNATURE_REQUEST_ERROR));
     };
     const apiCatch = (msg: string) => {
-      onLoginProcess(AuthActionProcessStatus.API_REJECTED);
+      onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
       onLoginError(new PhantomError(ErrorName.API_REQUEST_LOGIN_ERROR, msg));
     };
 
     signMsgWithPhantom()
       .then((signData) => {
         if (signData) {
-          onLoginProcess(AuthActionProcessStatus.API_PENDING);
+          onLoginProcess(AuthorizerActionProcessStatus.API_PENDING);
           login({
             type: authorizer.accountType,
             signature: signData.signature,
@@ -126,7 +126,7 @@ export default (): Authorizer => {
             pubkey: signData.pubkey,
           })
             .then((result) => {
-              onLoginProcess(AuthActionProcessStatus.API_FULFILLED);
+              onLoginProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onLoginSuccess(result.data);
             })
             .catch((error) => {
@@ -147,19 +147,19 @@ export default (): Authorizer => {
     onBindSuccess,
     onBindError
   ) => {
-    onBindProcess(AuthActionProcessStatus.SIGNATURE_PENDING);
+    onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_PENDING);
     const signMsgCatch = () => {
-      onBindProcess(AuthActionProcessStatus.SIGNATURE_REJECTED);
+      onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
       onBindError(new PhantomError(ErrorName.PHANTOM_SIGNATURE_REQUEST_ERROR));
     };
     const apiCatch = (msg: string) => {
-      onBindProcess(AuthActionProcessStatus.API_REJECTED);
+      onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
       onBindError(new PhantomError(ErrorName.API_REQUEST_BIND_ERROR, msg));
     };
     signMsgWithPhantom()
       .then((signData) => {
         if (signData) {
-          onBindProcess(AuthActionProcessStatus.API_PENDING);
+          onBindProcess(AuthorizerActionProcessStatus.API_PENDING);
           bindAccount(token, {
             type: authorizer.accountType,
             signature: signData.signature,
@@ -168,7 +168,7 @@ export default (): Authorizer => {
           })
             .then((result) => {
               if (result.data) {
-                onBindProcess(AuthActionProcessStatus.API_FULFILLED);
+                onBindProcess(AuthorizerActionProcessStatus.API_FULFILLED);
                 onBindSuccess(result.data);
               } else {
                 apiCatch('result data is null');
@@ -185,6 +185,6 @@ export default (): Authorizer => {
   };
   return {
     ...authorizer,
-    action: getActionByActionStaticFunction(loginAction, bindAction),
+    action: createActionConfigByStaticFunction(loginAction, bindAction),
   };
 };

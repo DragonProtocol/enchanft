@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 19:45:30
+ * @LastEditTime: 2022-11-13 12:18:32
  * @Description: file description
  */
 import {
@@ -15,13 +15,15 @@ import {
 import AuthProcessModal from '../../components/AuthProcessModal/AuthProcessModal';
 import { openOauthWindow } from '../../utils';
 import {
-  AuthActionProcessStatus,
+  LoginActionStaticFunction,
+  BindActionStaticFunction,
+  createActionConfigByStaticFunction,
+} from '../actionConfig';
+import {
   Authorizer,
   AuthorizerType,
   AuthorizerWebVersion,
-  BindActionStaticFunction,
-  getActionByActionStaticFunction,
-  LoginActionStaticFunction,
+  AuthorizerActionProcessStatus,
 } from '../authorizer';
 import iconUrl from './icon.svg';
 export interface TwitterAccountArgs {
@@ -136,7 +138,7 @@ export default ({
     bgColor: '#4D93F1',
     nameColor: '#FFFFFF',
     iconUrl,
-    authProcessComponent: AuthProcessModal,
+    actionProcessComponent: AuthProcessModal,
   };
   oauthCallbackUrlListener(oauthCallbackUri);
   const loginAction: LoginActionStaticFunction = (
@@ -156,18 +158,18 @@ export default ({
         ) {
           window.removeEventListener('storage', handleTwitterCallback);
           clearListenTwitterOauthStorage();
-          onLoginProcess(AuthActionProcessStatus.API_PENDING);
+          onLoginProcess(AuthorizerActionProcessStatus.API_PENDING);
           login({
             type: authorizer.accountType,
             code: newValue,
             callback: oauthCallbackUri,
           })
             .then((result) => {
-              onLoginProcess(AuthActionProcessStatus.API_FULFILLED);
+              onLoginProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onLoginSuccess(result.data);
             })
             .catch((error) => {
-              onLoginProcess(AuthActionProcessStatus.API_REJECTED);
+              onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
               onLoginError(
                 new TwitterError(
                   ErrorName.API_REQUEST_LOGIN_ERROR,
@@ -179,7 +181,7 @@ export default ({
       };
       window.addEventListener('storage', handleTwitterCallback);
     } catch (error) {
-      onLoginProcess(AuthActionProcessStatus.API_REJECTED);
+      onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
       onLoginError(error);
     }
   };
@@ -201,18 +203,18 @@ export default ({
         ) {
           window.removeEventListener('storage', handleTwitterCallback);
           clearListenTwitterOauthStorage();
-          onBindProcess(AuthActionProcessStatus.API_PENDING);
+          onBindProcess(AuthorizerActionProcessStatus.API_PENDING);
           bindAccount(token, {
             type: authorizer.accountType,
             code: newValue,
             callback: oauthCallbackUri,
           })
             .then((result) => {
-              onBindProcess(AuthActionProcessStatus.API_FULFILLED);
+              onBindProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onBindSuccess(result.data);
             })
             .catch((error) => {
-              onBindProcess(AuthActionProcessStatus.API_REJECTED);
+              onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
               onBindError(
                 new TwitterError(
                   ErrorName.API_REQUEST_BIND_ERROR,
@@ -224,12 +226,12 @@ export default ({
       };
       window.addEventListener('storage', handleTwitterCallback);
     } catch (error) {
-      onBindProcess(AuthActionProcessStatus.API_REJECTED);
+      onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
       onBindError(error);
     }
   };
   return {
     ...authorizer,
-    action: getActionByActionStaticFunction(loginAction, bindAction),
+    action: createActionConfigByStaticFunction(loginAction, bindAction),
   };
 };

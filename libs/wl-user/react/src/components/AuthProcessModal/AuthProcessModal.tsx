@@ -4,7 +4,7 @@ import ModalBase, { ModalBaseTitle } from '../common/modal/ModalBase';
 import { isMobile } from 'react-device-detect';
 import { ButtonPrimary, ButtonInfo } from '../common/button/ButtonBase';
 import {
-  AuthActionProcessStatus,
+  AuthorizerActionProcessStatus,
   Authorizer,
   AuthorizerWebVersion,
 } from '../../authorizers';
@@ -33,13 +33,13 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = ({
   const { user } = useWlUserReact();
   const [processState, setProcessState] = useState({
     actionType: ActionType.none,
-    status: AuthActionProcessStatus.IDLE,
+    status: AuthorizerActionProcessStatus.IDLE,
     errorMsg: '',
   });
   const closeModal = () =>
     setProcessState({
       actionType: ActionType.none,
-      status: AuthActionProcessStatus.IDLE,
+      status: AuthorizerActionProcessStatus.IDLE,
       errorMsg: '',
     });
   authorizer.action.loginListener({
@@ -67,7 +67,7 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = ({
   let closeBtnDisplay = false;
   let retryBtnDisplay = false;
   switch (processState.status) {
-    case AuthActionProcessStatus.SIGNATURE_PENDING:
+    case AuthorizerActionProcessStatus.SIGNATURE_PENDING:
       isOpen = true;
       if (authorizer.webVersion === AuthorizerWebVersion.web3) {
         title = '🕹 Signature Request';
@@ -77,7 +77,7 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = ({
         desc = ` Please authorize your ${authorizer.name} account.`;
       }
       break;
-    case AuthActionProcessStatus.SIGNATURE_REJECTED:
+    case AuthorizerActionProcessStatus.SIGNATURE_REJECTED:
       isOpen = true;
       if (authorizer.webVersion === AuthorizerWebVersion.web3) {
         title = '❌ Signature Rejected';
@@ -89,14 +89,14 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = ({
       closeBtnDisplay = true;
       retryBtnDisplay = true;
       break;
-    case AuthActionProcessStatus.API_PENDING:
+    case AuthorizerActionProcessStatus.API_PENDING:
       isOpen = true;
       title = `⏳ ${actionTypeMap[processState.actionType].pendingName}`;
       desc = `${
         actionTypeMap[processState.actionType].pendingName
       } in now, Please wait...`;
       break;
-    case AuthActionProcessStatus.API_REJECTED:
+    case AuthorizerActionProcessStatus.API_REJECTED:
       isOpen = true;
       title = `❌ ${actionTypeMap[processState.actionType].rejectName} Fail`;
       desc = processState.errorMsg;
