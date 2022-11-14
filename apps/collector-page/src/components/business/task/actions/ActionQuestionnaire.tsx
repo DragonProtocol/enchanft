@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-14 16:01:13
+ * @LastEditTime: 2022-11-14 16:36:27
  * @Description: file description
  */
 import React from 'react'
@@ -36,9 +36,7 @@ const ActionQuestionnaire: React.FC<ActionQuestionnaireProps> = ({
       onQuestionConfirm(data, answer)
     }
   }
-  const displayConfim =
-    allowHandle && !isDone && (!actionData?.answer || (!!actionData?.answer && !!actionData?.nopassReason))
-  const isWaitReview = !!actionData?.answer && !!actionData?.nopassReason
+  const isWaitReview = !!actionData?.answer && !actionData?.nopassReason
   return (
     <ActionQuestionnaireWrapper>
       <ActionIconBox allowHandle={allowHandle} isDone={isDone}>
