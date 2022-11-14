@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-14 15:44:44
+ * @LastEditTime: 2022-11-14 16:01:13
  * @Description: file description
  */
 import React from 'react'
@@ -38,6 +38,7 @@ const ActionQuestionnaire: React.FC<ActionQuestionnaireProps> = ({
   }
   const displayConfim =
     allowHandle && !isDone && (!actionData?.answer || (!!actionData?.answer && !!actionData?.nopassReason))
+  const isWaitReview = !!actionData?.answer && !!actionData?.nopassReason
   return (
     <ActionQuestionnaireWrapper>
       <ActionIconBox allowHandle={allowHandle} isDone={isDone}>
@@ -49,18 +50,30 @@ const ActionQuestionnaire: React.FC<ActionQuestionnaireProps> = ({
         <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
           {name} {progress && progress != '' && <ProgressSpan>({progress})</ProgressSpan>}
         </ActionNameSpan>
-        {displayConfim && (
-          <ActionFormBox>
-            <AnswerInput
-              placeholder="Please enter the answer"
-              onChange={(e) => setAnswer(e.target.value)}
-              value={answer}
-            />
-            <ConfirmBtn onClick={handleConfim}>Confirm</ConfirmBtn>
-          </ActionFormBox>
+        {allowHandle && !isDone ? (
+          <>
+            {isWaitReview ? (
+              <>
+                <ConfirmAnswerText>{actionData?.answer}</ConfirmAnswerText>
+                <ConfirmErrorText>Wait for review</ConfirmErrorText>
+              </>
+            ) : (
+              <>
+                <ActionFormBox>
+                  <AnswerInput
+                    placeholder="Please enter the answer"
+                    onChange={(e) => setAnswer(e.target.value)}
+                    value={answer}
+                  />
+                  <ConfirmBtn onClick={handleConfim}>Confirm</ConfirmBtn>
+                </ActionFormBox>
+                <ConfirmErrorText>{actionData?.nopassReason}</ConfirmErrorText>
+              </>
+            )}
+          </>
+        ) : (
+          <ConfirmAnswerText>{actionData?.answer}</ConfirmAnswerText>
         )}
-        {!displayConfim && actionData?.answer && <ConfirmAnswerText>{actionData?.answer}</ConfirmAnswerText>}
-        {actionData?.nopassReason && <ConfirmErrorText>{actionData?.nopassReason}</ConfirmErrorText>}
       </ActionContentBox>
     </ActionQuestionnaireWrapper>
   )
