@@ -6,7 +6,9 @@ import dayjs from 'dayjs';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { PassFlag, ReviewWorkProofParam } from '../api';
 import { useAppConfig } from '../AppProvider';
-import { getWorkProofsData, selectCreator, submitReviewWorkProof } from '../redux/creatorDashboard';
+import { getWorkProofsData, selectCreator, submitReviewWorkProof, WorkProofInfo } from '../redux/creatorDashboard';
+import { ActionType } from '../Components/TaskCreate/type';
+import PassModal from '../Components/TaskDashboard/PassModal';
 
 type Tab = 'Pending' | 'Pass' | 'No Pass';
 
@@ -15,6 +17,8 @@ export function WorkProofList() {
   const { slug, taskId } = useParams();
   const [tab, setTab] = useState<Tab>('Pending');
 
+  const [passModalData, setPassModalData] = useState<WorkProofInfo | undefined>(undefined);
+  
   const dispatch = useAppDispatch();
   const dashboardData = useAppSelector(selectCreator);
   const { allWorkProofs } = dashboardData;
@@ -88,15 +92,22 @@ export function WorkProofList() {
               <span>
                 {item.userName}
               </span>
-              <span>
-                Q: {item.actionData.question}<br />A: {item.actionData.answer}
-              </span>
+              {item.actionType === ActionType.QUESTIONNAIRE &&
+                <span>
+                  Q: {item.actionData.question}<br />A: {item.actionData.answer}
+                </span>
+              }
+              {item.actionType === ActionType.UPLOAD_IMAGE &&
+                <div>
+                  Q: {item.actionData.question}<br /><img src={item.actionData.answer} alt={item.actionData.question}></img>
+                </div>
+              }
               <span>
                 {dayjs(item.submitTime).format('YYYY/MM/DD HH:mm')}
               </span>
               {item.passed === null &&
                 <div className="btns">
-                  <button className="nopass" onClick={() => submitReview({ userId: item.userId, actionId: item.actionId, passed: false })}>
+                  <button className="nopass" onClick={() => setPassModalData(item)}>
                     No Pass
                   </button>
                   <button className="pass" onClick={() => submitReview({ userId: item.userId, actionId: item.actionId, passed: true })}>
@@ -108,6 +119,19 @@ export function WorkProofList() {
           );
         })}
       </div>
+      <PassModal
+          nopassMode={true}
+          data={passModalData}
+          closeModal={() => {
+            setPassModalData(undefined)
+          }}
+          submit={(passed:boolean, feedback:string) => {
+            if (passModalData){
+              const result:ReviewWorkProofParam = { userId: passModalData.userId, actionId: passModalData.actionId, passed: passed, nopassReason:feedback }
+              submitReview(result)
+              setPassModalData(undefined)}
+          }}
+        />
     </ContentBox>
   );
 }

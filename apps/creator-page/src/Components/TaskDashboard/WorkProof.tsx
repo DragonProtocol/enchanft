@@ -68,9 +68,9 @@ export default function WorkProof({
           closeModal={() => {
             setPassModalData(undefined)
           }}
-          submit={(passed:boolean) => {
+          submit={(passed:boolean,feedback:string) => {
             if (passModalData){
-              const result:ReviewWorkProofParam = { userId: passModalData.userId, actionId: passModalData.actionId, passed: passed }
+              const result:ReviewWorkProofParam = { userId: passModalData.userId, actionId: passModalData.actionId, passed: passed, nopassReason:feedback }
               submitReview(result)
               setPassModalData(undefined)}
           }}

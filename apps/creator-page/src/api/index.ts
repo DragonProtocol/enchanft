@@ -251,7 +251,7 @@ export function downloadWinner(type: string, taskId: string, token: string) {
     );
   });
 }
-export type ReviewWorkProofParam = { userId: string, actionId: number, passed: boolean }
+export type ReviewWorkProofParam = { userId: string, actionId: number, passed: boolean, nopassReason?:string }
 
 export function reviewWorkProof(taskId: number, data: ReviewWorkProofParam, token: string) {
   return axios({

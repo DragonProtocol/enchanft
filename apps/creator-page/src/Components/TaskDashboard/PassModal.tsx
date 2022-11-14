@@ -1,17 +1,23 @@
+import { useState } from 'react';
 import Modal from 'react-modal';
 import styled from 'styled-components';
 import { WorkProofInfo } from '../../redux/creatorDashboard';
 import IconClose from '../Icons/IconClose';
+import { ActionType } from '../TaskCreate/type';
 
 export default function PassModal({
+  nopassMode,
   data,
   closeModal,
   submit
 }: {
+  nopassMode?: boolean,
   data: WorkProofInfo | undefined
   closeModal: () => void;
-  submit: (pass: boolean) => void;
+  submit: (pass: boolean, feedback: string) => void;
 }) {
+  const [confirmState, setConfirmState] = useState(nopassMode)
+  const [noPassReason, setNoPassReason] = useState('')
   return (
     <Modal
       isOpen={data !== undefined}
@@ -40,15 +46,52 @@ export default function PassModal({
         </div>
         <p>{data?.userName || 'Somebody'}</p>
         <p>Q: {data?.actionData.question}</p>
-        <p>A: {data?.actionData.answer}</p>
-        <div className="btns">
-          <button className="nopass" onClick={() => submit(false)}>
-            No Pass
-          </button>
-          <button className="pass" onClick={() => submit(true)}>
-            Pass
-          </button>
-        </div>
+        {data?.actionType === ActionType.QUESTIONNAIRE &&
+          <p>A: {data?.actionData.answer}</p>
+        }
+        {data?.actionType === ActionType.UPLOAD_IMAGE &&
+          <img src={data.actionData.answer} alt={data.actionData.question}></img>
+        }
+        {confirmState ?
+          <>
+            <p>Feedback: </p>
+            <div className="input-box">
+              <input
+                type="text"
+                title="feedback"
+                placeholder="no pass reason"
+                value={noPassReason}
+                onChange={(e) => {
+                  setNoPassReason(e.target.value)
+                }}
+              />
+            </div>
+            <div className="btns">
+              <button className="nopass" onClick={() => {
+                if (nopassMode) {
+                  closeModal()
+                } else {
+                  setConfirmState(false)
+                }
+              }
+              }>
+                Back
+              </button>
+              <button className="pass" onClick={() => submit(false, noPassReason)}>
+                Sent
+              </button>
+            </div>
+          </>
+          :
+          <div className="btns">
+            <button className="nopass" onClick={() => setConfirmState(true)}>
+              No Pass
+            </button>
+            <button className="pass" onClick={() => submit(true,'')}>
+              Pass
+            </button>
+          </div>
+        }
       </ContentBox>
     </Modal>
   );
@@ -108,4 +151,26 @@ const ContentBox = styled.div`
       color: #fff;
     }
   }
+
+  & div.input-box {
+            flex-grow: 1;
+            background-color: #fff;
+            border: 1px solid #fff;
+            border-radius: 10px;
+            padding: 10px;
+            display: flex;
+            font-size: 14px;
+            line-height: 20px;
+            > input {
+              flex-grow: 1;
+              border: none;
+              outline: none;
+            }
+            > svg {
+              height: 20px;
+            }
+            &.adding {
+              color: rgba(51, 51, 51, 0.3);
+            }
+          }
 `;
