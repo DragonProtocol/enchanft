@@ -255,6 +255,7 @@ export default function TaskNew() {
         {step === 3 && (
           <>
             <Actions
+              luckyDraw={state.reward.luckyDraw}
               hasInviteBot={hasInviteBot || !!project.community.discordId}
               updateStateActions={(newStateActions) => {
                 setState({ ...state, actions: newStateActions });

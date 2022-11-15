@@ -35,10 +35,12 @@ export default function Actions({
   projectName,
   projectTwitter,
   followTwitters,
+  luckyDraw,
   updateStateActions,
   updateStateFollowTwitters,
 }: {
   hasInviteBot: boolean;
+  luckyDraw: boolean;
   projectName: string;
   projectTwitter: string;
   followTwitters: string[];
@@ -497,7 +499,7 @@ export default function Actions({
                 <ConnectTwitter />
               </div>
             )}
-            {twitter && followTwitter.valid && (
+            {twitter && followTwitter.valid && luckyDraw && (
               <LuckyDraw
                 weight={followTwitter.luckyDrawWeight}
                 setWeight={(w) => {
@@ -548,7 +550,7 @@ export default function Actions({
               </div>
             )}
 
-            {twitter && likeTwitter.valid && (
+            {twitter && likeTwitter.valid && luckyDraw && (
               <LuckyDraw
                 weight={likeTwitter.luckyDrawWeight}
                 setWeight={(w) => {
@@ -600,7 +602,7 @@ export default function Actions({
                 <ConnectTwitter />
               </div>
             )}
-            {twitter && retweetTwitter.valid && (
+            {twitter && retweetTwitter.valid && luckyDraw && (
               <LuckyDraw
                 weight={retweetTwitter.luckyDrawWeight}
                 setWeight={(w) => {
@@ -677,7 +679,7 @@ export default function Actions({
                 <ConnectTwitter />
               </div>
             )}
-            {twitter && quoteTwitter.valid && (
+            {twitter && quoteTwitter.valid && luckyDraw && (
               <LuckyDraw
                 weight={quoteTwitter.luckyDrawWeight}
                 setWeight={(w) => {
@@ -727,7 +729,7 @@ export default function Actions({
               </span>
               <IconWL />
             </div>
-            {inviteFriends.valid && (
+            {inviteFriends.valid && luckyDraw && (
               <LuckyDraw
                 weight={inviteFriends.luckyDrawWeight}
                 setWeight={(w) => {
@@ -778,7 +780,7 @@ export default function Actions({
               </span>
               <IconWL />
             </div>
-            {joinCommunityContribution.valid && (
+            {joinCommunityContribution.valid && luckyDraw && (
               <LuckyDraw
                 weight={joinCommunityContribution.luckyDrawWeight}
                 setWeight={(w) => {
@@ -838,7 +840,7 @@ export default function Actions({
                         </div>
                       </div>
 
-                      {questionnaire.valid && (
+                      {questionnaire.valid && luckyDraw && (
                         <LuckyDraw
                           borderNoTop
                           weight={item.luckyDrawWeight}
@@ -971,7 +973,7 @@ export default function Actions({
                         </div>
                       </div>
 
-                      {verifyAnswer.valid && (
+                      {verifyAnswer.valid && luckyDraw && (
                         <LuckyDraw
                           borderNoTop
                           weight={item.luckyDrawWeight}
@@ -1052,7 +1054,7 @@ export default function Actions({
                 </span>
                 <IconDiscord />
               </div>
-              {joinDiscord.valid && (
+              {joinDiscord.valid && luckyDraw && (
                 <LuckyDraw
                   weight={joinDiscord.luckyDrawWeight}
                   setWeight={(w) => {
@@ -1105,7 +1107,7 @@ export default function Actions({
                 </span>
                 <IconDiscord />
               </div>
-              {inviteDiscord.valid && (
+              {inviteDiscord.valid && luckyDraw && (
                 <LuckyDraw
                   weight={inviteDiscord.luckyDrawWeight}
                   setWeight={(w) => {
@@ -1172,16 +1174,18 @@ export default function Actions({
                       />
                     </div>
                   </div>
-                  <LuckyDraw
-                    borderNoTop
-                    weight={discordRole.luckyDrawWeight}
-                    setWeight={(w) => {
-                      setDiscordRole({
-                        ...discordRole,
-                        luckyDrawWeight: w,
-                      });
-                    }}
-                  />
+                  {luckyDraw && (
+                    <LuckyDraw
+                      borderNoTop
+                      weight={discordRole.luckyDrawWeight}
+                      setWeight={(w) => {
+                        setDiscordRole({
+                          ...discordRole,
+                          luckyDrawWeight: w,
+                        });
+                      }}
+                    />
+                  )}
                 </>
               )}
             </div>
@@ -1268,21 +1272,23 @@ export default function Actions({
                         />
                       </div>
                     </div>
-                    <LuckyDraw
-                      borderNoTop
-                      weight={item.luckyDrawWeight}
-                      setWeight={(w) => {
-                        const curr = {
-                          ...item,
-                          luckyDrawWeight: w,
-                        };
-                        setCustom([
-                          ...custom.slice(0, idx),
-                          curr,
-                          ...custom.slice(idx + 1),
-                        ]);
-                      }}
-                    />
+                    {luckyDraw && (
+                      <LuckyDraw
+                        borderNoTop
+                        weight={item.luckyDrawWeight}
+                        setWeight={(w) => {
+                          const curr = {
+                            ...item,
+                            luckyDrawWeight: w,
+                          };
+                          setCustom([
+                            ...custom.slice(0, idx),
+                            curr,
+                            ...custom.slice(idx + 1),
+                          ]);
+                        }}
+                      />
+                    )}
                     {(idx === custom.length - 1 && (
                       <div
                         className={'help add-btn custom custom-add'}
@@ -1359,7 +1365,7 @@ export default function Actions({
                 }}
               />
             )}
-            {walletBalance.valid && (
+            {walletBalance.valid && luckyDraw && (
               <LuckyDraw
                 weight={walletBalance.luckyDrawWeight}
                 setWeight={(w) => {
@@ -1453,7 +1459,7 @@ export default function Actions({
                   <IconPlus size="16px" /> Add
                 </div>
               )}
-              {nftHolder.valid && (
+              {nftHolder.valid && luckyDraw && (
                 <LuckyDraw
                   weight={nftHolder.luckyDrawWeight}
                   setWeight={(w) => {
@@ -1511,7 +1517,7 @@ export default function Actions({
                         </div>
                       </div>
 
-                      {uploadImage.valid && (
+                      {uploadImage.valid && luckyDraw && (
                         <LuckyDraw
                           borderNoTop
                           weight={item.luckyDrawWeight}
