@@ -108,11 +108,50 @@ export default function TaskNew() {
         if (err.response?.status === 401) {
           toast.error('Login has expired,please log in again!');
           updateAccount({ ...account, info: null });
+        } else {
+          toast.error('Bind WL Bot Fail.');
         }
       }
     },
     [project?.id, account, updateAccount]
   );
+
+  const checkInformationValid = useCallback(() => {
+    if (!state.name) {
+      toast.error('Task title is required');
+      return;
+    }
+    if (!state.description) {
+      toast.error('Task statement is required');
+      return;
+    }
+    return true;
+  }, [state]);
+
+  const checkTaskRewardValid = useCallback(() => {
+    if (state.reward.type === RewardType.OTHERS) {
+      if (!state.reward.name) {
+        toast.error('Reward name is required when the type is other');
+        return;
+      }
+    }
+    return true;
+  }, [state]);
+
+  const checkTaskActionValid = useCallback(() => {
+    if (state.actions.length === 0) {
+      toast.error('Task actions must have one item at least');
+      return;
+    }
+    return true;
+  }, [state]);
+
+  const checkValid = useCallback(() => {
+    if (step === 1) return checkInformationValid();
+    if (step === 2) return checkTaskRewardValid();
+    if (step === 3) return checkTaskActionValid();
+    return true;
+  }, [checkInformationValid, checkTaskActionValid, checkTaskRewardValid, step]);
 
   useEffect(() => {
     localStorage.setItem('discord_guild_id', JSON.stringify({ guildId: null }));
@@ -145,9 +184,30 @@ export default function TaskNew() {
           </button>
         </div>
         <div className="tar-bar">
-          <div className={step === 1 ? 'active' : ''}>1. Information</div>
-          <div className={step === 2 ? 'active' : ''}>2. Task Reward</div>
-          <div className={step === 3 ? 'active' : ''}>3. Task Action</div>
+          <div
+            className={step === 1 ? 'active' : ''}
+            onClick={() => {
+              if (checkValid()) setStep(1);
+            }}
+          >
+            1. Information
+          </div>
+          <div
+            className={step === 2 ? 'active' : ''}
+            onClick={() => {
+              if (checkValid()) setStep(2);
+            }}
+          >
+            2. Task Reward
+          </div>
+          <div
+            className={step === 3 ? 'active' : ''}
+            onClick={() => {
+              if (checkValid()) setStep(3);
+            }}
+          >
+            3. Task Action
+          </div>
         </div>
 
         {step === 1 && (
@@ -162,7 +222,7 @@ export default function TaskNew() {
             />
             <StepOne
               nextAction={() => {
-                setStep(step + 1);
+                if (checkValid()) setStep(step + 1);
               }}
               cancelAction={() => {
                 navigate(-1);
@@ -183,7 +243,7 @@ export default function TaskNew() {
             />
             <StepTwo
               nextAction={() => {
-                setStep(step + 1);
+                if (checkValid()) setStep(step + 1);
               }}
               backAction={() => {
                 setStep(step - 1);
@@ -283,6 +343,7 @@ const NewBox = styled.div`
     gap: 80px;
     margin-top: 40px;
     > div {
+      cursor: pointer;
       font-weight: 700;
       font-size: 24px;
       line-height: 40px;

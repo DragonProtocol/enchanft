@@ -45,6 +45,7 @@ export default function Actions({
   updateStateActions: (arg0: Action[]) => void;
   updateStateFollowTwitters: (arg0: string[]) => void;
 }) {
+  console.log('hasInviteBot', hasInviteBot);
   // const { account } = useAppConfig();
   const twitter = true;
   // 'account.info?.accounts.find((item) => item.accountType === ChainType.TWITTER)';
@@ -58,8 +59,8 @@ export default function Actions({
     followTwitters.length > 0
       ? [...followTwitters]
       : projectTwitter
-        ? [projectTwitter]
-        : []
+      ? [projectTwitter]
+      : []
   );
 
   const [discordRole, setDiscordRole] = useState({
@@ -626,7 +627,10 @@ export default function Actions({
                 }}
               />
               <span id="quote-twitter-msg" className="msg">
-                Quote the Tweet {quoteTwitter.tag_friends_num > 0 && <b>& @ {quoteTwitter.tag_friends_num} friends</b>}
+                Quote the Tweet{' '}
+                {quoteTwitter.tag_friends_num > 0 && (
+                  <b>& @ {quoteTwitter.tag_friends_num} friends</b>
+                )}
               </span>
               <IconTwitter />
             </div>
@@ -1302,18 +1306,18 @@ export default function Actions({
                         <IconPlus size="16px" /> Add
                       </div>
                     )) || (
-                        <div
-                          className={'help add-btn custom'}
-                          onClick={() => {
-                            setCustom([
-                              ...custom.slice(0, idx),
-                              ...custom.slice(idx + 1),
-                            ]);
-                          }}
-                        >
-                          <PngIconDelete />
-                        </div>
-                      )}
+                      <div
+                        className={'help add-btn custom'}
+                        onClick={() => {
+                          setCustom([
+                            ...custom.slice(0, idx),
+                            ...custom.slice(idx + 1),
+                          ]);
+                        }}
+                      >
+                        <PngIconDelete />
+                      </div>
+                    )}
                   </>
                 )}
               </div>
@@ -1566,7 +1570,6 @@ export default function Actions({
                 </div>
               </>
             )}
-
           </div>
         </div>
       </div>
@@ -1694,7 +1697,7 @@ function TwitterFollowed({
                 type="text"
                 title="task-like"
                 value={item}
-                onChange={() => { }}
+                onChange={() => {}}
               />
             </div>
 
