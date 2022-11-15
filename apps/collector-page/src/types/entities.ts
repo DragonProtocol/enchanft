@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-31 13:54:49
+ * @LastEditTime: 2022-11-15 15:16:40
  * @Description: 与后端entities type定义对应
  */
 
@@ -81,6 +81,7 @@ export enum ActionType {
   NFT_BALANCE = 'NFT_BALANCE',
   QUESTIONNAIRE = 'QUESTIONNAIRE',
   ANSWER_VERIFY = 'ANSWER_VERIFY',
+  UPLOAD_IMAGE = 'UPLOAD_IMAGE',
 }
 export type NftInfo = {
   name: string
@@ -107,6 +108,7 @@ export type ActionData = {
   answer?: string
   lucky_draw_weight?: number
   chain?: Chain
+  nopassReason?: string
 }
 export type Action = {
   id: number
@@ -207,6 +209,7 @@ export type Reward = {
   type: RewardType
   raffled: boolean
   data: RewardData
+  luckyDraw: boolean
 }
 
 /** user */

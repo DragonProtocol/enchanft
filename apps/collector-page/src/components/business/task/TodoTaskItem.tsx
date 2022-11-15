@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-17 14:50:17
+ * @LastEditTime: 2022-11-15 16:08:07
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -19,6 +19,7 @@ import { todoTaskCompleteStatusMap } from './TodoTaskList'
 import { useNavigate } from 'react-router-dom'
 import ProjectMintButton from '../project/ProjectMintButton'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
+import { isNoEndTime } from '../../../utils/task'
 
 export type TodoTaskItemDataType = {
   id: number
@@ -145,14 +146,14 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     switch (status) {
       case TaskTodoCompleteStatus.TODO:
       case TaskTodoCompleteStatus.IN_PRGRESS:
-        // 计算任务剩余天数
-        const remainDays = Math.ceil((endTime - Date.now()) / (1000 * 60 * 60 * 24))
         // 计算所有action，和已完成的action数量
         const allActionNum = actions?.length || 0
         const actionDoneNum = (actions || []).filter((action) => action.status === UserActionStatus.DONE).length
         return (
           <TaskProgressBox>
-            <ExcessTime>{remainDays} days left</ExcessTime>
+            {!isNoEndTime(endTime) && (
+              <ExcessTime>{Math.ceil((endTime - Date.now()) / (1000 * 60 * 60 * 24))} days left</ExcessTime>
+            )}
             <CompleteNum>{loadingRefresh ? 'Loading...' : `(${actionDoneNum}/${allActionNum})`}</CompleteNum>
           </TaskProgressBox>
         )
@@ -254,6 +255,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
             disabledVerify={disabledRefresh}
             onVerifyActions={onVerifyTaskClick}
             verifyingActions={verifyingActions}
+            dispalyLuckyDrawWeight={reward.luckyDraw}
             {...taskActionItemStaticProps}
           ></TaskActionList>
         </TaskOpenBodyBox>

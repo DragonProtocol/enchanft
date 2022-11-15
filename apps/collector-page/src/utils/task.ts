@@ -2,9 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-15 15:37:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 16:12:25
+ * @LastEditTime: 2022-11-15 16:00:22
  * @Description: file description
  */
+import { TASK_NO_ENDTIME_TIMESTAMP } from '../constants'
 import { TaskDetailEntity } from '../features/task/taskDetailSlice'
 import { TodoTaskItemForEntity } from '../features/user/todoTasksSlice'
 import { TaskDetailResponse, TodoTaskActionItem, TodoTaskItem, UserActionStatus } from '../types/api'
@@ -66,3 +67,5 @@ export const getTaskEntityForUpdateActionAfter = (task: TaskEntityType, action: 
   }
   return { ...task, status, actions }
 }
+
+export const isNoEndTime = (timestamp: number) => timestamp === TASK_NO_ENDTIME_TIMESTAMP

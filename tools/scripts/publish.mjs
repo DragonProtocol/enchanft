@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-02 12:50:32
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-03 11:55:03
+ * @LastEditTime: 2022-11-15 14:30:36
  * @Description: file description
  */
 /**
@@ -61,4 +61,4 @@ try {
   );
 }
 // Execute "npm publish" to publish
-// execSync(`npm publish --access public --tag ${tag}`);
+execSync(`npm publish --access public --tag ${tag}`);
