@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-30 11:45:27
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 16:51:44
+ * @LastEditTime: 2022-11-15 16:19:59
  * @Description: file description
  */
 import { LoginResult } from '../api';
@@ -14,6 +14,7 @@ import {
 
 export enum StorageKey {
   LAST_LOGIN_AUTHORIZER_TYPE = 'wl_user_last_login_authorizer_type',
+  LAST_LOGIN_USERID = 'wl_user_last_login_userid',
   LAST_LOGIN_TOKEN = 'wl_user_last_login_token',
   LAST_LOGIN_NAME = 'wl_user_last_login_name',
   LAST_LOGIN_AVATAR = 'wl_user_last_login_avatar',
@@ -21,6 +22,7 @@ export enum StorageKey {
 }
 type StorageKeyValue = {
   [StorageKey.LAST_LOGIN_AUTHORIZER_TYPE]: AuthorizerType;
+  [StorageKey.LAST_LOGIN_USERID]: string;
   [StorageKey.LAST_LOGIN_TOKEN]: string;
   [StorageKey.LAST_LOGIN_NAME]: string;
   [StorageKey.LAST_LOGIN_AVATAR]: string;
@@ -37,6 +39,7 @@ type StorageKeyValuePick<T extends StorageKey[]> = Pick<
 
 const storageDefaultValues: StorageKeyValue = {
   [StorageKey.LAST_LOGIN_AUTHORIZER_TYPE]: AuthorizerType.TWITTER,
+  [StorageKey.LAST_LOGIN_USERID]: '0',
   [StorageKey.LAST_LOGIN_TOKEN]: '',
   [StorageKey.LAST_LOGIN_NAME]: '',
   [StorageKey.LAST_LOGIN_AVATAR]: '',
@@ -122,6 +125,7 @@ export function updateStorageByLogin(
 ): void {
   setStorageValue(StorageKey.LAST_LOGIN_AUTHORIZER_TYPE, authorizer.type);
   setStorageValue(StorageKey.LAST_LOGIN_TOKEN, data.token);
+  setStorageValue(StorageKey.LAST_LOGIN_USERID, data.id + '');
   setStorageValue(StorageKey.LAST_LOGIN_NAME, data.name);
   setStorageValue(StorageKey.LAST_LOGIN_AVATAR, data.avatar);
   if (authorizer.webVersion === AuthorizerWebVersion.web3) {
@@ -134,6 +138,7 @@ export function updateStorageByLogin(
 
 export function updateStorageByLogout(): void {
   resetStorageValue(StorageKey.LAST_LOGIN_TOKEN);
+  resetStorageValue(StorageKey.LAST_LOGIN_USERID);
   resetStorageValue(StorageKey.LAST_LOGIN_NAME);
   resetStorageValue(StorageKey.LAST_LOGIN_AVATAR);
   resetStorageValue(StorageKey.LAST_LOGIN_PUBKEY);

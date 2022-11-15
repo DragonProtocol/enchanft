@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 14:33:20
+ * @LastEditTime: 2022-11-15 16:03:19
  * @Description: file description
  */
 import React from 'react'
@@ -11,7 +11,7 @@ import styled from 'styled-components'
 import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { RewardData, RewardType } from '../../../types/entities'
-import { getTaskRewardTypeLabel, getTaskRewardTypeValue } from '../../../utils/task'
+import { getTaskRewardTypeLabel, getTaskRewardTypeValue, isNoEndTime } from '../../../utils/task'
 import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 import PngIconScissorHand from '../../common/icons/PngIconScissorHand'
@@ -57,7 +57,6 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
   const { id, name, image, startTime, endTime, winnerNum, description, project, reward } = data
   const rewardTypeLabel = getTaskRewardTypeLabel(reward)
   const startDate = new Date(startTime).toLocaleDateString()
-  const endDate = new Date(endTime).toLocaleDateString()
   const rewardValue = getTaskRewardTypeValue(reward)
   return (
     <ExploreTaskSwiperItemWrapper onClick={() => navigate(`/${project?.slug}/${id}`)}>
@@ -77,7 +76,8 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
             <TaskDateAndWinnerItem>
               <PngIconAlarmClock size={'16px'} />
               <TaskDateTime>
-                {startDate} -- {endDate}
+                {startDate}
+                {!isNoEndTime(endTime) && ` — ${new Date(endTime).toLocaleDateString()}`}
               </TaskDateTime>
             </TaskDateAndWinnerItem>
             {winnerNum !== undefined && (

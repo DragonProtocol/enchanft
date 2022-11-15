@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 17:26:15
+ * @LastEditTime: 2022-11-15 16:24:00
  * @Description: file description
  */
 import {
@@ -176,6 +176,7 @@ export function WlUserReactProvider({
 
   const [user, setUser] = useState<User>({
     ...defaultUserData,
+    id: Number(lastLoginInfo[StorageKey.LAST_LOGIN_USERID]),
     name: lastLoginInfo[StorageKey.LAST_LOGIN_NAME],
     avatar: lastLoginInfo[StorageKey.LAST_LOGIN_AVATAR],
     token: lastLoginInfo[StorageKey.LAST_LOGIN_TOKEN],

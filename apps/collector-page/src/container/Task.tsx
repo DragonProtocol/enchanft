@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 11:40:13
+ * @LastEditTime: 2022-11-15 15:17:08
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react'
@@ -219,7 +219,7 @@ const Task: React.FC = () => {
   }
 
   const name = data.name || ''
-  const { image, participants, project } = data
+  const { image, participants, project, reward } = data
   // task status button
   const taskStatusButtonData = formatStoreDataToComponentDataByTaskStatusButton(
     data,
@@ -346,6 +346,7 @@ const Task: React.FC = () => {
                       onUploadImage={handleActionUploadImage}
                       copyBgc="#FFFFFF"
                       verifyBgc="#FFFFFF"
+                      dispalyLuckyDrawWeight={reward?.luckyDraw}
                     />
                   </TaskListBox>
                 </>

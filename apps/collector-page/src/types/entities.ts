@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-14 17:02:28
+ * @LastEditTime: 2022-11-15 15:16:40
  * @Description: 与后端entities type定义对应
  */
 
@@ -209,6 +209,7 @@ export type Reward = {
   type: RewardType
   raffled: boolean
   data: RewardData
+  luckyDraw: boolean
 }
 
 /** user */

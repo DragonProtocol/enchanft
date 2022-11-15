@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-27 15:30:43
+ * @LastEditTime: 2022-11-15 16:02:31
  * @Description: file description
  */
 import React from 'react'
@@ -11,7 +11,7 @@ import styled from 'styled-components'
 import { MOBILE_BREAK_POINT } from '../../../constants'
 import { ScrollBarCss } from '../../../GlobalStyle'
 import { RewardData, TaskTodoCompleteStatus } from '../../../types/entities'
-import { getTaskRewardTypeValue } from '../../../utils/task'
+import { getTaskRewardTypeValue, isNoEndTime } from '../../../utils/task'
 import { formatDateTime } from '../../../utils/time'
 import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
 import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
@@ -58,7 +58,6 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
     ...viewConfig,
   }
   const startDate = formatDateTime(startTime)
-  const endDate = formatDateTime(endTime)
   const rewardValue = getTaskRewardTypeValue(reward)
   const displayStatusTagAccepted =
     !!status && [TaskTodoCompleteStatus.TODO, TaskTodoCompleteStatus.IN_PRGRESS].includes(status)
@@ -89,7 +88,8 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({ data, viewConfig }: E
           <TaskInfoRow>
             <PngIconAlarmClock size={'16px'} />
             <TaskDateTime>
-              {startDate} — {endDate}
+              {startDate}
+              {!isNoEndTime(endTime) && ` — ${formatDateTime(endTime)}`}
             </TaskDateTime>
           </TaskInfoRow>
           {reward && (

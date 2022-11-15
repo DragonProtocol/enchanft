@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 11:51:37
+ * @LastEditTime: 2022-11-15 15:09:13
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -49,6 +49,7 @@ export type TaskActionItemDataType = {
 export type TaskActionItemStaticAttrGetters = {
   allowHandle?: boolean
   copyBgc?: string
+  dispalyLuckyDrawWeight?: boolean
 }
 export type TaskActionItemStaticFuncGetters = {
   onTwitter?: (callback: () => void) => void
@@ -76,6 +77,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   allowHandle,
   verifying,
   copyBgc,
+  dispalyLuckyDrawWeight,
   onTwitter,
   onDiscord,
   onFollowCommunity,
@@ -153,7 +155,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
     }
   }, [])
   const renderWeight = useCallback(() => {
-    if (actionData.lucky_draw_weight) {
+    if (dispalyLuckyDrawWeight && actionData.lucky_draw_weight) {
       return <TaskActionLuckyDrawWeight>+{actionData.lucky_draw_weight}</TaskActionLuckyDrawWeight>
     }
     return null
