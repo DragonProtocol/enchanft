@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-02 11:18:04
+ * @LastEditTime: 2022-11-10 18:57:28
  * @Description: file description
  */
 import React, { useState } from 'react';
@@ -13,50 +13,51 @@ import ModalBase, {
   ModalBaseTitle,
 } from './common/modal/ModalBase';
 import { isDesktop, isMobile } from 'react-device-detect';
-import LoginWithSignerButton from './LoginWithSignerButton';
-import { SignerType } from '@ecnft/wl-user-core';
+import LoginWithAuthorizerButton from './LoginWithAuthorizerButton';
+import { AuthorizerType } from '../authorizers';
 export type LoginModalProps = ModalBaseProps;
 
 const LoginModal: React.FC<LoginModalProps> = ({
   isOpen,
   ...modalProps
 }: LoginModalProps) => {
-  const { signers, getSigner, signer } = useWlUserReact();
-  // 推荐signer暂时先默认使用Twitter
-  const recommendSigner = signer || getSigner(SignerType.TWITTER);
-  // 将支持的otherSigners作为登录选项
-  const excloudOtherSigners = [recommendSigner.signerType];
-  const otherSigners = signers.filter(
-    (item) => !excloudOtherSigners.includes(item.signerType)
+  const { authorizers, getAuthorizer, authorizer } = useWlUserReact();
+  // 推荐authorizer暂时先默认使用Twitter
+  const recommendAuthorizer = authorizer || authorizers[0];
+  // 将支持的otherAuthorizers作为登录选项
+  const otherAuthorizers = authorizers.filter(
+    (item) => recommendAuthorizer.type !== item.type
   );
-  const [otherSignersDisplay, setOtherSignersDisplay] = useState(false);
+  const [otherAuthorizersDisplay, setOtherAuthorizersDisplay] = useState(false);
   return (
     <LoginModalWrapper isOpen={isOpen} {...modalProps}>
       <LoginModalBody className="wl-user-modal_login-body">
         <ModalBaseTitle>Login With</ModalBaseTitle>
-        <LoginSignerList>
-          {recommendSigner && (
+        <LoginAuthorizerList>
+          {recommendAuthorizer && (
             <RecommendLoginButton
-              signerType={recommendSigner.signerType}
+              authorizerType={recommendAuthorizer.type}
             ></RecommendLoginButton>
           )}
           {isDesktop && (
             <>
-              {otherSignersDisplay &&
-                otherSigners.map((signer) => (
+              {otherAuthorizersDisplay &&
+                otherAuthorizers.map((authorizer) => (
                   <MoreLoginButton
-                    key={signer.signerType}
-                    signerType={signer.signerType}
+                    key={authorizer.type}
+                    authorizerType={authorizer.type}
                   ></MoreLoginButton>
                 ))}
-              <OtherSignersDisplayBtn
-                onClick={() => setOtherSignersDisplay(!otherSignersDisplay)}
+              <OtherAuthorizersDisplayBtn
+                onClick={() =>
+                  setOtherAuthorizersDisplay(!otherAuthorizersDisplay)
+                }
               >
-                {otherSignersDisplay ? 'Less options ▲' : 'More options  ▼'}
-              </OtherSignersDisplayBtn>
+                {otherAuthorizersDisplay ? 'Less options ▲' : 'More options  ▼'}
+              </OtherAuthorizersDisplayBtn>
             </>
           )}
-        </LoginSignerList>
+        </LoginAuthorizerList>
       </LoginModalBody>
     </LoginModalWrapper>
   );
@@ -74,28 +75,28 @@ const LoginModalBody = styled.div`
   background: #f7f9f1;
   border-radius: 20px;
 `;
-const LoginSignerList = styled.div`
+const LoginAuthorizerList = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
 `;
-const OtherSignersDisplayBtn = styled.div`
+const OtherAuthorizersDisplayBtn = styled.div`
   cursor: pointer;
   font-weight: 700;
   font-size: 18px;
   line-height: 27px;
   color: #333333;
 `;
-const RecommendLoginButton = styled(LoginWithSignerButton)`
+const RecommendLoginButton = styled(LoginWithAuthorizerButton)`
   width: 100%;
   height: 160px;
   flex-direction: column;
-  .wl-user-button-login_signer-icon {
+  .wl-user-button-login_authorizer-icon {
     width: 50px;
     height: 50px;
   }
 `;
-const MoreLoginButton = styled(LoginWithSignerButton)`
+const MoreLoginButton = styled(LoginWithAuthorizerButton)`
   width: 100%;
 `;

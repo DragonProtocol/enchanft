@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-03 10:16:01
+ * @LastEditTime: 2022-11-11 17:26:15
  * @Description: file description
  */
 import {
@@ -16,16 +16,6 @@ import {
 } from 'react';
 import React, { createContext, useContext, useRef } from 'react';
 import {
-  AccountType,
-  User,
-  Signer,
-  SignerProcessStatus,
-  SignerType,
-  TwitterErrorName,
-  DiscordErrorName,
-  Account,
-} from '@ecnft/wl-user-core';
-import {
   getStorageValues,
   StorageKey,
   updateStorageByLogin,
@@ -33,18 +23,22 @@ import {
   updateStorageByUserInfo,
 } from './utils/storage';
 import LoginModal from './components/LoginModal';
-import SignatureModal from './components/SignatureModal';
 import BindModal from './components/BindModal';
 import UnbindConfirmModal from './components/UnbindConfirmModal';
 import Modal from 'react-modal';
-import {
-  getUserInfo,
-  updateUserInfo,
-  setAuthFailedCallback,
-} from '@ecnft/wl-user-core';
 import { toast, ToastContainer } from 'react-toastify';
 import EditProfileModal from './components/EditProfileModal';
 import { getUserDisplayName } from './utils';
+import { Authorizer, AuthorizerType } from './authorizers';
+import {
+  Account,
+  AccountType,
+  getUserInfo,
+  setAuthFailedCallback,
+  unbindAccount,
+  updateUserInfo,
+  User,
+} from './api';
 Modal.setAppElement('#root');
 export enum WlUserModalType {
   LOGIN = 'LOGIN',
@@ -71,11 +65,11 @@ type DispatchActionModalParams =
     }
   | {
       type: WlUserModalType.BIND;
-      payload: SignerType;
+      payload: AuthorizerType;
     }
   | {
       type: WlUserModalType.UNBIND_CONFIRM;
-      payload: SignerType;
+      payload: AuthorizerType;
     }
   | {
       type: WlUserModalType.EDIT_PROFILE;
@@ -83,15 +77,15 @@ type DispatchActionModalParams =
 type DispatchActionParams =
   | {
       type: WlUserActionType.LOGIN;
-      payload: SignerType;
+      payload: AuthorizerType;
     }
   | {
       type: WlUserActionType.BIND;
-      payload: SignerType;
+      payload: AuthorizerType;
     }
   | {
       type: WlUserActionType.UNBIND;
-      payload: SignerType;
+      payload: AuthorizerType;
     }
   | {
       type: WlUserActionType.UPDATE_USER_PROFILE;
@@ -100,17 +94,7 @@ type DispatchActionParams =
   | {
       type: WlUserActionType.LOGOUT;
     };
-type WlUserActionProcessStatus = SignerProcessStatus | AsyncRequestStatus;
-type WlUserActionState = {
-  type: WlUserActionType | null;
-  signer: Signer | null;
-  processStatus: WlUserActionProcessStatus;
-};
-const defaultUserActionState = {
-  type: null,
-  signer: null,
-  processStatus: SignerProcessStatus.IDLE,
-};
+
 const defaultUserData = {
   id: 0,
   name: '',
@@ -121,30 +105,18 @@ const defaultUserData = {
   token: '',
 };
 const lastLoginInfo = getStorageValues();
-const validateOpenSignatureModal = (status: WlUserActionProcessStatus) => {
-  return [
-    SignerProcessStatus.SIGNATURE_PENDING,
-    SignerProcessStatus.SIGNATURE_REJECTED,
-    SignerProcessStatus.LOGIN_PENDING,
-    SignerProcessStatus.LOGIN_REJECTED,
-    SignerProcessStatus.BIND_PENDING,
-    SignerProcessStatus.BIND_REJECTED,
-  ].includes(status as SignerProcessStatus);
-};
 
 export type WlUserReactContextType = {
-  // 所有注入的signer实例
-  signers: Signer[];
-  // 当前登录的signer
-  signer: Signer | null | undefined;
+  // 所有注入的authorizer实例
+  authorizers: Authorizer[];
+  // 当前登录的authorizer
+  authorizer: Authorizer | null | undefined;
   // 用户信息
   user: User;
   // 是否登录
   isLogin: boolean;
-  // 当前执行的action状态数据
-  userActionState: WlUserActionState;
   // 获取指定的签名者对象
-  getSigner: (signerType: SignerType) => Signer | undefined;
+  getAuthorizer: (authorizerType: AuthorizerType) => Authorizer | undefined;
   // 验证是否绑定了某个账号
   validateBindAccount: (accountType: AccountType) => boolean;
   // 获取绑定的账号
@@ -174,24 +146,32 @@ setAuthFailedCallback(handleAuthFailed);
 
 export interface WlUserReactProviderProps {
   children: ReactNode;
-  signers: Signer[];
+  authorizers: Authorizer[];
   valueChange?: (value: WlUserReactContextType) => void;
 }
 
 export function WlUserReactProvider({
   children,
-  signers,
+  authorizers,
   valueChange,
 }: WlUserReactProviderProps) {
-  const cachedSigners: MutableRefObject<WlUserReactProviderProps['signers']> =
-    useRef(signers);
-  // 确保授权对象都是静态传入的
+  const cachedAuthorizers: MutableRefObject<
+    WlUserReactProviderProps['authorizers']
+  > = useRef(authorizers);
+  // 确保传入授权对象，且都是静态传入的
+  if (authorizers.length === 0) {
+    throw new Error(
+      'The list of authorizers is empty, please make sure to pass in at least one authorizer.'
+    );
+  }
   if (
-    signers.length != cachedSigners.current.length ||
-    signers.some((signer, i) => signer !== cachedSigners.current[i])
+    authorizers.length != cachedAuthorizers.current.length ||
+    authorizers.some(
+      (authorizer, i) => authorizer !== cachedAuthorizers.current[i]
+    )
   )
     throw new Error(
-      'The signers prop passed to WlUserReactProvider must be referentially static.'
+      'The authorizers prop passed to WlUserReactProvider must be referentially static.'
     );
 
   const [user, setUser] = useState<User>({
@@ -200,21 +180,32 @@ export function WlUserReactProvider({
     avatar: lastLoginInfo[StorageKey.LAST_LOGIN_AVATAR],
     token: lastLoginInfo[StorageKey.LAST_LOGIN_TOKEN],
   });
-  // 获取一次用户信息, 同步为最新的
-  useEffect(() => {
-    if (user.token) {
-      getUserInfo(user.token).then((result) => {
-        const { data } = result.data;
-        const newUser = { ...user, ...data };
-        setUser(newUser);
-        const name = getUserDisplayName(
-          newUser,
-          lastLoginInfo[StorageKey.LAST_LOGIN_SIGNER_TYPE]
-        );
-        updateStorageByUserInfo({ ...newUser, name });
-      });
-    }
-  }, []);
+  const [loginModal, setLoginModal] = useState<{ isOpen: boolean }>({
+    isOpen: false,
+  });
+  const [bindModal, setBindModal] = useState<{
+    isOpen: boolean;
+    authorizer: Authorizer | null;
+  }>({
+    isOpen: false,
+    authorizer: null,
+  });
+  const [unbindConfirmModal, setUnbindConfirmModal] = useState<{
+    isOpen: boolean;
+    authorizer: Authorizer | null;
+    status: AsyncRequestStatus;
+  }>({
+    authorizer: null,
+    isOpen: false,
+    status: AsyncRequestStatus.IDLE,
+  });
+  const [editProfileModal, setEditProfileModal] = useState<{
+    isOpen: boolean;
+    status: AsyncRequestStatus;
+  }>({
+    isOpen: false,
+    status: AsyncRequestStatus.IDLE,
+  });
 
   const isLogin = useMemo(() => !!user.token, [user.token]);
   const validateBindAccount = useCallback(
@@ -227,153 +218,117 @@ export function WlUserReactProvider({
       user.accounts.find((account) => account.accountType === accountType),
     [user]
   );
-
-  // 用户行为及流程状态监控
-  const [userActionState, setUserActionState] = useState<WlUserActionState>(
-    defaultUserActionState
-  );
-  const resetUserActionState = useCallback(() => {
-    setUserActionState(defaultUserActionState);
-  }, []);
-  const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
-  const [isOpenBindModal, setIsOpenBindModal] = useState(false);
-  const [isOpenUnbindConfirmModal, setIsOpenUnbindConfirmModal] =
-    useState(false);
-  const isOpenSignatureModal = validateOpenSignatureModal(
-    userActionState.processStatus
-  );
-  const [isOpenEditProfileModal, setIsOpenEditProfileModal] = useState(false);
-  const getSigner = useCallback(
-    (signerType: SignerType): Signer | undefined => {
-      return signers.find((signer) => signer.signerType === signerType);
+  const getAuthorizer = useCallback(
+    (authorizerType: AuthorizerType): Authorizer | undefined => {
+      return authorizers.find(
+        (authorizer) => authorizer.type === authorizerType
+      );
     },
-    [signers]
+    [authorizers]
   );
-  const [signer, setSigner] = useState<Signer | undefined>(
-    getSigner(lastLoginInfo[StorageKey.LAST_LOGIN_SIGNER_TYPE])
+  const [authorizer, setAuthorizer] = useState<Authorizer | undefined>(
+    getAuthorizer(lastLoginInfo[StorageKey.LAST_LOGIN_AUTHORIZER_TYPE])
   );
+  // 获取一次用户信息, 同步为最新的
+  useEffect(() => {
+    if (user.token) {
+      getUserInfo(user.token).then((result) => {
+        const { data } = result.data;
+        const newUser = { ...user, ...data };
+        setUser(newUser);
+        const name = getUserDisplayName(
+          newUser,
+          getAuthorizer(lastLoginInfo[StorageKey.LAST_LOGIN_AUTHORIZER_TYPE])
+        );
+        updateStorageByUserInfo({ ...newUser, name });
+      });
+    }
+  }, [getAuthorizer]);
+
+  // 监控成功回调，更新数据
+  useEffect(() => {
+    for (const item of authorizers) {
+      item.action.loginListener({
+        success: (result) => {
+          setUser(result);
+          setAuthorizer(item);
+          updateStorageByLogin(item, result);
+          setLoginModal({
+            isOpen: false,
+          });
+        },
+      });
+      item.action.bindListener({
+        success: (result) => {
+          setUser({ ...user, accounts: result });
+          setBindModal({
+            isOpen: false,
+            authorizer: null,
+          });
+        },
+      });
+    }
+  }, [authorizers, user]);
+
   // 触发器
   const dispatchModal = useCallback(
     (params: DispatchActionModalParams) => {
-      const { type } = params;
-      const state = {
-        type: null,
-        processStatus: SignerProcessStatus.IDLE,
-        signer: null,
-      };
-      switch (type) {
+      switch (params.type) {
         case WlUserModalType.LOGIN:
-          setIsOpenLoginModal(true);
-          Object.assign(state, { type: WlUserActionType.LOGIN });
+          setLoginModal({
+            isOpen: true,
+          });
           break;
         case WlUserModalType.BIND:
-          setIsOpenBindModal(true);
-          Object.assign(state, {
-            type: WlUserActionType.BIND,
-            signer: getSigner(params.payload),
+          setBindModal({
+            isOpen: true,
+            authorizer: getAuthorizer(params.payload),
           });
           break;
         case WlUserModalType.UNBIND_CONFIRM:
-          setIsOpenUnbindConfirmModal(true);
-          Object.assign(state, {
-            type: WlUserActionType.UNBIND,
-            signer: getSigner(params.payload),
+          setUnbindConfirmModal({
+            ...unbindConfirmModal,
+            isOpen: true,
+            authorizer: getAuthorizer(params.payload),
           });
           break;
         case WlUserModalType.EDIT_PROFILE:
-          setIsOpenEditProfileModal(true);
-          Object.assign(state, {
-            type: WlUserActionType.UPDATE_USER_PROFILE,
+          setEditProfileModal({
+            ...editProfileModal,
+            isOpen: true,
           });
       }
-      setUserActionState({ ...userActionState, ...state });
     },
-    [userActionState]
+    [unbindConfirmModal, editProfileModal]
   );
+
   const dispatchAction = useCallback(
     (params: DispatchActionParams) => {
-      const { type } = params;
-      const state: Partial<WlUserActionState> = {
-        type: type,
-        signer: null,
-      };
-      // 触发行为是初始化当前用户行为信息，如果行为有签名授权者参与则监听签名授权的流程状态
-      const initUserActionStateAndListenProcess = (
-        newState: Partial<WlUserActionState>
-      ) => {
-        setUserActionState({ ...userActionState, ...newState });
-        // 监控流程状态变化，存储到当前的行为信息中
-        newState.signer?.signerProcessStatusChangeListener((processStatus) => {
-          setUserActionState({
-            ...userActionState,
-            ...newState,
-            processStatus,
-          });
-        });
-      };
       switch (params.type) {
         case WlUserActionType.LOGIN:
-          Object.assign(state, {
-            signer: getSigner(params.payload),
-          });
-          initUserActionStateAndListenProcess(state);
-          state.signer
-            ?.login()
-            .then((result) => {
-              setUser(result);
-              setSigner(state.signer);
-              state.signer &&
-                updateStorageByLogin(state.signer.signerType, result);
-              setIsOpenLoginModal(false);
-              resetUserActionState();
-            })
-            .catch(
-              (error) =>
-                ![
-                  TwitterErrorName.OAUTH_WINDOW_CLOSE,
-                  DiscordErrorName.OAUTH_WINDOW_CLOSE,
-                ].includes(error.name) && toast.error(error.message)
-            );
+          getAuthorizer(params.payload).action.login();
           break;
         case WlUserActionType.BIND:
-          Object.assign(state, {
-            signer: getSigner(params.payload),
-          });
-          initUserActionStateAndListenProcess(state);
-          state.signer
-            ?.bind(user.token)
-            .then((result) => {
-              setUser({ ...user, accounts: result });
-              setIsOpenBindModal(false);
-              resetUserActionState();
-            })
-            .catch(
-              (error) =>
-                ![
-                  TwitterErrorName.OAUTH_WINDOW_CLOSE,
-                  DiscordErrorName.OAUTH_WINDOW_CLOSE,
-                ].includes(error.name) && toast.error(error.message)
-            );
+          getAuthorizer(params.payload).action.bind(user.token);
           break;
         case WlUserActionType.UNBIND:
-          Object.assign(state, {
-            signer: getSigner(params.payload),
-          });
-          initUserActionStateAndListenProcess(state);
-          state.signer
-            ?.unbind(user.token)
+          unbindAccount(user.token, getAuthorizer(params.payload).accountType)
             .then((result) => {
-              setUser({ ...user, accounts: result });
-              setIsOpenUnbindConfirmModal(false);
-              resetUserActionState();
+              setUser({ ...user, accounts: result.data });
+              setUnbindConfirmModal({
+                isOpen: false,
+                authorizer: null,
+                status: AsyncRequestStatus.IDLE,
+              });
             })
-            .catch((error) => toast.error(error.message));
+            .catch((error) => {
+              toast.error(error.message);
+            });
           break;
         case WlUserActionType.UPDATE_USER_PROFILE:
-          setUserActionState({
-            ...userActionState,
-            ...state,
-            processStatus: AsyncRequestStatus.PENDING,
+          setEditProfileModal({
+            ...editProfileModal,
+            status: AsyncRequestStatus.PENDING,
           });
           updateUserInfo(user.token, {
             userName: params.payload.name,
@@ -382,14 +337,16 @@ export function WlUserReactProvider({
             .then((result) => {
               setUser({ ...user, ...params.payload });
               updateStorageByUserInfo(params.payload);
-              setIsOpenEditProfileModal(false);
+              setEditProfileModal({
+                isOpen: false,
+                status: AsyncRequestStatus.IDLE,
+              });
             })
-            .catch((error) => toast.error(error.message))
-            .finally(() => {
-              setUserActionState({
-                ...userActionState,
-                ...state,
-                processStatus: AsyncRequestStatus.IDLE,
+            .catch((error) => {
+              toast.error(error.message);
+              setEditProfileModal({
+                ...editProfileModal,
+                status: AsyncRequestStatus.IDLE,
               });
             });
           break;
@@ -399,18 +356,17 @@ export function WlUserReactProvider({
           break;
       }
     },
-    [userActionState, user]
+    [user, editProfileModal]
   );
 
   // 监听value变化（将provider内部的能力提供给provider外部）
   useEffect(() => {
     const wlUserContextValue = {
-      signers,
-      signer,
+      authorizers,
+      authorizer,
       user,
       isLogin,
-      userActionState,
-      getSigner,
+      getAuthorizer,
       validateBindAccount,
       getBindAccount,
       dispatchModal,
@@ -421,25 +377,34 @@ export function WlUserReactProvider({
       valueChange(wlUserContextValue);
     }
   }, [
-    signers,
-    signer,
+    authorizers,
+    authorizer,
     user,
     isLogin,
-    userActionState,
-    getSigner,
+    getAuthorizer,
     validateBindAccount,
     dispatchModal,
     dispatchAction,
   ]);
+
+  const authorizersElement = useMemo(() => {
+    return authorizers.map((item) => (
+      <React.Fragment key={item.type}>
+        {item.actionProviderElement ? item.actionProviderElement : null}
+        {item.actionProcessComponent ? (
+          <item.actionProcessComponent authorizer={item} />
+        ) : null}
+      </React.Fragment>
+    ));
+  }, [authorizers]);
   return (
     <WlUserReactContext.Provider
       value={{
-        signers,
-        signer,
+        authorizers,
+        authorizer,
         user,
         isLogin,
-        userActionState,
-        getSigner,
+        getAuthorizer,
         validateBindAccount,
         getBindAccount,
         dispatchModal,
@@ -448,77 +413,47 @@ export function WlUserReactProvider({
     >
       {children}
       <LoginModal
-        isOpen={isOpenLoginModal}
-        onRequestClose={() => {
-          setIsOpenLoginModal(false);
-          resetUserActionState();
-        }}
+        isOpen={loginModal.isOpen}
+        onRequestClose={() => setLoginModal({ isOpen: false })}
         shouldCloseOnOverlayClick={true}
       />
       <BindModal
-        isOpen={isOpenBindModal && !!userActionState.signer?.signerType}
-        signerType={userActionState.signer?.signerType || SignerType.METAMASK}
-        onClose={() => {
-          setIsOpenBindModal(false);
-          resetUserActionState();
-        }}
+        isOpen={bindModal.isOpen}
+        authorizer={bindModal.authorizer}
+        onClose={() =>
+          setBindModal({
+            isOpen: false,
+            authorizer: null,
+          })
+        }
       />
       <UnbindConfirmModal
-        isOpen={
-          isOpenUnbindConfirmModal && !!userActionState.signer?.signerType
-        }
-        isLoading={
-          userActionState.type === WlUserActionType.UNBIND &&
-          userActionState.processStatus === SignerProcessStatus.UNBIND_PENDING
-        }
-        signerType={userActionState.signer?.signerType || SignerType.METAMASK}
-        onConfirm={(signerType) => {
+        isOpen={unbindConfirmModal.isOpen}
+        isLoading={unbindConfirmModal.status === AsyncRequestStatus.PENDING}
+        authorizer={unbindConfirmModal.authorizer}
+        onConfirm={(authorizerType) => {
           dispatchAction({
             type: WlUserActionType.UNBIND,
-            payload: signerType,
+            payload: authorizerType,
           });
         }}
-        onClose={() => {
-          setIsOpenUnbindConfirmModal(false);
-          resetUserActionState();
-        }}
-      />
-      <SignatureModal
-        isOpen={isOpenSignatureModal}
-        signerType={userActionState.signer?.signerType}
-        signerActionType={userActionState.type}
-        signerProcessStatus={
-          userActionState.processStatus as SignerProcessStatus
+        onClose={() =>
+          setUnbindConfirmModal({
+            isOpen: false,
+            authorizer: null,
+            status: AsyncRequestStatus.IDLE,
+          })
         }
-        onClose={() => {
-          resetUserActionState();
-        }}
-        onRetry={() => {
-          // 重试刚才的操作
-          if (userActionState.signer) {
-            switch (userActionState.type) {
-              case WlUserActionType.LOGIN:
-              case WlUserActionType.BIND:
-              case WlUserActionType.UNBIND:
-                dispatchAction({
-                  type: userActionState.type,
-                  payload: userActionState.signer.signerType,
-                });
-                break;
-            }
-          }
-        }}
       />
       <EditProfileModal
-        isOpen={isOpenEditProfileModal}
-        isLoading={
-          userActionState.type === WlUserActionType.UPDATE_USER_PROFILE &&
-          userActionState.processStatus === AsyncRequestStatus.PENDING
+        isOpen={editProfileModal.isOpen}
+        isLoading={editProfileModal.status === AsyncRequestStatus.PENDING}
+        onClose={() =>
+          setEditProfileModal({
+            isOpen: false,
+            status: AsyncRequestStatus.IDLE,
+          })
         }
-        onClose={() => {
-          setIsOpenEditProfileModal(false);
-          resetUserActionState();
-        }}
         onSave={(form) => {
           dispatchAction({
             type: WlUserActionType.UPDATE_USER_PROFILE,
@@ -526,6 +461,7 @@ export function WlUserReactProvider({
           });
         }}
       />
+      {authorizersElement}
       <ToastContainer
         autoClose={2000}
         position="top-right"

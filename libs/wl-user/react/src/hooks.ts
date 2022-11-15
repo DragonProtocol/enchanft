@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-19 11:29:58
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 16:38:10
+ * @LastEditTime: 2022-11-11 14:16:42
  * @Description: file description
  */
 import { useCallback, useMemo } from 'react';
+import { ResourceType, RoleType } from './api';
 import { useWlUserReact } from './provider';
-import { ResourceType, RoleType } from '@ecnft/wl-user-core';
 
 export function usePermissions() {
   const { user } = useWlUserReact();
