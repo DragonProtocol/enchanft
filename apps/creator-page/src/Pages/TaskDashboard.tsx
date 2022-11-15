@@ -5,6 +5,7 @@ import Dashboard from '../Components/TaskDashboard/Dashboard';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import {
   getCreatorDashboardData,
+  getWorkProofsData,
   saveWinnersData,
   selectCreator,
   submitReviewWorkProof,
@@ -12,14 +13,19 @@ import {
 import { useAppConfig } from '../AppProvider';
 import Summary from '../Components/TaskDashboard/Summary';
 import Schedule from '../Components/TaskDashboard/Schedule';
-import { AsyncRequestStatus, downloadWinner, ReviewWorkProofParam } from '../api';
+import {
+  AsyncRequestStatus,
+  downloadWinner,
+  PassFlag,
+  ReviewWorkProofParam,
+} from '../api';
 import { Loading } from '../Components/Loading';
 import WinnerList from '../Components/TaskDashboard/WinnerList';
 import WorkProof from '../Components/TaskDashboard/WorkProof';
 
 export function TaskDashboard() {
   const { taskId } = useParams();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { account, isCreator, validLogin } = useAppConfig();
   const dispatch = useAppDispatch();
   const dashboardData = useAppSelector(selectCreator);
@@ -61,14 +67,14 @@ export function TaskDashboard() {
   );
 
   const submitReview = useCallback(
-    (data:ReviewWorkProofParam) => {
+    (data: ReviewWorkProofParam) => {
       if (!account.info?.token || !isCreator || !validLogin) return;
       //这里应该使用 workProofsStatus 做一个UI状态管理，
       dispatch(
         submitReviewWorkProof({
-          taskId: Number(taskId), 
-          data: data, 
-          token: account.info?.token
+          taskId: Number(taskId),
+          data: data,
+          token: account.info?.token,
         })
       );
     },
@@ -83,6 +89,13 @@ export function TaskDashboard() {
         token: account.info.token,
       })
     );
+    // dispatch(
+    //   getWorkProofsData({
+    //     taskId: Number(taskId),
+    //     token: account.info.token,
+    //     passFlag: PassFlag.NOT_PROCESSED,
+    //   })
+    // );
   }, [taskId, account.info?.token, dispatch, isCreator, validLogin]);
 
   if (status === AsyncRequestStatus.REJECTED) {
@@ -129,18 +142,17 @@ export function TaskDashboard() {
       <div className="right-box">
         <Summary info={taskInfo} reward={reward} />
         <Schedule schedules={scheduleInfo} reward={reward} />
-        {(taskId && account && account.info && account.info.token) &&
+        {taskId && account && account.info && account.info.token && (
           <WorkProof
             workProofs={workProofs}
-            submitReview={
-              (data) => {
-                submitReview(data)
-              }}
+            submitReview={(data) => {
+              submitReview(data);
+            }}
             viewAllWorkProofs={() => {
-              navigate(`workProofs`)
-            }
-            } />
-        }
+              navigate(`workProofs`);
+            }}
+          />
+        )}
       </div>
     </DashboardBox>
   );

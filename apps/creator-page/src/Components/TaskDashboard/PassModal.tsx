@@ -9,15 +9,15 @@ export default function PassModal({
   nopassMode,
   data,
   closeModal,
-  submit
+  submit,
 }: {
-  nopassMode?: boolean,
-  data: WorkProofInfo | undefined
+  nopassMode?: boolean;
+  data: WorkProofInfo | undefined;
   closeModal: () => void;
   submit: (pass: boolean, feedback: string) => void;
 }) {
-  const [confirmState, setConfirmState] = useState(nopassMode)
-  const [noPassReason, setNoPassReason] = useState('')
+  const [confirmState, setConfirmState] = useState(nopassMode);
+  const [noPassReason, setNoPassReason] = useState('');
   return (
     <Modal
       isOpen={data !== undefined}
@@ -46,13 +46,16 @@ export default function PassModal({
         </div>
         <p>{data?.userName || 'Somebody'}</p>
         <p>Q: {data?.actionData.question}</p>
-        {data?.actionType === ActionType.QUESTIONNAIRE &&
+        {data?.actionType === ActionType.QUESTIONNAIRE && (
           <p>A: {data?.actionData.answer}</p>
-        }
-        {data?.actionType === ActionType.UPLOAD_IMAGE &&
-          <img src={data.actionData.answer} alt={data.actionData.question}></img>
-        }
-        {confirmState ?
+        )}
+        {data?.actionType === ActionType.UPLOAD_IMAGE && (
+          <img
+            src={data.actionData.answer}
+            alt={data.actionData.question}
+          ></img>
+        )}
+        {confirmState ? (
           <>
             <p>Feedback: </p>
             <div className="input-box">
@@ -62,36 +65,41 @@ export default function PassModal({
                 placeholder="no pass reason"
                 value={noPassReason}
                 onChange={(e) => {
-                  setNoPassReason(e.target.value)
+                  setNoPassReason(e.target.value);
                 }}
               />
             </div>
             <div className="btns">
-              <button className="nopass" onClick={() => {
-                if (nopassMode) {
-                  closeModal()
-                } else {
-                  setConfirmState(false)
-                }
-              }
-              }>
+              <button
+                className="nopass"
+                onClick={() => {
+                  if (nopassMode) {
+                    closeModal();
+                  } else {
+                    setConfirmState(false);
+                  }
+                }}
+              >
                 Back
               </button>
-              <button className="pass" onClick={() => submit(false, noPassReason)}>
+              <button
+                className="pass"
+                onClick={() => submit(false, noPassReason)}
+              >
                 Sent
               </button>
             </div>
           </>
-          :
+        ) : (
           <div className="btns">
             <button className="nopass" onClick={() => setConfirmState(true)}>
               No Pass
             </button>
-            <button className="pass" onClick={() => submit(true,'')}>
+            <button className="pass" onClick={() => submit(true, '')}>
               Pass
             </button>
           </div>
-        }
+        )}
       </ContentBox>
     </Modal>
   );
@@ -120,8 +128,8 @@ const ContentBox = styled.div`
   & p {
     margin: 0;
     font-size: 20px;
-    color: #333333;   
-     margin-bottom: 10px;
+    color: #333333;
+    margin-bottom: 10px;
   }
 
   & .btns {
@@ -153,24 +161,24 @@ const ContentBox = styled.div`
   }
 
   & div.input-box {
-            flex-grow: 1;
-            background-color: #fff;
-            border: 1px solid #fff;
-            border-radius: 10px;
-            padding: 10px;
-            display: flex;
-            font-size: 14px;
-            line-height: 20px;
-            > input {
-              flex-grow: 1;
-              border: none;
-              outline: none;
-            }
-            > svg {
-              height: 20px;
-            }
-            &.adding {
-              color: rgba(51, 51, 51, 0.3);
-            }
-          }
+    flex-grow: 1;
+    background-color: #fff;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    font-size: 14px;
+    line-height: 20px;
+    > input {
+      flex-grow: 1;
+      border: none;
+      outline: none;
+    }
+    > svg {
+      height: 20px;
+    }
+    &.adding {
+      color: rgba(51, 51, 51, 0.3);
+    }
+  }
 `;

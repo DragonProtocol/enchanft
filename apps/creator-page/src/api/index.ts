@@ -144,10 +144,7 @@ export enum Chain {
   APTOS = 'APTOS',
 }
 
-export function createTask(
-  data: CreateTaskState,
-  token: string
-) {
+export function createTask(data: CreateTaskState, token: string) {
   const postData = {
     projectId: data.projectId,
     name: data.name,
@@ -195,7 +192,9 @@ export function createTask(
           question: item.question,
           answer: item.answer,
           tag_friends_num: item.tag_friends_num,
-          lucky_draw_weight: item.lucky_draw_weight,
+          lucky_draw_weight: data.reward.luckyDraw
+            ? item.lucky_draw_weight
+            : null,
           chain,
         },
       };
@@ -251,9 +250,18 @@ export function downloadWinner(type: string, taskId: string, token: string) {
     );
   });
 }
-export type ReviewWorkProofParam = { userId: string, actionId: number, passed: boolean, nopassReason?:string }
+export type ReviewWorkProofParam = {
+  userId: string;
+  actionId: number;
+  passed: boolean;
+  nopassReason?: string;
+};
 
-export function reviewWorkProof(taskId: number, data: ReviewWorkProofParam, token: string) {
+export function reviewWorkProof(
+  taskId: number,
+  data: ReviewWorkProofParam,
+  token: string
+) {
   return axios({
     url: ApiBaseUrl + `/creator/workProofs/${taskId}`,
     method: 'post',
@@ -261,7 +269,7 @@ export function reviewWorkProof(taskId: number, data: ReviewWorkProofParam, toke
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
+  });
 }
 
 export enum PassFlag {
@@ -272,14 +280,22 @@ export enum PassFlag {
 }
 
 //后端支持分页，但前端暂时不用，以后补上
-export function getWorkProofs(taskId: number,  passFlag: PassFlag, token: string, pageNo:number=0, pageSize:number=999) {
+export function getWorkProofs(
+  taskId: number,
+  passFlag: PassFlag,
+  token: string,
+  pageNo: number = 0,
+  pageSize: number = 999
+) {
   return axios({
-    url: ApiBaseUrl + `/creator/workProofs/${taskId}?pageNumber=${pageNo}&pageSize=${pageSize}&passFlag=${passFlag}`,
+    url:
+      ApiBaseUrl +
+      `/creator/workProofs/${taskId}?pageNumber=${pageNo}&pageSize=${pageSize}&passFlag=${passFlag}`,
     method: 'get',
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  })
+  });
 }
 
 export function creatorProjectApi(token: string) {

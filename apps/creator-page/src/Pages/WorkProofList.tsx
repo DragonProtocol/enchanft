@@ -1,37 +1,47 @@
 import { useState, useEffect, useCallback } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
+import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
 
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { PassFlag, ReviewWorkProofParam } from '../api';
 import { useAppConfig } from '../AppProvider';
-import { getWorkProofsData, selectCreator, submitReviewWorkProof, WorkProofInfo } from '../redux/creatorDashboard';
+import {
+  getWorkProofsData,
+  selectCreator,
+  submitReviewWorkProof,
+  WorkProofInfo,
+} from '../redux/creatorDashboard';
 import { ActionType } from '../Components/TaskCreate/type';
 import PassModal from '../Components/TaskDashboard/PassModal';
+import PngIconCaretLeft from '../Components/Icons/PngIconCaretLeft';
 
 type Tab = 'Pending' | 'Pass' | 'No Pass';
 
 export function WorkProofList() {
   const { account, isCreator, validLogin } = useAppConfig();
   const { slug, taskId } = useParams();
+  const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>('Pending');
 
-  const [passModalData, setPassModalData] = useState<WorkProofInfo | undefined>(undefined);
-  
+  const [passModalData, setPassModalData] = useState<WorkProofInfo | undefined>(
+    undefined
+  );
+
   const dispatch = useAppDispatch();
   const dashboardData = useAppSelector(selectCreator);
   const { allWorkProofs } = dashboardData;
 
   useEffect(() => {
     if (!account.info?.token || !isCreator || !validLogin) return;
-    const passFlag = (tab === 'Pending') ?
-      PassFlag.NOT_PROCESSED :
-      (tab === 'Pass') ?
-        PassFlag.PASS :
-        (tab === 'No Pass') ?
-          PassFlag.NOPASS :
-          PassFlag.ALL
+    const passFlag =
+      tab === 'Pending'
+        ? PassFlag.NOT_PROCESSED
+        : tab === 'Pass'
+        ? PassFlag.PASS
+        : tab === 'No Pass'
+        ? PassFlag.NOPASS
+        : PassFlag.ALL;
     dispatch(
       getWorkProofsData({
         taskId: Number(taskId),
@@ -49,7 +59,7 @@ export function WorkProofList() {
         submitReviewWorkProof({
           taskId: Number(taskId),
           data: data,
-          token: account.info?.token
+          token: account.info?.token,
         })
       );
     },
@@ -58,11 +68,16 @@ export function WorkProofList() {
 
   return (
     <ContentBox>
-      <div className='header'>
+      <div className="header">
+        <button
+          title="back"
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          <PngIconCaretLeft />
+        </button>
         <h2>Work Proof</h2>
-        <NavLink className='back' to={`/project/${slug}/task/${taskId}`}>
-          back
-        </NavLink>
       </div>
       <div className="tab-header">
         <div className="tab">
@@ -89,49 +104,71 @@ export function WorkProofList() {
         {allWorkProofs.map((item, idx) => {
           return (
             <div key={idx} className="content item">
-              <span>
-                {item.userName}
-              </span>
-              {item.actionType === ActionType.QUESTIONNAIRE &&
+              <span>{item.userName}</span>
+              {item.actionType === ActionType.QUESTIONNAIRE && (
                 <span>
-                  Q: {item.actionData.question}<br />A: {item.actionData.answer}
+                  Q: {item.actionData.question}
+                  <br />
+                  A: {item.actionData.answer}
                 </span>
-              }
-              {item.actionType === ActionType.UPLOAD_IMAGE &&
+              )}
+              {item.actionType === ActionType.UPLOAD_IMAGE && (
                 <div>
-                  Q: {item.actionData.question}<br /><img src={item.actionData.answer} alt={item.actionData.question}></img>
+                  Q: {item.actionData.question}
+                  <br />
+                  <img
+                    src={item.actionData.answer}
+                    alt={item.actionData.question}
+                  ></img>
                 </div>
-              }
-              <span>
-                {dayjs(item.submitTime).format('YYYY/MM/DD HH:mm')}
-              </span>
-              {item.passed === null &&
+              )}
+              <span>{dayjs(item.submitTime).format('YYYY/MM/DD HH:mm')}</span>
+              {item.passed === null && (
                 <div className="btns">
-                  <button className="nopass" onClick={() => setPassModalData(item)}>
+                  <button
+                    className="nopass"
+                    onClick={() => setPassModalData(item)}
+                  >
                     No Pass
                   </button>
-                  <button className="pass" onClick={() => submitReview({ userId: item.userId, actionId: item.actionId, passed: true, nopassReason:'' })}>
+                  <button
+                    className="pass"
+                    onClick={() =>
+                      submitReview({
+                        userId: item.userId,
+                        actionId: item.actionId,
+                        passed: true,
+                        nopassReason: '',
+                      })
+                    }
+                  >
                     Pass
                   </button>
                 </div>
-              }
+              )}
             </div>
           );
         })}
       </div>
       <PassModal
-          nopassMode={true}
-          data={passModalData}
-          closeModal={() => {
-            setPassModalData(undefined)
-          }}
-          submit={(passed:boolean, feedback:string) => {
-            if (passModalData){
-              const result:ReviewWorkProofParam = { userId: passModalData.userId, actionId: passModalData.actionId, passed: passed, nopassReason:feedback }
-              submitReview(result)
-              setPassModalData(undefined)}
-          }}
-        />
+        nopassMode={true}
+        data={passModalData}
+        closeModal={() => {
+          setPassModalData(undefined);
+        }}
+        submit={(passed: boolean, feedback: string) => {
+          if (passModalData) {
+            const result: ReviewWorkProofParam = {
+              userId: passModalData.userId,
+              actionId: passModalData.actionId,
+              passed: passed,
+              nopassReason: feedback,
+            };
+            submitReview(result);
+            setPassModalData(undefined);
+          }
+        }}
+      />
     </ContentBox>
   );
 }
@@ -142,19 +179,35 @@ const ContentBox = styled.div`
   border: 4px solid #333333;
   & .header {
     display: flex;
-    justify-content: space-between;
-    gap:20px;
+    gap: 20px;
     align-items: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #d9d9d9;
+    > button {
+      width: 48px;
+      height: 48px;
+      background: #e4ffdb;
+      border: 2px solid #333333;
+      box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+      border-radius: 20px;
+      & img {
+        vertical-align: middle;
+        height: 18px;
+        width: 12px;
+      }
+    }
     & h2 {
       font-weight: 700;
       font-size: 36px;
       color: #333333;
+      padding: 0;
+      margin: 0;
     }
   }
   & .tab-header {
     display: flex;
     justify-content: space-between;
-
+    margin-top: 20px;
     & .tab {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
@@ -252,31 +305,30 @@ const ContentBox = styled.div`
       }
     }
 
-    
-  & .btns {
-    display: flex;
-    & button {
-      cursor: pointer;
-      background: #ebeee4;
-      padding: 0px 20px;
+    & .btns {
+      display: flex;
+      & button {
+        cursor: pointer;
+        background: #ebeee4;
+        padding: 0px 20px;
 
-      border: none;
-      height: 48px;
-      font-size: 16px;
-      box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
-      border-radius: 10px;
-    }
+        border: none;
+        height: 48px;
+        font-size: 16px;
+        box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+        border-radius: 10px;
+      }
 
-    & button.pass {
-      background-color: #3dd606;
-      margin-left: 20px;
-      color: #fff;
+      & button.pass {
+        background-color: #3dd606;
+        margin-left: 20px;
+        color: #fff;
+      }
+      & button.nopass {
+        background-color: #ff2222;
+        margin-left: 20px;
+        color: #fff;
+      }
     }
-    & button.nopass {
-      background-color: #ff2222;
-      margin-left: 20px;
-      color: #fff;
-    }
-  }
   }
 `;

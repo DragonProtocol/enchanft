@@ -1,5 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { AsyncRequestStatus, creatorApi, getWorkProofs, PassFlag, reviewWorkProof, ReviewWorkProofParam, saveWinnersApi } from '../api';
+import {
+  AsyncRequestStatus,
+  creatorApi,
+  getWorkProofs,
+  PassFlag,
+  reviewWorkProof,
+  ReviewWorkProofParam,
+  saveWinnersApi,
+} from '../api';
 import { RewardType, RewardData } from '../Components/TaskCreate/type';
 import { RootState } from './store';
 
@@ -65,13 +73,13 @@ export type WorkProofInfo = {
   actionId: number;
   actionType: string;
   actionData: {
-    question: string,
-    answer: string,
-    lucky_draw_weight: number,
-  },
+    question: string;
+    answer: string;
+    lucky_draw_weight: number;
+  };
   passed: boolean;
   submitTime: string;
-}
+};
 // 站点状态信息
 const creatorState: CreatorState = {
   status: AsyncRequestStatus.IDLE,
@@ -93,7 +101,7 @@ const creatorState: CreatorState = {
     data: {},
   },
   workProofs: [],
-  allWorkProofs: []
+  allWorkProofs: [],
 };
 
 export const getCreatorDashboardData = createAsyncThunk(
@@ -143,14 +151,28 @@ export const submitReviewWorkProof = createAsyncThunk(
   ) => {
     const resp = await reviewWorkProof(taskId, data, token);
     ThunkAPI.dispatch(getCreatorDashboardData({ taskId, token }));
-    ThunkAPI.dispatch(getWorkProofsData({ taskId: taskId, passFlag: PassFlag.NOT_PROCESSED, token: token }));
+    ThunkAPI.dispatch(
+      getWorkProofsData({
+        taskId: taskId,
+        passFlag: PassFlag.NOT_PROCESSED,
+        token: token,
+      })
+    );
     return resp.data;
   }
 );
 
 export const getWorkProofsData = createAsyncThunk(
   'creator/workProofs',
-  async ({ taskId, passFlag, token }: { taskId: number; passFlag: PassFlag, token: string }) => {
+  async ({
+    taskId,
+    passFlag,
+    token,
+  }: {
+    taskId: number;
+    passFlag: PassFlag;
+    token: string;
+  }) => {
     const resp = await getWorkProofs(taskId, passFlag, token);
     return resp.data;
   }
@@ -160,7 +182,7 @@ export const creatorSlice = createSlice({
   name: 'website',
   initialState: creatorState,
   reducers: {
-    some: (state) => { },
+    some: (state) => {},
     resetData: (state) => {
       state.status = AsyncRequestStatus.FULFILLED;
       state.participants = creatorState.participants;
@@ -214,7 +236,7 @@ export const creatorSlice = createSlice({
       })
       .addCase(getWorkProofsData.fulfilled, (state, action) => {
         state.workProofsStatus = AsyncRequestStatus.FULFILLED;
-        console.log('all work proofs: ', action.payload)
+        console.log('all work proofs: ', action.payload);
         state.allWorkProofs = action.payload.data;
       })
       .addCase(getWorkProofsData.rejected, (state, action) => {
