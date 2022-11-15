@@ -251,6 +251,36 @@ export function downloadWinner(type: string, taskId: string, token: string) {
     );
   });
 }
+export type ReviewWorkProofParam = { userId: string, actionId: number, passed: boolean, nopassReason?:string }
+
+export function reviewWorkProof(taskId: number, data: ReviewWorkProofParam, token: string) {
+  return axios({
+    url: ApiBaseUrl + `/creator/workProofs/${taskId}`,
+    method: 'post',
+    data: data,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
+
+export enum PassFlag {
+  ALL = 'ALL',
+  PASS = 'PASS',
+  NOPASS = 'NOPASS',
+  NOT_PROCESSED = 'NOT_PROCESSED',
+}
+
+//后端支持分页，但前端暂时不用，以后补上
+export function getWorkProofs(taskId: number,  passFlag: PassFlag, token: string, pageNo:number=0, pageSize:number=999) {
+  return axios({
+    url: ApiBaseUrl + `/creator/workProofs/${taskId}?pageNumber=${pageNo}&pageSize=${pageSize}&passFlag=${passFlag}`,
+    method: 'get',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+}
 
 export function creatorProjectApi(token: string) {
   return axios({
