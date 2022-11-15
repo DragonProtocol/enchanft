@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-14 15:35:39
+ * @LastEditTime: 2022-11-15 13:02:10
  * @Description: file description
  */
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
@@ -251,7 +251,7 @@ export const questionConfirmAction = createAsyncThunk(
         dispatch(
           updateOneAction({
             ...action,
-            status: UserActionStatus.DONE,
+            status: UserActionStatus.TODO,
             progress: '',
             data: {
               ...action.data,
@@ -279,7 +279,58 @@ export const questionConfirmAction = createAsyncThunk(
     },
   },
 )
-
+// question confirm action
+export const uploadImageAction = createAsyncThunk(
+  'user/taskHandles/uploadImageAction',
+  async (params: { action: Action; url: string }, { dispatch }) => {
+    const { action, url: answer } = params
+    const { id, taskId } = action
+    try {
+      const resp = await confirmQuestionAction({ id, taskId, answer })
+      if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
+        dispatch(
+          updateTaskDetailAction({
+            ...action,
+            status: UserActionStatus.TODO,
+            progress: '',
+            data: {
+              ...action.data,
+              answer: answer,
+              nopassReason: '',
+            },
+          }),
+        )
+        dispatch(
+          updateOneAction({
+            ...action,
+            status: UserActionStatus.TODO,
+            progress: '',
+            data: {
+              ...action.data,
+              answer: answer,
+              nopassReason: '',
+            },
+          }),
+        )
+        toast.success('Uploaded.')
+      } else {
+        toast.error('upload error')
+      }
+    } catch (error) {
+      throw error
+    }
+  },
+  {
+    condition: (params: { action: Action; url: string }, { getState }) => {
+      const { action, url } = params
+      const state = getState() as RootState
+      const { selectById } = verifyActionQueueEntity.getSelectors()
+      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
+      return !!url || !item
+    },
+  },
+)
 export const userTaskHandlesSlice = createSlice({
   name: 'TaskHandles',
   initialState: initUserTaskHandlesState,

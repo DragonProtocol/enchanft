@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-14 16:36:27
+ * @LastEditTime: 2022-11-15 09:55:48
  * @Description: file description
  */
 import React from 'react'
@@ -11,7 +11,6 @@ import { UserActionStatus } from '../../../../types/api'
 import { TaskActionItemDataType } from '../TaskActionItem'
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper'
 import IconQuestion from '../../../common/icons/IconQuestion'
-import { useEffect } from 'react'
 import { useState } from 'react'
 import ActionIconBox from './ActionIconBox'
 import ActionNameSpan from './ActionNameSpan'
@@ -86,6 +85,9 @@ const ActionQuestionnaireWrapper = styled.div`
 `
 const ActionContentBox = styled.div`
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 `
 const ProgressSpan = styled.span`
   color: rgba(51, 51, 51, 0.5);

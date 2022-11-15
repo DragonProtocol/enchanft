@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-15 14:18:55
+ * @LastEditTime: 2022-11-15 12:31:02
  * @Description: file description
  */
 import React from 'react'
@@ -63,12 +63,7 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
   loadingMsg = 'loading...',
   emptyMsg = 'no task',
   onMint,
-  onVerifyTask,
-  onVerifyAction,
-  onTwitter,
-  onDiscord,
-  onFollowCommunity,
-  onCustomAction,
+  ...taskActionItemStaticProps
 }: TodoTaskListProps) => {
   const itemLen = items.length
   const title = todoTaskCompleteStatusMap[status].title || 'task list'
@@ -91,12 +86,7 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
               data={item.data}
               viewConfig={item.viewConfig}
               onMint={onMint}
-              onVerifyTask={onVerifyTask}
-              onVerifyAction={onVerifyAction}
-              onDiscord={onDiscord}
-              onTwitter={onTwitter}
-              onFollowCommunity={onFollowCommunity}
-              onCustomAction={onCustomAction}
+              {...taskActionItemStaticProps}
             />
           ))
         )}

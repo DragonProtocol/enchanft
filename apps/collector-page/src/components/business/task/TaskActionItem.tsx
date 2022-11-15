@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-14 15:24:33
+ * @LastEditTime: 2022-11-15 11:51:37
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -28,6 +28,7 @@ import ActionQuestionnaire from './actions/ActionQuestionnaire'
 import SubtractImg from '../../imgs/subtract.svg'
 import ActionVerifyAnswer from './actions/ActionVerifyAnswer'
 import ActionQuoteTwitter from './actions/ActionQuoteTwitter'
+import ActionUploadImage from './actions/ActionUploadImage'
 export type TaskActionItemDataType = {
   id: number
   name: string
@@ -62,6 +63,7 @@ export type TaskActionItemStaticFuncGetters = {
     confirmCallback: (assertAnswer: boolean) => void,
   ) => void
   onWallet?: (chain: Chain, callback: () => void) => void
+  onUploadImage?: (action: TaskActionItemDataType, url: string) => void
 }
 export type TaskActionItemProps = TaskActionItemStaticAttrGetters &
   TaskActionItemStaticFuncGetters & {
@@ -72,6 +74,8 @@ export type TaskActionItemProps = TaskActionItemStaticAttrGetters &
 const TaskActionItem: React.FC<TaskActionItemProps> = ({
   data,
   allowHandle,
+  verifying,
+  copyBgc,
   onTwitter,
   onDiscord,
   onFollowCommunity,
@@ -80,8 +84,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   onQuestionConfirm,
   onQuestionVerifyConfirm,
   onWallet,
-  verifying,
-  copyBgc,
+  onUploadImage,
 }: TaskActionItemProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
   const renderAction = () => {
@@ -137,6 +140,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.QUESTIONNAIRE:
         // 问卷调查
         return <ActionQuestionnaire data={data} allowHandle={allowHandle} onQuestionConfirm={onQuestionConfirm} />
+      case ActionType.UPLOAD_IMAGE:
+        // 图片上传
+        return <ActionUploadImage data={data} allowHandle={allowHandle} onUploadImage={onUploadImage} />
       default:
         return name
     }

@@ -10,6 +10,7 @@
     "@mui/lab": "^5.0.0-alpha.87",
     "@mui/material": "^5.5.0",
     "@mui/styled-engine-sc": "^5.4.2",
+    "@multiavatar/multiavatar": "^1.0.7",
     "@reduxjs/toolkit": "^1.8.3",
     "@testing-library/user-event": "^13.5.0",
     "@types/react": "18.0.13",
@@ -31,6 +32,7 @@
     "material-ui-popup-state": "^4.0.1",
     "process": "^0.11.10",
     "qs": "^6.11.0",
+    "rc-upload": "^4.3.4",
     "react": "18.2.0",
     "react-copy-to-clipboard": "^5.1.0",
     "react-device-detect": "^2.2.2",
@@ -43,8 +45,7 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.8",
     "styled-components": "^5.3.5",
-    "swiper": "^8.2.4",
-    "@multiavatar/multiavatar": "^1.0.7"
+    "swiper": "^8.2.4"
   },
   "scripts": {
     "start": "craco start",
@@ -63,6 +64,7 @@
   },
   "devDependencies": {
     "@craco/craco": "^7.0.0-alpha.8",
+    "@svgr/rollup": "^6.5.0",
     "@types/hammerjs": "^2.0.41",
     "@types/mockjs": "^1.0.6",
     "@types/react-lottie": "^1.2.6",
@@ -80,17 +82,16 @@
     "os": "^0.1.2",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
+    "react-modal": "^3.15.1",
     "react-test-renderer": "18.2.0",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
+    "ts-node": "~10.8.0",
     "tsconfig-paths-webpack-plugin": "^3.5.2",
     "typescript": "~4.7.2",
     "url": "^0.11.0",
     "web-vitals": "^2.1.4",
     "webpack": "^5.73.0",
-    "webpack-bundle-analyzer": "^4.6.0",
-    "ts-node": "~10.8.0",
-    "@svgr/rollup": "^6.5.0",
-    "react-modal": "^3.15.1"
+    "webpack-bundle-analyzer": "^4.6.0"
   }
 }

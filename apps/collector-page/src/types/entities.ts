@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-14 15:06:02
+ * @LastEditTime: 2022-11-14 17:02:28
  * @Description: 与后端entities type定义对应
  */
 
@@ -81,6 +81,7 @@ export enum ActionType {
   NFT_BALANCE = 'NFT_BALANCE',
   QUESTIONNAIRE = 'QUESTIONNAIRE',
   ANSWER_VERIFY = 'ANSWER_VERIFY',
+  UPLOAD_IMAGE = 'UPLOAD_IMAGE',
 }
 export type NftInfo = {
   name: string
