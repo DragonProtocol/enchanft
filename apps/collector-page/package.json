@@ -90,12 +90,5 @@
     "web-vitals": "^2.1.4",
     "webpack": "^5.73.0",
     "webpack-bundle-analyzer": "^4.6.0"
-  },
-  "overrides": {
-    "react-lottie": {
-      "peerDependencies": {
-        "react": "18.2.0"
-      }
-    }
   }
 }
