@@ -24,12 +24,13 @@ import Members from './Pages/Members';
 import { TaskPre } from './Pages/TaskPre';
 
 import {
-  Twitter,
-  Discord,
-  Metamask,
-  Phantom,
-  Martian,
-} from '@ecnft/wl-user-core';
+  twitterAuthorizer,
+  discordAuthorizer,
+  phantomAuthorizer,
+  martianAuthorizer,
+  rainbowKitAuthorizer,
+} from '@ecnft/wl-user-react';
+
 import {
   WlUserReactProvider,
   WlUserReactContextType,
@@ -38,9 +39,11 @@ import { useState } from 'react';
 import { WorkProofList } from './Pages/WorkProofList';
 
 const TWITTER_CLIENT_ID = process.env.REACT_APP_TWITTER_CLIENT_ID;
-const TWITTER_CALLBACK_URL = process.env.REACT_APP_TWITTER_CALLBACK_URL;
+const TWITTER_CALLBACK_URL =
+  process.env.REACT_APP_WL_USER_AUTH_CALLBACK_TWITTER;
 const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID;
-const DISCORD_CALLBACK_URL = process.env.REACT_APP_DISCORD_CALLBACK_URL;
+const DISCORD_CALLBACK_URL =
+  process.env.REACT_APP_WL_USER_AUTH_CALLBACK_DISCORD;
 
 if (
   !TWITTER_CLIENT_ID ||
@@ -52,17 +55,17 @@ if (
 }
 
 const signers = [
-  // new Twitter({
-  //   twitterClientId: TWITTER_CLIENT_ID,
-  //   oauthCallbackUri: TWITTER_CALLBACK_URL,
-  // }),
-  // new Discord({
-  //   discordClientId: DISCORD_CLIENT_ID,
-  //   oauthCallbackUri: DISCORD_CALLBACK_URL,
-  // }),
-  new Metamask(),
-  new Phantom(),
-  new Martian(),
+  twitterAuthorizer({
+    twitterClientId: TWITTER_CLIENT_ID,
+    oauthCallbackUri: TWITTER_CALLBACK_URL,
+  }),
+  discordAuthorizer({
+    discordClientId: DISCORD_CLIENT_ID,
+    oauthCallbackUri: DISCORD_CALLBACK_URL,
+  }),
+  rainbowKitAuthorizer(),
+  phantomAuthorizer(),
+  martianAuthorizer(),
 ];
 
 function App() {
@@ -113,7 +116,7 @@ export default function Providers() {
 
   return (
     <WlUserReactProvider
-      signers={signers}
+      authorizers={signers}
       valueChange={(value) => setWlUserReactValue(value)}
     >
       <BrowserRouter>

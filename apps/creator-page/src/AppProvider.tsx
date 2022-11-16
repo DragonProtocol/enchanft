@@ -13,7 +13,7 @@ import {
   useWlUserReact,
   WlUserActionType,
 } from '@ecnft/wl-user-react';
-import { User } from '@ecnft/wl-user-core';
+import { User } from '@ecnft/wl-user-react';
 
 export type SignMsgResult = {
   walletType: TokenType;

@@ -6,14 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import log from 'loglevel';
 import Modal from 'react-modal';
-import {
-  Twitter,
-  Discord,
-  Metamask,
-  Phantom,
-  Martian,
-  setApiBaseUrl,
-} from '@ecnft/wl-user-core';
+import { setApiBaseUrl } from '@ecnft/wl-user-react';
 
 console.log(`${process.env.REACT_APP_NAME}:v${process.env.REACT_APP_VERSION}`);
 
