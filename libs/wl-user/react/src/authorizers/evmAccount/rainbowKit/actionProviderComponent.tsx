@@ -233,7 +233,7 @@ const RainbowKitAuth: React.FC<RainbowKitAuthProps> = ({
     if (disconnect) disconnect();
   }, [resetSign, disconnect]);
   useEffect(() => {
-    if (isConnecting || isSignLoading) {
+    if (isSignLoading) {
       onSignStart && onSignStart();
     } else if (isConnected) {
       if (!isSignSuccess && !isSignError) {
