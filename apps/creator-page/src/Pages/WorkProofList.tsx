@@ -113,18 +113,18 @@ export function WorkProofList() {
                 </span>
               )}
               {item.actionType === ActionType.UPLOAD_IMAGE && (
-                <div>
+                <span>
                   Q: {item.actionData.question}
                   <br />
                   <img
                     src={item.actionData.answer}
                     alt={item.actionData.question}
                   ></img>
-                </div>
+                </span>
               )}
               <span>{dayjs(item.submitTime).format('YYYY/MM/DD HH:mm')}</span>
-              {item.passed === null && (
-                <div className="btns">
+              {(item.passed === null && (
+                <span className="btns">
                   <button
                     className="nopass"
                     onClick={() => setPassModalData(item)}
@@ -144,8 +144,8 @@ export function WorkProofList() {
                   >
                     Pass
                   </button>
-                </div>
-              )}
+                </span>
+              )) || <span />}
             </div>
           );
         })}
@@ -265,7 +265,8 @@ const ContentBox = styled.div`
       gap: 50px;
       justify-content: space-between;
       align-items: center;
-      height: 60px;
+      padding: 10px 0;
+
       border-top: 1px solid #d9d9d9;
 
       min-width: 200px;
@@ -277,6 +278,11 @@ const ContentBox = styled.div`
       & a {
         text-decoration: none;
         color: inherit;
+      }
+
+      & img {
+        max-width: 200px;
+        max-height: 100px;
       }
 
       &:first-child {
@@ -298,9 +304,12 @@ const ContentBox = styled.div`
       }
       & span {
         width: 200px;
-        &:nth-child(3) {
-          flex-grow: 1;
+        word-break: break-word;
+        &:nth-child(2) {
           width: 300px;
+        }
+        &:last-child {
+          width: 210px;
         }
       }
     }
@@ -309,24 +318,26 @@ const ContentBox = styled.div`
       display: flex;
       & button {
         cursor: pointer;
-        background: #ebeee4;
         padding: 0px 20px;
+        font-weight: 700;
+        font-size: 16px;
+        line-height: 24px;
 
         border: none;
         height: 48px;
         font-size: 16px;
-        box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+        box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
         border-radius: 10px;
       }
 
       & button.pass {
         background-color: #3dd606;
-        margin-left: 20px;
         color: #fff;
+        margin-left: 20px;
       }
       & button.nopass {
         background-color: #ff2222;
-        margin-left: 20px;
+
         color: #fff;
       }
     }
