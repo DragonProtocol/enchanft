@@ -40,7 +40,6 @@ import UploadImgModal from '../Components/UploadImgModal';
 import { BlockchainType } from '../Components/Project/types';
 import { AxiosError } from 'axios';
 import isEqual from '../utils/isEqual';
-import log from 'loglevel';
 import {
   connectionSocialMedia,
   TWITTER_CALLBACK_URL,
@@ -257,27 +256,7 @@ export default function ProjectInfoEdit() {
               });
             }}
           />
-          <ProjectWebsite
-            websiteUrl={project.community.website || ''}
-            setWebsiteUrl={(url) => {
-              setProject({
-                ...project,
-                community: {
-                  ...project.community,
-                  website: url,
-                },
-              });
-            }}
-          />
-          <ProjectTotalSupply
-            supply={project.itemTotalNum + '' || ''}
-            setSupply={(value) => {
-              setProject({
-                ...project,
-                itemTotalNum: Number(value),
-              });
-            }}
-          />
+
           <ProjectState
             state={project.mintStage}
             setState={(state) => {
@@ -293,87 +272,17 @@ export default function ProjectInfoEdit() {
             img={project?.image}
             uploadImageHandler={uploadImageHandler}
           />
-          {(() => {
-            if (isAdmin) {
-              return (
-                <ProjectTwitterLinkInput
-                  twitterName={project?.community?.twitterName || ''}
-                  setTwitterName={(name) => {
-                    setProject({
-                      ...project,
-                      community: {
-                        ...project.community,
-                        twitterName: name,
-                      },
-                    });
-                  }}
-                />
-              );
-            }
-            if (isVIP) {
-              return (
-                <ProjectTwitterLink
-                  msg="Authorize Twitter"
-                  hasTwitter={
-                    !!(
-                      project?.community?.twitterId &&
-                      project?.community?.twitterName
-                    )
-                  }
-                  twitterName={project?.community?.twitterName || ''}
-                  linkAction={async () => {
-                    if (!account.info?.token) return;
-                    try {
-                      const resp = await getTwitterSubScriptions(
-                        account.info.token
-                      );
-                      const { data } = resp;
-                      setTwitter(data.data);
-                      const winParams = `width=480,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no`;
-                      window.open(data.data.url, '__blank', winParams);
-                      setShowTwitterInputModal(true);
-                    } catch (error) {
-                      const err: AxiosError = error as any;
-                      if (err.response?.status === 401) {
-                        toast.error('Login has expired,please log in again!');
-                        updateAccount({ ...account, info: null });
-                      }
-                    }
-                  }}
-                />
-              );
-            }
-            return (
-              <ProjectTwitterLink
-                hasTwitter={
-                  hasTwitter ||
-                  !!(
-                    project?.community?.twitterId &&
-                    project?.community?.twitterName
-                  )
-                }
-                twitterName={project?.community?.twitterName || ''}
-                linkAction={async () => {
-                  connectionSocialMedia('twitter');
-                }}
-              />
-            );
-          })()}
-          {(isAdmin && (
-            <ProjectInviteBotInput
-              botUrl={project?.community?.discordInviteUrl || ''}
-              setBotUrl={(url) => {
-                setProject({
-                  ...project,
-                  community: {
-                    ...project.community,
-                    discordInviteUrl: url,
-                  },
-                });
-              }}
-            />
-          )) || <ProjectInviteBot hasInviteBot={hasInviteBot} />}
+
           <ProjectBlockchain blockchain={blockchain} />
+          <ProjectTotalSupply
+            supply={project.itemTotalNum + '' || ''}
+            setSupply={(value) => {
+              setProject({
+                ...project,
+                itemTotalNum: Number(value),
+              });
+            }}
+          />
           {blockchain === BlockchainType.Ethereum && (
             <ProjectContract
               tokenContract={project.tokenContract || ''}

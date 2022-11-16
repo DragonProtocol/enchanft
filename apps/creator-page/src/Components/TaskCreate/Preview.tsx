@@ -16,6 +16,8 @@ import IconCustom from '../Icons/IconCustom';
 import IconWallet from '../Icons/IconWallet';
 import IconNFT from '../Icons/IconNft';
 import IconQuestion from '../Icons/IconQuestion';
+import IconImage from '../Icons/IconImage';
+import { YEAR_3000 } from '../../utils/constants';
 
 export default function Preview({
   state,
@@ -81,7 +83,7 @@ export default function Preview({
                   <PngIconAlarmClock />
                   <span>
                     {dayjs(state.startTime).format('YYYY/MM/DD')}——
-                    {dayjs(state.endTime).format('YYYY/MM/DD')}
+                    {state.endTime!==YEAR_3000 && dayjs(state.endTime).format('YYYY/MM/DD')}
                   </span>
                 </div>
                 <div className="winners">
@@ -103,8 +105,14 @@ export default function Preview({
                   </span>
                 )}
               </div>
+
               <div className="desc">
-                <p>{state.description}</p>
+                <div className="ql-snow">
+                  <div
+                    className="ql-editor"
+                    dangerouslySetInnerHTML={{ __html: state.description }}
+                  ></div>
+                </div>
               </div>
             </div>
             <div className="right">
@@ -136,8 +144,14 @@ export default function Preview({
                   if (item.type === ActionType.CUSTOM) {
                     Icon = IconCustom;
                   }
-                  if (item.type === ActionType.QUESTIONNAIRE) {
+                  if (
+                    item.type === ActionType.QUESTIONNAIRE ||
+                    item.type === ActionType.ANSWER_VERIFY
+                  ) {
                     Icon = IconQuestion;
+                  }
+                  if (item.type === ActionType.UPLOAD_IMAGE) {
+                    Icon = IconImage;
                   }
                   if (
                     item.typeMore === ActionTypeMore.CUSTOM &&
@@ -298,6 +312,7 @@ const TaskPreviewWrapper = styled.div`
           font-weight: 400;
           font-size: 14px;
           line-height: 21px;
+          display: initial;
 
           color: rgba(51, 51, 51, 0.6);
 

@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 
 import { selectProjectDetail } from '../redux/projectSlice';
 import { useAppSelector } from '../redux/store';
+import { YEAR_3000 } from '../utils/constants';
 
 type Tab = 'Future' | 'Live' | 'Closed';
 
@@ -75,7 +76,7 @@ export function TaskPre() {
               <span>{reward && reward.raffled ? 'Raffles' : 'FCFS'}</span>
               <span>
                 {dayjs(item.startTime).format('YYYY/MM/DD HH:mm')} —{' '}
-                {dayjs(item.endTime).format('YYYY/MM/DD HH:mm')}
+                {item.endTime && item.endTime!==YEAR_3000 && dayjs(item.endTime).format('YYYY/MM/DD HH:mm')}
               </span>
               <span>
                 {reward && reward.type.toLowerCase().replace('_', ' ')}
@@ -186,9 +187,10 @@ const ContentBox = styled.div`
         }
       }
       & span {
-        min-width: 200px;
+        width: 200px;
         &:nth-child(3) {
           flex-grow: 1;
+          width: 300px;
         }
       }
     }

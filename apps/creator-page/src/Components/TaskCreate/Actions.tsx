@@ -28,22 +28,26 @@ import IconCustom from '../Icons/IconCustom';
 import IconDiscordWhite from '../Icons/IconDiscordWhite';
 import RightIcon from '../Icons/IconRight';
 import IconQuestion from '../Icons/IconQuestion';
+import IconImage from '../Icons/IconImage';
 
 export default function Actions({
   hasInviteBot,
   projectName,
   projectTwitter,
   followTwitters,
+  luckyDraw,
   updateStateActions,
   updateStateFollowTwitters,
 }: {
   hasInviteBot: boolean;
+  luckyDraw: boolean;
   projectName: string;
   projectTwitter: string;
   followTwitters: string[];
   updateStateActions: (arg0: Action[]) => void;
   updateStateFollowTwitters: (arg0: string[]) => void;
 }) {
+  console.log('hasInviteBot', hasInviteBot);
   // const { account } = useAppConfig();
   const twitter = true;
   // 'account.info?.accounts.find((item) => item.accountType === ChainType.TWITTER)';
@@ -94,7 +98,12 @@ export default function Actions({
     id: '',
     luckyDrawWeight: '1',
   });
-
+  const [quoteTwitter, setQuoteTwitter] = useState({
+    valid: false,
+    id: '',
+    tag_friends_num: 3,
+    luckyDrawWeight: '1',
+  });
   const [joinCommunityContribution, setJoinCommunityContribution] = useState({
     valid: false,
     num: 20,
@@ -137,7 +146,16 @@ export default function Actions({
   const [questionnaire, setQuestionnaire] = useState({
     type: ActionType.QUESTIONNAIRE,
     valid: false,
-    manualCheck: false,
+    data: [
+      {
+        question: '',
+        luckyDrawWeight: '1',
+      },
+    ],
+  });
+  const [verifyAnswer, setVerifyAnswer] = useState({
+    type: ActionType.ANSWER_VERIFY,
+    valid: false,
     data: [
       {
         question: '',
@@ -146,6 +164,17 @@ export default function Actions({
       },
     ],
   });
+  const [uploadImage, setUploadImage] = useState({
+    type: ActionType.UPLOAD_IMAGE,
+    valid: false,
+    data: [
+      {
+        desc: '',
+        luckyDrawWeight: '1',
+      },
+    ],
+  });
+
   useEffect(() => {
     const actions: Action[] = [];
     if (followTwitter.valid && followTwitterLinkResult.length > 0) {
@@ -220,6 +249,20 @@ export default function Actions({
           url: `https://twitter.com/intent/retweet?tweet_id=${retweetTwitter.id}`,
           tweet_id: retweetTwitter.id,
           lucky_draw_weight: Number(retweetTwitter.luckyDrawWeight) || 1,
+        });
+    }
+    if (quoteTwitter.valid && quoteTwitter.id) {
+      const msg = document.getElementById('quote-twitter-msg')?.textContent;
+      msg &&
+        actions.push({
+          name: msg,
+          type: ActionType.TWITTER,
+          typeMore: ActionTypeMore.QUOTE_TWEET,
+          description: '',
+          url: `https://twitter.com/intent/retweet?tweet_id=${quoteTwitter.id}`,
+          tweet_id: quoteTwitter.id,
+          tag_friends_num: Number(quoteTwitter.tag_friends_num) || 0,
+          lucky_draw_weight: Number(quoteTwitter.luckyDrawWeight) || 1,
         });
     }
     if (joinCommunityContribution.valid && joinCommunityContribution.num) {
@@ -306,15 +349,46 @@ export default function Actions({
 
     if (questionnaire.valid) {
       questionnaire.data.forEach((item) => {
-        const { question, answer, luckyDrawWeight } = item;
-        if (question.trim() && answer.trim()) {
+        const { question, luckyDrawWeight } = item;
+        if (question.trim()) {
           actions.push({
-            name: question,
+            name: question.trim(),
             type: ActionType.QUESTIONNAIRE,
             typeMore: ActionTypeMore.QUESTIONNAIRE,
             description: ``,
             question,
-            answer,
+            lucky_draw_weight: Number(luckyDrawWeight) || 1,
+          });
+        }
+      });
+    }
+
+    if (verifyAnswer.valid) {
+      verifyAnswer.data.forEach((item) => {
+        const { question, answer, luckyDrawWeight } = item;
+        if (question.trim() && answer.trim()) {
+          actions.push({
+            name: question.trim(),
+            type: ActionType.ANSWER_VERIFY,
+            typeMore: ActionTypeMore.ANSWER_VERIFY,
+            description: ``,
+            question,
+            answer: answer.trim(),
+            lucky_draw_weight: Number(luckyDrawWeight) || 1,
+          });
+        }
+      });
+    }
+
+    if (uploadImage.valid && uploadImage.data) {
+      uploadImage.data.forEach((item) => {
+        const { desc, luckyDrawWeight } = item;
+        if (desc.trim()) {
+          actions.push({
+            name: desc.trim(),
+            type: ActionType.UPLOAD_IMAGE,
+            typeMore: ActionTypeMore.UPLOAD_IMAGE,
+            description: desc,
             lucky_draw_weight: Number(luckyDrawWeight) || 1,
           });
         }
@@ -331,19 +405,22 @@ export default function Actions({
     inviteFriends,
     likeTwitter,
     retweetTwitter,
+    quoteTwitter,
     joinCommunityContribution,
     discordRole,
     custom,
     walletBalance,
     nftHolder,
     questionnaire,
+    verifyAnswer,
+    uploadImage,
   ]);
 
   return (
     <SelectActionsBox>
-      <div className="subtitle">
+      {/* <div className="subtitle">
         <span>Select actions</span>
-      </div>
+      </div> */}
       <div className="invite">
         <div className="content-item">
           <h4>Invite WL Bot</h4>
@@ -422,7 +499,7 @@ export default function Actions({
                 <ConnectTwitter />
               </div>
             )}
-            {twitter && followTwitter.valid && (
+            {twitter && followTwitter.valid && luckyDraw && (
               <LuckyDraw
                 weight={followTwitter.luckyDrawWeight}
                 setWeight={(w) => {
@@ -448,28 +525,32 @@ export default function Actions({
                 }}
               />
               <span id="like-twitter-msg" className="msg">
-                Like the tweet
+                Like the Tweet on Twitter
               </span>
               <IconTwitter />
             </div>
-            <div className="help">
-              {twitter ? (
-                likeTwitter.valid && (
+
+            {twitter ? (
+              likeTwitter.valid && (
+                <div className="help">
                   <TweetIdInput
-                    retweetId={likeTwitter.link}
-                    setRetweetId={(id) => {
+                    tweetId={likeTwitter.link}
+                    setTweetId={(id) => {
                       setLikeTwitter({
                         ...likeTwitter,
                         link: id,
                       });
                     }}
                   />
-                )
-              ) : (
+                </div>
+              )
+            ) : (
+              <div className="help">
                 <ConnectTwitter />
-              )}
-            </div>
-            {twitter && likeTwitter.valid && (
+              </div>
+            )}
+
+            {twitter && likeTwitter.valid && luckyDraw && (
               <LuckyDraw
                 weight={likeTwitter.luckyDrawWeight}
                 setWeight={(w) => {
@@ -495,33 +576,115 @@ export default function Actions({
                 }}
               />
               <span id="retweet-twitter-msg" className="msg">
-                Retweet the tweet
+                Retweet the Tweet
               </span>
               <IconTwitter />
             </div>
-            <div className="help">
-              {twitter ? (
-                retweetTwitter.valid && (
-                  <TweetIdInput
-                    retweetId={retweetTwitter.id}
-                    setRetweetId={(id) => {
-                      setRetweetTwitter({
-                        ...retweetTwitter,
-                        id,
-                      });
-                    }}
-                  />
-                )
-              ) : (
+
+            {twitter ? (
+              retweetTwitter.valid && (
+                <>
+                  <div className="help">
+                    <TweetIdInput
+                      tweetId={retweetTwitter.id}
+                      setTweetId={(id) => {
+                        setRetweetTwitter({
+                          ...retweetTwitter,
+                          id,
+                        });
+                      }}
+                    />
+                  </div>
+                </>
+              )
+            ) : (
+              <div className="help">
                 <ConnectTwitter />
-              )}
-            </div>
-            {twitter && retweetTwitter.valid && (
+              </div>
+            )}
+            {twitter && retweetTwitter.valid && luckyDraw && (
               <LuckyDraw
                 weight={retweetTwitter.luckyDrawWeight}
                 setWeight={(w) => {
                   setRetweetTwitter({
                     ...retweetTwitter,
+                    luckyDrawWeight: w,
+                  });
+                }}
+              />
+            )}
+          </div>
+
+          {/** Quote twitter */}
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={quoteTwitter.valid}
+                onChange={() => {
+                  if (!twitter) return;
+                  setQuoteTwitter({
+                    ...quoteTwitter,
+                    valid: !quoteTwitter.valid,
+                  });
+                }}
+              />
+              <span id="quote-twitter-msg" className="msg">
+                Quote the Tweet{' '}
+                {quoteTwitter.tag_friends_num > 0 && (
+                  <b>& @ {quoteTwitter.tag_friends_num} friends</b>
+                )}
+              </span>
+              <IconTwitter />
+            </div>
+
+            {twitter ? (
+              quoteTwitter.valid && (
+                <>
+                  <div className="help">
+                    <TweetIdInput
+                      tweetId={quoteTwitter.id}
+                      setTweetId={(id) => {
+                        setQuoteTwitter({
+                          ...quoteTwitter,
+                          id,
+                        });
+                      }}
+                    />
+                  </div>
+                  <div className="help">
+                    <span>@</span>
+                    <div className="input-box retweet">
+                      <input
+                        title="quote-num"
+                        type="number"
+                        min={0}
+                        step={1}
+                        value={quoteTwitter.tag_friends_num}
+                        onChange={(e) => {
+                          setQuoteTwitter({
+                            ...quoteTwitter,
+                            tag_friends_num: Number(e.target.value),
+                          });
+                        }}
+                      />
+                    </div>
+                    <span className="username">
+                      friends (Please fill in 0 if don't need tag)
+                    </span>
+                  </div>
+                </>
+              )
+            ) : (
+              <div className="help">
+                <ConnectTwitter />
+              </div>
+            )}
+            {twitter && quoteTwitter.valid && luckyDraw && (
+              <LuckyDraw
+                weight={quoteTwitter.luckyDrawWeight}
+                setWeight={(w) => {
+                  setQuoteTwitter({
+                    ...quoteTwitter,
                     luckyDrawWeight: w,
                   });
                 }}
@@ -566,7 +729,7 @@ export default function Actions({
               </span>
               <IconWL />
             </div>
-            {inviteFriends.valid && (
+            {inviteFriends.valid && luckyDraw && (
               <LuckyDraw
                 weight={inviteFriends.luckyDrawWeight}
                 setWeight={(w) => {
@@ -617,7 +780,7 @@ export default function Actions({
               </span>
               <IconWL />
             </div>
-            {joinCommunityContribution.valid && (
+            {joinCommunityContribution.valid && luckyDraw && (
               <LuckyDraw
                 weight={joinCommunityContribution.luckyDrawWeight}
                 setWeight={(w) => {
@@ -630,7 +793,7 @@ export default function Actions({
             )}
           </div>
 
-          {/** Question */}
+          {/* Questionnaire */}
           <div className="content-item">
             <div className="desc">
               <CustomCheckBox
@@ -657,7 +820,7 @@ export default function Actions({
                         <span className="username question">Question:</span>
                         <div className={'input-box'}>
                           <input
-                            title="question"
+                            title="questionnaire"
                             type="text"
                             value={item.question}
                             onChange={(e) => {
@@ -676,32 +839,8 @@ export default function Actions({
                           />
                         </div>
                       </div>
-                      <div className="help">
-                        <span className="username question">Answer:</span>
-                        <div className={'input-box'}>
-                          <input
-                            title="answer"
-                            type="text"
-                            placeholder="Case insensitive"
-                            value={item.answer}
-                            onChange={(e) => {
-                              setQuestionnaire({
-                                ...questionnaire,
-                                data: [
-                                  ...questionnaire.data.slice(0, idx),
-                                  {
-                                    ...item,
-                                    answer: e.target.value,
-                                  },
-                                  ...questionnaire.data.slice(idx + 1),
-                                ],
-                              });
-                            }}
-                          />
-                        </div>
-                      </div>
 
-                      {questionnaire.valid && (
+                      {questionnaire.valid && luckyDraw && (
                         <LuckyDraw
                           borderNoTop
                           weight={item.luckyDrawWeight}
@@ -750,6 +889,139 @@ export default function Actions({
                         ...questionnaire.data,
                         {
                           question: '',
+                          luckyDrawWeight: '1',
+                        },
+                      ],
+                    })
+                  }
+                >
+                  <IconPlus size="16px" /> Add
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Question (verify the answer) */}
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={verifyAnswer.valid}
+                onChange={() => {
+                  setVerifyAnswer({
+                    ...verifyAnswer,
+                    valid: !verifyAnswer.valid,
+                  });
+                }}
+              />
+              <span id="question" className="msg">
+                Verify the answer
+              </span>
+              <IconQuestion />
+            </div>
+            {verifyAnswer.valid && (
+              <>
+                {verifyAnswer.data.map((item, idx) => {
+                  return (
+                    <Fragment key={idx}>
+                      {idx > 0 && <div className="and"></div>}
+                      <div className="help">
+                        <span className="username question">Question:</span>
+                        <div className={'input-box'}>
+                          <input
+                            title="question"
+                            type="text"
+                            value={item.question}
+                            onChange={(e) => {
+                              setVerifyAnswer({
+                                ...verifyAnswer,
+                                data: [
+                                  ...verifyAnswer.data.slice(0, idx),
+                                  {
+                                    ...item,
+                                    question: e.target.value,
+                                  },
+                                  ...verifyAnswer.data.slice(idx + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="help">
+                        <span className="username question">Answer:</span>
+                        <div className={'input-box'}>
+                          <input
+                            title="answer"
+                            type="text"
+                            placeholder="Case insensitive"
+                            value={item.answer}
+                            onChange={(e) => {
+                              setVerifyAnswer({
+                                ...verifyAnswer,
+                                data: [
+                                  ...verifyAnswer.data.slice(0, idx),
+                                  {
+                                    ...item,
+                                    answer: e.target.value,
+                                  },
+                                  ...verifyAnswer.data.slice(idx + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {verifyAnswer.valid && luckyDraw && (
+                        <LuckyDraw
+                          borderNoTop
+                          weight={item.luckyDrawWeight}
+                          setWeight={(w) => {
+                            setVerifyAnswer({
+                              ...verifyAnswer,
+                              data: [
+                                ...verifyAnswer.data.slice(0, idx),
+                                {
+                                  ...item,
+                                  luckyDrawWeight: w,
+                                },
+                                ...verifyAnswer.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        />
+                      )}
+
+                      {idx !== verifyAnswer.data.length - 1 && (
+                        <div
+                          className={'help add-btn custom'}
+                          onClick={() => {
+                            setVerifyAnswer({
+                              ...verifyAnswer,
+                              data: [
+                                ...verifyAnswer.data.slice(0, idx),
+                                ...verifyAnswer.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        >
+                          <PngIconDelete />
+                        </div>
+                      )}
+                    </Fragment>
+                  );
+                })}
+                <div className="and"></div>
+                <div
+                  className={'help add-btn custom question-add'}
+                  onClick={() =>
+                    setVerifyAnswer({
+                      ...verifyAnswer,
+                      data: [
+                        ...verifyAnswer.data,
+                        {
+                          question: '',
                           answer: '',
                           luckyDrawWeight: '1',
                         },
@@ -761,25 +1033,6 @@ export default function Actions({
                 </div>
               </>
             )}
-
-            {/* <>
-                <div className="switch-btn-box">
-                  <span>Manual check?</span>
-                  <SwitchBtn
-                    width={80}
-                    height={40}
-                    dotHeight={32}
-                    dotWidth={32}
-                    open={questionnaire.manualCheck}
-                    onChange={(v) => {
-                      setQuestionnaire({
-                        ...questionnaire,
-                        manualCheck: v,
-                      });
-                    }}
-                  />
-                </div> 
-              </>*/}
           </div>
         </div>
         <div>
@@ -801,7 +1054,7 @@ export default function Actions({
                 </span>
                 <IconDiscord />
               </div>
-              {joinDiscord.valid && (
+              {joinDiscord.valid && luckyDraw && (
                 <LuckyDraw
                   weight={joinDiscord.luckyDrawWeight}
                   setWeight={(w) => {
@@ -854,7 +1107,7 @@ export default function Actions({
                 </span>
                 <IconDiscord />
               </div>
-              {inviteDiscord.valid && (
+              {inviteDiscord.valid && luckyDraw && (
                 <LuckyDraw
                   weight={inviteDiscord.luckyDrawWeight}
                   setWeight={(w) => {
@@ -921,16 +1174,18 @@ export default function Actions({
                       />
                     </div>
                   </div>
-                  <LuckyDraw
-                    borderNoTop
-                    weight={discordRole.luckyDrawWeight}
-                    setWeight={(w) => {
-                      setDiscordRole({
-                        ...discordRole,
-                        luckyDrawWeight: w,
-                      });
-                    }}
-                  />
+                  {luckyDraw && (
+                    <LuckyDraw
+                      borderNoTop
+                      weight={discordRole.luckyDrawWeight}
+                      setWeight={(w) => {
+                        setDiscordRole({
+                          ...discordRole,
+                          luckyDrawWeight: w,
+                        });
+                      }}
+                    />
+                  )}
                 </>
               )}
             </div>
@@ -1017,21 +1272,23 @@ export default function Actions({
                         />
                       </div>
                     </div>
-                    <LuckyDraw
-                      borderNoTop
-                      weight={item.luckyDrawWeight}
-                      setWeight={(w) => {
-                        const curr = {
-                          ...item,
-                          luckyDrawWeight: w,
-                        };
-                        setCustom([
-                          ...custom.slice(0, idx),
-                          curr,
-                          ...custom.slice(idx + 1),
-                        ]);
-                      }}
-                    />
+                    {luckyDraw && (
+                      <LuckyDraw
+                        borderNoTop
+                        weight={item.luckyDrawWeight}
+                        setWeight={(w) => {
+                          const curr = {
+                            ...item,
+                            luckyDrawWeight: w,
+                          };
+                          setCustom([
+                            ...custom.slice(0, idx),
+                            curr,
+                            ...custom.slice(idx + 1),
+                          ]);
+                        }}
+                      />
+                    )}
                     {(idx === custom.length - 1 && (
                       <div
                         className={'help add-btn custom custom-add'}
@@ -1108,7 +1365,7 @@ export default function Actions({
                 }}
               />
             )}
-            {walletBalance.valid && (
+            {walletBalance.valid && luckyDraw && (
               <LuckyDraw
                 weight={walletBalance.luckyDrawWeight}
                 setWeight={(w) => {
@@ -1202,7 +1459,7 @@ export default function Actions({
                   <IconPlus size="16px" /> Add
                 </div>
               )}
-              {nftHolder.valid && (
+              {nftHolder.valid && luckyDraw && (
                 <LuckyDraw
                   weight={nftHolder.luckyDrawWeight}
                   setWeight={(w) => {
@@ -1214,6 +1471,111 @@ export default function Actions({
                 />
               )}
             </div>
+          </div>
+          {/* upload Image */}
+          <div className="content-item">
+            <div className="desc">
+              <CustomCheckBox
+                checked={uploadImage.valid}
+                onChange={() => {
+                  setUploadImage({
+                    ...uploadImage,
+                    valid: !uploadImage.valid,
+                  });
+                }}
+              />
+              <span className="msg">Upload Image</span>
+              <IconImage />
+            </div>
+            {uploadImage.valid && (
+              <>
+                {uploadImage.data.map((item, idx) => {
+                  return (
+                    <Fragment key={idx}>
+                      {idx > 0 && <div className="and"></div>}
+                      <div className="help">
+                        <span className="username custom">Description: </span>
+                        <div className="input-box">
+                          <input
+                            type="text"
+                            title="upload image"
+                            value={item.desc}
+                            onChange={(e) => {
+                              setUploadImage({
+                                ...uploadImage,
+                                data: [
+                                  ...uploadImage.data.slice(0, idx),
+                                  {
+                                    ...item,
+                                    desc: e.target.value,
+                                  },
+                                  ...uploadImage.data.slice(idx + 1),
+                                ],
+                              });
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      {uploadImage.valid && luckyDraw && (
+                        <LuckyDraw
+                          borderNoTop
+                          weight={item.luckyDrawWeight}
+                          setWeight={(w) => {
+                            setUploadImage({
+                              ...uploadImage,
+                              data: [
+                                ...uploadImage.data.slice(0, idx),
+                                {
+                                  ...item,
+                                  luckyDrawWeight: w,
+                                },
+                                ...uploadImage.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        />
+                      )}
+
+                      {idx !== uploadImage.data.length - 1 && (
+                        <div
+                          className={'help add-btn custom'}
+                          onClick={() => {
+                            setUploadImage({
+                              ...uploadImage,
+                              data: [
+                                ...uploadImage.data.slice(0, idx),
+                                ...uploadImage.data.slice(idx + 1),
+                              ],
+                            });
+                          }}
+                        >
+                          <PngIconDelete />
+                        </div>
+                      )}
+                    </Fragment>
+                  );
+                })}
+                <div className="and"></div>
+                <div
+                  className={'help add-btn custom question-add'}
+                  onClick={() =>
+                    setUploadImage({
+                      ...uploadImage,
+                      data: [
+                        ...uploadImage.data,
+                        {
+                          desc: '',
+                          luckyDrawWeight: '1',
+                        },
+                      ],
+                    })
+                  }
+                >
+                  <IconPlus size="16px" /> Add
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -1249,13 +1611,13 @@ function LuckyDraw({
 }
 
 function TweetIdInput({
-  retweetId,
-  setRetweetId,
+  tweetId,
+  setTweetId,
 }: {
-  retweetId: string;
-  setRetweetId: (id: string) => void;
+  tweetId: string;
+  setTweetId: (id: string) => void;
 }) {
-  const [value, setValue] = useState(retweetId);
+  const [value, setValue] = useState(tweetId);
   const timerRef = useRef<NodeJS.Timeout>();
   const [checked, setChecked] = useState(false);
   const [dataValid, setDataValid] = useState(true);
@@ -1267,7 +1629,7 @@ function TweetIdInput({
       if (!checkData || !account.info) return;
       try {
         await checkTweetIdValid(checkData, account.info.token);
-        setRetweetId(data);
+        setTweetId(data);
       } catch (error) {
         const err: AxiosError = error as any;
         if (err.response?.status === 401) {
@@ -1279,7 +1641,7 @@ function TweetIdInput({
         setChecked(true);
       }
     },
-    [account, setRetweetId, updateAccount]
+    [account, setTweetId, updateAccount]
   );
 
   return (
@@ -1753,6 +2115,18 @@ const SelectActionsBox = styled.div`
             }
             &.adding {
               color: rgba(51, 51, 51, 0.3);
+            }
+
+            &.retweet {
+              margin: 0 10px;
+              font-weight: 400;
+              font-size: 14px;
+              line-height: 20px;
+              color: #333333;
+              flex-grow: initial;
+              & input {
+                width: 102px;
+              }
             }
 
             & select {

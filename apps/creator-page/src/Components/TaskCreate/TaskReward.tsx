@@ -16,7 +16,7 @@ import SwitchBtn from '../SwitchBtn';
 import RichText from '../RichText';
 import { Whitelist } from '../../redux/projectSlice';
 
-export default function CreateTaskBasic({
+export default function TaskReward({
   hasInviteBot,
   state,
   updateState,
@@ -68,69 +68,7 @@ export default function CreateTaskBasic({
   return (
     <>
       <BasicBox>
-        <div className="information">
-          <div className="subtitle">
-            <span>Information</span>
-          </div>
-          <div className="content">
-            <div>
-              <div className="content-item">
-                <h4>Task title</h4>
-                <input
-                  title="task-title"
-                  placeholder="At least 4 characters"
-                  value={state?.name}
-                  onChange={(e) => {
-                    updateState({
-                      ...state,
-                      name: e.target.value,
-                    });
-                  }}
-                />
-              </div>
-
-              <div className="content-item attach-file">
-                <h4>Task banner (640 * 300)</h4>
-                <input
-                  title="task-banner"
-                  id="task-banner"
-                  type="file"
-                  accept="image/png, image/gif, image/jpeg"
-                  onChange={uploadImageHandler}
-                />
-                <div
-                  onClick={() => {
-                    document.getElementById('task-banner')?.click();
-                  }}
-                >
-                  {(state.image && <img src={state.image} alt="" />) || (
-                    <div className="add-btn">
-                      <img className="add" src={AddSvg} alt="" />
-                      <br />
-                      <span>Attach file</span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="statement">
-              <h4>Task statement</h4>
-              <RichText
-                text={state.description}
-                setText={(v) => {
-                  updateState({
-                    ...state,
-                    description: v,
-                  });
-                }}
-              />
-            </div>
-          </div>
-        </div>
         <div className="setting">
-          <div className="subtitle">
-            <span>Task Setting</span>
-          </div>
           <div className="content">
             <div>
               <div className="content-item">
@@ -191,55 +129,7 @@ export default function CreateTaskBasic({
                   </div>
                 )}
               </div>
-              <div className="content-item">
-                <h4>Total winners</h4>
-                <input
-                  title="total-winners"
-                  type={'number'}
-                  min={'0'}
-                  onKeyPress={numberInput}
-                  value={
-                    state.winnerNum === 0 ? '' : state.winnerNum.toString()
-                  }
-                  onChange={(e) => {
-                    const num = Number(e.target.value);
-                    updateState({
-                      ...state,
-                      winnerNum: num,
-                    });
-                  }}
-                />
-              </div>
-              {/* <div className="content-item">
-                <h4>Invite WL Bot</h4>
-                <div className="invite-bot-container">
-                  <button
-                    className="invite-bot"
-                    onClick={() => {
-                      window.open(
-                        DiscordBotCallback,
-                        '__blank',
-                        `width=480,
-                        height=800,
-                        top=0,
-                        menubar=no,
-                        toolbar=no,
-                        status=no,
-                        scrollbars=no,
-                        resizable=yes,
-                        directories=no,
-                        status=no,
-                        location=no`
-                      );
-                    }}
-                  >
-                    <IconDiscordWhite size="28px" /> Invite WL Bot
-                  </button>
-                  {hasInviteBot && <RightIcon />}
-                </div>
-              </div> */}
-            </div>
-            <div>
+
               <div className="content-item">
                 <h4>Reward</h4>
                 <div
@@ -372,46 +262,23 @@ export default function CreateTaskBasic({
                 )}
               </div>
               <div className="content-item">
-                <h4>Task date</h4>
-                <div className="date-box">
-                  <input
-                    type="datetime-local"
-                    title="from-date"
-                    className="date"
-                    value={dayjs(state.startTime).format('YYYY-MM-DDTHH:mm')}
-                    onChange={(e) => {
-                      const startTime = dayjs(
-                        e.target.value || new Date().getTime()
-                      )
-                        .toDate()
-                        .getTime();
-                      if (startTime > state.endTime) return;
-                      updateState({
-                        ...state,
-                        startTime,
-                      });
-                    }}
-                  />
-                  <span />
-                  <input
-                    type="datetime-local"
-                    title="to-date"
-                    className="date"
-                    value={dayjs(state.endTime).format('YYYY-MM-DDTHH:mm')}
-                    onChange={(e) => {
-                      const endTime = dayjs(
-                        e.target.value || dayjs().add(1, 'M')
-                      )
-                        .toDate()
-                        .getTime();
-                      if (endTime < state.startTime) return;
-                      updateState({
-                        ...state,
-                        endTime,
-                      });
-                    }}
-                  />
-                </div>
+                <h4>Total Winners</h4>
+                <input
+                  title="total-winners"
+                  type={'number'}
+                  min={'0'}
+                  onKeyPress={numberInput}
+                  value={
+                    state.winnerNum === 0 ? '' : state.winnerNum.toString()
+                  }
+                  onChange={(e) => {
+                    const num = Number(e.target.value);
+                    updateState({
+                      ...state,
+                      winnerNum: num,
+                    });
+                  }}
+                />
               </div>
             </div>
           </div>
@@ -431,7 +298,7 @@ export default function CreateTaskBasic({
 const BasicBox = styled.div`
   & .content {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     > div {
       width: 540px;
     }
@@ -494,7 +361,7 @@ const BasicBox = styled.div`
         display: flex;
         align-items: center;
         gap: 10px;
-        margin: 10px;
+        margin-bottom: 10px;
 
         > .desc {
           & p {
