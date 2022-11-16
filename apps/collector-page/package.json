@@ -1,6 +1,6 @@
 {
   "name": "enchanft-collector-page",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "dependencies": {
     "@ecnft/wl-user-react": "^0.1.0",
@@ -62,7 +62,7 @@
     "serve": "npm start"
   },
   "devDependencies": {
-    "@craco/craco": "^7.0.0-alpha.8",
+    "@craco/craco": "^7.0.0",
     "@types/hammerjs": "^2.0.41",
     "@types/mockjs": "^1.0.6",
     "@types/react-lottie": "^1.2.6",
@@ -90,5 +90,12 @@
     "web-vitals": "^2.1.4",
     "webpack": "^5.73.0",
     "webpack-bundle-analyzer": "^4.6.0"
+  },
+  "overrides": {
+    "react-lottie": {
+      "peerDependencies": {
+        "react": "18.2.0"
+      }
+    }
   }
 }
