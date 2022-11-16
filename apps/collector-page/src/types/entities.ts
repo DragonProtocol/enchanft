@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-31 13:54:49
+ * @LastEditTime: 2022-11-15 15:16:40
  * @Description: 与后端entities type定义对应
  */
 
@@ -70,6 +70,7 @@ export enum ActionType {
   DISCORD_INVITES_PEOPLE = 'DISCORD_INVITES_PEOPLE',
   DISCORD_OBTAIN_ROLE = 'DISCORD_OBTAIN_ROLE',
   RETWEET = 'RETWEET',
+  QUOTE_TWEET = 'QUOTE_TWEET',
   LIKE_TWEET = 'LIKE_TWEET',
   REPLY_TWEET = 'REPLY_TWEET',
   UPDATE_BIO_OF_TWITTER = 'UPDATE_BIO_OF_TWITTER',
@@ -79,6 +80,8 @@ export enum ActionType {
   NATIVE_BALANCE = 'NATIVE_BALANCE',
   NFT_BALANCE = 'NFT_BALANCE',
   QUESTIONNAIRE = 'QUESTIONNAIRE',
+  ANSWER_VERIFY = 'ANSWER_VERIFY',
+  UPLOAD_IMAGE = 'UPLOAD_IMAGE',
 }
 export type NftInfo = {
   name: string
@@ -105,6 +108,7 @@ export type ActionData = {
   answer?: string
   lucky_draw_weight?: number
   chain?: Chain
+  nopassReason?: string
 }
 export type Action = {
   id: number
@@ -205,6 +209,7 @@ export type Reward = {
   type: RewardType
   raffled: boolean
   data: RewardData
+  luckyDraw: boolean
 }
 
 /** user */

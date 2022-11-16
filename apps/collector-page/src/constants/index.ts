@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-05 11:17:58
+ * @LastEditTime: 2022-11-15 16:09:51
  * @Description: 系统相关常量定义
  */
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
@@ -44,3 +44,4 @@ export const SHARE_EVENT_TWEET_CONTENTS = 'I am exploring on WL.xyz follow the l
 
 export const TASK_PARTICIPANTS_DISPLAY_MIN_NUM = 5
 export const TASK_PARTICIPANTS_FETCH_NUM = 30
+export const TASK_NO_ENDTIME_TIMESTAMP = 32503651200000

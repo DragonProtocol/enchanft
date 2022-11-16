@@ -2,11 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 17:11:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 00:09:00
+ * @LastEditTime: 2022-11-10 18:53:04
  * @Description: file description
  */
-import { useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
-import { SignerType, AccountType } from '@ecnft/wl-user-core'
+import { AccountType, AuthorizerType, useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
 import { ChainType, getChainType } from '../utils/chain'
 
 export enum AccountOperationType {
@@ -33,13 +32,13 @@ export default (chainId?: number) => {
       dispatchModal({ type: WlUserModalType.LOGIN })
     },
     [AccountOperationType.BIND_METAMASK]: () => {
-      dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.METAMASK })
+      dispatchModal({ type: WlUserModalType.BIND, payload: AuthorizerType.METAMASK_WALLET })
     },
     [AccountOperationType.BIND_PHANTOM]: () => {
-      dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.PHANTOM })
+      dispatchModal({ type: WlUserModalType.BIND, payload: AuthorizerType.PHANTOM_WALLET })
     },
     [AccountOperationType.BIND_MARTIAN]: () => {
-      dispatchModal({ type: WlUserModalType.BIND, payload: SignerType.MARTIAN })
+      dispatchModal({ type: WlUserModalType.BIND, payload: AuthorizerType.MARTIAN_WALLET })
     },
     [AccountOperationType.BIND_UNKNOWN]: () => {},
     [AccountOperationType.COMPLETED]: () => {},

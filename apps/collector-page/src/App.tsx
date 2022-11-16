@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-27 17:40:46
+ * @LastEditTime: 2022-11-10 18:43:52
  * @Description:
  */
 import { Provider as ReduxProvider } from 'react-redux'
@@ -13,9 +13,8 @@ import GlobalStyle from './GlobalStyle'
 import { injectStore, injectWlUserReactContextValue, injectHandleAxiosResponse401 } from './request/axios'
 import Appsignal from '@appsignal/javascript'
 import { ErrorBoundary } from '@appsignal/react'
-import { setApiBaseUrl } from '@ecnft/wl-user-core'
-import { WlUserReactProvider, handleAuthFailed } from '@ecnft/wl-user-react'
-import { signers } from './utils/wlUserReact'
+import { WlUserReactProvider, handleAuthFailed, setApiBaseUrl } from '@ecnft/wl-user-react'
+import { authorizers } from './utils/wlUserReact'
 import { API_BASE_URL } from './constants'
 injectStore(store)
 setApiBaseUrl(API_BASE_URL || '')
@@ -29,7 +28,7 @@ function App() {
   appsignal.demo()
   return (
     <ErrorBoundary instance={appsignal} tags={{ tag: 'value' }} fallback={() => <FallbackComponent />}>
-      <WlUserReactProvider signers={signers} valueChange={(value) => injectWlUserReactContextValue(value)}>
+      <WlUserReactProvider authorizers={authorizers} valueChange={(value) => injectWlUserReactContextValue(value)}>
         <ReduxProvider store={store}>
           <GlobalStyle />
           <BrowserRouter>

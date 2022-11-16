@@ -2,21 +2,27 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-30 11:45:27
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 17:39:07
+ * @LastEditTime: 2022-11-15 16:19:59
  * @Description: file description
  */
-import { SignerType, LoginResult } from '@ecnft/wl-user-core';
-import { isWeb3Signer, signerTypeToAccountTyp } from '.';
+import { LoginResult } from '../api';
+import {
+  Authorizer,
+  AuthorizerType,
+  AuthorizerWebVersion,
+} from '../authorizers';
 
 export enum StorageKey {
-  LAST_LOGIN_SIGNER_TYPE = 'wl_user_last_login_signer_type',
+  LAST_LOGIN_AUTHORIZER_TYPE = 'wl_user_last_login_authorizer_type',
+  LAST_LOGIN_USERID = 'wl_user_last_login_userid',
   LAST_LOGIN_TOKEN = 'wl_user_last_login_token',
   LAST_LOGIN_NAME = 'wl_user_last_login_name',
   LAST_LOGIN_AVATAR = 'wl_user_last_login_avatar',
   LAST_LOGIN_PUBKEY = 'wl_user_last_login_pubkey',
 }
 type StorageKeyValue = {
-  [StorageKey.LAST_LOGIN_SIGNER_TYPE]: SignerType;
+  [StorageKey.LAST_LOGIN_AUTHORIZER_TYPE]: AuthorizerType;
+  [StorageKey.LAST_LOGIN_USERID]: string;
   [StorageKey.LAST_LOGIN_TOKEN]: string;
   [StorageKey.LAST_LOGIN_NAME]: string;
   [StorageKey.LAST_LOGIN_AVATAR]: string;
@@ -32,7 +38,8 @@ type StorageKeyValuePick<T extends StorageKey[]> = Pick<
 >;
 
 const storageDefaultValues: StorageKeyValue = {
-  [StorageKey.LAST_LOGIN_SIGNER_TYPE]: SignerType.TWITTER,
+  [StorageKey.LAST_LOGIN_AUTHORIZER_TYPE]: AuthorizerType.TWITTER,
+  [StorageKey.LAST_LOGIN_USERID]: '0',
   [StorageKey.LAST_LOGIN_TOKEN]: '',
   [StorageKey.LAST_LOGIN_NAME]: '',
   [StorageKey.LAST_LOGIN_AVATAR]: '',
@@ -65,31 +72,32 @@ export function resetStorageValue(key: StorageKey): void {
 }
 
 // TODO 兼容旧版C，B端用户系统的localstorge, 后期要删除
-const oldVersionLastLoginSignerTypeMap = {
-  twitter: SignerType.TWITTER,
-  ethereum: SignerType.METAMASK,
-  solana: SignerType.PHANTOM,
-  aptos: SignerType.MARTIAN,
+const oldVersionLastLoginAuthorizerTypeMap = {
+  twitter: AuthorizerType.TWITTER,
+  ethereum: AuthorizerType.METAMASK_WALLET,
+  solana: AuthorizerType.PHANTOM_WALLET,
+  aptos: AuthorizerType.MARTIAN_WALLET,
 };
-function oldVersionLastLoginSignerTypeAdapter() {
-  // c端旧版LastLoginSignerType
-  const c_oldVersionLoginSignerType = localStorage.getItem('lastLoginType');
-  // b端旧版LastLoginSignerType
-  const b_oldVersionLoginSignerType = localStorage.getItem('last_login_type');
-  let newLastLoginSignerType = '';
-  if (c_oldVersionLoginSignerType) {
-    newLastLoginSignerType =
-      oldVersionLastLoginSignerTypeMap[c_oldVersionLoginSignerType];
+function oldVersionLastLoginAuthorizerTypeAdapter() {
+  // c端旧版LastLoginAuthorizerType
+  const c_oldVersionLoginAuthorizerType = localStorage.getItem('lastLoginType');
+  // b端旧版LastLoginAuthorizerType
+  const b_oldVersionLoginAuthorizerType =
+    localStorage.getItem('last_login_type');
+  let newLastLoginAuthorizerType = '';
+  if (c_oldVersionLoginAuthorizerType) {
+    newLastLoginAuthorizerType =
+      oldVersionLastLoginAuthorizerTypeMap[c_oldVersionLoginAuthorizerType];
     localStorage.removeItem('lastLoginType');
-  } else if (b_oldVersionLoginSignerType) {
-    newLastLoginSignerType =
-      oldVersionLastLoginSignerTypeMap[b_oldVersionLoginSignerType];
+  } else if (b_oldVersionLoginAuthorizerType) {
+    newLastLoginAuthorizerType =
+      oldVersionLastLoginAuthorizerTypeMap[b_oldVersionLoginAuthorizerType];
     localStorage.removeItem('last_login_type');
   }
-  if (newLastLoginSignerType) {
+  if (newLastLoginAuthorizerType) {
     localStorage.setItem(
-      StorageKey.LAST_LOGIN_SIGNER_TYPE,
-      newLastLoginSignerType
+      StorageKey.LAST_LOGIN_AUTHORIZER_TYPE,
+      newLastLoginAuthorizerType
     );
   }
 }
@@ -98,7 +106,7 @@ export function getStorageValues<T extends StorageKey[]>(
   keys?: T
 ): StorageKeyValuePick<T> {
   // TODO 兼容旧版C，B端用户系统的localstorge, 后期要删除
-  oldVersionLastLoginSignerTypeAdapter();
+  oldVersionLastLoginAuthorizerTypeAdapter();
 
   const keyAry = keys || [...Object.values(StorageKey)];
   const keyValues = { ...storageDefaultValues };
@@ -112,17 +120,17 @@ export function getStorageValues<T extends StorageKey[]>(
 }
 
 export function updateStorageByLogin(
-  signerType: SignerType,
+  authorizer: Authorizer,
   data: LoginResult
 ): void {
-  setStorageValue(StorageKey.LAST_LOGIN_SIGNER_TYPE, signerType);
+  setStorageValue(StorageKey.LAST_LOGIN_AUTHORIZER_TYPE, authorizer.type);
   setStorageValue(StorageKey.LAST_LOGIN_TOKEN, data.token);
+  setStorageValue(StorageKey.LAST_LOGIN_USERID, data.id + '');
   setStorageValue(StorageKey.LAST_LOGIN_NAME, data.name);
   setStorageValue(StorageKey.LAST_LOGIN_AVATAR, data.avatar);
-  if (isWeb3Signer(signerType)) {
-    const accountType = signerTypeToAccountTyp(signerType);
+  if (authorizer.webVersion === AuthorizerWebVersion.web3) {
     const account = data.accounts.find(
-      (item) => item.accountType === accountType
+      (item) => item.accountType === authorizer.accountType
     );
     setStorageValue(StorageKey.LAST_LOGIN_PUBKEY, account?.thirdpartyId || '');
   }
@@ -130,6 +138,7 @@ export function updateStorageByLogin(
 
 export function updateStorageByLogout(): void {
   resetStorageValue(StorageKey.LAST_LOGIN_TOKEN);
+  resetStorageValue(StorageKey.LAST_LOGIN_USERID);
   resetStorageValue(StorageKey.LAST_LOGIN_NAME);
   resetStorageValue(StorageKey.LAST_LOGIN_AVATAR);
   resetStorageValue(StorageKey.LAST_LOGIN_PUBKEY);

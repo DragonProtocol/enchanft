@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-31 12:03:24
+ * @LastEditTime: 2022-11-15 15:09:13
  * @Description: file description
  */
 import React, { useCallback } from 'react'
@@ -26,6 +26,9 @@ import ActionNativeBalance from './actions/ActionNativeBalance'
 import ActionNftBalance from './actions/ActionNftBalance'
 import ActionQuestionnaire from './actions/ActionQuestionnaire'
 import SubtractImg from '../../imgs/subtract.svg'
+import ActionVerifyAnswer from './actions/ActionVerifyAnswer'
+import ActionQuoteTwitter from './actions/ActionQuoteTwitter'
+import ActionUploadImage from './actions/ActionUploadImage'
 export type TaskActionItemDataType = {
   id: number
   name: string
@@ -46,6 +49,7 @@ export type TaskActionItemDataType = {
 export type TaskActionItemStaticAttrGetters = {
   allowHandle?: boolean
   copyBgc?: string
+  dispalyLuckyDrawWeight?: boolean
 }
 export type TaskActionItemStaticFuncGetters = {
   onTwitter?: (callback: () => void) => void
@@ -53,12 +57,14 @@ export type TaskActionItemStaticFuncGetters = {
   onFollowCommunity?: (action: TaskActionItemDataType) => void
   onVerifyAction?: (action: TaskActionItemDataType) => void
   onCustomAction?: (action: TaskActionItemDataType) => void
-  onQuestionConfirm?: (
+  onQuestionConfirm?: (action: TaskActionItemDataType, answer: string) => void
+  onQuestionVerifyConfirm?: (
     action: TaskActionItemDataType,
     answer: string,
     confirmCallback: (assertAnswer: boolean) => void,
   ) => void
   onWallet?: (chain: Chain, callback: () => void) => void
+  onUploadImage?: (action: TaskActionItemDataType, url: string) => void
 }
 export type TaskActionItemProps = TaskActionItemStaticAttrGetters &
   TaskActionItemStaticFuncGetters & {
@@ -69,15 +75,18 @@ export type TaskActionItemProps = TaskActionItemStaticAttrGetters &
 const TaskActionItem: React.FC<TaskActionItemProps> = ({
   data,
   allowHandle,
+  verifying,
+  copyBgc,
+  dispalyLuckyDrawWeight,
   onTwitter,
   onDiscord,
   onFollowCommunity,
   onVerifyAction,
   onCustomAction,
   onQuestionConfirm,
+  onQuestionVerifyConfirm,
   onWallet,
-  verifying,
-  copyBgc,
+  onUploadImage,
 }: TaskActionItemProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
   const renderAction = () => {
@@ -103,6 +112,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.RETWEET:
         // 转发twitter
         return <ActionRetweetTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
+      case ActionType.QUOTE_TWEET:
+        // 转发twitter
+        return <ActionQuoteTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.LIKE_TWEET:
         // 点赞twitter
         return <ActionLikeTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
@@ -122,9 +134,17 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.NFT_BALANCE:
         // 持有指定nft
         return <ActionNftBalance data={data} allowHandle={allowHandle} />
+      case ActionType.ANSWER_VERIFY:
+        // 问答
+        return (
+          <ActionVerifyAnswer data={data} allowHandle={allowHandle} onQuestionVerifyConfirm={onQuestionVerifyConfirm} />
+        )
       case ActionType.QUESTIONNAIRE:
         // 问卷调查
         return <ActionQuestionnaire data={data} allowHandle={allowHandle} onQuestionConfirm={onQuestionConfirm} />
+      case ActionType.UPLOAD_IMAGE:
+        // 图片上传
+        return <ActionUploadImage data={data} allowHandle={allowHandle} onUploadImage={onUploadImage} />
       default:
         return name
     }
@@ -135,7 +155,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
     }
   }, [])
   const renderWeight = useCallback(() => {
-    if (actionData.lucky_draw_weight) {
+    if (dispalyLuckyDrawWeight && actionData.lucky_draw_weight) {
       return <TaskActionLuckyDrawWeight>+{actionData.lucky_draw_weight}</TaskActionLuckyDrawWeight>
     }
     return null

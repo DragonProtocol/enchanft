@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 16:42:49
+ * @LastEditTime: 2022-11-10 23:02:27
  * @Description: 基础按钮
  */
 import React from 'react';
@@ -11,6 +11,7 @@ import ReactModal from 'react-modal';
 import { isMobile } from 'react-device-detect';
 export type ModalBaseProps = ReactModal.Props & {
   backdropFilter?: boolean;
+  zIndex?: number;
 };
 const customStyles = {
   overlay: {
@@ -20,7 +21,6 @@ const customStyles = {
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 9999,
   },
   content: {
     position: 'absolute',
@@ -38,12 +38,14 @@ const customStyles = {
 const ModalBase: React.FC<ModalBaseProps> = ({
   children,
   backdropFilter,
+  zIndex = 9999,
   ...otherProps
 }: ModalBaseProps) => {
   const overlay = customStyles.overlay;
   if (backdropFilter) {
     Object.assign(overlay, {
       backdropFilter: 'blur(12px)',
+      zIndex,
     });
   }
   const styles = {

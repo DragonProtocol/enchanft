@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 10:43:31
+ * @LastEditTime: 2022-11-10 17:01:29
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useCallback } from 'react';
@@ -19,8 +19,8 @@ const LoginButton: React.FC<LoginButtonProps> = ({
   onClick,
   ...otherProps
 }: LoginButtonProps) => {
-  const { signer, user, isLogin, dispatchModal } = useWlUserReact();
-  const nameStr = signer && getUserDisplayName(user, signer.signerType);
+  const { authorizer, user, isLogin, dispatchModal } = useWlUserReact();
+  const nameStr = authorizer && getUserDisplayName(user, authorizer);
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       if (onClick) {

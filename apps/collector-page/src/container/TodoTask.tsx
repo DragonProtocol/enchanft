@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-27 14:19:56
+ * @LastEditTime: 2022-11-15 11:42:54
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react'
@@ -187,7 +187,13 @@ const TodoTask: React.FC = () => {
   const { follow: followCommunityState } = useAppSelector(selectUserCommunityHandlesState)
 
   // 执行action操作
-  const { handleActionToDiscord, handleActionToTwitter, handleActionQuestionConfirm } = useHandleAction()
+  const {
+    handleActionToDiscord,
+    handleActionToTwitter,
+    handleActionQuestionConfirm,
+    handleActionQuestionVerifyConfirm,
+    handleActionUploadImage,
+  } = useHandleAction()
 
   // 关注社区
   const { status: followCommunityStatus } = followCommunityState
@@ -240,6 +246,8 @@ const TodoTask: React.FC = () => {
             onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
             onCustomAction={(action) => dispatch(completionAction(action))}
             onQuestionConfirm={handleActionQuestionConfirm}
+            onQuestionVerifyConfirm={handleActionQuestionVerifyConfirm}
+            onUploadImage={handleActionUploadImage}
           />
           <TodoTaskList
             status={TaskTodoCompleteStatus.IN_PRGRESS}
@@ -252,6 +260,8 @@ const TodoTask: React.FC = () => {
             onFollowCommunity={(action) => handleFollowCommunity(action.communityId)}
             onCustomAction={(action) => dispatch(completionAction(action))}
             onQuestionConfirm={handleActionQuestionConfirm}
+            onQuestionVerifyConfirm={handleActionQuestionVerifyConfirm}
+            onUploadImage={handleActionUploadImage}
           />
         </TodoTaskGroupLeft>
         <TodoTaskGroupRight>
