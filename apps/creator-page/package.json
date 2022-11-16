@@ -1,9 +1,9 @@
 {
   "name": "creator-page",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "private": true,
   "dependencies": {
-    "@craco/craco": "^6.4.5",
+    "@craco/craco": "^7.0.0",
     "@ecnft/wl-user-core": "^0.0.4",
     "@ecnft/wl-user-react": "^0.0.5",
     "@reduxjs/toolkit": "^1.8.5",
