@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-10 13:01:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 18:14:39
+ * @LastEditTime: 2022-10-24 00:04:17
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react'
 import styled from 'styled-components'
-import { MEDIA_BREAK_POINTS } from 'constants/index'
+import { MEDIA_BREAK_POINTS } from '../../constants/index'
 const MainInner: React.FC<HTMLAttributes<HTMLDivElement>> = ({ children, ...divProps }) => {
   return <MainInnerWrapper {...divProps}>{children}</MainInnerWrapper>
 }

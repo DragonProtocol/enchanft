@@ -1,8 +1,8 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../store/hooks'
 import styled from 'styled-components'
-import { selectAccount } from '../features/user/accountSlice'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import {
   ProjectDetailEntity,
   fetchProjectDetail,
@@ -17,13 +17,7 @@ import { AsyncRequestStatus } from '../types'
 import CardBox from '../components/common/card/CardBox'
 import ProjectDetailBasicInfo from '../components/business/project/ProjectDetailBasicInfo'
 import ExploreTaskList, { ExploreTaskListItemsType } from '../components/business/task/ExploreTaskList'
-import ProjectTeamMemberList, {
-  ProjectTeamMemberListItemsType,
-} from '../components/business/project/ProjectTeamMemberList'
 import ContributionList from '../components/business/contribution/ContributionList'
-import RichTextBox from '../components/common/text/RichTextBox'
-import ProjectRoadmap from '../components/business/project/ProjectRoadmap'
-import usePermissions from '../hooks/usePermissons'
 import Loading from '../components/common/loading/Loading'
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox'
 import PngIconNotebook from '../components/common/icons/PngIconNotebook'
@@ -40,6 +34,15 @@ import IconTwitterBlack from '../components/common/icons/IconTwitterBlack'
 import IconDiscordBlack from '../components/common/icons/IconDiscordBlack'
 import { getTwitterHomeLink } from '../utils/twitter'
 import { toWlModPageTaskCreate } from '../route/utils'
+import { AccountType, AuthorizerType, usePermissions, useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
+import { selectAll as selectAllForTodoTasks } from '../features/user/todoTasksSlice'
+import { TodoTaskItem } from '../types/api'
+import ProjectGradeTag from '../components/business/project/ProjectGradeTag'
+import { GradeType } from '../types/entities'
+import {
+  selectUserProjectHandlesState,
+  applyForVerification as applyForVerificationAsyncThunk,
+} from '../features/user/projectHandlesSlice'
 
 export enum ProjectInfoTabsValue {
   TEAM = 'team',
@@ -62,39 +65,32 @@ const formatStoreDataToComponentDataByProjectBasicInfo = (
   }
 }
 // project tasks
-const formatStoreDataToComponentDataByTasks = (data: ProjectDetailEntity): ExploreTaskListItemsType => {
+const formatStoreDataToComponentDataByTasks = (
+  data: ProjectDetailEntity,
+  todoTasks: TodoTaskItem[],
+): ExploreTaskListItemsType => {
   return (
     data.tasks?.map((task) => {
-      // TODO 待确认，这里先用task的whiteListTotalNum代替
-      // const winnerNum = task.whitelistTotalNum
+      const findTask = todoTasks.find((item) => item.id === task.id)
       return {
-        data: { ...task, project: { ...data } },
+        data: { ...task, project: { ...data }, status: findTask?.status },
       }
     }) || []
-  )
-}
-// project teamMembers
-const formatStoreDataToComponentDataByTeamMembers = (data: ProjectDetailEntity): ProjectTeamMemberListItemsType => {
-  return (
-    data.teamMembers?.map((member) => ({
-      data: member,
-      viewConfig: {},
-    })) || []
   )
 }
 
 const Project: React.FC = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch()
-  const { token, accounts, isLogin } = useAppSelector(selectAccount)
-  const accountTypes = accounts.map((account) => account.accountType)
+  const { user, isLogin, validateBindAccount, dispatchModal } = useWlUserReact()
+  const { token } = user
 
   const { projectSlug } = useParams()
   const { data, status, errorMsg } = useAppSelector(selectProjectDetail)
   const dispatchFetchDetail = useCallback(() => projectSlug && dispatch(fetchProjectDetail(projectSlug)), [projectSlug])
   const [loadingView, setLoadingView] = useState(true)
   const { isCreator, checkProjectAllowed } = usePermissions()
-
+  const todoTasks = useAppSelector(selectAllForTodoTasks)
   // 进入loading状态
   useEffect(() => {
     setLoadingView(true)
@@ -125,22 +121,27 @@ const Project: React.FC = () => {
     data?.chainId,
   )
 
-  // tabs
-  // const ProjectInfoTabs = [
-  //   {
-  //     label: 'Meet the Team',
-  //     value: ProjectInfoTabsValue.TEAM,
-  //   },
-  //   {
-  //     label: 'Roadmap',
-  //     value: ProjectInfoTabsValue.ROADMAP,
-  //   },
-  //   // {
-  //   //   label: 'Reviews',
-  //   //   value: ProjectInfoTabsValue.REVIEWS,
-  //   // },
-  // ]
-  // const [activeTab, setActiveTab] = useState(ProjectInfoTabsValue.TEAM)
+  // 用户显示 apply for verification
+  const { applyForVerification } = useAppSelector(selectUserProjectHandlesState)
+  const applyForVerificationLoading = applyForVerification.status === AsyncRequestStatus.PENDING
+  const displayApplyForVerification = useMemo(
+    () => !!data && data.grade === GradeType.UNOFFICIAL && !!data?.community.twitterName,
+    [data],
+  )
+  const handleApplyForVerification = useCallback(() => {
+    if (!isLogin) {
+      dispatchModal({ type: WlUserModalType.LOGIN })
+    } else if (!validateBindAccount(AccountType.TWITTER)) {
+      dispatchModal({ type: WlUserModalType.BIND, payload: AuthorizerType.TWITTER })
+    } else {
+      const account = user.accounts.find((item) => item.thirdpartyName === data?.community.twitterName)
+      if (account) {
+        dispatch(applyForVerificationAsyncThunk(data.id))
+      } else {
+        toast.warn('The bound twitter is inconsistent with the current project community twitter')
+      }
+    }
+  }, [isLogin, user, data, validateBindAccount])
 
   if (loadingView)
     return (
@@ -156,14 +157,7 @@ const Project: React.FC = () => {
   const projectBasicInfoDataView = formatStoreDataToComponentDataByProjectBasicInfo(data)
   const showContributionranks = contributionranks.slice(0, 5)
   const contributionMembersTotal = contributionranks.length
-  // const teamMembers = formatStoreDataToComponentDataByTeamMembers(data, token)
-  const tasks = formatStoreDataToComponentDataByTasks(data)
-
-  // const ProjectInfoTabComponents = {
-  //   [ProjectInfoTabsValue.TEAM]: <ProjectTeamMemberList items={teamMembers} />,
-  //   [ProjectInfoTabsValue.ROADMAP]: <ProjectRoadmap items={data.roadmap} />,
-  //   // [ProjectInfoTabsValue.REVIEWS]: <span>Not yet developed</span>,
-  // }
+  const tasks = formatStoreDataToComponentDataByTasks(data, todoTasks)
 
   const { follow, checkin } = handlesState
   // 关注社区
@@ -204,7 +198,11 @@ const Project: React.FC = () => {
       <ProjectLeftBox>
         <ProjectLeftInfo>
           <ProjectLeftInfoTop>
-            {data.image && <ProjectImage src={data.image} />}
+            <ProjectImageBox>
+              <ProjectGradeTag grade={data.grade} />
+              <ProjectImage src={data.image} />
+            </ProjectImageBox>
+
             <ProjectLeftInfoTopRight>
               <ProjectName>{data.name}</ProjectName>
               {community && (
@@ -258,6 +256,17 @@ const Project: React.FC = () => {
             viewConfig={projectBasicInfoDataView.viewConfig}
           />
         </ProjectLeftInfo>
+        {displayApplyForVerification && (
+          <ApplyForVerificationBox>
+            <ApplyForVerificationTitle>Community is not Verified</ApplyForVerificationTitle>
+            <ApplyForVerificationDesc>
+              If you are on the team, Please send us message and get verified.
+            </ApplyForVerificationDesc>
+            <ApplyForVerificationBtn onClick={handleApplyForVerification} disabled={applyForVerificationLoading}>
+              {applyForVerificationLoading ? 'Loading ...' : 'Apply for Verification'}
+            </ApplyForVerificationBtn>
+          </ApplyForVerificationBox>
+        )}
       </ProjectLeftBox>
 
       <ProjectRightBox>
@@ -284,31 +293,6 @@ const Project: React.FC = () => {
             />
           </ExploreTaskListBox>
         </ProjectEventsBox>
-
-        {/* <ProjectOtherInfoBox>
-            <ProjectOtherInfoLeftBox>
-              <ProjectLabelBox>
-                <ProjectLabel>Story</ProjectLabel>
-              </ProjectLabelBox>
-
-              <ProjectStoryContent value={data.story} />
-            </ProjectOtherInfoLeftBox>
-            <ProjectOtherInfoRightBox>
-              <ProjectOtherInfoRightTabs>
-                {ProjectInfoTabs.map((tab) => (
-                  <ProjectOtherInfoRightTab
-                    key={tab.value}
-                    isActive={tab.value === activeTab}
-                    onClick={() => setActiveTab(tab.value)}
-                  >
-                    {tab.label}
-                  </ProjectOtherInfoRightTab>
-                ))}
-              </ProjectOtherInfoRightTabs>
-              {(activeTab === ProjectInfoTabsValue.TEAM && <ProjectTeamMemberList items={teamMembers} />) ||
-                (activeTab === ProjectInfoTabsValue.ROADMAP && <ProjectRoadmap items={data.roadmap} />)}
-            </ProjectOtherInfoRightBox>
-          </ProjectOtherInfoBox> */}
       </ProjectRightBox>
       {displayCheckin && (
         <CommunityCheckinFloatingWindow>
@@ -361,6 +345,9 @@ const CommunityCheckinBtn = styled(ButtonPrimary)`
 const ProjectLeftBox = styled.div`
   flex-shrink: 0;
   width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     width: 100%;
   }
@@ -410,6 +397,9 @@ const ProjectNumbersItemValue = styled.span`
     line-height: 21px;
   }
 `
+const ProjectImageBox = styled.div`
+  position: relative;
+`
 const ProjectImage = styled.img`
   width: 140px;
   height: 140px;
@@ -448,7 +438,7 @@ const ProjectLink = styled.a`
 `
 const FollowBtn = styled(CommunityFollowButton)`
   width: 100%;
-  height: 40px;
+  height: 60px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     width: 70px;
     height: 30px;
@@ -468,7 +458,27 @@ const ProjectName = styled.div`
     line-height: 30px;
   }
 `
-
+const ApplyForVerificationBox = styled(CardBox)`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
+`
+const ApplyForVerificationTitle = styled.span`
+  font-weight: 700;
+  font-size: 16px;
+  line-height: 24px;
+  color: #333333;
+`
+const ApplyForVerificationDesc = styled.span`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 20px;
+  color: #333333;
+`
+const ApplyForVerificationBtn = styled(ButtonPrimary)`
+  height: 40px;
+`
 const ProjectRightBox = styled.div`
   flex: 1;
   display: flex;
@@ -480,13 +490,6 @@ const ContributionListBox = styled(CardBox)`
   background: #fffbdb;
 `
 const ProjectEventsBox = styled(CardBox)``
-const ProjectOtherInfoBox = styled.div`
-  display: flex;
-  gap: 40px;
-`
-const ProjectOtherInfoLeftBox = styled.div`
-  flex: 1;
-`
 const ProjectLabelBox = styled.div`
   display: flex;
   gap: 10px;
@@ -499,23 +502,4 @@ const ProjectLabel = styled.div`
   font-weight: 700;
   font-size: 20px;
   color: #333333;
-`
-const ProjectStoryContent = styled(RichTextBox)``
-const ProjectOtherInfoRightBox = styled.div`
-  width: 560px;
-`
-const ProjectOtherInfoRightTabs = styled.div`
-  display: flex;
-  gap: 80px;
-  margin-bottom: 20px;
-  border-bottom: solid 1px #d9d9d9;
-`
-const ProjectOtherInfoRightTab = styled.div<{ isActive: Boolean }>`
-  font-weight: 700;
-  font-size: 20px;
-  color: ${({ isActive }) => (isActive ? `#333333` : 'rgba(51, 51, 51, 0.6)')};
-  ${({ isActive }) => (isActive ? `box-shadow: inset 0 -4px #3DD606;` : '')}
-  cursor: pointer;
-  padding-bottom: 10px;
-  transition: all 0.2s ease-in-out;
 `

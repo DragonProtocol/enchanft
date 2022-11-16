@@ -1,0 +1,58 @@
+{
+  "$schema": "..\\..\\..\\node_modules\\nx\\schemas\\project-schema.json",
+  "sourceRoot": "libs/wl-user/react/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@nrwl/web:rollup",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/wl-user/react",
+        "tsConfig": "libs/wl-user/react/tsconfig.lib.json",
+        "project": "libs/wl-user/react/package.json",
+        "entryFile": "libs/wl-user/react/src/index.ts",
+        "external": ["react/jsx-runtime"],
+        "rollupConfig": [
+          "@nrwl/react/plugins/bundle-rollup",
+          "libs/wl-user/react/bundle-rollup.cjs"
+        ],
+        "compiler": "babel",
+        "assets": [
+          {
+            "glob": "libs/wl-user/react/README.md",
+            "input": ".",
+            "output": "."
+          }
+        ]
+      }
+    },
+    "publish": {
+      "executor": "@nrwl/workspace:run-commands",
+      "options": {
+        "command": "pnpm nx build wl-user-react & node tools/scripts/publish.mjs wl-user-react {args.tag}"
+      },
+      "dependsOn": [
+        {
+          "projects": "self",
+          "target": "build"
+        }
+      ]
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/wl-user/react/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/libs/wl-user/react"],
+      "options": {
+        "jestConfig": "libs/wl-user/react/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 17:48:49
+ * @LastEditTime: 2022-11-15 15:16:40
  * @Description: 与后端entities type定义对应
  */
 
@@ -70,6 +70,7 @@ export enum ActionType {
   DISCORD_INVITES_PEOPLE = 'DISCORD_INVITES_PEOPLE',
   DISCORD_OBTAIN_ROLE = 'DISCORD_OBTAIN_ROLE',
   RETWEET = 'RETWEET',
+  QUOTE_TWEET = 'QUOTE_TWEET',
   LIKE_TWEET = 'LIKE_TWEET',
   REPLY_TWEET = 'REPLY_TWEET',
   UPDATE_BIO_OF_TWITTER = 'UPDATE_BIO_OF_TWITTER',
@@ -78,11 +79,19 @@ export enum ActionType {
   CUSTOM = 'CUSTOM',
   NATIVE_BALANCE = 'NATIVE_BALANCE',
   NFT_BALANCE = 'NFT_BALANCE',
+  QUESTIONNAIRE = 'QUESTIONNAIRE',
+  ANSWER_VERIFY = 'ANSWER_VERIFY',
+  UPLOAD_IMAGE = 'UPLOAD_IMAGE',
 }
 export type NftInfo = {
   name: string
   address: string
   url: string
+}
+export enum Chain {
+  EVM = 'EVM',
+  SOLANA = 'SOLANA',
+  APTOS = 'APTOS',
 }
 export type ActionData = {
   url?: string
@@ -95,6 +104,11 @@ export type ActionData = {
   min_native_balance?: number
   nft_accounts?: NftInfo[]
   wallet_url?: string
+  question?: string
+  answer?: string
+  lucky_draw_weight?: number
+  chain?: Chain
+  nopassReason?: string
 }
 export type Action = {
   id: number
@@ -131,6 +145,11 @@ export enum MintStage {
   SOLDOUT = 'SOLDOUT',
   CLOSED = 'CLOSED',
 }
+export enum GradeType {
+  UNOFFICIAL = 'UNOFFICIAL',
+  OFFICIAL = 'OFFICIAL',
+  VIP = 'VIP',
+}
 export type Project = {
   id: number
   name: string
@@ -145,11 +164,12 @@ export type Project = {
   mintUrl: string
   mintStartTime: number
   whitelistTotalNum: number
-  publicSaleTime: number
+  publicSaleStartTime: number
   publicSalePrice: string
   injectedCoins: number
   chainId: number
   slug: string
+  grade: GradeType
 }
 
 export type ContributionRank = {
@@ -158,6 +178,7 @@ export type ContributionRank = {
   userName: string
   pubkey: string
   score: number
+  userId: number
 }
 
 /** whitelist */
@@ -188,6 +209,7 @@ export type Reward = {
   type: RewardType
   raffled: boolean
   data: RewardData
+  luckyDraw: boolean
 }
 
 /** user */
@@ -204,13 +226,4 @@ export type Announcement = {
   projectId: number
   title: string
   text: string
-}
-
-/** account */
-export enum AccountType {
-  TWITTER = 'TWITTER',
-  DISCORD = 'DISCORD',
-  SOLANA = 'SOLANA',
-  EVM = 'EVM',
-  APTOS = 'APTOS',
 }

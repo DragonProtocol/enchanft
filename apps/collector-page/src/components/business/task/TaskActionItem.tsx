@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-27 14:39:59
+ * @LastEditTime: 2022-11-15 15:09:13
  * @Description: file description
  */
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
-import { ActionData, ActionType, Project, TaskType } from '../../../types/entities'
+import { ActionData, ActionType, Chain, Project, TaskType } from '../../../types/entities'
 import { UserActionStatus } from '../../../types/api'
 import ActionContributionScore from './actions/ActionContributionScore'
 import ActionFollowCommunity from './actions/ActionFollowCommunity'
@@ -24,7 +24,11 @@ import ActionCustom from './actions/ActionCustom'
 import ActionDiscordObtainRole from './actions/ActionDiscordObtainRole'
 import ActionNativeBalance from './actions/ActionNativeBalance'
 import ActionNftBalance from './actions/ActionNftBalance'
-
+import ActionQuestionnaire from './actions/ActionQuestionnaire'
+import SubtractImg from '../../imgs/subtract.svg'
+import ActionVerifyAnswer from './actions/ActionVerifyAnswer'
+import ActionQuoteTwitter from './actions/ActionQuoteTwitter'
+import ActionUploadImage from './actions/ActionUploadImage'
 export type TaskActionItemDataType = {
   id: number
   name: string
@@ -41,30 +45,48 @@ export type TaskActionItemDataType = {
     slug: string
   }
 }
-export type TaskActionItemHandlesType = {
+
+export type TaskActionItemStaticAttrGetters = {
+  allowHandle?: boolean
+  copyBgc?: string
+  dispalyLuckyDrawWeight?: boolean
+}
+export type TaskActionItemStaticFuncGetters = {
   onTwitter?: (callback: () => void) => void
   onDiscord?: (callback: () => void) => void
   onFollowCommunity?: (action: TaskActionItemDataType) => void
   onVerifyAction?: (action: TaskActionItemDataType) => void
   onCustomAction?: (action: TaskActionItemDataType) => void
+  onQuestionConfirm?: (action: TaskActionItemDataType, answer: string) => void
+  onQuestionVerifyConfirm?: (
+    action: TaskActionItemDataType,
+    answer: string,
+    confirmCallback: (assertAnswer: boolean) => void,
+  ) => void
+  onWallet?: (chain: Chain, callback: () => void) => void
+  onUploadImage?: (action: TaskActionItemDataType, url: string) => void
 }
-export type TaskActionItemProps = TaskActionItemHandlesType & {
-  data: TaskActionItemDataType
-  allowHandle?: boolean
-  verifying?: boolean
-  copyBgc?: string
-}
+export type TaskActionItemProps = TaskActionItemStaticAttrGetters &
+  TaskActionItemStaticFuncGetters & {
+    data: TaskActionItemDataType
+    verifying?: boolean
+  }
 
 const TaskActionItem: React.FC<TaskActionItemProps> = ({
   data,
   allowHandle,
+  verifying,
+  copyBgc,
+  dispalyLuckyDrawWeight,
   onTwitter,
   onDiscord,
   onFollowCommunity,
   onVerifyAction,
   onCustomAction,
-  verifying,
-  copyBgc,
+  onQuestionConfirm,
+  onQuestionVerifyConfirm,
+  onWallet,
+  onUploadImage,
 }: TaskActionItemProps) => {
   const { name, orderNum, type, taskId, projectId, communityId, data: actionData, status } = data
   const renderAction = () => {
@@ -90,6 +112,9 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       case ActionType.RETWEET:
         // 转发twitter
         return <ActionRetweetTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
+      case ActionType.QUOTE_TWEET:
+        // 转发twitter
+        return <ActionQuoteTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
       case ActionType.LIKE_TWEET:
         // 点赞twitter
         return <ActionLikeTwitter data={data} onTwitter={onTwitter} allowHandle={allowHandle} />
@@ -105,10 +130,21 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
         return <ActionCustom data={data} allowHandle={allowHandle} onCustomAction={onCustomAction} />
       case ActionType.NATIVE_BALANCE:
         // 钱包余额
-        return <ActionNativeBalance data={data} allowHandle={allowHandle} />
+        return <ActionNativeBalance data={data} allowHandle={allowHandle} onWallet={onWallet} />
       case ActionType.NFT_BALANCE:
         // 持有指定nft
         return <ActionNftBalance data={data} allowHandle={allowHandle} />
+      case ActionType.ANSWER_VERIFY:
+        // 问答
+        return (
+          <ActionVerifyAnswer data={data} allowHandle={allowHandle} onQuestionVerifyConfirm={onQuestionVerifyConfirm} />
+        )
+      case ActionType.QUESTIONNAIRE:
+        // 问卷调查
+        return <ActionQuestionnaire data={data} allowHandle={allowHandle} onQuestionConfirm={onQuestionConfirm} />
+      case ActionType.UPLOAD_IMAGE:
+        // 图片上传
+        return <ActionUploadImage data={data} allowHandle={allowHandle} onUploadImage={onUploadImage} />
       default:
         return name
     }
@@ -118,6 +154,12 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
       onVerifyAction(data)
     }
   }, [])
+  const renderWeight = useCallback(() => {
+    if (dispalyLuckyDrawWeight && actionData.lucky_draw_weight) {
+      return <TaskActionLuckyDrawWeight>+{actionData.lucky_draw_weight}</TaskActionLuckyDrawWeight>
+    }
+    return null
+  }, [actionData])
   const renderStatus = () => {
     if (allowHandle) {
       switch (status) {
@@ -138,7 +180,10 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
   return (
     <TaskActionItemWrapper>
       <TaskActionContent>{renderAction()}</TaskActionContent>
-      {renderStatus()}
+      <TaskActionRight>
+        {renderWeight()}
+        {renderStatus()}
+      </TaskActionRight>
     </TaskActionItemWrapper>
   )
 }
@@ -156,6 +201,25 @@ const TaskActionItemWrapper = styled.div`
 const TaskActionContent = styled.div`
   flex: 1;
 `
+const TaskActionRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`
 const TaskActionStatusTodo = styled.div`
   cursor: pointer;
+  height: 24px;
+`
+const TaskActionLuckyDrawWeight = styled.div`
+  width: 20px;
+  height: 16px;
+  text-align: center;
+  background-image: url(${SubtractImg});
+  background-size: 100% 100%;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-weight: 700;
+  font-size: 11px;
+  line-height: 16px;
+  color: #f7f9f1;
 `

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 11:25:09
+ * @LastEditTime: 2022-10-24 00:06:48
  * @Description: 站点头部
  */
 import React, { useCallback } from 'react'
@@ -10,11 +10,11 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import { isDesktop } from 'react-device-detect'
 import LogoImg from '../imgs/logo.svg'
-import ConnectBtn from '../ConnectBtn'
 import useRoute from '../../hooks/useRoute'
 import { navs } from '../../route/routes'
-
+import { LoginButton, useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
 const Header: React.FC = () => {
+  const { isLogin, dispatchModal } = useWlUserReact()
   const navigate = useNavigate()
   const { routeKey } = useRoute()
 
@@ -42,7 +42,10 @@ const Header: React.FC = () => {
       <HeaderRight>
         {isDesktop && PcNav()}
         <ConnectBtnBox>
-          <ConnectBtn />
+          {/* <ConnectBtn /> */}
+          <LoginButton
+            onClick={() => (isLogin ? navigate('/profile') : dispatchModal({ type: WlUserModalType.LOGIN }))}
+          />
         </ConnectBtnBox>
       </HeaderRight>
     </HeaderWrapper>

@@ -2,13 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 10:15:17
+ * @LastEditTime: 2022-11-01 17:30:58
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit'
 
 import websiteReducer from '../features/website/index'
-import accountReducer from '../features/user/accountSlice'
 
 // project
 import exploreRecommendProjectsReducer from '../features/explore/recommendProjectsSlice'
@@ -34,13 +33,11 @@ import userFollowedCommunitiesReducer from '../features/user/followedCommunities
 import userCheckinCommunitiesReducer from '../features/user/checkinCommunitiesSlice'
 import userRewardsReducer from '../features/user/userRewardsSlice'
 import userCommunityHandlesReducer from '../features/user/communityHandlesSlice'
-
-import creatorReducer from '../features/creator'
+import userProjectHandlesReducer from '../features/user/projectHandlesSlice'
 
 export const store = configureStore({
   reducer: {
     website: websiteReducer,
-    account: accountReducer,
 
     exploreSearchProjects: exploreSearchProjectsReducer,
     exploreRecommendProjects: exploreRecommendProjectsReducer,
@@ -61,8 +58,7 @@ export const store = configureStore({
     userCheckinCommunities: userCheckinCommunitiesReducer,
     userRewards: userRewardsReducer,
     userCommunityHandles: userCommunityHandlesReducer,
-
-    creator: creatorReducer,
+    userProjectHandles: userProjectHandlesReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

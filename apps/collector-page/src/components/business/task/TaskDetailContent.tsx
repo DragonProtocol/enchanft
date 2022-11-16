@@ -7,7 +7,7 @@ import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
 import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
 import PngIconScissorHand from '../../common/icons/PngIconScissorHand'
-import { getTaskRewardTypeLabel, getTaskRewardTypeValue } from '../../../utils/task'
+import { getTaskRewardTypeLabel, getTaskRewardTypeValue, isNoEndTime } from '../../../utils/task'
 import { MOBILE_BREAK_POINT } from '../../../constants'
 import { formatDateTime } from '../../../utils/time'
 
@@ -38,7 +38,6 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetai
   const { id, name, type, startTime, endTime, winnerNum, image, description, reward } = data
   const rewardTypeLabel = getTaskRewardTypeLabel(reward)
   const startDate = formatDateTime(startTime)
-  const endDate = formatDateTime(endTime)
   const rewardValue = getTaskRewardTypeValue(reward)
   return (
     <TaskDetailContentWrapper>
@@ -47,7 +46,8 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetai
         <TaskDateAndWinnerItem>
           <PngIconAlarmClock size={'16px'} />
           <TaskDateTime>
-            {startDate} -- {endDate}
+            {startDate}
+            {!isNoEndTime(endTime) && ` — ${formatDateTime(endTime)}`}
           </TaskDateTime>
         </TaskDateAndWinnerItem>
         {winnerNum !== undefined && (

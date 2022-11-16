@@ -14,7 +14,7 @@ export type ProjectDetailBasicInfoDataType = {
   status: ProjectStatus
   image: string
   itemTotalNum: number
-  publicSaleTime: number
+  publicSaleStartTime: number
   publicSalePrice: string
   injectedCoins: number
   chainId: number
@@ -50,7 +50,7 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
     status,
     image,
     itemTotalNum,
-    publicSaleTime,
+    publicSaleStartTime,
     publicSalePrice,
     injectedCoins,
     chainId,
@@ -126,24 +126,28 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
       {displayMintInfo && (
         <>
           {renderWhitelist()}
-          <ProjectMintInfoBox>
-            <ProjectMintInfoBoxTop>
-              <ProjectMintInfoLabel>Public</ProjectMintInfoLabel>
-              {publicSaleTime &&
-                (publicSaleTime < new Date().getTime() ? (
-                  <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
-                ) : (
-                  <>
-                    <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
-                    <MintTimeCountdown timestamp={publicSaleTime} />
-                  </>
-                ))}
-            </ProjectMintInfoBoxTop>
-            <PrjectMintInfoPriceText>
-              {mintLimited && `MAX ${mintLimited} Tokens .`}
-              {publicSalePrice && `Mint Price ${publicSalePrice}`}
-            </PrjectMintInfoPriceText>
-          </ProjectMintInfoBox>
+          {(publicSaleStartTime || mintLimited || publicSalePrice) && (
+            <ProjectMintInfoBox>
+              <ProjectMintInfoBoxTop>
+                <ProjectMintInfoLabel>Public</ProjectMintInfoLabel>
+                {publicSaleStartTime &&
+                  (publicSaleStartTime < new Date().getTime() ? (
+                    <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
+                  ) : (
+                    <>
+                      <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
+                      <MintTimeCountdown timestamp={publicSaleStartTime} />
+                    </>
+                  ))}
+              </ProjectMintInfoBoxTop>
+              {(mintLimited || publicSalePrice) && (
+                <PrjectMintInfoPriceText>
+                  {mintLimited && `MAX ${mintLimited} Tokens .`}
+                  {publicSalePrice && `Mint Price ${publicSalePrice}`}
+                </PrjectMintInfoPriceText>
+              )}
+            </ProjectMintInfoBox>
+          )}
         </>
       )}
     </ProjectDetailBasicInfoWrapper>
@@ -159,10 +163,6 @@ const MintTimeCountdown = styled(TimeCountdown)`
   margin-left: 10px;
 `
 const ProjectDescription = styled(RichTextBox)`
-  max-height: 120px;
-  overflow-y: auto;
-  ${ScrollBarCss}
-
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;
@@ -173,10 +173,6 @@ const ProjectDescription = styled(RichTextBox)`
   }
 `
 const ProjectAnnouncement = styled(RichTextBox)`
-  max-height: 120px;
-  overflow-y: auto;
-  ${ScrollBarCss}
-
   font-weight: 400;
   font-size: 14px;
   line-height: 20px;

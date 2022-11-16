@@ -2,22 +2,19 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:30:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-13 15:28:19
+ * @LastEditTime: 2022-10-31 14:22:06
  * @Description: file description
  */
+import { UserAvatar } from '@ecnft/wl-user-react'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { MOBILE_BREAK_POINT } from '../../../constants'
-import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
-import { ButtonWarning } from '../../common/button/ButtonBase'
 import CommunityFollowButton, { FollowStatusType } from '../community/CommunityFollowButton'
-import UserAvatar from '../user/UserAvatar'
 export type ContributionMyDataType = {
-  id: number
   avatar: string
   userName: string
   score: number
-  pubkey: string
+  ranking: number
 }
 
 export type ContributionMyViewConfigType = {
@@ -46,16 +43,19 @@ const ContributionMy: React.FC<ContributionMyProps> = ({
   onFollow,
   onAccountOperation,
 }: ContributionMyProps) => {
-  const { avatar, userName, score, pubkey } = data
+  const { userName, score, ranking } = data
   const { displayFollowCommunity, followStatusType } = {
     ...defaultViewConfig,
     ...viewConfig,
   }
   return (
     <ContributionMyWrapper>
-      <Avatar src={avatar} multiavatarId={getMultiavatarIdByUser(data)} />
+      <Avatar />
       <RightBox>
-        <UserName>{userName}</UserName>
+        <RightTop>
+          <UserName>{userName}</UserName>
+          {!!ranking && <UserRanking>#{ranking}</UserRanking>}
+        </RightTop>
 
         {displayFollowCommunity ? (
           <FollowBtn followStatusType={followStatusType} onFollow={onFollow} onAccountOperation={onAccountOperation} />
@@ -87,11 +87,27 @@ const RightBox = styled.div`
   flex-direction: column;
   justify-content: space-evenly;
 `
-
+const RightTop = styled.div`
+  display: flex;
+  gap: 4px;
+  align-items: center;
+`
 const UserName = styled.span`
   font-weight: 700;
   font-size: 20px;
   line-height: 30px;
+  color: #333333;
+`
+const UserRanking = styled.span`
+  height: 25px;
+  padding: 2px 8px;
+  background: #ffe793;
+  border-radius: 23px;
+  box-sizing: border-box;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 25px;
+  text-align: center;
   color: #333333;
 `
 const UserScore = styled.span`
@@ -104,8 +120,8 @@ const UserScore = styled.span`
   }
 `
 const FollowBtn = styled(CommunityFollowButton)`
-  min-width: 100px;
-  height: 48px;
+  width: 150px;
+  height: 36px;
   font-weight: 700;
   font-size: 18px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {

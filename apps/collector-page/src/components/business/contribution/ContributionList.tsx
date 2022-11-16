@@ -2,25 +2,25 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 16:10:51
+ * @LastEditTime: 2022-10-31 14:12:35
  * @Description: file description
  */
 import React, { useCallback } from 'react'
 import styled from 'styled-components'
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import UserAvatar from '../user/UserAvatar'
 import PngIconTrophy from '../../common/icons/PngIconTrophy'
 import CrownImg from '../../imgs/crown.svg'
 import ButtonBase from '../../common/button/ButtonBase'
 import { MOBILE_BREAK_POINT } from '../../../constants'
 import { isDesktop } from 'react-device-detect'
-import { getMultiavatarIdByUser } from '../../../utils/multiavatar'
+import { UserAvatar } from '@ecnft/wl-user-react'
 export type ContributionItemDataType = {
   ranking: number
   avatar: string
   userName: string
   pubkey: string
   score: number
+  userId: number
 }
 export enum ContributionColumns {
   ranking = 'ranking',
@@ -40,6 +40,7 @@ export type ContributionListProps = {
   disabledDownload?: boolean
   displayMore?: boolean
   moreText?: string
+  highlightIds?: number[]
   onDownload?: () => void
   onMore?: () => void
 }
@@ -54,6 +55,7 @@ const ContributionList: React.FC<ContributionListProps> = ({
   disabledDownload = false,
   displayMore,
   moreText = 'View More',
+  highlightIds = [],
   onDownload,
   onMore,
 }: ContributionListProps) => {
@@ -90,9 +92,17 @@ const ContributionList: React.FC<ContributionListProps> = ({
             {displayRanking && (
               <ContributionItemRanking topThree={item.ranking < 4}>{item.ranking}</ContributionItemRanking>
             )}
-            {displayAvatar && <ContributionItemAvatar src={item.avatar} multiavatarId={getMultiavatarIdByUser(item)} />}
-            {displayUserName && <ContributionItemUserName>{item.userName}</ContributionItemUserName>}
-            {displayPubkey && <ContributionItemPubkey>{item.pubkey}</ContributionItemPubkey>}
+            {displayAvatar && <ContributionItemAvatar user={{ id: item.userId, avatar: item.avatar }} />}
+            {displayUserName && (
+              <ContributionItemUserName highlight={highlightIds.includes(item.userId)}>
+                {item.userName}
+              </ContributionItemUserName>
+            )}
+            {displayPubkey && (
+              <ContributionItemPubkey highlight={highlightIds.includes(item.userId)}>
+                {item.pubkey}
+              </ContributionItemPubkey>
+            )}
             {displayScore && <ContributionItemScore>{item.score}</ContributionItemScore>}
           </ContributionItemBox>
         ))}
@@ -187,16 +197,18 @@ const ContributionItemRanking = styled.div<{ topThree?: boolean }>`
 const ContributionItemAvatar = styled(UserAvatar)`
   width: 40px;
 `
-const ContributionItemUserName = styled(OverflowEllipsisBox)`
+const ContributionItemUserName = styled(OverflowEllipsisBox)<{ highlight?: boolean }>`
   width: 160px;
   text-align: left;
   text-transform: capitalize;
   font-weight: 700;
+  color: ${(props) => (props.highlight ? '#3DD606' : '#333333')};
 `
-const ContributionItemPubkey = styled(OverflowEllipsisBox)`
+const ContributionItemPubkey = styled(OverflowEllipsisBox)<{ highlight?: boolean }>`
   flex: 1;
   min-width: 45%;
   text-align: left;
+  color: ${(props) => (props.highlight ? '#3DD606' : '#333333')};
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     display: none;
   }

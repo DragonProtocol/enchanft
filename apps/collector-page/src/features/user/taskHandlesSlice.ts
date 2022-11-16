@@ -2,19 +2,22 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-25 19:02:07
+ * @LastEditTime: 2022-11-15 13:02:10
  * @Description: file description
  */
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
 import { toast } from 'react-toastify'
 import {
   completionOneAction,
+  confirmQuestionAction,
+  ResponseBizErrCode,
   takeTask as takeTaskRquest,
   verifyOneAction,
   verifyOneTask,
 } from '../../services/api/task'
 import { RootState } from '../../store/store'
 import { AsyncRequestStatus } from '../../types'
+import { UserActionStatus } from '../../types/api'
 import { Action, Task, TaskAcceptedStatus, TaskTodoCompleteStatus } from '../../types/entities'
 import { fetchTaskDetail, updateTaskDetail, updateTaskDetailAction } from '../task/taskDetailSlice'
 import { fetchFollowedCommunities } from './followedCommunitiesSlice'
@@ -178,6 +181,156 @@ export const completionAction = createAsyncThunk(
   },
 )
 
+// question verify confirm action
+export const questionVerifyConfirmAction = createAsyncThunk(
+  'user/taskHandles/questionConfirmVerifyAction',
+  async (params: { action: Action; answer: string; callback: (assertAnswer: boolean) => void }, { dispatch }) => {
+    const { action, answer, callback } = params
+    const { id, taskId } = action
+    try {
+      dispatch(addOneVerifyActionQueue(action))
+      const resp = await confirmQuestionAction({ id, taskId, answer })
+      if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
+        callback(true)
+        dispatch(
+          updateTaskDetailAction({
+            ...action,
+            status: UserActionStatus.DONE,
+            progress: '',
+          }),
+        )
+        dispatch(
+          updateOneAction({
+            ...action,
+            status: UserActionStatus.DONE,
+            progress: '',
+          }),
+        )
+        toast.success('Verified.')
+      } else {
+        callback(false)
+      }
+    } catch (error) {
+      throw error
+    } finally {
+      dispatch(removeOneVerifyActionQueue(id))
+    }
+  },
+  {
+    condition: (params: { action: Action; answer: string }, { getState }) => {
+      const { action, answer } = params
+      const state = getState() as RootState
+      const { selectById } = verifyActionQueueEntity.getSelectors()
+      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
+      return !item
+    },
+  },
+)
+// question confirm action
+export const questionConfirmAction = createAsyncThunk(
+  'user/taskHandles/questionConfirmAction',
+  async (params: { action: Action; answer: string }, { dispatch }) => {
+    const { action, answer } = params
+    const { id, taskId } = action
+    try {
+      const resp = await confirmQuestionAction({ id, taskId, answer })
+      if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
+        dispatch(
+          updateTaskDetailAction({
+            ...action,
+            status: UserActionStatus.TODO,
+            progress: '',
+            data: {
+              ...action.data,
+              answer: answer,
+              nopassReason: '',
+            },
+          }),
+        )
+        dispatch(
+          updateOneAction({
+            ...action,
+            status: UserActionStatus.TODO,
+            progress: '',
+            data: {
+              ...action.data,
+              answer: answer,
+              nopassReason: '',
+            },
+          }),
+        )
+        toast.success('Saved.')
+      } else {
+        toast.error('save error')
+      }
+    } catch (error) {
+      throw error
+    }
+  },
+  {
+    condition: (params: { action: Action; answer: string }, { getState }) => {
+      const { action, answer } = params
+      const state = getState() as RootState
+      const { selectById } = verifyActionQueueEntity.getSelectors()
+      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
+      return !item
+    },
+  },
+)
+// question confirm action
+export const uploadImageAction = createAsyncThunk(
+  'user/taskHandles/uploadImageAction',
+  async (params: { action: Action; url: string }, { dispatch }) => {
+    const { action, url: answer } = params
+    const { id, taskId } = action
+    try {
+      const resp = await confirmQuestionAction({ id, taskId, answer })
+      if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
+        dispatch(
+          updateTaskDetailAction({
+            ...action,
+            status: UserActionStatus.TODO,
+            progress: '',
+            data: {
+              ...action.data,
+              answer: answer,
+              nopassReason: '',
+            },
+          }),
+        )
+        dispatch(
+          updateOneAction({
+            ...action,
+            status: UserActionStatus.TODO,
+            progress: '',
+            data: {
+              ...action.data,
+              answer: answer,
+              nopassReason: '',
+            },
+          }),
+        )
+        toast.success('Uploaded.')
+      } else {
+        toast.error('upload error')
+      }
+    } catch (error) {
+      throw error
+    }
+  },
+  {
+    condition: (params: { action: Action; url: string }, { getState }) => {
+      const { action, url } = params
+      const state = getState() as RootState
+      const { selectById } = verifyActionQueueEntity.getSelectors()
+      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
+      return !!url || !item
+    },
+  },
+)
 export const userTaskHandlesSlice = createSlice({
   name: 'TaskHandles',
   initialState: initUserTaskHandlesState,
