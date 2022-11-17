@@ -2,11 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:51:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-07 14:37:16
+ * @LastEditTime: 2022-11-17 15:51:53
  * @Description: file description
  */
 import axios, { AxiosInstance, AxiosPromise } from 'axios';
 import qs from 'qs';
+
+export enum AsyncRequestStatus {
+  IDLE = 'idle',
+  PENDING = 'pending',
+  FULFILLED = 'fulfilled',
+  REJECTED = 'rejected',
+}
 export enum AccountType {
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',
@@ -79,7 +86,7 @@ export class ApiError extends Error {
 }
 
 // 添加响应拦截器
-let authFailedCallback: any;
+let authFailedCallback: () => void;
 export const setAuthFailedCallback = (callback: () => void) => {
   authFailedCallback = callback;
 };
@@ -106,13 +113,11 @@ axiosInstance.interceptors.response.use(
           authFailedCallback();
         }
         return undefined;
-      } else {
-        return Promise.reject(error.response?.data || error);
       }
-    } else {
-      // 对响应错误做点什么
       return Promise.reject(error.response?.data || error);
     }
+    // 对响应错误做点什么
+    return Promise.reject(error.response?.data || error);
   }
 );
 
@@ -162,9 +167,9 @@ export function login<K extends keyof LoginParamsMap>(
 ): AxiosPromise<LoginResult> {
   const data = qs.stringify(params);
   return axiosInstance({
-    url: `/users/login`,
+    url: '/users/login',
     method: 'post',
-    data: params,
+    data,
   });
 }
 
@@ -196,7 +201,7 @@ export function bindAccount<K extends keyof BindAccountParamsMap>(
   return axiosInstance({
     url: '/users/link',
     method: 'post',
-    data: data,
+    data,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -213,7 +218,7 @@ export function unbindAccount(
   return axiosInstance({
     url: '/users/unlink',
     method: 'post',
-    data: data,
+    data,
     headers: {
       Authorization: `Bearer ${token}`,
     },

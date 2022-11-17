@@ -2,11 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-13 12:39:21
+ * @LastEditTime: 2022-11-17 15:01:26
  * @Description: file description
  */
 import * as bs58 from 'bs58';
-import { ethers } from 'ethers';
 import {
   AccountType,
   ApiErrorMessageMap,
@@ -28,6 +27,7 @@ import {
   AuthorizerWebVersion,
 } from '../../authorizer';
 import iconUrl from './icon.svg';
+
 export const web3Window: typeof window & {
   solana?: any;
 } = window;
@@ -43,12 +43,10 @@ export async function getSolanaProvider() {
     const provider = web3Window.solana;
     if (provider.isPhantom) {
       return provider;
-    } else {
-      return null;
     }
-  } else {
     return null;
   }
+  return null;
 }
 export async function getPhantomAddr() {
   const solanaProvider = await getSolanaProvider();
@@ -66,13 +64,12 @@ export async function signMsgWithPhantom(): Promise<SignMsgResult | undefined> {
   const { signature: signatureBuf } = await solanaProvider.signMessage(
     Buffer.from(SIGN_MSG)
   );
-  const signature = bs58.encode(signatureBuf);
+  const signature = bs58.encode(signatureBuf as Uint8Array | number[]);
   return { pubkey: pubkey.toString(), signature, signMsg: SIGN_MSG };
 }
 export enum PhantomErrorName {
   PHANTOM_SIGNATURE_REQUEST_ERROR = 'PHANTOM_SIGNATURE_REQUEST_ERROR',
 }
-type ErrorName = PhantomErrorName | ApiErrorName;
 const ErrorName = { ...PhantomErrorName, ...ApiErrorName };
 const PhantomErrorMessageMap: {
   [name in keyof typeof ErrorName]: string;
@@ -129,7 +126,7 @@ export default (): Authorizer => {
               onLoginProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onLoginSuccess(result.data);
             })
-            .catch((error) => {
+            .catch((error: Error) => {
               apiCatch(error.message);
             });
         } else {
@@ -174,7 +171,7 @@ export default (): Authorizer => {
                 apiCatch('result data is null');
               }
             })
-            .catch((error) => apiCatch(error.message));
+            .catch((error: Error) => apiCatch(error.message));
         } else {
           signMsgCatch();
         }

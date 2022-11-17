@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 15:29:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-14 13:24:36
+ * @LastEditTime: 2022-11-17 16:45:21
  * @Description: file description
  */
 import '@rainbow-me/rainbowkit/styles.css';
@@ -30,12 +30,13 @@ import {
 import { publicProvider } from 'wagmi/providers/public';
 import { useCallback, useEffect, useRef } from 'react';
 import { AccountType, login, bindAccount } from '../../../api';
-import { useWlUserReact } from '../../../provider';
 import {
   AuthorizerActionProcessStatus,
   AuthorizerActionProviderComponentProps,
 } from '../../authorizer';
 import { SIGN_MSG } from '../../../constants';
+import { useWlUserReact } from '../../../hooks';
+
 const { chains, provider, webSocketProvider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
   [publicProvider()]
@@ -75,144 +76,147 @@ enum CurrentActionType {
   BIND = 'BIND',
 }
 
-export function ActionProviderComponent({
-  onLoginProcess,
-  onLoginSuccess,
-  onLoginError,
-  onBindProcess,
-  onBindSuccess,
-  onBindError,
-  setLoginAction,
-  setBindAction,
-}: AuthorizerActionProviderComponentProps) {
-  const currentActionType = useRef<CurrentActionType>(CurrentActionType.NONE);
-  const { user } = useWlUserReact();
+const ActionProviderComponent: React.FC<AuthorizerActionProviderComponentProps> =
+  function ({
+    onLoginProcess,
+    onLoginSuccess,
+    onLoginError,
+    onBindProcess,
+    onBindSuccess,
+    onBindError,
+    setLoginAction,
+    setBindAction,
+  }: AuthorizerActionProviderComponentProps) {
+    const currentActionType = useRef<CurrentActionType>(CurrentActionType.NONE);
+    const { user } = useWlUserReact();
 
-  const setOpenConnectModal = (fn: () => void) => {
-    setLoginAction(() => {
-      if (fn) {
-        currentActionType.current = CurrentActionType.LOGIN;
-        fn();
-      } else {
-        currentActionType.current = CurrentActionType.NONE;
-      }
-    });
-    setBindAction(() => {
-      if (fn) {
-        currentActionType.current = CurrentActionType.BIND;
-        fn();
-      } else {
-        currentActionType.current = CurrentActionType.NONE;
-      }
-    });
-  };
-  const onSignStart = useCallback(() => {
-    if (currentActionType.current === CurrentActionType.LOGIN) {
-      onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_PENDING);
-    } else if (currentActionType.current === CurrentActionType.BIND) {
-      onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_PENDING);
-    }
-  }, [onLoginProcess, onBindProcess]);
-  const onSignSuccess = useCallback(
-    (signature: string, message: string, pubkey: string) => {
+    const setOpenConnectModal = (fn: () => void) => {
+      setLoginAction(() => {
+        if (fn) {
+          currentActionType.current = CurrentActionType.LOGIN;
+          fn();
+        } else {
+          currentActionType.current = CurrentActionType.NONE;
+        }
+      });
+      setBindAction(() => {
+        if (fn) {
+          currentActionType.current = CurrentActionType.BIND;
+          fn();
+        } else {
+          currentActionType.current = CurrentActionType.NONE;
+        }
+      });
+    };
+    const onSignStart = useCallback(() => {
       if (currentActionType.current === CurrentActionType.LOGIN) {
-        onLoginProcess(AuthorizerActionProcessStatus.API_PENDING);
-        login({
-          type: AccountType.EVM,
-          signature: signature,
-          payload: message,
-          pubkey: pubkey,
-        })
-          .then((result) => {
-            const authenticated = !!result.data.token;
-            if (authenticated) {
-              onLoginProcess(AuthorizerActionProcessStatus.API_FULFILLED);
-              onLoginSuccess(result.data);
-            } else {
+        onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_PENDING);
+      } else if (currentActionType.current === CurrentActionType.BIND) {
+        onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_PENDING);
+      }
+    }, [onLoginProcess, onBindProcess]);
+    const onSignSuccess = useCallback(
+      (signature: string, message: string, pubkey: string) => {
+        if (currentActionType.current === CurrentActionType.LOGIN) {
+          onLoginProcess(AuthorizerActionProcessStatus.API_PENDING);
+          login({
+            type: AccountType.EVM,
+            signature,
+            payload: message,
+            pubkey,
+          })
+            .then((result) => {
+              const authenticated = !!result.data.token;
+              if (authenticated) {
+                onLoginProcess(AuthorizerActionProcessStatus.API_FULFILLED);
+                onLoginSuccess(result.data);
+              } else {
+                onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
+                onLoginError(new Error('Login Failed'));
+              }
+            })
+            .catch((error: Error) => {
               onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
-              onLoginError(new Error('Login Failed'));
-            }
+              onLoginError(error);
+            })
+            .finally(() => {
+              currentActionType.current = CurrentActionType.NONE;
+            });
+        } else if (currentActionType.current === CurrentActionType.BIND) {
+          onBindProcess(AuthorizerActionProcessStatus.API_PENDING);
+          bindAccount(user.token, {
+            type: AccountType.EVM,
+            signature,
+            payload: message,
+            pubkey,
           })
-          .catch((error) => {
-            onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
-            onLoginError(error);
-          })
-          .finally(() => {
-            currentActionType.current = CurrentActionType.NONE;
-          });
-      } else if (currentActionType.current === CurrentActionType.BIND) {
-        onBindProcess(AuthorizerActionProcessStatus.API_PENDING);
-        bindAccount(user.token, {
-          type: AccountType.EVM,
-          signature: signature,
-          payload: message,
-          pubkey: pubkey,
-        })
-          .then((result) => {
-            const authenticated = !!result.data;
-            if (authenticated) {
-              onBindProcess(AuthorizerActionProcessStatus.API_FULFILLED);
-              onBindSuccess(result.data);
-            } else {
+            .then((result) => {
+              const authenticated = !!result.data;
+              if (authenticated) {
+                onBindProcess(AuthorizerActionProcessStatus.API_FULFILLED);
+                onBindSuccess(result.data);
+              } else {
+                onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
+                onBindError(new Error('Bind Failed'));
+              }
+            })
+            .catch((error: Error) => {
               onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
-              onBindError(new Error('Bind Failed'));
-            }
-          })
-          .catch((error) => {
-            onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
-            onBindError(error);
-          })
-          .finally(() => {
-            currentActionType.current = CurrentActionType.NONE;
-          });
-      }
-    },
-    [
-      onLoginProcess,
-      onLoginSuccess,
-      onLoginError,
-      onBindProcess,
-      onBindSuccess,
-      onBindError,
-    ]
-  );
-  const onSignError = useCallback(
-    (error: Error) => {
-      if (currentActionType.current === CurrentActionType.LOGIN) {
-        onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
-        onLoginError(error);
-      } else if (currentActionType.current === CurrentActionType.BIND) {
-        onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
-        onBindError(error);
-      }
-    },
-    [onLoginError, onBindError]
-  );
-  return (
-    <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider appInfo={appInfo} chains={chains}>
-        <RainbowKitAuth
-          setOpenConnectModal={setOpenConnectModal}
-          onSignStart={onSignStart}
-          onSignSuccess={onSignSuccess}
-          onSignError={onSignError}
-        />
-      </RainbowKitProvider>
-    </WagmiConfig>
-  );
-}
+              onBindError(error);
+            })
+            .finally(() => {
+              currentActionType.current = CurrentActionType.NONE;
+            });
+        }
+      },
+      [
+        onLoginProcess,
+        onLoginSuccess,
+        onLoginError,
+        onBindProcess,
+        user.token,
+        onBindSuccess,
+        onBindError,
+      ]
+    );
+    const onSignError = useCallback(
+      (error: Error) => {
+        if (currentActionType.current === CurrentActionType.LOGIN) {
+          onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
+          onLoginError(error);
+        } else if (currentActionType.current === CurrentActionType.BIND) {
+          onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
+          onBindError(error);
+        }
+      },
+      [onLoginProcess, onLoginError, onBindProcess, onBindError]
+    );
+    return (
+      <WagmiConfig client={wagmiClient}>
+        <RainbowKitProvider appInfo={appInfo} chains={chains}>
+          <RainbowKitAuth
+            setOpenConnectModal={setOpenConnectModal}
+            onSignStart={onSignStart}
+            onSignSuccess={onSignSuccess}
+            onSignError={onSignError}
+          />
+        </RainbowKitProvider>
+      </WagmiConfig>
+    );
+  };
+export default ActionProviderComponent;
 type RainbowKitAuthProps = {
   setOpenConnectModal: (fn: () => void) => void;
   onSignStart: () => void;
   onSignSuccess: (signature: string, message: string, pubkey: string) => void;
   onSignError: (error: Error) => void;
 };
-const RainbowKitAuth: React.FC<RainbowKitAuthProps> = ({
+const RainbowKitAuth: React.FC<RainbowKitAuthProps> = function ({
   setOpenConnectModal,
   onSignStart,
   onSignSuccess,
   onSignError,
-}) => {
+}: RainbowKitAuthProps) {
   const { isLogin } = useWlUserReact();
   const { disconnect } = useDisconnect();
   const { openConnectModal } = useConnectModal();
@@ -234,10 +238,10 @@ const RainbowKitAuth: React.FC<RainbowKitAuthProps> = ({
   }, [resetSign, disconnect]);
   useEffect(() => {
     if (isSignLoading) {
-      onSignStart && onSignStart();
+      onSignStart();
     } else if (isConnected) {
       if (!isSignSuccess && !isSignError) {
-        signMessage && signMessage();
+        signMessage();
       } else if (isSignSuccess) {
         if (signData && address && onSignSuccess)
           onSignSuccess(signData, SIGN_MSG, address);
@@ -266,6 +270,9 @@ const RainbowKitAuth: React.FC<RainbowKitAuthProps> = ({
   useEffect(() => {
     handleReset();
   }, [isLogin, handleReset]);
-  useEffect(() => setOpenConnectModal(openConnectModal), [openConnectModal]);
+  useEffect(
+    () => setOpenConnectModal(openConnectModal),
+    [openConnectModal, setOpenConnectModal]
+  );
   return null;
 };

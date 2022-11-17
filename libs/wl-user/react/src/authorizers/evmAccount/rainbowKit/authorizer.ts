@@ -15,16 +15,15 @@ import {
 } from '../../authorizer';
 import { ActionProviderComponent } from './actionProviderComponent';
 import iconUrl from './icon.svg';
-export default (): Authorizer => {
-  return {
-    type: AuthorizerType.EVM_WALLET_KIT,
-    accountType: AccountType.EVM,
-    webVersion: AuthorizerWebVersion.web3,
-    name: 'Evm Wallet Kit',
-    bgColor: '#F6851B',
-    nameColor: '#FFFFFF',
-    iconUrl,
-    actionProcessComponent: AuthProcessModal,
-    ...createActionConfigByProviderComponent(ActionProviderComponent),
-  };
-};
+
+export default (): Authorizer => ({
+  type: AuthorizerType.EVM_WALLET_KIT,
+  accountType: AccountType.EVM,
+  webVersion: AuthorizerWebVersion.web3,
+  name: 'Evm Wallet Kit',
+  bgColor: '#F6851B',
+  nameColor: '#FFFFFF',
+  iconUrl,
+  actionProcessComponent: AuthProcessModal,
+  ...createActionConfigByProviderComponent(ActionProviderComponent),
+});

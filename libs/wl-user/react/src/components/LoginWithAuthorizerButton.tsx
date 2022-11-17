@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 19:25:54
+ * @LastEditTime: 2022-11-17 16:46:57
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { AuthorizerActionProcessStatus, AuthorizerType } from '../authorizers';
-import { useWlUserReact, WlUserActionType } from '../provider';
+import { useWlUserReact } from '../hooks';
 import { ButtonPrimary } from './common/button/ButtonBase';
 
 export type LoginWithAuthorizerButtonProps =

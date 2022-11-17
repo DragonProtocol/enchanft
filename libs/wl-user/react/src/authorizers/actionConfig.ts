@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-13 11:23:58
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-13 12:19:32
+ * @LastEditTime: 2022-11-17 11:22:31
  * @Description: 为action提供动力的辅助方法集合，用于得到正确的action配置
  */
 import React from 'react';
@@ -88,8 +88,12 @@ export const createActionConfigByProviderComponent = (
     onBindProcess: (status) => pubsub.trigger('bindProcess', status),
     onBindSuccess: (result) => pubsub.trigger('bindSuccess', result),
     onBindError: (error) => pubsub.trigger('bindError', error),
-    setLoginAction: (fn) => (action.login = fn),
-    setBindAction: (fn) => (action.bind = fn),
+    setLoginAction: (fn) => {
+      action.login = fn;
+    },
+    setBindAction: (fn) => {
+      action.bind = fn;
+    },
   });
   return {
     action,

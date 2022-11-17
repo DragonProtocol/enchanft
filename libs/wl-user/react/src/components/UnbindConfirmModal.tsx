@@ -7,10 +7,11 @@
  */
 import React from 'react';
 import styled from 'styled-components';
-import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
 import { isMobile } from 'react-device-detect';
+import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
 import { ButtonInfo, ButtonDanger } from './common/button/ButtonBase';
 import { Authorizer, AuthorizerType } from '../authorizers';
+
 export type UnbindConfirmModalProps = {
   isOpen: boolean;
   isLoading: boolean;
