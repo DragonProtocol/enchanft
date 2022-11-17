@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-17 15:36:32
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 16:43:24
+ * @LastEditTime: 2022-11-17 17:36:19
  * @Description: file description
  */
-import { createContext, useContext } from 'react';
+import { createContext } from 'react';
 import { User, AccountType, Account } from '../api';
-import { AuthorizerType, Authorizer } from '../authorizers';
+import { AuthorizerType, Authorizer } from '../authorizers/authorizer';
 
 export enum WlUserModalType {
   LOGIN = 'LOGIN',
