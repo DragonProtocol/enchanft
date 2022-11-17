@@ -2,15 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 17:01:29
+ * @LastEditTime: 2022-11-17 16:46:21
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useCallback } from 'react';
 import styled from 'styled-components';
-import { useWlUserReact, WlUserModalType } from '../provider';
 import { getUserDisplayName } from '../utils';
 import UserAvatar from './UserAvatar';
 import { ButtonPrimary } from './common/button/ButtonBase';
+import { WlUserModalType } from '../contexts/wlUserReact';
+import { useWlUserReact } from '../hooks';
 
 export type LoginButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
@@ -31,7 +32,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
         });
       }
     },
-    [onClick, isLogin]
+    [onClick, dispatchModal]
   );
   return (
     <LoginButtonWrapper onClick={handleClick} {...otherProps}>

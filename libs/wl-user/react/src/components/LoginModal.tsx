@@ -2,26 +2,26 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 18:57:28
+ * @LastEditTime: 2022-11-17 16:46:44
  * @Description: file description
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useWlUserReact } from '../provider';
+import { isDesktop, isMobile } from 'react-device-detect';
 import ModalBase, {
   ModalBaseProps,
   ModalBaseTitle,
 } from './common/modal/ModalBase';
-import { isDesktop, isMobile } from 'react-device-detect';
 import LoginWithAuthorizerButton from './LoginWithAuthorizerButton';
-import { AuthorizerType } from '../authorizers';
+import { useWlUserReact } from '../hooks';
+
 export type LoginModalProps = ModalBaseProps;
 
 const LoginModal: React.FC<LoginModalProps> = ({
   isOpen,
   ...modalProps
 }: LoginModalProps) => {
-  const { authorizers, getAuthorizer, authorizer } = useWlUserReact();
+  const { authorizers, authorizer } = useWlUserReact();
   // 推荐authorizer暂时先默认使用Twitter
   const recommendAuthorizer = authorizer || authorizers[0];
   // 将支持的otherAuthorizers作为登录选项
@@ -35,18 +35,13 @@ const LoginModal: React.FC<LoginModalProps> = ({
         <ModalBaseTitle>Login With</ModalBaseTitle>
         <LoginAuthorizerList>
           {recommendAuthorizer && (
-            <RecommendLoginButton
-              authorizerType={recommendAuthorizer.type}
-            ></RecommendLoginButton>
+            <RecommendLoginButton authorizerType={recommendAuthorizer.type} />
           )}
           {isDesktop && (
             <>
               {otherAuthorizersDisplay &&
-                otherAuthorizers.map((authorizer) => (
-                  <MoreLoginButton
-                    key={authorizer.type}
-                    authorizerType={authorizer.type}
-                  ></MoreLoginButton>
+                otherAuthorizers.map((item) => (
+                  <MoreLoginButton key={item.type} authorizerType={item.type} />
                 ))}
               <OtherAuthorizersDisplayBtn
                 onClick={() =>

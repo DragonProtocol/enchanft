@@ -7,6 +7,7 @@
  */
 import React from 'react';
 import { AccountType, BindResult, LoginResult } from '../api';
+
 export enum AuthorizerType {
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',

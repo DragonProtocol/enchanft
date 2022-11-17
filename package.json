@@ -10,7 +10,10 @@
     "lint:check": "nx run mini-site-baatarverse:lint && nx run collector-page:lint",
     "lint:fix": "nx lint --fix",
     "prepare": "husky install",
-    "format:staged": "lint-staged"
+    "format:staged": "lint-staged",
+    "prettier:check:all": "nx format:check",
+    "prettier:check": "nx format:check --projects",
+    "prettier:write": "nx format:write --projects"
   },
   "lint-staged": {
     "{apps,libs}/**/*.{js,ts,tsx}": [
@@ -53,6 +56,7 @@
     "eslint-plugin-cypress": "^2.10.3",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jsx-a11y": "6.5.1",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "7.30.0",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-sort-destructure-keys": "^1.4.0",

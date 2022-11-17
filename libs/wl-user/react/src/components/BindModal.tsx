@@ -2,27 +2,27 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 19:09:02
+ * @LastEditTime: 2022-11-17 17:08:51
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
 import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
-import { isMobile } from 'react-device-detect';
 import BindWithAuthorizerButton from './BindWithAuthorizerButton';
 import IconClose from './common/icons/IconClose';
 import { Authorizer } from '../authorizers';
+
 export type BindModalProps = {
   isOpen: boolean;
   authorizer: Authorizer | null;
   onClose?: () => void;
 };
 
-const BindModal: React.FC<BindModalProps> = ({
+const BindModal: React.FC<BindModalProps> = function ({
   isOpen,
   authorizer,
   onClose,
-}: BindModalProps) => {
+}: BindModalProps) {
   if (!authorizer) return null;
   const { name, type } = authorizer;
   return (
@@ -33,7 +33,8 @@ const BindModal: React.FC<BindModalProps> = ({
         </BindModalCloseButton>
         <ModalBaseTitle>Bind With</ModalBaseTitle>
         <BindModalDesc>
-          {name} is not connected. Please connect {name}.
+          {name} is not connected. Please connect
+          {name}.
         </BindModalDesc>
         <BindButton authorizerType={type} />
       </BindModalBody>

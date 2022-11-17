@@ -2,20 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 18:19:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 16:57:01
+ * @LastEditTime: 2022-11-17 17:12:24
  * @Description: file description
  */
 import { User } from '../api';
-import { Authorizer, AuthorizerWebVersion } from '../authorizers';
-export const openOauthWindow = (url: string): WindowProxy | null => {
-  return window.open(
+import { Authorizer, AuthorizerWebVersion } from '../authorizers/authorizer';
+
+export const openOauthWindow = (url: string): WindowProxy | null =>
+  window.open(
     url,
     '__blank',
-    `width=480,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no`
+    'width=480,height=800,top=0,menubar=no,toolbar=no,status=no,scrollbars=no,resizable=yes,directories=no,status=no,location=no'
   );
-};
 export const listenWindowClose = (win: Window, closeCallback: () => void) => {
-  const interval = setInterval(function () {
+  const interval = setInterval(() => {
     if (win.closed) {
       clearInterval(interval);
       closeCallback();
@@ -32,13 +32,14 @@ export const getAccountDisplayName = (user: User, authorizer: Authorizer) => {
       account.thirdpartyName
     ) {
       return account.thirdpartyName;
-    } else if (
+    }
+    if (
       authorizer.webVersion === AuthorizerWebVersion.web3 &&
       account.thirdpartyId
     ) {
-      return (
-        account.thirdpartyId.slice(0, 4) + '..' + account.thirdpartyId.slice(-4)
-      );
+      return `${account.thirdpartyId.slice(0, 4)}..${account.thirdpartyId.slice(
+        -4
+      )}`;
     }
   }
   return '';

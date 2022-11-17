@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 15:41:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 18:42:07
+ * @LastEditTime: 2022-11-17 17:35:33
  * @Description: file description
  */
 export * from './authorizer';
