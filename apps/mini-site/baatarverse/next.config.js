@@ -1,10 +1,10 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const withVideos = require('next-videos');
 // const withNx = require('@nrwl/next/plugins/with-nx');
-
+const withVideos = require('next-videos')
+ 
 /**
  * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
- * */
+ **/
 const nextConfig = {
   // nx: {
   //   // Set this to true if you would like to to use SVGR

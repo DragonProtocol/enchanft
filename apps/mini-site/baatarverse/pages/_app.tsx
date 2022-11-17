@@ -1,17 +1,20 @@
+import { useEffect } from 'react'
+
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import './styles.css';
-import favicon from '../public/static/favicon.png';
+import favicon from '../public/static/favicon.png'
 
-function CustomApp({ Component }: AppProps) {
+function CustomApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <link rel="icon" href={favicon.src} />
+      <link rel="icon" href={favicon.src}/>
+      {/* <link rel="icon" href="/static/favicon.ico"/> */}
         <title>CASKBAATAR</title>
       </Head>
       <main className="app">
-        <Component />
+        <Component {...pageProps} />
       </main>
     </>
   );
