@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 16:46:57
+ * @LastEditTime: 2022-11-18 16:37:16
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
@@ -71,7 +71,6 @@ const LoginWithAuthorizerButtonWrapper = styled(ButtonPrimary)<{
 const AuthorizerIcon = styled.img`
   width: 24px;
   height: 24px;
-  border-radius: 50%;
 `;
 const AuthorizerButtonName = styled.span<{ color: string }>`
   font-weight: 700;

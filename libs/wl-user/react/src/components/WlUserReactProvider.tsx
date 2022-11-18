@@ -153,8 +153,9 @@ export default function WlUserReactProvider({
     getAuthorizer(lastLoginInfo[StorageKey.LAST_LOGIN_AUTHORIZER_TYPE])
   );
   // 获取一次用户信息, 同步为最新的
+  const isInitFetchUser = useRef(false);
   useEffect(() => {
-    if (user.token) {
+    if (!isInitFetchUser.current && user.token) {
       getUserInfo(user.token)
         .then((result) => {
           const { data } = result.data;
@@ -166,7 +167,10 @@ export default function WlUserReactProvider({
           );
           updateStorageByUserInfo({ ...newUser, name });
         })
-        .catch(() => {});
+        .catch(() => {})
+        .finally(() => {
+          isInitFetchUser.current = true;
+        });
     }
   }, [getAuthorizer, user]);
 
