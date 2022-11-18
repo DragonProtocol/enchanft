@@ -11,7 +11,7 @@ import {
   phantomAuthorizer,
   martianAuthorizer,
   rainbowKitAuthorizer,
-  emailAuthorizer
+  emailAuthorizer,
 } from '@ecnft/wl-user-react'
 const TWITTER_CLIENT_ID = process.env.REACT_APP_TWITTER_CLIENT_ID || ''
 const TWITTER_CALLBACK_URL = process.env.REACT_APP_WL_USER_AUTH_CALLBACK_TWITTER || ''
@@ -24,5 +24,5 @@ export const authorizers = [
   rainbowKitAuthorizer(),
   phantomAuthorizer(),
   martianAuthorizer(),
-  emailAuthorizer()
+  emailAuthorizer(),
 ]
