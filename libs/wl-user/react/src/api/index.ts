@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:51:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 15:51:53
+ * @LastEditTime: 2022-11-18 17:07:56
  * @Description: file description
  */
 import axios, { AxiosInstance, AxiosPromise } from 'axios';
@@ -20,6 +20,7 @@ export enum AccountType {
   SOLANA = 'SOLANA',
   EVM = 'EVM',
   APTOS = 'APTOS',
+  EMAIL = 'EMAIL',
 }
 
 export enum RoleType {
@@ -146,9 +147,15 @@ type LoginParamsForDiscordAccount = {
   code: string;
   callback?: string;
 };
+type LoginAccountParamsForEmailAccount = {
+  type: AccountType;
+  code: string;
+  pubkey: string;
+};
 type LoginParamsMap = {
   [AccountType.TWITTER]: LoginParamsForTwitterAccount;
   [AccountType.DISCORD]: LoginParamsForDiscordAccount;
+  [AccountType.EMAIL]: LoginAccountParamsForEmailAccount;
   [AccountType.EVM]: HandleAccountParamsForWeb3Account;
   [AccountType.SOLANA]: HandleAccountParamsForWeb3Account;
   [AccountType.APTOS]: HandleAccountParamsForWeb3Account;
@@ -184,9 +191,15 @@ type BindAccountParamsForDiscordAccount = {
   code: string;
   callback: string;
 };
+type BindAccountParamsForEmailAccount = {
+  type: AccountType;
+  code: string;
+  pubkey: string;
+};
 type BindAccountParamsMap = {
   [AccountType.TWITTER]: BindAccountParamsForTwitterAccount;
   [AccountType.DISCORD]: BindAccountParamsForDiscordAccount;
+  [AccountType.EMAIL]: BindAccountParamsForEmailAccount;
   [AccountType.EVM]: HandleAccountParamsForWeb3Account;
   [AccountType.SOLANA]: HandleAccountParamsForWeb3Account;
   [AccountType.APTOS]: HandleAccountParamsForWeb3Account;
@@ -275,16 +288,17 @@ export function uploadUserAvatar(
     },
   });
 }
-// get twittier oauth1 request token ==================================
-type GetTwitterOauth1RequestTokenResult = {
-  oauthToken: string;
-  oauthTokenSecret: string;
-};
-export function getTwittierOauth1RequestToken(
-  callbackUri: string
-): AxiosPromise<ApiResp<GetTwitterOauth1RequestTokenResult>> {
+// send email
+export function sendEmailAuthRequest(
+  email: string,
+  token?: string
+): AxiosPromise<ApiResp<unknown>> {
   return axiosInstance({
-    url: `/users/twitter/oauth/request_token?callback=${callbackUri}`,
-    method: 'get',
+    url: '/users/email',
+    method: 'post',
+    data: qs.stringify({ email }),
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 }

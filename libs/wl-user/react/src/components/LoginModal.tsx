@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 16:46:44
+ * @LastEditTime: 2022-11-18 16:56:31
  * @Description: file description
  */
 import React, { useState } from 'react';
@@ -14,6 +14,7 @@ import ModalBase, {
 } from './common/modal/ModalBase';
 import LoginWithAuthorizerButton from './LoginWithAuthorizerButton';
 import { useWlUserReact } from '../hooks';
+import { AuthorizerType } from '../authorizers/authorizer';
 
 export type LoginModalProps = ModalBaseProps;
 
@@ -22,10 +23,14 @@ const LoginModal: React.FC<LoginModalProps> = ({
   ...modalProps
 }: LoginModalProps) => {
   const { authorizers, authorizer } = useWlUserReact();
+  // TODO email 登录接口完成后删除此筛选程序
+  const supportedAuthorizers = authorizers.filter(
+    (item) => item.type !== AuthorizerType.EMAIL
+  );
   // 推荐authorizer暂时先默认使用Twitter
-  const recommendAuthorizer = authorizer || authorizers[0];
+  const recommendAuthorizer = authorizer || supportedAuthorizers[0];
   // 将支持的otherAuthorizers作为登录选项
-  const otherAuthorizers = authorizers.filter(
+  const otherAuthorizers = supportedAuthorizers.filter(
     (item) => recommendAuthorizer.type !== item.type
   );
   const [otherAuthorizersDisplay, setOtherAuthorizersDisplay] = useState(false);
