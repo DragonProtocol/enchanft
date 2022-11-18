@@ -23,6 +23,51 @@ import ProjectAnnouncementEdit from './Pages/ProjectAnnouncementEdit';
 import Members from './Pages/Members';
 import { TaskPre } from './Pages/TaskPre';
 
+import {
+  twitterAuthorizer,
+  discordAuthorizer,
+  phantomAuthorizer,
+  martianAuthorizer,
+  rainbowKitAuthorizer,
+} from '@ecnft/wl-user-react';
+
+import {
+  WlUserReactProvider,
+  WlUserReactContextType,
+} from '@ecnft/wl-user-react';
+import { useState } from 'react';
+import { WorkProofList } from './Pages/WorkProofList';
+
+const TWITTER_CLIENT_ID = process.env.REACT_APP_TWITTER_CLIENT_ID;
+const TWITTER_CALLBACK_URL =
+  process.env.REACT_APP_WL_USER_AUTH_CALLBACK_TWITTER;
+const DISCORD_CLIENT_ID = process.env.REACT_APP_DISCORD_CLIENT_ID;
+const DISCORD_CALLBACK_URL =
+  process.env.REACT_APP_WL_USER_AUTH_CALLBACK_DISCORD;
+
+if (
+  !TWITTER_CLIENT_ID ||
+  !TWITTER_CALLBACK_URL ||
+  !DISCORD_CLIENT_ID ||
+  !DISCORD_CALLBACK_URL
+) {
+  throw new Error('config required!!!');
+}
+
+const signers = [
+  twitterAuthorizer({
+    twitterClientId: TWITTER_CLIENT_ID,
+    oauthCallbackUri: TWITTER_CALLBACK_URL,
+  }),
+  discordAuthorizer({
+    discordClientId: DISCORD_CLIENT_ID,
+    oauthCallbackUri: DISCORD_CALLBACK_URL,
+  }),
+  rainbowKitAuthorizer(),
+  phantomAuthorizer(),
+  martianAuthorizer(),
+];
+
 function App() {
   const { validLogin } = useAppConfig();
 
@@ -53,6 +98,7 @@ function App() {
           <Route path="mint/edit" element={<ProjectMintEdit />} />
           <Route path="task/pre" element={<TaskPre />} />
           <Route path="task/new" element={<TaskNew />} />
+          <Route path="task/:taskId/workProofs" element={<WorkProofList />} />
           <Route path="task/:taskId" element={<TaskDashboard />} />
           <Route path="account" element={<Account />} />
         </Route>
@@ -64,14 +110,23 @@ function App() {
 }
 
 export default function Providers() {
+  const [wlUserReactValue, setWlUserReactValue] = useState<
+    WlUserReactContextType | undefined
+  >(undefined);
+
   return (
-    <BrowserRouter>
-      <ReduxProvider store={store}>
-        <AppProvider>
-          <App />
-        </AppProvider>
-      </ReduxProvider>
-    </BrowserRouter>
+    <WlUserReactProvider
+      authorizers={signers}
+      valueChange={(value) => setWlUserReactValue(value)}
+    >
+      <BrowserRouter>
+        <ReduxProvider store={store}>
+          <AppProvider>
+            <App />
+          </AppProvider>
+        </ReduxProvider>
+      </BrowserRouter>
+    </WlUserReactProvider>
   );
 }
 

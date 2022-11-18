@@ -12,7 +12,6 @@ import { getTaskRewardTypeLabel } from '../../utils/task';
 import IconCheckbox from '../Icons/IconCheckbox';
 import IconCheckboxChecked from '../Icons/IconCheckboxChecked';
 import { RewardType } from '../TaskCreate/type';
-import UserAvatar from '../UserAvatar';
 import ConfirmModal from './ConfirmModal';
 import IconDownload from '../Icons/IconDownload';
 import IconTweet from '../Icons/IconTweet';
@@ -21,6 +20,7 @@ import AlarmModal from './AlarmModal';
 import { useParams } from 'react-router-dom';
 import { TASK_SHARE_URI } from '../../utils/constants';
 import IconConfirm from '../Icons/IconConfirm';
+import { UserAvatar } from '@ecnft/wl-user-react';
 
 export default function WinnerList({
   reward,
@@ -362,7 +362,7 @@ function ListItem({
       <div>
         <span className={idx < 3 ? 'index front-3' : 'index'}>{idx + 1}</span>
         <span>
-          <UserAvatar src={data.avatar} />
+          <UserAvatar user={{ avatar: data.avatar, id: data.id }} />
         </span>
         <span className="name">{data.name}</span>
         <span className="pubkey">{sortPubKey(data.pubkey, 16)}</span>
@@ -395,7 +395,7 @@ function PickedList({ idx, data }: { idx: number; data: any }) {
       <div>
         <span className={idx < 3 ? 'index front-3' : 'index'}>{idx + 1}</span>
         <span>
-          <UserAvatar src={data?.avatar} />
+          <UserAvatar user={{ avatar: data?.avatar || '', id: data.id }} />
         </span>
         <span className="name">{data?.name}</span>
         <span className="pubkey">{sortPubKey(data?.pubkey || '', 16)}</span>

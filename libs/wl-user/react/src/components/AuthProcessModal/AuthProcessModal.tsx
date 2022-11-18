@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import ModalBase, { ModalBaseTitle } from '../common/modal/ModalBase';
-import { isMobile } from 'react-device-detect';
 import { ButtonPrimary, ButtonInfo } from '../common/button/ButtonBase';
 import {
   AuthorizerActionProcessStatus,
   Authorizer,
   AuthorizerWebVersion,
-} from '../../authorizers';
-import { useWlUserReact } from '../../provider';
+} from '../../authorizers/authorizer';
+import { useWlUserReact } from '../../hooks';
+
 export type AuthProcessModalProps = {
   authorizer: Authorizer;
 };
@@ -17,7 +17,13 @@ enum ActionType {
   login = 'login',
   bind = 'bind',
 }
-const actionTypeMap = {
+const actionTypeMap: {
+  [k in keyof typeof ActionType]: { pendingName: string; rejectName: string };
+} = {
+  [ActionType.none]: {
+    pendingName: '',
+    rejectName: '',
+  },
   [ActionType.login]: {
     pendingName: 'Logging',
     rejectName: 'Login',
@@ -27,9 +33,9 @@ const actionTypeMap = {
     rejectName: 'Bind',
   },
 };
-const AuthProcessModal: React.FC<AuthProcessModalProps> = ({
+const AuthProcessModal: React.FC<AuthProcessModalProps> = function ({
   authorizer,
-}: AuthProcessModalProps) => {
+}: AuthProcessModalProps) {
   const { user } = useWlUserReact();
   const [processState, setProcessState] = useState({
     actionType: ActionType.none,
@@ -47,9 +53,9 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = ({
       setProcessState({
         ...processState,
         actionType: ActionType.login,
-        status: status,
+        status,
       }),
-    success: (result) => closeModal(),
+    success: () => closeModal(),
   });
 
   authorizer.action.bindListener({
@@ -57,9 +63,9 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = ({
       setProcessState({
         ...processState,
         actionType: ActionType.bind,
-        status: status,
+        status,
       }),
-    success: (result) => closeModal(),
+    success: () => closeModal(),
   });
   let isOpen = false;
   let title = '';
@@ -103,13 +109,10 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = ({
       closeBtnDisplay = true;
       retryBtnDisplay = true;
       break;
+    // no default
   }
   return (
-    <AuthProcessModalWrapper
-      zIndex={10000}
-      backdropFilter={true}
-      isOpen={isOpen}
-    >
+    <AuthProcessModalWrapper zIndex={10000} backdropFilter isOpen={isOpen}>
       <AuthProcessModalBody className="wl-user-modal-signature_body">
         <ModalBaseTitle>{title}</ModalBaseTitle>
         <AuthProcessModalDesc className="wl-user-modal-signature_title">

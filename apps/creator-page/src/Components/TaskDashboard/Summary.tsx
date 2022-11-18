@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { selectProjectDetail } from '../../redux/projectSlice';
 import { useAppSelector } from '../../redux/store';
-import { WL_HOST } from '../../utils/constants';
+import { WL_HOST, YEAR_3000 } from '../../utils/constants';
 import {
   getTaskRewardTypeLabel,
   getTaskRewardTypeValue,
@@ -42,8 +42,8 @@ export default function Summary({
         <div className="alarm-clock">
           <span>
             <PngIconAlarmClock />{' '}
-            {info?.startTime && new Date(info?.startTime).toLocaleDateString()}—
-            {info?.endTime && new Date(info?.endTime).toLocaleDateString()}
+            {info?.startTime && new Date(info?.startTime).toLocaleDateString()} — {' '}
+            {info?.endTime && new Date(info?.endTime).getTime() !==YEAR_3000 && new Date(info.endTime).toLocaleDateString()}
           </span>
           <span>
             <PngIconScissorHand />
@@ -55,7 +55,16 @@ export default function Summary({
             <PngIconGiftBox /> Reward: {getTaskRewardTypeValue(reward)}
           </span>
         </div>
-        <div className="desc">{info?.description || 'Task Statements'}</div>
+        <div className="desc">
+          <div className="ql-snow">
+            <div
+              className="ql-editor"
+              dangerouslySetInnerHTML={{
+                __html: info?.description || 'Task Statements',
+              }}
+            ></div>
+          </div>
+        </div>
         <hr />
 
         {/* <h4>{'Task Statements'}</h4> */}
@@ -160,6 +169,10 @@ const TaskTitleBox = styled.div`
     line-height: 21px;
     margin-top: 10px;
     color: rgba(51, 51, 51, 0.6);
+    & .ql-editor {
+      margin: 0;
+      padding: 0;
+    }
   }
   & .items {
     margin-top: 15px;

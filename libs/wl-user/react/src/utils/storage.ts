@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-30 11:45:27
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 16:19:59
+ * @LastEditTime: 2022-11-17 17:01:05
  * @Description: file description
  */
 import { LoginResult } from '../api';
@@ -49,7 +49,7 @@ const storageDefaultValues: StorageKeyValue = {
 export function getStorageValue<T extends StorageKey>(
   key: T
 ): StorageValueReturnType<T> {
-  let value = localStorage.getItem(key);
+  const value = localStorage.getItem(key);
   try {
     return value ? JSON.parse(value) : storageDefaultValues[key];
   } catch (e) {
@@ -80,18 +80,18 @@ const oldVersionLastLoginAuthorizerTypeMap = {
 };
 function oldVersionLastLoginAuthorizerTypeAdapter() {
   // c端旧版LastLoginAuthorizerType
-  const c_oldVersionLoginAuthorizerType = localStorage.getItem('lastLoginType');
+  const cOldVersionLoginAuthorizerType = localStorage.getItem('lastLoginType');
   // b端旧版LastLoginAuthorizerType
-  const b_oldVersionLoginAuthorizerType =
+  const bOldVersionLoginAuthorizerType =
     localStorage.getItem('last_login_type');
   let newLastLoginAuthorizerType = '';
-  if (c_oldVersionLoginAuthorizerType) {
+  if (cOldVersionLoginAuthorizerType) {
     newLastLoginAuthorizerType =
-      oldVersionLastLoginAuthorizerTypeMap[c_oldVersionLoginAuthorizerType];
+      oldVersionLastLoginAuthorizerTypeMap[cOldVersionLoginAuthorizerType];
     localStorage.removeItem('lastLoginType');
-  } else if (b_oldVersionLoginAuthorizerType) {
+  } else if (bOldVersionLoginAuthorizerType) {
     newLastLoginAuthorizerType =
-      oldVersionLastLoginAuthorizerTypeMap[b_oldVersionLoginAuthorizerType];
+      oldVersionLastLoginAuthorizerTypeMap[bOldVersionLoginAuthorizerType];
     localStorage.removeItem('last_login_type');
   }
   if (newLastLoginAuthorizerType) {
@@ -125,7 +125,7 @@ export function updateStorageByLogin(
 ): void {
   setStorageValue(StorageKey.LAST_LOGIN_AUTHORIZER_TYPE, authorizer.type);
   setStorageValue(StorageKey.LAST_LOGIN_TOKEN, data.token);
-  setStorageValue(StorageKey.LAST_LOGIN_USERID, data.id + '');
+  setStorageValue(StorageKey.LAST_LOGIN_USERID, `${data.id}`);
   setStorageValue(StorageKey.LAST_LOGIN_NAME, data.name);
   setStorageValue(StorageKey.LAST_LOGIN_AVATAR, data.avatar);
   if (authorizer.webVersion === AuthorizerWebVersion.web3) {

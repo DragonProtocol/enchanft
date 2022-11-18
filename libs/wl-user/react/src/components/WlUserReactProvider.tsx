@@ -1,134 +1,48 @@
-/*
- * @Author: shixuewen friendlysxw@163.com
- * @Date: 2022-09-29 16:38:00
- * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 16:24:00
- * @Description: file description
- */
-import {
-  Context,
+import React, {
   MutableRefObject,
   ReactNode,
   useCallback,
   useEffect,
   useMemo,
   useState,
+  useRef,
 } from 'react';
-import React, { createContext, useContext, useRef } from 'react';
+
+import Modal from 'react-modal';
+import { toast, ToastContainer } from 'react-toastify';
 import {
   getStorageValues,
   StorageKey,
   updateStorageByLogin,
   updateStorageByLogout,
   updateStorageByUserInfo,
-} from './utils/storage';
-import LoginModal from './components/LoginModal';
-import BindModal from './components/BindModal';
-import UnbindConfirmModal from './components/UnbindConfirmModal';
-import Modal from 'react-modal';
-import { toast, ToastContainer } from 'react-toastify';
-import EditProfileModal from './components/EditProfileModal';
-import { getUserDisplayName } from './utils';
-import { Authorizer, AuthorizerType } from './authorizers';
+} from '../utils/storage';
+import LoginModal from './LoginModal';
+import BindModal from './BindModal';
+import UnbindConfirmModal from './UnbindConfirmModal';
+import EditProfileModal from './EditProfileModal';
+import { getUserDisplayName } from '../utils';
+import { Authorizer, AuthorizerType } from '../authorizers';
 import {
   Account,
   AccountType,
+  AsyncRequestStatus,
   getUserInfo,
   setAuthFailedCallback,
   unbindAccount,
   updateUserInfo,
   User,
-} from './api';
+} from '../api';
+import {
+  DispatchActionModalParams,
+  DispatchActionParams,
+  WlUserActionType,
+  WlUserModalType,
+  WlUserReactContext,
+  WlUserReactContextType,
+} from '../contexts/wlUserReact';
+
 Modal.setAppElement('#root');
-export enum WlUserModalType {
-  LOGIN = 'LOGIN',
-  BIND = 'BIND',
-  UNBIND_CONFIRM = 'UNBIND_CONFIRM',
-  EDIT_PROFILE = 'EDIT_PROFILE',
-}
-export enum WlUserActionType {
-  LOGIN = 'LOGIN',
-  BIND = 'BIND',
-  UNBIND = 'UNBIND',
-  LOGOUT = 'LOGOUT',
-  UPDATE_USER_PROFILE = 'UPDATE_USER_PROFILE',
-}
-export enum AsyncRequestStatus {
-  IDLE = 'idle',
-  PENDING = 'pending',
-  FULFILLED = 'fulfilled',
-  REJECTED = 'rejected',
-}
-type DispatchActionModalParams =
-  | {
-      type: WlUserModalType.LOGIN;
-    }
-  | {
-      type: WlUserModalType.BIND;
-      payload: AuthorizerType;
-    }
-  | {
-      type: WlUserModalType.UNBIND_CONFIRM;
-      payload: AuthorizerType;
-    }
-  | {
-      type: WlUserModalType.EDIT_PROFILE;
-    };
-type DispatchActionParams =
-  | {
-      type: WlUserActionType.LOGIN;
-      payload: AuthorizerType;
-    }
-  | {
-      type: WlUserActionType.BIND;
-      payload: AuthorizerType;
-    }
-  | {
-      type: WlUserActionType.UNBIND;
-      payload: AuthorizerType;
-    }
-  | {
-      type: WlUserActionType.UPDATE_USER_PROFILE;
-      payload: Partial<User>;
-    }
-  | {
-      type: WlUserActionType.LOGOUT;
-    };
-
-const defaultUserData = {
-  id: 0,
-  name: '',
-  avatar: '',
-  accounts: [],
-  roles: [],
-  resourcePermissions: [],
-  token: '',
-};
-const lastLoginInfo = getStorageValues();
-
-export type WlUserReactContextType = {
-  // 所有注入的authorizer实例
-  authorizers: Authorizer[];
-  // 当前登录的authorizer
-  authorizer: Authorizer | null | undefined;
-  // 用户信息
-  user: User;
-  // 是否登录
-  isLogin: boolean;
-  // 获取指定的签名者对象
-  getAuthorizer: (authorizerType: AuthorizerType) => Authorizer | undefined;
-  // 验证是否绑定了某个账号
-  validateBindAccount: (accountType: AccountType) => boolean;
-  // 获取绑定的账号
-  getBindAccount: (accountType: AccountType) => Account | undefined;
-  // 打开modal的触发器
-  dispatchModal: (params: DispatchActionModalParams) => void;
-  // 指定行为的触发器
-  dispatchAction: (params: DispatchActionParams) => void;
-};
-const WlUserReactContext = createContext<WlUserReactContextType | undefined>(
-  undefined
-);
 let wlUserReactContextValue: WlUserReactContextType | undefined;
 // 设定token认证失效的回调
 export const handleAuthFailed = () => {
@@ -143,6 +57,16 @@ export const handleAuthFailed = () => {
   }
 };
 setAuthFailedCallback(handleAuthFailed);
+const defaultUserData = {
+  id: 0,
+  name: '',
+  avatar: '',
+  accounts: [],
+  roles: [],
+  resourcePermissions: [],
+  token: '',
+};
+const lastLoginInfo = getStorageValues();
 
 export interface WlUserReactProviderProps {
   children: ReactNode;
@@ -150,7 +74,7 @@ export interface WlUserReactProviderProps {
   valueChange?: (value: WlUserReactContextType) => void;
 }
 
-export function WlUserReactProvider({
+export default function WlUserReactProvider({
   children,
   authorizers,
   valueChange,
@@ -165,14 +89,15 @@ export function WlUserReactProvider({
     );
   }
   if (
-    authorizers.length != cachedAuthorizers.current.length ||
+    authorizers.length !== cachedAuthorizers.current.length ||
     authorizers.some(
       (authorizer, i) => authorizer !== cachedAuthorizers.current[i]
     )
-  )
+  ) {
     throw new Error(
       'The authorizers prop passed to WlUserReactProvider must be referentially static.'
     );
+  }
 
   const [user, setUser] = useState<User>({
     ...defaultUserData,
@@ -220,31 +145,34 @@ export function WlUserReactProvider({
     [user]
   );
   const getAuthorizer = useCallback(
-    (authorizerType: AuthorizerType): Authorizer | undefined => {
-      return authorizers.find(
-        (authorizer) => authorizer.type === authorizerType
-      );
-    },
+    (authorizerType: AuthorizerType): Authorizer | undefined =>
+      authorizers.find((authorizer) => authorizer.type === authorizerType),
     [authorizers]
   );
   const [authorizer, setAuthorizer] = useState<Authorizer | undefined>(
     getAuthorizer(lastLoginInfo[StorageKey.LAST_LOGIN_AUTHORIZER_TYPE])
   );
   // 获取一次用户信息, 同步为最新的
+  const isInitFetchUser = useRef(false);
   useEffect(() => {
-    if (user.token) {
-      getUserInfo(user.token).then((result) => {
-        const { data } = result.data;
-        const newUser = { ...user, ...data };
-        setUser(newUser);
-        const name = getUserDisplayName(
-          newUser,
-          getAuthorizer(lastLoginInfo[StorageKey.LAST_LOGIN_AUTHORIZER_TYPE])
-        );
-        updateStorageByUserInfo({ ...newUser, name });
-      });
+    if (!isInitFetchUser.current && user.token) {
+      getUserInfo(user.token)
+        .then((result) => {
+          const { data } = result.data;
+          const newUser = { ...user, ...data };
+          setUser(newUser);
+          const name = getUserDisplayName(
+            newUser,
+            getAuthorizer(lastLoginInfo[StorageKey.LAST_LOGIN_AUTHORIZER_TYPE])
+          );
+          updateStorageByUserInfo({ ...newUser, name });
+        })
+        .catch(() => {})
+        .finally(() => {
+          isInitFetchUser.current = true;
+        });
     }
-  }, [getAuthorizer]);
+  }, [getAuthorizer, user]);
 
   // 监控成功回调，更新数据
   useEffect(() => {
@@ -298,9 +226,11 @@ export function WlUserReactProvider({
             ...editProfileModal,
             isOpen: true,
           });
+          break;
+        // no default
       }
     },
-    [unbindConfirmModal, editProfileModal]
+    [unbindConfirmModal, editProfileModal, getAuthorizer]
   );
 
   const dispatchAction = useCallback(
@@ -355,9 +285,10 @@ export function WlUserReactProvider({
           setUser(defaultUserData);
           updateStorageByLogout();
           break;
+        // no default
       }
     },
-    [user, editProfileModal]
+    [user, editProfileModal, getAuthorizer]
   );
 
   // 监听value变化（将provider内部的能力提供给provider外部）
@@ -384,39 +315,56 @@ export function WlUserReactProvider({
     isLogin,
     getAuthorizer,
     validateBindAccount,
+    getBindAccount,
     dispatchModal,
     dispatchAction,
+    valueChange,
   ]);
 
-  const authorizersElement = useMemo(() => {
-    return authorizers.map((item) => (
-      <React.Fragment key={item.type}>
-        {item.actionProviderElement ? item.actionProviderElement : null}
-        {item.actionProcessComponent ? (
-          <item.actionProcessComponent authorizer={item} />
-        ) : null}
-      </React.Fragment>
-    ));
-  }, [authorizers]);
+  const authorizersElement = useMemo(
+    () =>
+      authorizers.map((item) => (
+        <React.Fragment key={item.type}>
+          {item.actionProviderElement ? item.actionProviderElement : null}
+          {item.actionProcessComponent ? (
+            <item.actionProcessComponent authorizer={item} />
+          ) : null}
+        </React.Fragment>
+      )),
+    [authorizers]
+  );
   return (
     <WlUserReactContext.Provider
-      value={{
-        authorizers,
-        authorizer,
-        user,
-        isLogin,
-        getAuthorizer,
-        validateBindAccount,
-        getBindAccount,
-        dispatchModal,
-        dispatchAction,
-      }}
+      value={useMemo(
+        () => ({
+          authorizers,
+          authorizer,
+          user,
+          isLogin,
+          getAuthorizer,
+          validateBindAccount,
+          getBindAccount,
+          dispatchModal,
+          dispatchAction,
+        }),
+        [
+          authorizers,
+          authorizer,
+          user,
+          isLogin,
+          getAuthorizer,
+          validateBindAccount,
+          getBindAccount,
+          dispatchModal,
+          dispatchAction,
+        ]
+      )}
     >
       {children}
       <LoginModal
         isOpen={loginModal.isOpen}
         onRequestClose={() => setLoginModal({ isOpen: false })}
-        shouldCloseOnOverlayClick={true}
+        shouldCloseOnOverlayClick
       />
       <BindModal
         isOpen={bindModal.isOpen}
@@ -470,15 +418,4 @@ export function WlUserReactProvider({
       />
     </WlUserReactContext.Provider>
   );
-}
-
-export function useWlUserReact(): WlUserReactContextType {
-  const context = useContext(
-    WlUserReactContext as Context<WlUserReactContextType | undefined>
-  );
-  if (!context)
-    throw Error(
-      'useWlUserReact can only be used within the WlUserReactProvider component'
-    );
-  return context;
 }

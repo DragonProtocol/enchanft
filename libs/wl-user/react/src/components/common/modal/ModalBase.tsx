@@ -9,6 +9,7 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import ReactModal from 'react-modal';
 import { isMobile } from 'react-device-detect';
+
 export type ModalBaseProps = ReactModal.Props & {
   backdropFilter?: boolean;
   zIndex?: number;
@@ -41,7 +42,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   zIndex = 9999,
   ...otherProps
 }: ModalBaseProps) => {
-  const overlay = customStyles.overlay;
+  const { overlay } = customStyles;
   if (backdropFilter) {
     Object.assign(overlay, {
       backdropFilter: 'blur(12px)',
@@ -49,7 +50,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
     });
   }
   const styles = {
-    overlay: overlay,
+    overlay,
     content: customStyles.content,
   };
   return (

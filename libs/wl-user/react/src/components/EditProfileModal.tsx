@@ -2,21 +2,22 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 14:18:23
+ * @LastEditTime: 2022-11-17 16:45:56
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
 import { isMobile } from 'react-device-detect';
+import { toast } from 'react-toastify';
+import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
 import { ButtonInfo, ButtonPrimary } from './common/button/ButtonBase';
-import { useWlUserReact } from '../provider';
 import UserAvatar from './UserAvatar';
 import UploadImgMaskImg from './imgs/upload_img_mask.svg';
 import LoadingSvg from './imgs/loading.svg';
 import { AVATAR_SIZE_LIMIT } from '../constants';
-import { toast } from 'react-toastify';
 import { uploadUserAvatar, User } from '../api';
+import { useWlUserReact } from '../hooks';
+
 type EditUserForm = Pick<User, 'name' | 'avatar'>;
 export type EditProfileModalProps = {
   isOpen: boolean;
@@ -37,8 +38,10 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   });
   const [avatarUploading, setAvatarUploading] = useState(false);
   useEffect(() => {
-    setUserForm({ name: user.name, avatar: user.avatar });
-  }, [isOpen]);
+    if (isOpen) {
+      setUserForm({ name: user.name, avatar: user.avatar });
+    }
+  }, [isOpen, user]);
   return (
     <EditProfileModalWrapper isOpen={isOpen}>
       <EditProfileModalBody className="wl-user-modal-update-profile_body">

@@ -16,7 +16,6 @@ import AddMemberModal from '../Components/AddMemberModal';
 import IconCheckbox from '../Components/Icons/IconCheckbox';
 import IconCheckboxChecked from '../Components/Icons/IconCheckboxChecked';
 import IconDownload from '../Components/Icons/IconDownload';
-import IconInputSearch from '../Components/Icons/IconInputSearch';
 import IconRandom from '../Components/Icons/IconRandom';
 import { selectProjectDetail } from '../redux/projectSlice';
 import { useAppSelector } from '../redux/store';
@@ -26,13 +25,12 @@ import Pagination from '../Components/Pagination';
 import convertToCSV from '../utils/convertToCsv';
 import Loading from '../Components/Loading';
 import { Whales } from '../utils/constants';
-import UserAvatar from '../Components/UserAvatar';
 import { chainIdToChain, sortPubKey } from '../utils';
 import IconPngSearch from '../Components/Icons/IconPngSearch';
-import IconTweet from '../Components/Icons/IconTweet';
 import IconTwitter from '../Components/Icons/IconTwitter';
 import IconDiscord from '../Components/Icons/IconDiscord';
 import { BlockchainType } from '../Components/Project/types';
+import { UserAvatar } from '@ecnft/wl-user-react';
 
 const fileDownload = require('js-file-download');
 
@@ -244,7 +242,9 @@ export default function Members() {
                     </td>*/}
                     {/* <td>{item.userId}</td> */}
                     <td>
-                      <UserAvatar src={item.userAvatar} />
+                      <UserAvatar
+                        user={{ avatar: item.userAvatar, id: item.id }}
+                      />
                       {item.userName || '❌'}
                     </td>
                     <td>

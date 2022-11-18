@@ -1,19 +1,25 @@
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { TASK_DEFAULT_IMAGE_URLS } from '../../utils/constants';
+import BtnBox from './BtnBox';
 import { RewardType, State } from './type';
 
 export default function PreviewBtn({
   state,
   updateState,
   passAction,
+  backAction,
 }: {
   state: State;
   updateState: (arg0: State) => void;
   passAction: () => void;
+  backAction: () => void;
 }) {
   return (
     <PreviewBox>
+      <button className="cancel" onClick={backAction}>
+        Back
+      </button>
       <button
         className="preview-btn"
         onClick={() => {
@@ -54,21 +60,15 @@ export default function PreviewBtn({
   );
 }
 
-const PreviewBox = styled.div`
-  text-align: end;
-  & button.preview-btn {
-    cursor: pointer;
-    margin-top: 20px;
-    width: 200px;
-    background-color: #3dd606;
-    color: #fff;
-    border: none;
-    height: 48px;
-    font-size: 20px;
-    box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 27px;
+const PreviewBox = styled(BtnBox)`
+  & button {
+    &.cancel {
+      background: #ebeee4;
+      color: #333333;
+    }
+    &.preview-btn {
+      background-color: #3dd606;
+      color: #fff;
+    }
   }
 `;

@@ -1,5 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { AsyncRequestStatus, creatorApi, saveWinnersApi } from '../api';
+import {
+  AsyncRequestStatus,
+  creatorApi,
+  getWorkProofs,
+  PassFlag,
+  reviewWorkProof,
+  ReviewWorkProofParam,
+  saveWinnersApi,
+} from '../api';
 import { RewardType, RewardData } from '../Components/TaskCreate/type';
 import { RootState } from './store';
 
@@ -38,6 +46,7 @@ export type PickedWhiteList = {
 export type CreatorState = {
   status: AsyncRequestStatus;
   saveStatus: AsyncRequestStatus;
+  workProofsStatus: AsyncRequestStatus;
   participants: number;
   winners: number;
   whitelistSaved: boolean;
@@ -53,12 +62,29 @@ export type CreatorState = {
     raffled: boolean;
     data: RewardData;
   };
+  workProofs: WorkProofInfo[];
+  allWorkProofs: WorkProofInfo[];
 };
 
+export type WorkProofInfo = {
+  userId: string;
+  userName: string;
+  userAvatar: string;
+  actionId: number;
+  actionType: string;
+  actionData: {
+    question: string;
+    answer: string;
+    lucky_draw_weight: number;
+  };
+  passed: boolean;
+  submitTime: string;
+};
 // 站点状态信息
 const creatorState: CreatorState = {
   status: AsyncRequestStatus.IDLE,
   saveStatus: AsyncRequestStatus.IDLE,
+  workProofsStatus: AsyncRequestStatus.IDLE,
   participants: 0,
   winners: 0,
   whitelistSaved: false,
@@ -74,6 +100,8 @@ const creatorState: CreatorState = {
     name: '',
     data: {},
   },
+  workProofs: [],
+  allWorkProofs: [],
 };
 
 export const getCreatorDashboardData = createAsyncThunk(
@@ -107,6 +135,49 @@ export const saveWinnersData = createAsyncThunk(
   }
 );
 
+export const submitReviewWorkProof = createAsyncThunk(
+  'creator/reviewWorkProof',
+  async (
+    {
+      taskId,
+      data,
+      token,
+    }: {
+      token: string;
+      data: ReviewWorkProofParam;
+      taskId: number;
+    },
+    ThunkAPI
+  ) => {
+    const resp = await reviewWorkProof(taskId, data, token);
+    ThunkAPI.dispatch(getCreatorDashboardData({ taskId, token }));
+    ThunkAPI.dispatch(
+      getWorkProofsData({
+        taskId: taskId,
+        passFlag: PassFlag.NOT_PROCESSED,
+        token: token,
+      })
+    );
+    return resp.data;
+  }
+);
+
+export const getWorkProofsData = createAsyncThunk(
+  'creator/workProofs',
+  async ({
+    taskId,
+    passFlag,
+    token,
+  }: {
+    taskId: number;
+    passFlag: PassFlag;
+    token: string;
+  }) => {
+    const resp = await getWorkProofs(taskId, passFlag, token);
+    return resp.data;
+  }
+);
+
 export const creatorSlice = createSlice({
   name: 'website',
   initialState: creatorState,
@@ -123,6 +194,7 @@ export const creatorSlice = createSlice({
       state.scheduleInfo = creatorState.scheduleInfo;
       state.taskInfo = creatorState.taskInfo;
       state.reward = creatorState.reward;
+      state.workProofs = creatorState.workProofs;
     },
   },
   extraReducers: (builder) => {
@@ -142,6 +214,7 @@ export const creatorSlice = createSlice({
         state.scheduleInfo = action.payload.scheduleInfo;
         state.taskInfo = action.payload.taskInfo;
         state.reward = action.payload.reward;
+        state.workProofs = action.payload.workProofs;
       })
       .addCase(getCreatorDashboardData.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED;
@@ -156,6 +229,18 @@ export const creatorSlice = createSlice({
       })
       .addCase(saveWinnersData.rejected, (state, action) => {
         state.saveStatus = AsyncRequestStatus.REJECTED;
+      })
+      //work proofs
+      .addCase(getWorkProofsData.pending, (state, action) => {
+        state.workProofsStatus = AsyncRequestStatus.PENDING;
+      })
+      .addCase(getWorkProofsData.fulfilled, (state, action) => {
+        state.workProofsStatus = AsyncRequestStatus.FULFILLED;
+        console.log('all work proofs: ', action.payload);
+        state.allWorkProofs = action.payload.data;
+      })
+      .addCase(getWorkProofsData.rejected, (state, action) => {
+        state.workProofsStatus = AsyncRequestStatus.REJECTED;
       });
   },
 });

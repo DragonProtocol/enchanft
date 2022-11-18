@@ -1,24 +1,30 @@
 import styled from 'styled-components';
 import { RewardType, State } from './type';
 import AddSvg from '../imgs/add.svg';
+import ArrowDown from '../Icons/svgs/arrow_down.svg';
 import dayjs from 'dayjs';
 import UploadImgModal from '../UploadImgModal';
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
+
 import { TASK_IMAGE_SIZE_LIMIT } from '../../utils/constants';
 import { uploadImage as uploadImageApi } from '../../api';
 import { useAppConfig } from '../../AppProvider';
 import { numberInput } from '../../utils';
 import { AxiosError } from 'axios';
 import SwitchBtn from '../SwitchBtn';
+import RichText from '../RichText';
+import { Whitelist } from '../../redux/projectSlice';
 
 export default function CreateTaskBasic({
   hasInviteBot,
   state,
   updateState,
+  whitelist,
 }: {
   hasInviteBot: boolean;
   state: State;
+  whitelist: Whitelist[];
   updateState: (arg0: State) => void;
 }) {
   const { account, updateAccount } = useAppConfig();
@@ -83,45 +89,41 @@ export default function CreateTaskBasic({
                 />
               </div>
 
-              <div className="content-item">
-                <h4>Task statement</h4>
-                <textarea
-                  title="task-statement"
-                  placeholder="Input"
-                  cols={30}
-                  rows={10}
-                  value={state.description}
-                  onChange={(e) => {
-                    updateState({
-                      ...state,
-                      description: e.target.value,
-                    });
+              <div className="content-item attach-file">
+                <h4>Task banner (640 * 300)</h4>
+                <input
+                  title="task-banner"
+                  id="task-banner"
+                  type="file"
+                  accept="image/png, image/gif, image/jpeg"
+                  onChange={uploadImageHandler}
+                />
+                <div
+                  onClick={() => {
+                    document.getElementById('task-banner')?.click();
                   }}
-                ></textarea>
+                >
+                  {(state.image && <img src={state.image} alt="" />) || (
+                    <div className="add-btn">
+                      <img className="add" src={AddSvg} alt="" />
+                      <br />
+                      <span>Attach file</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-            <div className="attach-file">
-              <h4>Task banner (640 * 300)</h4>
-              <input
-                title="task-banner"
-                id="task-banner"
-                type="file"
-                accept="image/png, image/gif, image/jpeg"
-                onChange={uploadImageHandler}
-              />
-              <div
-                onClick={() => {
-                  document.getElementById('task-banner')?.click();
+            <div className="statement">
+              <h4>Task statement</h4>
+              <RichText
+                text={state.description}
+                setText={(v) => {
+                  updateState({
+                    ...state,
+                    description: v,
+                  });
                 }}
-              >
-                {(state.image && <img src={state.image} alt="" />) || (
-                  <div className="add-btn">
-                    <img className="add" src={AddSvg} alt="" />
-                    <br />
-                    <span>Attach file</span>
-                  </div>
-                )}
-              </div>
+              />
             </div>
           </div>
         </div>
@@ -240,24 +242,33 @@ export default function CreateTaskBasic({
             <div>
               <div className="content-item">
                 <h4>Reward</h4>
-                <div className="reward-btn-group">
-                  <button
-                    className={
-                      state.reward.type === RewardType.WHITELIST ? 'active' : ''
-                    }
-                    onClick={() => {
-                      updateState({
-                        ...state,
-                        reward: {
-                          ...state.reward,
-                          name: '',
-                          type: RewardType.WHITELIST,
-                        },
-                      });
-                    }}
-                  >
-                    Whitelist
-                  </button>
+                <div
+                  className={
+                    'reward-btn-group ' +
+                    (whitelist.length > 0 ? 'three' : 'two')
+                  }
+                >
+                  {whitelist.length > 0 && (
+                    <button
+                      className={
+                        state.reward.type === RewardType.WHITELIST
+                          ? 'active'
+                          : ''
+                      }
+                      onClick={() => {
+                        updateState({
+                          ...state,
+                          reward: {
+                            ...state.reward,
+                            name: '',
+                            type: RewardType.WHITELIST,
+                          },
+                        });
+                      }}
+                    >
+                      Whitelist
+                    </button>
+                  )}
                   <button
                     className={
                       state.reward.type === RewardType.OTHERS ? 'active' : ''
@@ -294,6 +305,29 @@ export default function CreateTaskBasic({
                     Contribution Token
                   </button>
                 </div>
+                {state.reward.type === RewardType.WHITELIST && (
+                  <select
+                    title="whitelist"
+                    value={state.reward.whitelist_id}
+                    onChange={(e) => {
+                      updateState({
+                        ...state,
+                        reward: {
+                          ...state.reward,
+                          whitelist_id: Number(e.target.value),
+                        },
+                      });
+                    }}
+                  >
+                    {whitelist.map((item, idx) => {
+                      return (
+                        <option key={item.id} value={item.id}>
+                          Whitelist {idx + 1}
+                        </option>
+                      );
+                    })}
+                  </select>
+                )}
                 {state.reward.type === RewardType.OTHERS && (
                   <input
                     type="text"
@@ -428,7 +462,17 @@ const BasicBox = styled.div`
         overflow: hidden;
         border: 4px solid #333333;
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+
+        &.three {
+          grid-template-columns: 1fr 1fr 1fr;
+          & button:nth-child(2) {
+            border-left: 4px solid #333333;
+            border-right: 4px solid #333333;
+          }
+        }
+        &.two {
+          grid-template-columns: 1fr 1fr;
+        }
         & button {
           border: none;
           outline: none;
@@ -439,10 +483,7 @@ const BasicBox = styled.div`
           height: 50px;
           cursor: pointer;
         }
-        & button:nth-child(2) {
-          border-left: 4px solid #333333;
-          border-right: 4px solid #333333;
-        }
+
         & button.active {
           background: #333333;
           color: #fff;
@@ -500,13 +541,11 @@ const BasicBox = styled.div`
       }
     }
   }
-  & select {
-    width: 100%;
-  }
+
+  & select,
   & input,
   & textarea {
     font-family: inherit;
-    background-color: #f8f8f8;
     border: none;
     outline: none;
     padding: 12px 20px;
@@ -514,6 +553,17 @@ const BasicBox = styled.div`
     line-height: 27px;
     background: #ebeee4;
     border-radius: 10px;
+  }
+
+  & select {
+    width: 100%;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    background-image: url(${ArrowDown});
+    background-repeat: no-repeat;
+    background-position-x: calc(100% - 20px);
+    background-position-y: 19px;
   }
 
   & textarea {
@@ -551,6 +601,14 @@ const BasicBox = styled.div`
 
     > #task-banner {
       display: none;
+    }
+  }
+
+  & .statement {
+    > div {
+      background: #ebeee4;
+      border-radius: 10px;
+      overflow: hidden;
     }
   }
 `;

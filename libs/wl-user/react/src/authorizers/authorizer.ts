@@ -2,14 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-13 12:38:14
+ * @LastEditTime: 2022-11-18 11:19:04
  * @Description: file description
  */
 import React from 'react';
 import { AccountType, BindResult, LoginResult } from '../api';
+
 export enum AuthorizerType {
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',
+  EMAIL = 'EMAIL',
   METAMASK_WALLET = 'METAMASK_WALLET',
   PHANTOM_WALLET = 'PHANTOM_WALLET',
   MARTIAN_WALLET = 'MARTIAN_WALLET',
@@ -46,12 +48,12 @@ export type AuthorizerActionProcessComponentProps = {
 };
 
 export type AuthorizerActionProviderComponentProps = {
-  onLoginProcess: (status: AuthorizerActionProcessStatus) => void;
-  onLoginSuccess: (result: LoginResult) => void;
-  onLoginError: (error: Error) => void;
-  onBindProcess: (status: AuthorizerActionProcessStatus) => void;
-  onBindSuccess: (result: BindResult) => void;
-  onBindError: (error: Error) => void;
+  onLoginProcess?: (status: AuthorizerActionProcessStatus) => void;
+  onLoginSuccess?: (result: LoginResult) => void;
+  onLoginError?: (error: Error) => void;
+  onBindProcess?: (status: AuthorizerActionProcessStatus) => void;
+  onBindSuccess?: (result: BindResult) => void;
+  onBindError?: (error: Error) => void;
   setLoginAction: (fn: () => void) => void;
   setBindAction: (fn: () => void) => void;
 };

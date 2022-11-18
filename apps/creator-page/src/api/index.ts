@@ -152,7 +152,7 @@ export function createTask(data: CreateTaskState, token: string) {
     image: data.image,
     winNum: data.winnerNum,
     startTime: data.startTime,
-    endTime: data.endTime,
+    endTime: data.endTime, //if no end time, set endTime to year 3000 in Information
     reward: {
       type: data.reward.type,
       raffled: data.reward.raffled,
@@ -160,6 +160,7 @@ export function createTask(data: CreateTaskState, token: string) {
       luckyDraw: data.reward.luckyDraw,
       data: {
         token_num: data.reward.token_num,
+        whitelist_id: data.reward.whitelist_id,
       },
     },
     actions: data.actions.map((item) => {
@@ -190,7 +191,10 @@ export function createTask(data: CreateTaskState, token: string) {
           nft_accounts_or_add: item.nft_accounts_or_add,
           question: item.question,
           answer: item.answer,
-          lucky_draw_weight: item.lucky_draw_weight,
+          tag_friends_num: item.tag_friends_num,
+          lucky_draw_weight: data.reward.luckyDraw
+            ? item.lucky_draw_weight
+            : null,
           chain,
         },
       };
@@ -244,6 +248,53 @@ export function downloadWinner(type: string, taskId: string, token: string) {
       'text/csv;charset=utf-8',
       '\uFEFF'
     );
+  });
+}
+export type ReviewWorkProofParam = {
+  userId: string;
+  actionId: number;
+  passed: boolean;
+  nopassReason?: string;
+};
+
+export function reviewWorkProof(
+  taskId: number,
+  data: ReviewWorkProofParam,
+  token: string
+) {
+  return axios({
+    url: ApiBaseUrl + `/creator/workProofs/${taskId}`,
+    method: 'post',
+    data: data,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+}
+
+export enum PassFlag {
+  ALL = 'ALL',
+  PASS = 'PASS',
+  NOPASS = 'NOPASS',
+  NOT_PROCESSED = 'NOT_PROCESSED',
+}
+
+//后端支持分页，但前端暂时不用，以后补上
+export function getWorkProofs(
+  taskId: number,
+  passFlag: PassFlag,
+  token: string,
+  pageNo: number = 0,
+  pageSize: number = 999
+) {
+  return axios({
+    url:
+      ApiBaseUrl +
+      `/creator/workProofs/${taskId}?pageNumber=${pageNo}&pageSize=${pageSize}&passFlag=${passFlag}`,
+    method: 'get',
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 }
 

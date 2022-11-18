@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 19:25:54
+ * @LastEditTime: 2022-11-18 16:37:16
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { AuthorizerActionProcessStatus, AuthorizerType } from '../authorizers';
-import { useWlUserReact, WlUserActionType } from '../provider';
+import { useWlUserReact } from '../hooks';
 import { ButtonPrimary } from './common/button/ButtonBase';
 
 export type LoginWithAuthorizerButtonProps =
@@ -71,7 +71,6 @@ const LoginWithAuthorizerButtonWrapper = styled(ButtonPrimary)<{
 const AuthorizerIcon = styled.img`
   width: 24px;
   height: 24px;
-  border-radius: 50%;
 `;
 const AuthorizerButtonName = styled.span<{ color: string }>`
   font-weight: 700;

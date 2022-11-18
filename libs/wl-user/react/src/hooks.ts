@@ -2,13 +2,25 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-19 11:29:58
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 14:16:42
+ * @LastEditTime: 2022-11-17 16:44:30
  * @Description: file description
  */
-import { useCallback, useMemo } from 'react';
+import { useCallback, useContext, useMemo } from 'react';
 import { ResourceType, RoleType } from './api';
-import { useWlUserReact } from './provider';
+import {
+  WlUserReactContext,
+  WlUserReactContextType,
+} from './contexts/wlUserReact';
 
+export function useWlUserReact(): WlUserReactContextType {
+  const context = useContext(WlUserReactContext);
+  if (!context) {
+    throw Error(
+      'useWlUserReact can only be used within the WlUserReactProvider component'
+    );
+  }
+  return context;
+}
 export function usePermissions() {
   const { user } = useWlUserReact();
   const isCreator = useMemo(

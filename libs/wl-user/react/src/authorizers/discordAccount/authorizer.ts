@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-13 12:19:48
+ * @LastEditTime: 2022-11-17 14:32:59
  * @Description: file description
  */
 import {
@@ -26,7 +26,8 @@ import {
   AuthorizerWebVersion,
 } from '../authorizer';
 import iconUrl from './icon.svg';
-export interface DiscordConstructorArgs {
+
+export interface DiscordArgs {
   discordClientId: string;
   oauthCallbackUri: string;
 }
@@ -39,7 +40,6 @@ export type DiscordBindCallbackParams = {
 export enum DiscordErrorName {
   OAUTH_WINDOW_CLOSE = 'OAUTH_WINDOW_CLOSE',
 }
-type ErrorName = DiscordErrorName | ApiErrorName;
 const ErrorName = { ...DiscordErrorName, ...ApiErrorName };
 const DiscordErrorMessageMap: {
   [name in keyof typeof ErrorName]: string;
@@ -106,9 +106,9 @@ const isStartListenDiscordOauthStorage = () =>
     ListenDiscordOauthStorageKey.LISTEN_DISCORD_OAUTH_STATUS
   ) === ListenDiscordOauthStatus.START;
 const oauthCallbackUrlListener = (oauthCallbackUri: string) => {
-  if (location.href.startsWith(oauthCallbackUri)) {
+  if (window.location.href.startsWith(oauthCallbackUri)) {
     if (!isStartListenDiscordOauthStorage()) return;
-    const urlParams = new URLSearchParams(location.search);
+    const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     if (code) {
       endListenDiscordOauthStorage();
@@ -117,7 +117,10 @@ const oauthCallbackUrlListener = (oauthCallbackUri: string) => {
     }
   }
 };
-export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
+export default ({
+  discordClientId,
+  oauthCallbackUri,
+}: DiscordArgs): Authorizer => {
   const authorizer = {
     type: AuthorizerType.DISCORD,
     accountType: AccountType.DISCORD,
@@ -159,7 +162,7 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
               onLoginProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onLoginSuccess(result.data);
             })
-            .catch((error) => {
+            .catch((error: Error) => {
               onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
               onLoginError(
                 new DiscordError(
@@ -182,7 +185,7 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
       });
     } catch (error) {
       onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
-      onLoginError(error);
+      onLoginError(error as Error);
     }
   };
   // bind action
@@ -216,7 +219,7 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
               onBindProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onBindSuccess(result.data);
             })
-            .catch((error) => {
+            .catch((error: Error) => {
               onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
               onBindError(
                 new DiscordError(
@@ -239,7 +242,7 @@ export default ({ discordClientId, oauthCallbackUri }): Authorizer => {
       });
     } catch (error) {
       onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
-      onBindError(error);
+      onBindError(error as Error);
     }
   };
   return {

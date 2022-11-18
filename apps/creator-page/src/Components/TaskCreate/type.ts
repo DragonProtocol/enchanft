@@ -51,6 +51,8 @@ export enum ActionType {
   NFT = 'nft',
   CUSTOM = 'custom',
   QUESTIONNAIRE = 'QUESTIONNAIRE',
+  ANSWER_VERIFY = 'ANSWER_VERIFY',
+  UPLOAD_IMAGE = 'UPLOAD_IMAGE',
 }
 
 export enum ActionTypeMore {
@@ -59,6 +61,7 @@ export enum ActionTypeMore {
   JOIN_DISCORD = 'JOIN_DISCORD',
   DISCORD_INVITES_PEOPLE = 'DISCORD_INVITES_PEOPLE',
   RETWEET = 'RETWEET',
+  QUOTE_TWEET = 'QUOTE_TWEET',
   LIKE_TWEET = 'LIKE_TWEET',
   // REPLY_TWEET = 'REPLY_TWEET',
   // UPDATE_BIO_OF_TWITTER = 'UPDATE_BIO_OF_TWITTER',
@@ -69,6 +72,8 @@ export enum ActionTypeMore {
   NATIVE_BALANCE = 'NATIVE_BALANCE',
   NFT_BALANCE = 'NFT_BALANCE',
   QUESTIONNAIRE = 'QUESTIONNAIRE',
+  ANSWER_VERIFY = 'ANSWER_VERIFY',
+  UPLOAD_IMAGE = 'UPLOAD_IMAGE',
 }
 
 export type Action = {
@@ -88,6 +93,7 @@ export type Action = {
   nft_accounts_or_add?: boolean;
   question?: string;
   answer?: string;
+  tag_friends_num?: number;
   lucky_draw_weight?: number;
   coin_type?: CoinType;
 };
@@ -98,6 +104,7 @@ export type Reward = {
   luckyDraw: boolean;
   name?: string;
   token_num?: number;
+  whitelist_id?: number;
 };
 
 export type State = {
