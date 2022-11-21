@@ -2,14 +2,5 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "apps/collector-page/src",
   "projectType": "application",
-  "tags": [],
-  "targets":{
-    "lint": {
-      "executor": "@nrwl/linter:eslint",
-      "outputs": ["{options.outputFile}"],
-      "options": {
-        "lintFilePatterns": ["apps/collector-page/**/*.{ts,tsx,js,jsx}"]
-      }
-    }
-  }
+  "tags": []
 }
