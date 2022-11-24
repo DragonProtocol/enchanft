@@ -1,21 +1,25 @@
-{
-  "root": true,
-  "plugins": ["react", "@typescript-eslint"],
-  "extends": [
+module.exports = {
+  root: true,
+  ignorePatterns: ['.eslintrc.js'],
+  plugins: ["react", "@typescript-eslint"],
+  extends: [
     "airbnb",
     "airbnb-typescript",
     "airbnb/hooks",
+    "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:prettier/recommended"
   ],
-  "parserOptions": {
-    "project": "./tsconfig.base.json"
+  parserOptions: {
+    "tsconfigRootDir": __dirname,
+    "project": [
+      "./tsconfig.eslint.json",
+      "./apps/*/tsconfig.json",
+      "./libs/*/tsconfig.json"
+    ]
   },
-  "rules": {
-    //旧版本的 React 验证
-    "react/react-in-jsx-scope": "off",
-
+  rules: {
     //解决 styled 结构顺序问题
     "@typescript-eslint/no-use-before-define": "off",
 
@@ -36,7 +40,16 @@
 
     // 不限制js的语法 （如：不禁止使用for of语法）
     "no-restricted-syntax": "off",
+    // 允许在for循环中使用一元运算符 ++,--
+    "no-plusplus": [
+      "error",
+      {
+        "allowForLoopAfterthoughts": true
+      }
+    ],
 
+    //旧版本的 React 验证
+    "react/react-in-jsx-scope": "off",
     //设置可以直接展开 props
     "react/jsx-props-no-spreading": "off",
 
@@ -49,15 +62,8 @@
     ],
 
     // 关闭检查函数组件的定义方式
-    "react/function-component-definition": "off",
+    "react/function-component-definition": "off"
 
-    // 允许在for循环中使用一元运算符 ++,--
-    "no-plusplus": [
-      "error",
-      {
-        "allowForLoopAfterthoughts": true
-      }
-    ]
     // "no-shadow": "off",
     // "@typescript-eslint/no-shadow": "off"
   }

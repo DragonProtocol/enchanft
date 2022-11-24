@@ -16,9 +16,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "jsx": "react-jsx",
-    "paths": {
-      "@ecnft/wl-user-react": ["libs/wl-user/react/src/index.ts"]
-    }
+    "noEmitOnError": true
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp", "dist"]
 }

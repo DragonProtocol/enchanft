@@ -3,21 +3,27 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "start": "nx serve",
-    "build": "nx build",
-    "test": "nx test",
-    "nx": "nx",
-    "lint:check": "nx run mini-site-baatarverse:lint && nx run collector-page:lint",
-    "lint:fix": "nx lint --fix",
+    "lint": "eslint . --ext .js,.ts,.tsx,.json --max-warnings 0 --cache",
+    "lint:fix": "pnpm lint --fix",
+    "format": "prettier --write --cache --parser typescript .js,.ts,.tsx,.json",
+    "format:check": "prettier --check --cache --parser typescript .js,.ts,.tsx,.json",
+    "start:all": "pnpm --stream -r start",
+    "build:all": "pnpm --stream -r build",
+    "test:all": "pnpm --stream -r test",
     "prepare": "husky install",
     "format:staged": "lint-staged",
-    "prettier:check:all": "nx format:check",
-    "prettier:check": "nx format:check --projects",
-    "prettier:write": "nx format:write --projects"
+    "project:script": "node ./tools/scripts/project.script.mjs",
+    "start": "pnpm project:script start",
+    "build": "pnpm project:script build",
+    "test": "pnpm project:script test"
   },
   "lint-staged": {
-    "{apps,libs}/**/*.{js,ts,tsx}": [
-      "pnpm lint:fix --lintFilePatterns"
+    "*.{js,json,md,yml}": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "eslint",
+      "prettier --parser=typescript --write"
     ]
   },
   "private": true,
@@ -25,7 +31,6 @@
     "@nrwl/cli": "14.3.6",
     "@nrwl/cypress": "14.3.6",
     "@nrwl/devkit": "14.3.6",
-    "@nrwl/eslint-plugin-nx": "14.3.6",
     "@nrwl/jest": "14.3.6",
     "@nrwl/js": "14.3.6",
     "@nrwl/linter": "14.3.6",
@@ -34,6 +39,9 @@
     "@nrwl/react": "14.3.6",
     "@nrwl/web": "14.3.6",
     "@nrwl/workspace": "14.3.6",
+    "@rollup/plugin-commonjs": "^22.0.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-typescript": "^8.3.2",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "13.3.0",
     "@types/jest": "27.4.1",
@@ -67,6 +75,7 @@
     "nx": "14.3.6",
     "prettier": "^2.6.2",
     "react-test-renderer": "18.2.0",
+    "rollup-plugin-peer-deps-external": "^2.2.4",
     "ts-jest": "27.1.4",
     "ts-node": "~10.8.0",
     "typescript": "~4.7.2",
