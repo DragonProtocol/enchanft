@@ -1,3 +1,10 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-11-24 10:18:23
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-11-24 17:14:32
+ * @Description: file descriptio
+ */
 module.exports = {
   root: true,
   ignorePatterns: ['.eslintrc.js'],

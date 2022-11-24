@@ -4,6 +4,9 @@ importers:
 
   .:
     specifiers:
+      '@babel/plugin-transform-runtime': ^7.19.6
+      '@babel/preset-typescript': ^7.18.6
+      '@babel/runtime': ^7.20.1
       '@nrwl/cli': 14.3.6
       '@nrwl/cypress': 14.3.6
       '@nrwl/devkit': 14.3.6
@@ -49,6 +52,7 @@ importers:
       jest: 27.5.1
       jest-watch-typeahead: ^1.1.0
       lint-staged: ^13.0.3
+      lodash: ^4.17.21
       nx: 14.3.6
       prettier: ^2.6.2
       react: 18.2.0
@@ -57,7 +61,11 @@ importers:
       react-router-dom: 6.3.0
       react-test-renderer: 18.2.0
       regenerator-runtime: 0.13.7
+      rimraf: ^3.0.2
+      rollup: ^3.4.0
+      rollup-plugin-copy: ^3.4.0
       rollup-plugin-peer-deps-external: ^2.2.4
+      rollup-plugin-typescript2: ^0.31.2
       styled-components: 5.3.5
       ts-jest: 27.1.4
       ts-node: ~10.8.0
@@ -66,6 +74,7 @@ importers:
       web-vitals: ^2.1.4
     dependencies:
       core-js: 3.26.1
+      lodash: 4.17.21
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-is: 18.2.0
@@ -74,6 +83,9 @@ importers:
       styled-components: 5.3.5_7i5myeigehqah43i5u7wbekgba
       tslib: 2.4.1
     devDependencies:
+      '@babel/plugin-transform-runtime': 7.19.6_@babel+core@7.20.2
+      '@babel/preset-typescript': 7.18.6_@babel+core@7.20.2
+      '@babel/runtime': 7.20.1
       '@nrwl/cli': 14.3.6
       '@nrwl/cypress': 14.3.6_hdnfks3b4lzaywgmq4a4fezrbi
       '@nrwl/devkit': 14.3.6_nx@14.3.6
@@ -85,9 +97,9 @@ importers:
       '@nrwl/react': 14.3.6_det2d3lrmrjpew6kfpqk4iw7de
       '@nrwl/web': 14.3.6_vnyncbmzwxnmx6pjexgawkvtxm
       '@nrwl/workspace': 14.3.6_p4mi2smrdlimk4bbxlu4b6wavm
-      '@rollup/plugin-commonjs': 22.0.2_rollup@2.79.1
-      '@rollup/plugin-node-resolve': 13.3.0_rollup@2.79.1
-      '@rollup/plugin-typescript': 8.5.0_5wimikmvjdwpoz7hebq2gjuhnq
+      '@rollup/plugin-commonjs': 22.0.2_rollup@3.4.0
+      '@rollup/plugin-node-resolve': 13.3.0_rollup@3.4.0
+      '@rollup/plugin-typescript': 8.5.0_43p2tysliqbmdjo7u6zwnwuzrq
       '@testing-library/jest-dom': 5.16.5
       '@testing-library/react': 13.3.0_biqbaboplfbrettd7655fr4n2y
       '@types/jest': 27.4.1
@@ -121,7 +133,11 @@ importers:
       nx: 14.3.6
       prettier: 2.7.1
       react-test-renderer: 18.2.0_react@18.2.0
-      rollup-plugin-peer-deps-external: 2.2.4_rollup@2.79.1
+      rimraf: 3.0.2
+      rollup: 3.4.0
+      rollup-plugin-copy: 3.4.0
+      rollup-plugin-peer-deps-external: 2.2.4_rollup@3.4.0
+      rollup-plugin-typescript2: 0.31.2_o2sz2qqtjgrhg6w2mh7savmrqy
       ts-jest: 27.1.4_teinbzbodlkow5pznpst6s2q5q
       ts-node: 10.8.2_t4lrjbt3sxauai4t5o275zsepa
       typescript: 4.7.4
@@ -2663,6 +2679,7 @@ packages:
       - '@types/node'
       - postcss
       - typescript
+    dev: false
 
   /@cspotcode/source-map-support/0.8.1:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
@@ -6009,6 +6026,22 @@ packages:
       rollup: 2.79.1
     dev: true
 
+  /@rollup/plugin-commonjs/22.0.2_rollup@3.4.0:
+    resolution: {integrity: sha512-//NdP6iIwPbMTcazYsiBMbJW7gfmpHom33u1beiIoHDEM0Q9clvtQB1T0efvMqHeKsGohiHo97BCPCkBXdscwg==}
+    engines: {node: '>= 12.0.0'}
+    peerDependencies:
+      rollup: ^2.68.0
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@3.4.0
+      commondir: 1.0.1
+      estree-walker: 2.0.2
+      glob: 7.2.3
+      is-reference: 1.2.1
+      magic-string: 0.25.9
+      resolve: 1.22.1
+      rollup: 3.4.0
+    dev: true
+
   /@rollup/plugin-eslint/9.0.1_rollup@2.79.1:
     resolution: {integrity: sha512-6arHaZt+0pH8dgsxqT4KLW7BvJ0NThJRJtf56A7HKgBynLfcWJwiUvdb+TMowQdZgxRIvTnBV1VIER/FBrDFDw==}
     engines: {node: '>=14.0.0'}
@@ -6088,6 +6121,21 @@ packages:
       rollup: 2.79.1
     dev: true
 
+  /@rollup/plugin-node-resolve/13.3.0_rollup@3.4.0:
+    resolution: {integrity: sha512-Lus8rbUo1eEcnS4yTFKLZrVumLPY+YayBdWXgFSHYhTT2iJbMhoaaBL3xl5NCdeRytErGr8tZ0L71BMRmnlwSw==}
+    engines: {node: '>= 10.0.0'}
+    peerDependencies:
+      rollup: ^2.42.0
+    dependencies:
+      '@rollup/pluginutils': 3.1.0_rollup@3.4.0
+      '@types/resolve': 1.17.1
+      deepmerge: 4.2.2
+      is-builtin-module: 3.2.0
+      is-module: 1.0.0
+      resolve: 1.22.1
+      rollup: 3.4.0
+    dev: true
+
   /@rollup/plugin-replace/2.4.2_rollup@2.79.1:
     resolution: {integrity: sha512-IGcu+cydlUMZ5En85jxHH4qj2hta/11BHq95iHEyb2sbgiN0eCdzvUcHw5gt9pBL5lTi4JDYJ1acCoMGpTvEZg==}
     peerDependencies:
@@ -6110,7 +6158,7 @@ packages:
       terser: 5.15.1
     dev: true
 
-  /@rollup/plugin-typescript/8.5.0_5wimikmvjdwpoz7hebq2gjuhnq:
+  /@rollup/plugin-typescript/8.5.0_43p2tysliqbmdjo7u6zwnwuzrq:
     resolution: {integrity: sha512-wMv1/scv0m/rXx21wD2IsBbJFba8wGF3ErJIr6IKRfRj49S85Lszbxb4DCo8iILpluTjk2GAAu9CoZt4G3ppgQ==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
@@ -6121,9 +6169,9 @@ packages:
       tslib:
         optional: true
     dependencies:
-      '@rollup/pluginutils': 3.1.0_rollup@2.79.1
+      '@rollup/pluginutils': 3.1.0_rollup@3.4.0
       resolve: 1.22.1
-      rollup: 2.79.1
+      rollup: 3.4.0
       tslib: 2.4.1
       typescript: 4.7.4
     dev: true
@@ -6188,6 +6236,18 @@ packages:
       estree-walker: 1.0.1
       picomatch: 2.3.1
       rollup: 2.79.1
+
+  /@rollup/pluginutils/3.1.0_rollup@3.4.0:
+    resolution: {integrity: sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==}
+    engines: {node: '>= 8.0.0'}
+    peerDependencies:
+      rollup: ^1.20.0||^2.0.0
+    dependencies:
+      '@types/estree': 0.0.39
+      estree-walker: 1.0.1
+      picomatch: 2.3.1
+      rollup: 3.4.0
+    dev: true
 
   /@rollup/pluginutils/4.2.1:
     resolution: {integrity: sha512-iKnFXr7NkdZAIHiIWE+BX5ULi/ucVFYWD6TbAV+rZctiRTY2PL6tsIKhoIOaoskiWAkgu+VsbXgUVDNLHf+InQ==}
@@ -15649,7 +15709,7 @@ packages:
       pretty-format: 27.5.1
       slash: 3.0.0
       strip-json-comments: 3.1.1
-      ts-node: 10.8.2_vq46kxj6zfka4f6ijsosnft3hy
+      ts-node: 10.8.2_t4lrjbt3sxauai4t5o275zsepa
     transitivePeerDependencies:
       - bufferutil
       - canvas
@@ -18757,7 +18817,7 @@ packages:
     dependencies:
       lilconfig: 2.0.6
       postcss: 8.4.19
-      ts-node: 10.8.2_vq46kxj6zfka4f6ijsosnft3hy
+      ts-node: 10.8.2_t4lrjbt3sxauai4t5o275zsepa
       yaml: 1.10.2
 
   /postcss-load-config/3.1.4_postcss@8.4.19:
@@ -20332,6 +20392,7 @@ packages:
       - webpack-cli
       - webpack-hot-middleware
       - webpack-plugin-serve
+    dev: false
 
   /react-scripts/5.0.1_jndxj6vpqu23eeqz5ehcmaau4e:
     resolution: {integrity: sha512-8VAmEm/ZAwQzJ+GOMLbBsTdDKOpuZh7RPs0UymvBR2vRk4iZWCskjbFnxqjrzoIvlNNRZ3QJFx6/qDSi6zSnaQ==}
@@ -21175,6 +21236,14 @@ packages:
       rollup: 2.79.1
     dev: true
 
+  /rollup-plugin-peer-deps-external/2.2.4_rollup@3.4.0:
+    resolution: {integrity: sha512-AWdukIM1+k5JDdAqV/Cxd+nejvno2FVLVeZ74NKggm3Q5s9cbbcOgUPGdbxPi4BXu7xGaZ8HG12F+thImYu/0g==}
+    peerDependencies:
+      rollup: '*'
+    dependencies:
+      rollup: 3.4.0
+    dev: true
+
   /rollup-plugin-postcss/4.0.2_mvwutbz5h7f4b5ul7fagve7xcu:
     resolution: {integrity: sha512-05EaY6zvZdmvPUDi3uCcAQoESDcYnv8ogJJQRp6V5kZ6J6P7uAVJlrTZcaaA20wTH527YTnKfkAoPxWI/jPp4w==}
     engines: {node: '>=10'}
@@ -21279,6 +21348,22 @@ packages:
       typescript: 4.9.3
     dev: true
 
+  /rollup-plugin-typescript2/0.31.2_o2sz2qqtjgrhg6w2mh7savmrqy:
+    resolution: {integrity: sha512-hRwEYR1C8xDGVVMFJQdEVnNAeWRvpaY97g5mp3IeLnzhNXzSVq78Ye/BJ9PAaUfN4DXa/uDnqerifMOaMFY54Q==}
+    peerDependencies:
+      rollup: '>=1.26.3'
+      typescript: '>=2.4.0'
+    dependencies:
+      '@rollup/pluginutils': 4.2.1
+      '@yarn-tool/resolve-package': 1.0.47
+      find-cache-dir: 3.3.2
+      fs-extra: 10.1.0
+      resolve: 1.22.1
+      rollup: 3.4.0
+      tslib: 2.4.1
+      typescript: 4.7.4
+    dev: true
+
   /rollup-pluginutils/2.8.2:
     resolution: {integrity: sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ==}
     dependencies:
@@ -21302,6 +21387,14 @@ packages:
     hasBin: true
     optionalDependencies:
       fsevents: 2.3.2
+
+  /rollup/3.4.0:
+    resolution: {integrity: sha512-4g8ZrEFK7UbDvy3JF+d5bLiC8UKkS3n/27/cnVeESwB1LVPl6MoPL32/6+SCQ1vHTp6Mvp2veIHtwELhi+uXEw==}
+    engines: {node: '>=14.18.0', npm: '>=8.0.0'}
+    hasBin: true
+    optionalDependencies:
+      fsevents: 2.3.2
+    dev: true
 
   /rpc-websockets/7.5.0:
     resolution: {integrity: sha512-9tIRi1uZGy7YmDjErf1Ax3wtqdSSLIlnmL5OtOzgd5eqPKbsPpwDP5whUDO2LQay3Xp0CcHlcNSGzacNRluBaQ==}
@@ -23064,7 +23157,6 @@ packages:
       typescript: 4.7.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
-    dev: true
 
   /ts-node/10.8.2_vq46kxj6zfka4f6ijsosnft3hy:
     resolution: {integrity: sha512-LYdGnoGddf1D6v8REPtIH+5iq/gTDuZqv2/UJUU7tKjuEU8xVZorBM+buCGNjj+pGEud+sOoM4CX3/YzINpENA==}
@@ -23095,6 +23187,7 @@ packages:
       typescript: 4.7.4
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+    dev: true
 
   /tsconfig-paths-webpack-plugin/3.5.2:
     resolution: {integrity: sha512-EhnfjHbzm5IYI9YPNVIxx1moxMI4bpHD2e0zTXeDNQcwjjRaGepP7IhTHJkyDBG0CAOoxRfe7jCG630Ou+C6Pw==}

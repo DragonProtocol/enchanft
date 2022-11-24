@@ -4,9 +4,29 @@
       "@babel/preset-env",
       {
         "runtime": "automatic",
+        // 自动注入core-js (core-js: 填充浏览器未支持的功能，取代了polyfill, 需单独安装此包）
         "useBuiltIns": "usage"
+      }
+    ],
+    [
+      "@babel/preset-typescript",
+      {
+        "allowDeclareFields": true
       }
     ]
   ],
-  "plugins": [["styled-components", { "pure": true, "ssr": true }]]
+  "plugins": [
+    [
+      // 1.重用注入的core-js程序代码，以节省代码大小（运行时再编译core-js的代码中，这更适合多个文件的应用程序），
+      // 2.会创建一个沙盒环境避免变量污染
+      "@babel/plugin-transform-runtime",
+      {
+        "absoluteRuntime": false,
+        "corejs": false,
+        "helpers": true,
+        "regenerator": true
+      }
+    ],
+    ["styled-components", { "pure": true, "ssr": true }]
+  ]
 }

@@ -1,14 +1,15 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "./dist",
+    "rootDir": "src",
     "types": ["node"],
-    "declaration": true,
-    "declarationDir": "."
+    "sourceMap": true,
+    "declaration": true
   },
   "files": ["./typings/cssmodule.d.ts", "./typings/image.d.ts"],
   "exclude": [
     "jest.config.ts",
+    "rollup.config.js",
     "**/*.spec.ts",
     "**/*.test.ts",
     "**/*.spec.tsx",
@@ -17,7 +18,8 @@
     "**/*.test.js",
     "**/*.spec.jsx",
     "**/*.test.jsx",
-    "dist"
+    "dist",
+    "**/node_modules/**/*"
   ],
   "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
 }
