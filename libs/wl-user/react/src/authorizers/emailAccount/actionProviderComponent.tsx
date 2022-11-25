@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import validator from 'validator';
 import { toast } from 'react-toastify';
@@ -126,7 +126,7 @@ const ActionProviderComponent: React.FC<AuthorizerActionProviderComponentProps> 
               code,
             })
               .then(({ data }) => {
-                onBindSuccess(data);
+                if (onBindSuccess) onBindSuccess(data);
                 closeModal();
               })
               .catch((error) => {
@@ -262,7 +262,9 @@ const EmailCodeForm: React.FC<EmailCodeFormProps> = ({
         placeholder={type === 'email' ? 'name@example.com' : 'input'}
         disabled={disabled || loading}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setValue(e.target.value)
+        }
       />
       <AuthProcessModalBtns>
         <CancelBtn disabled={disabled || loading} onClick={() => onCancel()}>

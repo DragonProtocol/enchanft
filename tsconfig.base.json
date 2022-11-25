@@ -15,8 +15,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "jsx": "react-jsx",
-    "noEmitOnError": true
+    "jsx": "react-jsx"
   },
   "exclude": ["node_modules", "tmp", "dist"]
 }

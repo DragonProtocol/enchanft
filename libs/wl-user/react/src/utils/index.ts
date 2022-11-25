@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-08 18:19:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 17:12:24
+ * @LastEditTime: 2022-11-25 12:23:51
  * @Description: file description
  */
 import { User } from '../api';
@@ -22,29 +22,39 @@ export const listenWindowClose = (win: Window, closeCallback: () => void) => {
     }
   }, 250);
 };
-export const getAccountDisplayName = (user: User, authorizer: Authorizer) => {
-  const account = user.accounts.find(
-    (item) => item.accountType === authorizer.accountType
-  );
-  if (account) {
-    if (
-      authorizer.webVersion === AuthorizerWebVersion.web2 &&
-      account.thirdpartyName
-    ) {
-      return account.thirdpartyName;
-    }
-    if (
-      authorizer.webVersion === AuthorizerWebVersion.web3 &&
-      account.thirdpartyId
-    ) {
-      return `${account.thirdpartyId.slice(0, 4)}..${account.thirdpartyId.slice(
-        -4
-      )}`;
+export const getAccountDisplayName = (
+  user: User,
+  authorizer: Maybe<Authorizer>
+) => {
+  if (authorizer) {
+    const account = user.accounts.find(
+      (item) => item.accountType === authorizer.accountType
+    );
+    if (account) {
+      if (
+        authorizer.webVersion === AuthorizerWebVersion.web2 &&
+        account.thirdpartyName
+      ) {
+        return account.thirdpartyName;
+      }
+      if (
+        authorizer.webVersion === AuthorizerWebVersion.web3 &&
+        account.thirdpartyId
+      ) {
+        return `${account.thirdpartyId.slice(
+          0,
+          4
+        )}..${account.thirdpartyId.slice(-4)}`;
+      }
     }
   }
+
   return '';
 };
-export const getUserDisplayName = (user: User, authorizer: Authorizer) => {
+export const getUserDisplayName = (
+  user: User,
+  authorizer: Maybe<Authorizer>
+) => {
   if (user.name) return user.name;
   return getAccountDisplayName(user, authorizer);
 };

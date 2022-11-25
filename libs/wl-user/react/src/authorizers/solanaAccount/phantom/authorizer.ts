@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 15:01:26
+ * @LastEditTime: 2022-11-25 12:20:32
  * @Description: file description
  */
 import * as bs58 from 'bs58';
@@ -54,7 +54,7 @@ export async function getPhantomAddr() {
   const pubkey = solanaProvider.publicKey;
   return pubkey.toString();
 }
-export async function signMsgWithPhantom(): Promise<SignMsgResult | undefined> {
+export async function signMsgWithPhantom(): Promise<Maybe<SignMsgResult>> {
   const solanaProvider = await getSolanaProvider();
   if (!solanaProvider) {
     alert('phantom required');

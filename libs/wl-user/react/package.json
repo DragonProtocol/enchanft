@@ -1,25 +1,14 @@
 {
   "name": "@ecnft/wl-user-react",
   "version": "0.2.0",
-  "module": "./index.js",
-  "main": "./index.js",
   "type": "module",
+  "module": "./index.ts",
   "types": "./index.d.ts",
   "scripts": {
-    "build": "rimraf ./dist && rollup -c"
+    "build": "rimraf ./dist && rollup -c",
+    "build:report": "rimraf ./dist && rollup -c --report"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.20.2",
-    "@rollup/plugin-babel": "^6.0.2",
-    "@rollup/plugin-commonjs": "^22.0.0",
-    "@rollup/plugin-eslint": "^9.0.1",
-    "@rollup/plugin-image": "^3.0.1",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "@rollup/plugin-terser": "^0.1.0",
-    "@rollup/plugin-typescript": "^8.3.2",
-    "@rollup/plugin-url": "^8.0.0",
-    "@svgr/rollup": "^6.5.0",
     "@types/qs": "^6.9.7",
     "@types/react": "18.0.13",
     "@types/react-dom": "18.0.5",
@@ -30,9 +19,7 @@
     "ethers": "^5.6.9",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-test-renderer": "18.2.0",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
-    "rollup-plugin-postcss": "^4.0.2"
+    "react-test-renderer": "18.2.0"
   },
   "dependencies": {
     "@multiavatar/multiavatar": "^1.0.7",

@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-24 10:18:23
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-24 17:14:32
+ * @LastEditTime: 2022-11-25 16:16:09
  * @Description: file descriptio
  */
 module.exports = {
   root: true,
   ignorePatterns: ['.eslintrc.js'],
-  plugins: ["react", "@typescript-eslint"],
+  plugins: ["@typescript-eslint"],
   extends: [
     "airbnb",
     "airbnb-typescript",
@@ -18,15 +18,23 @@ module.exports = {
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:prettier/recommended"
   ],
+  settings: {
+    'import/resolver': {
+      node: { extensions: ['.js', '.mjs', '.ts', '.d.ts', '.tsx'] },
+    },
+  },
   parserOptions: {
+    sourceType: 'module',
     "tsconfigRootDir": __dirname,
     "project": [
       "./tsconfig.eslint.json",
-      "./apps/*/tsconfig.json",
-      "./libs/*/tsconfig.json"
+      "./apps/**/tsconfig.json",
+      "./libs/**/tsconfig.json"
     ]
   },
   rules: {
+    // 为了让monorepo中子项目可从根项目package.json中查找模块
+    "import/no-extraneous-dependencies": ["error", { "packageDir": [__dirname, './'] }],
     //解决 styled 结构顺序问题
     "@typescript-eslint/no-use-before-define": "off",
 

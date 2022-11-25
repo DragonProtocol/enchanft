@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 14:28:20
+ * @LastEditTime: 2022-11-25 12:19:51
  * @Description: file description
  */
 import {
@@ -49,7 +49,7 @@ export async function getMartianAddr() {
   const { publicKey } = await provider.account();
   return publicKey.slice(2);
 }
-export async function signMsgWithMartian(): Promise<SignMsgResult | undefined> {
+export async function signMsgWithMartian(): Promise<Maybe<SignMsgResult>> {
   const provider = await getAptosProvider();
   if (!provider) {
     alert('martian required');
