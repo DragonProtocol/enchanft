@@ -1,7 +1,7 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "react"],
+  "plugins": ["@typescript-eslint"],
   "extends": [
     "airbnb",
     "airbnb-typescript",
