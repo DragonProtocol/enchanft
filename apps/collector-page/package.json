@@ -52,13 +52,6 @@
     "build:report": "craco build --report",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "lint:check": "eslint \"./src/**/*.{js,ts,tsx}\"",
-    "lint:fix": "yarn lint:check --fix",
-    "prettier": "prettier \"./src/**/*.{js,ts,tsx}\"",
-    "prettier:check": "yarn prettier --check",
-    "prettier:fix": "yarn prettier --write",
-    "lintstaged": "lint-staged",
-    "prepare": "cd ../../ && husky install apps/collector-page/.husky",
     "serve": "npm start"
   },
   "devDependencies": {

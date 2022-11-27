@@ -1,21 +1,15 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "outDir": "dist",
-    "types": ["node"]
+    "outDir": "dist"
   },
-  "files": ["./typings/cssmodule.d.ts", "./typings/image.d.ts"],
+  "files": ["../../../typings/cssmodule.d.ts", "../../../typings/image.d.ts"],
   "exclude": [
     "jest.config.ts",
-    "rollup.config.js",
     "**/*.spec.ts",
     "**/*.test.ts",
     "**/*.spec.tsx",
-    "**/*.test.tsx",
-    "**/*.spec.js",
-    "**/*.test.js",
-    "**/*.spec.jsx",
-    "**/*.test.jsx"
+    "**/*.test.tsx"
   ],
-  "include": ["**/*.js", "**/*.jsx", "**/*.ts", "**/*.tsx"]
+  "include": ["**/*.ts", "**/*.tsx"]
 }
