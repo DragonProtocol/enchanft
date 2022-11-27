@@ -3,10 +3,10 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint . --ext \"**/*.{js,ts,tsx}\" --max-warnings 0 --cache",
-    "lint:fix": "pnpm lint --fix",
-    "format": "prettier --write \"**/*.{js,ts,tsx}\"  --parser typescript ",
-    "format:check": "prettier --check \"**/*.{js,ts,tsx}\"  --parser typescript ",
+    "lint:all": "eslint . --ext \"**/*.{js,ts,tsx}\" --max-warnings 0 --cache",
+    "lint:fix:all": "pnpm lint --fix",
+    "format:all": "prettier --write \"**/*.{js,ts,tsx}\"  --parser typescript ",
+    "format:check:all": "prettier --check \"**/*.{js,ts,tsx}\"  --parser typescript ",
     "start:all": "pnpm --stream -r start",
     "build:all": "pnpm --stream -r build",
     "test:all": "pnpm --stream -r test",
@@ -16,7 +16,11 @@
     "project:exec": "node ./tools/scripts/project.exec.mjs",
     "start": "pnpm project:script start",
     "build": "pnpm project:script build",
-    "test": "pnpm project:script test"
+    "test": "pnpm project:script test",
+    "lint": "pnpm project:script lint",
+    "lint:fix": "pnpm project:script lint:fix",
+    "format": "pnpm project:script format",
+    "format:check": "pnpm project:script format:check"
   },
   "lint-staged": {
     "*.{js,json,md,yml}": [
