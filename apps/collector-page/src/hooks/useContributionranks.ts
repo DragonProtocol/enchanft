@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-29 16:47:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-28 02:09:10
+ * @LastEditTime: 2022-11-28 18:37:01
  * @Description: file description
  */
 import { useEffect, useRef } from 'react';
@@ -22,10 +22,8 @@ export default (projectSlug?: string) => {
     projectSlug && dispatch(fetchCommunityContributionRanks(projectSlug));
   useEffect(() => {
     if (projectSlug) {
-      // eslint-disable-next-line @typescript-eslint/no-floating-promises
       dispatchContributionRanks();
       fetchContributionranksIntervalRef.current = setInterval(() => {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         dispatchContributionRanks();
       }, 60 * 1000);
     } else {
@@ -34,7 +32,6 @@ export default (projectSlug?: string) => {
     return () => {
       clearInterval(fetchContributionranksIntervalRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectSlug]);
 
   return { contributionranks, contributionranksState };

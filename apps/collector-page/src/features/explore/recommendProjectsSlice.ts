@@ -5,7 +5,7 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import { fetchListForRecommendProjects } from '../../services/api/explore';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
 import { ExploreRecommendProjectItem } from '../../types/api';
 

@@ -2,20 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 15:07:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 19:21:49
+ * @LastEditTime: 2022-11-28 19:03:32
  * @Description: file description
  */
-import {
-  EntityState,
-  createAsyncThunk,
-  createEntityAdapter,
-  createSlice,
-  PayloadAction,
-} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchDetailByCommunityBasicInfo } from '../../services/api/community';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
 import { CommunityBasicInfoResponse } from '../../types/api';
+
 export type ContributionCommunityForEntity = CommunityBasicInfoResponse | null;
 type ContributionCommunityState = {
   data: ContributionCommunityForEntity;

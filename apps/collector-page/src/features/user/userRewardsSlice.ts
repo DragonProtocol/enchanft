@@ -3,10 +3,9 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
-  PayloadAction,
 } from '@reduxjs/toolkit';
 import { fetchListForUserReward } from '../../services/api/reward';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
 import { UserRewardItem } from '../../types/api';
 

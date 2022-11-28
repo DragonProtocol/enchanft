@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 13:09:15
+ * @LastEditTime: 2022-11-28 18:27:08
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes } from 'react';
@@ -15,7 +15,6 @@ const ButtonNavigation: React.FC<ButtonProps> = ({
   children,
   ...otherProps
 }: ButtonProps) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
   <ButtonNavigationWrapper {...otherProps}>{children}</ButtonNavigationWrapper>
 );
 export default ButtonNavigation;

@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-28 12:35:59
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-28 01:17:54
+ * @LastEditTime: 2022-11-28 18:31:29
  * @Description: file description
  */
 import { HTMLAttributes } from 'react';
 import Icon from './pngs/alarm_clock.png';
+
 type Props = HTMLAttributes<HTMLImageElement> & {
   size?: string;
 };
@@ -19,7 +20,6 @@ const PngIconAlarmClock: React.FC<Props> = ({
     style: { width: size, height: size, ...style },
     ...imgProps,
   };
-  // eslint-disable-next-line jsx-a11y/alt-text
   return <img src={Icon} {...props} />;
 };
 export default PngIconAlarmClock;

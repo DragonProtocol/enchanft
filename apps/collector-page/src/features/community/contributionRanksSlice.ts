@@ -3,10 +3,9 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
-  PayloadAction,
 } from '@reduxjs/toolkit';
 import { fetchListForCommunityContributionRank } from '../../services/api/community';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
 import { CommunityContributionRankItem } from '../../types/api';
 
@@ -28,7 +27,7 @@ export const communityContributionRanksEntity =
     selectId: (item) => item.pubkey,
   });
 // 初始化列表信息
-const CommunitysState: CommunitysState =
+const communitysState: CommunitysState =
   communityContributionRanksEntity.getInitialState({
     status: AsyncRequestStatus.IDLE,
     errorMsg: '',
@@ -71,7 +70,7 @@ export const fetchCommunityContributionRanks = createAsyncThunk<
 
 export const communityContributionRanksSlice = createSlice({
   name: 'communityContributionRanks',
-  initialState: CommunitysState,
+  initialState: communitysState,
   reducers: {},
   extraReducers: (builder) => {
     builder

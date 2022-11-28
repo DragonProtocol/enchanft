@@ -2,18 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 17:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 16:54:15
+ * @LastEditTime: 2022-11-28 19:05:22
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  fetchDetail,
-  createTask as createTaskApi,
-} from '../../services/api/task';
-import { RootState } from '../../store/store';
+import { fetchDetail } from '../../services/api/task';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
 import { TaskDetailResponse, TodoTaskActionItem } from '../../types/api';
-import { State as CreateTaskState } from '../../components/business/task/create/state';
 import { getTaskEntityForUpdateActionAfter } from '../../utils/task';
 
 export type TaskDetailEntity = TaskDetailResponse;
@@ -55,14 +51,6 @@ export const fetchTaskDetail = createAsyncThunk<
     return rejectWithValue({ data: null, errorMsg: error.response.data });
   }
 });
-
-export const createTask = createAsyncThunk(
-  'task/create',
-  async (data: CreateTaskState) => {
-    const resp = await createTaskApi(data);
-    return resp.data;
-  }
-);
 
 export const taskDetailSlice = createSlice({
   name: 'taskDetail',
@@ -124,16 +112,6 @@ export const taskDetailSlice = createSlice({
         } else {
           state.errorMsg = action.error.message || '';
         }
-      })
-      /// //
-      .addCase(createTask.pending, (state) => {
-        state.createStatus = AsyncRequestStatus.PENDING;
-      })
-      .addCase(createTask.fulfilled, (state) => {
-        state.createStatus = AsyncRequestStatus.FULFILLED;
-      })
-      .addCase(createTask.rejected, (state) => {
-        state.createStatus = AsyncRequestStatus.REJECTED;
       });
   },
 });

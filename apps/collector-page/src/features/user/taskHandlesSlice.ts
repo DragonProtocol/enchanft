@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 14:53:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 13:02:10
+ * @LastEditTime: 2022-11-28 19:07:31
  * @Description: file description
  */
 import {
@@ -20,7 +20,7 @@ import {
   verifyOneAction,
   verifyOneTask,
 } from '../../services/api/task';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
 import { UserActionStatus } from '../../types/api';
 import {
@@ -96,24 +96,19 @@ const initUserTaskHandlesState: UserTaskHandlesStateType = {
 export const takeTask = createAsyncThunk(
   'user/taskHandles/takeTask',
   async (params: TakeTaskParams, { dispatch }) => {
-    try {
-      const resp = await takeTaskRquest(params);
-      if (resp.data.code === 0) {
-        const updateTask = {
-          id: params.id,
-          acceptedStatus: TaskAcceptedStatus.DONE,
-          status: TaskTodoCompleteStatus.TODO,
-        };
-        dispatch(updateTaskDetail(updateTask));
-        dispatch(fetchTaskDetail(params.id));
-        dispatch(fetchTodoTasks());
-        dispatch(fetchFollowedCommunities());
-      } else {
-        throw new Error(resp.data.msg);
-      }
-      return { errorMsg: '' };
-    } catch (error) {
-      throw error;
+    const resp = await takeTaskRquest(params);
+    if (resp.data.code === 0) {
+      const updateTask = {
+        id: params.id,
+        acceptedStatus: TaskAcceptedStatus.DONE,
+        status: TaskTodoCompleteStatus.TODO,
+      };
+      dispatch(updateTaskDetail(updateTask));
+      dispatch(fetchTaskDetail(params.id));
+      dispatch(fetchTodoTasks());
+      dispatch(fetchFollowedCommunities());
+    } else {
+      throw new Error(resp.data.msg);
     }
   }
 );
@@ -123,19 +118,15 @@ export const verifyTask = createAsyncThunk(
   'user/taskHandles/verifyTask',
   async (task: Task, { dispatch }) => {
     const { id } = task;
-    try {
-      dispatch(addOneVerifyTaskQueue(task));
-      const resp = await verifyOneTask({ id });
-      if (resp.data.code === 0 && resp.data.data) {
-        dispatch(updateTaskDetail(resp.data.data));
-        dispatch(setOneForTodoTask(resp.data.data));
-      } else {
-        throw new Error(resp.data.msg);
-      }
-    } catch (error) {
-      throw error;
-    } finally {
+    dispatch(addOneVerifyTaskQueue(task));
+    const resp = await verifyOneTask({ id });
+    if (resp.data.code === 0 && resp.data.data) {
+      dispatch(updateTaskDetail(resp.data.data));
+      dispatch(setOneForTodoTask(resp.data.data));
       dispatch(removeOneVerifyTaskQueue(id));
+    } else {
+      dispatch(removeOneVerifyTaskQueue(id));
+      throw new Error(resp.data.msg);
     }
   },
   {
@@ -154,19 +145,15 @@ export const verifyAction = createAsyncThunk(
   'user/taskHandles/verifyAction',
   async (action: Action, { dispatch }) => {
     const { id, taskId } = action;
-    try {
-      dispatch(addOneVerifyActionQueue(action));
-      const resp = await verifyOneAction({ id, taskId });
-      if (resp.data.code === 0 && resp.data.data) {
-        dispatch(updateTaskDetailAction(resp.data.data));
-        dispatch(updateOneAction(resp.data.data));
-      } else {
-        throw new Error(resp.data.msg);
-      }
-    } catch (error) {
-      throw error;
-    } finally {
+    dispatch(addOneVerifyActionQueue(action));
+    const resp = await verifyOneAction({ id, taskId });
+    if (resp.data.code === 0 && resp.data.data) {
+      dispatch(updateTaskDetailAction(resp.data.data));
+      dispatch(updateOneAction(resp.data.data));
       dispatch(removeOneVerifyActionQueue(id));
+    } else {
+      dispatch(removeOneVerifyActionQueue(id));
+      throw new Error(resp.data.msg);
     }
   },
   {
@@ -188,19 +175,15 @@ export const completionAction = createAsyncThunk(
   'user/taskHandles/completionAction',
   async (action: Action, { dispatch }) => {
     const { id, taskId } = action;
-    try {
-      dispatch(addOneVerifyActionQueue(action));
-      const resp = await completionOneAction({ id, taskId });
-      if (resp.data.code === 0 && resp.data.data) {
-        dispatch(updateTaskDetailAction(resp.data.data));
-        dispatch(updateOneAction(resp.data.data));
-      } else {
-        throw new Error(resp.data.msg);
-      }
-    } catch (error) {
-      throw error;
-    } finally {
+    dispatch(addOneVerifyActionQueue(action));
+    const resp = await completionOneAction({ id, taskId });
+    if (resp.data.code === 0 && resp.data.data) {
+      dispatch(updateTaskDetailAction(resp.data.data));
+      dispatch(updateOneAction(resp.data.data));
       dispatch(removeOneVerifyActionQueue(id));
+    } else {
+      dispatch(removeOneVerifyActionQueue(id));
+      throw new Error(resp.data.msg);
     }
   },
   {
@@ -230,37 +213,33 @@ export const questionVerifyConfirmAction = createAsyncThunk(
   ) => {
     const { action, answer, callback } = params;
     const { id, taskId } = action;
-    try {
-      dispatch(addOneVerifyActionQueue(action));
-      const resp = await confirmQuestionAction({ id, taskId, answer });
-      if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
-        callback(true);
-        dispatch(
-          updateTaskDetailAction({
-            ...action,
-            status: UserActionStatus.DONE,
-            progress: '',
-          })
-        );
-        dispatch(
-          updateOneAction({
-            ...action,
-            status: UserActionStatus.DONE,
-            progress: '',
-          })
-        );
-        toast.success('Verified.');
-      } else {
-        callback(false);
-      }
-    } catch (error) {
-      throw error;
-    } finally {
+    dispatch(addOneVerifyActionQueue(action));
+    const resp = await confirmQuestionAction({ id, taskId, answer });
+    if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
+      callback(true);
+      dispatch(
+        updateTaskDetailAction({
+          ...action,
+          status: UserActionStatus.DONE,
+          progress: '',
+        })
+      );
+      dispatch(
+        updateOneAction({
+          ...action,
+          status: UserActionStatus.DONE,
+          progress: '',
+        })
+      );
       dispatch(removeOneVerifyActionQueue(id));
+      toast.success('Verified.');
+    } else {
+      dispatch(removeOneVerifyActionQueue(id));
+      callback(false);
     }
   },
   {
-    condition: (params: { action: Action; answer: string }, { getState }) => {
+    condition: (params, { getState }) => {
       const { action, answer } = params;
       const state = getState() as RootState;
       const { selectById } = verifyActionQueueEntity.getSelectors();
@@ -279,39 +258,35 @@ export const questionConfirmAction = createAsyncThunk(
   async (params: { action: Action; answer: string }, { dispatch }) => {
     const { action, answer } = params;
     const { id, taskId } = action;
-    try {
-      const resp = await confirmQuestionAction({ id, taskId, answer });
-      if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
-        dispatch(
-          updateTaskDetailAction({
-            ...action,
-            status: UserActionStatus.TODO,
-            progress: '',
-            data: {
-              ...action.data,
-              answer,
-              nopassReason: '',
-            },
-          })
-        );
-        dispatch(
-          updateOneAction({
-            ...action,
-            status: UserActionStatus.TODO,
-            progress: '',
-            data: {
-              ...action.data,
-              answer,
-              nopassReason: '',
-            },
-          })
-        );
-        toast.success('Saved.');
-      } else {
-        toast.error('save error');
-      }
-    } catch (error) {
-      throw error;
+    const resp = await confirmQuestionAction({ id, taskId, answer });
+    if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
+      dispatch(
+        updateTaskDetailAction({
+          ...action,
+          status: UserActionStatus.TODO,
+          progress: '',
+          data: {
+            ...action.data,
+            answer,
+            nopassReason: '',
+          },
+        })
+      );
+      dispatch(
+        updateOneAction({
+          ...action,
+          status: UserActionStatus.TODO,
+          progress: '',
+          data: {
+            ...action.data,
+            answer,
+            nopassReason: '',
+          },
+        })
+      );
+      toast.success('Saved.');
+    } else {
+      toast.error('save error');
     }
   },
   {
@@ -334,39 +309,35 @@ export const uploadImageAction = createAsyncThunk(
   async (params: { action: Action; url: string }, { dispatch }) => {
     const { action, url: answer } = params;
     const { id, taskId } = action;
-    try {
-      const resp = await confirmQuestionAction({ id, taskId, answer });
-      if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
-        dispatch(
-          updateTaskDetailAction({
-            ...action,
-            status: UserActionStatus.TODO,
-            progress: '',
-            data: {
-              ...action.data,
-              answer,
-              nopassReason: '',
-            },
-          })
-        );
-        dispatch(
-          updateOneAction({
-            ...action,
-            status: UserActionStatus.TODO,
-            progress: '',
-            data: {
-              ...action.data,
-              answer,
-              nopassReason: '',
-            },
-          })
-        );
-        toast.success('Uploaded.');
-      } else {
-        toast.error('upload error');
-      }
-    } catch (error) {
-      throw error;
+    const resp = await confirmQuestionAction({ id, taskId, answer });
+    if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
+      dispatch(
+        updateTaskDetailAction({
+          ...action,
+          status: UserActionStatus.TODO,
+          progress: '',
+          data: {
+            ...action.data,
+            answer,
+            nopassReason: '',
+          },
+        })
+      );
+      dispatch(
+        updateOneAction({
+          ...action,
+          status: UserActionStatus.TODO,
+          progress: '',
+          data: {
+            ...action.data,
+            answer,
+            nopassReason: '',
+          },
+        })
+      );
+      toast.success('Uploaded.');
+    } else {
+      toast.error('upload error');
     }
   },
   {

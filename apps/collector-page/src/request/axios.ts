@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 16:54:03
+ * @LastEditTime: 2022-11-28 18:42:30
  * @Description: axios 封装：凭证，参数序列化
  */
 import axios, { AxiosRequestConfig, AxiosRequestHeaders } from 'axios';
@@ -85,10 +85,10 @@ axiosInstance.interceptors.response.use(
   (error) => {
     if (error.response.status === 401) {
       if (handleAxiosResponse401) handleAxiosResponse401();
-    } else {
-      // 对响应错误做点什么
-      return Promise.reject(error.response?.data || error);
+      return undefined;
     }
+    // 对响应错误做点什么
+    return Promise.reject(error.response?.data || error);
   }
 );
 

@@ -7,7 +7,9 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
-    "noEmit": true
+    "noEmit": true,
+    "declaration": false,
+    "declarationMap": false
   },
   "files": ["./typings/cssmodule.d.ts", "./typings/image.d.ts"],
   "include": [],

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-27 12:42:34
+ * @LastEditTime: 2022-11-28 19:05:39
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -15,7 +15,7 @@ import {
   FollowCommunityParams,
   verifyCommunityCheckin,
 } from '../../services/api/community';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
 import { fetchCommunityContributionRanks } from '../community/contributionRanksSlice';
 import { fetchUserContributon } from '../contribution/userContributionSlice';
@@ -53,53 +53,39 @@ const initUserCommunityHandlesState: UserCommunityHandlesStateType = {
 export const follow = createAsyncThunk(
   'user/communityHandles/follow',
   async (params: FollowCommunityParams, { dispatch }) => {
-    try {
-      const resp = await followCommunity(params);
-      if (resp.data.code === 0) {
-        const addFollowedCommunity = { id: params.id };
-        dispatch(addOneForFollowedCommunities(addFollowedCommunity));
-        dispatch(fetchFollowedCommunities());
-      } else {
-        throw new Error(resp.data.msg);
-      }
-      return { errorMsg: '' };
-    } catch (error) {
-      throw error;
+    const resp = await followCommunity(params);
+    if (resp.data.code === 0) {
+      const addFollowedCommunity = { id: params.id };
+      dispatch(addOneForFollowedCommunities(addFollowedCommunity));
+      dispatch(fetchFollowedCommunities());
+    } else {
+      throw new Error(resp.data.msg);
     }
   }
 );
 export const downloadContributionTokens = createAsyncThunk(
   'user/communityHandles/downloadContributionTokens',
   async (communityId: number) => {
-    try {
-      const resp = await downloadContributions(communityId);
-      fileDownload(resp.data, 'contribution_tokens.csv');
-    } catch (error) {
-      throw error;
-    }
+    const resp = await downloadContributions(communityId);
+    fileDownload(resp.data, 'contribution_tokens.csv');
   }
 );
 
 export const verifyCheckin = createAsyncThunk(
   'user/communityHandles/verifyCheckin',
   async (communityId: number, { dispatch, getState }) => {
-    try {
-      const resp = await verifyCommunityCheckin(communityId);
-      if (resp.data.code === 0) {
-        if (resp.data.data === 1) {
-          const addCheckinCommunity = {
-            communityId,
-            seqDays: 1,
-            contribution: 0,
-          };
-          dispatch(addOneForCheckinCommunities(addCheckinCommunity));
-        }
-      } else {
-        throw new Error(resp.data.msg);
+    const resp = await verifyCommunityCheckin(communityId);
+    if (resp.data.code === 0) {
+      if (resp.data.data === 1) {
+        const addCheckinCommunity = {
+          communityId,
+          seqDays: 1,
+          contribution: 0,
+        };
+        dispatch(addOneForCheckinCommunities(addCheckinCommunity));
       }
-      return { errorMsg: '' };
-    } catch (error) {
-      throw error;
+    } else {
+      throw new Error(resp.data.msg);
     }
   }
 );
@@ -110,33 +96,28 @@ export const checkin = createAsyncThunk(
     { communityId, slug }: { communityId: number; slug?: string },
     { dispatch }
   ) => {
-    try {
-      const resp = await checkinCommunity(communityId);
-      if (resp.data.code === 0) {
-        const { seqDays, contribution } = resp.data.data;
-        const addCheckinCommunity = {
-          communityId,
-          seqDays: seqDays || 0,
-          contribution: contribution || 0,
-        };
-        dispatch(addOneForCheckinCommunities(addCheckinCommunity));
-        if (slug) {
-          dispatch(fetchCommunityContributionRanks(slug));
-          dispatch(fetchUserContributon(slug));
-        }
-        toast.success(
-          `Got ${addCheckinCommunity.contribution} contribution scores!`
-        );
-        dispatch(setCheckinOpenClaimModal(true));
-        setTimeout(() => {
-          dispatch(setCheckinOpenClaimModal(false));
-        }, 3000);
-      } else {
-        throw new Error(resp.data.msg);
+    const resp = await checkinCommunity(communityId);
+    if (resp.data.code === 0) {
+      const { seqDays, contribution } = resp.data.data;
+      const addCheckinCommunity = {
+        communityId,
+        seqDays: seqDays || 0,
+        contribution: contribution || 0,
+      };
+      dispatch(addOneForCheckinCommunities(addCheckinCommunity));
+      if (slug) {
+        dispatch(fetchCommunityContributionRanks(slug));
+        dispatch(fetchUserContributon(slug));
       }
-      return { errorMsg: '' };
-    } catch (error) {
-      throw error;
+      toast.success(
+        `Got ${addCheckinCommunity.contribution} contribution scores!`
+      );
+      dispatch(setCheckinOpenClaimModal(true));
+      setTimeout(() => {
+        dispatch(setCheckinOpenClaimModal(false));
+      }, 3000);
+    } else {
+      throw new Error(resp.data.msg);
     }
   }
 );
@@ -175,7 +156,6 @@ export const userCommunityHandlesSlice = createSlice({
       })
       .addCase(verifyCheckin.pending, (state, action) => {
         console.log('verifyCheckin pending', action);
-        state.verifyCheckin.params = action.meta.arg;
         state.verifyCheckin.status = AsyncRequestStatus.PENDING;
         state.verifyCheckin.errorMsg = '';
       })
@@ -194,7 +174,6 @@ export const userCommunityHandlesSlice = createSlice({
       })
       .addCase(checkin.pending, (state, action) => {
         console.log('checkin pending', action);
-        state.checkin.params = action.meta.arg;
         state.checkin.status = AsyncRequestStatus.PENDING;
         state.checkin.errorMsg = '';
       })

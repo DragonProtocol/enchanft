@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-01 14:50:54
+ * @LastEditTime: 2022-11-28 18:26:15
  * @Description: 基础按钮
  */
 import React, { ButtonHTMLAttributes } from 'react';
@@ -14,7 +14,6 @@ const ButtonBase: React.FC<ButtonProps> = ({
   children,
   ...otherProps
 }: ButtonProps) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
   <ButtonBaseWrapper {...otherProps}>{children}</ButtonBaseWrapper>
 );
 export default ButtonBase;

@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 17:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 16:53:38
+ * @LastEditTime: 2022-11-28 19:05:16
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { fetchDetailByProjectSlug } from '../../services/api/project';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
 import { ProjectDetailResponse } from '../../types/api';
 

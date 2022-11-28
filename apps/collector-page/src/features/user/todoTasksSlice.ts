@@ -5,20 +5,10 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import {
-  fetchListForUserTodoTask,
-  verifyOneTask,
-  VerifyOneTaskParams,
-} from '../../services/api/task';
-import { RootState } from '../../store/store';
+import { fetchListForUserTodoTask } from '../../services/api/task';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
-import {
-  TodoTaskActionItem,
-  TodoTaskItem,
-  TodoTaskResponse,
-  UserActionStatus,
-} from '../../types/api';
-import { TaskTodoCompleteStatus } from '../../types/entities';
+import { TodoTaskActionItem, TodoTaskItem } from '../../types/api';
 import { getTaskEntityForUpdateActionAfter } from '../../utils/task';
 
 export type TodoTaskItemForEntity = TodoTaskItem;
@@ -66,8 +56,8 @@ export const userTodoTasksSlice = createSlice({
   name: 'UserTodoTasks',
   initialState: initTodoTasksState,
   reducers: {
-    updateOne: todoTasksEntity.updateOne,
-    setOne: todoTasksEntity.setOne,
+    updateOne: (...args) => todoTasksEntity.updateOne(...args),
+    setOne: (...args) => todoTasksEntity.setOne(...args),
     removeAll: (state) => {
       todoTasksEntity.removeAll(state);
     },

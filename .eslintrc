@@ -5,27 +5,17 @@
   "extends": [
     "airbnb",
     "airbnb-typescript",
-    "airbnb/hooks",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:prettier/recommended"
   ],
   "parserOptions": {
-    "project": "./tsconfig.base.json"
+    "project": ["./tsconfig.eslint.json"]
   },
-  "overrides": [
-    {
-      "files": ["**/features/*/*.ts", "**/store/*.ts"],
-      "rules": {
-        // 在redux slice中的action函数参数的引用值可以修改内部属性(state,payload)=>state.name='123'
-        "no-param-reassign": "off",
-        // 在redux中允许隐式循环依赖
-        "import/no-cycle": "off"
-      }
-    }
-  ],
   "rules": {
+    // 当一个模块只有一个导出时，允许采用命名导出
+    "import/prefer-default-export": "off",
     //解决 styled 结构顺序问题
     "@typescript-eslint/no-use-before-define": "off",
 
@@ -43,16 +33,21 @@
 
     "@typescript-eslint/no-unsafe-argument": "off",
     "@typescript-eslint/restrict-template-expressions": "off",
+    // 停止使用 void 运算符使用的规则报告承诺
+    // 对于promise在某些情况下允许使用未等待的方式运行 ( 如: redux的dispatch() )
+    "@typescript-eslint/no-floating-promises": "off",
 
     // 不限制js的语法 （如：不禁止使用for of语法）
     "no-restricted-syntax": "off",
-    // 允许在for循环中使用一元运算符 ++,--
+    // 允许在for循环中使用一元运算符 ++,-- (其它位置仍给出警告)
     "no-plusplus": [
       "error",
       {
         "allowForLoopAfterthoughts": true
       }
     ],
+    // 允许对函数参数赋值
+    "no-param-reassign": "off",
 
     //旧版本的 React 验证
     "react/react-in-jsx-scope": "off",

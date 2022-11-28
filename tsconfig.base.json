@@ -26,7 +26,6 @@
 
     // 跳过声明文件的类型检查
     "skipLibCheck": true,
-
     "skipDefaultLibCheck": true,
     "paths": {}
   },

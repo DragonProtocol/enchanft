@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-29 14:40:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-29 19:32:36
+ * @LastEditTime: 2022-11-28 19:05:29
  * @Description: file description
  */
 import {
@@ -12,7 +12,7 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
 
 export type CommunityCheckinItemForEntity = {
@@ -32,7 +32,7 @@ export const userCheckinCommunitiesEntity =
     selectId: (item) => item.communityId,
   });
 // 初始化列表信息
-const CommunitysState: CommunitysState =
+const communitysState: CommunitysState =
   userCheckinCommunitiesEntity.getInitialState({
     status: AsyncRequestStatus.FULFILLED,
     errorMsg: '',
@@ -41,7 +41,7 @@ const CommunitysState: CommunitysState =
 
 export const userCheckinCommunitiesSlice = createSlice({
   name: 'userCheckinCommunities',
-  initialState: CommunitysState,
+  initialState: communitysState,
   reducers: {
     addOne: (state, action: PayloadAction<CommunityCheckinItemForEntity>) => {
       const one = action.payload;

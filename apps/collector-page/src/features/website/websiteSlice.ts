@@ -2,11 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-28 02:02:51
+ * @LastEditTime: 2022-11-28 19:10:17
  * @Description: 站点的配置
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 
 type WebsiteState = {
   mobileNavDisplay: boolean;

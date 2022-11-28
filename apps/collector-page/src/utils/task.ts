@@ -2,12 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-15 15:37:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 16:00:22
+ * @LastEditTime: 2022-11-28 17:48:50
  * @Description: file description
  */
 import { TASK_NO_ENDTIME_TIMESTAMP } from '../constants';
-import { TaskDetailEntity } from '../features/task/taskDetailSlice';
-import { TodoTaskItemForEntity } from '../features/user/todoTasksSlice';
 import {
   TaskDetailResponse,
   TodoTaskActionItem,
@@ -36,6 +34,7 @@ export const getTaskRewardTypeLabel = (reward?: {
       case RewardType.OTHERS:
         rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS';
         break;
+      // no default
     }
   }
   return rewardTypeLabel;
@@ -58,12 +57,13 @@ export const getTaskRewardTypeValue = (reward?: {
       case RewardType.OTHERS:
         rewardTypeValue = reward?.name || 'Others';
         break;
+      // no default
     }
   }
   return rewardTypeValue;
 };
 
-type TaskEntityType = TodoTaskItemForEntity | TaskDetailEntity;
+type TaskEntityType = TodoTaskItem | TaskDetailResponse;
 export const getTaskEntityForUpdateActionAfter = (
   task: TaskEntityType,
   action: TodoTaskActionItem

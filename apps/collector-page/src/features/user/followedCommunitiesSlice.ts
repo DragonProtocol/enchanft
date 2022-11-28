@@ -3,12 +3,11 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
-  PayloadAction,
 } from '@reduxjs/toolkit';
 import { fetchListForUserFollowedCommunity } from '../../services/api/community';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
-import { FollowedCommunityItem } from '../../types/api';
+import type { FollowedCommunityItem } from '../../types/api';
 
 export type FollowedCommunitityForEntity = FollowedCommunityItem;
 type FollowedCommunityListState = EntityState<FollowedCommunitityForEntity> & {

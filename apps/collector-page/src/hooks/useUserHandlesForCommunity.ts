@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-29 16:47:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 00:09:42
+ * @LastEditTime: 2022-11-28 13:37:04
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -44,7 +44,7 @@ export default (communityId?: number, slug?: string) => {
     if (isLogin && communityId) {
       dispatch(follow({ id: communityId }));
     }
-  }, [isLogin, communityId]);
+  }, [isLogin, communityId, dispatch]);
 
   /** * checkin community */
   const userCheckinCommunityIds = useAppSelector(selectIds);
@@ -61,7 +61,7 @@ export default (communityId?: number, slug?: string) => {
   };
   const handleCheckin = useCallback(
     () => isLogin && communityId && dispatch(checkin({ communityId, slug })),
-    [isLogin, communityId, slug]
+    [isLogin, communityId, slug, dispatch]
   );
 
   // verify check in

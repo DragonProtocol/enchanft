@@ -1,10 +1,8 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-floating-promises */
 /*
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 18:51:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-28 02:21:17
+ * @LastEditTime: 2022-11-28 18:22:29
  * @Description: file description
  */
 import { useCallback, useEffect, useRef } from 'react';

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 15:36:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-17 15:37:01
+ * @LastEditTime: 2022-11-28 17:43:05
  * @Description: file description
  */
 import { AxiosPromise } from 'axios';
@@ -15,7 +15,6 @@ import {
   TodoTaskItem,
   TodoTaskResponse,
 } from '../../types/api';
-import { State as CreateTaskState } from '../../components/business/task/create/state';
 import { useGAEvent } from '../../hooks/useGoogleAnalytics';
 import { TASK_PARTICIPANTS_FETCH_NUM } from '../../constants';
 
@@ -166,51 +165,6 @@ export function fetchDetail(
   return request({
     url: `/tasks/${id}?participants=${TASK_PARTICIPANTS_FETCH_NUM}`,
     method: 'get',
-    headers: {
-      needToken: true,
-    },
-  });
-}
-
-export function createTask(data: CreateTaskState) {
-  const postData = {
-    projectId: data.projectId,
-    name: data.name,
-    description: data.description,
-    image: data.image,
-    winNum: data.winnerNum,
-    startTime: data.startTime,
-    endTime: data.endTime,
-    reward: {
-      type: data.reward.type,
-      raffled: data.reward.raffled,
-      name: data.reward.name,
-      data: {
-        token_num: data.reward.token_num,
-      },
-    },
-    actions: data.actions.map((item) => {
-      return {
-        name: item.name,
-        type: item.typeMore,
-        description: item.description,
-        data: {
-          url: item.url,
-          server_id: item.server_id,
-          require_score: item.require_score,
-          num: item.num,
-          accounts: item.accounts,
-          tweet_id: item.tweet_id,
-          role: item.role,
-        },
-      };
-    }),
-  };
-
-  return request({
-    url: `/tasks`,
-    method: 'post',
-    data: postData,
     headers: {
       needToken: true,
     },

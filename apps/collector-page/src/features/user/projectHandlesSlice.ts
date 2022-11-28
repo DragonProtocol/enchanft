@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 15:31:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-01 17:42:50
+ * @LastEditTime: 2022-11-28 19:07:22
  * @Description: file description
  */
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { applyForVerificationByProjectId } from '../../services/api/project';
-import { RootState } from '../../store/store';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
 import { GradeType } from '../../types/entities';
 import { updateProjectDetail } from '../project/projectDetailSlice';
@@ -34,16 +34,11 @@ const initUserProjectHandlesState: UserProjectHandlesStateType = {
 export const applyForVerification = createAsyncThunk(
   'user/projectHandles/applyForVerification',
   async (projectId: number, { dispatch }) => {
-    try {
-      const resp = await applyForVerificationByProjectId(projectId);
-      if (resp.data.code === 0) {
-        dispatch(updateProjectDetail({ grade: GradeType.OFFICIAL }));
-      } else {
-        throw new Error(resp.data.msg);
-      }
-      return { errorMsg: '' };
-    } catch (error) {
-      throw error;
+    const resp = await applyForVerificationByProjectId(projectId);
+    if (resp.data.code === 0) {
+      dispatch(updateProjectDetail({ grade: GradeType.OFFICIAL }));
+    } else {
+      throw new Error(resp.data.msg);
     }
   }
 );

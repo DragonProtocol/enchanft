@@ -2,23 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 15:21:43
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-19 17:49:10
+ * @LastEditTime: 2022-11-28 19:04:05
  * @Description: file description
  */
-import {
-  EntityState,
-  createAsyncThunk,
-  createEntityAdapter,
-  createSlice,
-  PayloadAction,
-} from '@reduxjs/toolkit';
-import {
-  fetchOneByUserCommunityContributionRank,
-  fetchOneByUserCommunityScore,
-} from '../../services/api/community';
-import { RootState } from '../../store/store';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { fetchOneByUserCommunityScore } from '../../services/api/community';
+import type { RootState } from '../../store/store';
 import { AsyncRequestStatus } from '../../types';
-import { UserContributionResponse } from '../../types/api';
+
 export type UserContributonForEntity = number;
 type UserContributonState = {
   data: UserContributonForEntity;
