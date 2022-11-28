@@ -5,18 +5,18 @@
  * @LastEditTime: 2022-09-28 11:04:05
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react'
-import styled from 'styled-components'
-import { ChainIds } from '../../../utils/chain'
-import IconEthereumWhite from '../../common/icons/IconEthereumWhite'
-import IconSolana from '../../common/icons/IconSolana'
-import IconMartian from '../../common/icons/IconMartian'
+import React, { HTMLAttributes } from 'react';
+import styled from 'styled-components';
+import { ChainIds } from '../../../utils/chain';
+import IconEthereumWhite from '../../common/icons/IconEthereumWhite';
+import IconSolana from '../../common/icons/IconSolana';
+import IconMartian from '../../common/icons/IconMartian';
 export type ChainTag = {
-  name: string
-  icon: React.FC
-  iconSize: string
-  bgc: string
-}
+  name: string;
+  icon: React.FC;
+  iconSize: string;
+  bgc: string;
+};
 export const chainMap: { [key in ChainIds]: ChainTag } = {
   [ChainIds.eth]: {
     name: 'Ethereum',
@@ -36,13 +36,17 @@ export const chainMap: { [key in ChainIds]: ChainTag } = {
     iconSize: '14px',
     bgc: '#171F1C',
   },
-}
+};
 type ChainTagProps = HTMLAttributes<HTMLDivElement> & {
-  chainId: number
-  size?: number
-}
-const ChainTag: React.FC<ChainTagProps> = ({ chainId, size = 1, ...otherProps }: ChainTagProps) => {
-  const chain = chainMap[chainId]
+  chainId: number;
+  size?: number;
+};
+const ChainTag: React.FC<ChainTagProps> = ({
+  chainId,
+  size = 1,
+  ...otherProps
+}: ChainTagProps) => {
+  const chain = chainMap[chainId];
   // // 要使用的字体大小
   // const nameSize = size * 12 + 'px'
 
@@ -74,9 +78,9 @@ const ChainTag: React.FC<ChainTagProps> = ({ chainId, size = 1, ...otherProps }:
     //     </ChainTagBody>
     //   </ChainTagBodyBox>
     // </ChainTagWrapper>
-  )
-}
-export default ChainTag
+  );
+};
+export default ChainTag;
 const ChainTagWrapper = styled.div<{ bgc: string }>`
   height: 22px;
   padding: 4px;
@@ -95,7 +99,7 @@ const ChainTagWrapper = styled.div<{ bgc: string }>`
   top: 0;
   left: 0;
   overflow: hidden;
-`
+`;
 // const ChainTagWrapper = styled.div<{ size: string }>`
 //   width: ${({ size }) => size};
 //   height: ${({ size }) => size};

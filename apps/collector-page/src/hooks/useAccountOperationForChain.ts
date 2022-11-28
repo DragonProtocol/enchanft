@@ -5,8 +5,13 @@
  * @LastEditTime: 2022-11-10 18:53:04
  * @Description: file description
  */
-import { AccountType, AuthorizerType, useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
-import { ChainType, getChainType } from '../utils/chain'
+import {
+  AccountType,
+  AuthorizerType,
+  useWlUserReact,
+  WlUserModalType,
+} from '@ecnft/wl-user-react';
+import { ChainType, getChainType } from '../utils/chain';
 
 export enum AccountOperationType {
   CONNECT_WALLET = 'CONNECT_WALLET',
@@ -23,51 +28,61 @@ export const ccountOperationDescMap = {
   [AccountOperationType.BIND_MARTIAN]: 'Bind Martian Wallet',
   [AccountOperationType.BIND_UNKNOWN]: 'Unknown chain',
   [AccountOperationType.COMPLETED]: '',
-}
+};
 export default (chainId?: number) => {
-  const { isLogin, validateBindAccount, dispatchModal } = useWlUserReact()
-  let accountOperationType = AccountOperationType.CONNECT_WALLET
+  const { isLogin, validateBindAccount, dispatchModal } = useWlUserReact();
+  let accountOperationType = AccountOperationType.CONNECT_WALLET;
   const handleAccountOperationMap = {
     [AccountOperationType.CONNECT_WALLET]: () => {
-      dispatchModal({ type: WlUserModalType.LOGIN })
+      dispatchModal({ type: WlUserModalType.LOGIN });
     },
     [AccountOperationType.BIND_METAMASK]: () => {
-      dispatchModal({ type: WlUserModalType.BIND, payload: AuthorizerType.METAMASK_WALLET })
+      dispatchModal({
+        type: WlUserModalType.BIND,
+        payload: AuthorizerType.METAMASK_WALLET,
+      });
     },
     [AccountOperationType.BIND_PHANTOM]: () => {
-      dispatchModal({ type: WlUserModalType.BIND, payload: AuthorizerType.PHANTOM_WALLET })
+      dispatchModal({
+        type: WlUserModalType.BIND,
+        payload: AuthorizerType.PHANTOM_WALLET,
+      });
     },
     [AccountOperationType.BIND_MARTIAN]: () => {
-      dispatchModal({ type: WlUserModalType.BIND, payload: AuthorizerType.MARTIAN_WALLET })
+      dispatchModal({
+        type: WlUserModalType.BIND,
+        payload: AuthorizerType.MARTIAN_WALLET,
+      });
     },
     [AccountOperationType.BIND_UNKNOWN]: () => {},
     [AccountOperationType.COMPLETED]: () => {},
-  }
+  };
 
   if (isLogin) {
-    const chainType = chainId ? getChainType(chainId) : ChainType.UNKNOWN
+    const chainType = chainId ? getChainType(chainId) : ChainType.UNKNOWN;
     switch (chainType) {
       case ChainType.EVM:
         accountOperationType = validateBindAccount(AccountType.EVM)
           ? AccountOperationType.COMPLETED
-          : AccountOperationType.BIND_METAMASK
-        break
+          : AccountOperationType.BIND_METAMASK;
+        break;
       case ChainType.SOLANA:
         accountOperationType = validateBindAccount(AccountType.SOLANA)
           ? AccountOperationType.COMPLETED
-          : AccountOperationType.BIND_PHANTOM
-        break
+          : AccountOperationType.BIND_PHANTOM;
+        break;
       case ChainType.APTOS:
         accountOperationType = validateBindAccount(AccountType.APTOS)
           ? AccountOperationType.COMPLETED
-          : AccountOperationType.BIND_MARTIAN
-        break
+          : AccountOperationType.BIND_MARTIAN;
+        break;
       default:
-        accountOperationType = AccountOperationType.BIND_UNKNOWN
-        break
+        accountOperationType = AccountOperationType.BIND_UNKNOWN;
+        break;
     }
   }
-  const accountOperationDesc = ccountOperationDescMap[accountOperationType]
-  const handleAccountOperation = handleAccountOperationMap[accountOperationType]
-  return { accountOperationType, accountOperationDesc, handleAccountOperation }
-}
+  const accountOperationDesc = ccountOperationDescMap[accountOperationType];
+  const handleAccountOperation =
+    handleAccountOperationMap[accountOperationType];
+  return { accountOperationType, accountOperationDesc, handleAccountOperation };
+};

@@ -5,35 +5,37 @@
  * @LastEditTime: 2022-09-14 14:07:36
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled from 'styled-components';
 import ExploreTaskSwiperItem, {
   ExploreTaskSwiperItemDataViewType,
   ExploreTaskSwiperItemHandlesType,
-} from './ExploreTaskSwiperItem'
-import RecommendSwiper, { RecommendSwiperItem } from '../../common/swiper/RecommendSwiper'
-import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../../../constants'
+} from './ExploreTaskSwiperItem';
+import RecommendSwiper, {
+  RecommendSwiperItem,
+} from '../../common/swiper/RecommendSwiper';
+import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../../../constants';
 export type ExploreTaskSwiperViewConfigType = {
-  loading?: boolean
-  loadingMsg?: string
-  emptyMsg?: string
-}
-export type ExplorTaskSwiperItemsType = ExploreTaskSwiperItemDataViewType[]
+  loading?: boolean;
+  loadingMsg?: string;
+  emptyMsg?: string;
+};
+export type ExplorTaskSwiperItemsType = ExploreTaskSwiperItemDataViewType[];
 export type ExploreTaskSwiperProps = ExploreTaskSwiperViewConfigType &
   ExploreTaskSwiperItemHandlesType & {
-    items: ExplorTaskSwiperItemsType
-  }
+    items: ExplorTaskSwiperItemsType;
+  };
 const ExploreTaskSwiper: React.FC<ExploreTaskSwiperProps> = ({
   items,
   loading,
   loadingMsg = 'loading...',
   emptyMsg = 'task empty',
 }: ExploreTaskSwiperProps) => {
-  const itemLen = items.length
-  const navigation = itemLen > 1 ? true : false
-  const autoplay = itemLen > 1 ? true : false
-  const loop = itemLen > 1 ? true : false
-  const pagination = itemLen > 1 ? true : false
+  const itemLen = items.length;
+  const navigation = itemLen > 1 ? true : false;
+  const autoplay = itemLen > 1 ? true : false;
+  const loop = itemLen > 1 ? true : false;
+  const pagination = itemLen > 1 ? true : false;
   return (
     <ExploreTaskSwiperWrapper
       navigation={navigation}
@@ -46,13 +48,16 @@ const ExploreTaskSwiper: React.FC<ExploreTaskSwiperProps> = ({
     >
       {items.map((item) => (
         <RecommendSwiperItem key={item.data.id}>
-          <ExploreTaskSwiperItem data={item.data} viewConfig={item.viewConfig} />
+          <ExploreTaskSwiperItem
+            data={item.data}
+            viewConfig={item.viewConfig}
+          />
         </RecommendSwiperItem>
       ))}
     </ExploreTaskSwiperWrapper>
-  )
-}
-export default ExploreTaskSwiper
+  );
+};
+export default ExploreTaskSwiper;
 const ExploreTaskSwiperWrapper = styled(RecommendSwiper)`
   width: 100%;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
@@ -67,4 +72,4 @@ const ExploreTaskSwiperWrapper = styled(RecommendSwiper)`
       }
     }
   }
-`
+`;

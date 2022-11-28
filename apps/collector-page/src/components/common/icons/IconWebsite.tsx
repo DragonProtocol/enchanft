@@ -5,13 +5,13 @@
  * @LastEditTime: 2022-08-08 15:17:11
  * @Description: file description
  */
-import React from 'react'
-import { ReactComponent as WebsiteIcon } from './svgs/website.svg'
+import React from 'react';
+import { ReactComponent as WebsiteIcon } from './svgs/website.svg';
 interface Props {
-  size?: string
-  opacity?: number
+  size?: string;
+  opacity?: number;
 }
 const IconWebsite: React.FC<Props> = ({ size = '1.5rem', opacity = 1 }) => {
-  return <WebsiteIcon width={size} height={size} opacity={opacity} />
-}
-export default IconWebsite
+  return <WebsiteIcon width={size} height={size} opacity={opacity} />;
+};
+export default IconWebsite;

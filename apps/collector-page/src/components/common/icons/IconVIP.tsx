@@ -5,5 +5,5 @@
  * @LastEditTime: 2022-10-27 17:15:21
  * @Description: file description
  */
-import { ReactComponent as IconVIP } from './svgs/VIP.svg'
-export default IconVIP
+import { ReactComponent as IconVIP } from './svgs/VIP.svg';
+export default IconVIP;

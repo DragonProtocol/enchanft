@@ -5,8 +5,13 @@
  * @LastEditTime: 2022-11-15 13:02:10
  * @Description: file description
  */
-import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from '@reduxjs/toolkit'
-import { toast } from 'react-toastify'
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+  EntityState,
+} from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 import {
   completionOneAction,
   confirmQuestionAction,
@@ -14,227 +19,268 @@ import {
   takeTask as takeTaskRquest,
   verifyOneAction,
   verifyOneTask,
-} from '../../services/api/task'
-import { RootState } from '../../store/store'
-import { AsyncRequestStatus } from '../../types'
-import { UserActionStatus } from '../../types/api'
-import { Action, Task, TaskAcceptedStatus, TaskTodoCompleteStatus } from '../../types/entities'
-import { fetchTaskDetail, updateTaskDetail, updateTaskDetailAction } from '../task/taskDetailSlice'
-import { fetchFollowedCommunities } from './followedCommunitiesSlice'
-import { fetchTodoTasks, setOne as setOneForTodoTask, updateOneAction } from './todoTasksSlice'
+} from '../../services/api/task';
+import { RootState } from '../../store/store';
+import { AsyncRequestStatus } from '../../types';
+import { UserActionStatus } from '../../types/api';
+import {
+  Action,
+  Task,
+  TaskAcceptedStatus,
+  TaskTodoCompleteStatus,
+} from '../../types/entities';
+import {
+  fetchTaskDetail,
+  updateTaskDetail,
+  updateTaskDetailAction,
+} from '../task/taskDetailSlice';
+import { fetchFollowedCommunities } from './followedCommunitiesSlice';
+import {
+  fetchTodoTasks,
+  setOne as setOneForTodoTask,
+  updateOneAction,
+} from './todoTasksSlice';
 
 // create an execution queue for the verify task
-export type VerifyTaskQueueEntity = Task
-type VerifyTaskQueueState = EntityState<VerifyTaskQueueEntity>
-export const verifyTaskQueueEntity = createEntityAdapter<VerifyTaskQueueEntity>({
-  selectId: (item) => item.id,
-})
-const verifyTaskQueueState: VerifyTaskQueueState = verifyTaskQueueEntity.getInitialState()
+export type VerifyTaskQueueEntity = Task;
+type VerifyTaskQueueState = EntityState<VerifyTaskQueueEntity>;
+export const verifyTaskQueueEntity = createEntityAdapter<VerifyTaskQueueEntity>(
+  {
+    selectId: (item) => item.id,
+  }
+);
+const verifyTaskQueueState: VerifyTaskQueueState =
+  verifyTaskQueueEntity.getInitialState();
 
 // create an execution queue for the verify action
-export type VerifyActionQueueEntity = Action
-type VerifyActionQueueState = EntityState<VerifyActionQueueEntity>
-export const verifyActionQueueEntity = createEntityAdapter<VerifyActionQueueEntity>({
-  selectId: (item) => item.id,
-})
-const verifyActionQueueState: VerifyActionQueueState = verifyActionQueueEntity.getInitialState()
+export type VerifyActionQueueEntity = Action;
+type VerifyActionQueueState = EntityState<VerifyActionQueueEntity>;
+export const verifyActionQueueEntity =
+  createEntityAdapter<VerifyActionQueueEntity>({
+    selectId: (item) => item.id,
+  });
+const verifyActionQueueState: VerifyActionQueueState =
+  verifyActionQueueEntity.getInitialState();
 
 // unified management of task operations
 export type TaskHandle<T> = {
-  params: T | null
-  status: AsyncRequestStatus
-  errorMsg: string
-}
+  params: T | null;
+  status: AsyncRequestStatus;
+  errorMsg: string;
+};
 export type TakeTaskParams = {
-  id: number
-}
+  id: number;
+};
 export type UserTaskHandlesStateType = {
-  takeTask: TaskHandle<TakeTaskParams>
-  verifyTask: TaskHandle<Task>
-  verifyTaskQueue: VerifyTaskQueueState
-  verifyAction: TaskHandle<Action>
-  verifyActionQueue: VerifyActionQueueState
-}
+  takeTask: TaskHandle<TakeTaskParams>;
+  verifyTask: TaskHandle<Task>;
+  verifyTaskQueue: VerifyTaskQueueState;
+  verifyAction: TaskHandle<Action>;
+  verifyActionQueue: VerifyActionQueueState;
+};
 // init data
 const initTaskHandlestate = {
   params: null,
   status: AsyncRequestStatus.IDLE,
   errorMsg: '',
-}
+};
 const initUserTaskHandlesState: UserTaskHandlesStateType = {
   takeTask: initTaskHandlestate,
   verifyTask: initTaskHandlestate,
   verifyTaskQueue: verifyTaskQueueState,
   verifyAction: initTaskHandlestate,
   verifyActionQueue: verifyActionQueueState,
-}
+};
 
 // take task
-export const takeTask = createAsyncThunk('user/taskHandles/takeTask', async (params: TakeTaskParams, { dispatch }) => {
-  try {
-    const resp = await takeTaskRquest(params)
-    if (resp.data.code === 0) {
-      const updateTask = { id: params.id, acceptedStatus: TaskAcceptedStatus.DONE, status: TaskTodoCompleteStatus.TODO }
-      dispatch(updateTaskDetail(updateTask))
-      dispatch(fetchTaskDetail(params.id))
-      dispatch(fetchTodoTasks())
-      dispatch(fetchFollowedCommunities())
-    } else {
-      throw new Error(resp.data.msg)
+export const takeTask = createAsyncThunk(
+  'user/taskHandles/takeTask',
+  async (params: TakeTaskParams, { dispatch }) => {
+    try {
+      const resp = await takeTaskRquest(params);
+      if (resp.data.code === 0) {
+        const updateTask = {
+          id: params.id,
+          acceptedStatus: TaskAcceptedStatus.DONE,
+          status: TaskTodoCompleteStatus.TODO,
+        };
+        dispatch(updateTaskDetail(updateTask));
+        dispatch(fetchTaskDetail(params.id));
+        dispatch(fetchTodoTasks());
+        dispatch(fetchFollowedCommunities());
+      } else {
+        throw new Error(resp.data.msg);
+      }
+      return { errorMsg: '' };
+    } catch (error) {
+      throw error;
     }
-    return { errorMsg: '' }
-  } catch (error) {
-    throw error
   }
-})
+);
 
 // verify task
 export const verifyTask = createAsyncThunk(
   'user/taskHandles/verifyTask',
   async (task: Task, { dispatch }) => {
-    const { id } = task
+    const { id } = task;
     try {
-      dispatch(addOneVerifyTaskQueue(task))
-      const resp = await verifyOneTask({ id })
+      dispatch(addOneVerifyTaskQueue(task));
+      const resp = await verifyOneTask({ id });
       if (resp.data.code === 0 && resp.data.data) {
-        dispatch(updateTaskDetail(resp.data.data))
-        dispatch(setOneForTodoTask(resp.data.data))
+        dispatch(updateTaskDetail(resp.data.data));
+        dispatch(setOneForTodoTask(resp.data.data));
       } else {
-        throw new Error(resp.data.msg)
+        throw new Error(resp.data.msg);
       }
     } catch (error) {
-      throw error
+      throw error;
     } finally {
-      dispatch(removeOneVerifyTaskQueue(id))
+      dispatch(removeOneVerifyTaskQueue(id));
     }
   },
   {
     condition: (task: Task, { getState }) => {
-      const state = getState() as RootState
-      const { selectById } = verifyTaskQueueEntity.getSelectors()
-      const item = selectById(state.userTaskHandles.verifyTaskQueue, task.id)
+      const state = getState() as RootState;
+      const { selectById } = verifyTaskQueueEntity.getSelectors();
+      const item = selectById(state.userTaskHandles.verifyTaskQueue, task.id);
       // 如果此 task 正在 verify task 的队列中则阻止新的verify请求
-      return !item
+      return !item;
     },
-  },
-)
+  }
+);
 
 // verify action
 export const verifyAction = createAsyncThunk(
   'user/taskHandles/verifyAction',
   async (action: Action, { dispatch }) => {
-    const { id, taskId } = action
+    const { id, taskId } = action;
     try {
-      dispatch(addOneVerifyActionQueue(action))
-      const resp = await verifyOneAction({ id, taskId })
+      dispatch(addOneVerifyActionQueue(action));
+      const resp = await verifyOneAction({ id, taskId });
       if (resp.data.code === 0 && resp.data.data) {
-        dispatch(updateTaskDetailAction(resp.data.data))
-        dispatch(updateOneAction(resp.data.data))
+        dispatch(updateTaskDetailAction(resp.data.data));
+        dispatch(updateOneAction(resp.data.data));
       } else {
-        throw new Error(resp.data.msg)
+        throw new Error(resp.data.msg);
       }
     } catch (error) {
-      throw error
+      throw error;
     } finally {
-      dispatch(removeOneVerifyActionQueue(id))
+      dispatch(removeOneVerifyActionQueue(id));
     }
   },
   {
     condition: (action: Action, { getState }) => {
-      const state = getState() as RootState
-      const { selectById } = verifyActionQueueEntity.getSelectors()
-      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      const state = getState() as RootState;
+      const { selectById } = verifyActionQueueEntity.getSelectors();
+      const item = selectById(
+        state.userTaskHandles.verifyActionQueue,
+        action.id
+      );
       // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
-      return !item
+      return !item;
     },
-  },
-)
+  }
+);
 
 // completion action
 export const completionAction = createAsyncThunk(
   'user/taskHandles/completionAction',
   async (action: Action, { dispatch }) => {
-    const { id, taskId } = action
+    const { id, taskId } = action;
     try {
-      dispatch(addOneVerifyActionQueue(action))
-      const resp = await completionOneAction({ id, taskId })
+      dispatch(addOneVerifyActionQueue(action));
+      const resp = await completionOneAction({ id, taskId });
       if (resp.data.code === 0 && resp.data.data) {
-        dispatch(updateTaskDetailAction(resp.data.data))
-        dispatch(updateOneAction(resp.data.data))
+        dispatch(updateTaskDetailAction(resp.data.data));
+        dispatch(updateOneAction(resp.data.data));
       } else {
-        throw new Error(resp.data.msg)
+        throw new Error(resp.data.msg);
       }
     } catch (error) {
-      throw error
+      throw error;
     } finally {
-      dispatch(removeOneVerifyActionQueue(id))
+      dispatch(removeOneVerifyActionQueue(id));
     }
   },
   {
     condition: (action: Action, { getState }) => {
-      const state = getState() as RootState
-      const { selectById } = verifyActionQueueEntity.getSelectors()
-      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      const state = getState() as RootState;
+      const { selectById } = verifyActionQueueEntity.getSelectors();
+      const item = selectById(
+        state.userTaskHandles.verifyActionQueue,
+        action.id
+      );
       // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
-      return !item
+      return !item;
     },
-  },
-)
+  }
+);
 
 // question verify confirm action
 export const questionVerifyConfirmAction = createAsyncThunk(
   'user/taskHandles/questionConfirmVerifyAction',
-  async (params: { action: Action; answer: string; callback: (assertAnswer: boolean) => void }, { dispatch }) => {
-    const { action, answer, callback } = params
-    const { id, taskId } = action
+  async (
+    params: {
+      action: Action;
+      answer: string;
+      callback: (assertAnswer: boolean) => void;
+    },
+    { dispatch }
+  ) => {
+    const { action, answer, callback } = params;
+    const { id, taskId } = action;
     try {
-      dispatch(addOneVerifyActionQueue(action))
-      const resp = await confirmQuestionAction({ id, taskId, answer })
+      dispatch(addOneVerifyActionQueue(action));
+      const resp = await confirmQuestionAction({ id, taskId, answer });
       if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
-        callback(true)
+        callback(true);
         dispatch(
           updateTaskDetailAction({
             ...action,
             status: UserActionStatus.DONE,
             progress: '',
-          }),
-        )
+          })
+        );
         dispatch(
           updateOneAction({
             ...action,
             status: UserActionStatus.DONE,
             progress: '',
-          }),
-        )
-        toast.success('Verified.')
+          })
+        );
+        toast.success('Verified.');
       } else {
-        callback(false)
+        callback(false);
       }
     } catch (error) {
-      throw error
+      throw error;
     } finally {
-      dispatch(removeOneVerifyActionQueue(id))
+      dispatch(removeOneVerifyActionQueue(id));
     }
   },
   {
     condition: (params: { action: Action; answer: string }, { getState }) => {
-      const { action, answer } = params
-      const state = getState() as RootState
-      const { selectById } = verifyActionQueueEntity.getSelectors()
-      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      const { action, answer } = params;
+      const state = getState() as RootState;
+      const { selectById } = verifyActionQueueEntity.getSelectors();
+      const item = selectById(
+        state.userTaskHandles.verifyActionQueue,
+        action.id
+      );
       // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
-      return !item
+      return !item;
     },
-  },
-)
+  }
+);
 // question confirm action
 export const questionConfirmAction = createAsyncThunk(
   'user/taskHandles/questionConfirmAction',
   async (params: { action: Action; answer: string }, { dispatch }) => {
-    const { action, answer } = params
-    const { id, taskId } = action
+    const { action, answer } = params;
+    const { id, taskId } = action;
     try {
-      const resp = await confirmQuestionAction({ id, taskId, answer })
+      const resp = await confirmQuestionAction({ id, taskId, answer });
       if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
         dispatch(
           updateTaskDetailAction({
@@ -243,11 +289,11 @@ export const questionConfirmAction = createAsyncThunk(
             progress: '',
             data: {
               ...action.data,
-              answer: answer,
+              answer,
               nopassReason: '',
             },
-          }),
-        )
+          })
+        );
         dispatch(
           updateOneAction({
             ...action,
@@ -255,38 +301,41 @@ export const questionConfirmAction = createAsyncThunk(
             progress: '',
             data: {
               ...action.data,
-              answer: answer,
+              answer,
               nopassReason: '',
             },
-          }),
-        )
-        toast.success('Saved.')
+          })
+        );
+        toast.success('Saved.');
       } else {
-        toast.error('save error')
+        toast.error('save error');
       }
     } catch (error) {
-      throw error
+      throw error;
     }
   },
   {
     condition: (params: { action: Action; answer: string }, { getState }) => {
-      const { action, answer } = params
-      const state = getState() as RootState
-      const { selectById } = verifyActionQueueEntity.getSelectors()
-      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      const { action, answer } = params;
+      const state = getState() as RootState;
+      const { selectById } = verifyActionQueueEntity.getSelectors();
+      const item = selectById(
+        state.userTaskHandles.verifyActionQueue,
+        action.id
+      );
       // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
-      return !item
+      return !item;
     },
-  },
-)
+  }
+);
 // question confirm action
 export const uploadImageAction = createAsyncThunk(
   'user/taskHandles/uploadImageAction',
   async (params: { action: Action; url: string }, { dispatch }) => {
-    const { action, url: answer } = params
-    const { id, taskId } = action
+    const { action, url: answer } = params;
+    const { id, taskId } = action;
     try {
-      const resp = await confirmQuestionAction({ id, taskId, answer })
+      const resp = await confirmQuestionAction({ id, taskId, answer });
       if (resp.data.code === ResponseBizErrCode.ACTION_ANSWER_CORRECT) {
         dispatch(
           updateTaskDetailAction({
@@ -295,11 +344,11 @@ export const uploadImageAction = createAsyncThunk(
             progress: '',
             data: {
               ...action.data,
-              answer: answer,
+              answer,
               nopassReason: '',
             },
-          }),
-        )
+          })
+        );
         dispatch(
           updateOneAction({
             ...action,
@@ -307,127 +356,143 @@ export const uploadImageAction = createAsyncThunk(
             progress: '',
             data: {
               ...action.data,
-              answer: answer,
+              answer,
               nopassReason: '',
             },
-          }),
-        )
-        toast.success('Uploaded.')
+          })
+        );
+        toast.success('Uploaded.');
       } else {
-        toast.error('upload error')
+        toast.error('upload error');
       }
     } catch (error) {
-      throw error
+      throw error;
     }
   },
   {
     condition: (params: { action: Action; url: string }, { getState }) => {
-      const { action, url } = params
-      const state = getState() as RootState
-      const { selectById } = verifyActionQueueEntity.getSelectors()
-      const item = selectById(state.userTaskHandles.verifyActionQueue, action.id)
+      const { action, url } = params;
+      const state = getState() as RootState;
+      const { selectById } = verifyActionQueueEntity.getSelectors();
+      const item = selectById(
+        state.userTaskHandles.verifyActionQueue,
+        action.id
+      );
       // 如果此 action 正在 verify action 的队列中则阻止新的verify请求
-      return !!url || !item
+      return !!url || !item;
     },
-  },
-)
+  }
+);
 export const userTaskHandlesSlice = createSlice({
   name: 'TaskHandles',
   initialState: initUserTaskHandlesState,
   reducers: {
     addOneVerifyTaskQueue: (state, action) => {
-      verifyTaskQueueEntity.addOne(state.verifyTaskQueue, action.payload)
+      verifyTaskQueueEntity.addOne(state.verifyTaskQueue, action.payload);
     },
     removeOneVerifyTaskQueue: (state, action) => {
-      verifyTaskQueueEntity.removeOne(state.verifyTaskQueue, action.payload)
+      verifyTaskQueueEntity.removeOne(state.verifyTaskQueue, action.payload);
     },
     addOneVerifyActionQueue: (state, action) => {
-      verifyActionQueueEntity.addOne(state.verifyActionQueue, action.payload)
+      verifyActionQueueEntity.addOne(state.verifyActionQueue, action.payload);
     },
     removeOneVerifyActionQueue: (state, action) => {
-      verifyActionQueueEntity.removeOne(state.verifyActionQueue, action.payload)
+      verifyActionQueueEntity.removeOne(
+        state.verifyActionQueue,
+        action.payload
+      );
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(takeTask.pending, (state, action) => {
-        console.log('takeTask pending', action)
-        state.takeTask.params = action.meta.arg
-        state.takeTask.status = AsyncRequestStatus.PENDING
-        state.takeTask.errorMsg = ''
+        console.log('takeTask pending', action);
+        state.takeTask.params = action.meta.arg;
+        state.takeTask.status = AsyncRequestStatus.PENDING;
+        state.takeTask.errorMsg = '';
       })
       .addCase(takeTask.fulfilled, (state, action) => {
-        console.log('takeTask fulfilled', action)
-        state.takeTask.params = null
-        state.takeTask.status = AsyncRequestStatus.FULFILLED
-        state.takeTask.errorMsg = ''
-        toast.success('Applied.')
+        console.log('takeTask fulfilled', action);
+        state.takeTask.params = null;
+        state.takeTask.status = AsyncRequestStatus.FULFILLED;
+        state.takeTask.errorMsg = '';
+        toast.success('Applied.');
       })
       .addCase(takeTask.rejected, (state, action) => {
-        console.log('takeTask rejected', action)
-        state.takeTask.params = null
-        state.takeTask.status = AsyncRequestStatus.REJECTED
-        state.takeTask.errorMsg = action.error.message || ''
-        toast.error(action.error.message)
+        console.log('takeTask rejected', action);
+        state.takeTask.params = null;
+        state.takeTask.status = AsyncRequestStatus.REJECTED;
+        state.takeTask.errorMsg = action.error.message || '';
+        toast.error(action.error.message);
       })
       .addCase(verifyTask.pending, (state, action) => {
-        console.log('verifyTask pending', action)
-        state.verifyTask.params = action.meta.arg
-        state.verifyTask.status = AsyncRequestStatus.PENDING
-        state.verifyTask.errorMsg = ''
+        console.log('verifyTask pending', action);
+        state.verifyTask.params = action.meta.arg;
+        state.verifyTask.status = AsyncRequestStatus.PENDING;
+        state.verifyTask.errorMsg = '';
       })
       .addCase(verifyTask.fulfilled, (state, action) => {
-        console.log('verifyTask fulfilled', action)
-        state.verifyTask.params = null
-        state.verifyTask.status = AsyncRequestStatus.FULFILLED
-        state.verifyTask.errorMsg = ''
-        toast.success('Verified.')
+        console.log('verifyTask fulfilled', action);
+        state.verifyTask.params = null;
+        state.verifyTask.status = AsyncRequestStatus.FULFILLED;
+        state.verifyTask.errorMsg = '';
+        toast.success('Verified.');
       })
       .addCase(verifyTask.rejected, (state, action) => {
-        console.log('verifyTask rejected', action)
-        state.verifyTask.params = null
-        state.verifyTask.status = AsyncRequestStatus.REJECTED
-        state.verifyTask.errorMsg = action.error.message || ''
-        toast.error(action.error.message)
+        console.log('verifyTask rejected', action);
+        state.verifyTask.params = null;
+        state.verifyTask.status = AsyncRequestStatus.REJECTED;
+        state.verifyTask.errorMsg = action.error.message || '';
+        toast.error(action.error.message);
       })
       .addCase(verifyAction.pending, (state, action) => {
-        console.log('verifyAction pending', action)
-        state.verifyAction.params = action.meta.arg
-        state.verifyAction.status = AsyncRequestStatus.PENDING
-        state.verifyAction.errorMsg = ''
+        console.log('verifyAction pending', action);
+        state.verifyAction.params = action.meta.arg;
+        state.verifyAction.status = AsyncRequestStatus.PENDING;
+        state.verifyAction.errorMsg = '';
       })
       .addCase(verifyAction.fulfilled, (state, action) => {
-        console.log('verifyAction fulfilled', action)
-        state.verifyAction.params = null
-        state.verifyAction.status = AsyncRequestStatus.FULFILLED
-        state.verifyAction.errorMsg = ''
-        toast.success('Verified.')
+        console.log('verifyAction fulfilled', action);
+        state.verifyAction.params = null;
+        state.verifyAction.status = AsyncRequestStatus.FULFILLED;
+        state.verifyAction.errorMsg = '';
+        toast.success('Verified.');
       })
       .addCase(verifyAction.rejected, (state, action) => {
-        console.log('verifyAction rejected', action)
-        state.verifyAction.params = null
-        state.verifyAction.status = AsyncRequestStatus.REJECTED
-        state.verifyAction.errorMsg = action.error.message || ''
-        toast.error(action.error.message)
-      })
+        console.log('verifyAction rejected', action);
+        state.verifyAction.params = null;
+        state.verifyAction.status = AsyncRequestStatus.REJECTED;
+        state.verifyAction.errorMsg = action.error.message || '';
+        toast.error(action.error.message);
+      });
   },
-})
+});
 
-export const selectUserTaskHandlesState = (state: RootState) => state.userTaskHandles
+export const selectUserTaskHandlesState = (state: RootState) =>
+  state.userTaskHandles;
 
 export const {
   selectAll: selectAllVerifyTaskQueue,
   selectIds: selectIdsVerifyTaskQueue,
   selectById: selectByIdVerifyTaskQueue,
-} = verifyTaskQueueEntity.getSelectors((state: RootState) => state.userTaskHandles.verifyTaskQueue)
+} = verifyTaskQueueEntity.getSelectors(
+  (state: RootState) => state.userTaskHandles.verifyTaskQueue
+);
 
 export const {
   selectAll: selectAllVerifyActionQueue,
   selectIds: selectIdsVerifyActionQueue,
   selectById: selectByIdVerifyActionQueue,
-} = verifyActionQueueEntity.getSelectors((state: RootState) => state.userTaskHandles.verifyActionQueue)
+} = verifyActionQueueEntity.getSelectors(
+  (state: RootState) => state.userTaskHandles.verifyActionQueue
+);
 
-const { actions, reducer } = userTaskHandlesSlice
-const { addOneVerifyTaskQueue, removeOneVerifyTaskQueue, addOneVerifyActionQueue, removeOneVerifyActionQueue } = actions
+const { actions, reducer } = userTaskHandlesSlice;
+const {
+  addOneVerifyTaskQueue,
+  removeOneVerifyTaskQueue,
+  addOneVerifyActionQueue,
+  removeOneVerifyActionQueue,
+} = actions;
 
-export default reducer
+export default reducer;

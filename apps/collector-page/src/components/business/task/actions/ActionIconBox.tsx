@@ -5,12 +5,12 @@
  * @LastEditTime: 2022-08-05 18:24:31
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react'
-import styled from 'styled-components'
+import React, { HTMLAttributes } from 'react';
+import styled from 'styled-components';
 export type ActionIconBoxProps = HTMLAttributes<HTMLDivElement> & {
-  allowHandle?: boolean
-  isDone?: boolean
-}
+  allowHandle?: boolean;
+  isDone?: boolean;
+};
 const ActionIconBox: React.FC<ActionIconBoxProps> = ({
   children,
   allowHandle,
@@ -18,12 +18,19 @@ const ActionIconBox: React.FC<ActionIconBoxProps> = ({
   ...otherProps
 }: ActionIconBoxProps) => {
   return (
-    <ActionIconBoxWrapper allowHandle={allowHandle} isDone={isDone} {...otherProps}>
+    <ActionIconBoxWrapper
+      allowHandle={allowHandle}
+      isDone={isDone}
+      {...otherProps}
+    >
       {children}
     </ActionIconBoxWrapper>
-  )
-}
-export default ActionIconBox
-const ActionIconBoxWrapper = styled.div<{ allowHandle?: boolean; isDone?: boolean }>`
+  );
+};
+export default ActionIconBox;
+const ActionIconBoxWrapper = styled.div<{
+  allowHandle?: boolean;
+  isDone?: boolean;
+}>`
   ${({ allowHandle, isDone }) => allowHandle && !isDone && `cursor: pointer;`}
-`
+`;

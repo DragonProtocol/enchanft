@@ -5,9 +5,13 @@
  * @LastEditTime: 2022-10-13 15:16:02
  * @Description: file description
  */
-import React, { useCallback } from 'react'
-import styled from 'styled-components'
-import { ButtonPrimary, ButtonProps, ButtonWarning } from '../../common/button/ButtonBase'
+import React, { useCallback } from 'react';
+import styled from 'styled-components';
+import {
+  ButtonPrimary,
+  ButtonProps,
+  ButtonWarning,
+} from '../../common/button/ButtonBase';
 export enum FollowStatusType {
   ACCOUNT_OPERATION = 'ACCOUNT_OPERATION',
   FOLLOW = 'FOLLOW',
@@ -22,20 +26,20 @@ const followBtnTextMap = {
   [FollowStatusType.FOLLOWING]: 'Loading ...',
   [FollowStatusType.FOLLOWED]: 'Applied',
   [FollowStatusType.UNKNOWN]: 'Unknown Status',
-}
+};
 
 export type CommunityFollowButtonViewConfigType = {
-  followStatusType?: FollowStatusType
-  followBtnText?: string
-}
+  followStatusType?: FollowStatusType;
+  followBtnText?: string;
+};
 
 export type CommunityFollowButtonHandlesType = {
-  onFollow?: () => void
-  onAccountOperation?: () => void
-}
+  onFollow?: () => void;
+  onAccountOperation?: () => void;
+};
 export type CommunityFollowButtonProps = ButtonProps &
   CommunityFollowButtonViewConfigType &
-  CommunityFollowButtonHandlesType
+  CommunityFollowButtonHandlesType;
 
 const CommunityFollowButton: React.FC<CommunityFollowButtonProps> = ({
   followStatusType = FollowStatusType.UNKNOWN,
@@ -46,15 +50,15 @@ const CommunityFollowButton: React.FC<CommunityFollowButtonProps> = ({
 }: CommunityFollowButtonProps) => {
   const handleFollow = () => {
     if (onFollow) {
-      onFollow()
+      onFollow();
     }
-  }
+  };
   const handleAccountOperation = () => {
     if (onAccountOperation) {
-      onAccountOperation()
+      onAccountOperation();
     }
-  }
-  const _followBtnText = followBtnText || followBtnTextMap[followStatusType]
+  };
+  const _followBtnText = followBtnText || followBtnTextMap[followStatusType];
   switch (followStatusType) {
     case FollowStatusType.ACCOUNT_OPERATION:
       return (
@@ -64,13 +68,13 @@ const CommunityFollowButton: React.FC<CommunityFollowButtonProps> = ({
         // <WalletBtn onClick={handleAccountOperation} {...buttonProps}>
         //   {_followBtnText}
         // </WalletBtn>
-      )
+      );
     case FollowStatusType.FOLLOW:
       return (
         <FollowBtn onClick={handleFollow} {...buttonProps}>
           {_followBtnText}
         </FollowBtn>
-      )
+      );
     case FollowStatusType.FOLLOWING:
     case FollowStatusType.FOLLOWED:
     default:
@@ -78,15 +82,15 @@ const CommunityFollowButton: React.FC<CommunityFollowButtonProps> = ({
         <FollowBtn disabled {...buttonProps}>
           {_followBtnText}
         </FollowBtn>
-      )
+      );
   }
-}
-export default CommunityFollowButton
+};
+export default CommunityFollowButton;
 const FollowBtn = styled(ButtonWarning)`
   font-weight: 700;
   font-size: 18px;
-`
+`;
 const WalletBtn = styled(ButtonPrimary)`
   font-weight: 700;
   font-size: 18px;
-`
+`;

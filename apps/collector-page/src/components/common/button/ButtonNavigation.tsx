@@ -5,17 +5,20 @@
  * @LastEditTime: 2022-08-16 13:09:15
  * @Description: file description
  */
-import React, { ButtonHTMLAttributes } from 'react'
-import styled from 'styled-components'
-import ButtonBase from './ButtonBase'
+import React, { ButtonHTMLAttributes } from 'react';
+import styled from 'styled-components';
+import ButtonBase from './ButtonBase';
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>
+export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
-const ButtonNavigation: React.FC<ButtonProps> = ({ children, ...otherProps }: ButtonProps) => (
+const ButtonNavigation: React.FC<ButtonProps> = ({
+  children,
+  ...otherProps
+}: ButtonProps) => (
   // eslint-disable-next-line react/jsx-props-no-spreading
   <ButtonNavigationWrapper {...otherProps}>{children}</ButtonNavigationWrapper>
-)
-export default ButtonNavigation
+);
+export default ButtonNavigation;
 
 const ButtonNavigationWrapper = styled(ButtonBase)`
   width: 50px;
@@ -28,4 +31,4 @@ const ButtonNavigationWrapper = styled(ButtonBase)`
   border: 2px solid #333333;
   box-shadow: 0px 4px 0px rgba(0, 0, 0, 0.25);
   border-radius: 20px;
-`
+`;

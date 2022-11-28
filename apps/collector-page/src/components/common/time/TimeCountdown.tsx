@@ -5,71 +5,75 @@
  * @LastEditTime: 2022-09-02 15:22:59
  * @Description: file description
  */
-import React, { HTMLAttributes, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
+import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
 
 type TimeCountdownProps = HTMLAttributes<HTMLDivElement> & {
-  timestamp?: number
+  timestamp?: number;
   data?: {
-    distance: number
-    day: number
-    hour: number
-    minute: number
-    second: number
-  }
-}
+    distance: number;
+    day: number;
+    hour: number;
+    minute: number;
+    second: number;
+  };
+};
 const defaultCountdownData = {
   distance: 0,
   day: 0,
   hour: 0,
   minute: 0,
   second: 0,
-}
-const TimeCountdown: React.FC<TimeCountdownProps> = ({ timestamp = 0, data, ...otherProps }: TimeCountdownProps) => {
-  const [countdownData, setCountdownData] = useState(defaultCountdownData)
-  const countdownDataIntervalRef = useRef<any>(null)
+};
+const TimeCountdown: React.FC<TimeCountdownProps> = ({
+  timestamp = 0,
+  data,
+  ...otherProps
+}: TimeCountdownProps) => {
+  const [countdownData, setCountdownData] = useState(defaultCountdownData);
+  const countdownDataIntervalRef = useRef<any>(null);
   useEffect(() => {
     if (data) {
-      setCountdownData(data)
+      setCountdownData(data);
     } else {
       if (timestamp > Date.now()) {
         countdownDataIntervalRef.current = setInterval(() => {
-          const distance = timestamp - Date.now()
-          const distanceDay = Math.floor(distance / (1000 * 60 * 60 * 24))
-          const distanceHour = Math.floor((distance / (1000 * 60 * 60)) % 24)
-          const distanceMinute = Math.floor((distance / (1000 * 60)) % 60)
-          const distanceSecond = Math.floor((distance / 1000) % 60)
+          const distance = timestamp - Date.now();
+          const distanceDay = Math.floor(distance / (1000 * 60 * 60 * 24));
+          const distanceHour = Math.floor((distance / (1000 * 60 * 60)) % 24);
+          const distanceMinute = Math.floor((distance / (1000 * 60)) % 60);
+          const distanceSecond = Math.floor((distance / 1000) % 60);
           setCountdownData({
             distance: distance,
             day: distanceDay,
             hour: distanceHour,
             minute: distanceMinute,
             second: distanceSecond,
-          })
+          });
           if (distance === 0) {
-            clearInterval(countdownDataIntervalRef.current)
+            clearInterval(countdownDataIntervalRef.current);
           }
-        }, 1000)
+        }, 1000);
       } else {
-        clearInterval(countdownDataIntervalRef.current)
-        setCountdownData(defaultCountdownData)
+        clearInterval(countdownDataIntervalRef.current);
+        setCountdownData(defaultCountdownData);
       }
     }
     return () => {
-      clearInterval(countdownDataIntervalRef.current)
-    }
-  }, [timestamp, data])
+      clearInterval(countdownDataIntervalRef.current);
+    };
+  }, [timestamp, data]);
   // 时间补0
   const timeZero = (time: number) => {
     if (time < 0) {
-      return time
+      return time;
     }
-    return time < 10 ? `0${time}` : time
-  }
-  const showDay = timeZero(countdownData.day)
-  const showHour = timeZero(countdownData.hour)
-  const showMinute = timeZero(countdownData.minute)
-  const showSecond = timeZero(countdownData.second)
+    return time < 10 ? `0${time}` : time;
+  };
+  const showDay = timeZero(countdownData.day);
+  const showHour = timeZero(countdownData.hour);
+  const showMinute = timeZero(countdownData.minute);
+  const showSecond = timeZero(countdownData.second);
   return (
     <TimeCountdownWrapper {...otherProps}>
       <CountdownItem>{showDay}</CountdownItem>
@@ -77,13 +81,13 @@ const TimeCountdown: React.FC<TimeCountdownProps> = ({ timestamp = 0, data, ...o
       <CountdownItem>{showMinute}</CountdownItem>
       <CountdownItem>{showSecond}</CountdownItem>
     </TimeCountdownWrapper>
-  )
-}
-export default TimeCountdown
+  );
+};
+export default TimeCountdown;
 const TimeCountdownWrapper = styled.div`
   display: flex;
   gap: 10px;
-`
+`;
 const CountdownItem = styled.div`
   width: 24px;
   height: 24px;
@@ -95,4 +99,4 @@ const CountdownItem = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;

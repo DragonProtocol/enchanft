@@ -7,5 +7,5 @@
  */
 
 export function sortPubKey(key: string, len = 4) {
-  return key.slice(0, len) + '..'.repeat(len / 4) + key.slice(-len)
+  return key.slice(0, len) + '..'.repeat(len / 4) + key.slice(-len);
 }

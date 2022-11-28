@@ -1,43 +1,52 @@
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { ScrollBarCss } from '../../../GlobalStyle'
-import { Announcement, ProjectStatus, TaskType, Whitelist } from '../../../types/entities'
-import TaskContent, { TaskContentDataViewType, TaskContentHandlesType } from '../task/TaskContent'
-import RichTextBox from '../../common/text/RichTextBox'
-import TimeCountdown from '../../common/time/TimeCountdown'
-import { MOBILE_BREAK_POINT } from '../../../constants'
-import { CollapsePanel } from '../../common/collapse'
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { ScrollBarCss } from '../../../GlobalStyle';
+import {
+  Announcement,
+  ProjectStatus,
+  TaskType,
+  Whitelist,
+} from '../../../types/entities';
+import TaskContent, {
+  TaskContentDataViewType,
+  TaskContentHandlesType,
+} from '../task/TaskContent';
+import RichTextBox from '../../common/text/RichTextBox';
+import TimeCountdown from '../../common/time/TimeCountdown';
+import { MOBILE_BREAK_POINT } from '../../../constants';
+import { CollapsePanel } from '../../common/collapse';
 export type ProjectDetailBasicInfoDataType = {
-  id: number
-  name: string
-  description: string
-  status: ProjectStatus
-  image: string
-  itemTotalNum: number
-  publicSaleStartTime: number
-  publicSalePrice: string
-  injectedCoins: number
-  chainId: number
-  whitelists?: Whitelist[]
-  announcement?: Announcement
-  mintLimited: number
-}
+  id: number;
+  name: string;
+  description: string;
+  status: ProjectStatus;
+  image: string;
+  itemTotalNum: number;
+  publicSaleStartTime: number;
+  publicSalePrice: string;
+  injectedCoins: number;
+  chainId: number;
+  whitelists?: Whitelist[];
+  announcement?: Announcement;
+  mintLimited: number;
+};
 
 export type ProjectDetailBasicInfoViewConfigType = {
-  displayMintInfo: boolean
-  displayTasks: boolean
-}
+  displayMintInfo: boolean;
+  displayTasks: boolean;
+};
 
 export type ProjectDetailBasicInfoDataViewType = {
-  data: ProjectDetailBasicInfoDataType
-  viewConfig?: ProjectDetailBasicInfoViewConfigType
-}
+  data: ProjectDetailBasicInfoDataType;
+  viewConfig?: ProjectDetailBasicInfoViewConfigType;
+};
 
-export type ProjectDetailBasicInfoProps = ProjectDetailBasicInfoDataViewType & TaskContentHandlesType
+export type ProjectDetailBasicInfoProps = ProjectDetailBasicInfoDataViewType &
+  TaskContentHandlesType;
 
 const defaultViewConfig = {
   displayMintInfo: true,
-}
+};
 const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
   data,
   viewConfig,
@@ -57,17 +66,19 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
     whitelists,
     announcement,
     mintLimited,
-  } = data
+  } = data;
   const { displayMintInfo } = {
     ...defaultViewConfig,
     ...viewConfig,
-  }
+  };
 
   const renderWhitelist = () => {
-    if (!whitelists || !whitelists.length) return null
-    const whitelist = whitelists[0]
-    if (!whitelist) return
-    const whitelistMintPriceText = whitelist.mintPrice ? `Mint Price ${whitelist.mintPrice}` : 'Free Mint'
+    if (!whitelists || !whitelists.length) return null;
+    const whitelist = whitelists[0];
+    if (!whitelist) return;
+    const whitelistMintPriceText = whitelist.mintPrice
+      ? `Mint Price ${whitelist.mintPrice}`
+      : 'Free Mint';
     return (
       <>
         <ProjectMintInfoBox>
@@ -75,33 +86,46 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
             <ProjectMintInfoLabel>Whitelist</ProjectMintInfoLabel>
             {whitelist.mintStartTime &&
               (whitelist.mintStartTime < new Date().getTime() ? (
-                <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
+                <ProjectMintInfoStartsInText>
+                  Already Start
+                </ProjectMintInfoStartsInText>
               ) : (
                 <>
-                  <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
+                  <ProjectMintInfoStartsInText>
+                    Starts in
+                  </ProjectMintInfoStartsInText>
                   <MintTimeCountdown timestamp={whitelist.mintStartTime} />
                 </>
               ))}
           </ProjectMintInfoBoxTop>
 
           <PrjectMintInfoPriceText>
-            {whitelist?.mintMaxNum && 'MAX ' + whitelist.mintMaxNum + ' Tokens .'} {whitelistMintPriceText}
+            {whitelist?.mintMaxNum &&
+              'MAX ' + whitelist.mintMaxNum + ' Tokens .'}{' '}
+            {whitelistMintPriceText}
           </PrjectMintInfoPriceText>
         </ProjectMintInfoBox>
       </>
-    )
-  }
+    );
+  };
   const [collapsePanelDxpanded, setCollapsePanelDxpanded] = useState({
     description: true,
     announcement: true,
-  })
+  });
   const switchCollapsePanelDxpanded = (key: string) =>
-    setCollapsePanelDxpanded({ ...collapsePanelDxpanded, [`${key}`]: !collapsePanelDxpanded[key] })
+    setCollapsePanelDxpanded({
+      ...collapsePanelDxpanded,
+      [`${key}`]: !collapsePanelDxpanded[key],
+    });
   return (
     <ProjectDetailBasicInfoWrapper>
       {!!description && (
         <CollapsePanel
-          header={<ProjectAnnouncementTitleBox>Description</ProjectAnnouncementTitleBox>}
+          header={
+            <ProjectAnnouncementTitleBox>
+              Description
+            </ProjectAnnouncementTitleBox>
+          }
           expanded={collapsePanelDxpanded.description}
           onClick={() => switchCollapsePanelDxpanded('description')}
         >
@@ -132,10 +156,14 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
                 <ProjectMintInfoLabel>Public</ProjectMintInfoLabel>
                 {publicSaleStartTime &&
                   (publicSaleStartTime < new Date().getTime() ? (
-                    <ProjectMintInfoStartsInText>Already Start</ProjectMintInfoStartsInText>
+                    <ProjectMintInfoStartsInText>
+                      Already Start
+                    </ProjectMintInfoStartsInText>
                   ) : (
                     <>
-                      <ProjectMintInfoStartsInText>Starts in</ProjectMintInfoStartsInText>
+                      <ProjectMintInfoStartsInText>
+                        Starts in
+                      </ProjectMintInfoStartsInText>
                       <MintTimeCountdown timestamp={publicSaleStartTime} />
                     </>
                   ))}
@@ -151,17 +179,17 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
         </>
       )}
     </ProjectDetailBasicInfoWrapper>
-  )
-}
-export default ProjectDetailBasicInfo
+  );
+};
+export default ProjectDetailBasicInfo;
 const ProjectDetailBasicInfoWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border-top: 1px solid #d9d9d9;
-`
+`;
 const MintTimeCountdown = styled(TimeCountdown)`
   margin-left: 10px;
-`
+`;
 const ProjectDescription = styled(RichTextBox)`
   font-weight: 400;
   font-size: 14px;
@@ -171,7 +199,7 @@ const ProjectDescription = styled(RichTextBox)`
     font-size: 12px;
     line-height: 18px;
   }
-`
+`;
 const ProjectAnnouncement = styled(RichTextBox)`
   font-weight: 400;
   font-size: 14px;
@@ -181,7 +209,7 @@ const ProjectAnnouncement = styled(RichTextBox)`
     font-size: 12px;
     line-height: 18px;
   }
-`
+`;
 const ProjectAnnouncementTitleBox = styled.div`
   display: flex;
   justify-content: center;
@@ -194,7 +222,7 @@ const ProjectAnnouncementTitleBox = styled.div`
     font-size: 14px;
     line-height: 21px;
   }
-`
+`;
 const ProjectAnnouncementTitleTag = styled.div`
   width: 49px;
   height: 20px;
@@ -210,24 +238,24 @@ const ProjectAnnouncementTitleTag = styled.div`
   text-transform: uppercase;
   color: #333333;
   margin-left: 10px;
-`
+`;
 
 const HorizontalLine = styled.div`
   width: 100%;
   height: 1px;
   background: #d9d9d9;
-`
+`;
 
 const ProjectMintInfoBox = styled.div`
   border-bottom: 1px solid #d9d9d9;
   padding: 20px 0;
   box-sizing: border-box;
-`
+`;
 const ProjectMintInfoBoxTop = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 const ProjectMintInfoLabel = styled.div`
   flex: 1;
   font-weight: 700;
@@ -237,7 +265,7 @@ const ProjectMintInfoLabel = styled.div`
     font-size: 14px;
     line-height: 21px;
   }
-`
+`;
 const ProjectMintInfoStartsInText = styled.div`
   font-size: 14px;
   color: rgba(51, 51, 51, 0.6);
@@ -245,7 +273,7 @@ const ProjectMintInfoStartsInText = styled.div`
     font-size: 12px;
     line-height: 18px;
   }
-`
+`;
 const PrjectMintInfoPriceText = styled.div`
   height: 40px;
   background: #ebeee4;
@@ -258,4 +286,4 @@ const PrjectMintInfoPriceText = styled.div`
   line-height: 21px;
   color: #333333;
   margin-top: 10px;
-`
+`;

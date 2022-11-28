@@ -5,17 +5,19 @@
  * @LastEditTime: 2022-09-07 11:32:57
  * @Description: file description
  */
-import { AxiosPromise } from 'axios'
-import request from '../../request/axios'
-import { ApiResp } from '../../types'
-import { UserRewardsResponse } from '../../types/api'
+import { AxiosPromise } from 'axios';
+import request from '../../request/axios';
+import { ApiResp } from '../../types';
+import { UserRewardsResponse } from '../../types/api';
 
-export function fetchListForUserReward(): AxiosPromise<ApiResp<UserRewardsResponse>> {
+export function fetchListForUserReward(): AxiosPromise<
+  ApiResp<UserRewardsResponse>
+> {
   return request({
     url: `/users/rewards`,
     method: 'get',
     headers: {
       needToken: true,
     },
-  })
+  });
 }

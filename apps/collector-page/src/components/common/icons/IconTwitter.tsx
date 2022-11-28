@@ -5,13 +5,13 @@
  * @LastEditTime: 2022-07-28 18:18:43
  * @Description: file description
  */
-import React from 'react'
-import { ReactComponent as TwitterIcon } from './svgs/twitter.svg'
+import React from 'react';
+import { ReactComponent as TwitterIcon } from './svgs/twitter.svg';
 interface Props {
-  size?: string
-  opacity?: number
+  size?: string;
+  opacity?: number;
 }
 const IconTwitter: React.FC<Props> = ({ size = '1.5rem', opacity = 1 }) => {
-  return <TwitterIcon width={size} height={size} opacity={opacity} />
-}
-export default IconTwitter
+  return <TwitterIcon width={size} height={size} opacity={opacity} />;
+};
+export default IconTwitter;

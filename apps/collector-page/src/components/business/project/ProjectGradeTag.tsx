@@ -5,11 +5,11 @@
  * @LastEditTime: 2022-10-27 17:19:45
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react'
-import styled from 'styled-components'
-import { GradeType } from '../../../types/entities'
-import IconOfficialCertification from '../../common/icons/IconOfficialCertification'
-import IconVIP from '../../common/icons/IconVIP'
+import React, { HTMLAttributes } from 'react';
+import styled from 'styled-components';
+import { GradeType } from '../../../types/entities';
+import IconOfficialCertification from '../../common/icons/IconOfficialCertification';
+import IconVIP from '../../common/icons/IconVIP';
 export const gradeStyleMap = {
   [GradeType.OFFICIAL]: {
     icon: IconOfficialCertification,
@@ -19,22 +19,26 @@ export const gradeStyleMap = {
     icon: IconVIP,
     bgc: '#FFF500',
   },
-}
+};
 type ProjectGradeTagProps = HTMLAttributes<HTMLDivElement> & {
-  grade: GradeType
-  size?: number
-}
-const ProjectGradeTag: React.FC<ProjectGradeTagProps> = ({ grade, size = 1, ...otherProps }: ProjectGradeTagProps) => {
-  const gradeStyle = gradeStyleMap[grade]
-  if (!gradeStyle) return null
+  grade: GradeType;
+  size?: number;
+};
+const ProjectGradeTag: React.FC<ProjectGradeTagProps> = ({
+  grade,
+  size = 1,
+  ...otherProps
+}: ProjectGradeTagProps) => {
+  const gradeStyle = gradeStyleMap[grade];
+  if (!gradeStyle) return null;
 
   return (
     <ProjectGradeTagWrapper bgc={gradeStyle.bgc} {...otherProps}>
       <gradeStyle.icon />
     </ProjectGradeTagWrapper>
-  )
-}
-export default ProjectGradeTag
+  );
+};
+export default ProjectGradeTag;
 const ProjectGradeTagWrapper = styled.div<{ bgc: string }>`
   position: absolute;
   top: 0;
@@ -49,4 +53,4 @@ const ProjectGradeTagWrapper = styled.div<{ bgc: string }>`
   box-sizing: border-box;
   display: flex;
   align-items: center;
-`
+`;

@@ -5,13 +5,13 @@
  * @LastEditTime: 2022-07-28 13:17:48
  * @Description: file description
  */
-import React from 'react'
-import { ReactComponent as CheckboxIcon } from './svgs/checkbox.svg'
+import React from 'react';
+import { ReactComponent as CheckboxIcon } from './svgs/checkbox.svg';
 interface Props {
-  size?: string
-  opacity?: number
+  size?: string;
+  opacity?: number;
 }
 const IconCheckbox: React.FC<Props> = ({ size = '1.5rem', opacity = 1 }) => {
-  return <CheckboxIcon width={size} height={size} opacity={opacity} />
-}
-export default IconCheckbox
+  return <CheckboxIcon width={size} height={size} opacity={opacity} />;
+};
+export default IconCheckbox;

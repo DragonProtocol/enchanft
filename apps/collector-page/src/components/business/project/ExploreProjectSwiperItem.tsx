@@ -5,45 +5,55 @@
  * @LastEditTime: 2022-09-14 17:37:06
  * @Description: file description
  */
-import React from 'react'
-import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-import { MOBILE_BREAK_POINT } from '../../../constants'
-import { ScrollBarCss } from '../../../GlobalStyle'
-import { MintStage } from '../../../types/entities'
-import ScrollBox from '../../common/scroll/ScrollBox'
-import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import RichTextBox from '../../common/text/RichTextBox'
-import RichTextToPlainTextSpan from '../../common/text/RichTextToPlainTextSpan'
-import ChainTag from '../chain/ChainTag'
-import MintStageLabel from './MintStageLabel'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { MOBILE_BREAK_POINT } from '../../../constants';
+import { ScrollBarCss } from '../../../GlobalStyle';
+import { MintStage } from '../../../types/entities';
+import ScrollBox from '../../common/scroll/ScrollBox';
+import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox';
+import RichTextBox from '../../common/text/RichTextBox';
+import RichTextToPlainTextSpan from '../../common/text/RichTextToPlainTextSpan';
+import ChainTag from '../chain/ChainTag';
+import MintStageLabel from './MintStageLabel';
 
 export type ExploreProjectSwiperItemDataType = {
-  id: number
-  name: string
-  image: string
-  mintStage: MintStage
-  description: string
-  chainId: number
-  communityId: number
-  slug: string
-}
-export type ExploreProjectSwiperItemViewConfigType = {}
+  id: number;
+  name: string;
+  image: string;
+  mintStage: MintStage;
+  description: string;
+  chainId: number;
+  communityId: number;
+  slug: string;
+};
+export type ExploreProjectSwiperItemViewConfigType = {};
 
 export type ExploreProjectSwiperItemDataViewType = {
-  data: ExploreProjectSwiperItemDataType
-  viewConfig?: ExploreProjectSwiperItemViewConfigType
-}
-export type ExploreProjectSwiperItemHandlesType = {}
+  data: ExploreProjectSwiperItemDataType;
+  viewConfig?: ExploreProjectSwiperItemViewConfigType;
+};
+export type ExploreProjectSwiperItemHandlesType = {};
 
-export type ExploreProjectSwiperItemProps = ExploreProjectSwiperItemDataViewType & ExploreProjectSwiperItemHandlesType
+export type ExploreProjectSwiperItemProps =
+  ExploreProjectSwiperItemDataViewType & ExploreProjectSwiperItemHandlesType;
 
 const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
   data,
   viewConfig,
 }: ExploreProjectSwiperItemProps) => {
-  const navigate = useNavigate()
-  const { id, name, image, mintStage, description, chainId, communityId, slug } = data
+  const navigate = useNavigate();
+  const {
+    id,
+    name,
+    image,
+    mintStage,
+    description,
+    chainId,
+    communityId,
+    slug,
+  } = data;
   return (
     <ExploreProjectSwiperItemWrapper onClick={() => navigate(`/${slug}`)}>
       {/* <ChainTag size={2} chainId={chainId} /> */}
@@ -60,9 +70,9 @@ const ExploreProjectSwiperItem: React.FC<ExploreProjectSwiperItemProps> = ({
         <ProjectDescription value={description} />
       </ProjectInfoBox>
     </ExploreProjectSwiperItemWrapper>
-  )
-}
-export default ExploreProjectSwiperItem
+  );
+};
+export default ExploreProjectSwiperItem;
 const ExploreProjectSwiperItemWrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -71,7 +81,7 @@ const ExploreProjectSwiperItemWrapper = styled.div`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     flex-direction: column;
   }
-`
+`;
 const ProjectImageBox = styled.div`
   width: 360px;
   height: 360px;
@@ -81,7 +91,7 @@ const ProjectImageBox = styled.div`
     width: 100%;
     height: 335px;
   }
-`
+`;
 const ProjectImage = styled.img`
   width: 100%;
   height: 100%;
@@ -97,7 +107,7 @@ const ProjectImage = styled.img`
     transform: translateY(2px);
   }
   transition: all 0.5s ease-out;
-`
+`;
 const ProjectInfoBox = styled.div`
   flex: 1;
   padding: 40px;
@@ -112,7 +122,7 @@ const ProjectInfoBox = styled.div`
     padding: 20px;
     gap: 10px;
   }
-`
+`;
 const ProjectName = styled.div`
   font-weight: 700;
   font-size: 36px;
@@ -122,13 +132,13 @@ const ProjectName = styled.div`
     font-size: 20px;
     line-height: 30px;
   }
-`
+`;
 const ProjectMintStageLabel = styled(MintStageLabel)`
   font-size: 20px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     font-size: 12px;
   }
-`
+`;
 
 // const ProjectDescription = styled(OverflowEllipsisBox)`
 //   flex: 1;
@@ -150,4 +160,4 @@ const ProjectDescription = styled(RichTextBox)`
     font-size: 14px;
     line-height: 21px;
   }
-`
+`;

@@ -5,32 +5,36 @@
  * @LastEditTime: 2022-11-11 18:19:21
  * @Description: 个人信息
  */
-import React, { useEffect, useRef, useState } from 'react'
-import { useCallback } from 'react'
-import { useAppSelector } from '../store/hooks'
-import styled from 'styled-components'
-import { IconButton } from '@mui/material'
-import EditIcon from '@mui/icons-material/Edit'
-import CommunityList, { CommunityListItemsType } from '../components/business/community/CommunityList'
+import React, { useEffect, useRef, useState } from 'react';
+import { useCallback } from 'react';
+import { useAppSelector } from '../store/hooks';
+import styled from 'styled-components';
+import { IconButton } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import CommunityList, {
+  CommunityListItemsType,
+} from '../components/business/community/CommunityList';
 import {
   FollowedCommunitityForEntity,
   selectAll as selectAllForFollowedCommunity,
   selectUserFollowedCommunitiesState,
-} from '../features/user/followedCommunitiesSlice'
-import { AsyncRequestStatus } from '../types'
+} from '../features/user/followedCommunitiesSlice';
+import { AsyncRequestStatus } from '../types';
 import {
   selectUserRewardsState,
   UserRewardForEntity,
   selectAll as selectAllForUserRewards,
-} from '../features/user/userRewardsSlice'
-import RewardList, { RewardListItemsType } from '../components/business/reward/RewardList'
-import { ButtonWarning } from '../components/common/button/ButtonBase'
-import CardBox from '../components/common/card/CardBox'
-import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup'
-import { MOBILE_BREAK_POINT } from '../constants'
-import { useNavigate } from 'react-router-dom'
-import OverflowEllipsisBox from '../components/common/text/OverflowEllipsisBox'
-import { isMobile } from 'react-device-detect'
+} from '../features/user/userRewardsSlice';
+import RewardList, {
+  RewardListItemsType,
+} from '../components/business/reward/RewardList';
+import { ButtonWarning } from '../components/common/button/ButtonBase';
+import CardBox from '../components/common/card/CardBox';
+import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup';
+import { MOBILE_BREAK_POINT } from '../constants';
+import { useNavigate } from 'react-router-dom';
+import OverflowEllipsisBox from '../components/common/text/OverflowEllipsisBox';
+import { isMobile } from 'react-device-detect';
 import {
   useWlUserReact,
   WlUserActionType,
@@ -38,9 +42,9 @@ import {
   BindWithAuthorizerButton,
   UserAvatar,
   AuthorizerType,
-} from '@ecnft/wl-user-react'
+} from '@ecnft/wl-user-react';
 const formatStoreDataToComponentDataByFollowedCommunities = (
-  communities: FollowedCommunitityForEntity[],
+  communities: FollowedCommunitityForEntity[]
 ): CommunityListItemsType => {
   return communities.map((item) => {
     return {
@@ -48,17 +52,19 @@ const formatStoreDataToComponentDataByFollowedCommunities = (
       viewConfig: {
         displayFollow: true,
       },
-    }
-  })
-}
-const formatStoreDataToComponentDataByUserRewards = (rewards: UserRewardForEntity[]): RewardListItemsType => {
+    };
+  });
+};
+const formatStoreDataToComponentDataByUserRewards = (
+  rewards: UserRewardForEntity[]
+): RewardListItemsType => {
   return rewards.map((item) => {
     return {
       data: { ...item },
       viewConfig: {},
-    }
-  })
-}
+    };
+  });
+};
 const ProfileTabOptions = [
   {
     label: 'My WL Application',
@@ -68,55 +74,69 @@ const ProfileTabOptions = [
     label: 'My Rewards',
     value: 'myRewards',
   },
-]
+];
 const Profile: React.FC = () => {
-  const { isLogin, user, dispatchAction, dispatchModal, authorizers } = useWlUserReact()
-  const navigate = useNavigate()
+  const { isLogin, user, dispatchAction, dispatchModal, authorizers } =
+    useWlUserReact();
+  const navigate = useNavigate();
 
   const handleLogout = useCallback(() => {
     if (isLogin) {
-      dispatchAction({ type: WlUserActionType.LOGOUT })
-      navigate('/')
+      dispatchAction({ type: WlUserActionType.LOGOUT });
+      navigate('/');
     }
-  }, [isLogin])
+  }, [isLogin]);
 
   // profile展示信息切换
-  const [curProfileTab, setCurProfileTab] = useState(ProfileTabOptions[0].value)
+  const [curProfileTab, setCurProfileTab] = useState(
+    ProfileTabOptions[0].value
+  );
 
   // 我的社区列表
-  const followedCommunities = useAppSelector(selectAllForFollowedCommunity)
-  const { status: followedCommunitiesStatus } = useAppSelector(selectUserFollowedCommunitiesState)
-  const loadingFollowedCommunities = followedCommunitiesStatus === AsyncRequestStatus.PENDING
-  const followedCommunityItems = formatStoreDataToComponentDataByFollowedCommunities(followedCommunities)
+  const followedCommunities = useAppSelector(selectAllForFollowedCommunity);
+  const { status: followedCommunitiesStatus } = useAppSelector(
+    selectUserFollowedCommunitiesState
+  );
+  const loadingFollowedCommunities =
+    followedCommunitiesStatus === AsyncRequestStatus.PENDING;
+  const followedCommunityItems =
+    formatStoreDataToComponentDataByFollowedCommunities(followedCommunities);
   // 我的reward列表
-  const rewards = useAppSelector(selectAllForUserRewards)
-  const { status: rewardsStatus } = useAppSelector(selectUserRewardsState)
-  const loadingUserRewards = rewardsStatus === AsyncRequestStatus.PENDING
-  const rewardItems = formatStoreDataToComponentDataByUserRewards(rewards)
+  const rewards = useAppSelector(selectAllForUserRewards);
+  const { status: rewardsStatus } = useAppSelector(selectUserRewardsState);
+  const loadingUserRewards = rewardsStatus === AsyncRequestStatus.PENDING;
+  const rewardItems = formatStoreDataToComponentDataByUserRewards(rewards);
 
   const renderUserBasicInfo = () => {
     return (
       <UserBasicInfoBox>
         <UserNameRow>
           <UserName>{user.name}</UserName>
-          <IconButton onClick={() => dispatchModal({ type: WlUserModalType.EDIT_PROFILE })}>
+          <IconButton
+            onClick={() =>
+              dispatchModal({ type: WlUserModalType.EDIT_PROFILE })
+            }
+          >
             <EditIcon />
           </IconButton>
         </UserNameRow>
         <LogoutBtn onClick={handleLogout}>Logout</LogoutBtn>
         {/* <UserAddress>{user.pubkey}</UserAddress> */}
       </UserBasicInfoBox>
-    )
-  }
+    );
+  };
   const renderUserAccountList = () => {
     return (
       <UserAccountListBox>
         {authorizers.map((authorizer) => (
-          <BindWithAuthorizerButton authorizerType={authorizer.type} key={authorizer.type} />
+          <BindWithAuthorizerButton
+            authorizerType={authorizer.type}
+            key={authorizer.type}
+          />
         ))}
       </UserAccountListBox>
-    )
-  }
+    );
+  };
   const renderUserInfoPc = () => {
     return (
       <ProfileTopBox>
@@ -126,8 +146,8 @@ const Profile: React.FC = () => {
           {renderUserAccountList()}
         </TopRightBox>
       </ProfileTopBox>
-    )
-  }
+    );
+  };
   const renderUserInfoMobile = () => {
     return (
       <ProfileTopBox>
@@ -137,8 +157,8 @@ const Profile: React.FC = () => {
         </TopRightBox>
         {renderUserAccountList()}
       </ProfileTopBox>
-    )
-  }
+    );
+  };
   return (
     <ProfileWrapper>
       {isMobile ? renderUserInfoMobile() : renderUserInfoPc()}
@@ -150,18 +170,23 @@ const Profile: React.FC = () => {
         />
         <ProfileTabContentBox>
           {curProfileTab === 'myCommunities' && (
-            <CommunityList items={followedCommunityItems} loading={loadingFollowedCommunities} />
+            <CommunityList
+              items={followedCommunityItems}
+              loading={loadingFollowedCommunities}
+            />
           )}
-          {curProfileTab === 'myRewards' && <RewardList items={rewardItems} loading={loadingUserRewards} />}
+          {curProfileTab === 'myRewards' && (
+            <RewardList items={rewardItems} loading={loadingUserRewards} />
+          )}
         </ProfileTabContentBox>
       </ProfileInfoTabsBox>
     </ProfileWrapper>
-  )
-}
-export default Profile
+  );
+};
+export default Profile;
 const ProfileWrapper = styled.div`
   width: 100%;
-`
+`;
 
 const ProfileTopBox = styled(CardBox)`
   border: 4px solid #333333;
@@ -170,7 +195,7 @@ const ProfileTopBox = styled(CardBox)`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     flex-direction: column;
   }
-`
+`;
 const LogoutBtn = styled(ButtonWarning)`
   font-weight: 700;
   font-size: 18px;
@@ -180,7 +205,7 @@ const LogoutBtn = styled(ButtonWarning)`
     font-size: 14px;
     padding: 5px 10px;
   }
-`
+`;
 const ProfileUserAvatar = styled(UserAvatar)`
   width: 160px;
   height: 160px;
@@ -189,7 +214,7 @@ const ProfileUserAvatar = styled(UserAvatar)`
     width: 80px;
     height: 80px;
   }
-`
+`;
 const TopRightBox = styled.div`
   flex: 1;
   display: flex;
@@ -200,7 +225,7 @@ const TopRightBox = styled.div`
     flex-direction: row;
     gap: 10px;
   }
-`
+`;
 const UserBasicInfoBox = styled.div`
   display: flex;
   gap: 20px;
@@ -213,7 +238,7 @@ const UserBasicInfoBox = styled.div`
     gap: 10px;
     overflow: hidden;
   }
-`
+`;
 const UserNameRow = styled.div`
   display: flex;
   align-items: center;
@@ -221,7 +246,7 @@ const UserNameRow = styled.div`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     gap: 5px;
   }
-`
+`;
 const UserName = styled(OverflowEllipsisBox)`
   font-weight: 700;
   font-size: 36px;
@@ -231,7 +256,7 @@ const UserName = styled(OverflowEllipsisBox)`
     font-size: 20px;
     line-height: 30px;
   }
-`
+`;
 const UserAddress = styled.div`
   font-size: 18px;
   line-height: 24px;
@@ -241,15 +266,15 @@ const UserAddress = styled.div`
     line-height: 18px;
     word-wrap: break-word;
   }
-`
+`;
 const UserAccountListBox = styled.div`
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
-`
+`;
 const ProfileInfoTabsBox = styled(CardBox)`
   margin-top: 20px;
-`
+`;
 const ButtonRadioGroupProfileTabs = styled(ButtonRadioGroup)`
   width: 400px;
   margin: 0 auto;
@@ -258,7 +283,7 @@ const ButtonRadioGroupProfileTabs = styled(ButtonRadioGroup)`
     font-size: 12px;
     line-height: 18px;
   }
-`
+`;
 const ProfileTabContentBox = styled.div`
   margin-top: 20px;
-`
+`;

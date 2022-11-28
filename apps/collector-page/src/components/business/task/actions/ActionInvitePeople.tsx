@@ -5,32 +5,32 @@
  * @LastEditTime: 2022-10-21 19:53:15
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
-import { UserActionStatus } from '../../../../types/api'
-import { TaskActionItemDataType } from '../TaskActionItem'
-import { CopyToClipboard } from 'react-copy-to-clipboard'
-import OverflowEllipsisBox from '../../../common/text/OverflowEllipsisBox'
-import TooltipWrapper from '../../../common/tooltip/TooltipWrapper'
-import IconWL from '../../../common/icons/IconWL'
-import IconCopy from '../../../common/icons/IconCopy'
-import { getTakeTaskRefLink } from '../../../../container/Ref'
-import { useAppSelector } from '../../../../store/hooks'
-import { useEffect } from 'react'
-import { useState } from 'react'
-import ActionIconBox from './ActionIconBox'
-import ActionNameSpan from './ActionNameSpan'
-import { toast } from 'react-toastify'
-import { tweetShare } from '../../../../utils/twitter'
-import { SHARE_EVENT_TWEET_CONTENTS } from '../../../../constants'
-import { useWlUserReact } from '@ecnft/wl-user-react'
+import React from 'react';
+import styled from 'styled-components';
+import { UserActionStatus } from '../../../../types/api';
+import { TaskActionItemDataType } from '../TaskActionItem';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import OverflowEllipsisBox from '../../../common/text/OverflowEllipsisBox';
+import TooltipWrapper from '../../../common/tooltip/TooltipWrapper';
+import IconWL from '../../../common/icons/IconWL';
+import IconCopy from '../../../common/icons/IconCopy';
+import { getTakeTaskRefLink } from '../../../../container/Ref';
+import { useAppSelector } from '../../../../store/hooks';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import ActionIconBox from './ActionIconBox';
+import ActionNameSpan from './ActionNameSpan';
+import { toast } from 'react-toastify';
+import { tweetShare } from '../../../../utils/twitter';
+import { SHARE_EVENT_TWEET_CONTENTS } from '../../../../constants';
+import { useWlUserReact } from '@ecnft/wl-user-react';
 
 export type ActionInvitePeopleProps = {
-  data: TaskActionItemDataType
-  allowHandle?: boolean
-  onCopy?: (text: string) => void
-  copyBgc?: string
-}
+  data: TaskActionItemDataType;
+  allowHandle?: boolean;
+  onCopy?: (text: string) => void;
+  copyBgc?: string;
+};
 
 const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
   data,
@@ -38,24 +38,35 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
   onCopy,
   copyBgc,
 }: ActionInvitePeopleProps) => {
-  const { user } = useWlUserReact()
-  const { name, progress, orderNum, type, taskId, projectId, communityId, description, data: actionData, status } = data
-  const [refUrl, setRefUrl] = useState('')
+  const { user } = useWlUserReact();
+  const {
+    name,
+    progress,
+    orderNum,
+    type,
+    taskId,
+    projectId,
+    communityId,
+    description,
+    data: actionData,
+    status,
+  } = data;
+  const [refUrl, setRefUrl] = useState('');
 
   useEffect(() => {
     if (user.id > 0) {
-      const url = getTakeTaskRefLink(user.id, taskId)
-      setRefUrl(url)
+      const url = getTakeTaskRefLink(user.id, taskId);
+      setRefUrl(url);
     }
-  }, [user])
+  }, [user]);
 
-  const isDone = status === UserActionStatus.DONE
+  const isDone = status === UserActionStatus.DONE;
   const handleCopySuccess = () => {
-    toast.success('Copied!')
+    toast.success('Copied!');
     if (onCopy) {
-      onCopy(refUrl)
+      onCopy(refUrl);
     }
-  }
+  };
   return (
     <ActionInvitePeopleWrapper>
       <ActionIconBox allowHandle={allowHandle} isDone={isDone}>
@@ -65,12 +76,19 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
       </ActionIconBox>
       <ActionContentBox>
         <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
-          {name} {progress && progress != '' && <ProgressSpan>({progress})</ProgressSpan>}
+          {name}{' '}
+          {progress && progress != '' && (
+            <ProgressSpan>({progress})</ProgressSpan>
+          )}
         </ActionNameSpan>
 
         {allowHandle && (
           <ActionInviteCopyBox bgc={copyBgc}>
-            <InviteLinkBox onClick={() => tweetShare(SHARE_EVENT_TWEET_CONTENTS, refUrl)}>{refUrl}</InviteLinkBox>
+            <InviteLinkBox
+              onClick={() => tweetShare(SHARE_EVENT_TWEET_CONTENTS, refUrl)}
+            >
+              {refUrl}
+            </InviteLinkBox>
             <CopyToClipboard text={refUrl} onCopy={handleCopySuccess}>
               <CopyBtn>
                 <IconCopy opacity={isDone ? 0.5 : 1} size="1.2rem" />
@@ -80,22 +98,22 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
         )}
       </ActionContentBox>
     </ActionInvitePeopleWrapper>
-  )
-}
-export default ActionInvitePeople
+  );
+};
+export default ActionInvitePeople;
 const ActionInvitePeopleWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 10px;
-`
+`;
 const ActionContentBox = styled.div`
   flex: 1;
-`
+`;
 const ProgressSpan = styled.span`
   color: rgba(51, 51, 51, 0.5);
-`
+`;
 const ActionInviteCopyBox = styled.div<{ bgc?: string }>`
   width: 100%;
   background: ${({ bgc }) => bgc || '#f8f8f8'};
@@ -106,12 +124,12 @@ const ActionInviteCopyBox = styled.div<{ bgc?: string }>`
   margin-top: 6px;
   padding: 5px;
   box-sizing: border-box;
-`
+`;
 const InviteLinkBox = styled(OverflowEllipsisBox)`
   font-size: 12px;
   line-height: 20px;
   color: rgba(51, 51, 51, 0.5);
-`
+`;
 const CopyBtn = styled.div`
   cursor: pointer;
-`
+`;

@@ -5,16 +5,16 @@
  * @LastEditTime: 2022-10-09 11:44:36
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
-import { MOBILE_BREAK_POINT } from '../../../constants'
-import { MintStage } from '../../../types/entities'
-import ButtonRadioGroup from '../../common/button/ButtonRadioGroup'
-import InputSearch from '../../common/input/InputSearch'
+import React from 'react';
+import styled from 'styled-components';
+import { MOBILE_BREAK_POINT } from '../../../constants';
+import { MintStage } from '../../../types/entities';
+import ButtonRadioGroup from '../../common/button/ButtonRadioGroup';
+import InputSearch from '../../common/input/InputSearch';
 export enum MintStageOther {
   All = '',
 }
-export type ExploreMintStageType = MintStage | MintStageOther
+export type ExploreMintStageType = MintStage | MintStageOther;
 export const ExploreMintStageOptions = [
   {
     label: 'All',
@@ -32,58 +32,58 @@ export const ExploreMintStageOptions = [
     label: 'Closed',
     value: MintStage.CLOSED,
   },
-]
+];
 
 export type ExploreProjectIndexFilterDataType = {
-  mintStage: ExploreMintStageType
-  keywords: string
-}
+  mintStage: ExploreMintStageType;
+  keywords: string;
+};
 
 export type ExploreProjectIndexFilterViewConfigType = {
-  displayStatus?: boolean
-  displayKeywords?: boolean
-}
+  displayStatus?: boolean;
+  displayKeywords?: boolean;
+};
 
 export type ExploreProjectIndexFilterDataViewType = {
-  data: ExploreProjectIndexFilterDataType
-  viewConfig?: ExploreProjectIndexFilterViewConfigType
-}
+  data: ExploreProjectIndexFilterDataType;
+  viewConfig?: ExploreProjectIndexFilterViewConfigType;
+};
 export type ExploreProjectIndexFilterHandlesType = {
-  onChange?: (filter: ExploreProjectIndexFilterDataType) => void
-}
-export type ExploreProjectIndexFilterProps = ExploreProjectIndexFilterDataViewType &
-  ExploreProjectIndexFilterHandlesType
+  onChange?: (filter: ExploreProjectIndexFilterDataType) => void;
+};
+export type ExploreProjectIndexFilterProps =
+  ExploreProjectIndexFilterDataViewType & ExploreProjectIndexFilterHandlesType;
 
 const defaultViewConfig = {
   displayStatus: true,
   displayKeywords: true,
-}
+};
 const ExploreProjectIndexFilter: React.FC<ExploreProjectIndexFilterProps> = ({
   data,
   viewConfig,
   onChange,
 }: ExploreProjectIndexFilterProps) => {
-  const { mintStage, keywords } = data
+  const { mintStage, keywords } = data;
   const { displayStatus, displayKeywords } = {
     ...defaultViewConfig,
     ...viewConfig,
-  }
+  };
   const handleStatusChange = (value) => {
     if (onChange) {
       onChange({
         ...data,
         mintStage: value,
-      })
+      });
     }
-  }
+  };
   const handleKeywordsChange = (value) => {
     if (onChange) {
       onChange({
         ...data,
         keywords: value,
-      })
+      });
     }
-  }
+  };
   return (
     <ExploreProjectIndexFilterWrapper>
       {/* {displayStatus && (
@@ -97,9 +97,9 @@ const ExploreProjectIndexFilter: React.FC<ExploreProjectIndexFilterProps> = ({
         />
       )}
     </ExploreProjectIndexFilterWrapper>
-  )
-}
-export default ExploreProjectIndexFilter
+  );
+};
+export default ExploreProjectIndexFilter;
 const ExploreProjectIndexFilterWrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -109,7 +109,7 @@ const ExploreProjectIndexFilterWrapper = styled.div`
     flex-direction: column;
     gap: 20px;
   }
-`
+`;
 const ButtonRadioGroupSortBy = styled(ButtonRadioGroup)`
   width: 400px;
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
@@ -117,7 +117,7 @@ const ButtonRadioGroupSortBy = styled(ButtonRadioGroup)`
     font-size: 14px;
     line-height: 21px;
   }
-`
+`;
 const InputSearchKeywords = styled(InputSearch)`
   width: 600px;
   height: 50px;
@@ -126,4 +126,4 @@ const InputSearchKeywords = styled(InputSearch)`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     width: 100%;
   }
-`
+`;

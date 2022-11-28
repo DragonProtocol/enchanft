@@ -5,14 +5,14 @@
  * @LastEditTime: 2022-09-09 18:59:34
  * @Description: file description
  */
-import React from 'react'
-import { ReactComponent as Icon } from './svgs/retweet.svg'
+import React from 'react';
+import { ReactComponent as Icon } from './svgs/retweet.svg';
 interface Props {
-  size?: string
-  opacity?: number
+  size?: string;
+  opacity?: number;
 }
 const IconWL: React.FC<Props> = ({ size = '1.5rem', opacity = 1 }) => {
-  return <Icon width={size} height={size} opacity={opacity} />
-}
+  return <Icon width={size} height={size} opacity={opacity} />;
+};
 
-export default IconWL
+export default IconWL;

@@ -13,7 +13,7 @@ export enum AsyncRequestStatus {
 }
 
 export type ApiResp<T> = {
-  code: number
-  msg: string
-  data: T
-}
+  code: number;
+  msg: string;
+  data: T;
+};

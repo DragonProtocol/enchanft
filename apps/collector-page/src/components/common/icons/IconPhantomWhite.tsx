@@ -5,13 +5,16 @@
  * @LastEditTime: 2022-07-29 13:33:17
  * @Description: file description
  */
-import React from 'react'
-import { ReactComponent as PhantomWhiteIcon } from './svgs/phantom_white.svg'
+import React from 'react';
+import { ReactComponent as PhantomWhiteIcon } from './svgs/phantom_white.svg';
 interface Props {
-  size?: string
-  opacity?: number
+  size?: string;
+  opacity?: number;
 }
-const IconPhantomWhite: React.FC<Props> = ({ size = '1.5rem', opacity = 1 }) => {
-  return <PhantomWhiteIcon width={size} height={size} opacity={opacity} />
-}
-export default IconPhantomWhite
+const IconPhantomWhite: React.FC<Props> = ({
+  size = '1.5rem',
+  opacity = 1,
+}) => {
+  return <PhantomWhiteIcon width={size} height={size} opacity={opacity} />;
+};
+export default IconPhantomWhite;

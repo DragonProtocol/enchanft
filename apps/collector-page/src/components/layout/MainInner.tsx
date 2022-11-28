@@ -5,13 +5,16 @@
  * @LastEditTime: 2022-10-24 00:04:17
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react'
-import styled from 'styled-components'
-import { MEDIA_BREAK_POINTS } from '../../constants/index'
-const MainInner: React.FC<HTMLAttributes<HTMLDivElement>> = ({ children, ...divProps }) => {
-  return <MainInnerWrapper {...divProps}>{children}</MainInnerWrapper>
-}
-export default MainInner
+import React, { HTMLAttributes } from 'react';
+import styled from 'styled-components';
+import { MEDIA_BREAK_POINTS } from '../../constants/index';
+const MainInner: React.FC<HTMLAttributes<HTMLDivElement>> = ({
+  children,
+  ...divProps
+}) => {
+  return <MainInnerWrapper {...divProps}>{children}</MainInnerWrapper>;
+};
+export default MainInner;
 const MainInnerWrapper = styled.div`
   position: relative;
   width: 100%;
@@ -26,4 +29,4 @@ const MainInnerWrapper = styled.div`
   @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
     padding: 0 20px;
   }
-`
+`;

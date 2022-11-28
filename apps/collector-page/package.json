@@ -53,7 +53,7 @@
     "test": "craco test",
     "eject": "react-scripts eject",
     "serve": "npm start",
-    "lint": "eslint . --ext \"**/*.{js,ts,tsx}\" --max-warnings 0 --cache",
+    "lint": "eslint --ext \"**/*.{js,ts,tsx}\" --max-warnings 0 --cache",
     "lint:fix": "pnpm lint --fix",
     "format": "prettier --write \"**/*.{js,ts,tsx}\"  --parser typescript ",
     "format:check": "prettier --check \"**/*.{js,ts,tsx}\"  --parser typescript "

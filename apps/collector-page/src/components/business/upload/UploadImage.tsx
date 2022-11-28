@@ -5,18 +5,18 @@
  * @LastEditTime: 2022-11-15 13:51:40
  * @Description: file description
  */
-import React, { useMemo, useState } from 'react'
-import styled from 'styled-components'
-import Upload, { UploadProps } from 'rc-upload'
-import IconUpload from '../../common/icons/IconUpload'
-import { uploadImage } from '../../../services/api/utils'
+import React, { useMemo, useState } from 'react';
+import styled from 'styled-components';
+import Upload, { UploadProps } from 'rc-upload';
+import IconUpload from '../../common/icons/IconUpload';
+import { uploadImage } from '../../../services/api/utils';
 export type UploadImageProps = React.PropsWithChildren<{
-  url?: string
-  description?: string
-  disabled?: boolean
-  onSuccess?: (url: string) => void
-  onError?: (error: Error) => void
-}>
+  url?: string;
+  description?: string;
+  disabled?: boolean;
+  onSuccess?: (url: string) => void;
+  onError?: (error: Error) => void;
+}>;
 
 const UploadImage: React.FC<UploadImageProps> = ({
   url,
@@ -30,35 +30,38 @@ const UploadImage: React.FC<UploadImageProps> = ({
     name: '',
     loading: false,
     percent: 0,
-  })
+  });
   const uploadProps: UploadProps = useMemo(
     () => ({
       disabled: disabled || imgState.loading,
       multiple: false,
       component: UploadImageWrapper,
       customRequest: ({ file }) => {
-        setImgState({ ...imgState, name: (file as File).name, loading: true })
+        setImgState({ ...imgState, name: (file as File).name, loading: true });
         uploadImage(file as File, ({ total, loaded }) => {
-          setImgState({ ...imgState, percent: Number(Math.round((loaded / total) * 100).toFixed(2)) })
+          setImgState({
+            ...imgState,
+            percent: Number(Math.round((loaded / total) * 100).toFixed(2)),
+          });
         })
           .then(({ data }) => {
-            onSuccess(data.url)
+            onSuccess(data.url);
           })
           .catch(onError)
-          .finally(() => setImgState({ ...imgState, loading: false }))
+          .finally(() => setImgState({ ...imgState, loading: false }));
 
         return {
           abort() {
-            console.log('upload progress is aborted.')
+            console.log('upload progress is aborted.');
           },
-        }
+        };
       },
       beforeUpload: (file) => {
-        return file && file['type'].split('/')[0] === 'image'
+        return file && file['type'].split('/')[0] === 'image';
       },
     }),
-    [imgState, disabled],
-  )
+    [imgState, disabled]
+  );
 
   return (
     <Upload {...uploadProps}>
@@ -74,9 +77,9 @@ const UploadImage: React.FC<UploadImageProps> = ({
           </>
         ))}
     </Upload>
-  )
-}
-export default UploadImage
+  );
+};
+export default UploadImage;
 const UploadImageWrapper = styled.div`
   width: 100%;
   min-height: 80px;
@@ -90,15 +93,15 @@ const UploadImageWrapper = styled.div`
   background: #e2e4de;
   border-radius: 10px;
   cursor: pointer;
-`
+`;
 const UploadDiscriptionText = styled.span`
   font-weight: 400;
   font-size: 12px;
   line-height: 18px;
   color: rgba(51, 51, 51, 0.5);
-`
+`;
 const UploadImagePreview = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
-`
+`;

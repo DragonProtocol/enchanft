@@ -5,13 +5,16 @@
  * @LastEditTime: 2022-09-07 11:24:48
  * @Description: file description
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import styled from 'styled-components'
-import ButtonBase, { ButtonPrimary, ButtonProps } from '../../common/button/ButtonBase'
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import styled from 'styled-components';
+import ButtonBase, {
+  ButtonPrimary,
+  ButtonProps,
+} from '../../common/button/ButtonBase';
 
 export type ProjectMintButtonProps = ButtonProps & {
-  startTimestamp: number
-}
+  startTimestamp: number;
+};
 
 const ProjectMintButton: React.FC<ProjectMintButtonProps> = ({
   startTimestamp,
@@ -24,40 +27,44 @@ const ProjectMintButton: React.FC<ProjectMintButtonProps> = ({
     hour: 0,
     minute: 0,
     second: 0,
-  })
-  const mintTimeCountdownIntervalRef = useRef<any>(null)
+  });
+  const mintTimeCountdownIntervalRef = useRef<any>(null);
   useEffect(() => {
     mintTimeCountdownIntervalRef.current = setInterval(() => {
-      const distance = startTimestamp - Date.now()
-      const distanceDay = Math.floor(distance / (1000 * 60 * 60 * 24))
-      const distanceHour = Math.floor((distance / (1000 * 60 * 60)) % 24)
-      const distanceMinute = Math.floor((distance / (1000 * 60)) % 60)
-      const distanceSecond = Math.floor((distance / 1000) % 60)
+      const distance = startTimestamp - Date.now();
+      const distanceDay = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const distanceHour = Math.floor((distance / (1000 * 60 * 60)) % 24);
+      const distanceMinute = Math.floor((distance / (1000 * 60)) % 60);
+      const distanceSecond = Math.floor((distance / 1000) % 60);
       setMintTimeCountdown({
         distance: distance,
         day: distanceDay,
         hour: distanceHour,
         minute: distanceMinute,
         second: distanceSecond,
-      })
-      if (distance === 0) clearInterval(mintTimeCountdownIntervalRef.current)
-    }, 1000)
+      });
+      if (distance === 0) clearInterval(mintTimeCountdownIntervalRef.current);
+    }, 1000);
     return () => {
-      clearInterval(mintTimeCountdownIntervalRef.current)
-    }
-  }, [startTimestamp])
+      clearInterval(mintTimeCountdownIntervalRef.current);
+    };
+  }, [startTimestamp]);
 
-  let mintText = 'MINT'
+  let mintText = 'MINT';
   if (mintTimeCountdown.distance > 0) {
-    mintText = 'You can mint in'
+    mintText = 'You can mint in';
     if (mintTimeCountdown.day > 0) {
-      mintText += ` ${mintTimeCountdown.day}d`
+      mintText += ` ${mintTimeCountdown.day}d`;
     }
     if (mintTimeCountdown.hour > 0 || mintTimeCountdown.day > 0) {
-      mintText += ` ${mintTimeCountdown.hour}h`
+      mintText += ` ${mintTimeCountdown.hour}h`;
     }
-    if (mintTimeCountdown.minute > 0 || mintTimeCountdown.hour > 0 || mintTimeCountdown.day > 0) {
-      mintText += ` ${mintTimeCountdown.minute}m`
+    if (
+      mintTimeCountdown.minute > 0 ||
+      mintTimeCountdown.hour > 0 ||
+      mintTimeCountdown.day > 0
+    ) {
+      mintText += ` ${mintTimeCountdown.minute}m`;
     }
     if (
       mintTimeCountdown.second > 0 ||
@@ -65,17 +72,17 @@ const ProjectMintButton: React.FC<ProjectMintButtonProps> = ({
       mintTimeCountdown.hour > 0 ||
       mintTimeCountdown.day > 0
     ) {
-      mintText += ` ${mintTimeCountdown.second}s`
+      mintText += ` ${mintTimeCountdown.second}s`;
     }
   }
-  const isDisabledMint = disabled || mintTimeCountdown.distance > 0
+  const isDisabledMint = disabled || mintTimeCountdown.distance > 0;
   return (
     <ProjectMintButtonWrapper disabled={isDisabledMint} {...btnOtherProps}>
       {mintText}
     </ProjectMintButtonWrapper>
-  )
-}
-export default ProjectMintButton
+  );
+};
+export default ProjectMintButton;
 const ProjectMintButtonWrapper = styled(ButtonBase)`
   width: 100%;
   background-color: #e07031;
@@ -84,4 +91,4 @@ const ProjectMintButtonWrapper = styled(ButtonBase)`
   line-height: 21px;
   text-align: center;
   color: #ffffff;
-`
+`;

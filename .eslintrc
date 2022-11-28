@@ -14,6 +14,17 @@
   "parserOptions": {
     "project": "./tsconfig.base.json"
   },
+  "overrides": [
+    {
+      "files": ["**/features/*/*.ts", "**/store/*.ts"],
+      "rules": {
+        // 在redux slice中的action函数参数的引用值可以修改内部属性(state,payload)=>state.name='123'
+        "no-param-reassign": "off",
+        // 在redux中允许隐式循环依赖
+        "import/no-cycle": "off"
+      }
+    }
+  ],
   "rules": {
     //解决 styled 结构顺序问题
     "@typescript-eslint/no-use-before-define": "off",

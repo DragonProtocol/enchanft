@@ -2,38 +2,39 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-31 17:06:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-22 16:09:42
+ * @LastEditTime: 2022-11-28 09:06:10
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
-import Lottie from 'react-lottie'
-import { getClaimAnimationData } from '../../../utils/lottie'
-import claim_bg_img from './imgs/claim_bg.png'
+import React from 'react';
+import styled from 'styled-components';
+import Lottie from 'react-lottie';
+import { getClaimAnimationData } from '../../../utils/lottie';
+import claim_bg_img from './imgs/claim_bg.png';
 export type CommunityCheckedinClaimModalDataType = {
-  seqDays: number
-  contribution: number
-}
+  seqDays: number;
+  contribution: number;
+};
 export type CommunityCheckedinClaimModalProps = {
-  data: CommunityCheckedinClaimModalDataType
-  open: boolean
-}
-const CommunityCheckedinClaimModal: React.FC<CommunityCheckedinClaimModalProps> = ({
-  data,
-  open,
-}: CommunityCheckedinClaimModalProps) => {
-  const { seqDays, contribution } = data
-  const animationData = getClaimAnimationData()
+  data: CommunityCheckedinClaimModalDataType;
+  open: boolean;
+};
+const CommunityCheckedinClaimModal: React.FC<
+  CommunityCheckedinClaimModalProps
+> = ({ data, open }: CommunityCheckedinClaimModalProps) => {
+  const { seqDays, contribution } = data;
+  const animationData = getClaimAnimationData();
   const defaultOptions = {
     loop: false,
     autoplay: true,
-    animationData: animationData,
+    animationData,
     rendererSettings: {
       preserveAspectRatio: 'xMidYMid slice',
     },
-  }
+  };
   return (
-    <CommunityCheckedinClaimModalWrapper style={{ display: open ? 'block' : 'none' }}>
+    <CommunityCheckedinClaimModalWrapper
+      style={{ display: open ? 'block' : 'none' }}
+    >
       <ClaimTextBox>
         <ClaimTextPlusNum>+ {contribution}</ClaimTextPlusNum>
         <ClaimTextDesc>Got {contribution} contribution scores!</ClaimTextDesc>
@@ -42,9 +43,9 @@ const CommunityCheckedinClaimModal: React.FC<CommunityCheckedinClaimModalProps> 
         <Lottie options={defaultOptions} />
       </LottieBox>
     </CommunityCheckedinClaimModalWrapper>
-  )
-}
-export default CommunityCheckedinClaimModal
+  );
+};
+export default CommunityCheckedinClaimModal;
 const CommunityCheckedinClaimModalWrapper = styled.div`
   position: fixed;
   width: 860px;
@@ -53,7 +54,7 @@ const CommunityCheckedinClaimModalWrapper = styled.div`
   top: 50%;
   transform: translate(-50%, -50%);
   transition: all 0.3s ease-out;
-`
+`;
 const ClaimTextBox = styled.div`
   width: 100%;
   height: 100%;
@@ -66,23 +67,23 @@ const ClaimTextBox = styled.div`
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
-`
+`;
 const ClaimTextPlusNum = styled.span`
   font-weight: 700;
   font-size: 40px;
   line-height: 60px;
   color: #3dd707;
-`
+`;
 const ClaimTextDesc = styled.span`
   font-weight: 700;
   font-size: 20px;
   line-height: 30px;
   color: #333333;
-`
+`;
 const LottieBox = styled.div`
   position: absolute;
   left: 0;
   top: 0;
   width: 860px;
   height: 360px;
-`
+`;

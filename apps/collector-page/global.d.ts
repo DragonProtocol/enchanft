@@ -5,4 +5,4 @@
  * @LastEditTime: 2022-07-07 15:51:30
  * @Description: file description
  */
-declare type Maybe<T> = T | null | undefined | ''
+declare type Maybe<T> = T | null | undefined | '';
