@@ -5,50 +5,54 @@
  * @LastEditTime: 2022-08-16 15:10:39
  * @Description: file description
  */
-import React, { useCallback, useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-import IconListAlt from '../common/icons/IconListAlt'
-import IconClose from '../common/icons/IconClose'
+import React, { useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import IconListAlt from '../common/icons/IconListAlt';
+import IconClose from '../common/icons/IconClose';
 type TodoFloatingWindowProps = {
-  count?: number
-}
-const TodoFloatingWindow: React.FC<TodoFloatingWindowProps> = ({ count = 0 }) => {
-  const navigate = useNavigate()
-  const location = useLocation()
-  const [isEnter, setIsEnter] = useState(false)
+  count?: number;
+};
+const TodoFloatingWindow: React.FC<TodoFloatingWindowProps> = ({
+  count = 0,
+}) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isEnter, setIsEnter] = useState(false);
   useEffect(() => {
     if (location.pathname === '/towl') {
-      setIsEnter(true)
+      setIsEnter(true);
     } else {
-      setIsEnter(false)
+      setIsEnter(false);
     }
-  }, [location])
+  }, [location]);
   const handleEnter = useCallback(() => {
-    navigate('/towl')
-  }, [])
+    navigate('/towl');
+  }, []);
   const handleLeave = useCallback(() => {
-    navigate(-1)
-  }, [])
+    navigate(-1);
+  }, []);
 
   const handleClick = useCallback(() => {
     if (isEnter) {
-      handleLeave()
+      handleLeave();
     } else {
-      handleEnter()
+      handleEnter();
     }
-  }, [isEnter])
+  }, [isEnter]);
 
   return (
     <TodoFloatingWindowWrapper onClick={handleClick}>
       <IconBox>
         {isEnter ? <IconClose size="42px" /> : <IconListAlt size="42px" />}
-        {!isEnter && count > 0 && <TodoFloatingWindowCount>{count}</TodoFloatingWindowCount>}
+        {!isEnter && count > 0 && (
+          <TodoFloatingWindowCount>{count}</TodoFloatingWindowCount>
+        )}
       </IconBox>
     </TodoFloatingWindowWrapper>
-  )
-}
-export default TodoFloatingWindow
+  );
+};
+export default TodoFloatingWindow;
 
 // TodoFloatingWindow style
 const TodoFloatingWindowWrapper = styled.div`
@@ -69,12 +73,12 @@ const TodoFloatingWindowWrapper = styled.div`
   color: #333333;
   cursor: pointer;
   z-index: 2;
-`
+`;
 const IconBox = styled.div`
   width: auto;
   height: auto;
   position: relative;
-`
+`;
 // 右上角数量提示
 const TodoFloatingWindowCount = styled.div`
   min-width: 24px;
@@ -94,4 +98,4 @@ const TodoFloatingWindowCount = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 2;
-`
+`;

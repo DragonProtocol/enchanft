@@ -18,11 +18,11 @@ export enum ChainIds {
   aptos = 2,
 }
 export type Chain = {
-  chainId: ChainIds
-  name: string
-  unit: string
-  type: ChainType
-}
+  chainId: ChainIds;
+  name: string;
+  unit: string;
+  type: ChainType;
+};
 export const chainMap: { [key in ChainIds]: Chain } = {
   [ChainIds.eth]: {
     chainId: ChainIds.eth,
@@ -42,11 +42,11 @@ export const chainMap: { [key in ChainIds]: Chain } = {
     unit: 'APT',
     type: ChainType.APTOS,
   },
-}
+};
 
 export const getChainInfo = (chainId: number): Chain => {
-  return chainMap[chainId]
-}
+  return chainMap[chainId];
+};
 export const getChainType = (chainId: number): ChainType => {
-  return chainMap[chainId]?.type || ChainType.UNKNOWN
-}
+  return chainMap[chainId]?.type || ChainType.UNKNOWN;
+};

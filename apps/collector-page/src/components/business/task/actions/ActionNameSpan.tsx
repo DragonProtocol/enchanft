@@ -2,15 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-05 17:16:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 18:24:50
+ * @LastEditTime: 2022-11-29 11:06:14
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react'
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components'
+import React, { HTMLAttributes } from 'react';
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
+
 export type ActionNameSpanProps = HTMLAttributes<HTMLSpanElement> & {
-  allowHandle?: boolean
-  isDone?: boolean
-}
+  allowHandle?: boolean;
+  isDone?: boolean;
+};
 
 const ActionNameSpan: React.FC<ActionNameSpanProps> = ({
   children,
@@ -18,12 +19,12 @@ const ActionNameSpan: React.FC<ActionNameSpanProps> = ({
   isDone,
   ...otherProps
 }: ActionNameSpanProps) => {
-  let ActionNameCss: FlattenSimpleInterpolation = css``
+  let ActionNameCss: FlattenSimpleInterpolation = css``;
   if (allowHandle) {
     if (isDone) {
-      ActionNameCss = ActionNameDoneCss
+      ActionNameCss = ActionNameDoneCss;
     } else {
-      ActionNameCss = ActionNameTodoCss
+      ActionNameCss = ActionNameTodoCss;
     }
   }
 
@@ -31,9 +32,9 @@ const ActionNameSpan: React.FC<ActionNameSpanProps> = ({
     <ActionNameSpanWrapper spanCss={ActionNameCss} {...otherProps}>
       {children}
     </ActionNameSpanWrapper>
-  )
-}
-export default ActionNameSpan
+  );
+};
+export default ActionNameSpan;
 const ActionNameTodoCss = css`
   cursor: pointer;
   /* 鼠标浮上加下划线 */
@@ -44,12 +45,14 @@ const ActionNameTodoCss = css`
   &:active {
     color: #3dd606;
   }
-`
+`;
 const ActionNameDoneCss = css`
   text-decoration-line: line-through;
   color: #333333;
   opacity: 0.5;
-`
-const ActionNameSpanWrapper = styled.span<{ spanCss: FlattenSimpleInterpolation }>`
+`;
+const ActionNameSpanWrapper = styled.span<{
+  spanCss: FlattenSimpleInterpolation;
+}>`
   ${({ spanCss }) => spanCss}
-`
+`;

@@ -1,23 +1,23 @@
-import React, { HTMLAttributes } from 'react'
-import styled from 'styled-components'
-import { Navigation, Autoplay } from 'swiper'
-import { Swiper, SwiperSlide } from 'swiper/react'
-import 'swiper/css'
+import React, { HTMLAttributes } from 'react';
+import styled from 'styled-components';
+import { Navigation, Autoplay } from 'swiper';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 
-import IconCaretLeft from '../icons/IconCaretLeft'
-import IconCaretRight from '../icons/IconCaretRight'
-import ButtonNavigation from '../button/ButtonNavigation'
-import Loading from '../loading/Loading'
+import IconCaretLeft from '../icons/IconCaretLeft';
+import IconCaretRight from '../icons/IconCaretRight';
+import ButtonNavigation from '../button/ButtonNavigation';
+import Loading from '../loading/Loading';
 
 export type RecommendSwiperProps = HTMLAttributes<HTMLDivElement> & {
-  loading?: boolean
-  loadingMsg?: string
-  emptyMsg?: string
-  navigation?: boolean
-  autoplay?: boolean
-  pagination?: boolean
-  loop?: boolean
-}
+  loading?: boolean;
+  loadingMsg?: string;
+  emptyMsg?: string;
+  navigation?: boolean;
+  autoplay?: boolean;
+  pagination?: boolean;
+  loop?: boolean;
+};
 const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
   children,
   loading,
@@ -29,26 +29,26 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
   loop,
   ...divProps
 }: RecommendSwiperProps) => {
-  const modulesConfig: any[] = []
-  const navigationConfig: any = {}
-  const autoplayConfig: any = {}
+  const modulesConfig: any[] = [];
+  const navigationConfig: any = {};
+  const autoplayConfig: any = {};
   if (navigation) {
-    modulesConfig.push(Navigation)
+    modulesConfig.push(Navigation);
     Object.assign(navigationConfig, {
       nextEl: '.recommend-swiper-next',
       prevEl: '.recommend-swiper-prev',
-    })
+    });
   }
   if (autoplay) {
-    modulesConfig.push(Autoplay)
+    modulesConfig.push(Autoplay);
     Object.assign(autoplayConfig, {
       delay: 6000,
-    })
+    });
   }
   const paginationConfig = {
-    clickable: pagination ? true : false,
-  }
-  const loopConfig = loop ? true : false
+    clickable: !!pagination,
+  };
+  const loopConfig = !!loop;
   return (
     <RecommendSwiperWrapper {...divProps}>
       {navigation && (
@@ -89,9 +89,9 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
         </RecommendSwiperRight>
       )}
     </RecommendSwiperWrapper>
-  )
-}
-export default RecommendSwiper
+  );
+};
+export default RecommendSwiper;
 const RecommendSwiperWrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -101,7 +101,7 @@ const RecommendSwiperWrapper = styled.div`
     width: 100%;
     height: 100%;
   }
-`
+`;
 const RecommendSwiperBox = styled.div`
   width: calc(100% - 8px);
   margin: 0 auto;
@@ -114,7 +114,7 @@ const RecommendSwiperBox = styled.div`
   box-shadow: 0px 8px 0px rgba(0, 0, 0, 0.25);
   border-radius: 20px;
   overflow: hidden;
-`
+`;
 const RecommendSwiperLeft = styled(ButtonNavigation)`
   position: absolute;
   top: 50%;
@@ -122,7 +122,7 @@ const RecommendSwiperLeft = styled(ButtonNavigation)`
   transform: translate(-50%, -50%);
   cursor: pointer;
   z-index: 2;
-`
+`;
 const RecommendSwiperRight = styled(ButtonNavigation)`
   position: absolute;
   top: 50%;
@@ -130,17 +130,17 @@ const RecommendSwiperRight = styled(ButtonNavigation)`
   transform: translate(50%, -50%);
   cursor: pointer;
   z-index: 2;
-`
+`;
 const RecommendSwiperLoading = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 const RecommendSwiperEmpty = styled.div`
   text-align: center;
   margin-top: 20px;
-`
+`;
 
-export const RecommendSwiperItem = SwiperSlide
+export const RecommendSwiperItem = SwiperSlide;

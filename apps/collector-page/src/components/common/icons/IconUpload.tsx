@@ -5,5 +5,5 @@
  * @LastEditTime: 2022-11-14 17:43:16
  * @Description: file description
  */
-import { ReactComponent as IconUpload } from './svgs/upload.svg'
-export default IconUpload
+import { ReactComponent as IconUpload } from './svgs/upload.svg';
+export default IconUpload;

@@ -25,29 +25,29 @@ export enum TaskTodoCompleteStatus {
   CLOSED = 'CLOSED',
 }
 export type Task = {
-  id: number
-  name: string
-  image: string
-  whitelistTotalNum: number
-  type: TaskType
-  projectId: number
-  startTime: number
-  endTime: number
-  description: string
-}
+  id: number;
+  name: string;
+  image: string;
+  whitelistTotalNum: number;
+  type: TaskType;
+  projectId: number;
+  startTime: number;
+  endTime: number;
+  description: string;
+};
 
 /** community */
 export type Community = {
-  id: number
-  name: string
-  icon: string
-  website: string
-  description: string
-  discordId: string
-  discordInviteUrl: string
-  twitterId: string
-  twitterName: string
-}
+  id: number;
+  name: string;
+  icon: string;
+  website: string;
+  description: string;
+  discordId: string;
+  discordInviteUrl: string;
+  twitterId: string;
+  twitterName: string;
+};
 
 /** roadmap */
 export enum RoadmapStatus {
@@ -56,11 +56,11 @@ export enum RoadmapStatus {
 }
 
 export type Roadmap = {
-  id: number
-  status: RoadmapStatus
-  description: string
-  projectId: number
-}
+  id: number;
+  status: RoadmapStatus;
+  description: string;
+  projectId: number;
+};
 
 /** action */
 export enum ActionType {
@@ -84,53 +84,53 @@ export enum ActionType {
   UPLOAD_IMAGE = 'UPLOAD_IMAGE',
 }
 export type NftInfo = {
-  name: string
-  address: string
-  url: string
-}
+  name: string;
+  address: string;
+  url: string;
+};
 export enum Chain {
   EVM = 'EVM',
   SOLANA = 'SOLANA',
   APTOS = 'APTOS',
 }
 export type ActionData = {
-  url?: string
-  tweet_id?: string
-  server_id?: string
-  role?: string
-  require_score?: number
-  num?: number
-  accounts?: string[]
-  min_native_balance?: number
-  nft_accounts?: NftInfo[]
-  wallet_url?: string
-  question?: string
-  answer?: string
-  lucky_draw_weight?: number
-  chain?: Chain
-  nopassReason?: string
-}
+  url?: string;
+  tweet_id?: string;
+  server_id?: string;
+  role?: string;
+  require_score?: number;
+  num?: number;
+  accounts?: string[];
+  min_native_balance?: number;
+  nft_accounts?: NftInfo[];
+  wallet_url?: string;
+  question?: string;
+  answer?: string;
+  lucky_draw_weight?: number;
+  chain?: Chain;
+  nopassReason?: string;
+};
 export type Action = {
-  id: number
-  name: string
-  orderNum: number
-  type: ActionType
-  taskId: number
-  projectId: number
-  communityId: number
-  description: string
-  data: ActionData
-}
+  id: number;
+  name: string;
+  orderNum: number;
+  type: ActionType;
+  taskId: number;
+  projectId: number;
+  communityId: number;
+  description: string;
+  data: ActionData;
+};
 
 /** team */
 export type Team = {
-  id: number
-  partner: string
-  role: string
-  avatar: string
-  description: string
-  projectId: number
-}
+  id: number;
+  partner: string;
+  role: string;
+  avatar: string;
+  description: string;
+  projectId: number;
+};
 
 /* project */
 
@@ -151,48 +151,48 @@ export enum GradeType {
   VIP = 'VIP',
 }
 export type Project = {
-  id: number
-  name: string
-  description: string
-  story: string
-  status: ProjectStatus
-  image: string
-  communityId: number
-  itemTotalNum: number
-  mintStage: MintStage
-  floorPrice: string
-  mintUrl: string
-  mintStartTime: number
-  whitelistTotalNum: number
-  publicSaleStartTime: number
-  publicSalePrice: string
-  injectedCoins: number
-  chainId: number
-  slug: string
-  grade: GradeType
-}
+  id: number;
+  name: string;
+  description: string;
+  story: string;
+  status: ProjectStatus;
+  image: string;
+  communityId: number;
+  itemTotalNum: number;
+  mintStage: MintStage;
+  floorPrice: string;
+  mintUrl: string;
+  mintStartTime: number;
+  whitelistTotalNum: number;
+  publicSaleStartTime: number;
+  publicSalePrice: string;
+  injectedCoins: number;
+  chainId: number;
+  slug: string;
+  grade: GradeType;
+};
 
 export type ContributionRank = {
-  ranking: number
-  avatar: string
-  userName: string
-  pubkey: string
-  score: number
-  userId: number
-}
+  ranking: number;
+  avatar: string;
+  userName: string;
+  pubkey: string;
+  score: number;
+  userId: number;
+};
 
 /** whitelist */
 export type Whitelist = {
-  id: number
-  mintUrl: string
-  mintPrice: string
-  mintStartTime: number
-  mintEndTime: number
-  mintMaxNum: number
-  totalNum: number
-  projectId: number
-  taskId: number
-}
+  id: number;
+  mintUrl: string;
+  mintPrice: string;
+  mintStartTime: number;
+  mintEndTime: number;
+  mintMaxNum: number;
+  totalNum: number;
+  projectId: number;
+  taskId: number;
+};
 
 /** reward */
 export enum RewardType {
@@ -201,29 +201,29 @@ export enum RewardType {
   CONTRIBUTION_TOKEN = 'CONTRIBUTION_TOKEN',
 }
 export type RewardData = {
-  token_num?: number
-}
+  token_num?: number;
+};
 export type Reward = {
-  id: number
-  name: string
-  type: RewardType
-  raffled: boolean
-  data: RewardData
-  luckyDraw: boolean
-}
+  id: number;
+  name: string;
+  type: RewardType;
+  raffled: boolean;
+  data: RewardData;
+  luckyDraw: boolean;
+};
 
 /** user */
 export type User = {
-  id: number
-  name: string
-  pubkey: string
-  avatar: string
-}
+  id: number;
+  name: string;
+  pubkey: string;
+  avatar: string;
+};
 
 /** announcement */
 export type Announcement = {
-  id: number
-  projectId: number
-  title: string
-  text: string
-}
+  id: number;
+  projectId: number;
+  title: string;
+  text: string;
+};

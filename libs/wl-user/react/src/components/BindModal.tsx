@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 17:08:51
+ * @LastEditTime: 2022-11-25 12:25:08
  * @Description: file description
  */
 import React from 'react';
@@ -14,7 +14,7 @@ import { Authorizer } from '../authorizers';
 
 export type BindModalProps = {
   isOpen: boolean;
-  authorizer: Authorizer | null;
+  authorizer: Maybe<Authorizer>;
   onClose?: () => void;
 };
 

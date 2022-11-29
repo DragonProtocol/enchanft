@@ -5,21 +5,21 @@
  * @LastEditTime: 2022-09-15 14:29:59
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
-import { MEDIA_BREAK_POINTS } from '../../../constants'
-import Loading from '../../common/loading/Loading'
-import RewardItem, { RewardItemDataViewType } from './RewardItem'
+import React from 'react';
+import styled from 'styled-components';
+import { MEDIA_BREAK_POINTS } from '../../../constants';
+import Loading from '../../common/loading/Loading';
+import RewardItem, { RewardItemDataViewType } from './RewardItem';
 
 export type RewardListViewConfigType = {
-  loading?: boolean
-  loadingMsg?: string
-  emptyMsg?: string
-}
-export type RewardListItemsType = RewardItemDataViewType[]
+  loading?: boolean;
+  loadingMsg?: string;
+  emptyMsg?: string;
+};
+export type RewardListItemsType = RewardItemDataViewType[];
 export type RewardListProps = RewardListViewConfigType & {
-  items: RewardListItemsType
-}
+  items: RewardListItemsType;
+};
 const RewardList: React.FC<RewardListProps> = ({
   items,
   loading,
@@ -32,15 +32,23 @@ const RewardList: React.FC<RewardListProps> = ({
         <Loading />
       </RewardListLoading>
     )}
-    {!loading && items.length === 0 && emptyMsg && <RewardListEmpty>{emptyMsg}</RewardListEmpty>}
+    {!loading && items.length === 0 && emptyMsg && (
+      <RewardListEmpty>{emptyMsg}</RewardListEmpty>
+    )}
     <RewardListWrapper>
       {!loading &&
         items.length > 0 &&
-        items.map((item) => <RewardItem key={`${item.data.id}`} data={item.data} viewConfig={item.viewConfig} />)}
+        items.map((item) => (
+          <RewardItem
+            key={`${item.data.id}`}
+            data={item.data}
+            viewConfig={item.viewConfig}
+          />
+        ))}
     </RewardListWrapper>
   </>
-)
-export default RewardList
+);
+export default RewardList;
 const RewardListWrapper = styled.div`
   width: 100%;
   min-height: 100px;
@@ -60,17 +68,17 @@ const RewardListWrapper = styled.div`
     flex-direction: column;
     grid-gap: 20px;
   }
-`
+`;
 const RewardListLoading = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 const RewardListEmpty = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;

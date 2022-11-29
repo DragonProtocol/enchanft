@@ -5,5 +5,5 @@
  * @LastEditTime: 2022-10-27 17:14:54
  * @Description: file description
  */
-import { ReactComponent as IconOfficialCertification } from './svgs/official_certification.svg'
-export default IconOfficialCertification
+import { ReactComponent as IconOfficialCertification } from './svgs/official_certification.svg';
+export default IconOfficialCertification;

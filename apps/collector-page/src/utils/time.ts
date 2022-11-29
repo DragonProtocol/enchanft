@@ -13,5 +13,5 @@ export const formatDateTime = (timestramp: number) => {
     day: 'numeric',
     hour: '2-digit',
     minute: '2-digit',
-  })
-}
+  });
+};

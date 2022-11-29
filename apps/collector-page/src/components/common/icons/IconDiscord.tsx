@@ -5,14 +5,14 @@
  * @LastEditTime: 2022-07-28 13:16:35
  * @Description: file description
  */
-import React from 'react'
-import { ReactComponent as DiscordIcon } from './svgs/discord.svg'
+import React from 'react';
+import { ReactComponent as DiscordIcon } from './svgs/discord.svg';
 interface Props {
-  size?: string
-  opacity?: number
+  size?: string;
+  opacity?: number;
 }
 const IconDiscord: React.FC<Props> = ({ size = '1.5rem', opacity = 1 }) => {
-  return <DiscordIcon width={size} height={size} opacity={opacity} />
-}
+  return <DiscordIcon width={size} height={size} opacity={opacity} />;
+};
 
-export default IconDiscord
+export default IconDiscord;

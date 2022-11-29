@@ -5,7 +5,7 @@
  * @LastEditTime: 2022-09-27 16:21:11
  * @Description: file description
  */
-export const DEFAULT_NFT_COLLECTION_URI = 'https://looksrare.org/collections/'
+export const DEFAULT_NFT_COLLECTION_URI = 'https://looksrare.org/collections/';
 export const getNftCollectionUrl = (contractAddress: string) => {
-  return DEFAULT_NFT_COLLECTION_URI + contractAddress
-}
+  return DEFAULT_NFT_COLLECTION_URI + contractAddress;
+};

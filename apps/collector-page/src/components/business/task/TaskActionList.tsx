@@ -5,36 +5,36 @@
  * @LastEditTime: 2022-10-17 14:25:55
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
-import ButtonBase from '../../common/button/ButtonBase'
-import Loading from '../../common/loading/Loading'
+import React from 'react';
+import styled from 'styled-components';
+import ButtonBase from '../../common/button/ButtonBase';
+import Loading from '../../common/loading/Loading';
 
 import TaskActionItem, {
   TaskActionItemDataType,
   TaskActionItemStaticAttrGetters,
   TaskActionItemStaticFuncGetters,
-} from './TaskActionItem'
+} from './TaskActionItem';
 export type TaskActionListViewConfigType = {
-  loading?: boolean
-  loadingMsg?: string
-  emptyMsg?: string
-  displayVerify?: boolean
-  disabledVerify?: boolean
-  loadingVerify?: boolean
-  loadingVerifyMsg?: string
-  verifyingActions?: number[]
-  verifyBgc?: string
-}
-export type TaskActionItemsType = TaskActionItemDataType[]
+  loading?: boolean;
+  loadingMsg?: string;
+  emptyMsg?: string;
+  displayVerify?: boolean;
+  disabledVerify?: boolean;
+  loadingVerify?: boolean;
+  loadingVerifyMsg?: string;
+  verifyingActions?: number[];
+  verifyBgc?: string;
+};
+export type TaskActionItemsType = TaskActionItemDataType[];
 export type TaskActionsListHandlesType = TaskActionItemStaticFuncGetters & {
-  onVerifyActions?: () => void
-}
+  onVerifyActions?: () => void;
+};
 export type TaskActionListProps = TaskActionListViewConfigType &
   TaskActionItemStaticAttrGetters &
   TaskActionsListHandlesType & {
-    items: TaskActionItemsType
-  }
+    items: TaskActionItemsType;
+  };
 const TaskActionList: React.FC<TaskActionListProps> = ({
   items,
   loading,
@@ -49,13 +49,13 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
   verifyBgc,
   ...taskActionItemStaticProps
 }: TaskActionListProps) => {
-  const itemLen = items.length
+  const itemLen = items.length;
   const onVerifyActionsClick = () => {
     if (onVerifyActions) {
-      onVerifyActions()
+      onVerifyActions();
     }
-  }
-  const verifyText = loadingVerify ? loadingVerifyMsg : 'Verify & Apply for WL'
+  };
+  const verifyText = loadingVerify ? loadingVerifyMsg : 'Verify & Apply for WL';
   return (
     <TaskActionListWrapper>
       {loading ? (
@@ -65,7 +65,11 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
       ) : (
         <>
           {displayVerify && (
-            <VerifyBtn onClick={onVerifyActionsClick} disabled={disabledVerify} bgc={verifyBgc}>
+            <VerifyBtn
+              onClick={onVerifyActionsClick}
+              disabled={disabledVerify}
+              bgc={verifyBgc}
+            >
               {verifyText}
             </VerifyBtn>
           )}
@@ -80,29 +84,31 @@ const TaskActionList: React.FC<TaskActionListProps> = ({
         </>
       )}
 
-      {!loading && itemLen === 0 && emptyMsg && <TaskActionListEmpty>{emptyMsg}</TaskActionListEmpty>}
+      {!loading && itemLen === 0 && emptyMsg && (
+        <TaskActionListEmpty>{emptyMsg}</TaskActionListEmpty>
+      )}
     </TaskActionListWrapper>
-  )
-}
-export default TaskActionList
+  );
+};
+export default TaskActionList;
 const TaskActionListWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 20px;
-`
+`;
 const TaskActionListLoading = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 const TaskActionListEmpty = styled.div`
   text-align: center;
   margin-top: 20px;
-`
+`;
 const VerifyBtn = styled(ButtonBase)<{ bgc?: string }>`
   width: 100%;
   height: 40px;
@@ -112,4 +118,4 @@ const VerifyBtn = styled(ButtonBase)<{ bgc?: string }>`
   font-size: 14px;
   line-height: 21px;
   color: #3dd606;
-`
+`;

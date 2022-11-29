@@ -1,9 +1,10 @@
-import React, { useCallback } from 'react'
-import styled from 'styled-components'
-import { MOBILE_BREAK_POINT } from '../../../constants'
-import ButtonBase, { ButtonPrimary } from '../../common/button/ButtonBase'
+import React, { useCallback } from 'react';
+import styled from 'styled-components';
+import { MOBILE_BREAK_POINT } from '../../../constants';
+import ButtonBase, { ButtonPrimary } from '../../common/button/ButtonBase';
 
-export type TaskStatusButtonDataType = {}
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type TaskStatusButtonDataType = {};
 
 export enum TaskStatusButtonType {
   ACCOUNT_OPERATION = 'ACCOUNT_OPERATION',
@@ -16,19 +17,19 @@ const buttonTextMap = {
   [TaskStatusButtonType.TAKE]: 'Apply For WL',
   [TaskStatusButtonType.COMPLETE]: 'Outcome Pending',
   [TaskStatusButtonType.MISSION_OFF]: 'Mission off',
-}
+};
 export type TaskStatusButtonDataViewType = {
-  type: TaskStatusButtonType
-  loading?: boolean
-  loadingText?: string
-  disabled?: boolean
-  btnText?: string
-}
+  type: TaskStatusButtonType;
+  loading?: boolean;
+  loadingText?: string;
+  disabled?: boolean;
+  btnText?: string;
+};
 
 export type TaskStatusButtonProps = TaskStatusButtonDataViewType & {
-  onAccountOperation?: () => void
-  onTake?: () => void
-}
+  onAccountOperation?: () => void;
+  onTake?: () => void;
+};
 
 const TaskStatusButton: React.FC<TaskStatusButtonProps> = ({
   type,
@@ -39,53 +40,57 @@ const TaskStatusButton: React.FC<TaskStatusButtonProps> = ({
   onAccountOperation,
   onTake,
 }: TaskStatusButtonProps) => {
-  const _btnText = btnText || buttonTextMap[type]
+  const btnTextStr = btnText || buttonTextMap[type];
 
   const handleAccountOperation = () => {
     if (onAccountOperation) {
-      onAccountOperation()
+      onAccountOperation();
     }
-  }
+  };
   const handleTake = () => {
     if (onTake) {
-      onTake()
+      onTake();
     }
-  }
+  };
 
   const renderStatusContent = () => {
     switch (type) {
       case TaskStatusButtonType.ACCOUNT_OPERATION:
         return (
           <TaskBtn onClick={handleAccountOperation} disabled={disabled}>
-            {_btnText}
+            {btnTextStr}
           </TaskBtn>
-        )
+        );
       case TaskStatusButtonType.TAKE:
         return (
           <TaskBtn onClick={handleTake} disabled={disabled}>
-            {loading ? loadingText : _btnText}
+            {loading ? loadingText : btnTextStr}
           </TaskBtn>
-        )
+        );
       case TaskStatusButtonType.COMPLETE:
-        return <TaskStatusDescBtn>{_btnText}</TaskStatusDescBtn>
+        return <TaskStatusDescBtn>{btnTextStr}</TaskStatusDescBtn>;
       case TaskStatusButtonType.MISSION_OFF:
-        return <TaskBtn disabled={true}>{_btnText}</TaskBtn>
+        return <TaskBtn disabled>{btnTextStr}</TaskBtn>;
+      default:
+        return null;
     }
-  }
-  return <TaskStatusButtonWrapper>{renderStatusContent()}</TaskStatusButtonWrapper>
-}
-export default TaskStatusButton
+  };
+  return (
+    <TaskStatusButtonWrapper>{renderStatusContent()}</TaskStatusButtonWrapper>
+  );
+};
+export default TaskStatusButton;
 const TaskStatusButtonWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
-`
+`;
 const TaskBtn = styled(ButtonPrimary)`
   width: 100%;
   font-weight: 700;
   font-size: 18px;
-`
+`;
 
 const TaskStatusDescBtn = styled(ButtonBase)`
   display: flex;
@@ -106,4 +111,4 @@ const TaskStatusDescBtn = styled(ButtonBase)`
     font-size: 16px;
     line-height: 24px;
   }
-`
+`;

@@ -2,22 +2,22 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-10 22:04:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 16:59:40
+ * @LastEditTime: 2022-11-25 13:21:27
  * @Description: file description
  */
 export default class Pubsub {
-  private clientList = [];
+  private clientList: any[] = [];
 
   public listen(key: string | number, fn: any): void {
     if (!fn) return;
-    if (!this.clientList[key]) {
-      this.clientList[key] = [];
+    if (!this.clientList[key as number]) {
+      this.clientList[key as number] = [];
     }
-    this.clientList[key].push(fn);
+    this.clientList[key as number].push(fn);
   }
 
   public trigger(key: string | number, ...arg: any[]): void {
-    const fns = this.clientList[key];
+    const fns = this.clientList[key as number];
     if (!fns || fns.length === 0) {
       return;
     }
@@ -30,7 +30,7 @@ export default class Pubsub {
   }
 
   public remove(key: string | number, fn: any): void {
-    const fns = this.clientList[key];
+    const fns = this.clientList[key as number];
     if (!fns) {
       return;
     }

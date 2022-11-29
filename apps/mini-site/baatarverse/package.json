@@ -1,4 +1,5 @@
 {
+  "name": "mini-site-baatarverse",
   "private": true,
   "engines": {
     "node": ">=v14.17.1"

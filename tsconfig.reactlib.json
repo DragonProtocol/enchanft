@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "types": ["node"],
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "noEmit": true,
+    "allowJs": true
+  },
+  "files": ["./typings/cssmodule.d.ts", "./typings/image.d.ts"],
+  "include": [],
+  "references": []
+}
