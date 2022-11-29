@@ -3,13 +3,13 @@
   "compilerOptions": {
     "outDir": "./dist",
     "jsx": "react-jsx",
-    "allowJs": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "types": ["node"],
-    "noEmit": true,
     "declaration": false,
-    "declarationMap": false
+    "declarationMap": false,
+    "noEmit": true,
+    "allowJs": true
   },
   "files": ["./typings/cssmodule.d.ts", "./typings/image.d.ts"],
   "include": [],
