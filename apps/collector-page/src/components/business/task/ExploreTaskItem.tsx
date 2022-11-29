@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 16:02:31
+ * @LastEditTime: 2022-11-29 10:23:40
  * @Description: file description
  */
 import React from 'react';
@@ -10,7 +10,11 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { MOBILE_BREAK_POINT } from '../../../constants';
 import { ScrollBarCss } from '../../../GlobalStyle';
-import { RewardData, TaskTodoCompleteStatus } from '../../../types/entities';
+import {
+  RewardData,
+  RewardType,
+  TaskTodoCompleteStatus,
+} from '../../../types/entities';
 import { getTaskRewardTypeValue, isNoEndTime } from '../../../utils/task';
 import { formatDateTime } from '../../../utils/time';
 import CardItemBox, {
@@ -20,7 +24,6 @@ import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock';
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox';
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox';
 import ChainTag from '../chain/ChainTag';
-import { RewardType } from './create/state';
 import TaskImageDefault from './TaskImageDefault';
 
 export type ExploreTaskItemDataType = {
@@ -42,6 +45,7 @@ export type ExploreTaskItemDataType = {
   status?: TaskTodoCompleteStatus;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type ExploreTaskItemViewConfigType = {};
 
 export type ExploreTaskItemDataViewType = {
@@ -58,10 +62,6 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({
 }: ExploreTaskItemProps) => {
   const navigate = useNavigate();
   const { id, name, image, startTime, endTime, project, reward, status } = data;
-  const {} = {
-    ...defaultViewConfig,
-    ...viewConfig,
-  };
   const startDate = formatDateTime(startTime);
   const rewardValue = getTaskRewardTypeValue(reward);
   const displayStatusTagAccepted =
@@ -76,13 +76,12 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({
       TaskTodoCompleteStatus.WON,
       TaskTodoCompleteStatus.LOST,
     ].includes(status);
-  const statusTag = displayStatusTagAccepted ? (
-    <TaskStatusTagAccepted>Accepted</TaskStatusTagAccepted>
-  ) : displayStatusTagComplete ? (
-    <TaskStatusTagComplete>Complete</TaskStatusTagComplete>
-  ) : (
-    ''
-  );
+  let statusTag = null;
+  if (displayStatusTagAccepted) {
+    statusTag = <TaskStatusTagAccepted>Accepted</TaskStatusTagAccepted>;
+  } else if (displayStatusTagComplete) {
+    statusTag = <TaskStatusTagComplete>Complete</TaskStatusTagComplete>;
+  }
   return (
     <ExploreTaskItemWrapper
       onClick={() => navigate(`/${project?.slug}/${id}`)}
@@ -98,7 +97,7 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({
         </TaskName>
         <TaskInfoBottom>
           <TaskInfoRow>
-            <PngIconAlarmClock size={'16px'} />
+            <PngIconAlarmClock size="16px" />
             <TaskDateTime>
               {startDate}
               {!isNoEndTime(endTime) && ` — ${formatDateTime(endTime)}`}
@@ -106,7 +105,7 @@ const ExploreTaskItem: React.FC<ExploreTaskItemProps> = ({
           </TaskInfoRow>
           {reward && (
             <TaskInfoRow>
-              <PngIconGiftBox size={'16px'} />
+              <PngIconGiftBox size="16px" />
               <TaskRemark>{rewardValue}</TaskRemark>
             </TaskInfoRow>
           )}

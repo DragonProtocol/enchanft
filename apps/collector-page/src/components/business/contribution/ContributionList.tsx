@@ -1,8 +1,9 @@
+/* eslint-disable react/no-array-index-key */
 /*
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 18:06:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-28 09:07:16
+ * @LastEditTime: 2022-11-29 10:42:18
  * @Description: file description
  */
 import React, { useCallback } from 'react';
@@ -14,6 +15,7 @@ import PngIconTrophy from '../../common/icons/PngIconTrophy';
 import CrownImg from '../../imgs/crown.svg';
 import ButtonBase from '../../common/button/ButtonBase';
 import { MOBILE_BREAK_POINT } from '../../../constants';
+
 export type ContributionItemDataType = {
   ranking: number;
   avatar: string;

@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-09 11:29:25
+ * @LastEditTime: 2022-11-29 11:46:30
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { AsyncRequestStatus } from '../types';
 import { SearchTaskStatus } from '../types/api';
 import {
@@ -44,7 +45,6 @@ import { MintStageOther } from '../components/business/project/ExploreProjectInd
 import ExploreProjectList, {
   ExploreProjectListItemsType,
 } from '../components/business/project/ExploreProjectList';
-import { useNavigate } from 'react-router-dom';
 
 const formatStoreDataToComponentDataByRecommendTasks = (
   tasks: ExploreRecommendTaskItemEntity[]
@@ -115,18 +115,17 @@ const Home: React.FC = () => {
   const recommendTaskItems =
     formatStoreDataToComponentDataByRecommendTasks(recommendTasks);
   const recommendTasksLoading =
-    recommendTasksStatus === AsyncRequestStatus.PENDING ? true : false;
+    recommendTasksStatus === AsyncRequestStatus.PENDING;
   const searchTaskItems = formatStoreDataToComponentDataByTasks(tasks).slice(
     0,
     4
   );
-  const searchTasksLoading =
-    searchTasksStatus === AsyncRequestStatus.PENDING ? true : false;
+  const searchTasksLoading = searchTasksStatus === AsyncRequestStatus.PENDING;
   const searchProjectItems = formatStoreDataToComponentDataByProjects(
     projects
   ).slice(0, 4);
   const searchProjectsLoading =
-    searchProjectsStatus === AsyncRequestStatus.PENDING ? true : false;
+    searchProjectsStatus === AsyncRequestStatus.PENDING;
   return (
     <HomeWrapper>
       {recommendTaskItems.length > 0 && (

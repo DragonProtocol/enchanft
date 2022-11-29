@@ -1,16 +1,21 @@
+/* eslint-disable react/no-unescaped-entities */
 /*
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:52:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 15:17:08
+ * @LastEditTime: 2022-11-29 13:16:26
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import styled from 'styled-components';
-import { AsyncRequestStatus } from '../types';
 import { useNavigate, useParams } from 'react-router-dom';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import Button from '@mui/material/Button';
+import { toast } from 'react-toastify';
+import { isDesktop, isMobile } from 'react-device-detect';
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { AsyncRequestStatus } from '../types';
 import {
   fetchTaskDetail,
   selectTaskDetail,
@@ -48,7 +53,6 @@ import ButtonNavigation from '../components/common/button/ButtonNavigation';
 import IconCaretLeft from '../components/common/icons/IconCaretLeft';
 import PngIconForbidden from '../components/common/icons/PngIconForbidden';
 import PngIconHourglass from '../components/common/icons/PngIconHourglass';
-import Button from '@mui/material/Button';
 import CardBox from '../components/common/card/CardBox';
 import Loading from '../components/common/loading/Loading';
 import TaskStatusButton, {
@@ -60,7 +64,6 @@ import { follow as followCommunity } from '../features/user/communityHandlesSlic
 import { selectIds as selectIdsByUserFollowedCommunity } from '../features/user/followedCommunitiesSlice';
 import ButtonBase, { ButtonInfo } from '../components/common/button/ButtonBase';
 import MainInnerStatusBox from '../components/layout/MainInnerStatusBox';
-import { toast } from 'react-toastify';
 import IconShare from '../components/common/icons/IconShare';
 import {
   MOBILE_BREAK_POINT,
@@ -75,9 +78,7 @@ import useAccountOperationForChain, {
   AccountOperationType,
 } from '../hooks/useAccountOperationForChain';
 import TaskDetailParticipants from '../components/business/task/TaskDetailParticipants';
-import { isDesktop, isMobile } from 'react-device-detect';
 import { toWlModPageTaskDetail } from '../route/utils';
-import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 const formatStoreDataToComponentDataByTaskStatusButton = (
   task: TaskDetailEntity,
   takeTaskState: TaskHandle<TakeTaskParams>,
@@ -104,6 +105,7 @@ const formatStoreDataToComponentDataByTaskStatusButton = (
         return {
           type: TaskStatusButtonType.MISSION_OFF,
         };
+      // no default
     }
     return null;
   }
@@ -287,8 +289,10 @@ const Task: React.FC = () => {
   }
 
   // 后面如果带/，则去掉/
-  const taskShareUrl =
-    TASK_SHARE_URI?.replace(/\/$/, '') + `/${projectSlug}/${id}`;
+  const taskShareUrl = `${TASK_SHARE_URI?.replace(
+    /\/$/,
+    ''
+  )}/${projectSlug}/${id}`;
   const displayParticipants =
     participants &&
     participants.takers !== undefined &&

@@ -2,17 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-01 18:05:02
+ * @LastEditTime: 2022-11-29 10:55:29
  * @Description: file description
  */
 import React from 'react';
 import styled, { css } from 'styled-components';
 import { UserActionStatus } from '../../../../types/api';
-import { TaskActionItemDataType } from '../TaskActionItem';
+import type { TaskActionItemDataType } from '../TaskActionItem';
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper';
 import IconWL from '../../../common/icons/IconWL';
 import ActionNameSpan from './ActionNameSpan';
 import ActionIconBox from './ActionIconBox';
+
 export type ActionCustomProps = {
   data: TaskActionItemDataType;
   allowHandle?: boolean;
@@ -36,7 +37,7 @@ const ActionCustom: React.FC<ActionCustomProps> = ({
     status,
     project,
   } = data;
-  const isDone = status === UserActionStatus.DONE ? true : false;
+  const isDone = status === UserActionStatus.DONE;
   const handleAction = () => {
     if (!allowHandle || isDone) return;
     window.open(actionData.url, '_blank');

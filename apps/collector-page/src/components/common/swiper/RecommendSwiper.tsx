@@ -46,9 +46,9 @@ const RecommendSwiper: React.FC<RecommendSwiperProps> = ({
     });
   }
   const paginationConfig = {
-    clickable: pagination ? true : false,
+    clickable: !!pagination,
   };
-  const loopConfig = loop ? true : false;
+  const loopConfig = !!loop;
   return (
     <RecommendSwiperWrapper {...divProps}>
       {navigation && (

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-14 18:02:58
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 13:51:40
+ * @LastEditTime: 2022-11-29 11:21:22
  * @Description: file description
  */
 import React, { useMemo, useState } from 'react';
@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import Upload, { UploadProps } from 'rc-upload';
 import IconUpload from '../../common/icons/IconUpload';
 import { uploadImage } from '../../../services/api/utils';
+
 export type UploadImageProps = React.PropsWithChildren<{
   url?: string;
   description?: string;
@@ -57,7 +58,7 @@ const UploadImage: React.FC<UploadImageProps> = ({
         };
       },
       beforeUpload: (file) => {
-        return file && file['type'].split('/')[0] === 'image';
+        return file && file.type.split('/')[0] === 'image';
       },
     }),
     [imgState, disabled]

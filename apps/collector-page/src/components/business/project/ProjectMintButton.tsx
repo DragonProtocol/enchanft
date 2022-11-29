@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-02 10:41:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-07 11:24:48
+ * @LastEditTime: 2022-11-29 10:53:43
  * @Description: file description
  */
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -37,7 +37,7 @@ const ProjectMintButton: React.FC<ProjectMintButtonProps> = ({
       const distanceMinute = Math.floor((distance / (1000 * 60)) % 60);
       const distanceSecond = Math.floor((distance / 1000) % 60);
       setMintTimeCountdown({
-        distance: distance,
+        distance,
         day: distanceDay,
         hour: distanceHour,
         minute: distanceMinute,

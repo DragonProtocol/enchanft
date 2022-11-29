@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-28 09:06:15
+ * @LastEditTime: 2022-11-29 10:10:24
  * @Description:
  */
 import { Provider as ReduxProvider } from 'react-redux';
@@ -24,6 +24,7 @@ import {
 } from './request/axios';
 import { authorizers } from './utils/wlUserReact';
 import { API_BASE_URL } from './constants';
+
 injectStore(store);
 setApiBaseUrl(API_BASE_URL || '');
 injectHandleAxiosResponse401(handleAuthFailed);
@@ -38,7 +39,7 @@ function App() {
     <ErrorBoundary
       instance={appsignal}
       tags={{ tag: 'value' }}
-      fallback={() => <FallbackComponent />}
+      fallback={() => FallbackComponent}
     >
       <WlUserReactProvider
         authorizers={authorizers}

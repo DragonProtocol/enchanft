@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-28 02:02:34
+ * @LastEditTime: 2022-11-29 11:35:06
  * @Description: 站点布局入口
  */
 import React, { useCallback, useEffect, useState } from 'react';
@@ -11,13 +11,14 @@ import { ToastContainer } from 'react-toastify';
 import Hammer from 'hammerjs';
 import { isMobile, isDesktop } from 'react-device-detect';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { MEDIA_BREAK_POINTS } from '../../constants/index';
+import { matchRoutes, useLocation, useNavigate } from 'react-router-dom';
+import { useWlUserReact } from '@ecnft/wl-user-react';
+import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../../constants/index';
 import Main from './Main';
 import Header from './Header';
 import TodoFloatingWindow from './TodoFloatingWindow';
 import ScrollBox from '../common/scroll/ScrollBox';
 import MainInner from './MainInner';
-import { matchRoutes, useLocation, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import {
   fetchFollowedCommunities,
@@ -41,8 +42,6 @@ import {
 } from '../../features/website/websiteSlice';
 import useRoute from '../../hooks/useRoute';
 import { navs, RouteKeys } from '../../route/routes';
-import { MOBILE_BREAK_POINT } from '../../constants';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 const Layout: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();

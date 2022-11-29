@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 10:53:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 14:10:09
+ * @LastEditTime: 2022-11-29 11:34:16
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react';
@@ -30,12 +30,13 @@ const RichTextBox: React.FC<RichTextBoxProps> = ({
     case RichTextMode.HTML:
       html = DOMPurify.sanitize(value);
       break;
+    // no default
   }
   return (
     <RichTextBoxWrapper
       {...otherProps}
       dangerouslySetInnerHTML={{ __html: html }}
-    ></RichTextBoxWrapper>
+    />
   );
 };
 export default RichTextBox;

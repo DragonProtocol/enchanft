@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-12 11:16:39
+ * @LastEditTime: 2022-11-29 11:03:36
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
 import { UserActionStatus } from '../../../../types/api';
-import { TaskActionItemDataType } from '../TaskActionItem';
+import type { TaskActionItemDataType } from '../TaskActionItem';
 import IconTwitter from '../../../common/icons/IconTwitter';
 import ActionIconBox from './ActionIconBox';
 import ActionNameSpan from './ActionNameSpan';
@@ -39,15 +39,15 @@ const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({
   const isDone = status === UserActionStatus.DONE;
   const accounts = actionData?.accounts || [];
 
-  const clickAction = (name: string) => {
+  const clickAction = (twitterName: string) => {
     if (!allowHandle || isDone) return;
-    const url = getTwitterFollowLink(name);
+    const url = getTwitterFollowLink(twitterName);
     const handleAction = () => {
       const winParams = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
       width=1000,height=1000,left=0,top=0`;
-      window.open(url, name, winParams);
+      window.open(url, twitterName, winParams);
     };
-    onTwitter && onTwitter(handleAction);
+    if (onTwitter) onTwitter(handleAction);
   };
   return (
     <ActionFollowTwitterWrapper>
@@ -58,9 +58,10 @@ const ActionFollowTwitter: React.FC<ActionFollowTwitterProps> = ({
         <FollowTwitterTitle allowHandle={allowHandle} isDone={isDone}>
           Follow{' '}
           {accounts.map((item, index) => (
+            // eslint-disable-next-line react/no-array-index-key
             <TwitterLinkBox key={index}>
               <TwitterLink onClick={() => clickAction(item)}>
-                {'@' + item}
+                {`@${item}`}
               </TwitterLink>
               {index < accounts.length - 1 ? ' , ' : ''}
             </TwitterLinkBox>

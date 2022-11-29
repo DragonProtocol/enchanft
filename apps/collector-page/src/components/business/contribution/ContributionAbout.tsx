@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-shadow */
+/* eslint-disable react/no-array-index-key */
 /*
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 12:04:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-13 15:29:14
+ * @LastEditTime: 2022-11-29 10:42:09
  * @Description: file description
  */
 import React, { useState } from 'react';
@@ -19,6 +21,7 @@ import CommunityCheckinButton, {
   CommunityCheckinButtonHandlesType,
   CommunityCheckinButtonViewConfigType,
 } from '../community/CommunityCheckinButton';
+
 export type ContributionAboutDataType = {
   name: string;
   icon: string;
@@ -30,20 +33,19 @@ export type ContributionAboutDataType = {
   discordInviteUrl: string;
 };
 
-const enum QA_ANSWER_TYPE {
+enum QaAnswerType {
   WL = 'WL',
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',
 }
 export type ContributionAboutViewConfigType =
-  CommunityCheckinButtonViewConfigType & {};
+  CommunityCheckinButtonViewConfigType;
 
 export type ContributionAboutDataViewType = {
   data: ContributionAboutDataType;
   viewConfig?: ContributionAboutViewConfigType;
 };
-export type ContributionAboutHandlesType =
-  CommunityCheckinButtonHandlesType & {};
+export type ContributionAboutHandlesType = CommunityCheckinButtonHandlesType;
 
 export type ContributionAboutProps = ContributionAboutDataViewType &
   ContributionAboutHandlesType;
@@ -89,7 +91,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
       answers: [
         {
           display: true,
-          type: QA_ANSWER_TYPE.WL,
+          type: QaAnswerType.WL,
           title: `Join the community.`,
           content: ``,
         },
@@ -115,7 +117,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
         },
         {
           display: !!twitterId && !!twitterName,
-          type: QA_ANSWER_TYPE.TWITTER,
+          type: QaAnswerType.TWITTER,
           title: (
             <>
               Like, retweet {TwitterLinkComponent} daily on Twitter to earn
@@ -125,7 +127,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
           content: (
             <CommunityUserNumberBox>
               <CommunityUserNumberItem>
-                <IconLike size={'20px'} />
+                <IconLike size="20px" />
                 <CommunityUserNumberLabelText>
                   (Like)
                 </CommunityUserNumberLabelText>
@@ -134,7 +136,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
                 </CommunityUserNumberValueText>
               </CommunityUserNumberItem>
               <CommunityUserNumberItem>
-                <IconRetweet size={'20px'} />
+                <IconRetweet size="20px" />
                 <CommunityUserNumberLabelText>
                   (Retweet)
                 </CommunityUserNumberLabelText>
@@ -148,10 +150,10 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
         {
           display: !!discordId,
           title: <>Join {DiscordLinkComponent} server on Discord.</>,
-          type: QA_ANSWER_TYPE.DISCORD,
+          type: QaAnswerType.DISCORD,
           content: (
             <CommunityBox>
-              <CommunityImg src={icon} radius={'16px'} />
+              <CommunityImg src={icon} radius="16px" />
               <CommunityCenter>
                 <CommunityName>{name}</CommunityName>
                 {discordMembers && (
@@ -171,7 +173,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
         },
         {
           display: !!discordId,
-          type: QA_ANSWER_TYPE.DISCORD,
+          type: QaAnswerType.DISCORD,
           title: (
             <>
               Chat in or invite friends to the {DiscordLinkComponent} daily on
@@ -181,7 +183,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
           content: (
             <CommunityUserNumberBox>
               <CommunityUserNumberItem>
-                <IconChat size={'20px'} />
+                <IconChat size="20px" />
                 <CommunityUserNumberLabelText>
                   (Chat)
                 </CommunityUserNumberLabelText>
@@ -190,7 +192,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
                 </CommunityUserNumberValueText>
               </CommunityUserNumberItem>
               <CommunityUserNumberItem>
-                <IconInvite size={'20px'} />
+                <IconInvite size="20px" />
                 <CommunityUserNumberLabelText>
                   (Invite)
                 </CommunityUserNumberLabelText>
@@ -203,7 +205,7 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
         },
         {
           display: true,
-          type: QA_ANSWER_TYPE.WL,
+          type: QaAnswerType.WL,
           title: `Daily Click.`,
           content: (
             <GetContributionTokenBtn
@@ -221,13 +223,13 @@ const ContributionAbout: React.FC<ContributionAboutProps> = ({
       answers: [
         {
           display: true,
-          type: QA_ANSWER_TYPE.WL,
+          type: QaAnswerType.WL,
           title: 'Whitelist',
           content: '',
         },
         {
           display: true,
-          type: QA_ANSWER_TYPE.WL,
+          type: QaAnswerType.WL,
           title: 'Project events',
           content: '',
         },

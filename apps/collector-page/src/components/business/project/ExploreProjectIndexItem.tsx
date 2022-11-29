@@ -2,13 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-28 12:35:08
+ * @LastEditTime: 2022-11-29 10:18:02
  * @Description: file description
  */
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { MOBILE_BREAK_POINT } from '../../../constants';
 import { ScrollBarCss } from '../../../GlobalStyle';
 import {
   GradeType,
@@ -17,13 +16,10 @@ import {
   TaskType,
 } from '../../../types/entities';
 import { formatNumberToUnitString } from '../../../utils/number';
-import { formatDateTime } from '../../../utils/time';
 import CardItemBox, {
   CardItemBoxAnimationType,
 } from '../../common/card/CardItemBox';
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox';
-import ChainTag from '../chain/ChainTag';
-import MintStageLabel from './MintStageLabel';
 import ProjectGradeTag from './ProjectGradeTag';
 
 export type ExploreProjectIndexItemDataType = {
@@ -52,6 +48,7 @@ export type ExploreProjectIndexItemDataType = {
   };
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type ExploreProjectIndexItemViewConfigType = {};
 
 export type ExploreProjectIndexItemDataViewType = {

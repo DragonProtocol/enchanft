@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:17:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 11:42:54
+ * @LastEditTime: 2022-11-29 13:16:54
  * @Description: file description
  */
 import React, { useCallback, useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import styled from 'styled-components';
+import { useSearchParams } from 'react-router-dom';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import ScrollBox from '../components/common/scroll/ScrollBox';
 import {
   ActionType,
@@ -24,7 +25,6 @@ import {
   selectUserTodoTasksState,
   TodoTaskItemForEntity,
 } from '../features/user/todoTasksSlice';
-import { useSearchParams } from 'react-router-dom';
 import useHandleAction from '../hooks/useHandleAction';
 import {
   follow as followCommunity,
@@ -85,13 +85,13 @@ const formatStoreDataToComponentDataByTodoList = (
       data: { ...task, actions },
       viewConfig: {
         allowOpenActions: true,
-        openActions: openActions,
+        openActions,
         allowHandleActions: true,
         displayRefresh: true,
         disabledRefresh: loadingRefresh,
-        loadingRefresh: loadingRefresh,
+        loadingRefresh,
         loadingRefreshMsg: 'verifying...',
-        verifyingActions: verifyingActions,
+        verifyingActions,
       },
     };
   });
@@ -139,13 +139,13 @@ const formatStoreDataToComponentDataByInProgressList = (
       data: { ...task, actions },
       viewConfig: {
         allowOpenActions: true,
-        openActions: openActions,
+        openActions,
         allowHandleActions: true,
         displayRefresh: true,
         disabledRefresh: loadingRefresh,
-        loadingRefresh: loadingRefresh,
+        loadingRefresh,
         loadingRefreshMsg: 'verifying...',
-        verifyingActions: verifyingActions,
+        verifyingActions,
       },
     };
   });

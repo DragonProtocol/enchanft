@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-06 17:34:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-13 15:16:02
+ * @LastEditTime: 2022-11-29 10:31:17
  * @Description: file description
  */
 import React, { useCallback } from 'react';
@@ -12,6 +12,7 @@ import {
   ButtonProps,
   ButtonWarning,
 } from '../../common/button/ButtonBase';
+
 export enum FollowStatusType {
   ACCOUNT_OPERATION = 'ACCOUNT_OPERATION',
   FOLLOW = 'FOLLOW',
@@ -58,21 +59,21 @@ const CommunityFollowButton: React.FC<CommunityFollowButtonProps> = ({
       onAccountOperation();
     }
   };
-  const _followBtnText = followBtnText || followBtnTextMap[followStatusType];
+  const followBtnTextStr = followBtnText || followBtnTextMap[followStatusType];
   switch (followStatusType) {
     case FollowStatusType.ACCOUNT_OPERATION:
       return (
         <FollowBtn onClick={handleAccountOperation} {...buttonProps}>
-          {_followBtnText}
+          {followBtnTextStr}
         </FollowBtn>
         // <WalletBtn onClick={handleAccountOperation} {...buttonProps}>
-        //   {_followBtnText}
+        //   {followBtnTextStr}
         // </WalletBtn>
       );
     case FollowStatusType.FOLLOW:
       return (
         <FollowBtn onClick={handleFollow} {...buttonProps}>
-          {_followBtnText}
+          {followBtnTextStr}
         </FollowBtn>
       );
     case FollowStatusType.FOLLOWING:
@@ -80,7 +81,7 @@ const CommunityFollowButton: React.FC<CommunityFollowButtonProps> = ({
     default:
       return (
         <FollowBtn disabled {...buttonProps}>
-          {_followBtnText}
+          {followBtnTextStr}
         </FollowBtn>
       );
   }

@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-05 18:18:33
+ * @LastEditTime: 2022-11-29 10:57:48
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
 import { UserActionStatus } from '../../../../types/api';
-import { TaskActionItemDataType } from '../TaskActionItem';
+import type { TaskActionItemDataType } from '../TaskActionItem';
 import IconDiscord from '../../../common/icons/IconDiscord';
 import ActionIconBox from './ActionIconBox';
 import ActionNameSpan from './ActionNameSpan';
@@ -43,7 +43,7 @@ const ActionDiscordInvitesPeople: React.FC<ActionDiscordInvitesPeopleProps> = ({
   };
   const clickAction = () => {
     if (!allowHandle || isDone) return;
-    onDiscord && onDiscord(handleAction);
+    if (onDiscord) onDiscord(handleAction);
   };
   return (
     <ActionDiscordInvitesPeopleWrapper>
@@ -56,10 +56,7 @@ const ActionDiscordInvitesPeople: React.FC<ActionDiscordInvitesPeopleProps> = ({
       </ActionIconBox>
       <ActionContentBox onClick={clickAction}>
         <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
-          {name}{' '}
-          {progress && progress != '' && (
-            <ProgressSpan>({progress})</ProgressSpan>
-          )}
+          {name} {progress && <ProgressSpan>({progress})</ProgressSpan>}
         </ActionNameSpan>
       </ActionContentBox>
     </ActionDiscordInvitesPeopleWrapper>

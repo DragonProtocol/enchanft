@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 17:03:43
+ * @LastEditTime: 2022-11-29 11:16:22
  * @Description: file description
  */
 import { UserAvatar } from '@ecnft/wl-user-react';
@@ -31,7 +31,7 @@ const TaskWinnerList: React.FC<TaskWinnerListProps> = ({
       <WinnerTitleBox>Winner List</WinnerTitleBox>
       <WinnerListBox>
         {items.map((item, index) => (
-          <WinnerItemBox key={index}>
+          <WinnerItemBox key={item.id}>
             <WinnerItemAvatar user={item} />
             <WinnerItemUserName highlight={highlightIds.includes(item.id)}>
               {item.name}

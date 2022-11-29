@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:45:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 13:46:39
+ * @LastEditTime: 2022-11-29 10:54:10
  * @Description: file description
  */
 import React from 'react';
@@ -17,6 +17,7 @@ import { RoadmapStatus } from '../../../types/entities';
 import IconCheckboxChecked from '../../common/icons/IconCheckboxChecked';
 import IconCheckbox from '../../common/icons/IconCheckbox';
 import RichTextBox from '../../common/text/RichTextBox';
+
 export type ProjectRoadmapItemDataType = {
   id: number;
   status: RoadmapStatus;
@@ -31,6 +32,7 @@ const ProjectRoadmap: React.FC<ProjectRoadmapProps> = ({ items }) => {
     <ProjectRoadmapWrapper>
       <CustomTimeline>
         {items.map((item, index) => (
+          // eslint-disable-next-line react/no-array-index-key
           <CustomTimelineItem key={index}>
             <CustomTimelineSeparator>
               <CustomTimelineDot>

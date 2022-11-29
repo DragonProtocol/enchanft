@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:25:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 14:07:36
+ * @LastEditTime: 2022-11-29 11:13:22
  * @Description: file description
  */
 import React from 'react';
@@ -15,6 +15,7 @@ import RecommendSwiper, {
   RecommendSwiperItem,
 } from '../../common/swiper/RecommendSwiper';
 import { MEDIA_BREAK_POINTS, MOBILE_BREAK_POINT } from '../../../constants';
+
 export type ExploreTaskSwiperViewConfigType = {
   loading?: boolean;
   loadingMsg?: string;
@@ -32,10 +33,10 @@ const ExploreTaskSwiper: React.FC<ExploreTaskSwiperProps> = ({
   emptyMsg = 'task empty',
 }: ExploreTaskSwiperProps) => {
   const itemLen = items.length;
-  const navigation = itemLen > 1 ? true : false;
-  const autoplay = itemLen > 1 ? true : false;
-  const loop = itemLen > 1 ? true : false;
-  const pagination = itemLen > 1 ? true : false;
+  const navigation = itemLen > 1;
+  const autoplay = itemLen > 1;
+  const loop = itemLen > 1;
+  const pagination = itemLen > 1;
   return (
     <ExploreTaskSwiperWrapper
       navigation={navigation}

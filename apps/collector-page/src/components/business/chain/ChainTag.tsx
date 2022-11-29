@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-22 11:34:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-28 11:04:05
+ * @LastEditTime: 2022-11-29 10:19:46
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react';
@@ -11,13 +11,14 @@ import { ChainIds } from '../../../utils/chain';
 import IconEthereumWhite from '../../common/icons/IconEthereumWhite';
 import IconSolana from '../../common/icons/IconSolana';
 import IconMartian from '../../common/icons/IconMartian';
-export type ChainTag = {
+
+export type ChainTagType = {
   name: string;
   icon: React.FC;
   iconSize: string;
   bgc: string;
 };
-export const chainMap: { [key in ChainIds]: ChainTag } = {
+export const chainMap: { [key in ChainIds]: ChainTagType } = {
   [ChainIds.eth]: {
     name: 'Ethereum',
     icon: IconEthereumWhite,

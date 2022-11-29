@@ -5,10 +5,18 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import styled from 'styled-components';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { isDesktop } from 'react-device-detect';
+import {
+  AccountType,
+  AuthorizerType,
+  usePermissions,
+  useWlUserReact,
+  WlUserModalType,
+} from '@ecnft/wl-user-react';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   ProjectDetailEntity,
   fetchProjectDetail,
@@ -16,12 +24,11 @@ import {
   resetProjectDetailState,
 } from '../features/project/projectDetailSlice';
 
-import ProjectBasicInfo, {
+import ProjectDetailBasicInfo, {
   ProjectDetailBasicInfoDataViewType,
 } from '../components/business/project/ProjectDetailBasicInfo';
 import { AsyncRequestStatus } from '../types';
 import CardBox from '../components/common/card/CardBox';
-import ProjectDetailBasicInfo from '../components/business/project/ProjectDetailBasicInfo';
 import ExploreTaskList, {
   ExploreTaskListItemsType,
 } from '../components/business/task/ExploreTaskList';
@@ -40,19 +47,11 @@ import CommunityFollowButton, {
   FollowStatusType,
 } from '../components/business/community/CommunityFollowButton';
 import { MOBILE_BREAK_POINT } from '../constants';
-import { isDesktop } from 'react-device-detect';
 import IconWebsite from '../components/common/icons/IconWebsite';
 import IconTwitterBlack from '../components/common/icons/IconTwitterBlack';
 import IconDiscordBlack from '../components/common/icons/IconDiscordBlack';
 import { getTwitterHomeLink } from '../utils/twitter';
 import { toWlModPageTaskCreate } from '../route/utils';
-import {
-  AccountType,
-  AuthorizerType,
-  usePermissions,
-  useWlUserReact,
-  WlUserModalType,
-} from '@ecnft/wl-user-react';
 import { selectAll as selectAllForTodoTasks } from '../features/user/todoTasksSlice';
 import { TodoTaskItem } from '../types/api';
 import ProjectGradeTag from '../components/business/project/ProjectGradeTag';
@@ -75,10 +74,10 @@ const formatStoreDataToComponentDataByProjectBasicInfo = (
   const displayMintInfo = true;
   const displayTasks = true;
   return {
-    data: data,
+    data,
     viewConfig: {
-      displayMintInfo: displayMintInfo,
-      displayTasks: displayTasks,
+      displayMintInfo,
+      displayTasks,
     },
   };
 };
@@ -196,6 +195,7 @@ const Project: React.FC = () => {
 
   if (!data) {
     return (
+      // eslint-disable-next-line react/no-unescaped-entities
       <MainInnerStatusBox>Can't find project {projectSlug}</MainInnerStatusBox>
     );
   }
@@ -228,7 +228,7 @@ const Project: React.FC = () => {
     }
   }
 
-  //进入ranks页面，如果符合条件就自动关注
+  // 进入ranks页面，如果符合条件就自动关注
   const allowFollow = followStatusType === FollowStatusType.FOLLOW;
   const startContribute = () => {
     navigate(`/${projectSlug}/rank`);
@@ -341,7 +341,7 @@ const Project: React.FC = () => {
           <ContributionList
             items={showContributionranks}
             membersTotal={contributionMembersTotal}
-            displayMore={true}
+            displayMore
             moreText={
               allowFollow
                 ? 'Apply for WL and start contributing'

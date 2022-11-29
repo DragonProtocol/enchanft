@@ -2,15 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 00:07:09
+ * @LastEditTime: 2022-11-29 11:35:11
  * @Description: 站点主体内容（路由导航）
  */
 
 import React, { useEffect } from 'react';
 import { useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
-import { permissionRoutes, routes } from '../../route/routes';
 import { useWlUserReact } from '@ecnft/wl-user-react';
+import { permissionRoutes, routes } from '../../route/routes';
 const Main: React.FC = () => {
   const { isLogin } = useWlUserReact();
   const permissionRoutesMap = permissionRoutes.map((route) => ({

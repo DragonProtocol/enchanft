@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 15:58:37
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-09 11:47:56
+ * @LastEditTime: 2022-11-29 13:11:15
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import styled from 'styled-components';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { AsyncRequestStatus } from '../types';
 import {
   ExploreRecommendProjectItemEntity,
@@ -84,10 +84,10 @@ const Projects: React.FC = () => {
   const recommendProjectItems =
     formatStoreDataToComponentDataByRecommendProjects(recommendProjects);
   const recommendProjectsLoading =
-    recommendProjectsStatus === AsyncRequestStatus.PENDING ? true : false;
+    recommendProjectsStatus === AsyncRequestStatus.PENDING;
   const searchProjectItems = formatStoreDataToComponentDataByProjects(projects);
   const searchProjectsLoading =
-    searchProjectsStatus === AsyncRequestStatus.PENDING ? true : false;
+    searchProjectsStatus === AsyncRequestStatus.PENDING;
 
   return (
     <ProjectsWrapper>

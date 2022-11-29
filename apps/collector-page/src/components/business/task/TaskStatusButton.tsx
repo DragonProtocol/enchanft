@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { MOBILE_BREAK_POINT } from '../../../constants';
 import ButtonBase, { ButtonPrimary } from '../../common/button/ButtonBase';
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type TaskStatusButtonDataType = {};
 
 export enum TaskStatusButtonType {
@@ -39,7 +40,7 @@ const TaskStatusButton: React.FC<TaskStatusButtonProps> = ({
   onAccountOperation,
   onTake,
 }: TaskStatusButtonProps) => {
-  const _btnText = btnText || buttonTextMap[type];
+  const btnTextStr = btnText || buttonTextMap[type];
 
   const handleAccountOperation = () => {
     if (onAccountOperation) {
@@ -57,19 +58,21 @@ const TaskStatusButton: React.FC<TaskStatusButtonProps> = ({
       case TaskStatusButtonType.ACCOUNT_OPERATION:
         return (
           <TaskBtn onClick={handleAccountOperation} disabled={disabled}>
-            {_btnText}
+            {btnTextStr}
           </TaskBtn>
         );
       case TaskStatusButtonType.TAKE:
         return (
           <TaskBtn onClick={handleTake} disabled={disabled}>
-            {loading ? loadingText : _btnText}
+            {loading ? loadingText : btnTextStr}
           </TaskBtn>
         );
       case TaskStatusButtonType.COMPLETE:
-        return <TaskStatusDescBtn>{_btnText}</TaskStatusDescBtn>;
+        return <TaskStatusDescBtn>{btnTextStr}</TaskStatusDescBtn>;
       case TaskStatusButtonType.MISSION_OFF:
-        return <TaskBtn disabled={true}>{_btnText}</TaskBtn>;
+        return <TaskBtn disabled>{btnTextStr}</TaskBtn>;
+      default:
+        return null;
     }
   };
   return (

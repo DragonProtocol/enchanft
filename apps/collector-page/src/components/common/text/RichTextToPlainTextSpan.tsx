@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-15 10:53:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-09 16:01:00
+ * @LastEditTime: 2022-11-29 11:34:32
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react';
@@ -30,6 +30,7 @@ const RichTextToPlainTextSpan: React.FC<RichTextToPlainTextSpanProps> = ({
     case RichTextToPlainTextMode.HTML:
       text = DOMPurify.sanitize(value).replace(/<[^>]+>/g, ' ');
       break;
+    // no default
   }
   return (
     <RichTextToPlainTextSpanWrapper {...otherProps}>

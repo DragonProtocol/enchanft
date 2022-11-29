@@ -3,15 +3,13 @@
   "version": "0.0.1",
   "license": "MIT",
   "scripts": {
-    "lint:all": "eslint . --ext \"**/*.{js,ts,tsx}\" --max-warnings 0 --cache",
+    "lint:all": "eslint . --ext .{js,ts,tsx} --cache",
     "lint:fix:all": "pnpm lint --fix",
     "format:all": "prettier --write \"**/*.{js,ts,tsx}\"  --parser typescript ",
     "format:check:all": "prettier --check \"**/*.{js,ts,tsx}\"  --parser typescript ",
     "start:all": "pnpm --stream -r start",
     "build:all": "pnpm --stream -r build",
     "test:all": "pnpm --stream -r test",
-    "prepare": "husky install",
-    "format:staged": "lint-staged",
     "project:script": "node ./tools/scripts/project.script.mjs",
     "project:exec": "node ./tools/scripts/project.exec.mjs",
     "start": "pnpm project:script start",
@@ -20,7 +18,9 @@
     "lint": "pnpm project:script lint",
     "lint:fix": "pnpm project:script lint:fix",
     "format": "pnpm project:script format",
-    "format:check": "pnpm project:script format:check"
+    "format:check": "pnpm project:script format:check",
+    "prepare": "husky install",
+    "format:staged": "lint-staged"
   },
   "lint-staged": {
     "*.{js,json,md,yml}": [

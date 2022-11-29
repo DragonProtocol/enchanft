@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-27 15:55:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-27 17:19:45
+ * @LastEditTime: 2022-11-29 10:53:35
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react';
@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { GradeType } from '../../../types/entities';
 import IconOfficialCertification from '../../common/icons/IconOfficialCertification';
 import IconVIP from '../../common/icons/IconVIP';
+
 export const gradeStyleMap = {
   [GradeType.OFFICIAL]: {
     icon: IconOfficialCertification,

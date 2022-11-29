@@ -66,7 +66,7 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
       <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
       <TaskDateAndWinnerBox>
         <TaskDateAndWinnerItem>
-          <PngIconAlarmClock size={'16px'} />
+          <PngIconAlarmClock size="16px" />
           <TaskDateTime>
             {startDate}
             {!isNoEndTime(endTime) && ` — ${formatDateTime(endTime)}`}
@@ -74,14 +74,14 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
         </TaskDateAndWinnerItem>
         {winnerNum !== undefined && (
           <TaskDateAndWinnerItem>
-            <PngIconScissorHand size={'16px'} />
+            <PngIconScissorHand size="16px" />
             <TaskWinners>Winners : {winnerNum}</TaskWinners>
           </TaskDateAndWinnerItem>
         )}
       </TaskDateAndWinnerBox>
       {reward && (
         <TaskRemarkBox>
-          <PngIconGiftBox size={'16px'} />
+          <PngIconGiftBox size="16px" />
           <TaskRemark>Reward : {rewardValue}</TaskRemark>
         </TaskRemarkBox>
       )}

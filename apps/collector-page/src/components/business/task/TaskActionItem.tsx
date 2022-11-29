@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:46:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 15:09:13
+ * @LastEditTime: 2022-11-29 11:14:07
  * @Description: file description
  */
 import React, { useCallback } from 'react';
@@ -35,6 +35,7 @@ import SubtractImg from '../../imgs/subtract.svg';
 import ActionVerifyAnswer from './actions/ActionVerifyAnswer';
 import ActionQuoteTwitter from './actions/ActionQuoteTwitter';
 import ActionUploadImage from './actions/ActionUploadImage';
+
 export type TaskActionItemDataType = {
   id: number;
   name: string;
@@ -282,6 +283,7 @@ const TaskActionItem: React.FC<TaskActionItemProps> = ({
               <IconCheckbox />
             </TaskActionStatusTodo>
           );
+        // no default
       }
     }
     return null;

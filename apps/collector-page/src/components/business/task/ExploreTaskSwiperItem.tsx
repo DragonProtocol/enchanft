@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /*
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 16:03:19
+ * @LastEditTime: 2022-11-29 10:24:56
  * @Description: file description
  */
 import React from 'react';
@@ -93,7 +94,7 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
           <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
           <TaskDateAndWinnerBox>
             <TaskDateAndWinnerItem>
-              <PngIconAlarmClock size={'16px'} />
+              <PngIconAlarmClock size="16px" />
               <TaskDateTime>
                 {startDate}
                 {!isNoEndTime(endTime) &&
@@ -102,14 +103,14 @@ const ExploreTaskSwiperItem: React.FC<ExploreTaskSwiperItemProps> = ({
             </TaskDateAndWinnerItem>
             {winnerNum !== undefined && (
               <TaskDateAndWinnerItem>
-                <PngIconScissorHand size={'16px'} />
+                <PngIconScissorHand size="16px" />
                 <TaskWinners>Winners : {winnerNum}</TaskWinners>
               </TaskDateAndWinnerItem>
             )}
           </TaskDateAndWinnerBox>
           {reward && (
             <TaskRewardBox>
-              <PngIconGiftBox size={'18px'} />
+              <PngIconGiftBox size="18px" />
               <TaskReward>Reward : {rewardValue}</TaskReward>
             </TaskRewardBox>
           )}

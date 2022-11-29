@@ -2,17 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-18 13:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 11:28:51
+ * @LastEditTime: 2022-11-29 10:59:10
  * @Description: file description
  */
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { UserActionStatus } from '../../../../types/api';
-import { TaskActionItemDataType } from '../TaskActionItem';
+import type { TaskActionItemDataType } from '../TaskActionItem';
 import IconNotify from '../../../common/icons/IconNotify';
 import ActionIconBox from './ActionIconBox';
 import ActionNameSpan from './ActionNameSpan';
+
 export type ActionFollowCommunityProps = {
   data: TaskActionItemDataType;
   allowHandle?: boolean;

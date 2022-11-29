@@ -2,15 +2,24 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 18:20:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 18:19:21
+ * @LastEditTime: 2022-11-29 11:48:21
  * @Description: 个人信息
  */
-import React, { useEffect, useRef, useState } from 'react';
-import { useCallback } from 'react';
-import { useAppSelector } from '../store/hooks';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { IconButton } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
+import { useNavigate } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
+import {
+  useWlUserReact,
+  WlUserActionType,
+  WlUserModalType,
+  BindWithAuthorizerButton,
+  UserAvatar,
+  AuthorizerType,
+} from '@ecnft/wl-user-react';
+import { useAppSelector } from '../store/hooks';
 import CommunityList, {
   CommunityListItemsType,
 } from '../components/business/community/CommunityList';
@@ -32,17 +41,7 @@ import { ButtonWarning } from '../components/common/button/ButtonBase';
 import CardBox from '../components/common/card/CardBox';
 import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup';
 import { MOBILE_BREAK_POINT } from '../constants';
-import { useNavigate } from 'react-router-dom';
 import OverflowEllipsisBox from '../components/common/text/OverflowEllipsisBox';
-import { isMobile } from 'react-device-detect';
-import {
-  useWlUserReact,
-  WlUserActionType,
-  WlUserModalType,
-  BindWithAuthorizerButton,
-  UserAvatar,
-  AuthorizerType,
-} from '@ecnft/wl-user-react';
 const formatStoreDataToComponentDataByFollowedCommunities = (
   communities: FollowedCommunitityForEntity[]
 ): CommunityListItemsType => {

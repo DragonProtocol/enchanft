@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:25:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 17:06:24
+ * @LastEditTime: 2022-11-29 10:43:37
  * @Description: file description
  */
 import React from 'react';
@@ -15,6 +15,7 @@ import RecommendSwiper, {
   RecommendSwiperItem,
 } from '../../common/swiper/RecommendSwiper';
 import { MOBILE_BREAK_POINT } from '../../../constants';
+
 export type ExploreProjectSwiperViewConfigType = {
   loading?: boolean;
   loadingMsg?: string;
@@ -33,10 +34,10 @@ const ExploreProjectSwiper: React.FC<ExploreProjectSwiperProps> = ({
   emptyMsg = 'task empty',
 }: ExploreProjectSwiperProps) => {
   const itemLen = items.length;
-  const navigation = itemLen > 1 ? true : false;
-  const autoplay = itemLen > 1 ? true : false;
-  const loop = itemLen > 1 ? true : false;
-  const pagination = itemLen > 1 ? true : false;
+  const navigation = itemLen > 1;
+  const autoplay = itemLen > 1;
+  const loop = itemLen > 1;
+  const pagination = itemLen > 1;
   return (
     <ExploreProjectSwiperWrapper
       navigation={navigation}

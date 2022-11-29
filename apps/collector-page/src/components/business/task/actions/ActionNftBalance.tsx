@@ -1,14 +1,15 @@
+/* eslint-disable no-nested-ternary */
 /*
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 18:19:22
+ * @LastEditTime: 2022-11-29 11:06:53
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
 import { UserActionStatus } from '../../../../types/api';
-import { TaskActionItemDataType } from '../TaskActionItem';
+import type { TaskActionItemDataType } from '../TaskActionItem';
 import ActionIconBox from './ActionIconBox';
 import ActionNameSpan from './ActionNameSpan';
 import { NftInfo } from '../../../../types/entities';
@@ -52,6 +53,7 @@ const ActionNftBalance: React.FC<ActionNftBalanceProps> = ({
         <ActionTitle allowHandle={allowHandle} isDone={isDone}>
           Holding {accounts.length > 2 && ' one of '}
           {accounts.map((item, index) => (
+            // eslint-disable-next-line react/no-array-index-key
             <ActionLinkBox key={index}>
               {accounts.length > 1 &&
                 (index === accounts.length - 1

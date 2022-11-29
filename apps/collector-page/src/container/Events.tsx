@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-27 15:23:51
+ * @LastEditTime: 2022-11-29 13:22:14
  * @Description: 首页任务看板
  */
 import React, { useEffect, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import styled from 'styled-components';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { AsyncRequestStatus } from '../types';
 import { SearchTaskStatus, TodoTaskItem } from '../types/api';
 import {
@@ -93,13 +93,12 @@ const Events: React.FC = () => {
   const recommendTaskItems =
     formatStoreDataToComponentDataByRecommendTasks(recommendTasks);
   const recommendTasksLoading =
-    recommendTasksStatus === AsyncRequestStatus.PENDING ? true : false;
+    recommendTasksStatus === AsyncRequestStatus.PENDING;
   const searchTaskItems = formatStoreDataToComponentDataByTasks(
     tasks,
     todoTasks
   );
-  const searchTasksLoading =
-    searchTasksStatus === AsyncRequestStatus.PENDING ? true : false;
+  const searchTasksLoading = searchTasksStatus === AsyncRequestStatus.PENDING;
 
   return (
     <EventsWrapper>

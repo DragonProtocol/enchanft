@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-11 12:33:18
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 17:01:12
+ * @LastEditTime: 2022-11-29 10:54:22
  * @Description: file description
  */
 import { UserAvatar } from '@ecnft/wl-user-react';
@@ -19,6 +19,7 @@ export type ProjectTeamMemberItemDataType = {
   description: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type ProjectTeamMemberItemViewConfigType = {};
 
 export type ProjectTeamMemberItemDataViewType = {

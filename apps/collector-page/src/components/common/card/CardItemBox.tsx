@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-29 10:38:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 19:12:22
+ * @LastEditTime: 2022-11-29 11:31:05
  * @Description: file description
  */
 import React, { HTMLAttributes } from 'react';
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
+
 export enum CardItemBoxAnimationType {
   HOVER_MOVE_UP = 'HOVER_MOVE_UP',
 }
@@ -29,13 +30,13 @@ const CardItemBox: React.FC<CardItemBoxProps> = ({
   animationType,
   ...otherProps
 }: CardItemBoxProps) => {
-  const _props = otherProps;
+  const props = otherProps;
   if (animationType) {
     const animationCss = CardItemBoxAnimationMap[animationType];
-    Object.assign(_props, { animationCss });
+    Object.assign(props, { animationCss });
   }
 
-  return <CardItemBoxWrapper {..._props}>{children}</CardItemBoxWrapper>;
+  return <CardItemBoxWrapper {...props}>{children}</CardItemBoxWrapper>;
 };
 export default CardItemBox;
 

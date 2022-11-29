@@ -7,14 +7,11 @@ import {
   TaskType,
   Whitelist,
 } from '../../../types/entities';
-import TaskContent, {
-  TaskContentDataViewType,
-  TaskContentHandlesType,
-} from '../task/TaskContent';
 import RichTextBox from '../../common/text/RichTextBox';
 import TimeCountdown from '../../common/time/TimeCountdown';
 import { MOBILE_BREAK_POINT } from '../../../constants';
 import { CollapsePanel } from '../../common/collapse';
+
 export type ProjectDetailBasicInfoDataType = {
   id: number;
   name: string;
@@ -41,8 +38,7 @@ export type ProjectDetailBasicInfoDataViewType = {
   viewConfig?: ProjectDetailBasicInfoViewConfigType;
 };
 
-export type ProjectDetailBasicInfoProps = ProjectDetailBasicInfoDataViewType &
-  TaskContentHandlesType;
+export type ProjectDetailBasicInfoProps = ProjectDetailBasicInfoDataViewType;
 
 const defaultViewConfig = {
   displayMintInfo: true,
@@ -50,7 +46,6 @@ const defaultViewConfig = {
 const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
   data,
   viewConfig,
-  onTake,
 }: ProjectDetailBasicInfoProps) => {
   const {
     id,
@@ -75,37 +70,34 @@ const ProjectDetailBasicInfo: React.FC<ProjectDetailBasicInfoProps> = ({
   const renderWhitelist = () => {
     if (!whitelists || !whitelists.length) return null;
     const whitelist = whitelists[0];
-    if (!whitelist) return;
+    if (!whitelist) return null;
     const whitelistMintPriceText = whitelist.mintPrice
       ? `Mint Price ${whitelist.mintPrice}`
       : 'Free Mint';
     return (
-      <>
-        <ProjectMintInfoBox>
-          <ProjectMintInfoBoxTop>
-            <ProjectMintInfoLabel>Whitelist</ProjectMintInfoLabel>
-            {whitelist.mintStartTime &&
-              (whitelist.mintStartTime < new Date().getTime() ? (
+      <ProjectMintInfoBox>
+        <ProjectMintInfoBoxTop>
+          <ProjectMintInfoLabel>Whitelist</ProjectMintInfoLabel>
+          {whitelist.mintStartTime &&
+            (whitelist.mintStartTime < new Date().getTime() ? (
+              <ProjectMintInfoStartsInText>
+                Already Start
+              </ProjectMintInfoStartsInText>
+            ) : (
+              <>
                 <ProjectMintInfoStartsInText>
-                  Already Start
+                  Starts in
                 </ProjectMintInfoStartsInText>
-              ) : (
-                <>
-                  <ProjectMintInfoStartsInText>
-                    Starts in
-                  </ProjectMintInfoStartsInText>
-                  <MintTimeCountdown timestamp={whitelist.mintStartTime} />
-                </>
-              ))}
-          </ProjectMintInfoBoxTop>
+                <MintTimeCountdown timestamp={whitelist.mintStartTime} />
+              </>
+            ))}
+        </ProjectMintInfoBoxTop>
 
-          <PrjectMintInfoPriceText>
-            {whitelist?.mintMaxNum &&
-              'MAX ' + whitelist.mintMaxNum + ' Tokens .'}{' '}
-            {whitelistMintPriceText}
-          </PrjectMintInfoPriceText>
-        </ProjectMintInfoBox>
-      </>
+        <PrjectMintInfoPriceText>
+          {whitelist?.mintMaxNum && `MAX ${whitelist.mintMaxNum} Tokens .`}{' '}
+          {whitelistMintPriceText}
+        </PrjectMintInfoPriceText>
+      </ProjectMintInfoBox>
     );
   };
   const [collapsePanelDxpanded, setCollapsePanelDxpanded] = useState({

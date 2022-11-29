@@ -2,19 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 13:00:18
+ * @LastEditTime: 2022-11-29 11:12:12
  * @Description: file description
  */
 import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import { UserActionStatus } from '../../../../types/api';
-import { TaskActionItemDataType } from '../TaskActionItem';
+import type { TaskActionItemDataType } from '../TaskActionItem';
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper';
 import IconImage from '../../../common/icons/IconImage';
 import ActionIconBox from './ActionIconBox';
 import ActionNameSpan from './ActionNameSpan';
 import UploadImage from '../../upload/UploadImage';
-import { toast } from 'react-toastify';
+
 export type ActionUploadImageProps = {
   data: TaskActionItemDataType;
   allowHandle?: boolean;
@@ -52,10 +53,7 @@ const ActionUploadImage: React.FC<ActionUploadImageProps> = ({
       </ActionIconBox>
       <ActionContentBox>
         <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
-          {name}{' '}
-          {progress && progress != '' && (
-            <ProgressSpan>({progress})</ProgressSpan>
-          )}
+          {name} {progress && <ProgressSpan>({progress})</ProgressSpan>}
         </ActionNameSpan>
         {allowHandle && !isDone ? (
           <>
@@ -71,7 +69,7 @@ const ActionUploadImage: React.FC<ActionUploadImageProps> = ({
             </ConfirmErrorText>
           </>
         ) : (
-          <UploadImage disabled={true} url={actionData?.answer || ''} />
+          <UploadImage disabled url={actionData?.answer || ''} />
         )}
       </ActionContentBox>
     </ActionUploadImageWrapper>

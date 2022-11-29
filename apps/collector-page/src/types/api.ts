@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:55:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-09 13:22:34
+ * @LastEditTime: 2022-11-29 11:52:36
  * @Description: api 接口类型定义（多是组装entities type 为 response type）
  */
 
@@ -88,6 +88,7 @@ export type ProjectDetailResponse = Project & {
   whitelists?: Whitelist[];
   community?: Community;
   announcement?: Announcement;
+  mintLimited: number;
 };
 
 /** community api */

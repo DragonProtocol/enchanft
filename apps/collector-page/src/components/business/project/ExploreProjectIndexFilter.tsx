@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:21:03
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-09 11:44:36
+ * @LastEditTime: 2022-11-29 10:42:52
  * @Description: file description
  */
 import React from 'react';
@@ -11,6 +11,7 @@ import { MOBILE_BREAK_POINT } from '../../../constants';
 import { MintStage } from '../../../types/entities';
 import ButtonRadioGroup from '../../common/button/ButtonRadioGroup';
 import InputSearch from '../../common/input/InputSearch';
+
 export enum MintStageOther {
   All = '',
 }

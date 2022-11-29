@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-12 13:55:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 17:04:33
+ * @LastEditTime: 2022-11-29 10:29:10
  * @Description: file description
  */
 import { UserAvatar } from '@ecnft/wl-user-react';
 import React from 'react';
 import styled from 'styled-components';
 import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox';
+
 export type ContributionItemDataType = {
   ranking: number;
   avatar: string;
@@ -32,7 +33,7 @@ const CommunityContribution: React.FC<CommunityContributionProps> = ({
           <ContributionTitleBox>Contribution Rank</ContributionTitleBox>
           <ContributionListBox>
             {items.map((item, index) => (
-              <ContributionItemBox key={index}>
+              <ContributionItemBox key={item.userId}>
                 <ContributionItemRanking>
                   {item.ranking}
                 </ContributionItemRanking>
@@ -54,7 +55,7 @@ const CommunityContribution: React.FC<CommunityContributionProps> = ({
       <ContributionRight>
         <ContributionBox>
           <ContributionTitleBox>About Contribution</ContributionTitleBox>
-          <ContributionAboutBox></ContributionAboutBox>
+          <ContributionAboutBox />
         </ContributionBox>
       </ContributionRight>
     </CommunityContributionWrapper>

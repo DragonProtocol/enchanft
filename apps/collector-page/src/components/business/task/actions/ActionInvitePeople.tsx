@@ -2,28 +2,26 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-21 19:53:15
+ * @LastEditTime: 2022-11-29 11:05:08
  * @Description: file description
  */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { UserActionStatus } from '../../../../types/api';
-import { TaskActionItemDataType } from '../TaskActionItem';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { toast } from 'react-toastify';
+import { useWlUserReact } from '@ecnft/wl-user-react';
+import { UserActionStatus } from '../../../../types/api';
+import type { TaskActionItemDataType } from '../TaskActionItem';
 import OverflowEllipsisBox from '../../../common/text/OverflowEllipsisBox';
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper';
 import IconWL from '../../../common/icons/IconWL';
 import IconCopy from '../../../common/icons/IconCopy';
 import { getTakeTaskRefLink } from '../../../../container/Ref';
 import { useAppSelector } from '../../../../store/hooks';
-import { useEffect } from 'react';
-import { useState } from 'react';
 import ActionIconBox from './ActionIconBox';
 import ActionNameSpan from './ActionNameSpan';
-import { toast } from 'react-toastify';
 import { tweetShare } from '../../../../utils/twitter';
 import { SHARE_EVENT_TWEET_CONTENTS } from '../../../../constants';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 
 export type ActionInvitePeopleProps = {
   data: TaskActionItemDataType;
@@ -76,10 +74,7 @@ const ActionInvitePeople: React.FC<ActionInvitePeopleProps> = ({
       </ActionIconBox>
       <ActionContentBox>
         <ActionNameSpan allowHandle={allowHandle} isDone={isDone}>
-          {name}{' '}
-          {progress && progress != '' && (
-            <ProgressSpan>({progress})</ProgressSpan>
-          )}
+          {name} {progress && <ProgressSpan>({progress})</ProgressSpan>}
         </ActionNameSpan>
 
         {allowHandle && (

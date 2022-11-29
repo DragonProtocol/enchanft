@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:36
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 16:08:07
+ * @LastEditTime: 2022-11-29 11:20:25
  * @Description: file description
  */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import {
   Project,
   Reward,
@@ -16,14 +17,8 @@ import {
   Whitelist,
 } from '../../../types/entities';
 import { UserActionStatus } from '../../../types/api';
-import ButtonBase from '../../common/button/ButtonBase';
 import { TaskActionItemDataType } from './TaskActionItem';
-import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
-import MoodIcon from '@mui/icons-material/Mood';
-import MoodBadIcon from '@mui/icons-material/MoodBad';
 import TaskActionList, { TaskActionsListHandlesType } from './TaskActionList';
-import { todoTaskCompleteStatusMap } from './TodoTaskList';
-import { useNavigate } from 'react-router-dom';
 import ProjectMintButton from '../project/ProjectMintButton';
 import PngIconGiftBox from '../../common/icons/PngIconGiftBox';
 import { isNoEndTime } from '../../../utils/task';
@@ -154,11 +149,6 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
     switch (status) {
       case TaskTodoCompleteStatus.TODO:
       case TaskTodoCompleteStatus.IN_PRGRESS:
-        // 计算所有action，和已完成的action数量
-        const allActionNum = actions?.length || 0;
-        const actionDoneNum = (actions || []).filter(
-          (action) => action.status === UserActionStatus.DONE
-        ).length;
         return (
           <TaskProgressBox>
             {!isNoEndTime(endTime) && (
@@ -170,7 +160,11 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
             <CompleteNum>
               {loadingRefresh
                 ? 'Loading...'
-                : `(${actionDoneNum}/${allActionNum})`}
+                : `(${
+                    (actions || []).filter(
+                      (action) => action.status === UserActionStatus.DONE
+                    ).length
+                  }/${actions?.length || 0})`}
             </CompleteNum>
           </TaskProgressBox>
         );
@@ -197,7 +191,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
   };
 
   // 是否展开action
-  const isOpenActionsDefault = allowOpenActions && openActions ? true : false;
+  const isOpenActionsDefault = !!(allowOpenActions && openActions);
   const [isOpenActions, setIsOpenActions] = useState(isOpenActionsDefault);
   const onTaskClick = () => {
     if (allowOpenActions) {
@@ -288,7 +282,7 @@ const TodoTaskItem: React.FC<TodoTaskItemProps> = ({
             verifyingActions={verifyingActions}
             dispalyLuckyDrawWeight={reward.luckyDraw}
             {...taskActionItemStaticProps}
-          ></TaskActionList>
+          />
         </TaskOpenBodyBox>
       )}
     </TodoTaskItemWrapper>
@@ -304,7 +298,7 @@ const TodoTaskItemWrapper = styled.div`
   box-sizing: border-box;
   border-radius: 10px;
 `;
-const TaskBasicInfoBox = styled.div<{ isAllowClick?: Boolean }>`
+const TaskBasicInfoBox = styled.div<{ isAllowClick?: boolean }>`
   width: 100%;
   display: flex;
   align-items: flex-start;

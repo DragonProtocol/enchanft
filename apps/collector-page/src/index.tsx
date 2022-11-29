@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 10:00:43
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-10 17:42:47
+ * @LastEditTime: 2022-11-29 13:19:50
  * @Description: file description
  */
 import React from 'react';
@@ -22,9 +22,7 @@ if (!isExternalLinkRiskWarningUrl) {
 }
 // import MobileRedirect from './MobileRedirect'
 
-const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
+const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     {isExternalLinkRiskWarningUrl ? <ExternalLinkRiskWarning /> : <App />}

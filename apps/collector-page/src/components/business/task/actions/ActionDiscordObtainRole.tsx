@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-30 17:07:24
+ * @LastEditTime: 2022-11-29 10:58:31
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
 import { UserActionStatus } from '../../../../types/api';
-import { TaskActionItemDataType } from '../TaskActionItem';
+import type { TaskActionItemDataType } from '../TaskActionItem';
 import IconDiscord from '../../../common/icons/IconDiscord';
 import ActionIconBox from './ActionIconBox';
 import ActionNameSpan from './ActionNameSpan';
@@ -44,7 +44,7 @@ const ActionDiscordObtainRole: React.FC<ActionDiscordObtainRoleProps> = ({
   };
   const clickAction = () => {
     if (!allowHandle || isDone) return;
-    onDiscord && onDiscord(handleAction);
+    if (onDiscord) onDiscord(handleAction);
   };
   return (
     <ActionDiscordObtainRoleWrapper>

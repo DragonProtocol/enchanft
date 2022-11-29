@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-07 11:52:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-27 16:37:34
+ * @LastEditTime: 2022-11-29 10:43:22
  * @Description: file description
  */
 import React, { useCallback } from 'react';
@@ -48,6 +48,7 @@ export type ExploreProjectItemDataType = {
   }>;
 };
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export type ExploreProjectItemViewConfigType = {};
 
 export type ExploreProjectItemDataViewType = {

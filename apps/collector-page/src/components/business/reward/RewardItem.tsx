@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import ButtonBase from '../../common/button/ButtonBase';
 import { useNavigate } from 'react-router-dom';
+import ButtonBase from '../../common/button/ButtonBase';
 import { ScrollBarCss } from '../../../GlobalStyle';
 import {
   Community,
@@ -161,7 +161,7 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
       if (mintStartTimeCountdownIntervalRef.current) {
         clearInterval(mintStartTimeCountdownIntervalRef.current);
       }
-      return;
+      return undefined;
     }
     mintStartTimeCountdownIntervalRef.current = setInterval(() => {
       const distance = mintStartTime - Date.now();
@@ -170,7 +170,7 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
       const distanceMinute = Math.floor((distance / (1000 * 60)) % 60);
       const distanceSecond = Math.floor((distance / 1000) % 60);
       setMintStartTimeCountdown({
-        distance: distance,
+        distance,
         day: distanceDay,
         hour: distanceHour,
         minute: distanceMinute,
@@ -228,7 +228,7 @@ const RewardWhitelistMintButton: React.FC<RewardWhitelistMintButtonProps> = ({
   return (
     <RewardWhitelistMintButtonWrapper>
       {mintClosed ? (
-        <MintClosedBox>{'Mint Closed'}</MintClosedBox>
+        <MintClosedBox>Mint Closed</MintClosedBox>
       ) : (
         <MintBtn disabled={isDisabledMint} onClick={onMint}>
           {mintBtnText}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-01 13:30:47
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-31 14:22:06
+ * @LastEditTime: 2022-11-29 10:42:44
  * @Description: file description
  */
 import { UserAvatar } from '@ecnft/wl-user-react';
@@ -12,6 +12,7 @@ import { MOBILE_BREAK_POINT } from '../../../constants';
 import CommunityFollowButton, {
   FollowStatusType,
 } from '../community/CommunityFollowButton';
+
 export type ContributionMyDataType = {
   avatar: string;
   userName: string;

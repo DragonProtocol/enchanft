@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-14 14:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-15 17:17:02
+ * @LastEditTime: 2022-11-29 11:06:05
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
 import { UserActionStatus } from '../../../../types/api';
-import { TaskActionItemDataType } from '../TaskActionItem';
+import type { TaskActionItemDataType } from '../TaskActionItem';
 import IconTwitter from '../../../common/icons/IconTwitter';
 import ActionIconBox from './ActionIconBox';
 import ActionNameSpan from './ActionNameSpan';
@@ -45,7 +45,7 @@ const ActionLikeTwitter: React.FC<ActionLikeTwitterProps> = ({
   };
   const clickAction = () => {
     if (!allowHandle || isDone) return;
-    onTwitter && onTwitter(handleAction);
+    if (onTwitter) onTwitter(handleAction);
   };
   return (
     <ActionLikeTwitterWrapper>

@@ -2,18 +2,19 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-25 15:33:48
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-08 11:28:24
+ * @LastEditTime: 2022-11-29 10:55:17
  * @Description: file description
  */
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { UserActionStatus } from '../../../../types/api';
-import { TaskActionItemDataType } from '../TaskActionItem';
+import type { TaskActionItemDataType } from '../TaskActionItem';
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper';
 import IconWL from '../../../common/icons/IconWL';
-import { useNavigate } from 'react-router-dom';
 import ActionNameSpan from './ActionNameSpan';
 import ActionIconBox from './ActionIconBox';
+
 export type ActionContributionScoreProps = {
   data: TaskActionItemDataType;
   allowHandle?: boolean;
@@ -36,7 +37,7 @@ const ActionContributionScore: React.FC<ActionContributionScoreProps> = ({
     status,
     project,
   } = data;
-  const isDone = status === UserActionStatus.DONE ? true : false;
+  const isDone = status === UserActionStatus.DONE;
   const handleAction = () => {
     if (!project?.slug || !allowHandle || isDone) return;
     navigate(`/${project.slug}/rank`);

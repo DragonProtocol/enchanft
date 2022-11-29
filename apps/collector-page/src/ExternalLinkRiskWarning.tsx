@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-10-09 14:54:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-18 14:27:43
+ * @LastEditTime: 2022-11-29 10:14:33
  * @Description: 外部链接风险提示
  */
 import React from 'react';
@@ -11,10 +11,11 @@ import { ButtonPrimary } from './components/common/button/ButtonBase';
 import LogoImg from './components/imgs/logo.svg';
 import GlobalStyle from './GlobalStyle';
 
-const ExternalLinkRiskWarningUri = `${location.origin}/link.html`;
+const ExternalLinkRiskWarningUri = `${window.location.origin}/link.html`;
 const noWarningDomains = ['wl.xyz', 'twitter.com', 'discord.com', 'discord.gg'];
 const isHyperlink = (str: string) => {
-  let regexp =
+  const regexp =
+    // eslint-disable-next-line no-useless-escape
     /(http|https):\/\/[\w]+(.[\w]+)([\w\-\.,@?^=%&:/~\+#\u4e00-\u9fa5]*[\w\-\@?^=%&/~\+#])/;
   return regexp.test(str);
 };
@@ -22,12 +23,12 @@ export const generateExternalLinkRiskWarningUrl = (link: string) => {
   return `${ExternalLinkRiskWarningUri}?target=${link}`;
 };
 export const getExternalLink = () => {
-  const urlParams = new URLSearchParams(location.search);
+  const urlParams = new URLSearchParams(window.location.search);
   return urlParams.get('target') || '';
 };
 
 export const isExternalLinkRiskWarningUrl =
-  location.href.startsWith(ExternalLinkRiskWarningUri + '?') &&
+  window.location.href.startsWith(`${ExternalLinkRiskWarningUri}?`) &&
   getExternalLink();
 
 type WindowOpen = typeof window.open;
@@ -56,16 +57,15 @@ export const startExternalLinkNavigationListener = () => {
   window.open = (function (open) {
     return function (url: string, ...args) {
       // 如果链接域名不在白名单中
-      var hostname = url.split('/')[2];
+      const hostname = url.split('/')[2];
       if (
         hostname &&
         !noWarningDomains.some((domain) => hostname.endsWith(domain))
       ) {
         const newUrl = generateExternalLinkRiskWarningUrl(url);
         return open(newUrl, ...args);
-      } else {
-        return open(url, ...args);
       }
+      return open(url, ...args);
     } as WindowOpen;
   })(window.open);
   // 3, ....
@@ -97,7 +97,11 @@ export default function () {
             other sites.
           </UnderlineText>
         </RedirectDescBox>
-        <ContinueBtn onClick={() => (location.href = externalLink)}>
+        <ContinueBtn
+          onClick={() => {
+            window.location.href = externalLink;
+          }}
+        >
           Got it. Continue →
         </ContinueBtn>
       </MobileRedirectWrapper>

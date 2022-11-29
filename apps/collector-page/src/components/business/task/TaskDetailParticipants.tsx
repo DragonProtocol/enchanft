@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-05 11:22:04
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-25 17:02:57
+ * @LastEditTime: 2022-11-29 11:14:34
  * @Description: file description
  */
 import { UserAvatar } from '@ecnft/wl-user-react';
@@ -41,7 +41,7 @@ const TaskDetailParticipants: React.FC<TaskDetailParticipantsProps> = ({
       </ParticipantsHeader>
       <ParticipantsListBox>
         {items.map((item, index) => (
-          <AvatarItem key={index} title={item.name} user={item} />
+          <AvatarItem key={item.id} title={item.name} user={item} />
         ))}
       </ParticipantsListBox>
     </TaskDetailParticipantsWrapper>

@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-types */
 /*
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 18:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-14 17:37:06
+ * @LastEditTime: 2022-11-29 10:18:15
  * @Description: file description
  */
 import React from 'react';
@@ -11,11 +12,7 @@ import styled from 'styled-components';
 import { MOBILE_BREAK_POINT } from '../../../constants';
 import { ScrollBarCss } from '../../../GlobalStyle';
 import { MintStage } from '../../../types/entities';
-import ScrollBox from '../../common/scroll/ScrollBox';
-import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox';
 import RichTextBox from '../../common/text/RichTextBox';
-import RichTextToPlainTextSpan from '../../common/text/RichTextToPlainTextSpan';
-import ChainTag from '../chain/ChainTag';
 import MintStageLabel from './MintStageLabel';
 
 export type ExploreProjectSwiperItemDataType = {

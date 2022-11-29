@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
 import styled from 'styled-components';
 import { useNavigate, useParams } from 'react-router-dom';
+import { isDesktop, isMobile } from 'react-device-detect';
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
 import ButtonNavigation from '../components/common/button/ButtonNavigation';
 import IconCaretLeft from '../components/common/icons/IconCaretLeft';
 import CardBox from '../components/common/card/CardBox';
@@ -33,10 +35,8 @@ import useAccountOperationForChain, {
 } from '../hooks/useAccountOperationForChain';
 import { CheckinStatusType } from '../components/business/community/CommunityCheckinButton';
 import { MOBILE_BREAK_POINT } from '../constants';
-import { isDesktop, isMobile } from 'react-device-detect';
 import useUserHandlesForCommunity from '../hooks/useUserHandlesForCommunity';
 import { FollowStatusType } from '../components/business/community/CommunityFollowButton';
-import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 
 const Contributionranks: React.FC = () => {
   const navigate = useNavigate();
@@ -132,14 +132,12 @@ const Contributionranks: React.FC = () => {
   // let checkinBtnText = ''
   if (!isFollowed) {
     checkinStatusType = CheckinStatusType.NOT_FOLLOWED;
+  } else if (isCheckedin) {
+    checkinStatusType = CheckinStatusType.CHECKEDIN;
+  } else if (checkin.status === AsyncRequestStatus.PENDING) {
+    checkinStatusType = CheckinStatusType.CHECKING;
   } else {
-    if (isCheckedin) {
-      checkinStatusType = CheckinStatusType.CHECKEDIN;
-    } else if (checkin.status === AsyncRequestStatus.PENDING) {
-      checkinStatusType = CheckinStatusType.CHECKING;
-    } else {
-      checkinStatusType = CheckinStatusType.CHECKIN;
-    }
+    checkinStatusType = CheckinStatusType.CHECKIN;
   }
 
   // 展示数据
@@ -156,7 +154,7 @@ const Contributionranks: React.FC = () => {
     viewConfig: {
       displayFollowCommunity:
         isLogin && !isFollowed && followStatusType !== FollowStatusType.UNKNOWN,
-      followStatusType: followStatusType,
+      followStatusType,
     },
   };
   // TODO 没有twitter名称字段
@@ -223,6 +221,7 @@ const Contributionranks: React.FC = () => {
                 checkinStatusType,
                 // checkinBtnText,
               }}
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
               onCheckin={handleCheckin}
               onAccountOperation={handleAccountOperation}
             />

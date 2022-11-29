@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-31 17:06:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-28 09:06:10
+ * @LastEditTime: 2022-11-29 10:25:25
  * @Description: file description
  */
 import React from 'react';
@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import Lottie from 'react-lottie';
 import { getClaimAnimationData } from '../../../utils/lottie';
 import claim_bg_img from './imgs/claim_bg.png';
+
 export type CommunityCheckedinClaimModalDataType = {
   seqDays: number;
   contribution: number;
