@@ -45,3 +45,4 @@ pnpm-lock.yaml
 yarn.lock
 
 .rollup-stats.html
+.eslintcache
