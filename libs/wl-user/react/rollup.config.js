@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-23 16:40:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-25 13:39:58
+ * @LastEditTime: 2022-11-29 16:43:47
  * @Description: file description
  */
 import { babel } from '@rollup/plugin-babel';
@@ -83,9 +83,9 @@ export default {
       },
     }),
     // 打包前通过eslint进行验证查看一下（配置.eslintrc）
-    // eslint({
-    //   include: ['**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx'],
-    // }),
+    eslint({
+      include: ['**/*.ts', '**/*.tsx'],
+    }),
     // 配合typescript进行打包
     typescript({
       check: true,
@@ -118,11 +118,11 @@ export default {
     }),
     process.argv.includes('--report')
       ? visualizer({
-        filename: '.rollup-stats.html',
-        gzipSize: true,
-        brotliSize: true,
-        open: true,
-      })
+          filename: '.rollup-stats.html',
+          gzipSize: true,
+          brotliSize: true,
+          open: true,
+        })
       : null,
   ],
 };

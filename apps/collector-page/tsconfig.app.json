@@ -6,7 +6,6 @@
   "files": ["../../typings/cssmodule.d.ts", "../../typings/image.d.ts"],
   "exclude": [
     "./src/setupTests.ts",
-    "jest.config.ts",
     "**/*.spec.ts",
     "**/*.test.ts",
     "**/*.spec.tsx",

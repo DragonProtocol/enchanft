@@ -1,16 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withVideos = require('next-videos');
-// const withNx = require('@nrwl/next/plugins/with-nx');
 
-/**
- * @type {import('@nrwl/next/plugins/with-nx').WithNxOptions}
- * */
 const nextConfig = {
-  // nx: {
-  //   // Set this to true if you would like to to use SVGR
-  //   // See: https://github.com/gregberge/svgr
-  //   svgr: false,
-  // },
   images: {
     loader: 'akamai',
     path: '',
@@ -18,4 +9,3 @@ const nextConfig = {
 };
 
 module.exports = withVideos(nextConfig);
-// module.exports = withNx(withVideos(nextConfig));
