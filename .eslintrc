@@ -10,9 +10,6 @@
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "plugin:prettier/recommended"
   ],
-  "parserOptions": {
-    "project": ["./tsconfig.eslint.json"]
-  },
   "rules": {
     /** js语法 **/
     // 不限制js的语法 （如：不禁止使用for of语法）
