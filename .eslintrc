@@ -3,8 +3,8 @@
   "parser": "@typescript-eslint/parser",
   "plugins": ["@typescript-eslint"],
   "extends": [
-    "airbnb",
-    "airbnb-typescript",
+    // "airbnb",
+    // "airbnb-typescript",
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
@@ -49,7 +49,7 @@
     // 停止使用 void 运算符使用的规则报告承诺
     // 对于promise在某些情况下允许使用未等待的方式运行 ( 如: redux的dispatch() )
     "@typescript-eslint/no-floating-promises": "off",
-
+    "@typescript-eslint/no-empty-function": "off",
     /* react */
     //旧版本的 React 验证
     "react/react-in-jsx-scope": "off",
