@@ -25,5 +25,8 @@
   },
   "wl-user": {
     "dir": "libs/wl-user/react"
+  },
+  "collector-page-v2": {
+    "dir": "apps/collector-page-v2"
   }
 }
