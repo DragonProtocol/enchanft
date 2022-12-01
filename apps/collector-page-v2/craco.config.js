@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-04 11:59:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 13:53:28
+ * @LastEditTime: 2022-12-01 10:29:51
  * @Description: 覆盖 cra 内部 webpack 配置
  */
 
@@ -42,9 +42,6 @@ module.exports = {
         buffer: require.resolve('buffer'),
         stream: require.resolve('stream-browserify'),
         crypto: require.resolve('crypto-browserify'),
-      };
-      config.resolve.alias = {
-        '@mui/styled-engine': '@mui/styled-engine-sc',
       };
 
       config.plugins.push(
