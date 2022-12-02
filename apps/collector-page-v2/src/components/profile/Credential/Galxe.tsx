@@ -1,24 +1,25 @@
 import { useState } from 'react';
 import styled from 'styled-components';
-import { CircleCard } from './Card';
+import { GalxeCard } from './Card';
 
+import { GalxeData } from '../../../services/types/profile';
 import Title from './Title';
 
-export default function Galxe() {
+export default function Galxe({ data }: { data: GalxeData }) {
   const [expand, setExpand] = useState(true);
   return (
     <ContentBox>
       <Title
-        name="Galxe"
+        name={`Galxe(${data.addressInfo.nfts.totalCount})`}
         expand={expand}
         setExpand={(e) => setExpand(e)}
         exploreAction={() => {}}
       />
       {expand && (
         <div className="data">
-          <CircleCard />
-          <CircleCard />
-          <CircleCard />
+          {data.addressInfo.nfts.list.map((item) => {
+            return <GalxeCard key={item.id} data={item} />;
+          })}
         </div>
       )}
     </ContentBox>
