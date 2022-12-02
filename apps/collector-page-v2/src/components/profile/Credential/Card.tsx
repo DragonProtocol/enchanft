@@ -1,12 +1,19 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
+import {
+  GalxeDataListItem,
+  NooxDataListItem,
+  PoapData,
+} from '../../../services/types/profile';
 
-export function Card() {
+export function NooxCard({ data }: { data: NooxDataListItem }) {
+  const img = useMemo(() => {
+    return data?.uriMetaData.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+  }, [data?.uriMetaData.image]);
+
   return (
     <Box>
-      <img
-        src="https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk"
-        alt=""
-      />
+      <img src={img} alt="" />
       <div className="hover">
         <button type="button">Get The OAT</button>
       </div>
@@ -16,7 +23,7 @@ export function Card() {
 
 const Box = styled.div`
   display: inline-block;
-  width: 120px;
+  width: 150px;
   height: 190px;
   border-radius: 10px;
   overflow: hidden;
@@ -46,13 +53,21 @@ const Box = styled.div`
   }
 `;
 
-export function CircleCard() {
+export function GalxeCard({ data }: { data: GalxeDataListItem }) {
   return (
     <CircleCardBox>
-      <img
-        src="https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk"
-        alt=""
-      />
+      <img src={data?.image} alt="" />
+      <div className="hover">
+        <button type="button">Get The OAT</button>
+      </div>
+    </CircleCardBox>
+  );
+}
+
+export function PoapCard({ data }: { data: PoapData }) {
+  return (
+    <CircleCardBox>
+      <img src={data?.event?.image_url} alt="" />
       <div className="hover">
         <button type="button">Get The OAT</button>
       </div>

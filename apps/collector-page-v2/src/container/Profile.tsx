@@ -5,22 +5,51 @@
  * @LastEditTime: 2022-11-30 15:18:30
  * @Description: file description
  */
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { useWlUserReact } from '@ecnft/wl-user-react';
 import Info from '../components/info';
 import DailyDigest from '../components/info/DailyDigest';
 import Credential from '../components/profile/Credential';
 import OnChainInterest from '../components/profile/OnChainInterest';
 import OffChainInterest from '../components/profile/OffChainInterest';
+import { fetchU3Profile } from '../services/api/profile';
+import { ProfileEntity, ProfileResponse } from '../services/types/profile';
 
 function Profile() {
+  const { user } = useWlUserReact();
   const [tab, setTab] = useState<'Credential' | 'OnChain' | 'OffChain'>(
     'Credential'
   );
+  const [loading, setLoading] = useState(true);
+  const [profileData, setProfileData] = useState<ProfileEntity>();
+
+  const fetchData = useCallback(async () => {
+    const { data } = await fetchU3Profile(user.token);
+    setProfileData(data.data);
+    setLoading(false);
+  }, [user.token]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  if (loading) {
+    return <div>Loading</div>;
+  }
+
   return (
     <ProfileWrapper>
       <div className="infos">
-        <Info />
+        <Info
+          {...{
+            nickname: user.name,
+            avatar: user.avatar,
+            walletAddr:
+              user.accounts[0]?.thirdpartyName ||
+              user.accounts[0]?.thirdpartyId,
+          }}
+        />
         <DailyDigest />
       </div>
 
@@ -47,8 +76,22 @@ function Profile() {
           </div>
         </div>
 
-        {tab === 'Credential' && <Credential />}
-        {tab === 'OnChain' && <OnChainInterest />}
+        {tab === 'Credential' && (
+          <Credential
+            {...{
+              poap: profileData.poap,
+              noox: profileData.noox,
+              galxe: profileData.galxe,
+            }}
+          />
+        )}
+        {tab === 'OnChain' && (
+          <OnChainInterest
+            data={profileData.nfts}
+            wallet={profileData.erc20Balances}
+            ethBalance={profileData.ethBalance}
+          />
+        )}
         {tab === 'OffChain' && <OffChainInterest />}
       </div>
     </ProfileWrapper>
@@ -57,6 +100,8 @@ function Profile() {
 export default Profile;
 const ProfileWrapper = styled.div`
   width: 100%;
+  height: 100%;
+  overflow: scroll;
   .infos {
     display: flex;
     gap: 30px;

@@ -9,6 +9,15 @@ const DailyDigestBox = styled.div`
   h2 {
     margin: 0;
   }
+
+  & button {
+    height: 34px;
+    border: none;
+    width: 100%;
+    background-color: rgb(56, 210, 10);
+    color: #fff;
+    border-radius: 10px;
+  }
 `;
 
 export default function DailyDigest() {
@@ -19,7 +28,7 @@ export default function DailyDigest() {
         <div>Daily recommends everything you are interested web3</div>
       </div>
       <div>
-        <button type="button">email</button>
+        <button type="button">Email</button>
       </div>
     </DailyDigestBox>
   );

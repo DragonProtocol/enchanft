@@ -1,30 +1,66 @@
 import styled from 'styled-components';
+import { sortPubKey } from '../../utils/solana';
+import { Copy } from '../icons/copy';
+import { Discord } from '../icons/discord';
+import { Twitter } from '../icons/twitter';
 
-export default function Info() {
+export default function Info({
+  nickname,
+  walletAddr,
+  avatar,
+}: {
+  nickname: string;
+  walletAddr: string;
+  avatar: string;
+}) {
   return (
     <InfoBox>
       <div className="user-info">
         <img
           className="user-avatar"
-          src="https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk"
+          src={
+            avatar ||
+            'https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk'
+          }
           alt=""
         />
 
-        <div className="">
+        <div>
           <div className="nickname">
-            <span className="name">Nickname</span>
-            <span>share</span>
+            <span className="name">{nickname || 'Unknown'}</span>
+            {/* <span className="share">
+              <Share />
+            </span> */}
           </div>
-          <div>
-            <span>wallet addr</span>
+          <div className="addr">
+            <span>{sortPubKey(walletAddr || '')}</span>
+            <span
+              className="copy"
+              onClick={() => {
+                navigator.clipboard.writeText(walletAddr).then(
+                  function () {
+                    alert('copied');
+                  },
+                  function (err) {
+                    console.error('Async: Could not copy text: ', err);
+                  }
+                );
+              }}
+            >
+              <Copy />
+            </span>
           </div>
         </div>
       </div>
       <div className="attach">
         <div>date</div>
         <div>
-          <span>twitter</span>
-          <span>discord</span>
+          <span className="twitter">
+            <Twitter />
+          </span>
+          <span className="discord">
+            <Discord />
+          </span>
         </div>
       </div>
     </InfoBox>
@@ -56,10 +92,41 @@ const InfoBox = styled.div`
         }
       }
     }
+
+    div.addr {
+      display: flex;
+      gap: 5px;
+      & .copy {
+        cursor: pointer;
+      }
+    }
+
+    & .share {
+      cursor: pointer;
+    }
   }
 
   .attach {
     display: flex;
     justify-content: space-between;
+
+    > div {
+      display: flex;
+      gap: 10px;
+    }
+
+    & .twitter,
+    & .discord {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background-color: rgb(52, 128, 223);
+    }
+    & .discord {
+      background-color: rgb(64, 72, 243);
+    }
   }
 `;
