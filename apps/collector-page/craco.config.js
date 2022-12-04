@@ -15,6 +15,12 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 module.exports = {
   webpack: {
     configure: (config) => {
+      const forkTsPlugInInstances = config.plugins.find(
+        (p) => p.constructor.name === 'ForkTsCheckerWebpackPlugin'
+      );
+      if (forkTsPlugInInstances)
+        forkTsPlugInInstances.options.typescript.build = true;
+
       // Remove guard against importing modules outside of `src`.
       // Needed for workspace projects.
       config.resolve.plugins = config.resolve.plugins.filter(
