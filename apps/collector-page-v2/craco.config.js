@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-04 11:59:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 10:59:06
+ * @LastEditTime: 2022-12-05 12:42:31
  * @Description: 覆盖 cra 内部 webpack 配置
  */
 
@@ -13,6 +13,9 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
+  eslint: {
+    mode: 'file',
+  },
   webpack: {
     configure: (config) => {
       // Remove guard against importing modules outside of `src`.

@@ -2,14 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 18:36:37
+ * @LastEditTime: 2022-12-05 12:54:05
  * @Description: file description
  */
-import React, { ButtonHTMLAttributes } from 'react';
-import styled from 'styled-components';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import ButtonBase from './ButtonBase';
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+export type ButtonProps = StyledComponentPropsWithRef<'button'>;
 
 function ButtonNavigation({ children, ...otherProps }: ButtonProps) {
   return (
