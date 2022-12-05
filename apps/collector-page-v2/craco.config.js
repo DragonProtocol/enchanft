@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-04 11:59:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 01:19:09
+ * @LastEditTime: 2022-12-05 10:59:06
  * @Description: 覆盖 cra 内部 webpack 配置
  */
 
@@ -28,6 +28,7 @@ module.exports = {
           mainFields: ['module', 'main'],
         })
       );
+      // 解决出现 output file has not been built from source file
       const forkTsPlugInInstances = config.plugins.find(
         (p) => p.constructor.name === 'ForkTsCheckerWebpackPlugin'
       );
