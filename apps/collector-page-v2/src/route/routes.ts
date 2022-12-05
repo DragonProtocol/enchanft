@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-01 10:17:06
+ * @LastEditTime: 2022-12-05 19:32:48
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -79,6 +79,18 @@ export const routes: CutomRouteObject[] = [
     path: '/favorites',
     element: loadContainerElement('Favorites'),
     key: RouteKey.favorites,
+    children: [
+      {
+        path: '/favorites/events/:id',
+        element: loadContainerElement('Event'),
+        key: RouteKey.event,
+      },
+      {
+        path: '/favorites/projects/:id',
+        element: loadContainerElement('Project'),
+        key: RouteKey.project,
+      },
+    ],
   },
   {
     path: '/profile',
@@ -137,6 +149,11 @@ export const navs: CutomNavObject[] = [
     name: 'profile',
     link: getRoute(RouteKey.profile).path,
     activeRouteKeys: [RouteKey.profile],
+  },
+  {
+    name: 'favorites',
+    link: getRoute(RouteKey.favorites).path,
+    activeRouteKeys: [RouteKey.favorites],
   },
 ];
 export const permissionRouteKeys = [RouteKey.profile, RouteKey.favorites];

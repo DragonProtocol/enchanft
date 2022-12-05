@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 17:51:28
+ * @LastEditTime: 2022-12-05 19:20:52
  * @Description: 首页任务看板
  */
 import { useCallback, useMemo } from 'react';
@@ -39,8 +39,8 @@ function Event() {
   );
 
   const onFavor = useCallback(
-    () => dispatch(favorEvent({ id: eventId })),
-    [dispatch, params]
+    () => dispatch(favorEvent(data)),
+    [dispatch, data]
   );
   const onShare = () => {};
 

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 16:11:47
+ * @LastEditTime: 2022-12-05 19:08:53
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -56,7 +56,8 @@ export type EventExploreListItemResponse = {
 export type EventExploreListResponse = ApiResp<
   Array<EventExploreListItemResponse>
 >;
+export type EventFavoriteListItemResponse = EventExploreListItemResponse;
 export type EventFavoriteListResponse = ApiResp<
-  Array<EventExploreListItemResponse>
+  Array<EventFavoriteListItemResponse>
 >;
 export type EventFavorHandleResponse = ApiResp<unknown>;

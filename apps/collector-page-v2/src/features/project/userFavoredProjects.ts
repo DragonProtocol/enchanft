@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-02 16:40:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 17:23:53
+ * @LastEditTime: 2022-12-05 19:19:13
  * @Description: file description
  */
 import {
@@ -13,10 +13,10 @@ import {
 } from '@reduxjs/toolkit';
 import { fetchListForProjectExplore } from '../../services/api/project';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
-import { ProjectEntity } from '../../services/types/project';
+import { ProjectFavoriteListItemResponse } from '../../services/types/project';
 import type { RootState } from '../../store/store';
 
-export type FavoredProjectForEntity = ProjectEntity;
+export type FavoredProjectForEntity = ProjectFavoriteListItemResponse;
 type FavoredCommunityListState = EntityState<FavoredProjectForEntity> & {
   status: AsyncRequestStatus;
   errorMsg: string;

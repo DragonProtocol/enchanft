@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 17:48:13
+ * @LastEditTime: 2022-12-05 19:28:49
  * @Description: 首页任务看板
  */
 import { useParams } from 'react-router-dom';
@@ -34,8 +34,8 @@ function Project() {
   );
   const onShare = () => {};
   const onFavor = useCallback(
-    () => dispatch(favorProject({ id: projectId })),
-    [dispatch, params]
+    () => dispatch(favorProject(data)),
+    [dispatch, data]
   );
   const onEventComplete = useCallback(
     (eventId) => dispatch(completeEvent({ id: eventId })),

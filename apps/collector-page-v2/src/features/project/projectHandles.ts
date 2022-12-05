@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 17:43:21
+ * @LastEditTime: 2022-12-05 19:27:54
  * @Description: file description
  */
 import {
@@ -13,15 +13,16 @@ import {
 } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { AsyncRequestStatus } from '../../services/types';
-import { ProjectEntity } from '../../services/types/project';
+import {
+  ProjectEntity,
+  ProjectExploreListItemResponse,
+} from '../../services/types/project';
 import type { RootState } from '../../store/store';
 import { favorProject as favorProjectApi } from '../../services/api/project';
 import { addOne as addOneToFavoredProjects } from './userFavoredProjects';
 
 // 为project 点赞操作 创建一个执行队列
-export type FavorProjectParams = {
-  id: number;
-};
+export type FavorProjectParams = ProjectExploreListItemResponse;
 export type FavorProjectEntity = ProjectEntity;
 type FavorProjectQueueState = EntityState<FavorProjectEntity>;
 export const favorProjectQueueEntity = createEntityAdapter<FavorProjectEntity>({
@@ -53,7 +54,7 @@ export type ProjectHandle<T> = {
 export type ProjectHandlesState = {
   favorProject: ProjectHandle<FavorProjectParams>;
   favorProjectQueue: FavorProjectQueueState;
-  completeProject: ProjectHandle<FavorProjectParams>;
+  completeProject: ProjectHandle<CompleteProjectParams>;
   completeProjectQueue: FavorProjectQueueState;
 };
 

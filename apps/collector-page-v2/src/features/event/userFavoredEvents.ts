@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-02 16:40:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 17:08:19
+ * @LastEditTime: 2022-12-05 19:16:18
  * @Description: file description
  */
 import {
@@ -12,10 +12,10 @@ import {
   createSlice,
 } from '@reduxjs/toolkit';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
-import { EventEntity } from '../../services/types/event';
+import { EventFavoriteListItemResponse } from '../../services/types/event';
 import type { RootState } from '../../store/store';
 
-export type FavoredEventForEntity = EventEntity;
+export type FavoredEventForEntity = EventFavoriteListItemResponse;
 type FavoredCommunityListState = EntityState<FavoredEventForEntity> & {
   status: AsyncRequestStatus;
   errorMsg: string;
