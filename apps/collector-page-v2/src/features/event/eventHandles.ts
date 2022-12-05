@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 18:19:31
+ * @LastEditTime: 2022-12-05 17:11:34
  * @Description: file description
  */
 import {
@@ -150,7 +150,7 @@ export const eventHandlesSlice = createSlice({
         state.favorEvent.params = null;
         state.favorEvent.status = AsyncRequestStatus.FULFILLED;
         state.favorEvent.errorMsg = '';
-        toast.success('Applied.');
+        toast.success('Ok.');
       })
       .addCase(favorEvent.rejected, (state, action) => {
         state.favorEvent.params = null;
@@ -167,7 +167,7 @@ export const eventHandlesSlice = createSlice({
         state.completeEvent.params = null;
         state.completeEvent.status = AsyncRequestStatus.FULFILLED;
         state.completeEvent.errorMsg = '';
-        toast.success('Applied.');
+        toast.success('Ok.');
       })
       .addCase(completeEvent.rejected, (state, action) => {
         state.completeEvent.params = null;

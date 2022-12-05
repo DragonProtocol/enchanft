@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-02 16:40:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 18:52:15
+ * @LastEditTime: 2022-12-05 17:08:19
  * @Description: file description
  */
 import {
@@ -34,7 +34,7 @@ const initFavoredEventsState: FavoredCommunityListState =
 export const fetchFavoredEvents = createAsyncThunk<
   Array<FavoredEventForEntity>,
   undefined
->('event/explore/list', (params, { rejectWithValue }) => {
+>('event/user/favoredList', (params, { rejectWithValue }) => {
   // TODO 获取用户喜欢的event api 待对接
   // const resp = await fetchListForEventExplore(params);
   // if (resp.data.code === ApiRespCode.SUCCESS) {
@@ -48,7 +48,7 @@ export const userFavoredEventsSlice = createSlice({
   name: 'userFavoredEvents',
   initialState: initFavoredEventsState,
   reducers: {
-    addOne: (...args) => userFavoredEventsEntity.updateOne(...args),
+    addOne: (...args) => userFavoredEventsEntity.addOne(...args),
     updateOne: (...args) => userFavoredEventsEntity.updateOne(...args),
     setOne: (...args) => userFavoredEventsEntity.setOne(...args),
     removeOne: (...args) => userFavoredEventsEntity.removeOne(...args),

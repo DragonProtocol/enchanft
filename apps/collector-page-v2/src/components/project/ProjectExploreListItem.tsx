@@ -2,14 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 14:01:35
+ * @LastEditTime: 2022-12-05 13:00:34
  * @Description: file description
  */
-import { HtmlHTMLAttributes } from 'react';
-import styled from 'styled-components';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { ProjectExploreListItemResponse } from '../../services/types/project';
 
-export type ProjectExploreListItemProps = HtmlHTMLAttributes<HTMLDivElement> & {
+export type ProjectExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   data: ProjectExploreListItemResponse;
   isActive: boolean;
 };

@@ -2,15 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 15:30:00
+ * @LastEditTime: 2022-12-05 13:00:11
  * @Description: file description
  */
-import { HtmlHTMLAttributes } from 'react';
-import styled from 'styled-components';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { EventExploreListItemResponse } from '../../services/types/event';
 import { formatDateTime } from '../../utils/time';
 
-export type EventExploreListItemProps = HtmlHTMLAttributes<HTMLDivElement> & {
+export type EventExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   data: EventExploreListItemResponse;
   isActive: boolean;
 };

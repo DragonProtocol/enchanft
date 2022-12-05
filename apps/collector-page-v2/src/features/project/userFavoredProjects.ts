@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-02 16:40:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 18:53:34
+ * @LastEditTime: 2022-12-05 17:23:53
  * @Description: file description
  */
 import {
@@ -49,7 +49,7 @@ export const userFavoredProjectsSlice = createSlice({
   name: 'userFavoredProjects',
   initialState: initFavoredProjectsState,
   reducers: {
-    addOne: (...args) => userFavoredProjectsEntity.updateOne(...args),
+    addOne: (...args) => userFavoredProjectsEntity.addOne(...args),
     updateOne: (...args) => userFavoredProjectsEntity.updateOne(...args),
     setOne: (...args) => userFavoredProjectsEntity.setOne(...args),
     removeOne: (...args) => userFavoredProjectsEntity.removeOne(...args),

@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 19:50:36
+ * @LastEditTime: 2022-12-05 17:51:28
  * @Description: 首页任务看板
  */
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import EventDetailCard from '../components/event/EventDetailCard';
@@ -43,6 +43,19 @@ function Event() {
     [dispatch, params]
   );
   const onShare = () => {};
+
+  const isFavored = useMemo(
+    () => favoredIds.includes(eventId),
+    [favoredIds, eventId]
+  );
+  const loadingFavor = useMemo(
+    () => favorQueueIds.includes(eventId),
+    [favorQueueIds, eventId]
+  );
+  const isCompleted = useMemo(
+    () => completedIds.includes(eventId),
+    [completedIds, eventId]
+  );
   return data ? (
     <EventDetailCard
       data={data}
@@ -52,9 +65,11 @@ function Event() {
       displayFavor={isLogin}
       displayComplete={isLogin}
       displayShare={isLogin}
-      isFavored={favoredIds.includes(eventId)}
-      isCompleted={completedIds.includes(eventId)}
-      loadingFavor={favorQueueIds.includes(eventId)}
+      isFavored={isFavored}
+      loadingFavor={loadingFavor}
+      disabledFavor={isFavored || loadingFavor}
+      isCompleted={isCompleted}
+      disabledComplete={isCompleted}
     />
   ) : null;
 }

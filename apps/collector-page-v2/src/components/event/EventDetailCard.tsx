@@ -2,11 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 19:44:55
+ * @LastEditTime: 2022-12-05 12:59:45
  * @Description: file description
  */
-import { HtmlHTMLAttributes } from 'react';
-import styled from 'styled-components';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import type { EventExploreListItemResponse } from '../../services/types/event';
 import { formatDateTime } from '../../utils/time';
 
@@ -16,7 +15,7 @@ export type EventDetailCardData = Omit<
 > &
   Partial<Pick<EventExploreListItemResponse, 'project'>>;
 
-export type EventDetailCardProps = HtmlHTMLAttributes<HTMLDivElement> & {
+export type EventDetailCardProps = StyledComponentPropsWithRef<'div'> & {
   data: EventDetailCardData;
   displayFavor?: boolean;
   disabledFavor?: boolean;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 19:47:57
+ * @LastEditTime: 2022-12-05 17:39:21
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -14,6 +14,7 @@ import EventDetailCard from '../event/EventDetailCard';
 
 export type ProjectDetailCardProps = {
   data: ProjectExploreListItemResponse;
+  completedEventIds: number[];
   displayFavor?: boolean;
   disabledFavor?: boolean;
   loadingFavor?: boolean;
@@ -25,6 +26,7 @@ export type ProjectDetailCardProps = {
 };
 export default function ProjectDetailCard({
   data,
+  completedEventIds,
   displayFavor = true,
   disabledFavor,
   loadingFavor,
@@ -75,6 +77,8 @@ export default function ProjectDetailCard({
             onComplete={() => onEventComplete && onEventComplete(item)}
             displayFavor={false}
             displayShare={false}
+            disabledComplete={completedEventIds.includes(item.id)}
+            isCompleted={completedEventIds.includes(item.id)}
           />
         ))}
       </LayoutMain>

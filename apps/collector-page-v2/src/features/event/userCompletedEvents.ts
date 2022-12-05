@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-02 16:40:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 18:35:21
+ * @LastEditTime: 2022-12-05 17:11:09
  * @Description: file description
  */
 import {
@@ -35,7 +35,7 @@ const initCompletedEventsState: CompletedCommunityListState =
 export const fetchCompletedEvents = createAsyncThunk<
   Array<CompletedEventForEntity>,
   undefined
->('event/explore/list', (params) => {
+>('event/user/completedList', (params) => {
   // TODO 获取用户标记完成的event
   return fetchListForUserCompletedEvents().map((id) => ({ id }));
 });
@@ -44,7 +44,7 @@ export const userCompletedEventsSlice = createSlice({
   name: 'userCompletedEvents',
   initialState: initCompletedEventsState,
   reducers: {
-    addOne: (...args) => userCompletedEventsEntity.updateOne(...args),
+    addOne: (...args) => userCompletedEventsEntity.addOne(...args),
     updateOne: (...args) => userCompletedEventsEntity.updateOne(...args),
     setOne: (...args) => userCompletedEventsEntity.setOne(...args),
     removeOne: (...args) => userCompletedEventsEntity.removeOne(...args),

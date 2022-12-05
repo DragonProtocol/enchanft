@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 17:54:44
+ * @LastEditTime: 2022-12-05 16:43:15
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -23,8 +23,8 @@ export type ProjectEntity = {
 };
 export type ProjectExploreListParams = {
   keywords?: string;
-  orderBy?: OrderBy;
-  type?: ProjectType;
+  orderBy?: OrderBy | '';
+  type?: ProjectType | '';
   pageSize?: number;
   pageNumber?: number;
 };

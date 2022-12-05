@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 17:59:08
+ * @LastEditTime: 2022-12-05 17:43:21
  * @Description: file description
  */
 import {
@@ -123,7 +123,7 @@ export const projectHandlesSlice = createSlice({
         state.favorProject.params = null;
         state.favorProject.status = AsyncRequestStatus.FULFILLED;
         state.favorProject.errorMsg = '';
-        toast.success('Applied.');
+        toast.success('Ok.');
       })
       .addCase(favorProject.rejected, (state, action) => {
         state.favorProject.params = null;
@@ -138,9 +138,9 @@ export const selectProjectHandlesState = (state: RootState) =>
   state.projectHandles;
 
 export const {
-  selectAll: selectAllFavorProject,
-  selectIds: selectIdsFavorProject,
-  selectById: selectByIdFavorProject,
+  selectAll: selectAllFavorProjectQueue,
+  selectIds: selectIdsFavorProjectQueue,
+  selectById: selectByIdFavorProjectQueue,
 } = favorProjectQueueEntity.getSelectors(
   (state: RootState) => state.projectHandles.favorProjectQueue
 );

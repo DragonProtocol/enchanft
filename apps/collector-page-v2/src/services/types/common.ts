@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 14:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 11:31:37
+ * @LastEditTime: 2022-12-05 15:20:44
  * @Description: file description
  */
 export enum OrderBy {
@@ -13,7 +13,7 @@ export enum OrderBy {
 }
 
 export enum Platform {
-  GALXE = 'GALXE',
+  GALXE = 'Platform',
   NOOX = 'NOOX',
   POAP = 'POAP',
   QUEST3 = 'QUEST3',

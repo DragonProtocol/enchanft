@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 18:50:41
+ * @LastEditTime: 2022-12-05 16:16:13
  * @Description: file description
  */
 import qs from 'qs';
@@ -16,11 +16,10 @@ import request, { RequestPromise } from './request';
 export function fetchListForEventExplore(
   params: EventExploreListParams
 ): RequestPromise<EventExploreListResponse> {
-  const data = qs.stringify(params);
   return request({
     url: `/events/searching`,
     method: 'get',
-    data,
+    params,
   });
 }
 export function favorEvent(
