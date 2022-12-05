@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-01 11:27:17
+ * @LastEditTime: 2022-12-02 12:38:20
  * @Description: 常用类型定义
  */
 export enum AsyncRequestStatus {
@@ -18,13 +18,5 @@ export enum ApiRespCode {
 export type ApiResp<T> = {
   code: ApiRespCode;
   msg: string;
-  data: T;
-};
-
-// TODO 预留的针对与分页的api响应格式，暂时还没确定，可能不需要
-export type ApiPageResp<T> = {
-  code: ApiRespCode;
-  msg: string;
-  currentPage: number;
   data: T;
 };
