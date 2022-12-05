@@ -2,13 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 18:36:26
+ * @LastEditTime: 2022-12-05 12:52:16
  * @Description: 基础按钮
  */
-import React, { ButtonHTMLAttributes } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+export type ButtonProps = StyledComponentPropsWithRef<'button'>;
 
 function ButtonBase({ children, ...otherProps }: ButtonProps) {
   return <ButtonBaseWrapper {...otherProps}>{children}</ButtonBaseWrapper>;

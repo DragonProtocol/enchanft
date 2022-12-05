@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-04 11:59:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-01 10:29:51
+ * @LastEditTime: 2022-12-05 12:42:31
  * @Description: 覆盖 cra 内部 webpack 配置
  */
 
@@ -13,6 +13,9 @@ const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
+  eslint: {
+    mode: 'file',
+  },
   webpack: {
     configure: (config) => {
       // Remove guard against importing modules outside of `src`.
@@ -28,6 +31,13 @@ module.exports = {
           mainFields: ['module', 'main'],
         })
       );
+      // 解决出现 output file has not been built from source file
+      const forkTsPlugInInstances = config.plugins.find(
+        (p) => p.constructor.name === 'ForkTsCheckerWebpackPlugin'
+      );
+      if (forkTsPlugInInstances) {
+        forkTsPlugInInstances.options.typescript.build = true;
+      }
 
       // Replace include option for babel loader with exclude
       // so babel will handle workspace projects as well.
