@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-04 11:59:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-01 10:29:51
+ * @LastEditTime: 2022-12-05 01:19:09
  * @Description: 覆盖 cra 内部 webpack 配置
  */
 
@@ -28,6 +28,12 @@ module.exports = {
           mainFields: ['module', 'main'],
         })
       );
+      const forkTsPlugInInstances = config.plugins.find(
+        (p) => p.constructor.name === 'ForkTsCheckerWebpackPlugin'
+      );
+      if (forkTsPlugInInstances) {
+        forkTsPlugInInstances.options.typescript.build = true;
+      }
 
       // Replace include option for babel loader with exclude
       // so babel will handle workspace projects as well.
