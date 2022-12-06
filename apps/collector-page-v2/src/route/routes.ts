@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-01 10:17:06
+ * @LastEditTime: 2022-12-06 10:41:42
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -17,6 +17,7 @@ export enum RouteKey {
   project = 'project',
   contents = 'contents',
   content = 'content',
+  contentCreate = 'contentCreate',
   favorites = 'favorites',
   frens = 'frens',
   profile = 'profile',
@@ -74,6 +75,11 @@ export const routes: CutomRouteObject[] = [
         key: RouteKey.content,
       },
     ],
+  },
+  {
+    path: '/contents/create',
+    element: loadContainerElement('ContentCreate'),
+    key: RouteKey.contentCreate,
   },
   {
     path: '/favorites',
@@ -138,5 +144,21 @@ export const navs: CutomNavObject[] = [
     link: getRoute(RouteKey.profile).path,
     activeRouteKeys: [RouteKey.profile],
   },
+  {
+    name: 'favorites',
+    link: getRoute(RouteKey.favorites).path,
+    activeRouteKeys: [RouteKey.favorites],
+  },
+  {
+    name: 'add content',
+    link: getRoute(RouteKey.contentCreate).path,
+    activeRouteKeys: [RouteKey.contentCreate],
+  },
 ];
-export const permissionRouteKeys = [RouteKey.profile, RouteKey.favorites];
+
+// 需要权限的路由
+export const permissionRouteKeys = [
+  RouteKey.profile,
+  RouteKey.favorites,
+  RouteKey.contentCreate,
+];
