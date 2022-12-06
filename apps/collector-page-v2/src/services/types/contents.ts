@@ -20,6 +20,7 @@ export enum OrderBy {
 export type ContentListItem = {
   id: number;
   title: string;
+  createdAt: number;
   value: string;
   author: string;
   description: string;
@@ -30,6 +31,8 @@ export type ContentListItem = {
   platform: {
     logo: string;
   };
+  upVoted: boolean;
+  favored: boolean;
   uniProject: {
     id: 1;
     description: string;

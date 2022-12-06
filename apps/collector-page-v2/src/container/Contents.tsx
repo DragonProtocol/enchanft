@@ -5,28 +5,57 @@
  * @LastEditTime: 2022-11-30 14:57:46
  * @Description: 首页任务看板
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+// import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
-import ListRouteLayout from '../components/layout/ListRoutelLayout';
-import ContentsHeader from '../components/contents/Header';
-import { RouteKey } from '../route/routes';
-import useRoute from '../route/useRoute';
+import dayjs from 'dayjs';
 
-import { fetchContents } from '../services/api/contents';
+import ContentsHeader from '../components/contents/Header';
+// import useRoute from '../route/useRoute';
+
+import {
+  fetchContents,
+  voteContent,
+  favorsContent,
+} from '../services/api/contents';
 import { ContentListItem } from '../services/types/contents';
+import { addOrRemoveFromLocal, getLocalData } from '../utils/contentStore';
 
 function Contents() {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { user } = useWlUserReact();
-  const { lastRouteMeta } = useRoute();
-  const params = useParams();
+  // const { lastRouteMeta } = useRoute();
+  // const params = useParams();
+  const queryRef = useRef<{
+    keywords: string;
+    type: string;
+    orderBy: string;
+  }>();
+  const currPageSize = useRef(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
   const [selectContent, setSelectContent] = useState<ContentListItem>();
+  const [localData, setLocalData] = useState<{ [key: number]: number }>({});
   const [loading, setLoading] = useState(true);
-  const [currPageSize, setCurrPageSize] = useState(0);
+
+  const seeOrHidden = useCallback((id: number) => {
+    const data = addOrRemoveFromLocal(id);
+    setLocalData(data);
+    setSelectContent(undefined);
+  }, []);
+
+  const vote = useCallback(async () => {
+    if (!selectContent) return;
+    if (selectContent.upVoted) return;
+    await voteContent(selectContent.id, user.token);
+  }, [user.token, selectContent?.id]);
+
+  const favors = useCallback(async () => {
+    if (!selectContent) return;
+    if (selectContent.favored) return;
+    await favorsContent(selectContent.id, user.token);
+  }, [user.token, selectContent?.id]);
 
   const fetchData = useCallback(
     async (keywords: string, type: string, orderBy: string) => {
@@ -51,6 +80,25 @@ function Contents() {
     [currPageSize, user.token]
   );
 
+  const loadMore = useCallback(
+    async (pageSize: number) => {
+      const { keywords, type, orderBy } = queryRef.current;
+      try {
+        const { data } = await fetchContents(
+          { keywords, type, orderBy, pageSize },
+          user.token
+        );
+        setContents([...contents, ...data.data]);
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        // TODO
+        console.log('load more done');
+      }
+    },
+    [queryRef.current, contents]
+  );
+
   const contentValue = useMemo(() => {
     if (!selectContent?.value) return '';
     try {
@@ -61,33 +109,60 @@ function Contents() {
     }
   }, [selectContent]);
 
+  const keysFilter = useMemo(() => {
+    return Object.values(localData);
+  }, [localData]);
+
+  useEffect(() => {
+    const data = getLocalData();
+    setLocalData(data);
+  }, []);
+
   return (
     <Box id="box">
       <ContentsHeader
         filterAction={(keywords: string, type: string, orderBy: string) => {
+          queryRef.current = {
+            keywords,
+            type,
+            orderBy,
+          };
           fetchData(keywords, type, orderBy);
         }}
       />
       {(loading && <div>loading</div>) || (
         <ContentsWrapper>
           <ListBox>
-            {contents.map((item) => (
-              <ContentItem
-                key={item.id}
-                isActive={item.id === selectContent?.id}
-                onClick={() => {
-                  setSelectContent(item);
-                }}
-              >
-                <ContentItemTitle>
-                  <span>{item.type}</span>
-                  <span>{item.author}</span>
-                  <span>Date</span>
-                </ContentItemTitle>
-                <p>{item.title}</p>
-                <ContentItemFooter>up:{item.upVoteNum}</ContentItemFooter>
-              </ContentItem>
-            ))}
+            {contents
+              .filter((item) => {
+                return !keysFilter.includes(item.id);
+              })
+              .map((item) => (
+                <ContentItem
+                  key={item.id}
+                  isActive={item.id === selectContent?.id}
+                  onClick={() => {
+                    setSelectContent(item);
+                  }}
+                >
+                  <ContentItemTitle>
+                    <span>{item.type}</span>
+                    <span>{item.author}</span>
+                    <span>{dayjs(item.createdAt).format('DD/MM/YYYY')}</span>
+                  </ContentItemTitle>
+                  <p>{item.title}</p>
+                  <ContentItemFooter>up:{item.upVoteNum}</ContentItemFooter>
+                </ContentItem>
+              ))}
+            <button
+              type="button"
+              onClick={() => {
+                currPageSize.current += 1;
+                loadMore(currPageSize.current);
+              }}
+            >
+              More
+            </button>
           </ListBox>
 
           <ContentBox>
@@ -95,7 +170,33 @@ function Contents() {
               <>
                 <ContentTitle>
                   <div>{selectContent?.title}</div>
-                  <div>{selectContent?.author}</div>
+                  <div>
+                    <div>{selectContent?.author}</div>
+                    <div>
+                      <span
+                        onClick={() => {
+                          vote();
+                        }}
+                      >
+                        up {selectContent.upVoteNum}
+                      </span>
+                      <span
+                        onClick={() => {
+                          favors();
+                        }}
+                      >
+                        {selectContent.favored ? 'favored' : 'favor'}
+                      </span>
+                      <span
+                        onClick={() => {
+                          seeOrHidden(selectContent.id);
+                        }}
+                      >
+                        hidden
+                      </span>
+                      {/* <span>share</span> */}
+                    </div>
+                  </div>
                 </ContentTitle>
                 <ContentBody
                   dangerouslySetInnerHTML={{ __html: contentValue }}
@@ -124,7 +225,7 @@ const ContentsWrapper = styled.div`
 const ListBox = styled.div`
   flex: 1;
   min-width: 500px;
-  height: calc(100vh - 92px);
+  height: calc(100vh - 162px);
   overflow: scroll;
 `;
 const ContentBox = styled.div`
@@ -145,8 +246,14 @@ const ContentBox = styled.div`
 const ContentTitle = styled.div`
   border-bottom: 1px dotted gray;
   > div {
+    display: flex;
+    justify-content: space-between;
     &:first-child {
       font-size: 25px;
+    }
+    > div {
+      display: flex;
+      gap: 10px;
     }
   }
 `;
