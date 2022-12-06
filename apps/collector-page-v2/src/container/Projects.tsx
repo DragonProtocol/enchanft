@@ -2,13 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 16:53:17
+ * @LastEditTime: 2022-12-06 19:03:55
  * @Description: 首页任务看板
  */
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import ListRouteLayout from '../components/layout/ListRoutelLayout';
 import ProjectExploreList from '../components/project/ProjectExploreList';
 import ProjectExploreListFilter, {
   defaultProjectExploreListFilterValues,
@@ -20,10 +19,11 @@ import {
   selectState,
 } from '../features/project/projectExploreList';
 import { AsyncRequestStatus } from '../services/types';
+import { ProjectExploreListItemResponse } from '../services/types/project';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import Project from './Project';
 
 export default function Projects() {
-  const navigate = useNavigate();
   const params = useParams();
   const activeId = Number(params.id);
   const { status } = useAppSelector(selectState);
@@ -31,6 +31,8 @@ export default function Projects() {
   const [filter, setFilter] = useState<ProjectExploreListFilterValues>(
     defaultProjectExploreListFilterValues
   );
+  const [project, setProject] =
+    useState<Maybe<ProjectExploreListItemResponse>>(null);
   useEffect(() => {
     dispatch(fetchProjectExploreList(filter));
   }, [filter]);
@@ -46,19 +48,20 @@ export default function Projects() {
         values={filter}
         onChange={(newFilter) => setFilter(newFilter)}
       />
-      <ProjectsContentBox>
-        {isLoading ? (
-          <span>loading</span>
-        ) : (
-          <ListRouteLayout>
+      <MainBox>
+        <ListBox>
+          {isLoading ? (
+            <span>loading</span>
+          ) : (
             <ProjectExploreList
               data={projectExploreList}
               activeId={activeId}
-              onItemClick={(item) => navigate(`/projects/${item.id}`)}
+              onItemClick={setProject}
             />
-          </ListRouteLayout>
-        )}
-      </ProjectsContentBox>
+          )}
+        </ListBox>
+        <ContentBox>{project && <Project data={project} />}</ContentBox>
+      </MainBox>
     </ProjectsWrapper>
   );
 }
@@ -69,7 +72,15 @@ const ProjectsWrapper = styled.div`
   flex-direction: column;
   gap: 20px;
 `;
-const ProjectsContentBox = styled.div`
+const MainBox = styled.div`
   width: 100%;
+  flex: 1;
+  display: flex;
+  gap: 20px;
+`;
+const ListBox = styled.div`
+  width: 400px;
+`;
+const ContentBox = styled.div`
   flex: 1;
 `;

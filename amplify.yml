@@ -70,6 +70,9 @@ applications:
         preBuild:
           commands:
             - npm i --legacy-peer-deps
+            - cd ../../
+            - npm i
+            - cd apps/collector-page-v2
         build:
           commands:
             - npm run build
