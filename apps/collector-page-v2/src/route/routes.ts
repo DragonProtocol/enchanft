@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 10:41:42
+ * @LastEditTime: 2022-12-06 11:24:09
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -156,9 +156,11 @@ export const navs: CutomNavObject[] = [
   },
 ];
 
-// 需要权限的路由
-export const permissionRouteKeys = [
+// 需要登录权限的路由
+export const permissionLoginRouteKeys = [
   RouteKey.profile,
   RouteKey.favorites,
   RouteKey.contentCreate,
 ];
+// 需要admin权限的路由
+export const permissionAdminRouteKeys = [RouteKey.contentCreate];
