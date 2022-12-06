@@ -1,5 +1,4 @@
-import { type } from 'os';
-import { ApiPageResp, ApiResp } from '.';
+import { ApiResp } from '.';
 
 export type PoapData = {
   event: {
@@ -142,4 +141,4 @@ export type ProfileEntity = {
   noox: NooxData;
   nfts: NFTData;
 };
-export type ProfileResponse = ApiPageResp<ProfileEntity>;
+export type ProfileResponse = ApiResp<ProfileEntity>;

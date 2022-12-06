@@ -1,4 +1,4 @@
-import { ApiPageResp } from '.';
+import { ApiResp } from '.';
 
 export enum ContentType {
   NEWS = 'News',
@@ -41,4 +41,4 @@ export type ContentListItem = {
   };
 };
 
-export type ContentsListResponse = ApiPageResp<Array<ContentListItem>>;
+export type ContentsListResponse = ApiResp<Array<ContentListItem>>;
