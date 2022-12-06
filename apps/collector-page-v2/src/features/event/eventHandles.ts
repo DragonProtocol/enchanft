@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 19:28:14
+ * @LastEditTime: 2022-12-07 07:44:20
  * @Description: file description
  */
 import {
@@ -22,8 +22,8 @@ import {
   favorEvent as favorEventApi,
   completeEvent as completeEventApi,
 } from '../../services/api/event';
-import { addOne as addOneToFavoredEvents } from './userFavoredEvents';
 import { addOne as addOneToCompleteedEvents } from './userCompletedEvents';
+import { addOneWithEvents } from '../favorite/userGroupFavorites';
 
 // 为event 点赞操作 创建一个执行队列
 export type FavorEventParams = EventExploreListItemResponse;
@@ -82,7 +82,7 @@ export const favorEvent = createAsyncThunk(
     dispatch(addOneToFavorEventQueue(params));
     const resp = await favorEventApi(params.id);
     if (resp.data.code === 0) {
-      dispatch(addOneToFavoredEvents(params));
+      dispatch(addOneWithEvents(params));
       dispatch(removeOneForFavorEventQueue(params.id));
     } else {
       dispatch(removeOneForFavorEventQueue(params.id));

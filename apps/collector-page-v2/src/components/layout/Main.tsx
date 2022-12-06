@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 19:27:04
+ * @LastEditTime: 2022-12-07 07:37:09
  * @Description: 站点主体内容（路由导航）
  */
 import { useRoutes } from 'react-router-dom';
@@ -20,6 +20,10 @@ import {
   fetchUserGroupFavorites,
   removeAllFavorites,
 } from '../../features/favorite/userGroupFavorites';
+import {
+  fetchCompletedEvents,
+  removeAll as removeAllForCompletedEvents,
+} from '../../features/event/userCompletedEvents';
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -29,9 +33,11 @@ function Main() {
   useEffect(() => {
     if (!isLogin) {
       dispatch(removeAllFavorites());
+      dispatch(removeAllForCompletedEvents());
       return;
     }
     dispatch(fetchUserGroupFavorites());
+    dispatch(fetchCompletedEvents());
   }, [isLogin]);
   const renderElement = useCallback(
     (route: CutomRouteObject) => {

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 19:27:54
+ * @LastEditTime: 2022-12-07 07:44:43
  * @Description: file description
  */
 import {
@@ -19,7 +19,7 @@ import {
 } from '../../services/types/project';
 import type { RootState } from '../../store/store';
 import { favorProject as favorProjectApi } from '../../services/api/project';
-import { addOne as addOneToFavoredProjects } from './userFavoredProjects';
+import { addOneWithProjects } from '../favorite/userGroupFavorites';
 
 // 为project 点赞操作 创建一个执行队列
 export type FavorProjectParams = ProjectExploreListItemResponse;
@@ -78,7 +78,7 @@ export const favorProject = createAsyncThunk(
     dispatch(addOneToFavorProjectQueue(params));
     const resp = await favorProjectApi(params.id);
     if (resp.data.code === 0) {
-      dispatch(addOneToFavoredProjects(params));
+      dispatch(addOneWithProjects(params));
       dispatch(removeOneForFavorProjectQueue(params.id));
     } else {
       dispatch(removeOneForFavorProjectQueue(params.id));

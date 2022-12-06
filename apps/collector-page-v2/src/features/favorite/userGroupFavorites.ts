@@ -2,8 +2,8 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-06 14:31:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 18:18:11
- * @Description: file description
+ * @LastEditTime: 2022-12-07 07:53:00
+ * @Description: 用户的 favorites 分组数据
  */
 import {
   EntityState,
@@ -136,16 +136,19 @@ export const {
 );
 export const selectState = (state: RootState) => state.userGroupFavorites;
 export const {
+  // events
   addOneWithEvents,
   updateOneWithEvents,
   setOneWithEvents,
   removeOneWithEvents,
   removeAllWithEvents,
+  // projects
   addOneWithProjects,
   updateOneWithProjects,
   setOneWithProjects,
   removeOneWithProjects,
   removeAllWithProjects,
+  // common
   removeAllFavorites,
 } = actions;
 export default reducer;
