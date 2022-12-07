@@ -10,26 +10,20 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
-import dayjs from 'dayjs';
 
 import ContentsHeader from '../components/contents/Header';
 // import useRoute from '../route/useRoute';
 
-import {
-  fetchContents,
-  voteContent,
-  favorsContent,
-} from '../services/api/contents';
+import { fetchContents } from '../services/api/contents';
 import { ContentListItem } from '../services/types/contents';
-import { addOrRemoveFromLocal, getLocalData } from '../utils/contentStore';
 import ListItem from '../components/contents/ListItem';
 import ContentShower from '../components/contents/ContentShower';
+import userFavored from '../hooks/useFavored';
+import { useVoteUp } from '../hooks/useVoteUp';
+import useContentHidden from '../hooks/useContentHidden';
 
 function Contents() {
-  // const navigate = useNavigate();
   const { user } = useWlUserReact();
-  // const { lastRouteMeta } = useRoute();
-  // const params = useParams();
   const queryRef = useRef<{
     keywords: string;
     type: string;
@@ -38,26 +32,13 @@ function Contents() {
   const currPageSize = useRef(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
   const [selectContent, setSelectContent] = useState<ContentListItem>();
-  const [localData, setLocalData] = useState<{ [key: number]: number }>({});
   const [loading, setLoading] = useState(true);
 
-  const seeOrHidden = useCallback((id: number) => {
-    const data = addOrRemoveFromLocal(id);
-    setLocalData(data);
-    setSelectContent(undefined);
-  }, []);
+  const { keysFilter, contentHiddenOrNot } = useContentHidden();
 
-  const vote = useCallback(async () => {
-    if (!selectContent) return;
-    if (selectContent.upVoted) return;
-    await voteContent(selectContent.id, user.token);
-  }, [user.token, selectContent?.id]);
+  const vote = useVoteUp(selectContent?.id, selectContent?.upVoted);
 
-  const favors = useCallback(async () => {
-    if (!selectContent) return;
-    if (selectContent.favored) return;
-    await favorsContent(selectContent.id, user.token);
-  }, [user.token, selectContent?.id]);
+  const favors = userFavored(selectContent?.id, selectContent?.favored);
 
   const fetchData = useCallback(
     async (keywords: string, type: string, orderBy: string) => {
@@ -111,15 +92,6 @@ function Contents() {
     }
   }, [selectContent]);
 
-  const keysFilter = useMemo(() => {
-    return Object.values(localData);
-  }, [localData]);
-
-  useEffect(() => {
-    const data = getLocalData();
-    setLocalData(data);
-  }, []);
-
   return (
     <Box id="box">
       <ContentsHeader
@@ -168,7 +140,8 @@ function Contents() {
                 voteAction={vote}
                 favorsActions={favors}
                 hiddenAction={() => {
-                  seeOrHidden(selectContent.id);
+                  contentHiddenOrNot(selectContent.id);
+                  setSelectContent(undefined);
                 }}
               />
             )}
