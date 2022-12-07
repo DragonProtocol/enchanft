@@ -42,3 +42,15 @@ export type ContentListItem = {
 };
 
 export type ContentsListResponse = ApiResp<Array<ContentListItem>>;
+
+export type URLParseResponse = ApiResp<{
+  title: string;
+  content: string;
+  // byline: null;
+  // dir: null;
+  excerpt: string;
+  lang: string;
+  length: number;
+  // siteName: null;
+  textContent: string;
+}>;

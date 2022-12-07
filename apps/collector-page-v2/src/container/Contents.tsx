@@ -22,6 +22,8 @@ import {
 } from '../services/api/contents';
 import { ContentListItem } from '../services/types/contents';
 import { addOrRemoveFromLocal, getLocalData } from '../utils/contentStore';
+import ListItem from '../components/contents/ListItem';
+import ContentShower from '../components/contents/ContentShower';
 
 function Contents() {
   // const navigate = useNavigate();
@@ -138,21 +140,14 @@ function Contents() {
                 return !keysFilter.includes(item.id);
               })
               .map((item) => (
-                <ContentItem
+                <ListItem
                   key={item.id}
                   isActive={item.id === selectContent?.id}
-                  onClick={() => {
+                  clickAction={() => {
                     setSelectContent(item);
                   }}
-                >
-                  <ContentItemTitle>
-                    <span>{item.type}</span>
-                    <span>{item.author}</span>
-                    <span>{dayjs(item.createdAt).format('DD/MM/YYYY')}</span>
-                  </ContentItemTitle>
-                  <p>{item.title}</p>
-                  <ContentItemFooter>up:{item.upVoteNum}</ContentItemFooter>
-                </ContentItem>
+                  {...item}
+                />
               ))}
             <button
               type="button"
@@ -167,41 +162,15 @@ function Contents() {
 
           <ContentBox>
             {selectContent && (
-              <>
-                <ContentTitle>
-                  <div>{selectContent?.title}</div>
-                  <div>
-                    <div>{selectContent?.author}</div>
-                    <div>
-                      <span
-                        onClick={() => {
-                          vote();
-                        }}
-                      >
-                        up {selectContent.upVoteNum}
-                      </span>
-                      <span
-                        onClick={() => {
-                          favors();
-                        }}
-                      >
-                        {selectContent.favored ? 'favored' : 'favor'}
-                      </span>
-                      <span
-                        onClick={() => {
-                          seeOrHidden(selectContent.id);
-                        }}
-                      >
-                        hidden
-                      </span>
-                      {/* <span>share</span> */}
-                    </div>
-                  </div>
-                </ContentTitle>
-                <ContentBody
-                  dangerouslySetInnerHTML={{ __html: contentValue }}
-                />
-              </>
+              <ContentShower
+                {...selectContent}
+                content={contentValue}
+                voteAction={vote}
+                favorsActions={favors}
+                hiddenAction={() => {
+                  seeOrHidden(selectContent.id);
+                }}
+              />
             )}
           </ContentBox>
         </ContentsWrapper>
@@ -242,52 +211,4 @@ const ContentBox = styled.div`
   & pre {
     overflow: scroll;
   }
-`;
-const ContentTitle = styled.div`
-  border-bottom: 1px dotted gray;
-  > div {
-    display: flex;
-    justify-content: space-between;
-    &:first-child {
-      font-size: 25px;
-    }
-    > div {
-      display: flex;
-      gap: 10px;
-    }
-  }
-`;
-const ContentBody = styled.div``;
-
-const ContentItem = styled.div<{ isActive: boolean }>`
-  line-height: 27px;
-  padding: 20px 0;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-  border-bottom: 1px do lightgray;
-  background: ${(props) => (props.isActive ? '#000' : 'none')};
-  color: ${(props) => (props.isActive ? '#fff' : '#000')};
-  &:hover {
-    background: #999;
-  }
-`;
-
-const ContentItemTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  & span {
-    &:first-child {
-      border: 1px solid gray;
-    }
-    &:last-child {
-      flex-grow: 1;
-      text-align: end;
-    }
-  }
-`;
-
-const ContentItemFooter = styled.div`
-  display: flex;
 `;
