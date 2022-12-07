@@ -1,4 +1,4 @@
-import { ContentsListResponse } from '../types/contents';
+import { ContentsListResponse, URLParseResponse } from '../types/contents';
 import request, { RequestPromise } from './request';
 
 // TODO
@@ -27,7 +27,7 @@ export function saveContent(token: string) {
   });
 }
 
-export function contentParse(url: string) {
+export function contentParse(url: string): RequestPromise<URLParseResponse> {
   return request({
     url: `/contents/parser?url=${url}`,
   });
