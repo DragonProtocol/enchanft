@@ -1,4 +1,8 @@
-import { ContentsListResponse, URLParseResponse } from '../types/contents';
+import {
+  ContentsListResponse,
+  ContentType,
+  URLParseResponse,
+} from '../types/contents';
 import request, { RequestPromise } from './request';
 
 // TODO
@@ -8,17 +12,25 @@ export function getContentProjects() {
   });
 }
 
-// TODO
-export function saveContent(token: string) {
+export function saveContent(
+  data: {
+    title: string;
+    author: string;
+    url: string;
+    types: ContentType;
+    uniProjectId: number | Array<number>;
+  },
+  token: string
+) {
   return request({
     url: `/contents`,
     method: 'post',
     data: {
-      tittle: 'JavaScript URL 正则怎么写',
-      author: '实用前端',
-      url: 'https://juejin.cn/post/6844903846766968845',
-      type: 'READS',
-      uniProjectId: 1,
+      title: data.title,
+      author: data.author,
+      url: data.url,
+      type: data.types.toUpperCase().replace(' ', '_'),
+      uniProjedctId: data.uniProjectId,
     },
     headers: {
       token,

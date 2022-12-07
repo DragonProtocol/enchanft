@@ -1,15 +1,25 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useWlUserReact } from '@ecnft/wl-user-react';
+import { useCallback, useState } from 'react';
 import styled from 'styled-components';
-import { contentParse } from '../services/api/contents';
+import { contentParse, saveContent } from '../services/api/contents';
+import { ContentType } from '../services/types/contents';
 
 function ContentCreate() {
+  const { user } = useWlUserReact();
+  const [parsing, setParsing] = useState(false);
+
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
   const [originalUrl, setOriginalUrl] = useState('');
+  const [type, setType] = useState(ContentType.NEWS);
+
   const [urlContent, setUrlContent] = useState({
     title: '',
     content: '',
   });
-  const [parsing, setParsing] = useState(false);
+
   const loadUrlContent = useCallback(async () => {
+    if (!originalUrl) return;
     setParsing(true);
     const { data } = await contentParse(originalUrl);
 
@@ -20,18 +30,39 @@ function ContentCreate() {
     setParsing(false);
   }, [originalUrl]);
 
-  useEffect(() => {}, []);
+  const submitContent = useCallback(async () => {
+    await saveContent(
+      {
+        title,
+        author,
+        url: originalUrl,
+        types: type,
+        uniProjectId: 1,
+      },
+      user.token
+    );
+  }, [user.token, title, author, originalUrl, type]);
 
   return (
     <ContentCreateWrapper>
       <CreateBox>
         <div>
           <div>Title</div>
-          <input title="title" type="text" />
+          <input
+            title="title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
         <div>
           <div>Author</div>
-          <input title="author" type="text" />
+          <input
+            title="author"
+            type="text"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+          />
         </div>
         <div>
           <div>Original URL</div>
@@ -47,15 +78,34 @@ function ContentCreate() {
         </div>
         <div>
           <div>Content Type</div>
-          <input title="content-type" type="text" />
+          <select
+            title="type"
+            value={type}
+            onChange={(e) => {
+              setType(e.target.value as ContentType);
+            }}
+          >
+            {Object.values(ContentType).map((item) => {
+              return (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </select>
         </div>
         <div>Projects</div>
         <div>
-          <button type="button">submit</button>
+          <button type="button" onClick={submitContent}>
+            submit
+          </button>
         </div>
       </CreateBox>
       {(parsing && <ShowBox>Parseing</ShowBox>) || (
-        <ShowBox dangerouslySetInnerHTML={{ __html: urlContent.content }} />
+        <ShowBox>
+          <h3>{urlContent.title}</h3>
+          <div dangerouslySetInnerHTML={{ __html: urlContent.content }} />
+        </ShowBox>
       )}
     </ContentCreateWrapper>
   );
@@ -74,7 +124,8 @@ const CreateBox = styled.div`
   display: flex;
   flex-direction: column;
   > div {
-    input {
+    input,
+    select {
       box-sizing: border-box;
       width: 100%;
     }
