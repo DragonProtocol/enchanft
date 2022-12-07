@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 19:29:48
+ * @LastEditTime: 2022-12-07 10:42:55
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -12,6 +12,7 @@ import React, { ReactNode } from 'react';
 export enum RouteKey {
   home = 'home',
   events = 'events',
+  eventCreate = 'eventCreate',
   event = 'event',
   projects = 'projects',
   project = 'project',
@@ -44,6 +45,11 @@ export const routes: CutomRouteObject[] = [
     path: '/events',
     element: loadContainerElement('Events'),
     key: RouteKey.events,
+  },
+  {
+    path: '/events/create',
+    element: loadContainerElement('EventCreate'),
+    key: RouteKey.eventCreate,
   },
   {
     path: '/projects',
@@ -134,6 +140,11 @@ export const navs: CutomNavObject[] = [
     link: getRoute(RouteKey.contentCreate).path,
     activeRouteKeys: [RouteKey.contentCreate],
   },
+  {
+    name: 'add event',
+    link: getRoute(RouteKey.eventCreate).path,
+    activeRouteKeys: [RouteKey.eventCreate],
+  },
 ];
 
 // 需要登录权限的路由
@@ -143,4 +154,7 @@ export const permissionLoginRouteKeys = [
   RouteKey.contentCreate,
 ];
 // 需要admin权限的路由
-export const permissionAdminRouteKeys = [RouteKey.contentCreate];
+export const permissionAdminRouteKeys = [
+  RouteKey.contentCreate,
+  RouteKey.eventCreate,
+];
