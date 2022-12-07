@@ -10,24 +10,20 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
-import dayjs from 'dayjs';
 
 import ContentsHeader from '../components/contents/Header';
 // import useRoute from '../route/useRoute';
 
-import {
-  fetchContents,
-  voteContent,
-  favorsContent,
-} from '../services/api/contents';
+import { fetchContents } from '../services/api/contents';
 import { ContentListItem } from '../services/types/contents';
-import { addOrRemoveFromLocal, getLocalData } from '../utils/contentStore';
+import ListItem from '../components/contents/ListItem';
+import ContentShower from '../components/contents/ContentShower';
+import userFavored from '../hooks/useFavored';
+import { useVoteUp } from '../hooks/useVoteUp';
+import useContentHidden from '../hooks/useContentHidden';
 
 function Contents() {
-  // const navigate = useNavigate();
   const { user } = useWlUserReact();
-  // const { lastRouteMeta } = useRoute();
-  // const params = useParams();
   const queryRef = useRef<{
     keywords: string;
     type: string;
@@ -36,26 +32,13 @@ function Contents() {
   const currPageSize = useRef(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
   const [selectContent, setSelectContent] = useState<ContentListItem>();
-  const [localData, setLocalData] = useState<{ [key: number]: number }>({});
   const [loading, setLoading] = useState(true);
 
-  const seeOrHidden = useCallback((id: number) => {
-    const data = addOrRemoveFromLocal(id);
-    setLocalData(data);
-    setSelectContent(undefined);
-  }, []);
+  const { keysFilter, contentHiddenOrNot } = useContentHidden();
 
-  const vote = useCallback(async () => {
-    if (!selectContent) return;
-    if (selectContent.upVoted) return;
-    await voteContent(selectContent.id, user.token);
-  }, [user.token, selectContent?.id]);
+  const vote = useVoteUp(selectContent?.id, selectContent?.upVoted);
 
-  const favors = useCallback(async () => {
-    if (!selectContent) return;
-    if (selectContent.favored) return;
-    await favorsContent(selectContent.id, user.token);
-  }, [user.token, selectContent?.id]);
+  const favors = userFavored(selectContent?.id, selectContent?.favored);
 
   const fetchData = useCallback(
     async (keywords: string, type: string, orderBy: string) => {
@@ -109,15 +92,6 @@ function Contents() {
     }
   }, [selectContent]);
 
-  const keysFilter = useMemo(() => {
-    return Object.values(localData);
-  }, [localData]);
-
-  useEffect(() => {
-    const data = getLocalData();
-    setLocalData(data);
-  }, []);
-
   return (
     <Box id="box">
       <ContentsHeader
@@ -138,21 +112,14 @@ function Contents() {
                 return !keysFilter.includes(item.id);
               })
               .map((item) => (
-                <ContentItem
+                <ListItem
                   key={item.id}
                   isActive={item.id === selectContent?.id}
-                  onClick={() => {
+                  clickAction={() => {
                     setSelectContent(item);
                   }}
-                >
-                  <ContentItemTitle>
-                    <span>{item.type}</span>
-                    <span>{item.author}</span>
-                    <span>{dayjs(item.createdAt).format('DD/MM/YYYY')}</span>
-                  </ContentItemTitle>
-                  <p>{item.title}</p>
-                  <ContentItemFooter>up:{item.upVoteNum}</ContentItemFooter>
-                </ContentItem>
+                  {...item}
+                />
               ))}
             <button
               type="button"
@@ -167,41 +134,16 @@ function Contents() {
 
           <ContentBox>
             {selectContent && (
-              <>
-                <ContentTitle>
-                  <div>{selectContent?.title}</div>
-                  <div>
-                    <div>{selectContent?.author}</div>
-                    <div>
-                      <span
-                        onClick={() => {
-                          vote();
-                        }}
-                      >
-                        up {selectContent.upVoteNum}
-                      </span>
-                      <span
-                        onClick={() => {
-                          favors();
-                        }}
-                      >
-                        {selectContent.favored ? 'favored' : 'favor'}
-                      </span>
-                      <span
-                        onClick={() => {
-                          seeOrHidden(selectContent.id);
-                        }}
-                      >
-                        hidden
-                      </span>
-                      {/* <span>share</span> */}
-                    </div>
-                  </div>
-                </ContentTitle>
-                <ContentBody
-                  dangerouslySetInnerHTML={{ __html: contentValue }}
-                />
-              </>
+              <ContentShower
+                {...selectContent}
+                content={contentValue}
+                voteAction={vote}
+                favorsActions={favors}
+                hiddenAction={() => {
+                  contentHiddenOrNot(selectContent.id);
+                  setSelectContent(undefined);
+                }}
+              />
             )}
           </ContentBox>
         </ContentsWrapper>
@@ -242,52 +184,4 @@ const ContentBox = styled.div`
   & pre {
     overflow: scroll;
   }
-`;
-const ContentTitle = styled.div`
-  border-bottom: 1px dotted gray;
-  > div {
-    display: flex;
-    justify-content: space-between;
-    &:first-child {
-      font-size: 25px;
-    }
-    > div {
-      display: flex;
-      gap: 10px;
-    }
-  }
-`;
-const ContentBody = styled.div``;
-
-const ContentItem = styled.div<{ isActive: boolean }>`
-  line-height: 27px;
-  padding: 20px 0;
-  display: flex;
-  flex-direction: column;
-  cursor: pointer;
-  border-bottom: 1px do lightgray;
-  background: ${(props) => (props.isActive ? '#000' : 'none')};
-  color: ${(props) => (props.isActive ? '#fff' : '#000')};
-  &:hover {
-    background: #999;
-  }
-`;
-
-const ContentItemTitle = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  & span {
-    &:first-child {
-      border: 1px solid gray;
-    }
-    &:last-child {
-      flex-grow: 1;
-      text-align: end;
-    }
-  }
-`;
-
-const ContentItemFooter = styled.div`
-  display: flex;
 `;
