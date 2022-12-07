@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 17:11:34
+ * @LastEditTime: 2022-12-07 07:44:20
  * @Description: file description
  */
 import {
@@ -13,19 +13,20 @@ import {
 } from '@reduxjs/toolkit';
 import { toast } from 'react-toastify';
 import { AsyncRequestStatus } from '../../services/types';
-import { EventEntity } from '../../services/types/event';
+import {
+  EventEntity,
+  EventExploreListItemResponse,
+} from '../../services/types/event';
 import type { RootState } from '../../store/store';
 import {
   favorEvent as favorEventApi,
   completeEvent as completeEventApi,
 } from '../../services/api/event';
-import { addOne as addOneToFavoredEvents } from './userFavoredEvents';
 import { addOne as addOneToCompleteedEvents } from './userCompletedEvents';
+import { addOneWithEvents } from '../favorite/userGroupFavorites';
 
 // 为event 点赞操作 创建一个执行队列
-export type FavorEventParams = {
-  id: number;
-};
+export type FavorEventParams = EventExploreListItemResponse;
 export type FavorEventEntity = EventEntity;
 type FavorEventQueueState = EntityState<FavorEventEntity>;
 export const favorEventQueueEntity = createEntityAdapter<FavorEventEntity>({
@@ -57,7 +58,7 @@ export type EventHandle<T> = {
 export type EventHandlesState = {
   favorEvent: EventHandle<FavorEventParams>;
   favorEventQueue: FavorEventQueueState;
-  completeEvent: EventHandle<FavorEventParams>;
+  completeEvent: EventHandle<CompleteEventParams>;
   completeEventQueue: FavorEventQueueState;
 };
 
@@ -81,7 +82,7 @@ export const favorEvent = createAsyncThunk(
     dispatch(addOneToFavorEventQueue(params));
     const resp = await favorEventApi(params.id);
     if (resp.data.code === 0) {
-      dispatch(addOneToFavoredEvents(params));
+      dispatch(addOneWithEvents(params));
       dispatch(removeOneForFavorEventQueue(params.id));
     } else {
       dispatch(removeOneForFavorEventQueue(params.id));

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 11:34:39
+ * @LastEditTime: 2022-12-07 07:37:09
  * @Description: 站点主体内容（路由导航）
  */
 import { useRoutes } from 'react-router-dom';
@@ -17,17 +17,13 @@ import {
 } from '../../route/routes';
 import { useAppDispatch } from '../../store/hooks';
 import {
-  fetchFavoredEvents,
-  removeAll as removeAllForFavoredEvents,
-} from '../../features/event/userFavoredEvents';
+  fetchUserGroupFavorites,
+  removeAllFavorites,
+} from '../../features/favorite/userGroupFavorites';
 import {
   fetchCompletedEvents,
   removeAll as removeAllForCompletedEvents,
 } from '../../features/event/userCompletedEvents';
-import {
-  fetchFavoredProjects,
-  removeAll as removeAllForFavoredProjects,
-} from '../../features/project/userFavoredProjects';
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -36,14 +32,12 @@ function Main() {
   // 获取用户相关信息
   useEffect(() => {
     if (!isLogin) {
-      dispatch(removeAllForFavoredEvents());
+      dispatch(removeAllFavorites());
       dispatch(removeAllForCompletedEvents());
-      dispatch(removeAllForFavoredProjects());
       return;
     }
-    dispatch(fetchFavoredEvents());
+    dispatch(fetchUserGroupFavorites());
     dispatch(fetchCompletedEvents());
-    dispatch(fetchFavoredProjects());
   }, [isLogin]);
   const renderElement = useCallback(
     (route: CutomRouteObject) => {

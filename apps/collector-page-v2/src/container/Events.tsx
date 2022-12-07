@@ -2,28 +2,28 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 16:01:41
+ * @LastEditTime: 2022-12-06 18:56:24
  * @Description: 首页任务看板
  */
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import EventExploreList from '../components/event/EventExploreList';
 import EventExploreListFilter, {
   defaultEventExploreListFilterValues,
   EventExploreListFilterValues,
 } from '../components/event/EventExploreListFilter';
-import ListRouteLayout from '../components/layout/ListRoutelLayout';
 import {
   fetchEventExploreList,
   selectAll,
   selectState,
 } from '../features/event/eventExploreList';
 import { AsyncRequestStatus } from '../services/types';
+import { EventExploreListItemResponse } from '../services/types/event';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import Event from './Event';
 
 export default function Events() {
-  const navigate = useNavigate();
   const params = useParams();
   const activeId = Number(params.id);
   const { status } = useAppSelector(selectState);
@@ -31,6 +31,7 @@ export default function Events() {
   const [filter, setFilter] = useState<EventExploreListFilterValues>(
     defaultEventExploreListFilterValues
   );
+  const [event, setEvent] = useState<Maybe<EventExploreListItemResponse>>(null);
   useEffect(() => {
     dispatch(fetchEventExploreList(filter));
   }, [filter]);
@@ -46,19 +47,20 @@ export default function Events() {
         values={filter}
         onChange={(newFilter) => setFilter(newFilter)}
       />
-      <EventsContentBox>
-        {isLoading ? (
-          <span>loading</span>
-        ) : (
-          <ListRouteLayout>
+      <MainBox>
+        <ListBox>
+          {isLoading ? (
+            <span>loading</span>
+          ) : (
             <EventExploreList
               data={eventExploreList}
               activeId={activeId}
-              onItemClick={(item) => navigate(`/events/${item.id}`)}
+              onItemClick={setEvent}
             />
-          </ListRouteLayout>
-        )}
-      </EventsContentBox>
+          )}
+        </ListBox>
+        <ContentBox>{event && <Event data={event} />}</ContentBox>
+      </MainBox>
     </EventsWrapper>
   );
 }
@@ -69,7 +71,15 @@ const EventsWrapper = styled.div`
   flex-direction: column;
   gap: 20px;
 `;
-const EventsContentBox = styled.div`
+const MainBox = styled.div`
   width: 100%;
+  flex: 1;
+  display: flex;
+  gap: 20px;
+`;
+const ListBox = styled.div`
+  width: 400px;
+`;
+const ContentBox = styled.div`
   flex: 1;
 `;
