@@ -54,3 +54,11 @@ export type URLParseResponse = ApiResp<{
   // siteName: null;
   textContent: string;
 }>;
+
+export type Project = {
+  favored: boolean;
+  id: number;
+  image: string;
+  name: string;
+};
+export type ContentsResponse = ApiResp<Array<Project>>;

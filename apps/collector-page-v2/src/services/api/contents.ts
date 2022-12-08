@@ -1,12 +1,12 @@
 import {
   ContentsListResponse,
+  ContentsResponse,
   ContentType,
   URLParseResponse,
 } from '../types/contents';
 import request, { RequestPromise } from './request';
 
-// TODO
-export function getContentProjects() {
+export function getContentProjects(): RequestPromise<ContentsResponse> {
   return request({
     url: `/uniprojects/searching`,
   });

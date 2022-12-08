@@ -1,8 +1,12 @@
 import { useWlUserReact } from '@ecnft/wl-user-react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { contentParse, saveContent } from '../services/api/contents';
-import { ContentType } from '../services/types/contents';
+import {
+  contentParse,
+  getContentProjects,
+  saveContent,
+} from '../services/api/contents';
+import { ContentType, Project } from '../services/types/contents';
 
 function ContentCreate() {
   const { user } = useWlUserReact();
@@ -12,6 +16,8 @@ function ContentCreate() {
   const [author, setAuthor] = useState('');
   const [originalUrl, setOriginalUrl] = useState('');
   const [type, setType] = useState(ContentType.NEWS);
+  const [projects, setProjects] = useState<Array<Project>>([]);
+  const [selectProjects, setSelectProjects] = useState<Array<Project>>([]);
 
   const [urlContent, setUrlContent] = useState({
     title: '',
@@ -31,17 +37,34 @@ function ContentCreate() {
   }, [originalUrl]);
 
   const submitContent = useCallback(async () => {
+    if (
+      !title ||
+      !author ||
+      !originalUrl ||
+      !type ||
+      selectProjects.length === 0
+    )
+      return;
     await saveContent(
       {
         title,
         author,
         url: originalUrl,
         types: type,
-        uniProjectId: 1,
+        uniProjectId: selectProjects.map((item) => item.id),
       },
       user.token
     );
-  }, [user.token, title, author, originalUrl, type]);
+  }, [user.token, title, author, originalUrl, type, selectProjects]);
+
+  const loadProjects = useCallback(async () => {
+    const { data } = await getContentProjects();
+    setProjects(data.data);
+  }, []);
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
 
   return (
     <ContentCreateWrapper>
@@ -94,7 +117,53 @@ function ContentCreate() {
             })}
           </select>
         </div>
-        <div>Projects</div>
+        <div>
+          <div> Projects</div>
+          <div>
+            {selectProjects.map((item, idx) => {
+              return (
+                <div key={item.id}>
+                  {item.name}{' '}
+                  <span
+                    onClick={() => {
+                      setSelectProjects([
+                        ...selectProjects.slice(0, idx),
+                        ...selectProjects.slice(idx + 1),
+                      ]);
+                    }}
+                  >
+                    x
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          <select
+            title="project"
+            name=""
+            id=""
+            value="default"
+            onChange={(e) => {
+              const selectItem = projects.find((item) => {
+                return item.id.toString() === e.target.value;
+              });
+              setSelectProjects([...selectProjects, selectItem]);
+            }}
+          >
+            <option value="default">select project</option>
+            {projects
+              .filter((item) => {
+                return !selectProjects.find((i) => i.id === item.id);
+              })
+              .map((item) => {
+                return (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                );
+              })}
+          </select>
+        </div>
         <div>
           <button type="button" onClick={submitContent}>
             submit
