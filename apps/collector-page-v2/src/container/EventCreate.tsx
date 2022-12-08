@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 17:21:53
+ * @LastEditTime: 2022-12-08 17:52:14
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -114,7 +114,7 @@ function EventCreate() {
     initialValues: {
       name: '',
       description: '',
-      // image: '',
+      image: '',
       platform: Platform.GALXE,
       project: projectOptions[0]?.value,
       link: '',
@@ -125,7 +125,6 @@ function EventCreate() {
     },
     validationSchema: Yup.object({
       name: Yup.string().required('Required'),
-      // image: Yup.string().required('Required'),
       platform: Yup.string().required('Required'),
       project: Yup.number().required('Required'),
       link: Yup.string().required('Required'),
@@ -168,12 +167,12 @@ function EventCreate() {
           value={formik.values.description}
         />
         {renderFieldError('description')}
-        {/* <label htmlFor="image">image</label>
+        <label htmlFor="image">image</label>
         <UploadImage
           url={formik.values.image}
           onSuccess={(url) => formik.setFieldValue('image', url)}
         />
-        {renderFieldError('image')} */}
+        {renderFieldError('image')}
         <label htmlFor="platform">platform</label>
         <Select
           id="platform"
