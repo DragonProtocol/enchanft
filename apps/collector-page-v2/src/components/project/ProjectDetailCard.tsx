@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 17:39:21
+ * @LastEditTime: 2022-12-08 17:18:54
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -10,6 +10,8 @@ import type {
   ProjectExploreListItemEventResponse,
   ProjectExploreListItemResponse,
 } from '../../services/types/project';
+import { getContentWithJsonValue } from '../../utils/content';
+import ContentShower from '../contents/ContentShower';
 import EventDetailCard from '../event/EventDetailCard';
 
 export type ProjectDetailCardProps = {
@@ -81,6 +83,15 @@ export default function ProjectDetailCard({
             isCompleted={completedEventIds.includes(item.id)}
           />
         ))}
+        {data.contents.map((item) => (
+          <ContentCard
+            {...item}
+            content={getContentWithJsonValue(item.value)}
+            voteAction={() => alert('在此页面，此按钮后期会隐藏')}
+            favorsActions={() => alert('在此页面，此按钮后期会隐藏')}
+            hiddenAction={() => alert('在此页面，此按钮后期会隐藏')}
+          />
+        ))}
       </LayoutMain>
     </ProjectDetailCardWrapper>
   );
@@ -94,6 +105,7 @@ const ProjectDetailCardWrapper = styled.div`
   background-color: rgba(41, 41, 41, 1);
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 `;
 const LayoutHeader = styled.div``;
 const LayoutHeaderTop = styled.div`
@@ -153,15 +165,21 @@ const PorjectDescription = styled.div`
   font-size: 14px;
 `;
 const LayoutMain = styled.div`
+  height: 0;
   flex: 1;
   margin-top: 20px;
   padding-top: 20px;
   border-top: 1px dashed rgba(255, 255, 255, 1);
   box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   gap: 20px;
-  overflow-y: auto;
 `;
 const EventCard = styled(EventDetailCard)`
+  min-height: 66vh;
+  background-color: rgba(79, 79, 79, 1);
+`;
+const ContentCard = styled(ContentShower)`
+  min-height: 66vh;
   background-color: rgba(79, 79, 79, 1);
 `;

@@ -2,17 +2,23 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 19:25:06
+ * @LastEditTime: 2022-12-08 16:33:41
  * @Description: 首页任务看板
  */
 import { useState } from 'react';
 import styled from 'styled-components';
 import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup';
+import ContentList from '../components/contents/ContentList';
 import EventExploreList from '../components/event/EventExploreList';
 import ProjectExploreList from '../components/project/ProjectExploreList';
+import {
+  ContentsEntityItem,
+  EventsEntityItem,
+  ProjectsEntityItem,
+} from '../features/favorite/userGroupFavorites';
+import useContentHidden from '../hooks/useContentHidden';
 import useUserFavorites from '../hooks/useUserFavorites';
-import { EventExploreListItemResponse } from '../services/types/event';
-import { ProjectExploreListItemResponse } from '../services/types/project';
+import Content from './Content';
 import Event from './Event';
 import Project from './Project';
 
@@ -36,13 +42,15 @@ export const FavoriteSwitchOptions = [
   },
 ];
 function Favorites() {
-  const { events, projects } = useUserFavorites();
-  const [event, setEvent] = useState<Maybe<EventExploreListItemResponse>>(null);
-  const [project, setProject] =
-    useState<Maybe<ProjectExploreListItemResponse>>(null);
+  const { events, projects, contents } = useUserFavorites();
+  const [event, setEvent] = useState<EventsEntityItem | null>(null);
+  const [project, setProject] = useState<ProjectsEntityItem | null>(null);
+  const [content, setContent] = useState<ContentsEntityItem | null>(null);
   const [switchValue, setSwitchValue] = useState<FavoriteSwitchValue>(
     FavoriteSwitchValue.event
   );
+
+  const { keysFilter, contentHiddenOrNot } = useContentHidden();
   return (
     <FavoritesWrapper>
       <FavoritesListBox>
@@ -55,15 +63,24 @@ function Favorites() {
           {switchValue === FavoriteSwitchValue.event && (
             <EventExploreList
               data={events}
-              activeId={0}
+              activeId={event?.id || 0}
               onItemClick={setEvent}
             />
           )}
           {switchValue === FavoriteSwitchValue.project && (
             <ProjectExploreList
               data={projects}
-              activeId={0}
+              activeId={project?.id || 0}
               onItemClick={setProject}
+            />
+          )}
+          {switchValue === FavoriteSwitchValue.content && (
+            <ContentList
+              data={contents.filter((item) => {
+                return !keysFilter.includes(item.id);
+              })}
+              activeId={content?.id || 0}
+              onItemClick={(item: ContentsEntityItem) => setContent(item)}
             />
           )}
         </FavoritesList>
@@ -75,6 +92,14 @@ function Favorites() {
         {switchValue === FavoriteSwitchValue.project && project && (
           <Project data={project} />
         )}
+        {switchValue === FavoriteSwitchValue.content &&
+          content &&
+          !keysFilter.includes(content.id) && (
+            <Content
+              data={content}
+              onHidden={() => contentHiddenOrNot(content.id)}
+            />
+          )}
       </FavoritesContentBox>
     </FavoritesWrapper>
   );
@@ -94,8 +119,16 @@ const FavoritesListBox = styled.div`
 `;
 const FavoritesList = styled.div`
   width: 100%;
+  height: 0px;
   flex: 1;
+  border-radius: 10px;
+  background-color: rgba(41, 41, 41, 1);
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
 `;
 const FavoritesContentBox = styled.div`
+  width: 0;
   flex: 1;
+  overflow-y: auto;
 `;
