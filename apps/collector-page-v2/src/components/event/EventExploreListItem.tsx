@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 13:00:11
+ * @LastEditTime: 2022-12-08 12:59:23
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -27,9 +27,11 @@ export default function EventExploreListItem({
           <EventStartTime>{formatDateTime(data.startTime)}</EventStartTime>
         </LayoutLeftBottom>
       </LayoutLeft>
-      <LayoutRight>
-        <EventPlatformIcon src={data.project.image} />
-      </LayoutRight>
+      {data.project && (
+        <LayoutRight>
+          <EventPlatformIcon src={data.project.image} />
+        </LayoutRight>
+      )}
     </EventExploreListItemWrapper>
   );
 }

@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 19:18:29
+ * @LastEditTime: 2022-12-08 16:52:05
  * @Description: file description
  */
 import type { ApiResp } from '.';
 import type { OrderBy, ProjectType } from './common';
+import { ContentListItem } from './contents';
 import type { EventExploreListItemResponse } from './event';
 
 export enum UniProjectType {
@@ -32,12 +33,17 @@ export type ProjectExploreListItemEventResponse = Omit<
   EventExploreListItemResponse,
   'project'
 >;
+export type ProjectExploreListItemContentResponse = Omit<
+  ContentListItem,
+  'uniProject'
+>;
 export type ProjectExploreListItemResponse = {
   id: number;
   name: string;
   description: string;
   image: string;
   events: ProjectExploreListItemEventResponse[];
+  contents: ProjectExploreListItemContentResponse[];
 };
 export type ProjectExploreListResponse = ApiResp<
   Array<ProjectExploreListItemResponse>

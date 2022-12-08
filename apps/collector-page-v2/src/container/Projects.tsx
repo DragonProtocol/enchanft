@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 19:03:55
+ * @LastEditTime: 2022-12-08 17:11:41
  * @Description: 首页任务看板
  */
 import { useEffect, useMemo, useState } from 'react';
@@ -74,13 +74,21 @@ const ProjectsWrapper = styled.div`
 `;
 const MainBox = styled.div`
   width: 100%;
+  height: 0px;
   flex: 1;
   display: flex;
   gap: 20px;
 `;
 const ListBox = styled.div`
   width: 400px;
+  border-radius: 10px;
+  background-color: rgba(41, 41, 41, 1);
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
 `;
 const ContentBox = styled.div`
+  width: 0;
   flex: 1;
+  overflow-y: auto;
 `;
