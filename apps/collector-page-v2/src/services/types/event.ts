@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-07 18:07:27
+ * @LastEditTime: 2022-12-08 17:21:30
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -61,7 +61,7 @@ export type EventFavorHandleResponse = ApiResp<unknown>;
 export type CreateEventData = {
   name: string;
   description: string;
-  image: string;
+  // image: string;
   platform: Platform;
   project: number;
   link: string;

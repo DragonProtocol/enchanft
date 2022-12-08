@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-07 18:40:18
+ * @LastEditTime: 2022-12-08 17:22:23
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -152,6 +152,7 @@ export const permissionLoginRouteKeys = [
   RouteKey.profile,
   RouteKey.favorites,
   RouteKey.contentCreate,
+  RouteKey.eventCreate,
 ];
 
 // 需要admin权限的路由
