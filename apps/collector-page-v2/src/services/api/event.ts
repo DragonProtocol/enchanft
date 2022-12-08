@@ -2,11 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 16:16:13
+ * @LastEditTime: 2022-12-07 18:34:48
  * @Description: file description
  */
 import qs from 'qs';
 import {
+  CreateEventData,
+  CreateEventResponse,
   EventExploreListParams,
   EventExploreListResponse,
   EventFavorHandleResponse,
@@ -28,6 +30,18 @@ export function favorEvent(
   return request({
     url: `/events/${id}/favors`,
     method: 'post',
+    headers: {
+      needToken: true,
+    },
+  });
+}
+export function createEvent(
+  data: CreateEventData
+): RequestPromise<CreateEventResponse> {
+  return request({
+    url: `/events`,
+    method: 'post',
+    data,
     headers: {
       needToken: true,
     },

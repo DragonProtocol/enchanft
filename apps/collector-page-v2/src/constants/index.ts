@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-01 10:10:22
+ * @LastEditTime: 2022-12-07 17:32:53
  * @Description: 系统相关常量定义
  */
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -22,3 +22,5 @@ export const WL_TWITTER_URL = 'https://twitter.com/realwlxyz';
 export const WL_DISCORD_URL = 'https://discord.com/invite/ZXEgc3UrjB';
 
 export const WL_APP_VERSION = process.env.REACT_APP_VERSION;
+
+export const EVENT_IMAGE_SIZE_LIMIT = 200 * 1024;
