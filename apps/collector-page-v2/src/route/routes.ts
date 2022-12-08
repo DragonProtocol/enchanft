@@ -155,7 +155,8 @@ export const permissionLoginRouteKeys = [
 ];
 
 // 需要admin权限的路由
+
 export const permissionAdminRouteKeys = [
   RouteKey.eventCreate,
-  // RouteKey.contentCreate
+  RouteKey.contentCreate,
 ];

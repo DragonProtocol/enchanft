@@ -1,15 +1,31 @@
+import { useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { contentParse } from '../services/api/contents';
+import {
+  contentParse,
+  getContentProjects,
+  saveContent,
+} from '../services/api/contents';
+import { ContentType, Project } from '../services/types/contents';
 
 function ContentCreate() {
+  const { user } = useWlUserReact();
+  const [parsing, setParsing] = useState(false);
+
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
   const [originalUrl, setOriginalUrl] = useState('');
+  const [type, setType] = useState(ContentType.NEWS);
+  const [projects, setProjects] = useState<Array<Project>>([]);
+  const [selectProjects, setSelectProjects] = useState<Array<Project>>([]);
+
   const [urlContent, setUrlContent] = useState({
     title: '',
     content: '',
   });
-  const [parsing, setParsing] = useState(false);
+
   const loadUrlContent = useCallback(async () => {
+    if (!originalUrl) return;
     setParsing(true);
     const { data } = await contentParse(originalUrl);
 
@@ -20,18 +36,56 @@ function ContentCreate() {
     setParsing(false);
   }, [originalUrl]);
 
-  useEffect(() => {}, []);
+  const submitContent = useCallback(async () => {
+    if (
+      !title ||
+      !author ||
+      !originalUrl ||
+      !type ||
+      selectProjects.length === 0
+    )
+      return;
+    await saveContent(
+      {
+        title,
+        author,
+        url: originalUrl,
+        types: type,
+        uniProjectId: selectProjects.map((item) => item.id),
+      },
+      user.token
+    );
+  }, [user.token, title, author, originalUrl, type, selectProjects]);
+
+  const loadProjects = useCallback(async () => {
+    const { data } = await getContentProjects();
+    setProjects(data.data);
+  }, []);
+
+  useEffect(() => {
+    loadProjects();
+  }, []);
 
   return (
     <ContentCreateWrapper>
       <CreateBox>
         <div>
           <div>Title</div>
-          <input title="title" type="text" />
+          <input
+            title="title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
         <div>
           <div>Author</div>
-          <input title="author" type="text" />
+          <input
+            title="author"
+            type="text"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+          />
         </div>
         <div>
           <div>Original URL</div>
@@ -47,15 +101,80 @@ function ContentCreate() {
         </div>
         <div>
           <div>Content Type</div>
-          <input title="content-type" type="text" />
+          <select
+            title="type"
+            value={type}
+            onChange={(e) => {
+              setType(e.target.value as ContentType);
+            }}
+          >
+            {Object.values(ContentType).map((item) => {
+              return (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              );
+            })}
+          </select>
         </div>
-        <div>Projects</div>
         <div>
-          <button type="button">submit</button>
+          <div> Projects</div>
+          <div>
+            {selectProjects.map((item, idx) => {
+              return (
+                <div key={item.id}>
+                  {item.name}{' '}
+                  <span
+                    onClick={() => {
+                      setSelectProjects([
+                        ...selectProjects.slice(0, idx),
+                        ...selectProjects.slice(idx + 1),
+                      ]);
+                    }}
+                  >
+                    x
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+          <select
+            title="project"
+            name=""
+            id=""
+            value="default"
+            onChange={(e) => {
+              const selectItem = projects.find((item) => {
+                return item.id.toString() === e.target.value;
+              });
+              setSelectProjects([...selectProjects, selectItem]);
+            }}
+          >
+            <option value="default">select project</option>
+            {projects
+              .filter((item) => {
+                return !selectProjects.find((i) => i.id === item.id);
+              })
+              .map((item) => {
+                return (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                );
+              })}
+          </select>
+        </div>
+        <div>
+          <button type="button" onClick={submitContent}>
+            submit
+          </button>
         </div>
       </CreateBox>
       {(parsing && <ShowBox>Parseing</ShowBox>) || (
-        <ShowBox dangerouslySetInnerHTML={{ __html: urlContent.content }} />
+        <ShowBox>
+          <h3>{urlContent.title}</h3>
+          <div dangerouslySetInnerHTML={{ __html: urlContent.content }} />
+        </ShowBox>
       )}
     </ContentCreateWrapper>
   );
@@ -74,7 +193,8 @@ const CreateBox = styled.div`
   display: flex;
   flex-direction: column;
   > div {
-    input {
+    input,
+    select {
       box-sizing: border-box;
       width: 100%;
     }
