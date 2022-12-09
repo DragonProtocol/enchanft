@@ -10,7 +10,7 @@ chrome.runtime.onInstalled.addListener(() => {
   const RULE = {
     id: 1,
     condition: {
-      initiatorDomains: [chrome.runtime.id],
+      // initiatorDomains: [chrome.runtime.id],
       resourceTypes: ['main_frame', 'sub_frame'],
     },
     action: {
