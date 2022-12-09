@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 19:16:54
+ * @LastEditTime: 2022-12-09 15:58:35
  * @Description: event detail container
  */
-import { useCallback, useMemo } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import EventDetailCard from '../components/event/EventDetailCard';
 import {
@@ -15,17 +15,44 @@ import {
 } from '../features/event/eventHandles';
 import { selectAll as selecteAllCompleted } from '../features/event/userCompletedEvents';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { EventExploreListItemResponse } from '../services/types/event';
 import useUserFavorites from '../hooks/useUserFavorites';
+import { EventChain } from '../services/types/event';
+import { Reward } from '../services/types/common';
+import { addHideDaylightIdToStorage } from '../utils/daylight';
 
 export type EventContainerProps = {
-  data: EventExploreListItemResponse;
+  data: {
+    id: number;
+    name: string;
+    description: string;
+    image: string;
+    link: string;
+    chain: EventChain;
+    startTime: number;
+    endTime: number;
+    reward: Reward;
+    project: {
+      id: number;
+      name: string;
+      description: string;
+      image: string;
+    };
+    platform: {
+      logo: string;
+    };
+    isDaylight?: boolean;
+  };
 };
 function Event({ data }: EventContainerProps) {
   const dispatch = useAppDispatch();
   const { isLogin } = useWlUserReact();
   const { eventIds } = useUserFavorites();
   const { id: eventId } = data;
+  useEffect(() => {
+    if (data.isDaylight) {
+      addHideDaylightIdToStorage(data.id as unknown as string);
+    }
+  }, [data]);
 
   const favorQueueIds = useAppSelector(selectIdsFavorEventQueue).map((id) =>
     Number(id)
