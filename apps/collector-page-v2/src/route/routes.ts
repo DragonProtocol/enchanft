@@ -159,5 +159,5 @@ export const permissionLoginRouteKeys = [
 
 export const permissionAdminRouteKeys = [
   RouteKey.eventCreate,
-  RouteKey.contentCreate,
+  // RouteKey.contentCreate,
 ];

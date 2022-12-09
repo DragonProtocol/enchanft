@@ -42,6 +42,7 @@ function Contents() {
   const [loading, setLoading] = useState(true);
   const [daylightContentLoading, setDaylightContentLoading] = useState(false);
   const { keysFilter, contentHiddenOrNot } = useContentHidden();
+  const [tab, setTab] = useState<'original' | 'readerView'>('readerView');
 
   const vote = useVoteUp(selectContent?.id, selectContent?.upVoted);
 
@@ -49,10 +50,10 @@ function Contents() {
 
   const fetchDaylightData = useCallback(
     async (daylightCursor: string) => {
-      if (!evmAccount?.thirdpartyId) return [];
+      // if (!evmAccount?.thirdpartyId) return [];
       const data = await fetchDaylight(
-        daylightCursor,
-        evmAccount?.thirdpartyId
+        daylightCursor
+        // evmAccount?.thirdpartyId
       );
       const cursor = data.data.abilities[data.data.abilities.length - 1]?.uid;
       // setCurrDaylightCursor(data.data.links.next);
@@ -173,6 +174,12 @@ function Contents() {
           };
           fetchData(keywords, type, orderBy);
         }}
+        changeOriginalAction={() => {
+          setTab('original');
+        }}
+        changeReaderViewAction={() => {
+          setTab('readerView');
+        }}
       />
       {(loading && <div>loading</div>) || (
         <ContentsWrapper>
@@ -212,19 +219,45 @@ function Contents() {
           </ListBox>
 
           <ContentBox>
-            {(daylightContentLoading && <div>loading</div>) ||
-              (selectContent && (
-                <ContentShower
-                  {...selectContent}
-                  content={daylightContent || contentValue}
-                  voteAction={vote}
-                  favorsActions={favors}
-                  hiddenAction={() => {
-                    contentHiddenOrNot(selectContent?.uid || selectContent.id);
-                    setSelectContent(undefined);
+            {tab === 'original' && (
+              <div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    alert('TODO');
                   }}
-                />
-              ))}
+                >
+                  install extension
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.open(
+                      selectContent.action?.linkUrl || selectContent.link,
+                      '_blank'
+                    );
+                  }}
+                >
+                  open in new tab
+                </button>
+              </div>
+            )}
+            {tab === 'readerView' &&
+              ((daylightContentLoading && <div>loading</div>) ||
+                (selectContent && (
+                  <ContentShower
+                    {...selectContent}
+                    content={daylightContent || contentValue}
+                    voteAction={vote}
+                    favorsActions={favors}
+                    hiddenAction={() => {
+                      contentHiddenOrNot(
+                        selectContent?.uid || selectContent.id
+                      );
+                      setSelectContent(undefined);
+                    }}
+                  />
+                )))}
           </ContentBox>
         </ContentsWrapper>
       )}
