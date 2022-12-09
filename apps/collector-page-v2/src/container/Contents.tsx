@@ -8,14 +8,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useWlUserReact } from '@ecnft/wl-user-react';
+import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 
 import ContentsHeader from '../components/contents/Header';
-// import useRoute from '../route/useRoute';
 
-import { fetchContents } from '../services/api/contents';
-import { ContentListItem } from '../services/types/contents';
+import {
+  contentParse,
+  fetchContents,
+  fetchDaylight,
+} from '../services/api/contents';
+import { ContentListItem, OrderBy } from '../services/types/contents';
 import ListItem from '../components/contents/ListItem';
 import ContentShower from '../components/contents/ContentShower';
 import userFavored from '../hooks/useFavored';
@@ -23,22 +26,41 @@ import { useVoteUp } from '../hooks/useVoteUp';
 import useContentHidden from '../hooks/useContentHidden';
 
 function Contents() {
-  const { user } = useWlUserReact();
+  const { user, getBindAccount } = useWlUserReact();
+  const evmAccount = getBindAccount(AccountType.EVM);
+
   const queryRef = useRef<{
     keywords: string;
     type: string;
     orderBy: string;
   }>();
-  const currPageSize = useRef(0);
+  const [currDaylightCursor, setCurrDaylightCursor] = useState('');
+  const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
   const [selectContent, setSelectContent] = useState<ContentListItem>();
+  const [daylightContent, setDaylightContent] = useState('');
   const [loading, setLoading] = useState(true);
-
+  const [daylightContentLoading, setDaylightContentLoading] = useState(false);
   const { keysFilter, contentHiddenOrNot } = useContentHidden();
 
   const vote = useVoteUp(selectContent?.id, selectContent?.upVoted);
 
   const favors = userFavored(selectContent?.id, selectContent?.favored);
+
+  const fetchDaylightData = useCallback(
+    async (daylightCursor: string) => {
+      if (!evmAccount?.thirdpartyId) return [];
+      const data = await fetchDaylight(
+        daylightCursor,
+        evmAccount?.thirdpartyId
+      );
+      const cursor = data.data.abilities[data.data.abilities.length - 1]?.uid;
+      // setCurrDaylightCursor(data.data.links.next);
+      setCurrDaylightCursor(cursor);
+      return data.data.abilities;
+    },
+    [evmAccount]
+  );
 
   const fetchData = useCallback(
     async (keywords: string, type: string, orderBy: string) => {
@@ -48,30 +70,58 @@ function Contents() {
       if (type.toLowerCase() === 'all') {
         type = '';
       }
+
       try {
-        const { data } = await fetchContents(
-          { keywords, type, orderBy },
-          user.token
-        );
-        setContents(data.data);
+        if (orderBy === OrderBy.FORU) {
+          const [dayLightData, { data }] = await Promise.all([
+            fetchDaylightData(''),
+            fetchContents(
+              { keywords, type, orderBy: OrderBy.TRENDING },
+              user.token
+            ),
+          ]);
+          setContents([...dayLightData, ...data.data]);
+        } else {
+          const { data } = await fetchContents(
+            { keywords, type, orderBy },
+            user.token
+          );
+          setContents(data.data);
+        }
       } catch (error) {
         toast.error(error.message);
       } finally {
         setLoading(false);
       }
     },
-    [currPageSize, user.token]
+    [currPageNumber, user.token]
   );
 
   const loadMore = useCallback(
-    async (pageSize: number) => {
+    async (pageNumber: number) => {
       const { keywords, type, orderBy } = queryRef.current;
       try {
-        const { data } = await fetchContents(
-          { keywords, type, orderBy, pageSize },
-          user.token
-        );
-        setContents([...contents, ...data.data]);
+        if (orderBy === OrderBy.FORU) {
+          const [dayLightData, { data }] = await Promise.all([
+            fetchDaylightData(currDaylightCursor),
+            fetchContents(
+              {
+                keywords,
+                type,
+                orderBy: OrderBy.TRENDING,
+                pageNumber,
+              },
+              user.token
+            ),
+          ]);
+          setContents([...contents, ...dayLightData, ...data.data]);
+        } else {
+          const { data } = await fetchContents(
+            { keywords, type, orderBy, pageNumber },
+            user.token
+          );
+          setContents([...contents, ...data.data]);
+        }
       } catch (error) {
         toast.error(error.message);
       } finally {
@@ -79,8 +129,20 @@ function Contents() {
         console.log('load more done');
       }
     },
-    [queryRef.current, contents]
+    [queryRef.current, contents, currDaylightCursor]
   );
+
+  const loadDaylightContent = useCallback(async (url: string) => {
+    try {
+      setDaylightContentLoading(true);
+      const { data } = await contentParse(url);
+      setDaylightContent(data.data.content);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setDaylightContentLoading(false);
+    }
+  }, []);
 
   const contentValue = useMemo(() => {
     if (!selectContent?.value) return '';
@@ -89,6 +151,14 @@ function Contents() {
       return content.content;
     } catch (error) {
       return selectContent?.value;
+    }
+  }, [selectContent]);
+
+  useEffect(() => {
+    if (selectContent?.uid) {
+      loadDaylightContent(selectContent.action.linkUrl);
+    } else {
+      setDaylightContent('');
     }
   }, [selectContent]);
 
@@ -109,23 +179,32 @@ function Contents() {
           <ListBox>
             {contents
               .filter((item) => {
-                return !keysFilter.includes(item.id);
+                return !keysFilter.includes(item.uid || item.id);
               })
-              .map((item) => (
-                <ListItem
-                  key={item.id}
-                  isActive={item.id === selectContent?.id}
-                  clickAction={() => {
-                    setSelectContent(item);
-                  }}
-                  {...item}
-                />
-              ))}
+              .map((item) => {
+                let isActive = false;
+                if (item.uid) {
+                  isActive = item.uid === selectContent?.uid;
+                } else {
+                  isActive = item.id === selectContent?.id;
+                }
+
+                return (
+                  <ListItem
+                    key={item.id || item.uid}
+                    isActive={isActive}
+                    clickAction={() => {
+                      setSelectContent(item);
+                    }}
+                    {...item}
+                  />
+                );
+              })}
             <button
               type="button"
               onClick={() => {
-                currPageSize.current += 1;
-                loadMore(currPageSize.current);
+                loadMore(currPageNumber + 1);
+                setCurrPageNumber(currPageNumber + 1);
               }}
             >
               More
@@ -133,18 +212,19 @@ function Contents() {
           </ListBox>
 
           <ContentBox>
-            {selectContent && (
-              <ContentShower
-                {...selectContent}
-                content={contentValue}
-                voteAction={vote}
-                favorsActions={favors}
-                hiddenAction={() => {
-                  contentHiddenOrNot(selectContent.id);
-                  setSelectContent(undefined);
-                }}
-              />
-            )}
+            {(daylightContentLoading && <div>loading</div>) ||
+              (selectContent && (
+                <ContentShower
+                  {...selectContent}
+                  content={daylightContent || contentValue}
+                  voteAction={vote}
+                  favorsActions={favors}
+                  hiddenAction={() => {
+                    contentHiddenOrNot(selectContent?.uid || selectContent.id);
+                    setSelectContent(undefined);
+                  }}
+                />
+              ))}
           </ContentBox>
         </ContentsWrapper>
       )}
@@ -154,26 +234,31 @@ function Contents() {
 export default Contents;
 
 const Box = styled.div`
+  margin: 0 auto;
   height: 100%;
-  width: calc(100vw - 240px);
+  box-sizing: border-box;
+  padding-top: 24px;
+  /* background: #1b1e23; */
+  /* color: #ffffff; */
+  width: 1160px;
   overflow: hidden;
 `;
 const ContentsWrapper = styled.div`
   width: 100%;
+  height: calc(100% - 74px);
   display: flex;
-  gap: 20px;
-  margin-top: 20px;
+  margin-top: 24px;
 `;
 const ListBox = styled.div`
-  flex: 1;
-  min-width: 500px;
-  height: calc(100vh - 162px);
+  min-width: 360px;
+  width: 360px;
+  height: 100%;
   overflow: scroll;
 `;
 const ContentBox = styled.div`
-  flex: 2;
-  height: calc(100vh - 180px);
-  padding: 10px;
+  height: calc(100% - 40px);
+  width: calc(100% - 360px);
+  padding: 20px;
   overflow-x: hidden;
   overflow: scroll;
 

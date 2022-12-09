@@ -62,14 +62,12 @@ export default function Header({
 const HeaderBox = styled.div`
   display: flex;
   justify-content: space-between;
-  gap: 100px;
+  align-items: center;
+  height: 50px;
   .classify {
     display: flex;
+    align-items: center;
     gap: 10px;
-    > div {
-      width: 200px;
-      border: 1px solid gray;
-    }
   }
   .search {
     display: flex;

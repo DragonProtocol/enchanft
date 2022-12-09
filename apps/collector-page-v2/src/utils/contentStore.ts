@@ -1,5 +1,5 @@
 const KEY = 'seeOrHidden';
-export function addOrRemoveFromLocal(id: number) {
+export function addOrRemoveFromLocal(id: number | string) {
   const exits = localStorage.getItem(KEY) || '{}';
   const exitsData = JSON.parse(exits);
   if (exitsData[id]) {
