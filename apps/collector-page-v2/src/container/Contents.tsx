@@ -50,10 +50,10 @@ function Contents() {
 
   const fetchDaylightData = useCallback(
     async (daylightCursor: string) => {
-      // if (!evmAccount?.thirdpartyId) return [];
+      if (!evmAccount?.thirdpartyId) return [];
       const data = await fetchDaylight(
-        daylightCursor
-        // evmAccount?.thirdpartyId
+        daylightCursor,
+        evmAccount?.thirdpartyId
       );
       const cursor = data.data.abilities[data.data.abilities.length - 1]?.uid;
       // setCurrDaylightCursor(data.data.links.next);
