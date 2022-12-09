@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 17:11:41
+ * @LastEditTime: 2022-12-09 12:33:33
  * @Description: 首页任务看板
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import ProjectExploreList from '../components/project/ProjectExploreList';
@@ -14,6 +14,7 @@ import ProjectExploreListFilter, {
   ProjectExploreListFilterValues,
 } from '../components/project/ProjectExploreListFilter';
 import {
+  fetchMoreProjectExploreList,
   fetchProjectExploreList,
   selectAll,
   selectState,
@@ -26,7 +27,7 @@ import Project from './Project';
 export default function Projects() {
   const params = useParams();
   const activeId = Number(params.id);
-  const { status } = useAppSelector(selectState);
+  const { status, moreStatus } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const [filter, setFilter] = useState<ProjectExploreListFilterValues>(
     defaultProjectExploreListFilterValues
@@ -41,6 +42,14 @@ export default function Projects() {
   const isLoading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
     [status]
+  );
+  const getMore = useCallback(
+    () => dispatch(fetchMoreProjectExploreList(filter)),
+    [filter]
+  );
+  const isLoadingMore = useMemo(
+    () => moreStatus === AsyncRequestStatus.PENDING,
+    [moreStatus]
   );
   return (
     <ProjectsWrapper>
@@ -59,6 +68,10 @@ export default function Projects() {
               onItemClick={setProject}
             />
           )}
+          {isLoadingMore && <span>loading more</span>}
+          <button type="button" onClick={getMore}>
+            more
+          </button>
         </ListBox>
         <ContentBox>{project && <Project data={project} />}</ContentBox>
       </MainBox>

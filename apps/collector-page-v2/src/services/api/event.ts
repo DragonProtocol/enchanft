@@ -2,9 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-07 18:34:48
+ * @LastEditTime: 2022-12-09 14:21:47
  * @Description: file description
  */
+import axios, { AxiosPromise } from 'axios';
 import qs from 'qs';
 import {
   CreateEventData,
@@ -71,4 +72,18 @@ export function fetchListForUserCompletedEvents(): Array<number> {
   } catch (e) {
     return [];
   }
+}
+
+export type DaylightListParams = {
+  pubkey: string;
+  after: string;
+  limit: number;
+};
+export function fetchListByDaylight(
+  params: DaylightListParams
+): AxiosPromise<any> {
+  const { pubkey, after, limit } = params;
+  return axios.get(
+    `https://api.daylight.xyz/v1/wallets/${pubkey}/abilities?type=access&type=mint&type=airdrop&type=claim&type=vote&type=misc&sortDirection=desc&sort=magic&limit=${limit}&after=${after}`
+  );
 }
