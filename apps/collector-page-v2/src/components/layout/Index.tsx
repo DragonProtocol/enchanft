@@ -72,6 +72,5 @@ const ContentBox = styled.div`
 const PageBox = styled.div`
   flex: 1;
   height: 100%;
-  padding: 20px;
   box-sizing: border-box;
 `;

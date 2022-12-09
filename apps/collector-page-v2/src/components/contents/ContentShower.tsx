@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export default function ContentShower({
+  uid,
   title,
   author,
   upVoteNum,
@@ -10,6 +11,7 @@ export default function ContentShower({
   favorsActions,
   hiddenAction,
 }: {
+  uid?: string;
   title: string;
   author: string;
   upVoteNum: number;
@@ -26,8 +28,12 @@ export default function ContentShower({
         <div>
           <div>{author}</div>
           <div>
-            <span onClick={voteAction}>up {upVoteNum}</span>
-            <span onClick={favorsActions}>{favored ? 'favored' : 'favor'}</span>
+            {!uid && <span onClick={voteAction}>up {upVoteNum}</span>}
+            {!uid && (
+              <span onClick={favorsActions}>
+                {favored ? 'favored' : 'favor'}
+              </span>
+            )}
             <span onClick={hiddenAction}>hidden</span>
             {/* <span>share</span> */}
           </div>

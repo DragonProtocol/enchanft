@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {
   ContentsListResponse,
   ContentsResponse,
@@ -19,6 +20,7 @@ export function saveContent(
     url: string;
     types: ContentType;
     uniProjectId: number | Array<number>;
+    supportReaderView?: boolean;
   },
   token: string
 ) {
@@ -31,6 +33,7 @@ export function saveContent(
       url: data.url,
       type: data.types.toUpperCase().replace(' ', '_'),
       uniProjedctId: data.uniProjectId,
+      supportReaderView: data.supportReaderView || false,
     },
     headers: {
       token,
@@ -67,6 +70,20 @@ export function voteContent(id: number, token: string) {
   });
 }
 
+export function fetchDaylight(
+  cursor: string,
+  wallet = '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4'
+) {
+  if (cursor) {
+    return axios.get(
+      `https://api.daylight.xyz/v1/wallets/${wallet}/abilities?type=result&type=article&sortDirection=desc&sort=magic&limit=10&after=${cursor}`
+    );
+  }
+  return axios.get(
+    `https://api.daylight.xyz/v1/wallets/${wallet}/abilities?type=result&type=article&sortDirection=desc&sort=magic&limit=10`
+  );
+}
+
 export function fetchContents(
   query: {
     keywords?: string;
@@ -80,14 +97,13 @@ export function fetchContents(
   return request({
     url: `/contents/searching`,
     params: {
-      pageSize: query.pageSize ?? 0,
-      pageNumber: query.pageNumber ?? 10,
+      pageSize: query.pageSize ?? 10,
+      pageNumber: query.pageNumber ?? 0,
       keywords: query.keywords ?? '',
       type: query.type ? query.type.toUpperCase().replace(' ', '_') : '',
-      // TODO: wait for backend support
-      //   orderBy: query.orderBy
-      //     ? query.orderBy.toUpperCase().replace(' ', '')
-      //     : '',
+      orderBy: query.orderBy
+        ? query.orderBy.toUpperCase().replace(' ', '')
+        : '',
     },
     method: 'get',
     headers: {

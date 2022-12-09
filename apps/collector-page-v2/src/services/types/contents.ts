@@ -11,13 +11,15 @@ export enum ContentType {
 }
 
 export enum OrderBy {
-  EARLIEST = 'Earliest',
+  // EARLIEST = 'Earliest',
   TRENDING = 'Trending',
   NEWEST = 'Newest',
   FORU = 'For U',
 }
 
 export type ContentListItem = {
+  uid?: string;
+  action?: { linkUrl: string };
   id: number;
   title: string;
   createdAt: number;
