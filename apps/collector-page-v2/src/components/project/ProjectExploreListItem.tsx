@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 13:00:34
+ * @LastEditTime: 2022-12-09 16:56:08
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -28,7 +28,7 @@ export default function ProjectExploreListItem({
           <ProjectName>{data.name}</ProjectName>
         </LayoutRightRow>
         <LayoutRightRow>
-          <LayoutText>{data.events.length ?? 0} events</LayoutText>
+          <LayoutText>{data?.events?.length || 0} events</LayoutText>
         </LayoutRightRow>
       </LayoutRight>
     </ProjectExploreListItemWrapper>

@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 17:52:14
+ * @LastEditTime: 2022-12-09 18:39:54
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -15,7 +15,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { useWlUserReact } from '@ecnft/wl-user-react';
-import { Platform, Reward } from '../services/types/common';
+import { Platform, PlatformLogo, Reward } from '../services/types/common';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   fetchProjectSelectList,
@@ -27,6 +27,7 @@ import { uploadImage } from '../services/api/upload';
 import { EVENT_IMAGE_SIZE_LIMIT } from '../constants';
 import { eventCreate, selectState } from '../features/event/eventCreate';
 import { AsyncRequestStatus } from '../services/types';
+import EventDetailCard from '../components/event/EventDetailCard';
 
 const platformOptions: Array<{
   value: Platform;
@@ -122,12 +123,13 @@ function EventCreate() {
       reward: Reward.BADGE,
       startTime: new Date().getTime(),
       endTime: new Date().getTime(),
+      supportIframe: true,
     },
     validationSchema: Yup.object({
       name: Yup.string().required('Required'),
       platform: Yup.string().required('Required'),
       project: Yup.number().required('Required'),
-      link: Yup.string().required('Required'),
+      link: Yup.string().required('Required').url('Please enter a regular url'),
       chain: Yup.string().required('Required'),
       reward: Yup.string().required('Required'),
       startTime: Yup.number().required('Required'),
@@ -145,6 +147,16 @@ function EventCreate() {
     [formik.touched, formik.errors]
   );
 
+  const reviewData = useMemo(() => {
+    const { project, platform } = formik.values;
+    return {
+      ...formik.values,
+      platform: {
+        logo: PlatformLogo[platform],
+      },
+      project: projectSelectList.find((item) => item.id === project),
+    };
+  }, [formik.values, projectSelectList]);
   return (
     <EventCreateWrapper>
       <EventCreateForm
@@ -160,7 +172,7 @@ function EventCreate() {
         />
         {renderFieldError('name')}
         <label htmlFor="description">description</label>
-        <textarea
+        <input
           id="description"
           name="description"
           onChange={formik.handleChange}
@@ -273,6 +285,20 @@ function EventCreate() {
             <span>No end</span>
           </label>
         </TimeRow>
+        <label htmlFor="supportIframe">supportIframe</label>
+        <label>
+          <input
+            type="checkbox"
+            checked={formik.values.supportIframe}
+            onChange={(e) =>
+              formik.setFieldValue(
+                'supportIframe',
+                !formik.values.supportIframe
+              )
+            }
+          />
+          <span>{formik.values.supportIframe ? 'Yes' : 'No'}</span>
+        </label>
         <FormButtons>
           <button type="reset" disabled={loading}>
             Reset
@@ -282,6 +308,14 @@ function EventCreate() {
           </button>
         </FormButtons>
       </EventCreateForm>
+      <EventPreviewBox>
+        <EventPreview
+          data={reviewData}
+          displayFavor={false}
+          displayComplete={false}
+          displayShare={false}
+        />
+      </EventPreviewBox>
     </EventCreateWrapper>
   );
 }
@@ -289,12 +323,17 @@ export default EventCreate;
 const EventCreateWrapper = styled.div`
   width: 100%;
   height: 100%;
-  overflow-y: auto;
+  display: flex;
+  gap: 20px;
 `;
 const EventCreateForm = styled.form`
+  width: 400px;
   display: flex;
   flex-direction: column;
   gap: 20px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 `;
 const TimeRow = styled.div`
   display: flex;
@@ -306,6 +345,14 @@ const FieldErrorText = styled.div`
 const FormButtons = styled.div`
   display: flex;
   gap: 20px;
+`;
+const EventPreviewBox = styled.div`
+  width: 0;
+  flex: 1;
+  overflow-y: auto;
+`;
+const EventPreview = styled(EventDetailCard)`
+  min-height: 100%;
 `;
 function UploadImage({
   url,
