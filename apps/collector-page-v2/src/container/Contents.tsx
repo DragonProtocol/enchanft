@@ -244,20 +244,35 @@ function Contents() {
             )}
             {tab === 'readerView' &&
               ((daylightContentLoading && <div>loading</div>) ||
-                (selectContent && (
-                  <ContentShower
-                    {...selectContent}
-                    content={daylightContent || contentValue}
-                    voteAction={vote}
-                    favorsActions={favors}
-                    hiddenAction={() => {
-                      contentHiddenOrNot(
-                        selectContent?.uid || selectContent.id
-                      );
-                      setSelectContent(undefined);
-                    }}
-                  />
-                )))}
+                (selectContent &&
+                  ((selectContent.supportReaderView && (
+                    <ContentShower
+                      {...selectContent}
+                      content={daylightContent || contentValue}
+                      voteAction={vote}
+                      favorsActions={favors}
+                      hiddenAction={() => {
+                        contentHiddenOrNot(
+                          selectContent?.uid || selectContent.id
+                        );
+                        setSelectContent(undefined);
+                      }}
+                    />
+                  )) || (
+                    <div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          window.open(
+                            selectContent.action?.linkUrl || selectContent.link,
+                            '_blank'
+                          );
+                        }}
+                      >
+                        open in new tab
+                      </button>
+                    </div>
+                  ))))}
           </ContentBox>
         </ContentsWrapper>
       )}
