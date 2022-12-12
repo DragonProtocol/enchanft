@@ -24,7 +24,7 @@ export function NooxCard({ data }: { data: NooxDataListItem }) {
 const Box = styled.div`
   display: inline-block;
   width: 150px;
-  height: 190px;
+  height: 200px;
   border-radius: 10px;
   overflow: hidden;
   position: relative;
@@ -43,7 +43,15 @@ const Box = styled.div`
     display: none;
     align-items: center;
     justify-content: center;
-    background-color: #d3d3d38a;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+    & button {
+      width: 136px;
+      height: 41px;
+      border: none;
+      outline: none;
+      background: #ffffff;
+      border-radius: 12px;
+    }
   }
 
   &:hover {
@@ -77,8 +85,8 @@ export function PoapCard({ data }: { data: PoapData }) {
 
 const CircleCardBox = styled.div`
   display: inline-block;
-  width: 120px;
-  height: 120px;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
   overflow: hidden;
   position: relative;
@@ -97,7 +105,16 @@ const CircleCardBox = styled.div`
     display: none;
     align-items: center;
     justify-content: center;
-    background-color: #d3d3d38a;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+
+    & button {
+      width: 136px;
+      height: 41px;
+      border: none;
+      outline: none;
+      background: #ffffff;
+      border-radius: 12px;
+    }
   }
 
   &:hover {

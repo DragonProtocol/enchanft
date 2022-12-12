@@ -25,6 +25,6 @@ export default function Credential({
 
 const ContentBox = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 0px;
   flex-direction: column;
 `;
