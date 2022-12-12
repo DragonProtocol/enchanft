@@ -6,8 +6,12 @@ import { OrderBy, ContentType } from '../../services/types/contents';
 
 export default function Header({
   filterAction,
+  changeOriginalAction,
+  changeReaderViewAction,
 }: {
   filterAction: (keywords: string, type: string, orderBy: string) => void;
+  changeOriginalAction: () => void;
+  changeReaderViewAction: () => void;
 }) {
   const [orderBy, setOrderBy] = useState('For U');
   const [type, setType] = useState('');
@@ -36,16 +40,7 @@ export default function Header({
             setType(item);
           }}
         />
-      </div>
-      <div className="search">
-        <button
-          type="button"
-          onClick={() => {
-            filterAction(search, type, orderBy);
-          }}
-        >
-          search
-        </button>
+
         <input
           title="content-search"
           type="text"
@@ -54,6 +49,22 @@ export default function Header({
             setSearch(e.target.value);
           }}
         />
+        <button
+          type="button"
+          onClick={() => {
+            filterAction(search, type, orderBy);
+          }}
+        >
+          search
+        </button>
+      </div>
+      <div className="search">
+        <button type="button" onClick={changeOriginalAction}>
+          Original
+        </button>
+        <button type="button" onClick={changeReaderViewAction}>
+          ReaderView
+        </button>
       </div>
     </HeaderBox>
   );
@@ -71,6 +82,7 @@ const HeaderBox = styled.div`
   }
   .search {
     display: flex;
+    justify-content: end;
     width: 300px;
     > input {
       width: 100%;

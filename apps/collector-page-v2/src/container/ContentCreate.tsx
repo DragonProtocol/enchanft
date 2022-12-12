@@ -18,6 +18,7 @@ function ContentCreate() {
   const [type, setType] = useState(ContentType.NEWS);
   const [projects, setProjects] = useState<Array<Project>>([]);
   const [selectProjects, setSelectProjects] = useState<Array<Project>>([]);
+  const [supportReader, setSupportReader] = useState(true);
 
   const [urlContent, setUrlContent] = useState({
     title: '',
@@ -52,10 +53,19 @@ function ContentCreate() {
         url: originalUrl,
         types: type,
         uniProjectId: selectProjects.map((item) => item.id),
+        supportReaderView: supportReader,
       },
       user.token
     );
-  }, [user.token, title, author, originalUrl, type, selectProjects]);
+  }, [
+    user.token,
+    title,
+    author,
+    originalUrl,
+    type,
+    selectProjects,
+    supportReader,
+  ]);
 
   const loadProjects = useCallback(async () => {
     const { data } = await getContentProjects();
@@ -116,6 +126,20 @@ function ContentCreate() {
               );
             })}
           </select>
+        </div>
+        <div>
+          <label htmlFor="support-reader">
+            support reader view display
+            <input
+              id="support-reader"
+              title="support-reader"
+              type="checkbox"
+              defaultChecked={supportReader}
+              onChange={(e) => {
+                setSupportReader(e.target.checked);
+              }}
+            />
+          </label>
         </div>
         <div>
           <div> Projects</div>
@@ -197,6 +221,9 @@ const CreateBox = styled.div`
     select {
       box-sizing: border-box;
       width: 100%;
+    }
+    input[type='checkbox'] {
+      width: initial;
     }
   }
 `;

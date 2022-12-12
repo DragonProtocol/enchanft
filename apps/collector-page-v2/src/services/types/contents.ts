@@ -33,6 +33,7 @@ export type ContentListItem = {
   platform: {
     logo: string;
   };
+  supportReaderView?: boolean;
   upVoted: boolean;
   favored: boolean;
   uniProject: {
