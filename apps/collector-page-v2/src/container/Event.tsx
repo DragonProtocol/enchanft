@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 15:58:35
+ * @LastEditTime: 2022-12-09 18:32:29
  * @Description: event detail container
  */
 import { useCallback, useEffect, useMemo } from 'react';
 import { useWlUserReact } from '@ecnft/wl-user-react';
+import styled from 'styled-components';
 import EventDetailCard from '../components/event/EventDetailCard';
 import {
   completeEvent,
@@ -16,30 +17,11 @@ import {
 import { selectAll as selecteAllCompleted } from '../features/event/userCompletedEvents';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import useUserFavorites from '../hooks/useUserFavorites';
-import { EventChain } from '../services/types/event';
-import { Reward } from '../services/types/common';
+import { EventExploreListItemResponse } from '../services/types/event';
 import { addHideDaylightIdToStorage } from '../utils/daylight';
 
 export type EventContainerProps = {
-  data: {
-    id: number;
-    name: string;
-    description: string;
-    image: string;
-    link: string;
-    chain: EventChain;
-    startTime: number;
-    endTime: number;
-    reward: Reward;
-    project: {
-      id: number;
-      name: string;
-      description: string;
-      image: string;
-    };
-    platform: {
-      logo: string;
-    };
+  data: EventExploreListItemResponse & {
     isDaylight?: boolean;
   };
 };
@@ -84,14 +66,14 @@ function Event({ data }: EventContainerProps) {
     [completedIds, eventId]
   );
   return (
-    <EventDetailCard
+    <EventWrapper
       data={data}
       onComplete={onComplete}
       onShare={onShare}
       onFavor={onFavor}
-      displayFavor={isLogin}
-      displayComplete={isLogin}
-      displayShare={isLogin}
+      displayFavor={data.isDaylight ? false : isLogin}
+      displayComplete={data.isDaylight ? false : isLogin}
+      displayShare={data.isDaylight ? false : isLogin}
       isFavored={isFavored}
       loadingFavor={loadingFavor}
       disabledFavor={isFavored || loadingFavor}
@@ -101,3 +83,6 @@ function Event({ data }: EventContainerProps) {
   );
 }
 export default Event;
+const EventWrapper = styled(EventDetailCard)`
+  height: 100%;
+`;

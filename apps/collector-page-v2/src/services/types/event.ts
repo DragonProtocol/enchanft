@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 17:51:23
+ * @LastEditTime: 2022-12-09 17:23:08
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -52,6 +52,7 @@ export type EventExploreListItemResponse = {
   platform: {
     logo: string;
   };
+  supportIframe: boolean;
 };
 export type EventExploreListResponse = ApiResp<
   Array<EventExploreListItemResponse>
@@ -69,5 +70,6 @@ export type CreateEventData = {
   reward: Reward;
   startTime: number;
   endTime: number;
+  supportIframe: boolean;
 };
 export type CreateEventResponse = ApiResp<unknown>;

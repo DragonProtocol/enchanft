@@ -23,6 +23,7 @@ export function daylightAbilityListToEventList(
       logo: '',
     },
     isDaylight: true,
+    supportIframe: true,
   }));
 }
 
