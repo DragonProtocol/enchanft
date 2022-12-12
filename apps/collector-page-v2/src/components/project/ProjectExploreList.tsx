@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-02 12:44:48
+ * @LastEditTime: 2022-12-08 15:09:19
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -33,13 +33,7 @@ export default function ProjectExploreList({
   );
 }
 const ProjectExploreListWrapper = styled.div`
-  width: 400px;
-  height: 100%;
-  border-radius: 10px;
-  background-color: rgba(41, 41, 41, 1);
-  padding: 20px;
-  box-sizing: border-box;
-  overflow-y: auto;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;

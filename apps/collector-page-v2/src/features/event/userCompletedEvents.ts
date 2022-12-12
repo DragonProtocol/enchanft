@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-02 16:40:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 17:11:09
+ * @LastEditTime: 2022-12-06 18:18:44
  * @Description: file description
  */
 import {
@@ -71,9 +71,10 @@ export const userCompletedEventsSlice = createSlice({
 });
 
 const { actions, reducer } = userCompletedEventsSlice;
-export const { selectAll, selectById } = userCompletedEventsEntity.getSelectors(
-  (state: RootState) => state.userCompletedEvents
-);
+export const { selectAll, selectById, selectIds } =
+  userCompletedEventsEntity.getSelectors(
+    (state: RootState) => state.userCompletedEvents
+  );
 export const selectState = (state: RootState) => state.userCompletedEvents;
 export const { addOne, updateOne, setOne, removeOne, removeAll } = actions;
 export default reducer;

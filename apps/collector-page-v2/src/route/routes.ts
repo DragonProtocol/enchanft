@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 11:24:09
+ * @LastEditTime: 2022-12-08 17:22:23
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -12,6 +12,7 @@ import React, { ReactNode } from 'react';
 export enum RouteKey {
   home = 'home',
   events = 'events',
+  eventCreate = 'eventCreate',
   event = 'event',
   projects = 'projects',
   project = 'project',
@@ -44,37 +45,21 @@ export const routes: CutomRouteObject[] = [
     path: '/events',
     element: loadContainerElement('Events'),
     key: RouteKey.events,
-    children: [
-      {
-        path: '/events/:id',
-        element: loadContainerElement('Event'),
-        key: RouteKey.event,
-      },
-    ],
+  },
+  {
+    path: '/events/create',
+    element: loadContainerElement('EventCreate'),
+    key: RouteKey.eventCreate,
   },
   {
     path: '/projects',
     element: loadContainerElement('Projects'),
     key: RouteKey.projects,
-    children: [
-      {
-        path: '/projects/:id',
-        element: loadContainerElement('Project'),
-        key: RouteKey.project,
-      },
-    ],
   },
   {
     path: '/contents',
     element: loadContainerElement('Contents'),
     key: RouteKey.contents,
-    children: [
-      {
-        path: '/contents/:id',
-        element: loadContainerElement('Content'),
-        key: RouteKey.content,
-      },
-    ],
   },
   {
     path: '/contents/create',
@@ -100,18 +85,19 @@ export const routes: CutomRouteObject[] = [
 ];
 
 export const getRoute = (key: RouteKey): CutomRouteObject | undefined => {
+  let route: CutomRouteObject | undefined;
   const searchRoute = (routeAry: CutomRouteObject[]) => {
-    if (routeAry && routeAry.length) {
-      for (const route of routeAry) {
-        if (route.key === key) {
-          return route;
-        }
-        searchRoute(route.children);
+    for (const item of routeAry) {
+      if (item.key === key) {
+        route = item;
+      } else if (item.children?.length) {
+        searchRoute(item.children);
       }
+      if (route) return;
     }
-    return undefined;
   };
-  return searchRoute(routes);
+  searchRoute(routes);
+  return route;
 };
 export type CutomNavObject = {
   name: string;
@@ -154,6 +140,11 @@ export const navs: CutomNavObject[] = [
     link: getRoute(RouteKey.contentCreate).path,
     activeRouteKeys: [RouteKey.contentCreate],
   },
+  {
+    name: 'add event',
+    link: getRoute(RouteKey.eventCreate).path,
+    activeRouteKeys: [RouteKey.eventCreate],
+  },
 ];
 
 // 需要登录权限的路由
@@ -161,6 +152,12 @@ export const permissionLoginRouteKeys = [
   RouteKey.profile,
   RouteKey.favorites,
   RouteKey.contentCreate,
+  RouteKey.eventCreate,
 ];
+
 // 需要admin权限的路由
-export const permissionAdminRouteKeys = [RouteKey.contentCreate];
+
+export const permissionAdminRouteKeys = [
+  RouteKey.eventCreate,
+  // RouteKey.contentCreate,
+];

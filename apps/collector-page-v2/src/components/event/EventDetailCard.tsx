@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 12:59:45
+ * @LastEditTime: 2022-12-09 18:31:27
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -11,9 +11,9 @@ import { formatDateTime } from '../../utils/time';
 
 export type EventDetailCardData = Omit<
   EventExploreListItemResponse,
-  'project'
+  'project' | 'id'
 > &
-  Partial<Pick<EventExploreListItemResponse, 'project'>>;
+  Partial<Pick<EventExploreListItemResponse, 'project' | 'id'>>;
 
 export type EventDetailCardProps = StyledComponentPropsWithRef<'div'> & {
   data: EventDetailCardData;
@@ -93,13 +93,28 @@ export default function EventDetailCard({
           )}
         </EventHeaderHandles>
       </EventHeader>
-      <EventIframe src={data.link} />
+      {data.supportIframe ? (
+        <EventIframe src={data.link} />
+      ) : (
+        <EventPreview>
+          <EventDescription>{data.description}</EventDescription>
+          {data.image && <EventImage src={data.image} />}
+        </EventPreview>
+      )}
+
+      <EventLinkHandles>
+        <EventLinkHandleButton onClick={() => window.open(data.link, '_blank')}>
+          newtab
+        </EventLinkHandleButton>
+        <EventLinkHandleButton onClick={() => alert('add extension')}>
+          add extension
+        </EventLinkHandleButton>
+      </EventLinkHandles>
     </EventDetailCardWrapper>
   );
 }
 const EventDetailCardWrapper = styled.div`
   width: 100%;
-  height: 100%;
   padding: 20px;
   box-sizing: border-box;
   border-radius: 10px;
@@ -179,3 +194,20 @@ const EventIframe = styled.iframe`
   width: 100%;
   border: none;
 `;
+const EventPreview = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20;
+`;
+const EventDescription = styled.div`
+  font-size: 18px;
+`;
+const EventImage = styled.img`
+  width: 100%;
+  object-fit: cover;
+`;
+const EventLinkHandles = styled.div`
+  display: flex;
+  gap: 20px;
+`;
+const EventLinkHandleButton = styled.button``;

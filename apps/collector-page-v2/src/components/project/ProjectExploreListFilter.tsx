@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 16:50:03
+ * @LastEditTime: 2022-12-09 16:12:32
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -21,10 +21,6 @@ const orderByOptions: Array<{
   {
     value: OrderBy.NEWEST,
     label: 'Newest',
-  },
-  {
-    value: OrderBy.EARLIEST,
-    label: 'Earliest',
   },
   {
     value: OrderBy.TRENDING,

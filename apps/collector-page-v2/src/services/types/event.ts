@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 16:11:47
+ * @LastEditTime: 2022-12-09 17:23:08
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -18,7 +18,7 @@ export type EventEntity = {
   description: string;
   image: string;
   link: string;
-  chain: string;
+  chain: EventChain;
   startTime: number;
   endTime: number;
   reward: Reward;
@@ -39,7 +39,7 @@ export type EventExploreListItemResponse = {
   description: string;
   image: string;
   link: string;
-  chain: string;
+  chain: EventChain;
   startTime: number;
   endTime: number;
   reward: Reward;
@@ -52,11 +52,24 @@ export type EventExploreListItemResponse = {
   platform: {
     logo: string;
   };
+  supportIframe: boolean;
 };
 export type EventExploreListResponse = ApiResp<
   Array<EventExploreListItemResponse>
 >;
-export type EventFavoriteListResponse = ApiResp<
-  Array<EventExploreListItemResponse>
->;
 export type EventFavorHandleResponse = ApiResp<unknown>;
+
+export type CreateEventData = {
+  name: string;
+  description: string;
+  image: string;
+  platform: Platform;
+  project: number;
+  link: string;
+  chain: EventChain;
+  reward: Reward;
+  startTime: number;
+  endTime: number;
+  supportIframe: boolean;
+};
+export type CreateEventResponse = ApiResp<unknown>;

@@ -2,48 +2,46 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 17:48:13
+ * @LastEditTime: 2022-12-06 19:20:05
  * @Description: 首页任务看板
  */
-import { useParams } from 'react-router-dom';
 import { useCallback, useMemo } from 'react';
 import ProjectDetailCard from '../components/project/ProjectDetailCard';
-import { selectById } from '../features/project/projectExploreList';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { selectAll as selecteAllFovored } from '../features/project/userFavoredProjects';
 import { selectAll as selecteAllCompletedEvents } from '../features/event/userCompletedEvents';
 import {
   favorProject,
   selectIdsFavorProjectQueue,
 } from '../features/project/projectHandles';
 import { completeEvent } from '../features/event/eventHandles';
+import { ProjectExploreListItemResponse } from '../services/types/project';
+import useUserFavorites from '../hooks/useUserFavorites';
 
-function Project() {
+export type ProjectContainerProps = {
+  data: ProjectExploreListItemResponse;
+};
+function Project({ data }: ProjectContainerProps) {
   const dispatch = useAppDispatch();
-  const params = useParams();
-  const projectId = Number(params.id);
-  const data = useAppSelector((state) => selectById(state, params.id));
+  const { projectIds } = useUserFavorites();
+  const { id: projectId } = data;
   const favorProjectQueueIds = useAppSelector(selectIdsFavorProjectQueue).map(
     (id) => Number(id)
-  );
-  const favoredProjectIds = useAppSelector(selecteAllFovored).map(
-    (item) => item.id
   );
   const completedEventIds = useAppSelector(selecteAllCompletedEvents).map(
     (item) => item.id
   );
   const onShare = () => {};
   const onFavor = useCallback(
-    () => dispatch(favorProject({ id: projectId })),
-    [dispatch, params]
+    () => dispatch(favorProject(data)),
+    [dispatch, data]
   );
   const onEventComplete = useCallback(
     (eventId) => dispatch(completeEvent({ id: eventId })),
     [dispatch]
   );
   const isFavored = useMemo(
-    () => favoredProjectIds.includes(projectId),
-    [favoredProjectIds, projectId]
+    () => projectIds.includes(projectId),
+    [projectIds, projectId]
   );
   const loadingFavor = useMemo(
     () => favorProjectQueueIds.includes(projectId),
