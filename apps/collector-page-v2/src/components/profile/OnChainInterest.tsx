@@ -7,6 +7,8 @@ import {
   NFTDataListItem,
 } from '../../services/types/profile';
 
+import ethImage from '../imgs/eth.png';
+
 export default function OnChainInterest({
   data,
   wallet,
@@ -22,7 +24,9 @@ export default function OnChainInterest({
         <div className="title">
           <span>{`NFT(${data.result.length})`}</span>
           <div>
-            <input title="search" type="text" />
+            <select title="filter" name="all" id="">
+              <option value="all">all</option>
+            </select>
           </div>
         </div>
         <div className="data">
@@ -32,7 +36,7 @@ export default function OnChainInterest({
         </div>
       </div>
       <div className="wallet">
-        <div>Wallet</div>
+        <h2>Wallet</h2>
         <div>
           <EthTokenInfo balance={ethBalance} />
           {wallet.map((item) => {
@@ -57,16 +61,13 @@ function EthTokenInfo({ balance }: { balance: string }) {
   return (
     <TokenInfoBox>
       <div>
-        <img
-          src="https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk"
-          alt=""
-        />
+        <img src={ethImage} alt="" />
         <div>
           <h3>ETH</h3>
           <span>Ether</span>
         </div>
       </div>
-      <span>{ethers.utils.formatEther(balance).substring(0, 7)}</span>
+      <span>{ethers.utils.formatEther(balance).substring(0, 4)}</span>
     </TokenInfoBox>
   );
 }
@@ -91,32 +92,63 @@ function TokenInfo(props: {
       <span>
         {BigNumber.from(balance)
           .div(BigNumber.from(`1${'0'.repeat(decimals)}`))
-          .toString()}
+          .toNumber()
+          .toFixed(2)}
       </span>
     </TokenInfoBox>
   );
 }
 
 const TokenInfoBox = styled.div`
-  border: 1px solid gray;
-  margin-top: 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 88px;
+
+  border-bottom: 1px solid #14171a;
   > div {
     display: flex;
     gap: 10px;
+
+    > div {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
     h3 {
       margin: 0;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
+      color: #ffffff;
+    }
+
+    span {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
+      /* identical to box height */
+
+      /* #718096 */
+
+      color: #718096;
     }
   }
   img {
-    width: 50px;
+    width: 48px;
+    border-radius: 50%;
   }
 
   > span {
     margin: 0;
-    font-weight: 700;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 21px;
+    text-align: right;
+
+    /* #FFFFFF */
+
+    color: #ffffff;
   }
 `;
 
@@ -131,7 +163,8 @@ function NFTCard({ data }: { data: NFTDataListItem }) {
     <CardBox>
       <img src={img} alt="" />
       <div>
-        <h3>{data?.normalized_metadata.name}</h3>
+        <p>{data?.normalized_metadata.name}</p>
+        {/* {data?.normalized_metadata.name} */}
         {/* <h3>2.99 SOL</h3> */}
       </div>
     </CardBox>
@@ -139,28 +172,61 @@ function NFTCard({ data }: { data: NFTDataListItem }) {
 }
 
 const CardBox = styled.div`
-  width: 200px;
-  border: 1px solid gray;
+  width: 165px;
+  height: 225px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  border: 1px solid #39424c;
+  border-radius: 10px;
+  overflow: hidden;
   position: relative;
   img {
     width: 100%;
+    aspect-ratio: 1;
   }
 
-  h3 {
-    margin: 0;
+  & > div {
+    padding: 20px;
+    > p {
+      margin: 0;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
+      overflow: hidden;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #ffffff;
+    }
   }
 `;
 
 const ContentBox = styled.div`
   display: flex;
-  gap: 20px;
+  gap: 40px;
+  margin-top: 40px;
   .nft {
     flex-grow: 1;
+    width: 760px;
+    padding: 30px 20px;
+    background: #1b1e23;
+    border-radius: 20px;
+    box-sizing: border-box;
     .title {
       display: flex;
-      gap: 100px;
+      align-items: center;
+      justify-content: space-between;
+      > span {
+        font-style: italic;
+        font-weight: 700;
+        font-size: 24px;
+        line-height: 28px;
+
+        color: #ffffff;
+      }
       > div {
-        flex-grow: 1;
+        /* TODO */
         input {
           width: 100%;
           box-sizing: border-box;
@@ -176,6 +242,30 @@ const ContentBox = styled.div`
   }
 
   .wallet {
-    min-width: 500px;
+    width: 360px;
+    box-sizing: border-box;
+
+    background: #1b1e23;
+    border-radius: 20px;
+    height: fit-content;
+    & h2 {
+      padding: 20px;
+      margin: 0;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 24px;
+      line-height: 28px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #14171a;
+
+      color: #ffffff;
+    }
+
+    > div {
+      > div {
+        padding: 0 20px;
+      }
+    }
   }
 `;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 16:52:05
+ * @LastEditTime: 2022-12-09 16:42:25
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -42,8 +42,8 @@ export type ProjectExploreListItemResponse = {
   name: string;
   description: string;
   image: string;
-  events: ProjectExploreListItemEventResponse[];
-  contents: ProjectExploreListItemContentResponse[];
+  events?: ProjectExploreListItemEventResponse[];
+  contents?: ProjectExploreListItemContentResponse[];
 };
 export type ProjectExploreListResponse = ApiResp<
   Array<ProjectExploreListItemResponse>

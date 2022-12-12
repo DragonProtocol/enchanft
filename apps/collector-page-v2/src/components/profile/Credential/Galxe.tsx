@@ -27,10 +27,14 @@ export default function Galxe({ data }: { data: GalxeData }) {
 }
 
 const ContentBox = styled.div`
+  margin-top: 40px;
+  background: #1b1e23;
+  border-radius: 20px;
+  padding: 20px;
   .data {
-    margin-top: 10px;
-    padding-top: 10px;
     display: flex;
     gap: 20px;
+    margin-top: 20px;
+    /* height: 258px; */
   }
 `;

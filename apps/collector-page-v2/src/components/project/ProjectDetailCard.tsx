@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 17:18:54
+ * @LastEditTime: 2022-12-09 16:49:48
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -72,26 +72,28 @@ export default function ProjectDetailCard({
         </LayoutHeaderBottom>
       </LayoutHeader>
       <LayoutMain>
-        {data.events.map((item) => (
-          <EventCard
-            key={item.id}
-            data={item}
-            onComplete={() => onEventComplete && onEventComplete(item)}
-            displayFavor={false}
-            displayShare={false}
-            disabledComplete={completedEventIds.includes(item.id)}
-            isCompleted={completedEventIds.includes(item.id)}
-          />
-        ))}
-        {data.contents.map((item) => (
-          <ContentCard
-            {...item}
-            content={getContentWithJsonValue(item.value)}
-            voteAction={() => alert('在此页面，此按钮后期会隐藏')}
-            favorsActions={() => alert('在此页面，此按钮后期会隐藏')}
-            hiddenAction={() => alert('在此页面，此按钮后期会隐藏')}
-          />
-        ))}
+        {data.events &&
+          data.events.map((item) => (
+            <EventCard
+              key={item.id}
+              data={item}
+              onComplete={() => onEventComplete && onEventComplete(item)}
+              displayFavor={false}
+              displayShare={false}
+              disabledComplete={completedEventIds.includes(item.id)}
+              isCompleted={completedEventIds.includes(item.id)}
+            />
+          ))}
+        {data.contents &&
+          data.contents.map((item) => (
+            <ContentCard
+              {...item}
+              content={getContentWithJsonValue(item.value)}
+              voteAction={() => alert('在此页面，此按钮后期会隐藏')}
+              favorsActions={() => alert('在此页面，此按钮后期会隐藏')}
+              hiddenAction={() => alert('在此页面，此按钮后期会隐藏')}
+            />
+          ))}
       </LayoutMain>
     </ProjectDetailCardWrapper>
   );

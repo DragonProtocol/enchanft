@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 16:33:41
+ * @LastEditTime: 2022-12-12 12:07:13
  * @Description: 首页任务看板
  */
 import { useState } from 'react';
@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import ButtonRadioGroup from '../components/common/button/ButtonRadioGroup';
 import ContentList from '../components/contents/ContentList';
 import EventExploreList from '../components/event/EventExploreList';
+import { MainWrapper } from '../components/layout/Index';
 import ProjectExploreList from '../components/project/ProjectExploreList';
 import {
   ContentsEntityItem,
@@ -105,7 +106,7 @@ function Favorites() {
   );
 }
 export default Favorites;
-const FavoritesWrapper = styled.div`
+const FavoritesWrapper = styled(MainWrapper)`
   width: 100%;
   height: 100%;
   display: flex;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 16:17:41
+ * @LastEditTime: 2022-12-09 16:53:26
  * @Description: file description
  */
 import {
@@ -110,21 +110,24 @@ export const fetchEventExploreList = createAsyncThunk<
       pageNumber: PAGE_NUMBER_FIRST,
     };
     if (params.orderBy === OrderBy.FORU) {
-      const state = getState() as RootState;
-      const { eventExploreList } = state;
-      const { daylightUid } = eventExploreList;
-      const daylightParmas = {
-        // pubkey: '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4',
-        pubkey: params.pubkey,
-        after: daylightUid,
-        limit: PAGE_SIZE,
-      };
-      const { data, daylightAfterUid } = await getEventsByForu(
-        apiParams,
-        daylightParmas
-      );
-      dispatch(setDaylightUid(daylightAfterUid));
-      return data;
+      if (params.pubkey) {
+        const state = getState() as RootState;
+        const { eventExploreList } = state;
+        const { daylightUid } = eventExploreList;
+        const daylightParmas = {
+          // pubkey: '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4',
+          pubkey: params.pubkey,
+          after: daylightUid,
+          limit: PAGE_SIZE,
+        };
+        const { data, daylightAfterUid } = await getEventsByForu(
+          apiParams,
+          daylightParmas
+        );
+        dispatch(setDaylightUid(daylightAfterUid));
+        return data;
+      }
+      apiParams.orderBy = OrderBy.TRENDING;
     }
     const resp = await fetchListForEventExplore(apiParams);
     if (resp.data.code === ApiRespCode.SUCCESS) {
