@@ -4,8 +4,8 @@ export function Discord() {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       role="img"
-      width="20"
-      height="20"
+      width="23"
+      height="23"
       preserveAspectRatio="xMidYMid meet"
       viewBox="0 0 24 24"
     >
