@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "javascript-time-ago": "^2.5.9",
     "@appsignal/javascript": "^1.3.23",
     "@appsignal/react": "^1.0.20",
     "@ecnft/wl-user-react": "^0.2.0",
