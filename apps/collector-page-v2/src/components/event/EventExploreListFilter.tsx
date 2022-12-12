@@ -2,27 +2,34 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 16:41:04
+ * @LastEditTime: 2022-12-12 16:47:01
  * @Description: file description
  */
 import styled from 'styled-components';
-import Select from 'react-select';
 import {
   OrderBy,
   Platform,
+  PlatformLogo,
   ProjectType,
   Reward,
 } from '../../services/types/common';
 import { EventExploreListParams } from '../../services/types/event';
+import SearchInput from '../common/input/SearchInput';
+import Select, { SelectOption } from '../common/select/Select';
+import OrderBySvg from '../common/icons/svgs/activity-heart.svg';
+import PlatformSvg from '../common/icons/svgs/cube.svg';
+import RewardSvg from '../common/icons/svgs/gift.svg';
+import ProjectTypeSvg from '../common/icons/svgs/grid.svg';
 
 export type EventExploreListFilterValues = Pick<
   EventExploreListParams,
   'orderBy' | 'platform' | 'reward' | 'projectType' | 'keywords'
 >;
-const orderByOptions: Array<{
-  value: EventExploreListFilterValues['orderBy'];
-  label: string;
-}> = [
+const orderByOptions: Array<
+  SelectOption & {
+    value: EventExploreListFilterValues['orderBy'];
+  }
+> = [
   {
     value: OrderBy.NEWEST,
     label: 'Newest',
@@ -40,10 +47,11 @@ const orderByOptions: Array<{
     label: 'For U',
   },
 ];
-const platformOptions: Array<{
-  value: EventExploreListFilterValues['platform'];
-  label: string;
-}> = [
+const platformOptions: Array<
+  SelectOption & {
+    value: EventExploreListFilterValues['platform'];
+  }
+> = [
   {
     value: '',
     label: 'All Platform',
@@ -51,24 +59,29 @@ const platformOptions: Array<{
   {
     value: Platform.GALXE,
     label: 'Galxe',
+    iconUrl: PlatformLogo.GALXE,
   },
   {
     value: Platform.NOOX,
     label: 'Noox',
+    iconUrl: PlatformLogo.NOOX,
   },
   {
     value: Platform.POAP,
     label: 'POAP',
+    iconUrl: PlatformLogo.POAP,
   },
   {
     value: Platform.QUEST3,
     label: 'Quest3',
+    iconUrl: PlatformLogo.QUEST3,
   },
 ];
-const rewardOptions: Array<{
-  value: EventExploreListFilterValues['reward'];
-  label: string;
-}> = [
+const rewardOptions: Array<
+  SelectOption & {
+    value: EventExploreListFilterValues['reward'];
+  }
+> = [
   {
     value: '',
     label: 'All Reward',
@@ -90,10 +103,11 @@ const rewardOptions: Array<{
     label: 'WL',
   },
 ];
-const projectTypeOptions: Array<{
-  value: EventExploreListFilterValues['projectType'];
-  label: string;
-}> = [
+const projectTypeOptions: Array<
+  SelectOption & {
+    value: EventExploreListFilterValues['projectType'];
+  }
+> = [
   {
     value: '',
     label: 'All Project',
@@ -135,33 +149,31 @@ export default function EventExploreListFilter({
   return (
     <EventExploreListFilterWrapper>
       <Select
-        name="orderBy"
         options={orderByOptions}
-        onChange={({ value }) => onChange({ ...values, orderBy: value })}
-        value={orderByOptions.find((item) => item.value === orderBy)}
+        onChange={(value) => onChange({ ...values, orderBy: value })}
+        value={orderBy}
+        iconUrl={OrderBySvg}
       />
       <Select
-        name="platform"
         options={platformOptions}
-        onChange={({ value }) => onChange({ ...values, platform: value })}
-        value={platformOptions.find((item) => item.value === platform)}
+        onChange={(value) => onChange({ ...values, platform: value })}
+        value={platform}
+        iconUrl={PlatformSvg}
       />
       <Select
-        name="reward"
         options={rewardOptions}
-        onChange={({ value }) => onChange({ ...values, reward: value })}
-        value={rewardOptions.find((item) => item.value === reward)}
+        onChange={(value) => onChange({ ...values, reward: value })}
+        value={reward}
+        iconUrl={RewardSvg}
       />
       <Select
-        name="projectType"
         options={projectTypeOptions}
-        onChange={({ value }) => onChange({ ...values, projectType: value })}
-        value={projectTypeOptions.find((item) => item.value === projectType)}
+        onChange={(value) => onChange({ ...values, projectType: value })}
+        value={projectType}
+        iconUrl={ProjectTypeSvg}
       />
-      <input
-        type="search"
-        name="keywords"
-        onChange={(e) => onChange({ ...values, keywords: e.target.value })}
+      <SearchInput
+        onSearch={(value) => onChange({ ...values, keywords: value })}
       />
     </EventExploreListFilterWrapper>
   );
@@ -169,5 +181,6 @@ export default function EventExploreListFilter({
 const EventExploreListFilterWrapper = styled.div`
   width: 100%;
   display: flex;
+  align-items: center;
   gap: 20px;
 `;
