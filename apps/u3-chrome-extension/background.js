@@ -1,10 +1,14 @@
 chrome.action.onClicked.addListener(function () {
   chrome.tabs.create({
-    url: chrome.runtime.getURL('index.html')
+    url: 'https://u3.xyz/',
   });
 });
 
-var HEADERS_TO_FILTER = ["Content-Security-Policy", "X-Frame-Options", "Frame-Options"];
+var HEADERS_TO_FILTER = [
+  'Content-Security-Policy',
+  'X-Frame-Options',
+  'Frame-Options',
+];
 
 chrome.runtime.onInstalled.addListener(() => {
   const RULE = {
@@ -15,7 +19,10 @@ chrome.runtime.onInstalled.addListener(() => {
     },
     action: {
       type: 'modifyHeaders',
-      responseHeaders: HEADERS_TO_FILTER.map(header => ({ header, operation: 'remove' }))
+      responseHeaders: HEADERS_TO_FILTER.map((header) => ({
+        header,
+        operation: 'remove',
+      })),
     },
   };
   chrome.declarativeNetRequest.updateDynamicRules({
