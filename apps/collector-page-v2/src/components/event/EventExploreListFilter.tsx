@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 16:47:01
+ * @LastEditTime: 2022-12-12 17:19:11
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -25,11 +25,7 @@ export type EventExploreListFilterValues = Pick<
   EventExploreListParams,
   'orderBy' | 'platform' | 'reward' | 'projectType' | 'keywords'
 >;
-const orderByOptions: Array<
-  SelectOption & {
-    value: EventExploreListFilterValues['orderBy'];
-  }
-> = [
+const orderByOptions: Array<SelectOption> = [
   {
     value: OrderBy.NEWEST,
     label: 'Newest',
@@ -47,11 +43,7 @@ const orderByOptions: Array<
     label: 'For U',
   },
 ];
-const platformOptions: Array<
-  SelectOption & {
-    value: EventExploreListFilterValues['platform'];
-  }
-> = [
+const platformOptions: Array<SelectOption> = [
   {
     value: '',
     label: 'All Platform',
@@ -77,11 +69,7 @@ const platformOptions: Array<
     iconUrl: PlatformLogo.QUEST3,
   },
 ];
-const rewardOptions: Array<
-  SelectOption & {
-    value: EventExploreListFilterValues['reward'];
-  }
-> = [
+const rewardOptions: Array<SelectOption> = [
   {
     value: '',
     label: 'All Reward',
@@ -103,11 +91,7 @@ const rewardOptions: Array<
     label: 'WL',
   },
 ];
-const projectTypeOptions: Array<
-  SelectOption & {
-    value: EventExploreListFilterValues['projectType'];
-  }
-> = [
+const projectTypeOptions: Array<SelectOption> = [
   {
     value: '',
     label: 'All Project',
