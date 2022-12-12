@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 20:03:01
+ * @LastEditTime: 2022-12-12 15:02:23
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
@@ -24,7 +24,10 @@ function Layout() {
         </HeaderInner>
       </HeaderBox>
       <ContentBox>
-        <Nav />
+        <NavBox>
+          <Nav />
+        </NavBox>
+
         <PageBox>
           <Main />
         </PageBox>
@@ -40,11 +43,11 @@ const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ebeee4;
+  background: #14171a;
 `;
 const HeaderBox = styled.div`
   width: 100%;
-  background: #f7f9f1;
+  background: #1b1e23;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1;
   position: fixed;
@@ -56,21 +59,41 @@ const HeaderInner = styled.div`
   height: 72px;
   box-sizing: border-box;
   padding: 0 40px;
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: ${MEDIA_BREAK_POINTS.xxxl}px;
     margin: 0 auto;
-  }
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    padding: 0 20px;
   }
 `;
 const ContentBox = styled.div`
   width: 100%;
   height: calc(100vh - 72px);
   margin-top: 72px;
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: ${MEDIA_BREAK_POINTS.xxxl}px;
+  }
   display: flex;
+`;
+const NavBox = styled.div`
+  width: 200px;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+  background: #1b1e23;
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    background: none;
+  }
 `;
 const PageBox = styled.div`
   flex: 1;
   height: 100%;
   box-sizing: border-box;
+`;
+
+export const MainWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  padding: 24px 40px;
+  box-sizing: border-box;
+  overflow-y: auto;
 `;

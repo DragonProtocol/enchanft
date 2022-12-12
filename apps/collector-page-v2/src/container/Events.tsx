@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 15:11:32
+ * @LastEditTime: 2022-12-12 12:04:07
  * @Description: 首页任务看板
  */
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
@@ -14,6 +14,7 @@ import EventExploreListFilter, {
   defaultEventExploreListFilterValues,
   EventExploreListFilterValues,
 } from '../components/event/EventExploreListFilter';
+import { MainWrapper } from '../components/layout/Index';
 import {
   fetchEventExploreList,
   fetchMoreEventExploreList,
@@ -96,7 +97,7 @@ export default function Events() {
     </EventsWrapper>
   );
 }
-const EventsWrapper = styled.div`
+const EventsWrapper = styled(MainWrapper)`
   width: 100%;
   height: 100%;
   display: flex;
