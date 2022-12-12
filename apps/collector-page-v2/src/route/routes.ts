@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 17:22:23
+ * @LastEditTime: 2022-12-12 13:59:59
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -84,6 +84,20 @@ export const routes: CutomRouteObject[] = [
   NoMatchRoute,
 ];
 
+// 需要登录权限的路由
+export const permissionLoginRouteKeys = [
+  RouteKey.profile,
+  RouteKey.favorites,
+  RouteKey.contentCreate,
+  RouteKey.eventCreate,
+];
+
+// 需要admin权限的路由
+export const permissionAdminRouteKeys = [
+  RouteKey.eventCreate,
+  // RouteKey.contentCreate,
+];
+
 export const getRoute = (key: RouteKey): CutomRouteObject | undefined => {
   let route: CutomRouteObject | undefined;
   const searchRoute = (routeAry: CutomRouteObject[]) => {
@@ -99,65 +113,3 @@ export const getRoute = (key: RouteKey): CutomRouteObject | undefined => {
   searchRoute(routes);
   return route;
 };
-export type CutomNavObject = {
-  name: string;
-  link: string;
-  activeRouteKeys: RouteKey[];
-};
-export const navs: CutomNavObject[] = [
-  {
-    name: 'home',
-    link: getRoute(RouteKey.home).path,
-    activeRouteKeys: [RouteKey.home],
-  },
-  {
-    name: 'events',
-    link: getRoute(RouteKey.events).path,
-    activeRouteKeys: [RouteKey.events, RouteKey.event],
-  },
-  {
-    name: 'projects',
-    link: getRoute(RouteKey.projects).path,
-    activeRouteKeys: [RouteKey.projects, RouteKey.project],
-  },
-  {
-    name: 'contents',
-    link: getRoute(RouteKey.contents).path,
-    activeRouteKeys: [RouteKey.contents, RouteKey.content],
-  },
-  {
-    name: 'profile',
-    link: getRoute(RouteKey.profile).path,
-    activeRouteKeys: [RouteKey.profile],
-  },
-  {
-    name: 'favorites',
-    link: getRoute(RouteKey.favorites).path,
-    activeRouteKeys: [RouteKey.favorites],
-  },
-  {
-    name: 'add content',
-    link: getRoute(RouteKey.contentCreate).path,
-    activeRouteKeys: [RouteKey.contentCreate],
-  },
-  {
-    name: 'add event',
-    link: getRoute(RouteKey.eventCreate).path,
-    activeRouteKeys: [RouteKey.eventCreate],
-  },
-];
-
-// 需要登录权限的路由
-export const permissionLoginRouteKeys = [
-  RouteKey.profile,
-  RouteKey.favorites,
-  RouteKey.contentCreate,
-  RouteKey.eventCreate,
-];
-
-// 需要admin权限的路由
-
-export const permissionAdminRouteKeys = [
-  RouteKey.eventCreate,
-  // RouteKey.contentCreate,
-];

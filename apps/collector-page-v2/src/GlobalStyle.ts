@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-30 22:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-08 15:58:48
+ * @LastEditTime: 2022-12-12 15:02:07
  * @Description: 全局样式
  */
 import { createGlobalStyle, css } from 'styled-components';
@@ -80,7 +80,7 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #E5E5E5;
+    background-color: #14171A;
     margin:0;
     padding:0;
     width:100%;
