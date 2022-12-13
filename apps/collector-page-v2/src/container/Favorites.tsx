@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 12:07:13
+ * @LastEditTime: 2022-12-13 09:48:51
  * @Description: 首页任务看板
  */
 import { useState } from 'react';
@@ -18,6 +18,7 @@ import {
   ProjectsEntityItem,
 } from '../features/favorite/userGroupFavorites';
 import useContentHidden from '../hooks/useContentHidden';
+import useEventHandles from '../hooks/useEventHandles';
 import useUserFavorites from '../hooks/useUserFavorites';
 import Content from './Content';
 import Event from './Event';
@@ -43,6 +44,14 @@ export const FavoriteSwitchOptions = [
   },
 ];
 function Favorites() {
+  const {
+    favoredIds,
+    favorQueueIds,
+    completedIds,
+    onComplete,
+    onFavor,
+    onShare,
+  } = useEventHandles();
   const { events, projects, contents } = useUserFavorites();
   const [event, setEvent] = useState<EventsEntityItem | null>(null);
   const [project, setProject] = useState<ProjectsEntityItem | null>(null);
@@ -65,6 +74,13 @@ function Favorites() {
             <EventExploreList
               data={events}
               activeId={event?.id || 0}
+              favoredIds={favoredIds}
+              favorQueueIds={favorQueueIds}
+              completedIds={completedIds}
+              displayHandles
+              onComplete={onComplete}
+              onFavor={onFavor}
+              onShare={onShare}
               onItemClick={setEvent}
             />
           )}

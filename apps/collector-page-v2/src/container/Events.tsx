@@ -2,42 +2,49 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 12:04:07
+ * @LastEditTime: 2022-12-13 11:23:40
  * @Description: 首页任务看板
  */
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
+import CannotOpenPlatFormLink from '../components/event/CannotOpenPlatFormLink';
 import EventExploreList from '../components/event/EventExploreList';
 import EventExploreListFilter, {
   defaultEventExploreListFilterValues,
   EventExploreListFilterValues,
 } from '../components/event/EventExploreListFilter';
 import { MainWrapper } from '../components/layout/Index';
+import ListScrollBox from '../components/common/box/ListScrollBox';
 import {
   fetchEventExploreList,
   fetchMoreEventExploreList,
   selectAll,
   selectState,
 } from '../features/event/eventExploreList';
+import useEventHandles from '../hooks/useEventHandles';
 import { AsyncRequestStatus } from '../services/types';
 import { OrderBy } from '../services/types/common';
 import { EventExploreListItemResponse } from '../services/types/event';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import Event from './Event';
 
 export default function Events() {
-  const { getBindAccount } = useWlUserReact();
+  const {
+    favoredIds,
+    favorQueueIds,
+    completedIds,
+    onComplete,
+    onFavor,
+    onShare,
+  } = useEventHandles();
+  const { getBindAccount, isLogin } = useWlUserReact();
   const evmAccount = getBindAccount(AccountType.EVM);
-  const params = useParams();
-  const activeId = Number(params.id);
   const { status, moreStatus } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const [filter, setFilter] = useState<EventExploreListFilterValues>(
     defaultEventExploreListFilterValues
   );
-  const [event, setEvent] = useState<Maybe<EventExploreListItemResponse>>(null);
+  const [event, setEvent] = useState<EventExploreListItemResponse | null>(null);
   useEffect(() => {
     dispatch(fetchEventExploreList({ ...filter }));
   }, [filter]);
@@ -70,6 +77,7 @@ export default function Events() {
     () => moreStatus === AsyncRequestStatus.PENDING,
     [moreStatus]
   );
+
   return (
     <EventsWrapper>
       <EventExploreListFilter
@@ -77,22 +85,39 @@ export default function Events() {
         onChange={(newFilter) => setFilter(newFilter)}
       />
       <MainBox>
-        <ListBox>
+        <ListBox onScrollBottom={getMore}>
           {isLoading ? (
-            <span>loading</span>
+            <MoreLoading>loading ...</MoreLoading>
           ) : (
             <EventExploreList
               data={eventExploreList}
-              activeId={activeId}
+              activeId={event?.id || 0}
+              favoredIds={favoredIds}
+              favorQueueIds={favorQueueIds}
+              completedIds={completedIds}
+              displayHandles={isLogin}
+              onComplete={onComplete}
+              onFavor={onFavor}
+              onShare={onShare}
               onItemClick={setEvent}
             />
           )}
-          {isLoadingMore && <span>loading more</span>}
-          <button type="button" onClick={getMore}>
-            more
-          </button>
+          {!isLoading && isLoadingMore && (
+            <MoreLoading>loading ...</MoreLoading>
+          )}
         </ListBox>
-        <ContentBox>{event && <Event data={event} />}</ContentBox>
+        <ContentBox>
+          {event ? (
+            event.supportIframe ? (
+              <EventIframe src={event.link} />
+            ) : (
+              <CannotOpenPlatFormLink
+                iconUrl={event.platform.logo}
+                linkUrl={event.link}
+              />
+            )
+          ) : null}
+        </ContentBox>
       </MainBox>
     </EventsWrapper>
   );
@@ -107,20 +132,35 @@ const EventsWrapper = styled(MainWrapper)`
 const MainBox = styled.div`
   width: 100%;
   height: 0px;
+  border: 1px solid #39424c;
+  box-sizing: border-box;
+  border-radius: 20px;
+  overflow: hidden;
   flex: 1;
   display: flex;
-  gap: 20px;
 `;
-const ListBox = styled.div`
-  width: 400px;
-  border-radius: 10px;
-  background-color: rgba(41, 41, 41, 1);
-  padding: 20px;
+const ListBox = styled(ListScrollBox)`
+  width: 360px;
+  height: 100%;
+
+  background: #1b1e23;
+  border-right: 1px solid #39424c;
   box-sizing: border-box;
   overflow-y: auto;
+`;
+const MoreLoading = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: #748094;
 `;
 const ContentBox = styled.div`
   width: 0;
   flex: 1;
-  overflow-y: auto;
+  height: 100%;
+`;
+
+const EventIframe = styled.iframe`
+  width: 100%;
+  height: 100%;
+  border: none;
 `;

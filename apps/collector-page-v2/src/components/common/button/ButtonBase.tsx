@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 12:52:16
+ * @LastEditTime: 2022-12-13 12:24:13
  * @Description: 基础按钮
  */
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
@@ -14,7 +14,13 @@ function ButtonBase({ children, ...otherProps }: ButtonProps) {
 }
 export default ButtonBase;
 export const ButtonPrimary = styled(ButtonBase)`
-  background-color: #3dd606;
+  background-color: #ffffff;
+  color: #14171a;
+`;
+export const ButtonPrimaryLine = styled(ButtonBase)`
+  border: 1px solid #39424c;
+  background-color: #1a1e23;
+  color: #718096;
 `;
 export const ButtonWarning = styled(ButtonBase)`
   background-color: #ebb700;
@@ -28,18 +34,19 @@ export const ButtonInfo = styled(ButtonBase)`
 `;
 
 export const ButtonBaseCss = css`
+  height: 48px;
+  padding: 12px 24px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
   display: flex;
+  flex-direction: row;
   justify-content: center;
   align-items: center;
-  box-shadow: inset 0px -4px 0px rgba(0, 0, 0, 0.1);
-  font-weight: 700;
-  font-size: 16px;
-  color: #ffffff;
-  border: none;
+  gap: 10px;
   cursor: pointer;
-  padding: 16px 18px;
-  box-sizing: border-box;
-  border-radius: 10px;
 `;
 const ButtonBaseWrapper = styled.button`
   ${ButtonBaseCss}
