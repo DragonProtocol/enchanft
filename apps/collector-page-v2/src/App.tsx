@@ -7,6 +7,7 @@
  */
 import { Provider as ReduxProvider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
+import Modal from 'react-modal';
 import Appsignal from '@appsignal/javascript';
 import { ErrorBoundary } from '@appsignal/react';
 import {
@@ -36,6 +37,7 @@ function FallbackComponent() {
   return <div>Uh oh! There was an error :(</div>;
 }
 
+Modal.setAppElement('#root');
 function App() {
   appsignal.demo();
   return (

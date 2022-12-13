@@ -22,5 +22,6 @@ export const WL_TWITTER_URL = 'https://twitter.com/realwlxyz';
 export const WL_DISCORD_URL = 'https://discord.com/invite/ZXEgc3UrjB';
 
 export const WL_APP_VERSION = process.env.REACT_APP_VERSION;
+export const CHROME_EXTENSION_URL = process.env.REACT_APP_CHROME_EXTENSION_URL;
 
 export const EVENT_IMAGE_SIZE_LIMIT = 200 * 1024;
