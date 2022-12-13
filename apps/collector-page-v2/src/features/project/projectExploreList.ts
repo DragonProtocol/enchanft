@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 16:31:28
+ * @LastEditTime: 2022-12-13 13:46:22
  * @Description: file description
  */
 import {
@@ -28,7 +28,8 @@ type ProjectExploreListStore = EntityState<ProjectExploreListItem> & {
   moreErrorMsg: string;
   currentRequestId: string; // 当前正在请求的id(由createAsyncThunk生成的唯一id)
 };
-const PAGE_SIZE = 10;
+// 这里设定15个是因为首次获取10个的话可能列表无法查询滚动条，无法进行滚动加载
+const PAGE_SIZE = 15;
 const PAGE_NUMBER_FIRST = 0;
 export const projectExploreListEntity =
   createEntityAdapter<ProjectExploreListItem>({

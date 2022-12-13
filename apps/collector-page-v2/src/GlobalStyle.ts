@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-30 22:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 15:02:07
+ * @LastEditTime: 2022-12-13 10:02:44
  * @Description: 全局样式
  */
 import { createGlobalStyle, css } from 'styled-components';
@@ -31,7 +31,7 @@ export const ScrollBarCss = css`
 `;
 
 export const FontFamilyCss = css`
-  font-family: 'Poppins';
+  font-family: 'Rubik';
   font-style: normal;
 `;
 
@@ -48,29 +48,29 @@ export const CursorPointerUpCss = css`
 `;
 const GlobalStyle = createGlobalStyle`
   @font-face {
-    font-family: 'Poppins';
-    src:  url('/fonts/Poppins-Black.ttf') format('truetype');
+    font-family: 'Rubik';
+    src:  url('/fonts/Rubik-BoldItalic.ttf') format('truetype');
     font-style: normal;
     font-weight: 900;
     font-display: auto;
   }
   @font-face {
-    font-family: 'Poppins';
-    src:  url('/fonts/Poppins-Bold.ttf') format('truetype');
+    font-family: 'Rubik';
+    src:  url('/fonts/Rubik-Bold.ttf') format('truetype');
     font-style: normal;
     font-weight: bold;
     font-display: auto;
   }
   @font-face {
-    font-family: 'Poppins';
-    src:  url('/fonts/Poppins-Medium.ttf') format('truetype');
+    font-family: 'Rubik';
+    src:  url('/fonts/Rubik-Medium.ttf') format('truetype');
     font-style: normal;
     font-weight: 500;
     font-display: auto;
   }
   @font-face {
-    font-family: 'Poppins';
-    src:  url('/fonts/Poppins-Regular.ttf') format('truetype');
+    font-family: 'Rubik';
+    src:  url('/fonts/Rubik-Regular.ttf') format('truetype');
     font-style: normal;
     font-weight: normal;
     font-display: auto;

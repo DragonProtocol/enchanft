@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 15:09:19
+ * @LastEditTime: 2022-12-13 13:35:00
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -36,5 +36,4 @@ const ProjectExploreListWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
 `;

@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 18:39:54
+ * @LastEditTime: 2022-12-13 12:40:08
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -27,7 +27,7 @@ import { uploadImage } from '../services/api/upload';
 import { EVENT_IMAGE_SIZE_LIMIT } from '../constants';
 import { eventCreate, selectState } from '../features/event/eventCreate';
 import { AsyncRequestStatus } from '../services/types';
-import EventDetailCard from '../components/event/EventDetailCard';
+import EventDetailView from '../components/event/EventDetailView';
 
 const platformOptions: Array<{
   value: Platform;
@@ -351,7 +351,7 @@ const EventPreviewBox = styled.div`
   flex: 1;
   overflow-y: auto;
 `;
-const EventPreview = styled(EventDetailCard)`
+const EventPreview = styled(EventDetailView)`
   min-height: 100%;
 `;
 function UploadImage({

@@ -2,11 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 19:20:05
+ * @LastEditTime: 2022-12-13 11:43:00
  * @Description: 首页任务看板
  */
 import { useCallback, useMemo } from 'react';
-import ProjectDetailCard from '../components/project/ProjectDetailCard';
+import ProjectDetailCard from '../components/project/ProjectDetailView';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { selectAll as selecteAllCompletedEvents } from '../features/event/userCompletedEvents';
 import {
