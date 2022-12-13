@@ -50,6 +50,7 @@ function Profile() {
         <div className="infos">
           <Info
             {...{
+              date: (user as any).createdAt,
               nickname: user.name,
               avatar: user.avatar,
               walletAddr:

@@ -34,6 +34,7 @@ export type EventExploreListParams = {
 };
 
 export type EventExploreListItemResponse = {
+  uid?: string;
   id: number;
   name: string;
   description: string;
