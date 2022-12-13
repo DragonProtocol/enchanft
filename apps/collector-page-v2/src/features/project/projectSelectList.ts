@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-07 15:40:16
+ * @LastEditTime: 2022-12-13 19:33:55
  * @Description: file description
  */
 import {
@@ -13,6 +13,7 @@ import {
 } from '@reduxjs/toolkit';
 import { fetchListForProjectExplore } from '../../services/api/project';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
+import { OrderBy } from '../../services/types/common';
 import { ProjectExploreListItemResponse } from '../../services/types/project';
 import type { RootState } from '../../store/store';
 
@@ -37,7 +38,13 @@ export const fetchProjectSelectList = createAsyncThunk<
   Array<ProjectSelectListItem>,
   undefined
 >('project/select/list', async (params, { rejectWithValue }) => {
-  const resp = await fetchListForProjectExplore(params);
+  // TODO 暂时先取TRENDING的前20条，后期要有一个获取所有project的接口
+  const tempParams = {
+    orderBy: OrderBy.TRENDING,
+    pageSize: 20,
+    pageNumber: 0,
+  };
+  const resp = await fetchListForProjectExplore(tempParams);
   if (resp.data.code === ApiRespCode.SUCCESS) {
     return resp.data.data;
   }
