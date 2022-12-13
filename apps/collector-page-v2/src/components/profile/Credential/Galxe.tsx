@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { GalxeCard } from './Card';
 
 import { GalxeData } from '../../../services/types/profile';
@@ -7,18 +8,29 @@ import Title from './Title';
 
 export default function Galxe({ data }: { data: GalxeData }) {
   const [expand, setExpand] = useState(true);
+  const navigate = useNavigate();
   return (
     <ContentBox>
       <Title
         name={`Galxe(${data.addressInfo.nfts.totalCount})`}
         expand={expand}
         setExpand={(e) => setExpand(e)}
-        exploreAction={() => {}}
+        exploreAction={() => {
+          navigate('/events');
+        }}
       />
       {expand && (
         <div className="data">
           {data.addressInfo.nfts.list.map((item) => {
-            return <GalxeCard key={item.id} data={item} />;
+            return (
+              <GalxeCard
+                key={item.id}
+                data={item}
+                oatAction={() => {
+                  navigate('/events');
+                }}
+              />
+            );
           })}
         </div>
       )}

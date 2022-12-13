@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { debounce } from 'lodash';
 import { DropDown } from './DropDown';
 import { OrderBy, ContentType } from '../../services/types/contents';
+import { Favors } from '../icons/favors';
+import { Projects } from '../icons/projects';
+import SearchInput from '../common/input/SearchInput';
 
 export default function Header({
   filterAction,
@@ -15,7 +18,7 @@ export default function Header({
 }) {
   const [orderBy, setOrderBy] = useState('For U');
   const [type, setType] = useState('');
-  const [search, setSearch] = useState('');
+  const [active, setActive] = useState<'original' | 'readerview'>('readerview');
 
   const fetchData = useCallback(debounce(filterAction, 100), []);
 
@@ -28,6 +31,7 @@ export default function Header({
       <div className="classify">
         <DropDown
           items={Object.values(OrderBy)}
+          Icon={<Favors />}
           title="For U"
           selectAction={(item) => {
             setOrderBy(item);
@@ -35,36 +39,45 @@ export default function Header({
         />
         <DropDown
           items={Object.values(ContentType)}
+          Icon={<Projects />}
+          width={185}
+          title="Project Type"
           defaultSelect="All"
           selectAction={(item) => {
             setType(item);
           }}
         />
-
-        <input
-          title="content-search"
-          type="text"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-          }}
-        />
-        <button
-          type="button"
-          onClick={() => {
-            filterAction(search, type, orderBy);
-          }}
-        >
-          search
-        </button>
       </div>
       <div className="search">
-        <button type="button" onClick={changeOriginalAction}>
-          Original
-        </button>
-        <button type="button" onClick={changeReaderViewAction}>
-          ReaderView
-        </button>
+        <div className="btns">
+          <button
+            type="button"
+            className={active === 'original' ? 'active' : ''}
+            onClick={() => {
+              setActive('original');
+              changeOriginalAction();
+            }}
+          >
+            Original
+          </button>
+          <button
+            className={active === 'readerview' ? 'active' : ''}
+            type="button"
+            onClick={() => {
+              setActive('readerview');
+              changeReaderViewAction();
+            }}
+          >
+            ReaderView
+          </button>
+        </div>
+        <div className="input">
+          <SearchInput
+            onSearch={(query) => {
+              filterAction(query, type, orderBy);
+            }}
+          />
+        </div>
       </div>
     </HeaderBox>
   );
@@ -83,9 +96,41 @@ const HeaderBox = styled.div`
   .search {
     display: flex;
     justify-content: end;
-    width: 300px;
-    > input {
-      width: 100%;
+    align-items: center;
+    gap: 20px;
+    > div.input {
+      width: 400px;
+      > input {
+        width: 100%;
+      }
+    }
+
+    > div.btns {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      width: 260px;
+      height: 40px;
+
+      background: #14171a;
+      border-radius: 100px;
+
+      > button {
+        cursor: pointer;
+        width: 122px;
+        height: 32px;
+        border: none;
+        background: #21262c;
+        box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
+          0px 0px 4px rgba(20, 23, 26, 0.04);
+        border-radius: 100px;
+        outline: none;
+        color: #a0aec0;
+
+        &.active {
+          color: #ffffff;
+        }
+      }
     }
   }
 `;

@@ -1,9 +1,11 @@
 import styled from 'styled-components';
+import { useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react';
 import { sortPubKey } from '../../utils/solana';
 import { Copy } from '../icons/copy';
 import { Discord } from '../icons/discord';
 import { Twitter } from '../icons/twitter';
 import { Refresh } from '../icons/refresh';
+import { Edit } from '../icons/edit';
 
 export default function Info({
   nickname,
@@ -14,16 +16,26 @@ export default function Info({
   walletAddr: string;
   avatar: string;
 }) {
+  const { dispatchModal } = useWlUserReact();
   return (
     <InfoBox>
       <div className="user-info">
-        <img
-          className="user-avatar"
-          src={avatar || '/default-avatar.png'}
-          alt=""
-        />
+        <div className="img-edit">
+          <div
+            onClick={() => {
+              dispatchModal({ type: WlUserModalType.EDIT_PROFILE });
+            }}
+          >
+            <Edit />
+          </div>
+          <img
+            className="user-avatar"
+            src={avatar || '/default-avatar.png'}
+            alt=""
+          />
+        </div>
 
-        <div>
+        <div className="info">
           <div className="nickname">
             <span className="name">{nickname || 'Unknown'}</span>
             <span className="share">
@@ -92,7 +104,29 @@ const InfoBox = styled.div`
       width: 120px;
       height: 120px;
     }
-    & > div {
+    & > div.img-edit {
+      position: relative;
+      &:hover {
+        > div {
+          display: flex;
+        }
+      }
+      > div {
+        cursor: pointer;
+        position: absolute;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0.5)
+        );
+      }
+    }
+    & > div.info {
       flex-grow: 1;
       display: flex;
       flex-direction: column;
