@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 12:33:50
+ * @LastEditTime: 2022-12-14 13:48:38
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -31,7 +31,6 @@ import { uploadImage } from '../services/api/upload';
 import { EVENT_IMAGE_SIZE_LIMIT } from '../constants';
 import { eventCreate, selectState } from '../features/event/eventCreate';
 import { AsyncRequestStatus } from '../services/types';
-import EventDetailView from '../components/event/EventDetailView';
 import { MainWrapper } from '../components/layout/Index';
 import CardBase from '../components/common/card/CardBase';
 import ScrollBox from '../components/common/box/ScrollBox';
@@ -44,9 +43,9 @@ import {
 import Switch from '../components/common/switch/Switch';
 import RefreshSvg from '../components/common/icons/svgs/refresh.svg';
 import TimePicker from '../components/common/time/TimePicker';
-import AsyncSelect from '../components/common/select/AsyncSelect';
-import { fetchListForProjectExplore } from '../services/api/project';
 import EventLinkPreview from '../components/event/EventLinkPreview';
+import ProjectAsyncSelect from '../components/business/form/ProjectAsyncSelect';
+import PlatformSelect from '../components/business/form/PlatformSelect';
 
 const platformOptions: Array<{
   value: Platform;
@@ -180,16 +179,6 @@ function EventCreate() {
     };
   }, [formik.values, projectSelectList]);
 
-  const getProjectOptions = (keywords: string) => {
-    // TODO 暂时先取TRENDING的前50条，后期要有一个获取所有project的接口
-    const params = {
-      orderBy: OrderBy.TRENDING,
-      pageSize: 50,
-      pageNumber: 0,
-      keywords,
-    };
-    return fetchListForProjectExplore(params).then((resp) => resp.data.data);
-  };
   return (
     <ScrollBox>
       <EventCreateWrapper>
@@ -225,8 +214,7 @@ function EventCreate() {
 
           <FormField>
             <FormLabel htmlFor="platform">Platform</FormLabel>
-            <Select
-              options={platformOptions}
+            <PlatformSelect
               onChange={(value) => formik.setFieldValue('platform', value)}
               value={formik.values.platform}
             />
@@ -235,15 +223,9 @@ function EventCreate() {
 
           <FormField>
             <FormLabel htmlFor="project">Project</FormLabel>
-            {/* <Select
-              options={projectOptions}
-              onChange={(value) => formik.setFieldValue('project', value)}
-              value={formik.values.project}
-            /> */}
-            <AsyncSelect
+            <ProjectAsyncSelect
               value={formik.values.project}
               onChange={(value) => formik.setFieldValue('project', value)}
-              getOptions={getProjectOptions}
             />
             {renderFieldError('project')}
           </FormField>
