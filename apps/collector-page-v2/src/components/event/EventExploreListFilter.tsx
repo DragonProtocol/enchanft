@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 17:19:11
+ * @LastEditTime: 2022-12-13 13:43:48
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -132,33 +132,34 @@ export default function EventExploreListFilter({
   const { orderBy, platform, reward, projectType } = values;
   return (
     <EventExploreListFilterWrapper>
-      <Select
-        options={orderByOptions}
-        onChange={(value) => onChange({ ...values, orderBy: value })}
-        value={orderBy}
-        iconUrl={OrderBySvg}
-      />
-      <Select
-        options={platformOptions}
-        onChange={(value) => onChange({ ...values, platform: value })}
-        value={platform}
-        iconUrl={PlatformSvg}
-      />
-      <Select
-        options={rewardOptions}
-        onChange={(value) => onChange({ ...values, reward: value })}
-        value={reward}
-        iconUrl={RewardSvg}
-      />
-      <Select
-        options={projectTypeOptions}
-        onChange={(value) => onChange({ ...values, projectType: value })}
-        value={projectType}
-        iconUrl={ProjectTypeSvg}
-      />
-      <SearchInput
-        onSearch={(value) => onChange({ ...values, keywords: value })}
-      />
+      <Left>
+        <Select
+          options={orderByOptions}
+          onChange={(value) => onChange({ ...values, orderBy: value })}
+          value={orderBy}
+          iconUrl={OrderBySvg}
+        />
+        <Select
+          options={platformOptions}
+          onChange={(value) => onChange({ ...values, platform: value })}
+          value={platform}
+          iconUrl={PlatformSvg}
+        />
+        <Select
+          options={rewardOptions}
+          onChange={(value) => onChange({ ...values, reward: value })}
+          value={reward}
+          iconUrl={RewardSvg}
+        />
+        <Select
+          options={projectTypeOptions}
+          onChange={(value) => onChange({ ...values, projectType: value })}
+          value={projectType}
+          iconUrl={ProjectTypeSvg}
+        />
+      </Left>
+
+      <Search onSearch={(value) => onChange({ ...values, keywords: value })} />
     </EventExploreListFilterWrapper>
   );
 }
@@ -167,4 +168,13 @@ const EventExploreListFilterWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
+`;
+const Left = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+const Search = styled(SearchInput)`
+  max-width: 400px;
 `;

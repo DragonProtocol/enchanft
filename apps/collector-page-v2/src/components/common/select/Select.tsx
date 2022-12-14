@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 16:47:45
+ * @LastEditTime: 2022-12-13 17:21:58
  * @Description: file description
  */
 import { useMemo, useState } from 'react';
@@ -44,16 +44,19 @@ export default function Select({
         className="select-button"
         onClick={() => setOpenOptions(!openOptions)}
       >
-        {iconUrl && (
-          <SelectButtonBeforeIcon
-            className="select-button-before-icon"
-            src={iconUrl}
-          />
-        )}
+        <SelectButtonLeft>
+          {iconUrl && (
+            <SelectButtonBeforeIcon
+              className="select-button-before-icon"
+              src={iconUrl}
+            />
+          )}
 
-        <SelectButtonText className="select-button-text">
-          {displayText}
-        </SelectButtonText>
+          <SelectButtonText className="select-button-text">
+            {displayText}
+          </SelectButtonText>
+        </SelectButtonLeft>
+
         <SelectButtonChevronIcon
           className="select-button-chevron-icon"
           src={ChevronDownSvg}
@@ -106,11 +109,19 @@ const SelectButton = styled.div`
   align-items: center;
   gap: 10px;
 `;
+const SelectButtonLeft = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+`;
 const SelectButtonBeforeIcon = styled.img`
   width: 24px;
   height: 24px;
 `;
 const SelectButtonText = styled.span`
+  flex: 1;
   font-weight: 500;
   font-size: 16px;
   line-height: 24px;

@@ -7,6 +7,7 @@ import {
   NFTDataListItem,
 } from '../../services/types/profile';
 
+import CrownImg from '../imgs/crown.svg';
 import ethImage from '../imgs/eth.png';
 
 export default function OnChainInterest({
@@ -231,6 +232,21 @@ const ContentBox = styled.div`
           width: 100%;
           box-sizing: border-box;
         }
+      }
+      & select {
+        outline: none;
+        width: 300px;
+        height: 48px;
+        background: #1a1e23;
+        border: 1px solid #39424c;
+        border-radius: 12px;
+        color: #ffffff;
+        padding: 0 5px;
+        appearance: none;
+        background-image: url(${CrownImg});
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1em;
       }
     }
     .data {

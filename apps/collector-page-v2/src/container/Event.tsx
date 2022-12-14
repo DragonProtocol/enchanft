@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 18:32:29
+ * @LastEditTime: 2022-12-13 12:39:43
  * @Description: event detail container
  */
 import { useCallback, useEffect, useMemo } from 'react';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import styled from 'styled-components';
-import EventDetailCard from '../components/event/EventDetailCard';
+import EventDetailView from '../components/event/EventDetailView';
 import {
   completeEvent,
   favorEvent,
@@ -28,7 +28,7 @@ export type EventContainerProps = {
 function Event({ data }: EventContainerProps) {
   const dispatch = useAppDispatch();
   const { isLogin } = useWlUserReact();
-  const { eventIds } = useUserFavorites();
+  const { eventIds: favoredIds } = useUserFavorites();
   const { id: eventId } = data;
   useEffect(() => {
     if (data.isDaylight) {
@@ -54,8 +54,8 @@ function Event({ data }: EventContainerProps) {
   const onShare = () => {};
 
   const isFavored = useMemo(
-    () => eventIds.includes(eventId),
-    [eventIds, eventId]
+    () => favoredIds.includes(eventId),
+    [favoredIds, eventId]
   );
   const loadingFavor = useMemo(
     () => favorQueueIds.includes(eventId),
@@ -83,6 +83,6 @@ function Event({ data }: EventContainerProps) {
   );
 }
 export default Event;
-const EventWrapper = styled(EventDetailCard)`
+const EventWrapper = styled(EventDetailView)`
   height: 100%;
 `;

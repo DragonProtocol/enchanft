@@ -6,7 +6,13 @@ import {
   PoapData,
 } from '../../../services/types/profile';
 
-export function NooxCard({ data }: { data: NooxDataListItem }) {
+export function NooxCard({
+  data,
+  oatAction,
+}: {
+  data: NooxDataListItem;
+  oatAction: () => void;
+}) {
   const img = useMemo(() => {
     return data?.uriMetaData.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
   }, [data?.uriMetaData.image]);
@@ -15,7 +21,9 @@ export function NooxCard({ data }: { data: NooxDataListItem }) {
     <Box>
       <img src={img} alt="" />
       <div className="hover">
-        <button type="button">Get The OAT</button>
+        <button type="button" onClick={oatAction}>
+          Get The OAT
+        </button>
       </div>
     </Box>
   );
@@ -61,23 +69,39 @@ const Box = styled.div`
   }
 `;
 
-export function GalxeCard({ data }: { data: GalxeDataListItem }) {
+export function GalxeCard({
+  data,
+  oatAction,
+}: {
+  data: GalxeDataListItem;
+  oatAction: () => void;
+}) {
   return (
     <CircleCardBox>
       <img src={data?.image} alt="" />
       <div className="hover">
-        <button type="button">Get The OAT</button>
+        <button type="button" onClick={oatAction}>
+          Get The OAT
+        </button>
       </div>
     </CircleCardBox>
   );
 }
 
-export function PoapCard({ data }: { data: PoapData }) {
+export function PoapCard({
+  data,
+  oatAction,
+}: {
+  data: PoapData;
+  oatAction: () => void;
+}) {
   return (
     <CircleCardBox>
       <img src={data?.event?.image_url} alt="" />
       <div className="hover">
-        <button type="button">Get The OAT</button>
+        <button type="button" onClick={oatAction}>
+          Get The OAT
+        </button>
       </div>
     </CircleCardBox>
   );

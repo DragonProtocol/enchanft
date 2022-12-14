@@ -24,6 +24,7 @@ import ContentShower from '../components/contents/ContentShower';
 import userFavored from '../hooks/useFavored';
 import { useVoteUp } from '../hooks/useVoteUp';
 import useContentHidden from '../hooks/useContentHidden';
+import ExtensionSupport from '../components/common/ExtensionSupport';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -40,6 +41,7 @@ function Contents() {
   const [selectContent, setSelectContent] = useState<ContentListItem>();
   const [daylightContent, setDaylightContent] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [daylightContentLoading, setDaylightContentLoading] = useState(false);
   const { keysFilter, contentHiddenOrNot } = useContentHidden();
   const [tab, setTab] = useState<'original' | 'readerView'>('readerView');
@@ -102,6 +104,7 @@ function Contents() {
     async (pageNumber: number) => {
       const { keywords, type, orderBy } = queryRef.current;
       try {
+        setLoadingMore(true);
         if (orderBy === OrderBy.FORU) {
           const [dayLightData, { data }] = await Promise.all([
             fetchDaylightData(currDaylightCursor),
@@ -126,8 +129,7 @@ function Contents() {
       } catch (error) {
         toast.error(error.message);
       } finally {
-        // TODO
-        console.log('load more done');
+        setLoadingMore(false);
       }
     },
     [queryRef.current, contents, currDaylightCursor]
@@ -207,40 +209,28 @@ function Contents() {
                   />
                 );
               })}
-            <button
-              type="button"
-              onClick={() => {
-                loadMore(currPageNumber + 1);
-                setCurrPageNumber(currPageNumber + 1);
-              }}
-            >
-              More
-            </button>
+            <div className="load-more">
+              {loadingMore ? (
+                'loading'
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    loadMore(currPageNumber + 1);
+                    setCurrPageNumber(currPageNumber + 1);
+                  }}
+                >
+                  Load More
+                </button>
+              )}
+            </div>
           </ListBox>
 
           <ContentBox>
             {tab === 'original' && (
-              <div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    alert('TODO');
-                  }}
-                >
-                  install extension
-                </button>
-                <button
-                  type="button"
-                  onClick={() => {
-                    window.open(
-                      selectContent.action?.linkUrl || selectContent.link,
-                      '_blank'
-                    );
-                  }}
-                >
-                  open in new tab
-                </button>
-              </div>
+              <ExtensionSupport
+                url={selectContent.action?.linkUrl || selectContent.link}
+              />
             )}
             {tab === 'readerView' &&
               ((daylightContentLoading && <div>loading</div>) ||
@@ -259,19 +249,9 @@ function Contents() {
                       }}
                     />
                   )) || (
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          window.open(
-                            selectContent.action?.linkUrl || selectContent.link,
-                            '_blank'
-                          );
-                        }}
-                      >
-                        open in new tab
-                      </button>
-                    </div>
+                    <ExtensionSupport
+                      url={selectContent.action?.linkUrl || selectContent.link}
+                    />
                   ))))}
           </ContentBox>
         </ContentsWrapper>
@@ -292,8 +272,12 @@ const Box = styled.div`
   overflow: hidden;
 `;
 const ContentsWrapper = styled.div`
-  width: 100%;
+  width: calc(100% - 2px);
   height: calc(100% - 74px);
+  border: 1px solid #39424c;
+  background-color: #1b1e23;
+  border-radius: 20px;
+  overflow: hidden;
   display: flex;
   margin-top: 24px;
 `;
@@ -302,6 +286,21 @@ const ListBox = styled.div`
   width: 360px;
   height: 100%;
   overflow: scroll;
+  border-right: 1px solid #39424c;
+
+  & .load-more {
+    margin: 20px;
+    text-align: center;
+    > button {
+      cursor: pointer;
+      background-color: inherit;
+      color: #fff;
+      border: 1px solid gray;
+      border-radius: 5px;
+      padding: 10px 20px;
+      outline: none;
+    }
+  }
 `;
 const ContentBox = styled.div`
   height: calc(100% - 40px);

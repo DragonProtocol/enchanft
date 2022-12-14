@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 13:59:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 14:29:02
+ * @LastEditTime: 2022-12-13 16:26:40
  * @Description: file description
  */
 import HomeSvg from '../components/common/icons/svgs/home.svg';
@@ -43,11 +43,6 @@ export const navs: CutomNavObject[] = [
         activeRouteKeys: [RouteKey.events, RouteKey.event],
       },
       {
-        name: 'projects',
-        link: getRoute(RouteKey.projects).path,
-        activeRouteKeys: [RouteKey.projects, RouteKey.project],
-      },
-      {
         name: 'contents',
         link: getRoute(RouteKey.contents).path,
         activeRouteKeys: [RouteKey.contents, RouteKey.content],
@@ -56,6 +51,11 @@ export const navs: CutomNavObject[] = [
         name: 'frens',
         link: getRoute(RouteKey.frens).path,
         activeRouteKeys: [RouteKey.frens, RouteKey.frens],
+      },
+      {
+        name: 'projects',
+        link: getRoute(RouteKey.projects).path,
+        activeRouteKeys: [RouteKey.projects, RouteKey.project],
       },
     ],
   },
