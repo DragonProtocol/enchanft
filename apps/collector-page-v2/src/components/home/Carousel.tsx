@@ -1,17 +1,42 @@
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import TextTransition, { presets } from 'react-text-transition';
 import CarouselBg from '../imgs/carousel-bg.png';
 import MagicCubeImg from '../imgs/magic-cube.png';
 
+const TEXTS = [
+  'Identity',
+  'POAP',
+  'Token',
+  'NFT',
+  'WL',
+  'Airdrop',
+  'DAO',
+  'DeFi',
+  'Games',
+];
+
 export default function Carousel() {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const intervalId = setInterval(
+      () => setIndex((i) => i + 1),
+      3000 // every 3 seconds
+    );
+    return () => clearTimeout(intervalId);
+  }, []);
   return (
     <Box>
       <div className="info">
         <h2>Your Data,</h2>
         <h2>Your Content,</h2>
         <h2> Your Web3.</h2>
-        <p>
-          Hub For Your Fragmented Self Sovereign Data and <span>XXX</span>
-        </p>
+        <div>
+          Hub For Your Fragmented Self Sovereign Data and
+          <TextTransition springConfig={presets.wobbly}>
+            {TEXTS[index % TEXTS.length]}
+          </TextTransition>
+        </div>
         {/* <div>
           <span>Badge</span>
           <span>Token</span>
@@ -60,21 +85,21 @@ const Box = styled.div`
       }
     }
 
-    > p {
+    > div {
       font-weight: 500;
       font-size: 24px;
       line-height: 28px;
       padding: 0 7px;
       color: #ffffff;
 
-      > span {
+      > div {
         color: #ffd318;
       }
     }
 
     > div {
       display: flex;
-      gap: 14px;
+      gap: 10px;
       margin-top: 20px;
       > span {
         display: flex;
@@ -102,6 +127,6 @@ const Box = styled.div`
   & .magic-cube {
     position: absolute;
     padding: 42px 0;
-    right: 111px;
+    right: 100px;
   }
 `;
