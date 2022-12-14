@@ -22,6 +22,12 @@
     "service_worker": "background.js"
   },
 
+  "content": {
+    "matches": ["*://localhost/*", "*://u3.xyz/*", "*://dev.u3.xyz/*"],
+    "js": ["install_notifier.js"],
+    "run_at": "document_idle"
+  },
+
   "minimum_chrome_version": "96",
   "permissions": ["declarativeNetRequestWithHostAccess"],
   "host_permissions": ["<all_urls>"]
