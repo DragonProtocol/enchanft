@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 13:58:57
+ * @LastEditTime: 2022-12-14 14:08:50
  * @Description: file description
  */
 import { useEffect, useMemo, useState } from 'react';
@@ -40,7 +40,9 @@ export default function Select({
     [option, placeholder]
   );
   useEffect(() => {
-    document.addEventListener('click', (e) => setOpenOptions(false));
+    const handleClick = (e) => setOpenOptions(false);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
   }, []);
   return (
     <SelectWrapper {...wrapperProps}>
