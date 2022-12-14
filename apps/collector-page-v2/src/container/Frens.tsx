@@ -5,12 +5,13 @@
  * @LastEditTime: 2022-11-30 14:58:27
  * @Description: 首页任务看板
  */
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import SearchInput from '../components/common/input/SearchInput';
 
 import {
   getFeed,
@@ -22,7 +23,7 @@ const timeAgo = new TimeAgo('en-US');
 
 const tagComponentsMap = {
   social: (item) => {
-    const { timestamp } = item || {};
+    const { timestamp, owner_name: ownerName } = item || {};
     const { platform, metadata, tag } = item?.actions?.[0] || {};
     const {
       target,
@@ -34,7 +35,7 @@ const tagComponentsMap = {
       <>
         <div className="first-row">
           <span className="tag">{tag}</span>
-          <strong>vitalik.eth</strong> made a comment on{' '}
+          <strong>{ownerName}</strong> made a comment on{' '}
           <strong>{platform}</strong>
           {'  |  '}
           {timeAgo.format(new Date(timestamp).getTime())}
@@ -51,6 +52,8 @@ const tagComponentsMap = {
 };
 
 function Frens() {
+  const [feedTab, setFeedTab] = useState('Explore');
+  const [followTab, setFollowTab] = useState('Following');
   const dispatch = useAppDispatch();
 
   const { feed } = useAppSelector(selectFrensHandlesState);
@@ -90,13 +93,23 @@ function Frens() {
   };
   return (
     <FrensWrapper>
-      <FrensInner>
+      <FrensFeed>
         <FrensFeedSwitch>
-          <div>Explore</div>
-          <div>Following</div>
+          <div
+            onClick={() => setFeedTab('Explore')}
+            className={feedTab === 'Explore' ? 'active' : ''}
+          >
+            Explore
+          </div>
+          <div
+            onClick={() => setFeedTab('Following')}
+            className={feedTab === 'Following' ? 'active' : ''}
+          >
+            Following
+          </div>
         </FrensFeedSwitch>
         {feed?.result?.map((item) => {
-          const { owner, tag, timestamp } = item;
+          const { owner, tag, owner_name: ownerName } = item;
           return (
             <FrensFeedCard>
               <img
@@ -106,7 +119,7 @@ function Frens() {
               />
               <div className="content">
                 <div className="owner">
-                  <span className="color-white">Nicole</span>{' '}
+                  <span className="name color-white">{ownerName}</span>{' '}
                   {renderAddress(owner)}
                 </div>
                 {tagComponentsMap?.[tag]?.(item)}
@@ -114,7 +127,30 @@ function Frens() {
             </FrensFeedCard>
           );
         })}
-      </FrensInner>
+      </FrensFeed>
+      <FrensRight>
+        <SearchInput onSearch={() => {}} placeholder="Search Address or ENS" />
+        <div className="card">
+          <FrensFeedSwitch>
+            <div
+              onClick={() => setFollowTab('Following')}
+              className={`${
+                followTab === 'Following' ? 'active' : ''
+              } follow-tab`}
+            >
+              Following (12.4k)
+            </div>
+            <div
+              onClick={() => setFollowTab('Follower')}
+              className={`${
+                followTab === 'Follower' ? 'active' : ''
+              } follow-tab`}
+            >
+              Follower (398)
+            </div>
+          </FrensFeedSwitch>
+        </div>
+      </FrensRight>
     </FrensWrapper>
   );
 }
@@ -123,23 +159,53 @@ const FrensWrapper = styled.div`
   width: 100%;
   background: #14171a;
   padding: 20px 20px 0 20px;
+  box-sizing: border-box;
   color: #718096;
+  display: flex;
+
+  .card {
+    background: #1b1e23;
+    border-radius: 20px;
+    padding: 0px 20px;
+    margin-top: 30px;
+    & > div {
+      justify-content: space-between;
+    }
+  }
 `;
-const FrensInner = styled.div`
+const FrensFeed = styled.div`
   width: 100%;
-  max-width: 42.5rem;
+  max-width: 47.5rem;
   min-width: 37.5rem;
   background: #1b1e23;
   border-radius: 20px;
   padding: 0px 20px;
+  margin-right: 40px;
+`;
+const FrensRight = styled.div`
+  flex-grow: 1;
 `;
 const FrensFeedSwitch = styled.div`
   display: flex;
   column-gap: 20px;
-  padding: 25px 0;
   border-bottom: 1px solid #39424c;
   & > div {
+    padding: 25px 0 18px 0;
+    font-weight: bolder;
     cursor: pointer;
+    font-size: 17px;
+  }
+
+  .active {
+    color: white;
+    border-bottom: 3px solid white;
+    border-radius: 100px 100px 0px 0px;
+  }
+
+  .follow-tab {
+    width: 50%;
+    text-align: center;
+    white-space: pre;
   }
 `;
 
@@ -191,7 +257,7 @@ const FrensFeedCard = styled.div`
     -webkit-line-clamp: 2;
     line-clamp: 2;
     max-height: 2.5rem;
-    white-space: pre-wrap;
+    /* white-space: pre-wrap; */
   }
 
   .owner {
@@ -202,6 +268,10 @@ const FrensFeedCard = styled.div`
   .address {
     margin-left: 10px;
     margin-right: 5px;
+  }
+
+  .name {
+    font-weight: bolder;
   }
 
   .first-row {
