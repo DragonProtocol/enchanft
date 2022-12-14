@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 17:47:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 13:06:07
+ * @LastEditTime: 2022-12-14 10:45:10
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -10,7 +10,7 @@ import styled from 'styled-components';
 const ScrollBox = styled.div`
   width: 100%;
   height: 100%;
-  overflow-y: overlay;
+  overflow: overlay;
   box-sizing: border-box;
   /* 设置滚动条的样式 */
   ::-webkit-scrollbar {

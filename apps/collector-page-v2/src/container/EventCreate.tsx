@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 10:18:31
+ * @LastEditTime: 2022-12-14 12:33:50
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -14,7 +14,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { useWlUserReact } from '@ecnft/wl-user-react';
-import { Platform, PlatformLogo, Reward } from '../services/types/common';
+import {
+  OrderBy,
+  Platform,
+  PlatformLogo,
+  Reward,
+} from '../services/types/common';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   fetchProjectSelectList,
@@ -39,6 +44,8 @@ import {
 import Switch from '../components/common/switch/Switch';
 import RefreshSvg from '../components/common/icons/svgs/refresh.svg';
 import TimePicker from '../components/common/time/TimePicker';
+import AsyncSelect from '../components/common/select/AsyncSelect';
+import { fetchListForProjectExplore } from '../services/api/project';
 import EventLinkPreview from '../components/event/EventLinkPreview';
 
 const platformOptions: Array<{
@@ -172,6 +179,17 @@ function EventCreate() {
       project: projectSelectList.find((item) => item.id === project),
     };
   }, [formik.values, projectSelectList]);
+
+  const getProjectOptions = (keywords: string) => {
+    // TODO 暂时先取TRENDING的前50条，后期要有一个获取所有project的接口
+    const params = {
+      orderBy: OrderBy.TRENDING,
+      pageSize: 50,
+      pageNumber: 0,
+      keywords,
+    };
+    return fetchListForProjectExplore(params).then((resp) => resp.data.data);
+  };
   return (
     <ScrollBox>
       <EventCreateWrapper>
@@ -217,10 +235,15 @@ function EventCreate() {
 
           <FormField>
             <FormLabel htmlFor="project">Project</FormLabel>
-            <Select
+            {/* <Select
               options={projectOptions}
               onChange={(value) => formik.setFieldValue('project', value)}
               value={formik.values.project}
+            /> */}
+            <AsyncSelect
+              value={formik.values.project}
+              onChange={(value) => formik.setFieldValue('project', value)}
+              getOptions={getProjectOptions}
             />
             {renderFieldError('project')}
           </FormField>
@@ -326,7 +349,9 @@ function EventCreate() {
             <FormButtonSubmit
               type="submit"
               disabled={loading}
-              onClick={() => formik.handleSubmit()}
+              onClick={() => {
+                console.log(formik.values);
+              }}
             >
               Submit
             </FormButtonSubmit>
