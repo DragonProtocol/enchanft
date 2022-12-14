@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 13:32:07
+ * @LastEditTime: 2022-12-14 09:42:20
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -99,7 +99,7 @@ export default function EventDetailCard({
           )}
         </EventHeaderHandles>
       </EventHeader>
-      <EventContent>
+      {/* <EventContent>
         {data.supportIframe ? (
           <EventIframe src={data.link} />
         ) : (
@@ -108,7 +108,7 @@ export default function EventDetailCard({
             linkUrl={data.link}
           />
         )}
-      </EventContent>
+      </EventContent> */}
     </EventDetailCardWrapper>
   );
 }
