@@ -8,7 +8,9 @@
 
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { useState, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import Loading from '../components/common/loading/Loading';
 import Carousel from '../components/home/Carousel';
 import DiscoverProj from '../components/home/DiscoverProj';
 import Platform from '../components/home/Platform';
@@ -28,6 +30,7 @@ import { ProjectExploreListItemResponse } from '../services/types/project';
 function Home() {
   const { user, getBindAccount } = useWlUserReact();
   const evmAccount = getBindAccount(AccountType.EVM);
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [platforms, setPlatforms] = useState<Array<PlatformData>>([]);
   const [trendingProjects, setTrendingProjects] = useState<
@@ -65,17 +68,44 @@ function Home() {
     });
   }, [evmAccount]);
 
-  if (loading) return <div>loading</div>;
+  if (loading)
+    return (
+      <HomeWrapper>
+        <div className="loading">
+          <Loading />
+        </div>
+      </HomeWrapper>
+    );
   return (
     <HomeWrapper>
       <div>
         <Carousel />
-        <RecommendEvents data={events} />
+        <RecommendEvents
+          data={events}
+          viewAllAction={() => {
+            navigate('/events');
+          }}
+        />
         <div className="row-2">
-          <RecommendContent data={contents} />
-          <DiscoverProj data={trendingProjects} />
+          <RecommendContent
+            data={contents}
+            viewAllAction={() => {
+              navigate('/contents');
+            }}
+          />
+          <DiscoverProj
+            data={trendingProjects}
+            viewAllAction={() => {
+              navigate('/projects');
+            }}
+          />
         </div>
-        <Platform platforms={platforms} />
+        <Platform
+          platforms={platforms}
+          viewAllAction={() => {
+            navigate('/events');
+          }}
+        />
         <br />
       </div>
     </HomeWrapper>
@@ -93,6 +123,11 @@ const HomeWrapper = styled.div`
     display: flex;
     flex-direction: column;
     gap: 40px;
+  }
+  > div.loading {
+    width: 1160px;
+    display: flex;
+    align-items: center;
   }
 
   & div.row-2 {

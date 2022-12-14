@@ -3,10 +3,16 @@ import Badge from '../contents/Badge';
 
 import Title from './Title';
 
-export default function RecommendContent({ data }: { data: any[] }) {
+export default function RecommendContent({
+  data,
+  viewAllAction,
+}: {
+  data: any[];
+  viewAllAction: () => void;
+}) {
   return (
     <Box>
-      <Title text="Recommended Contents" viewAllAction={() => {}} />
+      <Title text="Recommended Contents" viewAllAction={viewAllAction} />
       <div className="lists">
         {data.map((item) => {
           return (

@@ -5,14 +5,16 @@ export default function Title({
   viewAllAction,
 }: {
   text: string;
-  viewAllAction: () => void;
+  viewAllAction?: () => void;
 }) {
   return (
     <Box>
       <span>{text}</span>
-      <button type="button" onClick={viewAllAction}>
-        View All
-      </button>
+      {viewAllAction && (
+        <button type="button" onClick={viewAllAction}>
+          View All
+        </button>
+      )}
     </Box>
   );
 }

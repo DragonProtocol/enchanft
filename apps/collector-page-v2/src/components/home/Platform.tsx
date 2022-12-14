@@ -4,12 +4,14 @@ import { PlatformData } from '../../services/types/home';
 
 export default function Platform({
   platforms,
+  viewAllAction,
 }: {
   platforms: Array<PlatformData>;
+  viewAllAction: () => void;
 }) {
   return (
     <Box>
-      <Title text="Browse by Platform" viewAllAction={() => {}} />{' '}
+      <Title text="Browse by Platform" viewAllAction={viewAllAction} />{' '}
       <div className="lists">
         {platforms.map((item) => {
           return <Card key={item.platform} {...item} />;

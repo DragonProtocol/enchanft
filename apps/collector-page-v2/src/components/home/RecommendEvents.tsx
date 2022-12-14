@@ -2,10 +2,16 @@ import styled from 'styled-components';
 import Title from './Title';
 import Badge from '../contents/Badge';
 
-export default function RecommendEvents({ data }: { data: any[] }) {
+export default function RecommendEvents({
+  data,
+  viewAllAction,
+}: {
+  data: any[];
+  viewAllAction: () => void;
+}) {
   return (
     <Box>
-      <Title text="Recommended Events" viewAllAction={() => {}} />{' '}
+      <Title text="Recommended Events" viewAllAction={viewAllAction} />{' '}
       <div className="lists">
         {data.map((item) => {
           return (

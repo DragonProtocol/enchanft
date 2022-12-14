@@ -5,12 +5,14 @@ import { ProjectExploreListItemResponse } from '../../services/types/project';
 
 export default function DiscoverProj({
   data,
+  viewAllAction,
 }: {
   data: Array<ProjectExploreListItemResponse>;
+  viewAllAction: () => void;
 }) {
   return (
     <Box>
-      <Title text="Discover Projects" viewAllAction={() => {}} />{' '}
+      <Title text="Discover Projects" viewAllAction={viewAllAction} />{' '}
       <div className="lists">
         {data.map((item) => {
           return (
