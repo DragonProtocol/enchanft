@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 13:40:38
+ * @LastEditTime: 2022-12-14 18:32:40
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -20,16 +20,16 @@ const orderByOptions: Array<{
   label: string;
 }> = [
   {
+    value: OrderBy.FORU,
+    label: 'For U',
+  },
+  {
     value: OrderBy.NEWEST,
     label: 'Newest',
   },
   {
     value: OrderBy.TRENDING,
     label: 'Trending',
-  },
-  {
-    value: OrderBy.FORU,
-    label: 'For U',
   },
 ];
 const typeOptions: Array<{

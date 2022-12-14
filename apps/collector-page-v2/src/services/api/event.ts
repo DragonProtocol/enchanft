@@ -2,10 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 14:21:47
+ * @LastEditTime: 2022-12-14 18:30:38
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
+import { isArray, isNumber } from 'lodash';
 import qs from 'qs';
 import {
   CreateEventData,
@@ -51,27 +52,30 @@ export function createEvent(
 
 // TODO :complete 暂时保存到本地
 const COMPLETED_EVENTS_STOREAGE_KEY = 'completed_events';
-export function completeEvent(id: number): Array<number> {
-  const value = localStorage.getItem(COMPLETED_EVENTS_STOREAGE_KEY);
-  let events = [];
+const getStorageCompletedIds = () => {
   try {
-    events = JSON.parse(value).push(id);
-    return events;
-  } catch (e) {
-    events = [id];
-    return events;
-  } finally {
-    localStorage.setItem(COMPLETED_EVENTS_STOREAGE_KEY, JSON.stringify(events));
-  }
-}
-
-export function fetchListForUserCompletedEvents(): Array<number> {
-  const value = localStorage.getItem(COMPLETED_EVENTS_STOREAGE_KEY);
-  try {
-    return JSON.parse(value);
+    const value = localStorage.getItem(COMPLETED_EVENTS_STOREAGE_KEY);
+    const v = JSON.parse(value);
+    if (isArray(v)) {
+      return v;
+    }
+    if (isNumber(v)) {
+      return [v];
+    }
+    return [];
   } catch (e) {
     return [];
   }
+};
+export function completeEvent(id: number): Array<number> {
+  const events = getStorageCompletedIds();
+  events.push(id);
+  localStorage.setItem(COMPLETED_EVENTS_STOREAGE_KEY, JSON.stringify(events));
+  return events;
+}
+
+export function fetchListForUserCompletedEvents(): Array<number> {
+  return getStorageCompletedIds();
 }
 
 export type DaylightListParams = {

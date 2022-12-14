@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-13 14:37:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 17:31:11
+ * @LastEditTime: 2022-12-14 14:40:29
  * @Description: file description
  */
 import React, { useCallback } from 'react';
@@ -44,7 +44,7 @@ export interface Props extends StyledComponentPropsWithRef<'input'> {
 export default function InputBase({
   value,
   onChange,
-  placeholder = 'Search',
+  placeholder = 'Placeholder',
   debounce: needDebounce,
   debounceMs = 300,
   ...otherProps

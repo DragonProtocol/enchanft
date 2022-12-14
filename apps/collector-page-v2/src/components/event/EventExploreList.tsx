@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 22:32:19
+ * @LastEditTime: 2022-12-14 17:17:32
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -57,7 +57,9 @@ export default function EventExploreList({
           onComplete={() => onComplete(item)}
           onShare={() => onShare(item)}
           onFavor={() => onFavor(item)}
-          displayHandles={item.isDaylight ? false : displayHandles}
+          displayHandles={
+            item.isDaylight ? false : displayHandles && item.id === activeId
+          }
           isFavored={isFavored(item.id)}
           loadingFavor={loadingFavor(item.id)}
           disabledFavor={isFavored(item.id) || loadingFavor(item.id)}

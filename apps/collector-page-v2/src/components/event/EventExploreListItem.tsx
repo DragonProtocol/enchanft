@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 12:27:51
+ * @LastEditTime: 2022-12-14 17:52:24
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -32,22 +32,34 @@ export type EventExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   onShare?: () => void;
   onFavor?: () => void;
 };
+const defaultStyle = {
+  bgc: 'rgba(16, 16, 20, 0.1)',
+  activeColor: '#FFFFFF',
+};
 const styleMaps = {
   [Platform.GALXE]: {
-    bgc: 'none',
-    activeColor: '#7854F7',
+    bgc: 'rgba(16, 16, 20, 0.1)',
+    activeColor: '#FFFFFF',
   },
   [Platform.NOOX]: {
-    bgc: 'none',
-    activeColor: '#7854F7',
+    bgc: 'rgba(56, 3, 168, 0.1)',
+    activeColor: '#3803A8',
   },
   [Platform.POAP]: {
-    bgc: 'none',
-    activeColor: '#7854F7',
+    bgc: 'rgba(148, 86, 209, 0.1)',
+    activeColor: '#9456D1',
   },
   [Platform.QUEST3]: {
-    bgc: 'none',
-    activeColor: '#7854F7',
+    bgc: 'rgba(203, 255, 4, 0.1)',
+    activeColor: '#CBFF04',
+  },
+  [Platform.RABBIT_HOLE]: {
+    bgc: 'rgba(160, 247, 189, 0.1)',
+    activeColor: '#A0F7BD',
+  },
+  [Platform.LINK3]: {
+    bgc: 'rgba(28, 91, 245, 0.1)',
+    activeColor: '#1C5BF5',
   },
 };
 export default function EventExploreListItem({
@@ -65,9 +77,11 @@ export default function EventExploreListItem({
   onFavor,
   ...props
 }: EventExploreListItemProps) {
-  // TODO 后期冲data.platform.?中获取
-  const bgc = styleMaps[Platform.GALXE]?.bgc || 'none';
-  const activeColor = styleMaps[Platform.GALXE]?.activeColor || 'none';
+  let style = defaultStyle;
+  if (data?.platform?.name) {
+    style = styleMaps[data.platform.name];
+  }
+  const { bgc, activeColor } = style;
   return (
     <EventExploreListItemWrapper
       bgc={bgc}
@@ -92,8 +106,8 @@ export default function EventExploreListItem({
               {loadingComplete
                 ? 'loading'
                 : isCompleted
-                ? 'Completed'
-                : 'Mark as complate'}
+                ? 'Archived'
+                : 'Archive'}
             </EventHandleButtonText>
           </EventHandleButtonComplete>
           <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
