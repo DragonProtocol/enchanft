@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 19:50:12
+ * @LastEditTime: 2022-12-14 10:18:31
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -39,6 +39,7 @@ import {
 import Switch from '../components/common/switch/Switch';
 import RefreshSvg from '../components/common/icons/svgs/refresh.svg';
 import TimePicker from '../components/common/time/TimePicker';
+import EventLinkPreview from '../components/event/EventLinkPreview';
 
 const platformOptions: Array<{
   value: Platform;
@@ -161,7 +162,7 @@ function EventCreate() {
     [formik.touched, formik.errors]
   );
 
-  const reviewData = useMemo(() => {
+  const previewData = useMemo(() => {
     const { project, platform } = formik.values;
     return {
       ...formik.values,
@@ -332,7 +333,7 @@ function EventCreate() {
           </FormButtons>
         </EventCreateFormCard>
         <EventPreviewBox>
-          <EventPreview src={formik.values.link} />
+          <EventLinkPreview data={previewData} />
         </EventPreviewBox>
       </EventCreateWrapper>
     </ScrollBox>

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 19:59:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 20:48:49
+ * @LastEditTime: 2022-12-14 10:19:57
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -32,7 +32,7 @@ export default function CannotOpenPlatFormLink({
         </ButtonPrimaryLine>
         <ButtonPrimary onClick={() => alert('add extension')}>
           <InstallExtensionIcon src={ChromeSvg} />
-          <span>Open in new tab</span>
+          <span>Install U3 on Chrome</span>
         </ButtonPrimary>
       </ButtonBox>
     </CannotOpenPlatFormLinkWrapper>
