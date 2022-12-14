@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { ContentsListResponse } from '../types/contents';
-import { EventExploreListResponse } from '../types/event';
 import { PlatformDataResponse } from '../types/home';
 import { ProjectExploreListResponse } from '../types/project';
 import request, { RequestPromise } from './request';

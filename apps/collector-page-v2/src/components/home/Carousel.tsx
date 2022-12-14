@@ -6,10 +6,13 @@ export default function Carousel() {
   return (
     <Box>
       <div className="info">
-        <h2>
-          Your Web3,<span> Personalized.</span>
-        </h2>
-        <div>
+        <h2>Your Data,</h2>
+        <h2>Your Content,</h2>
+        <h2> Your Web3.</h2>
+        <p>
+          Hub For Your Fragmented Self Sovereign Data and <span>XXX</span>
+        </p>
+        {/* <div>
           <span>Badge</span>
           <span>Token</span>
           <span>NFT</span>
@@ -20,7 +23,7 @@ export default function Carousel() {
           <span>DeFi</span>
           <span>Game</span>
           <span>NFTs</span>
-        </div>
+        </div> */}
       </div>
       <div className="magic-cube">
         <img src={MagicCubeImg} alt="" />
@@ -30,7 +33,7 @@ export default function Carousel() {
 }
 
 const Box = styled.div`
-  height: 300px;
+  height: 400px;
   display: flex;
   position: relative;
   background: linear-gradient(
@@ -42,10 +45,8 @@ const Box = styled.div`
   border-radius: 20px;
 
   & .info {
-    width: 593px;
-    height: 157px;
-    margin-left: 58px;
-    margin-top: 73px;
+    margin-left: 80px;
+    margin-top: 87px;
 
     > h2 {
       font-style: italic;
@@ -56,6 +57,18 @@ const Box = styled.div`
       color: #ffffff;
       > span {
         color: #d436ff;
+      }
+    }
+
+    > p {
+      font-weight: 500;
+      font-size: 24px;
+      line-height: 28px;
+      padding: 0 7px;
+      color: #ffffff;
+
+      > span {
+        color: #ffd318;
       }
     }
 
@@ -88,7 +101,7 @@ const Box = styled.div`
 
   & .magic-cube {
     position: absolute;
-    padding: 26px 0;
-    right: 130px;
+    padding: 42px 0;
+    right: 111px;
   }
 `;
