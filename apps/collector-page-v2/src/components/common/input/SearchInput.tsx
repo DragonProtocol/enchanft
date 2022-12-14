@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-09 19:37:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 16:53:00
+ * @LastEditTime: 2022-12-13 15:43:37
  * @Description: file description
  */
 import React, { useCallback, useState } from 'react';
@@ -42,7 +42,7 @@ const Input = styled.input`
   background: transparent;
 
   &::placeholder {
-    color: #666;
+    color: #4e5a6e;
   }
 `;
 

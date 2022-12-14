@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 13:28:58
+ * @LastEditTime: 2022-12-14 09:42:45
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -207,7 +207,7 @@ const CardBox = styled(CardBase)`
   background: #14171a;
 `;
 const EventCard = styled(EventDetailView)`
-  min-height: 50vh;
+  /* min-height: 50vh; */
 `;
 const ContentCard = styled(ContentShower)`
   min-height: 50vh;

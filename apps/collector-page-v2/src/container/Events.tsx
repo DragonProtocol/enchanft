@@ -2,13 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 11:23:40
+ * @LastEditTime: 2022-12-14 09:30:49
  * @Description: 首页任务看板
  */
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import CannotOpenPlatFormLink from '../components/event/CannotOpenPlatFormLink';
 import EventExploreList from '../components/event/EventExploreList';
 import EventExploreListFilter, {
   defaultEventExploreListFilterValues,
@@ -27,6 +26,7 @@ import { AsyncRequestStatus } from '../services/types';
 import { OrderBy } from '../services/types/common';
 import { EventExploreListItemResponse } from '../services/types/event';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import EventLinkPreview from '../components/event/EventLinkPreview';
 
 export default function Events() {
   const {
@@ -107,16 +107,7 @@ export default function Events() {
           )}
         </ListBox>
         <ContentBox>
-          {event ? (
-            event.supportIframe ? (
-              <EventIframe src={event.link} />
-            ) : (
-              <CannotOpenPlatFormLink
-                iconUrl={event.platform.logo}
-                linkUrl={event.link}
-              />
-            )
-          ) : null}
+          {event ? <EventLinkPreview data={event} /> : null}
         </ContentBox>
       </MainBox>
     </EventsWrapper>
@@ -157,10 +148,4 @@ const ContentBox = styled.div`
   width: 0;
   flex: 1;
   height: 100%;
-`;
-
-const EventIframe = styled.iframe`
-  width: 100%;
-  height: 100%;
-  border: none;
 `;
