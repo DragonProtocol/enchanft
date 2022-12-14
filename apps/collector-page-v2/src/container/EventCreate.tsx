@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 19:50:12
+ * @LastEditTime: 2022-12-14 13:48:38
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -14,7 +14,12 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { useWlUserReact } from '@ecnft/wl-user-react';
-import { Platform, PlatformLogo, Reward } from '../services/types/common';
+import {
+  OrderBy,
+  Platform,
+  PlatformLogo,
+  Reward,
+} from '../services/types/common';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   fetchProjectSelectList,
@@ -26,7 +31,6 @@ import { uploadImage } from '../services/api/upload';
 import { EVENT_IMAGE_SIZE_LIMIT } from '../constants';
 import { eventCreate, selectState } from '../features/event/eventCreate';
 import { AsyncRequestStatus } from '../services/types';
-import EventDetailView from '../components/event/EventDetailView';
 import { MainWrapper } from '../components/layout/Index';
 import CardBase from '../components/common/card/CardBase';
 import ScrollBox from '../components/common/box/ScrollBox';
@@ -39,6 +43,9 @@ import {
 import Switch from '../components/common/switch/Switch';
 import RefreshSvg from '../components/common/icons/svgs/refresh.svg';
 import TimePicker from '../components/common/time/TimePicker';
+import EventLinkPreview from '../components/event/EventLinkPreview';
+import ProjectAsyncSelect from '../components/business/form/ProjectAsyncSelect';
+import PlatformSelect from '../components/business/form/PlatformSelect';
 
 const platformOptions: Array<{
   value: Platform;
@@ -161,7 +168,7 @@ function EventCreate() {
     [formik.touched, formik.errors]
   );
 
-  const reviewData = useMemo(() => {
+  const previewData = useMemo(() => {
     const { project, platform } = formik.values;
     return {
       ...formik.values,
@@ -171,6 +178,7 @@ function EventCreate() {
       project: projectSelectList.find((item) => item.id === project),
     };
   }, [formik.values, projectSelectList]);
+
   return (
     <ScrollBox>
       <EventCreateWrapper>
@@ -206,8 +214,7 @@ function EventCreate() {
 
           <FormField>
             <FormLabel htmlFor="platform">Platform</FormLabel>
-            <Select
-              options={platformOptions}
+            <PlatformSelect
               onChange={(value) => formik.setFieldValue('platform', value)}
               value={formik.values.platform}
             />
@@ -216,10 +223,9 @@ function EventCreate() {
 
           <FormField>
             <FormLabel htmlFor="project">Project</FormLabel>
-            <Select
-              options={projectOptions}
-              onChange={(value) => formik.setFieldValue('project', value)}
+            <ProjectAsyncSelect
               value={formik.values.project}
+              onChange={(value) => formik.setFieldValue('project', value)}
             />
             {renderFieldError('project')}
           </FormField>
@@ -325,14 +331,16 @@ function EventCreate() {
             <FormButtonSubmit
               type="submit"
               disabled={loading}
-              onClick={() => formik.handleSubmit()}
+              onClick={() => {
+                console.log(formik.values);
+              }}
             >
               Submit
             </FormButtonSubmit>
           </FormButtons>
         </EventCreateFormCard>
         <EventPreviewBox>
-          <EventPreview src={formik.values.link} />
+          <EventLinkPreview data={previewData} />
         </EventPreviewBox>
       </EventCreateWrapper>
     </ScrollBox>

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 15:02:23
+ * @LastEditTime: 2022-12-14 18:01:45
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
@@ -32,7 +32,18 @@ function Layout() {
           <Main />
         </PageBox>
       </ContentBox>
-      <ToastContainer autoClose={2000} position="top-right" />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </LayoutWrapper>
   );
 }

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-30 22:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 10:02:44
+ * @LastEditTime: 2022-12-14 10:46:29
  * @Description: 全局样式
  */
 import { createGlobalStyle, css } from 'styled-components';
@@ -10,7 +10,7 @@ import { createGlobalStyle, css } from 'styled-components';
 export const ScrollBarCss = css`
   /* 设置滚动条的样式 */
   ::-webkit-scrollbar {
-    width: 3px;
+    width: 2px;
   }
   /* 滚动槽 */
   ::-webkit-scrollbar-track {
@@ -26,7 +26,7 @@ export const ScrollBarCss = css`
     box-shadow: rgba(0, 0, 0, 0.5);
   }
   ::-webkit-scrollbar-thumb:window-inactive {
-    background: #ccc;
+    background: #1b1e23;
   }
 `;
 

@@ -25,6 +25,7 @@ import userFavored from '../hooks/useFavored';
 import { useVoteUp } from '../hooks/useVoteUp';
 import useContentHidden from '../hooks/useContentHidden';
 import ExtensionSupport from '../components/common/ExtensionSupport';
+import Loading from '../components/common/loading/Loading';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -183,7 +184,7 @@ function Contents() {
           setTab('readerView');
         }}
       />
-      {(loading && <div>loading</div>) || (
+      {(loading && <Loading />) || (
         <ContentsWrapper>
           <ListBox>
             {contents
@@ -211,7 +212,7 @@ function Contents() {
               })}
             <div className="load-more">
               {loadingMore ? (
-                'loading'
+                <Loading />
               ) : (
                 <button
                   type="button"
@@ -230,10 +231,14 @@ function Contents() {
             {tab === 'original' && (
               <ExtensionSupport
                 url={selectContent.action?.linkUrl || selectContent.link}
+                title={selectContent.title}
+                img={
+                  selectContent.imageUrl || selectContent.uniProjects[0]?.image
+                }
               />
             )}
             {tab === 'readerView' &&
-              ((daylightContentLoading && <div>loading</div>) ||
+              ((daylightContentLoading && <Loading />) ||
                 (selectContent &&
                   ((selectContent.supportReaderView && (
                     <ContentShower
@@ -251,6 +256,11 @@ function Contents() {
                   )) || (
                     <ExtensionSupport
                       url={selectContent.action?.linkUrl || selectContent.link}
+                      title={selectContent.title}
+                      img={
+                        selectContent.imageUrl ||
+                        selectContent.uniProjects[0]?.image
+                      }
                     />
                   ))))}
           </ContentBox>
@@ -274,9 +284,12 @@ const Box = styled.div`
 const ContentsWrapper = styled.div`
   width: calc(100% - 2px);
   height: calc(100% - 74px);
+  box-sizing: border-box;
   border: 1px solid #39424c;
   background-color: #1b1e23;
-  border-radius: 20px;
+  /* border--radius: 20px; */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
   overflow: hidden;
   display: flex;
   margin-top: 24px;
@@ -284,7 +297,7 @@ const ContentsWrapper = styled.div`
 const ListBox = styled.div`
   min-width: 360px;
   width: 360px;
-  height: 100%;
+  height: calc(100%);
   overflow: scroll;
   border-right: 1px solid #39424c;
 
@@ -303,7 +316,7 @@ const ListBox = styled.div`
   }
 `;
 const ContentBox = styled.div`
-  height: calc(100% - 40px);
+  height: calc(100%);
   width: calc(100% - 360px);
   padding: 20px;
   overflow-x: hidden;
