@@ -231,10 +231,14 @@ function Contents() {
             {tab === 'original' && (
               <ExtensionSupport
                 url={selectContent.action?.linkUrl || selectContent.link}
+                title={selectContent.title}
+                img={
+                  selectContent.imageUrl || selectContent.uniProjects[0]?.image
+                }
               />
             )}
             {tab === 'readerView' &&
-              ((daylightContentLoading && <div>loading</div>) ||
+              ((daylightContentLoading && <Loading />) ||
                 (selectContent &&
                   ((selectContent.supportReaderView && (
                     <ContentShower
@@ -252,6 +256,11 @@ function Contents() {
                   )) || (
                     <ExtensionSupport
                       url={selectContent.action?.linkUrl || selectContent.link}
+                      title={selectContent.title}
+                      img={
+                        selectContent.imageUrl ||
+                        selectContent.uniProjects[0]?.image
+                      }
                     />
                   ))))}
           </ContentBox>

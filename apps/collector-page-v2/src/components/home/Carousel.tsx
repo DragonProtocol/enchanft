@@ -14,6 +14,7 @@ const TEXTS = [
   'DAO',
   'DeFi',
   'Games',
+  'Reputation',
 ];
 
 export default function Carousel() {

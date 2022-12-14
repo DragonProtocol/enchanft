@@ -54,6 +54,7 @@ export default function ContentShower({
         </div>
       </ContentTitle>
       <ContentBody dangerouslySetInnerHTML={{ __html: content }} />
+      <br />
     </Shower>
   );
 }
