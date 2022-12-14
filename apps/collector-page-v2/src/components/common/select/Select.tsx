@@ -2,23 +2,24 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 17:21:58
+ * @LastEditTime: 2022-12-14 14:08:50
  * @Description: file description
  */
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import ChevronDownSvg from '../icons/svgs/chevron-down.svg';
 
+type ValueType = string | number;
 export type SelectOption = {
-  value: any;
+  value: ValueType;
   label: string;
   iconUrl?: string;
 };
 export type Props = StyledComponentPropsWithRef<'div'> & {
   options: SelectOption[];
-  value: any;
+  value: ValueType;
   placeholder?: string;
-  onChange?: (value: any) => void;
+  onChange?: (value: ValueType) => void;
   iconUrl?: string;
 };
 export default function Select({
@@ -38,11 +39,19 @@ export default function Select({
     () => (option ? option.label : placeholder),
     [option, placeholder]
   );
+  useEffect(() => {
+    const handleClick = (e) => setOpenOptions(false);
+    document.addEventListener('click', handleClick);
+    return () => document.removeEventListener('click', handleClick);
+  }, []);
   return (
     <SelectWrapper {...wrapperProps}>
       <SelectButton
         className="select-button"
-        onClick={() => setOpenOptions(!openOptions)}
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpenOptions(!openOptions);
+        }}
       >
         <SelectButtonLeft>
           {iconUrl && (
@@ -144,6 +153,7 @@ const OptionsBox = styled.div`
   background: #1b1e23;
   border: 1px solid #39424c;
   border-radius: 10px;
+  z-index: 1;
 `;
 const OptionItem = styled.div<{ isActive: boolean }>`
   padding: 20px;
