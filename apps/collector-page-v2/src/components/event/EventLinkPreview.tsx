@@ -13,8 +13,10 @@ export type CannotOpenPlatFormLinkProps = {
 export default function EventLinkPreview({
   data,
 }: CannotOpenPlatFormLinkProps) {
+  const u3ExtensionInstalled =
+    localStorage.getItem('u3ExtensionInstalled') === 'true';
   const { platform, link, supportIframe } = data;
-  const displayCannotOpen = !supportIframe;
+  const displayCannotOpen = !supportIframe && !u3ExtensionInstalled;
   return displayCannotOpen ? (
     <CannotOpenPlatFormLink iconUrl={platform.logo} linkUrl={link} />
   ) : (
