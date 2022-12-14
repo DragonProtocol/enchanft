@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 09:42:45
+ * @LastEditTime: 2022-12-14 14:43:11
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -58,7 +58,7 @@ export default function ProjectDetailCard({
               {displayFavor && (
                 <ProjectHandleButton onClick={onFavor} disabled={disabledFavor}>
                   <ProjectHandleButtonIcon src={LikeSvg} />
-                  {/* {loadingFavor ? 'loading' : isFavored ? 'Favored' : 'Favor'} */}
+                  {loadingFavor ? 'loading' : isFavored ? 'Favored' : 'Favor'}
                 </ProjectHandleButton>
               )}
               {displayShare && (
@@ -161,7 +161,6 @@ const LayoutHeaderHandles = styled.div`
   align-items: flex-end;
 `;
 const ProjectHandleButton = styled(ButtonPrimaryLine)`
-  width: 44px;
   height: 32px;
   padding: 6px 12px;
 `;

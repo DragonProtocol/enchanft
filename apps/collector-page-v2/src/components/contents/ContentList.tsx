@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-08 14:04:04
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 14:13:44
+ * @LastEditTime: 2022-12-14 17:05:20
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -47,5 +47,4 @@ const ContentListWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
 `;
