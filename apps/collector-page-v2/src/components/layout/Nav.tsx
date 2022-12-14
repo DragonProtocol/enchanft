@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 18:17:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 14:20:32
+ * @LastEditTime: 2022-12-14 14:13:24
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
@@ -14,7 +14,7 @@ import useRoute from '../../route/useRoute';
 export default function Nav() {
   const navigate = useNavigate();
   const { firstRouteMeta } = useRoute();
-  const [openGroupKeys, setOpenGroupKeys] = useState<Array<string>>([]);
+  const [openGroupKeys, setOpenGroupKeys] = useState<Array<string>>(['Feed']);
   const handleGroupClick = useCallback(
     (name: string) => {
       if (openGroupKeys.includes(name)) {
