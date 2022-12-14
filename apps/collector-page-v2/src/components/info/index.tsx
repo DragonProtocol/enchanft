@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react';
+import dayjs from 'dayjs';
 import { sortPubKey } from '../../utils/solana';
 import { Copy } from '../icons/copy';
 import { Discord } from '../icons/discord';
@@ -11,10 +12,12 @@ export default function Info({
   nickname,
   walletAddr,
   avatar,
+  date,
 }: {
   nickname: string;
   walletAddr: string;
   avatar: string;
+  date: number;
 }) {
   const { dispatchModal } = useWlUserReact();
   return (
@@ -62,14 +65,14 @@ export default function Info({
           </div>
           <div className="attach">
             <div>
-              <span>
+              {/* <span>
                 <span className="num">90</span>Following
               </span>
               <span>
                 <span className="num">90</span>Follower
-              </span>
+              </span> */}
               <span>|</span>
-              <span>Date</span>
+              <span>{dayjs(date || Date.now()).format('MMM DD YYYY')}</span>
             </div>
             <div>
               <span className="twitter">

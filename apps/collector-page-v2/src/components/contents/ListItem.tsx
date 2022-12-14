@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import Badge from './Brage';
+import Badge from './Badge';
 
 export default function ListItem({
   isActive,

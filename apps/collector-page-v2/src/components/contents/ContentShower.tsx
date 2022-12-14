@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import styled from 'styled-components';
 import { Eye } from '../icons/eye';
 import { Heart } from '../icons/heart';
-import Badge from './Brage';
+import Badge from './Badge';
 
 export default function ContentShower({
   uid,
