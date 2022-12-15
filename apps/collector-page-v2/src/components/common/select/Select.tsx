@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 17:31:16
+ * @LastEditTime: 2022-12-15 15:01:31
  * @Description: file description
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import ChevronDownSvg from '../icons/svgs/chevron-down.svg';
 
@@ -30,6 +30,7 @@ export default function Select({
   iconUrl,
   ...wrapperProps
 }: Props) {
+  const selectButtonRef = useRef();
   const [openOptions, setOpenOptions] = useState(false);
   const option = useMemo(
     () => options.find((item) => item.value === value),
@@ -40,31 +41,37 @@ export default function Select({
     [option, placeholder]
   );
   useEffect(() => {
-    const handleClick = (e) => setOpenOptions(false);
-    document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
-  }, []);
+    const windowClick = (e) => {
+      if (
+        e.target === selectButtonRef.current ||
+        (e.target as HTMLElement).parentNode === selectButtonRef.current
+      )
+        return;
+      setOpenOptions(false);
+    };
+    document.addEventListener('click', windowClick);
+    return () => document.removeEventListener('click', windowClick);
+  }, [setOpenOptions]);
   return (
     <SelectWrapper {...wrapperProps}>
       <SelectButton
+        ref={selectButtonRef}
         className="select-button"
         onClick={(e) => {
-          e.stopPropagation();
+          // e.stopPropagation();
           setOpenOptions(!openOptions);
         }}
       >
-        <SelectButtonLeft>
-          {iconUrl && (
-            <SelectButtonBeforeIcon
-              className="select-button-before-icon"
-              src={iconUrl}
-            />
-          )}
+        {iconUrl && (
+          <SelectButtonBeforeIcon
+            className="select-button-before-icon"
+            src={iconUrl}
+          />
+        )}
 
-          <SelectButtonText className="select-button-text">
-            {displayText}
-          </SelectButtonText>
-        </SelectButtonLeft>
+        <SelectButtonText className="select-button-text">
+          {displayText}
+        </SelectButtonText>
 
         <SelectButtonChevronIcon
           className="select-button-chevron-icon"
@@ -104,22 +111,16 @@ export default function Select({
 }
 const SelectWrapper = styled.div`
   height: 40px;
+  position: relative;
+`;
+const SelectButton = styled.div`
+  width: 100%;
+  height: 100%;
   border-radius: 20px;
   box-sizing: border-box;
   padding: 8px 20px;
   border: 1px solid #39424c;
-  position: relative;
   cursor: pointer;
-`;
-const SelectButton = styled.div`
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-`;
-const SelectButtonLeft = styled.div`
-  flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -142,6 +143,7 @@ const SelectButtonChevronIcon = styled.img`
   height: 20px;
 `;
 const OptionsBox = styled.div`
+  min-width: 100%;
   position: absolute;
   left: 0;
   top: 100%;
@@ -175,7 +177,7 @@ const OptionItem = styled.div<{ isActive: boolean }>`
       !props.isActive &&
       `
         background: #14171a;
-        opacity: 0.8;
+        opacity: 0.6;
       `};
   }
 `;
@@ -184,4 +186,6 @@ const OptionIcon = styled.img`
   height: 20px;
   border-radius: 50%;
 `;
-const OptionLabel = styled.span``;
+const OptionLabel = styled.span`
+  white-space: nowrap;
+`;

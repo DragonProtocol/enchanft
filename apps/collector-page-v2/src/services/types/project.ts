@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 16:42:25
+ * @LastEditTime: 2022-12-15 14:41:20
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -28,6 +28,7 @@ export type ProjectExploreListParams = {
   type?: ProjectType | '';
   pageSize?: number;
   pageNumber?: number;
+  projectId?: number;
 };
 export type ProjectExploreListItemEventResponse = Omit<
   EventExploreListItemResponse,

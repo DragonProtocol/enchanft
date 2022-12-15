@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:59:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 16:51:41
+ * @LastEditTime: 2022-12-15 15:01:09
  * @Description: file description
  */
 import React, { useRef } from 'react';
@@ -58,7 +58,6 @@ export default function ({
         components={{
           IndicatorsContainer: CustomIndicatorsContainer,
         }}
-        defaultMenuIsOpen
       />
     </AsyncSelectWrapper>
   );

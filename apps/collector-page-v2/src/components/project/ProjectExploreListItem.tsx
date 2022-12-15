@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 13:49:28
+ * @LastEditTime: 2022-12-15 12:10:52
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -48,6 +48,7 @@ const ProjectExploreListItemWrapper = styled.div<{
   padding: 20px;
   box-sizing: border-box;
   gap: 10px;
+  cursor: pointer;
 
   background: ${({ isActive }) => (isActive ? '#14171A' : '#1B1E23')};
   border-bottom: 1px solid #39424c;
