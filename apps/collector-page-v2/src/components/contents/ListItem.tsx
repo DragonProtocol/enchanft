@@ -1,5 +1,8 @@
 import dayjs from 'dayjs';
 import styled from 'styled-components';
+import { Share } from '../icons/share';
+import { EyeClose } from '../icons/eyeClose';
+import { Heart } from '../icons/heart';
 import Badge from './Badge';
 
 export default function ListItem({
@@ -10,6 +13,10 @@ export default function ListItem({
   createdAt,
   title,
   upVoteNum,
+  voteAction,
+  favorsAction,
+  favored,
+  hiddenAction,
 }: {
   upVoteNum: number;
   title: string;
@@ -18,6 +25,10 @@ export default function ListItem({
   createdAt: number;
   isActive: boolean;
   clickAction: () => void;
+  voteAction?: () => void;
+  favorsAction?: () => void;
+  favored?: boolean;
+  hiddenAction?: () => void;
 }) {
   return (
     <ContentItem
@@ -33,7 +44,29 @@ export default function ListItem({
         <span>{dayjs(createdAt).format('MMM DD YYYY')}</span>
       </ContentItemTitle>
 
-      <ContentItemFooter>👏 &nbsp;{upVoteNum}</ContentItemFooter>
+      <ContentItemFooter>
+        <span
+          className={isActive ? 'vote' : 'vote active'}
+          onClick={() => voteAction && voteAction()}
+        >
+          👏 &nbsp;{upVoteNum}
+        </span>
+        {isActive && (
+          <span onClick={() => favorsAction && favorsAction()}>
+            {favored ? <Heart fill="#718096" /> : <Heart />}
+          </span>
+        )}
+        {isActive && (
+          <span onClick={() => hiddenAction && hiddenAction}>
+            <EyeClose />
+          </span>
+        )}
+        {isActive && (
+          <span>
+            <Share />
+          </span>
+        )}
+      </ContentItemFooter>
     </ContentItem>
   );
 }
@@ -94,4 +127,23 @@ const ContentItemFooter = styled.div`
   font-size: 14px;
   line-height: 17px;
   color: #718096;
+  gap: 10px;
+
+  & span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #39424c;
+    border-radius: 12px;
+    width: 32px;
+    height: 32px;
+    box-sizing: border-box;
+  }
+
+  & span.vote {
+    width: 190px;
+    &.active {
+      width: 100px;
+    }
+  }
 `;

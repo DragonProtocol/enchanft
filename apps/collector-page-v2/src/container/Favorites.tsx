@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 10:09:18
+ * @LastEditTime: 2022-12-15 18:31:12
  * @Description: 首页任务看板
  */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import ScrollBox from '../components/common/box/ScrollBox';
 import Tab from '../components/common/tab/Tab';
@@ -17,6 +17,7 @@ import ProjectExploreList from '../components/project/ProjectExploreList';
 import {
   ContentsEntityItem,
   EventsEntityItem,
+  fetchUserGroupFavorites,
   ProjectsEntityItem,
 } from '../features/favorite/userGroupFavorites';
 import useContentHidden from '../hooks/useContentHidden';
@@ -25,6 +26,7 @@ import useUserFavorites from '../hooks/useUserFavorites';
 import Content from './Content';
 import Project from './Project';
 import ArchiveSvg from '../components/common/icons/svgs/archive.svg';
+import { useAppDispatch } from '../store/hooks';
 
 enum FavoriteSwitchValue {
   event = 'event',
@@ -46,6 +48,10 @@ export const FavoriteSwitchOptions = [
   },
 ];
 function Favorites() {
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(fetchUserGroupFavorites());
+  }, []);
   const {
     favoredIds,
     favorQueueIds,
@@ -64,7 +70,7 @@ function Favorites() {
 
   const { keysFilter, contentHiddenOrNot } = useContentHidden();
   return (
-    <FavoritesWrapper>
+    <MainWrapper>
       <FavoritesLayout>
         <FavoritesListBox>
           <FavoritesListHeader>
@@ -131,11 +137,10 @@ function Favorites() {
             )}
         </FavoritesContentBox>
       </FavoritesLayout>
-    </FavoritesWrapper>
+    </MainWrapper>
   );
 }
 export default Favorites;
-const FavoritesWrapper = styled(MainWrapper)``;
 const FavoritesLayout = styled.div`
   width: 100%;
   height: 100%;

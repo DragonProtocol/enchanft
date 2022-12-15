@@ -49,28 +49,6 @@ export default function Header({
         />
       </div>
       <div className="search">
-        <div className="btns">
-          <button
-            type="button"
-            className={active === 'original' ? 'active' : ''}
-            onClick={() => {
-              setActive('original');
-              changeOriginalAction();
-            }}
-          >
-            Original
-          </button>
-          <button
-            className={active === 'readerview' ? 'active' : ''}
-            type="button"
-            onClick={() => {
-              setActive('readerview');
-              changeReaderViewAction();
-            }}
-          >
-            ReaderView
-          </button>
-        </div>
         <div className="input">
           <SearchInput
             onSearch={(query) => {

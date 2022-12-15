@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 14:43:11
+ * @LastEditTime: 2022-12-15 19:06:37
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -10,15 +10,15 @@ import type {
   ProjectExploreListItemEventResponse,
   ProjectExploreListItemResponse,
 } from '../../services/types/project';
-import { getContentWithJsonValue } from '../../utils/content';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import ContentShower from '../contents/ContentShower';
-import EventDetailView from '../event/EventDetailView';
+import EventLinkCard from '../event/EventLinkCard';
 import LikeSvg from '../common/icons/svgs/like.svg';
 import ShareSvg from '../common/icons/svgs/share.svg';
 import TwitterSvg from '../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../common/icons/svgs/discord.svg';
 import CardBase from '../common/card/CardBase';
+import ContentLinkCard from '../contents/ContentLinkCard';
 
 export type ProjectDetailCardProps = {
   data: ProjectExploreListItemResponse;
@@ -31,6 +31,8 @@ export type ProjectDetailCardProps = {
   onShare?: () => void;
   onFavor?: () => void;
   onEventComplete?: (event: ProjectExploreListItemEventResponse) => void;
+  currentVotedContentIds: number[];
+  onContentVote: (id: number) => void;
 };
 export default function ProjectDetailCard({
   data,
@@ -43,6 +45,8 @@ export default function ProjectDetailCard({
   onShare,
   onFavor,
   onEventComplete,
+  currentVotedContentIds,
+  onContentVote,
 }: ProjectDetailCardProps) {
   return (
     <ProjectDetailCardWrapper>
@@ -84,28 +88,29 @@ export default function ProjectDetailCard({
       <LayoutMain>
         {data.events &&
           data.events.map((item) => (
-            <CardBox key={item.id}>
-              <EventCard
-                data={item}
-                onComplete={() => onEventComplete && onEventComplete(item)}
-                displayFavor={false}
-                displayShare={false}
-                disabledComplete={completedEventIds.includes(item.id)}
-                isCompleted={completedEventIds.includes(item.id)}
-              />
-            </CardBox>
+            <EventLinkCard
+              key={item.id}
+              data={item}
+              onComplete={() => onEventComplete && onEventComplete(item)}
+              disabledComplete={completedEventIds.includes(item.id)}
+              isCompleted={completedEventIds.includes(item.id)}
+            />
           ))}
         {data.contents &&
           data.contents.map((item) => (
-            <CardBox key={item.id}>
-              <ContentCard
-                {...item}
-                content={getContentWithJsonValue(item.value)}
-                voteAction={() => alert('在此页面，此按钮后期会隐藏')}
-                favorsActions={() => alert('在此页面，此按钮后期会隐藏')}
-                hiddenAction={() => alert('在此页面，此按钮后期会隐藏')}
-              />
-            </CardBox>
+            <ContentLinkCard
+              key={item.id}
+              data={{
+                ...item,
+                upVoteNum: currentVotedContentIds.includes(item.id)
+                  ? item.upVoteNum + 1
+                  : item.upVoteNum,
+              }}
+              onVote={() => onContentVote(item.id)}
+              disabledVote={
+                item.upVoted || currentVotedContentIds.includes(item.id)
+              }
+            />
           ))}
       </LayoutMain>
     </ProjectDetailCardWrapper>
@@ -205,7 +210,7 @@ const LayoutMain = styled.div`
 const CardBox = styled(CardBase)`
   background: #14171a;
 `;
-const EventCard = styled(EventDetailView)`
+const EventCard = styled(EventLinkCard)`
   /* min-height: 50vh; */
 `;
 const ContentCard = styled(ContentShower)`

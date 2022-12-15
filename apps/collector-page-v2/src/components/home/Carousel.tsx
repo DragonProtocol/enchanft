@@ -33,7 +33,7 @@ export default function Carousel() {
         <h2>Your Content,</h2>
         <h2> Your Web3.</h2>
         <div>
-          Hub For Your Fragmented Self Sovereign Data and
+          Hub For Your Self Sovereign Data and
           <TextTransition springConfig={presets.wobbly}>
             {TEXTS[index % TEXTS.length]}
           </TextTransition>
@@ -128,6 +128,8 @@ const Box = styled.div`
   & .magic-cube {
     position: absolute;
     padding: 42px 0;
-    right: 100px;
+    right: 10px;
+    width: 400px;
+    height: 400px;
   }
 `;

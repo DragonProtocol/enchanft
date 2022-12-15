@@ -6,7 +6,8 @@
  */
 {
   // ts 配置
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "cSpell.words": ["ecnft", "FORU", "thirdparty"]
 
   // // lint 配置
   // "eslint.validate": [
