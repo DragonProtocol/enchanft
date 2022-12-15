@@ -24,6 +24,8 @@ import ContentShower from '../components/contents/ContentShower';
 import userFavored from '../hooks/useFavored';
 import { useVoteUp } from '../hooks/useVoteUp';
 import useContentHidden from '../hooks/useContentHidden';
+import ExtensionSupport from '../components/common/ExtensionSupport';
+import Loading from '../components/common/loading/Loading';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -40,6 +42,7 @@ function Contents() {
   const [selectContent, setSelectContent] = useState<ContentListItem>();
   const [daylightContent, setDaylightContent] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [daylightContentLoading, setDaylightContentLoading] = useState(false);
   const { keysFilter, contentHiddenOrNot } = useContentHidden();
   const [tab, setTab] = useState<'original' | 'readerView'>('readerView');
@@ -102,6 +105,7 @@ function Contents() {
     async (pageNumber: number) => {
       const { keywords, type, orderBy } = queryRef.current;
       try {
+        setLoadingMore(true);
         if (orderBy === OrderBy.FORU) {
           const [dayLightData, { data }] = await Promise.all([
             fetchDaylightData(currDaylightCursor),
@@ -126,8 +130,7 @@ function Contents() {
       } catch (error) {
         toast.error(error.message);
       } finally {
-        // TODO
-        console.log('load more done');
+        setLoadingMore(false);
       }
     },
     [queryRef.current, contents, currDaylightCursor]
@@ -181,7 +184,13 @@ function Contents() {
           setTab('readerView');
         }}
       />
-      {(loading && <div>loading</div>) || (
+      {(loading && (
+        <ContentsWrapper>
+          <div className="loading">
+            <Loading />
+          </div>
+        </ContentsWrapper>
+      )) || (
         <ContentsWrapper>
           <ListBox>
             {contents
@@ -203,47 +212,78 @@ function Contents() {
                     clickAction={() => {
                       setSelectContent(item);
                     }}
+                    voteAction={vote}
+                    favorsAction={favors}
+                    hiddenAction={() => {
+                      contentHiddenOrNot(
+                        selectContent?.uid || selectContent.id
+                      );
+                      setSelectContent(undefined);
+                    }}
                     {...item}
                   />
                 );
               })}
-            <button
-              type="button"
-              onClick={() => {
-                loadMore(currPageNumber + 1);
-                setCurrPageNumber(currPageNumber + 1);
-              }}
-            >
-              More
-            </button>
+            <div className="load-more">
+              {loadingMore ? (
+                <Loading />
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    loadMore(currPageNumber + 1);
+                    setCurrPageNumber(currPageNumber + 1);
+                  }}
+                >
+                  Load More
+                </button>
+              )}
+            </div>
           </ListBox>
 
           <ContentBox>
-            {tab === 'original' && (
+            <div className="tabs">
               <div>
                 <button
                   type="button"
+                  className={tab === 'original' ? 'active' : ''}
                   onClick={() => {
-                    alert('TODO');
+                    setTab('original');
+                    // changeOriginalAction();
                   }}
                 >
-                  install extension
+                  Original
                 </button>
                 <button
+                  className={tab === 'readerView' ? 'active' : ''}
                   type="button"
                   onClick={() => {
-                    window.open(
-                      selectContent.action?.linkUrl || selectContent.link,
-                      '_blank'
-                    );
+                    setTab('readerView');
+                    // changeReaderViewAction();
                   }}
                 >
-                  open in new tab
+                  ReaderView
                 </button>
               </div>
+            </div>
+            {tab === 'original' && selectContent && (
+              <ExtensionSupport
+                url={selectContent.action?.linkUrl || selectContent.link}
+                title={selectContent.title}
+                img={
+                  selectContent.imageUrl ||
+                  (selectContent.uniProjects &&
+                    selectContent.uniProjects[0]?.image)
+                }
+              />
             )}
             {tab === 'readerView' &&
-              ((daylightContentLoading && <div>loading</div>) ||
+              selectContent &&
+              ((daylightContentLoading && (
+                <LoadingBox>
+                  <Loading />
+                </LoadingBox>
+              )) ||
                 (selectContent &&
                   ((selectContent.supportReaderView && (
                     <ContentShower
@@ -259,19 +299,15 @@ function Contents() {
                       }}
                     />
                   )) || (
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          window.open(
-                            selectContent.action?.linkUrl || selectContent.link,
-                            '_blank'
-                          );
-                        }}
-                      >
-                        open in new tab
-                      </button>
-                    </div>
+                    <ExtensionSupport
+                      url={selectContent.action?.linkUrl || selectContent.link}
+                      title={selectContent.title}
+                      img={
+                        selectContent.imageUrl ||
+                        (selectContent.uniProjects &&
+                          selectContent.uniProjects[0]?.image)
+                      }
+                    />
                   ))))}
           </ContentBox>
         </ContentsWrapper>
@@ -283,32 +319,59 @@ export default Contents;
 
 const Box = styled.div`
   margin: 0 auto;
-  height: 100%;
+  height: calc(100vh - 72px);
   box-sizing: border-box;
   padding-top: 24px;
-  /* background: #1b1e23; */
-  /* color: #ffffff; */
   width: 1160px;
   overflow: hidden;
 `;
 const ContentsWrapper = styled.div`
-  width: 100%;
+  width: calc(100% - 2px);
   height: calc(100% - 74px);
+  box-sizing: border-box;
+  border: 1px solid #39424c;
+  background-color: #1b1e23;
+  /* border--radius: 20px; */
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  overflow: hidden;
   display: flex;
   margin-top: 24px;
+
+  & .loading {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 const ListBox = styled.div`
   min-width: 360px;
   width: 360px;
-  height: 100%;
+  height: calc(100%);
   overflow: scroll;
+  border-right: 1px solid #39424c;
+
+  & .load-more {
+    margin: 20px;
+    text-align: center;
+    > button {
+      cursor: pointer;
+      background-color: inherit;
+      color: #fff;
+      border: 1px solid gray;
+      border-radius: 5px;
+      padding: 10px 20px;
+      outline: none;
+    }
+  }
 `;
 const ContentBox = styled.div`
-  height: calc(100% - 40px);
+  height: calc(100%);
   width: calc(100% - 360px);
-  padding: 20px;
+
   overflow-x: hidden;
-  overflow: scroll;
+  overflow: hidden;
 
   & img {
     max-width: 100%;
@@ -317,4 +380,51 @@ const ContentBox = styled.div`
   & pre {
     overflow: scroll;
   }
+
+  & div.tabs {
+    height: 60px;
+    background: #1b1e23;
+    border-bottom: 1px solid #39424c;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    > div {
+      width: 260px;
+      height: 40px;
+      background: #14171a;
+      border-radius: 100px;
+      padding: 4px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      > button {
+        cursor: pointer;
+        width: 122px;
+        height: 32px;
+        border: none;
+
+        box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
+          0px 0px 4px rgba(20, 23, 26, 0.04);
+        border-radius: 100px;
+        outline: none;
+        background: inherit;
+        color: #a0aec0;
+
+        &.active {
+          color: #ffffff;
+          background: #21262c;
+        }
+      }
+    }
+  }
+`;
+
+const LoadingBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
 `;

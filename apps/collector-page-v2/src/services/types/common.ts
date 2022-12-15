@@ -2,9 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 14:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 17:48:41
+ * @LastEditTime: 2022-12-14 17:08:21
  * @Description: file description
  */
+import { ApiResp } from '.';
+
 export enum OrderBy {
   EARLIEST = 'EARLIEST',
   TRENDING = 'TRENDING',
@@ -17,6 +19,8 @@ export enum Platform {
   NOOX = 'NOOX',
   POAP = 'POAP',
   QUEST3 = 'QUEST3',
+  RABBIT_HOLE = 'RABBIT_HOLE',
+  LINK3 = 'LINK3',
 }
 
 export enum Reward {
@@ -39,3 +43,9 @@ export enum PlatformLogo {
   POAP = 'https://poap.xyz/favicon-32x32.dba5403f.png',
   QUEST3 = 'https://quest3.xyz/favicon.ico',
 }
+export type PlatformsItemResponse = {
+  platform: string;
+  platformLogo: string;
+  eventNumber: number;
+};
+export type PlatformsResponse = ApiResp<Array<PlatformsItemResponse>>;

@@ -4,18 +4,22 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 18:39:54
+ * @LastEditTime: 2022-12-15 14:59:07
  * @Description: file description
  */
 import styled from 'styled-components';
-import Select from 'react-select';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { useWlUserReact } from '@ecnft/wl-user-react';
-import { Platform, PlatformLogo, Reward } from '../services/types/common';
+import {
+  OrderBy,
+  Platform,
+  PlatformLogo,
+  Reward,
+} from '../services/types/common';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   fetchProjectSelectList,
@@ -27,7 +31,21 @@ import { uploadImage } from '../services/api/upload';
 import { EVENT_IMAGE_SIZE_LIMIT } from '../constants';
 import { eventCreate, selectState } from '../features/event/eventCreate';
 import { AsyncRequestStatus } from '../services/types';
-import EventDetailCard from '../components/event/EventDetailCard';
+import { MainWrapper } from '../components/layout/Index';
+import CardBase from '../components/common/card/CardBase';
+import ScrollBox from '../components/common/box/ScrollBox';
+import InputBase from '../components/common/input/InputBase';
+import Select from '../components/common/select/Select';
+import {
+  ButtonPrimary,
+  ButtonPrimaryLine,
+} from '../components/common/button/ButtonBase';
+import Switch from '../components/common/switch/Switch';
+import RefreshSvg from '../components/common/icons/svgs/refresh.svg';
+import TimePicker from '../components/common/time/TimePicker';
+import EventLinkPreview from '../components/event/EventLinkPreview';
+import ProjectAsyncSelect from '../components/business/form/ProjectAsyncSelect';
+import PlatformSelect from '../components/business/form/PlatformSelect';
 
 const platformOptions: Array<{
   value: Platform;
@@ -92,7 +110,10 @@ function EventCreate() {
   const projectSelectList = useAppSelector(selectAll);
   const projectOptions = useMemo(
     () =>
-      projectSelectList.map((item) => ({ value: item.id, label: item.name })),
+      projectSelectList.map((item) => ({
+        value: item.id,
+        label: item.name,
+      })),
     [projectSelectList]
   );
   const { status } = useAppSelector(selectState);
@@ -147,7 +168,7 @@ function EventCreate() {
     [formik.touched, formik.errors]
   );
 
-  const reviewData = useMemo(() => {
+  const previewData = useMemo(() => {
     const { project, platform } = formik.values;
     return {
       ...formik.values,
@@ -157,187 +178,214 @@ function EventCreate() {
       project: projectSelectList.find((item) => item.id === project),
     };
   }, [formik.values, projectSelectList]);
+
   return (
     <EventCreateWrapper>
-      <EventCreateForm
-        onSubmit={formik.handleSubmit}
-        onReset={formik.handleReset}
-      >
-        <label htmlFor="name">name</label>
-        <input
-          id="name"
-          name="name"
-          onChange={formik.handleChange}
-          value={formik.values.name}
-        />
-        {renderFieldError('name')}
-        <label htmlFor="description">description</label>
-        <input
-          id="description"
-          name="description"
-          onChange={formik.handleChange}
-          value={formik.values.description}
-        />
-        {renderFieldError('description')}
-        <label htmlFor="image">image</label>
-        <UploadImage
-          url={formik.values.image}
-          onSuccess={(url) => formik.setFieldValue('image', url)}
-        />
-        {renderFieldError('image')}
-        <label htmlFor="platform">platform</label>
-        <Select
-          id="platform"
-          name="platform"
-          options={platformOptions}
-          onChange={({ value }) => formik.setFieldValue('platform', value)}
-          value={platformOptions.find(
-            (item) => item.value === formik.values.platform
-          )}
-        />
-        {renderFieldError('platform')}
-        <label htmlFor="project">project</label>
-        <Select
-          id="project"
-          name="project"
-          options={projectOptions}
-          onChange={({ value }) => formik.setFieldValue('project', value)}
-          value={projectOptions.find(
-            (item) => item.value === formik.values.project
-          )}
-        />
-        {renderFieldError('project')}
-        <label htmlFor="link">link</label>
-        <input
-          id="link"
-          name="link"
-          onChange={formik.handleChange}
-          value={formik.values.link}
-        />
-        {renderFieldError('link')}
-        <label htmlFor="chain">chain</label>
-        <Select
-          id="chain"
-          name="chain"
-          options={chainOptions}
-          onChange={({ value }) => formik.setFieldValue('chain', value)}
-          value={chainOptions.find(
-            (item) => item.value === formik.values.chain
-          )}
-        />
-        {renderFieldError('chain')}
-        <label htmlFor="reward">reward</label>
-        <Select
-          id="reward"
-          name="reward"
-          options={rewardOptions}
-          onChange={({ value }) => formik.setFieldValue('reward', value)}
-          value={rewardOptions.find(
-            (item) => item.value === formik.values.reward
-          )}
-        />
-        {renderFieldError('reward')}
-        <label htmlFor="startTime">time</label>
-        <TimeRow>
-          <input
-            id="startTime"
-            name="startTime"
-            type="datetime-local"
-            onChange={(e) =>
-              formik.setFieldValue(
-                'startTime',
-                new Date(e.target.value).getTime()
-              )
-            }
-            value={dayjs(formik.values.startTime).format('YYYY-MM-DDTHH:mm:ss')}
+      <EventCreateFormCard>
+        <FormField>
+          <FormLabel htmlFor="name">Title</FormLabel>
+          <InputBase
+            onChange={(e) => formik.setFieldValue('name', e.target.value)}
+            value={formik.values.name}
           />
-          {renderFieldError('startTime')}
-          {!noEndTime && (
-            <>
-              -
-              <input
-                id="endTime"
-                name="endTime"
-                type="datetime-local"
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    'endTime',
-                    new Date(e.target.value).getTime()
-                  )
-                }
-                value={dayjs(formik.values.endTime).format(
-                  'YYYY-MM-DDTHH:mm:ss'
-                )}
-                min={dayjs(formik.values.startTime).format(
-                  'YYYY-MM-DDTHH:mm:ss'
-                )}
-              />
-              {renderFieldError('endTime')}
-            </>
-          )}
+          {renderFieldError('name')}
+        </FormField>
 
-          <label>
-            <input
-              type="checkbox"
-              checked={noEndTime}
-              onChange={(e) => setNoEndTime(!noEndTime)}
-            />
-            <span>No end</span>
-          </label>
-        </TimeRow>
-        <label htmlFor="supportIframe">supportIframe</label>
-        <label>
-          <input
-            type="checkbox"
-            checked={formik.values.supportIframe}
+        <FormField>
+          <FormLabel htmlFor="description">Description</FormLabel>
+          <InputBase
             onChange={(e) =>
-              formik.setFieldValue(
-                'supportIframe',
-                !formik.values.supportIframe
-              )
+              formik.setFieldValue('description', e.target.value)
             }
+            value={formik.values.description}
           />
-          <span>{formik.values.supportIframe ? 'Yes' : 'No'}</span>
-        </label>
+          {renderFieldError('description')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="image">Image</FormLabel>
+          <UploadImage
+            url={formik.values.image}
+            onSuccess={(url) => formik.setFieldValue('image', url)}
+          />
+          {renderFieldError('image')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="platform">Platform</FormLabel>
+          <PlatformSelect
+            onChange={(value) => formik.setFieldValue('platform', value)}
+            value={formik.values.platform}
+          />
+          {renderFieldError('platform')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="project">Project</FormLabel>
+          <ProjectAsyncSelect
+            value={formik.values.project}
+            onChange={(value) => formik.setFieldValue('project', value)}
+          />
+          {renderFieldError('project')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="link">Original URL</FormLabel>
+          <InputBase
+            onChange={(e) => formik.setFieldValue('link', e.target.value)}
+            value={formik.values.link}
+          />
+          {renderFieldError('link')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="chain">Blockchain</FormLabel>
+          <Select
+            options={chainOptions}
+            onChange={(value) => formik.setFieldValue('chain', value)}
+            value={formik.values.chain}
+          />
+          {renderFieldError('chain')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="reward">Reward</FormLabel>
+          <Select
+            id="reward"
+            options={rewardOptions}
+            onChange={(value) => formik.setFieldValue('reward', value)}
+            value={formik.values.reward}
+          />
+          {renderFieldError('reward')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="startTime">Time</FormLabel>
+          <TimeRow>
+            <TimePicker
+              placeholder="Start Time"
+              onChange={(e) =>
+                formik.setFieldValue(
+                  'startTime',
+                  new Date(e.target.value).getTime()
+                )
+              }
+              value={dayjs(formik.values.startTime).format(
+                'YYYY-MM-DDTHH:mm:ss'
+              )}
+            />
+            {renderFieldError('startTime')}
+            {!noEndTime && (
+              <>
+                -
+                <TimePicker
+                  placeholder="End Time"
+                  onChange={(e) =>
+                    formik.setFieldValue(
+                      'endTime',
+                      new Date(e.target.value).getTime()
+                    )
+                  }
+                  value={dayjs(formik.values.endTime).format(
+                    'YYYY-MM-DDTHH:mm:ss'
+                  )}
+                  min={dayjs(formik.values.startTime).format(
+                    'YYYY-MM-DDTHH:mm:ss'
+                  )}
+                />
+                {renderFieldError('endTime')}
+              </>
+            )}
+          </TimeRow>
+          <SwitchRow>
+            <Switch
+              onChange={(checked) => setNoEndTime(checked)}
+              checked={noEndTime}
+            />
+            <SwitchText>No end</SwitchText>
+          </SwitchRow>
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="supportIframe">Iframe Display</FormLabel>
+          <SwitchRow>
+            <Switch
+              onChange={(checked) =>
+                formik.setFieldValue('supportIframe', checked)
+              }
+              checked={formik.values.supportIframe}
+            />
+            <SwitchText>Support</SwitchText>
+          </SwitchRow>
+        </FormField>
+
         <FormButtons>
-          <button type="reset" disabled={loading}>
-            Reset
-          </button>
-          <button type="submit" disabled={loading}>
+          <ButtonPrimaryLine
+            type="reset"
+            disabled={loading}
+            onClick={formik.handleReset}
+          >
+            <FormButtonIcon src={RefreshSvg} />
+          </ButtonPrimaryLine>
+          <FormButtonSubmit
+            type="submit"
+            disabled={loading}
+            onClick={() => {
+              console.log(formik.values);
+            }}
+          >
             Submit
-          </button>
+          </FormButtonSubmit>
         </FormButtons>
-      </EventCreateForm>
+      </EventCreateFormCard>
       <EventPreviewBox>
-        <EventPreview
-          data={reviewData}
-          displayFavor={false}
-          displayComplete={false}
-          displayShare={false}
-        />
+        <EventLinkPreview data={previewData} />
       </EventPreviewBox>
     </EventCreateWrapper>
   );
 }
 export default EventCreate;
-const EventCreateWrapper = styled.div`
-  width: 100%;
-  height: 100%;
+const EventCreateWrapper = styled(MainWrapper)`
+  height: auto;
   display: flex;
-  gap: 20px;
+  gap: 40px;
 `;
-const EventCreateForm = styled.form`
-  width: 400px;
+
+const EventCreateFormCard = styled(CardBase)`
+  width: 360px;
+  border: none;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  box-sizing: border-box;
+`;
+const FormField = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+const FormLabel = styled.label`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: #ffffff;
+  text-transform: 'capitalize';
+`;
+const SwitchRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+const SwitchText = styled.span`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #4e5a6e;
 `;
 const TimeRow = styled.div`
   display: flex;
-  gap: 20px;
+  align-items: center;
+  gap: 10px;
+  color: #39424c;
 `;
 const FieldErrorText = styled.div`
   color: red;
@@ -346,13 +394,23 @@ const FormButtons = styled.div`
   display: flex;
   gap: 20px;
 `;
-const EventPreviewBox = styled.div`
-  width: 0;
+const FormButtonSubmit = styled(ButtonPrimary)`
   flex: 1;
-  overflow-y: auto;
 `;
-const EventPreview = styled(EventDetailCard)`
+const FormButtonIcon = styled.img`
+  width: 24px;
+  height: 24px;
+`;
+const EventPreviewBox = styled(CardBase)`
+  width: 0;
+  height: auto;
+  flex: 1;
+  padding: 0;
+`;
+const EventPreview = styled.iframe`
+  width: 100%;
   min-height: 100%;
+  border: none;
 `;
 function UploadImage({
   url,
@@ -366,12 +424,12 @@ function UploadImage({
   return (
     <UploadImageWrapper
       onClick={() => {
-        document.getElementById('uploadinput')?.click();
+        document.getElementById('uploadInput')?.click();
       }}
     >
       <input
-        title="uploadinput"
-        id="uploadinput"
+        title="uploadInput"
+        id="uploadInput"
         style={{ display: 'none' }}
         type="file"
         accept="image/png, image/gif, image/jpeg"
@@ -395,18 +453,16 @@ function UploadImage({
         }}
       />
 
-      {(loading && (
-        <div className="uploading">
-          <p>Uploading ...</p>
-        </div>
-      )) || <UploadImagePreview src={url} />}
+      {(loading && <div className="uploading">Uploading ...</div>) ||
+        (url && <UploadImagePreview src={url} />)}
     </UploadImageWrapper>
   );
 }
 
-const UploadImageWrapper = styled.div`
+const UploadImageWrapper = styled(CardBase)`
   width: 160px;
   height: 160px;
+  padding: 0;
   position: relative;
   &:hover {
     cursor: pointer;
@@ -421,8 +477,12 @@ const UploadImageWrapper = styled.div`
     }
   }
   & .uploading {
-    text-align: center;
-    padding-top: 20px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #4e5a6e;
   }
 `;
 const UploadImagePreview = styled.img`

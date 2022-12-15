@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 20:03:01
+ * @LastEditTime: 2022-12-15 14:10:19
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
@@ -13,6 +13,7 @@ import Main from './Main';
 import Header from './Header';
 import { useGAPageView } from '../../hooks/useGoogleAnalytics';
 import Nav from './Nav';
+import { ScrollBarCss } from '../../GlobalStyle';
 
 function Layout() {
   useGAPageView();
@@ -24,12 +25,32 @@ function Layout() {
         </HeaderInner>
       </HeaderBox>
       <ContentBox>
-        <Nav />
-        <PageBox>
-          <Main />
-        </PageBox>
+        <LeftBox>
+          <LeftInner>
+            <Nav />
+          </LeftInner>
+        </LeftBox>
+
+        <RightBox>
+          <RightInner>
+            <MainPageBox>
+              <Main />
+            </MainPageBox>
+          </RightInner>
+        </RightBox>
       </ContentBox>
-      <ToastContainer autoClose={2000} position="top-right" />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+      />
     </LayoutWrapper>
   );
 }
@@ -40,11 +61,11 @@ const LayoutWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #ebeee4;
+  background: #14171a;
 `;
 const HeaderBox = styled.div`
   width: 100%;
-  background: #f7f9f1;
+  background: #1b1e23;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   z-index: 1;
   position: fixed;
@@ -56,11 +77,9 @@ const HeaderInner = styled.div`
   height: 72px;
   box-sizing: border-box;
   padding: 0 40px;
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: ${MEDIA_BREAK_POINTS.xxxl}px;
     margin: 0 auto;
-  }
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    padding: 0 20px;
   }
 `;
 const ContentBox = styled.div`
@@ -69,8 +88,54 @@ const ContentBox = styled.div`
   margin-top: 72px;
   display: flex;
 `;
-const PageBox = styled.div`
-  flex: 1;
+const LeftBox = styled.div`
+  background: #1b1e23;
+  @media (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: 200px;
+  }
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    background: none;
+    width: calc((100vw - ${MEDIA_BREAK_POINTS.xxxl}px) / 2 + 200px);
+    display: flex;
+    justify-content: flex-end;
+  }
+`;
+const LeftInner = styled.div`
+  width: 200px;
+  padding: 20px;
+  box-sizing: border-box;
+`;
+const RightBox = styled.div`
   height: 100%;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    flex: 1;
+  }
+  @media (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: calc(100vw - (100vw - ${MEDIA_BREAK_POINTS.xxxl}px) / 2 - 200px);
+    display: flex;
+    justify-content: flex-start;
+  }
+`;
+const RightInner = styled.div`
+  width: calc(100vw - (100vw - ${MEDIA_BREAK_POINTS.xxxl}px) / 2 - 200px);
+`;
+const MainPageBox = styled.div`
+  height: 100%;
+  box-sizing: border-box;
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: 100%;
+  }
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: calc(${MEDIA_BREAK_POINTS.xxxl}px - 200px);
+  }
+`;
+
+export const MainWrapper = styled.div`
+  width: 100%;
+  height: calc(100vh - 72px);
+  padding: 24px 40px;
   box-sizing: border-box;
 `;

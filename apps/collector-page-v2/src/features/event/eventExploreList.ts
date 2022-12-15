@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 16:53:26
+ * @LastEditTime: 2022-12-15 18:14:46
  * @Description: file description
  */
 import {
@@ -86,7 +86,7 @@ const getEventsByForu = async (
   const trendingEventList = trendingData.data.data;
 
   // 合并数据
-  const data = [...trendingEventList, ...daylightEventList];
+  const data = [...daylightEventList, ...trendingEventList];
 
   // 最后一个daylight数据的uid
   const daylightAfterUid =

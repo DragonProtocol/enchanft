@@ -16,6 +16,7 @@ import OnChainInterest from '../components/profile/OnChainInterest';
 import OffChainInterest from '../components/profile/OffChainInterest';
 import { fetchU3Profile } from '../services/api/profile';
 import { ProfileEntity } from '../services/types/profile';
+import Loading from '../components/common/loading/Loading';
 
 function Profile() {
   const { user } = useWlUserReact();
@@ -41,7 +42,13 @@ function Profile() {
   }, [fetchData]);
 
   if (loading) {
-    return <div>Loading</div>;
+    return (
+      <ProfileWrapper>
+        <div className="loading">
+          <Loading />
+        </div>
+      </ProfileWrapper>
+    );
   }
 
   return (
@@ -50,6 +57,7 @@ function Profile() {
         <div className="infos">
           <Info
             {...{
+              date: (user as any).createdAt,
               nickname: user.name,
               avatar: user.avatar,
               walletAddr:
@@ -79,7 +87,7 @@ function Profile() {
               className={tab === 'OffChain' ? 'active' : ''}
             >
               Off-Chain Interest
-              <span>soon</span>
+              <span>Soon</span>
             </div>
           </div>
 
@@ -108,8 +116,11 @@ function Profile() {
 export default Profile;
 const ProfileWrapper = styled.div`
   height: 100%;
-  /* background-color: #14171a; */
   overflow: scroll;
+  > div.loading {
+    display: flex;
+    justify-content: center;
+  }
   > div {
     margin: 0 auto;
     width: 1160px;
@@ -117,32 +128,54 @@ const ProfileWrapper = styled.div`
 
     .infos {
       display: flex;
-      gap: 30px;
+      gap: 40px;
     }
 
     .content {
-      margin-top: 20px;
+      margin-top: 50px;
       .tab {
-        margin-bottom: 20px;
-        width: 700px;
-        display: grid;
-        grid-template-columns: repeat(3, minmax(10px, 1fr));
-        background-color: darkgray;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        padding: 0px;
+        gap: 40px;
+
+        width: 1160px;
+        height: 72px;
+
+        border-bottom: 1px solid #39424c;
         color: white;
+
         > div {
           cursor: pointer;
-          text-align: center;
-          display: inline-block;
+          align-items: center;
+          display: flex;
           position: relative;
+          height: inherit;
+          font-weight: 700;
+          font-size: 18px;
+          line-height: 21px;
+          color: #ffffff;
           > span {
-            position: absolute;
-            right: 0px;
-            top: 0px;
-            background-color: lightgray;
-            font-size: 13px;
+            margin-left: 3px;
+            padding: 3px;
+            background: #718096;
+            border-radius: 4px;
+            font-weight: 400;
+            font-size: 12px;
+            line-height: 14px;
+            color: #14171a;
           }
           &.active {
-            background-color: gray;
+            &::after {
+              content: ' ';
+              height: 3px;
+              position: absolute;
+              width: 100%;
+              background: #ffffff;
+              border-radius: 100px 100px 0px 0px;
+              bottom: 0;
+            }
           }
         }
       }

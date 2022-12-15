@@ -1,39 +1,52 @@
 import styled from 'styled-components';
+import { useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react';
+import dayjs from 'dayjs';
 import { sortPubKey } from '../../utils/solana';
 import { Copy } from '../icons/copy';
 import { Discord } from '../icons/discord';
 import { Twitter } from '../icons/twitter';
+import { Refresh } from '../icons/refresh';
+import { Edit } from '../icons/edit';
 
 export default function Info({
   nickname,
   walletAddr,
   avatar,
+  date,
 }: {
   nickname: string;
   walletAddr: string;
   avatar: string;
+  date: number;
 }) {
+  const { dispatchModal } = useWlUserReact();
   return (
     <InfoBox>
       <div className="user-info">
-        <img
-          className="user-avatar"
-          src={
-            avatar ||
-            'https://arweave.net/QeSUFwff9xDbl4SCXlOmEn0TuS4vPg11r2_ETPPu_nk'
-          }
-          alt=""
-        />
+        <div className="img-edit">
+          <div
+            onClick={() => {
+              dispatchModal({ type: WlUserModalType.EDIT_PROFILE });
+            }}
+          >
+            <Edit />
+          </div>
+          <img
+            className="user-avatar"
+            src={avatar || '/default-avatar.png'}
+            alt=""
+          />
+        </div>
 
-        <div>
+        <div className="info">
           <div className="nickname">
             <span className="name">{nickname || 'Unknown'}</span>
-            {/* <span className="share">
-              <Share />
-            </span> */}
+            <span className="share">
+              <Refresh />
+            </span>
           </div>
           <div className="addr">
-            <span>{sortPubKey(walletAddr || '')}</span>
+            <span>{sortPubKey(walletAddr || '', 10)}</span>
             <span
               className="copy"
               onClick={() => {
@@ -50,17 +63,26 @@ export default function Info({
               <Copy />
             </span>
           </div>
-        </div>
-      </div>
-      <div className="attach">
-        <div>date</div>
-        <div>
-          <span className="twitter">
-            <Twitter />
-          </span>
-          <span className="discord">
-            <Discord />
-          </span>
+          <div className="attach">
+            <div>
+              {/* <span>
+                <span className="num">90</span>Following
+              </span>
+              <span>
+                <span className="num">90</span>Follower
+              </span> */}
+              <span>|</span>
+              <span>{dayjs(date || Date.now()).format('MMM DD YYYY')}</span>
+            </div>
+            <div>
+              <span className="twitter">
+                <Twitter />
+              </span>
+              <span className="discord">
+                <Discord />
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </InfoBox>
@@ -68,20 +90,50 @@ export default function Info({
 }
 
 const InfoBox = styled.div`
-  flex-grow: 1;
+  padding: 25px 25px 25px 20px;
+  box-sizing: border-box;
+  color: white;
+  width: 760px;
+  height: 170px;
+
+  background: #1b1e23;
+  border-radius: 20px;
   .user-info {
     display: flex;
-    gap: 10px;
+    gap: 20px;
     & img.user-avatar {
-      border-radius: 5px;
+      border-radius: 50%;
 
-      width: 100px;
-      height: 100px;
+      width: 120px;
+      height: 120px;
     }
-    & > div {
+    & > div.img-edit {
+      position: relative;
+      &:hover {
+        > div {
+          display: flex;
+        }
+      }
+      > div {
+        cursor: pointer;
+        position: absolute;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          0deg,
+          rgba(0, 0, 0, 0.5),
+          rgba(0, 0, 0, 0.5)
+        );
+      }
+    }
+    & > div.info {
       flex-grow: 1;
       display: flex;
       flex-direction: column;
+      gap: 10px;
       justify-content: space-between;
       & .nickname {
         display: flex;
@@ -89,6 +141,12 @@ const InfoBox = styled.div`
         & .name {
           font-size: 25px;
           font-weight: 700;
+          font-style: italic;
+          font-weight: 700;
+          font-size: 24px;
+          line-height: 28px;
+
+          color: #ffffff;
         }
       }
     }
@@ -96,6 +154,11 @@ const InfoBox = styled.div`
     div.addr {
       display: flex;
       gap: 5px;
+      color: #718096;
+      align-items: center;
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 24px;
       & .copy {
         cursor: pointer;
       }
@@ -108,25 +171,40 @@ const InfoBox = styled.div`
 
   .attach {
     display: flex;
-    justify-content: space-between;
 
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    /* identical to box height, or 150% */
+
+    /* #718096 */
+
+    color: #718096;
     > div {
       display: flex;
       gap: 10px;
     }
 
+    & .num {
+      line-height: 19px;
+      color: #ffffff;
+      margin-right: 5px;
+    }
+
     & .twitter,
     & .discord {
-      width: 34px;
-      height: 34px;
+      width: 40px;
+      height: 40px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border-radius: 50%;
-      background-color: rgb(52, 128, 223);
+      background: #14171a;
     }
     & .discord {
-      background-color: rgb(64, 72, 243);
+      /* background: #14171a; */
     }
   }
 `;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-30 22:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-08 15:58:48
+ * @LastEditTime: 2022-12-14 10:46:29
  * @Description: 全局样式
  */
 import { createGlobalStyle, css } from 'styled-components';
@@ -10,7 +10,7 @@ import { createGlobalStyle, css } from 'styled-components';
 export const ScrollBarCss = css`
   /* 设置滚动条的样式 */
   ::-webkit-scrollbar {
-    width: 3px;
+    width: 2px;
   }
   /* 滚动槽 */
   ::-webkit-scrollbar-track {
@@ -26,12 +26,12 @@ export const ScrollBarCss = css`
     box-shadow: rgba(0, 0, 0, 0.5);
   }
   ::-webkit-scrollbar-thumb:window-inactive {
-    background: #ccc;
+    background: #1b1e23;
   }
 `;
 
 export const FontFamilyCss = css`
-  font-family: 'Poppins';
+  font-family: 'Rubik';
   font-style: normal;
 `;
 
@@ -48,29 +48,29 @@ export const CursorPointerUpCss = css`
 `;
 const GlobalStyle = createGlobalStyle`
   @font-face {
-    font-family: 'Poppins';
-    src:  url('/fonts/Poppins-Black.ttf') format('truetype');
+    font-family: 'Rubik';
+    src:  url('/fonts/Rubik-BoldItalic.ttf') format('truetype');
     font-style: normal;
     font-weight: 900;
     font-display: auto;
   }
   @font-face {
-    font-family: 'Poppins';
-    src:  url('/fonts/Poppins-Bold.ttf') format('truetype');
+    font-family: 'Rubik';
+    src:  url('/fonts/Rubik-Bold.ttf') format('truetype');
     font-style: normal;
     font-weight: bold;
     font-display: auto;
   }
   @font-face {
-    font-family: 'Poppins';
-    src:  url('/fonts/Poppins-Medium.ttf') format('truetype');
+    font-family: 'Rubik';
+    src:  url('/fonts/Rubik-Medium.ttf') format('truetype');
     font-style: normal;
     font-weight: 500;
     font-display: auto;
   }
   @font-face {
-    font-family: 'Poppins';
-    src:  url('/fonts/Poppins-Regular.ttf') format('truetype');
+    font-family: 'Rubik';
+    src:  url('/fonts/Rubik-Regular.ttf') format('truetype');
     font-style: normal;
     font-weight: normal;
     font-display: auto;
@@ -80,7 +80,7 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    background-color: #E5E5E5;
+    background-color: #14171A;
     margin:0;
     padding:0;
     width:100%;

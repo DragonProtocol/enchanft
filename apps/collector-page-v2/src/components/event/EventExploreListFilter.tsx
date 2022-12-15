@@ -2,27 +2,28 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 16:41:04
+ * @LastEditTime: 2022-12-14 18:32:23
  * @Description: file description
  */
 import styled from 'styled-components';
-import Select from 'react-select';
-import {
-  OrderBy,
-  Platform,
-  ProjectType,
-  Reward,
-} from '../../services/types/common';
+import { OrderBy, ProjectType, Reward } from '../../services/types/common';
 import { EventExploreListParams } from '../../services/types/event';
+import SearchInput from '../common/input/SearchInput';
+import Select, { SelectOption } from '../common/select/Select';
+import OrderBySvg from '../common/icons/svgs/activity-heart.svg';
+import RewardSvg from '../common/icons/svgs/gift.svg';
+import ProjectTypeSvg from '../common/icons/svgs/grid.svg';
+import PlatformFilter from '../business/filter/PlatformFilter';
 
 export type EventExploreListFilterValues = Pick<
   EventExploreListParams,
   'orderBy' | 'platform' | 'reward' | 'projectType' | 'keywords'
 >;
-const orderByOptions: Array<{
-  value: EventExploreListFilterValues['orderBy'];
-  label: string;
-}> = [
+const orderByOptions: Array<SelectOption> = [
+  {
+    value: OrderBy.FORU,
+    label: 'For U',
+  },
   {
     value: OrderBy.NEWEST,
     label: 'Newest',
@@ -35,40 +36,8 @@ const orderByOptions: Array<{
     value: OrderBy.TRENDING,
     label: 'Trending',
   },
-  {
-    value: OrderBy.FORU,
-    label: 'For U',
-  },
 ];
-const platformOptions: Array<{
-  value: EventExploreListFilterValues['platform'];
-  label: string;
-}> = [
-  {
-    value: '',
-    label: 'All Platform',
-  },
-  {
-    value: Platform.GALXE,
-    label: 'Galxe',
-  },
-  {
-    value: Platform.NOOX,
-    label: 'Noox',
-  },
-  {
-    value: Platform.POAP,
-    label: 'POAP',
-  },
-  {
-    value: Platform.QUEST3,
-    label: 'Quest3',
-  },
-];
-const rewardOptions: Array<{
-  value: EventExploreListFilterValues['reward'];
-  label: string;
-}> = [
+const rewardOptions: Array<SelectOption> = [
   {
     value: '',
     label: 'All Reward',
@@ -90,10 +59,7 @@ const rewardOptions: Array<{
     label: 'WL',
   },
 ];
-const projectTypeOptions: Array<{
-  value: EventExploreListFilterValues['projectType'];
-  label: string;
-}> = [
+const projectTypeOptions: Array<SelectOption> = [
   {
     value: '',
     label: 'All Project',
@@ -116,13 +82,14 @@ const projectTypeOptions: Array<{
   },
 ];
 
-export const defaultEventExploreListFilterValues = {
-  orderBy: orderByOptions[0].value,
-  platform: platformOptions[0].value,
-  reward: rewardOptions[0].value,
-  projectType: projectTypeOptions[0].value,
-  keywords: '',
-};
+export const defaultEventExploreListFilterValues: EventExploreListFilterValues =
+  {
+    orderBy: orderByOptions[0].value,
+    platform: '',
+    reward: rewardOptions[0].value,
+    projectType: projectTypeOptions[0].value,
+    keywords: '',
+  };
 type EventExploreListFilterProps = {
   values: EventExploreListFilterValues;
   onChange: (values: EventExploreListFilterValues) => void;
@@ -134,40 +101,47 @@ export default function EventExploreListFilter({
   const { orderBy, platform, reward, projectType } = values;
   return (
     <EventExploreListFilterWrapper>
-      <Select
-        name="orderBy"
-        options={orderByOptions}
-        onChange={({ value }) => onChange({ ...values, orderBy: value })}
-        value={orderByOptions.find((item) => item.value === orderBy)}
-      />
-      <Select
-        name="platform"
-        options={platformOptions}
-        onChange={({ value }) => onChange({ ...values, platform: value })}
-        value={platformOptions.find((item) => item.value === platform)}
-      />
-      <Select
-        name="reward"
-        options={rewardOptions}
-        onChange={({ value }) => onChange({ ...values, reward: value })}
-        value={rewardOptions.find((item) => item.value === reward)}
-      />
-      <Select
-        name="projectType"
-        options={projectTypeOptions}
-        onChange={({ value }) => onChange({ ...values, projectType: value })}
-        value={projectTypeOptions.find((item) => item.value === projectType)}
-      />
-      <input
-        type="search"
-        name="keywords"
-        onChange={(e) => onChange({ ...values, keywords: e.target.value })}
-      />
+      <Left>
+        <Select
+          options={orderByOptions}
+          onChange={(value) => onChange({ ...values, orderBy: value })}
+          value={orderBy}
+          iconUrl={OrderBySvg}
+        />
+        <PlatformFilter
+          onChange={(value) => onChange({ ...values, platform: value })}
+          value={platform}
+        />
+        <Select
+          options={rewardOptions}
+          onChange={(value) => onChange({ ...values, reward: value })}
+          value={reward}
+          iconUrl={RewardSvg}
+        />
+        <Select
+          options={projectTypeOptions}
+          onChange={(value) => onChange({ ...values, projectType: value })}
+          value={projectType}
+          iconUrl={ProjectTypeSvg}
+        />
+      </Left>
+
+      <Search onSearch={(value) => onChange({ ...values, keywords: value })} />
     </EventExploreListFilterWrapper>
   );
 }
 const EventExploreListFilterWrapper = styled.div`
   width: 100%;
   display: flex;
+  align-items: center;
   gap: 20px;
+`;
+const Left = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+const Search = styled(SearchInput)`
+  max-width: 400px;
 `;

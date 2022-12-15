@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 16:12:32
+ * @LastEditTime: 2022-12-14 18:32:40
  * @Description: file description
  */
 import styled from 'styled-components';
-import Select from 'react-select';
 import { OrderBy, ProjectType } from '../../services/types/common';
 import { ProjectExploreListParams } from '../../services/types/project';
+import SearchInput from '../common/input/SearchInput';
+import Select from '../common/select/Select';
 
 export type ProjectExploreListFilterValues = Pick<
   ProjectExploreListParams,
@@ -19,16 +20,16 @@ const orderByOptions: Array<{
   label: string;
 }> = [
   {
+    value: OrderBy.FORU,
+    label: 'For U',
+  },
+  {
     value: OrderBy.NEWEST,
     label: 'Newest',
   },
   {
     value: OrderBy.TRENDING,
     label: 'Trending',
-  },
-  {
-    value: OrderBy.FORU,
-    label: 'For U',
   },
 ];
 const typeOptions: Array<{
@@ -73,29 +74,34 @@ export default function ProjectExploreListFilter({
   const { orderBy, type, keywords } = values;
   return (
     <ProjectExploreListFilterWrapper>
-      <Select
-        name="orderBy"
-        options={orderByOptions}
-        onChange={({ value }) => onChange({ ...values, orderBy: value })}
-        value={orderByOptions.find((item) => item.value === orderBy)}
-      />
-      <Select
-        name="type"
-        options={typeOptions}
-        onChange={({ value }) => onChange({ ...values, type: value })}
-        value={typeOptions.find((item) => item.value === type)}
-      />
-      <input
-        type="search"
-        name="keywords"
-        onChange={(e) => onChange({ ...values, keywords: e.target.value })}
-        value={keywords}
-      />
+      <Left>
+        <Select
+          options={orderByOptions}
+          onChange={(value) => onChange({ ...values, orderBy: value })}
+          value={orderBy}
+        />
+        <Select
+          options={typeOptions}
+          onChange={(value) => onChange({ ...values, type: value })}
+          value={type}
+        />
+      </Left>
+      <Search onSearch={(value) => onChange({ ...values, keywords: value })} />
     </ProjectExploreListFilterWrapper>
   );
 }
 const ProjectExploreListFilterWrapper = styled.div`
   width: 100%;
   display: flex;
+  align-items: center;
   gap: 20px;
+`;
+const Left = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
+const Search = styled(SearchInput)`
+  max-width: 400px;
 `;

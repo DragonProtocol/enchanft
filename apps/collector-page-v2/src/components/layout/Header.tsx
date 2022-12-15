@@ -2,20 +2,19 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 18:28:05
+ * @LastEditTime: 2022-12-12 14:57:31
  * @Description: 站点头部
  */
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  LoginButton,
-  useWlUserReact,
-  WlUserModalType,
-} from '@ecnft/wl-user-react';
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 import LogoImg from '../imgs/logo.svg';
+import SubmitNav from './SubmitNav';
+import LoginButton from './LoginButton';
 
 function Header() {
-  const { isLogin, dispatchModal } = useWlUserReact();
+  const { isLogin } = useWlUserReact();
+  const { isAdmin } = usePermissions();
   const navigate = useNavigate();
   return (
     <HeaderWrapper>
@@ -23,15 +22,8 @@ function Header() {
         <HeaderLogo src={LogoImg} alt="" onClick={() => navigate('/')} />
       </HeaderLeft>
       <HeaderRight>
-        <ConnectBtnBox>
-          <LoginButton
-            onClick={() =>
-              isLogin
-                ? navigate('/profile')
-                : dispatchModal({ type: WlUserModalType.LOGIN })
-            }
-          />
-        </ConnectBtnBox>
+        {isLogin && isAdmin && <SubmitNav />}
+        <LoginButton />
       </HeaderRight>
     </HeaderWrapper>
   );
@@ -59,6 +51,5 @@ const HeaderRight = styled.div`
   display: flex;
   justify-content: end;
   align-items: center;
-  gap: 80px;
+  gap: 16px;
 `;
-const ConnectBtnBox = styled.div``;

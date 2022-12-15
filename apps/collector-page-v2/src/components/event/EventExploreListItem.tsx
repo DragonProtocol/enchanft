@@ -2,88 +2,200 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 12:59:23
+ * @LastEditTime: 2022-12-15 18:05:47
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import { Platform } from '../../services/types/common';
 import { EventExploreListItemResponse } from '../../services/types/event';
 import { formatDateTime } from '../../utils/time';
+import { ButtonPrimaryLine } from '../common/button/ButtonBase';
+import CompleteSvg from '../common/icons/svgs/check-circle.svg';
+import LikeSvg from '../common/icons/svgs/like.svg';
+import ShareSvg from '../common/icons/svgs/share.svg';
+import Tag from '../common/tag/Tag';
 
+export type EventExploreListItemData = EventExploreListItemResponse & {
+  isDaylight?: boolean;
+};
 export type EventExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
-  data: EventExploreListItemResponse;
+  data: EventExploreListItemData;
   isActive: boolean;
+  disabledFavor?: boolean;
+  loadingFavor?: boolean;
+  isFavored?: boolean;
+  disabledComplete?: boolean;
+  loadingComplete?: boolean;
+  isCompleted?: boolean;
+  displayHandles?: boolean;
+  onComplete?: () => void;
+  onShare?: () => void;
+  onFavor?: () => void;
+};
+const defaultStyle = {
+  bgc: 'rgba(16, 16, 20, 0.1)',
+  activeColor: '#FFFFFF',
+};
+const styleMaps = {
+  [Platform.GALXE]: {
+    bgc: 'rgba(16, 16, 20, 0.1)',
+    activeColor: '#FFFFFF',
+  },
+  [Platform.NOOX]: {
+    bgc: 'rgba(56, 3, 168, 0.1)',
+    activeColor: '#3803A8',
+  },
+  [Platform.POAP]: {
+    bgc: 'rgba(148, 86, 209, 0.1)',
+    activeColor: '#9456D1',
+  },
+  [Platform.QUEST3]: {
+    bgc: 'rgba(203, 255, 4, 0.1)',
+    activeColor: '#CBFF04',
+  },
+  [Platform.RABBIT_HOLE]: {
+    bgc: 'rgba(160, 247, 189, 0.1)',
+    activeColor: '#A0F7BD',
+  },
+  [Platform.LINK3]: {
+    bgc: 'rgba(28, 91, 245, 0.1)',
+    activeColor: '#1C5BF5',
+  },
 };
 export default function EventExploreListItem({
   data,
   isActive,
+  disabledFavor,
+  loadingFavor,
+  isFavored,
+  disabledComplete,
+  loadingComplete,
+  isCompleted,
+  displayHandles = true,
+  onComplete,
+  onShare,
+  onFavor,
   ...props
 }: EventExploreListItemProps) {
+  let style = defaultStyle;
+  if (isActive && data?.platform?.name) {
+    style = styleMaps[data.platform.name] || defaultStyle;
+  }
+  const { bgc, activeColor } = style;
   return (
-    <EventExploreListItemWrapper {...props}>
-      <LayoutLeft>
-        <EventName>{data.name}</EventName>
-        <LayoutLeftBottom>
-          <EventReward>{data.reward}</EventReward>
-          <EventStartTime>{formatDateTime(data.startTime)}</EventStartTime>
-        </LayoutLeftBottom>
-      </LayoutLeft>
-      {data.project && (
-        <LayoutRight>
-          <EventPlatformIcon src={data.project.image} />
-        </LayoutRight>
+    <EventExploreListItemWrapper
+      bgc={bgc}
+      isActive={isActive}
+      activeColor={activeColor}
+      {...props}
+    >
+      <EventName>{data.name}</EventName>
+      <CenterBox>
+        <EventReward>{data.reward}</EventReward>
+        <EventStartTime>{formatDateTime(data.startTime)}</EventStartTime>
+        {data.platform && <EventPlatformIcon src={data.platform.logo} />}
+      </CenterBox>
+      {displayHandles && (
+        <EventHandles>
+          <EventHandleButtonComplete
+            onClick={onComplete}
+            disabled={disabledComplete}
+          >
+            <EventHandleButtonIcon src={CompleteSvg} />
+            <EventHandleButtonText>
+              {loadingComplete
+                ? 'loading'
+                : isCompleted
+                ? 'Archived'
+                : 'Archive'}
+            </EventHandleButtonText>
+          </EventHandleButtonComplete>
+          <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
+            <EventHandleButtonIcon src={LikeSvg} />
+            <EventHandleButtonText>
+              {loadingFavor ? 'loading' : isFavored ? 'Favored' : 'Favor'}
+            </EventHandleButtonText>
+          </EventHandleButton>
+          <EventHandleButton onClick={onShare}>
+            <EventHandleButtonIcon src={ShareSvg} />
+          </EventHandleButton>
+        </EventHandles>
       )}
     </EventExploreListItemWrapper>
   );
 }
-const EventExploreListItemWrapper = styled.div`
+const EventExploreListItemWrapper = styled.div<{
+  bgc: string;
+  isActive: boolean;
+  activeColor: string;
+}>`
   width: 100%;
-  height: 80px;
-  padding: 20px;
   box-sizing: border-box;
   cursor: pointer;
-  background: rgba(64, 149, 229, 1);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-const LayoutLeft = styled.div`
+
   display: flex;
   flex-direction: column;
-  gap: 8px;
-`;
-const LayoutRight = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  gap: 10px;
+
+  background: ${({ bgc }) => bgc};
+  border-bottom: 1px solid #39424c;
+  ${({ isActive, activeColor }) =>
+    isActive &&
+    `
+    box-shadow: inset -4px 0px 0px ${activeColor};
+  `}
 `;
 const EventName = styled.div`
-  color: rgba(255, 255, 255, 1);
+  font-weight: 500;
   font-size: 16px;
-  text-transform: uppercase;
-  overflow: hidden;
+  line-height: 19px;
+  color: #ffffff;
 `;
-const LayoutLeftBottom = styled.div`
+const CenterBox = styled.div`
+  width: 100%;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 `;
-const EventReward = styled.div`
-  width: 80px;
-  height: 22px;
-  border-radius: 4px;
-  background-color: rgba(89, 27, 183, 1);
-  color: rgba(184, 134, 248, 1);
-  font-size: 14px;
-  text-align: center;
-  line-height: 22px;
-`;
+
+const EventReward = styled(Tag)``;
 const EventStartTime = styled.span`
-  color: rgba(255, 255, 255, 1);
-  font-size: 18px;
+  width: 0;
+  flex: 1;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  color: #718096;
 `;
 const EventPlatformIcon = styled.img`
   width: 30px;
   height: 30px;
   border-radius: 50%;
+`;
+
+const EventHandles = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+const EventHandleButton = styled(ButtonPrimaryLine)`
+  padding: 6px;
+  height: 32px;
+`;
+const EventHandleButtonComplete = styled(EventHandleButton)`
+  flex: 1;
+`;
+const EventHandleButtonIcon = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+const EventHandleButtonText = styled.span`
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  color: #ffffff;
+  white-space: nowrap;
 `;

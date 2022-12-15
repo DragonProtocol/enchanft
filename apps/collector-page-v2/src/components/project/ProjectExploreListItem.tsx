@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 16:56:08
+ * @LastEditTime: 2022-12-15 12:10:52
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -18,7 +18,7 @@ export default function ProjectExploreListItem({
   ...props
 }: ProjectExploreListItemProps) {
   return (
-    <ProjectExploreListItemWrapper {...props}>
+    <ProjectExploreListItemWrapper isActive={isActive} {...props}>
       <LayoutLeft>
         <ProjectAvatar src={data.image} />
       </LayoutLeft>
@@ -28,23 +28,35 @@ export default function ProjectExploreListItem({
           <ProjectName>{data.name}</ProjectName>
         </LayoutRightRow>
         <LayoutRightRow>
-          <LayoutText>{data?.events?.length || 0} events</LayoutText>
+          {data?.events?.length && (
+            <LayoutText>{data.events.length} events</LayoutText>
+          )}
+          {data?.contents?.length && (
+            <LayoutText>{data.contents.length} contents</LayoutText>
+          )}
         </LayoutRightRow>
       </LayoutRight>
     </ProjectExploreListItemWrapper>
   );
 }
-const ProjectExploreListItemWrapper = styled.div`
+const ProjectExploreListItemWrapper = styled.div<{
+  isActive: boolean;
+}>`
   width: 100%;
-  height: 80px;
-  padding: 20px;
-  box-sizing: border-box;
-  cursor: pointer;
-  background: rgba(64, 149, 229, 1);
-  border-radius: 4px;
   display: flex;
   align-items: center;
-  gap: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+  gap: 10px;
+  cursor: pointer;
+
+  background: ${({ isActive }) => (isActive ? '#14171A' : '#1B1E23')};
+  border-bottom: 1px solid #39424c;
+  ${({ isActive }) =>
+    isActive &&
+    `
+    box-shadow: inset -4px 0px 0px #FFFFFF;
+  `}
 `;
 
 const LayoutLeft = styled.div`
@@ -53,28 +65,34 @@ const LayoutLeft = styled.div`
   flex-shrink: 0;
 `;
 const ProjectAvatar = styled.img`
-  width: 52px;
-  height: 52px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
 `;
 const LayoutRight = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 10px;
 `;
 const LayoutRightRow = styled.div`
   width: 100%;
   display: flex;
-  gap: 8px;
+  gap: 20px;
   align-items: center;
-  overflow: hidden;
 `;
 
 const ProjectName = styled.span`
-  color: rgba(255, 255, 255, 1);
-  font-size: 18px;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: #ffffff;
 `;
 const LayoutText = styled.span`
-  color: rgba(255, 255, 255, 1);
-  font-size: 14px;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+  color: #718096;
+  opacity: 0.8;
 `;
