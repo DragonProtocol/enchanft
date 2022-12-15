@@ -40,17 +40,7 @@ export default function ContentShower({
             <span>|</span>
             <span>{dayjs(createdAt).format('MMM DD YYYY')}</span>
           </div>
-          <div>
-            {!uid && <span onClick={voteAction}>👏 Applause</span>}
-            {!uid && (
-              <span onClick={favorsActions}>
-                {favored ? <Heart fill="#718096" /> : <Heart />}
-              </span>
-            )}
-            <span onClick={hiddenAction}>
-              <Eye />
-            </span>
-          </div>
+          <div />
         </div>
       </ContentTitle>
       <ContentBody dangerouslySetInnerHTML={{ __html: content }} />
@@ -59,7 +49,11 @@ export default function ContentShower({
   );
 }
 
-const Shower = styled.div``;
+const Shower = styled.div`
+  height: calc(100% - 60px);
+  overflow: scroll;
+  padding: 20px;
+`;
 
 const ContentTitle = styled.div`
   border-bottom: 1px dotted #39424c;

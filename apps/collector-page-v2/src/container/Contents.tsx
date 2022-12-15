@@ -206,6 +206,14 @@ function Contents() {
                     clickAction={() => {
                       setSelectContent(item);
                     }}
+                    voteAction={vote}
+                    favorsAction={favors}
+                    hiddenAction={() => {
+                      contentHiddenOrNot(
+                        selectContent?.uid || selectContent.id
+                      );
+                      setSelectContent(undefined);
+                    }}
                     {...item}
                   />
                 );
@@ -228,7 +236,31 @@ function Contents() {
           </ListBox>
 
           <ContentBox>
-            {tab === 'original' && (
+            <div className="tabs">
+              <div>
+                <button
+                  type="button"
+                  className={tab === 'original' ? 'active' : ''}
+                  onClick={() => {
+                    setTab('original');
+                    // changeOriginalAction();
+                  }}
+                >
+                  Original
+                </button>
+                <button
+                  className={tab === 'readerView' ? 'active' : ''}
+                  type="button"
+                  onClick={() => {
+                    setTab('readerView');
+                    // changeReaderViewAction();
+                  }}
+                >
+                  ReaderView
+                </button>
+              </div>
+            </div>
+            {tab === 'original' && selectContent && (
               <ExtensionSupport
                 url={selectContent.action?.linkUrl || selectContent.link}
                 title={selectContent.title}
@@ -238,6 +270,7 @@ function Contents() {
               />
             )}
             {tab === 'readerView' &&
+              selectContent &&
               ((daylightContentLoading && <Loading />) ||
                 (selectContent &&
                   ((selectContent.supportReaderView && (
@@ -276,8 +309,6 @@ const Box = styled.div`
   height: 100%;
   box-sizing: border-box;
   padding-top: 24px;
-  /* background: #1b1e23; */
-  /* color: #ffffff; */
   width: 1160px;
   overflow: hidden;
 `;
@@ -318,9 +349,9 @@ const ListBox = styled.div`
 const ContentBox = styled.div`
   height: calc(100%);
   width: calc(100% - 360px);
-  padding: 20px;
+
   overflow-x: hidden;
-  overflow: scroll;
+  overflow: hidden;
 
   & img {
     max-width: 100%;
@@ -328,5 +359,45 @@ const ContentBox = styled.div`
 
   & pre {
     overflow: scroll;
+  }
+
+  & div.tabs {
+    height: 60px;
+    background: #1b1e23;
+    border-bottom: 1px solid #39424c;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    > div {
+      width: 260px;
+      height: 40px;
+      background: #14171a;
+      border-radius: 100px;
+      padding: 4px;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      > button {
+        cursor: pointer;
+        width: 122px;
+        height: 32px;
+        border: none;
+
+        box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
+          0px 0px 4px rgba(20, 23, 26, 0.04);
+        border-radius: 100px;
+        outline: none;
+        background: inherit;
+        color: #a0aec0;
+
+        &.active {
+          color: #ffffff;
+          background: #21262c;
+        }
+      }
+    }
   }
 `;

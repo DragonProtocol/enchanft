@@ -114,7 +114,6 @@ function Home() {
 export default Home;
 const HomeWrapper = styled.div`
   height: 100%;
-  background-color: rgb(17, 18, 20);
   overflow: scroll;
   > div {
     margin: 0 auto;
