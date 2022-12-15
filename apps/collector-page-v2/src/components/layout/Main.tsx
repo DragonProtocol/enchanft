@@ -24,11 +24,14 @@ import {
   fetchCompletedEvents,
   removeAll as removeAllForCompletedEvents,
 } from '../../features/event/userCompletedEvents';
+import useU3Extension from '../../hooks/useU3Extension';
 
 function Main() {
   const dispatch = useAppDispatch();
   const { isLogin } = useWlUserReact();
   const { isAdmin } = usePermissions();
+  const { u3ExtensionInstalled } = useU3Extension();
+  localStorage.setItem('u3ExtensionInstalled', u3ExtensionInstalled.toString());
   // 获取用户相关信息
   useEffect(() => {
     if (!isLogin) {
