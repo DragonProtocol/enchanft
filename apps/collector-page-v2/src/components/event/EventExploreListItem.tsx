@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 15:01:58
+ * @LastEditTime: 2022-12-15 18:05:47
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -79,7 +79,7 @@ export default function EventExploreListItem({
 }: EventExploreListItemProps) {
   let style = defaultStyle;
   if (isActive && data?.platform?.name) {
-    style = styleMaps[data.platform.name];
+    style = styleMaps[data.platform.name] || defaultStyle;
   }
   const { bgc, activeColor } = style;
   return (
