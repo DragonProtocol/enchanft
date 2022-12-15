@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 09:42:20
+ * @LastEditTime: 2022-12-14 17:01:53
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -79,8 +79,8 @@ export default function EventDetailCard({
                 {loadingComplete
                   ? 'loading'
                   : isCompleted
-                  ? 'Completed'
-                  : 'Mark as complate'}
+                  ? 'Archived'
+                  : 'Archive'}
               </EventHandleButtonText>
             </EventHandleButtonComplete>
           )}

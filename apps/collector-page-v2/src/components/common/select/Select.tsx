@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 14:08:50
+ * @LastEditTime: 2022-12-14 17:31:16
  * @Description: file description
  */
 import { useEffect, useMemo, useState } from 'react';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import ChevronDownSvg from '../icons/svgs/chevron-down.svg';
 
-type ValueType = string | number;
+type ValueType = any;
 export type SelectOption = {
   value: ValueType;
   label: string;
@@ -144,8 +144,9 @@ const SelectButtonChevronIcon = styled.img`
 const OptionsBox = styled.div`
   position: absolute;
   left: 0;
-  bottom: -10px;
-  transform: translateY(100%);
+  top: 100%;
+  margin-bottom: 10px;
+  margin-top: 10px;
 
   display: flex;
   flex-direction: column;

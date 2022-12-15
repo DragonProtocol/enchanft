@@ -257,6 +257,7 @@ const CreateBox = styled(CardBase)`
     }
     select {
       padding-left: 5px;
+      margin-top: 10px;
       appearance: none;
       background-image: url(${CrownImg});
       background-repeat: no-repeat;

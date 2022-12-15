@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import Badge from '../contents/Badge';
+import { ContentListItem } from '../contents/ContentList';
 
 import Title from './Title';
 
@@ -7,7 +8,7 @@ export default function RecommendContent({
   data,
   viewAllAction,
 }: {
-  data: any[];
+  data: ContentListItem[];
   viewAllAction: () => void;
 }) {
   return (
@@ -17,9 +18,9 @@ export default function RecommendContent({
         {data.map((item) => {
           return (
             <Card
-              key={item.uid || item.title}
+              key={item.id || item.title}
               {...item}
-              author={item.requirements[0]?.community?.title || ''}
+              author={item.author || ''}
             />
           );
         })}

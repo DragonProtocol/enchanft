@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 13:46:41
+ * @LastEditTime: 2022-12-14 18:32:23
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -21,6 +21,10 @@ export type EventExploreListFilterValues = Pick<
 >;
 const orderByOptions: Array<SelectOption> = [
   {
+    value: OrderBy.FORU,
+    label: 'For U',
+  },
+  {
     value: OrderBy.NEWEST,
     label: 'Newest',
   },
@@ -31,10 +35,6 @@ const orderByOptions: Array<SelectOption> = [
   {
     value: OrderBy.TRENDING,
     label: 'Trending',
-  },
-  {
-    value: OrderBy.FORU,
-    label: 'For U',
   },
 ];
 const rewardOptions: Array<SelectOption> = [
@@ -82,13 +82,14 @@ const projectTypeOptions: Array<SelectOption> = [
   },
 ];
 
-export const defaultEventExploreListFilterValues = {
-  orderBy: orderByOptions[0].value,
-  platform: '',
-  reward: rewardOptions[0].value,
-  projectType: projectTypeOptions[0].value,
-  keywords: '',
-};
+export const defaultEventExploreListFilterValues: EventExploreListFilterValues =
+  {
+    orderBy: orderByOptions[0].value,
+    platform: '',
+    reward: rewardOptions[0].value,
+    projectType: projectTypeOptions[0].value,
+    keywords: '',
+  };
 type EventExploreListFilterProps = {
   values: EventExploreListFilterValues;
   onChange: (values: EventExploreListFilterValues) => void;
