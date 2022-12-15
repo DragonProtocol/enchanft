@@ -265,13 +265,19 @@ function Contents() {
                 url={selectContent.action?.linkUrl || selectContent.link}
                 title={selectContent.title}
                 img={
-                  selectContent.imageUrl || selectContent.uniProjects[0]?.image
+                  selectContent.imageUrl ||
+                  (selectContent.uniProjects &&
+                    selectContent.uniProjects[0]?.image)
                 }
               />
             )}
             {tab === 'readerView' &&
               selectContent &&
-              ((daylightContentLoading && <Loading />) ||
+              ((daylightContentLoading && (
+                <LoadingBox>
+                  <Loading />
+                </LoadingBox>
+              )) ||
                 (selectContent &&
                   ((selectContent.supportReaderView && (
                     <ContentShower
@@ -292,7 +298,8 @@ function Contents() {
                       title={selectContent.title}
                       img={
                         selectContent.imageUrl ||
-                        selectContent.uniProjects[0]?.image
+                        (selectContent.uniProjects &&
+                          selectContent.uniProjects[0]?.image)
                       }
                     />
                   ))))}
@@ -400,4 +407,11 @@ const ContentBox = styled.div`
       }
     }
   }
+`;
+
+const LoadingBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
 `;
