@@ -25,10 +25,10 @@ export default function ListItem({
   createdAt: number;
   isActive: boolean;
   clickAction: () => void;
-  voteAction: () => void;
-  favorsAction: () => void;
-  favored: boolean;
-  hiddenAction: () => void;
+  voteAction?: () => void;
+  favorsAction?: () => void;
+  favored?: boolean;
+  hiddenAction?: () => void;
 }) {
   return (
     <ContentItem
@@ -47,17 +47,17 @@ export default function ListItem({
       <ContentItemFooter>
         <span
           className={isActive ? 'vote' : 'vote active'}
-          onClick={voteAction}
+          onClick={() => voteAction && voteAction()}
         >
           👏 &nbsp;{upVoteNum}
         </span>
         {isActive && (
-          <span onClick={favorsAction}>
+          <span onClick={() => favorsAction && favorsAction()}>
             {favored ? <Heart fill="#718096" /> : <Heart />}
           </span>
         )}
         {isActive && (
-          <span onClick={hiddenAction}>
+          <span onClick={() => hiddenAction && hiddenAction}>
             <EyeClose />
           </span>
         )}
