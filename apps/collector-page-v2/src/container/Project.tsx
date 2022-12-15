@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 11:43:00
+ * @LastEditTime: 2022-12-15 17:25:13
  * @Description: 首页任务看板
  */
 import { useCallback, useMemo } from 'react';
@@ -16,6 +16,8 @@ import {
 import { completeEvent } from '../features/event/eventHandles';
 import { ProjectExploreListItemResponse } from '../services/types/project';
 import useUserFavorites from '../hooks/useUserFavorites';
+import { tweetShare } from '../utils/twitter';
+import { getProjectShareUrl } from '../utils/share';
 
 export type ProjectContainerProps = {
   data: ProjectExploreListItemResponse;
@@ -30,7 +32,9 @@ function Project({ data }: ProjectContainerProps) {
   const completedEventIds = useAppSelector(selecteAllCompletedEvents).map(
     (item) => item.id
   );
-  const onShare = () => {};
+  const onShare = () => {
+    tweetShare(data.name, getProjectShareUrl(data.id));
+  };
   const onFavor = useCallback(
     () => dispatch(favorProject(data)),
     [dispatch, data]
