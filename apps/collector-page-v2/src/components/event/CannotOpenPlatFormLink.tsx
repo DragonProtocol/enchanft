@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 19:59:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 10:19:57
+ * @LastEditTime: 2022-12-15 15:01:46
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -12,16 +12,18 @@ import ChromeSvg from '../common/icons/svgs/chrome.svg';
 export type CannotOpenPlatFormLinkProps = StyledComponentPropsWithRef<'div'> & {
   iconUrl: string;
   linkUrl: string;
+  title: string;
 };
 export default function CannotOpenPlatFormLink({
   iconUrl,
   linkUrl,
+  title,
   ...props
 }: CannotOpenPlatFormLinkProps) {
   return (
     <CannotOpenPlatFormLinkWrapper {...props}>
       <Icon src={iconUrl} />
-      <Title>Down to earth: potentials of DID </Title>
+      <Title>{title} </Title>
       <Description>
         Sorry, this website has disabled embedding. Please try our Chrome
         extension for free toss the content displayed here.
@@ -41,6 +43,8 @@ export default function CannotOpenPlatFormLink({
 const CannotOpenPlatFormLinkWrapper = styled.div`
   width: 100%;
   height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
   background: #1b1e23;
   border-radius: 20px;
   display: flex;

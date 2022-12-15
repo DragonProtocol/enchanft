@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-11 16:53:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-09 12:04:07
+ * @LastEditTime: 2022-12-15 14:21:43
  * @Description: file description
  */
 export const TWITTER_URI = 'https://twitter.com';
@@ -24,6 +24,7 @@ export const getTwitterRetweetLink = (tweetId: string) => {
   return `${TWITTER_URI_RETWEET}?tweet_id=${tweetId}`;
 };
 
-export const tweetShare = (content, url) => {
-  window.open(`${TWITTER_URI_TWEET}?text=${content}&url=${url}`);
+export const tweetShare = (content: string, url?: string) => {
+  const link = url ?? window.location.href;
+  window.open(`${TWITTER_URI_TWEET}?text=${content}&url=${link}`);
 };

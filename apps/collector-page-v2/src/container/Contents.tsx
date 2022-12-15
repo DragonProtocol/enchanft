@@ -184,7 +184,13 @@ function Contents() {
           setTab('readerView');
         }}
       />
-      {(loading && <Loading />) || (
+      {(loading && (
+        <ContentsWrapper>
+          <div className="loading">
+            <Loading />
+          </div>
+        </ContentsWrapper>
+      )) || (
         <ContentsWrapper>
           <ListBox>
             {contents
@@ -265,13 +271,19 @@ function Contents() {
                 url={selectContent.action?.linkUrl || selectContent.link}
                 title={selectContent.title}
                 img={
-                  selectContent.imageUrl || selectContent.uniProjects[0]?.image
+                  selectContent.imageUrl ||
+                  (selectContent.uniProjects &&
+                    selectContent.uniProjects[0]?.image)
                 }
               />
             )}
             {tab === 'readerView' &&
               selectContent &&
-              ((daylightContentLoading && <Loading />) ||
+              ((daylightContentLoading && (
+                <LoadingBox>
+                  <Loading />
+                </LoadingBox>
+              )) ||
                 (selectContent &&
                   ((selectContent.supportReaderView && (
                     <ContentShower
@@ -292,7 +304,8 @@ function Contents() {
                       title={selectContent.title}
                       img={
                         selectContent.imageUrl ||
-                        selectContent.uniProjects[0]?.image
+                        (selectContent.uniProjects &&
+                          selectContent.uniProjects[0]?.image)
                       }
                     />
                   ))))}
@@ -306,7 +319,7 @@ export default Contents;
 
 const Box = styled.div`
   margin: 0 auto;
-  height: 100%;
+  height: calc(100vh - 72px);
   box-sizing: border-box;
   padding-top: 24px;
   width: 1160px;
@@ -324,6 +337,13 @@ const ContentsWrapper = styled.div`
   overflow: hidden;
   display: flex;
   margin-top: 24px;
+
+  & .loading {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 const ListBox = styled.div`
   min-width: 360px;
@@ -400,4 +420,11 @@ const ContentBox = styled.div`
       }
     }
   }
+`;
+
+const LoadingBox = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 40px;
 `;

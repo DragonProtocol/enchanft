@@ -53,6 +53,7 @@ const Box = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px;
+  box-sizing: border-box;
 
   & img {
     width: 120px;

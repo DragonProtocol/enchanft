@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-07 17:32:53
+ * @LastEditTime: 2022-12-15 14:57:21
  * @Description: 系统相关常量定义
  */
 export const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
@@ -25,3 +25,5 @@ export const WL_APP_VERSION = process.env.REACT_APP_VERSION;
 export const CHROME_EXTENSION_URL = process.env.REACT_APP_CHROME_EXTENSION_URL;
 
 export const EVENT_IMAGE_SIZE_LIMIT = 200 * 1024;
+
+export const US_HOST_URI = 'https://u3.xyz/';

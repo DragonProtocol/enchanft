@@ -29,7 +29,7 @@ import { ProjectExploreListItemResponse } from '../services/types/project';
 
 function Home() {
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [platforms, setPlatforms] = useState<Array<PlatformData>>([]);
   const [trendingProjects, setTrendingProjects] = useState<
     Array<ProjectExploreListItemResponse>
