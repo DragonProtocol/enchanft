@@ -33,7 +33,7 @@ export default function Carousel() {
         <h2>Your Content,</h2>
         <h2> Your Web3.</h2>
         <div>
-          Hub For Your Fragmented Self Sovereign Data and
+          Hub For Your Self Sovereign Data and
           <TextTransition springConfig={presets.wobbly}>
             {TEXTS[index % TEXTS.length]}
           </TextTransition>

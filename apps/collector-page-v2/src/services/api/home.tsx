@@ -9,25 +9,35 @@ export function getPlatforms(): RequestPromise<PlatformDataResponse> {
   });
 }
 
-// TODO remove default wallet
-export function getRecommendedContents(
-  wallet = '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4'
-) {
-  return axios.get(
-    `https://api.daylight.xyz/v1/wallets/${wallet}/abilities?type=result&type=article&sortDirection=desc&sort=magic&limit=4`
-  );
+export function getTrendingContents() {
+  return request({
+    url: `/contents/searching`,
+    params: {
+      pageSize: 4,
+      pageNumber: 0,
+      keywords: '',
+      type: '',
+      orderBy: 'TRENDING',
+    },
+    method: 'get',
+  });
 }
 
-// TODO remove default wallet
-export function getRecommendedEvents(
-  wallet = '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4'
-) {
-  return axios.get(
-    `https://api.daylight.xyz/v1/wallets/${wallet}/abilities?type=access&type=mint&type=airdrop&type=claim&type=vote&type=misc&sortDirection=desc&sort=magic&limit=4`
-  );
+export function getTrendingEvents() {
+  return request({
+    url: `/events/searching`,
+    method: 'get',
+    params: {
+      pageSize: 4,
+      pageNumber: 0,
+      keywords: '',
+      type: '',
+      orderBy: 'TRENDING',
+    },
+  });
 }
 
-export function getTrendingContents(): RequestPromise<ProjectExploreListResponse> {
+export function getTrendingProjects(): RequestPromise<ProjectExploreListResponse> {
   return request({
     url: `/uniProjects/searching`,
     params: {

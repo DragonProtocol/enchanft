@@ -18,8 +18,8 @@ import RecommendContent from '../components/home/RecommendContent';
 import RecommendEvents from '../components/home/RecommendEvents';
 import {
   getPlatforms,
-  getRecommendedContents,
-  getRecommendedEvents,
+  getTrendingProjects,
+  getTrendingEvents,
   getTrendingContents,
 } from '../services/api/home';
 import { ContentListItem } from '../services/types/contents';
@@ -28,8 +28,6 @@ import { PlatformData } from '../services/types/home';
 import { ProjectExploreListItemResponse } from '../services/types/project';
 
 function Home() {
-  const { user, getBindAccount } = useWlUserReact();
-  const evmAccount = getBindAccount(AccountType.EVM);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [platforms, setPlatforms] = useState<Array<PlatformData>>([]);
@@ -39,17 +37,17 @@ function Home() {
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
   const [events, setEvents] = useState<Array<EventExploreListItemResponse>>([]);
 
-  const loadTrending = useCallback(async () => {
-    const { data } = await getTrendingContents();
+  const loadProjects = useCallback(async () => {
+    const { data } = await getTrendingProjects();
     setTrendingProjects(data.data);
   }, []);
-  const loadContents = useCallback(async (wallet?: string) => {
-    const { data } = await getRecommendedContents(wallet);
-    setContents(data.abilities);
+  const loadContents = useCallback(async () => {
+    const { data } = await getTrendingContents();
+    setContents(data.data);
   }, []);
-  const loadEvents = useCallback(async (wallet?: string) => {
-    const { data } = await getRecommendedEvents(wallet);
-    setEvents(data.abilities);
+  const loadEvents = useCallback(async () => {
+    const { data } = await getTrendingEvents();
+    setEvents(data.data);
   }, []);
   const loadPlatforms = useCallback(async () => {
     const { data } = await getPlatforms();
@@ -60,13 +58,13 @@ function Home() {
     setLoading(true);
     Promise.all([
       loadPlatforms(),
-      loadEvents(evmAccount?.thirdpartyId),
-      loadContents(evmAccount?.thirdpartyId),
-      loadTrending(),
+      loadEvents(),
+      loadContents(),
+      loadProjects(),
     ]).finally(() => {
       setLoading(false);
     });
-  }, [evmAccount]);
+  }, []);
 
   if (loading)
     return (
