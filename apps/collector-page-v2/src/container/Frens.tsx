@@ -5,14 +5,25 @@
  * @LastEditTime: 2022-11-30 14:58:27
  * @Description: 首页任务看板
  */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+  useRef,
+} from 'react';
 import styled from 'styled-components';
+import { debounce } from 'lodash';
+
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { TagType } from '../services/types/common';
+import { AsyncRequestStatus } from '../services/types';
 
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import SearchInput from '../components/common/input/SearchInput';
+import Loading from '../components/common/loading/Loading';
+
 import Select, { SelectOption } from '../components/common/select/Select';
 import ProjectTypeSvg from '../components/common/icons/svgs/grid.svg';
 
@@ -286,18 +297,53 @@ function Frens() {
   );
   const [filterTag, setFilterTag] = useState('');
   const dispatch = useAppDispatch();
+  const feedRef = useRef(null);
 
-  const { feed } = useAppSelector(selectFrensHandlesState);
+  const { feed, status } = useAppSelector(selectFrensHandlesState);
 
-  const onComplete = useCallback(() => {
-    dispatch(getFeed({ id: '111' }));
-  }, [dispatch]);
+  const loading = useMemo(
+    () => status === AsyncRequestStatus.PENDING,
+    [status]
+  );
 
   useEffect(() => {
-    // console.log('---------->');
-    dispatch(getFeed({ id: '111' }));
+    feedRef.current = feed;
+  }, [feed]);
+
+  const fetchData = useCallback(
+    ({
+      category,
+      cursor,
+      address,
+      reset = false,
+    }: {
+      category?: string;
+      cursor?: string;
+      address?: string;
+      reset?: boolean;
+    }) => {
+      dispatch(getFeed({ category, cursor, address, reset }));
+    },
+    [dispatch]
+  );
+
+  useEffect(() => {
+    fetchData({ reset: true });
   }, []);
-  console.log(feed, '---------->');
+
+  useEffect(() => {
+    window.onscroll = debounce(() => {
+      if (!loading) {
+        fetchData({
+          cursor: feedRef?.current?.cursor,
+        });
+      }
+    }, 100);
+
+    return () => {
+      window.onscroll = null;
+    };
+  }, []);
 
   return (
     <FrensWrapper>
@@ -344,6 +390,7 @@ function Frens() {
             </FrensFeedCard>
           );
         })}
+        <Loading />
       </FrensFeed>
       <FrensRight>
         <SearchInput onSearch={() => {}} placeholder="Search Address or ENS" />
@@ -389,6 +436,11 @@ const FrensWrapper = styled.div`
     & > div {
       justify-content: space-between;
     }
+  }
+
+  .rubiks-loader {
+    margin: 0 auto;
+    padding: 30px 0;
   }
 `;
 const FrensFeed = styled.div`
@@ -503,7 +555,10 @@ const FrensFeedCard = styled.div`
   }
 
   .first-row {
-    white-space: pre;
+    /* white-space: pre; */
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 20px;
   }
 
   .nft-box {

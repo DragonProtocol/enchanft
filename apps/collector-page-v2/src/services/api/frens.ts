@@ -7,8 +7,10 @@ import {
 } from '../types/contents';
 import request, { RequestPromise } from './request';
 
-export function getFeed(): RequestPromise<ContentsResponse> {
+export function getFeed(params): RequestPromise<ContentsResponse> {
   return request({
     url: `/frens/feed`,
+    method: 'get',
+    params,
   });
 }

@@ -20,15 +20,17 @@ import { AsyncRequestStatus } from '../../services/types';
 import type { RootState } from '../../store/store';
 import { getFeed as getFeedApi } from '../../services/api/frens';
 
-// 统一管理操作
-export type FrensHandle<T> = {
-  params: T | null;
-  status: AsyncRequestStatus;
-  errorMsg: string;
-};
+// // 统一管理操作
+// export type FrensHandle<T> = {
+//   params: T | null;
+//   status: AsyncRequestStatus;
+//   errorMsg: string;
+// };
 
 export type FrensHandlesState = {
   feed: any;
+  status: AsyncRequestStatus;
+  errorMsg: string;
 };
 
 // init data
@@ -38,15 +40,30 @@ const initFrensHandlesState: FrensHandlesState = {
     cursor: null,
     result: null,
   },
+  status: AsyncRequestStatus.IDLE,
+  errorMsg: '',
 };
 
 // favor frens
 export const getFeed = createAsyncThunk(
   'user/frensHandles/favorFrens',
-  async (params: any, { dispatch }) => {
-    const resp = await getFeedApi();
+  async (
+    {
+      category,
+      cursor,
+      address,
+      reset = false,
+    }: {
+      category?: string;
+      cursor?: string;
+      address?: string;
+      reset?: boolean;
+    },
+    { dispatch }
+  ) => {
+    const resp = await getFeedApi({ category, cursor, address });
     if (resp.data.code === 0) {
-      dispatch(getFeedSuccess(resp?.data?.data));
+      dispatch(getFeedSuccess({ data: resp?.data?.data, reset }));
     } else {
       throw new Error(resp.data.msg);
     }
@@ -58,7 +75,17 @@ export const frensHandlesSlice = createSlice({
   initialState: initFrensHandlesState,
   reducers: {
     getFeedSuccess: (state, action) => {
-      state.feed = action?.payload?.data;
+      let result = action?.payload?.data?.data?.result || [];
+      if (!action?.payload?.reset) {
+        result = [...state.feed.result, ...result];
+      }
+
+      state.feed = {
+        cursor: action?.payload?.data?.data?.cursor,
+        result,
+        total: action?.payload?.data?.data?.total,
+      };
+      // state.feed = action?.payload?.data?.data;
 
       // favorFrensQueueEntity.addOne(state.favorFrensQueue, action.payload);
     },
@@ -67,20 +94,20 @@ export const frensHandlesSlice = createSlice({
     builder
       .addCase(getFeed.pending, (state, action) => {
         // state.feed.total = action.meta.arg;
-        state.feed.status = AsyncRequestStatus.PENDING;
-        state.feed.errorMsg = '';
+        state.status = AsyncRequestStatus.PENDING;
+        state.errorMsg = '';
       })
       .addCase(getFeed.fulfilled, (state, action) => {
         // console.log('---------------->', action);
         // state.feed.total = action;
-        state.feed.status = AsyncRequestStatus.FULFILLED;
-        state.feed.errorMsg = '';
+        state.status = AsyncRequestStatus.FULFILLED;
+        state.errorMsg = '';
         toast.success('Ok.');
       })
       .addCase(getFeed.rejected, (state, action) => {
         // state.feed = null;
-        state.feed.status = AsyncRequestStatus.REJECTED;
-        state.feed.errorMsg = action.error.message || '';
+        state.status = AsyncRequestStatus.REJECTED;
+        state.errorMsg = action.error.message || '';
         toast.error(action.error.message);
       });
   },
