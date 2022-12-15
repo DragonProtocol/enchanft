@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 14:36:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-12 14:58:44
+ * @LastEditTime: 2022-12-15 14:24:38
  * @Description: file description
  */
 import {
@@ -27,6 +27,8 @@ export default function LoginButton() {
           dispatchModal({
             type: WlUserModalType.LOGIN,
           });
+        } else {
+          dispatchAction({ type: WlUserActionType.LOGOUT });
         }
       }}
     >
@@ -37,12 +39,7 @@ export default function LoginButton() {
             <LoginButtonName className="wl-user-button_login-name">
               {nameStr}
             </LoginButtonName>
-            <LogoutIconButton
-              src={LogoutSvg}
-              onClick={() => {
-                dispatchAction({ type: WlUserActionType.LOGOUT });
-              }}
-            />
+            <LogoutIconButton src={LogoutSvg} />
           </>
         ) : (
           <LoginButtonName className="wl-user-button_login-name">

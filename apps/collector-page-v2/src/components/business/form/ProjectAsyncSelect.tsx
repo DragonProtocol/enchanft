@@ -2,15 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 12:43:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 12:50:10
+ * @LastEditTime: 2022-12-14 17:39:38
  * @Description: file description
  */
+import { StyledComponentPropsWithRef } from 'styled-components';
 import { fetchListForProjectExplore } from '../../../services/api/project';
 import { OrderBy } from '../../../services/types/common';
 import AsyncSelect from '../../common/select/AsyncSelect';
 
 type ValueType = string | number;
-type Props = {
+type Props = StyledComponentPropsWithRef<'div'> & {
   value: ValueType;
   onChange: (value: ValueType) => void;
 };

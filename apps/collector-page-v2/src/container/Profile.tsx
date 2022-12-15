@@ -16,6 +16,7 @@ import OnChainInterest from '../components/profile/OnChainInterest';
 import OffChainInterest from '../components/profile/OffChainInterest';
 import { fetchU3Profile } from '../services/api/profile';
 import { ProfileEntity } from '../services/types/profile';
+import Loading from '../components/common/loading/Loading';
 
 function Profile() {
   const { user } = useWlUserReact();
@@ -41,7 +42,13 @@ function Profile() {
   }, [fetchData]);
 
   if (loading) {
-    return <div>Loading</div>;
+    return (
+      <ProfileWrapper>
+        <div className="loading">
+          <Loading />
+        </div>
+      </ProfileWrapper>
+    );
   }
 
   return (
@@ -109,8 +116,11 @@ function Profile() {
 export default Profile;
 const ProfileWrapper = styled.div`
   height: 100%;
-  background-color: rgb(17, 18, 20);
   overflow: scroll;
+  > div.loading {
+    display: flex;
+    justify-content: center;
+  }
   > div {
     margin: 0 auto;
     width: 1160px;

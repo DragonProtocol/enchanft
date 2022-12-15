@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-09 17:23:08
+ * @LastEditTime: 2022-12-15 14:40:58
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -31,6 +31,7 @@ export type EventExploreListParams = {
   orderBy?: OrderBy | '';
   pageSize?: number;
   pageNumber?: number;
+  eventId?: number;
 };
 
 export type EventExploreListItemResponse = {
@@ -51,6 +52,7 @@ export type EventExploreListItemResponse = {
     image: string;
   };
   platform: {
+    name: string;
     logo: string;
   };
   supportIframe: boolean;

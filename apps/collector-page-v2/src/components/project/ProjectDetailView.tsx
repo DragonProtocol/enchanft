@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 09:42:45
+ * @LastEditTime: 2022-12-15 15:02:48
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -10,15 +10,15 @@ import type {
   ProjectExploreListItemEventResponse,
   ProjectExploreListItemResponse,
 } from '../../services/types/project';
-import { getContentWithJsonValue } from '../../utils/content';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import ContentShower from '../contents/ContentShower';
-import EventDetailView from '../event/EventDetailView';
+import EventLinkCard from '../event/EventLinkCard';
 import LikeSvg from '../common/icons/svgs/like.svg';
 import ShareSvg from '../common/icons/svgs/share.svg';
 import TwitterSvg from '../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../common/icons/svgs/discord.svg';
 import CardBase from '../common/card/CardBase';
+import ContentLinkCard from '../contents/ContentLinkCard';
 
 export type ProjectDetailCardProps = {
   data: ProjectExploreListItemResponse;
@@ -58,7 +58,7 @@ export default function ProjectDetailCard({
               {displayFavor && (
                 <ProjectHandleButton onClick={onFavor} disabled={disabledFavor}>
                   <ProjectHandleButtonIcon src={LikeSvg} />
-                  {/* {loadingFavor ? 'loading' : isFavored ? 'Favored' : 'Favor'} */}
+                  {loadingFavor ? 'loading' : isFavored ? 'Favored' : 'Favor'}
                 </ProjectHandleButton>
               )}
               {displayShare && (
@@ -84,28 +84,21 @@ export default function ProjectDetailCard({
       <LayoutMain>
         {data.events &&
           data.events.map((item) => (
-            <CardBox key={item.id}>
-              <EventCard
-                data={item}
-                onComplete={() => onEventComplete && onEventComplete(item)}
-                displayFavor={false}
-                displayShare={false}
-                disabledComplete={completedEventIds.includes(item.id)}
-                isCompleted={completedEventIds.includes(item.id)}
-              />
-            </CardBox>
+            <EventLinkCard
+              key={item.id}
+              data={item}
+              onComplete={() => onEventComplete && onEventComplete(item)}
+              disabledComplete={completedEventIds.includes(item.id)}
+              isCompleted={completedEventIds.includes(item.id)}
+            />
           ))}
         {data.contents &&
           data.contents.map((item) => (
-            <CardBox key={item.id}>
-              <ContentCard
-                {...item}
-                content={getContentWithJsonValue(item.value)}
-                voteAction={() => alert('在此页面，此按钮后期会隐藏')}
-                favorsActions={() => alert('在此页面，此按钮后期会隐藏')}
-                hiddenAction={() => alert('在此页面，此按钮后期会隐藏')}
-              />
-            </CardBox>
+            <ContentLinkCard
+              key={item.id}
+              data={item}
+              onVote={() => alert('TODO')}
+            />
           ))}
       </LayoutMain>
     </ProjectDetailCardWrapper>
@@ -161,7 +154,6 @@ const LayoutHeaderHandles = styled.div`
   align-items: flex-end;
 `;
 const ProjectHandleButton = styled(ButtonPrimaryLine)`
-  width: 44px;
   height: 32px;
   padding: 6px 12px;
 `;
@@ -206,7 +198,7 @@ const LayoutMain = styled.div`
 const CardBox = styled(CardBase)`
   background: #14171a;
 `;
-const EventCard = styled(EventDetailView)`
+const EventCard = styled(EventLinkCard)`
   /* min-height: 50vh; */
 `;
 const ContentCard = styled(ContentShower)`

@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 13:48:38
+ * @LastEditTime: 2022-12-15 14:59:07
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -180,175 +180,172 @@ function EventCreate() {
   }, [formik.values, projectSelectList]);
 
   return (
-    <ScrollBox>
-      <EventCreateWrapper>
-        <EventCreateFormCard>
-          <FormField>
-            <FormLabel htmlFor="name">Title</FormLabel>
-            <InputBase
-              onChange={(e) => formik.setFieldValue('name', e.target.value)}
-              value={formik.values.name}
-            />
-            {renderFieldError('name')}
-          </FormField>
+    <EventCreateWrapper>
+      <EventCreateFormCard>
+        <FormField>
+          <FormLabel htmlFor="name">Title</FormLabel>
+          <InputBase
+            onChange={(e) => formik.setFieldValue('name', e.target.value)}
+            value={formik.values.name}
+          />
+          {renderFieldError('name')}
+        </FormField>
 
-          <FormField>
-            <FormLabel htmlFor="description">Description</FormLabel>
-            <InputBase
+        <FormField>
+          <FormLabel htmlFor="description">Description</FormLabel>
+          <InputBase
+            onChange={(e) =>
+              formik.setFieldValue('description', e.target.value)
+            }
+            value={formik.values.description}
+          />
+          {renderFieldError('description')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="image">Image</FormLabel>
+          <UploadImage
+            url={formik.values.image}
+            onSuccess={(url) => formik.setFieldValue('image', url)}
+          />
+          {renderFieldError('image')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="platform">Platform</FormLabel>
+          <PlatformSelect
+            onChange={(value) => formik.setFieldValue('platform', value)}
+            value={formik.values.platform}
+          />
+          {renderFieldError('platform')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="project">Project</FormLabel>
+          <ProjectAsyncSelect
+            value={formik.values.project}
+            onChange={(value) => formik.setFieldValue('project', value)}
+          />
+          {renderFieldError('project')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="link">Original URL</FormLabel>
+          <InputBase
+            onChange={(e) => formik.setFieldValue('link', e.target.value)}
+            value={formik.values.link}
+          />
+          {renderFieldError('link')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="chain">Blockchain</FormLabel>
+          <Select
+            options={chainOptions}
+            onChange={(value) => formik.setFieldValue('chain', value)}
+            value={formik.values.chain}
+          />
+          {renderFieldError('chain')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="reward">Reward</FormLabel>
+          <Select
+            id="reward"
+            options={rewardOptions}
+            onChange={(value) => formik.setFieldValue('reward', value)}
+            value={formik.values.reward}
+          />
+          {renderFieldError('reward')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="startTime">Time</FormLabel>
+          <TimeRow>
+            <TimePicker
+              placeholder="Start Time"
               onChange={(e) =>
-                formik.setFieldValue('description', e.target.value)
+                formik.setFieldValue(
+                  'startTime',
+                  new Date(e.target.value).getTime()
+                )
               }
-              value={formik.values.description}
-            />
-            {renderFieldError('description')}
-          </FormField>
-
-          <FormField>
-            <FormLabel htmlFor="image">Image</FormLabel>
-            <UploadImage
-              url={formik.values.image}
-              onSuccess={(url) => formik.setFieldValue('image', url)}
-            />
-            {renderFieldError('image')}
-          </FormField>
-
-          <FormField>
-            <FormLabel htmlFor="platform">Platform</FormLabel>
-            <PlatformSelect
-              onChange={(value) => formik.setFieldValue('platform', value)}
-              value={formik.values.platform}
-            />
-            {renderFieldError('platform')}
-          </FormField>
-
-          <FormField>
-            <FormLabel htmlFor="project">Project</FormLabel>
-            <ProjectAsyncSelect
-              value={formik.values.project}
-              onChange={(value) => formik.setFieldValue('project', value)}
-            />
-            {renderFieldError('project')}
-          </FormField>
-
-          <FormField>
-            <FormLabel htmlFor="link">Original URL</FormLabel>
-            <InputBase
-              onChange={(e) => formik.setFieldValue('link', e.target.value)}
-              value={formik.values.link}
-            />
-            {renderFieldError('link')}
-          </FormField>
-
-          <FormField>
-            <FormLabel htmlFor="chain">Blockchain</FormLabel>
-            <Select
-              options={chainOptions}
-              onChange={(value) => formik.setFieldValue('chain', value)}
-              value={formik.values.chain}
-            />
-            {renderFieldError('chain')}
-          </FormField>
-
-          <FormField>
-            <FormLabel htmlFor="reward">Reward</FormLabel>
-            <Select
-              id="reward"
-              options={rewardOptions}
-              onChange={(value) => formik.setFieldValue('reward', value)}
-              value={formik.values.reward}
-            />
-            {renderFieldError('reward')}
-          </FormField>
-
-          <FormField>
-            <FormLabel htmlFor="startTime">Time</FormLabel>
-            <TimeRow>
-              <TimePicker
-                placeholder="Start Time"
-                onChange={(e) =>
-                  formik.setFieldValue(
-                    'startTime',
-                    new Date(e.target.value).getTime()
-                  )
-                }
-                value={dayjs(formik.values.startTime).format(
-                  'YYYY-MM-DDTHH:mm:ss'
-                )}
-              />
-              {renderFieldError('startTime')}
-              {!noEndTime && (
-                <>
-                  -
-                  <TimePicker
-                    placeholder="End Time"
-                    onChange={(e) =>
-                      formik.setFieldValue(
-                        'endTime',
-                        new Date(e.target.value).getTime()
-                      )
-                    }
-                    value={dayjs(formik.values.endTime).format(
-                      'YYYY-MM-DDTHH:mm:ss'
-                    )}
-                    min={dayjs(formik.values.startTime).format(
-                      'YYYY-MM-DDTHH:mm:ss'
-                    )}
-                  />
-                  {renderFieldError('endTime')}
-                </>
+              value={dayjs(formik.values.startTime).format(
+                'YYYY-MM-DDTHH:mm:ss'
               )}
-            </TimeRow>
-            <SwitchRow>
-              <Switch
-                onChange={(checked) => setNoEndTime(checked)}
-                checked={noEndTime}
-              />
-              <SwitchText>No end</SwitchText>
-            </SwitchRow>
-          </FormField>
+            />
+            {renderFieldError('startTime')}
+            {!noEndTime && (
+              <>
+                -
+                <TimePicker
+                  placeholder="End Time"
+                  onChange={(e) =>
+                    formik.setFieldValue(
+                      'endTime',
+                      new Date(e.target.value).getTime()
+                    )
+                  }
+                  value={dayjs(formik.values.endTime).format(
+                    'YYYY-MM-DDTHH:mm:ss'
+                  )}
+                  min={dayjs(formik.values.startTime).format(
+                    'YYYY-MM-DDTHH:mm:ss'
+                  )}
+                />
+                {renderFieldError('endTime')}
+              </>
+            )}
+          </TimeRow>
+          <SwitchRow>
+            <Switch
+              onChange={(checked) => setNoEndTime(checked)}
+              checked={noEndTime}
+            />
+            <SwitchText>No end</SwitchText>
+          </SwitchRow>
+        </FormField>
 
-          <FormField>
-            <FormLabel htmlFor="supportIframe">Iframe Display</FormLabel>
-            <SwitchRow>
-              <Switch
-                onChange={(checked) =>
-                  formik.setFieldValue('supportIframe', checked)
-                }
-                checked={formik.values.supportIframe}
-              />
-              <SwitchText>Support</SwitchText>
-            </SwitchRow>
-          </FormField>
+        <FormField>
+          <FormLabel htmlFor="supportIframe">Iframe Display</FormLabel>
+          <SwitchRow>
+            <Switch
+              onChange={(checked) =>
+                formik.setFieldValue('supportIframe', checked)
+              }
+              checked={formik.values.supportIframe}
+            />
+            <SwitchText>Support</SwitchText>
+          </SwitchRow>
+        </FormField>
 
-          <FormButtons>
-            <ButtonPrimaryLine
-              type="reset"
-              disabled={loading}
-              onClick={formik.handleReset}
-            >
-              <FormButtonIcon src={RefreshSvg} />
-            </ButtonPrimaryLine>
-            <FormButtonSubmit
-              type="submit"
-              disabled={loading}
-              onClick={() => {
-                console.log(formik.values);
-              }}
-            >
-              Submit
-            </FormButtonSubmit>
-          </FormButtons>
-        </EventCreateFormCard>
-        <EventPreviewBox>
-          <EventLinkPreview data={previewData} />
-        </EventPreviewBox>
-      </EventCreateWrapper>
-    </ScrollBox>
+        <FormButtons>
+          <ButtonPrimaryLine
+            type="reset"
+            disabled={loading}
+            onClick={formik.handleReset}
+          >
+            <FormButtonIcon src={RefreshSvg} />
+          </ButtonPrimaryLine>
+          <FormButtonSubmit
+            type="submit"
+            disabled={loading}
+            onClick={() => {
+              console.log(formik.values);
+            }}
+          >
+            Submit
+          </FormButtonSubmit>
+        </FormButtons>
+      </EventCreateFormCard>
+      <EventPreviewBox>
+        <EventLinkPreview data={previewData} />
+      </EventPreviewBox>
+    </EventCreateWrapper>
   );
 }
 export default EventCreate;
 const EventCreateWrapper = styled(MainWrapper)`
-  width: 100%;
   height: auto;
   display: flex;
   gap: 40px;

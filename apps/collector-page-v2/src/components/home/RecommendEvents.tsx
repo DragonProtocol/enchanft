@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import Title from './Title';
 import Badge from '../contents/Badge';
+import { EventExploreListItemResponse } from '../../services/types/event';
 
 export default function RecommendEvents({
   data,
   viewAllAction,
 }: {
-  data: any[];
+  data: EventExploreListItemResponse[];
   viewAllAction: () => void;
 }) {
   return (
@@ -17,9 +18,9 @@ export default function RecommendEvents({
           return (
             <Card
               key={item.uid || item.id}
-              title={item.title}
-              img={item.imageUrl}
-              author={item.requirements[0]?.community?.title || ''}
+              title={item.name}
+              img={item.image}
+              author={item.project.name || ''}
             />
           );
         })}

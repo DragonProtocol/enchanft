@@ -1,3 +1,10 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-12-12 11:13:29
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-12-14 17:49:18
+ * @Description: file description
+ */
 import type { EventExploreListItem } from '../features/event/eventExploreList';
 
 export function daylightAbilityListToEventList(
@@ -20,6 +27,7 @@ export function daylightAbilityListToEventList(
       image: ability.requirements[0].community?.imageUrl,
     },
     platform: {
+      name: '',
       logo: '',
     },
     isDaylight: true,

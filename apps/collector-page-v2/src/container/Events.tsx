@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 09:30:49
+ * @LastEditTime: 2022-12-15 14:42:36
  * @Description: 首页任务看板
  */
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { useParams } from 'react-router-dom';
 import EventExploreList from '../components/event/EventExploreList';
 import EventExploreListFilter, {
   defaultEventExploreListFilterValues,
@@ -27,8 +28,12 @@ import { OrderBy } from '../services/types/common';
 import { EventExploreListItemResponse } from '../services/types/event';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import EventLinkPreview from '../components/event/EventLinkPreview';
+import Loading from '../components/common/loading/Loading';
 
 export default function Events() {
+  const { id } = useParams();
+  console.log({ id });
+
   const {
     favoredIds,
     favorQueueIds,
@@ -77,7 +82,7 @@ export default function Events() {
     () => moreStatus === AsyncRequestStatus.PENDING,
     [moreStatus]
   );
-
+  const isEmpty = useMemo(() => !eventExploreList.length, [eventExploreList]);
   return (
     <EventsWrapper>
       <EventExploreListFilter
@@ -85,37 +90,37 @@ export default function Events() {
         onChange={(newFilter) => setFilter(newFilter)}
       />
       <MainBox>
-        <ListBox onScrollBottom={getMore}>
-          {isLoading ? (
-            <MoreLoading>loading ...</MoreLoading>
-          ) : (
-            <EventExploreList
-              data={eventExploreList}
-              activeId={event?.id || 0}
-              favoredIds={favoredIds}
-              favorQueueIds={favorQueueIds}
-              completedIds={completedIds}
-              displayHandles={isLogin}
-              onComplete={onComplete}
-              onFavor={onFavor}
-              onShare={onShare}
-              onItemClick={setEvent}
-            />
-          )}
-          {!isLoading && isLoadingMore && (
-            <MoreLoading>loading ...</MoreLoading>
-          )}
-        </ListBox>
-        <ContentBox>
-          {event ? <EventLinkPreview data={event} /> : null}
-        </ContentBox>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          !isEmpty && (
+            <MainBody>
+              <ListBox onScrollBottom={getMore}>
+                <EventExploreList
+                  data={eventExploreList}
+                  activeId={event?.id || 0}
+                  favoredIds={favoredIds}
+                  favorQueueIds={favorQueueIds}
+                  completedIds={completedIds}
+                  displayHandles={isLogin}
+                  onComplete={onComplete}
+                  onFavor={onFavor}
+                  onShare={onShare}
+                  onItemClick={setEvent}
+                />
+                {isLoadingMore && <MoreLoading>loading ...</MoreLoading>}
+              </ListBox>
+              <ContentBox>
+                {event ? <EventLinkPreview data={event} /> : null}
+              </ContentBox>
+            </MainBody>
+          )
+        )}
       </MainBox>
     </EventsWrapper>
   );
 }
 const EventsWrapper = styled(MainWrapper)`
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -123,18 +128,24 @@ const EventsWrapper = styled(MainWrapper)`
 const MainBox = styled.div`
   width: 100%;
   height: 0px;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const MainBody = styled.div`
+  width: 100%;
+  height: 100%;
+  background: #1b1e23;
   border: 1px solid #39424c;
   box-sizing: border-box;
   border-radius: 20px;
   overflow: hidden;
-  flex: 1;
   display: flex;
 `;
 const ListBox = styled(ListScrollBox)`
   width: 360px;
   height: 100%;
-
-  background: #1b1e23;
   border-right: 1px solid #39424c;
   box-sizing: border-box;
   overflow-y: auto;

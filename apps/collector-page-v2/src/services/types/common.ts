@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 14:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 13:41:55
+ * @LastEditTime: 2022-12-14 17:08:21
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -19,6 +19,8 @@ export enum Platform {
   NOOX = 'NOOX',
   POAP = 'POAP',
   QUEST3 = 'QUEST3',
+  RABBIT_HOLE = 'RABBIT_HOLE',
+  LINK3 = 'LINK3',
 }
 
 export enum Reward {

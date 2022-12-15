@@ -1,8 +1,16 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-12-14 10:28:05
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-12-15 12:13:11
+ * @Description: file description
+ */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import CannotOpenPlatFormLink from './CannotOpenPlatFormLink';
 
 export type CannotOpenPlatFormLinkProps = {
   data: {
+    name: string;
     platform: {
       logo: string;
     };
@@ -15,10 +23,14 @@ export default function EventLinkPreview({
 }: CannotOpenPlatFormLinkProps) {
   const u3ExtensionInstalled =
     localStorage.getItem('u3ExtensionInstalled') === 'true';
-  const { platform, link, supportIframe } = data;
+  const { platform, link, supportIframe, name } = data;
   const displayCannotOpen = !supportIframe && !u3ExtensionInstalled;
   return displayCannotOpen ? (
-    <CannotOpenPlatFormLink iconUrl={platform.logo} linkUrl={link} />
+    <CannotOpenPlatFormLink
+      iconUrl={platform.logo}
+      linkUrl={link}
+      title={name}
+    />
   ) : (
     <EventIframe src={link} />
   );

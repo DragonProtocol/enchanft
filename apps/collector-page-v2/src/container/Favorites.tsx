@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 10:09:18
+ * @LastEditTime: 2022-12-15 14:13:26
  * @Description: 首页任务看板
  */
 import { useState } from 'react';
@@ -64,7 +64,7 @@ function Favorites() {
 
   const { keysFilter, contentHiddenOrNot } = useContentHidden();
   return (
-    <FavoritesWrapper>
+    <MainWrapper>
       <FavoritesLayout>
         <FavoritesListBox>
           <FavoritesListHeader>
@@ -131,11 +131,10 @@ function Favorites() {
             )}
         </FavoritesContentBox>
       </FavoritesLayout>
-    </FavoritesWrapper>
+    </MainWrapper>
   );
 }
 export default Favorites;
-const FavoritesWrapper = styled(MainWrapper)``;
 const FavoritesLayout = styled.div`
   width: 100%;
   height: 100%;

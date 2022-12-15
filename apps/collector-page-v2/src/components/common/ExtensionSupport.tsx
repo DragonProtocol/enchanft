@@ -3,11 +3,19 @@ import { CHROME_EXTENSION_URL } from '../../constants';
 import { Chrome } from '../icons/chrome';
 import extension from './imgs/extension.png';
 
-export default function ExtensionSupport({ url }: { url: string }) {
+export default function ExtensionSupport({
+  url,
+  title,
+  img,
+}: {
+  url: string;
+  title: string;
+  img?: string;
+}) {
   return (
     <Box>
-      <img title="extension" src={extension} alt="" />
-      <h2>Down to earth: potentials of DID</h2>
+      {img && <img title="extension" src={img} alt="" />}
+      <h2>{title}</h2>
       <p>
         Sorry, this website has disabled embedding. Please try our Chrome
         extension for free toss the content displayed here.
@@ -44,6 +52,14 @@ const Box = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+
+  & img {
+    width: 120px;
+    border-radius: 50%;
+    height: 120px;
+  }
 
   > h2 {
     font-style: italic;
