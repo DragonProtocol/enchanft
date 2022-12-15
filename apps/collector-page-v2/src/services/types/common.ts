@@ -37,6 +37,15 @@ export enum ProjectType {
   NFT = 'NFT',
 }
 
+export enum TagType {
+  SOCIAL = 'social',
+  TRANSACTION = 'transaction',
+  EXCHANGE = 'exchange',
+  COLLECTIBLE = 'collectible',
+  DONATION = 'donation',
+  GOVERNANCE = 'governance',
+}
+
 export enum PlatformLogo {
   GALXE = 'https://galxe.com/favicon.ico',
   NOOX = 'https://noox.world/favicon.ico',
