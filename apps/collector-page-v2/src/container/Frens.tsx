@@ -83,7 +83,7 @@ const renderAddress = (address: string, isIcon = true) => {
 };
 
 const tagComponentsMap = {
-  social: (item) => {
+  comment: (item) => {
     const { timestamp, owner_name: ownerName } = item || {};
     const { platform, metadata, tag } = item?.actions?.[0] || {};
     const {
@@ -236,6 +236,42 @@ const tagComponentsMap = {
 
           <div>
             <strong>{`${from?.value_display} ${from?.symbol} for ${to?.value_display} ${to?.symbol}`}</strong>
+          </div>
+        </div>
+      </>
+    );
+  },
+  transfer: (item) => {
+    const { timestamp, owner_name: ownerName, platform, owner } = item || {};
+    const {
+      metadata,
+      tag,
+      address_from: formAddress,
+      address_to: toAddress,
+    } = item?.actions?.[0] || {};
+    const { image, name, value_display: valueDisplay, symbol } = metadata;
+
+    const isSent = formAddress === owner;
+    return (
+      <>
+        <div className="first-row">
+          <span className="tag">{tag}</span>
+          <strong>{ownerName}</strong> {isSent ? 'sent to' : 'claimed from'}
+          <strong>
+            {renderAddress(isSent ? toAddress : formAddress, false)}
+          </strong>
+          {'  |  '}
+          {timeAgo.format(new Date(timestamp).getTime())}
+        </div>
+        <div className="nft-box">
+          {/* TODO 金额显示方式 */}
+          {/* https://rss3.io/images/default.svg */}
+          <div className="trans">
+            <img src={image} alt={name} />
+          </div>
+
+          <div>
+            <strong>{`${valueDisplay} ${symbol}`}</strong>
           </div>
         </div>
       </>
@@ -424,7 +460,8 @@ const FrensFeedCard = styled.div`
   .content {
     display: flex;
     flex-direction: column;
-    row-gap: 0.675rem;
+    /* row-gap: 0.675rem; */
+    row-gap: 0.875rem;
     /* row-gap: 0.575rem; */
     font-size: 14px;
   }
@@ -500,6 +537,15 @@ const FrensFeedCard = styled.div`
         margin-left: -0.5rem;
         z-index: 1;
         filter: drop-shadow(rgba(0, 0, 0, 0.25) -1px 0px 2px);
+      }
+    }
+
+    .trans {
+      img {
+        width: 2rem;
+        height: 2rem;
+        object-fit: contain;
+        z-index: 0;
       }
     }
   }
