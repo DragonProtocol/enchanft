@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TextTransition, { presets } from 'react-text-transition';
+import Rubiks from '../magic-kube/rubiks/index';
+
 import CarouselBg from '../imgs/carousel-bg.png';
 import MagicCubeImg from '../imgs/magic-cube.png';
 
@@ -25,6 +27,13 @@ export default function Carousel() {
       3000 // every 3 seconds
     );
     return () => clearTimeout(intervalId);
+  }, []);
+  useEffect(() => {
+    const container = document.getElementById('magic-cube-container');
+    if (!container.childNodes.length) {
+      const rubiks = new Rubiks(container);
+      rubiks.disorder();
+    }
   }, []);
   return (
     <Box>
@@ -51,8 +60,8 @@ export default function Carousel() {
           <span>NFTs</span>
         </div> */}
       </div>
-      <div className="magic-cube">
-        <img src={MagicCubeImg} alt="" />
+      <div className="magic-cube" id="magic-cube-container">
+        {/* <img src={MagicCubeImg} alt="" /> */}
       </div>
     </Box>
   );
@@ -127,7 +136,10 @@ const Box = styled.div`
 
   & .magic-cube {
     position: absolute;
-    padding: 42px 0;
-    right: 100px;
+    /* padding: 42px 0; */
+    width: 400px;
+    height: 400px;
+
+    right: 10px;
   }
 `;

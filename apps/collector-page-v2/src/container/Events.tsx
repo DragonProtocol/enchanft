@@ -41,9 +41,8 @@ export default function Events() {
   const evmAccount = getBindAccount(AccountType.EVM);
   const { status, moreStatus } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
-  const [filter, setFilter] = useState<EventExploreListFilterValues>(
-    defaultEventExploreListFilterValues
-  );
+  const [filter, setFilter] = useState<EventExploreListFilterValues>();
+  // defaultEventExploreListFilterValues
   const [event, setEvent] = useState<EventExploreListItemResponse | null>(null);
   useEffect(() => {
     dispatch(fetchEventExploreList({ ...filter }));
