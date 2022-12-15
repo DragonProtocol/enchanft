@@ -128,6 +128,8 @@ const Box = styled.div`
   & .magic-cube {
     position: absolute;
     padding: 42px 0;
-    right: 100px;
+    right: 10px;
+    width: 400px;
+    height: 400px;
   }
 `;

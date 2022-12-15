@@ -184,7 +184,13 @@ function Contents() {
           setTab('readerView');
         }}
       />
-      {(loading && <Loading />) || (
+      {(loading && (
+        <ContentsWrapper>
+          <div className="loading">
+            <Loading />
+          </div>
+        </ContentsWrapper>
+      )) || (
         <ContentsWrapper>
           <ListBox>
             {contents
@@ -324,6 +330,13 @@ const ContentsWrapper = styled.div`
   overflow: hidden;
   display: flex;
   margin-top: 24px;
+
+  & .loading {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 const ListBox = styled.div`
   min-width: 360px;
