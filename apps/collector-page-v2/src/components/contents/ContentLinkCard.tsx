@@ -56,7 +56,7 @@ export default function ContentLinkCard({
         >
           👏
           <ContentHandleButtonText>
-            {loadingVote ? 'loading' : isVoted ? 'Applaused' : 'Applause'}
+            &nbsp;{data.upVoteNum}
           </ContentHandleButtonText>
         </ContentHandleButton>
       )}

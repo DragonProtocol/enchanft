@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 15:02:48
+ * @LastEditTime: 2022-12-15 19:06:37
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -31,6 +31,8 @@ export type ProjectDetailCardProps = {
   onShare?: () => void;
   onFavor?: () => void;
   onEventComplete?: (event: ProjectExploreListItemEventResponse) => void;
+  currentVotedContentIds: number[];
+  onContentVote: (id: number) => void;
 };
 export default function ProjectDetailCard({
   data,
@@ -43,6 +45,8 @@ export default function ProjectDetailCard({
   onShare,
   onFavor,
   onEventComplete,
+  currentVotedContentIds,
+  onContentVote,
 }: ProjectDetailCardProps) {
   return (
     <ProjectDetailCardWrapper>
@@ -96,8 +100,16 @@ export default function ProjectDetailCard({
           data.contents.map((item) => (
             <ContentLinkCard
               key={item.id}
-              data={item}
-              onVote={() => alert('TODO')}
+              data={{
+                ...item,
+                upVoteNum: currentVotedContentIds.includes(item.id)
+                  ? item.upVoteNum + 1
+                  : item.upVoteNum,
+              }}
+              onVote={() => onContentVote(item.id)}
+              disabledVote={
+                item.upVoted || currentVotedContentIds.includes(item.id)
+              }
             />
           ))}
       </LayoutMain>
