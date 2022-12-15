@@ -111,15 +111,15 @@ class Rubiks {
   private startAnimation() {
     const animation = (time: number) => {
       time /= 1000; // convert to seconds
-      if (this.cube) {
-        if (time < 2) {
-          this.cube.position.z = (-1 + time / 2) * 100;
-        } else {
-          this.cube.position.z = 0;
-        }
-        const dis = time;
-        this.cube.position.y = Math.sin(dis) * 0.3;
-      }
+      // if (this.cube) {
+      //   if (time < 2) {
+      //     this.cube.position.z = (-1 + time / 2) * 100;
+      //   } else {
+      //     this.cube.position.z = 0;
+      //   }
+      //   const dis = time;
+      //   this.cube.position.y = Math.sin(dis) * 0.3;
+      // }
 
       this.render();
       requestAnimationFrame(animation);
