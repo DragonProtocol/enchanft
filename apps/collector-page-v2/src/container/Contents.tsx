@@ -319,7 +319,7 @@ export default Contents;
 
 const Box = styled.div`
   margin: 0 auto;
-  height: 100%;
+  height: calc(100vh - 72px);
   box-sizing: border-box;
   padding-top: 24px;
   width: 1160px;
