@@ -57,8 +57,9 @@ export class Cube extends Group {
 
     this.createChildrenByData();
 
-    this.rotateX(Math.PI * 0.25);
-    this.rotateY(Math.PI * 0.25);
+    this.rotateX(Math.PI * 0.1);
+    this.rotateY(Math.PI * 0.2);
+
     setFinish(this.finish);
   }
 

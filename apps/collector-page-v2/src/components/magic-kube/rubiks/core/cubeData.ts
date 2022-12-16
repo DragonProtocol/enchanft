@@ -49,10 +49,10 @@ class CubeData {
       // '#643981',
       // ------------
       '#0046FF',
-      '#5904C6',
+      '#CDFF00',
       '#D03DCA',
       '#9DFBC7',
-      '#CDFF00',
+      '#5904C6',
       '#387CFF',
     ]
   ) {
@@ -91,7 +91,7 @@ class CubeData {
           color: this.colors[0],
           pos: new Vector3(x, border + this._size * 0.5, z),
           normal: new Vector3(0, 1, 0),
-          withLogo: x === 0 && z === 0,
+          // withLogo: x === 0 && z === 0,
         });
 
         this.elements.push({
@@ -109,7 +109,7 @@ class CubeData {
           color: this.colors[2],
           pos: new Vector3(-border - this._size * 0.5, y, z),
           normal: new Vector3(-1, 0, 0),
-          withLogo: y === 0 && z === 0,
+          // withLogo: y === 0 && z === 0,
         });
 
         this.elements.push({
@@ -127,7 +127,7 @@ class CubeData {
           color: this.colors[4],
           pos: new Vector3(x, y, border + this._size * 0.5),
           normal: new Vector3(0, 0, 1),
-          withLogo: x === 0 && y === 0,
+          // withLogo: x === 0 && y === 0,
         });
 
         this.elements.push({
