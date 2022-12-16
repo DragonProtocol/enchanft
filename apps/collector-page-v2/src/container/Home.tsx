@@ -66,44 +66,44 @@ function Home() {
     });
   }, []);
 
-  if (loading)
-    return (
-      <HomeWrapper>
-        <div className="loading">
-          <Loading />
-        </div>
-      </HomeWrapper>
-    );
   return (
     <HomeWrapper>
       <div>
         <Carousel />
-        <RecommendEvents
-          data={events}
-          viewAllAction={() => {
-            navigate('/events');
-          }}
-        />
-        <div className="row-2">
-          <RecommendContent
-            data={contents}
-            viewAllAction={() => {
-              navigate('/contents');
-            }}
-          />
-          <DiscoverProj
-            data={trendingProjects}
-            viewAllAction={() => {
-              navigate('/projects');
-            }}
-          />
-        </div>
-        <Platform
-          platforms={platforms}
-          viewAllAction={() => {
-            navigate('/events');
-          }}
-        />
+        {(loading && (
+          <div className="loading">
+            <Loading />
+          </div>
+        )) || (
+          <>
+            <RecommendEvents
+              data={events}
+              viewAllAction={() => {
+                navigate('/events');
+              }}
+            />
+            <div className="row-2">
+              <RecommendContent
+                data={contents}
+                viewAllAction={() => {
+                  navigate('/contents/:id');
+                }}
+              />
+              <DiscoverProj
+                data={trendingProjects}
+                viewAllAction={() => {
+                  navigate('/projects');
+                }}
+              />
+            </div>
+            <Platform
+              platforms={platforms}
+              viewAllAction={() => {
+                navigate('/events');
+              }}
+            />
+          </>
+        )}
         <br />
       </div>
     </HomeWrapper>
@@ -121,10 +121,10 @@ const HomeWrapper = styled.div`
     flex-direction: column;
     gap: 40px;
   }
-  > div.loading {
+  & div.loading {
     width: 1160px;
     display: flex;
-    align-items: center;
+    justify-content: center;
   }
 
   & div.row-2 {

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 19:06:37
+ * @LastEditTime: 2022-12-16 11:07:59
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -72,14 +72,14 @@ export default function ProjectDetailCard({
               )}
             </LayoutHeaderHandles>
           </LayoutHeaderRightRow>
-          <LayoutHeaderRightRow>
+          {/* <LayoutHeaderRightRow>
             <LinkButton>
               <LinkIcon src={TwitterSvg} />
             </LinkButton>
             <LinkButton>
               <LinkIcon src={DiscordSvg} />
             </LinkButton>
-          </LayoutHeaderRightRow>
+          </LayoutHeaderRightRow> */}
           <LayoutHeaderRightRow>
             <PorjectDescription>{data.description}</PorjectDescription>
           </LayoutHeaderRightRow>

@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 
+import { useNavigate, useParams } from 'react-router-dom';
 import ContentsHeader from '../components/contents/Header';
 
 import {
@@ -26,16 +27,24 @@ import { useVoteUp } from '../hooks/useVoteUp';
 import useContentHidden from '../hooks/useContentHidden';
 import ExtensionSupport from '../components/common/ExtensionSupport';
 import Loading from '../components/common/loading/Loading';
+import { getProjectShareUrl } from '../utils/share';
+import { tweetShare } from '../utils/twitter';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
   const evmAccount = getBindAccount(AccountType.EVM);
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const queryRef = useRef<{
     keywords: string;
     type: string;
     orderBy: string;
-  }>();
+  }>({
+    keywords: '',
+    type: '',
+    orderBy: 'For U',
+  });
   const [currDaylightCursor, setCurrDaylightCursor] = useState('');
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
@@ -50,6 +59,10 @@ function Contents() {
   const vote = useVoteUp(selectContent?.id, selectContent?.upVoted);
 
   const favors = userFavored(selectContent?.id, selectContent?.favored);
+
+  const onShare = (data: ContentListItem) => {
+    tweetShare(data.title, getProjectShareUrl(data.id));
+  };
 
   const fetchDaylightData = useCallback(
     async (daylightCursor: string) => {
@@ -76,21 +89,28 @@ function Contents() {
       }
 
       try {
+        let tmpData = [];
         if (orderBy === OrderBy.FORU) {
           const [dayLightData, { data }] = await Promise.all([
             fetchDaylightData(''),
             fetchContents(
-              { keywords, type, orderBy: OrderBy.TRENDING },
+              { keywords, type, orderBy: OrderBy.TRENDING, contentId: id },
               user.token
             ),
           ]);
-          setContents([...dayLightData, ...data.data]);
+          tmpData = [...dayLightData, ...data.data];
         } else {
           const { data } = await fetchContents(
-            { keywords, type, orderBy },
+            { keywords, type, orderBy, contentId: id },
             user.token
           );
-          setContents(data.data);
+          tmpData = data.data;
+        }
+        setContents(tmpData);
+        if (id) {
+          setSelectContent(
+            tmpData.find((item) => `${item.id}` === id || item.uid === id)
+          );
         }
       } catch (error) {
         toast.error(error.message);
@@ -98,7 +118,7 @@ function Contents() {
         setLoading(false);
       }
     },
-    [currPageNumber, user.token]
+    [currPageNumber, user.token, id]
   );
 
   const loadMore = useCallback(
@@ -166,6 +186,10 @@ function Contents() {
     }
   }, [selectContent]);
 
+  useEffect(() => {
+    fetchData('', '', 'For U');
+  }, []);
+
   return (
     <Box id="box">
       <ContentsHeader
@@ -176,6 +200,7 @@ function Contents() {
             orderBy,
           };
           fetchData(keywords, type, orderBy);
+          navigate('/contents/:id');
         }}
         changeOriginalAction={() => {
           setTab('original');
@@ -211,6 +236,10 @@ function Contents() {
                     isActive={isActive}
                     clickAction={() => {
                       setSelectContent(item);
+                      navigate(`/contents/${item.uid || item.id}`);
+                    }}
+                    shareAction={() => {
+                      onShare(item);
                     }}
                     voteAction={vote}
                     favorsAction={favors}
@@ -226,7 +255,9 @@ function Contents() {
               })}
             <div className="load-more">
               {loadingMore ? (
-                <Loading />
+                <div className="loading">
+                  <Loading />
+                </div>
               ) : (
                 <button
                   type="button"

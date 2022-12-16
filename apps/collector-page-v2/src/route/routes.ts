@@ -67,7 +67,7 @@ export const routes: CutomRouteObject[] = [
     key: RouteKey.projects,
   },
   {
-    path: '/contents',
+    path: '/contents/:id',
     element: loadContainerElement('Contents'),
     key: RouteKey.contents,
   },

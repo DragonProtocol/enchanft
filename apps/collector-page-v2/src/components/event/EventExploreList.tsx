@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 17:17:32
+ * @LastEditTime: 2022-12-16 10:57:29
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -17,7 +17,7 @@ export type EventExploreListProps = {
   favoredIds: number[];
   favorQueueIds: number[];
   completedIds: number[];
-  displayHandles: boolean;
+  displayHandles?: boolean;
   onComplete: (event: EventExploreListItemData) => void;
   onFavor: (event: EventExploreListItemData) => void;
   onShare: (event: EventExploreListItemData) => void;
