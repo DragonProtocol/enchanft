@@ -86,7 +86,7 @@ function Home() {
               <RecommendContent
                 data={contents}
                 viewAllAction={() => {
-                  navigate('/contents');
+                  navigate('/contents/:id');
                 }}
               />
               <DiscoverProj
