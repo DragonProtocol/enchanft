@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-23 16:40:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 15:29:55
+ * @LastEditTime: 2022-12-16 19:27:45
  * @Description: file description
  */
 import { babel } from '@rollup/plugin-babel';
@@ -106,12 +106,12 @@ export default {
     // 压缩混淆代码
     // terser(),
     // 拷贝静态文件到打包目录中
-    copy({
-      targets: [
-        { src: './package.json', dest: 'dist' },
-        { src: './README.md', dest: 'dist' },
-      ],
-    }),
+    // copy({
+    //   targets: [
+    //     { src: './package.json', dest: 'dist' },
+    //     { src: './README.md', dest: 'dist' },
+    //   ],
+    // }),
     analyze({
       hideDeps: true,
       summaryOnly: true,
