@@ -1,20 +1,8 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable no-underscore-dangle */
-import {
-  Camera,
-  Matrix4,
-  PerspectiveCamera,
-  Raycaster,
-  Scene,
-  Vector2,
-  Vector3,
-  WebGLRenderer,
-} from 'three';
+import { PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 
 import { Cube } from './cube';
-import { rotateAroundWorldAxis, ndcToScreen } from '../util/transform';
-import { SquareMesh } from './square';
-import { setFinish } from './statusbar';
 import Control from './control';
 
 export class MouseControl extends Control {
@@ -36,7 +24,6 @@ export class MouseControl extends Control {
 
   public mousedownHandle(event: MouseEvent) {
     event.preventDefault();
-
     this.operateStart(event.offsetX, event.offsetY);
   }
 
@@ -54,7 +41,6 @@ export class MouseControl extends Control {
 
   public mousemoveHandle(event: MouseEvent) {
     event.preventDefault();
-
     this.operateDrag(
       event.offsetX,
       event.offsetY,

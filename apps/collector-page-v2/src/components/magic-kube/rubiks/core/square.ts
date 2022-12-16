@@ -5,12 +5,9 @@ import {
   Mesh,
   Color,
   Object3D,
-  Group,
-  Plane,
-  PlaneGeometry,
   DoubleSide,
   TextureLoader,
-  Vector3,
+  PlaneGeometry,
 } from 'three';
 import { CubeElement } from './cubeData';
 
@@ -74,7 +71,7 @@ export const createSquare = (color: Color, element: CubeElement) => {
   square.add(mesh);
 
   const mat2 = new MeshBasicMaterial({
-    color: 'black',
+    color: '#101A58',
     side: DoubleSide,
   });
 
@@ -86,6 +83,20 @@ export const createSquare = (color: Color, element: CubeElement) => {
   const posY = element.pos.y;
   const posZ = element.pos.z;
   square.position.set(posX, posY, posZ);
+
+  if (element.withLogo) {
+    textureLoader.load('/logo.png', (texture) => {
+      const geo2 = new PlaneGeometry(1, 1, 1);
+      const mat3 = new MeshBasicMaterial({
+        map: texture,
+        transparent: true,
+      });
+      const avatarPlane = new Mesh(geo2, mat3);
+      avatarPlane.position.set(0, 0, 0.01);
+      avatarPlane.scale.set(0.8, 0.8, 0.8);
+      square.add(avatarPlane);
+    });
+  }
 
   square.lookAt(element.pos.clone().add(element.normal));
   return square;

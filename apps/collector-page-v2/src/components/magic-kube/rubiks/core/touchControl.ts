@@ -1,20 +1,8 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 /* eslint-disable no-underscore-dangle */
-import {
-  Camera,
-  Matrix4,
-  PerspectiveCamera,
-  Raycaster,
-  Scene,
-  Vector2,
-  Vector3,
-  WebGLRenderer,
-} from 'three';
+import { PerspectiveCamera, Scene, Vector2, WebGLRenderer } from 'three';
 
 import { Cube } from './cube';
-import { rotateAroundWorldAxis, ndcToScreen } from '../util/transform';
-import { SquareMesh } from './square';
-import { setFinish } from './statusbar';
 import Control from './control';
 
 export class TouchControl extends Control {

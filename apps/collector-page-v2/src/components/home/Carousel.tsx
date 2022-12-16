@@ -103,7 +103,12 @@ const Box = styled.div`
       color: #ffffff;
 
       > div {
-        color: #ffd318;
+        > div {
+          background: linear-gradient(91.5deg, #cd62ff 44.54%, #62aaff 85.29%),
+            #ffd318;
+          -webkit-background-clip: text;
+          color: transparent;
+        }
       }
     }
 
@@ -136,7 +141,7 @@ const Box = styled.div`
 
   & .magic-cube {
     position: absolute;
-    right: 10px;
+    right: 60px;
     width: 400px;
     height: 400px;
   }

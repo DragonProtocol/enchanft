@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { CHROME_EXTENSION_URL } from '../../constants';
 import { Chrome } from '../icons/chrome';
-import extension from './imgs/extension.png';
 
 export default function ExtensionSupport({
   url,

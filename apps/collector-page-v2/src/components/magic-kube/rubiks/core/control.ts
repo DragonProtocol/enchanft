@@ -1,7 +1,5 @@
 /* eslint-disable no-underscore-dangle */
 import {
-  Camera,
-  Matrix4,
   PerspectiveCamera,
   Raycaster,
   Scene,
@@ -11,7 +9,7 @@ import {
 } from 'three';
 
 import { Cube } from './cube';
-import { rotateAroundWorldAxis, ndcToScreen } from '../util/transform';
+import { rotateAroundWorldAxis } from '../util/transform';
 import { SquareMesh } from './square';
 import { setFinish } from './statusbar';
 

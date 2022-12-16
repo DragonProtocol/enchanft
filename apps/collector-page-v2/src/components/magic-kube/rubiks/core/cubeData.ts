@@ -41,12 +41,19 @@ class CubeData {
   public constructor(
     cubeOrder = 3,
     colors: CubeColor = [
-      '#E54D21',
-      '#836C78',
-      '#F6CF3A',
-      '#A21F30',
-      '#ffffff',
-      '#643981',
+      // '#E54D21',
+      // '#836C78',
+      // '#ffffff',
+      // '#F6CF3A',
+      // '#A21F30',
+      // '#643981',
+      // ------------
+      '#0046FF',
+      '#5904C6',
+      '#D03DCA',
+      '#9DFBC7',
+      '#CDFF00',
+      '#387CFF',
     ]
   ) {
     this.cubeOrder = cubeOrder;
@@ -84,6 +91,7 @@ class CubeData {
           color: this.colors[0],
           pos: new Vector3(x, border + this._size * 0.5, z),
           normal: new Vector3(0, 1, 0),
+          withLogo: x === 0 && z === 0,
         });
 
         this.elements.push({
@@ -101,6 +109,7 @@ class CubeData {
           color: this.colors[2],
           pos: new Vector3(-border - this._size * 0.5, y, z),
           normal: new Vector3(-1, 0, 0),
+          withLogo: y === 0 && z === 0,
         });
 
         this.elements.push({
