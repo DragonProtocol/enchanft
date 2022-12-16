@@ -26,4 +26,4 @@ export const CHROME_EXTENSION_URL = process.env.REACT_APP_CHROME_EXTENSION_URL;
 
 export const EVENT_IMAGE_SIZE_LIMIT = 200 * 1024;
 
-export const US_HOST_URI = 'https://u3.xyz/';
+export const US_HOST_URI = 'https://u3.xyz';
