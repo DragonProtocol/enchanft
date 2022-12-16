@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import Title from './Title';
 import { Subtract } from '../icons/subtract';
 import { ProjectExploreListItemResponse } from '../../services/types/project';
@@ -10,6 +11,7 @@ export default function DiscoverProj({
   data: Array<ProjectExploreListItemResponse>;
   viewAllAction: () => void;
 }) {
+  const navigate = useNavigate();
   return (
     <Box>
       <Title text="Discover Projects" viewAllAction={viewAllAction} />{' '}
@@ -17,6 +19,9 @@ export default function DiscoverProj({
         {data.map((item) => {
           return (
             <Card
+              clickAction={() => {
+                navigate(`/projects/${item.id}`);
+              }}
               key={item.id}
               {...item}
               events={item.events || []}
@@ -44,14 +49,16 @@ function Card({
   image,
   events,
   contents,
+  clickAction,
 }: {
   name: string;
   image: string;
   events: any[];
   contents: any[];
+  clickAction: () => void;
 }) {
   return (
-    <CardBox>
+    <CardBox onClick={clickAction}>
       <img src={image} alt="" />
       <div>
         <div>
@@ -73,7 +80,7 @@ const CardBox = styled.div`
   display: flex;
   padding: 20px;
   gap: 10px;
-
+  cursor: pointer;
   height: 88px;
   border-bottom: 1px solid #14171a;
   box-sizing: border-box;

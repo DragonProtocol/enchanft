@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 14:55:14
+ * @LastEditTime: 2022-12-15 17:14:52
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -47,6 +47,11 @@ export const routes: CutomRouteObject[] = [
     key: RouteKey.events,
   },
   {
+    path: '/events/:id',
+    element: loadContainerElement('Events'),
+    key: RouteKey.events,
+  },
+  {
     path: '/events/create',
     element: loadContainerElement('EventCreate'),
     key: RouteKey.eventCreate,
@@ -57,7 +62,12 @@ export const routes: CutomRouteObject[] = [
     key: RouteKey.projects,
   },
   {
-    path: '/contents',
+    path: '/projects/:id',
+    element: loadContainerElement('Projects'),
+    key: RouteKey.projects,
+  },
+  {
+    path: '/contents/:id',
     element: loadContainerElement('Contents'),
     key: RouteKey.contents,
   },

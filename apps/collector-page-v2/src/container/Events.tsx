@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 14:42:36
+ * @LastEditTime: 2022-12-15 17:13:50
  * @Description: 首页任务看板
  */
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
@@ -32,7 +32,6 @@ import Loading from '../components/common/loading/Loading';
 
 export default function Events() {
   const { id } = useParams();
-  console.log({ id });
 
   const {
     favoredIds,
@@ -46,27 +45,34 @@ export default function Events() {
   const evmAccount = getBindAccount(AccountType.EVM);
   const { status, moreStatus } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
-  const [filter, setFilter] = useState<EventExploreListFilterValues>();
-  // defaultEventExploreListFilterValues
-  const [event, setEvent] = useState<EventExploreListItemResponse | null>(null);
-  useEffect(() => {
-    dispatch(fetchEventExploreList({ ...filter }));
-  }, [filter]);
-
-  // 当此时选项发生变化，且orderby = foru, 且有绑定的evm账户信息变化时再重新请求一次
-  useEffect(() => {
-    if (evmAccount?.thirdpartyId && filter.orderBy === OrderBy.FORU) {
-      dispatch(
-        fetchEventExploreList({ ...filter, pubkey: evmAccount?.thirdpartyId })
-      );
-    }
-  }, [filter, evmAccount]);
-
   const eventExploreList = useAppSelector(selectAll);
   const isLoading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
     [status]
   );
+  const [filter, setFilter] = useState<EventExploreListFilterValues>(
+    defaultEventExploreListFilterValues
+  );
+  const [event, setEvent] = useState<EventExploreListItemResponse | null>(null);
+
+  useEffect(() => {
+    const params = { ...filter };
+    if (id) {
+      Object.assign(params, { eventId: Number(id) });
+    }
+    if (evmAccount?.thirdpartyId && filter.orderBy === OrderBy.FORU) {
+      Object.assign(params, { pubkey: evmAccount?.thirdpartyId });
+    }
+    dispatch(fetchEventExploreList({ ...params }));
+  }, [id, filter, evmAccount]);
+  useEffect(() => {
+    if (id) {
+      setEvent(eventExploreList.find((item) => item.id === Number(id)));
+    } else {
+      setEvent(eventExploreList[0]);
+    }
+  }, [eventExploreList, id]);
+
   const getMore = useCallback(
     () =>
       dispatch(
