@@ -121,6 +121,33 @@ const tagComponentsMap = {
       </>
     );
   },
+  post: (item) => {
+    const { timestamp, owner_name: ownerName } = item || {};
+    const { platform, metadata, tag } = item?.actions?.[0] || {};
+    const {
+      target,
+      // target: { body: targetBody },
+      body,
+    } = metadata;
+    const targetBody = target?.body;
+    return (
+      <>
+        <div className="first-row">
+          <span className="tag">{tag}</span>
+          <strong>{ownerName}</strong> posted a note on{' '}
+          <strong>{platform}</strong>
+          {'  |  '}
+          {timeAgo.format(new Date(timestamp).getTime())}
+        </div>
+        <div className="line-clamp-2 color-white">{body}</div>
+        {targetBody && (
+          <div className="target-bg">
+            <div className="line-clamp-2">{targetBody}</div>
+          </div>
+        )}
+      </>
+    );
+  },
   mint: (item) => {
     const {
       timestamp,
@@ -331,20 +358,6 @@ function Frens() {
     fetchData({ reset: true });
   }, []);
 
-  useEffect(() => {
-    window.onscroll = debounce(() => {
-      if (!loading) {
-        fetchData({
-          cursor: feedRef?.current?.cursor,
-        });
-      }
-    }, 100);
-
-    return () => {
-      window.onscroll = null;
-    };
-  }, []);
-
   return (
     <FrensWrapper>
       <FrensFeed>
@@ -390,7 +403,22 @@ function Frens() {
             </FrensFeedCard>
           );
         })}
-        <Loading />
+        <div className="load-more">
+          {loading ? (
+            <Loading />
+          ) : (
+            <button
+              type="button"
+              onClick={() => {
+                fetchData({
+                  cursor: feedRef?.current?.cursor,
+                });
+              }}
+            >
+              Load More
+            </button>
+          )}
+        </div>
       </FrensFeed>
       <FrensRight>
         <SearchInput onSearch={() => {}} placeholder="Search Address or ENS" />
@@ -438,9 +466,25 @@ const FrensWrapper = styled.div`
     }
   }
 
-  .rubiks-loader {
+  /* .rubiks-loader {
     margin: 0 auto;
     padding: 30px 0;
+  } */
+
+  .load-more {
+    margin: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    > button {
+      cursor: pointer;
+      background-color: #1b1e23;
+      color: #fff;
+      border: 1px solid gray;
+      border-radius: 5px;
+      padding: 10px 20px;
+      outline: none;
+    }
   }
 `;
 const FrensFeed = styled.div`
