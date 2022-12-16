@@ -122,6 +122,7 @@ const InfoBox = styled.div`
         justify-content: center;
         width: 100%;
         height: 100%;
+        border-radius: 50%;
         background: linear-gradient(
           0deg,
           rgba(0, 0, 0, 0.5),

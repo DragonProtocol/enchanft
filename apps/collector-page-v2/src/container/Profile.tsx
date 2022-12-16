@@ -41,16 +41,6 @@ function Profile() {
     fetchData();
   }, [fetchData]);
 
-  if (loading) {
-    return (
-      <ProfileWrapper>
-        <div className="loading">
-          <Loading />
-        </div>
-      </ProfileWrapper>
-    );
-  }
-
   return (
     <ProfileWrapper>
       <div>
@@ -68,47 +58,53 @@ function Profile() {
           <DailyDigest />
         </div>
 
-        <div className="content">
-          <div className="tab">
-            <div
-              onClick={() => setTab('Credential')}
-              className={tab === 'Credential' ? 'active' : ''}
-            >
-              Credential Data
-            </div>
-            <div
-              onClick={() => setTab('OnChain')}
-              className={tab === 'OnChain' ? 'active' : ''}
-            >
-              On-Chain Interest
-            </div>
-            <div
-              onClick={() => setTab('OffChain')}
-              className={tab === 'OffChain' ? 'active' : ''}
-            >
-              Off-Chain Interest
-              <span>Soon</span>
-            </div>
+        {(loading && (
+          <div className="loading">
+            <Loading />
           </div>
+        )) || (
+          <div className="content">
+            <div className="tab">
+              <div
+                onClick={() => setTab('Credential')}
+                className={tab === 'Credential' ? 'active' : ''}
+              >
+                Credential Data
+              </div>
+              <div
+                onClick={() => setTab('OnChain')}
+                className={tab === 'OnChain' ? 'active' : ''}
+              >
+                On-Chain Interest
+              </div>
+              <div
+                onClick={() => setTab('OffChain')}
+                className={tab === 'OffChain' ? 'active' : ''}
+              >
+                Off-Chain Interest
+                <span>Soon</span>
+              </div>
+            </div>
 
-          {tab === 'Credential' && profileData && (
-            <Credential
-              {...{
-                poap: profileData.poap,
-                noox: profileData.noox,
-                galxe: profileData.galxe,
-              }}
-            />
-          )}
-          {tab === 'OnChain' && profileData && (
-            <OnChainInterest
-              data={profileData.nfts}
-              wallet={profileData.erc20Balances}
-              ethBalance={profileData.ethBalance}
-            />
-          )}
-          {tab === 'OffChain' && <OffChainInterest />}
-        </div>
+            {tab === 'Credential' && profileData && (
+              <Credential
+                {...{
+                  poap: profileData.poap,
+                  noox: profileData.noox,
+                  galxe: profileData.galxe,
+                }}
+              />
+            )}
+            {tab === 'OnChain' && profileData && (
+              <OnChainInterest
+                data={profileData.nfts}
+                wallet={profileData.erc20Balances}
+                ethBalance={profileData.ethBalance}
+              />
+            )}
+            {tab === 'OffChain' && <OffChainInterest />}
+          </div>
+        )}
       </div>
     </ProfileWrapper>
   );
@@ -117,9 +113,10 @@ export default Profile;
 const ProfileWrapper = styled.div`
   height: 100%;
   overflow: scroll;
-  > div.loading {
+  & div.loading {
     display: flex;
     justify-content: center;
+    margin-top: 40px;
   }
   > div {
     margin: 0 auto;
