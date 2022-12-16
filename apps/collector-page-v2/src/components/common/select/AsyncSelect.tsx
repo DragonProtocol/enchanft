@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:59:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 15:01:09
+ * @LastEditTime: 2022-12-16 10:41:04
  * @Description: file description
  */
 import React, { useRef } from 'react';
@@ -119,10 +119,12 @@ const AsyncSelectWrapper = styled.div`
     margin-top: 10px;
     background: #1b1e23;
     border: 1px solid #39424c;
-    border-radius: 10px;
+    border-radius: 20px;
     .select__menu-list {
       ${ScrollBarCss}
+      gap: 2;
       .select__option {
+        height: 40px;
         padding: 20px;
         box-sizing: border-box;
         font-weight: 400;

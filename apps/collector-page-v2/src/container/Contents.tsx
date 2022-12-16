@@ -27,6 +27,8 @@ import { useVoteUp } from '../hooks/useVoteUp';
 import useContentHidden from '../hooks/useContentHidden';
 import ExtensionSupport from '../components/common/ExtensionSupport';
 import Loading from '../components/common/loading/Loading';
+import { getProjectShareUrl } from '../utils/share';
+import { tweetShare } from '../utils/twitter';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -53,6 +55,10 @@ function Contents() {
   const vote = useVoteUp(selectContent?.id, selectContent?.upVoted);
 
   const favors = userFavored(selectContent?.id, selectContent?.favored);
+
+  const onShare = (data: ContentListItem) => {
+    tweetShare(data.title, getProjectShareUrl(data.id));
+  };
 
   const fetchDaylightData = useCallback(
     async (daylightCursor: string) => {
@@ -227,6 +233,9 @@ function Contents() {
                     clickAction={() => {
                       setSelectContent(item);
                       navigate(`/contents/${item.uid || item.id}`);
+                    }}
+                    shareAction={() => {
+                      onShare(item);
                     }}
                     voteAction={vote}
                     favorsAction={favors}

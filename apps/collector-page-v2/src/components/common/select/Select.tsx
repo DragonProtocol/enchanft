@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 15:01:31
+ * @LastEditTime: 2022-12-16 10:27:34
  * @Description: file description
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -136,7 +136,9 @@ const SelectButtonText = styled.span`
   font-size: 16px;
   line-height: 24px;
   color: #ffffff;
+  text-overflow: ellipsis;
   white-space: nowrap;
+  overflow: hidden;
 `;
 const SelectButtonChevronIcon = styled.img`
   width: 20px;
@@ -152,13 +154,15 @@ const OptionsBox = styled.div`
 
   display: flex;
   flex-direction: column;
+  gap: 2px;
 
   background: #1b1e23;
   border: 1px solid #39424c;
-  border-radius: 10px;
+  border-radius: 20px;
   z-index: 1;
 `;
 const OptionItem = styled.div<{ isActive: boolean }>`
+  height: 40px;
   padding: 20px;
   box-sizing: border-box;
   font-weight: 400;

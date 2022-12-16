@@ -13,3 +13,7 @@ export const getEventShareUrl = (id: string | number) => {
 export const getProjectShareUrl = (id: string | number) => {
   return `${US_HOST_URI}/projects/${id}`;
 };
+
+export const getContentShareUrl = (id: string | number) => {
+  return `${US_HOST_URI}/contents/${id}`;
+};
