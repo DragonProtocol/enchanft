@@ -40,7 +40,11 @@ function Contents() {
     keywords: string;
     type: string;
     orderBy: string;
-  }>();
+  }>({
+    keywords: '',
+    type: '',
+    orderBy: 'For U',
+  });
   const [currDaylightCursor, setCurrDaylightCursor] = useState('');
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
@@ -251,7 +255,9 @@ function Contents() {
               })}
             <div className="load-more">
               {loadingMore ? (
-                <Loading />
+                <div className="loading">
+                  <Loading />
+                </div>
               ) : (
                 <button
                   type="button"
