@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-18 16:56:31
+ * @LastEditTime: 2022-12-16 18:00:23
  * @Description: file description
  */
 import React, { useState } from 'react';
@@ -15,14 +15,12 @@ import ModalBase, {
 import LoginWithAuthorizerButton from './LoginWithAuthorizerButton';
 import { useWlUserReact } from '../hooks';
 import { AuthorizerType } from '../authorizers/authorizer';
+import { createClassNamesByTheme } from '../utils/style';
 
 export type LoginModalProps = ModalBaseProps;
 
-const LoginModal: React.FC<LoginModalProps> = ({
-  isOpen,
-  ...modalProps
-}: LoginModalProps) => {
-  const { authorizers, authorizer } = useWlUserReact();
+function LoginModal({ isOpen, ...modalProps }: LoginModalProps) {
+  const { authorizers, authorizer, theme } = useWlUserReact();
   // TODO email 登录接口完成后删除此筛选程序
   const supportedAuthorizers = authorizers.filter(
     (item) => item.type !== AuthorizerType.EMAIL
@@ -35,20 +33,32 @@ const LoginModal: React.FC<LoginModalProps> = ({
   );
   const [otherAuthorizersDisplay, setOtherAuthorizersDisplay] = useState(false);
   return (
-    <LoginModalWrapper isOpen={isOpen} {...modalProps}>
+    <LoginModalWrapper
+      isOpen={isOpen}
+      className={createClassNamesByTheme('wl-user-modal_login', theme)}
+      {...modalProps}
+    >
       <LoginModalBody className="wl-user-modal_login-body">
         <ModalBaseTitle>Login With</ModalBaseTitle>
-        <LoginAuthorizerList>
+        <LoginAuthorizerList className="wl-user-modal_login-options">
           {recommendAuthorizer && (
-            <RecommendLoginButton authorizerType={recommendAuthorizer.type} />
+            <RecommendLoginButton
+              authorizerType={recommendAuthorizer.type}
+              className="wl-user-modal_login-option-recomend"
+            />
           )}
           {isDesktop && (
             <>
               {otherAuthorizersDisplay &&
                 otherAuthorizers.map((item) => (
-                  <MoreLoginButton key={item.type} authorizerType={item.type} />
+                  <MoreLoginButton
+                    key={item.type}
+                    authorizerType={item.type}
+                    className="wl-user-modal_login-option-other"
+                  />
                 ))}
               <OtherAuthorizersDisplayBtn
+                className="wl-user-modal_login-other-display"
                 onClick={() =>
                   setOtherAuthorizersDisplay(!otherAuthorizersDisplay)
                 }
@@ -61,7 +71,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
       </LoginModalBody>
     </LoginModalWrapper>
   );
-};
+}
 export default LoginModal;
 
 const LoginModalWrapper = styled(ModalBase)``;

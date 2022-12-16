@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 16:46:21
+ * @LastEditTime: 2022-12-16 17:58:41
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useCallback } from 'react';
@@ -12,15 +12,12 @@ import UserAvatar from './UserAvatar';
 import { ButtonPrimary } from './common/button/ButtonBase';
 import { WlUserModalType } from '../contexts/wlUserReact';
 import { useWlUserReact } from '../hooks';
+import { createClassNamesByTheme } from '../utils/style';
 
 export type LoginButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
-const LoginButton: React.FC<LoginButtonProps> = ({
-  children,
-  onClick,
-  ...otherProps
-}: LoginButtonProps) => {
-  const { authorizer, user, isLogin, dispatchModal } = useWlUserReact();
+function LoginButton({ children, onClick, ...otherProps }: LoginButtonProps) {
+  const { authorizer, user, isLogin, dispatchModal, theme } = useWlUserReact();
   const nameStr = authorizer && getUserDisplayName(user, authorizer);
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -35,7 +32,11 @@ const LoginButton: React.FC<LoginButtonProps> = ({
     [onClick, dispatchModal]
   );
   return (
-    <LoginButtonWrapper onClick={handleClick} {...otherProps}>
+    <LoginButtonWrapper
+      onClick={handleClick}
+      className={createClassNamesByTheme('wl-user-button_login', theme)}
+      {...otherProps}
+    >
       <LoginButtonBody className="wl-user-button_login-body">
         {children ||
           (isLogin ? (
@@ -51,7 +52,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
       </LoginButtonBody>
     </LoginButtonWrapper>
   );
-};
+}
 export default LoginButton;
 
 const LoginButtonWrapper = styled(ButtonPrimary)`

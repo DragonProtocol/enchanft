@@ -1,8 +1,9 @@
 {
   "name": "@ecnft/wl-user-react",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
-  "module": "./index.ts",
+  "module": "./index.js",
+  "main": "./index.js",
   "types": "./index.d.ts",
   "scripts": {
     "build": "rimraf ./dist && rollup -c",
@@ -54,7 +55,6 @@
     "qs": "^6.11.0",
     "react-device-detect": "^2.2.2",
     "react-modal": "^3.15.1",
-    "react-toastify": "^9.0.8",
     "regenerator-runtime": "0.13.7",
     "siwe": "^1.1.6",
     "styled-components": "^5.3.5",
@@ -68,6 +68,7 @@
   },
   "peerDependencies": {
     "ethers": ">=5.6.9",
-    "react": ">=18.2.0"
+    "react": ">=18.2.0",
+    "react-toastify": ">=9.0.8"
   }
 }

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:00:22
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-18 15:58:21
+ * @LastEditTime: 2022-12-16 16:20:06
  * @Description: file description
  */
 import React, { InputHTMLAttributes } from 'react';
@@ -10,9 +10,9 @@ import styled from 'styled-components';
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement>;
 
-const InputBase: React.FC<InputProps> = (props: InputProps) => (
-  <InputBaseWrapper {...props} />
-);
+function InputBase(props: InputProps) {
+  return <InputBaseWrapper {...props} />;
+}
 export default InputBase;
 
 const InputBaseWrapper = styled.input`

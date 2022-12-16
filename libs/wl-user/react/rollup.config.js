@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-23 16:40:30
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-29 16:43:47
+ * @LastEditTime: 2022-12-16 15:29:55
  * @Description: file description
  */
 import { babel } from '@rollup/plugin-babel';
@@ -53,7 +53,7 @@ export default {
     // 将commonjs模块转换为es模块
     commonjs(),
     // 配合babel对结果块文件执行代码转换
-    babel(),
+    babel({ babelHelpers: 'runtime' }),
     // 将引用的图像文件进行 base64 编码
     image(),
     // 将 .json 文件转换为 ES6 模块
@@ -89,7 +89,7 @@ export default {
     // 配合typescript进行打包
     typescript({
       check: true,
-      tsconfig: './tsconfig.lib.json',
+      tsconfig: './tsconfig.json',
       tsconfigOverride: {
         compilerOptions: {
           rootDir: './src',

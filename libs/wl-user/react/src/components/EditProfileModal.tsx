@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 16:45:56
+ * @LastEditTime: 2022-12-16 17:57:05
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react';
@@ -17,6 +17,7 @@ import LoadingSvg from './imgs/loading.svg';
 import { AVATAR_SIZE_LIMIT } from '../constants';
 import { uploadUserAvatar, User } from '../api';
 import { useWlUserReact } from '../hooks';
+import { createClassNamesByTheme } from '../utils/style';
 
 type EditUserForm = Pick<User, 'name' | 'avatar'>;
 export type EditProfileModalProps = {
@@ -25,13 +26,13 @@ export type EditProfileModalProps = {
   onClose?: () => void;
   onSave?: (form: EditUserForm) => void;
 };
-const EditProfileModal: React.FC<EditProfileModalProps> = ({
+function EditProfileModal({
   isOpen,
   isLoading,
   onClose,
   onSave,
-}: EditProfileModalProps) => {
-  const { user } = useWlUserReact();
+}: EditProfileModalProps) {
+  const { user, theme } = useWlUserReact();
   const [userForm, setUserForm] = useState<EditUserForm>({
     name: '',
     avatar: '',
@@ -43,11 +44,15 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
     }
   }, [isOpen, user]);
   return (
-    <EditProfileModalWrapper isOpen={isOpen}>
-      <EditProfileModalBody className="wl-user-modal-update-profile_body">
+    <EditProfileModalWrapper
+      isOpen={isOpen}
+      className={createClassNamesByTheme('wl-user-modal_edit-profile', theme)}
+    >
+      <EditProfileModalBody className="wl-user-modal_edit-profile-body">
         <ModalBaseTitle>Edit Profile</ModalBaseTitle>
-        <EditProfileForm className="wl-user-modal-update-profile_form">
+        <EditProfileForm className="wl-user-modal_edit-profile-form">
           <EditAvatarBox
+            className="wl-user-modal_edit-profile-avatar"
             onClick={() => {
               document.getElementById('uploadinput')?.click();
             }}
@@ -79,7 +84,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             />
 
             {(avatarUploading && (
-              <div className="uploading">
+              <div className="wl-user-modal_edit-profile-avatar-loading">
                 <img src={LoadingSvg} alt="" />
                 <p>Uploading ...</p>
               </div>
@@ -98,7 +103,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             />
           </EditNameBox>
         </EditProfileForm>
-        <EditProfileBtns className="wl-user-modal-update-profile_btns">
+        <EditProfileBtns className="wl-user-modal_edit-profile_btns">
           <CancelBtn onClick={onClose}>Cancel</CancelBtn>
           <SaveBtn
             disabled={isLoading}
@@ -110,7 +115,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
       </EditProfileModalBody>
     </EditProfileModalWrapper>
   );
-};
+}
 export default EditProfileModal;
 
 const EditProfileModalWrapper = styled(ModalBase)``;
@@ -155,7 +160,7 @@ const EditAvatarBox = styled.div`
       background-image: url(${UploadImgMaskImg});
     }
   }
-  & .uploading {
+  & .wl-user-modal_edit-profile-avatar-loading {
     text-align: center;
     padding-top: 20px;
     ${isMobile &&

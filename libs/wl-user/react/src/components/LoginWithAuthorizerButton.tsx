@@ -2,26 +2,27 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-18 16:37:16
+ * @LastEditTime: 2022-12-16 18:00:41
  * @Description: file description
  */
-import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
-import styled from 'styled-components';
+import { useState } from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { AuthorizerActionProcessStatus, AuthorizerType } from '../authorizers';
 import { useWlUserReact } from '../hooks';
+import { createClassNamesByTheme } from '../utils/style';
 import { ButtonPrimary } from './common/button/ButtonBase';
 
 export type LoginWithAuthorizerButtonProps =
-  ButtonHTMLAttributes<HTMLButtonElement> & {
+  StyledComponentPropsWithRef<'button'> & {
     authorizerType: AuthorizerType;
   };
 
-const LoginWithAuthorizerButton: React.FC<LoginWithAuthorizerButtonProps> = ({
+function LoginWithAuthorizerButton({
   children,
   authorizerType,
   ...otherProps
-}: LoginWithAuthorizerButtonProps) => {
-  const { getAuthorizer, isLogin } = useWlUserReact();
+}: LoginWithAuthorizerButtonProps) {
+  const { getAuthorizer, isLogin, theme } = useWlUserReact();
   const authorizer = getAuthorizer(authorizerType);
   if (!authorizer) throw Error(`${authorizerType} authorizer not found`);
   const { name, bgColor, iconUrl, nameColor } = authorizer;
@@ -37,6 +38,10 @@ const LoginWithAuthorizerButton: React.FC<LoginWithAuthorizerButtonProps> = ({
   });
   return (
     <LoginWithAuthorizerButtonWrapper
+      className={createClassNamesByTheme(
+        'wl-user-button-login_authorizer',
+        theme
+      )}
       onClick={() => authorizer.action.login()}
       disabled={(isLogin && authorizer.type === authorizerType) || loading}
       bgColor={bgColor}
@@ -55,7 +60,7 @@ const LoginWithAuthorizerButton: React.FC<LoginWithAuthorizerButtonProps> = ({
       </AuthorizerButtonName>
     </LoginWithAuthorizerButtonWrapper>
   );
-};
+}
 export default LoginWithAuthorizerButton;
 
 const LoginWithAuthorizerButtonWrapper = styled(ButtonPrimary)<{

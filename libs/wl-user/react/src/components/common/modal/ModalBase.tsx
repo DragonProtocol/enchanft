@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 23:02:27
+ * @LastEditTime: 2022-12-16 14:47:26
  * @Description: 基础按钮
  */
 import React from 'react';
@@ -36,12 +36,12 @@ const customStyles = {
     transform: 'translate(-50%,-50%)',
   },
 };
-const ModalBase: React.FC<ModalBaseProps> = ({
+function ModalBase({
   children,
   backdropFilter,
   zIndex = 9999,
   ...otherProps
-}: ModalBaseProps) => {
+}: ModalBaseProps) {
   const { overlay } = customStyles;
   if (backdropFilter) {
     Object.assign(overlay, {
@@ -58,7 +58,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
       {children}
     </ReactModal>
   );
-};
+}
 export default ModalBase;
 export const ModalBaseTitle = styled.p`
   margin: 0;

@@ -8,6 +8,7 @@ import {
   AuthorizerWebVersion,
 } from '../../authorizers/authorizer';
 import { useWlUserReact } from '../../hooks';
+import { createClassNamesByTheme } from '../../utils/style';
 
 export type AuthProcessModalProps = {
   authorizer: Authorizer;
@@ -36,7 +37,7 @@ const actionTypeMap: {
 const AuthProcessModal: React.FC<AuthProcessModalProps> = function ({
   authorizer,
 }: AuthProcessModalProps) {
-  const { user } = useWlUserReact();
+  const { user, theme } = useWlUserReact();
   const [processState, setProcessState] = useState({
     actionType: ActionType.none,
     status: AuthorizerActionProcessStatus.IDLE,
@@ -112,15 +113,27 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = function ({
     // no default
   }
   return (
-    <AuthProcessModalWrapper zIndex={10000} backdropFilter isOpen={isOpen}>
-      <AuthProcessModalBody className="wl-user-modal-signature_body">
-        <ModalBaseTitle>{title}</ModalBaseTitle>
-        <AuthProcessModalDesc className="wl-user-modal-signature_title">
+    <AuthProcessModalWrapper
+      zIndex={10000}
+      backdropFilter
+      isOpen={isOpen}
+      className={createClassNamesByTheme('wl-user-modal_signature', theme)}
+    >
+      <AuthProcessModalBody className="wl-user-modal_signature-body">
+        <ModalBaseTitle className="wl-user-modal_signature-title">
+          {title}
+        </ModalBaseTitle>
+        <AuthProcessModalDesc className="wl-user-modal_signature-desc">
           {desc}
         </AuthProcessModalDesc>
-        <AuthProcessModalBtns className="wl-user-modal-signature_btns">
+        <AuthProcessModalBtns className="wl-user-modal_signature-btns">
           {closeBtnDisplay && (
-            <CloseBtn onClick={() => closeModal()}>Cancel</CloseBtn>
+            <CloseBtn
+              onClick={() => closeModal()}
+              className="wl-user-modal_signature-cancel"
+            >
+              Cancel
+            </CloseBtn>
           )}
           {retryBtnDisplay && (
             <RetryBtn
@@ -131,6 +144,7 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = function ({
                   authorizer.action.bind(user.token);
                 }
               }}
+              className="wl-user-modal_signature-retry"
             >
               Retry
             </RetryBtn>

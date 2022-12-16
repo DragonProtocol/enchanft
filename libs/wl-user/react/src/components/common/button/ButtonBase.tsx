@@ -2,21 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-02 15:51:59
+ * @LastEditTime: 2022-12-16 14:42:18
  * @Description: 基础按钮
  */
-import React, { ButtonHTMLAttributes } from 'react';
-import styled, { css } from 'styled-components';
+import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+export type ButtonProps = StyledComponentPropsWithRef<'button'>;
 
-const ButtonBase: React.FC<ButtonProps> = ({
-  children,
-  ...otherProps
-}: ButtonProps) => (
-  // eslint-disable-next-line react/jsx-props-no-spreading
-  <ButtonBaseWrapper {...otherProps}>{children}</ButtonBaseWrapper>
-);
+function ButtonBase({ children, ...otherProps }: ButtonProps) {
+  return <ButtonBaseWrapper {...otherProps}>{children}</ButtonBaseWrapper>;
+}
 export default ButtonBase;
 export const ButtonPrimary = styled(ButtonBase)`
   background-color: #3dd606;
