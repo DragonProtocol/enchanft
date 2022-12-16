@@ -63,6 +63,47 @@ export default function ({
   );
 }
 
+export function AsyncSelectV2({
+  value,
+  onChange,
+  valueField = 'id',
+  labelField = 'name',
+  getOptions,
+}: Props) {
+  const cacheOptions = useRef<Option[]>([]);
+  const loadOptions = (inputValue, callback) => {
+    getOptions(inputValue)
+      .then((data) => {
+        const options = data.map((item) => ({
+          id: item.id,
+          image: item.image,
+          name: item.name,
+          value: item[valueField],
+          label: item[labelField],
+        }));
+        callback(options);
+        cacheOptions.current = options;
+      })
+      .catch((err) => callback([]));
+  };
+  return (
+    <AsyncSelectWrapper>
+      <AsyncSelect
+        defaultOptions
+        value={value}
+        onChange={(option) => onChange(option)}
+        cacheOptions
+        loadOptions={loadOptions}
+        className="select-container"
+        classNamePrefix="select"
+        components={{
+          IndicatorsContainer: CustomIndicatorsContainer,
+        }}
+      />
+    </AsyncSelectWrapper>
+  );
+}
+
 function CustomIndicatorsContainer({ innerProps }: any) {
   return <ChevronDownIcon src={ChevronDownSvg} {...innerProps} />;
 }
