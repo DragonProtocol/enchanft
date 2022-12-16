@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Badge from '../contents/Badge';
 import { ContentListItem } from '../contents/ContentList';
@@ -11,6 +12,7 @@ export default function RecommendContent({
   data: ContentListItem[];
   viewAllAction: () => void;
 }) {
+  const navigate = useNavigate();
   return (
     <Box>
       <Title text="Recommended Contents" viewAllAction={viewAllAction} />
@@ -18,6 +20,9 @@ export default function RecommendContent({
         {data.map((item) => {
           return (
             <Card
+              clickAction={() => {
+                navigate(`/contents/${item.id}`);
+              }}
               key={item.id || item.title}
               {...item}
               author={item.author || ''}
@@ -39,9 +44,17 @@ const Box = styled.div`
   }
 `;
 
-function Card({ title, author }: { title: string; author: string }) {
+function Card({
+  title,
+  author,
+  clickAction,
+}: {
+  title: string;
+  author: string;
+  clickAction: () => void;
+}) {
   return (
-    <CardBox>
+    <CardBox onClick={clickAction}>
       <h2>{title}</h2>
       <div>
         <Badge text="DeFi" />
@@ -56,6 +69,7 @@ const CardBox = styled.div`
   padding: 20px;
   height: 88px;
   border-bottom: 1px solid #14171a;
+  cursor: pointer;
   & h2 {
     margin: 0;
     font-weight: 500;

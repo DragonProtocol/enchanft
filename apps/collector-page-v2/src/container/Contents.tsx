@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 
+import { useNavigate, useParams } from 'react-router-dom';
 import ContentsHeader from '../components/contents/Header';
 
 import {
@@ -30,6 +31,8 @@ import Loading from '../components/common/loading/Loading';
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
   const evmAccount = getBindAccount(AccountType.EVM);
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const queryRef = useRef<{
     keywords: string;
@@ -76,21 +79,28 @@ function Contents() {
       }
 
       try {
+        let tmpData = [];
         if (orderBy === OrderBy.FORU) {
           const [dayLightData, { data }] = await Promise.all([
             fetchDaylightData(''),
             fetchContents(
-              { keywords, type, orderBy: OrderBy.TRENDING },
+              { keywords, type, orderBy: OrderBy.TRENDING, contentId: id },
               user.token
             ),
           ]);
-          setContents([...dayLightData, ...data.data]);
+          tmpData = [...dayLightData, ...data.data];
         } else {
           const { data } = await fetchContents(
-            { keywords, type, orderBy },
+            { keywords, type, orderBy, contentId: id },
             user.token
           );
-          setContents(data.data);
+          tmpData = data.data;
+        }
+        setContents(tmpData);
+        if (id) {
+          setSelectContent(
+            tmpData.find((item) => `${item.id}` === id || item.uid === id)
+          );
         }
       } catch (error) {
         toast.error(error.message);
@@ -98,7 +108,7 @@ function Contents() {
         setLoading(false);
       }
     },
-    [currPageNumber, user.token]
+    [currPageNumber, user.token, id]
   );
 
   const loadMore = useCallback(
@@ -166,6 +176,10 @@ function Contents() {
     }
   }, [selectContent]);
 
+  useEffect(() => {
+    fetchData('', '', 'For U');
+  }, []);
+
   return (
     <Box id="box">
       <ContentsHeader
@@ -176,6 +190,7 @@ function Contents() {
             orderBy,
           };
           fetchData(keywords, type, orderBy);
+          navigate('/contents/:id');
         }}
         changeOriginalAction={() => {
           setTab('original');
@@ -211,6 +226,7 @@ function Contents() {
                     isActive={isActive}
                     clickAction={() => {
                       setSelectContent(item);
+                      navigate(`/contents/${item.uid || item.id}`);
                     }}
                     voteAction={vote}
                     favorsAction={favors}
