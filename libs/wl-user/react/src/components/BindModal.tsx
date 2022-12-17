@@ -2,12 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 17:44:08
+ * @LastEditTime: 2022-12-17 14:23:42
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
-import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
+import ModalBase, {
+  ModalBaseBody,
+  ModalBaseTitle,
+} from './common/modal/ModalBase';
 import BindWithAuthorizerButton from './BindWithAuthorizerButton';
 import IconClose from './common/icons/IconClose';
 import { Authorizer } from '../authorizers';
@@ -34,16 +37,11 @@ const BindModal: React.FC<BindModalProps> = function ({
       isOpen={isOpen}
     >
       <BindModalBody className="wl-user-modal_bind-body">
-        <BindModalCloseButton
-          className="wl-user-modal_bind-close"
-          onClick={onClose}
-        >
+        <BindModalCloseButton className="btn-close" onClick={onClose}>
           <IconClose />
         </BindModalCloseButton>
-        <ModalBaseTitle className="wl-user-modal_bind-title">
-          Bind With
-        </ModalBaseTitle>
-        <BindModalDesc className="wl-user-modal_bind-desc">
+        <ModalBaseTitle className="bind-title">Bind With</ModalBaseTitle>
+        <BindModalDesc className="bind-desc">
           {name} is not connected. Please connect
           {name}.
         </BindModalDesc>
@@ -55,14 +53,11 @@ const BindModal: React.FC<BindModalProps> = function ({
 export default BindModal;
 
 const BindModalWrapper = styled(ModalBase)``;
-const BindModalBody = styled.div`
+const BindModalBody = styled(ModalBaseBody)`
   display: flex;
   flex-direction: column;
-  padding: 20px;
   gap: 20px;
   position: relative;
-  background: #f7f9f1;
-  border-radius: 20px;
 `;
 const BindModalCloseButton = styled.div`
   position: absolute;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 17:58:41
+ * @LastEditTime: 2022-12-17 14:29:33
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useCallback } from 'react';
@@ -41,8 +41,8 @@ function LoginButton({ children, onClick, ...otherProps }: LoginButtonProps) {
         {children ||
           (isLogin ? (
             <>
-              <LoginButtonAvatar className="wl-user-button_login-avatar" />
-              <LoginButtonName className="wl-user-button_login-name">
+              <LoginButtonAvatar className="login-avatar" />
+              <LoginButtonName className="login-name">
                 {nameStr}
               </LoginButtonName>
             </>

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 18:03:40
+ * @LastEditTime: 2022-12-17 14:32:19
  * @Description: file description
  */
 import React from 'react';
@@ -35,25 +35,22 @@ function UnbindConfirmModal({
       isOpen={isOpen}
       className={createClassNamesByTheme('wl-user-modal_unbind-confirm', theme)}
     >
-      <UnbindConfirmModalBody className="wl-user-modal_unbind-confirm-title">
-        <ModalBaseTitle className="wl-user-modal_unbind-confirm-title">
+      <UnbindConfirmModalBody className="unbind-confirm-title">
+        <ModalBaseTitle className="unbind-confirm-title">
           Disconnect
         </ModalBaseTitle>
-        <UnbindConfirmModalDesc className="wl-user-modal_unbind-confirm-desc">
+        <UnbindConfirmModalDesc className="unbind-confirm-desc">
           This {authorizer.name} account cannot be connected within 24h after
           disconnection.
         </UnbindConfirmModalDesc>
-        <UnbindConfirmModalBtns className="wl-user-modal_unbind-confirm-btns">
-          <CloseBtn
-            onClick={onClose}
-            className="wl-user-modal_unbind-confirm-cancel"
-          >
+        <UnbindConfirmModalBtns className="unbind-confirm-btns">
+          <CloseBtn onClick={onClose} className="unbind-confirm-btn-cancel">
             Cancel
           </CloseBtn>
           <ConfirmBtn
             disabled={isLoading}
             onClick={() => onConfirm && onConfirm(authorizer.type)}
-            className="wl-user-modal_unbind-confirm-submit"
+            className="unbind-confirm-btn-submit"
           >
             {isLoading ? 'Loading ...' : 'Disconnect'}
           </ConfirmBtn>

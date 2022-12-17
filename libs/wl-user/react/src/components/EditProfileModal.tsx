@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 17:57:05
+ * @LastEditTime: 2022-12-17 14:28:23
  * @Description: file description
  */
 import React, { useEffect, useState } from 'react';
@@ -49,10 +49,12 @@ function EditProfileModal({
       className={createClassNamesByTheme('wl-user-modal_edit-profile', theme)}
     >
       <EditProfileModalBody className="wl-user-modal_edit-profile-body">
-        <ModalBaseTitle>Edit Profile</ModalBaseTitle>
-        <EditProfileForm className="wl-user-modal_edit-profile-form">
+        <ModalBaseTitle className="edit-profile-title">
+          Edit Profile
+        </ModalBaseTitle>
+        <EditProfileForm className="edit-profile-form">
           <EditAvatarBox
-            className="wl-user-modal_edit-profile-avatar"
+            className="form-field form-field-avatar"
             onClick={() => {
               document.getElementById('uploadinput')?.click();
             }}
@@ -84,18 +86,19 @@ function EditProfileModal({
             />
 
             {(avatarUploading && (
-              <div className="wl-user-modal_edit-profile-avatar-loading">
+              <div className="form-field-avatar-loading">
                 <img src={LoadingSvg} alt="" />
                 <p>Uploading ...</p>
               </div>
             )) || <EditAvatar src={userForm.avatar} />}
           </EditAvatarBox>
 
-          <EditNameBox>
-            <EditNameLabel>Name</EditNameLabel>
+          <EditNameBox className="form-field form-field-name">
+            <EditNameLabel className="form-field-label">Name</EditNameLabel>
             <input
               title="name"
               id="name"
+              className="form-field-name-input"
               value={userForm.name}
               onChange={(e) =>
                 setUserForm({ ...userForm, name: e.target.value })
@@ -103,11 +106,14 @@ function EditProfileModal({
             />
           </EditNameBox>
         </EditProfileForm>
-        <EditProfileBtns className="wl-user-modal_edit-profile_btns">
-          <CancelBtn onClick={onClose}>Cancel</CancelBtn>
+        <EditProfileBtns className="edit-profile-btns">
+          <CancelBtn onClick={onClose} className="btn-cancel">
+            Cancel
+          </CancelBtn>
           <SaveBtn
             disabled={isLoading}
             onClick={() => onSave && onSave(userForm)}
+            className="btn-save"
           >
             {isLoading ? 'Loading ...' : 'Save'}
           </SaveBtn>
@@ -160,7 +166,7 @@ const EditAvatarBox = styled.div`
       background-image: url(${UploadImgMaskImg});
     }
   }
-  & .wl-user-modal_edit-profile-avatar-loading {
+  & .form-field-avatar-loading {
     text-align: center;
     padding-top: 20px;
     ${isMobile &&
@@ -187,7 +193,7 @@ const EditNameBox = styled.div`
   flex-direction: column;
   gap: 20px;
 
-  & input {
+  .form-field-name-input {
     padding: 11.5px 18px;
     margin-top: 10px;
     border-radius: 10px;

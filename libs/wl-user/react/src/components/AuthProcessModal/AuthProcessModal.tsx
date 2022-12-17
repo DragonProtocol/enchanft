@@ -120,17 +120,15 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = function ({
       className={createClassNamesByTheme('wl-user-modal_signature', theme)}
     >
       <AuthProcessModalBody className="wl-user-modal_signature-body">
-        <ModalBaseTitle className="wl-user-modal_signature-title">
-          {title}
-        </ModalBaseTitle>
-        <AuthProcessModalDesc className="wl-user-modal_signature-desc">
+        <ModalBaseTitle className="signature-title">{title}</ModalBaseTitle>
+        <AuthProcessModalDesc className="signature-desc">
           {desc}
         </AuthProcessModalDesc>
-        <AuthProcessModalBtns className="wl-user-modal_signature-btns">
+        <AuthProcessModalBtns className="signature-btns">
           {closeBtnDisplay && (
             <CloseBtn
               onClick={() => closeModal()}
-              className="wl-user-modal_signature-cancel"
+              className="signature-btn-cancel"
             >
               Cancel
             </CloseBtn>
@@ -144,7 +142,7 @@ const AuthProcessModal: React.FC<AuthProcessModalProps> = function ({
                   authorizer.action.bind(user.token);
                 }
               }}
-              className="wl-user-modal_signature-retry"
+              className="signature-btn-retry"
             >
               Retry
             </RetryBtn>

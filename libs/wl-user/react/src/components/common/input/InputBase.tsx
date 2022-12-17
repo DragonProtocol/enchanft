@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 11:00:22
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 16:20:06
+ * @LastEditTime: 2022-12-17 14:35:02
  * @Description: file description
  */
 import React, { InputHTMLAttributes } from 'react';
@@ -10,8 +10,13 @@ import styled from 'styled-components';
 
 export type InputProps = InputHTMLAttributes<HTMLInputElement>;
 
-function InputBase(props: InputProps) {
-  return <InputBaseWrapper {...props} />;
+function InputBase({ className, ...otherProps }: InputProps) {
+  return (
+    <InputBaseWrapper
+      className={`wl-user-input-base ${className}`}
+      {...otherProps}
+    />
+  );
 }
 export default InputBase;
 

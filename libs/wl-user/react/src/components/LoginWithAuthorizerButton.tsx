@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 18:00:41
+ * @LastEditTime: 2022-12-17 14:31:37
  * @Description: file description
  */
 import { useState } from 'react';
@@ -47,15 +47,9 @@ function LoginWithAuthorizerButton({
       bgColor={bgColor}
       {...otherProps}
     >
-      <AuthorizerIcon
-        src={iconUrl}
-        className="wl-user-button-login_authorizer-icon"
-      />
+      <AuthorizerIcon src={iconUrl} className="authorizer-icon" />
 
-      <AuthorizerButtonName
-        color={nameColor}
-        className="wl-user-button-login_authorizer-name"
-      >
+      <AuthorizerButtonName color={nameColor} className="authorizer-name">
         {loading ? 'Logging ...' : name}
       </AuthorizerButtonName>
     </LoginWithAuthorizerButtonWrapper>

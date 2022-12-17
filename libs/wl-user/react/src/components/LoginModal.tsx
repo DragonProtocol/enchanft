@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 18:00:23
+ * @LastEditTime: 2022-12-17 14:31:46
  * @Description: file description
  */
 import React, { useState } from 'react';
@@ -40,11 +40,11 @@ function LoginModal({ isOpen, ...modalProps }: LoginModalProps) {
     >
       <LoginModalBody className="wl-user-modal_login-body">
         <ModalBaseTitle>Login With</ModalBaseTitle>
-        <LoginAuthorizerList className="wl-user-modal_login-options">
+        <LoginAuthorizerList className="login-options">
           {recommendAuthorizer && (
             <RecommendLoginButton
               authorizerType={recommendAuthorizer.type}
-              className="wl-user-modal_login-option-recomend"
+              className="login-option-recomend"
             />
           )}
           {isDesktop && (
@@ -54,11 +54,11 @@ function LoginModal({ isOpen, ...modalProps }: LoginModalProps) {
                   <MoreLoginButton
                     key={item.type}
                     authorizerType={item.type}
-                    className="wl-user-modal_login-option-other"
+                    className="login-option-other"
                   />
                 ))}
               <OtherAuthorizersDisplayBtn
-                className="wl-user-modal_login-other-display"
+                className="login-other-display"
                 onClick={() =>
                   setOtherAuthorizersDisplay(!otherAuthorizersDisplay)
                 }
@@ -102,7 +102,7 @@ const RecommendLoginButton = styled(LoginWithAuthorizerButton)`
   width: 100%;
   height: 160px;
   flex-direction: column;
-  .wl-user-button-login_authorizer-icon {
+  .authorizer-icon {
     width: 50px;
     height: 50px;
   }
