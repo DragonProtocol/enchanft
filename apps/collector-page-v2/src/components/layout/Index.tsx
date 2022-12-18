@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 14:10:19
+ * @LastEditTime: 2022-12-17 16:13:39
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
@@ -41,7 +41,7 @@ function Layout() {
       </ContentBox>
       <ToastContainer
         position="top-right"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

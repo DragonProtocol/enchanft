@@ -2,10 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-06-30 22:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 10:46:29
+ * @LastEditTime: 2022-12-17 11:08:04
  * @Description: 全局样式
  */
 import { createGlobalStyle, css } from 'styled-components';
+import { wlUserLayout, wlUserTheme } from './styles/wl-user';
 
 export const ScrollBarCss = css`
   /* 设置滚动条的样式 */
@@ -87,6 +88,10 @@ const GlobalStyle = createGlobalStyle`
     height:100vh;
     box-sizing: border-box;
     ${FontFamilyCss}
+
+    /* wl-user */
+    ${wlUserLayout}
+    ${wlUserTheme}
   }
 `;
 export default GlobalStyle;
