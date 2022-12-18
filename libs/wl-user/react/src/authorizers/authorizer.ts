@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-25 13:02:47
+ * @LastEditTime: 2022-12-16 18:17:34
  * @Description: file description
  */
 import React from 'react';
 import { AccountType, BindResult, LoginResult } from '../api';
+import { ThemeType } from '../types';
 
 export enum AuthorizerType {
   TWITTER = 'TWITTER',

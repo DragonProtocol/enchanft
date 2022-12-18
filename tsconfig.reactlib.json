@@ -9,7 +9,7 @@
     "noEmit": true,
     "allowJs": true
   },
-  "files": ["./typings/cssmodule.d.ts", "./typings/image.d.ts"],
+  "files": [],
   "include": [],
   "references": []
 }
