@@ -18,7 +18,14 @@ import { AsyncRequestStatus } from '../../services/types';
 //   FrensExploreListItemResponse,
 // } from '../../services/types/frens';
 import type { RootState } from '../../store/store';
-import { getFeed as getFeedApi } from '../../services/api/frens';
+import {
+  getFeed as getFeedApi,
+  follower,
+  following,
+  search,
+  follow,
+  unFollow,
+} from '../../services/api/frens';
 
 // // 统一管理操作
 // export type FrensHandle<T> = {
@@ -29,7 +36,11 @@ import { getFeed as getFeedApi } from '../../services/api/frens';
 
 export type FrensHandlesState = {
   feed: any;
+  follower: any;
+  following: any;
+  isSearch: boolean;
   status: AsyncRequestStatus;
+  followStatus: AsyncRequestStatus;
   errorMsg: string;
 };
 
@@ -40,7 +51,11 @@ const initFrensHandlesState: FrensHandlesState = {
     cursor: null,
     result: null,
   },
+  follower: null,
+  following: null,
+  isSearch: false,
   status: AsyncRequestStatus.IDLE,
+  followStatus: AsyncRequestStatus.IDLE,
   errorMsg: '',
 };
 
@@ -52,32 +67,158 @@ export const getFeed = createAsyncThunk(
       category,
       cursor,
       address,
+      tag,
       reset = false,
     }: {
       category?: string;
       cursor?: string;
       address?: string;
+      tag?: string;
       reset?: boolean;
     },
     { dispatch }
   ) => {
-    const resp = await getFeedApi({ category, cursor, address });
+    if (reset) dispatch(resetFeed({}));
+    if (address) {
+      const resp = await search({ cursor, address, tag });
+      if (resp.data.code === 0) {
+        dispatch(handleSearch(true));
+        dispatch(getFeedSuccess({ data: resp?.data?.data, reset }));
+      } else {
+        throw new Error(resp.data.msg);
+      }
+    } else {
+      dispatch(handleSearch(false));
+      const resp = await getFeedApi({ category, cursor, address, tag });
+      if (resp.data.code === 0) {
+        dispatch(getFeedSuccess({ data: resp?.data?.data, reset }));
+      } else {
+        throw new Error(resp.data.msg);
+      }
+    }
+  }
+);
+
+export const setFollow = createAsyncThunk(
+  'user/frensHandles/getFollowing',
+  async (
+    {
+      target,
+      isFollow,
+    }: {
+      target: string;
+      isFollow: boolean;
+    },
+    { dispatch }
+  ) => {
+    if (isFollow) {
+      await unFollow({ target });
+      dispatch(getFollowing({ reset: true }));
+    } else {
+      await follow({ target });
+      dispatch(getFollowing({ reset: true }));
+    }
+  }
+);
+
+// favor frens
+export const getFollowing = createAsyncThunk(
+  'user/frensHandles/getFollowing',
+  async (
+    {
+      cursor,
+      reset = false,
+    }: {
+      cursor?: string;
+      reset?: boolean;
+    },
+    { dispatch }
+  ) => {
+    const resp = await following({});
     if (resp.data.code === 0) {
-      dispatch(getFeedSuccess({ data: resp?.data?.data, reset }));
+      dispatch(getFollowingSuccess({ data: resp?.data?.data, reset }));
     } else {
       throw new Error(resp.data.msg);
     }
   }
+);
+// favor frens
+export const getFollower = createAsyncThunk(
+  'user/frensHandles/getFollower',
+  async (
+    {
+      cursor,
+      reset = false,
+    }: {
+      cursor?: string;
+      reset?: boolean;
+    },
+    { dispatch }
+  ) => {
+    const resp = await follower({});
+    if (resp.data.code === 0) {
+      dispatch(getFollowerSuccess({ data: resp?.data?.data, reset }));
+    } else {
+      throw new Error(resp.data.msg);
+    }
+  }
+  // {
+  //   condition: (params, { getState }) => {
+  //     const state = getState() as RootState
+  //     const {
+  //       exploreSearchTasks: { status },
+  //     } = state
+  //     // 之前的请求正在进行中,则阻止新的请求
+  //     if (status === AsyncRequestStatus.PENDING) {
+  //       return false
+  //     }
+  //     return true
+  //   },
+  // },
 );
 
 export const frensHandlesSlice = createSlice({
   name: 'FrensHandles',
   initialState: initFrensHandlesState,
   reducers: {
+    handleSearch: (state, action) => {
+      state.isSearch = action?.payload;
+    },
+    getFollowingSuccess: (state, action) => {
+      let result = action?.payload?.data?.result || [];
+      if (!action?.payload?.reset) {
+        result = [...(state?.following?.result || []), ...result];
+      }
+
+      state.following = {
+        cursor: result?.[(result?.length || 1) - 1]?.owner,
+        result,
+        total: action?.payload?.data?.total,
+      };
+    },
+    getFollowerSuccess: (state, action) => {
+      let result = action?.payload?.data?.result || [];
+      if (!action?.payload?.reset) {
+        result = [...(state?.follower?.result || []), ...result];
+      }
+
+      state.follower = {
+        cursor: result?.[(result?.length || 1) - 1]?.owner,
+        result,
+        total: action?.payload?.data?.total,
+      };
+    },
+    resetFeed: (state, action) => {
+      state.feed = {
+        total: null,
+        cursor: null,
+        result: null,
+      };
+    },
     getFeedSuccess: (state, action) => {
       let result = action?.payload?.data?.data?.result || [];
       if (!action?.payload?.reset) {
-        result = [...state.feed.result, ...result];
+        result = [...(state?.feed?.result || []), ...result];
       }
 
       state.feed = {
@@ -93,20 +234,44 @@ export const frensHandlesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getFeed.pending, (state, action) => {
-        // state.feed.total = action.meta.arg;
         state.status = AsyncRequestStatus.PENDING;
         state.errorMsg = '';
       })
       .addCase(getFeed.fulfilled, (state, action) => {
-        // console.log('---------------->', action);
-        // state.feed.total = action;
         state.status = AsyncRequestStatus.FULFILLED;
         state.errorMsg = '';
         toast.success('Ok.');
       })
       .addCase(getFeed.rejected, (state, action) => {
-        // state.feed = null;
         state.status = AsyncRequestStatus.REJECTED;
+        state.errorMsg = action.error.message || '';
+        toast.error(action.error.message);
+      })
+      .addCase(getFollowing.pending, (state, action) => {
+        state.followStatus = AsyncRequestStatus.PENDING;
+        state.errorMsg = '';
+      })
+      .addCase(getFollowing.fulfilled, (state, action) => {
+        state.followStatus = AsyncRequestStatus.FULFILLED;
+        state.errorMsg = '';
+        toast.success('Ok.');
+      })
+      .addCase(getFollowing.rejected, (state, action) => {
+        state.followStatus = AsyncRequestStatus.REJECTED;
+        state.errorMsg = action.error.message || '';
+        toast.error(action.error.message);
+      })
+      .addCase(getFollower.pending, (state, action) => {
+        state.followStatus = AsyncRequestStatus.PENDING;
+        state.errorMsg = '';
+      })
+      .addCase(getFollower.fulfilled, (state, action) => {
+        state.followStatus = AsyncRequestStatus.FULFILLED;
+        state.errorMsg = '';
+        toast.success('Ok.');
+      })
+      .addCase(getFollower.rejected, (state, action) => {
+        state.followStatus = AsyncRequestStatus.REJECTED;
         state.errorMsg = action.error.message || '';
         toast.error(action.error.message);
       });
@@ -116,5 +281,11 @@ export const frensHandlesSlice = createSlice({
 export const selectFrensHandlesState = (state: RootState) => state.frensHandles;
 
 const { actions, reducer } = frensHandlesSlice;
-const { getFeedSuccess } = actions;
+const {
+  getFeedSuccess,
+  resetFeed,
+  getFollowingSuccess,
+  getFollowerSuccess,
+  handleSearch,
+} = actions;
 export default reducer;

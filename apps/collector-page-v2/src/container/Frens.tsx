@@ -13,7 +13,8 @@ import React, {
   useRef,
 } from 'react';
 import styled from 'styled-components';
-import { debounce } from 'lodash';
+
+import { Popover } from 'antd';
 
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
@@ -30,6 +31,9 @@ import ProjectTypeSvg from '../components/common/icons/svgs/grid.svg';
 import {
   getFeed,
   selectFrensHandlesState,
+  getFollower,
+  getFollowing,
+  setFollow,
 } from '../features/frens/frensHandles';
 
 TimeAgo.addDefaultLocale(en);
@@ -66,26 +70,31 @@ const tagTypeOptions: Array<SelectOption> = [
   },
 ];
 
-const renderAddress = (address: string, isIcon = true) => {
+const renderAddress = (address: string, isIcon = true, className?: string) => {
   const formatAddress = `${address.substring(0, 6)}...${address.substring(
     address.length - 4
   )}`;
 
   return (
     <>
-      <span className="address">{formatAddress}</span>
+      <span className={`address ${className}`}>{formatAddress}</span>
       {isIcon && (
         <svg
-          width="14"
-          height="15"
-          viewBox="0 0 14 15"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          // class="cursor-pointer"
+          className="address-svg"
+          onClick={async () => {
+            await navigator.clipboard.writeText(address);
+          }}
         >
           <path
-            d="M8.80274 5.29972C8.1339 4.63087 7.17243 4.4165 6.07762 4.4165H5.02016C5.03446 3.54192 5.22297 3.10056 5.46316 2.86038C5.71307 2.61047 6.18076 2.4165 7.12762 2.4165H9.57762C10.5245 2.4165 10.9922 2.61047 11.2421 2.86038C11.492 3.11028 11.686 3.57798 11.686 4.52484V6.97484C11.686 7.9217 11.492 8.38939 11.2421 8.6393C11.0019 8.87948 10.5605 9.068 9.68595 9.0823V8.02484C9.68595 6.93003 9.47159 5.96856 8.80274 5.29972ZM9.68525 10.5825C10.7354 10.5686 11.6559 10.3468 12.3027 9.69996C12.9716 9.03112 13.186 8.06964 13.186 6.97484V4.52484C13.186 3.43003 12.9716 2.46856 12.3027 1.79972C11.6339 1.13087 10.6724 0.916504 9.57762 0.916504H7.12762C6.03281 0.916504 5.07134 1.13087 4.4025 1.79972C3.75566 2.44655 3.53389 3.36708 3.51999 4.41721C2.46986 4.4311 1.54934 4.65288 0.902499 5.29972C0.233655 5.96856 0.0192871 6.93003 0.0192871 8.02484V10.4748C0.0192871 11.5696 0.233655 12.5311 0.902499 13.2C1.57134 13.8688 2.53281 14.0832 3.62762 14.0832H6.07762C7.17243 14.0832 8.1339 13.8688 8.80274 13.2C9.44958 12.5531 9.67135 11.6326 9.68525 10.5825ZM4.26929 5.9165H3.62762C2.68076 5.9165 2.21307 6.11047 1.96316 6.36038C1.71325 6.61028 1.51929 7.07798 1.51929 8.02484V10.4748C1.51929 11.4217 1.71325 11.8894 1.96316 12.1393C2.21307 12.3892 2.68076 12.5832 3.62762 12.5832H6.07762C7.02448 12.5832 7.49218 12.3892 7.74208 12.1393C7.99199 11.8894 8.18595 11.4217 8.18595 10.4748V9.83317V8.02484C8.18595 7.07798 7.99199 6.61028 7.74208 6.36038C7.5078 6.12609 7.08209 5.94097 6.24961 5.91874C6.19411 5.91726 6.1368 5.9165 6.07762 5.9165H4.26929Z"
-            fill="#0072FF"
+            d="M10.6668 5.33333V3.46666C10.6668 2.71992 10.6668 2.34656 10.5215 2.06134C10.3937 1.81046 10.1897 1.60648 9.93882 1.47865C9.6536 1.33333 9.28023 1.33333 8.5335 1.33333H3.46683C2.72009 1.33333 2.34672 1.33333 2.06151 1.47865C1.81063 1.60648 1.60665 1.81046 1.47882 2.06134C1.3335 2.34656 1.3335 2.71992 1.3335 3.46666V8.53333C1.3335 9.28007 1.3335 9.65343 1.47882 9.93865C1.60665 10.1895 1.81063 10.3935 2.06151 10.5213C2.34672 10.6667 2.72009 10.6667 3.46683 10.6667H5.3335M7.46683 14.6667H12.5335C13.2802 14.6667 13.6536 14.6667 13.9388 14.5213C14.1897 14.3935 14.3937 14.1895 14.5215 13.9386C14.6668 13.6534 14.6668 13.2801 14.6668 12.5333V7.46666C14.6668 6.71992 14.6668 6.34656 14.5215 6.06134C14.3937 5.81046 14.1897 5.60648 13.9388 5.47865C13.6536 5.33333 13.2802 5.33333 12.5335 5.33333H7.46683C6.72009 5.33333 6.34672 5.33333 6.06151 5.47865C5.81063 5.60648 5.60665 5.81046 5.47882 6.06134C5.3335 6.34656 5.3335 6.71993 5.3335 7.46666V12.5333C5.3335 13.2801 5.3335 13.6534 5.47882 13.9386C5.60665 14.1895 5.81063 14.3935 6.06151 14.5213C6.34672 14.6667 6.72009 14.6667 7.46683 14.6667Z"
+            stroke="#718096"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
         </svg>
       )}
@@ -94,6 +103,144 @@ const renderAddress = (address: string, isIcon = true) => {
 };
 
 const tagComponentsMap = {
+  vote: (item) => {
+    const { timestamp, owner_name: ownerName } = item || {};
+    const { platform, metadata, tag } = item?.actions?.[0] || {};
+    const { proposal } = metadata;
+    const { title, options, body } = proposal;
+    const option = options?.[0];
+    return (
+      <>
+        <div className="first-row">
+          <span className="tag">{tag}</span>
+          <strong>{ownerName}</strong> voted for <strong>{option}</strong>
+          {'  |  '}
+          {timeAgo.format(new Date(timestamp).getTime())}
+        </div>
+        <div className="line-clamp-2 color-white">{title}</div>
+        {body && (
+          <div className="target-bg">
+            <div className="line-clamp-2">{body}</div>
+          </div>
+        )}
+      </>
+    );
+  },
+  share: (item) => {
+    const { timestamp, owner_name: ownerName } = item || {};
+    const { platform, metadata, tag } = item?.actions?.[0] || {};
+    const {
+      target,
+      // target: { body: targetBody },
+      body,
+    } = metadata;
+    const targetBody = target?.body;
+    return (
+      <>
+        <div className="first-row">
+          <span className="tag">{tag}</span>
+          <strong>{ownerName}</strong> shared a note on{' '}
+          <strong>{platform}</strong>
+          {'  |  '}
+          {timeAgo.format(new Date(timestamp).getTime())}
+        </div>
+        <div className="line-clamp-2 color-white">{targetBody}</div>
+        {/* {targetBody && (
+          <div className="target-bg">
+            <div className="line-clamp-2">{targetBody}</div>
+          </div>
+        )} */}
+      </>
+    );
+  },
+  follow: (item) => {
+    const { timestamp, owner_name: ownerName, owner } = item || {};
+    const { platform, metadata, tag } = item?.actions?.[0] || {};
+    const {
+      target,
+      // target: { body: targetBody },
+      name,
+      address,
+    } = metadata;
+    const targetBody = target?.body;
+    return (
+      <>
+        <div className="first-row">
+          <span className="tag">{tag}</span>
+          <strong>{ownerName}</strong> followed <strong>{name}</strong> on{' '}
+          <strong>{platform}</strong>
+          {'  |  '}
+          {timeAgo.format(new Date(timestamp).getTime())}
+        </div>
+        <div className="nft-box follow-box">
+          {/* TODO 显示策略 + 闪光效果 */}
+          {/* https://rss3.io/images/default.svg */}
+          <div>
+            <img
+              src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
+              alt={ownerName}
+            />
+            <span className="follow-name">{ownerName}</span>
+          </div>
+          <svg
+            width="48"
+            height="19"
+            viewBox="0 0 48 19"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1.10484 10.6521C0.870169 10.6521 0.667503 10.5667 0.496836 10.3961C0.336836 10.2254 0.256836 10.0174 0.256836 9.77208C0.256836 9.52675 0.336836 9.32408 0.496836 9.16408C0.667503 8.99341 0.870169 8.90808 1.10484 8.90808C1.3395 8.90808 1.54217 8.99341 1.71284 9.16408C1.8835 9.32408 1.96884 9.52675 1.96884 9.77208C1.96884 10.0174 1.8835 10.2254 1.71284 10.3961C1.54217 10.5667 1.3395 10.6521 1.10484 10.6521Z"
+              fill="#79B346"
+            />
+            <path
+              d="M4.49546 10.6521C4.26079 10.6521 4.05813 10.5667 3.88746 10.3961C3.72746 10.2254 3.64746 10.0174 3.64746 9.77208C3.64746 9.52675 3.72746 9.32408 3.88746 9.16408C4.05813 8.99341 4.26079 8.90808 4.49546 8.90808C4.73013 8.90808 4.93279 8.99341 5.10346 9.16408C5.27413 9.32408 5.35946 9.52675 5.35946 9.77208C5.35946 10.0174 5.27413 10.2254 5.10346 10.3961C4.93279 10.5667 4.73013 10.6521 4.49546 10.6521Z"
+              fill="#79B346"
+            />
+            <path
+              d="M7.88609 10.6521C7.65142 10.6521 7.44875 10.5667 7.27809 10.3961C7.11809 10.2254 7.03809 10.0174 7.03809 9.77208C7.03809 9.52675 7.11809 9.32408 7.27809 9.16408C7.44875 8.99341 7.65142 8.90808 7.88609 8.90808C8.12075 8.90808 8.32342 8.99341 8.49409 9.16408C8.66475 9.32408 8.75009 9.52675 8.75009 9.77208C8.75009 10.0174 8.66475 10.2254 8.49409 10.3961C8.32342 10.5667 8.12075 10.6521 7.88609 10.6521Z"
+              fill="#79B346"
+            />
+            <path
+              d="M23.75 0.780029C18.791 0.780029 14.75 4.82103 14.75 9.78003C14.75 14.739 18.791 18.78 23.75 18.78C28.709 18.78 32.75 14.739 32.75 9.78003C32.75 4.82103 28.709 0.780029 23.75 0.780029ZM28.052 7.71003L22.949 12.813C22.823 12.939 22.652 13.011 22.472 13.011C22.292 13.011 22.121 12.939 21.995 12.813L19.448 10.266C19.187 10.005 19.187 9.57303 19.448 9.31203C19.709 9.05103 20.141 9.05103 20.402 9.31203L22.472 11.382L27.098 6.75603C27.359 6.49503 27.791 6.49503 28.052 6.75603C28.313 7.01703 28.313 7.44003 28.052 7.71003Z"
+              fill="#79B346"
+            />
+            <path
+              d="M39.598 10.6521C39.3633 10.6521 39.1607 10.5667 38.99 10.3961C38.83 10.2254 38.75 10.0174 38.75 9.77208C38.75 9.52675 38.83 9.32408 38.99 9.16408C39.1607 8.99341 39.3633 8.90808 39.598 8.90808C39.8327 8.90808 40.0353 8.99341 40.206 9.16408C40.3767 9.32408 40.462 9.52675 40.462 9.77208C40.462 10.0174 40.3767 10.2254 40.206 10.3961C40.0353 10.5667 39.8327 10.6521 39.598 10.6521Z"
+              fill="#79B346"
+            />
+            <path
+              d="M42.9886 10.6521C42.754 10.6521 42.5513 10.5667 42.3806 10.3961C42.2206 10.2254 42.1406 10.0174 42.1406 9.77208C42.1406 9.52675 42.2206 9.32408 42.3806 9.16408C42.5513 8.99341 42.754 8.90808 42.9886 8.90808C43.2233 8.90808 43.426 8.99341 43.5966 9.16408C43.7673 9.32408 43.8526 9.52675 43.8526 9.77208C43.8526 10.0174 43.7673 10.2254 43.5966 10.3961C43.426 10.5667 43.2233 10.6521 42.9886 10.6521Z"
+              fill="#79B346"
+            />
+            <path
+              d="M46.3793 10.6521C46.1446 10.6521 45.9419 10.5667 45.7713 10.3961C45.6113 10.2254 45.5312 10.0174 45.5312 9.77208C45.5312 9.52675 45.6113 9.32408 45.7713 9.16408C45.9419 8.99341 46.1446 8.90808 46.3793 8.90808C46.6139 8.90808 46.8166 8.99341 46.9872 9.16408C47.1579 9.32408 47.2432 9.52675 47.2432 9.77208C47.2432 10.0174 47.1579 10.2254 46.9872 10.3961C46.8166 10.5667 46.6139 10.6521 46.3793 10.6521Z"
+              fill="#79B346"
+            />
+          </svg>
+          <div>
+            <img
+              src={`https://cdn.stamp.fyi/avatar/${address}?s=300`}
+              alt={name}
+            />
+            <span className="follow-name">{name}</span>
+          </div>
+
+          {/* {image.includes('.mp4') ? (
+              <video src={image} />
+            ) : (
+              <img
+                src={image}
+                alt={name}
+                onError={(e) => {
+                  e.currentTarget.src = 'https://rss3.io/images/default.svg';
+                }}
+              />
+            )} */}
+        </div>
+      </>
+    );
+  },
   comment: (item) => {
     const { timestamp, owner_name: ownerName } = item || {};
     const { platform, metadata, tag } = item?.actions?.[0] || {};
@@ -323,10 +470,13 @@ function Frens() {
     'Following'
   );
   const [filterTag, setFilterTag] = useState('');
+  const [filterAddress, setFilterAddress] = useState(null);
   const dispatch = useAppDispatch();
   const feedRef = useRef(null);
 
-  const { feed, status } = useAppSelector(selectFrensHandlesState);
+  const { feed, status, following, follower, isSearch } = useAppSelector(
+    selectFrensHandlesState
+  );
 
   const loading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
@@ -335,7 +485,12 @@ function Frens() {
 
   useEffect(() => {
     feedRef.current = feed;
-  }, [feed]);
+  }, []);
+
+  useEffect(() => {
+    dispatch(getFollowing({ reset: true }));
+    dispatch(getFollower({ reset: true }));
+  }, []);
 
   const fetchData = useCallback(
     ({
@@ -349,14 +504,90 @@ function Frens() {
       address?: string;
       reset?: boolean;
     }) => {
-      dispatch(getFeed({ category, cursor, address, reset }));
+      dispatch(
+        getFeed({
+          category: feedTab?.toLowerCase(),
+          cursor,
+          address: filterAddress,
+          reset,
+          tag: filterTag,
+        })
+      );
     },
-    [dispatch]
+    [dispatch, filterTag, feedTab, filterAddress]
   );
 
   useEffect(() => {
     fetchData({ reset: true });
-  }, []);
+  }, [filterTag, feedTab, filterAddress]);
+
+  const renderUserInfo = (
+    owner: string,
+    owner_name: string,
+    is_follow: boolean,
+    owner_follower_num?: number,
+    owner_following_num?: number,
+    isClose?: boolean
+  ) => (
+    <div className="user-item">
+      {isClose && (
+        <svg
+          width="14"
+          height="14"
+          viewBox="0 0 36 36"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          className="user-item-close"
+          onClick={() => setFilterAddress(null)}
+        >
+          <path
+            d="M0 0H4V4H0V0ZM8 8H4V4H8V8ZM12 12H8V8H12V12ZM16 16H12V12H16V16ZM20 20H16V16H20V20ZM24 24H20V20H24V24ZM28 28H24V24H28V28ZM32 32V28H28V32H32ZM32 32V36H36V32H32Z"
+            fill="#333333"
+          />
+          <path
+            d="M0 36H4V32H0V36ZM8 28H4V32H8V28ZM12 24H8V28H12V24ZM16 20H12V24H16V20ZM20 16H16V20H20V16ZM24 12H20V16H24V12ZM28 8H24V12H28V8ZM32 4V8H28V4H32ZM32 4V0H36V4H32Z"
+            fill="#333333"
+          />
+        </svg>
+      )}
+      <div className="user-info">
+        <img
+          className="avatar"
+          src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
+          alt={owner}
+        />
+        <div>
+          <div className="name color-white">{owner_name || ' '}</div>
+          <div>{renderAddress(owner, false, 'address-normal')}</div>
+        </div>
+        <button
+          className="frens-button"
+          type="button"
+          onClick={() => {
+            dispatch(setFollow({ isFollow: is_follow, target: owner }));
+          }}
+        >
+          {is_follow ? (
+            <>
+              <span className="btn-following">Following</span>
+              <span className="btn-unfollow">UnFollow</span>
+            </>
+          ) : (
+            'Follow'
+          )}
+        </button>
+      </div>
+      <div className="follow-info">
+        {owner_following_num}
+        {'  '}
+        <span className="name color-white">Following</span>
+        {'   '}
+        {owner_follower_num}
+        {'  '}
+        <span className="name color-white">Follower</span>
+      </div>
+    </div>
+  );
 
   return (
     <FrensWrapper>
@@ -383,15 +614,42 @@ function Frens() {
             />
           </div>
         </FrensFeedSwitch>
-        {feed?.result?.map((item) => {
-          const { owner, tag, type, owner_name: ownerName } = item;
+        {feed?.result?.map((item, index) => {
+          const {
+            owner,
+            tag,
+            type,
+            owner_name: ownerName,
+            owner_follower_num: ownerFollowerNum,
+            owner_following_num: ownerFollowingNum,
+          } = item;
           return (
             <FrensFeedCard>
-              <img
-                className="avatar"
-                src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
-                alt={owner}
-              />
+              <Popover
+                content={renderUserInfo(
+                  owner,
+                  ownerName,
+                  false,
+                  ownerFollowerNum,
+                  ownerFollowingNum,
+                  false
+                )}
+                getPopupContainer={(triggerNode) =>
+                  (triggerNode as any).parentNode
+                }
+                color={'#1b1e23'}
+                overlayInnerStyle={{
+                  background: '#1b1e23',
+                  color: '#718096',
+                }}
+              >
+                <img
+                  id={`tooltip-anchor-children-${owner}-${index}`}
+                  className="avatar"
+                  src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
+                  alt={owner}
+                />
+              </Popover>
               <div className="content">
                 <div className="owner">
                   <span className="name color-white">{ownerName}</span>{' '}
@@ -421,7 +679,26 @@ function Frens() {
         </div>
       </FrensFeed>
       <FrensRight>
-        <SearchInput onSearch={() => {}} placeholder="Search Address or ENS" />
+        {isSearch && feed?.result?.[0] ? (
+          <div className="card search-card">
+            {renderUserInfo(
+              feed?.result?.[0]?.owner,
+              feed?.result?.[0]?.owner_name,
+              false,
+              feed?.result?.[0]?.owner_follower_num,
+              feed?.result?.[0]?.owner_following_num,
+              true
+            )}
+          </div>
+        ) : (
+          <SearchInput
+            onSearch={(value) => {
+              console.log(value, 'value');
+              setFilterAddress(value);
+            }}
+            placeholder="Search Address or ENS"
+          />
+        )}
         <div className="card">
           <FrensFeedSwitch>
             <div
@@ -430,7 +707,7 @@ function Frens() {
                 followTab === 'Following' ? 'active' : ''
               } follow-tab`}
             >
-              Following (12.4k)
+              Following {following?.total ? `(${following?.total})` : null}
             </div>
             <div
               onClick={() => setFollowTab('Follower')}
@@ -438,9 +715,56 @@ function Frens() {
                 followTab === 'Follower' ? 'active' : ''
               } follow-tab`}
             >
-              Follower (398)
+              Follower {follower?.total ? `(${follower?.total})` : null}
             </div>
           </FrensFeedSwitch>
+          {(followTab === 'Following' ? following : follower)?.result?.map(
+            ({ owner, owner_name, is_follow }, index) => (
+              <div
+                className="user-info"
+                key={`frens-feed-card-${owner}-${index}`}
+              >
+                <img
+                  className="avatar"
+                  src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
+                  alt={owner}
+                />
+                <div>
+                  <div className="name color-white">{owner_name || ' '}</div>
+                  <div>{renderAddress(owner, false)}</div>
+                </div>
+                <button
+                  className="frens-button"
+                  type="button"
+                  onClick={() => {
+                    dispatch(setFollow({ isFollow: is_follow, target: owner }));
+                  }}
+                >
+                  {is_follow ? (
+                    <>
+                      <span className="btn-following">Following</span>
+                      <span className="btn-unfollow">UnFollow</span>
+                    </>
+                  ) : (
+                    'Follow'
+                  )}
+                </button>
+              </div>
+            )
+          )}
+          {/* <div className="load-more-box">
+            <button
+              className="frens-button"
+              type="button"
+              onClick={() => {
+                fetchData({
+                  cursor: feedRef?.current?.cursor,
+                });
+              }}
+            >
+              Load More
+            </button>
+          </div> */}
         </div>
       </FrensRight>
     </FrensWrapper>
@@ -466,10 +790,22 @@ const FrensWrapper = styled.div`
     }
   }
 
+  .search-card {
+    margin: 0;
+  }
+
   /* .rubiks-loader {
     margin: 0 auto;
     padding: 30px 0;
   } */
+
+  .name {
+    font-weight: bolder;
+  }
+
+  .color-white {
+    color: white;
+  }
 
   .load-more {
     margin: 20px;
@@ -480,10 +816,80 @@ const FrensWrapper = styled.div`
       cursor: pointer;
       background-color: #1b1e23;
       color: #fff;
-      border: 1px solid gray;
+      border: 1px solid #39424c;
       border-radius: 5px;
       padding: 10px 20px;
       outline: none;
+    }
+  }
+
+  .load-more-box {
+    justify-content: center !important;
+    display: flex;
+    padding: 12px 0;
+  }
+
+  .frens-button {
+    cursor: pointer;
+    background-color: #1b1e23;
+    color: #fff;
+    border: 1px solid #39424c;
+    border-radius: 5px;
+    padding: 10px 20px;
+    outline: none;
+
+    .btn-unfollow {
+      display: none;
+    }
+    &:hover {
+      .btn-following {
+        display: none;
+      }
+      .btn-unfollow {
+        display: block;
+      }
+    }
+    /* background: #14171a; */
+  }
+
+  .user-item {
+    position: relative;
+    color: #718096;
+    .user-item-close {
+      position: absolute;
+      top: 7px;
+      right: 0;
+    }
+
+    svg {
+      cursor: pointer;
+    }
+  }
+
+  .follow-info {
+    white-space: pre;
+    padding: 15px 0;
+  }
+
+  .user-info {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    column-gap: 12px;
+    padding: 20px 0;
+    border-bottom: 1px solid #14171a;
+
+    img {
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+      border-radius: 50%;
+    }
+    .name {
+      margin-bottom: 5px;
+    }
+    .frens-button {
+      margin-left: auto;
     }
   }
 `;
@@ -562,10 +968,6 @@ const FrensFeedCard = styled.div`
     font-size: 14px;
   }
 
-  .color-white {
-    color: white;
-  }
-
   .target-bg {
     background: #14171a;
     padding: 10px 20px;
@@ -594,8 +996,12 @@ const FrensFeedCard = styled.div`
     margin-right: 5px;
   }
 
-  .name {
-    font-weight: bolder;
+  .address-normal {
+    margin: 0;
+  }
+
+  .address-svg {
+    cursor: pointer;
   }
 
   .first-row {
@@ -647,5 +1053,25 @@ const FrensFeedCard = styled.div`
         z-index: 0;
       }
     }
+  }
+
+  .follow-box {
+    & > div {
+      display: flex;
+      column-gap: 10px;
+      align-items: center;
+    }
+    img {
+      width: 2rem;
+      height: 2rem;
+      object-fit: contain;
+      margin-right: -5px;
+      border-radius: 50%;
+    }
+  }
+
+  .follow-name {
+    margin-left: 5px;
+    font-weight: bolder;
   }
 `;
