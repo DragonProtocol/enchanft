@@ -220,7 +220,7 @@ function Contents() {
         }}
       />
       {(loading && (
-        <ContentsWrapper>
+        <ContentsWrapper loading>
           <div className="loading">
             <Loading />
           </div>
@@ -401,12 +401,12 @@ const Box = styled.div`
   padding: 24px 40px 0 40px;
   overflow: hidden;
 `;
-const ContentsWrapper = styled.div`
+const ContentsWrapper = styled.div<{ loading?: boolean }>`
   width: calc(100% - 2px);
   height: calc(100% - 74px);
   box-sizing: border-box;
-  border: 1px solid #39424c;
-  background-color: #1b1e23;
+  border: ${(props) => (props.loading ? 'none' : '1px solid #39424c')};
+  background-color: ${(props) => (props.loading ? '' : '#1b1e23')};
   /* border--radius: 20px; */
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
