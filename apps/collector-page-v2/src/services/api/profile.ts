@@ -11,3 +11,10 @@ export function fetchU3Profile(token: string): RequestPromise<ProfileResponse> {
     },
   });
 }
+
+export function fetchU3ProfileWithWallet(wallet: string) {
+  return request({
+    url: `/users/u3profile/${wallet}`,
+    method: 'get',
+  });
+}
