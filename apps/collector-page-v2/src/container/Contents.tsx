@@ -220,7 +220,7 @@ function Contents() {
         }}
       />
       {(loading && (
-        <ContentsWrapper loading>
+        <ContentsWrapper loading="true">
           <div className="loading">
             <Loading />
           </div>
@@ -401,7 +401,7 @@ const Box = styled.div`
   padding: 24px 40px 0 40px;
   overflow: hidden;
 `;
-const ContentsWrapper = styled.div<{ loading?: boolean }>`
+const ContentsWrapper = styled.div<{ loading?: string }>`
   width: calc(100% - 2px);
   height: calc(100% - 74px);
   box-sizing: border-box;

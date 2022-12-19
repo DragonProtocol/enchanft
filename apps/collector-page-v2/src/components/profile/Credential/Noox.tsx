@@ -15,7 +15,7 @@ export default function Noox({ data }: { data: NooxData }) {
         expand={expand}
         setExpand={(e) => setExpand(e)}
         exploreAction={() => {
-          navigate('/events');
+          navigate('/events&platform=noox');
         }}
       />
       {expand && (

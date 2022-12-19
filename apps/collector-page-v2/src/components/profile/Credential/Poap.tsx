@@ -17,7 +17,7 @@ export default function Poap({ data }: { data: Array<PoapData> }) {
         expand={expand}
         setExpand={(e) => setExpand(e)}
         exploreAction={() => {
-          navigate('/events');
+          navigate('/events&platform=poap');
         }}
       />
       {expand && (

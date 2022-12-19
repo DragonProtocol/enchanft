@@ -16,7 +16,7 @@ export default function Galxe({ data }: { data: GalxeData }) {
         expand={expand}
         setExpand={(e) => setExpand(e)}
         exploreAction={() => {
-          navigate('/events');
+          navigate('/events?platform=galxe');
         }}
       />
       {expand && (
