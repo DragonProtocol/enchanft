@@ -304,11 +304,11 @@ function Contents() {
                 />
               );
             })}
-            {/* {!hasMore && (
+            {!hasMore && (
               <div className="load-more">
-                <div>NoMoreData</div>
+                <div>No other contents</div>
               </div>
-            )} */}
+            )}
             {loadingMore && (
               <div className="load-more">
                 <div className="loading">
@@ -431,6 +431,7 @@ const ListBox = styled(ListScrollBox)`
   & .load-more {
     margin: 20px;
     text-align: center;
+    color: #718096;
     > button {
       cursor: pointer;
       background-color: inherit;
