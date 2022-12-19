@@ -182,6 +182,12 @@ function Contents() {
     }
   }, [selectContent]);
 
+  const showContents = useMemo(() => {
+    return contents.filter((item) => {
+      return !keysFilter.includes(item.uid || item.id);
+    });
+  }, [contents, keysFilter]);
+
   useEffect(() => {
     if (selectContent?.uid) {
       loadDaylightContent(selectContent.action.linkUrl);
@@ -230,46 +236,79 @@ function Contents() {
               setCurrPageNumber(currPageNumber + 1);
             }}
           >
-            {contents
-              .filter((item) => {
-                return !keysFilter.includes(item.uid || item.id);
-              })
-              .map((item) => {
-                let isActive = false;
-                if (item.uid) {
-                  isActive = item.uid === selectContent?.uid;
-                } else {
-                  isActive = item.id === selectContent?.id;
-                }
-
-                return (
-                  <ListItem
-                    key={item.id || item.uid}
-                    isActive={isActive}
-                    clickAction={() => {
-                      setSelectContent(item);
-                      navigate(`/contents/${item.uid || item.id}`);
-                    }}
-                    shareAction={() => {
-                      onShare(item);
-                    }}
-                    voteAction={vote}
-                    favorsAction={favors}
-                    hiddenAction={() => {
-                      contentHiddenOrNot(
-                        selectContent?.uid || selectContent.id
-                      );
-                      setSelectContent(undefined);
-                    }}
-                    {...item}
-                  />
-                );
-              })}
-            {/* {!hasMore && (
+            {showContents.map((item, idx) => {
+              let isActive = false;
+              if (item.uid) {
+                isActive = item.uid === selectContent?.uid;
+              } else {
+                isActive = item.id === selectContent?.id;
+              }
+              return (
+                <ListItem
+                  key={item.id || item.uid}
+                  isActive={isActive}
+                  clickAction={() => {
+                    setSelectContent(item);
+                    navigate(`/contents/${item.uid || item.id}`);
+                  }}
+                  shareAction={() => {
+                    onShare(item);
+                  }}
+                  voteAction={async () => {
+                    try {
+                      await vote();
+                      if (selectContent.upVoted) return;
+                      setSelectContent({
+                        ...selectContent,
+                        upVoteNum: selectContent.upVoteNum + 1,
+                        upVoted: true,
+                      });
+                      setContents([
+                        ...showContents.slice(0, idx),
+                        {
+                          ...showContents[idx],
+                          upVoteNum: showContents[idx].upVoteNum + 1,
+                          upVoted: true,
+                        },
+                        ...showContents.slice(idx + 1),
+                      ]);
+                    } catch (error) {
+                      toast.error(error.message);
+                    }
+                  }}
+                  favorsAction={async () => {
+                    try {
+                      await favors();
+                      if (selectContent.favored) return;
+                      setSelectContent({
+                        ...selectContent,
+                        favored: true,
+                      });
+                      setContents([
+                        ...showContents.slice(0, idx),
+                        {
+                          ...showContents[idx],
+                          favored: true,
+                        },
+                        ...showContents.slice(idx + 1),
+                      ]);
+                    } catch (error) {
+                      toast.error(error.message);
+                    }
+                  }}
+                  hiddenAction={() => {
+                    contentHiddenOrNot(selectContent?.uid || selectContent.id);
+                    setSelectContent(undefined);
+                  }}
+                  {...item}
+                />
+              );
+            })}
+            {!hasMore && (
               <div className="load-more">
-                <div>NoMoreData</div>
+                <div>No other contents</div>
               </div>
-            )} */}
+            )}
             {loadingMore && (
               <div className="load-more">
                 <div className="loading">
@@ -392,6 +431,7 @@ const ListBox = styled(ListScrollBox)`
   & .load-more {
     margin: 20px;
     text-align: center;
+    color: #718096;
     > button {
       cursor: pointer;
       background-color: inherit;

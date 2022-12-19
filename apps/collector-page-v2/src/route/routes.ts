@@ -22,6 +22,7 @@ export enum RouteKey {
   favorites = 'favorites',
   frens = 'frens',
   profile = 'profile',
+  profileWallet = 'profileWallet',
   noMatch = 'noMatch',
 }
 
@@ -89,7 +90,7 @@ export const routes: CutomRouteObject[] = [
   {
     path: '/profile/:wallet',
     element: loadContainerElement('Profile'),
-    key: RouteKey.profile,
+    key: RouteKey.profileWallet,
   },
   {
     path: '/frens',
