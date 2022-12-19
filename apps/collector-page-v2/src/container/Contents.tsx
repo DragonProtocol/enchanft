@@ -54,7 +54,7 @@ function Contents() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [daylightContentLoading, setDaylightContentLoading] = useState(true);
+  const [daylightContentLoading, setDaylightContentLoading] = useState(false);
   const { keysFilter, contentHiddenOrNot } = useContentHidden();
   const [tab, setTab] = useState<'original' | 'readerView'>('readerView');
 
@@ -141,7 +141,7 @@ function Contents() {
               user.token
             ),
           ]);
-          setHasMore(dayLightData > 0 || data.data.length > 0);
+          setHasMore(dayLightData.length > 0 || data.data.length > 0);
           setContents([...contents, ...dayLightData, ...data.data]);
         } else {
           const { data } = await fetchContents(
@@ -223,7 +223,7 @@ function Contents() {
         <ContentsWrapper>
           <ListBox
             onScrollBottom={() => {
-              console.log('onScrollBottom LoadMore');
+              console.log('onScrollBottom LoadMore', loadingMore, hasMore);
               if (loadingMore) return;
               if (!hasMore) return;
               loadMore(currPageNumber + 1);
