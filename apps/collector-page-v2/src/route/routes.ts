@@ -87,6 +87,11 @@ export const routes: CutomRouteObject[] = [
     key: RouteKey.profile,
   },
   {
+    path: '/profile/:wallet',
+    element: loadContainerElement('Profile'),
+    key: RouteKey.profile,
+  },
+  {
     path: '/frens',
     element: loadContainerElement('Frens'),
     key: RouteKey.frens,

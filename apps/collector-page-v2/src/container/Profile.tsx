@@ -9,6 +9,7 @@ import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 import Info from '../components/info';
 import DailyDigest from '../components/info/DailyDigest';
 import Credential from '../components/profile/Credential';
@@ -19,6 +20,7 @@ import { ProfileEntity } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
 
 function Profile() {
+  const { wallet } = useParams();
   const { user } = useWlUserReact();
   const [tab, setTab] = useState<'Credential' | 'OnChain' | 'OffChain'>(
     'Credential'
@@ -38,25 +40,32 @@ function Profile() {
   }, [user.token]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (wallet) {
+      console.log('fetchDataWithWallet', wallet);
+      setLoading(false);
+    } else {
+      fetchData();
+    }
+  }, [fetchData, wallet]);
 
   return (
     <ProfileWrapper>
       <div>
-        <div className="infos">
-          <Info
-            {...{
-              date: (user as any).createdAt,
-              nickname: user.name,
-              avatar: user.avatar,
-              walletAddr:
-                user.accounts[0]?.thirdpartyName ||
-                user.accounts[0]?.thirdpartyId,
-            }}
-          />
-          <DailyDigest />
-        </div>
+        {!wallet && (
+          <div className="infos">
+            <Info
+              {...{
+                date: (user as any).createdAt,
+                nickname: user.name,
+                avatar: user.avatar,
+                walletAddr:
+                  user.accounts[0]?.thirdpartyName ||
+                  user.accounts[0]?.thirdpartyId,
+              }}
+            />
+            <DailyDigest />
+          </div>
+        )}
 
         {(loading && (
           <div className="loading">
@@ -125,10 +134,10 @@ const ProfileWrapper = styled.div`
     .infos {
       display: flex;
       gap: 40px;
+      margin-bottom: 50px;
     }
 
     .content {
-      margin-top: 50px;
       .tab {
         display: flex;
         flex-direction: row;
