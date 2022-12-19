@@ -59,6 +59,7 @@ const TitleBox = styled.div`
     align-items: center;
     gap: 10px;
     & button {
+      cursor: pointer;
       font-weight: 400;
       font-size: 16px;
       line-height: 19px;

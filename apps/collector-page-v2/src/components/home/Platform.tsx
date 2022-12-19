@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import Title from './Title';
 import { PlatformData } from '../../services/types/home';
 
@@ -9,6 +10,7 @@ export default function Platform({
   platforms: Array<PlatformData>;
   viewAllAction: () => void;
 }) {
+  const navigate = useNavigate();
   return (
     <Box>
       <Title text="Browse by Platform" viewAllAction={viewAllAction} />{' '}
@@ -20,7 +22,7 @@ export default function Platform({
               {...item}
               clickAction={() => {
                 if (item.platformUrl) {
-                  window.open(item.platformUrl, '_blank');
+                  navigate(`/events?platform=${item.platform}`);
                 }
               }}
             />
