@@ -15,7 +15,10 @@ import DailyDigest from '../components/info/DailyDigest';
 import Credential from '../components/profile/Credential';
 import OnChainInterest from '../components/profile/OnChainInterest';
 import OffChainInterest from '../components/profile/OffChainInterest';
-import { fetchU3Profile } from '../services/api/profile';
+import {
+  fetchU3Profile,
+  fetchU3ProfileWithWallet,
+} from '../services/api/profile';
 import { ProfileEntity } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
 
@@ -39,19 +42,29 @@ function Profile() {
     }
   }, [user.token]);
 
+  const fetchDataWithWallet = useCallback(async () => {
+    try {
+      const { data } = await fetchU3ProfileWithWallet(wallet);
+      setProfileData(data.data);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [wallet]);
+
   useEffect(() => {
     if (wallet) {
-      console.log('fetchDataWithWallet', wallet);
-      setLoading(false);
+      fetchDataWithWallet();
     } else {
       fetchData();
     }
-  }, [fetchData, wallet]);
+  }, [fetchData, fetchDataWithWallet, wallet]);
 
   return (
     <ProfileWrapper>
       <div>
-        {!wallet && (
+        {!wallet && user && (
           <div className="infos">
             <Info
               {...{
