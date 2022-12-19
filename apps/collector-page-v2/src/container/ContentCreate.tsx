@@ -29,6 +29,7 @@ function ContentCreate() {
   const [type, setType] = useState(ContentType.NEWS);
   const [selectProjects, setSelectProjects] = useState<Array<Project>>([]);
   const [supportReader, setSupportReader] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [urlContent, setUrlContent] = useState({
     title: '',
@@ -41,6 +42,10 @@ function ContentCreate() {
     setOriginalUrl('');
     setType(ContentType.NEWS);
     setSelectProjects([]);
+    setUrlContent({
+      title: '',
+      content: '',
+    });
   }, []);
 
   const loadUrlContent = useCallback(async () => {
@@ -61,9 +66,11 @@ function ContentCreate() {
       !author ||
       !originalUrl ||
       !type ||
-      selectProjects.length === 0
+      selectProjects.length === 0 ||
+      loading
     )
       return;
+    setLoading(true);
     try {
       await saveContent(
         {
@@ -80,6 +87,8 @@ function ContentCreate() {
       reset();
     } catch (error) {
       toast.error('Add Content Fail!!!');
+    } finally {
+      setLoading(false);
     }
   }, [
     user.token,
@@ -189,7 +198,7 @@ function ContentCreate() {
           <FormButtons>
             <FormButtonSubmit
               type="submit"
-              // disabled={loading}
+              disabled={loading}
               onClick={submitContent}
             >
               Submit
