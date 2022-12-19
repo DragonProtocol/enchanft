@@ -2,10 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:28:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 12:13:11
+ * @LastEditTime: 2022-12-19 14:40:16
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import { selectWebsite } from '../../features/website/websiteSlice';
+import { useAppSelector } from '../../store/hooks';
 import CannotOpenPlatFormLink from './CannotOpenPlatFormLink';
 
 export type CannotOpenPlatFormLinkProps = {
@@ -21,8 +23,7 @@ export type CannotOpenPlatFormLinkProps = {
 export default function EventLinkPreview({
   data,
 }: CannotOpenPlatFormLinkProps) {
-  const u3ExtensionInstalled =
-    localStorage.getItem('u3ExtensionInstalled') === 'true';
+  const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
   const { platform, link, supportIframe, name } = data;
   const displayCannotOpen = !supportIframe && !u3ExtensionInstalled;
   return displayCannotOpen ? (
