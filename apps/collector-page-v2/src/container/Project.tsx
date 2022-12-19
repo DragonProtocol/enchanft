@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 19:04:48
+ * @LastEditTime: 2022-12-19 11:34:54
  * @Description: 首页任务看板
  */
 import { useCallback, useMemo, useState } from 'react';
@@ -20,11 +20,13 @@ import useUserFavorites from '../hooks/useUserFavorites';
 import { tweetShare } from '../utils/twitter';
 import { getProjectShareUrl } from '../utils/share';
 import { voteContent } from '../services/api/contents';
+import useLogin from '../hooks/useLogin';
 
 export type ProjectContainerProps = {
   data: ProjectExploreListItemResponse;
 };
 function Project({ data }: ProjectContainerProps) {
+  const { handleLoginVerify } = useLogin();
   const { user } = useWlUserReact();
   const dispatch = useAppDispatch();
   const { projectIds } = useUserFavorites();
@@ -38,13 +40,18 @@ function Project({ data }: ProjectContainerProps) {
   const onShare = () => {
     tweetShare(data.name, getProjectShareUrl(data.id));
   };
-  const onFavor = useCallback(
-    () => dispatch(favorProject(data)),
-    [dispatch, data]
-  );
+  const onFavor = useCallback(() => {
+    handleLoginVerify(() => {
+      dispatch(favorProject(data));
+    });
+  }, [dispatch, data, handleLoginVerify]);
   const onEventComplete = useCallback(
-    (eventId) => dispatch(completeEvent({ id: eventId })),
-    [dispatch]
+    (eventId) => {
+      handleLoginVerify(() => {
+        dispatch(completeEvent({ id: eventId }));
+      });
+    },
+    [dispatch, handleLoginVerify]
   );
   const isFavored = useMemo(
     () => projectIds.includes(projectId),
@@ -56,11 +63,13 @@ function Project({ data }: ProjectContainerProps) {
   );
   const [currentVotedContentIds, setVotedContentIds] = useState([]);
   const onContentVote = useCallback(
-    async (id) => {
-      await voteContent(id, user.token);
-      setVotedContentIds([...currentVotedContentIds, id]);
+    (id) => {
+      handleLoginVerify(async () => {
+        await voteContent(id, user.token);
+        setVotedContentIds([...currentVotedContentIds, id]);
+      });
     },
-    [currentVotedContentIds, setVotedContentIds]
+    [currentVotedContentIds, setVotedContentIds, handleLoginVerify]
   );
   return (
     <ProjectDetailCard

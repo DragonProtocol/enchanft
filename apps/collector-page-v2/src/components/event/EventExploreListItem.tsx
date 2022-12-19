@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 18:05:47
+ * @LastEditTime: 2022-12-19 11:08:54
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -38,7 +38,7 @@ const defaultStyle = {
 };
 const styleMaps = {
   [Platform.GALXE]: {
-    bgc: 'rgba(16, 16, 20, 0.1)',
+    bgc: '#14171a',
     activeColor: '#FFFFFF',
   },
   [Platform.NOOX]: {
