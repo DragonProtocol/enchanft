@@ -637,7 +637,7 @@ function Frens() {
                 getPopupContainer={(triggerNode) =>
                   (triggerNode as any).parentNode
                 }
-                color={'#1b1e23'}
+                color="#1b1e23"
                 overlayInnerStyle={{
                   background: '#1b1e23',
                   color: '#718096',
@@ -719,11 +719,8 @@ function Frens() {
             </div>
           </FrensFeedSwitch>
           {(followTab === 'Following' ? following : follower)?.result?.map(
-            ({ owner, owner_name, is_follow }, index) => (
-              <div
-                className="user-info"
-                key={`frens-feed-card-${owner}-${index}`}
-              >
+            ({ owner, owner_name, is_follow }) => (
+              <div className="user-info" key={`frens-feed-card-${owner}`}>
                 <img
                   className="avatar"
                   src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
