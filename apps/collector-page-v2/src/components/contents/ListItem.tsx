@@ -49,7 +49,12 @@ export default function ListItem({
       <ContentItemFooter>
         <span
           className={isActive ? 'vote' : 'vote active'}
-          onClick={() => voteAction && voteAction()}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (voteAction) {
+              voteAction();
+            }
+          }}
         >
           👏 &nbsp;{upVoteNum}
         </span>

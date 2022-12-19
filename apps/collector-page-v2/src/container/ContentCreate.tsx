@@ -27,7 +27,6 @@ function ContentCreate() {
   const [author, setAuthor] = useState('');
   const [originalUrl, setOriginalUrl] = useState('');
   const [type, setType] = useState(ContentType.NEWS);
-  const [projects, setProjects] = useState<Array<Project>>([]);
   const [selectProjects, setSelectProjects] = useState<Array<Project>>([]);
   const [supportReader, setSupportReader] = useState(true);
 
@@ -35,6 +34,14 @@ function ContentCreate() {
     title: '',
     content: '',
   });
+
+  const reset = useCallback(() => {
+    setTitle('');
+    setAuthor('');
+    setOriginalUrl('');
+    setType(ContentType.NEWS);
+    setSelectProjects([]);
+  }, []);
 
   const loadUrlContent = useCallback(async () => {
     if (!originalUrl) return;
@@ -70,6 +77,7 @@ function ContentCreate() {
         user.token
       );
       toast.success('Add Content Success!!!');
+      reset();
     } catch (error) {
       toast.error('Add Content Fail!!!');
     }
@@ -82,15 +90,6 @@ function ContentCreate() {
     selectProjects,
     supportReader,
   ]);
-
-  const loadProjects = useCallback(async () => {
-    const { data } = await getContentProjects();
-    setProjects(data.data);
-  }, []);
-
-  useEffect(() => {
-    loadProjects();
-  }, []);
 
   return (
     <ScrollBox>
