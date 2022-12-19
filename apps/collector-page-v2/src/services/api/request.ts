@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 10:08:56
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 13:27:45
+ * @LastEditTime: 2022-12-17 11:19:39
  * @Description: 后端api请求封装
  */
 import axios, {
@@ -11,7 +11,11 @@ import axios, {
   AxiosPromise,
 } from 'axios';
 import qs from 'qs';
-import { WlUserReactContextType } from '@ecnft/wl-user-react';
+import {
+  AuthorizerType,
+  WlUserActionType,
+  WlUserReactContextType,
+} from '@ecnft/wl-user-react';
 import { API_BASE_URL } from '../../constants';
 
 export type RequestPromise<T> = AxiosPromise<T>;
@@ -81,7 +85,10 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      if (handleAxiosResponse401) handleAxiosResponse401();
+      wlUserReactContextValue.dispatchAction({
+        type: WlUserActionType.LOGIN,
+        payload: AuthorizerType.EVM_WALLET_KIT,
+      });
       return undefined;
     }
     // 对响应错误做点什么
