@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 14:59:07
+ * @LastEditTime: 2022-12-19 15:24:00
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -159,6 +159,11 @@ function EventCreate() {
       handleSubmit(values);
     },
   });
+  useEffect(() => {
+    if (status === AsyncRequestStatus.FULFILLED) {
+      formik.resetForm();
+    }
+  }, [status]);
   const renderFieldError = useCallback(
     (field: string) => {
       return formik.touched[field] && formik.errors[field] ? (
@@ -185,6 +190,7 @@ function EventCreate() {
         <FormField>
           <FormLabel htmlFor="name">Title</FormLabel>
           <InputBase
+            placeholder="Title"
             onChange={(e) => formik.setFieldValue('name', e.target.value)}
             value={formik.values.name}
           />
@@ -194,6 +200,7 @@ function EventCreate() {
         <FormField>
           <FormLabel htmlFor="description">Description</FormLabel>
           <InputBase
+            placeholder="Description"
             onChange={(e) =>
               formik.setFieldValue('description', e.target.value)
             }
@@ -214,6 +221,7 @@ function EventCreate() {
         <FormField>
           <FormLabel htmlFor="platform">Platform</FormLabel>
           <PlatformSelect
+            placeholder="Filter by Platform"
             onChange={(value) => formik.setFieldValue('platform', value)}
             value={formik.values.platform}
           />
@@ -223,6 +231,7 @@ function EventCreate() {
         <FormField>
           <FormLabel htmlFor="project">Project</FormLabel>
           <ProjectAsyncSelect
+            placeholder="Filter by Project"
             value={formik.values.project}
             onChange={(value) => formik.setFieldValue('project', value)}
           />
@@ -232,6 +241,7 @@ function EventCreate() {
         <FormField>
           <FormLabel htmlFor="link">Original URL</FormLabel>
           <InputBase
+            placeholder="Original URL"
             onChange={(e) => formik.setFieldValue('link', e.target.value)}
             value={formik.values.link}
           />
@@ -330,9 +340,7 @@ function EventCreate() {
           <FormButtonSubmit
             type="submit"
             disabled={loading}
-            onClick={() => {
-              console.log(formik.values);
-            }}
+            onClick={() => formik.submitForm()}
           >
             Submit
           </FormButtonSubmit>
