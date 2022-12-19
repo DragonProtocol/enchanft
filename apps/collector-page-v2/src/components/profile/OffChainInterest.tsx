@@ -40,7 +40,6 @@ const ContentBox = styled.div`
   box-sizing: border-box;
   gap: 20px;
 
-  width: 1160px;
   height: 230px;
 
   background: #1b1e23;
