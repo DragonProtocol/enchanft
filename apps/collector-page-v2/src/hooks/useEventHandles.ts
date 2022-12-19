@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-13 09:39:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 17:24:46
+ * @LastEditTime: 2022-12-19 11:29:23
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -18,8 +18,10 @@ import { EventExploreListItemResponse } from '../services/types/event';
 import { tweetShare } from '../utils/twitter';
 import { US_HOST_URI } from '../constants';
 import { getEventShareUrl } from '../utils/share';
+import useLogin from './useLogin';
 
 export default () => {
+  const { handleLoginVerify } = useLogin();
   const dispatch = useAppDispatch();
   const { eventIds: favoredIds } = useUserFavorites();
   const favorQueueIds = useAppSelector(selectIdsFavorEventQueue).map((id) =>
@@ -29,14 +31,21 @@ export default () => {
     (item) => item.id
   );
   const onComplete = useCallback(
-    (item: EventExploreListItemResponse) =>
-      dispatch(completeEvent({ id: item.id })),
-    [dispatch]
+    (item: EventExploreListItemResponse) => {
+      handleLoginVerify(() => {
+        dispatch(completeEvent({ id: item.id }));
+      });
+    },
+    [dispatch, handleLoginVerify]
   );
 
   const onFavor = useCallback(
-    (item: EventExploreListItemResponse) => dispatch(favorEvent(item)),
-    [dispatch]
+    (item: EventExploreListItemResponse) => {
+      handleLoginVerify(() => {
+        dispatch(favorEvent(item));
+      });
+    },
+    [dispatch, handleLoginVerify]
   );
   const onShare = useCallback((item: EventExploreListItemResponse) => {
     tweetShare(item.name, getEventShareUrl(item.id));
