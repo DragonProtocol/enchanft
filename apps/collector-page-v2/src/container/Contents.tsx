@@ -29,6 +29,7 @@ import ExtensionSupport from '../components/common/ExtensionSupport';
 import Loading from '../components/common/loading/Loading';
 import { getProjectShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
+import ListScrollBox from '../components/common/box/ListScrollBox';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -52,6 +53,7 @@ function Contents() {
   const [daylightContent, setDaylightContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [daylightContentLoading, setDaylightContentLoading] = useState(false);
   const { keysFilter, contentHiddenOrNot } = useContentHidden();
   const [tab, setTab] = useState<'original' | 'readerView'>('readerView');
@@ -139,12 +141,14 @@ function Contents() {
               user.token
             ),
           ]);
+          setHasMore(dayLightData.length > 0 || data.data.length > 0);
           setContents([...contents, ...dayLightData, ...data.data]);
         } else {
           const { data } = await fetchContents(
             { keywords, type, orderBy, pageNumber },
             user.token
           );
+          setHasMore(data.data.length > 0);
           setContents([...contents, ...data.data]);
         }
       } catch (error) {
@@ -217,7 +221,15 @@ function Contents() {
         </ContentsWrapper>
       )) || (
         <ContentsWrapper>
-          <ListBox>
+          <ListBox
+            onScrollBottom={() => {
+              console.log('onScrollBottom LoadMore', loadingMore, hasMore);
+              if (loadingMore) return;
+              if (!hasMore) return;
+              loadMore(currPageNumber + 1);
+              setCurrPageNumber(currPageNumber + 1);
+            }}
+          >
             {contents
               .filter((item) => {
                 return !keysFilter.includes(item.uid || item.id);
@@ -253,23 +265,18 @@ function Contents() {
                   />
                 );
               })}
-            <div className="load-more">
-              {loadingMore ? (
+            {/* {!hasMore && (
+              <div className="load-more">
+                <div>NoMoreData</div>
+              </div>
+            )} */}
+            {loadingMore && (
+              <div className="load-more">
                 <div className="loading">
                   <Loading />
                 </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    loadMore(currPageNumber + 1);
-                    setCurrPageNumber(currPageNumber + 1);
-                  }}
-                >
-                  Load More
-                </button>
-              )}
-            </div>
+              </div>
+            )}
           </ListBox>
 
           <ContentBox>
@@ -375,7 +382,7 @@ const ContentsWrapper = styled.div`
     justify-content: center;
   }
 `;
-const ListBox = styled.div`
+const ListBox = styled(ListScrollBox)`
   min-width: 360px;
   width: 360px;
   height: calc(100%);
