@@ -2,51 +2,56 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-26 13:14:23
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-09-28 10:43:28
+ * @LastEditTime: 2022-12-19 18:49:13
  * @Description: file description
  */
 
+import EvmSvg from '../components/chain/svgs/ethereum_eth_logo.svg';
+import SolanaSvg from '../components/chain/svgs/solana_sol_logo.svg';
+import PolygonSvg from '../components/chain/svgs/polygon-matic-logo.svg';
+import BscLogo from '../components/chain/svgs/bsc-logo.svg';
+import Aptos from '../components/chain/svgs/aptos-logo.svg';
+
 export enum ChainType {
-  SOLANA = 'SOLANA',
   EVM = 'EVM',
+  SOLANA = 'SOLANA',
+  BSC = 'BSC',
+  MATIC = 'MATIC',
   APTOS = 'APTOS',
-  UNKNOWN = 'UNKNOWN',
-}
-export enum ChainIds {
-  eth = 1,
-  solana = -1,
-  aptos = 2,
 }
 export type Chain = {
-  chainId: ChainIds;
   name: string;
-  unit: string;
   type: ChainType;
+  iconUrl: string;
 };
-export const chainMap: { [key in ChainIds]: Chain } = {
-  [ChainIds.eth]: {
-    chainId: ChainIds.eth,
+export const chainMap: { [key in ChainType]: Chain } = {
+  [ChainType.EVM]: {
     name: 'Ethereum',
-    unit: 'ETH',
     type: ChainType.EVM,
+    iconUrl: EvmSvg,
   },
-  [ChainIds.solana]: {
-    chainId: ChainIds.solana,
+  [ChainType.SOLANA]: {
     name: 'Solana',
-    unit: 'SOL',
     type: ChainType.SOLANA,
+    iconUrl: SolanaSvg,
   },
-  [ChainIds.aptos]: {
-    chainId: ChainIds.aptos,
+  [ChainType.BSC]: {
+    name: 'Bsc',
+    type: ChainType.BSC,
+    iconUrl: BscLogo,
+  },
+  [ChainType.MATIC]: {
+    name: 'Polygon',
+    type: ChainType.MATIC,
+    iconUrl: PolygonSvg,
+  },
+  [ChainType.APTOS]: {
     name: 'Aptos',
-    unit: 'APT',
     type: ChainType.APTOS,
+    iconUrl: Aptos,
   },
 };
 
-export const getChainInfo = (chainId: number): Chain => {
-  return chainMap[chainId];
-};
-export const getChainType = (chainId: number): ChainType => {
-  return chainMap[chainId]?.type || ChainType.UNKNOWN;
+export const getChainInfo = (type: ChainType): Chain => {
+  return chainMap[type];
 };
