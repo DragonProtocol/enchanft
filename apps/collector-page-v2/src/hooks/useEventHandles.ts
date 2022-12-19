@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-13 09:39:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 11:29:23
+ * @LastEditTime: 2022-12-19 14:42:22
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -16,7 +16,6 @@ import useUserFavorites from './useUserFavorites';
 import { selectAll as selecteAllCompleted } from '../features/event/userCompletedEvents';
 import { EventExploreListItemResponse } from '../services/types/event';
 import { tweetShare } from '../utils/twitter';
-import { US_HOST_URI } from '../constants';
 import { getEventShareUrl } from '../utils/share';
 import useLogin from './useLogin';
 
