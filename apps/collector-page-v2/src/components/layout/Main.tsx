@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-07 07:37:09
+ * @LastEditTime: 2022-12-19 14:30:28
  * @Description: 站点主体内容（路由导航）
  */
 import { useRoutes } from 'react-router-dom';
@@ -25,13 +25,16 @@ import {
   removeAll as removeAllForCompletedEvents,
 } from '../../features/event/userCompletedEvents';
 import useU3Extension from '../../hooks/useU3Extension';
+import { setU3ExtensionInstalled } from '../../features/website/websiteSlice';
 
 function Main() {
   const dispatch = useAppDispatch();
   const { isLogin } = useWlUserReact();
   const { isAdmin } = usePermissions();
   const { u3ExtensionInstalled } = useU3Extension();
-  localStorage.setItem('u3ExtensionInstalled', u3ExtensionInstalled.toString());
+  useEffect(() => {
+    dispatch(setU3ExtensionInstalled(u3ExtensionInstalled));
+  }, [u3ExtensionInstalled]);
   // 获取用户相关信息
   useEffect(() => {
     if (!isLogin) {

@@ -27,14 +27,26 @@ function ContentCreate() {
   const [author, setAuthor] = useState('');
   const [originalUrl, setOriginalUrl] = useState('');
   const [type, setType] = useState(ContentType.NEWS);
-  const [projects, setProjects] = useState<Array<Project>>([]);
   const [selectProjects, setSelectProjects] = useState<Array<Project>>([]);
   const [supportReader, setSupportReader] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [urlContent, setUrlContent] = useState({
     title: '',
     content: '',
   });
+
+  const reset = useCallback(() => {
+    setTitle('');
+    setAuthor('');
+    setOriginalUrl('');
+    setType(ContentType.NEWS);
+    setSelectProjects([]);
+    setUrlContent({
+      title: '',
+      content: '',
+    });
+  }, []);
 
   const loadUrlContent = useCallback(async () => {
     if (!originalUrl) return;
@@ -54,9 +66,11 @@ function ContentCreate() {
       !author ||
       !originalUrl ||
       !type ||
-      selectProjects.length === 0
+      selectProjects.length === 0 ||
+      loading
     )
       return;
+    setLoading(true);
     try {
       await saveContent(
         {
@@ -70,8 +84,11 @@ function ContentCreate() {
         user.token
       );
       toast.success('Add Content Success!!!');
+      reset();
     } catch (error) {
       toast.error('Add Content Fail!!!');
+    } finally {
+      setLoading(false);
     }
   }, [
     user.token,
@@ -82,15 +99,6 @@ function ContentCreate() {
     selectProjects,
     supportReader,
   ]);
-
-  const loadProjects = useCallback(async () => {
-    const { data } = await getContentProjects();
-    setProjects(data.data);
-  }, []);
-
-  useEffect(() => {
-    loadProjects();
-  }, []);
 
   return (
     <ScrollBox>
@@ -190,7 +198,7 @@ function ContentCreate() {
           <FormButtons>
             <FormButtonSubmit
               type="submit"
-              // disabled={loading}
+              disabled={loading}
               onClick={submitContent}
             >
               Submit

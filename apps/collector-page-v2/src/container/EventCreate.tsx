@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 14:59:07
+ * @LastEditTime: 2022-12-19 18:49:25
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -25,7 +25,7 @@ import {
   fetchProjectSelectList,
   selectAll,
 } from '../features/project/projectSelectList';
-import { CreateEventData, EventChain } from '../services/types/event';
+import { CreateEventData } from '../services/types/event';
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg';
 import { uploadImage } from '../services/api/upload';
 import { EVENT_IMAGE_SIZE_LIMIT } from '../constants';
@@ -33,7 +33,6 @@ import { eventCreate, selectState } from '../features/event/eventCreate';
 import { AsyncRequestStatus } from '../services/types';
 import { MainWrapper } from '../components/layout/Index';
 import CardBase from '../components/common/card/CardBase';
-import ScrollBox from '../components/common/box/ScrollBox';
 import InputBase from '../components/common/input/InputBase';
 import Select from '../components/common/select/Select';
 import {
@@ -46,28 +45,8 @@ import TimePicker from '../components/common/time/TimePicker';
 import EventLinkPreview from '../components/event/EventLinkPreview';
 import ProjectAsyncSelect from '../components/business/form/ProjectAsyncSelect';
 import PlatformSelect from '../components/business/form/PlatformSelect';
+import { ChainType } from '../utils/chain';
 
-const platformOptions: Array<{
-  value: Platform;
-  label: string;
-}> = [
-  {
-    value: Platform.GALXE,
-    label: 'Galxe',
-  },
-  {
-    value: Platform.NOOX,
-    label: 'Noox',
-  },
-  {
-    value: Platform.POAP,
-    label: 'POAP',
-  },
-  {
-    value: Platform.QUEST3,
-    label: 'Quest3',
-  },
-];
 const rewardOptions: Array<{
   value: Reward;
   label: string;
@@ -90,16 +69,28 @@ const rewardOptions: Array<{
   },
 ];
 const chainOptions: Array<{
-  value: EventChain;
+  value: ChainType;
   label: string;
 }> = [
   {
-    value: EventChain.ETH,
+    value: ChainType.EVM,
     label: 'Ethereum',
   },
   {
-    value: EventChain.SOLANA,
+    value: ChainType.SOLANA,
     label: 'Solana',
+  },
+  {
+    value: ChainType.BSC,
+    label: 'Bsc',
+  },
+  {
+    value: ChainType.MATIC,
+    label: 'Polygon',
+  },
+  {
+    value: ChainType.APTOS,
+    label: 'Aptos',
   },
 ];
 function EventCreate() {
@@ -140,7 +131,7 @@ function EventCreate() {
       platform: Platform.GALXE,
       project: projectOptions[0]?.value,
       link: '',
-      chain: EventChain.ETH,
+      chain: ChainType.EVM,
       reward: Reward.BADGE,
       startTime: new Date().getTime(),
       endTime: new Date().getTime(),
@@ -159,6 +150,11 @@ function EventCreate() {
       handleSubmit(values);
     },
   });
+  useEffect(() => {
+    if (status === AsyncRequestStatus.FULFILLED) {
+      formik.resetForm();
+    }
+  }, [status]);
   const renderFieldError = useCallback(
     (field: string) => {
       return formik.touched[field] && formik.errors[field] ? (
@@ -185,6 +181,7 @@ function EventCreate() {
         <FormField>
           <FormLabel htmlFor="name">Title</FormLabel>
           <InputBase
+            placeholder="Title"
             onChange={(e) => formik.setFieldValue('name', e.target.value)}
             value={formik.values.name}
           />
@@ -194,6 +191,7 @@ function EventCreate() {
         <FormField>
           <FormLabel htmlFor="description">Description</FormLabel>
           <InputBase
+            placeholder="Description"
             onChange={(e) =>
               formik.setFieldValue('description', e.target.value)
             }
@@ -214,6 +212,7 @@ function EventCreate() {
         <FormField>
           <FormLabel htmlFor="platform">Platform</FormLabel>
           <PlatformSelect
+            placeholder="Filter by Platform"
             onChange={(value) => formik.setFieldValue('platform', value)}
             value={formik.values.platform}
           />
@@ -223,6 +222,7 @@ function EventCreate() {
         <FormField>
           <FormLabel htmlFor="project">Project</FormLabel>
           <ProjectAsyncSelect
+            placeholder="Filter by Project"
             value={formik.values.project}
             onChange={(value) => formik.setFieldValue('project', value)}
           />
@@ -232,6 +232,7 @@ function EventCreate() {
         <FormField>
           <FormLabel htmlFor="link">Original URL</FormLabel>
           <InputBase
+            placeholder="Original URL"
             onChange={(e) => formik.setFieldValue('link', e.target.value)}
             value={formik.values.link}
           />
@@ -330,9 +331,7 @@ function EventCreate() {
           <FormButtonSubmit
             type="submit"
             disabled={loading}
-            onClick={() => {
-              console.log(formik.values);
-            }}
+            onClick={() => formik.submitForm()}
           >
             Submit
           </FormButtonSubmit>

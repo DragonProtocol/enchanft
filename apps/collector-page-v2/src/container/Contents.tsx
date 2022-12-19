@@ -29,6 +29,7 @@ import ExtensionSupport from '../components/common/ExtensionSupport';
 import Loading from '../components/common/loading/Loading';
 import { getProjectShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
+import ListScrollBox from '../components/common/box/ListScrollBox';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -52,6 +53,7 @@ function Contents() {
   const [daylightContent, setDaylightContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const [daylightContentLoading, setDaylightContentLoading] = useState(false);
   const { keysFilter, contentHiddenOrNot } = useContentHidden();
   const [tab, setTab] = useState<'original' | 'readerView'>('readerView');
@@ -139,12 +141,14 @@ function Contents() {
               user.token
             ),
           ]);
+          setHasMore(dayLightData.length > 0 || data.data.length > 0);
           setContents([...contents, ...dayLightData, ...data.data]);
         } else {
           const { data } = await fetchContents(
             { keywords, type, orderBy, pageNumber },
             user.token
           );
+          setHasMore(data.data.length > 0);
           setContents([...contents, ...data.data]);
         }
       } catch (error) {
@@ -178,6 +182,12 @@ function Contents() {
     }
   }, [selectContent]);
 
+  const showContents = useMemo(() => {
+    return contents.filter((item) => {
+      return !keysFilter.includes(item.uid || item.id);
+    });
+  }, [contents, keysFilter]);
+
   useEffect(() => {
     if (selectContent?.uid) {
       loadDaylightContent(selectContent.action.linkUrl);
@@ -210,66 +220,102 @@ function Contents() {
         }}
       />
       {(loading && (
-        <ContentsWrapper>
+        <ContentsWrapper loading="true">
           <div className="loading">
             <Loading />
           </div>
         </ContentsWrapper>
       )) || (
         <ContentsWrapper>
-          <ListBox>
-            {contents
-              .filter((item) => {
-                return !keysFilter.includes(item.uid || item.id);
-              })
-              .map((item) => {
-                let isActive = false;
-                if (item.uid) {
-                  isActive = item.uid === selectContent?.uid;
-                } else {
-                  isActive = item.id === selectContent?.id;
-                }
-
-                return (
-                  <ListItem
-                    key={item.id || item.uid}
-                    isActive={isActive}
-                    clickAction={() => {
-                      setSelectContent(item);
-                      navigate(`/contents/${item.uid || item.id}`);
-                    }}
-                    shareAction={() => {
-                      onShare(item);
-                    }}
-                    voteAction={vote}
-                    favorsAction={favors}
-                    hiddenAction={() => {
-                      contentHiddenOrNot(
-                        selectContent?.uid || selectContent.id
-                      );
-                      setSelectContent(undefined);
-                    }}
-                    {...item}
-                  />
-                );
-              })}
-            <div className="load-more">
-              {loadingMore ? (
+          <ListBox
+            onScrollBottom={() => {
+              console.log('onScrollBottom LoadMore', loadingMore, hasMore);
+              if (loadingMore) return;
+              if (!hasMore) return;
+              loadMore(currPageNumber + 1);
+              setCurrPageNumber(currPageNumber + 1);
+            }}
+          >
+            {showContents.map((item, idx) => {
+              let isActive = false;
+              if (item.uid) {
+                isActive = item.uid === selectContent?.uid;
+              } else {
+                isActive = item.id === selectContent?.id;
+              }
+              return (
+                <ListItem
+                  key={item.id || item.uid}
+                  isActive={isActive}
+                  clickAction={() => {
+                    setSelectContent(item);
+                    navigate(`/contents/${item.uid || item.id}`);
+                  }}
+                  shareAction={() => {
+                    onShare(item);
+                  }}
+                  voteAction={async () => {
+                    try {
+                      await vote();
+                      if (selectContent.upVoted) return;
+                      setSelectContent({
+                        ...selectContent,
+                        upVoteNum: selectContent.upVoteNum + 1,
+                        upVoted: true,
+                      });
+                      setContents([
+                        ...showContents.slice(0, idx),
+                        {
+                          ...showContents[idx],
+                          upVoteNum: showContents[idx].upVoteNum + 1,
+                          upVoted: true,
+                        },
+                        ...showContents.slice(idx + 1),
+                      ]);
+                    } catch (error) {
+                      toast.error(error.message);
+                    }
+                  }}
+                  favorsAction={async () => {
+                    try {
+                      await favors();
+                      if (selectContent.favored) return;
+                      setSelectContent({
+                        ...selectContent,
+                        favored: true,
+                      });
+                      setContents([
+                        ...showContents.slice(0, idx),
+                        {
+                          ...showContents[idx],
+                          favored: true,
+                        },
+                        ...showContents.slice(idx + 1),
+                      ]);
+                    } catch (error) {
+                      toast.error(error.message);
+                    }
+                  }}
+                  hiddenAction={() => {
+                    contentHiddenOrNot(selectContent?.uid || selectContent.id);
+                    setSelectContent(undefined);
+                  }}
+                  {...item}
+                />
+              );
+            })}
+            {!hasMore && (
+              <div className="load-more">
+                <div>No other contents</div>
+              </div>
+            )}
+            {loadingMore && (
+              <div className="load-more">
                 <div className="loading">
                   <Loading />
                 </div>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    loadMore(currPageNumber + 1);
-                    setCurrPageNumber(currPageNumber + 1);
-                  }}
-                >
-                  Load More
-                </button>
-              )}
-            </div>
+              </div>
+            )}
           </ListBox>
 
           <ContentBox>
@@ -352,16 +398,15 @@ const Box = styled.div`
   margin: 0 auto;
   height: calc(100vh - 72px);
   box-sizing: border-box;
-  padding-top: 24px;
-  width: 1160px;
+  padding: 24px 40px 0 40px;
   overflow: hidden;
 `;
-const ContentsWrapper = styled.div`
+const ContentsWrapper = styled.div<{ loading?: string }>`
   width: calc(100% - 2px);
   height: calc(100% - 74px);
   box-sizing: border-box;
-  border: 1px solid #39424c;
-  background-color: #1b1e23;
+  border: ${(props) => (props.loading ? 'none' : '1px solid #39424c')};
+  background-color: ${(props) => (props.loading ? '' : '#1b1e23')};
   /* border--radius: 20px; */
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
@@ -376,7 +421,7 @@ const ContentsWrapper = styled.div`
     justify-content: center;
   }
 `;
-const ListBox = styled.div`
+const ListBox = styled(ListScrollBox)`
   min-width: 360px;
   width: 360px;
   height: calc(100%);
@@ -386,6 +431,7 @@ const ListBox = styled.div`
   & .load-more {
     margin: 20px;
     text-align: center;
+    color: #718096;
     > button {
       cursor: pointer;
       background-color: inherit;

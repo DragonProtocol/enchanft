@@ -1,11 +1,12 @@
 import { BigNumber, ethers } from 'ethers';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import {
   ERC20Balances,
   NFTData,
   NFTDataListItem,
 } from '../../services/types/profile';
+import Select from '../common/select/Select';
 
 import CrownImg from '../imgs/crown.svg';
 import ethImage from '../imgs/eth.png';
@@ -19,21 +20,45 @@ export default function OnChainInterest({
   wallet: ERC20Balances;
   ethBalance: string;
 }) {
+  const collections = new Set(
+    data.result.map((item) => item.name).filter((item) => !!item)
+  );
+  const [collection, setCollection] = useState('');
+
   return (
     <ContentBox>
       <div className="nft">
         <div className="title">
           <span>{`NFT(${data.result.length})`}</span>
           <div>
-            <select title="filter" name="all" id="">
-              <option value="all">all</option>
-            </select>
+            <Select
+              placeholder="Filter By Collections"
+              options={[...collections].map((item) => {
+                return {
+                  value: item,
+                  label: item,
+                };
+              })}
+              onChange={(value) => {
+                setCollection(value);
+              }}
+              value={collection}
+            />
           </div>
         </div>
         <div className="data">
-          {data.result.map((item) => {
-            return <NFTCard key={item.normalized_metadata.name} data={item} />;
-          })}
+          {data.result
+            .filter((item) => {
+              if (collection) {
+                return item.name === collection;
+              }
+              return true;
+            })
+            .map((item) => {
+              return (
+                <NFTCard key={item.normalized_metadata.name} data={item} />
+              );
+            })}
         </div>
       </div>
       <div className="wallet">
@@ -155,10 +180,13 @@ const TokenInfoBox = styled.div`
 
 function NFTCard({ data }: { data: NFTDataListItem }) {
   const img = useMemo(() => {
-    return data?.normalized_metadata.image.replace(
-      'ipfs://',
-      'https://ipfs.io/ipfs/'
-    );
+    if (data?.normalized_metadata?.image) {
+      return data?.normalized_metadata.image.replace(
+        'ipfs://',
+        'https://ipfs.io/ipfs/'
+      );
+    }
+    return '';
   }, [data?.normalized_metadata.image]);
   return (
     <CardBox>
@@ -227,7 +255,7 @@ const ContentBox = styled.div`
         color: #ffffff;
       }
       > div {
-        /* TODO */
+        width: 300px;
         input {
           width: 100%;
           box-sizing: border-box;

@@ -2,23 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 14:40:58
+ * @LastEditTime: 2022-12-19 18:30:42
  * @Description: file description
  */
 import { ApiResp } from '.';
+import { ChainType } from '../../utils/chain';
 import { OrderBy, Platform, ProjectType, Reward } from './common';
 
-export enum EventChain {
-  ETH = 'ETH',
-  SOLANA = 'SOLANA',
-}
 export type EventEntity = {
   id: number;
   name: string;
   description: string;
   image: string;
   link: string;
-  chain: EventChain;
+  chain: ChainType;
   startTime: number;
   endTime: number;
   reward: Reward;
@@ -41,7 +38,7 @@ export type EventExploreListItemResponse = {
   description: string;
   image: string;
   link: string;
-  chain: EventChain;
+  chain: ChainType;
   startTime: number;
   endTime: number;
   reward: Reward;
@@ -69,7 +66,7 @@ export type CreateEventData = {
   platform: Platform;
   project: number;
   link: string;
-  chain: EventChain;
+  chain: ChainType;
   reward: Reward;
   startTime: number;
   endTime: number;
