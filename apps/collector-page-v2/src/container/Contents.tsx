@@ -352,8 +352,7 @@ const Box = styled.div`
   margin: 0 auto;
   height: calc(100vh - 72px);
   box-sizing: border-box;
-  padding-top: 24px;
-  width: 1160px;
+  padding: 24px 40px 0 40px;
   overflow: hidden;
 `;
 const ContentsWrapper = styled.div`

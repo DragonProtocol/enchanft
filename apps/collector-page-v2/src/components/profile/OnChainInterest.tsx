@@ -155,10 +155,13 @@ const TokenInfoBox = styled.div`
 
 function NFTCard({ data }: { data: NFTDataListItem }) {
   const img = useMemo(() => {
-    return data?.normalized_metadata.image.replace(
-      'ipfs://',
-      'https://ipfs.io/ipfs/'
-    );
+    if (data?.normalized_metadata?.image) {
+      return data?.normalized_metadata.image.replace(
+        'ipfs://',
+        'https://ipfs.io/ipfs/'
+      );
+    }
+    return '';
   }, [data?.normalized_metadata.image]);
   return (
     <CardBox>

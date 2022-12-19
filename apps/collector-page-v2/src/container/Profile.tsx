@@ -120,8 +120,7 @@ const ProfileWrapper = styled.div`
   }
   > div {
     margin: 0 auto;
-    width: 1160px;
-    padding-top: 40px;
+    padding: 40px;
 
     .infos {
       display: flex;
@@ -137,7 +136,6 @@ const ProfileWrapper = styled.div`
         padding: 0px;
         gap: 40px;
 
-        width: 1160px;
         height: 72px;
 
         border-bottom: 1px solid #39424c;

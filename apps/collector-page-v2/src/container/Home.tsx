@@ -115,14 +115,13 @@ const HomeWrapper = styled.div`
   overflow: scroll;
   > div {
     margin: 0 auto;
-    width: 1160px;
-    padding-top: 40px;
+    padding: 40px;
     display: flex;
     flex-direction: column;
     gap: 40px;
   }
   & div.loading {
-    width: 1160px;
+    width: 100%;
     display: flex;
     justify-content: center;
   }
