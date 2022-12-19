@@ -1,3 +1,4 @@
+/* eslint-disable no-new */
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import TextTransition, { presets } from 'react-text-transition';
@@ -29,11 +30,17 @@ export default function Carousel() {
     return () => clearTimeout(intervalId);
   }, []);
   useEffect(() => {
-    const container = document.getElementById('magic-cube-container');
-    if (!container.childNodes.length) {
-      const rubiks = new Rubiks(container);
-      rubiks.disorder();
-    }
+    const { $, Rubik } = window as any;
+    const dimensions = 3;
+
+    const element = $('#magic-cube-container').empty();
+    const rubik = new Rubik(element, dimensions);
+    rubik.shuffle();
+    // const container = document.getElementById('magic-cube-container');
+    // if (!container.childNodes.length) {
+    //   const rubiks = new Rubiks(container);
+    //   rubiks.disorder();
+    // }
   }, []);
   return (
     <Box>
