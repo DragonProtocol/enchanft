@@ -63,9 +63,9 @@ const Box = styled.div`
   }
 
   &:hover {
-    .hover {
+    /* .hover {
       display: flex;
-    }
+    } */
   }
 `;
 
@@ -142,8 +142,8 @@ const CircleCardBox = styled.div`
   }
 
   &:hover {
-    .hover {
+    /* .hover {
       display: flex;
-    }
+    } */
   }
 `;
