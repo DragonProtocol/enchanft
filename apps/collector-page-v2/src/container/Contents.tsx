@@ -30,12 +30,15 @@ import Loading from '../components/common/loading/Loading';
 import { getProjectShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
 import ListScrollBox from '../components/common/box/ListScrollBox';
+import { selectWebsite } from '../features/website/websiteSlice';
+import { useAppSelector } from '../store/hooks';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
   const evmAccount = getBindAccount(AccountType.EVM);
   const navigate = useNavigate();
   const { id } = useParams();
+  const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
 
   const queryRef = useRef<{
     keywords: string;
@@ -56,7 +59,9 @@ function Contents() {
   const [hasMore, setHasMore] = useState(true);
   const [daylightContentLoading, setDaylightContentLoading] = useState(false);
   const { keysFilter, contentHiddenOrNot } = useContentHidden();
-  const [tab, setTab] = useState<'original' | 'readerView'>('readerView');
+  const [tab, setTab] = useState<'original' | 'readerView'>(
+    u3ExtensionInstalled ? 'original' : 'readerView'
+  );
 
   const vote = useVoteUp(selectContent?.id, selectContent?.upVoted);
 
@@ -379,6 +384,7 @@ function Contents() {
                     <ExtensionSupport
                       url={selectContent.action?.linkUrl || selectContent.link}
                       title={selectContent.title}
+                      msg="Reader view is not supported for this page! Please view it in new tab."
                       img={
                         selectContent.imageUrl ||
                         (selectContent.uniProjects &&
