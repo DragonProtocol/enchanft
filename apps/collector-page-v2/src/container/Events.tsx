@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 17:23:01
+ * @LastEditTime: 2022-12-20 11:46:44
  * @Description: 首页任务看板
  */
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
@@ -43,7 +43,7 @@ export default function Events() {
   } = useEventHandles();
   const { getBindAccount, isLogin } = useWlUserReact();
   const evmAccount = getBindAccount(AccountType.EVM);
-  const { status, moreStatus } = useAppSelector(selectState);
+  const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const eventExploreList = useAppSelector(selectAll);
   const isLoading = useMemo(
@@ -131,7 +131,11 @@ export default function Events() {
                   onShare={onShare}
                   onItemClick={setEvent}
                 />
-                {isLoadingMore && <MoreLoading>loading ...</MoreLoading>}
+                {isLoadingMore ? (
+                  <MoreLoading>loading ...</MoreLoading>
+                ) : noMore ? (
+                  <MoreLoading>No other events</MoreLoading>
+                ) : null}
               </ListBox>
               <ContentBox>
                 {event ? <EventLinkPreview data={event} /> : null}

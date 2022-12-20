@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 17:16:40
+ * @LastEditTime: 2022-12-20 11:53:48
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -30,7 +30,7 @@ import Loading from '../components/common/loading/Loading';
 
 export default function Projects() {
   const { id } = useParams();
-  const { status, moreStatus } = useAppSelector(selectState);
+  const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const projectExploreList = useAppSelector(selectAll);
   const isLoading = useMemo(
@@ -90,7 +90,11 @@ export default function Projects() {
                   activeId={project?.id || 0}
                   onItemClick={setProject}
                 />
-                {isLoadingMore && <MoreLoading>loading ...</MoreLoading>}
+                {isLoadingMore ? (
+                  <MoreLoading>loading ...</MoreLoading>
+                ) : noMore ? (
+                  <MoreLoading>No other projects</MoreLoading>
+                ) : null}
               </ListBox>
               <ContentBox>{project && <Project data={project} />}</ContentBox>
             </MainBody>
