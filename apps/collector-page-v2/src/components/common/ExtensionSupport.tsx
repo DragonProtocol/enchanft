@@ -6,18 +6,21 @@ export default function ExtensionSupport({
   url,
   title,
   img,
+  msg,
 }: {
   url: string;
   title: string;
   img?: string;
+  msg?: string;
 }) {
   return (
     <Box>
       {img && <img title="extension" src={img} alt="" />}
       <h2>{title}</h2>
       <p>
-        Sorry, this website has disabled embedding. Please try our Chrome
-        extension for free toss the content displayed here.
+        {msg ||
+          `Sorry, this website has disabled embedding. Please try our Chrome
+        extension for free toss the content displayed here.`}
       </p>
       <div className="btns">
         <button
