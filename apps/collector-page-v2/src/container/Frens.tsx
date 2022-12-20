@@ -15,6 +15,7 @@ import React, {
 import styled from 'styled-components';
 
 import { Popover } from 'antd';
+import { useWlUserReact } from '@ecnft/wl-user-react';
 
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
@@ -473,6 +474,7 @@ function Frens() {
   const [filterAddress, setFilterAddress] = useState(null);
   const dispatch = useAppDispatch();
   const feedRef = useRef(null);
+  const { isLogin } = useWlUserReact();
 
   const { feed, status, following, follower, isSearch } = useAppSelector(
     selectFrensHandlesState
@@ -488,9 +490,11 @@ function Frens() {
   }, []);
 
   useEffect(() => {
-    dispatch(getFollowing({ reset: true }));
-    dispatch(getFollower({ reset: true }));
-  }, []);
+    if (isLogin) {
+      dispatch(getFollowing({ reset: true }));
+      dispatch(getFollower({ reset: true }));
+    }
+  }, [isLogin]);
 
   const fetchData = useCallback(
     ({
@@ -718,6 +722,13 @@ function Frens() {
               Follower {follower?.total ? `(${follower?.total})` : null}
             </div>
           </FrensFeedSwitch>
+          {!(followTab === 'Following' ? following : follower)?.result && (
+            <div className="follow-tip">
+              {followTab === 'Following'
+                ? 'you did NOT follow anyone!'
+                : 'you have no follower!'}
+            </div>
+          )}
           {(followTab === 'Following' ? following : follower)?.result?.map(
             ({ owner, owner_name, is_follow }) => (
               <div className="user-info" key={`frens-feed-card-${owner}`}>
@@ -791,6 +802,10 @@ const FrensWrapper = styled.div`
     margin: 0;
   }
 
+  .follow-tip {
+    padding: 30px 0;
+    text-align: center;
+  }
   /* .rubiks-loader {
     margin: 0 auto;
     padding: 30px 0;
