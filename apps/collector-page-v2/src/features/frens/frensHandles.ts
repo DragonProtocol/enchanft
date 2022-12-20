@@ -11,7 +11,6 @@ import {
   createSlice,
   EntityState,
 } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
 import { AsyncRequestStatus } from '../../services/types';
 // import {
 //   FrensEntity,
@@ -240,12 +239,10 @@ export const frensHandlesSlice = createSlice({
       .addCase(getFeed.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED;
         state.errorMsg = '';
-        toast.success('Ok.');
       })
       .addCase(getFeed.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED;
         state.errorMsg = action.error.message || '';
-        toast.error(action.error.message);
       })
       .addCase(getFollowing.pending, (state, action) => {
         state.followStatus = AsyncRequestStatus.PENDING;
@@ -254,12 +251,10 @@ export const frensHandlesSlice = createSlice({
       .addCase(getFollowing.fulfilled, (state, action) => {
         state.followStatus = AsyncRequestStatus.FULFILLED;
         state.errorMsg = '';
-        toast.success('Ok.');
       })
       .addCase(getFollowing.rejected, (state, action) => {
         state.followStatus = AsyncRequestStatus.REJECTED;
         state.errorMsg = action.error.message || '';
-        toast.error(action.error.message);
       })
       .addCase(getFollower.pending, (state, action) => {
         state.followStatus = AsyncRequestStatus.PENDING;
@@ -268,12 +263,10 @@ export const frensHandlesSlice = createSlice({
       .addCase(getFollower.fulfilled, (state, action) => {
         state.followStatus = AsyncRequestStatus.FULFILLED;
         state.errorMsg = '';
-        toast.success('Ok.');
       })
       .addCase(getFollower.rejected, (state, action) => {
         state.followStatus = AsyncRequestStatus.REJECTED;
         state.errorMsg = action.error.message || '';
-        toast.error(action.error.message);
       });
   },
 });
