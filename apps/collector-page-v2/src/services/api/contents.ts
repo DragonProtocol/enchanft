@@ -91,12 +91,14 @@ export function fetchContents(
     orderBy?: string;
     pageSize?: number;
     pageNumber?: number;
+    contentId?: string;
   },
   token?: string
 ): RequestPromise<ContentsListResponse> {
   return request({
     url: `/contents/searching`,
     params: {
+      contentId: query.contentId === ':id' ? null : query.contentId,
       pageSize: query.pageSize ?? 10,
       pageNumber: query.pageNumber ?? 0,
       keywords: query.keywords ?? '',

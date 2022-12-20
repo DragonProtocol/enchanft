@@ -1,12 +1,21 @@
 import styled from 'styled-components';
-import { useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react';
+import {
+  AccountType,
+  getUserDisplayName,
+  UserAvatar,
+  useWlUserReact,
+  WlUserModalType,
+} from '@ecnft/wl-user-react';
 import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
 import { sortPubKey } from '../../utils/solana';
 import { Copy } from '../icons/copy';
 import { Discord } from '../icons/discord';
 import { Twitter } from '../icons/twitter';
 import { Refresh } from '../icons/refresh';
 import { Edit } from '../icons/edit';
+import IconTwitter from '../common/icons/IconTwitter';
+import IconDiscord from '../common/icons/IconDiscord';
 
 export default function Info({
   nickname,
@@ -19,7 +28,10 @@ export default function Info({
   avatar: string;
   date: number;
 }) {
-  const { dispatchModal } = useWlUserReact();
+  const { dispatchModal, user, authorizer, getBindAccount } = useWlUserReact();
+  const nameStr = getUserDisplayName(user, authorizer);
+  const twitterAccount = getBindAccount(AccountType.TWITTER);
+  const discordAccount = getBindAccount(AccountType.DISCORD);
   return (
     <InfoBox>
       <div className="user-info">
@@ -31,16 +43,12 @@ export default function Info({
           >
             <Edit />
           </div>
-          <img
-            className="user-avatar"
-            src={avatar || '/default-avatar.png'}
-            alt=""
-          />
+          <UserAvatar className="user-avatar" />
         </div>
 
         <div className="info">
           <div className="nickname">
-            <span className="name">{nickname || 'Unknown'}</span>
+            <span className="name">{nameStr}</span>
             <span className="share">
               <Refresh />
             </span>
@@ -52,7 +60,7 @@ export default function Info({
               onClick={() => {
                 navigator.clipboard.writeText(walletAddr).then(
                   function () {
-                    alert('copied');
+                    toast.success('copied');
                   },
                   function (err) {
                     console.error('Async: Could not copy text: ', err);
@@ -75,11 +83,25 @@ export default function Info({
               <span>{dayjs(date || Date.now()).format('MMM DD YYYY')}</span>
             </div>
             <div>
-              <span className="twitter">
-                <Twitter />
+              <span
+                className="twitter"
+                title={
+                  twitterAccount
+                    ? twitterAccount.thirdpartyName
+                    : 'twitter unbound'
+                }
+              >
+                <IconTwitter fill={twitterAccount ? '#FFFFFF' : '#718096'} />
               </span>
-              <span className="discord">
-                <Discord />
+              <span
+                className="discord"
+                title={
+                  discordAccount
+                    ? discordAccount.thirdpartyName
+                    : 'discord unbound'
+                }
+              >
+                <IconDiscord fill={discordAccount ? '#FFFFFF' : '#718096'} />
               </span>
             </div>
           </div>
@@ -122,6 +144,7 @@ const InfoBox = styled.div`
         justify-content: center;
         width: 100%;
         height: 100%;
+        border-radius: 50%;
         background: linear-gradient(
           0deg,
           rgba(0, 0, 0, 0.5),

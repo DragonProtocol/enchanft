@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 18:14:46
+ * @LastEditTime: 2022-12-16 11:06:21
  * @Description: file description
  */
 import {
@@ -152,7 +152,7 @@ export const fetchMoreEventExploreList = createAsyncThunk<
       pageSize: PAGE_SIZE,
       pageNumber: pageNumber + 1,
     };
-    if (params.orderBy === OrderBy.FORU) {
+    if (params.orderBy === OrderBy.FORU && params.pubkey) {
       const daylightParmas = {
         // pubkey: '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4',
         pubkey: params.pubkey,

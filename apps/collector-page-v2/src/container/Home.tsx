@@ -66,44 +66,44 @@ function Home() {
     });
   }, []);
 
-  if (loading)
-    return (
-      <HomeWrapper>
-        <div className="loading">
-          <Loading />
-        </div>
-      </HomeWrapper>
-    );
   return (
     <HomeWrapper>
       <div>
         <Carousel />
-        <RecommendEvents
-          data={events}
-          viewAllAction={() => {
-            navigate('/events');
-          }}
-        />
-        <div className="row-2">
-          <RecommendContent
-            data={contents}
-            viewAllAction={() => {
-              navigate('/contents');
-            }}
-          />
-          <DiscoverProj
-            data={trendingProjects}
-            viewAllAction={() => {
-              navigate('/projects');
-            }}
-          />
-        </div>
-        <Platform
-          platforms={platforms}
-          viewAllAction={() => {
-            navigate('/events');
-          }}
-        />
+        {(loading && (
+          <div className="loading">
+            <Loading />
+          </div>
+        )) || (
+          <>
+            <RecommendEvents
+              data={events}
+              viewAllAction={() => {
+                navigate('/events');
+              }}
+            />
+            <div className="row-2">
+              <RecommendContent
+                data={contents}
+                viewAllAction={() => {
+                  navigate('/contents/:id');
+                }}
+              />
+              <DiscoverProj
+                data={trendingProjects}
+                viewAllAction={() => {
+                  navigate('/projects');
+                }}
+              />
+            </div>
+            <Platform
+              platforms={platforms}
+              viewAllAction={() => {
+                navigate('/events');
+              }}
+            />
+          </>
+        )}
         <br />
       </div>
     </HomeWrapper>
@@ -115,16 +115,15 @@ const HomeWrapper = styled.div`
   overflow: scroll;
   > div {
     margin: 0 auto;
-    width: 1160px;
-    padding-top: 40px;
+    padding: 40px;
     display: flex;
     flex-direction: column;
     gap: 40px;
   }
-  > div.loading {
-    width: 1160px;
+  & div.loading {
+    width: 100%;
     display: flex;
-    align-items: center;
+    justify-content: center;
   }
 
   & div.row-2 {

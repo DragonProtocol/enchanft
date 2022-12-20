@@ -5,11 +5,15 @@
  * @LastEditTime: 2022-12-15 17:23:29
  * @Description: file description
  */
-import { US_HOST_URI } from '../constants';
+import { U3_HOST_URI } from '../constants';
 
 export const getEventShareUrl = (id: string | number) => {
-  return `${US_HOST_URI}/events/${id}`;
+  return `${U3_HOST_URI}/events/${id}`;
 };
 export const getProjectShareUrl = (id: string | number) => {
-  return `${US_HOST_URI}/projects/${id}`;
+  return `${U3_HOST_URI}/projects/${id}`;
+};
+
+export const getContentShareUrl = (id: string | number) => {
+  return `${U3_HOST_URI}/contents/${id}`;
 };

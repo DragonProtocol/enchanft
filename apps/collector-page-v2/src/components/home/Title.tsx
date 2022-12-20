@@ -39,7 +39,7 @@ const Box = styled.div`
     font-size: 16px;
     line-height: 19px;
     background-color: inherit;
-
+    cursor: pointer;
     text-align: center;
 
     color: #718096;

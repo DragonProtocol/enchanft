@@ -1,6 +1,7 @@
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
+import { toast } from 'react-toastify';
 import ScrollBox from '../components/common/box/ScrollBox';
 import { ButtonPrimary } from '../components/common/button/ButtonBase';
 import CardBase from '../components/common/card/CardBase';
@@ -16,6 +17,7 @@ import {
 } from '../services/api/contents';
 import { ContentType, Project } from '../services/types/contents';
 import { Close } from '../components/icons/close';
+import { ProjectAsyncSelectV2 } from '../components/business/form/ProjectAsyncSelect';
 
 function ContentCreate() {
   const { user } = useWlUserReact();
@@ -25,14 +27,26 @@ function ContentCreate() {
   const [author, setAuthor] = useState('');
   const [originalUrl, setOriginalUrl] = useState('');
   const [type, setType] = useState(ContentType.NEWS);
-  const [projects, setProjects] = useState<Array<Project>>([]);
   const [selectProjects, setSelectProjects] = useState<Array<Project>>([]);
   const [supportReader, setSupportReader] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [urlContent, setUrlContent] = useState({
     title: '',
     content: '',
   });
+
+  const reset = useCallback(() => {
+    setTitle('');
+    setAuthor('');
+    setOriginalUrl('');
+    setType(ContentType.NEWS);
+    setSelectProjects([]);
+    setUrlContent({
+      title: '',
+      content: '',
+    });
+  }, []);
 
   const loadUrlContent = useCallback(async () => {
     if (!originalUrl) return;
@@ -52,20 +66,30 @@ function ContentCreate() {
       !author ||
       !originalUrl ||
       !type ||
-      selectProjects.length === 0
+      selectProjects.length === 0 ||
+      loading
     )
       return;
-    await saveContent(
-      {
-        title,
-        author,
-        url: originalUrl,
-        types: type,
-        uniProjectId: selectProjects.map((item) => item.id),
-        supportReaderView: supportReader,
-      },
-      user.token
-    );
+    setLoading(true);
+    try {
+      await saveContent(
+        {
+          title,
+          author,
+          url: originalUrl,
+          types: type,
+          uniProjectId: selectProjects.map((item) => item.id),
+          supportReaderView: supportReader,
+        },
+        user.token
+      );
+      toast.success('Add Content Success!!!');
+      reset();
+    } catch (error) {
+      toast.error('Add Content Fail!!!');
+    } finally {
+      setLoading(false);
+    }
   }, [
     user.token,
     title,
@@ -75,15 +99,6 @@ function ContentCreate() {
     selectProjects,
     supportReader,
   ]);
-
-  const loadProjects = useCallback(async () => {
-    const { data } = await getContentProjects();
-    setProjects(data.data);
-  }, []);
-
-  useEffect(() => {
-    loadProjects();
-  }, []);
 
   return (
     <ScrollBox>
@@ -120,25 +135,19 @@ function ContentCreate() {
             {/* {renderFieldError('description')} */}
           </FormField>
 
-          <div>
-            <div>Content Type</div>
-            <select
-              title="type"
-              value={type}
-              onChange={(e) => {
-                setType(e.target.value as ContentType);
-              }}
-            >
-              {Object.values(ContentType).map((item) => {
-                return (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                );
+          <FormField>
+            <FormLabel htmlFor="content-type">Content Type</FormLabel>
+            <Select
+              options={Object.values(ContentType).map((item) => {
+                return {
+                  value: item,
+                  label: item,
+                };
               })}
-            </select>
-          </div>
-          {/* {renderFieldError('platform')} */}
+              onChange={(value) => setType(value as ContentType)}
+              value={type}
+            />
+          </FormField>
 
           <FormField>
             <FormLabel htmlFor="support-reader">
@@ -153,8 +162,8 @@ function ContentCreate() {
             </SwitchRow>
           </FormField>
 
-          <div>
-            <div>Tag Project</div>
+          <FormField>
+            <FormLabel htmlFor="project">Tag Project</FormLabel>
             <div className="proj-list">
               {selectProjects.map((item, idx) => {
                 return (
@@ -177,37 +186,19 @@ function ContentCreate() {
                 );
               })}
             </div>
-            <select
-              title="project"
-              name=""
-              id=""
-              value="default"
-              onChange={(e) => {
-                const selectItem = projects.find((item) => {
-                  return item.id.toString() === e.target.value;
-                });
-                setSelectProjects([...selectProjects, selectItem]);
+            <ProjectAsyncSelectV2
+              value=""
+              onChange={(value) => {
+                if (!selectProjects.find((item) => item.id === value.id))
+                  setSelectProjects([...selectProjects, value]);
               }}
-            >
-              <option value="default">Add Project</option>
-              {projects
-                .filter((item) => {
-                  return !selectProjects.find((i) => i.id === item.id);
-                })
-                .map((item) => {
-                  return (
-                    <option key={item.id} value={item.id}>
-                      {item.name}
-                    </option>
-                  );
-                })}
-            </select>
-          </div>
+            />
+          </FormField>
 
           <FormButtons>
             <FormButtonSubmit
               type="submit"
-              // disabled={loading}
+              disabled={loading}
               onClick={submitContent}
             >
               Submit
@@ -227,7 +218,7 @@ function ContentCreate() {
 export default ContentCreate;
 const ContentCreateWrapper = styled(MainWrapper)`
   width: 1240px;
-  height: 100%;
+  height: calc(100vh - 72px);
   box-sizing: border-box;
   display: flex;
   gap: 40px;
@@ -240,7 +231,8 @@ const CreateBox = styled(CardBase)`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  height: fit-content;
+  height: 100%;
+  overflow: scroll;
 
   > div {
     input,
@@ -273,7 +265,6 @@ const CreateBox = styled(CardBase)`
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin: 10px 0;
 
     > div {
       padding: 3px;
@@ -324,7 +315,7 @@ const SwitchText = styled.span`
 `;
 const ShowBox = styled.div`
   flex-grow: 1;
-  height: calc(100% - 20px);
+  height: 100%;
   border: 1px solid #39424c;
   border-radius: 20px;
   padding: 10px;

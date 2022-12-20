@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import Title from './Title';
 import { PlatformData } from '../../services/types/home';
 
@@ -9,12 +10,23 @@ export default function Platform({
   platforms: Array<PlatformData>;
   viewAllAction: () => void;
 }) {
+  const navigate = useNavigate();
   return (
     <Box>
       <Title text="Browse by Platform" viewAllAction={viewAllAction} />{' '}
       <div className="lists">
         {platforms.map((item) => {
-          return <Card key={item.platform} {...item} />;
+          return (
+            <Card
+              key={item.platform}
+              {...item}
+              clickAction={() => {
+                if (item.platformUrl) {
+                  navigate(`/events?platform=${item.platform}`);
+                }
+              }}
+            />
+          );
         })}
       </div>
     </Box>
@@ -29,10 +41,10 @@ const Box = styled.div`
   }
 `;
 
-function Card(props: PlatformData) {
-  const { eventNumber, platform, platformLogo } = props;
+function Card(props: PlatformData & { clickAction: () => void }) {
+  const { eventNumber, platform, platformLogo, clickAction } = props;
   return (
-    <CardBox>
+    <CardBox onClick={clickAction}>
       <img src={platformLogo} alt="" />
       <h2>{platform}</h2>
       <div>{eventNumber} events</div>
@@ -47,7 +59,7 @@ const CardBox = styled.div`
   box-sizing: border-box;
   padding: 20px;
   gap: 10px;
-
+  cursor: pointer;
   width: 160px;
   height: 146px;
   background: #1b1e23;

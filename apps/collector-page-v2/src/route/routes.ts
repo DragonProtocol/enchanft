@@ -22,6 +22,7 @@ export enum RouteKey {
   favorites = 'favorites',
   frens = 'frens',
   profile = 'profile',
+  profileWallet = 'profileWallet',
   noMatch = 'noMatch',
 }
 
@@ -67,7 +68,7 @@ export const routes: CutomRouteObject[] = [
     key: RouteKey.projects,
   },
   {
-    path: '/contents',
+    path: '/contents/:id',
     element: loadContainerElement('Contents'),
     key: RouteKey.contents,
   },
@@ -85,6 +86,11 @@ export const routes: CutomRouteObject[] = [
     path: '/profile',
     element: loadContainerElement('Profile'),
     key: RouteKey.profile,
+  },
+  {
+    path: '/profile/:wallet',
+    element: loadContainerElement('Profile'),
+    key: RouteKey.profileWallet,
   },
   {
     path: '/frens',

@@ -2,7 +2,7 @@
  * @Author:
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 16:48:10
+ * @LastEditTime: 2022-12-17 10:51:29
  * @Description:
  */
 import { Provider as ReduxProvider } from 'react-redux';
@@ -47,6 +47,7 @@ function App() {
       fallback={() => FallbackComponent}
     >
       <WlUserReactProvider
+        theme="dark"
         authorizers={authorizers}
         valueChange={(value) => injectWlUserReactContextValue(value)}
       >

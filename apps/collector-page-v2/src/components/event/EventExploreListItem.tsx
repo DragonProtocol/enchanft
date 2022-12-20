@@ -2,16 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 18:05:47
+ * @LastEditTime: 2022-12-19 18:58:05
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { Platform } from '../../services/types/common';
 import { EventExploreListItemResponse } from '../../services/types/event';
+import { getChainInfo } from '../../utils/chain';
 import { formatDateTime } from '../../utils/time';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
+import IconLike from '../common/icons/IconLike';
 import CompleteSvg from '../common/icons/svgs/check-circle.svg';
-import LikeSvg from '../common/icons/svgs/like.svg';
+import CompletedSvg from '../common/icons/svgs/check.svg';
 import ShareSvg from '../common/icons/svgs/share.svg';
 import Tag from '../common/tag/Tag';
 
@@ -38,7 +40,7 @@ const defaultStyle = {
 };
 const styleMaps = {
   [Platform.GALXE]: {
-    bgc: 'rgba(16, 16, 20, 0.1)',
+    bgc: '#14171a',
     activeColor: '#FFFFFF',
   },
   [Platform.NOOX]: {
@@ -89,7 +91,11 @@ export default function EventExploreListItem({
       activeColor={activeColor}
       {...props}
     >
-      <EventName>{data.name}</EventName>
+      <TopBox>
+        <ChainIcon src={getChainInfo(data.chain)?.iconUrl} />
+        <EventName>{data.name}</EventName>
+      </TopBox>
+
       <CenterBox>
         <EventReward>{data.reward}</EventReward>
         <EventStartTime>{formatDateTime(data.startTime)}</EventStartTime>
@@ -101,7 +107,9 @@ export default function EventExploreListItem({
             onClick={onComplete}
             disabled={disabledComplete}
           >
-            <EventHandleButtonIcon src={CompleteSvg} />
+            <EventHandleButtonIcon
+              src={isCompleted ? CompletedSvg : CompleteSvg}
+            />
             <EventHandleButtonText>
               {loadingComplete
                 ? 'loading'
@@ -111,10 +119,7 @@ export default function EventExploreListItem({
             </EventHandleButtonText>
           </EventHandleButtonComplete>
           <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
-            <EventHandleButtonIcon src={LikeSvg} />
-            <EventHandleButtonText>
-              {loadingFavor ? 'loading' : isFavored ? 'Favored' : 'Favor'}
-            </EventHandleButtonText>
+            <EventHandleButtonLikeIcon fill={isFavored ? '#718096' : 'none'} />
           </EventHandleButton>
           <EventHandleButton onClick={onShare}>
             <EventHandleButtonIcon src={ShareSvg} />
@@ -147,7 +152,19 @@ const EventExploreListItemWrapper = styled.div<{
     box-shadow: inset -4px 0px 0px ${activeColor};
   `}
 `;
+const TopBox = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+const ChainIcon = styled.img`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+`;
 const EventName = styled.div`
+  flex: 1;
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
@@ -170,8 +187,8 @@ const EventStartTime = styled.span`
   color: #718096;
 `;
 const EventPlatformIcon = styled.img`
-  width: 30px;
-  height: 30px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
 `;
 
@@ -187,6 +204,10 @@ const EventHandleButton = styled(ButtonPrimaryLine)`
 `;
 const EventHandleButtonComplete = styled(EventHandleButton)`
   flex: 1;
+`;
+const EventHandleButtonLikeIcon = styled(IconLike)`
+  width: 20px;
+  height: 20px;
 `;
 const EventHandleButtonIcon = styled.img`
   width: 20px;

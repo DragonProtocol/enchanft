@@ -1,3 +1,11 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-12-17 14:50:43
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-12-17 15:39:15
+ * @Description: file description
+ */
+import { AuthorizerType, BindWithAuthorizerButton } from '@ecnft/wl-user-react';
 import styled from 'styled-components';
 import { Discord } from '../icons/discord';
 import { Twitter } from '../icons/twitter';
@@ -12,13 +20,15 @@ export default function OffChainInterest() {
       </p>
       <p> You can start by authorizing a Twitter and Discord account.</p>
       <div className="btns">
-        <button type="button" className="twitter">
+        <BindWithAuthorizerButton authorizerType={AuthorizerType.TWITTER} />
+        <BindWithAuthorizerButton authorizerType={AuthorizerType.DISCORD} />
+        {/* <button type="button" className="twitter">
           <Twitter />
           Twitter
         </button>
         <button type="button" className="discord">
           <Discord /> Discord
-        </button>
+        </button> */}
       </div>
     </ContentBox>
   );
@@ -30,7 +40,6 @@ const ContentBox = styled.div`
   box-sizing: border-box;
   gap: 20px;
 
-  width: 1160px;
   height: 230px;
 
   background: #1b1e23;

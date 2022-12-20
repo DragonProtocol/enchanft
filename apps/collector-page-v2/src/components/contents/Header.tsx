@@ -22,9 +22,9 @@ export default function Header({
 
   const fetchData = useCallback(debounce(filterAction, 100), []);
 
-  useEffect(() => {
-    fetchData('', type, orderBy);
-  }, [orderBy, type]);
+  // useEffect(() => {
+  //   fetchData('', type, orderBy);
+  // }, [orderBy, type]);
 
   return (
     <HeaderBox>
@@ -35,6 +35,7 @@ export default function Header({
           title="For U"
           selectAction={(item) => {
             setOrderBy(item);
+            fetchData('', type, item);
           }}
         />
         <DropDown
@@ -45,6 +46,7 @@ export default function Header({
           defaultSelect="All"
           selectAction={(item) => {
             setType(item);
+            fetchData('', item, orderBy);
           }}
         />
       </div>

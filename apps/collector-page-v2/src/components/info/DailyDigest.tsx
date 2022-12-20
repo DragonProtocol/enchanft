@@ -1,3 +1,11 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-12-17 14:50:43
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-12-17 15:50:29
+ * @Description: file description
+ */
+import { AuthorizerType, BindWithAuthorizerButton } from '@ecnft/wl-user-react';
 import React from 'react';
 import styled from 'styled-components';
 import { Email } from '../icons/email';
@@ -65,10 +73,11 @@ export default function DailyDigest() {
       </div>
 
       <div>
-        <button type="button">
+        <BindWithAuthorizerButton authorizerType={AuthorizerType.EMAIL} />
+        {/* <button type="button">
           <Email />
           Email
-        </button>
+        </button> */}
       </div>
     </DailyDigestBox>
   );

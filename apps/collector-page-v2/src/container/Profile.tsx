@@ -9,16 +9,21 @@ import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
+import { useParams } from 'react-router-dom';
 import Info from '../components/info';
 import DailyDigest from '../components/info/DailyDigest';
 import Credential from '../components/profile/Credential';
 import OnChainInterest from '../components/profile/OnChainInterest';
 import OffChainInterest from '../components/profile/OffChainInterest';
-import { fetchU3Profile } from '../services/api/profile';
+import {
+  fetchU3Profile,
+  fetchU3ProfileWithWallet,
+} from '../services/api/profile';
 import { ProfileEntity } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
 
 function Profile() {
+  const { wallet } = useParams();
   const { user } = useWlUserReact();
   const [tab, setTab] = useState<'Credential' | 'OnChain' | 'OffChain'>(
     'Credential'
@@ -37,78 +42,91 @@ function Profile() {
     }
   }, [user.token]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  const fetchDataWithWallet = useCallback(async () => {
+    try {
+      const { data } = await fetchU3ProfileWithWallet(wallet);
+      setProfileData(data.data);
+    } catch (error) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [wallet]);
 
-  if (loading) {
-    return (
-      <ProfileWrapper>
-        <div className="loading">
-          <Loading />
-        </div>
-      </ProfileWrapper>
-    );
-  }
+  useEffect(() => {
+    if (wallet) {
+      fetchDataWithWallet();
+    } else {
+      fetchData();
+    }
+  }, [fetchData, fetchDataWithWallet, wallet]);
 
   return (
     <ProfileWrapper>
       <div>
-        <div className="infos">
-          <Info
-            {...{
-              date: (user as any).createdAt,
-              nickname: user.name,
-              avatar: user.avatar,
-              walletAddr:
-                user.accounts[0]?.thirdpartyName ||
-                user.accounts[0]?.thirdpartyId,
-            }}
-          />
-          <DailyDigest />
-        </div>
-
-        <div className="content">
-          <div className="tab">
-            <div
-              onClick={() => setTab('Credential')}
-              className={tab === 'Credential' ? 'active' : ''}
-            >
-              Credential Data
-            </div>
-            <div
-              onClick={() => setTab('OnChain')}
-              className={tab === 'OnChain' ? 'active' : ''}
-            >
-              On-Chain Interest
-            </div>
-            <div
-              onClick={() => setTab('OffChain')}
-              className={tab === 'OffChain' ? 'active' : ''}
-            >
-              Off-Chain Interest
-              <span>Soon</span>
-            </div>
-          </div>
-
-          {tab === 'Credential' && profileData && (
-            <Credential
+        {!wallet && user && (
+          <div className="infos">
+            <Info
               {...{
-                poap: profileData.poap,
-                noox: profileData.noox,
-                galxe: profileData.galxe,
+                date: (user as any).createdAt,
+                nickname: user.name,
+                avatar: user.avatar,
+                walletAddr:
+                  user.accounts[0]?.thirdpartyName ||
+                  user.accounts[0]?.thirdpartyId,
               }}
             />
-          )}
-          {tab === 'OnChain' && profileData && (
-            <OnChainInterest
-              data={profileData.nfts}
-              wallet={profileData.erc20Balances}
-              ethBalance={profileData.ethBalance}
-            />
-          )}
-          {tab === 'OffChain' && <OffChainInterest />}
-        </div>
+            <DailyDigest />
+          </div>
+        )}
+
+        {(loading && (
+          <div className="loading">
+            <Loading />
+          </div>
+        )) || (
+          <div className="content">
+            <div className="tab">
+              <div
+                onClick={() => setTab('Credential')}
+                className={tab === 'Credential' ? 'active' : ''}
+              >
+                Credential Data
+              </div>
+              <div
+                onClick={() => setTab('OnChain')}
+                className={tab === 'OnChain' ? 'active' : ''}
+              >
+                On-Chain Interest
+              </div>
+              <div
+                onClick={() => setTab('OffChain')}
+                className={tab === 'OffChain' ? 'active' : ''}
+              >
+                Off-Chain Interest
+                <span>Soon</span>
+              </div>
+            </div>
+
+            {tab === 'Credential' && profileData && (
+              <Credential
+                {...{
+                  poap: profileData.poap,
+                  noox: profileData.noox,
+                  galxe: profileData.galxe,
+                }}
+              />
+            )}
+            {tab === 'OnChain' && profileData && (
+              <OnChainInterest
+                data={profileData.nfts}
+                wallet={profileData.erc20Balances}
+                ethBalance={profileData.ethBalance}
+              />
+            )}
+            {tab === 'OffChain' && <OffChainInterest />}
+          </div>
+        )}
       </div>
     </ProfileWrapper>
   );
@@ -117,22 +135,22 @@ export default Profile;
 const ProfileWrapper = styled.div`
   height: 100%;
   overflow: scroll;
-  > div.loading {
+  & div.loading {
     display: flex;
     justify-content: center;
+    margin-top: 40px;
   }
   > div {
     margin: 0 auto;
-    width: 1160px;
-    padding-top: 40px;
+    padding: 40px;
 
     .infos {
       display: flex;
       gap: 40px;
+      margin-bottom: 50px;
     }
 
     .content {
-      margin-top: 50px;
       .tab {
         display: flex;
         flex-direction: row;
@@ -140,7 +158,6 @@ const ProfileWrapper = styled.div`
         padding: 0px;
         gap: 40px;
 
-        width: 1160px;
         height: 72px;
 
         border-bottom: 1px solid #39424c;

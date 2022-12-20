@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 17:13:50
+ * @LastEditTime: 2022-12-19 17:23:01
  * @Description: 首页任务看板
  */
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import EventExploreList from '../components/event/EventExploreList';
 import EventExploreListFilter, {
   defaultEventExploreListFilterValues,
@@ -32,7 +32,7 @@ import Loading from '../components/common/loading/Loading';
 
 export default function Events() {
   const { id } = useParams();
-
+  const [searchParams, setSearchParams] = useSearchParams();
   const {
     favoredIds,
     favorQueueIds,
@@ -54,7 +54,26 @@ export default function Events() {
     defaultEventExploreListFilterValues
   );
   const [event, setEvent] = useState<EventExploreListItemResponse | null>(null);
-
+  useEffect(() => {
+    const params = {
+      orderBy:
+        searchParams.get('orderBy') ||
+        defaultEventExploreListFilterValues.orderBy,
+      platform:
+        searchParams.get('platform') ||
+        defaultEventExploreListFilterValues.platform,
+      reward:
+        searchParams.get('reward') ||
+        defaultEventExploreListFilterValues.reward,
+      projectType:
+        searchParams.get('projectType') ||
+        defaultEventExploreListFilterValues.projectType,
+      keywords:
+        searchParams.get('keywords') ||
+        defaultEventExploreListFilterValues.keywords,
+    } as EventExploreListFilterValues;
+    setFilter(params);
+  }, [searchParams]);
   useEffect(() => {
     const params = { ...filter };
     if (id) {
@@ -92,7 +111,7 @@ export default function Events() {
     <EventsWrapper>
       <EventExploreListFilter
         values={filter}
-        onChange={(newFilter) => setFilter(newFilter)}
+        onChange={(newFilter) => setSearchParams(newFilter)}
       />
       <MainBox>
         {isLoading ? (
@@ -107,7 +126,6 @@ export default function Events() {
                   favoredIds={favoredIds}
                   favorQueueIds={favorQueueIds}
                   completedIds={completedIds}
-                  displayHandles={isLogin}
                   onComplete={onComplete}
                   onFavor={onFavor}
                   onShare={onShare}

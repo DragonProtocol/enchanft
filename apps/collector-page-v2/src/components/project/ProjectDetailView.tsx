@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 19:06:37
+ * @LastEditTime: 2022-12-19 19:01:32
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -19,6 +19,7 @@ import TwitterSvg from '../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../common/icons/svgs/discord.svg';
 import CardBase from '../common/card/CardBase';
 import ContentLinkCard from '../contents/ContentLinkCard';
+import IconLike from '../common/icons/IconLike';
 
 export type ProjectDetailCardProps = {
   data: ProjectExploreListItemResponse;
@@ -61,8 +62,9 @@ export default function ProjectDetailCard({
             <LayoutHeaderHandles>
               {displayFavor && (
                 <ProjectHandleButton onClick={onFavor} disabled={disabledFavor}>
-                  <ProjectHandleButtonIcon src={LikeSvg} />
-                  {loadingFavor ? 'loading' : isFavored ? 'Favored' : 'Favor'}
+                  <ProjectHandleButtonLikeIcon
+                    fill={isFavored ? '#718096' : 'none'}
+                  />
                 </ProjectHandleButton>
               )}
               {displayShare && (
@@ -72,14 +74,14 @@ export default function ProjectDetailCard({
               )}
             </LayoutHeaderHandles>
           </LayoutHeaderRightRow>
-          <LayoutHeaderRightRow>
+          {/* <LayoutHeaderRightRow>
             <LinkButton>
               <LinkIcon src={TwitterSvg} />
             </LinkButton>
             <LinkButton>
               <LinkIcon src={DiscordSvg} />
             </LinkButton>
-          </LayoutHeaderRightRow>
+          </LayoutHeaderRightRow> */}
           <LayoutHeaderRightRow>
             <PorjectDescription>{data.description}</PorjectDescription>
           </LayoutHeaderRightRow>
@@ -168,6 +170,10 @@ const LayoutHeaderHandles = styled.div`
 const ProjectHandleButton = styled(ButtonPrimaryLine)`
   height: 32px;
   padding: 6px 12px;
+`;
+const ProjectHandleButtonLikeIcon = styled(IconLike)`
+  width: 20px;
+  height: 20px;
 `;
 const ProjectHandleButtonIcon = styled.img`
   width: 20px;

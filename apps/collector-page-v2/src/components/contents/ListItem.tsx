@@ -17,6 +17,7 @@ export default function ListItem({
   favorsAction,
   favored,
   hiddenAction,
+  shareAction,
 }: {
   upVoteNum: number;
   title: string;
@@ -29,6 +30,7 @@ export default function ListItem({
   favorsAction?: () => void;
   favored?: boolean;
   hiddenAction?: () => void;
+  shareAction?: () => void;
 }) {
   return (
     <ContentItem
@@ -47,22 +49,44 @@ export default function ListItem({
       <ContentItemFooter>
         <span
           className={isActive ? 'vote' : 'vote active'}
-          onClick={() => voteAction && voteAction()}
+          onClick={(e) => {
+            e.stopPropagation();
+            if (voteAction) {
+              voteAction();
+            }
+          }}
         >
           👏 &nbsp;{upVoteNum}
         </span>
         {isActive && (
-          <span onClick={() => favorsAction && favorsAction()}>
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              if (favorsAction) favorsAction();
+            }}
+          >
             {favored ? <Heart fill="#718096" /> : <Heart />}
           </span>
         )}
         {isActive && (
-          <span onClick={() => hiddenAction && hiddenAction}>
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              if (hiddenAction) {
+                hiddenAction();
+              }
+            }}
+          >
             <EyeClose />
           </span>
         )}
         {isActive && (
-          <span>
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+              if (shareAction) shareAction();
+            }}
+          >
             <Share />
           </span>
         )}
