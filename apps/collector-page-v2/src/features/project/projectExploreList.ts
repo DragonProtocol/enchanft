@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 13:46:22
+ * @LastEditTime: 2022-12-20 11:52:58
  * @Description: file description
  */
 import {
@@ -23,6 +23,7 @@ export type ProjectExploreListItem = ProjectExploreListItemResponse;
 type ProjectExploreListStore = EntityState<ProjectExploreListItem> & {
   status: AsyncRequestStatus;
   moreStatus: AsyncRequestStatus;
+  noMore: boolean;
   pageNumber: number;
   errorMsg: string;
   moreErrorMsg: string;
@@ -39,6 +40,7 @@ const initTodoTasksState: ProjectExploreListStore =
   projectExploreListEntity.getInitialState({
     status: AsyncRequestStatus.IDLE,
     moreStatus: AsyncRequestStatus.IDLE,
+    noMore: false,
     pageNumber: PAGE_NUMBER_FIRST,
     errorMsg: '',
     moreErrorMsg: '',
@@ -108,6 +110,7 @@ export const projectExploreListSlice = createSlice({
         state.errorMsg = '';
         state.pageNumber = 0;
         state.currentRequestId = action.meta.requestId;
+        state.noMore = false;
       })
       .addCase(fetchProjectExploreList.fulfilled, (state, action) => {
         const { currentRequestId } = state;
@@ -126,12 +129,17 @@ export const projectExploreListSlice = createSlice({
       .addCase(fetchMoreProjectExploreList.pending, (state, action) => {
         state.moreStatus = AsyncRequestStatus.PENDING;
         state.moreErrorMsg = '';
+        state.noMore = false;
       })
       .addCase(fetchMoreProjectExploreList.fulfilled, (state, action) => {
         state.moreStatus = AsyncRequestStatus.FULFILLED;
         state.moreErrorMsg = '';
-        state.pageNumber += 1;
-        projectExploreListEntity.addMany(state, action.payload);
+        if (action.payload.length) {
+          state.pageNumber += 1;
+          projectExploreListEntity.addMany(state, action.payload);
+        } else {
+          state.noMore = true;
+        }
       })
       .addCase(fetchMoreProjectExploreList.rejected, (state, action) => {
         state.moreStatus = AsyncRequestStatus.REJECTED;

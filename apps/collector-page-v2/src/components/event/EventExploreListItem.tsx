@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 18:58:05
+ * @LastEditTime: 2022-12-20 11:54:33
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -15,7 +15,7 @@ import IconLike from '../common/icons/IconLike';
 import CompleteSvg from '../common/icons/svgs/check-circle.svg';
 import CompletedSvg from '../common/icons/svgs/check.svg';
 import ShareSvg from '../common/icons/svgs/share.svg';
-import Tag from '../common/tag/Tag';
+import RewardTag from './RewardTag';
 
 export type EventExploreListItemData = EventExploreListItemResponse & {
   isDaylight?: boolean;
@@ -97,7 +97,7 @@ export default function EventExploreListItem({
       </TopBox>
 
       <CenterBox>
-        <EventReward>{data.reward}</EventReward>
+        <RewardTag value={data.reward} />
         <EventStartTime>{formatDateTime(data.startTime)}</EventStartTime>
         {data.platform && <EventPlatformIcon src={data.platform.logo} />}
       </CenterBox>
@@ -176,8 +176,6 @@ const CenterBox = styled.div`
   align-items: center;
   gap: 10px;
 `;
-
-const EventReward = styled(Tag)``;
 const EventStartTime = styled.span`
   width: 0;
   flex: 1;
