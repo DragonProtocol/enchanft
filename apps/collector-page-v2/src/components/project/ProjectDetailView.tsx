@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 19:01:32
+ * @LastEditTime: 2022-12-20 16:48:26
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -10,41 +10,22 @@ import type {
   ProjectExploreListItemEventResponse,
   ProjectExploreListItemResponse,
 } from '../../services/types/project';
-import { ButtonPrimaryLine } from '../common/button/ButtonBase';
-import ContentShower from '../contents/ContentShower';
 import EventLinkCard from '../event/EventLinkCard';
-import LikeSvg from '../common/icons/svgs/like.svg';
-import ShareSvg from '../common/icons/svgs/share.svg';
 import TwitterSvg from '../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../common/icons/svgs/discord.svg';
-import CardBase from '../common/card/CardBase';
 import ContentLinkCard from '../contents/ContentLinkCard';
-import IconLike from '../common/icons/IconLike';
+import { ContentListItem } from '../contents/ContentList';
 
 export type ProjectDetailCardProps = {
   data: ProjectExploreListItemResponse;
   completedEventIds: number[];
-  displayFavor?: boolean;
-  disabledFavor?: boolean;
-  loadingFavor?: boolean;
-  isFavored?: boolean;
-  displayShare?: boolean;
-  onShare?: () => void;
-  onFavor?: () => void;
   onEventComplete?: (event: ProjectExploreListItemEventResponse) => void;
   currentVotedContentIds: number[];
-  onContentVote: (id: number) => void;
+  onContentVote: (content: ContentListItem) => void;
 };
 export default function ProjectDetailCard({
   data,
   completedEventIds,
-  displayFavor = true,
-  disabledFavor,
-  loadingFavor,
-  isFavored,
-  displayShare = true,
-  onShare,
-  onFavor,
   onEventComplete,
   currentVotedContentIds,
   onContentVote,
@@ -59,20 +40,6 @@ export default function ProjectDetailCard({
         <LayoutHeaderRight>
           <LayoutHeaderRightRow>
             <ProjectName>{data.name}</ProjectName>
-            <LayoutHeaderHandles>
-              {displayFavor && (
-                <ProjectHandleButton onClick={onFavor} disabled={disabledFavor}>
-                  <ProjectHandleButtonLikeIcon
-                    fill={isFavored ? '#718096' : 'none'}
-                  />
-                </ProjectHandleButton>
-              )}
-              {displayShare && (
-                <ProjectHandleButton onClick={onShare}>
-                  <ProjectHandleButtonIcon src={ShareSvg} />
-                </ProjectHandleButton>
-              )}
-            </LayoutHeaderHandles>
           </LayoutHeaderRightRow>
           {/* <LayoutHeaderRightRow>
             <LinkButton>
@@ -102,13 +69,8 @@ export default function ProjectDetailCard({
           data.contents.map((item) => (
             <ContentLinkCard
               key={item.id}
-              data={{
-                ...item,
-                upVoteNum: currentVotedContentIds.includes(item.id)
-                  ? item.upVoteNum + 1
-                  : item.upVoteNum,
-              }}
-              onVote={() => onContentVote(item.id)}
+              data={item}
+              onVote={() => onContentVote(item)}
               disabledVote={
                 item.upVoted || currentVotedContentIds.includes(item.id)
               }
@@ -162,39 +124,6 @@ const ProjectName = styled.span`
   color: #ffffff;
 `;
 
-const LayoutHeaderHandles = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: flex-end;
-`;
-const ProjectHandleButton = styled(ButtonPrimaryLine)`
-  height: 32px;
-  padding: 6px 12px;
-`;
-const ProjectHandleButtonLikeIcon = styled(IconLike)`
-  width: 20px;
-  height: 20px;
-`;
-const ProjectHandleButtonIcon = styled.img`
-  width: 20px;
-  height: 20px;
-`;
-const LinkButton = styled.button`
-  padding: 10px;
-  width: 40px;
-  height: 40px;
-  background: #14171a;
-  border-radius: 39px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: none;
-  cursor: pointer;
-`;
-const LinkIcon = styled.img`
-  width: 24px;
-  height: 24px;
-`;
 const PorjectDescription = styled.div`
   font-weight: 400;
   font-size: 14px;
@@ -212,13 +141,4 @@ const LayoutMain = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-`;
-const CardBox = styled(CardBase)`
-  background: #14171a;
-`;
-const EventCard = styled(EventLinkCard)`
-  /* min-height: 50vh; */
-`;
-const ContentCard = styled(ContentShower)`
-  min-height: 50vh;
 `;

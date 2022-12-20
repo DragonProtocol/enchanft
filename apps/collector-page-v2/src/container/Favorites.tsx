@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 13:35:11
+ * @LastEditTime: 2022-12-20 17:35:04
  * @Description: 首页任务看板
  */
 import { useEffect, useMemo, useState } from 'react';
@@ -21,15 +21,18 @@ import {
   ProjectsEntityItem,
   selectState,
 } from '../features/favorite/userGroupFavorites';
-import useContentHidden from '../hooks/useContentHidden';
 import useEventHandles from '../hooks/useEventHandles';
 import useUserFavorites from '../hooks/useUserFavorites';
-import Content from './Content';
-import Project from './Project';
 import ArchiveSvg from '../components/common/icons/svgs/archive.svg';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { AsyncRequestStatus } from '../services/types';
 import Loading from '../components/common/loading/Loading';
+import useProjectHandles from '../hooks/useProjectHandles';
+import useContentHandles from '../hooks/useContentHandles';
+import { ContentListItem } from '../services/types/contents';
+import ProjectDetailView from '../components/project/ProjectDetailView';
+import ContentShower from '../components/contents/ContentShower';
+import { getContentWithJsonValue } from '../utils/content';
 
 enum FavoriteSwitchValue {
   event = 'event',
@@ -63,6 +66,21 @@ function Favorites() {
     onFavor,
     onShare,
   } = useEventHandles();
+  const {
+    favoredIds: projectFavoredIds,
+    favorQueueIds: projectFavorQueueIds,
+    onFavor: onProjectFavor,
+    onShare: onProjectShare,
+  } = useProjectHandles();
+  const {
+    votedIds: contentVotedIds,
+    onVote: onContentVote,
+    onFavor: onContentFavor,
+    onShare: onContentShare,
+    onHidden: onContentHidden,
+    formatCurrentContents,
+  } = useContentHandles();
+
   const { events, projects, contents } = useUserFavorites();
   const { status } = useAppSelector(selectState);
   const isLoading = useMemo(
@@ -76,7 +94,19 @@ function Favorites() {
     FavoriteSwitchValue.event
   );
 
-  const { keysFilter, contentHiddenOrNot } = useContentHidden();
+  const showProject = useMemo(
+    () =>
+      project
+        ? {
+            ...project,
+            contents: formatCurrentContents(
+              project.contents as ContentListItem[]
+            ),
+          }
+        : null,
+    [project, formatCurrentContents]
+  );
+  const showContentList = formatCurrentContents(contents);
   return (
     <FavoritesWrapper>
       {isLoading ? (
@@ -113,16 +143,24 @@ function Favorites() {
                 <ProjectExploreList
                   data={projects}
                   activeId={project?.id || 0}
+                  favoredIds={projectFavoredIds}
+                  favorQueueIds={projectFavorQueueIds}
+                  onFavor={onProjectFavor}
+                  onShare={onProjectShare}
                   onItemClick={setProject}
                 />
               )}
               {switchValue === FavoriteSwitchValue.content && (
                 <ContentList
-                  data={contents.filter((item) => {
-                    return !keysFilter.includes(item.id);
-                  })}
+                  data={showContentList}
                   activeId={content?.id || 0}
-                  onItemClick={(item: ContentsEntityItem) => setContent(item)}
+                  onVote={onContentVote}
+                  onFavor={onContentFavor}
+                  onShare={onContentShare}
+                  onHidden={onContentHidden}
+                  onItemClick={(item) =>
+                    setContent(item as unknown as ContentListItem)
+                  }
                 />
               )}
             </FavoritesList>
@@ -133,19 +171,28 @@ function Favorites() {
             )}
             {switchValue === FavoriteSwitchValue.project && project && (
               <ContentScrollBox>
-                <Project data={project} />
+                {showProject && (
+                  <ProjectDetailView
+                    data={showProject}
+                    completedEventIds={completedIds}
+                    onEventComplete={onComplete}
+                    currentVotedContentIds={contentVotedIds}
+                    onContentVote={onContentVote}
+                  />
+                )}
               </ContentScrollBox>
             )}
-            {switchValue === FavoriteSwitchValue.content &&
-              content &&
-              !keysFilter.includes(content.id) && (
-                <ContentScrollBox>
-                  <Content
-                    data={content}
-                    onHidden={() => contentHiddenOrNot(content.id)}
-                  />
-                </ContentScrollBox>
-              )}
+            {switchValue === FavoriteSwitchValue.content && content && (
+              <ContentScrollBox>
+                <ContentShower
+                  {...content}
+                  voteAction={() => {}}
+                  favorsActions={() => {}}
+                  hiddenAction={() => {}}
+                  content={getContentWithJsonValue(content.value)}
+                />
+              </ContentScrollBox>
+            )}
           </FavoritesContentBox>
         </FavoritesLayout>
       )}
