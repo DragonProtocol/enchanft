@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 23:13:55
+ * @LastEditTime: 2022-12-20 15:22:58
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -11,7 +11,9 @@ import { formatDateTime } from '../../utils/time';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import CardBase from '../common/card/CardBase';
 import CompleteSvg from '../common/icons/svgs/check-circle.svg';
+import CompletedSvg from '../common/icons/svgs/check.svg';
 import Tag from '../common/tag/Tag';
+import RewardTag from './RewardTag';
 
 export type EventLinkCardData = {
   name: string;
@@ -56,7 +58,7 @@ export default function EventLinkCard({
           <EventName>{data.name}</EventName>
         </LayoutCenterRow>
         <LayoutCenterRow>
-          <EventReward>{data.reward}</EventReward>
+          <RewardTag value={data.reward} />
           <LayoutText>{formatDateTime(data.startTime)}</LayoutText>
         </LayoutCenterRow>
       </LayoutCenter>
@@ -68,7 +70,9 @@ export default function EventLinkCard({
           }}
           disabled={disabledComplete}
         >
-          <EventHandleButtonIcon src={CompleteSvg} />
+          <EventHandleButtonIcon
+            src={isCompleted ? CompletedSvg : CompleteSvg}
+          />
           <EventHandleButtonText>
             {loadingComplete ? 'loading' : isCompleted ? 'Archived' : 'Archive'}
           </EventHandleButtonText>
