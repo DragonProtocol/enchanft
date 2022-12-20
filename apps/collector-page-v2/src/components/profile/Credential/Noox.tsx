@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { Platform } from '../../../services/types/common';
 import { NooxData } from '../../../services/types/profile';
 import { NooxCard } from './Card';
 import Title from './Title';
@@ -15,7 +16,7 @@ export default function Noox({ data }: { data: NooxData }) {
         expand={expand}
         setExpand={(e) => setExpand(e)}
         exploreAction={() => {
-          navigate('/events&platform=noox');
+          navigate(`/events?platform=${Platform.NOOX}`);
         }}
       />
       {expand && (
