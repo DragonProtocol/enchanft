@@ -95,6 +95,17 @@ export default function ListItem({
   );
 }
 
+export function ListItemHidden({ undoAction }: { undoAction: () => void }) {
+  return (
+    <ContentItem isActive={false}>
+      <div className="tint">
+        😊 Thanks, We will use this to make your list better.{' '}
+        <span onClick={undoAction}>Undo</span>
+      </div>
+    </ContentItem>
+  );
+}
+
 const ContentItem = styled.div<{ isActive: boolean }>`
   line-height: 27px;
   padding: 20px;
@@ -131,6 +142,20 @@ const ContentItem = styled.div<{ isActive: boolean }>`
     line-height: 19px;
     color: #ffffff;
     opacity: 0.8;
+  }
+
+  & .tint {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: #718096;
+    & span {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17px;
+
+      color: #ffffff;
+    }
   }
 `;
 
