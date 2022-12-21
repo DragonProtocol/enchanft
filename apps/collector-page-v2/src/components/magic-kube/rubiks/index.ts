@@ -8,6 +8,7 @@ import { Cube } from './core/cube';
 import Control from './core/control';
 import { MouseControl } from './core/mouseControl';
 import { TouchControl } from './core/touchControl';
+import { RandomControl } from './core/randomControl';
 
 const setSize = (
   container: Element,
@@ -35,6 +36,8 @@ class Rubiks {
   private renderer: WebGLRenderer;
 
   private _controls: Control[] = [];
+
+  randomControl: RandomControl;
 
   public constructor(container: Element) {
     this.camera = createCamera();
@@ -84,11 +87,48 @@ class Rubiks {
     this.render();
   }
 
+  public randomMove() {
+    // mouseDown
+    const startX = randomInt(100, 300);
+    const startY = randomInt(100, 300);
+    const mousedownEvent = new MouseEvent('mousedown', {
+      clientX: startX,
+      clientY: startY,
+    });
+    this.randomControl.mousedownHandle(mousedownEvent);
+
+    // mouseMove
+    const mousemoveEvent = new MouseEvent('mousemove', {
+      clientX: randomInt(50 + startX, 100 + startX),
+      clientY: randomInt(50 + startY, 100 + startY),
+      movementX: randomDirection(),
+      movementY: randomDirection(),
+    });
+    this.randomControl.moveHandle(mousemoveEvent);
+
+    // mouseUp
+    const mouseupEvent = new MouseEvent('mouseup', {});
+    this.randomControl.mouseupHandle(mouseupEvent);
+  }
+
   /**
    * 打乱
    */
-  public disorder() {
+  public disorder(step = 10) {
     if (this.cube) {
+      this.randomControl = new RandomControl(
+        this.camera,
+        this.scene,
+        this.renderer,
+        this.cube
+      );
+      const timer = setInterval(() => {
+        step -= 1;
+        this.randomMove();
+        if (step < 0) {
+          clearInterval(timer);
+        }
+      }, 500);
     }
   }
 
@@ -130,3 +170,13 @@ class Rubiks {
 }
 
 export default Rubiks;
+
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function randomDirection() {
+  let x = randomInt(0, 1);
+  if (x === 0) x = -1;
+  return x;
+}

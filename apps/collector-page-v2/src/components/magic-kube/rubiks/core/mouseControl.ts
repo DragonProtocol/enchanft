@@ -29,7 +29,6 @@ export class MouseControl extends Control {
 
   public mouseupHandle(event: MouseEvent) {
     event.preventDefault();
-    console.log('mouseup');
 
     this.operateEnd();
   }
