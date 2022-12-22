@@ -244,7 +244,7 @@ function Contents() {
             }}
           >
             {contents.map((item, idx) => {
-              if (!keysFilter.includes(item.uid || item.id)) {
+              if (keysFilter.includes(item.uid || item.id)) {
                 return (
                   <ListItemHidden
                     undoAction={() => {
