@@ -61,9 +61,21 @@ export function following(params): RequestPromise<ContentsResponse> {
     },
   });
 }
+
 export function follower(params): RequestPromise<ContentsResponse> {
   return request({
     url: `/frens/follower`,
+    method: 'get',
+    params,
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
+export function reco(params): RequestPromise<ContentsResponse> {
+  return request({
+    url: `/frens/reco`,
     method: 'get',
     params,
     headers: {
