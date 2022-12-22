@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
+import { Platform } from '../../../services/types/common';
 import { PoapData } from '../../../services/types/profile';
 import { PoapCard } from './Card';
 
@@ -17,7 +17,7 @@ export default function Poap({ data }: { data: Array<PoapData> }) {
         expand={expand}
         setExpand={(e) => setExpand(e)}
         exploreAction={() => {
-          navigate('/events&platform=poap');
+          navigate(`/events?platform=${Platform.POAP}`);
         }}
       />
       {expand && (

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 17:16:40
+ * @LastEditTime: 2022-12-20 17:13:17
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -24,13 +24,21 @@ import {
 import { AsyncRequestStatus } from '../services/types';
 import { ProjectExploreListItemResponse } from '../services/types/project';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import Project from './Project';
 import ScrollBox from '../components/common/box/ScrollBox';
 import Loading from '../components/common/loading/Loading';
+import useProjectHandles from '../hooks/useProjectHandles';
+import ProjectDetailView from '../components/project/ProjectDetailView';
+import useEventHandles from '../hooks/useEventHandles';
+import useContentHandles from '../hooks/useContentHandles';
+import { ContentListItem } from '../services/types/contents';
 
 export default function Projects() {
   const { id } = useParams();
-  const { status, moreStatus } = useAppSelector(selectState);
+  const { completedIds: completedEventIds, onComplete: onEventComplete } =
+    useEventHandles();
+  const { onVote, votedIds, formatCurrentContents } = useContentHandles();
+  const { favoredIds, favorQueueIds, onFavor, onShare } = useProjectHandles();
+  const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const projectExploreList = useAppSelector(selectAll);
   const isLoading = useMemo(
@@ -42,6 +50,18 @@ export default function Projects() {
   );
   const [project, setProject] = useState<ProjectExploreListItemResponse | null>(
     null
+  );
+  const showProject = useMemo(
+    () =>
+      project
+        ? {
+            ...project,
+            contents: formatCurrentContents(
+              project.contents as ContentListItem[]
+            ),
+          }
+        : null,
+    [project, formatCurrentContents]
   );
   useEffect(() => {
     const params = { ...filter };
@@ -88,11 +108,29 @@ export default function Projects() {
                 <ProjectExploreList
                   data={projectExploreList}
                   activeId={project?.id || 0}
+                  favoredIds={favoredIds}
+                  favorQueueIds={favorQueueIds}
+                  onFavor={onFavor}
+                  onShare={onShare}
                   onItemClick={setProject}
                 />
-                {isLoadingMore && <MoreLoading>loading ...</MoreLoading>}
+                {isLoadingMore ? (
+                  <MoreLoading>loading ...</MoreLoading>
+                ) : noMore ? (
+                  <MoreLoading>No other projects</MoreLoading>
+                ) : null}
               </ListBox>
-              <ContentBox>{project && <Project data={project} />}</ContentBox>
+              <ContentBox>
+                {showProject && (
+                  <ProjectDetailView
+                    data={showProject}
+                    completedEventIds={completedEventIds}
+                    onEventComplete={onEventComplete}
+                    currentVotedContentIds={votedIds}
+                    onContentVote={onVote}
+                  />
+                )}
+              </ContentBox>
             </MainBody>
           )
         )}

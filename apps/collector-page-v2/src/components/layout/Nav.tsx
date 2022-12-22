@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 18:17:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 14:13:24
+ * @LastEditTime: 2022-12-20 15:35:56
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
@@ -29,9 +29,8 @@ export default function Nav() {
     <NavWrapper>
       {navs.map((item) =>
         item.navs ? (
-          <PcNavGroupBox>
+          <PcNavGroupBox key={item.name}>
             <PcNavItem
-              key={item.name}
               isActive={false}
               onClick={() => handleGroupClick(item.name)}
             >

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 11:06:21
+ * @LastEditTime: 2022-12-20 11:47:55
  * @Description: file description
  */
 import {
@@ -35,6 +35,7 @@ export type EventExploreListItem = EventExploreListItemResponse & {
 type EventExploreListStore = EntityState<EventExploreListItem> & {
   status: AsyncRequestStatus;
   moreStatus: AsyncRequestStatus;
+  noMore: boolean;
   pageNumber: number;
   errorMsg: string;
   moreErrorMsg: string;
@@ -52,6 +53,7 @@ const initTodoTasksState: EventExploreListStore =
   eventExploreListEntity.getInitialState({
     status: AsyncRequestStatus.IDLE,
     moreStatus: AsyncRequestStatus.IDLE,
+    noMore: false,
     pageNumber: PAGE_NUMBER_FIRST,
     errorMsg: '',
     moreErrorMsg: '',
@@ -207,6 +209,7 @@ export const eventExploreListSlice = createSlice({
         state.errorMsg = '';
         state.pageNumber = 0;
         state.currentRequestId = action.meta.requestId;
+        state.noMore = false;
       })
       .addCase(fetchEventExploreList.fulfilled, (state, action) => {
         const { currentRequestId } = state;
@@ -223,14 +226,19 @@ export const eventExploreListSlice = createSlice({
         state.errorMsg = action.error.message || '';
       })
       .addCase(fetchMoreEventExploreList.pending, (state, action) => {
+        state.noMore = false;
         state.moreStatus = AsyncRequestStatus.PENDING;
         state.moreErrorMsg = '';
       })
       .addCase(fetchMoreEventExploreList.fulfilled, (state, action) => {
         state.moreStatus = AsyncRequestStatus.FULFILLED;
         state.moreErrorMsg = '';
-        state.pageNumber += 1;
-        eventExploreListEntity.addMany(state, action.payload);
+        if (action.payload.length) {
+          state.pageNumber += 1;
+          eventExploreListEntity.addMany(state, action.payload);
+        } else {
+          state.noMore = true;
+        }
       })
       .addCase(fetchMoreEventExploreList.rejected, (state, action) => {
         state.moreStatus = AsyncRequestStatus.REJECTED;

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { GalxeCard } from './Card';
 
 import { GalxeData } from '../../../services/types/profile';
+import { Platform } from '../../../services/types/common';
 import Title from './Title';
 
 export default function Galxe({ data }: { data: GalxeData }) {
@@ -16,7 +17,7 @@ export default function Galxe({ data }: { data: GalxeData }) {
         expand={expand}
         setExpand={(e) => setExpand(e)}
         exploreAction={() => {
-          navigate('/events?platform=galxe');
+          navigate(`/events?platform=${Platform.GALXE}`);
         }}
       />
       {expand && (

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 19:59:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 15:01:46
+ * @LastEditTime: 2022-12-20 10:53:12
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -26,7 +26,7 @@ export default function CannotOpenPlatFormLink({
       <Title>{title} </Title>
       <Description>
         Sorry, this website has disabled embedding. Please try our Chrome
-        extension for free toss the content displayed here.
+        extension for free to see the content displayed here.
       </Description>
       <ButtonBox>
         <ButtonPrimaryLine onClick={() => window.open(linkUrl, '_blank')}>

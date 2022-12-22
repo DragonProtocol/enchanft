@@ -48,6 +48,11 @@ export const navs: CutomNavObject[] = [
         activeRouteKeys: [RouteKey.contents, RouteKey.content],
       },
       {
+        name: 'frens',
+        link: getRoute(RouteKey.frens).path,
+        activeRouteKeys: [RouteKey.frens, RouteKey.frens],
+      },
+      {
         name: 'projects',
         link: getRoute(RouteKey.projects).path,
         activeRouteKeys: [RouteKey.projects, RouteKey.project],
