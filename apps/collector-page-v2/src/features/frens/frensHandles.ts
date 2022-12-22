@@ -24,6 +24,7 @@ import {
   search,
   follow,
   unFollow,
+  reco,
 } from '../../services/api/frens';
 
 // // 统一管理操作
@@ -37,6 +38,7 @@ export type FrensHandlesState = {
   feed: any;
   follower: any;
   following: any;
+  reco: any;
   isSearch: boolean;
   status: AsyncRequestStatus;
   followStatus: AsyncRequestStatus;
@@ -52,6 +54,7 @@ const initFrensHandlesState: FrensHandlesState = {
   },
   follower: null,
   following: null,
+  reco: null,
   isSearch: false,
   status: AsyncRequestStatus.IDLE,
   followStatus: AsyncRequestStatus.IDLE,
@@ -120,6 +123,18 @@ export const setFollow = createAsyncThunk(
   }
 );
 
+export const getReco = createAsyncThunk(
+  'user/frensHandles/getReco',
+  async (params: any, { dispatch }) => {
+    const resp = await reco({});
+    if (resp.data.code === 0) {
+      dispatch(getRecoSuccess(resp?.data?.data));
+    } else {
+      throw new Error(resp.data.msg);
+    }
+  }
+);
+
 // favor frens
 export const getFollowing = createAsyncThunk(
   'user/frensHandles/getFollowing',
@@ -182,6 +197,9 @@ export const frensHandlesSlice = createSlice({
   reducers: {
     handleSearch: (state, action) => {
       state.isSearch = action?.payload;
+    },
+    getRecoSuccess: (state, action) => {
+      state.reco = action?.payload;
     },
     getFollowingSuccess: (state, action) => {
       let result = action?.payload?.data?.result || [];
@@ -280,5 +298,6 @@ const {
   getFollowingSuccess,
   getFollowerSuccess,
   handleSearch,
+  getRecoSuccess,
 } = actions;
 export default reducer;
