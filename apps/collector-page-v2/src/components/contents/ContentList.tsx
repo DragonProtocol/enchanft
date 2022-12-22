@@ -2,10 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-08 14:04:04
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 17:30:29
+ * @LastEditTime: 2022-12-22 18:32:21
  * @Description: file description
  */
 import styled from 'styled-components';
+import AnimatedListItem, {
+  useAnimatedListTransition,
+} from '../animation/AnimatedListItem';
 import ListItem from './ListItem';
 
 export type ContentListItem = {
@@ -35,25 +38,29 @@ export default function ContentList({
   onHidden,
   onItemClick,
 }: ContentListProps) {
+  const transitions = useAnimatedListTransition(data);
   return (
     <ContentListWrapper>
-      {data.map((item) => (
-        <ListItem
-          key={item.id}
-          type={item.type}
-          author={item.author}
-          createdAt={item.createdAt}
-          title={item.title}
-          upVoteNum={item.upVoteNum}
-          isActive={item.id === activeId}
-          clickAction={() => onItemClick && onItemClick(item)}
-          favored={item.favored}
-          voteAction={() => onVote && onVote(item)}
-          favorsAction={() => onFavor && onFavor(item)}
-          shareAction={() => onShare && onShare(item)}
-          hiddenAction={() => onHidden && onHidden(item)}
-        />
-      ))}
+      {transitions((styles, item) => {
+        return (
+          <AnimatedListItem key={item.id} styles={{ ...styles }}>
+            <ListItem
+              type={item.type}
+              author={item.author}
+              createdAt={item.createdAt}
+              title={item.title}
+              upVoteNum={item.upVoteNum}
+              isActive={item.id === activeId}
+              clickAction={() => onItemClick && onItemClick(item)}
+              favored={item.favored}
+              voteAction={() => onVote && onVote(item)}
+              favorsAction={() => onFavor && onFavor(item)}
+              shareAction={() => onShare && onShare(item)}
+              hiddenAction={() => onHidden && onHidden(item)}
+            />
+          </AnimatedListItem>
+        );
+      })}
     </ContentListWrapper>
   );
 }

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 11:54:33
+ * @LastEditTime: 2022-12-21 15:34:35
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -151,6 +151,7 @@ const EventExploreListItemWrapper = styled.div<{
     `
     box-shadow: inset -4px 0px 0px ${activeColor};
   `}
+  transition: background-color 0.5s, box-shadow 0.5s;
 `;
 const TopBox = styled.div`
   width: 100%;
