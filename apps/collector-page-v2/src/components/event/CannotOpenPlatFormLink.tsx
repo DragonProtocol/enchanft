@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 19:59:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 10:53:12
+ * @LastEditTime: 2022-12-23 13:46:19
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -22,7 +22,7 @@ export default function CannotOpenPlatFormLink({
 }: CannotOpenPlatFormLinkProps) {
   return (
     <CannotOpenPlatFormLinkWrapper {...props}>
-      <Icon src={iconUrl} />
+      {iconUrl && <Icon src={iconUrl} />}
       <Title>{title} </Title>
       <Description>
         Sorry, this website has disabled embedding. Please try our Chrome

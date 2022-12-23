@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-22 18:20:18
+ * @LastEditTime: 2022-12-23 15:50:14
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -17,7 +17,7 @@ import ProjectExploreListItem, {
 export type ProjectExploreListProps = {
   data: ProjectExploreListItemData[];
   activeId: number;
-  favoredIds: number[];
+  favoredIds?: number[];
   favorQueueIds: number[];
   displayHandles?: boolean;
   onFavor: (event: ProjectExploreListItemData) => void;
@@ -27,7 +27,7 @@ export type ProjectExploreListProps = {
 export default function ProjectExploreList({
   data,
   activeId,
-  favoredIds,
+  favoredIds = [],
   favorQueueIds,
   displayHandles = true,
   onFavor,
@@ -35,7 +35,8 @@ export default function ProjectExploreList({
   onItemClick,
 }: ProjectExploreListProps) {
   const isFavored = useCallback(
-    (id: number) => favoredIds.includes(id),
+    (item: ProjectExploreListItemData) =>
+      item.favored || favoredIds.includes(item.id),
     [favoredIds]
   );
   const loadingFavor = useCallback(
@@ -54,9 +55,9 @@ export default function ProjectExploreList({
               onShare={() => onShare(item)}
               onFavor={() => onFavor(item)}
               displayHandles={displayHandles && item.id === activeId}
-              isFavored={isFavored(item.id)}
+              isFavored={isFavored(item)}
               loadingFavor={loadingFavor(item.id)}
-              disabledFavor={isFavored(item.id) || loadingFavor(item.id)}
+              disabledFavor={isFavored(item) || loadingFavor(item.id)}
               onClick={() => onItemClick && onItemClick(item)}
             />
           </AnimatedListItem>

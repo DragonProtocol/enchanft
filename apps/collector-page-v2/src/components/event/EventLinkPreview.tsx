@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:28:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 14:40:16
+ * @LastEditTime: 2022-12-23 13:45:55
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -13,7 +13,7 @@ import CannotOpenPlatFormLink from './CannotOpenPlatFormLink';
 export type CannotOpenPlatFormLinkProps = {
   data: {
     name: string;
-    platform: {
+    platform?: {
       logo: string;
     };
     link: string;
@@ -28,7 +28,7 @@ export default function EventLinkPreview({
   const displayCannotOpen = !supportIframe && !u3ExtensionInstalled;
   return displayCannotOpen ? (
     <CannotOpenPlatFormLink
-      iconUrl={platform.logo}
+      iconUrl={platform?.logo || ''}
       linkUrl={link}
       title={name}
     />

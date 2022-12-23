@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-21 15:34:35
+ * @LastEditTime: 2022-12-23 13:47:10
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -99,7 +99,7 @@ export default function EventExploreListItem({
       <CenterBox>
         <RewardTag value={data.reward} />
         <EventStartTime>{formatDateTime(data.startTime)}</EventStartTime>
-        {data.platform && <EventPlatformIcon src={data.platform.logo} />}
+        {data?.platform?.logo && <EventPlatformIcon src={data.platform.logo} />}
       </CenterBox>
       {displayHandles && (
         <EventHandles>

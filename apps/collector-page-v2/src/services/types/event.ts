@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 18:30:42
+ * @LastEditTime: 2022-12-23 13:55:44
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -33,7 +33,7 @@ export type EventExploreListParams = {
 
 export type EventExploreListItemResponse = {
   uid?: string;
-  id: number;
+  id: number | string;
   name: string;
   description: string;
   image: string;
@@ -42,22 +42,27 @@ export type EventExploreListItemResponse = {
   startTime: number;
   endTime: number;
   reward: Reward;
-  project: {
+  project?: {
     id: number;
     name: string;
     description: string;
     image: string;
   };
-  platform: {
+  platform?: {
     name: string;
     logo: string;
   };
   supportIframe: boolean;
+  favored?: boolean;
+  completed?: boolean;
+  uuid?: string;
+  isForU?: boolean;
 };
 export type EventExploreListResponse = ApiResp<
   Array<EventExploreListItemResponse>
 >;
 export type EventFavorHandleResponse = ApiResp<unknown>;
+export type EventCompleteHandleResponse = ApiResp<unknown>;
 
 export type CreateEventData = {
   name: string;

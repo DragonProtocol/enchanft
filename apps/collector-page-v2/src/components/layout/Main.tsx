@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 14:30:28
+ * @LastEditTime: 2022-12-23 15:21:10
  * @Description: 站点主体内容（路由导航）
  */
 import { useRoutes } from 'react-router-dom';
@@ -16,14 +16,6 @@ import {
   routes,
 } from '../../route/routes';
 import { useAppDispatch } from '../../store/hooks';
-import {
-  fetchUserGroupFavorites,
-  removeAllFavorites,
-} from '../../features/favorite/userGroupFavorites';
-import {
-  fetchCompletedEvents,
-  removeAll as removeAllForCompletedEvents,
-} from '../../features/event/userCompletedEvents';
 import useU3Extension from '../../hooks/useU3Extension';
 import { setU3ExtensionInstalled } from '../../features/website/websiteSlice';
 
@@ -35,16 +27,7 @@ function Main() {
   useEffect(() => {
     dispatch(setU3ExtensionInstalled(u3ExtensionInstalled));
   }, [u3ExtensionInstalled]);
-  // 获取用户相关信息
-  useEffect(() => {
-    if (!isLogin) {
-      dispatch(removeAllFavorites());
-      dispatch(removeAllForCompletedEvents());
-      return;
-    }
-    dispatch(fetchUserGroupFavorites());
-    dispatch(fetchCompletedEvents());
-  }, [isLogin]);
+
   const renderElement = useCallback(
     (route: CutomRouteObject) => {
       if (isLogin) {

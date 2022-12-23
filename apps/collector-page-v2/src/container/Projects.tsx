@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 17:13:17
+ * @LastEditTime: 2022-12-23 17:11:34
  * @Description: 首页任务看板
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { MainWrapper } from '../components/layout/Index';
@@ -31,16 +31,25 @@ import ProjectDetailView from '../components/project/ProjectDetailView';
 import useEventHandles from '../hooks/useEventHandles';
 import useContentHandles from '../hooks/useContentHandles';
 import { ContentListItem } from '../services/types/contents';
+import NoResult from '../components/common/NoResult';
 
 export default function Projects() {
   const { id } = useParams();
-  const { completedIds: completedEventIds, onComplete: onEventComplete } =
-    useEventHandles();
+  const {
+    completedIds: eventCompletedIds,
+    completeQueueIds: eventCompleteQueueIds,
+    onComplete: onEventComplete,
+  } = useEventHandles();
   const { onVote, votedIds, formatCurrentContents } = useContentHandles();
   const { favoredIds, favorQueueIds, onFavor, onShare } = useProjectHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const projectExploreList = useAppSelector(selectAll);
+  const projectExploreListRef = useRef<ProjectExploreListItemResponse[]>([]);
+  useEffect(() => {
+    projectExploreListRef.current = projectExploreList;
+  }, [projectExploreList]);
+
   const isLoading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
     [status]
@@ -74,11 +83,13 @@ export default function Projects() {
   }, [id, filter]);
   useEffect(() => {
     if (id) {
-      setProject(projectExploreList.find((item) => item.id === Number(id)));
+      setProject(
+        projectExploreListRef.current.find((item) => item.id === Number(id))
+      );
     } else {
-      setProject(projectExploreList[0]);
+      setProject(projectExploreListRef.current[0]);
     }
-  }, [projectExploreList, id]);
+  }, [id]);
 
   const getMore = useCallback(
     () => dispatch(fetchMoreProjectExploreList(filter)),
@@ -102,37 +113,42 @@ export default function Projects() {
         {isLoading ? (
           <Loading />
         ) : (
-          !isEmpty && (
-            <MainBody>
-              <ListBox onScrollBottom={getMore}>
-                <ProjectExploreList
-                  data={projectExploreList}
-                  activeId={project?.id || 0}
-                  favoredIds={favoredIds}
-                  favorQueueIds={favorQueueIds}
-                  onFavor={onFavor}
-                  onShare={onShare}
-                  onItemClick={setProject}
-                />
-                {isLoadingMore ? (
-                  <MoreLoading>loading ...</MoreLoading>
-                ) : noMore ? (
-                  <MoreLoading>No other projects</MoreLoading>
-                ) : null}
-              </ListBox>
-              <ContentBox>
-                {showProject && (
-                  <ProjectDetailView
-                    data={showProject}
-                    completedEventIds={completedEventIds}
-                    onEventComplete={onEventComplete}
-                    currentVotedContentIds={votedIds}
-                    onContentVote={onVote}
+          <MainBody>
+            {!isEmpty ? (
+              <>
+                <ListBox onScrollBottom={getMore}>
+                  <ProjectExploreList
+                    data={projectExploreList}
+                    activeId={project?.id || 0}
+                    favoredIds={favoredIds}
+                    favorQueueIds={favorQueueIds}
+                    onFavor={onFavor}
+                    onShare={onShare}
+                    onItemClick={setProject}
                   />
-                )}
-              </ContentBox>
-            </MainBody>
-          )
+                  {isLoadingMore ? (
+                    <MoreLoading>loading ...</MoreLoading>
+                  ) : noMore ? (
+                    <MoreLoading>No other projects</MoreLoading>
+                  ) : null}
+                </ListBox>
+                <ContentBox>
+                  {showProject && (
+                    <ProjectDetailView
+                      data={showProject}
+                      eventCompletedIds={eventCompletedIds}
+                      eventCompleteQueueIds={eventCompleteQueueIds}
+                      onEventComplete={onEventComplete}
+                      contentVotedIds={votedIds}
+                      onContentVote={onVote}
+                    />
+                  )}
+                </ContentBox>
+              </>
+            ) : (
+              <NoResult />
+            )}
+          </MainBody>
         )}
       </MainBox>
     </ProjectsWrapper>
