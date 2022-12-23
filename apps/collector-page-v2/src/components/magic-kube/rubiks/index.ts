@@ -87,22 +87,27 @@ class Rubiks {
     this.render();
   }
 
-  public randomMove() {
+  public randomMove([d1, d2]: number[][]) {
     // mouseDown
-    const startX = randomInt(100, 300);
-    const startY = randomInt(100, 300);
+
+    // const startX = randomInt(100, 300);
+    // const startY = randomInt(100, 300);
     const mousedownEvent = new MouseEvent('mousedown', {
-      clientX: startX,
-      clientY: startY,
+      clientX: d1[0],
+      clientY: d1[0],
     });
     this.randomControl.mousedownHandle(mousedownEvent);
 
     // mouseMove
     const mousemoveEvent = new MouseEvent('mousemove', {
-      clientX: randomInt(50 + startX, 100 + startX),
-      clientY: randomInt(50 + startY, 100 + startY),
-      movementX: randomDirection(),
-      movementY: randomDirection(),
+      // clientX: randomInt(50 + startX, 100 + startX),
+      // clientY: randomInt(50 + startY, 100 + startY),
+      // movementX: randomDirection(),
+      // movementY: randomDirection(),
+      clientX: d2[0],
+      clientY: d2[1],
+      movementX: 0,
+      movementY: 0,
     });
     this.randomControl.moveHandle(mousemoveEvent);
 
@@ -122,10 +127,37 @@ class Rubiks {
         this.renderer,
         this.cube
       );
+      const data = [
+        [
+          [90, 155],
+          [281, 196, 0, 0],
+        ],
+        [
+          [87, 212],
+          [241, 301, 0, 0],
+        ],
+        [
+          [100, 265],
+          [252, 316, 0, 0],
+        ],
+        [
+          [191, 174],
+          [186, 339, 0, 0],
+        ],
+        [
+          [255, 149],
+          [269, 325, 0, 0],
+        ],
+        [
+          [314, 137],
+          [300, 241, 0, 0],
+        ],
+      ];
       const timer = setInterval(() => {
         step -= 1;
-        this.randomMove();
-        if (step < 0) {
+        const d = data[step % data.length];
+        this.randomMove(d);
+        if (step <= 0) {
           clearInterval(timer);
         }
       }, 500);
