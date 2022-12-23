@@ -1,5 +1,6 @@
 /* eslint-disable no-underscore-dangle */
 import { Vector3 } from 'three';
+import { randomData } from './randomData';
 
 type ColorRepresentation = string | number;
 
@@ -164,31 +165,42 @@ class CubeData {
    * @returns
    */
   public getLocalData() {
+    const r = randomInt(0, randomData.length - 1);
+    let parseData: {
+      color: ColorRepresentation;
+      pos: {
+        x: number;
+        y: number;
+        z: number;
+      };
+      normal: {
+        x: number;
+        y: number;
+        z: number;
+      };
+    }[] = [];
     if (localStorage) {
       const data = localStorage.getItem(`${this.cubeOrder}-Rubik`);
-
       if (data) {
-        const parseData: {
-          color: ColorRepresentation;
-          pos: { x: number; y: number; z: number };
-          normal: { x: number; y: number; z: number };
-        }[] = JSON.parse(data);
-
-        parseData.forEach((item) => {
-          item.normal = new Vector3(
-            item.normal.x,
-            item.normal.y,
-            item.normal.z
-          );
-          item.pos = new Vector3(item.pos.x, item.pos.y, item.pos.z);
-        });
-
-        return parseData as CubeElement[];
+        parseData = JSON.parse(data);
+      } else {
+        parseData = randomData[r];
       }
+    } else {
+      parseData = randomData[r];
     }
 
-    return [];
+    parseData.forEach((item) => {
+      item.normal = new Vector3(item.normal.x, item.normal.y, item.normal.z);
+      item.pos = new Vector3(item.pos.x, item.pos.y, item.pos.z);
+    });
+
+    return parseData as CubeElement[];
   }
 }
 
 export default CubeData;
+
+function randomInt(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}

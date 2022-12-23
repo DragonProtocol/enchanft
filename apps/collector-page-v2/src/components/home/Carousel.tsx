@@ -31,7 +31,6 @@ export default function Carousel() {
     const container = document.getElementById('magic-cube-container');
     if (!container.childNodes.length) {
       const rubiks = new Rubiks(container);
-      rubiks.disorder();
     }
   }, []);
   return (

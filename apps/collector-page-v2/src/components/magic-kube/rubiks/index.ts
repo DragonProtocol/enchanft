@@ -121,46 +121,6 @@ class Rubiks {
    */
   public disorder(step = 10) {
     if (this.cube) {
-      this.randomControl = new RandomControl(
-        this.camera,
-        this.scene,
-        this.renderer,
-        this.cube
-      );
-      const data = [
-        [
-          [90, 155],
-          [281, 196, 0, 0],
-        ],
-        [
-          [87, 212],
-          [241, 301, 0, 0],
-        ],
-        [
-          [100, 265],
-          [252, 316, 0, 0],
-        ],
-        [
-          [191, 174],
-          [186, 339, 0, 0],
-        ],
-        [
-          [255, 149],
-          [269, 325, 0, 0],
-        ],
-        [
-          [314, 137],
-          [300, 241, 0, 0],
-        ],
-      ];
-      const timer = setInterval(() => {
-        step -= 1;
-        const d = data[step % data.length];
-        this.randomMove(d);
-        if (step <= 0) {
-          clearInterval(timer);
-        }
-      }, 500);
     }
   }
 
