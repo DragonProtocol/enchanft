@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Platform } from '../../../services/types/common';
 import { PoapData } from '../../../services/types/profile';
-import { PoapCard } from './Card';
+import { NoItem, PoapCard } from './Card';
 
 import Title from './Title';
 
@@ -13,7 +13,7 @@ export default function Poap({ data }: { data: Array<PoapData> }) {
   return (
     <ContentBox>
       <Title
-        name={`POAP(${data.length})`}
+        name={(data.length && `POAP(${data.length})`) || `POAP`}
         expand={expand}
         setExpand={(e) => setExpand(e)}
         exploreAction={() => {
@@ -22,17 +22,25 @@ export default function Poap({ data }: { data: Array<PoapData> }) {
       />
       {expand && (
         <div className="data">
-          {data.map((item) => {
-            return (
-              <PoapCard
-                key={item.event.id}
-                data={item}
-                oatAction={() => {
-                  navigate('/events');
-                }}
-              />
-            );
-          })}
+          {(data.length &&
+            data.map((item) => {
+              return (
+                <PoapCard
+                  key={item.event.id}
+                  data={item}
+                  oatAction={() => {
+                    navigate('/events');
+                  }}
+                />
+              );
+            })) || (
+            <NoItem
+              msg="No data were found on Poap. Explore and get the first one."
+              exploreAction={() => {
+                navigate(`/events?platform=${Platform.POAP}`);
+              }}
+            />
+          )}
         </div>
       )}
     </ContentBox>

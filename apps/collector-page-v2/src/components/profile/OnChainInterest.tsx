@@ -7,6 +7,7 @@ import {
   NFTDataListItem,
 } from '../../services/types/profile';
 import Select from '../common/select/Select';
+import { NoItem } from '../icons/no-item';
 
 import CrownImg from '../imgs/crown.svg';
 import ethImage from '../imgs/eth.png';
@@ -125,6 +126,17 @@ function TokenInfo(props: {
   );
 }
 
+export function OnChainNoItem() {
+  return (
+    <ContentBox>
+      <div className="no-item">
+        <NoItem />
+        <p> No items to display</p>
+      </div>
+    </ContentBox>
+  );
+}
+
 const TokenInfoBox = styled.div`
   display: flex;
   align-items: center;
@@ -235,6 +247,22 @@ const ContentBox = styled.div`
   display: flex;
   gap: 40px;
   margin-top: 40px;
+  .no-item {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+    padding: 40px 20px;
+    height: 219px;
+    background: #1b1e23;
+    border-radius: 20px;
+    & p {
+      font-weight: 400;
+      font-size: 16px;
+      line-height: 19px;
+
+      color: #748094;
+    }
+  }
   .nft {
     flex-grow: 1;
     width: 760px;

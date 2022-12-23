@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { GalxeCard } from './Card';
+import { GalxeCard, NoItem } from './Card';
 
 import { GalxeData } from '../../../services/types/profile';
 import { Platform } from '../../../services/types/common';
@@ -13,7 +13,11 @@ export default function Galxe({ data }: { data: GalxeData }) {
   return (
     <ContentBox>
       <Title
-        name={`Galxe(${data.addressInfo.nfts.totalCount})`}
+        name={
+          (data.addressInfo.nfts.totalCount &&
+            `Galxe(${data.addressInfo.nfts.totalCount})`) ||
+          `Galxe`
+        }
         expand={expand}
         setExpand={(e) => setExpand(e)}
         exploreAction={() => {
@@ -22,17 +26,25 @@ export default function Galxe({ data }: { data: GalxeData }) {
       />
       {expand && (
         <div className="data">
-          {data.addressInfo.nfts.list.map((item) => {
-            return (
-              <GalxeCard
-                key={item.id}
-                data={item}
-                oatAction={() => {
-                  navigate('/events');
-                }}
-              />
-            );
-          })}
+          {(data.addressInfo.nfts.list.length &&
+            data.addressInfo.nfts.list.map((item) => {
+              return (
+                <GalxeCard
+                  key={item.id}
+                  data={item}
+                  oatAction={() => {
+                    navigate('/events');
+                  }}
+                />
+              );
+            })) || (
+            <NoItem
+              msg="No OATs were found on Galxe. Explore and get the first one."
+              exploreAction={() => {
+                navigate(`/events?platform=${Platform.GALXE}`);
+              }}
+            />
+          )}
         </div>
       )}
     </ContentBox>
