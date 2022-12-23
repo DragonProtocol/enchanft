@@ -129,7 +129,7 @@ class Rubiks {
         if (step < 0) {
           clearInterval(timer);
         }
-      }, 500);
+      }, 1000);
     }
   }
 
