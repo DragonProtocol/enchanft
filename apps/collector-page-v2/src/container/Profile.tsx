@@ -13,7 +13,9 @@ import { useParams } from 'react-router-dom';
 import Info from '../components/info';
 import DailyDigest from '../components/info/DailyDigest';
 import Credential from '../components/profile/Credential';
-import OnChainInterest from '../components/profile/OnChainInterest';
+import OnChainInterest, {
+  OnChainNoItem,
+} from '../components/profile/OnChainInterest';
 import OffChainInterest from '../components/profile/OffChainInterest';
 import {
   fetchU3Profile,
@@ -117,13 +119,14 @@ function Profile() {
                 }}
               />
             )}
-            {tab === 'OnChain' && profileData && (
-              <OnChainInterest
-                data={profileData.nfts}
-                wallet={profileData.erc20Balances}
-                ethBalance={profileData.ethBalance}
-              />
-            )}
+            {tab === 'OnChain' &&
+              ((profileData.nfts.total && (
+                <OnChainInterest
+                  data={profileData.nfts}
+                  wallet={profileData.erc20Balances}
+                  ethBalance={profileData.ethBalance}
+                />
+              )) || <OnChainNoItem />)}
             {tab === 'OffChain' && <OffChainInterest />}
           </div>
         )}
