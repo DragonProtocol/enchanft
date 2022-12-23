@@ -183,11 +183,7 @@ class CubeData {
       const data = localStorage.getItem(`${this.cubeOrder}-Rubik`);
       if (data) {
         parseData = JSON.parse(data);
-      } else {
-        parseData = randomData[r];
       }
-    } else {
-      parseData = randomData[r];
     }
 
     parseData.forEach((item) => {

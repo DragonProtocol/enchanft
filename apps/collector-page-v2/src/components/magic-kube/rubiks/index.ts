@@ -87,25 +87,21 @@ class Rubiks {
     this.render();
   }
 
-  public randomMove([d1, d2]: number[][]) {
+  public randomMove() {
     // mouseDown
-
-    // const startX = randomInt(100, 300);
-    // const startY = randomInt(100, 300);
+    const startX = randomInt(100, 300);
+    const startY = 400 - startX;
     const mousedownEvent = new MouseEvent('mousedown', {
-      clientX: d1[0],
-      clientY: d1[0],
+      clientX: startX,
+      clientY: startY,
     });
     this.randomControl.mousedownHandle(mousedownEvent);
 
     // mouseMove
+    const endX = randomInt(80 + startX, 80 + startX);
     const mousemoveEvent = new MouseEvent('mousemove', {
-      // clientX: randomInt(50 + startX, 100 + startX),
-      // clientY: randomInt(50 + startY, 100 + startY),
-      // movementX: randomDirection(),
-      // movementY: randomDirection(),
-      clientX: d2[0],
-      clientY: d2[1],
+      clientX: endX,
+      clientY: 600 - endX,
       movementX: 0,
       movementY: 0,
     });
@@ -121,6 +117,19 @@ class Rubiks {
    */
   public disorder(step = 10) {
     if (this.cube) {
+      this.randomControl = new RandomControl(
+        this.camera,
+        this.scene,
+        this.renderer,
+        this.cube
+      );
+      const timer = setInterval(() => {
+        step -= 1;
+        this.randomMove();
+        if (step < 0) {
+          clearInterval(timer);
+        }
+      }, 500);
     }
   }
 
