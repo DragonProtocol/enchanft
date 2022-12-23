@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 16:48:26
+ * @LastEditTime: 2022-12-22 18:26:11
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -15,6 +15,9 @@ import TwitterSvg from '../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../common/icons/svgs/discord.svg';
 import ContentLinkCard from '../contents/ContentLinkCard';
 import { ContentListItem } from '../contents/ContentList';
+import AnimatedListItem, {
+  useAnimatedListTransition,
+} from '../animation/AnimatedListItem';
 
 export type ProjectDetailCardProps = {
   data: ProjectExploreListItemResponse;
@@ -30,6 +33,8 @@ export default function ProjectDetailCard({
   currentVotedContentIds,
   onContentVote,
 }: ProjectDetailCardProps) {
+  const eventTransitions = useAnimatedListTransition(data.events || []);
+  const contentTransitions = useAnimatedListTransition(data.contents || []);
   return (
     <ProjectDetailCardWrapper>
       <LayoutHeader>
@@ -56,26 +61,33 @@ export default function ProjectDetailCard({
       </LayoutHeader>
       <LayoutMain>
         {data.events &&
-          data.events.map((item) => (
-            <EventLinkCard
-              key={item.id}
-              data={item}
-              onComplete={() => onEventComplete && onEventComplete(item)}
-              disabledComplete={completedEventIds.includes(item.id)}
-              isCompleted={completedEventIds.includes(item.id)}
-            />
-          ))}
+          eventTransitions((styles, item) => {
+            return (
+              <AnimatedListItem key={item.id} styles={{ ...styles }}>
+                <EventLinkCard
+                  data={item}
+                  onComplete={() => onEventComplete && onEventComplete(item)}
+                  disabledComplete={completedEventIds.includes(item.id)}
+                  isCompleted={completedEventIds.includes(item.id)}
+                />
+              </AnimatedListItem>
+            );
+          })}
         {data.contents &&
-          data.contents.map((item) => (
-            <ContentLinkCard
-              key={item.id}
-              data={item}
-              onVote={() => onContentVote(item)}
-              disabledVote={
-                item.upVoted || currentVotedContentIds.includes(item.id)
-              }
-            />
-          ))}
+          contentTransitions((styles, item) => {
+            return (
+              <AnimatedListItem key={item.id} styles={{ ...styles }}>
+                <ContentLinkCard
+                  key={item.id}
+                  data={item}
+                  onVote={() => onContentVote(item)}
+                  disabledVote={
+                    item.upVoted || currentVotedContentIds.includes(item.id)
+                  }
+                />
+              </AnimatedListItem>
+            );
+          })}
       </LayoutMain>
     </ProjectDetailCardWrapper>
   );
