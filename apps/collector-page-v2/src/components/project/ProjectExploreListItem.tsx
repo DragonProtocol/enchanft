@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 14:29:19
+ * @LastEditTime: 2022-12-22 18:49:20
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -87,6 +87,7 @@ const ProjectExploreListItemWrapper = styled.div<{
     `
     box-shadow: inset -4px 0px 0px #FFFFFF;
   `}
+  transition: background-color 0.5s, box-shadow 0.5s;
 `;
 const ProjectInfo = styled.div`
   display: flex;

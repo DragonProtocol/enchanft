@@ -20,7 +20,7 @@ import {
   fetchDaylight,
 } from '../services/api/contents';
 import { ContentListItem, OrderBy } from '../services/types/contents';
-import ListItem from '../components/contents/ListItem';
+import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import ContentShower from '../components/contents/ContentShower';
 import userFavored from '../hooks/useFavored';
 import { useVoteUp } from '../hooks/useVoteUp';
@@ -32,6 +32,7 @@ import { tweetShare } from '../utils/twitter';
 import ListScrollBox from '../components/common/box/ListScrollBox';
 import { selectWebsite } from '../features/website/websiteSlice';
 import { useAppSelector } from '../store/hooks';
+import ConfirmModal from '../components/contents/ConfirmModal';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -62,6 +63,7 @@ function Contents() {
   const [tab, setTab] = useState<'original' | 'readerView'>(
     u3ExtensionInstalled ? 'original' : 'readerView'
   );
+  const [showModal, setShowModal] = useState(false);
 
   const vote = useVoteUp(selectContent?.id, selectContent?.upVoted);
 
@@ -241,7 +243,16 @@ function Contents() {
               setCurrPageNumber(currPageNumber + 1);
             }}
           >
-            {showContents.map((item, idx) => {
+            {contents.map((item, idx) => {
+              if (keysFilter.includes(item.uid || item.id)) {
+                return (
+                  <ListItemHidden
+                    undoAction={() => {
+                      contentHiddenOrNot(item.uid || item.id);
+                    }}
+                  />
+                );
+              }
               let isActive = false;
               if (item.uid) {
                 isActive = item.uid === selectContent?.uid;
@@ -302,8 +313,7 @@ function Contents() {
                     }
                   }}
                   hiddenAction={() => {
-                    contentHiddenOrNot(selectContent?.uid || selectContent.id);
-                    setSelectContent(undefined);
+                    setShowModal(true);
                   }}
                   {...item}
                 />
@@ -395,6 +405,17 @@ function Contents() {
           </ContentBox>
         </ContentsWrapper>
       )}
+      <ConfirmModal
+        show={showModal}
+        closeModal={() => {
+          setShowModal(false);
+        }}
+        confirmAction={() => {
+          contentHiddenOrNot(selectContent?.uid || selectContent.id);
+          setSelectContent(undefined);
+          setShowModal(false);
+        }}
+      />
     </Box>
   );
 }
