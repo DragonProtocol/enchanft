@@ -22,7 +22,7 @@ import {
   favorEvent as favorEventApi,
   completeEvent as completeEventApi,
 } from '../../services/api/event';
-import { addOne as addOneToCompletedEvents } from './userCompletedEvents';
+import { addOne as addOneToCompletedEvents } from './eventCompletedList';
 import { addOneWithEvents } from '../favorite/userGroupFavorites';
 import { updateOne as updateOneWithEventExplore } from './eventExploreList';
 

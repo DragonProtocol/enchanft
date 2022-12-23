@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 16:28:21
+ * @LastEditTime: 2022-12-23 18:22:42
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
@@ -22,6 +22,18 @@ export function fetchListForEventExplore(
 ): RequestPromise<EventExploreListResponse> {
   return request({
     url: `/events/searching`,
+    method: 'get',
+    params,
+    headers: {
+      needToken: true,
+    },
+  });
+}
+export function fetchListForEventComplete(
+  params: EventExploreListParams
+): RequestPromise<EventExploreListResponse> {
+  return request({
+    url: `/events/completings`,
     method: 'get',
     params,
     headers: {
@@ -80,7 +92,7 @@ export function completeEvent({
 }
 
 // TODO 获取用户完成的events
-export function fetchListForUserCompletedEvents(): Array<number> {
+export function fetchListForEventCompletedList(): Array<number> {
   return [];
 }
 

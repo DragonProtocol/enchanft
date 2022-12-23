@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 15:58:17
+ * @LastEditTime: 2022-12-23 17:09:54
  * @Description: 首页任务看板
  */
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
@@ -29,6 +29,7 @@ import { EventExploreListItemResponse } from '../services/types/event';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import EventLinkPreview from '../components/event/EventLinkPreview';
 import Loading from '../components/common/loading/Loading';
+import NoResult from '../components/common/NoResult';
 
 export default function Events() {
   const { id } = useParams();
@@ -122,32 +123,36 @@ export default function Events() {
         {isLoading ? (
           <Loading />
         ) : (
-          !isEmpty && (
-            <MainBody>
-              <ListBox onScrollBottom={getMore}>
-                <EventExploreList
-                  data={eventExploreList}
-                  activeId={event?.id || 0}
-                  favoredIds={favoredIds}
-                  favorQueueIds={favorQueueIds}
-                  completedIds={completedIds}
-                  completeQueueIds={completeQueueIds}
-                  onComplete={onComplete}
-                  onFavor={onFavor}
-                  onShare={onShare}
-                  onItemClick={setEvent}
-                />
-                {isLoadingMore ? (
-                  <MoreLoading>loading ...</MoreLoading>
-                ) : noMore ? (
-                  <MoreLoading>No other events</MoreLoading>
-                ) : null}
-              </ListBox>
-              <ContentBox>
-                {event ? <EventLinkPreview data={event} /> : null}
-              </ContentBox>
-            </MainBody>
-          )
+          <MainBody>
+            {!isEmpty ? (
+              <>
+                <ListBox onScrollBottom={getMore}>
+                  <EventExploreList
+                    data={eventExploreList}
+                    activeId={event?.id || 0}
+                    favoredIds={favoredIds}
+                    favorQueueIds={favorQueueIds}
+                    completedIds={completedIds}
+                    completeQueueIds={completeQueueIds}
+                    onComplete={onComplete}
+                    onFavor={onFavor}
+                    onShare={onShare}
+                    onItemClick={setEvent}
+                  />
+                  {isLoadingMore ? (
+                    <MoreLoading>loading ...</MoreLoading>
+                  ) : noMore ? (
+                    <MoreLoading>No other events</MoreLoading>
+                  ) : null}
+                </ListBox>
+                <ContentBox>
+                  {event ? <EventLinkPreview data={event} /> : null}
+                </ContentBox>
+              </>
+            ) : (
+              <NoResult />
+            )}
+          </MainBody>
         )}
       </MainBox>
     </EventsWrapper>

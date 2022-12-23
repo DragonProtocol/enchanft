@@ -14,7 +14,7 @@ import {
 } from '../features/event/eventHandles';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import useUserFavorites from './useUserFavorites';
-import { selectAll as selecteAllCompleted } from '../features/event/userCompletedEvents';
+import { selectAll as selecteAllCompleted } from '../features/event/eventCompletedList';
 import { EventExploreListItemResponse } from '../services/types/event';
 import { tweetShare } from '../utils/twitter';
 import { getEventShareUrl } from '../utils/share';

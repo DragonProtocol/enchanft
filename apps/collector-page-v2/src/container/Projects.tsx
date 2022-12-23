@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 16:48:57
+ * @LastEditTime: 2022-12-23 17:11:34
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -31,6 +31,7 @@ import ProjectDetailView from '../components/project/ProjectDetailView';
 import useEventHandles from '../hooks/useEventHandles';
 import useContentHandles from '../hooks/useContentHandles';
 import { ContentListItem } from '../services/types/contents';
+import NoResult from '../components/common/NoResult';
 
 export default function Projects() {
   const { id } = useParams();
@@ -112,38 +113,42 @@ export default function Projects() {
         {isLoading ? (
           <Loading />
         ) : (
-          !isEmpty && (
-            <MainBody>
-              <ListBox onScrollBottom={getMore}>
-                <ProjectExploreList
-                  data={projectExploreList}
-                  activeId={project?.id || 0}
-                  favoredIds={favoredIds}
-                  favorQueueIds={favorQueueIds}
-                  onFavor={onFavor}
-                  onShare={onShare}
-                  onItemClick={setProject}
-                />
-                {isLoadingMore ? (
-                  <MoreLoading>loading ...</MoreLoading>
-                ) : noMore ? (
-                  <MoreLoading>No other projects</MoreLoading>
-                ) : null}
-              </ListBox>
-              <ContentBox>
-                {showProject && (
-                  <ProjectDetailView
-                    data={showProject}
-                    eventCompletedIds={eventCompletedIds}
-                    eventCompleteQueueIds={eventCompleteQueueIds}
-                    onEventComplete={onEventComplete}
-                    contentVotedIds={votedIds}
-                    onContentVote={onVote}
+          <MainBody>
+            {!isEmpty ? (
+              <>
+                <ListBox onScrollBottom={getMore}>
+                  <ProjectExploreList
+                    data={projectExploreList}
+                    activeId={project?.id || 0}
+                    favoredIds={favoredIds}
+                    favorQueueIds={favorQueueIds}
+                    onFavor={onFavor}
+                    onShare={onShare}
+                    onItemClick={setProject}
                   />
-                )}
-              </ContentBox>
-            </MainBody>
-          )
+                  {isLoadingMore ? (
+                    <MoreLoading>loading ...</MoreLoading>
+                  ) : noMore ? (
+                    <MoreLoading>No other projects</MoreLoading>
+                  ) : null}
+                </ListBox>
+                <ContentBox>
+                  {showProject && (
+                    <ProjectDetailView
+                      data={showProject}
+                      eventCompletedIds={eventCompletedIds}
+                      eventCompleteQueueIds={eventCompleteQueueIds}
+                      onEventComplete={onEventComplete}
+                      contentVotedIds={votedIds}
+                      onContentVote={onVote}
+                    />
+                  )}
+                </ContentBox>
+              </>
+            ) : (
+              <NoResult />
+            )}
+          </MainBody>
         )}
       </MainBox>
     </ProjectsWrapper>
