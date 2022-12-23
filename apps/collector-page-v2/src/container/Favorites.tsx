@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-22 18:43:15
+ * @LastEditTime: 2022-12-23 16:39:15
  * @Description: 首页任务看板
  */
 import { useEffect, useMemo, useState } from 'react';
@@ -59,12 +59,13 @@ function Favorites() {
     dispatch(fetchUserGroupFavorites());
   }, []);
   const {
-    favoredIds,
-    favorQueueIds,
-    completedIds,
-    onComplete,
-    onFavor,
-    onShare,
+    favoredIds: eventFavoredIds,
+    favorQueueIds: eventFavorQueueIds,
+    completedIds: eventCompletedIds,
+    completeQueueIds: eventCompleteQueueIds,
+    onComplete: onEventComplete,
+    onFavor: onEventFavor,
+    onShare: onEventShare,
   } = useEventHandles();
   const {
     favoredIds: projectFavoredIds,
@@ -129,13 +130,14 @@ function Favorites() {
                 <EventExploreList
                   data={events}
                   activeId={event?.id || 0}
-                  favoredIds={favoredIds}
-                  favorQueueIds={favorQueueIds}
-                  completedIds={completedIds}
+                  favoredIds={eventFavoredIds}
+                  favorQueueIds={eventFavorQueueIds}
+                  completedIds={eventCompletedIds}
+                  completeQueueIds={eventCompleteQueueIds}
                   displayHandles
-                  onComplete={onComplete}
-                  onFavor={onFavor}
-                  onShare={onShare}
+                  onComplete={onEventComplete}
+                  onFavor={onEventFavor}
+                  onShare={onEventShare}
                   onItemClick={setEvent}
                 />
               )}
@@ -174,9 +176,10 @@ function Favorites() {
                 {showProject && (
                   <ProjectDetailView
                     data={showProject}
-                    completedEventIds={completedIds}
-                    onEventComplete={onComplete}
-                    currentVotedContentIds={contentVotedIds}
+                    eventCompletedIds={eventCompletedIds}
+                    eventCompleteQueueIds={eventCompleteQueueIds}
+                    onEventComplete={onEventComplete}
+                    contentVotedIds={contentVotedIds}
                     onContentVote={onContentVote}
                   />
                 )}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 17:46:47
+ * @LastEditTime: 2022-12-23 16:38:46
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
@@ -19,7 +19,7 @@ export default () => {
   const { handleLoginVerify } = useLogin();
   const { user } = useWlUserReact();
   // vote
-  const [votedIds, setVotedContentIds] = useState([]);
+  const [votedIds, setVotedContentIds] = useState<Array<number | string>>([]);
   const onVote = useCallback(
     (data: ContentListItem) => {
       handleLoginVerify(() => {

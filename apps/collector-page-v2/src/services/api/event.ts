@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 18:30:38
+ * @LastEditTime: 2022-12-23 16:28:21
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
@@ -24,13 +24,22 @@ export function fetchListForEventExplore(
     url: `/events/searching`,
     method: 'get',
     params,
+    headers: {
+      needToken: true,
+    },
   });
 }
-export function favorEvent(
-  id: number
-): RequestPromise<EventFavorHandleResponse> {
+export function favorEvent({
+  id,
+  uuid,
+  isForU,
+}: {
+  id: number | string;
+  uuid: string;
+  isForU: boolean;
+}): RequestPromise<EventFavorHandleResponse> {
   return request({
-    url: `/events/${id}/favors`,
+    url: isForU ? `/events/${uuid}/personlfavors` : `/events/${id}/favors`,
     method: 'post',
     headers: {
       needToken: true,
@@ -50,44 +59,41 @@ export function createEvent(
   });
 }
 
-// TODO :complete 暂时保存到本地
-const COMPLETED_EVENTS_STOREAGE_KEY = 'completed_events';
-const getStorageCompletedIds = () => {
-  try {
-    const value = localStorage.getItem(COMPLETED_EVENTS_STOREAGE_KEY);
-    const v = JSON.parse(value);
-    if (isArray(v)) {
-      return v;
-    }
-    if (isNumber(v)) {
-      return [v];
-    }
-    return [];
-  } catch (e) {
-    return [];
-  }
-};
-export function completeEvent(id: number): Array<number> {
-  const events = getStorageCompletedIds();
-  events.push(id);
-  localStorage.setItem(COMPLETED_EVENTS_STOREAGE_KEY, JSON.stringify(events));
-  return events;
+export function completeEvent({
+  id,
+  uuid,
+  isForU,
+}: {
+  id: number | string;
+  uuid: string;
+  isForU: boolean;
+}): RequestPromise<EventFavorHandleResponse> {
+  return request({
+    url: isForU
+      ? `/events/${uuid}/personlcompleting`
+      : `/events/${id}/completing`,
+    method: 'post',
+    headers: {
+      needToken: true,
+    },
+  });
 }
 
+// TODO 获取用户完成的events
 export function fetchListForUserCompletedEvents(): Array<number> {
-  return getStorageCompletedIds();
+  return [];
 }
 
-export type DaylightListParams = {
-  pubkey: string;
-  after: string;
-  limit: number;
-};
-export function fetchListByDaylight(
-  params: DaylightListParams
-): AxiosPromise<any> {
-  const { pubkey, after, limit } = params;
-  return axios.get(
-    `https://api.daylight.xyz/v1/wallets/${pubkey}/abilities?type=access&type=mint&type=airdrop&type=claim&type=vote&type=misc&sortDirection=desc&sort=magic&limit=${limit}&after=${after}`
-  );
-}
+// export type DaylightListParams = {
+//   pubkey: string;
+//   after: string;
+//   limit: number;
+// };
+// export function fetchListByDaylight(
+//   params: DaylightListParams
+// ): AxiosPromise<any> {
+//   const { pubkey, after, limit } = params;
+//   return axios.get(
+//     `https://api.daylight.xyz/v1/wallets/${pubkey}/abilities?type=access&type=mint&type=airdrop&type=claim&type=vote&type=misc&sortDirection=desc&sort=magic&limit=${limit}&after=${after}`
+//   );
+// }

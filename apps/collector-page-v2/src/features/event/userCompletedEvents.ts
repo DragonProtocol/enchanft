@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-02 16:40:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-06 18:18:44
+ * @LastEditTime: 2022-12-23 16:17:46
  * @Description: file description
  */
 import {
@@ -11,12 +11,11 @@ import {
   createEntityAdapter,
   createSlice,
 } from '@reduxjs/toolkit';
-import { fetchListForUserCompletedEvents } from '../../services/api/event';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
-import { EventEntity } from '../../services/types/event';
+import { EventExploreListItemResponse } from '../../services/types/event';
 import type { RootState } from '../../store/store';
 
-export type CompletedEventForEntity = { id: number };
+export type CompletedEventForEntity = EventExploreListItemResponse;
 type CompletedCommunityListState = EntityState<CompletedEventForEntity> & {
   status: AsyncRequestStatus;
   errorMsg: string;
@@ -37,7 +36,7 @@ export const fetchCompletedEvents = createAsyncThunk<
   undefined
 >('event/user/completedList', (params) => {
   // TODO 获取用户标记完成的event
-  return fetchListForUserCompletedEvents().map((id) => ({ id }));
+  return [];
 });
 
 export const userCompletedEventsSlice = createSlice({

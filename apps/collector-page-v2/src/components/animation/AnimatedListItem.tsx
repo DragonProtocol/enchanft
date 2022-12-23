@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-21 18:15:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-22 18:37:45
+ * @LastEditTime: 2022-12-23 15:04:48
  * @Description: file description
  */
 import {
@@ -25,9 +25,11 @@ export type AnimatedListTransition<T> = TransitionFn<
   TransitionStyles
 >;
 export function useAnimatedListTransition<T>(
-  items: Array<AnimatedListTransitionItem<T>>
+  items: Array<AnimatedListTransitionItem<T>>,
+  keyField?: string
 ) {
   return useTransition(items, {
+    keys: (item) => item[keyField || 'id'],
     from: {
       transform: 'rotateX(90deg)',
       opacity: 0,

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-07 07:44:20
+ * @LastEditTime: 2022-12-23 15:54:47
  * @Description: file description
  */
 import {
@@ -22,8 +22,9 @@ import {
   favorEvent as favorEventApi,
   completeEvent as completeEventApi,
 } from '../../services/api/event';
-import { addOne as addOneToCompleteedEvents } from './userCompletedEvents';
+import { addOne as addOneToCompletedEvents } from './userCompletedEvents';
 import { addOneWithEvents } from '../favorite/userGroupFavorites';
+import { updateOne as updateOneWithEventExplore } from './eventExploreList';
 
 // 为event 点赞操作 创建一个执行队列
 export type FavorEventParams = EventExploreListItemResponse;
@@ -36,9 +37,7 @@ const favorEventQueueState: FavorEventQueueState =
   favorEventQueueEntity.getInitialState();
 
 // 为event 标记为操作 创建一个执行队列
-export type CompleteEventParams = {
-  id: number;
-};
+export type CompleteEventParams = EventExploreListItemResponse;
 export type CompleteEventEntity = EventEntity;
 type CompleteEventQueueState = EntityState<CompleteEventEntity>;
 export const completeEventQueueEntity =
@@ -80,8 +79,13 @@ export const favorEvent = createAsyncThunk(
   'user/eventHandles/favorEvent',
   async (params: FavorEventParams, { dispatch }) => {
     dispatch(addOneToFavorEventQueue(params));
-    const resp = await favorEventApi(params.id);
+    const resp = await favorEventApi({
+      id: params.id,
+      uuid: params?.uuid || '',
+      isForU: params?.isForU || false,
+    });
     if (resp.data.code === 0) {
+      dispatch(updateOneWithEventExplore({ id: params.id, favored: true }));
       dispatch(addOneWithEvents(params));
       dispatch(removeOneForFavorEventQueue(params.id));
     } else {
@@ -103,11 +107,21 @@ export const favorEvent = createAsyncThunk(
 // complete event
 export const completeEvent = createAsyncThunk(
   'user/eventHandles/completeEvent',
-  (params: CompleteEventParams, { dispatch }) => {
+  async (params: CompleteEventParams, { dispatch }) => {
     dispatch(addOneToCompleteEventQueue(params));
-    completeEventApi(params.id);
-    dispatch(addOneToCompleteedEvents(params));
-    dispatch(removeOneForCompleteEventQueue(params.id));
+    const resp = await completeEventApi({
+      id: params.id,
+      uuid: params?.uuid || '',
+      isForU: params?.isForU || false,
+    });
+    if (resp.data.code === 0) {
+      dispatch(updateOneWithEventExplore({ id: params.id, completed: true }));
+      dispatch(addOneToCompletedEvents(params));
+      dispatch(removeOneForCompleteEventQueue(params.id));
+    } else {
+      dispatch(removeOneForCompleteEventQueue(params.id));
+      throw new Error(resp.data.msg);
+    }
   },
   {
     condition: (params: CompleteEventParams, { getState }) => {
