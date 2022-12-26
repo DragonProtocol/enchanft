@@ -70,6 +70,39 @@ export function voteContent(id: number, token: string) {
   });
 }
 
+export function personalFavors(uuid: string, token: string) {
+  return request({
+    url: `/contents/${uuid}/personalfavors`,
+    method: 'post',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
+export function personalVote(uuid: string, token: string) {
+  return request({
+    url: `/contents/${uuid}/personalvotes`,
+    method: 'post',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
+export function personalComplete(uuid: string, token: string) {
+  return request({
+    url: `/contents/${uuid}/personalcompleting`,
+    method: 'post',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
 export function fetchDaylight(
   cursor: string,
   wallet = '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4'
@@ -98,6 +131,7 @@ export function fetchContents(
   return request({
     url: `/contents/searching`,
     params: {
+      userId: 84,
       contentId: query.contentId === ':id' ? null : query.contentId,
       pageSize: query.pageSize ?? 10,
       pageNumber: query.pageNumber ?? 0,

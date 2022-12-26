@@ -14,11 +14,7 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContentsHeader from '../components/contents/Header';
 
-import {
-  contentParse,
-  fetchContents,
-  fetchDaylight,
-} from '../services/api/contents';
+import { contentParse, fetchContents } from '../services/api/contents';
 import { ContentListItem, OrderBy } from '../services/types/contents';
 import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import ContentShower from '../components/contents/ContentShower';
@@ -50,7 +46,7 @@ function Contents() {
     type: '',
     orderBy: 'For U',
   });
-  const [currDaylightCursor, setCurrDaylightCursor] = useState('');
+
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
   const [selectContent, setSelectContent] = useState<ContentListItem>();
@@ -65,28 +61,19 @@ function Contents() {
   );
   const [showModal, setShowModal] = useState(false);
 
-  const vote = useVoteUp(selectContent?.id, selectContent?.upVoted);
+  const vote = useVoteUp(
+    selectContent?.uuid || selectContent?.id,
+    selectContent?.upVoted
+  );
 
-  const favors = userFavored(selectContent?.id, selectContent?.favored);
+  const favors = userFavored(
+    selectContent?.uuid || selectContent?.id,
+    selectContent?.favored
+  );
 
   const onShare = (data: ContentListItem) => {
     tweetShare(data.title, getProjectShareUrl(data.id));
   };
-
-  const fetchDaylightData = useCallback(
-    async (daylightCursor: string) => {
-      if (!evmAccount?.thirdpartyId) return [];
-      const data = await fetchDaylight(
-        daylightCursor,
-        evmAccount?.thirdpartyId
-      );
-      const cursor = data.data.abilities[data.data.abilities.length - 1]?.uid;
-      // setCurrDaylightCursor(data.data.links.next);
-      setCurrDaylightCursor(cursor);
-      return data.data.abilities;
-    },
-    [evmAccount]
-  );
 
   const fetchData = useCallback(
     async (keywords: string, type: string, orderBy: string) => {
@@ -100,14 +87,13 @@ function Contents() {
       try {
         let tmpData = [];
         if (orderBy === OrderBy.FORU) {
-          const [dayLightData, { data }] = await Promise.all([
-            fetchDaylightData(''),
+          const [{ data }] = await Promise.all([
             fetchContents(
-              { keywords, type, orderBy: OrderBy.TRENDING, contentId: id },
+              { keywords, type, orderBy: OrderBy.FORU, contentId: id },
               user.token
             ),
           ]);
-          tmpData = [...dayLightData, ...data.data];
+          tmpData = [...data.data];
         } else {
           const { data } = await fetchContents(
             { keywords, type, orderBy, contentId: id },
@@ -118,7 +104,7 @@ function Contents() {
         setContents(tmpData);
         if (id) {
           setSelectContent(
-            tmpData.find((item) => `${item.id}` === id || item.uid === id)
+            tmpData.find((item) => `${item.id}` === id || item.uuid === id)
           );
         }
       } catch (error) {
@@ -136,20 +122,19 @@ function Contents() {
       try {
         setLoadingMore(true);
         if (orderBy === OrderBy.FORU) {
-          const [dayLightData, { data }] = await Promise.all([
-            fetchDaylightData(currDaylightCursor),
+          const [{ data }] = await Promise.all([
             fetchContents(
               {
                 keywords,
                 type,
-                orderBy: OrderBy.TRENDING,
+                orderBy: OrderBy.FORU,
                 pageNumber,
               },
               user.token
             ),
           ]);
-          setHasMore(dayLightData.length > 0 || data.data.length > 0);
-          setContents([...contents, ...dayLightData, ...data.data]);
+          setHasMore(data.data.length > 0);
+          setContents([...contents, ...data.data]);
         } else {
           const { data } = await fetchContents(
             { keywords, type, orderBy, pageNumber },
@@ -164,7 +149,7 @@ function Contents() {
         setLoadingMore(false);
       }
     },
-    [queryRef.current, contents, currDaylightCursor]
+    [queryRef.current, contents]
   );
 
   const loadDaylightContent = useCallback(async (url: string) => {
@@ -191,13 +176,13 @@ function Contents() {
 
   const showContents = useMemo(() => {
     return contents.filter((item) => {
-      return !keysFilter.includes(item.uid || item.id);
+      return !keysFilter.includes(item.uuid || item.id);
     });
   }, [contents, keysFilter]);
 
   useEffect(() => {
-    if (selectContent?.uid) {
-      loadDaylightContent(selectContent.action.linkUrl);
+    if (selectContent?.uuid) {
+      loadDaylightContent(selectContent.link);
     } else {
       setDaylightContent('');
     }
@@ -244,28 +229,28 @@ function Contents() {
             }}
           >
             {contents.map((item, idx) => {
-              if (keysFilter.includes(item.uid || item.id)) {
+              if (keysFilter.includes(item.uuid || item.id)) {
                 return (
                   <ListItemHidden
                     undoAction={() => {
-                      contentHiddenOrNot(item.uid || item.id);
+                      contentHiddenOrNot(item.uuid || item.id);
                     }}
                   />
                 );
               }
               let isActive = false;
-              if (item.uid) {
-                isActive = item.uid === selectContent?.uid;
+              if (item.uuid) {
+                isActive = item.uuid === selectContent?.uuid;
               } else {
                 isActive = item.id === selectContent?.id;
               }
               return (
                 <ListItem
-                  key={item.id || item.uid}
+                  key={item.id || item.uuid}
                   isActive={isActive}
                   clickAction={() => {
                     setSelectContent(item);
-                    navigate(`/contents/${item.uid || item.id}`);
+                    navigate(`/contents/${item.uuid || item.id}`);
                   }}
                   shareAction={() => {
                     onShare(item);
@@ -360,7 +345,7 @@ function Contents() {
             </div>
             {tab === 'original' && selectContent && (
               <ExtensionSupport
-                url={selectContent.action?.linkUrl || selectContent.link}
+                url={selectContent.link}
                 title={selectContent.title}
                 img={
                   selectContent.imageUrl ||
@@ -385,14 +370,14 @@ function Contents() {
                       favorsActions={favors}
                       hiddenAction={() => {
                         contentHiddenOrNot(
-                          selectContent?.uid || selectContent.id
+                          selectContent?.uuid || selectContent.id
                         );
                         setSelectContent(undefined);
                       }}
                     />
                   )) || (
                     <ExtensionSupport
-                      url={selectContent.action?.linkUrl || selectContent.link}
+                      url={selectContent.link}
                       title={selectContent.title}
                       msg="Reader view is not supported for this page! Please view it in new tab."
                       img={
@@ -411,7 +396,7 @@ function Contents() {
           setShowModal(false);
         }}
         confirmAction={() => {
-          contentHiddenOrNot(selectContent?.uid || selectContent.id);
+          contentHiddenOrNot(selectContent?.uuid || selectContent.id);
           setSelectContent(undefined);
           setShowModal(false);
         }}

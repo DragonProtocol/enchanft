@@ -19,7 +19,7 @@ export enum OrderBy {
 
 export type ContentListItem = {
   uid?: string;
-  action?: { linkUrl: string };
+  // action?: { linkUrl: string };
   imageUrl?: string;
   uniProjects: Array<{
     description: string;
@@ -28,7 +28,7 @@ export type ContentListItem = {
     image: string;
     name: string;
   }>;
-
+  uuid?: string;
   id: number;
   title: string;
   createdAt: number;
