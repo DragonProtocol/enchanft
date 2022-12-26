@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 16:28:34
+ * @LastEditTime: 2022-12-26 16:36:04
  * @Description: file description
  */
 import {
@@ -96,9 +96,7 @@ const initTodoTasksState: EventExploreListStore =
 
 //   return { data, daylightAfterUid };
 // };
-type AdaptationEventExploreListParams = EventExploreListParams & {
-  pubkey?: string;
-};
+type AdaptationEventExploreListParams = EventExploreListParams;
 // 重新获取列表
 export const fetchEventExploreList = createAsyncThunk<
   Array<EventExploreListItem>,

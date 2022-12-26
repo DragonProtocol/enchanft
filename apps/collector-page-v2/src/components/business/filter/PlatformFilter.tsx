@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 12:43:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 13:46:36
+ * @LastEditTime: 2022-12-26 15:49:17
  * @Description: file description
  */
 import React, { useEffect, useRef, useState } from 'react';
@@ -14,13 +14,18 @@ import PlatformSvg from '../../common/icons/svgs/cube.svg';
 type ValueType = string | number;
 type Props = StyledComponentPropsWithRef<'div'> & {
   value: ValueType;
-  onChange: (value: ValueType) => void;
+  onChange?: (value: ValueType) => void;
+  onSelectOption?: (option: SelectOption) => void;
 };
 const optionAll = {
   value: '',
   label: 'All Platform',
 };
-export default function PlatformFilter({ value, onChange }: Props) {
+export default function PlatformFilter({
+  value,
+  onChange,
+  onSelectOption,
+}: Props) {
   const [options, setOptions] = useState<SelectOption[]>([optionAll]);
   useEffect(() => {
     getAllPlatform().then((resp) =>
@@ -39,6 +44,7 @@ export default function PlatformFilter({ value, onChange }: Props) {
       options={options}
       value={value}
       onChange={onChange}
+      onSelectOption={onSelectOption}
       iconUrl={PlatformSvg}
     />
   );

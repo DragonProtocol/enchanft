@@ -2,11 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 10:27:34
+ * @LastEditTime: 2022-12-26 16:04:33
  * @Description: file description
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
-import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
 import ChevronDownSvg from '../icons/svgs/chevron-down.svg';
 
 type ValueType = any;
@@ -20,13 +20,15 @@ export type Props = StyledComponentPropsWithRef<'div'> & {
   value: ValueType;
   placeholder?: string;
   onChange?: (value: ValueType) => void;
+  onSelectOption?: (option: SelectOption) => void;
   iconUrl?: string;
 };
 export default function Select({
   options,
   value,
-  placeholder = 'Select',
+  placeholder = 'Select...',
   onChange,
+  onSelectOption,
   iconUrl,
   ...wrapperProps
 }: Props) {
@@ -36,10 +38,7 @@ export default function Select({
     () => options.find((item) => item.value === value),
     [options, value]
   );
-  const displayText = useMemo(
-    () => (option ? option.label : placeholder),
-    [option, placeholder]
-  );
+
   useEffect(() => {
     const windowClick = (e) => {
       if (
@@ -69,9 +68,15 @@ export default function Select({
           />
         )}
 
-        <SelectButtonText className="select-button-text">
-          {displayText}
-        </SelectButtonText>
+        {option ? (
+          <SelectButtonText className="select-button-text">
+            {option.label}
+          </SelectButtonText>
+        ) : (
+          <SelectButtonPlaceholder className="select-button-placeholder">
+            {placeholder}
+          </SelectButtonPlaceholder>
+        )}
 
         <SelectButtonChevronIcon
           className="select-button-chevron-icon"
@@ -89,6 +94,9 @@ export default function Select({
               onClick={() => {
                 if (onChange) {
                   onChange(item.value);
+                }
+                if (onSelectOption) {
+                  onSelectOption(item);
                 }
                 setOpenOptions(false);
               }}
@@ -130,7 +138,7 @@ const SelectButtonBeforeIcon = styled.img`
   width: 24px;
   height: 24px;
 `;
-const SelectButtonText = styled.span`
+const SelectButtonTextCss = css`
   flex: 1;
   font-weight: 500;
   font-size: 16px;
@@ -139,6 +147,13 @@ const SelectButtonText = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
+`;
+const SelectButtonText = styled.span`
+  ${SelectButtonTextCss}
+`;
+const SelectButtonPlaceholder = styled.span`
+  ${SelectButtonTextCss}
+  color: #4e5a6e;
 `;
 const SelectButtonChevronIcon = styled.img`
   width: 20px;

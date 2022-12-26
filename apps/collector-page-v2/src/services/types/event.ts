@@ -2,12 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 13:55:44
+ * @LastEditTime: 2022-12-26 13:29:09
  * @Description: file description
  */
 import { ApiResp } from '.';
-import { ChainType } from '../../utils/chain';
-import { OrderBy, Platform, ProjectType, Reward } from './common';
+import { ChainType, OrderBy, Platform, ProjectType, Reward } from './common';
 
 export type EventEntity = {
   id: number;
