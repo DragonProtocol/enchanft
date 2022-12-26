@@ -102,7 +102,7 @@ function Contents() {
           tmpData = data.data;
         }
         setContents(tmpData);
-        if (id) {
+        if (id !== ':id' && id) {
           setSelectContent(
             tmpData.find((item) => `${item.id}` === id || item.uuid === id)
           );
