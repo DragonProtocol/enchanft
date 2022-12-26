@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-13 09:39:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 18:15:05
+ * @LastEditTime: 2022-12-26 19:14:53
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -21,6 +21,8 @@ import { getEventShareUrl } from '../utils/share';
 import useLogin from './useLogin';
 import {
   selectWebsite,
+  setEventCompleteGuideEnd,
+  setEventCompleteGuideEndCallback,
   setOpenEventCompleteGuideModal,
 } from '../features/website/websiteSlice';
 
@@ -40,6 +42,12 @@ export default () => {
       handleLoginVerify(() => {
         if (!eventCompleteGuideEnd) {
           dispatch(setOpenEventCompleteGuideModal(true));
+          dispatch(
+            setEventCompleteGuideEndCallback(() => {
+              dispatch(setEventCompleteGuideEnd());
+              dispatch(completeEvent(item));
+            })
+          );
           return;
         }
         dispatch(completeEvent(item));

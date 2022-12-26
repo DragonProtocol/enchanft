@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 17:41:56
+ * @LastEditTime: 2022-12-26 19:07:47
  * @Description: 站点主体内容（路由导航）
  */
 import { useRoutes } from 'react-router-dom';
@@ -19,7 +19,6 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import useU3Extension from '../../hooks/useU3Extension';
 import {
   selectWebsite,
-  setEventCompleteGuideEnd,
   setU3ExtensionInstalled,
 } from '../../features/website/websiteSlice';
 import EventCompleteGuideModal from '../event/EventCompleteGuideModal';
@@ -28,7 +27,8 @@ function Main() {
   const dispatch = useAppDispatch();
   const { isLogin } = useWlUserReact();
   const { isAdmin } = usePermissions();
-  const { openEventCompleteGuideModal } = useAppSelector(selectWebsite);
+  const { openEventCompleteGuideModal, eventCompleteGuideEndCallback } =
+    useAppSelector(selectWebsite);
   const { u3ExtensionInstalled } = useU3Extension();
   useEffect(() => {
     dispatch(setU3ExtensionInstalled(u3ExtensionInstalled));
@@ -64,7 +64,7 @@ function Main() {
       {renderRoutes}
       <EventCompleteGuideModal
         isOpen={openEventCompleteGuideModal}
-        onGuideEnd={() => dispatch(setEventCompleteGuideEnd())}
+        onGuideEnd={eventCompleteGuideEndCallback}
       />
     </MainWrapper>
   );
