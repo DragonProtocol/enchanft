@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 15:21:10
+ * @LastEditTime: 2022-12-26 17:41:56
  * @Description: 站点主体内容（路由导航）
  */
 import { useRoutes } from 'react-router-dom';
@@ -15,14 +15,20 @@ import {
   permissionLoginRouteKeys,
   routes,
 } from '../../route/routes';
-import { useAppDispatch } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import useU3Extension from '../../hooks/useU3Extension';
-import { setU3ExtensionInstalled } from '../../features/website/websiteSlice';
+import {
+  selectWebsite,
+  setEventCompleteGuideEnd,
+  setU3ExtensionInstalled,
+} from '../../features/website/websiteSlice';
+import EventCompleteGuideModal from '../event/EventCompleteGuideModal';
 
 function Main() {
   const dispatch = useAppDispatch();
   const { isLogin } = useWlUserReact();
   const { isAdmin } = usePermissions();
+  const { openEventCompleteGuideModal } = useAppSelector(selectWebsite);
   const { u3ExtensionInstalled } = useU3Extension();
   useEffect(() => {
     dispatch(setU3ExtensionInstalled(u3ExtensionInstalled));
@@ -53,7 +59,15 @@ function Main() {
     element: renderElement(item),
   }));
   const renderRoutes = useRoutes(routesMap);
-  return <MainWrapper>{renderRoutes}</MainWrapper>;
+  return (
+    <MainWrapper>
+      {renderRoutes}
+      <EventCompleteGuideModal
+        isOpen={openEventCompleteGuideModal}
+        onGuideEnd={() => dispatch(setEventCompleteGuideEnd())}
+      />
+    </MainWrapper>
+  );
 }
 export default Main;
 const MainWrapper = styled.div`
