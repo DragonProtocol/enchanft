@@ -2,10 +2,9 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 17:09:54
+ * @LastEditTime: 2022-12-26 16:38:52
  * @Description: 首页任务看板
  */
-import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -24,7 +23,6 @@ import {
 } from '../features/event/eventExploreList';
 import useEventHandles from '../hooks/useEventHandles';
 import { AsyncRequestStatus } from '../services/types';
-import { OrderBy } from '../services/types/common';
 import { EventExploreListItemResponse } from '../services/types/event';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import EventLinkPreview from '../components/event/EventLinkPreview';
@@ -43,16 +41,9 @@ export default function Events() {
     onFavor,
     onShare,
   } = useEventHandles();
-  const { getBindAccount, isLogin } = useWlUserReact();
-  const evmAccount = getBindAccount(AccountType.EVM);
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const eventExploreList = useAppSelector(selectAll);
-  const eventExploreListRef = useRef<EventExploreListItemResponse[]>([]);
-  useEffect(() => {
-    eventExploreListRef.current = eventExploreList;
-  }, [eventExploreList]);
-
   const isLoading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
     [status]
@@ -87,26 +78,27 @@ export default function Events() {
       Object.assign(params, { eventId: Number(id) });
     }
     dispatch(fetchEventExploreList({ ...params }));
-  }, [id, filter, evmAccount]);
+  }, [id, filter]);
+  const isInitActive = useRef(false);
   useEffect(() => {
-    if (id) {
-      setEvent(
-        eventExploreListRef.current.find((item) => item.id === Number(id))
-      );
-    } else {
-      setEvent(eventExploreListRef.current[0]);
+    if (!isInitActive.current && status === AsyncRequestStatus.FULFILLED) {
+      if (id) {
+        setEvent(eventExploreList.find((item) => item.id === Number(id)));
+      } else {
+        setEvent(eventExploreList[0]);
+      }
+      isInitActive.current = true;
     }
-  }, [id]);
+  }, [id, eventExploreList, status]);
 
   const getMore = useCallback(
     () =>
       dispatch(
         fetchMoreEventExploreList({
           ...filter,
-          pubkey: evmAccount?.thirdpartyId,
         })
       ),
-    [filter, evmAccount]
+    [filter]
   );
   const isLoadingMore = useMemo(
     () => moreStatus === AsyncRequestStatus.PENDING,

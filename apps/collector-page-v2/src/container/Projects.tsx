@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 17:11:34
+ * @LastEditTime: 2022-12-26 16:29:31
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -45,10 +45,6 @@ export default function Projects() {
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const projectExploreList = useAppSelector(selectAll);
-  const projectExploreListRef = useRef<ProjectExploreListItemResponse[]>([]);
-  useEffect(() => {
-    projectExploreListRef.current = projectExploreList;
-  }, [projectExploreList]);
 
   const isLoading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
@@ -81,15 +77,18 @@ export default function Projects() {
     }
     dispatch(fetchProjectExploreList({ ...params }));
   }, [id, filter]);
+
+  const isInitActive = useRef(false);
   useEffect(() => {
-    if (id) {
-      setProject(
-        projectExploreListRef.current.find((item) => item.id === Number(id))
-      );
-    } else {
-      setProject(projectExploreListRef.current[0]);
+    if (!isInitActive.current && status === AsyncRequestStatus.FULFILLED) {
+      if (id) {
+        setProject(projectExploreList.find((item) => item.id === Number(id)));
+      } else {
+        setProject(projectExploreList[0]);
+      }
+      isInitActive.current = true;
     }
-  }, [id]);
+  }, [id, projectExploreList, status]);
 
   const getMore = useCallback(
     () => dispatch(fetchMoreProjectExploreList(filter)),
