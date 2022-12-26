@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-26 13:14:23
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 18:49:13
+ * @LastEditTime: 2022-12-26 13:25:37
  * @Description: file description
  */
 
@@ -11,14 +11,8 @@ import SolanaSvg from '../components/chain/svgs/solana_sol_logo.svg';
 import PolygonSvg from '../components/chain/svgs/polygon-matic-logo.svg';
 import BscLogo from '../components/chain/svgs/bsc-logo.svg';
 import Aptos from '../components/chain/svgs/aptos-logo.svg';
+import { ChainType } from '../services/types/common';
 
-export enum ChainType {
-  EVM = 'EVM',
-  SOLANA = 'SOLANA',
-  BSC = 'BSC',
-  MATIC = 'MATIC',
-  APTOS = 'APTOS',
-}
 export type Chain = {
   name: string;
   type: ChainType;
