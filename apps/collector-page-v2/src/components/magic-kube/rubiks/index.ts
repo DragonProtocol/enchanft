@@ -10,6 +10,7 @@ import { MouseControl } from './core/mouseControl';
 import { TouchControl } from './core/touchControl';
 import { RandomControl } from './core/randomControl';
 
+const RANDOM_TIME = 1000;
 const setSize = (
   container: Element,
   camera: PerspectiveCamera,
@@ -129,7 +130,7 @@ class Rubiks {
         if (step < 0) {
           clearInterval(timer);
         }
-      }, 1000);
+      }, RANDOM_TIME);
     }
   }
 
