@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 15:54:58
+ * @LastEditTime: 2022-12-27 14:16:44
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -14,18 +14,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { useWlUserReact } from '@ecnft/wl-user-react';
-import {
-  ChainType,
-  OrderBy,
-  Platform,
-  PlatformLogo,
-  Reward,
-} from '../services/types/common';
+import { ChainType, Platform, Reward } from '../services/types/common';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import {
-  fetchProjectSelectList,
-  selectAll,
-} from '../features/project/projectSelectList';
 import { CreateEventData } from '../services/types/event';
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg';
 import { uploadImage } from '../services/api/upload';
@@ -95,9 +85,6 @@ const chainOptions: Array<{
 ];
 function EventCreate() {
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchProjectSelectList());
-  }, []);
   const { status } = useAppSelector(selectState);
   const loading = useMemo(
     () => status === AsyncRequestStatus.PENDING,

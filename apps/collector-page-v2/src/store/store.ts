@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-07 18:17:28
+ * @LastEditTime: 2022-12-27 14:17:06
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit';
@@ -14,7 +14,6 @@ import eventHandles from '../features/event/eventHandles';
 import eventCreate from '../features/event/eventCreate';
 import eventCompletedList from '../features/event/eventCompletedList';
 import projectExploreList from '../features/project/projectExploreList';
-import projectSelectList from '../features/project/projectSelectList';
 import projectHandles from '../features/project/projectHandles';
 import frensHandles from '../features/frens/frensHandles';
 import userGroupFavorites from '../features/favorite/userGroupFavorites';
@@ -27,7 +26,6 @@ export const store = configureStore({
     eventCreate,
     eventCompletedList,
     projectExploreList,
-    projectSelectList,
     projectHandles,
     userGroupFavorites,
     frensHandles,

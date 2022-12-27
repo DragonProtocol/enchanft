@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 13:14:48
+ * @LastEditTime: 2022-12-27 14:36:47
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -34,11 +34,11 @@ export type EventExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   onShare?: () => void;
   onFavor?: () => void;
 };
-const defaultStyle = {
+export const defaultStyle = {
   bgc: 'rgba(16, 16, 20, 0.1)',
   activeColor: '#FFFFFF',
 };
-const styleMaps = {
+export const styleMaps = {
   [Platform.GALXE]: {
     bgc: '#14171a',
     activeColor: '#FFFFFF',
@@ -98,7 +98,9 @@ export default function EventExploreListItem({
 
       <CenterBox>
         <RewardTag value={data.reward} />
-        <EventStartTime>{formatDateTime(data.startTime)}</EventStartTime>
+        {data?.startTime && (
+          <EventStartTime>{formatDateTime(data.startTime)}</EventStartTime>
+        )}
         {data?.platform?.logo && <EventPlatformIcon src={data.platform.logo} />}
       </CenterBox>
       {displayHandles && (

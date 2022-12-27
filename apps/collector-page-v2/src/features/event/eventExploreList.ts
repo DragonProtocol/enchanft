@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 16:36:04
+ * @LastEditTime: 2022-12-27 14:14:00
  * @Description: file description
  */
 import {
@@ -42,7 +42,7 @@ type EventExploreListStore = EntityState<EventExploreListItem> & {
   currentRequestId: string; // 当前正在请求的id(由createAsyncThunk生成的唯一id)
   // daylightUid: string;
 };
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 const PAGE_NUMBER_FIRST = 0;
 export const eventExploreListEntity = createEntityAdapter<EventExploreListItem>(
   {
