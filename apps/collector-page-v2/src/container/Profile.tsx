@@ -55,6 +55,29 @@ function Profile() {
     }
   }, [wallet]);
 
+  const addWallet = useCallback(
+    async (addr: string) => {
+      // TODO
+      await new Promise<void>((resolve, reject) => {
+        console.log('addWallet', addr);
+        resolve();
+      });
+
+      return true;
+    },
+    [user.token]
+  );
+  const delWallet = useCallback(
+    async (addr: string) => {
+      // TODO
+      await new Promise<void>((resolve, reject) => {
+        console.log('delWallet', addr);
+        resolve();
+      });
+    },
+    [user.token]
+  );
+
   useEffect(() => {
     if (wallet) {
       fetchDataWithWallet();
@@ -77,6 +100,8 @@ function Profile() {
                   user.accounts[0]?.thirdpartyName ||
                   user.accounts[0]?.thirdpartyId,
               }}
+              addWallet={addWallet}
+              delWallet={delWallet}
             />
             <DailyDigest />
           </div>
