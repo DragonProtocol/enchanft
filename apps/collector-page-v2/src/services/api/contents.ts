@@ -103,6 +103,17 @@ export function personalComplete(uuid: string, token: string) {
   });
 }
 
+export function complete(id: number, token: string) {
+  return request({
+    url: `/contents/${id}/completing`,
+    method: 'post',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
 export function fetchDaylight(
   cursor: string,
   wallet = '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4'

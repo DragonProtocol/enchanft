@@ -15,6 +15,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ContentsHeader from '../components/contents/Header';
 
 import {
+  complete,
   contentParse,
   fetchContents,
   personalComplete,
@@ -59,7 +60,6 @@ function Contents() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [daylightContentLoading, setDaylightContentLoading] = useState(false);
-  const { keysFilter, contentHiddenOrNot } = useContentHidden();
   const [tab, setTab] = useState<'original' | 'readerView'>(
     u3ExtensionInstalled ? 'original' : 'readerView'
   );
@@ -77,7 +77,11 @@ function Contents() {
 
   const hiddenContent = useCallback(
     async (uuid: string | number) => {
-      await personalComplete(`${uuid}`, user.token);
+      if (Number.isNaN(Number(uuid))) {
+        await personalComplete(`${uuid}`, user.token);
+      } else {
+        await complete(Number(uuid), user.token);
+      }
     },
     [user.token]
   );
