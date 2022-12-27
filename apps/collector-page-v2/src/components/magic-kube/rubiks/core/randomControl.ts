@@ -19,12 +19,12 @@ export class RandomControl extends Control {
     this.init();
   }
 
-  public startHandle(event: MouseEvent) {
+  public mousedownHandle(event: MouseEvent) {
     event.preventDefault();
     this.operateStart(event.offsetX, event.offsetY);
   }
 
-  public mouseoutHandle(event: MouseEvent) {
+  public mouseupHandle(event: MouseEvent) {
     event.preventDefault();
     this.operateEnd();
   }

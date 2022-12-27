@@ -4,7 +4,6 @@ import TextTransition, { presets } from 'react-text-transition';
 import Rubiks from '../magic-kube/rubiks/index';
 
 import CarouselBg from '../imgs/carousel-bg.png';
-import MagicCubeImg from '../imgs/magic-cube.png';
 
 const TEXTS = [
   'Identity',
