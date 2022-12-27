@@ -14,7 +14,11 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContentsHeader from '../components/contents/Header';
 
-import { contentParse, fetchContents } from '../services/api/contents';
+import {
+  contentParse,
+  fetchContents,
+  personalComplete,
+} from '../services/api/contents';
 import { ContentListItem, OrderBy } from '../services/types/contents';
 import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import ContentShower from '../components/contents/ContentShower';
@@ -69,6 +73,13 @@ function Contents() {
   const favors = userFavored(
     selectContent?.uuid || selectContent?.id,
     selectContent?.favored
+  );
+
+  const hiddenContent = useCallback(
+    async (uuid: string | number) => {
+      await personalComplete(`${uuid}`, user.token);
+    },
+    [user.token]
   );
 
   const onShare = (data: ContentListItem) => {
@@ -174,20 +185,6 @@ function Contents() {
     }
   }, [selectContent]);
 
-  const showContents = useMemo(() => {
-    return contents.filter((item) => {
-      return !keysFilter.includes(item.uuid || item.id);
-    });
-  }, [contents, keysFilter]);
-
-  useEffect(() => {
-    if (selectContent?.uuid) {
-      loadDaylightContent(selectContent.link);
-    } else {
-      setDaylightContent('');
-    }
-  }, [selectContent]);
-
   useEffect(() => {
     fetchData('', '', 'For U');
   }, []);
@@ -229,11 +226,20 @@ function Contents() {
             }}
           >
             {contents.map((item, idx) => {
-              if (keysFilter.includes(item.uuid || item.id)) {
+              if (item.hidden) {
                 return (
                   <ListItemHidden
+                    key={item.id || item.uuid}
                     undoAction={() => {
-                      contentHiddenOrNot(item.uuid || item.id);
+                      hiddenContent(item?.uuid || item.id);
+                      setContents([
+                        ...contents.slice(0, idx),
+                        {
+                          ...contents[idx],
+                          hidden: false,
+                        },
+                        ...contents.slice(idx + 1),
+                      ]);
                     }}
                   />
                 );
@@ -244,6 +250,7 @@ function Contents() {
               } else {
                 isActive = item.id === selectContent?.id;
               }
+
               return (
                 <ListItem
                   key={item.id || item.uuid}
@@ -251,48 +258,57 @@ function Contents() {
                   clickAction={() => {
                     setSelectContent(item);
                     navigate(`/contents/${item.uuid || item.id}`);
+                    if (item?.uuid) {
+                      loadDaylightContent(item.link);
+                    } else {
+                      setDaylightContent('');
+                    }
                   }}
                   shareAction={() => {
                     onShare(item);
                   }}
                   voteAction={async () => {
                     try {
-                      await vote();
+                      const voteSuccess = await vote();
                       if (selectContent.upVoted) return;
-                      setSelectContent({
-                        ...selectContent,
-                        upVoteNum: selectContent.upVoteNum + 1,
-                        upVoted: true,
-                      });
-                      setContents([
-                        ...showContents.slice(0, idx),
-                        {
-                          ...showContents[idx],
-                          upVoteNum: showContents[idx].upVoteNum + 1,
+                      if (voteSuccess) {
+                        setSelectContent({
+                          ...selectContent,
+                          upVoteNum: selectContent.upVoteNum + 1,
                           upVoted: true,
-                        },
-                        ...showContents.slice(idx + 1),
-                      ]);
+                        });
+                        setContents([
+                          ...contents.slice(0, idx),
+                          {
+                            ...contents[idx],
+                            upVoteNum: contents[idx].upVoteNum + 1,
+                            upVoted: true,
+                          },
+                          ...contents.slice(idx + 1),
+                        ]);
+                      }
                     } catch (error) {
                       toast.error(error.message);
                     }
                   }}
                   favorsAction={async () => {
                     try {
-                      await favors();
+                      const favorsSuccess = await favors();
                       if (selectContent.favored) return;
-                      setSelectContent({
-                        ...selectContent,
-                        favored: true,
-                      });
-                      setContents([
-                        ...showContents.slice(0, idx),
-                        {
-                          ...showContents[idx],
+                      if (favorsSuccess) {
+                        setSelectContent({
+                          ...selectContent,
                           favored: true,
-                        },
-                        ...showContents.slice(idx + 1),
-                      ]);
+                        });
+                        setContents([
+                          ...contents.slice(0, idx),
+                          {
+                            ...contents[idx],
+                            favored: true,
+                          },
+                          ...contents.slice(idx + 1),
+                        ]);
+                      }
                     } catch (error) {
                       toast.error(error.message);
                     }
@@ -366,14 +382,6 @@ function Contents() {
                     <ContentShower
                       {...selectContent}
                       content={daylightContent || contentValue}
-                      voteAction={vote}
-                      favorsActions={favors}
-                      hiddenAction={() => {
-                        contentHiddenOrNot(
-                          selectContent?.uuid || selectContent.id
-                        );
-                        setSelectContent(undefined);
-                      }}
                     />
                   )) || (
                     <ExtensionSupport
@@ -396,9 +404,27 @@ function Contents() {
           setShowModal(false);
         }}
         confirmAction={() => {
-          contentHiddenOrNot(selectContent?.uuid || selectContent.id);
-          setSelectContent(undefined);
-          setShowModal(false);
+          try {
+            hiddenContent(selectContent?.uuid || selectContent.id);
+            const idx = contents.findIndex((item) => {
+              if (item?.uuid && item?.uuid === selectContent?.uuid) return true;
+              if (item?.id && item.id === selectContent.id) return true;
+              return false;
+            });
+
+            setContents([
+              ...contents.slice(0, idx),
+              {
+                ...contents[idx],
+                hidden: true,
+              },
+              ...contents.slice(idx + 1),
+            ]);
+            setSelectContent(undefined);
+            setShowModal(false);
+          } catch (error) {
+            toast.error(error.message);
+          }
         }}
       />
     </Box>

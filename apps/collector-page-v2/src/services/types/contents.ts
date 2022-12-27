@@ -45,6 +45,7 @@ export type ContentListItem = {
   supportReaderView?: boolean;
   upVoted: boolean;
   favored: boolean;
+  hidden: boolean;
   uniProject: {
     id: 1;
     description: string;
