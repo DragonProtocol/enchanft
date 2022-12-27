@@ -385,9 +385,6 @@ function Favorites() {
                     <ContentScrollBox>
                       <ContentShower
                         {...content}
-                        voteAction={() => {}}
-                        favorsActions={() => {}}
-                        hiddenAction={() => {}}
                         content={getContentWithJsonValue(content.value)}
                       />
                     </ContentScrollBox>
