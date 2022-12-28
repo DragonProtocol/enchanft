@@ -20,10 +20,23 @@ import {
 import { ContentLang, ContentType, Project } from '../services/types/contents';
 import { Close } from '../components/icons/close';
 import { ProjectAsyncSelectV2 } from '../components/business/form/ProjectAsyncSelect';
+import {
+  ContentBox,
+  ContentShowerTab,
+  LoadingBox,
+  Tab,
+} from '../components/contents/ContentShowerBox';
+import { useAppSelector } from '../store/hooks';
+import { selectWebsite } from '../features/website/websiteSlice';
+import Loading from '../components/common/loading/Loading';
 
 function ContentCreate() {
   const { user } = useWlUserReact();
   const [parsing, setParsing] = useState(false);
+  const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
+  const [tab, setTab] = useState<Tab>(
+    u3ExtensionInstalled ? 'original' : 'readerView'
+  );
 
   const [selectProjects, setSelectProjects] = useState<Array<Project>>([]);
   const [loading, setLoading] = useState(false);
@@ -42,6 +55,7 @@ function ContentCreate() {
       lang: ContentLang.All,
       uniProjectId: [],
       supportReaderView: true,
+      supportIframe: true,
     },
     validationSchema: Yup.object({
       title: Yup.string().required('Required'),
@@ -88,6 +102,7 @@ function ContentCreate() {
       lang: ContentLang;
       uniProjectId: { id: number }[];
       supportReaderView: boolean;
+      supportIframe: boolean;
     }) => {
       if (loading) return;
       setLoading(true);
@@ -101,6 +116,7 @@ function ContentCreate() {
             lang: data.lang,
             uniProjectId: data.uniProjectId.map((item) => item.id),
             supportReaderView: data.supportReaderView,
+            supportIframe: data.supportIframe,
           },
           user.token
         );
@@ -208,6 +224,19 @@ function ContentCreate() {
           </FormField>
 
           <FormField>
+            <FormLabel htmlFor="support-iframe">Original</FormLabel>
+            <SwitchRow>
+              <Switch
+                onChange={(checked) =>
+                  formik.setFieldValue('supportIframe', checked)
+                }
+                checked={formik.values.supportIframe}
+              />
+              <SwitchText>Original</SwitchText>
+            </SwitchRow>
+          </FormField>
+
+          <FormField>
             <FormLabel htmlFor="project">Tag Project</FormLabel>
             <div className="proj-list">
               {formik.values.uniProjectId.map((item, idx) => {
@@ -259,12 +288,31 @@ function ContentCreate() {
             </FormButtonSubmit>
           </FormButtons>
         </CreateBox>
-        {(parsing && <ShowBox>Parseing</ShowBox>) || (
-          <ShowBox>
-            <h3>{urlContent.title}</h3>
-            <div dangerouslySetInnerHTML={{ __html: urlContent.content }} />
-          </ShowBox>
-        )}
+        <ShowBox>
+          <ContentBox>
+            <ContentShowerTab tab={tab} setTab={(t) => setTab(t)} />
+            {(() => {
+              if (tab === 'original') {
+                return <iframe title="daylight" src={formik.values.url} />;
+              }
+              if (parsing) {
+                return (
+                  <LoadingBox>
+                    <Loading />
+                  </LoadingBox>
+                );
+              }
+              return (
+                <div className="reader-view">
+                  <h3>{urlContent.title}</h3>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: urlContent.content }}
+                  />
+                </div>
+              );
+            })()}
+          </ContentBox>
+        </ShowBox>
       </ContentCreateWrapper>
     </ScrollBox>
   );
@@ -372,7 +420,7 @@ const ShowBox = styled.div`
   height: 100%;
   border: 1px solid #39424c;
   border-radius: 20px;
-  padding: 10px;
+  /* padding: 10px; */
   overflow: scroll;
   color: white;
   width: calc(100% - 360px);
@@ -382,6 +430,12 @@ const ShowBox = styled.div`
   }
   & pre {
     overflow: scroll;
+  }
+
+  & .reader-view {
+    padding: 10px;
+    overflow: scroll;
+    height: calc(100% - 60px);
   }
 `;
 

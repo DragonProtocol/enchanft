@@ -10,13 +10,15 @@ import Loading from '../common/loading/Loading';
 import ContentShower from './ContentShower';
 
 const urlCache: { [key: string]: string } = {};
+export type Tab = 'original' | 'readerView';
+
 export default function ContentShowerBox({
   selectContent,
 }: {
   selectContent: ContentListItem | undefined;
 }) {
   const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
-  const [tab, setTab] = useState<'original' | 'readerView'>(
+  const [tab, setTab] = useState<Tab>(
     u3ExtensionInstalled ? 'original' : 'readerView'
   );
   const [daylightContentLoading, setDaylightContentLoading] = useState(false);
@@ -41,6 +43,7 @@ export default function ContentShowerBox({
   }, []);
 
   useEffect(() => {
+    console.log('selectContent', selectContent);
     if (selectContent?.supportReaderView) {
       if (!selectContent.value) loadDaylightContent(selectContent.link);
       setTab('readerView');
@@ -60,43 +63,58 @@ export default function ContentShowerBox({
   }, [selectContent]);
 
   return (
-    <ContentBox>
-      <div className="tabs">
-        <div>
-          <button
-            type="button"
-            className={tab === 'original' ? 'active' : ''}
-            onClick={() => {
-              setTab('original');
-            }}
-          >
-            Original
-          </button>
-          <button
-            className={tab === 'readerView' ? 'active' : ''}
-            type="button"
-            onClick={() => {
-              setTab('readerView');
-              if (!selectContent.supportReaderView) {
-                loadDaylightContent(selectContent.link);
-              }
-            }}
-          >
-            ReaderView
-          </button>
-        </div>
-      </div>
+    <ContentBoxContainer>
+      <ContentBox>
+        <ContentShowerTab
+          tab={tab}
+          setTab={(t) => setTab(t)}
+          readerViewAction={() => {
+            if (!selectContent.supportReaderView) {
+              console.log('loadDaylightContent');
+              loadDaylightContent(selectContent.link);
+            }
+          }}
+        />
+        {(() => {
+          if (tab === 'original') {
+            if (u3ExtensionInstalled || selectContent.supportIframe) {
+              return <iframe title="daylight" src={selectContent.link} />;
+            }
 
-      {(() => {
-        if (tab === 'original') {
-          if (u3ExtensionInstalled || selectContent.supportIframe) {
-            return <iframe title="daylight" src={selectContent.link} />;
+            return (
+              <ExtensionSupport
+                url={selectContent.link}
+                title={selectContent.title}
+                img={
+                  selectContent.imageUrl ||
+                  (selectContent.uniProjects &&
+                    selectContent.uniProjects[0]?.image)
+                }
+              />
+            );
           }
-
+          if (tab === 'readerView') {
+            if (daylightContentLoading) {
+              return (
+                <LoadingBox>
+                  <Loading />
+                </LoadingBox>
+              );
+            }
+            if (contentValue || daylightContent) {
+              return (
+                <ContentShower
+                  {...selectContent}
+                  content={daylightContent || contentValue}
+                />
+              );
+            }
+          }
           return (
             <ExtensionSupport
               url={selectContent.link}
               title={selectContent.title}
+              msg="Reader view is not supported for this page! Please view it in new tab."
               img={
                 selectContent.imageUrl ||
                 (selectContent.uniProjects &&
@@ -104,43 +122,56 @@ export default function ContentShowerBox({
               }
             />
           );
-        }
-        if (tab === 'readerView') {
-          if (daylightContentLoading) {
-            return (
-              <LoadingBox>
-                <Loading />
-              </LoadingBox>
-            );
-          }
-          if (contentValue || daylightContent) {
-            return (
-              <ContentShower
-                {...selectContent}
-                content={daylightContent || contentValue}
-              />
-            );
-          }
-        }
-        return (
-          <ExtensionSupport
-            url={selectContent.link}
-            title={selectContent.title}
-            msg="Reader view is not supported for this page! Please view it in new tab."
-            img={
-              selectContent.imageUrl ||
-              (selectContent.uniProjects && selectContent.uniProjects[0]?.image)
-            }
-          />
-        );
-      })()}
-    </ContentBox>
+        })()}
+      </ContentBox>
+    </ContentBoxContainer>
   );
 }
 
-const ContentBox = styled.div`
+export function ContentShowerTab({
+  tab,
+  setTab,
+  readerViewAction,
+}: {
+  tab: Tab;
+  setTab: (tab: Tab) => void;
+  readerViewAction?: () => void;
+}) {
+  return (
+    <div className="tabs">
+      <div>
+        <button
+          type="button"
+          className={tab === 'original' ? 'active' : ''}
+          onClick={() => {
+            setTab('original');
+          }}
+        >
+          Original
+        </button>
+        <button
+          className={tab === 'readerView' ? 'active' : ''}
+          type="button"
+          onClick={() => {
+            setTab('readerView');
+            if (readerViewAction) readerViewAction();
+          }}
+        >
+          ReaderView
+        </button>
+      </div>
+    </div>
+  );
+}
+
+const ContentBoxContainer = styled.div`
   height: calc(100%);
   width: calc(100% - 360px);
+`;
+
+export const ContentBox = styled.div`
+  height: calc(100%);
+  width: 100%;
 
   overflow-x: hidden;
   overflow: hidden;
@@ -200,7 +231,7 @@ const ContentBox = styled.div`
   }
 `;
 
-const LoadingBox = styled.div`
+export const LoadingBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;

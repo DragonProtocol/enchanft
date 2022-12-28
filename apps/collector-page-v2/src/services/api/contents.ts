@@ -23,6 +23,7 @@ export function saveContent(
     lang: ContentLang;
     uniProjectId: number | Array<number>;
     supportReaderView?: boolean;
+    supportIframe?: boolean;
   },
   token: string
 ) {
@@ -37,6 +38,7 @@ export function saveContent(
       lang: data.lang === ContentLang.All ? null : data.lang,
       uniProjedctId: data.uniProjectId,
       supportReaderView: data.supportReaderView || false,
+      supportIframe: data.supportIframe || false,
     },
     headers: {
       token,
