@@ -25,7 +25,7 @@ import {
   ContentListItem,
   OrderBy,
 } from '../services/types/contents';
-import ListItem, { ListItemHidden } from '../components/contents/ListItem';
+import ListItem from '../components/contents/ListItem';
 import ContentShower from '../components/contents/ContentShower';
 import userFavored from '../hooks/useFavored';
 import { useVoteUp } from '../hooks/useVoteUp';
@@ -106,7 +106,7 @@ function Contents() {
       }
 
       try {
-        let tmpData = [];
+        let tmpData: ContentListItem[] = [];
         const { data } = await fetchContents(
           { keywords, type, orderBy, contentId: id, lang },
           user.token
@@ -114,9 +114,13 @@ function Contents() {
         tmpData = data.data;
         setContents(tmpData);
         if (id !== ':id' && id) {
-          setSelectContent(
-            tmpData.find((item) => `${item.id}` === id || item.uuid === id)
+          const itemData = tmpData.find(
+            (item) => `${item.id}` === id || item.uuid === id
           );
+          setSelectContent(itemData);
+          if (itemData?.supportReaderView === false) {
+            loadDaylightContent(itemData.link);
+          }
         }
       } catch (error) {
         toast.error(error.message);
@@ -140,6 +144,7 @@ function Contents() {
         setContents([...contents, ...data.data]);
       } catch (error) {
         toast.error(error.message);
+        setHasMore(false);
       } finally {
         setLoadingMore(false);
       }
@@ -148,6 +153,7 @@ function Contents() {
   );
 
   const loadDaylightContent = useCallback(async (url: string) => {
+    setDaylightContent('');
     try {
       setDaylightContentLoading(true);
       const { data } = await contentParse(url);
@@ -216,29 +222,11 @@ function Contents() {
             }}
           >
             {contents.map((item, idx) => {
-              if (item.hidden) {
-                return (
-                  <ListItemHidden
-                    key={item.id || item.uuid}
-                    undoAction={() => {
-                      hiddenContent(item?.uuid || item.id);
-                      setContents([
-                        ...contents.slice(0, idx),
-                        {
-                          ...contents[idx],
-                          hidden: false,
-                        },
-                        ...contents.slice(idx + 1),
-                      ]);
-                    }}
-                  />
-                );
-              }
               let isActive = false;
-              if (item.uuid) {
-                isActive = item.uuid === selectContent?.uuid;
-              } else {
+              if (item.id) {
                 isActive = item.id === selectContent?.id;
+              } else {
+                isActive = item.uuid === selectContent?.uuid;
               }
 
               return (
@@ -247,8 +235,8 @@ function Contents() {
                   isActive={isActive}
                   clickAction={() => {
                     setSelectContent(item);
-                    navigate(`/contents/${item.uuid || item.id}`);
-                    if (item?.uuid) {
+                    navigate(`/contents/${item.id || item.uuid}`);
+                    if (item?.supportReaderView === false) {
                       loadDaylightContent(item.link);
                     } else {
                       setDaylightContent('');
@@ -366,7 +354,7 @@ function Contents() {
                 </LoadingBox>
               )) ||
                 (selectContent &&
-                  ((selectContent.supportReaderView && (
+                  (((selectContent.supportReaderView || daylightContent) && (
                     <ContentShower
                       {...selectContent}
                       content={daylightContent || contentValue}
@@ -408,7 +396,29 @@ function Contents() {
               },
               ...contents.slice(idx + 1),
             ]);
-            setSelectContent(undefined);
+            setTimeout(() => {
+              setDaylightContent('');
+              setContents([
+                ...contents.slice(0, idx),
+                ...contents.slice(idx + 1),
+              ]);
+              let item;
+              if (contents[idx + 1]) {
+                item = contents[idx + 1];
+              } else if (contents[idx - 1]) {
+                item = contents[idx - 1];
+              } else {
+                setSelectContent(undefined);
+              }
+              if (item) {
+                navigate(`/contents/${item.id || item.uuid}`);
+                setSelectContent(item);
+                if (item?.supportReaderView === false) {
+                  loadDaylightContent(item.link);
+                }
+              }
+            }, 550);
+
             setShowModal(false);
           } catch (error) {
             toast.error(error.message);

@@ -146,7 +146,6 @@ export function fetchContents(
   return request({
     url: `/contents/searching`,
     params: {
-      userId: 84,
       lang: query.lang === ContentLang.All ? null : query.lang,
       contentId: query.contentId === ':id' ? null : query.contentId,
       pageSize: query.pageSize ?? 10,
