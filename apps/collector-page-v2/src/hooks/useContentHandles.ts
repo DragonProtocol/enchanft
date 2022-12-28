@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-28 18:01:40
+ * @LastEditTime: 2022-12-28 18:38:38
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
@@ -160,11 +160,11 @@ export default () => {
         .filter((item) => !hiddenIds.includes(item?.uuid || item.id))
         .map((item) => ({
           ...item,
-          upVoteNum: votedIds.includes(item.id)
+          upVoteNum: votedIds.includes(item?.uuid || item.id)
             ? item.upVoteNum + 1
             : item.upVoteNum,
-          upVoted: item.upVoted || votedIds.includes(item.id),
-          favored: item.favored || favoredIds.includes(item.id),
+          upVoted: item.upVoted || votedIds.includes(item?.uuid || item.id),
+          favored: item.favored || favoredIds.includes(item?.uuid || item.id),
         })),
     [votedIds, favoredIds, hiddenIds]
   );
