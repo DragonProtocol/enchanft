@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 19:24:02
+ * @LastEditTime: 2022-12-28 18:24:44
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -191,6 +191,9 @@ function Favorites() {
   } = useProjectHandles();
   const {
     votedIds: contentVotedIds,
+    voteQueueIds: contentVoteQueueIds,
+    favorQueueIds: contentFavorQueueIds,
+    hiddenQueueIds: contentHiddenQueueIds,
     onVote: onContentVote,
     onFavor: onContentFavor,
     onShare: onContentShare,
@@ -311,7 +314,10 @@ function Favorites() {
                     <FavoritesList>
                       <ContentList
                         data={showContentList}
-                        activeId={content?.id || 0}
+                        activeId={content?.id}
+                        loadingVoteIds={contentVoteQueueIds}
+                        loadingFavorIds={contentFavorQueueIds}
+                        loadingHiddenIds={contentHiddenQueueIds}
                         onVote={onContentVote}
                         onFavor={onContentFavor}
                         onShare={onContentShare}
