@@ -16,35 +16,24 @@ import ContentsHeader from '../components/contents/Header';
 
 import {
   complete,
-  contentParse,
   fetchContents,
   personalComplete,
 } from '../services/api/contents';
-import {
-  ContentLang,
-  ContentListItem,
-  OrderBy,
-} from '../services/types/contents';
+import { ContentLang, ContentListItem } from '../services/types/contents';
 import ListItem from '../components/contents/ListItem';
-import ContentShower from '../components/contents/ContentShower';
 import userFavored from '../hooks/useFavored';
 import { useVoteUp } from '../hooks/useVoteUp';
-import useContentHidden from '../hooks/useContentHidden';
-import ExtensionSupport from '../components/common/ExtensionSupport';
 import Loading from '../components/common/loading/Loading';
 import { getProjectShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
 import ListScrollBox from '../components/common/box/ListScrollBox';
-import { selectWebsite } from '../features/website/websiteSlice';
-import { useAppSelector } from '../store/hooks';
 import ConfirmModal from '../components/contents/ConfirmModal';
+import ContentShowerBox from '../components/contents/ContentShowerBox';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
-  const evmAccount = getBindAccount(AccountType.EVM);
   const navigate = useNavigate();
   const { id } = useParams();
-  const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
 
   const queryRef = useRef<{
     keywords: string;
@@ -61,14 +50,9 @@ function Contents() {
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
   const [selectContent, setSelectContent] = useState<ContentListItem>();
-  const [daylightContent, setDaylightContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [daylightContentLoading, setDaylightContentLoading] = useState(false);
-  const [tab, setTab] = useState<'original' | 'readerView'>(
-    u3ExtensionInstalled ? 'original' : 'readerView'
-  );
   const [showModal, setShowModal] = useState(false);
 
   const vote = useVoteUp(
@@ -118,9 +102,6 @@ function Contents() {
             (item) => `${item.id}` === id || item.uuid === id
           );
           setSelectContent(itemData);
-          if (itemData?.supportReaderView === false) {
-            loadDaylightContent(itemData.link);
-          }
         } else if (tmpData.length > 0) {
           setSelectContent(tmpData[0]);
         }
@@ -154,29 +135,6 @@ function Contents() {
     [queryRef.current, contents]
   );
 
-  const loadDaylightContent = useCallback(async (url: string) => {
-    setDaylightContent('');
-    try {
-      setDaylightContentLoading(true);
-      const { data } = await contentParse(url);
-      setDaylightContent(data.data.content);
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setDaylightContentLoading(false);
-    }
-  }, []);
-
-  const contentValue = useMemo(() => {
-    if (!selectContent?.value) return '';
-    try {
-      const content = JSON.parse(selectContent?.value);
-      return content.content;
-    } catch (error) {
-      return selectContent?.value;
-    }
-  }, [selectContent]);
-
   useEffect(() => {
     fetchData('', '', 'For U', ContentLang.All);
   }, []);
@@ -198,12 +156,6 @@ function Contents() {
           };
           fetchData(keywords, type, orderBy, lang);
           navigate('/contents/:id');
-        }}
-        changeOriginalAction={() => {
-          setTab('original');
-        }}
-        changeReaderViewAction={() => {
-          setTab('readerView');
         }}
       />
       {(loading && (
@@ -238,11 +190,6 @@ function Contents() {
                   clickAction={() => {
                     setSelectContent(item);
                     navigate(`/contents/${item.id || item.uuid}`);
-                    if (item?.supportReaderView === false) {
-                      loadDaylightContent(item.link);
-                    } else {
-                      setDaylightContent('');
-                    }
                   }}
                   shareAction={() => {
                     onShare(item);
@@ -311,69 +258,7 @@ function Contents() {
               </div>
             )}
           </ListBox>
-
-          <ContentBox>
-            <div className="tabs">
-              <div>
-                <button
-                  type="button"
-                  className={tab === 'original' ? 'active' : ''}
-                  onClick={() => {
-                    setTab('original');
-                    // changeOriginalAction();
-                  }}
-                >
-                  Original
-                </button>
-                <button
-                  className={tab === 'readerView' ? 'active' : ''}
-                  type="button"
-                  onClick={() => {
-                    setTab('readerView');
-                    // changeReaderViewAction();
-                  }}
-                >
-                  ReaderView
-                </button>
-              </div>
-            </div>
-            {tab === 'original' && selectContent && (
-              <ExtensionSupport
-                url={selectContent.link}
-                title={selectContent.title}
-                img={
-                  selectContent.imageUrl ||
-                  (selectContent.uniProjects &&
-                    selectContent.uniProjects[0]?.image)
-                }
-              />
-            )}
-            {tab === 'readerView' &&
-              selectContent &&
-              ((daylightContentLoading && (
-                <LoadingBox>
-                  <Loading />
-                </LoadingBox>
-              )) ||
-                (selectContent &&
-                  (((selectContent.supportReaderView || daylightContent) && (
-                    <ContentShower
-                      {...selectContent}
-                      content={daylightContent || contentValue}
-                    />
-                  )) || (
-                    <ExtensionSupport
-                      url={selectContent.link}
-                      title={selectContent.title}
-                      msg="Reader view is not supported for this page! Please view it in new tab."
-                      img={
-                        selectContent.imageUrl ||
-                        (selectContent.uniProjects &&
-                          selectContent.uniProjects[0]?.image)
-                      }
-                    />
-                  ))))}
-          </ContentBox>
+          <ContentShowerBox selectContent={selectContent} />
         </ContentsWrapper>
       )}
       <ConfirmModal
@@ -399,7 +284,6 @@ function Contents() {
               ...contents.slice(idx + 1),
             ]);
             setTimeout(() => {
-              setDaylightContent('');
               setContents([
                 ...contents.slice(0, idx),
                 ...contents.slice(idx + 1),
@@ -415,9 +299,6 @@ function Contents() {
               if (item) {
                 navigate(`/contents/${item.id || item.uuid}`);
                 setSelectContent(item);
-                if (item?.supportReaderView === false) {
-                  loadDaylightContent(item.link);
-                }
               }
             }, 550);
 
