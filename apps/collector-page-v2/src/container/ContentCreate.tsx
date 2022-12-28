@@ -195,9 +195,7 @@ function ContentCreate() {
           </FormField>
 
           <FormField>
-            <FormLabel htmlFor="support-reader">
-              support reader view display
-            </FormLabel>
+            <FormLabel htmlFor="support-reader">Reader View</FormLabel>
             <SwitchRow>
               <Switch
                 onChange={(checked) =>
@@ -205,7 +203,7 @@ function ContentCreate() {
                 }
                 checked={formik.values.supportReaderView}
               />
-              <SwitchText>Support</SwitchText>
+              <SwitchText>Readability</SwitchText>
             </SwitchRow>
           </FormField>
 

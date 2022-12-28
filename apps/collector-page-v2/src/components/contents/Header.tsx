@@ -13,8 +13,6 @@ import SearchInput from '../common/input/SearchInput';
 
 export default function Header({
   filterAction,
-  changeOriginalAction,
-  changeReaderViewAction,
 }: {
   filterAction: (
     keywords: string,
@@ -22,8 +20,6 @@ export default function Header({
     orderBy: string,
     lang: string
   ) => void;
-  changeOriginalAction: () => void;
-  changeReaderViewAction: () => void;
 }) {
   const [orderBy, setOrderBy] = useState('For U');
   const [type, setType] = useState('');

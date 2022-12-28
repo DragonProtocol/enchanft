@@ -49,6 +49,7 @@ export type ContentListItem = {
     logo: string;
   };
   supportReaderView?: boolean;
+  supportIframe?: boolean;
   upVoted: boolean;
   favored: boolean;
   hidden: boolean;
