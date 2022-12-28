@@ -27,7 +27,7 @@ import {
 } from '../features/website/websiteSlice';
 
 export default () => {
-  const { handleLoginVerify } = useLogin();
+  const { handleCallbackVerifyLogin } = useLogin();
   const dispatch = useAppDispatch();
   const { eventIds: favoredIds } = useUserFavorites();
   const favorQueueIds = useAppSelector(selectIdsFavorEventQueue);
@@ -39,7 +39,7 @@ export default () => {
   const { eventCompleteGuideEnd } = useAppSelector(selectWebsite);
   const onComplete = useCallback(
     (item: EventExploreListItemResponse) => {
-      handleLoginVerify(() => {
+      handleCallbackVerifyLogin(() => {
         if (!eventCompleteGuideEnd) {
           dispatch(setOpenEventCompleteGuideModal(true));
           dispatch(
@@ -53,16 +53,16 @@ export default () => {
         dispatch(completeEvent(item));
       });
     },
-    [dispatch, handleLoginVerify, eventCompleteGuideEnd]
+    [dispatch, handleCallbackVerifyLogin, eventCompleteGuideEnd]
   );
 
   const onFavor = useCallback(
     (item: EventExploreListItemResponse) => {
-      handleLoginVerify(() => {
+      handleCallbackVerifyLogin(() => {
         dispatch(favorEvent(item));
       });
     },
-    [dispatch, handleLoginVerify]
+    [dispatch, handleCallbackVerifyLogin]
   );
   const onShare = useCallback((item: EventExploreListItemResponse) => {
     tweetShare(item.name, getEventShareUrl(item.id));

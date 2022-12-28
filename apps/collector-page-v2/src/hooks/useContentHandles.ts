@@ -16,13 +16,13 @@ import { tweetShare } from '../utils/twitter';
 import useContentHidden from './useContentHidden';
 
 export default () => {
-  const { handleLoginVerify } = useLogin();
+  const { handleCallbackVerifyLogin } = useLogin();
   const { user } = useWlUserReact();
   // vote
   const [votedIds, setVotedContentIds] = useState<Array<number | string>>([]);
   const onVote = useCallback(
     (data: ContentListItem) => {
-      handleLoginVerify(() => {
+      handleCallbackVerifyLogin(() => {
         voteContent(data.id, user.token)
           .then(() => {
             setVotedContentIds([...votedIds, data.id]);
@@ -30,13 +30,13 @@ export default () => {
           .catch((error) => toast.error(error.message));
       });
     },
-    [votedIds, setVotedContentIds, handleLoginVerify]
+    [votedIds, setVotedContentIds, handleCallbackVerifyLogin]
   );
   // favor
   const [favoredIds, setFavoredContentIds] = useState([]);
   const onFavor = useCallback(
     (data: ContentListItem) => {
-      handleLoginVerify(() => {
+      handleCallbackVerifyLogin(() => {
         favorsContent(data.id, user.token)
           .then(() => {
             setFavoredContentIds([...favoredIds, data.id]);
@@ -44,7 +44,7 @@ export default () => {
           .catch((error) => toast.error(error.message));
       });
     },
-    [favoredIds, setFavoredContentIds, handleLoginVerify]
+    [favoredIds, setFavoredContentIds, handleCallbackVerifyLogin]
   );
 
   // hidden

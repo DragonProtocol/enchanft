@@ -18,7 +18,7 @@ import { getProjectShareUrl } from '../utils/share';
 import useLogin from './useLogin';
 
 export default () => {
-  const { handleLoginVerify } = useLogin();
+  const { handleCallbackVerifyLogin } = useLogin();
   const dispatch = useAppDispatch();
   const { projectIds: favoredIds } = useUserFavorites();
   const favorQueueIds = useAppSelector(selectIdsFavorProjectQueue).map((id) =>
@@ -29,11 +29,11 @@ export default () => {
   }, []);
   const onFavor = useCallback(
     (item: ProjectExploreListItemResponse) => {
-      handleLoginVerify(() => {
+      handleCallbackVerifyLogin(() => {
         dispatch(favorProject(item));
       });
     },
-    [dispatch, handleLoginVerify]
+    [dispatch, handleCallbackVerifyLogin]
   );
   return {
     favoredIds,
