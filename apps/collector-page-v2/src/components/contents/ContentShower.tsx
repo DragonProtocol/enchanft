@@ -5,29 +5,17 @@ import { Heart } from '../icons/heart';
 import Badge from './Badge';
 
 export default function ContentShower({
-  uid,
   title,
   type,
   createdAt,
   author,
-  upVoteNum,
-  favored,
   content,
-  voteAction,
-  favorsActions,
-  hiddenAction,
 }: {
-  uid?: string;
   title: string;
   type: string;
   author: string;
   createdAt: number;
-  upVoteNum: number;
-  favored: boolean;
   content: string;
-  voteAction: () => void;
-  favorsActions: () => void;
-  hiddenAction: () => void;
 }) {
   return (
     <Shower>

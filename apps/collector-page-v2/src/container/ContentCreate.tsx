@@ -17,7 +17,7 @@ import {
   getContentProjects,
   saveContent,
 } from '../services/api/contents';
-import { ContentType, Project } from '../services/types/contents';
+import { ContentLang, ContentType, Project } from '../services/types/contents';
 import { Close } from '../components/icons/close';
 import { ProjectAsyncSelectV2 } from '../components/business/form/ProjectAsyncSelect';
 
@@ -39,6 +39,7 @@ function ContentCreate() {
       author: '',
       url: '',
       type: ContentType.NEWS,
+      lang: ContentLang.All,
       uniProjectId: [],
       supportReaderView: true,
     },
@@ -84,6 +85,7 @@ function ContentCreate() {
       author: string;
       url: string;
       type: ContentType;
+      lang: ContentLang;
       uniProjectId: { id: number }[];
       supportReaderView: boolean;
     }) => {
@@ -95,7 +97,8 @@ function ContentCreate() {
             title: data.title,
             author: data.author,
             url: data.url,
-            types: data.type,
+            type: data.type,
+            lang: data.lang,
             uniProjectId: data.uniProjectId.map((item) => item.id),
             supportReaderView: data.supportReaderView,
           },
@@ -171,6 +174,24 @@ function ContentCreate() {
               value={formik.values.type}
             />
             {renderFieldError('type')}
+          </FormField>
+
+          <FormField>
+            <FormLabel htmlFor="content-lang">Content Lang</FormLabel>
+            <Select
+              defaultValue={ContentLang.All}
+              options={Object.values(ContentLang).map((item) => {
+                return {
+                  value: item,
+                  label: item,
+                };
+              })}
+              onChange={(value) =>
+                formik.setFieldValue('lang', value as ContentLang)
+              }
+              value={formik.values.lang}
+            />
+            {/* {renderFieldError('lang')} */}
           </FormField>
 
           <FormField>

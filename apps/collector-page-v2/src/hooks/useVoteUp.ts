@@ -1,12 +1,13 @@
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback } from 'react';
-import { voteContent } from '../services/api/contents';
+import { personalVote } from '../services/api/contents';
 
-export function useVoteUp(id: number, upVoted: boolean) {
+export function useVoteUp(uuid: string | number, upVoted: boolean) {
   const { user } = useWlUserReact();
   const voteUp = useCallback(async () => {
-    if (upVoted) return;
-    await voteContent(id, user.token);
-  }, [user.token, id, upVoted]);
+    if (upVoted) return false;
+    await personalVote(`${uuid}`, user.token);
+    return true;
+  }, [user.token, uuid, upVoted]);
   return voteUp;
 }
