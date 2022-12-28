@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 16:42:07
+ * @LastEditTime: 2022-12-27 18:55:04
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -17,6 +17,7 @@ import TwitterSvg from '../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../common/icons/svgs/discord.svg';
 import ContentLinkCard from '../contents/ContentLinkCard';
 import { ContentListItem } from '../contents/ContentList';
+import ProjectImgDefault from './ProjectImgDefault';
 
 export type ProjectDetailCardProps = {
   data: ProjectExploreListItemResponse;
@@ -112,7 +113,7 @@ const LayoutHeaderLeft = styled.div`
   align-items: center;
   flex-shrink: 0;
 `;
-const ProjectImg = styled.img`
+const ProjectImg = styled(ProjectImgDefault)`
   width: 120px;
   height: 120px;
   border-radius: 50%;
