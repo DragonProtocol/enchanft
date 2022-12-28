@@ -121,6 +121,8 @@ function Contents() {
           if (itemData?.supportReaderView === false) {
             loadDaylightContent(itemData.link);
           }
+        } else if (tmpData.length > 0) {
+          setSelectContent(tmpData[0]);
         }
       } catch (error) {
         toast.error(error.message);
