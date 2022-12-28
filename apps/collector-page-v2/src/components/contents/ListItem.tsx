@@ -47,17 +47,19 @@ export default function ListItem({
       </ContentItemTitle>
 
       <ContentItemFooter>
-        <span
-          className={isActive ? 'vote' : 'vote active'}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (voteAction) {
-              voteAction();
-            }
-          }}
-        >
-          👏 &nbsp;{upVoteNum}
-        </span>
+        {isActive && (
+          <span
+            className={isActive ? 'vote' : 'vote active'}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (voteAction) {
+                voteAction();
+              }
+            }}
+          >
+            👏 &nbsp;{upVoteNum}
+          </span>
+        )}
         {isActive && (
           <span
             onClick={(e) => {
