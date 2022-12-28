@@ -69,7 +69,7 @@ export default function ContentShowerBox({
           tab={tab}
           setTab={(t) => setTab(t)}
           readerViewAction={() => {
-            if (!selectContent.supportReaderView) {
+            if (selectContent.supportReaderView && !selectContent.value) {
               console.log('loadDaylightContent');
               loadDaylightContent(selectContent.link);
             }
