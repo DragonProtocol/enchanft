@@ -1,5 +1,11 @@
 import { ApiResp } from '.';
 
+export enum ContentLang {
+  All = 'All', // only for UI
+  EN = 'EN',
+  CN = 'CN',
+}
+
 export enum ContentType {
   NEWS = 'News',
   GAMING = 'Gaming',

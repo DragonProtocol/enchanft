@@ -20,7 +20,11 @@ import {
   fetchContents,
   personalComplete,
 } from '../services/api/contents';
-import { ContentListItem, OrderBy } from '../services/types/contents';
+import {
+  ContentLang,
+  ContentListItem,
+  OrderBy,
+} from '../services/types/contents';
 import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import ContentShower from '../components/contents/ContentShower';
 import userFavored from '../hooks/useFavored';
@@ -46,10 +50,12 @@ function Contents() {
     keywords: string;
     type: string;
     orderBy: string;
+    lang: string;
   }>({
     keywords: '',
     type: '',
     orderBy: 'For U',
+    lang: ContentLang.All,
   });
 
   const [currPageNumber, setCurrPageNumber] = useState(0);
@@ -91,7 +97,7 @@ function Contents() {
   };
 
   const fetchData = useCallback(
-    async (keywords: string, type: string, orderBy: string) => {
+    async (keywords: string, type: string, orderBy: string, lang: string) => {
       setLoading(true);
       setContents([]);
       setSelectContent(undefined);
@@ -101,21 +107,11 @@ function Contents() {
 
       try {
         let tmpData = [];
-        if (orderBy === OrderBy.FORU) {
-          const [{ data }] = await Promise.all([
-            fetchContents(
-              { keywords, type, orderBy: OrderBy.FORU, contentId: id },
-              user.token
-            ),
-          ]);
-          tmpData = [...data.data];
-        } else {
-          const { data } = await fetchContents(
-            { keywords, type, orderBy, contentId: id },
-            user.token
-          );
-          tmpData = data.data;
-        }
+        const { data } = await fetchContents(
+          { keywords, type, orderBy, contentId: id, lang },
+          user.token
+        );
+        tmpData = data.data;
         setContents(tmpData);
         if (id !== ':id' && id) {
           setSelectContent(
@@ -133,31 +129,15 @@ function Contents() {
 
   const loadMore = useCallback(
     async (pageNumber: number) => {
-      const { keywords, type, orderBy } = queryRef.current;
+      const { keywords, type, orderBy, lang } = queryRef.current;
       try {
         setLoadingMore(true);
-        if (orderBy === OrderBy.FORU) {
-          const [{ data }] = await Promise.all([
-            fetchContents(
-              {
-                keywords,
-                type,
-                orderBy: OrderBy.FORU,
-                pageNumber,
-              },
-              user.token
-            ),
-          ]);
-          setHasMore(data.data.length > 0);
-          setContents([...contents, ...data.data]);
-        } else {
-          const { data } = await fetchContents(
-            { keywords, type, orderBy, pageNumber },
-            user.token
-          );
-          setHasMore(data.data.length > 0);
-          setContents([...contents, ...data.data]);
-        }
+        const { data } = await fetchContents(
+          { keywords, type, orderBy, pageNumber, lang },
+          user.token
+        );
+        setHasMore(data.data.length > 0);
+        setContents([...contents, ...data.data]);
       } catch (error) {
         toast.error(error.message);
       } finally {
@@ -190,19 +170,25 @@ function Contents() {
   }, [selectContent]);
 
   useEffect(() => {
-    fetchData('', '', 'For U');
+    fetchData('', '', 'For U', ContentLang.All);
   }, []);
 
   return (
     <Box id="box">
       <ContentsHeader
-        filterAction={(keywords: string, type: string, orderBy: string) => {
+        filterAction={(
+          keywords: string,
+          type: string,
+          orderBy: string,
+          lang: string
+        ) => {
           queryRef.current = {
             keywords,
             type,
             orderBy,
+            lang,
           };
-          fetchData(keywords, type, orderBy);
+          fetchData(keywords, type, orderBy, lang);
           navigate('/contents/:id');
         }}
         changeOriginalAction={() => {
@@ -331,9 +317,7 @@ function Contents() {
             )}
             {loadingMore && (
               <div className="load-more">
-                <div className="loading">
-                  <Loading />
-                </div>
+                <div className="loading">loading</div>
               </div>
             )}
           </ListBox>
@@ -445,13 +429,11 @@ const Box = styled.div`
 `;
 const ContentsWrapper = styled.div<{ loading?: string }>`
   width: calc(100% - 2px);
-  height: calc(100% - 74px);
+  height: calc(100% - 94px);
   box-sizing: border-box;
   border: ${(props) => (props.loading ? 'none' : '1px solid #39424c')};
   background-color: ${(props) => (props.loading ? '' : '#1b1e23')};
-  /* border--radius: 20px; */
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  border-radius: 20px;
   overflow: hidden;
   display: flex;
   margin-top: 24px;

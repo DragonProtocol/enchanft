@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {
+  ContentLang,
   ContentsListResponse,
   ContentsResponse,
   ContentType,
@@ -18,20 +19,22 @@ export function saveContent(
     title: string;
     author: string;
     url: string;
-    types: ContentType;
+    type: ContentType;
+    lang: ContentLang;
     uniProjectId: number | Array<number>;
     supportReaderView?: boolean;
   },
   token: string
 ) {
   return request({
-    url: `/contents`,
+    url: `/contentsdd`,
     method: 'post',
     data: {
       title: data.title,
       author: data.author,
       url: data.url,
-      type: data.types.toUpperCase().replace(' ', '_'),
+      type: data.type.toUpperCase().replace(' ', '_'),
+      lang: data.lang === ContentLang.All ? null : data.lang,
       uniProjedctId: data.uniProjectId,
       supportReaderView: data.supportReaderView || false,
     },
@@ -136,6 +139,7 @@ export function fetchContents(
     pageSize?: number;
     pageNumber?: number;
     contentId?: string;
+    lang?: string;
   },
   token?: string
 ): RequestPromise<ContentsListResponse> {
@@ -143,6 +147,7 @@ export function fetchContents(
     url: `/contents/searching`,
     params: {
       userId: 84,
+      lang: query.lang === ContentLang.All ? null : query.lang,
       contentId: query.contentId === ':id' ? null : query.contentId,
       pageSize: query.pageSize ?? 10,
       pageNumber: query.pageNumber ?? 0,
