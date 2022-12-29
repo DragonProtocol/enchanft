@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-28 18:24:44
+ * @LastEditTime: 2022-12-29 10:16:26
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -48,6 +48,7 @@ import TwoHeartSvg from '../components/imgs/two-heart.svg';
 import CheckCircleSvg from '../components/imgs/check-circle.svg';
 import { ButtonPrimaryLine } from '../components/common/button/ButtonBase';
 import ListScrollBox from '../components/common/box/ListScrollBox';
+import ContentShowerBox from '../components/contents/ContentShowerBox';
 
 function EmptyFavorites() {
   const navigate = useNavigate();
@@ -388,12 +389,7 @@ function Favorites() {
 
                 {switchValue === FavoriteSwitchValue.content &&
                   (content ? (
-                    <ContentScrollBox>
-                      <ContentShower
-                        {...content}
-                        content={getContentWithJsonValue(content.value)}
-                      />
-                    </ContentScrollBox>
+                    <ContentShowerBox selectContent={content} />
                   ) : (
                     <EmptyContent />
                   ))}

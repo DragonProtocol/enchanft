@@ -23,6 +23,7 @@ export default function ContentShowerBox({
   );
   const [daylightContentLoading, setDaylightContentLoading] = useState(false);
   const [daylightContent, setDaylightContent] = useState('');
+  const [iframeLoaded, setIframeLoaded] = useState(false);
 
   const loadDaylightContent = useCallback(async (url: string) => {
     if (urlCache[url]) {
@@ -44,6 +45,7 @@ export default function ContentShowerBox({
 
   useEffect(() => {
     // console.log('selectContent', selectContent);
+    setIframeLoaded(false);
     if (selectContent?.supportReaderView) {
       if (!selectContent.value) loadDaylightContent(selectContent.link);
       setTab('readerView');
@@ -76,7 +78,25 @@ export default function ContentShowerBox({
       {(() => {
         if (tab === 'original') {
           if (u3ExtensionInstalled || selectContent.supportIframe) {
-            return <iframe title="daylight" src={selectContent.link} />;
+            return (
+              <div className="iframe-container">
+                {!iframeLoaded && (
+                  <LoadingBox>
+                    <Loading />
+                  </LoadingBox>
+                )}
+                <iframe
+                  title="daylight"
+                  src={selectContent.link}
+                  style={{
+                    opacity: iframeLoaded ? 1 : 0,
+                  }}
+                  onLoad={() => {
+                    setIframeLoaded(true);
+                  }}
+                />
+              </div>
+            );
           }
 
           return (
@@ -220,10 +240,15 @@ export const ContentBox = styled.div`
     }
   }
 
-  & iframe {
-    border: 0;
+  & .iframe-container {
     width: 100%;
     height: calc(100% - 60px);
+
+    & iframe {
+      border: 0;
+      width: 100%;
+      height: 100%;
+    }
   }
 `;
 

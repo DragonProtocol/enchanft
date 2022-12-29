@@ -3,13 +3,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 16:48:41
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 17:50:22
+ * @LastEditTime: 2022-12-29 11:12:56
  * @Description: file description
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ButtonPrimary } from '../common/button/ButtonBase';
 import ModalBase from '../common/modal/ModalBase';
+import Tip1Gif from './gifs/tip_1.gif';
+import Tip2Gif from './gifs/tip_2.gif';
 
 export type EventCompleteGuideModalProps = {
   isOpen: boolean;
@@ -26,7 +28,7 @@ export default function EventCompleteGuideModal({
       <ModalBody>
         {step === 1 ? (
           <>
-            <GuideView> GIF </GuideView>
+            <GuideView src={Tip1Gif} />
             <GuideDesc>
               When the event is complete, you can mark the event as completed.
             </GuideDesc>
@@ -36,8 +38,7 @@ export default function EventCompleteGuideModal({
           </>
         ) : (
           <>
-            {' '}
-            <GuideView> GIF </GuideView>
+            <GuideView src={Tip2Gif} />
             <GuideDesc>
               You can find it in the favorites drawer and see what you've done
               in Web3.
@@ -65,7 +66,7 @@ const ModalBody = styled.div`
   background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
   border-radius: 20px;
 `;
-const GuideView = styled.div`
+const GuideView = styled.img`
   width: 100%;
   height: 200px;
   background: #14171a;

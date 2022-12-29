@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-28 18:38:38
+ * @LastEditTime: 2022-12-29 11:18:46
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
@@ -29,6 +29,7 @@ export default () => {
   const [voteQueueIds, setVoteQueueIds] = useState<Array<number | string>>([]);
   const onVote = useCallback(
     (data: ContentListItem) => {
+      if (data.upVoted || voteQueueIds.includes(data?.uuid || data.id)) return;
       handleCallbackVerifyLogin(async () => {
         try {
           if (data?.uuid) {
@@ -67,6 +68,7 @@ export default () => {
   );
   const onFavor = useCallback(
     (data: ContentListItem) => {
+      if (data.favored || favorQueueIds.includes(data?.uuid || data.id)) return;
       handleCallbackVerifyLogin(async () => {
         try {
           if (data?.uuid) {
@@ -112,6 +114,7 @@ export default () => {
         error?: (error: Error) => void;
       }
     ) => {
+      if (data.hidden || hiddenQueueIds.includes(data?.uuid || data.id)) return;
       handleCallbackVerifyLogin(async () => {
         try {
           if (data?.uuid) {

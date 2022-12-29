@@ -39,7 +39,9 @@ export type FrensHandlesState = {
   follower: any;
   following: any;
   reco: any;
+  followingMap: any;
   isSearch: boolean;
+  followAddressLoading: Array<string>;
   status: AsyncRequestStatus;
   followStatus: AsyncRequestStatus;
   errorMsg: string;
@@ -54,7 +56,9 @@ const initFrensHandlesState: FrensHandlesState = {
   },
   follower: null,
   following: null,
+  followingMap: {},
   reco: null,
+  followAddressLoading: [],
   isSearch: false,
   status: AsyncRequestStatus.IDLE,
   followStatus: AsyncRequestStatus.IDLE,
@@ -113,12 +117,16 @@ export const setFollow = createAsyncThunk(
     },
     { dispatch }
   ) => {
+    dispatch(setFollowAddressLoading({ isLoading: true, target }));
+
     if (isFollow) {
       await unFollow({ target });
       dispatch(getFollowing({ reset: true }));
+      dispatch(setFollowAddressLoading({ isLoading: false, target }));
     } else {
       await follow({ target });
       dispatch(getFollowing({ reset: true }));
+      dispatch(setFollowAddressLoading({ isLoading: false, target }));
     }
   }
 );
@@ -148,7 +156,7 @@ export const getFollowing = createAsyncThunk(
     },
     { dispatch }
   ) => {
-    const resp = await following({});
+    const resp = await following({ page_size: 100 });
     if (resp.data.code === 0) {
       dispatch(getFollowingSuccess({ data: resp?.data?.data, reset }));
     } else {
@@ -169,7 +177,7 @@ export const getFollower = createAsyncThunk(
     },
     { dispatch }
   ) => {
-    const resp = await follower({});
+    const resp = await follower({ page_size: 100 });
     if (resp.data.code === 0) {
       dispatch(getFollowerSuccess({ data: resp?.data?.data, reset }));
     } else {
@@ -198,6 +206,19 @@ export const frensHandlesSlice = createSlice({
     handleSearch: (state, action) => {
       state.isSearch = action?.payload;
     },
+    setFollowAddressLoading: (state, action) => {
+      const { isLoading, target } = action?.payload || {};
+      const followAddressLoading = [...state.followAddressLoading];
+
+      if (isLoading) {
+        followAddressLoading.push(target);
+      } else {
+        const index = followAddressLoading.indexOf(target);
+        if (index !== -1) followAddressLoading.splice(index, 1);
+      }
+
+      state.followAddressLoading = followAddressLoading;
+    },
     getRecoSuccess: (state, action) => {
       state.reco = action?.payload;
     },
@@ -212,6 +233,10 @@ export const frensHandlesSlice = createSlice({
         result,
         total: action?.payload?.data?.total,
       };
+      state.followingMap = result?.reduce((acc, cur) => {
+        acc[cur.owner] = cur?.owner_name;
+        return acc;
+      }, {});
     },
     getFollowerSuccess: (state, action) => {
       let result = action?.payload?.data?.result || [];
@@ -299,5 +324,6 @@ const {
   getFollowerSuccess,
   handleSearch,
   getRecoSuccess,
+  setFollowAddressLoading,
 } = actions;
 export default reducer;

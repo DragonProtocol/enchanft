@@ -31,6 +31,7 @@ import ConfirmModal from '../components/contents/ConfirmModal';
 import ContentShowerBox, {
   ContentBoxContainer,
 } from '../components/contents/ContentShowerBox';
+import useContentHandles from '../hooks/useContentHandles';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -57,15 +58,11 @@ function Contents() {
   const [hasMore, setHasMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
 
-  const vote = useVoteUp(
-    selectContent?.uuid || selectContent?.id,
-    selectContent?.upVoted
-  );
-
-  const favors = userFavored(
-    selectContent?.uuid || selectContent?.id,
-    selectContent?.favored
-  );
+  const {
+    onFavor: favors,
+    onVote: vote,
+    formatCurrentContents,
+  } = useContentHandles();
 
   const hiddenContent = useCallback(
     async (uuid: string | number) => {
@@ -177,7 +174,7 @@ function Contents() {
               setCurrPageNumber(currPageNumber + 1);
             }}
           >
-            {contents.map((item, idx) => {
+            {formatCurrentContents(contents).map((item, idx) => {
               let isActive = false;
               if (item.id) {
                 isActive = item.id === selectContent?.id;
@@ -196,51 +193,11 @@ function Contents() {
                   shareAction={() => {
                     onShare(item);
                   }}
-                  voteAction={async () => {
-                    try {
-                      const voteSuccess = await vote();
-                      if (selectContent.upVoted) return;
-                      if (voteSuccess) {
-                        setSelectContent({
-                          ...selectContent,
-                          upVoteNum: selectContent.upVoteNum + 1,
-                          upVoted: true,
-                        });
-                        setContents([
-                          ...contents.slice(0, idx),
-                          {
-                            ...contents[idx],
-                            upVoteNum: contents[idx].upVoteNum + 1,
-                            upVoted: true,
-                          },
-                          ...contents.slice(idx + 1),
-                        ]);
-                      }
-                    } catch (error) {
-                      toast.error(error.message);
-                    }
+                  voteAction={() => {
+                    vote(selectContent);
                   }}
-                  favorsAction={async () => {
-                    try {
-                      const favorsSuccess = await favors();
-                      if (selectContent.favored) return;
-                      if (favorsSuccess) {
-                        setSelectContent({
-                          ...selectContent,
-                          favored: true,
-                        });
-                        setContents([
-                          ...contents.slice(0, idx),
-                          {
-                            ...contents[idx],
-                            favored: true,
-                          },
-                          ...contents.slice(idx + 1),
-                        ]);
-                      }
-                    } catch (error) {
-                      toast.error(error.message);
-                    }
+                  favorsAction={() => {
+                    favors(selectContent);
                   }}
                   hiddenAction={() => {
                     setShowModal(true);
