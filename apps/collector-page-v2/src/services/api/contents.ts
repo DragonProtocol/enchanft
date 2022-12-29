@@ -28,7 +28,7 @@ export function saveContent(
   token: string
 ) {
   return request({
-    url: `/contentsdd`,
+    url: `/contents`,
     method: 'post',
     data: {
       title: data.title,
