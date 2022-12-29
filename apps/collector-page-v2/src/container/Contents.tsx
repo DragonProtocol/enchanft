@@ -28,7 +28,9 @@ import { getProjectShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
 import ListScrollBox from '../components/common/box/ListScrollBox';
 import ConfirmModal from '../components/contents/ConfirmModal';
-import ContentShowerBox from '../components/contents/ContentShowerBox';
+import ContentShowerBox, {
+  ContentBoxContainer,
+} from '../components/contents/ContentShowerBox';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -258,7 +260,9 @@ function Contents() {
               </div>
             )}
           </ListBox>
-          <ContentShowerBox selectContent={selectContent} />
+          <ContentBoxContainer>
+            <ContentShowerBox selectContent={selectContent} />
+          </ContentBoxContainer>
         </ContentsWrapper>
       )}
       <ConfirmModal
