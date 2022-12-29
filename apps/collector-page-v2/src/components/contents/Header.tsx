@@ -10,6 +10,7 @@ import {
 import { Favors } from '../icons/favors';
 import { Projects } from '../icons/projects';
 import SearchInput from '../common/input/SearchInput';
+import { Lang } from '../icons/lang';
 
 export default function Header({
   filterAction,
@@ -24,7 +25,7 @@ export default function Header({
   const [orderBy, setOrderBy] = useState('For U');
   const [type, setType] = useState('');
   // const [active, setActive] = useState<'original' | 'readerview'>('readerview');
-  const [lang, setLang] = useState('All');
+  const [lang, setLang] = useState<ContentLang>(ContentLang.All);
 
   const fetchData = useCallback(debounce(filterAction, 100), []);
 
@@ -56,15 +57,14 @@ export default function Header({
           }}
         />
         <DropDown
-          items={Object.values(ContentLang).slice(1)}
-          // TODO replace icon
-          Icon={<Projects />}
-          width={110}
-          title={ContentLang.All}
+          items={Object.keys(ContentLang).slice(1)}
+          Icon={<Lang />}
+          width={160}
+          title="Language"
           defaultSelect={ContentLang.All}
           selectAction={(item) => {
-            setLang(item);
-            fetchData('', type, orderBy, item);
+            setLang(ContentLang[item]);
+            fetchData('', type, orderBy, ContentLang[item]);
           }}
         />
       </div>

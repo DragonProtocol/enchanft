@@ -52,7 +52,7 @@ function ContentCreate() {
       author: '',
       url: '',
       type: ContentType.NEWS,
-      lang: ContentLang.All,
+      lang: ContentLang.English,
       uniProjectId: [],
       supportReaderView: true,
       supportIframe: true,
@@ -195,13 +195,15 @@ function ContentCreate() {
           <FormField>
             <FormLabel htmlFor="content-lang">Content Lang</FormLabel>
             <Select
-              defaultValue={ContentLang.All}
-              options={Object.values(ContentLang).map((item) => {
-                return {
-                  value: item,
-                  label: item,
-                };
-              })}
+              defaultValue={ContentLang.English}
+              options={Object.keys(ContentLang)
+                .slice(1)
+                .map((item) => {
+                  return {
+                    value: ContentLang[item],
+                    label: item,
+                  };
+                })}
               onChange={(value) =>
                 formik.setFieldValue('lang', value as ContentLang)
               }
@@ -293,7 +295,11 @@ function ContentCreate() {
             <ContentShowerTab tab={tab} setTab={(t) => setTab(t)} />
             {(() => {
               if (tab === 'original') {
-                return <iframe title="daylight" src={formik.values.url} />;
+                return (
+                  <div className="iframe-container">
+                    <iframe title="daylight" src={formik.values.url} />
+                  </div>
+                );
               }
               if (parsing) {
                 return (
