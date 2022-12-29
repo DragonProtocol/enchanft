@@ -227,7 +227,7 @@ export const ContentBox = styled.div`
   & iframe {
     border: 0;
     width: 100%;
-    height: 100%;
+    height: calc(100% - 60px);
   }
 `;
 
