@@ -18,8 +18,10 @@ import OnChainInterest, {
 } from '../components/profile/OnChainInterest';
 import OffChainInterest from '../components/profile/OffChainInterest';
 import {
+  addOrDelWallet,
   fetchU3Profile,
   fetchU3ProfileWithWallet,
+  fetchU3Wallets,
 } from '../services/api/profile';
 import { ProfileEntity } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
@@ -32,6 +34,7 @@ function Profile() {
   );
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileEntity>();
+  const [wallets, setWallets] = useState([]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -41,6 +44,15 @@ function Profile() {
       toast.error(error.message);
     } finally {
       setLoading(false);
+    }
+  }, [user.token]);
+
+  const fetchWallets = useCallback(async () => {
+    try {
+      const { data } = await fetchU3Wallets(user.token);
+      setWallets(data.data);
+    } catch (error) {
+      toast.error(error.message);
     }
   }, [user.token]);
 
@@ -55,25 +67,29 @@ function Profile() {
     }
   }, [wallet]);
 
+  const addOrRemoveWallet = useCallback(
+    async (addr: string, add: boolean) => {
+      try {
+        await addOrDelWallet(addr, add, user.token);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    },
+    [user.token]
+  );
+
   const addWallet = useCallback(
     async (addr: string) => {
-      // TODO
-      await new Promise<void>((resolve, reject) => {
-        console.log('addWallet', addr);
-        resolve();
-      });
-
+      await addOrRemoveWallet(addr, true);
+      await fetchWallets();
       return true;
     },
     [user.token]
   );
   const delWallet = useCallback(
     async (addr: string) => {
-      // TODO
-      await new Promise<void>((resolve, reject) => {
-        console.log('delWallet', addr);
-        resolve();
-      });
+      await addOrRemoveWallet(addr, false);
+      await fetchWallets();
     },
     [user.token]
   );
@@ -83,6 +99,7 @@ function Profile() {
       fetchDataWithWallet();
     } else {
       fetchData();
+      fetchWallets();
     }
   }, [fetchData, fetchDataWithWallet, wallet]);
 
