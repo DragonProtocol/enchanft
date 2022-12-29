@@ -43,7 +43,7 @@ export default function ContentShowerBox({
   }, []);
 
   useEffect(() => {
-    console.log('selectContent', selectContent);
+    // console.log('selectContent', selectContent);
     if (selectContent?.supportReaderView) {
       if (!selectContent.value) loadDaylightContent(selectContent.link);
       setTab('readerView');
@@ -63,58 +63,26 @@ export default function ContentShowerBox({
   }, [selectContent]);
 
   return (
-    <ContentBoxContainer>
-      <ContentBox>
-        <ContentShowerTab
-          tab={tab}
-          setTab={(t) => setTab(t)}
-          readerViewAction={() => {
-            if (selectContent.supportReaderView && !selectContent.value) {
-              console.log('loadDaylightContent');
-              loadDaylightContent(selectContent.link);
-            }
-          }}
-        />
-        {(() => {
-          if (tab === 'original') {
-            if (u3ExtensionInstalled || selectContent.supportIframe) {
-              return <iframe title="daylight" src={selectContent.link} />;
-            }
+    <ContentBox>
+      <ContentShowerTab
+        tab={tab}
+        setTab={(t) => setTab(t)}
+        readerViewAction={() => {
+          if (selectContent.supportReaderView && !selectContent.value) {
+            loadDaylightContent(selectContent.link);
+          }
+        }}
+      />
+      {(() => {
+        if (tab === 'original') {
+          if (u3ExtensionInstalled || selectContent.supportIframe) {
+            return <iframe title="daylight" src={selectContent.link} />;
+          }
 
-            return (
-              <ExtensionSupport
-                url={selectContent.link}
-                title={selectContent.title}
-                img={
-                  selectContent.imageUrl ||
-                  (selectContent.uniProjects &&
-                    selectContent.uniProjects[0]?.image)
-                }
-              />
-            );
-          }
-          if (tab === 'readerView') {
-            if (daylightContentLoading) {
-              return (
-                <LoadingBox>
-                  <Loading />
-                </LoadingBox>
-              );
-            }
-            if (contentValue || daylightContent) {
-              return (
-                <ContentShower
-                  {...selectContent}
-                  content={daylightContent || contentValue}
-                />
-              );
-            }
-          }
           return (
             <ExtensionSupport
               url={selectContent.link}
               title={selectContent.title}
-              msg="Reader view is not supported for this page! Please view it in new tab."
               img={
                 selectContent.imageUrl ||
                 (selectContent.uniProjects &&
@@ -122,9 +90,37 @@ export default function ContentShowerBox({
               }
             />
           );
-        })()}
-      </ContentBox>
-    </ContentBoxContainer>
+        }
+        if (tab === 'readerView') {
+          if (daylightContentLoading) {
+            return (
+              <LoadingBox>
+                <Loading />
+              </LoadingBox>
+            );
+          }
+          if (contentValue || daylightContent) {
+            return (
+              <ContentShower
+                {...selectContent}
+                content={daylightContent || contentValue}
+              />
+            );
+          }
+        }
+        return (
+          <ExtensionSupport
+            url={selectContent.link}
+            title={selectContent.title}
+            msg="Reader view is not supported for this page! Please view it in new tab."
+            img={
+              selectContent.imageUrl ||
+              (selectContent.uniProjects && selectContent.uniProjects[0]?.image)
+            }
+          />
+        );
+      })()}
+    </ContentBox>
   );
 }
 
@@ -164,7 +160,7 @@ export function ContentShowerTab({
   );
 }
 
-const ContentBoxContainer = styled.div`
+export const ContentBoxContainer = styled.div`
   height: calc(100%);
   width: calc(100% - 360px);
 `;
