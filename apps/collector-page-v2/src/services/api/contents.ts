@@ -1,5 +1,6 @@
 import axios from 'axios';
 import {
+  ContentLang,
   ContentsListResponse,
   ContentsResponse,
   ContentType,
@@ -18,9 +19,11 @@ export function saveContent(
     title: string;
     author: string;
     url: string;
-    types: ContentType;
+    type: ContentType;
+    lang: ContentLang;
     uniProjectId: number | Array<number>;
     supportReaderView?: boolean;
+    supportIframe?: boolean;
   },
   token: string
 ) {
@@ -31,9 +34,11 @@ export function saveContent(
       title: data.title,
       author: data.author,
       url: data.url,
-      type: data.types.toUpperCase().replace(' ', '_'),
+      type: data.type.toUpperCase().replace(' ', '_'),
+      lang: data.lang === ContentLang.All ? null : data.lang,
       uniProjedctId: data.uniProjectId,
       supportReaderView: data.supportReaderView || false,
+      supportIframe: data.supportIframe || false,
     },
     headers: {
       token,
@@ -70,6 +75,50 @@ export function voteContent(id: number, token: string) {
   });
 }
 
+export function personalFavors(uuid: string, token: string) {
+  return request({
+    url: `/contents/${uuid}/personalfavors`,
+    method: 'post',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
+export function personalVote(uuid: string, token: string) {
+  return request({
+    url: `/contents/${uuid}/personalvotes`,
+    method: 'post',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
+export function personalComplete(uuid: string, token: string) {
+  return request({
+    url: `/contents/${uuid}/personalcompleting`,
+    method: 'post',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
+export function complete(id: number, token: string) {
+  return request({
+    url: `/contents/${id}/completing`,
+    method: 'post',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
 export function fetchDaylight(
   cursor: string,
   wallet = '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4'
@@ -92,12 +141,14 @@ export function fetchContents(
     pageSize?: number;
     pageNumber?: number;
     contentId?: string;
+    lang?: string;
   },
   token?: string
 ): RequestPromise<ContentsListResponse> {
   return request({
     url: `/contents/searching`,
     params: {
+      lang: query.lang === ContentLang.All ? null : query.lang,
       contentId: query.contentId === ':id' ? null : query.contentId,
       pageSize: query.pageSize ?? 10,
       pageNumber: query.pageNumber ?? 0,

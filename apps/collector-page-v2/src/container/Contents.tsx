@@ -15,81 +15,75 @@ import { useNavigate, useParams } from 'react-router-dom';
 import ContentsHeader from '../components/contents/Header';
 
 import {
-  contentParse,
+  complete,
   fetchContents,
-  fetchDaylight,
+  personalComplete,
 } from '../services/api/contents';
-import { ContentListItem, OrderBy } from '../services/types/contents';
-import ListItem, { ListItemHidden } from '../components/contents/ListItem';
-import ContentShower from '../components/contents/ContentShower';
+import { ContentLang, ContentListItem } from '../services/types/contents';
+import ListItem from '../components/contents/ListItem';
 import userFavored from '../hooks/useFavored';
 import { useVoteUp } from '../hooks/useVoteUp';
-import useContentHidden from '../hooks/useContentHidden';
-import ExtensionSupport from '../components/common/ExtensionSupport';
 import Loading from '../components/common/loading/Loading';
 import { getProjectShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
 import ListScrollBox from '../components/common/box/ListScrollBox';
-import { selectWebsite } from '../features/website/websiteSlice';
-import { useAppSelector } from '../store/hooks';
 import ConfirmModal from '../components/contents/ConfirmModal';
+import ContentShowerBox, {
+  ContentBoxContainer,
+} from '../components/contents/ContentShowerBox';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
-  const evmAccount = getBindAccount(AccountType.EVM);
   const navigate = useNavigate();
   const { id } = useParams();
-  const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
 
   const queryRef = useRef<{
     keywords: string;
     type: string;
     orderBy: string;
+    lang: string;
   }>({
     keywords: '',
     type: '',
     orderBy: 'For U',
+    lang: ContentLang.All,
   });
-  const [currDaylightCursor, setCurrDaylightCursor] = useState('');
+
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
   const [selectContent, setSelectContent] = useState<ContentListItem>();
-  const [daylightContent, setDaylightContent] = useState('');
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [daylightContentLoading, setDaylightContentLoading] = useState(false);
-  const { keysFilter, contentHiddenOrNot } = useContentHidden();
-  const [tab, setTab] = useState<'original' | 'readerView'>(
-    u3ExtensionInstalled ? 'original' : 'readerView'
-  );
   const [showModal, setShowModal] = useState(false);
 
-  const vote = useVoteUp(selectContent?.id, selectContent?.upVoted);
+  const vote = useVoteUp(
+    selectContent?.uuid || selectContent?.id,
+    selectContent?.upVoted
+  );
 
-  const favors = userFavored(selectContent?.id, selectContent?.favored);
+  const favors = userFavored(
+    selectContent?.uuid || selectContent?.id,
+    selectContent?.favored
+  );
+
+  const hiddenContent = useCallback(
+    async (uuid: string | number) => {
+      if (Number.isNaN(Number(uuid))) {
+        await personalComplete(`${uuid}`, user.token);
+      } else {
+        await complete(Number(uuid), user.token);
+      }
+    },
+    [user.token]
+  );
 
   const onShare = (data: ContentListItem) => {
     tweetShare(data.title, getProjectShareUrl(data.id));
   };
 
-  const fetchDaylightData = useCallback(
-    async (daylightCursor: string) => {
-      if (!evmAccount?.thirdpartyId) return [];
-      const data = await fetchDaylight(
-        daylightCursor,
-        evmAccount?.thirdpartyId
-      );
-      const cursor = data.data.abilities[data.data.abilities.length - 1]?.uid;
-      // setCurrDaylightCursor(data.data.links.next);
-      setCurrDaylightCursor(cursor);
-      return data.data.abilities;
-    },
-    [evmAccount]
-  );
-
   const fetchData = useCallback(
-    async (keywords: string, type: string, orderBy: string) => {
+    async (keywords: string, type: string, orderBy: string, lang: string) => {
       setLoading(true);
       setContents([]);
       setSelectContent(undefined);
@@ -98,28 +92,20 @@ function Contents() {
       }
 
       try {
-        let tmpData = [];
-        if (orderBy === OrderBy.FORU) {
-          const [dayLightData, { data }] = await Promise.all([
-            fetchDaylightData(''),
-            fetchContents(
-              { keywords, type, orderBy: OrderBy.TRENDING, contentId: id },
-              user.token
-            ),
-          ]);
-          tmpData = [...dayLightData, ...data.data];
-        } else {
-          const { data } = await fetchContents(
-            { keywords, type, orderBy, contentId: id },
-            user.token
-          );
-          tmpData = data.data;
-        }
+        let tmpData: ContentListItem[] = [];
+        const { data } = await fetchContents(
+          { keywords, type, orderBy, contentId: id, lang },
+          user.token
+        );
+        tmpData = data.data;
         setContents(tmpData);
-        if (id) {
-          setSelectContent(
-            tmpData.find((item) => `${item.id}` === id || item.uid === id)
+        if (id !== ':id' && id) {
+          const itemData = tmpData.find(
+            (item) => `${item.id}` === id || item.uuid === id
           );
+          setSelectContent(itemData);
+        } else if (tmpData.length > 0) {
+          setSelectContent(tmpData[0]);
         }
       } catch (error) {
         toast.error(error.message);
@@ -132,98 +118,46 @@ function Contents() {
 
   const loadMore = useCallback(
     async (pageNumber: number) => {
-      const { keywords, type, orderBy } = queryRef.current;
+      const { keywords, type, orderBy, lang } = queryRef.current;
       try {
         setLoadingMore(true);
-        if (orderBy === OrderBy.FORU) {
-          const [dayLightData, { data }] = await Promise.all([
-            fetchDaylightData(currDaylightCursor),
-            fetchContents(
-              {
-                keywords,
-                type,
-                orderBy: OrderBy.TRENDING,
-                pageNumber,
-              },
-              user.token
-            ),
-          ]);
-          setHasMore(dayLightData.length > 0 || data.data.length > 0);
-          setContents([...contents, ...dayLightData, ...data.data]);
-        } else {
-          const { data } = await fetchContents(
-            { keywords, type, orderBy, pageNumber },
-            user.token
-          );
-          setHasMore(data.data.length > 0);
-          setContents([...contents, ...data.data]);
-        }
+        const { data } = await fetchContents(
+          { keywords, type, orderBy, pageNumber, lang },
+          user.token
+        );
+        setHasMore(data.data.length > 0);
+        setContents([...contents, ...data.data]);
       } catch (error) {
         toast.error(error.message);
+        setHasMore(false);
       } finally {
         setLoadingMore(false);
       }
     },
-    [queryRef.current, contents, currDaylightCursor]
+    [queryRef.current, contents]
   );
 
-  const loadDaylightContent = useCallback(async (url: string) => {
-    try {
-      setDaylightContentLoading(true);
-      const { data } = await contentParse(url);
-      setDaylightContent(data.data.content);
-    } catch (error) {
-      toast.error(error.message);
-    } finally {
-      setDaylightContentLoading(false);
-    }
-  }, []);
-
-  const contentValue = useMemo(() => {
-    if (!selectContent?.value) return '';
-    try {
-      const content = JSON.parse(selectContent?.value);
-      return content.content;
-    } catch (error) {
-      return selectContent?.value;
-    }
-  }, [selectContent]);
-
-  const showContents = useMemo(() => {
-    return contents.filter((item) => {
-      return !keysFilter.includes(item.uid || item.id);
-    });
-  }, [contents, keysFilter]);
-
   useEffect(() => {
-    if (selectContent?.uid) {
-      loadDaylightContent(selectContent.action.linkUrl);
-    } else {
-      setDaylightContent('');
-    }
-  }, [selectContent]);
-
-  useEffect(() => {
-    fetchData('', '', 'For U');
+    fetchData('', '', 'For U', ContentLang.All);
   }, []);
 
   return (
     <Box id="box">
       <ContentsHeader
-        filterAction={(keywords: string, type: string, orderBy: string) => {
+        filterAction={(
+          keywords: string,
+          type: string,
+          orderBy: string,
+          lang: string
+        ) => {
           queryRef.current = {
             keywords,
             type,
             orderBy,
+            lang,
           };
-          fetchData(keywords, type, orderBy);
+          fetchData(keywords, type, orderBy, lang);
           navigate('/contents/:id');
-        }}
-        changeOriginalAction={() => {
-          setTab('original');
-        }}
-        changeReaderViewAction={() => {
-          setTab('readerView');
         }}
       />
       {(loading && (
@@ -244,70 +178,66 @@ function Contents() {
             }}
           >
             {contents.map((item, idx) => {
-              if (keysFilter.includes(item.uid || item.id)) {
-                return (
-                  <ListItemHidden
-                    undoAction={() => {
-                      contentHiddenOrNot(item.uid || item.id);
-                    }}
-                  />
-                );
-              }
               let isActive = false;
-              if (item.uid) {
-                isActive = item.uid === selectContent?.uid;
-              } else {
+              if (item.id) {
                 isActive = item.id === selectContent?.id;
+              } else {
+                isActive = item.uuid === selectContent?.uuid;
               }
+
               return (
                 <ListItem
-                  key={item.id || item.uid}
+                  key={item.id || item.uuid}
                   isActive={isActive}
                   clickAction={() => {
                     setSelectContent(item);
-                    navigate(`/contents/${item.uid || item.id}`);
+                    navigate(`/contents/${item.id || item.uuid}`);
                   }}
                   shareAction={() => {
                     onShare(item);
                   }}
                   voteAction={async () => {
                     try {
-                      await vote();
+                      const voteSuccess = await vote();
                       if (selectContent.upVoted) return;
-                      setSelectContent({
-                        ...selectContent,
-                        upVoteNum: selectContent.upVoteNum + 1,
-                        upVoted: true,
-                      });
-                      setContents([
-                        ...showContents.slice(0, idx),
-                        {
-                          ...showContents[idx],
-                          upVoteNum: showContents[idx].upVoteNum + 1,
+                      if (voteSuccess) {
+                        setSelectContent({
+                          ...selectContent,
+                          upVoteNum: selectContent.upVoteNum + 1,
                           upVoted: true,
-                        },
-                        ...showContents.slice(idx + 1),
-                      ]);
+                        });
+                        setContents([
+                          ...contents.slice(0, idx),
+                          {
+                            ...contents[idx],
+                            upVoteNum: contents[idx].upVoteNum + 1,
+                            upVoted: true,
+                          },
+                          ...contents.slice(idx + 1),
+                        ]);
+                      }
                     } catch (error) {
                       toast.error(error.message);
                     }
                   }}
                   favorsAction={async () => {
                     try {
-                      await favors();
+                      const favorsSuccess = await favors();
                       if (selectContent.favored) return;
-                      setSelectContent({
-                        ...selectContent,
-                        favored: true,
-                      });
-                      setContents([
-                        ...showContents.slice(0, idx),
-                        {
-                          ...showContents[idx],
+                      if (favorsSuccess) {
+                        setSelectContent({
+                          ...selectContent,
                           favored: true,
-                        },
-                        ...showContents.slice(idx + 1),
-                      ]);
+                        });
+                        setContents([
+                          ...contents.slice(0, idx),
+                          {
+                            ...contents[idx],
+                            favored: true,
+                          },
+                          ...contents.slice(idx + 1),
+                        ]);
+                      }
                     } catch (error) {
                       toast.error(error.message);
                     }
@@ -326,83 +256,13 @@ function Contents() {
             )}
             {loadingMore && (
               <div className="load-more">
-                <div className="loading">
-                  <Loading />
-                </div>
+                <div className="loading">loading</div>
               </div>
             )}
           </ListBox>
-
-          <ContentBox>
-            <div className="tabs">
-              <div>
-                <button
-                  type="button"
-                  className={tab === 'original' ? 'active' : ''}
-                  onClick={() => {
-                    setTab('original');
-                    // changeOriginalAction();
-                  }}
-                >
-                  Original
-                </button>
-                <button
-                  className={tab === 'readerView' ? 'active' : ''}
-                  type="button"
-                  onClick={() => {
-                    setTab('readerView');
-                    // changeReaderViewAction();
-                  }}
-                >
-                  ReaderView
-                </button>
-              </div>
-            </div>
-            {tab === 'original' && selectContent && (
-              <ExtensionSupport
-                url={selectContent.action?.linkUrl || selectContent.link}
-                title={selectContent.title}
-                img={
-                  selectContent.imageUrl ||
-                  (selectContent.uniProjects &&
-                    selectContent.uniProjects[0]?.image)
-                }
-              />
-            )}
-            {tab === 'readerView' &&
-              selectContent &&
-              ((daylightContentLoading && (
-                <LoadingBox>
-                  <Loading />
-                </LoadingBox>
-              )) ||
-                (selectContent &&
-                  ((selectContent.supportReaderView && (
-                    <ContentShower
-                      {...selectContent}
-                      content={daylightContent || contentValue}
-                      voteAction={vote}
-                      favorsActions={favors}
-                      hiddenAction={() => {
-                        contentHiddenOrNot(
-                          selectContent?.uid || selectContent.id
-                        );
-                        setSelectContent(undefined);
-                      }}
-                    />
-                  )) || (
-                    <ExtensionSupport
-                      url={selectContent.action?.linkUrl || selectContent.link}
-                      title={selectContent.title}
-                      msg="Reader view is not supported for this page! Please view it in new tab."
-                      img={
-                        selectContent.imageUrl ||
-                        (selectContent.uniProjects &&
-                          selectContent.uniProjects[0]?.image)
-                      }
-                    />
-                  ))))}
-          </ContentBox>
+          <ContentBoxContainer>
+            <ContentShowerBox selectContent={selectContent} />
+          </ContentBoxContainer>
         </ContentsWrapper>
       )}
       <ConfirmModal
@@ -411,9 +271,45 @@ function Contents() {
           setShowModal(false);
         }}
         confirmAction={() => {
-          contentHiddenOrNot(selectContent?.uid || selectContent.id);
-          setSelectContent(undefined);
-          setShowModal(false);
+          try {
+            hiddenContent(selectContent?.uuid || selectContent.id);
+            const idx = contents.findIndex((item) => {
+              if (item?.uuid && item?.uuid === selectContent?.uuid) return true;
+              if (item?.id && item.id === selectContent.id) return true;
+              return false;
+            });
+
+            setContents([
+              ...contents.slice(0, idx),
+              {
+                ...contents[idx],
+                hidden: true,
+              },
+              ...contents.slice(idx + 1),
+            ]);
+            setTimeout(() => {
+              setContents([
+                ...contents.slice(0, idx),
+                ...contents.slice(idx + 1),
+              ]);
+              let item;
+              if (contents[idx + 1]) {
+                item = contents[idx + 1];
+              } else if (contents[idx - 1]) {
+                item = contents[idx - 1];
+              } else {
+                setSelectContent(undefined);
+              }
+              if (item) {
+                navigate(`/contents/${item.id || item.uuid}`);
+                setSelectContent(item);
+              }
+            }, 550);
+
+            setShowModal(false);
+          } catch (error) {
+            toast.error(error.message);
+          }
         }}
       />
     </Box>
@@ -430,13 +326,11 @@ const Box = styled.div`
 `;
 const ContentsWrapper = styled.div<{ loading?: string }>`
   width: calc(100% - 2px);
-  height: calc(100% - 74px);
+  height: calc(100% - 94px);
   box-sizing: border-box;
   border: ${(props) => (props.loading ? 'none' : '1px solid #39424c')};
   background-color: ${(props) => (props.loading ? '' : '#1b1e23')};
-  /* border--radius: 20px; */
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
+  border-radius: 20px;
   overflow: hidden;
   display: flex;
   margin-top: 24px;

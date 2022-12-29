@@ -2,38 +2,24 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 14:36:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 18:18:48
+ * @LastEditTime: 2022-12-28 13:35:30
  * @Description: file description
  */
-import {
-  AuthorizerType,
-  UserAvatar,
-  useWlUserReact,
-  WlUserActionType,
-  WlUserModalType,
-} from '@ecnft/wl-user-react';
+import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
 import styled from 'styled-components';
+import useLogin from '../../hooks/useLogin';
 import LogoutSvg from '../common/icons/svgs/logout.svg';
-// TODO 后期从wl-user-react中导出
-import { getUserDisplayName } from '../../utils/wlUserReact';
 
 export default function LoginButton() {
-  const { authorizer, user, isLogin, dispatchModal, dispatchAction } =
-    useWlUserReact();
+  const { authorizer, user, isLogin, login, logout } = useLogin();
   const nameStr = authorizer && getUserDisplayName(user, authorizer);
   return (
     <LoginButtonWrapper
       onClick={() => {
         if (!isLogin) {
-          // dispatchModal({
-          //   type: WlUserModalType.LOGIN,
-          // });
-          dispatchAction({
-            type: WlUserActionType.LOGIN,
-            payload: AuthorizerType.EVM_WALLET_KIT,
-          });
+          login();
         } else {
-          dispatchAction({ type: WlUserActionType.LOGOUT });
+          logout();
         }
       }}
     >

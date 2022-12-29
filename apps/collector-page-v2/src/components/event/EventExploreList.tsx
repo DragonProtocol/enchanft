@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 15:43:59
+ * @LastEditTime: 2022-12-27 14:12:36
  * @Description: file description
  */
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import EventExploreListItem, {
   EventExploreListItemData,
+  styleMaps,
 } from './EventExploreListItem';
 import AnimatedListItem, {
   useAnimatedListTransition,
@@ -64,8 +65,13 @@ export default function EventExploreList({
   return (
     <EventExploreListWrapper>
       {transitions((styles, item) => {
+        const bgc = styleMaps[item?.platform?.name]?.bgc;
         return (
-          <AnimatedListItem key={item.id} styles={{ ...styles }}>
+          <AnimatedListItem
+            key={item.id}
+            styles={{ ...styles }}
+            bottomFaceBgc={bgc}
+          >
             <EventExploreListItem
               data={item}
               isActive={item.id === activeId}

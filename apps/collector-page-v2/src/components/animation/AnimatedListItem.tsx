@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-21 18:15:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 15:04:48
+ * @LastEditTime: 2022-12-27 14:29:19
  * @Description: file description
  */
 import {
@@ -34,13 +34,13 @@ export function useAnimatedListTransition<T>(
       transform: 'rotateX(90deg)',
       opacity: 0,
       bottomTransform: 'rotateX(0deg)',
-      bottomOpacity: 1,
+      bottomOpacity: 0,
     },
     enter: {
       transform: 'rotateX(0deg)',
       opacity: 1,
       bottomTransform: 'rotateX(-90deg)',
-      bottomOpacity: 0,
+      bottomOpacity: 1,
     },
     leave: {
       transform: 'rotateX(90deg)',
@@ -60,8 +60,14 @@ export function useAnimatedListTransition<T>(
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   styles: TransitionStyles;
+  bottomFaceBgc?: string;
 };
-export default function AnimatedListItem({ children, styles }: Props) {
+const bottomFaceBgcDefault = '#718096';
+export default function AnimatedListItem({
+  children,
+  styles,
+  bottomFaceBgc,
+}: Props) {
   const { transform, opacity, bottomTransform, bottomOpacity } = styles;
   return (
     <AnimatedListItemCube>
@@ -97,7 +103,11 @@ export default function AnimatedListItem({ children, styles }: Props) {
       </animated.div>
       <animated.div
         className="cube-face cube-face-bottom"
-        style={{ transform: bottomTransform, opacity: bottomOpacity }}
+        style={{
+          transform: bottomTransform,
+          opacity: bottomOpacity,
+          backgroundColor: bottomFaceBgc || bottomFaceBgcDefault,
+        }}
       />
     </AnimatedListItemCube>
   );
@@ -111,6 +121,6 @@ const AnimatedListItemCube = styled.div`
     backface-visibility: hidden;
   }
   .cube-face-bottom {
-    background-color: #000;
+    border: 1px solid #39424c;
   }
 `;

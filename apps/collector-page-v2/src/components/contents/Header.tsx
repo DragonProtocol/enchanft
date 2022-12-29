@@ -2,23 +2,29 @@ import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { debounce } from 'lodash';
 import { DropDown } from './DropDown';
-import { OrderBy, ContentType } from '../../services/types/contents';
+import {
+  OrderBy,
+  ContentType,
+  ContentLang,
+} from '../../services/types/contents';
 import { Favors } from '../icons/favors';
 import { Projects } from '../icons/projects';
 import SearchInput from '../common/input/SearchInput';
 
 export default function Header({
   filterAction,
-  changeOriginalAction,
-  changeReaderViewAction,
 }: {
-  filterAction: (keywords: string, type: string, orderBy: string) => void;
-  changeOriginalAction: () => void;
-  changeReaderViewAction: () => void;
+  filterAction: (
+    keywords: string,
+    type: string,
+    orderBy: string,
+    lang: string
+  ) => void;
 }) {
   const [orderBy, setOrderBy] = useState('For U');
   const [type, setType] = useState('');
-  const [active, setActive] = useState<'original' | 'readerview'>('readerview');
+  // const [active, setActive] = useState<'original' | 'readerview'>('readerview');
+  const [lang, setLang] = useState('All');
 
   const fetchData = useCallback(debounce(filterAction, 100), []);
 
@@ -35,7 +41,7 @@ export default function Header({
           title="For U"
           selectAction={(item) => {
             setOrderBy(item);
-            fetchData('', type, item);
+            fetchData('', type, item, lang);
           }}
         />
         <DropDown
@@ -46,7 +52,19 @@ export default function Header({
           defaultSelect="All"
           selectAction={(item) => {
             setType(item);
-            fetchData('', item, orderBy);
+            fetchData('', item, orderBy, lang);
+          }}
+        />
+        <DropDown
+          items={Object.values(ContentLang).slice(1)}
+          // TODO replace icon
+          Icon={<Projects />}
+          width={110}
+          title={ContentLang.All}
+          defaultSelect={ContentLang.All}
+          selectAction={(item) => {
+            setLang(item);
+            fetchData('', type, orderBy, item);
           }}
         />
       </div>
@@ -54,7 +72,7 @@ export default function Header({
         <div className="input">
           <SearchInput
             onSearch={(query) => {
-              filterAction(query, type, orderBy);
+              filterAction(query, type, orderBy, lang);
             }}
           />
         </div>

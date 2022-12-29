@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-02 16:40:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 18:40:36
+ * @LastEditTime: 2022-12-27 14:18:14
  * @Description: file description
  */
 import {
@@ -27,7 +27,7 @@ type CompletedCommunityListState = EntityState<CompletedEventListItem> & {
   moreErrorMsg: string;
   currentRequestId: string; // 当前正在请求的id(由createAsyncThunk生成的唯一id)
 };
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 20;
 const PAGE_NUMBER_FIRST = 0;
 export const eventCompletedListEntity =
   createEntityAdapter<CompletedEventListItem>({
@@ -65,7 +65,7 @@ export const fetchMoreEventCompletedList = createAsyncThunk<
   Array<CompletedEventListItem>,
   undefined
 >(
-  'event/explore/page',
+  'event/completed/page',
   async (params, { rejectWithValue, getState, dispatch }) => {
     const state = getState() as RootState;
     const { eventCompletedList } = state;

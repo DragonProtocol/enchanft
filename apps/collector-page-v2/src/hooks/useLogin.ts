@@ -6,7 +6,8 @@ import {
 import { useCallback } from 'react';
 
 export default () => {
-  const { isLogin, dispatchAction } = useWlUserReact();
+  const wlUser = useWlUserReact();
+  const { isLogin, dispatchAction } = wlUser;
 
   const login = useCallback(() => {
     dispatchAction({
@@ -19,7 +20,7 @@ export default () => {
     dispatchAction({ type: WlUserActionType.LOGOUT });
   }, [dispatchAction]);
 
-  const handleLoginVerify = useCallback(
+  const handleCallbackVerifyLogin = useCallback(
     (callback?: () => void) => {
       if (!isLogin) {
         login();
@@ -31,8 +32,9 @@ export default () => {
   );
 
   return {
+    ...wlUser,
     login,
     logout,
-    handleLoginVerify,
+    handleCallbackVerifyLogin,
   };
 };
