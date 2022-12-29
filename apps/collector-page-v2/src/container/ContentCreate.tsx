@@ -436,6 +436,7 @@ const ShowBox = styled.div`
     padding: 10px;
     overflow: scroll;
     height: calc(100% - 60px);
+    background: #1b1e23;
   }
 `;
 
