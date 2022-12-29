@@ -46,6 +46,7 @@ export default function ContentShowerBox({
   useEffect(() => {
     // console.log('selectContent', selectContent);
     setIframeLoaded(false);
+    setDaylightContent('');
     if (selectContent?.supportReaderView) {
       if (!selectContent.value) loadDaylightContent(selectContent.link);
       setTab('readerView');
