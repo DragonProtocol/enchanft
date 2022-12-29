@@ -2,8 +2,8 @@ import { ApiResp } from '.';
 
 export enum ContentLang {
   All = 'All', // only for UI
-  EN = 'EN',
-  CN = 'CN',
+  English = 'EN',
+  中文 = 'CN',
 }
 
 export enum ContentType {
