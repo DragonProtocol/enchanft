@@ -2,6 +2,9 @@ import { useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { useSearchParams } from 'react-router-dom';
 import ScrollBox from '../components/common/box/ScrollBox';
 import { ButtonPrimary } from '../components/common/button/ButtonBase';
 import CardBase from '../components/common/card/CardBase';
@@ -15,20 +18,29 @@ import {
   getContentProjects,
   saveContent,
 } from '../services/api/contents';
-import { ContentType, Project } from '../services/types/contents';
+import { ContentLang, ContentType, Project } from '../services/types/contents';
 import { Close } from '../components/icons/close';
 import { ProjectAsyncSelectV2 } from '../components/business/form/ProjectAsyncSelect';
+import {
+  ContentBox,
+  ContentShowerTab,
+  LoadingBox,
+  Tab,
+} from '../components/contents/ContentShowerBox';
+import { useAppSelector } from '../store/hooks';
+import { selectWebsite } from '../features/website/websiteSlice';
+import Loading from '../components/common/loading/Loading';
 
 function ContentCreate() {
   const { user } = useWlUserReact();
   const [parsing, setParsing] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
+  const [tab, setTab] = useState<Tab>(
+    u3ExtensionInstalled ? 'original' : 'readerView'
+  );
 
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [originalUrl, setOriginalUrl] = useState('');
-  const [type, setType] = useState(ContentType.NEWS);
   const [selectProjects, setSelectProjects] = useState<Array<Project>>([]);
-  const [supportReader, setSupportReader] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const [urlContent, setUrlContent] = useState({
@@ -36,103 +48,138 @@ function ContentCreate() {
     content: '',
   });
 
+  const formik = useFormik({
+    initialValues: {
+      title: '',
+      author: '',
+      url: searchParams.get('url') || '',
+      type: ContentType.NEWS,
+      lang: ContentLang.English,
+      uniProjectId: [],
+      supportReaderView: true,
+      supportIframe: true,
+    },
+    validationSchema: Yup.object({
+      title: Yup.string().required('Required'),
+      author: Yup.string().required('Required'),
+      url: Yup.string().required('Required').url('Please enter a regular url'),
+      type: Yup.string().required('Required'),
+    }),
+    onSubmit: (values) => {
+      submitContent(values);
+    },
+  });
+
   const reset = useCallback(() => {
-    setTitle('');
-    setAuthor('');
-    setOriginalUrl('');
-    setType(ContentType.NEWS);
-    setSelectProjects([]);
+    formik.resetForm();
     setUrlContent({
       title: '',
       content: '',
     });
   }, []);
 
+  useEffect(() => {
+    if (!formik.values.url) return;
+    loadUrlContent();
+  }, [formik.values.url]);
+
   const loadUrlContent = useCallback(async () => {
-    if (!originalUrl) return;
+    if (!formik.values.url) return;
     setParsing(true);
-    const { data } = await contentParse(originalUrl);
-
-    setUrlContent({
-      title: data.data.title,
-      content: data.data.content,
-    });
-    setParsing(false);
-  }, [originalUrl]);
-
-  const submitContent = useCallback(async () => {
-    if (
-      !title ||
-      !author ||
-      !originalUrl ||
-      !type ||
-      selectProjects.length === 0 ||
-      loading
-    )
-      return;
-    setLoading(true);
     try {
-      await saveContent(
-        {
-          title,
-          author,
-          url: originalUrl,
-          types: type,
-          uniProjectId: selectProjects.map((item) => item.id),
-          supportReaderView: supportReader,
-        },
-        user.token
-      );
-      toast.success('Add Content Success!!!');
-      reset();
+      const { data } = await contentParse(formik.values.url);
+      setUrlContent({
+        title: data.data.title,
+        content: data.data.content,
+      });
+      formik.setFieldValue('title', data.data.title);
     } catch (error) {
-      toast.error('Add Content Fail!!!');
+      toast.error(error.msg);
     } finally {
-      setLoading(false);
+      setParsing(false);
     }
-  }, [
-    user.token,
-    title,
-    author,
-    originalUrl,
-    type,
-    selectProjects,
-    supportReader,
-  ]);
+  }, [formik.values.url]);
+
+  const submitContent = useCallback(
+    async (data: {
+      title: string;
+      author: string;
+      url: string;
+      type: ContentType;
+      lang: ContentLang;
+      uniProjectId: { id: number }[];
+      supportReaderView: boolean;
+      supportIframe: boolean;
+    }) => {
+      if (loading) return;
+      setLoading(true);
+      try {
+        await saveContent(
+          {
+            title: data.title,
+            author: data.author,
+            url: data.url,
+            type: data.type,
+            lang: data.lang,
+            uniProjectId: data.uniProjectId.map((item) => item.id),
+            supportReaderView: data.supportReaderView,
+            supportIframe: data.supportIframe,
+          },
+          user.token
+        );
+        toast.success('Add Content Success!!!');
+        reset();
+      } catch (error) {
+        toast.error('Add Content Fail!!!');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [user.token]
+  );
+
+  const renderFieldError = useCallback(
+    (field: string) => {
+      return formik.touched[field] && formik.errors[field] ? (
+        <FieldErrorText>{formik.errors[field]}</FieldErrorText>
+      ) : null;
+    },
+    [formik.touched, formik.errors]
+  );
 
   return (
     <ScrollBox>
       <ContentCreateWrapper>
         <CreateBox>
           <FormField>
+            <FormLabel htmlFor="original-url">Original URL</FormLabel>
+            <InputBase
+              onChange={(e) => formik.setFieldValue('url', e.target.value)}
+              value={formik.values.url}
+              placeholder="original url"
+              onBlur={loadUrlContent}
+            />
+            {renderFieldError('url')}
+          </FormField>
+
+          <FormField>
             <FormLabel htmlFor="title">Title</FormLabel>
             <InputBase
-              onChange={(e) => setTitle(e.target.value)}
-              value={title}
+              onChange={(e) => formik.setFieldValue('title', e.target.value)}
+              value={formik.values.title}
               placeholder="title"
             />
-            {/* {renderFieldError('name')} */}
+            {renderFieldError('title')}
           </FormField>
 
           <FormField>
             <FormLabel htmlFor="author">Author</FormLabel>
             <InputBase
-              onChange={(e) => setAuthor(e.target.value)}
-              value={author}
+              onChange={(e) => formik.setFieldValue('author', e.target.value)}
+              value={formik.values.author}
               placeholder="author"
             />
-            {/* {renderFieldError('description')} */}
-          </FormField>
-
-          <FormField>
-            <FormLabel htmlFor="original-url">Original URL</FormLabel>
-            <InputBase
-              onChange={(e) => setOriginalUrl(e.target.value)}
-              value={originalUrl}
-              placeholder="original url"
-              onBlur={loadUrlContent}
-            />
-            {/* {renderFieldError('description')} */}
+            {renderFieldError('author')}
           </FormField>
 
           <FormField>
@@ -144,28 +191,64 @@ function ContentCreate() {
                   label: item,
                 };
               })}
-              onChange={(value) => setType(value as ContentType)}
-              value={type}
+              onChange={(value) =>
+                formik.setFieldValue('type', value as ContentType)
+              }
+              value={formik.values.type}
             />
+            {renderFieldError('type')}
           </FormField>
 
           <FormField>
-            <FormLabel htmlFor="support-reader">
-              support reader view display
-            </FormLabel>
+            <FormLabel htmlFor="content-lang">Content Lang</FormLabel>
+            <Select
+              defaultValue={ContentLang.English}
+              options={Object.keys(ContentLang)
+                .slice(1)
+                .map((item) => {
+                  return {
+                    value: ContentLang[item],
+                    label: item,
+                  };
+                })}
+              onChange={(value) =>
+                formik.setFieldValue('lang', value as ContentLang)
+              }
+              value={formik.values.lang}
+            />
+            {/* {renderFieldError('lang')} */}
+          </FormField>
+
+          <FormField>
+            <FormLabel htmlFor="support-reader">Reader View</FormLabel>
             <SwitchRow>
               <Switch
-                onChange={(checked) => setSupportReader(checked)}
-                checked={supportReader}
+                onChange={(checked) =>
+                  formik.setFieldValue('supportReaderView', checked)
+                }
+                checked={formik.values.supportReaderView}
               />
-              <SwitchText>Support</SwitchText>
+              <SwitchText>Readability</SwitchText>
+            </SwitchRow>
+          </FormField>
+
+          <FormField>
+            <FormLabel htmlFor="support-iframe">Original</FormLabel>
+            <SwitchRow>
+              <Switch
+                onChange={(checked) =>
+                  formik.setFieldValue('supportIframe', checked)
+                }
+                checked={formik.values.supportIframe}
+              />
+              <SwitchText>Original</SwitchText>
             </SwitchRow>
           </FormField>
 
           <FormField>
             <FormLabel htmlFor="project">Tag Project</FormLabel>
             <div className="proj-list">
-              {selectProjects.map((item, idx) => {
+              {formik.values.uniProjectId.map((item, idx) => {
                 return (
                   <div key={item.id}>
                     <div>
@@ -189,8 +272,17 @@ function ContentCreate() {
             <ProjectAsyncSelectV2
               value=""
               onChange={(value) => {
-                if (!selectProjects.find((item) => item.id === value.id))
-                  setSelectProjects([...selectProjects, value]);
+                if (
+                  !formik.values.uniProjectId.find(
+                    (item) => item.id === value.id
+                  )
+                ) {
+                  formik.setFieldValue('uniProjectId', [
+                    ...formik.values.uniProjectId,
+                    value,
+                  ]);
+                }
+                // setSelectProjects([...selectProjects, value]);
               }}
             />
           </FormField>
@@ -199,30 +291,49 @@ function ContentCreate() {
             <FormButtonSubmit
               type="submit"
               disabled={loading}
-              onClick={submitContent}
+              onClick={() => formik.submitForm()}
             >
               Submit
             </FormButtonSubmit>
           </FormButtons>
         </CreateBox>
-        {(parsing && <ShowBox>Parseing</ShowBox>) || (
-          <ShowBox>
-            <h3>{urlContent.title}</h3>
-            <div dangerouslySetInnerHTML={{ __html: urlContent.content }} />
-          </ShowBox>
-        )}
+        <ShowBox>
+          <ContentBox>
+            <ContentShowerTab tab={tab} setTab={(t) => setTab(t)} />
+            {(() => {
+              if (tab === 'original') {
+                return (
+                  <div className="iframe-container">
+                    <iframe title="daylight" src={formik.values.url} />
+                  </div>
+                );
+              }
+              if (parsing) {
+                return (
+                  <LoadingBox>
+                    <Loading />
+                  </LoadingBox>
+                );
+              }
+              return (
+                <div className="reader-view">
+                  <h3>{urlContent.title}</h3>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: urlContent.content }}
+                  />
+                </div>
+              );
+            })()}
+          </ContentBox>
+        </ShowBox>
       </ContentCreateWrapper>
     </ScrollBox>
   );
 }
 export default ContentCreate;
 const ContentCreateWrapper = styled(MainWrapper)`
-  width: 1240px;
-  height: calc(100vh - 72px);
-  box-sizing: border-box;
   display: flex;
-  gap: 40px;
-  color: #fff;
+  gap: 24px;
 `;
 
 const CreateBox = styled(CardBase)`
@@ -318,7 +429,7 @@ const ShowBox = styled.div`
   height: 100%;
   border: 1px solid #39424c;
   border-radius: 20px;
-  padding: 10px;
+  /* padding: 10px; */
   overflow: scroll;
   color: white;
   width: calc(100% - 360px);
@@ -328,6 +439,13 @@ const ShowBox = styled.div`
   }
   & pre {
     overflow: scroll;
+  }
+
+  & .reader-view {
+    padding: 10px;
+    overflow: scroll;
+    height: calc(100% - 60px);
+    background: #1b1e23;
   }
 `;
 
@@ -341,4 +459,8 @@ const FormButtonSubmit = styled(ButtonPrimary)`
 const FormButtonIcon = styled.img`
   width: 24px;
   height: 24px;
+`;
+
+const FieldErrorText = styled.div`
+  color: red;
 `;

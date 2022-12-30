@@ -2,18 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 11:54:33
+ * @LastEditTime: 2022-12-30 15:42:20
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { Platform } from '../../services/types/common';
 import { EventExploreListItemResponse } from '../../services/types/event';
 import { getChainInfo } from '../../utils/chain';
-import { formatDateTime } from '../../utils/time';
+import { defaultFormatDate } from '../../utils/time';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import IconLike from '../common/icons/IconLike';
 import CompleteSvg from '../common/icons/svgs/check-circle.svg';
-import CompletedSvg from '../common/icons/svgs/check.svg';
+import CompletedSvg from '../common/icons/svgs/checked-circle.svg';
 import ShareSvg from '../common/icons/svgs/share.svg';
 import RewardTag from './RewardTag';
 
@@ -34,11 +34,11 @@ export type EventExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   onShare?: () => void;
   onFavor?: () => void;
 };
-const defaultStyle = {
+export const defaultStyle = {
   bgc: 'rgba(16, 16, 20, 0.1)',
   activeColor: '#FFFFFF',
 };
-const styleMaps = {
+export const styleMaps = {
   [Platform.GALXE]: {
     bgc: '#14171a',
     activeColor: '#FFFFFF',
@@ -98,8 +98,10 @@ export default function EventExploreListItem({
 
       <CenterBox>
         <RewardTag value={data.reward} />
-        <EventStartTime>{formatDateTime(data.startTime)}</EventStartTime>
-        {data.platform && <EventPlatformIcon src={data.platform.logo} />}
+        {data?.startTime && (
+          <EventStartTime>{defaultFormatDate(data.startTime)}</EventStartTime>
+        )}
+        {data?.platform?.logo && <EventPlatformIcon src={data.platform.logo} />}
       </CenterBox>
       {displayHandles && (
         <EventHandles>
@@ -114,8 +116,8 @@ export default function EventExploreListItem({
               {loadingComplete
                 ? 'loading'
                 : isCompleted
-                ? 'Archived'
-                : 'Archive'}
+                ? 'Completed'
+                : 'Mark as Complete'}
             </EventHandleButtonText>
           </EventHandleButtonComplete>
           <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
@@ -151,6 +153,7 @@ const EventExploreListItemWrapper = styled.div<{
     `
     box-shadow: inset -4px 0px 0px ${activeColor};
   `}
+  transition: background-color 0.5s, box-shadow 0.5s;
 `;
 const TopBox = styled.div`
   width: 100%;

@@ -2,10 +2,18 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 14:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 17:08:21
+ * @LastEditTime: 2022-12-26 13:25:15
  * @Description: file description
  */
 import { ApiResp } from '.';
+
+export enum ChainType {
+  EVM = 'EVM',
+  SOLANA = 'SOLANA',
+  BSC = 'BSC',
+  MATIC = 'MATIC',
+  APTOS = 'APTOS',
+}
 
 export enum OrderBy {
   EARLIEST = 'EARLIEST',

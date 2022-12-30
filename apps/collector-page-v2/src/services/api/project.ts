@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-05 17:17:24
+ * @LastEditTime: 2022-12-23 16:05:04
  * @Description: file description
  */
 import qs from 'qs';
@@ -20,6 +20,9 @@ export function fetchListForProjectExplore(
     url: `/uniProjects/searching`,
     method: 'get',
     params,
+    headers: {
+      needToken: true,
+    },
   });
 }
 export function favorProject(

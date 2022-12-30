@@ -6,8 +6,9 @@ import { PerspectiveCamera, Scene, WebGLRenderer } from 'three';
 import { Cube } from './cube';
 import Control from './control';
 
-// TODO
 export class RandomControl extends Control {
+  couldRandom: boolean;
+
   constructor(
     camera: PerspectiveCamera,
     scene: Scene,
@@ -15,31 +16,41 @@ export class RandomControl extends Control {
     cube: Cube
   ) {
     super(camera, scene, renderer, cube);
-
+    this.couldRandom = true;
     this.init();
   }
 
-  public startHandle(event: MouseEvent) {
+  public mousedownHandle(event: MouseEvent) {
     event.preventDefault();
-    this.operateStart(event.offsetX, event.offsetY);
+    if (this.couldRandom) {
+      this.operateStart(event.offsetX, event.offsetY);
+    }
   }
 
-  public mouseoutHandle(event: MouseEvent) {
+  public mouseupHandle(event: MouseEvent) {
     event.preventDefault();
-    this.operateEnd();
+    if (this.couldRandom) {
+      this.operateEnd();
+    }
   }
 
   public moveHandle(event: MouseEvent) {
     event.preventDefault();
-    this.operateDrag(
-      event.offsetX,
-      event.offsetY,
-      event.movementX,
-      event.movementY
-    );
+    if (this.couldRandom) {
+      this.operateDrag(
+        event.offsetX,
+        event.offsetY,
+        event.movementX,
+        event.movementY
+      );
+    }
   }
 
-  public init(): void {}
+  public init(): void {
+    this.domElement.addEventListener('mouseenter', () => {
+      this.couldRandom = false;
+    });
+  }
 
   public dispose(): void {}
 }

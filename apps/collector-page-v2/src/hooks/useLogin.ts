@@ -4,9 +4,11 @@ import {
   WlUserActionType,
 } from '@ecnft/wl-user-react';
 import { useCallback } from 'react';
+import { removeHomeBannerHiddenFromStore } from '../utils/homeStore';
 
 export default () => {
-  const { isLogin, dispatchAction } = useWlUserReact();
+  const wlUser = useWlUserReact();
+  const { isLogin, dispatchAction } = wlUser;
 
   const login = useCallback(() => {
     dispatchAction({
@@ -17,9 +19,10 @@ export default () => {
 
   const logout = useCallback(() => {
     dispatchAction({ type: WlUserActionType.LOGOUT });
+    removeHomeBannerHiddenFromStore();
   }, [dispatchAction]);
 
-  const handleLoginVerify = useCallback(
+  const handleCallbackVerifyLogin = useCallback(
     (callback?: () => void) => {
       if (!isLogin) {
         login();
@@ -31,8 +34,9 @@ export default () => {
   );
 
   return {
+    ...wlUser,
     login,
     logout,
-    handleLoginVerify,
+    handleCallbackVerifyLogin,
   };
 };

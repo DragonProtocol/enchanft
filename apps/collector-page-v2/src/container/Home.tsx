@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 14:00:51
+ * @LastEditTime: 2022-12-30 19:00:21
  * @Description: file description
  */
 
@@ -16,6 +16,8 @@ import DiscoverProj from '../components/home/DiscoverProj';
 import Platform from '../components/home/Platform';
 import RecommendContent from '../components/home/RecommendContent';
 import RecommendEvents from '../components/home/RecommendEvents';
+import { MainWrapper } from '../components/layout/Index';
+import { selectWebsite } from '../features/website/websiteSlice';
 import {
   getPlatforms,
   getTrendingProjects,
@@ -26,8 +28,10 @@ import { ContentListItem } from '../services/types/contents';
 import { EventExploreListItemResponse } from '../services/types/event';
 import { PlatformData } from '../services/types/home';
 import { ProjectExploreListItemResponse } from '../services/types/project';
+import { useAppSelector } from '../store/hooks';
 
 function Home() {
+  const { homeBannerDisplay } = useAppSelector(selectWebsite);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [platforms, setPlatforms] = useState<Array<PlatformData>>([]);
@@ -68,27 +72,29 @@ function Home() {
 
   return (
     <HomeWrapper>
-      <div>
-        <Carousel />
-        {(loading && (
-          <div className="loading">
-            <Loading />
-          </div>
-        )) || (
-          <>
-            <RecommendEvents
-              data={events}
-              viewAllAction={() => {
-                navigate('/events');
-              }}
-            />
-            <div className="row-2">
+      {homeBannerDisplay && <Carousel />}
+      {(loading && (
+        <div className="loading">
+          <Loading />
+        </div>
+      )) || (
+        <>
+          <RecommendEvents
+            data={events}
+            viewAllAction={() => {
+              navigate('/events');
+            }}
+          />
+          <div className="row-2">
+            <div className="left">
               <RecommendContent
                 data={contents}
                 viewAllAction={() => {
                   navigate('/contents/:id');
                 }}
               />
+            </div>
+            <div className="right">
               <DiscoverProj
                 data={trendingProjects}
                 viewAllAction={() => {
@@ -96,30 +102,24 @@ function Home() {
                 }}
               />
             </div>
-            <Platform
-              platforms={platforms}
-              viewAllAction={() => {
-                navigate('/events');
-              }}
-            />
-          </>
-        )}
-        <br />
-      </div>
+          </div>
+          <Platform
+            platforms={platforms}
+            viewAllAction={() => {
+              navigate('/events');
+            }}
+          />
+        </>
+      )}
     </HomeWrapper>
   );
 }
 export default Home;
-const HomeWrapper = styled.div`
-  height: 100%;
+const HomeWrapper = styled(MainWrapper)`
   overflow: scroll;
-  > div {
-    margin: 0 auto;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
   & div.loading {
     width: 100%;
     display: flex;
@@ -128,6 +128,12 @@ const HomeWrapper = styled.div`
 
   & div.row-2 {
     display: flex;
-    gap: 40px;
+    gap: 20px;
+    .left {
+      flex: 2;
+    }
+    .right {
+      flex: 1;
+    }
   }
 `;

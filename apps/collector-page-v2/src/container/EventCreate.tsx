@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 18:49:25
+ * @LastEditTime: 2022-12-27 14:16:44
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -14,17 +14,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { useWlUserReact } from '@ecnft/wl-user-react';
-import {
-  OrderBy,
-  Platform,
-  PlatformLogo,
-  Reward,
-} from '../services/types/common';
+import { ChainType, Platform, Reward } from '../services/types/common';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import {
-  fetchProjectSelectList,
-  selectAll,
-} from '../features/project/projectSelectList';
 import { CreateEventData } from '../services/types/event';
 import UploadImgMaskImg from '../components/imgs/upload_img_mask.svg';
 import { uploadImage } from '../services/api/upload';
@@ -45,7 +36,6 @@ import TimePicker from '../components/common/time/TimePicker';
 import EventLinkPreview from '../components/event/EventLinkPreview';
 import ProjectAsyncSelect from '../components/business/form/ProjectAsyncSelect';
 import PlatformSelect from '../components/business/form/PlatformSelect';
-import { ChainType } from '../utils/chain';
 
 const rewardOptions: Array<{
   value: Reward;
@@ -95,18 +85,6 @@ const chainOptions: Array<{
 ];
 function EventCreate() {
   const dispatch = useAppDispatch();
-  useEffect(() => {
-    dispatch(fetchProjectSelectList());
-  }, []);
-  const projectSelectList = useAppSelector(selectAll);
-  const projectOptions = useMemo(
-    () =>
-      projectSelectList.map((item) => ({
-        value: item.id,
-        label: item.name,
-      })),
-    [projectSelectList]
-  );
   const { status } = useAppSelector(selectState);
   const loading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
@@ -128,8 +106,8 @@ function EventCreate() {
       name: '',
       description: '',
       image: '',
-      platform: Platform.GALXE,
-      project: projectOptions[0]?.value,
+      platform: '' as unknown as Platform,
+      project: '' as unknown as number,
       link: '',
       chain: ChainType.EVM,
       reward: Reward.BADGE,
@@ -164,16 +142,15 @@ function EventCreate() {
     [formik.touched, formik.errors]
   );
 
+  const [selectPlatformLogo, setSelectPlatformLogo] = useState('');
   const previewData = useMemo(() => {
-    const { project, platform } = formik.values;
     return {
       ...formik.values,
       platform: {
-        logo: PlatformLogo[platform],
+        logo: selectPlatformLogo,
       },
-      project: projectSelectList.find((item) => item.id === project),
     };
-  }, [formik.values, projectSelectList]);
+  }, [formik.values, selectPlatformLogo]);
 
   return (
     <EventCreateWrapper>
@@ -214,6 +191,7 @@ function EventCreate() {
           <PlatformSelect
             placeholder="Filter by Platform"
             onChange={(value) => formik.setFieldValue('platform', value)}
+            onSelectOption={(option) => setSelectPlatformLogo(option.iconUrl)}
             value={formik.values.platform}
           />
           {renderFieldError('platform')}
@@ -224,7 +202,7 @@ function EventCreate() {
           <ProjectAsyncSelect
             placeholder="Filter by Project"
             value={formik.values.project}
-            onChange={(value) => formik.setFieldValue('project', value)}
+            onChange={(option) => formik.setFieldValue('project', option.value)}
           />
           {renderFieldError('project')}
         </FormField>
@@ -347,7 +325,7 @@ export default EventCreate;
 const EventCreateWrapper = styled(MainWrapper)`
   height: auto;
   display: flex;
-  gap: 40px;
+  gap: 24px;
 `;
 
 const EventCreateFormCard = styled(CardBase)`

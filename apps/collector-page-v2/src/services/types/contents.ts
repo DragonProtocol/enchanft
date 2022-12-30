@@ -1,5 +1,11 @@
 import { ApiResp } from '.';
 
+export enum ContentLang {
+  All = 'All', // only for UI
+  English = 'EN',
+  中文 = 'CN',
+}
+
 export enum ContentType {
   NEWS = 'News',
   GAMING = 'Gaming',
@@ -19,7 +25,7 @@ export enum OrderBy {
 
 export type ContentListItem = {
   uid?: string;
-  action?: { linkUrl: string };
+  // action?: { linkUrl: string };
   imageUrl?: string;
   uniProjects: Array<{
     description: string;
@@ -28,7 +34,7 @@ export type ContentListItem = {
     image: string;
     name: string;
   }>;
-
+  uuid?: string;
   id: number;
   title: string;
   createdAt: number;
@@ -43,8 +49,10 @@ export type ContentListItem = {
     logo: string;
   };
   supportReaderView?: boolean;
+  supportIframe?: boolean;
   upVoted: boolean;
   favored: boolean;
+  hidden: boolean;
   uniProject: {
     id: 1;
     description: string;

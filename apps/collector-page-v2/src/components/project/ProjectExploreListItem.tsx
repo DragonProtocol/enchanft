@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 14:29:19
+ * @LastEditTime: 2022-12-27 18:54:52
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -10,6 +10,7 @@ import { ProjectExploreListItemResponse } from '../../services/types/project';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import IconLike from '../common/icons/IconLike';
 import ShareSvg from '../common/icons/svgs/share.svg';
+import ProjectImgDefault from './ProjectImgDefault';
 
 export type ProjectExploreListItemData = ProjectExploreListItemResponse;
 export type ProjectExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
@@ -87,6 +88,7 @@ const ProjectExploreListItemWrapper = styled.div<{
     `
     box-shadow: inset -4px 0px 0px #FFFFFF;
   `}
+  transition: background-color 0.5s, box-shadow 0.5s;
 `;
 const ProjectInfo = styled.div`
   display: flex;
@@ -99,7 +101,7 @@ const LayoutLeft = styled.div`
   align-items: center;
   flex-shrink: 0;
 `;
-const ProjectAvatar = styled.img`
+const ProjectAvatar = styled(ProjectImgDefault)`
   width: 50px;
   height: 50px;
   border-radius: 50%;

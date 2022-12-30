@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { Platform } from '../../../services/types/common';
 import { NooxData } from '../../../services/types/profile';
-import { NooxCard } from './Card';
+import { NoItem, NooxCard } from './Card';
 import Title from './Title';
 
 export default function Noox({ data }: { data: NooxData }) {
@@ -12,7 +12,7 @@ export default function Noox({ data }: { data: NooxData }) {
   return (
     <ContentBox>
       <Title
-        name={`NOOX(${data.total})`}
+        name={(data.total && `NOOX(${data.total})`) || `NOOX`}
         expand={expand}
         setExpand={(e) => setExpand(e)}
         exploreAction={() => {
@@ -21,17 +21,25 @@ export default function Noox({ data }: { data: NooxData }) {
       />
       {expand && (
         <div className="data">
-          {data.result.map((item) => {
-            return (
-              <NooxCard
-                key={item.transaction_hash}
-                data={item}
-                oatAction={() => {
-                  navigate('/events');
-                }}
-              />
-            );
-          })}
+          {(data.result.length &&
+            data.result.map((item) => {
+              return (
+                <NooxCard
+                  key={item.transaction_hash}
+                  data={item}
+                  oatAction={() => {
+                    navigate('/events');
+                  }}
+                />
+              );
+            })) || (
+            <NoItem
+              msg="No data were found on Noox. Explore and get the first one."
+              exploreAction={() => {
+                navigate(`/events?platform=${Platform.NOOX}`);
+              }}
+            />
+          )}
         </div>
       )}
     </ContentBox>
@@ -45,6 +53,7 @@ const ContentBox = styled.div`
   padding: 20px;
   .data {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
     margin-top: 20px;
     /* height: 258px; */

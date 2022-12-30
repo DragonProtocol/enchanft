@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 17:47:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 11:24:48
+ * @LastEditTime: 2022-12-26 13:06:03
  * @Description: file description
  */
 import React, { useEffect, useRef } from 'react';
@@ -18,18 +18,13 @@ function ListScrollBox({
   onScrollBottom,
   ...divProps
 }: ListScrollBoxProps) {
-  const init = useRef(true);
   const { ref: inViewRef, inView } = useInView({
     root: null,
     threshold: 0,
   });
   useEffect(() => {
     if (inView && onScrollBottom) {
-      if (init.current) {
-        init.current = false;
-      } else {
-        onScrollBottom();
-      }
+      onScrollBottom();
     }
   }, [inView, onScrollBottom]);
   return (

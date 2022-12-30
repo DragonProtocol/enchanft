@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 12:24:13
+ * @LastEditTime: 2022-12-26 18:18:08
  * @Description: 基础按钮
  */
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
@@ -18,7 +18,7 @@ export const ButtonPrimary = styled(ButtonBase)`
   color: #14171a;
 `;
 export const ButtonPrimaryLine = styled(ButtonBase)`
-  border: 1px solid #39424c;
+  border: 1px solid #39424c !important;
   background-color: #1a1e23;
   color: #718096;
 `;
@@ -47,6 +47,7 @@ export const ButtonBaseCss = css`
   align-items: center;
   gap: 10px;
   cursor: pointer;
+  border: none;
 `;
 const ButtonBaseWrapper = styled.button`
   ${ButtonBaseCss}

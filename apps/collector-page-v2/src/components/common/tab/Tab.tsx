@@ -9,7 +9,7 @@ import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
 type TabOption = {
   value: any;
-  label: string;
+  label: string | JSX.Element;
 };
 type Props = StyledComponentPropsWithRef<'div'> & {
   options: TabOption[];

@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import {
   GalxeDataListItem,
@@ -13,13 +13,37 @@ export function NooxCard({
   data: NooxDataListItem;
   oatAction: () => void;
 }) {
+  const videoEl = useRef<HTMLVideoElement>(null);
+
+  const attemptPlay = () => {
+    if (videoEl && videoEl.current) {
+      videoEl.current.play().catch((error) => {
+        console.error('Error attempting to play', error);
+      });
+    }
+  };
+
+  useEffect(() => {
+    attemptPlay();
+  }, []);
+
   const img = useMemo(() => {
-    return data?.uriMetaData.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
-  }, [data?.uriMetaData.image]);
+    if (data.uriMetaData) {
+      return data?.uriMetaData.image.replace(
+        'ipfs://',
+        'https://ipfs.io/ipfs/'
+      );
+    }
+    return '';
+  }, [data?.uriMetaData?.image]);
 
   return (
     <Box>
-      <img src={img} alt="" />
+      {img.endsWith('mp4') ? (
+        <video src={img} autoPlay loop ref={videoEl} />
+      ) : (
+        <img src={img} alt="" />
+      )}
       <div className="hover">
         <button type="button" onClick={oatAction}>
           Get The OAT
@@ -76,9 +100,27 @@ export function GalxeCard({
   data: GalxeDataListItem;
   oatAction: () => void;
 }) {
+  const videoEl = useRef<HTMLVideoElement>(null);
+
+  const attemptPlay = () => {
+    if (videoEl && videoEl.current) {
+      videoEl.current.play().catch((error) => {
+        console.error('Error attempting to play', error);
+      });
+    }
+  };
+
+  useEffect(() => {
+    attemptPlay();
+  }, []);
+
   return (
     <CircleCardBox>
-      <img src={data?.image} alt="" />
+      {data?.image.endsWith('mp4') ? (
+        <video src={data?.image} autoPlay loop ref={videoEl} />
+      ) : (
+        <img src={data?.image} alt="" />
+      )}
       <div className="hover">
         <button type="button" onClick={oatAction}>
           Get The OAT
@@ -107,6 +149,61 @@ export function PoapCard({
   );
 }
 
+export function NoItem({
+  msg,
+  exploreAction,
+}: {
+  msg: string;
+  exploreAction: () => void;
+}) {
+  return (
+    <NoItemBox className="no-item">
+      <p>{msg}</p>
+      <button type="button" onClick={exploreAction}>
+        Explore
+      </button>
+    </NoItemBox>
+  );
+}
+
+const NoItemBox = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  height: 167px;
+
+  background: #1b1e23;
+  border-radius: 20px;
+
+  & p {
+    margin: 0;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: center;
+    color: #748094;
+  }
+
+  & button {
+    padding: 12px 24px;
+    cursor: pointer;
+    width: 115px;
+    height: 48px;
+
+    background: #1a1e23;
+    border: 1px solid #39424c;
+    border-radius: 12px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    color: #718096;
+  }
+`;
+
 const CircleCardBox = styled.div`
   display: inline-block;
   width: 170px;
@@ -118,6 +215,10 @@ const CircleCardBox = styled.div`
   img {
     width: 100%;
     height: 100%;
+  }
+
+  video {
+    width: 100%;
   }
 
   .hover {

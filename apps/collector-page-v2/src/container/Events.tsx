@@ -2,11 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 11:46:44
+ * @LastEditTime: 2022-12-26 16:38:52
  * @Description: 首页任务看板
  */
-import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { useParams, useSearchParams } from 'react-router-dom';
 import EventExploreList from '../components/event/EventExploreList';
@@ -24,11 +23,11 @@ import {
 } from '../features/event/eventExploreList';
 import useEventHandles from '../hooks/useEventHandles';
 import { AsyncRequestStatus } from '../services/types';
-import { OrderBy } from '../services/types/common';
 import { EventExploreListItemResponse } from '../services/types/event';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import EventLinkPreview from '../components/event/EventLinkPreview';
 import Loading from '../components/common/loading/Loading';
+import NoResult from '../components/common/NoResult';
 
 export default function Events() {
   const { id } = useParams();
@@ -37,12 +36,11 @@ export default function Events() {
     favoredIds,
     favorQueueIds,
     completedIds,
+    completeQueueIds,
     onComplete,
     onFavor,
     onShare,
   } = useEventHandles();
-  const { getBindAccount, isLogin } = useWlUserReact();
-  const evmAccount = getBindAccount(AccountType.EVM);
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const eventExploreList = useAppSelector(selectAll);
@@ -79,28 +77,28 @@ export default function Events() {
     if (id) {
       Object.assign(params, { eventId: Number(id) });
     }
-    if (evmAccount?.thirdpartyId && filter.orderBy === OrderBy.FORU) {
-      Object.assign(params, { pubkey: evmAccount?.thirdpartyId });
-    }
     dispatch(fetchEventExploreList({ ...params }));
-  }, [id, filter, evmAccount]);
+  }, [id, filter]);
+  const isInitActive = useRef(false);
   useEffect(() => {
-    if (id) {
-      setEvent(eventExploreList.find((item) => item.id === Number(id)));
-    } else {
-      setEvent(eventExploreList[0]);
+    if (!isInitActive.current && status === AsyncRequestStatus.FULFILLED) {
+      if (id) {
+        setEvent(eventExploreList.find((item) => item.id === Number(id)));
+      } else {
+        setEvent(eventExploreList[0]);
+      }
+      isInitActive.current = true;
     }
-  }, [eventExploreList, id]);
+  }, [id, eventExploreList, status]);
 
   const getMore = useCallback(
     () =>
       dispatch(
         fetchMoreEventExploreList({
           ...filter,
-          pubkey: evmAccount?.thirdpartyId,
         })
       ),
-    [filter, evmAccount]
+    [filter]
   );
   const isLoadingMore = useMemo(
     () => moreStatus === AsyncRequestStatus.PENDING,
@@ -117,31 +115,36 @@ export default function Events() {
         {isLoading ? (
           <Loading />
         ) : (
-          !isEmpty && (
-            <MainBody>
-              <ListBox onScrollBottom={getMore}>
-                <EventExploreList
-                  data={eventExploreList}
-                  activeId={event?.id || 0}
-                  favoredIds={favoredIds}
-                  favorQueueIds={favorQueueIds}
-                  completedIds={completedIds}
-                  onComplete={onComplete}
-                  onFavor={onFavor}
-                  onShare={onShare}
-                  onItemClick={setEvent}
-                />
-                {isLoadingMore ? (
-                  <MoreLoading>loading ...</MoreLoading>
-                ) : noMore ? (
-                  <MoreLoading>No other events</MoreLoading>
-                ) : null}
-              </ListBox>
-              <ContentBox>
-                {event ? <EventLinkPreview data={event} /> : null}
-              </ContentBox>
-            </MainBody>
-          )
+          <MainBody>
+            {!isEmpty ? (
+              <>
+                <ListBox onScrollBottom={getMore}>
+                  <EventExploreList
+                    data={eventExploreList}
+                    activeId={event?.id || 0}
+                    favoredIds={favoredIds}
+                    favorQueueIds={favorQueueIds}
+                    completedIds={completedIds}
+                    completeQueueIds={completeQueueIds}
+                    onComplete={onComplete}
+                    onFavor={onFavor}
+                    onShare={onShare}
+                    onItemClick={setEvent}
+                  />
+                  {isLoadingMore ? (
+                    <MoreLoading>loading ...</MoreLoading>
+                  ) : noMore ? (
+                    <MoreLoading>No other events</MoreLoading>
+                  ) : null}
+                </ListBox>
+                <ContentBox>
+                  {event ? <EventLinkPreview data={event} /> : null}
+                </ContentBox>
+              </>
+            ) : (
+              <NoResult />
+            )}
+          </MainBody>
         )}
       </MainBox>
     </EventsWrapper>

@@ -2,58 +2,155 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 17:46:47
+ * @LastEditTime: 2022-12-29 11:18:46
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 import useLogin from './useLogin';
-import { favorsContent, voteContent } from '../services/api/contents';
+import {
+  favorsContent,
+  voteContent,
+  complete,
+  personalFavors,
+  personalVote,
+  personalComplete,
+} from '../services/api/contents';
 import { ContentListItem } from '../services/types/contents';
 import { getContentShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
-import useContentHidden from './useContentHidden';
 
 export default () => {
-  const { handleLoginVerify } = useLogin();
+  const { handleCallbackVerifyLogin } = useLogin();
   const { user } = useWlUserReact();
   // vote
-  const [votedIds, setVotedContentIds] = useState([]);
+  const [votedIds, setVotedContentIds] = useState<Array<number | string>>([]);
+  const [voteQueueIds, setVoteQueueIds] = useState<Array<number | string>>([]);
   const onVote = useCallback(
     (data: ContentListItem) => {
-      handleLoginVerify(() => {
-        voteContent(data.id, user.token)
-          .then(() => {
+      if (data.upVoted || voteQueueIds.includes(data?.uuid || data.id)) return;
+      handleCallbackVerifyLogin(async () => {
+        try {
+          if (data?.uuid) {
+            setVoteQueueIds([...new Set([...voteQueueIds, data.uuid])]);
+            await personalVote(data.uuid, user.token);
+            setVotedContentIds([...votedIds, data.uuid]);
+          } else {
+            setVoteQueueIds([...new Set([...voteQueueIds, data.id])]);
+            await voteContent(data.id, user.token);
             setVotedContentIds([...votedIds, data.id]);
-          })
-          .catch((error) => toast.error(error.message));
+          }
+        } catch (error) {
+          toast.error(error.message);
+        } finally {
+          setVoteQueueIds([
+            ...voteQueueIds.filter((id) =>
+              data?.uuid ? id !== data.uuid : id !== data.id
+            ),
+          ]);
+        }
       });
     },
-    [votedIds, setVotedContentIds, handleLoginVerify]
+    [
+      user,
+      votedIds,
+      setVotedContentIds,
+      voteQueueIds,
+      setVoteQueueIds,
+      handleCallbackVerifyLogin,
+    ]
   );
   // favor
   const [favoredIds, setFavoredContentIds] = useState([]);
+  const [favorQueueIds, setFavorQueueIds] = useState<Array<number | string>>(
+    []
+  );
   const onFavor = useCallback(
     (data: ContentListItem) => {
-      handleLoginVerify(() => {
-        favorsContent(data.id, user.token)
-          .then(() => {
+      if (data.favored || favorQueueIds.includes(data?.uuid || data.id)) return;
+      handleCallbackVerifyLogin(async () => {
+        try {
+          if (data?.uuid) {
+            setFavorQueueIds([...new Set([...favorQueueIds, data.uuid])]);
+            await personalFavors(data.uuid, user.token);
+            setFavoredContentIds([...favoredIds, data.uuid]);
+          } else {
+            setFavorQueueIds([...new Set([...favorQueueIds, data.id])]);
+            await favorsContent(data.id, user.token);
             setFavoredContentIds([...favoredIds, data.id]);
-          })
-          .catch((error) => toast.error(error.message));
+          }
+        } catch (error) {
+          toast.error(error.message);
+        } finally {
+          setFavorQueueIds([
+            ...favorQueueIds.filter((id) =>
+              data?.uuid ? id !== data.uuid : id !== data.id
+            ),
+          ]);
+        }
       });
     },
-    [favoredIds, setFavoredContentIds, handleLoginVerify]
+    [
+      user,
+      favoredIds,
+      setFavoredContentIds,
+      favorQueueIds,
+      setFavorQueueIds,
+      handleCallbackVerifyLogin,
+    ]
   );
 
   // hidden
-  const { keysFilter: hiddenIds, contentHiddenOrNot } = useContentHidden();
+  const [hiddenIds, setHiddenContentIds] = useState([]);
+  const [hiddenQueueIds, setHiddenQueueIds] = useState<Array<number | string>>(
+    []
+  );
   const onHidden = useCallback(
-    (data: ContentListItem) => {
-      contentHiddenOrNot(data?.uid || data.id);
+    (
+      data: ContentListItem,
+      callback?: {
+        success?: () => void;
+        error?: (error: Error) => void;
+      }
+    ) => {
+      if (data.hidden || hiddenQueueIds.includes(data?.uuid || data.id)) return;
+      handleCallbackVerifyLogin(async () => {
+        try {
+          if (data?.uuid) {
+            setHiddenQueueIds([...new Set([...hiddenQueueIds, data.uuid])]);
+            await personalComplete(data.uuid, user.token);
+            setHiddenContentIds([...hiddenIds, data.uuid]);
+          } else {
+            setHiddenQueueIds([...new Set([...hiddenQueueIds, data.id])]);
+            await complete(data.id, user.token);
+            setHiddenContentIds([...hiddenIds, data.id]);
+          }
+          if (callback && callback.success) {
+            callback.success();
+          }
+        } catch (error) {
+          if (callback && callback.error) {
+            callback.error(error);
+          }
+          toast.error(error.message);
+        } finally {
+          setHiddenQueueIds([
+            ...hiddenQueueIds.filter((id) =>
+              data?.uuid ? id !== data.uuid : id !== data.id
+            ),
+          ]);
+        }
+      });
     },
-    [contentHiddenOrNot]
+    [
+      user,
+      hiddenIds,
+      setHiddenContentIds,
+      hiddenQueueIds,
+      setHiddenQueueIds,
+      handleCallbackVerifyLogin,
+    ]
   );
   // share
   const onShare = useCallback((data: ContentListItem) => {
@@ -63,23 +160,26 @@ export default () => {
   const formatCurrentContents = useCallback(
     (data: ContentListItem[]) =>
       (data || [])
-        .filter((item) => !hiddenIds.includes(item.uid || item.id))
+        .filter((item) => !hiddenIds.includes(item?.uuid || item.id))
         .map((item) => ({
           ...item,
-          upVoteNum: votedIds.includes(item.id)
+          upVoteNum: votedIds.includes(item?.uuid || item.id)
             ? item.upVoteNum + 1
             : item.upVoteNum,
-          upVoted: item.upVoted || votedIds.includes(item.id),
-          favored: item.favored || favoredIds.includes(item.id),
+          upVoted: item.upVoted || votedIds.includes(item?.uuid || item.id),
+          favored: item.favored || favoredIds.includes(item?.uuid || item.id),
         })),
     [votedIds, favoredIds, hiddenIds]
   );
   return {
     votedIds,
-    favoredIds,
-    hiddenIds,
+    voteQueueIds,
     onVote,
+    favoredIds,
+    favorQueueIds,
     onFavor,
+    hiddenIds,
+    hiddenQueueIds,
     onHidden,
     onShare,
     formatCurrentContents,

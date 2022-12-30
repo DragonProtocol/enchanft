@@ -2,33 +2,40 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-19 11:07:31
+ * @LastEditTime: 2022-12-27 14:12:36
  * @Description: file description
  */
 import { useCallback } from 'react';
 import styled from 'styled-components';
 import EventExploreListItem, {
   EventExploreListItemData,
+  styleMaps,
 } from './EventExploreListItem';
+import AnimatedListItem, {
+  useAnimatedListTransition,
+} from '../animation/AnimatedListItem';
 
 export type EventExploreListProps = {
   data: EventExploreListItemData[];
-  activeId: number;
-  favoredIds: number[];
-  favorQueueIds: number[];
-  completedIds: number[];
+  activeId: number | string;
+  favorQueueIds: Array<number | string>;
+  favoredIds?: Array<number | string>;
+  completeQueueIds: Array<number | string>;
+  completedIds?: Array<number | string>;
   displayHandles?: boolean;
   onComplete: (event: EventExploreListItemData) => void;
   onFavor: (event: EventExploreListItemData) => void;
   onShare: (event: EventExploreListItemData) => void;
   onItemClick?: (item: EventExploreListItemData) => void;
 };
+
 export default function EventExploreList({
   data,
   activeId,
-  favoredIds,
   favorQueueIds,
-  completedIds,
+  favoredIds = [],
+  completeQueueIds,
+  completedIds = [],
   displayHandles = true,
   onComplete,
   onFavor,
@@ -36,38 +43,55 @@ export default function EventExploreList({
   onItemClick,
 }: EventExploreListProps) {
   const isFavored = useCallback(
-    (id: number) => favoredIds.includes(id),
+    (item: EventExploreListItemData) =>
+      item.favored || favoredIds.includes(item.id),
     [favoredIds]
   );
   const loadingFavor = useCallback(
-    (id: number) => favorQueueIds.includes(id),
+    (id: number | string) => favorQueueIds.includes(id),
     [favorQueueIds]
   );
   const isCompleted = useCallback(
-    (id: number) => completedIds.includes(id),
+    (item: EventExploreListItemData) =>
+      item.completed || completedIds.includes(item.id),
     [completedIds]
   );
+  const loadingComplete = useCallback(
+    (id: number | string) => completeQueueIds.includes(id),
+    [completeQueueIds]
+  );
+  const transitions = useAnimatedListTransition(data);
+
   return (
     <EventExploreListWrapper>
-      {data.map((item) => (
-        <EventExploreListItem
-          key={item.id}
-          data={item}
-          isActive={item.id === activeId}
-          onComplete={() => onComplete(item)}
-          onShare={() => onShare(item)}
-          onFavor={() => onFavor(item)}
-          displayHandles={
-            item.isDaylight ? false : displayHandles && item.id === activeId
-          }
-          isFavored={isFavored(item.id)}
-          loadingFavor={loadingFavor(item.id)}
-          disabledFavor={isFavored(item.id) || loadingFavor(item.id)}
-          isCompleted={isCompleted(item.id)}
-          disabledComplete={isCompleted(item.id)}
-          onClick={() => onItemClick && onItemClick(item)}
-        />
-      ))}
+      {transitions((styles, item) => {
+        const bgc = styleMaps[item?.platform?.name]?.bgc;
+        return (
+          <AnimatedListItem
+            key={item.id}
+            styles={{ ...styles }}
+            bottomFaceBgc={bgc}
+          >
+            <EventExploreListItem
+              data={item}
+              isActive={item.id === activeId}
+              onComplete={() => onComplete(item)}
+              onShare={() => onShare(item)}
+              onFavor={() => onFavor(item)}
+              displayHandles={
+                item.isDaylight ? false : displayHandles && item.id === activeId
+              }
+              isFavored={isFavored(item)}
+              loadingFavor={loadingFavor(item.id)}
+              disabledFavor={isFavored(item) || loadingFavor(item.id)}
+              isCompleted={isCompleted(item)}
+              loadingComplete={loadingComplete(item.id)}
+              disabledComplete={isCompleted(item) || loadingComplete(item.id)}
+              onClick={() => onItemClick && onItemClick(item)}
+            />
+          </AnimatedListItem>
+        );
+      })}
     </EventExploreListWrapper>
   );
 }

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:59:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-16 10:41:04
+ * @LastEditTime: 2022-12-26 16:07:11
  * @Description: file description
  */
 import React, { useRef } from 'react';
@@ -13,13 +13,15 @@ import { ScrollBarCss } from '../../../GlobalStyle';
 import ChevronDownSvg from '../icons/svgs/chevron-down.svg';
 
 type ValueType = string | number;
-type Option = {
+export type Option = {
   value: ValueType;
   label: string;
 };
 type Props = StyledComponentPropsWithRef<'div'> & {
   value: ValueType;
-  onChange: (value: ValueType) => void;
+  onChange?: (value: ValueType) => void;
+  // eslint-disable-next-line react/no-unused-prop-types
+  onSelectOption?: (option: Option) => void;
   valueField?: string;
   labelField?: string;
   getOptions: (inputValue: string) => Promise<any[]>;
@@ -27,6 +29,7 @@ type Props = StyledComponentPropsWithRef<'div'> & {
 export default function ({
   value,
   onChange,
+  onSelectOption,
   valueField = 'id',
   labelField = 'name',
   getOptions,
@@ -36,6 +39,7 @@ export default function ({
     getOptions(inputValue)
       .then((data) => {
         const options = data.map((item) => ({
+          ...item,
           value: item[valueField],
           label: item[labelField],
         }));
@@ -50,7 +54,14 @@ export default function ({
       <AsyncSelect
         defaultOptions
         value={SelectValue}
-        onChange={(option) => onChange(option.value)}
+        onChange={(option) => {
+          if (onChange) {
+            onChange(option.value);
+          }
+          if (onSelectOption) {
+            onSelectOption(option);
+          }
+        }}
         cacheOptions
         loadOptions={loadOptions}
         className="select-container"

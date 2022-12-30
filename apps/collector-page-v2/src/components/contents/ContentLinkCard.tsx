@@ -1,5 +1,5 @@
-import dayjs from 'dayjs';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import { defaultFormatDate } from '../../utils/time';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import CardBase from '../common/card/CardBase';
 import Tag from '../common/tag/Tag';
@@ -43,7 +43,7 @@ export default function ContentLinkCard({
           <ContentType>{data.type}</ContentType>
           <LayoutText>{data.author}</LayoutText>
           <LayoutText>|</LayoutText>
-          <LayoutText>{dayjs(data.createdAt).format('MMM DD YYYY')}</LayoutText>
+          <LayoutText>{defaultFormatDate(data.createdAt)}</LayoutText>
         </LayoutCenterRow>
       </LayoutCenter>
       {displayVote && (

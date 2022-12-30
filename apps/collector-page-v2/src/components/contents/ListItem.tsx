@@ -1,9 +1,10 @@
-import dayjs from 'dayjs';
 import styled from 'styled-components';
+import { useEffect, useRef, useState } from 'react';
 import { Share } from '../icons/share';
 import { EyeClose } from '../icons/eyeClose';
 import { Heart } from '../icons/heart';
 import Badge from './Badge';
+import { defaultFormatDate } from '../../utils/time';
 
 export default function ListItem({
   isActive,
@@ -16,6 +17,7 @@ export default function ListItem({
   voteAction,
   favorsAction,
   favored,
+  hidden,
   hiddenAction,
   shareAction,
 }: {
@@ -25,6 +27,7 @@ export default function ListItem({
   author: string;
   createdAt: number;
   isActive: boolean;
+  hidden?: boolean;
   clickAction: () => void;
   voteAction?: () => void;
   favorsAction?: () => void;
@@ -32,33 +35,54 @@ export default function ListItem({
   hiddenAction?: () => void;
   shareAction?: () => void;
 }) {
+  const itemRef = useRef<HTMLDivElement>();
+  const [height, setHeight] = useState('fit-content');
+  const [classNames, setClassNames] = useState('');
+  useEffect(() => {
+    if (hidden) {
+      const { clientHeight } = itemRef.current;
+      setHeight(`${clientHeight}px`);
+      setTimeout(() => {
+        setClassNames('active hidden');
+      }, 50);
+    }
+    if (isActive) {
+      setClassNames('active');
+    } else {
+      setClassNames('');
+    }
+  }, [hidden, isActive]);
+
   return (
     <ContentItem
-      className={isActive ? 'active' : ''}
+      ref={itemRef}
+      className={classNames}
       isActive={isActive}
       onClick={clickAction}
+      height={height}
     >
       <p>{title}</p>
       <ContentItemTitle>
         <Badge text={type} />
-        <span>{author}</span>
+        <span className="author">{author}</span>
         <span>|</span>
-        <span>{dayjs(createdAt).format('MMM DD YYYY')}</span>
+        <span>{defaultFormatDate(createdAt)}</span>
       </ContentItemTitle>
 
-      <ContentItemFooter>
-        <span
-          className={isActive ? 'vote' : 'vote active'}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (voteAction) {
-              voteAction();
-            }
-          }}
-        >
-          👏 &nbsp;{upVoteNum}
-        </span>
-        {isActive && (
+      {isActive && (
+        <ContentItemFooter>
+          <span
+            className={isActive ? 'vote' : 'vote active'}
+            onClick={(e) => {
+              e.stopPropagation();
+              if (voteAction) {
+                voteAction();
+              }
+            }}
+          >
+            👏 &nbsp;{upVoteNum}
+          </span>
+
           <span
             onClick={(e) => {
               e.stopPropagation();
@@ -67,8 +91,7 @@ export default function ListItem({
           >
             {favored ? <Heart fill="#718096" /> : <Heart />}
           </span>
-        )}
-        {isActive && (
+
           <span
             onClick={(e) => {
               e.stopPropagation();
@@ -79,8 +102,7 @@ export default function ListItem({
           >
             <EyeClose />
           </span>
-        )}
-        {isActive && (
+
           <span
             onClick={(e) => {
               e.stopPropagation();
@@ -89,24 +111,24 @@ export default function ListItem({
           >
             <Share />
           </span>
-        )}
-      </ContentItemFooter>
+        </ContentItemFooter>
+      )}
     </ContentItem>
   );
 }
 
-export function ListItemHidden({ undoAction }: { undoAction: () => void }) {
-  return (
-    <ContentItem isActive={false}>
-      <div className="tint">
-        😊 Thanks, We will use this to make your list better.{' '}
-        <span onClick={undoAction}>Undo</span>
-      </div>
-    </ContentItem>
-  );
-}
+// export function ListItemHidden({ undoAction }: { undoAction: () => void }) {
+//   return (
+//     <ContentItem isActive={false}>
+//       <div className="tint">
+//         😊 Thanks, We will use this to make your list better.{' '}
+//         <span onClick={undoAction}>Undo</span>
+//       </div>
+//     </ContentItem>
+//   );
+// }
 
-const ContentItem = styled.div<{ isActive: boolean }>`
+const ContentItem = styled.div<{ isActive: boolean; height: string }>`
   line-height: 27px;
   padding: 20px;
   gap: 10px;
@@ -122,6 +144,8 @@ const ContentItem = styled.div<{ isActive: boolean }>`
   }
   &.active {
     background: #14171a;
+    transition: all 0.5s ease-out;
+    height: ${(props) => props.height};
     > p {
       opacity: 1;
     }
@@ -133,6 +157,15 @@ const ContentItem = styled.div<{ isActive: boolean }>`
       position: absolute;
       width: 2px;
       background-color: #ffffff;
+    }
+    &.hidden {
+      font-size: 0;
+      margin-top: 0;
+      margin-bottom: 0;
+      opacity: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      height: 0;
     }
   }
   > p {
@@ -163,11 +196,18 @@ const ContentItemTitle = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 10px 0;
+  margin-top: 10px;
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
   color: #718096;
+
+  & .author {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 `;
 
 const ContentItemFooter = styled.div`
@@ -175,6 +215,7 @@ const ContentItemFooter = styled.div`
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
+  margin-top: 10px;
   color: #718096;
   gap: 10px;
 

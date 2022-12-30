@@ -22,14 +22,33 @@ export class MouseControl extends Control {
     this.init();
   }
 
+  // mousedown 90 155
+  // mousemove 281 196 0 0
+  // 237 237 1 0
+
+  // 87 212
+  // 241 301 0 0
+
+  // 100 265
+  // 252 316 0 0
+
+  // 191 174
+  // 186 339 0 0
+
+  // 255 149
+  // 269 325 0 0
+
+  // 314 137
+  // 300 241 0 1
   public mousedownHandle(event: MouseEvent) {
     event.preventDefault();
+    console.log('mousedown', event.offsetX, event.offsetY);
+
     this.operateStart(event.offsetX, event.offsetY);
   }
 
   public mouseupHandle(event: MouseEvent) {
     event.preventDefault();
-    console.log('mouseup');
 
     this.operateEnd();
   }
@@ -41,6 +60,7 @@ export class MouseControl extends Control {
 
   public mousemoveHandle(event: MouseEvent) {
     event.preventDefault();
+
     this.operateDrag(
       event.offsetX,
       event.offsetY,

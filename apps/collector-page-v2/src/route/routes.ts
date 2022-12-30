@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 17:14:52
+ * @LastEditTime: 2022-12-30 15:50:38
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -25,10 +25,14 @@ export enum RouteKey {
   profileWallet = 'profileWallet',
   noMatch = 'noMatch',
 }
-
+export enum RoutePermission {
+  login = 'login',
+  admin = 'admin',
+}
 export type CutomRouteObject = RouteObject & {
   key: RouteKey;
   children?: Array<CutomRouteObject>;
+  permissions?: RoutePermission[];
 };
 
 const loadContainerElement = (fileName: string): ReactNode => {
@@ -56,6 +60,7 @@ export const routes: CutomRouteObject[] = [
     path: '/events/create',
     element: loadContainerElement('EventCreate'),
     key: RouteKey.eventCreate,
+    permissions: [RoutePermission.login, RoutePermission.admin],
   },
   {
     path: '/projects',
@@ -76,21 +81,25 @@ export const routes: CutomRouteObject[] = [
     path: '/contents/create',
     element: loadContainerElement('ContentCreate'),
     key: RouteKey.contentCreate,
+    permissions: [RoutePermission.login],
   },
   {
     path: '/favorites',
     element: loadContainerElement('Favorites'),
     key: RouteKey.favorites,
+    permissions: [RoutePermission.login],
   },
   {
     path: '/profile',
     element: loadContainerElement('Profile'),
     key: RouteKey.profile,
+    permissions: [RoutePermission.login],
   },
   {
     path: '/profile/:wallet',
     element: loadContainerElement('Profile'),
     key: RouteKey.profileWallet,
+    permissions: [RoutePermission.login],
   },
   {
     path: '/frens',
@@ -98,20 +107,6 @@ export const routes: CutomRouteObject[] = [
     key: RouteKey.frens,
   },
   NoMatchRoute,
-];
-
-// 需要登录权限的路由
-export const permissionLoginRouteKeys = [
-  RouteKey.profile,
-  RouteKey.favorites,
-  RouteKey.contentCreate,
-  RouteKey.eventCreate,
-];
-
-// 需要admin权限的路由
-export const permissionAdminRouteKeys = [
-  RouteKey.eventCreate,
-  RouteKey.contentCreate,
 ];
 
 export const getRoute = (key: RouteKey): CutomRouteObject | undefined => {

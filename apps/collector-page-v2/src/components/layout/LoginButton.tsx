@@ -2,38 +2,28 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 14:36:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-15 18:18:48
+ * @LastEditTime: 2022-12-30 12:03:21
  * @Description: file description
  */
-import {
-  AuthorizerType,
-  UserAvatar,
-  useWlUserReact,
-  WlUserActionType,
-  WlUserModalType,
-} from '@ecnft/wl-user-react';
+import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
 import styled from 'styled-components';
+import useLogin from '../../hooks/useLogin';
 import LogoutSvg from '../common/icons/svgs/logout.svg';
-// TODO 后期从wl-user-react中导出
-import { getUserDisplayName } from '../../utils/wlUserReact';
 
-export default function LoginButton() {
-  const { authorizer, user, isLogin, dispatchModal, dispatchAction } =
-    useWlUserReact();
+type Props = {
+  onlyIcon?: boolean;
+};
+export default function LoginButton({ onlyIcon }: Props) {
+  const { authorizer, user, isLogin, login, logout } = useLogin();
   const nameStr = authorizer && getUserDisplayName(user, authorizer);
   return (
     <LoginButtonWrapper
+      hiddenStyle={onlyIcon}
       onClick={() => {
         if (!isLogin) {
-          // dispatchModal({
-          //   type: WlUserModalType.LOGIN,
-          // });
-          dispatchAction({
-            type: WlUserActionType.LOGIN,
-            payload: AuthorizerType.EVM_WALLET_KIT,
-          });
+          login();
         } else {
-          dispatchAction({ type: WlUserActionType.LOGOUT });
+          logout();
         }
       }}
     >
@@ -41,10 +31,14 @@ export default function LoginButton() {
         {isLogin ? (
           <>
             <LoginButtonAvatar className="wl-user-button_login-avatar" />
-            <LoginButtonName className="wl-user-button_login-name">
-              {nameStr}
-            </LoginButtonName>
-            <LogoutIconButton src={LogoutSvg} />
+            {!onlyIcon && (
+              <>
+                <LoginButtonName className="wl-user-button_login-name">
+                  {nameStr}
+                </LoginButtonName>
+                <LogoutIconButton src={LogoutSvg} />
+              </>
+            )}
           </>
         ) : (
           <LoginButtonName className="wl-user-button_login-name">
@@ -56,7 +50,7 @@ export default function LoginButton() {
   );
 }
 
-const LoginButtonWrapper = styled.div`
+const LoginButtonWrapper = styled.div<{ hiddenStyle?: boolean }>`
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
@@ -71,6 +65,13 @@ const LoginButtonWrapper = styled.div`
   border: 1px solid #39424c;
   border-radius: 12px;
   cursor: pointer;
+  ${({ hiddenStyle }) =>
+    hiddenStyle &&
+    `
+    padding: 0;
+    border: none;
+  `}
+  transition: all 0.3s ease-out;
 `;
 const LoginButtonBody = styled.div`
   display: flex;

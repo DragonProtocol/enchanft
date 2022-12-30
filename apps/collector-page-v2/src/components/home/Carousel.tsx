@@ -4,7 +4,10 @@ import TextTransition, { presets } from 'react-text-transition';
 import Rubiks from '../magic-kube/rubiks/index';
 
 import CarouselBg from '../imgs/carousel-bg.png';
-import MagicCubeImg from '../imgs/magic-cube.png';
+import InstallU3ExtensionButton from '../business/button/InstallU3ExtensionButton';
+import CloseSvg from '../common/icons/svgs/close.svg';
+import { useAppDispatch } from '../../store/hooks';
+import { setHomeBannerHidden } from '../../features/website/websiteSlice';
 
 const TEXTS = [
   'Identity',
@@ -20,6 +23,7 @@ const TEXTS = [
 ];
 
 export default function Carousel() {
+  const dispatch = useAppDispatch();
   const [index, setIndex] = useState(0);
   useEffect(() => {
     const intervalId = setInterval(
@@ -38,15 +42,15 @@ export default function Carousel() {
   return (
     <Box>
       <div className="info">
-        <h2>Your Data,</h2>
-        <h2>Your Content,</h2>
-        <h2> Your Web3.</h2>
+        <h2>Your Data, Your Content, Your Web3.</h2>
         <div>
           Hub For Your Self Sovereign Data and
           <TextTransition springConfig={presets.wobbly}>
             {TEXTS[index % TEXTS.length]}
           </TextTransition>
         </div>
+        <ExtensionButton />
+
         {/* <div>
           <span>Badge</span>
           <span>Token</span>
@@ -63,12 +67,16 @@ export default function Carousel() {
       <div className="magic-cube" id="magic-cube-container">
         {/* <img src={MagicCubeImg} alt="" /> */}
       </div>
+
+      <CloseButton onClick={() => dispatch(setHomeBannerHidden())}>
+        <img src={CloseSvg} alt="" />
+      </CloseButton>
     </Box>
   );
 }
 
 const Box = styled.div`
-  height: 400px;
+  height: 300px;
   display: flex;
   position: relative;
   background: linear-gradient(
@@ -77,14 +85,15 @@ const Box = styled.div`
     rgba(14, 10, 17, 0.8)
   );
   background-image: url(${CarouselBg});
+  background-size: cover;
+  background-repeat: no-repeat;
   border-radius: 20px;
+  padding: 60px;
+  box-sizing: border-box;
 
   & .info {
-    margin-left: 80px;
-    margin-top: 87px;
-
     > h2 {
-      font-style: italic;
+      /* font-style: italic; */
       font-weight: 700;
       font-size: 40px;
       line-height: 47px;
@@ -141,8 +150,26 @@ const Box = styled.div`
 
   & .magic-cube {
     position: absolute;
+    top: 0;
     right: 60px;
-    width: 400px;
-    height: 400px;
+    width: 300px;
+    height: 300px;
   }
+`;
+
+const ExtensionButton = styled(InstallU3ExtensionButton)`
+  margin-top: 40px;
+`;
+const CloseButton = styled.div`
+  width: 30px;
+  height: 30px;
+  background: rgba(20, 23, 26, 0.5);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
 `;

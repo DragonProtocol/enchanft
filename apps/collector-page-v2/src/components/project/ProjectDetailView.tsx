@@ -2,11 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 16:48:26
+ * @LastEditTime: 2022-12-27 18:55:04
  * @Description: file description
  */
 import styled from 'styled-components';
+import { useCallback } from 'react';
 import type {
+  ProjectExploreListItemContentResponse,
   ProjectExploreListItemEventResponse,
   ProjectExploreListItemResponse,
 } from '../../services/types/project';
@@ -15,21 +17,38 @@ import TwitterSvg from '../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../common/icons/svgs/discord.svg';
 import ContentLinkCard from '../contents/ContentLinkCard';
 import { ContentListItem } from '../contents/ContentList';
+import ProjectImgDefault from './ProjectImgDefault';
 
 export type ProjectDetailCardProps = {
   data: ProjectExploreListItemResponse;
-  completedEventIds: number[];
+  eventCompletedIds?: Array<number | string>;
+  eventCompleteQueueIds: Array<number | string>;
   onEventComplete?: (event: ProjectExploreListItemEventResponse) => void;
-  currentVotedContentIds: number[];
+  contentVotedIds: Array<number | string>;
   onContentVote: (content: ContentListItem) => void;
 };
 export default function ProjectDetailCard({
   data,
-  completedEventIds,
+  eventCompletedIds = [],
+  eventCompleteQueueIds,
   onEventComplete,
-  currentVotedContentIds,
+  contentVotedIds,
   onContentVote,
 }: ProjectDetailCardProps) {
+  const isCompletedEvent = useCallback(
+    (item: ProjectExploreListItemEventResponse) =>
+      item.completed || eventCompletedIds.includes(item.id),
+    [eventCompletedIds]
+  );
+  const loadingComplete = useCallback(
+    (id: number | string) => eventCompleteQueueIds.includes(id),
+    [eventCompleteQueueIds]
+  );
+  const isVotedContent = useCallback(
+    (item: ProjectExploreListItemContentResponse) =>
+      item.upVoted || contentVotedIds.includes(item.id),
+    [contentVotedIds]
+  );
   return (
     <ProjectDetailCardWrapper>
       <LayoutHeader>
@@ -61,8 +80,9 @@ export default function ProjectDetailCard({
               key={item.id}
               data={item}
               onComplete={() => onEventComplete && onEventComplete(item)}
-              disabledComplete={completedEventIds.includes(item.id)}
-              isCompleted={completedEventIds.includes(item.id)}
+              disabledComplete={isCompletedEvent(item)}
+              isCompleted={isCompletedEvent(item)}
+              loadingComplete={loadingComplete(item.id)}
             />
           ))}
         {data.contents &&
@@ -71,9 +91,7 @@ export default function ProjectDetailCard({
               key={item.id}
               data={item}
               onVote={() => onContentVote(item)}
-              disabledVote={
-                item.upVoted || currentVotedContentIds.includes(item.id)
-              }
+              disabledVote={isVotedContent(item)}
             />
           ))}
       </LayoutMain>
@@ -95,7 +113,7 @@ const LayoutHeaderLeft = styled.div`
   align-items: center;
   flex-shrink: 0;
 `;
-const ProjectImg = styled.img`
+const ProjectImg = styled(ProjectImgDefault)`
   width: 120px;
   height: 120px;
   border-radius: 50%;
