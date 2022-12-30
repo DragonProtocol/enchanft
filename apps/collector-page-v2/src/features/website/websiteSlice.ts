@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 19:13:18
+ * @LastEditTime: 2022-12-30 18:51:51
  * @Description: 站点的配置
  */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -11,6 +11,10 @@ import {
   setEventCompleteGuideEndToStore,
   verifyEventCompleteGuideEndByStore,
 } from '../../utils/event';
+import {
+  setHomeBannerHiddenToStore,
+  verifyHomeBannerHiddenByStore,
+} from '../../utils/homeStore';
 
 type WebsiteState = {
   mobileNavDisplay: boolean;
@@ -18,6 +22,7 @@ type WebsiteState = {
   eventCompleteGuideEnd: boolean;
   openEventCompleteGuideModal: boolean;
   eventCompleteGuideEndCallback: () => void;
+  homeBannerDisplay: boolean;
 };
 
 // 站点状态信息
@@ -27,6 +32,7 @@ const websiteState: WebsiteState = {
   eventCompleteGuideEnd: verifyEventCompleteGuideEndByStore(),
   openEventCompleteGuideModal: false,
   eventCompleteGuideEndCallback: () => {},
+  homeBannerDisplay: !verifyHomeBannerHiddenByStore(),
 };
 
 export const websiteSlice = createSlice({
@@ -53,6 +59,10 @@ export const websiteSlice = createSlice({
     ) => {
       state.eventCompleteGuideEndCallback = action.payload;
     },
+    setHomeBannerHidden: (state) => {
+      state.homeBannerDisplay = false;
+      setHomeBannerHiddenToStore();
+    },
   },
 });
 
@@ -63,6 +73,7 @@ export const {
   setEventCompleteGuideEnd,
   setOpenEventCompleteGuideModal,
   setEventCompleteGuideEndCallback,
+  setHomeBannerHidden,
 } = actions;
 export const selectWebsite = (state: RootState) => state.website;
 export default reducer;

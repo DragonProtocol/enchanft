@@ -5,6 +5,9 @@ import Rubiks from '../magic-kube/rubiks/index';
 
 import CarouselBg from '../imgs/carousel-bg.png';
 import InstallU3ExtensionButton from '../business/button/InstallU3ExtensionButton';
+import CloseSvg from '../common/icons/svgs/close.svg';
+import { useAppDispatch } from '../../store/hooks';
+import { setHomeBannerHidden } from '../../features/website/websiteSlice';
 
 const TEXTS = [
   'Identity',
@@ -20,6 +23,7 @@ const TEXTS = [
 ];
 
 export default function Carousel() {
+  const dispatch = useAppDispatch();
   const [index, setIndex] = useState(0);
   useEffect(() => {
     const intervalId = setInterval(
@@ -38,7 +42,7 @@ export default function Carousel() {
   return (
     <Box>
       <div className="info">
-        <h2>Your Data,Your Content,Your Web3.</h2>
+        <h2>Your Data, Your Content, Your Web3.</h2>
         <div>
           Hub For Your Self Sovereign Data and
           <TextTransition springConfig={presets.wobbly}>
@@ -63,6 +67,10 @@ export default function Carousel() {
       <div className="magic-cube" id="magic-cube-container">
         {/* <img src={MagicCubeImg} alt="" /> */}
       </div>
+
+      <CloseButton onClick={() => dispatch(setHomeBannerHidden())}>
+        <img src={CloseSvg} alt="" />
+      </CloseButton>
     </Box>
   );
 }
@@ -85,7 +93,7 @@ const Box = styled.div`
 
   & .info {
     > h2 {
-      font-style: italic;
+      /* font-style: italic; */
       font-weight: 700;
       font-size: 40px;
       line-height: 47px;
@@ -151,4 +159,17 @@ const Box = styled.div`
 
 const ExtensionButton = styled(InstallU3ExtensionButton)`
   margin-top: 40px;
+`;
+const CloseButton = styled.div`
+  width: 30px;
+  height: 30px;
+  background: rgba(20, 23, 26, 0.5);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
 `;

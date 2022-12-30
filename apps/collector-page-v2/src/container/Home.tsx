@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 18:06:07
+ * @LastEditTime: 2022-12-30 19:00:21
  * @Description: file description
  */
 
@@ -17,6 +17,7 @@ import Platform from '../components/home/Platform';
 import RecommendContent from '../components/home/RecommendContent';
 import RecommendEvents from '../components/home/RecommendEvents';
 import { MainWrapper } from '../components/layout/Index';
+import { selectWebsite } from '../features/website/websiteSlice';
 import {
   getPlatforms,
   getTrendingProjects,
@@ -27,8 +28,10 @@ import { ContentListItem } from '../services/types/contents';
 import { EventExploreListItemResponse } from '../services/types/event';
 import { PlatformData } from '../services/types/home';
 import { ProjectExploreListItemResponse } from '../services/types/project';
+import { useAppSelector } from '../store/hooks';
 
 function Home() {
+  const { homeBannerDisplay } = useAppSelector(selectWebsite);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [platforms, setPlatforms] = useState<Array<PlatformData>>([]);
@@ -69,7 +72,7 @@ function Home() {
 
   return (
     <HomeWrapper>
-      <Carousel />
+      {homeBannerDisplay && <Carousel />}
       {(loading && (
         <div className="loading">
           <Loading />
@@ -108,7 +111,6 @@ function Home() {
           />
         </>
       )}
-      <br />
     </HomeWrapper>
   );
 }
