@@ -2,75 +2,156 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 18:17:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 15:35:56
+ * @LastEditTime: 2022-12-30 15:20:40
  * @Description: file description
  */
-import { useCallback, useState } from 'react';
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { navs } from '../../route/nav';
+import { CutomNavObject, navs } from '../../route/nav';
 import useRoute from '../../route/useRoute';
 
-export default function Nav() {
+type Props = {
+  onlyIcon?: boolean;
+};
+
+export default function Nav({ onlyIcon }: Props) {
+  const { isLogin } = useWlUserReact();
+  const { isAdmin } = usePermissions();
   const navigate = useNavigate();
   const { firstRouteMeta } = useRoute();
-  const [openGroupKeys, setOpenGroupKeys] = useState<Array<string>>(['Feed']);
+  const [openGroupKeys, setOpenGroupKeys] = useState<Array<string>>([
+    'feed',
+    'feed-submit',
+  ]);
   const handleGroupClick = useCallback(
-    (name: string) => {
-      if (openGroupKeys.includes(name)) {
-        setOpenGroupKeys([...openGroupKeys.filter((item) => item !== name)]);
+    (key: string) => {
+      if (openGroupKeys.includes(key)) {
+        setOpenGroupKeys([...openGroupKeys.filter((item) => item !== key)]);
       } else {
-        setOpenGroupKeys([...openGroupKeys, name]);
+        setOpenGroupKeys([...openGroupKeys, key]);
       }
     },
     [openGroupKeys, setOpenGroupKeys]
   );
+  const navItemIsActive = useCallback(
+    (nav: CutomNavObject) => nav.activeRouteKeys.includes(firstRouteMeta.key),
+    [firstRouteMeta]
+  );
+
+  const groupChidrenInnerEls = useRef(new WeakMap());
+  const navItemTextInnerEls = useRef(new WeakMap());
+  const renderNavItemText = useCallback(
+    (nav: CutomNavObject) => {
+      if (navItemTextInnerEls.current.has(nav)) {
+        const innerEl = navItemTextInnerEls.current.get(nav);
+        innerEl.parentElement.style.width = onlyIcon
+          ? '0px'
+          : `${innerEl.scrollWidth}px`;
+      }
+      return (
+        <PcNavItemTextBox>
+          <PcNavItemTextInner
+            ref={(el) => {
+              if (el) {
+                navItemTextInnerEls.current.set(nav, el);
+              }
+            }}
+          >
+            {nav.name}
+          </PcNavItemTextInner>
+        </PcNavItemTextBox>
+      );
+    },
+    [onlyIcon]
+  );
+  const renderNavItem = useCallback(
+    (nav: CutomNavObject) => {
+      const isActive = navItemIsActive(nav);
+      return (
+        <PcNavItem
+          key={nav.route.path}
+          isActive={isActive}
+          onClick={() => navigate(nav.route.path)}
+        >
+          <PcNavItemIconBox isActive={isActive}>
+            {nav.icon && <nav.icon />}
+          </PcNavItemIconBox>
+          {renderNavItemText(nav)}
+        </PcNavItem>
+      );
+    },
+    [navItemIsActive, onlyIcon]
+  );
   return (
     <NavWrapper>
-      {navs.map((item) =>
-        item.navs ? (
-          <PcNavGroupBox key={item.name}>
-            <PcNavItem
-              isActive={false}
-              onClick={() => handleGroupClick(item.name)}
-            >
-              <PcNavItemIcon src={item.iconUrl} />
-              <PcNavItemText>{item.name}</PcNavItemText>
-            </PcNavItem>
-            {openGroupKeys.includes(item.name) &&
-              item.navs.map((nav) => (
-                <PcNavItem
-                  key={nav.link}
-                  isActive={nav.activeRouteKeys.includes(firstRouteMeta.key)}
-                  onClick={() => navigate(nav.link)}
+      {navs.map((item) => {
+        // feed submit 特殊处理
+        if (item.key === 'feed-submit') {
+          // 未登录不显示
+          if (!isLogin) return null;
+          // 如果不是admin只显示submit content
+          if (!isAdmin) {
+            return renderNavItem(item);
+          }
+        }
+        if (item.children) {
+          const groupIsOpen = openGroupKeys.includes(item.key);
+          const childrenHasActive = !!item.children.find((nav) =>
+            navItemIsActive(nav)
+          );
+          const groupIsActive = onlyIcon
+            ? childrenHasActive
+            : groupIsOpen
+            ? false
+            : childrenHasActive;
+
+          if (groupChidrenInnerEls.current.has(item)) {
+            const innerEl = groupChidrenInnerEls.current.get(item);
+            innerEl.parentElement.style.height =
+              onlyIcon || !groupIsOpen ? '0px' : `${innerEl.offsetHeight}px`;
+          }
+          return (
+            <PcNavGroupBox key={item.name}>
+              <PcNavItem
+                isActive={groupIsActive}
+                onClick={() => handleGroupClick(item.key)}
+              >
+                <PcNavItemIconBox isActive={groupIsActive}>
+                  <item.icon />
+                </PcNavItemIconBox>
+                {renderNavItemText(item)}
+              </PcNavItem>
+              <GroupChildrenBox>
+                <GroupChildrenInner
+                  ref={(el) => {
+                    if (el) {
+                      groupChidrenInnerEls.current.set(item, el);
+                    }
+                  }}
                 >
-                  <PcNavItemIconBox />
-                  <PcNavItemText>{nav.name}</PcNavItemText>
-                </PcNavItem>
-              ))}
-          </PcNavGroupBox>
-        ) : (
-          <PcNavItem
-            key={item.link}
-            isActive={item.activeRouteKeys.includes(firstRouteMeta.key)}
-            onClick={() => navigate(item.link)}
-          >
-            <PcNavItemIcon src={item.iconUrl} />
-            <PcNavItemText>{item.name}</PcNavItemText>
-          </PcNavItem>
-        )
-      )}
+                  {item.children.map((nav) => renderNavItem(nav))}
+                </GroupChildrenInner>
+              </GroupChildrenBox>
+            </PcNavGroupBox>
+          );
+        }
+        return renderNavItem(item);
+      })}
     </NavWrapper>
   );
 }
 const NavWrapper = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  transition: all 0.3s ease-out;
 `;
 const PcNavItem = styled.div<{ isActive: boolean }>`
+  overflow: hidden;
+  height: 40px;
   font-weight: 400;
   font-size: 16px;
   line-height: 19px;
@@ -92,16 +173,35 @@ const PcNavItem = styled.div<{ isActive: boolean }>`
       opacity: 0.8;
     `};
   }
+  transition: all 0.3s ease-out;
 `;
-const PcNavItemIconBox = styled.div`
+const PcNavItemIconBox = styled.div<{ isActive?: boolean }>`
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
+  ${({ isActive }) =>
+    isActive &&
+    `
+    path {
+      stroke: #fff;
+      transition: all 0.3s ease-out;
+    }
+  `}
+  transition: all 0.3s ease-out;
 `;
-const PcNavItemIcon = styled.img`
-  width: 16px;
-  height: 16px;
+const PcNavItemTextBox = styled.div`
+  overflow: hidden;
+  transition: all 0.5s ease-out;
 `;
-const PcNavItemText = styled.span``;
+const PcNavItemTextInner = styled.div`
+  white-space: nowrap;
+`;
 const PcNavGroupBox = styled.div`
+  max-height: 100vh;
   transition: height 1s;
 `;
+const GroupChildrenBox = styled.div`
+  overflow: hidden;
+  transition: all 0.5s ease-out;
+`;
+const GroupChildrenInner = styled.div``;

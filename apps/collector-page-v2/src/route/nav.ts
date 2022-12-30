@@ -2,85 +2,89 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 13:59:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 16:26:40
+ * @LastEditTime: 2022-12-30 11:59:55
  * @Description: file description
  */
-import HomeSvg from '../components/common/icons/svgs/home.svg';
-import ProfileSvg from '../components/common/icons/svgs/profile.svg';
-import FeedSvg from '../components/common/icons/svgs/feed.svg';
-import LikeSvg from '../components/common/icons/svgs/like.svg';
-import { getRoute, RouteKey } from './routes';
+import { ReactComponent as HomeSvg } from '../components/common/icons/svgs/home.svg';
+import { ReactComponent as ProfileSvg } from '../components/common/icons/svgs/profile.svg';
+import { ReactComponent as FeedSvg } from '../components/common/icons/svgs/feed.svg';
+import { ReactComponent as LikeSvg } from '../components/common/icons/svgs/like.svg';
+import { ReactComponent as PlusSquareSvg } from '../components/common/icons/svgs/plus-square.svg';
+
+import { CutomRouteObject, getRoute, RouteKey } from './routes';
 
 export type CutomNavObject = {
   name: string;
-  link: string;
   activeRouteKeys: RouteKey[];
-  iconUrl?: string;
-  navs?: CutomNavObject[];
+  icon?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  children?: CutomNavObject[];
+  key?: string;
+  route?: CutomRouteObject;
 };
 export const navs: CutomNavObject[] = [
   {
     name: 'home',
-    link: getRoute(RouteKey.home).path,
     activeRouteKeys: [RouteKey.home],
-    iconUrl: HomeSvg,
+    icon: HomeSvg,
+    route: getRoute(RouteKey.home),
   },
   {
     name: 'profile',
-    link: getRoute(RouteKey.profile).path,
     activeRouteKeys: [RouteKey.profile],
-    iconUrl: ProfileSvg,
+    icon: ProfileSvg,
+    route: getRoute(RouteKey.profile),
   },
   {
+    key: 'feed',
     name: 'Feed',
-    iconUrl: FeedSvg,
-    link: '',
+    icon: FeedSvg,
     activeRouteKeys: [],
-    navs: [
+    children: [
       {
         name: 'events',
-        link: getRoute(RouteKey.events).path,
         activeRouteKeys: [RouteKey.events, RouteKey.event],
+        route: getRoute(RouteKey.events),
       },
       {
         name: 'contents',
-        link: getRoute(RouteKey.contents).path,
         activeRouteKeys: [RouteKey.contents, RouteKey.content],
+        route: getRoute(RouteKey.contents),
       },
       {
         name: 'frens',
-        link: getRoute(RouteKey.frens).path,
         activeRouteKeys: [RouteKey.frens, RouteKey.frens],
+        route: getRoute(RouteKey.frens),
       },
       {
         name: 'projects',
-        link: getRoute(RouteKey.projects).path,
         activeRouteKeys: [RouteKey.projects, RouteKey.project],
+        route: getRoute(RouteKey.projects),
       },
     ],
   },
   {
     name: 'favorite',
-    link: getRoute(RouteKey.favorites).path,
     activeRouteKeys: [RouteKey.favorites],
-    iconUrl: LikeSvg,
+    icon: LikeSvg,
+    route: getRoute(RouteKey.favorites),
   },
-];
-
-export type CutomSubmitNavObject = {
-  name: string;
-  link: string;
-  activeRouteKeys: RouteKey[];
-};
-export const submitNavs: CutomNavObject[] = [
   {
-    name: 'submit content',
-    link: getRoute(RouteKey.contentCreate).path,
+    key: 'feed-submit',
+    name: 'Submit',
+    icon: PlusSquareSvg,
     activeRouteKeys: [RouteKey.contentCreate],
-  },
-  {
-    name: 'submit event',
-    link: getRoute(RouteKey.eventCreate).path,
-    activeRouteKeys: [RouteKey.eventCreate],
+    route: getRoute(RouteKey.contentCreate),
+    children: [
+      {
+        name: 'content',
+        activeRouteKeys: [RouteKey.contentCreate],
+        route: getRoute(RouteKey.contentCreate),
+      },
+      {
+        name: 'event',
+        activeRouteKeys: [RouteKey.eventCreate],
+        route: getRoute(RouteKey.eventCreate),
+      },
+    ],
   },
 ];

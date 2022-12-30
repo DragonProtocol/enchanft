@@ -76,6 +76,8 @@ const Box = styled.div`
     rgba(14, 10, 17, 0.8)
   );
   background-image: url(${CarouselBg});
+  background-size: cover;
+  background-repeat: no-repeat;
   border-radius: 20px;
 
   & .info {
