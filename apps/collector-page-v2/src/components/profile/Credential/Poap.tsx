@@ -54,6 +54,7 @@ const ContentBox = styled.div`
   padding: 20px;
   .data {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
     margin-top: 20px;
     /* height: 258px; */

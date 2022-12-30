@@ -205,6 +205,8 @@ const ContentItemTitle = styled.div`
   & .author {
     max-width: 150px;
     overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 

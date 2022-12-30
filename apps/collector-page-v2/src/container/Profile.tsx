@@ -18,11 +18,16 @@ import OnChainInterest, {
 } from '../components/profile/OnChainInterest';
 import OffChainInterest from '../components/profile/OffChainInterest';
 import {
+  addOrDelWallet,
   fetchU3Profile,
+  fetchU3Profiles,
   fetchU3ProfileWithWallet,
+  fetchU3Wallets,
+  ProfileDefault,
 } from '../services/api/profile';
-import { ProfileEntity } from '../services/types/profile';
+import { ProfileEntity, ProfileWallet } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
+import { mergeProfilesData } from '../utils/mergeProfilesData';
 
 function Profile() {
   const { wallet } = useParams();
@@ -32,15 +37,30 @@ function Profile() {
   );
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileEntity>();
+  const [wallets, setWallets] = useState<ProfileWallet[]>([]);
 
   const fetchData = useCallback(async () => {
     try {
-      const { data } = await fetchU3Profile(user.token);
-      setProfileData(data.data);
+      const { data } = await fetchU3Profiles(user.token);
+      console.log(data.data);
+      const r = mergeProfilesData(data.data);
+      console.log(r);
+      setProfileData(r);
+      // setProfileData(data.data);
     } catch (error) {
+      setProfileData(ProfileDefault);
       toast.error(error.message);
     } finally {
       setLoading(false);
+    }
+  }, [user.token]);
+
+  const fetchWallets = useCallback(async () => {
+    try {
+      const { data } = await fetchU3Wallets(user.token);
+      setWallets(data.data);
+    } catch (error) {
+      toast.error(error.message);
     }
   }, [user.token]);
 
@@ -49,17 +69,46 @@ function Profile() {
       const { data } = await fetchU3ProfileWithWallet(wallet);
       setProfileData(data.data);
     } catch (error) {
+      setProfileData(ProfileDefault);
       toast.error(error.message);
     } finally {
       setLoading(false);
     }
   }, [wallet]);
 
+  const addOrRemoveWallet = useCallback(
+    async (addr: string, add: boolean) => {
+      try {
+        await addOrDelWallet(addr, add, user.token);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    },
+    [user.token]
+  );
+
+  const addWallet = useCallback(
+    async (addr: string) => {
+      await addOrRemoveWallet(addr, true);
+      await fetchWallets();
+      return true;
+    },
+    [user.token]
+  );
+  const delWallet = useCallback(
+    async (addr: string) => {
+      await addOrRemoveWallet(addr, false);
+      await fetchWallets();
+    },
+    [user.token]
+  );
+
   useEffect(() => {
     if (wallet) {
       fetchDataWithWallet();
     } else {
       fetchData();
+      fetchWallets();
     }
   }, [fetchData, fetchDataWithWallet, wallet]);
 
@@ -73,10 +122,13 @@ function Profile() {
                 date: (user as any).createdAt,
                 nickname: user.name,
                 avatar: user.avatar,
+                wallets,
                 walletAddr:
                   user.accounts[0]?.thirdpartyName ||
                   user.accounts[0]?.thirdpartyId,
               }}
+              addWallet={addWallet}
+              delWallet={delWallet}
             />
             <DailyDigest />
           </div>

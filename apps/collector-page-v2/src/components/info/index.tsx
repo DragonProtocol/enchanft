@@ -8,26 +8,36 @@ import {
 } from '@ecnft/wl-user-react';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
+import { useState } from 'react';
 import { sortPubKey } from '../../utils/solana';
 import { Copy } from '../icons/copy';
-import { Discord } from '../icons/discord';
-import { Twitter } from '../icons/twitter';
+
 import { Refresh } from '../icons/refresh';
 import { Edit } from '../icons/edit';
 import IconTwitter from '../common/icons/IconTwitter';
 import IconDiscord from '../common/icons/IconDiscord';
+import WalletList from './WalletList';
+import AddWalletModal from './AddWalletModal';
+import { ProfileWallet } from '../../services/types/profile';
 
 export default function Info({
   nickname,
   walletAddr,
   avatar,
   date,
+  wallets,
+  addWallet,
+  delWallet,
 }: {
   nickname: string;
   walletAddr: string;
   avatar: string;
   date: number;
+  wallets: ProfileWallet[];
+  delWallet: (addr: string) => void;
+  addWallet: (addr: string) => Promise<boolean>;
 }) {
+  const [showAddModal, setShowAddModal] = useState(false);
   const { dispatchModal, user, authorizer, getBindAccount } = useWlUserReact();
   const nameStr = getUserDisplayName(user, authorizer);
   const twitterAccount = getBindAccount(AccountType.TWITTER);
@@ -49,9 +59,22 @@ export default function Info({
         <div className="info">
           <div className="nickname">
             <span className="name">{nameStr}</span>
-            <span className="share">
-              <Refresh />
-            </span>
+            <div className="wallet">
+              <WalletList
+                currAddr={walletAddr}
+                wallets={[{ wallet: walletAddr, chain: 'eth' }, ...wallets]}
+                addAction={() => {
+                  setShowAddModal(true);
+                }}
+                delAction={(addr) => {
+                  if (addr === walletAddr) return;
+                  delWallet(addr);
+                }}
+              />
+              <span className="share">
+                <Refresh />
+              </span>
+            </div>
           </div>
           <div className="addr">
             <span>{sortPubKey(walletAddr || '', 10)}</span>
@@ -59,10 +82,10 @@ export default function Info({
               className="copy"
               onClick={() => {
                 navigator.clipboard.writeText(walletAddr).then(
-                  function () {
+                  () => {
                     toast.success('copied');
                   },
-                  function (err) {
+                  (err) => {
                     console.error('Async: Could not copy text: ', err);
                   }
                 );
@@ -107,6 +130,19 @@ export default function Info({
           </div>
         </div>
       </div>
+      <AddWalletModal
+        show={showAddModal}
+        closeModal={() => {
+          setShowAddModal(false);
+        }}
+        confirmAction={async (addr) => {
+          const r = await addWallet(addr);
+          if (r) {
+            setShowAddModal(false);
+          }
+          return r;
+        }}
+      />
     </InfoBox>
   );
 }
@@ -170,6 +206,14 @@ const InfoBox = styled.div`
           line-height: 28px;
 
           color: #ffffff;
+        }
+      }
+
+      & .wallet {
+        display: flex;
+        gap: 20px;
+        & > div {
+          margin-top: -8px;
         }
       }
     }

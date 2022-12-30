@@ -50,7 +50,7 @@ export type GalxeDataListItem = {
 };
 
 export type GalxeData = {
-  addressInfo: {
+  addressInfo?: {
     nfts: {
       totalCount: number;
       pageInfo: {
@@ -77,7 +77,7 @@ export type NooxDataListItem = {
   transaction_index: number;
   log_index: number;
   uri: string;
-  uriMetaData: {
+  uriMetaData?: {
     name: string;
     description: string;
     description_eligibility: string;
@@ -142,3 +142,11 @@ export type ProfileEntity = {
   nfts: NFTData;
 };
 export type ProfileResponse = ApiResp<ProfileEntity>;
+
+type ProfilesEntity = { data: ProfileEntity; wallet: string; chain: string };
+export type ProfilesResponse = ApiResp<ProfilesEntity[]>;
+
+export type ProfileWallet = {
+  chain: string; // 'eth'
+  wallet: string;
+};

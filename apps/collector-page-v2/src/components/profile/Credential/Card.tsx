@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import {
   GalxeDataListItem,
@@ -13,13 +13,37 @@ export function NooxCard({
   data: NooxDataListItem;
   oatAction: () => void;
 }) {
+  const videoEl = useRef<HTMLVideoElement>(null);
+
+  const attemptPlay = () => {
+    if (videoEl && videoEl.current) {
+      videoEl.current.play().catch((error) => {
+        console.error('Error attempting to play', error);
+      });
+    }
+  };
+
+  useEffect(() => {
+    attemptPlay();
+  }, []);
+
   const img = useMemo(() => {
-    return data?.uriMetaData.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
-  }, [data?.uriMetaData.image]);
+    if (data.uriMetaData) {
+      return data?.uriMetaData.image.replace(
+        'ipfs://',
+        'https://ipfs.io/ipfs/'
+      );
+    }
+    return '';
+  }, [data?.uriMetaData?.image]);
 
   return (
     <Box>
-      <img src={img} alt="" />
+      {img.endsWith('mp4') ? (
+        <video src={img} autoPlay loop ref={videoEl} />
+      ) : (
+        <img src={img} alt="" />
+      )}
       <div className="hover">
         <button type="button" onClick={oatAction}>
           Get The OAT
@@ -76,9 +100,27 @@ export function GalxeCard({
   data: GalxeDataListItem;
   oatAction: () => void;
 }) {
+  const videoEl = useRef<HTMLVideoElement>(null);
+
+  const attemptPlay = () => {
+    if (videoEl && videoEl.current) {
+      videoEl.current.play().catch((error) => {
+        console.error('Error attempting to play', error);
+      });
+    }
+  };
+
+  useEffect(() => {
+    attemptPlay();
+  }, []);
+
   return (
     <CircleCardBox>
-      <img src={data?.image} alt="" />
+      {data?.image.endsWith('mp4') ? (
+        <video src={data?.image} autoPlay loop ref={videoEl} />
+      ) : (
+        <img src={data?.image} alt="" />
+      )}
       <div className="hover">
         <button type="button" onClick={oatAction}>
           Get The OAT
@@ -173,6 +215,10 @@ const CircleCardBox = styled.div`
   img {
     width: 100%;
     height: 100%;
+  }
+
+  video {
+    width: 100%;
   }
 
   .hover {
