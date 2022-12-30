@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-28 11:39:00
+ * @LastEditTime: 2022-12-30 15:50:38
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -81,7 +81,7 @@ export const routes: CutomRouteObject[] = [
     path: '/contents/create',
     element: loadContainerElement('ContentCreate'),
     key: RouteKey.contentCreate,
-    permissions: [RoutePermission.login, RoutePermission.admin],
+    permissions: [RoutePermission.login],
   },
   {
     path: '/favorites',
