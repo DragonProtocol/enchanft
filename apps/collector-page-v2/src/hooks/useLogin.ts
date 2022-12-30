@@ -4,6 +4,7 @@ import {
   WlUserActionType,
 } from '@ecnft/wl-user-react';
 import { useCallback } from 'react';
+import { removeHomeBannerHiddenFromStore } from '../utils/homeStore';
 
 export default () => {
   const wlUser = useWlUserReact();
@@ -18,6 +19,7 @@ export default () => {
 
   const logout = useCallback(() => {
     dispatchAction({ type: WlUserActionType.LOGOUT });
+    removeHomeBannerHiddenFromStore();
   }, [dispatchAction]);
 
   const handleCallbackVerifyLogin = useCallback(
