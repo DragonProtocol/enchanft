@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 19:59:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 13:46:19
+ * @LastEditTime: 2022-12-30 17:21:20
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { ButtonPrimary, ButtonPrimaryLine } from '../common/button/ButtonBase';
-import ChromeSvg from '../common/icons/svgs/chrome.svg';
+import InstallU3ExtensionButton from '../business/button/InstallU3ExtensionButton';
+import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 
 export type CannotOpenPlatFormLinkProps = StyledComponentPropsWithRef<'div'> & {
   iconUrl: string;
@@ -32,10 +32,7 @@ export default function CannotOpenPlatFormLink({
         <ButtonPrimaryLine onClick={() => window.open(linkUrl, '_blank')}>
           Open in new tab
         </ButtonPrimaryLine>
-        <ButtonPrimary onClick={() => alert('add extension')}>
-          <InstallExtensionIcon src={ChromeSvg} />
-          <span>Install U3 on Chrome</span>
-        </ButtonPrimary>
+        <InstallU3ExtensionButton />
       </ButtonBox>
     </CannotOpenPlatFormLinkWrapper>
   );
@@ -80,8 +77,4 @@ const ButtonBox = styled.div`
   display: flex;
   align-items: center;
   gap: 20px;
-`;
-const InstallExtensionIcon = styled.img`
-  width: 24px;
-  height: 24px;
 `;

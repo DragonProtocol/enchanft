@@ -35,12 +35,15 @@ export default function RecommendContent({
 }
 
 const Box = styled.div`
-  width: 760px;
+  width: 100%;
 
   & .lists {
     margin-top: 20px;
     background: #1b1e23;
     border-radius: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
   }
 `;
 
@@ -65,10 +68,20 @@ function Card({
 }
 
 const CardBox = styled.div`
+  flex: 50%;
   box-sizing: border-box;
   padding: 20px;
   height: 88px;
-  border-bottom: 1px solid #14171a;
+  border-top: 1px solid #39424c;
+  &:nth-child(1) {
+    border-top: none;
+  }
+  &:nth-child(2) {
+    border-top: none;
+  }
+  &:nth-child(even) {
+    border-left: 1px solid #39424c;
+  }
   cursor: pointer;
   & h2 {
     margin: 0;
@@ -76,6 +89,16 @@ const CardBox = styled.div`
     font-size: 16px;
     line-height: 19px;
     color: #ffffff;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    display: -webkit-box;
+
+    -webkit-box-orient: vertical;
+
+    -webkit-line-clamp: 1;
   }
   > div {
     margin-top: 10px;

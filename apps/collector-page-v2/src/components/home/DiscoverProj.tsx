@@ -35,7 +35,7 @@ export default function DiscoverProj({
 }
 
 const Box = styled.div`
-  width: 358px;
+  width: 100%;
 
   & .lists {
     margin-top: 20px;
@@ -80,7 +80,8 @@ const CardBox = styled.div`
   gap: 10px;
   cursor: pointer;
   height: 88px;
-  border-bottom: 1px solid #14171a;
+  border-right: 1px solid rgba(57, 66, 76, 0.5);
+  border-bottom: 1px solid rgba(57, 66, 76, 0.5);
   box-sizing: border-box;
   & > img {
     width: 48px;

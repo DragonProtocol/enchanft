@@ -13,7 +13,7 @@ export function getTrendingContents() {
   return request({
     url: `/contents/searching`,
     params: {
-      pageSize: 4,
+      pageSize: 8,
       pageNumber: 0,
       keywords: '',
       type: '',
@@ -28,7 +28,7 @@ export function getTrendingEvents() {
     url: `/events/searching`,
     method: 'get',
     params: {
-      pageSize: 4,
+      pageSize: 6,
       pageNumber: 0,
       keywords: '',
       type: '',
