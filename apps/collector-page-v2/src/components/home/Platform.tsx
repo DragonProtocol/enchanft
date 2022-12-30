@@ -1,3 +1,10 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-12-26 10:22:20
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-12-30 18:12:17
+ * @Description: file description
+ */
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Title from './Title';
@@ -36,7 +43,7 @@ export default function Platform({
 const Box = styled.div`
   & .lists {
     display: flex;
-    gap: 40px;
+    gap: 20px;
     margin-top: 20px;
   }
 `;
@@ -53,6 +60,7 @@ function Card(props: PlatformData & { clickAction: () => void }) {
 }
 
 const CardBox = styled.div`
+  flex: 1;
   display: flex;
   flex-direction: column;
   text-align: center;

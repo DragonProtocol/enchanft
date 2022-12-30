@@ -4,6 +4,7 @@ import TextTransition, { presets } from 'react-text-transition';
 import Rubiks from '../magic-kube/rubiks/index';
 
 import CarouselBg from '../imgs/carousel-bg.png';
+import InstallU3ExtensionButton from '../business/button/InstallU3ExtensionButton';
 
 const TEXTS = [
   'Identity',
@@ -37,15 +38,15 @@ export default function Carousel() {
   return (
     <Box>
       <div className="info">
-        <h2>Your Data,</h2>
-        <h2>Your Content,</h2>
-        <h2> Your Web3.</h2>
+        <h2>Your Data,Your Content,Your Web3.</h2>
         <div>
           Hub For Your Self Sovereign Data and
           <TextTransition springConfig={presets.wobbly}>
             {TEXTS[index % TEXTS.length]}
           </TextTransition>
         </div>
+        <ExtensionButton />
+
         {/* <div>
           <span>Badge</span>
           <span>Token</span>
@@ -67,7 +68,7 @@ export default function Carousel() {
 }
 
 const Box = styled.div`
-  height: 400px;
+  height: 300px;
   display: flex;
   position: relative;
   background: linear-gradient(
@@ -79,11 +80,10 @@ const Box = styled.div`
   background-size: cover;
   background-repeat: no-repeat;
   border-radius: 20px;
+  padding: 60px;
+  box-sizing: border-box;
 
   & .info {
-    margin-left: 80px;
-    margin-top: 87px;
-
     > h2 {
       font-style: italic;
       font-weight: 700;
@@ -142,8 +142,13 @@ const Box = styled.div`
 
   & .magic-cube {
     position: absolute;
+    top: 0;
     right: 60px;
-    width: 400px;
-    height: 400px;
+    width: 300px;
+    height: 300px;
   }
+`;
+
+const ExtensionButton = styled(InstallU3ExtensionButton)`
+  margin-top: 40px;
 `;

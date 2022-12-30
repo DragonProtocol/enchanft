@@ -37,7 +37,7 @@ export default function RecommendEvents({
 const Box = styled.div`
   & .lists {
     display: flex;
-    gap: 40px;
+    gap: 20px;
     margin-top: 20px;
   }
 `;
@@ -59,7 +59,10 @@ function Card({
       <div>
         <h2>{title}</h2>
         <div>
-          <Badge text="Badge" />
+          <div>
+            <Badge text="Badge" />
+          </div>
+
           <span>{author}</span>
         </div>
       </div>
@@ -68,16 +71,17 @@ function Card({
 }
 
 const CardBox = styled.div`
-  width: 260px;
-  height: 371px;
+  flex: 1;
+  height: 315px;
   cursor: pointer;
   box-sizing: border-box;
   background: #1b1e23;
   border-radius: 20px;
+  overflow: hidden;
 
   > img {
-    width: 260px;
-    height: 260px;
+    width: 100%;
+    height: 178px;
   }
 
   > div {
@@ -90,10 +94,21 @@ const CardBox = styled.div`
       line-height: 19px;
 
       color: #ffffff;
+
+      overflow: hidden;
+
+      text-overflow: ellipsis;
+
+      display: -webkit-box;
+
+      -webkit-box-orient: vertical;
+
+      -webkit-line-clamp: 2;
     }
 
     > div {
       display: flex;
+      flex-direction: column;
       gap: 10px;
       font-weight: 400;
       font-size: 16px;
