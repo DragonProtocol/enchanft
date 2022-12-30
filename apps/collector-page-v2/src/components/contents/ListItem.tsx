@@ -1,10 +1,10 @@
-import dayjs from 'dayjs';
 import styled from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
 import { Share } from '../icons/share';
 import { EyeClose } from '../icons/eyeClose';
 import { Heart } from '../icons/heart';
 import Badge from './Badge';
+import { defaultFormatDate } from '../../utils/time';
 
 export default function ListItem({
   isActive,
@@ -66,7 +66,7 @@ export default function ListItem({
         <Badge text={type} />
         <span className="author">{author}</span>
         <span>|</span>
-        <span>{dayjs(createdAt).format('MMM DD YYYY')}</span>
+        <span>{defaultFormatDate(createdAt)}</span>
       </ContentItemTitle>
 
       {isActive && (
