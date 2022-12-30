@@ -67,6 +67,6 @@ const RightInner = styled.div`
 export const MainWrapper = styled.div`
   width: 100%;
   height: 100%;
-  padding: 40px;
+  padding: 24px;
   box-sizing: border-box;
 `;

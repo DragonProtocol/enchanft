@@ -32,6 +32,7 @@ import ContentShowerBox, {
   ContentBoxContainer,
 } from '../components/contents/ContentShowerBox';
 import useContentHandles from '../hooks/useContentHandles';
+import { MainWrapper } from '../components/layout/Index';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -139,7 +140,7 @@ function Contents() {
   }, []);
 
   return (
-    <Box id="box">
+    <Box>
       <ContentsHeader
         filterAction={(
           keywords: string,
@@ -274,17 +275,22 @@ function Contents() {
 }
 export default Contents;
 
-const Box = styled.div`
-  margin: 0 auto;
-  height: calc(100vh - 72px);
-  box-sizing: border-box;
-  padding: 24px 40px 0 40px;
-  overflow: hidden;
+const Box = styled(MainWrapper)`
+  display: flex;
+  flex-direction: column;
+  /* gap: 20px; */
 `;
+// const Box = styled.div`
+//   margin: 0 auto;
+//   height: calc(100vh - 72px);
+//   box-sizing: border-box;
+//   padding: 24px 40px 0 40px;
+//   overflow: hidden;
+// `;
 const ContentsWrapper = styled.div<{ loading?: string }>`
-  width: calc(100% - 2px);
-  height: calc(100% - 94px);
-  box-sizing: border-box;
+  /* width: calc(100% - 2px);
+  height: calc(100% - 94px); */
+  /* box-sizing: border-box; */
   border: ${(props) => (props.loading ? 'none' : '1px solid #39424c')};
   background-color: ${(props) => (props.loading ? '' : '#1b1e23')};
   border-radius: 20px;
@@ -321,65 +327,65 @@ const ListBox = styled(ListScrollBox)`
     }
   }
 `;
-const ContentBox = styled.div`
-  height: calc(100%);
-  width: calc(100% - 360px);
+// const ContentBox = styled.div`
+//   height: calc(100%);
+//   width: calc(100% - 360px);
 
-  overflow-x: hidden;
-  overflow: hidden;
+//   overflow-x: hidden;
+//   overflow: hidden;
 
-  & img {
-    max-width: 100%;
-  }
+//   & img {
+//     max-width: 100%;
+//   }
 
-  & pre {
-    overflow: scroll;
-  }
+//   & pre {
+//     overflow: scroll;
+//   }
 
-  & div.tabs {
-    height: 60px;
-    background: #1b1e23;
-    border-bottom: 1px solid #39424c;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+//   & div.tabs {
+//     height: 60px;
+//     background: #1b1e23;
+//     border-bottom: 1px solid #39424c;
+//     box-sizing: border-box;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
 
-    > div {
-      width: 260px;
-      height: 40px;
-      background: #14171a;
-      border-radius: 100px;
-      padding: 4px;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      > button {
-        cursor: pointer;
-        width: 122px;
-        height: 32px;
-        border: none;
+//     > div {
+//       width: 260px;
+//       height: 40px;
+//       background: #14171a;
+//       border-radius: 100px;
+//       padding: 4px;
+//       box-sizing: border-box;
+//       display: flex;
+//       align-items: center;
+//       justify-content: space-between;
+//       > button {
+//         cursor: pointer;
+//         width: 122px;
+//         height: 32px;
+//         border: none;
 
-        box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
-          0px 0px 4px rgba(20, 23, 26, 0.04);
-        border-radius: 100px;
-        outline: none;
-        background: inherit;
-        color: #a0aec0;
+//         box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
+//           0px 0px 4px rgba(20, 23, 26, 0.04);
+//         border-radius: 100px;
+//         outline: none;
+//         background: inherit;
+//         color: #a0aec0;
 
-        &.active {
-          color: #ffffff;
-          background: #21262c;
-        }
-      }
-    }
-  }
-`;
+//         &.active {
+//           color: #ffffff;
+//           background: #21262c;
+//         }
+//       }
+//     }
+//   }
+// `;
 
-const LoadingBox = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 40px;
-`;
+// const LoadingBox = styled.div`
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   margin-top: 40px;
+// `;

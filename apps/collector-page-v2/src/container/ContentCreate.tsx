@@ -332,12 +332,8 @@ function ContentCreate() {
 }
 export default ContentCreate;
 const ContentCreateWrapper = styled(MainWrapper)`
-  width: 1240px;
-  height: calc(100vh - 72px);
-  box-sizing: border-box;
   display: flex;
-  gap: 40px;
-  color: #fff;
+  gap: 24px;
 `;
 
 const CreateBox = styled(CardBase)`

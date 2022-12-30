@@ -325,7 +325,7 @@ export default EventCreate;
 const EventCreateWrapper = styled(MainWrapper)`
   height: auto;
   display: flex;
-  gap: 40px;
+  gap: 24px;
 `;
 
 const EventCreateFormCard = styled(CardBase)`
