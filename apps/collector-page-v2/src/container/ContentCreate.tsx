@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
+import { useSearchParams } from 'react-router-dom';
 import ScrollBox from '../components/common/box/ScrollBox';
 import { ButtonPrimary } from '../components/common/button/ButtonBase';
 import CardBase from '../components/common/card/CardBase';
@@ -33,6 +34,7 @@ import Loading from '../components/common/loading/Loading';
 function ContentCreate() {
   const { user } = useWlUserReact();
   const [parsing, setParsing] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
   const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
   const [tab, setTab] = useState<Tab>(
     u3ExtensionInstalled ? 'original' : 'readerView'
@@ -50,7 +52,7 @@ function ContentCreate() {
     initialValues: {
       title: '',
       author: '',
-      url: '',
+      url: searchParams.get('url') || '',
       type: ContentType.NEWS,
       lang: ContentLang.English,
       uniProjectId: [],
@@ -75,6 +77,11 @@ function ContentCreate() {
       content: '',
     });
   }, []);
+
+  useEffect(() => {
+    if (!formik.values.url) return;
+    loadUrlContent();
+  }, [formik.values.url]);
 
   const loadUrlContent = useCallback(async () => {
     if (!formik.values.url) return;
