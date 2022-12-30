@@ -10,11 +10,12 @@ import Title from './Title';
 export default function Galxe({ data }: { data: GalxeData }) {
   const [expand, setExpand] = useState(true);
   const navigate = useNavigate();
+
   return (
     <ContentBox>
       <Title
         name={
-          (data.addressInfo.nfts.totalCount &&
+          (data.addressInfo?.nfts.totalCount &&
             `Galxe(${data.addressInfo.nfts.totalCount})`) ||
           `Galxe`
         }
@@ -26,8 +27,8 @@ export default function Galxe({ data }: { data: GalxeData }) {
       />
       {expand && (
         <div className="data">
-          {(data.addressInfo.nfts.list.length &&
-            data.addressInfo.nfts.list.map((item) => {
+          {(data.addressInfo?.nfts.list.length &&
+            data.addressInfo?.nfts.list.map((item) => {
               return (
                 <GalxeCard
                   key={item.id}
@@ -58,6 +59,7 @@ const ContentBox = styled.div`
   padding: 20px;
   .data {
     display: flex;
+    flex-wrap: wrap;
     gap: 20px;
     margin-top: 20px;
     /* height: 258px; */

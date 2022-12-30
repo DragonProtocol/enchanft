@@ -1,4 +1,4 @@
-import { ProfileResponse } from '../types/profile';
+import { ProfileResponse, ProfilesResponse } from '../types/profile';
 import request, { RequestPromise } from './request';
 
 export function fetchU3Profile(token: string): RequestPromise<ProfileResponse> {
@@ -12,7 +12,37 @@ export function fetchU3Profile(token: string): RequestPromise<ProfileResponse> {
   });
 }
 
-export function fetchU3Profiles(token: string) {
+export const ProfileDefault = {
+  erc20Balances: [],
+  ethBalance: '0',
+  galxe: {
+    addressInfo: {
+      nfts: {
+        totalCount: 0,
+        pageInfo: {
+          startCursor: '',
+          endCursor: '',
+          hasNextPage: false,
+          hasPreviousPage: false,
+        },
+        list: [],
+      },
+    },
+  },
+  poap: [],
+  noox: {
+    total: 0,
+    result: [],
+  },
+  nfts: {
+    total: 0,
+    cursor: '',
+    result: [],
+  },
+};
+export function fetchU3Profiles(
+  token: string
+): RequestPromise<ProfilesResponse> {
   return request({
     url: `/users/u3profiles`,
     method: 'get',

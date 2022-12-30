@@ -8,6 +8,7 @@ import { ChevronDown } from '../icons/chevron-down';
 import { Copy2 } from '../icons/copy';
 import { Trash } from '../icons/trash';
 import { Wallet } from '../icons/wallet';
+import { ProfileWallet } from '../../services/types/profile';
 
 export default function WalletList({
   wallets,
@@ -15,7 +16,7 @@ export default function WalletList({
   addAction,
   delAction,
 }: {
-  wallets: string[];
+  wallets: ProfileWallet[];
   currAddr: string;
   addAction: () => void;
   delAction: (addr: string) => void;
@@ -67,17 +68,18 @@ export default function WalletList({
             </span>
           </div>
           {wallets.map((item) => {
+            const { chain, wallet } = item;
             return (
-              <div className="item" key={item}>
+              <div className="item" key={wallet}>
                 <div>
-                  <span className="wallet-addr">{sortPubKey(item, 4)}</span>
-                  {currAddr === item && <Badge text="Owner" />}
+                  <span className="wallet-addr">{sortPubKey(wallet, 4)}</span>
+                  {currAddr === wallet && <Badge text="Owner" />}
                 </div>
 
                 <div>
                   <span
                     onClick={() => {
-                      navigator.clipboard.writeText(item).then(
+                      navigator.clipboard.writeText(wallet).then(
                         () => {
                           toast.success('copied');
                         },
@@ -89,13 +91,15 @@ export default function WalletList({
                   >
                     <Copy2 />
                   </span>
-                  <span
-                    onClick={() => {
-                      delAction(item);
-                    }}
-                  >
-                    <Trash />
-                  </span>
+                  {currAddr !== wallet && (
+                    <span
+                      onClick={() => {
+                        delAction(wallet);
+                      }}
+                    >
+                      <Trash />
+                    </span>
+                  )}
                 </div>
               </div>
             );
@@ -116,7 +120,7 @@ const WalletBox = styled.div`
     justify-content: center;
     box-sizing: border-box;
     gap: 8px;
-    width: 143px;
+    min-width: 150px;
     height: 36px;
     background: #1a1e23;
     border: 1px solid #39424c;

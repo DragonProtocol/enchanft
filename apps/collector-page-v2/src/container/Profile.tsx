@@ -20,11 +20,14 @@ import OffChainInterest from '../components/profile/OffChainInterest';
 import {
   addOrDelWallet,
   fetchU3Profile,
+  fetchU3Profiles,
   fetchU3ProfileWithWallet,
   fetchU3Wallets,
+  ProfileDefault,
 } from '../services/api/profile';
-import { ProfileEntity } from '../services/types/profile';
+import { ProfileEntity, ProfileWallet } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
+import { mergeProfilesData } from '../utils/mergeProfilesData';
 
 function Profile() {
   const { wallet } = useParams();
@@ -34,13 +37,18 @@ function Profile() {
   );
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileEntity>();
-  const [wallets, setWallets] = useState([]);
+  const [wallets, setWallets] = useState<ProfileWallet[]>([]);
 
   const fetchData = useCallback(async () => {
     try {
-      const { data } = await fetchU3Profile(user.token);
-      setProfileData(data.data);
+      const { data } = await fetchU3Profiles(user.token);
+      console.log(data.data);
+      const r = mergeProfilesData(data.data);
+      console.log(r);
+      setProfileData(r);
+      // setProfileData(data.data);
     } catch (error) {
+      setProfileData(ProfileDefault);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -61,6 +69,7 @@ function Profile() {
       const { data } = await fetchU3ProfileWithWallet(wallet);
       setProfileData(data.data);
     } catch (error) {
+      setProfileData(ProfileDefault);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -113,6 +122,7 @@ function Profile() {
                 date: (user as any).createdAt,
                 nickname: user.name,
                 avatar: user.avatar,
+                wallets,
                 walletAddr:
                   user.accounts[0]?.thirdpartyName ||
                   user.accounts[0]?.thirdpartyId,

@@ -18,12 +18,14 @@ import IconTwitter from '../common/icons/IconTwitter';
 import IconDiscord from '../common/icons/IconDiscord';
 import WalletList from './WalletList';
 import AddWalletModal from './AddWalletModal';
+import { ProfileWallet } from '../../services/types/profile';
 
 export default function Info({
   nickname,
   walletAddr,
   avatar,
   date,
+  wallets,
   addWallet,
   delWallet,
 }: {
@@ -31,6 +33,7 @@ export default function Info({
   walletAddr: string;
   avatar: string;
   date: number;
+  wallets: ProfileWallet[];
   delWallet: (addr: string) => void;
   addWallet: (addr: string) => Promise<boolean>;
 }) {
@@ -59,7 +62,7 @@ export default function Info({
             <div className="wallet">
               <WalletList
                 currAddr={walletAddr}
-                wallets={[walletAddr]}
+                wallets={[{ wallet: walletAddr, chain: 'eth' }, ...wallets]}
                 addAction={() => {
                   setShowAddModal(true);
                 }}
