@@ -1,5 +1,5 @@
-import dayjs from 'dayjs';
 import styled from 'styled-components';
+import { defaultFormatDate } from '../../utils/time';
 import { Eye } from '../icons/eye';
 import { Heart } from '../icons/heart';
 import Badge from './Badge';
@@ -26,7 +26,7 @@ export default function ContentShower({
             <Badge text={type} />
             <span>{author}</span>
             <span>|</span>
-            <span>{dayjs(createdAt).format('MMM DD YYYY')}</span>
+            <span>{defaultFormatDate(createdAt)}</span>
           </div>
           <div />
         </div>

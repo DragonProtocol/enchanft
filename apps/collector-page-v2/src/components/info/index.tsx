@@ -6,7 +6,6 @@ import {
   useWlUserReact,
   WlUserModalType,
 } from '@ecnft/wl-user-react';
-import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import { sortPubKey } from '../../utils/solana';
@@ -19,6 +18,7 @@ import IconDiscord from '../common/icons/IconDiscord';
 import WalletList from './WalletList';
 import AddWalletModal from './AddWalletModal';
 import { ProfileWallet } from '../../services/types/profile';
+import { defaultFormatDate } from '../../utils/time';
 
 export default function Info({
   nickname,
@@ -103,7 +103,7 @@ export default function Info({
                 <span className="num">90</span>Follower
               </span> */}
               <span>|</span>
-              <span>{dayjs(date || Date.now()).format('MMM DD YYYY')}</span>
+              <span>{defaultFormatDate(date || Date.now())}</span>
             </div>
             <div>
               <span
