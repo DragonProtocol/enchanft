@@ -151,7 +151,7 @@ const InfoBox = styled.div`
   padding: 25px 25px 25px 20px;
   box-sizing: border-box;
   color: white;
-  width: 760px;
+  width: 100%;
   height: 170px;
 
   background: #1b1e23;

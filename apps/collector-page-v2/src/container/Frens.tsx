@@ -37,6 +37,7 @@ import {
   setFollow,
   getReco,
 } from '../features/frens/frensHandles';
+import { MainWrapper } from '../components/layout/Index';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
@@ -920,16 +921,13 @@ const StyledLdsRing = styled.div`
     }
   }
 `;
-const FrensWrapper = styled.div`
-  width: 100%;
+const FrensWrapper = styled(MainWrapper)`
+  height: auto;
   background: #14171a;
-  padding: 20px 20px 0 20px;
-  box-sizing: border-box;
   color: #718096;
   display: flex;
 
   .feed-content {
-    max-height: calc(100vh - 159px);
     overflow-y: auto;
   }
 
@@ -942,7 +940,7 @@ const FrensWrapper = styled.div`
     background: #1b1e23;
     border-radius: 20px;
     padding: 0px 20px;
-    margin-top: 30px;
+    margin-top: 24px;
     & > div {
       justify-content: space-between;
     }
@@ -1061,8 +1059,8 @@ const FrensFeed = styled.div`
   min-width: 37.5rem;
   background: #1b1e23;
   border-radius: 20px;
-  padding: 0px 20px;
-  margin-right: 40px;
+  padding: 0px 24px;
+  margin-right: 24px;
 `;
 const FrensRight = styled.div`
   flex-grow: 1;
@@ -1075,22 +1073,22 @@ const FrensFeedSwitch = styled.div`
 
   .title {
     font-weight: 700;
-    padding: 13px 0;
+    padding: 12px 0;
     font-size: 22px;
     line-height: 26px;
     color: #ffffff;
   }
 
   & > div {
-    padding: 25px 0 18px 0;
+    padding: 24px 0 18px 0;
     font-weight: bolder;
     cursor: pointer;
-    font-size: 17px;
+    font-size: 18px;
   }
 
   .active {
     color: white;
-    border-bottom: 3px solid white;
+    border-bottom: 4px solid white;
     border-radius: 100px 100px 0px 0px;
   }
 
@@ -1111,14 +1109,14 @@ const FrensFeedSwitch = styled.div`
 
 const FrensFeedCard = styled.div`
   display: flex;
-  padding: 40px 0;
+  padding: 24px 0;
   border-bottom: 1px solid #39424c;
 
   .avatar {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    margin-right: 20px;
+    margin-right: 24px;
   }
 
   .tag {

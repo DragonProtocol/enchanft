@@ -197,12 +197,12 @@ const ProfileWrapper = styled.div`
   }
   > div {
     margin: 0 auto;
-    padding: 40px;
+    padding: 24px;
 
     .infos {
       display: flex;
-      gap: 40px;
-      margin-bottom: 50px;
+      gap: 24px;
+      margin-bottom: 24px;
     }
 
     .content {
@@ -211,7 +211,7 @@ const ProfileWrapper = styled.div`
         flex-direction: row;
         align-items: flex-start;
         padding: 0px;
-        gap: 40px;
+        gap: 24px;
 
         height: 72px;
 
@@ -226,7 +226,7 @@ const ProfileWrapper = styled.div`
           height: inherit;
           font-weight: 700;
           font-size: 18px;
-          line-height: 21px;
+          line-height: 24px;
           color: #ffffff;
           > span {
             margin-left: 3px;
