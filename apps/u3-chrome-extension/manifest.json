@@ -1,6 +1,6 @@
 {
-  "name": "u3-chrome-extension",
-  "description": "u3-chrome-extension",
+  "name": "U3 - Your Web3 Data Hub",
+  "description": "Hub For Your Self Sovereign Data",
   "version": "0.1.0",
   "manifest_version": 3,
   "action": {
