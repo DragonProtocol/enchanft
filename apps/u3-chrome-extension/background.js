@@ -1,6 +1,8 @@
-chrome.action.onClicked.addListener(function () {
+chrome.action.onClicked.addListener(async () => {
+  const tab = await getTab();
+
   chrome.tabs.create({
-    url: 'https://u3.xyz/',
+    url: 'https://u3.xyz/contents/create?url=' + tab,
   });
 });
 
@@ -30,3 +32,23 @@ chrome.runtime.onInstalled.addListener(() => {
     addRules: [RULE],
   });
 });
+
+// --------------------------- utils -----------------------------
+
+async function getTab() {
+  let queryOptions = { active: true, currentWindow: true };
+  let tabs = await chrome.tabs.query(queryOptions);
+  return tabs[0].url;
+}
+
+// async function getCookie() {
+//   return new Promise((res, rej) => {
+//     try {
+//       chrome.cookies.get({ url: "https://u3.xyz", name: "u3_token" }, (cookies) => {
+//         res(cookies?.value)
+//       })
+//     } catch (error) {
+//       rej(error)
+//     }
+//   })
+// }
