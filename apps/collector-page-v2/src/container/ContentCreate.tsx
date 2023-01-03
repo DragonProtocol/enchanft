@@ -80,15 +80,15 @@ function ContentCreate() {
 
   useEffect(() => {
     if (!formik.values.url) return;
-    loadUrlContent();
+    loadUrlContent(formik.values.url);
   }, [formik.values.url]);
 
-  const loadUrlContent = useCallback(async () => {
-    if (!formik.values.url) return;
-    if (!isUrl(formik.values.url)) return;
+  const loadUrlContent = useCallback(async (url: string) => {
+    if (!url) return;
+    if (!isUrl(url)) return;
     setParsing(true);
     try {
-      const { data } = await contentParse(formik.values.url);
+      const { data } = await contentParse(url);
       setUrlContent({
         title: data.data.title,
         content: data.data.content,
@@ -99,7 +99,7 @@ function ContentCreate() {
     } finally {
       setParsing(false);
     }
-  }, [formik.values.url]);
+  }, []);
 
   const submitContent = useCallback(
     async (data: {
@@ -158,7 +158,15 @@ function ContentCreate() {
               onChange={(e) => formik.setFieldValue('url', e.target.value)}
               value={formik.values.url}
               placeholder="original url"
-              onBlur={loadUrlContent}
+              onBlur={() => {
+                if (formik.values.url.startsWith('http')) {
+                  loadUrlContent(formik.values.url);
+                } else if (formik.values.url.length > 4) {
+                  const urlWithProtocol = `https://${formik.values.url}`;
+                  formik.setFieldValue('url', urlWithProtocol);
+                  loadUrlContent(urlWithProtocol);
+                }
+              }}
             />
             {renderFieldError('url')}
           </FormField>
