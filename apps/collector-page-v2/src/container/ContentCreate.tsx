@@ -30,6 +30,7 @@ import {
 import { useAppSelector } from '../store/hooks';
 import { selectWebsite } from '../features/website/websiteSlice';
 import Loading from '../components/common/loading/Loading';
+import isUrl from '../utils/isUrl';
 
 function ContentCreate() {
   const { user } = useWlUserReact();
@@ -40,7 +41,6 @@ function ContentCreate() {
     u3ExtensionInstalled ? 'original' : 'readerView'
   );
 
-  const [selectProjects, setSelectProjects] = useState<Array<Project>>([]);
   const [loading, setLoading] = useState(false);
 
   const [urlContent, setUrlContent] = useState({
@@ -85,6 +85,7 @@ function ContentCreate() {
 
   const loadUrlContent = useCallback(async () => {
     if (!formik.values.url) return;
+    if (!isUrl(formik.values.url)) return;
     setParsing(true);
     try {
       const { data } = await contentParse(formik.values.url);
@@ -256,10 +257,11 @@ function ContentCreate() {
                       {item.name}{' '}
                     </div>
                     <span
+                      className="close"
                       onClick={() => {
-                        setSelectProjects([
-                          ...selectProjects.slice(0, idx),
-                          ...selectProjects.slice(idx + 1),
+                        formik.setFieldValue('uniProjectId', [
+                          ...formik.values.uniProjectId.slice(0, idx),
+                          ...formik.values.uniProjectId.slice(idx + 1),
                         ]);
                       }}
                     >
@@ -304,7 +306,9 @@ function ContentCreate() {
               if (tab === 'original') {
                 return (
                   <div className="iframe-container">
-                    <iframe title="daylight" src={formik.values.url} />
+                    {isUrl(formik.values.url) && (
+                      <iframe title="daylight" src={formik.values.url} />
+                    )}
                   </div>
                 );
               }
@@ -385,7 +389,7 @@ const CreateBox = styled(CardBase)`
       display: flex;
       justify-content: space-between;
       align-items: center;
-
+      color: #fff;
       > div {
         display: flex;
         align-items: center;
@@ -397,6 +401,10 @@ const CreateBox = styled(CardBase)`
         border-radius: 50%;
         margin-right: 5px;
       }
+    }
+
+    & .close {
+      cursor: pointer;
     }
   }
 `;
