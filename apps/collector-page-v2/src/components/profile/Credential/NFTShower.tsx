@@ -44,7 +44,7 @@ export default function NFTShower({
   }, [url, ipfs]);
 
   if (img.endsWith('mp4') || contentType.startsWith('video')) {
-    return <video src={img} autoPlay loop ref={videoEl} />;
+    return <video src={img} autoPlay muted loop ref={videoEl} />;
   }
 
   return (
