@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 14:57:46
+ * @LastEditTime: 2023-01-03 17:19:57
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -33,6 +33,7 @@ import ContentShowerBox, {
 } from '../components/contents/ContentShowerBox';
 import useContentHandles from '../hooks/useContentHandles';
 import { MainWrapper } from '../components/layout/Index';
+import FeedsMenu from '../components/layout/FeedsMenu';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -141,6 +142,7 @@ function Contents() {
 
   return (
     <Box>
+      <FeedsMenu />
       <ContentsHeader
         filterAction={(
           keywords: string,
@@ -278,7 +280,7 @@ export default Contents;
 const Box = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
-  /* gap: 20px; */
+  gap: 24px;
 `;
 // const Box = styled.div`
 //   margin: 0 auto;
@@ -296,7 +298,7 @@ const ContentsWrapper = styled.div<{ loading?: string }>`
   border-radius: 20px;
   overflow: hidden;
   display: flex;
-  margin-top: 24px;
+  /* margin-top: 24px; */
 
   & .loading {
     width: 100%;

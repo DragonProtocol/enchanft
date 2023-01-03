@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 16:29:31
+ * @LastEditTime: 2023-01-03 17:19:44
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -32,6 +32,7 @@ import useEventHandles from '../hooks/useEventHandles';
 import useContentHandles from '../hooks/useContentHandles';
 import { ContentListItem } from '../services/types/contents';
 import NoResult from '../components/common/NoResult';
+import FeedsMenu from '../components/layout/FeedsMenu';
 
 export default function Projects() {
   const { id } = useParams();
@@ -104,6 +105,7 @@ export default function Projects() {
   );
   return (
     <ProjectsWrapper>
+      <FeedsMenu />
       <ProjectExploreListFilter
         values={filter}
         onChange={(newFilter) => setFilter(newFilter)}
@@ -156,7 +158,7 @@ export default function Projects() {
 const ProjectsWrapper = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 `;
 const MainBox = styled.div`
   width: 100%;
