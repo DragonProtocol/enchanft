@@ -1,4 +1,7 @@
 {
+  "collector-page-v2": {
+    "dir": "apps/collector-page-v2"
+  },
   "collector-page": {
     "dir": "apps/collector-page"
   },

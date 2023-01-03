@@ -67,6 +67,25 @@ applications:
       cache:
         paths:
           - node_modules/**/*
+  - appRoot: apps/collector-page-v2
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - npm i --legacy-peer-deps
+            - cd ../../
+            - npm i
+            - cd apps/collector-page-v2
+        build:
+          commands:
+            - npm run build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
   - appRoot: apps/creator-page
     frontend:
       phases:
