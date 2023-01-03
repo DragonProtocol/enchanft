@@ -63,10 +63,11 @@ export default function ListItem({
     >
       <p>{title}</p>
       <ContentItemTitle>
-        <Badge text={type} />
-        <span className="author">{author}</span>
-        <span>|</span>
-        <span>{defaultFormatDate(createdAt)}</span>
+        <div>
+          <Badge text={type} />
+          <span>{defaultFormatDate(createdAt)}</span>
+        </div>
+        {!isActive && <span>👏 &nbsp;{upVoteNum}</span>}
       </ContentItemTitle>
 
       {isActive && (
@@ -195,12 +196,30 @@ const ContentItem = styled.div<{ isActive: boolean; height: string }>`
 const ContentItemTitle = styled.div`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
   margin-top: 10px;
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
   color: #718096;
+
+  > div {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  > span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #39424c;
+    border-radius: 12px;
+    padding: 0 18px;
+    height: 32px;
+    box-sizing: border-box;
+  }
 
   & .author {
     max-width: 150px;
