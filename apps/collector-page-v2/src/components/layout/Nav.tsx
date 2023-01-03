@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 18:17:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 15:20:40
+ * @LastEditTime: 2023-01-03 10:21:21
  * @Description: file description
  */
 import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
@@ -75,9 +75,7 @@ export default function Nav({ onlyIcon }: Props) {
           isActive={isActive}
           onClick={() => navigate(nav.route.path)}
         >
-          <PcNavItemIconBox isActive={isActive}>
-            {nav.icon && <nav.icon />}
-          </PcNavItemIconBox>
+          <PcNavItemIconBox isActive={isActive}>{nav.icon}</PcNavItemIconBox>
           {renderNavItemText(nav)}
         </PcNavItem>
       );
@@ -119,7 +117,7 @@ export default function Nav({ onlyIcon }: Props) {
                 onClick={() => handleGroupClick(item.key)}
               >
                 <PcNavItemIconBox isActive={groupIsActive}>
-                  <item.icon />
+                  {item.icon}
                 </PcNavItemIconBox>
                 {renderNavItemText(item)}
               </PcNavItem>
