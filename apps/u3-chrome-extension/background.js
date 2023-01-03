@@ -1,8 +1,9 @@
 chrome.action.onClicked.addListener(async () => {
-  const tab = await getTab();
+  const activeTab = await getTab();
 
-  chrome.tabs.create({
-    url: 'https://u3.xyz/contents/create?url=' + tab,
+  chrome.tabs.sendMessage(activeTab.id, {
+    message: 'clicked_browser_action',
+    tab: activeTab,
   });
 });
 
@@ -38,7 +39,7 @@ chrome.runtime.onInstalled.addListener(() => {
 async function getTab() {
   let queryOptions = { active: true, currentWindow: true };
   let tabs = await chrome.tabs.query(queryOptions);
-  return tabs[0].url;
+  return tabs[0];
 }
 
 // async function getCookie() {

@@ -22,8 +22,14 @@
 
   "content_scripts": [
     {
-      "matches": ["*://localhost/*", "*://u3.xyz/*", "*://dev.u3.xyz/*"],
-      "js": ["install_notifier.js"],
+      "matches": [
+        "*://localhost/*",
+        "*://u3.xyz/*",
+        "*://dev.u3.xyz/*",
+        "*://www.chaincatcher.com/*"
+      ],
+      "css": ["content.css"],
+      "js": ["install_notifier.js", "content_script.js"],
       "run_at": "document_idle"
     }
   ],
