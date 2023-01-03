@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 16:38:52
+ * @LastEditTime: 2023-01-03 17:19:31
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -28,6 +28,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import EventLinkPreview from '../components/event/EventLinkPreview';
 import Loading from '../components/common/loading/Loading';
 import NoResult from '../components/common/NoResult';
+import FeedsMenu from '../components/layout/FeedsMenu';
 
 export default function Events() {
   const { id } = useParams();
@@ -107,6 +108,7 @@ export default function Events() {
   const isEmpty = useMemo(() => !eventExploreList.length, [eventExploreList]);
   return (
     <EventsWrapper>
+      <FeedsMenu />
       <EventExploreListFilter
         values={filter}
         onChange={(newFilter) => setSearchParams(newFilter)}
@@ -153,7 +155,7 @@ export default function Events() {
 const EventsWrapper = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 `;
 const MainBox = styled.div`
   width: 100%;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 13:59:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 10:20:42
+ * @LastEditTime: 2023-01-03 17:30:20
  * @Description: file description
  */
 import React, { ReactNode } from 'react';
@@ -39,29 +39,13 @@ export const navs: CutomNavObject[] = [
     key: 'feed',
     name: 'Feed',
     icon: React.createElement(FeedSvg),
-    activeRouteKeys: [],
-    children: [
-      {
-        name: 'events',
-        activeRouteKeys: [RouteKey.events, RouteKey.event],
-        route: getRoute(RouteKey.events),
-      },
-      {
-        name: 'contents',
-        activeRouteKeys: [RouteKey.contents, RouteKey.content],
-        route: getRoute(RouteKey.contents),
-      },
-      {
-        name: 'frens',
-        activeRouteKeys: [RouteKey.frens, RouteKey.frens],
-        route: getRoute(RouteKey.frens),
-      },
-      {
-        name: 'projects',
-        activeRouteKeys: [RouteKey.projects, RouteKey.project],
-        route: getRoute(RouteKey.projects),
-      },
+    activeRouteKeys: [
+      RouteKey.events,
+      RouteKey.contents,
+      RouteKey.frens,
+      RouteKey.projects,
     ],
+    route: getRoute(RouteKey.events),
   },
   {
     name: 'favorite',
