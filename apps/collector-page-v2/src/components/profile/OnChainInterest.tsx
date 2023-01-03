@@ -11,6 +11,7 @@ import { NoItem } from '../icons/no-item';
 
 import CrownImg from '../imgs/crown.svg';
 import ethImage from '../imgs/eth.png';
+import NFTShower from './Credential/NFTShower';
 
 export default function OnChainInterest({
   data,
@@ -184,25 +185,14 @@ const TokenInfoBox = styled.div`
     line-height: 21px;
     text-align: right;
 
-    /* #FFFFFF */
-
     color: #ffffff;
   }
 `;
 
 function NFTCard({ data }: { data: NFTDataListItem }) {
-  const img = useMemo(() => {
-    if (data?.normalized_metadata?.image) {
-      return data?.normalized_metadata.image.replace(
-        'ipfs://',
-        'https://ipfs.io/ipfs/'
-      );
-    }
-    return '';
-  }, [data?.normalized_metadata.image]);
   return (
     <CardBox>
-      <img src={img} alt="" />
+      <NFTShower url={data?.normalized_metadata?.image || ''} ipfs />
       <div>
         <p>{data?.normalized_metadata.name}</p>
         {/* {data?.normalized_metadata.name} */}
@@ -213,7 +203,7 @@ function NFTCard({ data }: { data: NFTDataListItem }) {
 }
 
 const CardBox = styled.div`
-  width: 165px;
+  width: 162px;
   height: 225px;
   display: flex;
   flex-direction: column;
@@ -225,6 +215,11 @@ const CardBox = styled.div`
   img {
     width: 100%;
     aspect-ratio: 1;
+  }
+
+  video {
+    width: 100%;
+    height: 160px;
   }
 
   & > div {
