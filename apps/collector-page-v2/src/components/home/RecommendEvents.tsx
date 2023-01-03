@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 import Title from './Title';
 import Badge from '../contents/Badge';
 import { EventExploreListItemResponse } from '../../services/types/event';
 
+const isUrl = (str: string) => Yup.string().required().url().isValidSync(str);
 export default function RecommendEvents({
   data,
   viewAllAction,
@@ -17,6 +19,14 @@ export default function RecommendEvents({
       <Title text="Recommended Events" viewAllAction={viewAllAction} />{' '}
       <div className="lists">
         {data.map((item) => {
+          const { image, project, platform } = item;
+          const img = isUrl(image)
+            ? image
+            : isUrl(project?.image)
+            ? project.image
+            : isUrl(platform?.logo)
+            ? platform.logo
+            : '';
           return (
             <Card
               clickAction={() => {
@@ -24,7 +34,7 @@ export default function RecommendEvents({
               }}
               key={item.uid || item.id}
               title={item.name}
-              img={item.image}
+              img={img}
               author={item.project.name || ''}
             />
           );
@@ -82,6 +92,17 @@ const CardBox = styled.div`
   > img {
     width: 100%;
     height: 178px;
+    overflow: hidden;
+    &:before {
+      content: ' ';
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      border-radius: inherit;
+      padding: 2px;
+      box-sizing: border-box;
+    }
   }
 
   > div {
