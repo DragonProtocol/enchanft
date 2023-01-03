@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-29 11:18:46
+ * @LastEditTime: 2023-01-03 15:32:46
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
@@ -26,26 +26,33 @@ export default () => {
   const { user } = useWlUserReact();
   // vote
   const [votedIds, setVotedContentIds] = useState<Array<number | string>>([]);
-  const [voteQueueIds, setVoteQueueIds] = useState<Array<number | string>>([]);
+  const [votePendingIds, setVotePendingIds] = useState<Array<number | string>>(
+    []
+  );
   const onVote = useCallback(
     (data: ContentListItem) => {
-      if (data.upVoted || voteQueueIds.includes(data?.uuid || data.id)) return;
+      if (
+        data.upVoted ||
+        votedIds.includes(data?.uuid || data.id) ||
+        votePendingIds.includes(data?.uuid || data.id)
+      )
+        return;
       handleCallbackVerifyLogin(async () => {
         try {
           if (data?.uuid) {
-            setVoteQueueIds([...new Set([...voteQueueIds, data.uuid])]);
+            setVotePendingIds([...new Set([...votePendingIds, data.uuid])]);
             await personalVote(data.uuid, user.token);
             setVotedContentIds([...votedIds, data.uuid]);
           } else {
-            setVoteQueueIds([...new Set([...voteQueueIds, data.id])]);
+            setVotePendingIds([...new Set([...votePendingIds, data.id])]);
             await voteContent(data.id, user.token);
             setVotedContentIds([...votedIds, data.id]);
           }
         } catch (error) {
           toast.error(error.message);
         } finally {
-          setVoteQueueIds([
-            ...voteQueueIds.filter((id) =>
+          setVotePendingIds([
+            ...votePendingIds.filter((id) =>
               data?.uuid ? id !== data.uuid : id !== data.id
             ),
           ]);
@@ -56,35 +63,40 @@ export default () => {
       user,
       votedIds,
       setVotedContentIds,
-      voteQueueIds,
-      setVoteQueueIds,
+      votePendingIds,
+      setVotePendingIds,
       handleCallbackVerifyLogin,
     ]
   );
   // favor
   const [favoredIds, setFavoredContentIds] = useState([]);
-  const [favorQueueIds, setFavorQueueIds] = useState<Array<number | string>>(
-    []
-  );
+  const [favorPendingIds, setFavorPendingIds] = useState<
+    Array<number | string>
+  >([]);
   const onFavor = useCallback(
     (data: ContentListItem) => {
-      if (data.favored || favorQueueIds.includes(data?.uuid || data.id)) return;
+      if (
+        data.favored ||
+        favoredIds.includes(data?.uuid || data.id) ||
+        favorPendingIds.includes(data?.uuid || data.id)
+      )
+        return;
       handleCallbackVerifyLogin(async () => {
         try {
           if (data?.uuid) {
-            setFavorQueueIds([...new Set([...favorQueueIds, data.uuid])]);
+            setFavorPendingIds([...new Set([...favorPendingIds, data.uuid])]);
             await personalFavors(data.uuid, user.token);
             setFavoredContentIds([...favoredIds, data.uuid]);
           } else {
-            setFavorQueueIds([...new Set([...favorQueueIds, data.id])]);
+            setFavorPendingIds([...new Set([...favorPendingIds, data.id])]);
             await favorsContent(data.id, user.token);
             setFavoredContentIds([...favoredIds, data.id]);
           }
         } catch (error) {
           toast.error(error.message);
         } finally {
-          setFavorQueueIds([
-            ...favorQueueIds.filter((id) =>
+          setFavorPendingIds([
+            ...favorPendingIds.filter((id) =>
               data?.uuid ? id !== data.uuid : id !== data.id
             ),
           ]);
@@ -95,17 +107,17 @@ export default () => {
       user,
       favoredIds,
       setFavoredContentIds,
-      favorQueueIds,
-      setFavorQueueIds,
+      favorPendingIds,
+      setFavorPendingIds,
       handleCallbackVerifyLogin,
     ]
   );
 
   // hidden
   const [hiddenIds, setHiddenContentIds] = useState([]);
-  const [hiddenQueueIds, setHiddenQueueIds] = useState<Array<number | string>>(
-    []
-  );
+  const [hiddenPendingIds, setHiddenPendingIds] = useState<
+    Array<number | string>
+  >([]);
   const onHidden = useCallback(
     (
       data: ContentListItem,
@@ -114,15 +126,20 @@ export default () => {
         error?: (error: Error) => void;
       }
     ) => {
-      if (data.hidden || hiddenQueueIds.includes(data?.uuid || data.id)) return;
+      if (
+        data.hidden ||
+        hiddenIds.includes(data?.uuid || data.id) ||
+        hiddenPendingIds.includes(data?.uuid || data.id)
+      )
+        return;
       handleCallbackVerifyLogin(async () => {
         try {
           if (data?.uuid) {
-            setHiddenQueueIds([...new Set([...hiddenQueueIds, data.uuid])]);
+            setHiddenPendingIds([...new Set([...hiddenPendingIds, data.uuid])]);
             await personalComplete(data.uuid, user.token);
             setHiddenContentIds([...hiddenIds, data.uuid]);
           } else {
-            setHiddenQueueIds([...new Set([...hiddenQueueIds, data.id])]);
+            setHiddenPendingIds([...new Set([...hiddenPendingIds, data.id])]);
             await complete(data.id, user.token);
             setHiddenContentIds([...hiddenIds, data.id]);
           }
@@ -135,8 +152,8 @@ export default () => {
           }
           toast.error(error.message);
         } finally {
-          setHiddenQueueIds([
-            ...hiddenQueueIds.filter((id) =>
+          setHiddenPendingIds([
+            ...hiddenPendingIds.filter((id) =>
               data?.uuid ? id !== data.uuid : id !== data.id
             ),
           ]);
@@ -147,8 +164,8 @@ export default () => {
       user,
       hiddenIds,
       setHiddenContentIds,
-      hiddenQueueIds,
-      setHiddenQueueIds,
+      hiddenPendingIds,
+      setHiddenPendingIds,
       handleCallbackVerifyLogin,
     ]
   );
@@ -173,13 +190,13 @@ export default () => {
   );
   return {
     votedIds,
-    voteQueueIds,
+    votePendingIds,
     onVote,
     favoredIds,
-    favorQueueIds,
+    favorPendingIds,
     onFavor,
     hiddenIds,
-    hiddenQueueIds,
+    hiddenPendingIds,
     onHidden,
     onShare,
     formatCurrentContents,
