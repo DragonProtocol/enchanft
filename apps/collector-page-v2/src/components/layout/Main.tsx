@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-28 13:16:02
+ * @LastEditTime: 2023-01-03 18:27:18
  * @Description: 站点主体内容（路由导航）
  */
 import { useRoutes } from 'react-router-dom';
@@ -19,6 +19,7 @@ import {
 import EventCompleteGuideModal from '../event/EventCompleteGuideModal';
 import useRoute from '../../route/useRoute';
 import useLogin from '../../hooks/useLogin';
+import NoLogin from './NoLogin';
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -59,7 +60,7 @@ function Main() {
         }
         // 没有登录但需要登录权限
         if (permissions.includes(RoutePermission.login)) {
-          return <NoPermission>Need Login</NoPermission>;
+          return <NoLogin />;
         }
       }
       return element;
@@ -93,4 +94,5 @@ const NoPermission = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 30px;
+  color: #ffffff;
 `;
