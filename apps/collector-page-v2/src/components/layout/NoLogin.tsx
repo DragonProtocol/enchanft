@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:29:11
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 18:22:59
+ * @LastEditTime: 2023-01-03 18:28:48
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -18,7 +18,7 @@ function NoLogin() {
         <Icon src={WalletSvg} />
         <MainText>No Wallet Connected</MainText>
         <SecondaryText>Get Started by connecting your wallet</SecondaryText>
-        <ButtonPrimary onClick={() => login()}>Commect Wallet</ButtonPrimary>
+        <LoginButton onClick={() => login()}>Connect Wallet</LoginButton>
       </NoLoginContainer>
     </NoLoginWrapper>
   );
@@ -58,4 +58,7 @@ const SecondaryText = styled.span`
   line-height: 19px;
   text-align: center;
   color: #718096;
+`;
+const LoginButton = styled(ButtonPrimary)`
+  width: 228px;
 `;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 18:11:21
+ * @LastEditTime: 2023-01-03 18:27:18
  * @Description: 站点主体内容（路由导航）
  */
 import { useRoutes } from 'react-router-dom';
@@ -94,4 +94,5 @@ const NoPermission = styled.div`
   justify-content: center;
   align-items: center;
   font-size: 30px;
+  color: #ffffff;
 `;
