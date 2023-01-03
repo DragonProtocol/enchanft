@@ -1,7 +1,5 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
-import * as IPFS from 'ipfs-core';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import axios from 'axios';
-import Loading from '../../common/loading/Loading';
 
 export default function NFTShower({
   url,
@@ -21,21 +19,19 @@ export default function NFTShower({
     }
   };
 
-  useEffect(() => {
-    attemptPlay();
+  const imageErrCheck = useCallback(async (imageUrl: string) => {
+    if (!imageUrl) return;
+    try {
+      const resp = await axios.get(imageUrl);
+      setContentType(resp.headers['content-type']);
+    } catch (error) {
+      console.error(error);
+    }
   }, []);
 
   useEffect(() => {
-    if (url.startsWith('ipfs') && !url.includes('.')) {
-      const dataUrl = url.replace('ipfs://', 'https://ipfs.io/ipfs/');
-      axios
-        .get(dataUrl)
-        .then((resp) => {
-          setContentType(resp.headers['content-type']);
-        })
-        .catch((err) => {});
-    }
-  }, [url]);
+    attemptPlay();
+  }, [contentType]);
 
   const img = useMemo(() => {
     if (ipfs) {
@@ -51,5 +47,13 @@ export default function NFTShower({
     return <video src={img} autoPlay loop ref={videoEl} />;
   }
 
-  return <img src={img} alt="" />;
+  return (
+    <img
+      src={img}
+      alt=""
+      onError={() => {
+        imageErrCheck(img);
+      }}
+    />
+  );
 }
