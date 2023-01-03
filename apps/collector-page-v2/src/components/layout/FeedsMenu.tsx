@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-03 16:10:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 17:09:46
+ * @LastEditTime: 2023-01-03 18:44:50
  * @Description: file description
  */
 import { useNavigate } from 'react-router-dom';
@@ -51,4 +51,5 @@ const FeedsMenuWrapper = styled.div`
 const TabSwitch = styled(Tab)`
   border-bottom: none;
   justify-content: flex-start;
+  height: 32px;
 `;
