@@ -47,6 +47,10 @@ export default function NFTShower({
     return <video src={img} autoPlay muted loop ref={videoEl} />;
   }
 
+  if (!img) {
+    return null;
+  }
+
   return (
     <img
       src={img}
