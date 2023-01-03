@@ -80,8 +80,10 @@ const CardBox = styled.div`
   gap: 10px;
   cursor: pointer;
   height: 88px;
-  border-right: 1px solid rgba(57, 66, 76, 0.5);
   border-bottom: 1px solid rgba(57, 66, 76, 0.5);
+  &:last-child {
+    border: none;
+  }
   box-sizing: border-box;
   & > img {
     width: 48px;

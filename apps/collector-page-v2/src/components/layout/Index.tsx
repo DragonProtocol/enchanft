@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 10:33:24
+ * @LastEditTime: 2023-01-03 11:18:21
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
@@ -56,7 +56,7 @@ const RightInner = styled.div`
   height: 100%;
   margin: 0 auto;
   box-sizing: border-box;
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+  @media (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
     width: 100%;
   }
   @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
