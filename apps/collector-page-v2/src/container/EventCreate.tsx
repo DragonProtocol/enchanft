@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 17:45:32
+ * @LastEditTime: 2023-01-03 19:05:05
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -14,6 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { useWlUserReact } from '@ecnft/wl-user-react';
+import { useSearchParams } from 'react-router-dom';
 import { ChainType, Platform, Reward } from '../services/types/common';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { CreateEventData } from '../services/types/event';
@@ -86,6 +87,7 @@ const chainOptions: Array<{
 function EventCreate() {
   const dispatch = useAppDispatch();
   const { status } = useAppSelector(selectState);
+  const [searchParams, setSearchParams] = useSearchParams();
   const loading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
     [status]
@@ -108,7 +110,7 @@ function EventCreate() {
       image: '',
       platform: '' as unknown as Platform,
       project: '' as unknown as number,
-      link: '',
+      link: searchParams.get('url') || '',
       chain: ChainType.EVM,
       reward: Reward.BADGE,
       startTime: new Date().getTime(),
