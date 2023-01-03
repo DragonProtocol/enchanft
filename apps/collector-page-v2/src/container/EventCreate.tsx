@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-27 14:16:44
+ * @LastEditTime: 2023-01-03 17:45:32
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -213,6 +213,15 @@ function EventCreate() {
             placeholder="Original URL"
             onChange={(e) => formik.setFieldValue('link', e.target.value)}
             value={formik.values.link}
+            onBlur={() => {
+              if (
+                !formik.values.link.startsWith('http') &&
+                formik.values.link.length > 4
+              ) {
+                const urlWithProtocol = `https://${formik.values.link}`;
+                formik.setFieldValue('link', urlWithProtocol);
+              }
+            }}
           />
           {renderFieldError('link')}
         </FormField>
