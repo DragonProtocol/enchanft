@@ -2,9 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 13:59:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 11:59:55
+ * @LastEditTime: 2023-01-03 10:20:42
  * @Description: file description
  */
+import React, { ReactNode } from 'react';
 import { ReactComponent as HomeSvg } from '../components/common/icons/svgs/home.svg';
 import { ReactComponent as ProfileSvg } from '../components/common/icons/svgs/profile.svg';
 import { ReactComponent as FeedSvg } from '../components/common/icons/svgs/feed.svg';
@@ -16,7 +17,7 @@ import { CutomRouteObject, getRoute, RouteKey } from './routes';
 export type CutomNavObject = {
   name: string;
   activeRouteKeys: RouteKey[];
-  icon?: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  icon?: ReactNode;
   children?: CutomNavObject[];
   key?: string;
   route?: CutomRouteObject;
@@ -25,19 +26,19 @@ export const navs: CutomNavObject[] = [
   {
     name: 'home',
     activeRouteKeys: [RouteKey.home],
-    icon: HomeSvg,
+    icon: React.createElement(HomeSvg),
     route: getRoute(RouteKey.home),
   },
   {
     name: 'profile',
     activeRouteKeys: [RouteKey.profile],
-    icon: ProfileSvg,
+    icon: React.createElement(ProfileSvg),
     route: getRoute(RouteKey.profile),
   },
   {
     key: 'feed',
     name: 'Feed',
-    icon: FeedSvg,
+    icon: React.createElement(FeedSvg),
     activeRouteKeys: [],
     children: [
       {
@@ -65,13 +66,13 @@ export const navs: CutomNavObject[] = [
   {
     name: 'favorite',
     activeRouteKeys: [RouteKey.favorites],
-    icon: LikeSvg,
+    icon: React.createElement(LikeSvg),
     route: getRoute(RouteKey.favorites),
   },
   {
     key: 'feed-submit',
     name: 'Submit',
-    icon: PlusSquareSvg,
+    icon: React.createElement(PlusSquareSvg),
     activeRouteKeys: [RouteKey.contentCreate],
     route: getRoute(RouteKey.contentCreate),
     children: [
