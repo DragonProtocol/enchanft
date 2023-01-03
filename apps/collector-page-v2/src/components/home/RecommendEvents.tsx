@@ -1,11 +1,10 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import * as Yup from 'yup';
 import Title from './Title';
 import Badge from '../contents/Badge';
 import { EventExploreListItemResponse } from '../../services/types/event';
+import isUrl from '../../utils/isUrl';
 
-const isUrl = (str: string) => Yup.string().required().url().isValidSync(str);
 export default function RecommendEvents({
   data,
   viewAllAction,
