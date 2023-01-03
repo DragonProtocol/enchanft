@@ -1,10 +1,10 @@
-import { useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components';
 import {
   GalxeDataListItem,
   NooxDataListItem,
   PoapData,
 } from '../../../services/types/profile';
+import NFTShower from './NFTShower';
 
 export function NooxCard({
   data,
@@ -13,37 +13,9 @@ export function NooxCard({
   data: NooxDataListItem;
   oatAction: () => void;
 }) {
-  const videoEl = useRef<HTMLVideoElement>(null);
-
-  const attemptPlay = () => {
-    if (videoEl && videoEl.current) {
-      videoEl.current.play().catch((error) => {
-        console.error('Error attempting to play', error);
-      });
-    }
-  };
-
-  useEffect(() => {
-    attemptPlay();
-  }, []);
-
-  const img = useMemo(() => {
-    if (data.uriMetaData) {
-      return data?.uriMetaData.image.replace(
-        'ipfs://',
-        'https://ipfs.io/ipfs/'
-      );
-    }
-    return '';
-  }, [data?.uriMetaData?.image]);
-
   return (
     <Box>
-      {img.endsWith('mp4') ? (
-        <video src={img} autoPlay loop ref={videoEl} />
-      ) : (
-        <img src={img} alt="" />
-      )}
+      <NFTShower url={data?.uriMetaData?.image || ''} ipfs />
       <div className="hover">
         <button type="button" onClick={oatAction}>
           Get The OAT
@@ -55,8 +27,8 @@ export function NooxCard({
 
 const Box = styled.div`
   display: inline-block;
-  width: 150px;
-  height: 200px;
+  width: 198px;
+  height: 240px;
   border-radius: 10px;
   overflow: hidden;
   position: relative;
@@ -100,27 +72,9 @@ export function GalxeCard({
   data: GalxeDataListItem;
   oatAction: () => void;
 }) {
-  const videoEl = useRef<HTMLVideoElement>(null);
-
-  const attemptPlay = () => {
-    if (videoEl && videoEl.current) {
-      videoEl.current.play().catch((error) => {
-        console.error('Error attempting to play', error);
-      });
-    }
-  };
-
-  useEffect(() => {
-    attemptPlay();
-  }, []);
-
   return (
     <CircleCardBox>
-      {data?.image.endsWith('mp4') ? (
-        <video src={data?.image} autoPlay loop ref={videoEl} />
-      ) : (
-        <img src={data?.image} alt="" />
-      )}
+      <NFTShower url={data?.image || ''} />
       <div className="hover">
         <button type="button" onClick={oatAction}>
           Get The OAT
@@ -206,8 +160,8 @@ const NoItemBox = styled.div`
 
 const CircleCardBox = styled.div`
   display: inline-block;
-  width: 170px;
-  height: 170px;
+  width: 198px;
+  height: 198px;
   border-radius: 50%;
   overflow: hidden;
   position: relative;
