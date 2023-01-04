@@ -17,6 +17,7 @@ export default function ListItem({
   voteAction,
   favorsAction,
   favored,
+  upVoted,
   hidden,
   hiddenAction,
   shareAction,
@@ -30,6 +31,7 @@ export default function ListItem({
   hidden?: boolean;
   clickAction: () => void;
   voteAction?: () => void;
+  upVoted?: boolean;
   favorsAction?: () => void;
   favored?: boolean;
   hiddenAction?: () => void;
@@ -73,7 +75,9 @@ export default function ListItem({
       {isActive && (
         <ContentItemFooter>
           <span
-            className={isActive ? 'vote' : 'vote active'}
+            className={
+              isActive ? (upVoted ? 'vote disable' : 'vote') : 'vote active'
+            }
             onClick={(e) => {
               e.stopPropagation();
               if (voteAction) {
@@ -89,6 +93,7 @@ export default function ListItem({
               e.stopPropagation();
               if (favorsAction) favorsAction();
             }}
+            className={favored ? 'disable' : ''}
           >
             {favored ? <Heart fill="#718096" /> : <Heart />}
           </span>
@@ -286,6 +291,10 @@ const ContentItemFooter = styled.div`
     width: 32px;
     height: 32px;
     box-sizing: border-box;
+
+    &.disable {
+      cursor: not-allowed;
+    }
   }
 
   & span.vote {
