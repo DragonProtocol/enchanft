@@ -42,7 +42,7 @@
     "react-datepicker": "^4.8.0",
     "react-device-detect": "^2.2.2",
     "react-dom": "18.2.0",
-    "react-ga": "^3.3.0",
+    "react-ga4": "1.4.1",
     "react-intersection-observer": "^9.3.4",
     "react-lottie": "^1.2.3",
     "react-modal": "^3.16.1",
