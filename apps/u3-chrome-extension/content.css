@@ -19,10 +19,32 @@
   }
 }
 
+.u3-close-btn{
+  position: fixed;
+  top: 40px;
+  right: 30px;
+  transform: rotate(45deg);
+  cursor: pointer;
+}
+
+@media screen and (min-width: 1440px) {
+  .u3-close-btn{
+    right: calc(30px + (100vw - 1440px) / 2);
+  }
+}
+
 .toHide {
   transform-origin: 70% 50vh;
   /* animation: 4s linear 0s infinite alternate hide; */
   animation: 1.2s linear 0s 1 forwards hide;
+}
+
+.show{
+  display: block;
+  z-index: inherit;
+  position: inherit;
+  opacity: 1;
+  animation: none;
 }
 
 #u3-loading {

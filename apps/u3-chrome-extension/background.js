@@ -1,9 +1,23 @@
-chrome.action.onClicked.addListener(async () => {
-  const activeTab = await getTab();
+// chrome.action.onClicked.addListener(async () => {
+//   const activeTab = await getTab();
 
-  chrome.tabs.sendMessage(activeTab.id, {
+//   chrome.tabs.sendMessage(activeTab.id, {
+//     message: 'clicked_browser_action',
+//     tab: activeTab,
+//   });
+// });
+
+chrome.contextMenus.create({
+  id: 'U3',
+  type: 'normal',
+  title: 'add content',
+  contexts: ['all'],
+});
+
+chrome.contextMenus.onClicked.addListener((info, tab) => {
+  chrome.tabs.sendMessage(tab.id, {
     message: 'clicked_browser_action',
-    tab: activeTab,
+    tab,
   });
 });
 

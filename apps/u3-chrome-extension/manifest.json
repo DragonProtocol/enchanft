@@ -35,6 +35,6 @@
   ],
 
   "minimum_chrome_version": "96",
-  "permissions": ["declarativeNetRequestWithHostAccess"],
+  "permissions": ["declarativeNetRequestWithHostAccess", "contextMenus"],
   "host_permissions": ["<all_urls>"]
 }
