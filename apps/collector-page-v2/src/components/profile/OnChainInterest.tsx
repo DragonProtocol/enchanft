@@ -1,6 +1,7 @@
 import { BigNumber, ethers } from 'ethers';
 import { useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { MEDIA_BREAK_POINTS } from '../../constants';
 import {
   ERC20Balances,
   NFTData,
@@ -192,8 +193,8 @@ const TokenInfoBox = styled.div`
 function NFTCard({ data }: { data: NFTDataListItem }) {
   return (
     <CardBox>
-      <NFTShower url={data?.normalized_metadata?.image || ''} ipfs />
-      <div>
+      <NFTShower url={data?.normalized_metadata?.image || ''} ipfs calcHeight />
+      <div className="name">
         <p>{data?.normalized_metadata.name}</p>
         {/* {data?.normalized_metadata.name} */}
         {/* <h3>2.99 SOL</h3> */}
@@ -204,7 +205,7 @@ function NFTCard({ data }: { data: NFTDataListItem }) {
 
 const CardBox = styled.div`
   width: 162px;
-  height: 225px;
+  /* height: 225px; */
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -212,6 +213,23 @@ const CardBox = styled.div`
   border-radius: 10px;
   overflow: hidden;
   position: relative;
+  &:before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+  }
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: calc((100% - 20px * 3) / 4);
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: calc((100% - 20px * 2) / 3);
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+    width: calc((100% - 20px * 1) / 2);
+  }
+
   img {
     width: 100%;
     aspect-ratio: 1;
@@ -219,10 +237,10 @@ const CardBox = styled.div`
 
   video {
     width: 100%;
-    height: 160px;
+    aspect-ratio: 1;
   }
 
-  & > div {
+  & > div.name {
     padding: 20px;
     > p {
       margin: 0;
@@ -310,6 +328,7 @@ const ContentBox = styled.div`
 
   .wallet {
     width: 360px;
+    min-width: 360px;
     box-sizing: border-box;
 
     background: #1b1e23;

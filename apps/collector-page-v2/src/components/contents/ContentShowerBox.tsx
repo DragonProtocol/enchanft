@@ -116,6 +116,7 @@ export default function ContentShowerBox({
           if (selectContent) {
             return (
               <ExtensionSupport
+                btns
                 url={selectContent.link}
                 title={selectContent.title}
                 img={

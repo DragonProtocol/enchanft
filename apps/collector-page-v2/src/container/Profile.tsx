@@ -204,7 +204,7 @@ const ProfileWrapper = styled.div`
 
     .infos {
       display: flex;
-      gap: 24px;
+      gap: 40px;
       margin-bottom: 24px;
     }
 
