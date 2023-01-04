@@ -145,17 +145,21 @@ export default function ContentShowerBox({
             );
           }
         }
-        return (
-          <ExtensionSupport
-            url={selectContent.link}
-            title={selectContent.title}
-            msg="Reader view is not supported for this page! Please view it in new tab."
-            img={
-              selectContent.imageUrl ||
-              (selectContent.uniProjects && selectContent.uniProjects[0]?.image)
-            }
-          />
-        );
+        if (selectContent) {
+          return (
+            <ExtensionSupport
+              url={selectContent.link}
+              title={selectContent.title}
+              msg="Reader view is not supported for this page! Please view it in new tab."
+              img={
+                selectContent.imageUrl ||
+                (selectContent.uniProjects &&
+                  selectContent.uniProjects[0]?.image)
+              }
+            />
+          );
+        }
+        return null;
       })()}
     </ContentBox>
   );
