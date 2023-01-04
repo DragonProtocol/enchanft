@@ -193,11 +193,14 @@ const ProfileWrapper = styled.div`
   & div.loading {
     display: flex;
     justify-content: center;
-    margin-top: 40px;
+    height: calc(100% - 210px);
+    align-items: center;
   }
   > div {
     margin: 0 auto;
     padding: 24px;
+    height: 100%;
+    box-sizing: border-box;
 
     .infos {
       display: flex;

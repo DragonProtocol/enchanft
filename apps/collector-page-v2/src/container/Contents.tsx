@@ -14,9 +14,20 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContentsHeader from '../components/contents/Header';
 
-import { fetchContents } from '../services/api/contents';
-import { ContentLang, ContentListItem } from '../services/types/contents';
 import ListItem, { ListItemHidden } from '../components/contents/ListItem';
+import {
+  complete,
+  fetchContents,
+  personalComplete,
+  updateContent,
+} from '../services/api/contents';
+import {
+  ContentLang,
+  ContentListItem,
+  ContentStatus,
+} from '../services/types/contents';
+import userFavored from '../hooks/useFavored';
+import { useVoteUp } from '../hooks/useVoteUp';
 import Loading from '../components/common/loading/Loading';
 import { getProjectShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
@@ -54,6 +65,7 @@ function Contents() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   const {
     onFavor: favors,
@@ -146,6 +158,48 @@ function Contents() {
       }, 3250);
     },
     [contents, hiddenData]
+  );
+
+  const scoreContent = useCallback(
+    async (editId: number) => {
+      if (updating) return;
+      setUpdating(true);
+      try {
+        await updateContent({ id: editId, adminScore: 10 }, user.token);
+        toast.success('score content success!!!');
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setUpdating(false);
+      }
+    },
+    [user.token, updating]
+  );
+
+  const delContent = useCallback(
+    async (editId: number) => {
+      if (updating) return;
+      setUpdating(true);
+      try {
+        await updateContent(
+          { id: editId, status: ContentStatus.HIDDEN },
+          user.token
+        );
+        const idx = contents.findIndex((item) => {
+          if (item?.id && item.id === editId) return true;
+          return false;
+        });
+
+        setContents([...contents.slice(0, idx), ...contents.slice(idx + 1)]);
+        setSelectContent(undefined);
+        toast.success('delete content success!!!');
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setUpdating(false);
+      }
+    },
+    [user.token, contents, updating]
   );
 
   useEffect(() => {
@@ -264,7 +318,19 @@ function Contents() {
             )}
           </ListBox>
           <ContentBoxContainer>
-            <ContentShowerBox selectContent={selectContent} />
+            <ContentShowerBox
+              selectContent={selectContent}
+              deleteAction={() => {
+                if (selectContent?.id) delContent(selectContent.id);
+              }}
+              editAction={() => {
+                if (selectContent?.id)
+                  navigate(`/contents/create?id=${selectContent.id}`);
+              }}
+              thumbUpAction={() => {
+                if (selectContent?.id) scoreContent(selectContent.id);
+              }}
+            />
           </ContentBoxContainer>
         </ContentsWrapper>
       )}
@@ -323,12 +389,14 @@ const ContentsWrapper = styled.div<{ loading?: string }>`
   overflow: hidden;
   display: flex;
   /* margin-top: 24px; */
+  flex-grow: 1;
 
   & .loading {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
   }
 `;
 const ListBox = styled(ListScrollBox)`

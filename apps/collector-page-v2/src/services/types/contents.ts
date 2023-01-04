@@ -6,6 +6,11 @@ export enum ContentLang {
   中文 = 'CN',
 }
 
+export enum ContentStatus {
+  HIDDEN = 'HIDDEN',
+  VISIBLE = 'VISIBLE',
+}
+
 export enum ContentType {
   NEWS = 'News',
   GAMING = 'Gaming',
