@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 11:49:18
+ * @LastEditTime: 2023-01-04 14:22:40
  * @Description: file description
  */
 import { useState } from 'react';
@@ -12,10 +12,14 @@ import LoginButton from './LoginButton';
 import Nav from './Nav';
 import LogoSvg from '../imgs/logo.svg';
 import LogoIconSvg from '../imgs/logo-icon.svg';
+import LogoutConfirmModal from './LogoutConfirmModal';
+import useLogin from '../../hooks/useLogin';
 
 export default function Menu() {
+  const { logout } = useLogin();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
   return (
     <MenuWrapper
       onMouseEnter={() => setIsOpen(true)}
@@ -27,8 +31,26 @@ export default function Menu() {
         <Nav onlyIcon={!isOpen} />
       </NavListBox>
       <LoginButtonBox>
-        <LoginButton onlyIcon={!isOpen} />
+        <LoginButton
+          onlyIcon={!isOpen}
+          onLogout={() => {
+            setOpenLogoutConfirm(true);
+          }}
+        />
       </LoginButtonBox>
+      <LogoutConfirmModal
+        isOpen={openLogoutConfirm}
+        onClose={() => {
+          setOpenLogoutConfirm(false);
+        }}
+        onConfirm={() => {
+          logout();
+          setOpenLogoutConfirm(false);
+        }}
+        onAfterOpen={() => {
+          setIsOpen(false);
+        }}
+      />
     </MenuWrapper>
   );
 }

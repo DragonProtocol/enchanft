@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 17:55:16
+ * @LastEditTime: 2023-01-04 14:20:10
  * @Description: 基础按钮
  */
 import React from 'react';
@@ -21,19 +21,21 @@ const customStyles = {
     right: 0,
     bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 1,
   },
   content: {
     position: 'absolute',
-    width: 'auto',
-    height: 'auto',
+    width: 'fit-content',
+    height: 'fit-content',
     padding: 0,
     margin: 0,
-    top: '40%',
+    top: '50%',
     left: '50%',
     overflow: 'auto',
     WebkitOverflowScrolling: 'touch',
     transform: 'translate(-50%,-50%)',
     border: 'none',
+    background: 'none',
   },
 };
 function ModalBase({
@@ -58,12 +60,21 @@ function ModalBase({
   );
 }
 export default ModalBase;
+export const ModalBaseBody = styled.div`
+  padding: 20px;
+  box-sizing: border-box;
+  background: #1b1e23;
+  border-radius: 20px;
+`;
 export const ModalBaseTitle = styled.p`
   margin: 0;
+  padding: 0;
+  font-style: italic;
   font-weight: 700;
-  font-size: 20px;
-  line-height: 30px;
-  color: #333333;
+  font-size: 24px;
+  line-height: 28px;
+
+  color: #ffffff;
   ${isMobile &&
   `
     font-size: 14px;

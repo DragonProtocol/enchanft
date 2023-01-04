@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 11:18:21
+ * @LastEditTime: 2023-01-04 15:25:04
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
@@ -69,4 +69,8 @@ export const MainWrapper = styled.div`
   height: 100%;
   padding: 24px;
   box-sizing: border-box;
+  @media (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
+    width: ${MEDIA_BREAK_POINTS.xl}px;
+    overflow-x: auto;
+  }
 `;
