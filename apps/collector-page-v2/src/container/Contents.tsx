@@ -14,15 +14,9 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContentsHeader from '../components/contents/Header';
 
-import {
-  complete,
-  fetchContents,
-  personalComplete,
-} from '../services/api/contents';
+import { fetchContents } from '../services/api/contents';
 import { ContentLang, ContentListItem } from '../services/types/contents';
-import ListItem from '../components/contents/ListItem';
-import userFavored from '../hooks/useFavored';
-import { useVoteUp } from '../hooks/useVoteUp';
+import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import Loading from '../components/common/loading/Loading';
 import { getProjectShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
@@ -51,6 +45,7 @@ function Contents() {
     orderBy: 'For U',
     lang: ContentLang.All,
   });
+  const removeTimer = useRef<NodeJS.Timeout>();
 
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
@@ -63,19 +58,9 @@ function Contents() {
   const {
     onFavor: favors,
     onVote: vote,
+    onHidden: hiddenData,
     formatCurrentContents,
   } = useContentHandles();
-
-  const hiddenContent = useCallback(
-    async (uuid: string | number) => {
-      if (Number.isNaN(Number(uuid))) {
-        await personalComplete(`${uuid}`, user.token);
-      } else {
-        await complete(Number(uuid), user.token);
-      }
-    },
-    [user.token]
-  );
 
   const onShare = (data: ContentListItem) => {
     tweetShare(data.title, getProjectShareUrl(data.id));
@@ -136,6 +121,33 @@ function Contents() {
     [queryRef.current, contents]
   );
 
+  const removeContent = useCallback(
+    (idx: number) => {
+      removeTimer.current = setTimeout(() => {
+        if (idx === -1) return;
+
+        const dataItem = contents[idx];
+        clearTimeout(removeTimer.current);
+        removeTimer.current = undefined;
+        hiddenData(dataItem);
+        setContents([...contents.slice(0, idx), ...contents.slice(idx + 1)]);
+        let item;
+        if (contents[idx + 1]) {
+          item = contents[idx + 1];
+        } else if (contents[idx - 1]) {
+          item = contents[idx - 1];
+        } else {
+          setSelectContent(undefined);
+        }
+        if (item) {
+          navigate(`/contents/${item.id || item.uuid}`);
+          setSelectContent(item);
+        }
+      }, 3250);
+    },
+    [contents, hiddenData]
+  );
+
   useEffect(() => {
     fetchData('', '', 'For U', ContentLang.All);
   }, []);
@@ -185,6 +197,29 @@ function Contents() {
                 isActive = item.uuid === selectContent?.uuid;
               }
 
+              if (item.hidden) {
+                return (
+                  <ListItemHidden
+                    key={item.id || item.uuid}
+                    isActive={isActive}
+                    hidden
+                    undoAction={() => {
+                      setContents([
+                        ...contents.slice(0, idx),
+                        {
+                          ...contents[idx],
+                          hidden: false,
+                        },
+                        ...contents.slice(idx + 1),
+                      ]);
+                      if (removeTimer.current) {
+                        clearTimeout(removeTimer.current);
+                      }
+                    }}
+                  />
+                );
+              }
+
               return (
                 <ListItem
                   key={item.id || item.uuid}
@@ -197,13 +232,21 @@ function Contents() {
                     onShare(item);
                   }}
                   voteAction={() => {
-                    vote(selectContent);
+                    vote(item);
                   }}
                   favorsAction={() => {
-                    favors(selectContent);
+                    favors(item);
                   }}
                   hiddenAction={() => {
-                    setShowModal(true);
+                    setContents([
+                      ...contents.slice(0, idx),
+                      {
+                        ...contents[idx],
+                        hidden: true,
+                      },
+                      ...contents.slice(idx + 1),
+                    ]);
+                    removeContent(idx);
                   }}
                   {...item}
                 />
@@ -232,7 +275,6 @@ function Contents() {
         }}
         confirmAction={() => {
           try {
-            hiddenContent(selectContent?.uuid || selectContent.id);
             const idx = contents.findIndex((item) => {
               if (item?.uuid && item?.uuid === selectContent?.uuid) return true;
               if (item?.id && item.id === selectContent.id) return true;
@@ -247,25 +289,7 @@ function Contents() {
               },
               ...contents.slice(idx + 1),
             ]);
-            setTimeout(() => {
-              setContents([
-                ...contents.slice(0, idx),
-                ...contents.slice(idx + 1),
-              ]);
-              let item;
-              if (contents[idx + 1]) {
-                item = contents[idx + 1];
-              } else if (contents[idx - 1]) {
-                item = contents[idx - 1];
-              } else {
-                setSelectContent(undefined);
-              }
-              if (item) {
-                navigate(`/contents/${item.id || item.uuid}`);
-                setSelectContent(item);
-              }
-            }, 550);
-
+            removeContent(idx);
             setShowModal(false);
           } catch (error) {
             toast.error(error.message);
@@ -329,65 +353,3 @@ const ListBox = styled(ListScrollBox)`
     }
   }
 `;
-// const ContentBox = styled.div`
-//   height: calc(100%);
-//   width: calc(100% - 360px);
-
-//   overflow-x: hidden;
-//   overflow: hidden;
-
-//   & img {
-//     max-width: 100%;
-//   }
-
-//   & pre {
-//     overflow: scroll;
-//   }
-
-//   & div.tabs {
-//     height: 60px;
-//     background: #1b1e23;
-//     border-bottom: 1px solid #39424c;
-//     box-sizing: border-box;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-
-//     > div {
-//       width: 260px;
-//       height: 40px;
-//       background: #14171a;
-//       border-radius: 100px;
-//       padding: 4px;
-//       box-sizing: border-box;
-//       display: flex;
-//       align-items: center;
-//       justify-content: space-between;
-//       > button {
-//         cursor: pointer;
-//         width: 122px;
-//         height: 32px;
-//         border: none;
-
-//         box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
-//           0px 0px 4px rgba(20, 23, 26, 0.04);
-//         border-radius: 100px;
-//         outline: none;
-//         background: inherit;
-//         color: #a0aec0;
-
-//         &.active {
-//           color: #ffffff;
-//           background: #21262c;
-//         }
-//       }
-//     }
-//   }
-// `;
-
-// const LoadingBox = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   margin-top: 40px;
-// `;

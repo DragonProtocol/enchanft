@@ -118,18 +118,57 @@ export default function ListItem({
   );
 }
 
-// export function ListItemHidden({ undoAction }: { undoAction: () => void }) {
-//   return (
-//     <ContentItem isActive={false}>
-//       <div className="tint">
-//         😊 Thanks, We will use this to make your list better.{' '}
-//         <span onClick={undoAction}>Undo</span>
-//       </div>
-//     </ContentItem>
-//   );
-// }
+export function ListItemHidden({
+  undoAction,
+  isActive,
+  hidden,
+}: {
+  undoAction: () => void;
+  isActive: boolean;
+  hidden?: boolean;
+}) {
+  const timerRef = useRef<NodeJS.Timeout>();
+  const [height, setHeight] = useState('fit-content');
+  const itemRef = useRef<HTMLDivElement>();
+
+  const [classNames, setClassNames] = useState('');
+  useEffect(() => {
+    if (hidden) {
+      const { clientHeight } = itemRef.current;
+      setHeight(`${clientHeight}px`);
+
+      timerRef.current = setTimeout(() => {
+        setClassNames('active hidden');
+      }, 3050);
+    }
+    if (isActive) {
+      setClassNames('active');
+    } else {
+      setClassNames('');
+    }
+  }, [hidden, isActive]);
+
+  return (
+    <ContentItem isActive height={height} className={classNames} ref={itemRef}>
+      <div className="tint">
+        😊 Thanks, We will use this to make your list better.{' '}
+        <span
+          onClick={() => {
+            if (timerRef.current) {
+              clearTimeout(timerRef.current);
+            }
+            undoAction();
+          }}
+        >
+          Undo
+        </span>
+      </div>
+    </ContentItem>
+  );
+}
 
 const ContentItem = styled.div<{ isActive: boolean; height: string }>`
+  box-sizing: border-box;
   line-height: 27px;
   padding: 20px;
   gap: 10px;
