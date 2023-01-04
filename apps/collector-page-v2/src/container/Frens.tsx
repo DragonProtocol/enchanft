@@ -1073,7 +1073,7 @@ const FrensBody = styled.div`
 `;
 const FrensFeed = styled.div`
   width: 100%;
-  max-width: 47.5rem;
+  /* max-width: 47.5rem; */
   min-width: 37.5rem;
   background: #1b1e23;
   border-radius: 20px;
@@ -1081,7 +1081,8 @@ const FrensFeed = styled.div`
   margin-right: 24px;
 `;
 const FrensRight = styled.div`
-  flex-grow: 1;
+  /* flex-grow: 1; */
+  width: 360px;
 `;
 const FrensFeedSwitch = styled.div`
   display: flex;
@@ -1149,9 +1150,7 @@ const FrensFeedCard = styled.div`
   .content {
     display: flex;
     flex-direction: column;
-    /* row-gap: 0.675rem; */
     row-gap: 0.875rem;
-    /* row-gap: 0.575rem; */
     font-size: 14px;
   }
 
