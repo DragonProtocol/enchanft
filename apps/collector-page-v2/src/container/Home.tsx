@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 19:00:21
+ * @LastEditTime: 2023-01-04 14:55:00
  * @Description: file description
  */
 
@@ -16,6 +16,7 @@ import DiscoverProj from '../components/home/DiscoverProj';
 import Platform from '../components/home/Platform';
 import RecommendContent from '../components/home/RecommendContent';
 import RecommendEvents from '../components/home/RecommendEvents';
+import TrendingEvents from '../components/home/TrendingEvents';
 import { MainWrapper } from '../components/layout/Index';
 import { selectWebsite } from '../features/website/websiteSlice';
 import {
@@ -40,6 +41,8 @@ function Home() {
   >([]);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
   const [events, setEvents] = useState<Array<EventExploreListItemResponse>>([]);
+  const recommendEvents = events.slice(0, 8);
+  const trendingEvents = events.slice(-6);
 
   const loadProjects = useCallback(async () => {
     const { data } = await getTrendingProjects();
@@ -80,7 +83,7 @@ function Home() {
       )) || (
         <>
           <RecommendEvents
-            data={events}
+            data={recommendEvents}
             viewAllAction={() => {
               navigate('/events');
             }}
@@ -109,6 +112,12 @@ function Home() {
               navigate('/events');
             }}
           />
+          <TrendingEvents
+            data={trendingEvents}
+            viewAllAction={() => {
+              navigate('/events');
+            }}
+          />
         </>
       )}
     </HomeWrapper>
@@ -121,9 +130,11 @@ const HomeWrapper = styled(MainWrapper)`
   flex-direction: column;
   gap: 40px;
   & div.loading {
+    flex: 1;
     width: 100%;
     display: flex;
     justify-content: center;
+    align-items: center;
   }
 
   & div.row-2 {
