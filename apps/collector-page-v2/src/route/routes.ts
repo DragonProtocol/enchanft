@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 15:50:38
+ * @LastEditTime: 2023-01-05 16:09:09
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -13,6 +13,7 @@ export enum RouteKey {
   home = 'home',
   events = 'events',
   eventCreate = 'eventCreate',
+  eventEdit = 'eventEdit',
   event = 'event',
   projects = 'projects',
   project = 'project',
@@ -60,6 +61,12 @@ export const routes: CutomRouteObject[] = [
     path: '/events/create',
     element: loadContainerElement('EventCreate'),
     key: RouteKey.eventCreate,
+    permissions: [RoutePermission.login, RoutePermission.admin],
+  },
+  {
+    path: '/events/:id/edit',
+    element: loadContainerElement('EventEdit'),
+    key: RouteKey.eventEdit,
     permissions: [RoutePermission.login, RoutePermission.admin],
   },
   {
