@@ -36,6 +36,7 @@ export function saveContent(
     uniProjectIds: Array<number>;
     supportReaderView?: boolean;
     supportIframe?: boolean;
+    adminScore?: number;
   },
   token: string
 ) {
@@ -51,6 +52,7 @@ export function saveContent(
       uniProjectIds: data.uniProjectIds,
       supportReaderView: data.supportReaderView || false,
       supportIframe: data.supportIframe || false,
+      adminScore: data.adminScore,
     },
     headers: {
       token,

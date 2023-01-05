@@ -1,4 +1,4 @@
-import { useWlUserReact } from '@ecnft/wl-user-react';
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
@@ -39,6 +39,7 @@ import isUrl from '../utils/isUrl';
 
 function ContentCreate() {
   const { user } = useWlUserReact();
+  const { isAdmin } = usePermissions();
   const [parsing, setParsing] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
@@ -134,6 +135,7 @@ function ContentCreate() {
       uniProjectIds: { id: number }[];
       supportReaderView: boolean;
       supportIframe: boolean;
+      adminScore: number | null;
     }) => {
       if (loading) return;
       setLoading(true);
@@ -149,6 +151,7 @@ function ContentCreate() {
               uniProjectIds: data.uniProjectIds.map((item) => item.id),
               supportReaderView: data.supportReaderView,
               supportIframe: data.supportIframe,
+              adminScore: data.adminScore,
             },
             user.token
           );
@@ -165,6 +168,7 @@ function ContentCreate() {
               uniProjectIds: data.uniProjectIds.map((item) => item.id),
               supportReaderView: data.supportReaderView,
               supportIframe: data.supportIframe,
+              adminScore: data.adminScore,
             },
             user.token
           );
@@ -337,6 +341,22 @@ function ContentCreate() {
               }}
             />
           </FormField>
+
+          {isAdmin && (
+            <FormField>
+              <FormLabel htmlFor="admin-sore">Admin Score</FormLabel>
+              <InputBase
+                type="number"
+                min={0}
+                step={10}
+                onChange={(e) =>
+                  formik.setFieldValue('adminScore', e.target.value)
+                }
+                value={formik.values.adminScore || '0'}
+                placeholder="admin score"
+              />
+            </FormField>
+          )}
 
           <FormButtons>
             <FormButtonSubmit
