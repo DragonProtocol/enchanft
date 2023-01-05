@@ -64,6 +64,7 @@ export type ContentListItem = {
     name: string;
     image: string;
   };
+  isForU?: boolean;
 };
 
 export type ContentsListResponse = ApiResp<Array<ContentListItem>>;

@@ -86,6 +86,7 @@ export default function ContentShowerBox({
           }
         }}
         showAdminOps
+        isForU={!!selectContent.isForU}
         thumbUpAction={thumbUpAction}
         deleteAction={deleteAction}
         editAction={editAction}
@@ -171,6 +172,7 @@ export function ContentShowerTab({
   setTab,
   readerViewAction,
   showAdminOps,
+  isForU,
   thumbUpAction,
   deleteAction,
   editAction,
@@ -182,6 +184,7 @@ export function ContentShowerTab({
   thumbUpAction?: () => void;
   deleteAction?: () => void;
   editAction?: () => void;
+  isForU?: boolean;
 }) {
   const { isAdmin } = usePermissions();
   return (
@@ -207,7 +210,7 @@ export function ContentShowerTab({
           ReaderView
         </button>
       </div>
-      {showAdminOps && isAdmin && (
+      {showAdminOps && !isForU && isAdmin && (
         <div className="admin-ops">
           <span
             onClick={() => {
