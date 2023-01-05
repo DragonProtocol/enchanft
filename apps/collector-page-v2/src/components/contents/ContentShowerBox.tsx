@@ -85,8 +85,8 @@ export default function ContentShowerBox({
             loadDaylightContent(selectContent.link);
           }
         }}
-        showAdminOps
-        isForU={!!selectContent.isForU}
+        showAdminOps={!!selectContent}
+        isForU={!!selectContent?.isForU}
         thumbUpAction={thumbUpAction}
         deleteAction={deleteAction}
         editAction={editAction}
