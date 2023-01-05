@@ -167,6 +167,21 @@ function Contents() {
       try {
         await updateContent({ id: editId, adminScore: 10 }, user.token);
         toast.success('score content success!!!');
+        const idx = contents.findIndex((item) => {
+          if (item?.id && item.id === editId) return true;
+          return false;
+        });
+        const curr = contents[idx];
+        curr.adminStore = (curr.adminStore || 0) + 10;
+
+        setContents([
+          ...contents.slice(0, idx),
+          { ...curr },
+          ...contents.slice(idx + 1),
+        ]);
+        setSelectContent({
+          ...curr,
+        });
       } catch (error) {
         toast.error(error.message);
       } finally {

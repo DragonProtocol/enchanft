@@ -87,6 +87,7 @@ export default function ContentShowerBox({
         }}
         showAdminOps={!!selectContent}
         isForU={!!selectContent?.isForU}
+        adminScore={selectContent?.adminStore || 0}
         thumbUpAction={thumbUpAction}
         deleteAction={deleteAction}
         editAction={editAction}
@@ -176,6 +177,7 @@ export function ContentShowerTab({
   thumbUpAction,
   deleteAction,
   editAction,
+  adminScore,
 }: {
   tab: Tab;
   setTab: (tab: Tab) => void;
@@ -185,6 +187,7 @@ export function ContentShowerTab({
   deleteAction?: () => void;
   editAction?: () => void;
   isForU?: boolean;
+  adminScore?: number;
 }) {
   const { isAdmin } = usePermissions();
   return (
@@ -218,6 +221,7 @@ export function ContentShowerTab({
             }}
           >
             <ThumbUp />
+            &nbsp; {adminScore || 0}
           </span>
           <span
             onClick={() => {
@@ -315,7 +319,8 @@ export const ContentBox = styled.div`
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 32px;
+        padding: 6px;
+        /* width: 32px; */
         height: 32px;
         box-sizing: border-box;
       }

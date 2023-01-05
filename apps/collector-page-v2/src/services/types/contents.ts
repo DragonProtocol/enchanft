@@ -65,6 +65,7 @@ export type ContentListItem = {
     image: string;
   };
   isForU?: boolean;
+  adminStore: null | number;
 };
 
 export type ContentsListResponse = ApiResp<Array<ContentListItem>>;
