@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 18:22:42
+ * @LastEditTime: 2023-01-04 19:23:14
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
@@ -14,6 +14,7 @@ import {
   EventExploreListParams,
   EventExploreListResponse,
   EventFavorHandleResponse,
+  FetchOneEventResponse,
 } from '../types/event';
 import request, { RequestPromise } from './request';
 
@@ -65,6 +66,31 @@ export function createEvent(
     url: `/events`,
     method: 'post',
     data,
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
+export function updateEvent(
+  id: string | number,
+  data: Partial<CreateEventData>
+): RequestPromise<CreateEventResponse> {
+  return request({
+    url: `/events/${id}`,
+    method: 'post',
+    data,
+    headers: {
+      needToken: true,
+    },
+  });
+}
+export function fetchOneEvent(
+  id: string | number
+): RequestPromise<FetchOneEventResponse> {
+  return request({
+    url: `/events/${id}`,
+    method: 'get',
     headers: {
       needToken: true,
     },

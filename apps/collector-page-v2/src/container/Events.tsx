@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 17:19:31
+ * @LastEditTime: 2023-01-05 17:43:16
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { usePermissions } from '@ecnft/wl-user-react';
 import EventExploreList from '../components/event/EventExploreList';
 import EventExploreListFilter, {
   defaultEventExploreListFilterValues,
@@ -29,8 +30,11 @@ import EventLinkPreview from '../components/event/EventLinkPreview';
 import Loading from '../components/common/loading/Loading';
 import NoResult from '../components/common/NoResult';
 import FeedsMenu from '../components/layout/FeedsMenu';
+import useAdminEventHandles from '../hooks/useAdminEventHandles';
 
 export default function Events() {
+  const navigate = useNavigate();
+  const { isAdmin } = usePermissions();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const {
@@ -42,6 +46,7 @@ export default function Events() {
     onFavor,
     onShare,
   } = useEventHandles();
+  const { onAdminThumbUp, onAdminDelete } = useAdminEventHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const eventExploreList = useAppSelector(selectAll);
@@ -52,7 +57,7 @@ export default function Events() {
   const [filter, setFilter] = useState<EventExploreListFilterValues>(
     defaultEventExploreListFilterValues
   );
-  const [event, setEvent] = useState<EventExploreListItemResponse | null>(null);
+  const [activeId, setActiveId] = useState<string | number>('');
   useEffect(() => {
     const params = {
       orderBy:
@@ -84,13 +89,18 @@ export default function Events() {
   useEffect(() => {
     if (!isInitActive.current && status === AsyncRequestStatus.FULFILLED) {
       if (id) {
-        setEvent(eventExploreList.find((item) => item.id === Number(id)));
+        setActiveId(id);
       } else {
-        setEvent(eventExploreList[0]);
+        setActiveId(eventExploreList[0].id);
       }
       isInitActive.current = true;
     }
   }, [id, eventExploreList, status]);
+
+  const event = useMemo(
+    () => eventExploreList.find((item) => String(item.id) === String(activeId)),
+    [eventExploreList, activeId]
+  );
 
   const getMore = useCallback(
     () =>
@@ -131,7 +141,7 @@ export default function Events() {
                     onComplete={onComplete}
                     onFavor={onFavor}
                     onShare={onShare}
-                    onItemClick={setEvent}
+                    onItemClick={(item) => setActiveId(item.id)}
                   />
                   {isLoadingMore ? (
                     <MoreLoading>loading ...</MoreLoading>
@@ -140,7 +150,15 @@ export default function Events() {
                   ) : null}
                 </ListBox>
                 <ContentBox>
-                  {event ? <EventLinkPreview data={event} /> : null}
+                  {event ? (
+                    <EventLinkPreview
+                      data={event}
+                      showAdminOps={!event.isForU && isAdmin}
+                      onAdminThumbUp={() => onAdminThumbUp(event)}
+                      onAdminDelete={() => onAdminDelete(event)}
+                      onAdminEdit={() => navigate(`/events/${event.id}/edit`)}
+                    />
+                  ) : null}
                 </ContentBox>
               </>
             ) : (
