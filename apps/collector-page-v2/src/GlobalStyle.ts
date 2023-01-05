@@ -48,34 +48,6 @@ export const CursorPointerUpCss = css`
   cursor: pointer;
 `;
 const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'Rubik';
-    src:  url('/fonts/Rubik-BoldItalic.ttf') format('truetype');
-    font-style: normal;
-    font-weight: 900;
-    font-display: auto;
-  }
-  @font-face {
-    font-family: 'Rubik';
-    src:  url('/fonts/Rubik-Bold.ttf') format('truetype');
-    font-style: normal;
-    font-weight: bold;
-    font-display: auto;
-  }
-  @font-face {
-    font-family: 'Rubik';
-    src:  url('/fonts/Rubik-Medium.ttf') format('truetype');
-    font-style: normal;
-    font-weight: 500;
-    font-display: auto;
-  }
-  @font-face {
-    font-family: 'Rubik';
-    src:  url('/fonts/Rubik-Regular.ttf') format('truetype');
-    font-style: normal;
-    font-weight: normal;
-    font-display: auto;
-  }
   html,body,#root {
     -moz-osx-font-smoothing: grayscale;
     -webkit-font-smoothing: antialiased;

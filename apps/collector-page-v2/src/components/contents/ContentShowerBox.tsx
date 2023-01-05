@@ -335,5 +335,5 @@ export const LoadingBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 40px;
+  height: calc(100% - 60px);
 `;
