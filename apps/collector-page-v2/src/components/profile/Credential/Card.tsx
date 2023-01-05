@@ -1,10 +1,12 @@
 import styled from 'styled-components';
+import { useEffect, useRef, useState } from 'react';
 import {
   GalxeDataListItem,
   NooxDataListItem,
   PoapData,
 } from '../../../services/types/profile';
 import NFTShower from './NFTShower';
+import { MEDIA_BREAK_POINTS } from '../../../constants';
 
 export function NooxCard({
   data,
@@ -28,10 +30,32 @@ export function NooxCard({
 const Box = styled.div`
   display: inline-block;
   width: 198px;
-  height: 240px;
+  /* height: 240px; */
   border-radius: 10px;
   overflow: hidden;
   position: relative;
+
+  &:before {
+    content: '';
+    display: block;
+    padding-top: 110%;
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: calc((100% - 20px * 5) / 6);
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: calc((100% - 20px * 4) / 5);
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.xl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+    width: calc((100% - 20px * 3) / 4);
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.lg}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
+    width: calc((100% - 20px * 2) / 3);
+  }
 
   img {
     width: 100%;
@@ -72,8 +96,9 @@ export function GalxeCard({
   data: GalxeDataListItem;
   oatAction: () => void;
 }) {
+  const targetRef = useRef<HTMLDivElement>();
   return (
-    <CircleCardBox>
+    <CircleCardBox ref={targetRef}>
       <NFTShower url={data?.image || ''} />
       <div className="hover">
         <button type="button" onClick={oatAction}>
@@ -93,7 +118,7 @@ export function PoapCard({
 }) {
   return (
     <CircleCardBox>
-      <img src={data?.event?.image_url} alt="" />
+      <NFTShower url={data?.event?.image_url || ''} />
       <div className="hover">
         <button type="button" onClick={oatAction}>
           Get The OAT
@@ -161,10 +186,31 @@ const NoItemBox = styled.div`
 const CircleCardBox = styled.div`
   display: inline-block;
   width: 198px;
-  height: 198px;
+  /* height: 198px; */
   border-radius: 50%;
   overflow: hidden;
   position: relative;
+  &:before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: calc((100% - 20px * 5) / 6);
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    width: calc((100% - 20px * 4) / 5);
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.xl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+    width: calc((100% - 20px * 3) / 4);
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
+    width: calc((100% - 20px * 2) / 3);
+  }
 
   img {
     width: 100%;
@@ -201,4 +247,15 @@ const CircleCardBox = styled.div`
       display: flex;
     } */
   }
+`;
+
+const InfoContainer = styled.div<{ show: boolean; top: number; left: number }>`
+  position: fixed;
+  width: 340px;
+  height: 153px;
+  background-color: #1b1e23;
+  z-index: 100;
+  visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
+  left: ${(props) => `${props.left}px`};
+  top: ${(props) => `${props.top - 100}px`};
 `;

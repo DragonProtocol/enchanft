@@ -7,11 +7,13 @@ export default function ExtensionSupport({
   title,
   img,
   msg,
+  btns,
 }: {
   url: string;
   title: string;
   img?: string;
   msg?: string;
+  btns?: boolean;
 }) {
   return (
     <Box>
@@ -22,27 +24,29 @@ export default function ExtensionSupport({
           `Sorry, this website has disabled embedding. Please try our Chrome
         extension for free toss the content displayed here.`}
       </p>
-      <div className="btns">
-        <button
-          type="button"
-          onClick={() => {
-            window.open(url, '_blank');
-          }}
-        >
-          Open in new tab
-        </button>
-        <button
-          type="button"
-          className="chrome"
-          onClick={() => {
-            if (CHROME_EXTENSION_URL)
-              window.open(CHROME_EXTENSION_URL, '_blank');
-            else alert('TODO');
-          }}
-        >
-          <Chrome /> Install U3 on Chrome
-        </button>
-      </div>
+      {btns && (
+        <div className="btns">
+          <button
+            type="button"
+            onClick={() => {
+              window.open(url, '_blank');
+            }}
+          >
+            Open in new tab
+          </button>
+          <button
+            type="button"
+            className="chrome"
+            onClick={() => {
+              if (CHROME_EXTENSION_URL)
+                window.open(CHROME_EXTENSION_URL, '_blank');
+              else alert('TODO');
+            }}
+          >
+            <Chrome /> Install U3 on Chrome
+          </button>
+        </div>
+      )}
     </Box>
   );
 }
