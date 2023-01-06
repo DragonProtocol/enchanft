@@ -87,7 +87,7 @@ export default function ContentShowerBox({
         }}
         showAdminOps={!!selectContent}
         isForU={!!selectContent?.isForU}
-        adminScore={selectContent?.adminStore || 0}
+        adminScore={selectContent?.adminScore || 0}
         thumbUpAction={thumbUpAction}
         deleteAction={deleteAction}
         editAction={editAction}
