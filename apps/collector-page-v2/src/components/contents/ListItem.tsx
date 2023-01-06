@@ -151,20 +151,22 @@ export function ListItemHidden({
   }, [hidden, isActive]);
 
   return (
-    <ContentItem isActive height={height} className={classNames} ref={itemRef}>
-      <div className="tint">
-        😊 Thanks, We will use this to make your list better.{' '}
-        <span
-          onClick={() => {
-            if (timerRef.current) {
-              clearTimeout(timerRef.current);
-            }
-            undoAction();
-          }}
-        >
-          Undo
-        </span>
-      </div>
+    <ContentItem className={classNames} ref={itemRef}>
+      <ItemInner isActive height={height}>
+        <div className="tint">
+          😊 Thanks, We will use this to make your list better.{' '}
+          <span
+            onClick={() => {
+              if (timerRef.current) {
+                clearTimeout(timerRef.current);
+              }
+              undoAction();
+            }}
+          >
+            Undo
+          </span>
+        </div>
+      </ItemInner>
     </ContentItem>
   );
 }
