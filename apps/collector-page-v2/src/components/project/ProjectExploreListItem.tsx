@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-27 18:54:52
+ * @LastEditTime: 2023-01-06 18:07:26
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -36,37 +36,39 @@ export default function ProjectExploreListItem({
 }: ProjectExploreListItemProps) {
   return (
     <ProjectExploreListItemWrapper isActive={isActive} {...props}>
-      <ProjectInfo>
-        <LayoutLeft>
-          <ProjectAvatar src={data.image} />
-        </LayoutLeft>
+      <ListItemInner>
+        <ProjectInfo>
+          <LayoutLeft>
+            <ProjectAvatar src={data.image} />
+          </LayoutLeft>
 
-        <LayoutRight>
-          <LayoutRightRow>
-            <ProjectName>{data.name}</ProjectName>
-          </LayoutRightRow>
-          <LayoutRightRow>
-            {data?.events?.length && (
-              <LayoutText>{data.events.length} events</LayoutText>
-            )}
-            {data?.contents?.length && (
-              <LayoutText>{data.contents.length} contents</LayoutText>
-            )}
-          </LayoutRightRow>
-        </LayoutRight>
-      </ProjectInfo>
-      {displayHandles && (
-        <ProjectHandles>
-          <ProjectHandleButton onClick={onFavor} disabled={disabledFavor}>
-            <ProjectHandleButtonLikeIcon
-              fill={isFavored ? '#718096' : 'none'}
-            />
-          </ProjectHandleButton>
-          <ProjectHandleButton onClick={onShare}>
-            <ProjectHandleButtonIcon src={ShareSvg} />
-          </ProjectHandleButton>
-        </ProjectHandles>
-      )}
+          <LayoutRight>
+            <LayoutRightRow>
+              <ProjectName>{data.name}</ProjectName>
+            </LayoutRightRow>
+            <LayoutRightRow>
+              {data?.events?.length && (
+                <LayoutText>{data.events.length} events</LayoutText>
+              )}
+              {data?.contents?.length && (
+                <LayoutText>{data.contents.length} contents</LayoutText>
+              )}
+            </LayoutRightRow>
+          </LayoutRight>
+        </ProjectInfo>
+        {displayHandles && (
+          <ProjectHandles>
+            <ProjectHandleButton onClick={onFavor} disabled={disabledFavor}>
+              <ProjectHandleButtonLikeIcon
+                fill={isFavored ? '#718096' : 'none'}
+              />
+            </ProjectHandleButton>
+            <ProjectHandleButton onClick={onShare}>
+              <ProjectHandleButtonIcon src={ShareSvg} />
+            </ProjectHandleButton>
+          </ProjectHandles>
+        )}
+      </ListItemInner>
     </ProjectExploreListItemWrapper>
   );
 }
@@ -74,11 +76,8 @@ const ProjectExploreListItemWrapper = styled.div<{
   isActive: boolean;
 }>`
   width: 100%;
-  display: flex;
-  flex-direction: column;
   padding: 20px;
   box-sizing: border-box;
-  gap: 10px;
   cursor: pointer;
 
   background: ${({ isActive }) => (isActive ? '#14171A' : '#1B1E23')};
@@ -86,9 +85,21 @@ const ProjectExploreListItemWrapper = styled.div<{
   ${({ isActive }) =>
     isActive &&
     `
-    box-shadow: inset -4px 0px 0px #FFFFFF;
+    border-right: 4px solid #FFFFFF;
   `}
   transition: background-color 0.5s, box-shadow 0.5s;
+  overflow: hidden;
+  &:hover {
+    & > * {
+      transform: scale(1.1);
+    }
+  }
+`;
+const ListItemInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  transition: all 0.3s;
 `;
 const ProjectInfo = styled.div`
   display: flex;

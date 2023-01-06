@@ -68,21 +68,23 @@ function Card({
   clickAction: () => void;
 }) {
   return (
-    <CardBox onClick={clickAction}>
-      <EventImg src={img} />
-      <BottomBox>
-        <EventTitle>{title}</EventTitle>
-        <EventRewardTagBox>
-          <RewardTag value={reward} />
-        </EventRewardTagBox>
+    <CardWrapper>
+      <CardBox onClick={clickAction}>
+        <EventImg src={img} />
+        <BottomBox>
+          <EventTitle>{title}</EventTitle>
+          <EventRewardTagBox>
+            <RewardTag value={reward} />
+          </EventRewardTagBox>
 
-        <EventAuthor>{author}</EventAuthor>
-      </BottomBox>
-    </CardBox>
+          <EventAuthor>{author}</EventAuthor>
+        </BottomBox>
+      </CardBox>
+    </CardWrapper>
   );
 }
 
-const CardBox = styled.div`
+const CardWrapper = styled.div`
   flex: 1;
   height: 315px;
   cursor: pointer;
@@ -90,6 +92,14 @@ const CardBox = styled.div`
   background: #1b1e23;
   border-radius: 20px;
   overflow: hidden;
+  &:hover {
+    & > * {
+      transform: scale(1.1);
+    }
+  }
+`;
+const CardBox = styled.div`
+  transition: all 0.3s;
   display: flex;
   flex-direction: column;
 `;

@@ -58,29 +58,41 @@ function Card({
   clickAction: () => void;
 }) {
   return (
-    <CardBox onClick={clickAction}>
-      <img src={image} alt="" />
-      <div>
+    <CardWrapper>
+      <CardBox onClick={clickAction}>
+        <img src={image} alt="" />
         <div>
-          <h3>{name}</h3>
-          <span>{/* <Subtract /> */}</span>
+          <div>
+            <h3>{name}</h3>
+            <span>{/* <Subtract /> */}</span>
+          </div>
+          <div>
+            <span>{events.length} events</span>
+            <span>{contents.length} content</span>
+          </div>
         </div>
-        <div>
-          <span>{events.length} events</span>
-          <span>{contents.length} content</span>
-        </div>
-      </div>
-    </CardBox>
+      </CardBox>
+    </CardWrapper>
   );
 }
-
-const CardBox = styled.div`
-  display: flex;
-  padding: 20px;
-  gap: 10px;
+const CardWrapper = styled.div`
   cursor: pointer;
   height: 88px;
+  padding: 20px;
   border-bottom: 1px solid rgba(57, 66, 76, 0.5);
+  box-sizing: border-box;
+  overflow: hidden;
+  &:hover {
+    & > * {
+      transform: scale(1.3);
+    }
+  }
+`;
+const CardBox = styled.div`
+  transform-origin: left center;
+  transition: all 0.3s;
+  display: flex;
+  gap: 10px;
   &:last-child {
     border: none;
   }

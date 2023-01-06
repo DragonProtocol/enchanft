@@ -35,41 +35,51 @@ export default function ContentLinkCard({
       onClick={() => window.open(data.link, '__blank')}
       {...props}
     >
-      <LayoutCenter>
-        <LayoutCenterRow>
-          <ContentName>{data.title}</ContentName>
-        </LayoutCenterRow>
-        <LayoutCenterRow>
-          <ContentType>{data.type}</ContentType>
-          <LayoutText>{data.author}</LayoutText>
-          <LayoutText>|</LayoutText>
-          <LayoutText>{defaultFormatDate(data.createdAt)}</LayoutText>
-        </LayoutCenterRow>
-      </LayoutCenter>
-      {displayVote && (
-        <ContentHandleButton
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onVote) onVote();
-          }}
-          disabled={disabledVote}
-        >
-          👏
-          <ContentHandleButtonText>
-            &nbsp;{data.upVoteNum}
-          </ContentHandleButtonText>
-        </ContentHandleButton>
-      )}
+      <ListItemInner>
+        <LayoutCenter>
+          <LayoutCenterRow>
+            <ContentName>{data.title}</ContentName>
+          </LayoutCenterRow>
+          <LayoutCenterRow>
+            <ContentType>{data.type}</ContentType>
+            <LayoutText>{data.author}</LayoutText>
+            <LayoutText>|</LayoutText>
+            <LayoutText>{defaultFormatDate(data.createdAt)}</LayoutText>
+          </LayoutCenterRow>
+        </LayoutCenter>
+        {displayVote && (
+          <ContentHandleButton
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onVote) onVote();
+            }}
+            disabled={disabledVote}
+          >
+            👏
+            <ContentHandleButtonText>
+              &nbsp;{data.upVoteNum}
+            </ContentHandleButtonText>
+          </ContentHandleButton>
+        )}
+      </ListItemInner>
     </ContentLinkCardWrapper>
   );
 }
 const ContentLinkCardWrapper = styled(CardBase)`
   background: #14171a;
   width: 100%;
+  cursor: pointer;
+  &:hover {
+    & > * {
+      transform: scale(1.1);
+    }
+  }
+`;
+const ListItemInner = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
+  transition: all 0.3s;
 `;
 const LayoutCenter = styled.div`
   width: 0;

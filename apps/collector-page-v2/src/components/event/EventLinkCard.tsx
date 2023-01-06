@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 15:44:02
+ * @LastEditTime: 2023-01-06 18:10:01
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -49,45 +49,59 @@ export default function EventLinkCard({
       onClick={() => window.open(data.link, '__blank')}
       {...props}
     >
-      <LayoutLeft>
-        <PlatformImg src={data.platform.logo} />
-      </LayoutLeft>
+      <ListItemInner>
+        <LayoutLeft>
+          <PlatformImg src={data.platform.logo} />
+        </LayoutLeft>
 
-      <LayoutCenter>
-        <LayoutCenterRow>
-          <EventName>{data.name}</EventName>
-        </LayoutCenterRow>
-        <LayoutCenterRow>
-          <RewardTag value={data.reward} />
-          <LayoutText>{defaultFormatDate(data.startTime)}</LayoutText>
-        </LayoutCenterRow>
-      </LayoutCenter>
-      {displayComplete && (
-        <EventHandleButton
-          onClick={(e) => {
-            e.stopPropagation();
-            if (onComplete) onComplete();
-          }}
-          disabled={disabledComplete}
-        >
-          <EventHandleButtonIcon
-            src={isCompleted ? CompletedSvg : CompleteSvg}
-          />
-          <EventHandleButtonText>
-            {loadingComplete ? 'loading' : isCompleted ? 'Archived' : 'Archive'}
-          </EventHandleButtonText>
-        </EventHandleButton>
-      )}
+        <LayoutCenter>
+          <LayoutCenterRow>
+            <EventName>{data.name}</EventName>
+          </LayoutCenterRow>
+          <LayoutCenterRow>
+            <RewardTag value={data.reward} />
+            <LayoutText>{defaultFormatDate(data.startTime)}</LayoutText>
+          </LayoutCenterRow>
+        </LayoutCenter>
+        {displayComplete && (
+          <EventHandleButton
+            onClick={(e) => {
+              e.stopPropagation();
+              if (onComplete) onComplete();
+            }}
+            disabled={disabledComplete}
+          >
+            <EventHandleButtonIcon
+              src={isCompleted ? CompletedSvg : CompleteSvg}
+            />
+            <EventHandleButtonText>
+              {loadingComplete
+                ? 'loading'
+                : isCompleted
+                ? 'Archived'
+                : 'Archive'}
+            </EventHandleButtonText>
+          </EventHandleButton>
+        )}
+      </ListItemInner>
     </EventLinkCardWrapper>
   );
 }
 const EventLinkCardWrapper = styled(CardBase)`
   background: #14171a;
   width: 100%;
+  cursor: pointer;
+  &:hover {
+    & > * {
+      transform: scale(1.05);
+    }
+  }
+`;
+const ListItemInner = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  cursor: pointer;
+  transition: all 0.3s;
 `;
 const LayoutLeft = styled.div`
   display: flex;
