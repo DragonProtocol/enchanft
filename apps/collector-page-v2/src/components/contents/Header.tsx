@@ -39,6 +39,7 @@ export default function Header({
         <DropDown
           items={Object.values(OrderBy)}
           Icon={<Favors />}
+          width={145}
           title="For U"
           selectAction={(item) => {
             setOrderBy(item);

@@ -17,6 +17,7 @@ import ContentsHeader from '../components/contents/Header';
 import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import {
   complete,
+  delFavors,
   fetchContents,
   personalComplete,
   updateContent,
@@ -71,8 +72,8 @@ function Contents() {
     onFavor: favors,
     onVote: vote,
     onHidden: hiddenData,
-    formatCurrentContents,
-  } = useContentHandles();
+    newList,
+  } = useContentHandles(contents);
 
   const onShare = (data: ContentListItem) => {
     tweetShare(data.title, getProjectShareUrl(data.id));
@@ -175,7 +176,7 @@ function Contents() {
         await updateContent({ id: editId, adminScore: 10 }, user.token);
         toast.success('score content success!!!');
 
-        curr.adminStore = Number(curr.adminStore || 0) + 10;
+        curr.adminScore = Number(curr.adminScore || 0) + 10;
         setContents([
           ...contents.slice(0, idx),
           { ...curr },
@@ -254,13 +255,14 @@ function Contents() {
           <ListBox
             onScrollBottom={() => {
               console.log('onScrollBottom LoadMore', loadingMore, hasMore);
+              if (newList.length === 0) return;
               if (loadingMore) return;
               if (!hasMore) return;
               loadMore(currPageNumber + 1);
               setCurrPageNumber(currPageNumber + 1);
             }}
           >
-            {formatCurrentContents(contents).map((item, idx) => {
+            {newList.map((item, idx) => {
               let isActive = false;
               if (item.id) {
                 isActive = item.id === selectContent?.id;

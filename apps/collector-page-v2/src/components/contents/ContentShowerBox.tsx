@@ -87,12 +87,13 @@ export default function ContentShowerBox({
         }}
         showAdminOps={!!selectContent}
         isForU={!!selectContent?.isForU}
-        adminScore={selectContent?.adminStore || 0}
+        adminScore={selectContent?.adminScore || 0}
         thumbUpAction={thumbUpAction}
         deleteAction={deleteAction}
         editAction={editAction}
       />
       {(() => {
+        if (!selectContent) return null;
         if (tab === 'original') {
           if (u3ExtensionInstalled || selectContent?.supportIframe) {
             return (
@@ -104,7 +105,7 @@ export default function ContentShowerBox({
                 )}
                 <iframe
                   title="daylight"
-                  src={selectContent.link}
+                  src={selectContent?.link}
                   style={{
                     opacity: iframeLoaded ? 1 : 0,
                   }}
@@ -115,21 +116,18 @@ export default function ContentShowerBox({
               </div>
             );
           }
-          if (selectContent) {
-            return (
-              <ExtensionSupport
-                btns
-                url={selectContent.link}
-                title={selectContent.title}
-                img={
-                  selectContent.imageUrl ||
-                  (selectContent.uniProjects &&
-                    selectContent.uniProjects[0]?.image)
-                }
-              />
-            );
-          }
-          return null;
+          return (
+            <ExtensionSupport
+              btns
+              url={selectContent.link}
+              title={selectContent.title}
+              img={
+                selectContent.imageUrl ||
+                (selectContent.uniProjects &&
+                  selectContent.uniProjects[0]?.image)
+              }
+            />
+          );
         }
         if (tab === 'readerView') {
           if (daylightContentLoading) {
@@ -148,21 +146,17 @@ export default function ContentShowerBox({
             );
           }
         }
-        if (selectContent) {
-          return (
-            <ExtensionSupport
-              url={selectContent.link}
-              title={selectContent.title}
-              msg="Reader view is not supported for this page! Please view it in new tab."
-              img={
-                selectContent.imageUrl ||
-                (selectContent.uniProjects &&
-                  selectContent.uniProjects[0]?.image)
-              }
-            />
-          );
-        }
-        return null;
+        return (
+          <ExtensionSupport
+            url={selectContent.link}
+            title={selectContent.title}
+            msg="Reader view is not supported for this page! Please view it in new tab."
+            img={
+              selectContent.imageUrl ||
+              (selectContent.uniProjects && selectContent.uniProjects[0]?.image)
+            }
+          />
+        );
       })()}
     </ContentBox>
   );

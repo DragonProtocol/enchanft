@@ -160,6 +160,17 @@ export function personalComplete(uuid: string, token: string) {
   });
 }
 
+export function delFavors(id: number, token: string) {
+  return request({
+    url: `/contents/${id}/favors`,
+    method: 'delete',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
 export function complete(id: number, token: string) {
   return request({
     url: `/contents/${id}/completing`,
