@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-06 14:34:36
+ * @LastEditTime: 2023-01-06 16:04:45
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -32,6 +32,9 @@ export default (originList?: ContentListItem[]) => {
 
   // manage list
   const [newList, setNewList] = useState([...(originList || [])]);
+  useEffect(() => {
+    setNewList([...(originList || [])]);
+  }, [originList]);
 
   const updateOne = useCallback(
     (id: string | number, data: Partial<ContentListItem>) => {
@@ -57,30 +60,41 @@ export default (originList?: ContentListItem[]) => {
   ]);
   const onVote = useCallback(
     (data: ContentListItem) => {
-      if (data.upVoted || votePendingIds.includes(data?.uuid || data.id))
-        return;
-      handleCallbackVerifyLogin(async () => {
-        try {
-          cacheContentVotePendingIds.add(data?.uuid || data.id);
-          setVotePendingIds([...cacheContentVotePendingIds]);
-          if (data?.uuid) {
-            await personalVote(data.uuid, user.token);
-          } else {
-            await voteContent(data.id, user.token);
+      return new Promise((resolve, reject) => {
+        if (data.upVoted || votePendingIds.includes(data?.uuid || data.id))
+          return;
+        handleCallbackVerifyLogin(async () => {
+          try {
+            cacheContentVotePendingIds.add(data?.uuid || data.id);
+            setVotePendingIds([...cacheContentVotePendingIds]);
+            if (data?.uuid) {
+              const resp = await personalVote(data.uuid, user.token);
+              resolve(resp);
+            } else {
+              const resp = await voteContent(data.id, user.token);
+              resolve(resp);
+            }
+            updateOne(data.uuid || data.id, {
+              upVoted: true,
+              upVoteNum: data.upVoteNum + 1,
+            });
+          } catch (error) {
+            toast.error(error?.message || error?.msg);
+            reject(error);
+          } finally {
+            cacheContentVotePendingIds.delete(data?.uuid || data.id);
+            setVotePendingIds([...cacheContentVotePendingIds]);
           }
-          updateOne(data.uuid || data.id, {
-            upVoted: true,
-            upVoteNum: data.upVoteNum + 1,
-          });
-        } catch (error) {
-          toast.error(error?.message || error?.msg);
-        } finally {
-          cacheContentVotePendingIds.delete(data?.uuid || data.id);
-          setVotePendingIds([...cacheContentVotePendingIds]);
-        }
+        });
       });
     },
-    [user, votePendingIds, setVotePendingIds, handleCallbackVerifyLogin]
+    [
+      user,
+      votePendingIds,
+      setVotePendingIds,
+      handleCallbackVerifyLogin,
+      updateOne,
+    ]
   );
   // favor
   const [favorPendingIds, setFavorPendingIds] = useState([
@@ -88,29 +102,40 @@ export default (originList?: ContentListItem[]) => {
   ]);
   const onFavor = useCallback(
     (data: ContentListItem) => {
-      if (data.favored || favorPendingIds.includes(data?.uuid || data.id))
-        return;
-      handleCallbackVerifyLogin(async () => {
-        try {
-          cacheContentFovarPendingIds.add(data?.uuid || data.id);
-          setFavorPendingIds([...cacheContentFovarPendingIds]);
-          if (data?.uuid) {
-            await personalFavors(data.uuid, user.token);
-          } else {
-            await favorsContent(data.id, user.token);
+      return new Promise((resolve, reject) => {
+        if (data.favored || favorPendingIds.includes(data?.uuid || data.id))
+          return;
+        handleCallbackVerifyLogin(async () => {
+          try {
+            cacheContentFovarPendingIds.add(data?.uuid || data.id);
+            setFavorPendingIds([...cacheContentFovarPendingIds]);
+            if (data?.uuid) {
+              const resp = await personalFavors(data.uuid, user.token);
+              resolve(resp);
+            } else {
+              const resp = await favorsContent(data.id, user.token);
+              resolve(resp);
+            }
+            updateOne(data.uuid || data.id, {
+              favored: true,
+            });
+          } catch (error) {
+            toast.error(error?.message || error?.msg);
+            reject(error);
+          } finally {
+            cacheContentFovarPendingIds.delete(data?.uuid || data.id);
+            setFavorPendingIds([...cacheContentFovarPendingIds]);
           }
-          updateOne(data.uuid || data.id, {
-            favored: true,
-          });
-        } catch (error) {
-          toast.error(error?.message || error?.msg);
-        } finally {
-          cacheContentFovarPendingIds.delete(data?.uuid || data.id);
-          setFavorPendingIds([...cacheContentFovarPendingIds]);
-        }
+        });
       });
     },
-    [user, favorPendingIds, setFavorPendingIds, handleCallbackVerifyLogin]
+    [
+      user,
+      favorPendingIds,
+      setFavorPendingIds,
+      handleCallbackVerifyLogin,
+      updateOne,
+    ]
   );
 
   // hidden
@@ -125,33 +150,44 @@ export default (originList?: ContentListItem[]) => {
         error?: (error: Error) => void;
       }
     ) => {
-      if (data.hidden || hiddenPendingIds.includes(data?.uuid || data.id))
-        return;
-      handleCallbackVerifyLogin(async () => {
-        try {
-          cacheContentHiddenPendingIds.add(data?.uuid || data.id);
-          setHiddenPendingIds([...cacheContentHiddenPendingIds]);
-          if (data?.uuid) {
-            await personalComplete(data.uuid, user.token);
-          } else {
-            await complete(data.id, user.token);
+      return new Promise((resolve, reject) => {
+        if (data.hidden || hiddenPendingIds.includes(data?.uuid || data.id))
+          return;
+        handleCallbackVerifyLogin(async () => {
+          try {
+            cacheContentHiddenPendingIds.add(data?.uuid || data.id);
+            setHiddenPendingIds([...cacheContentHiddenPendingIds]);
+            if (data?.uuid) {
+              const resp = await personalComplete(data.uuid, user.token);
+              resolve(resp);
+            } else {
+              const resp = await complete(data.id, user.token);
+              resolve(resp);
+            }
+            deleteOne(data.uuid || data.id);
+            if (callback && callback.success) {
+              callback.success();
+            }
+          } catch (error) {
+            if (callback && callback.error) {
+              callback.error(error);
+            }
+            toast.error(error?.message || error?.msg);
+            reject(error);
+          } finally {
+            cacheContentHiddenPendingIds.delete(data?.uuid || data.id);
+            setHiddenPendingIds([...cacheContentHiddenPendingIds]);
           }
-          deleteOne(data.uuid || data.id);
-          if (callback && callback.success) {
-            callback.success();
-          }
-        } catch (error) {
-          if (callback && callback.error) {
-            callback.error(error);
-          }
-          toast.error(error?.message || error?.msg);
-        } finally {
-          cacheContentHiddenPendingIds.delete(data?.uuid || data.id);
-          setHiddenPendingIds([...cacheContentHiddenPendingIds]);
-        }
+        });
       });
     },
-    [user, hiddenPendingIds, setHiddenPendingIds, handleCallbackVerifyLogin]
+    [
+      user,
+      hiddenPendingIds,
+      setHiddenPendingIds,
+      handleCallbackVerifyLogin,
+      deleteOne,
+    ]
   );
   // share
   const onShare = useCallback((data: ContentListItem) => {
