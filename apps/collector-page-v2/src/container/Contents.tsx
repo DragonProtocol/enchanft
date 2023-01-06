@@ -72,8 +72,8 @@ function Contents() {
     onFavor: favors,
     onVote: vote,
     onHidden: hiddenData,
-    formatCurrentContents,
-  } = useContentHandles();
+    newList,
+  } = useContentHandles(contents);
 
   const onShare = (data: ContentListItem) => {
     tweetShare(data.title, getProjectShareUrl(data.id));
@@ -132,29 +132,6 @@ function Contents() {
       }
     },
     [queryRef.current, contents]
-  );
-
-  const delFavorsHandler = useCallback(
-    async (delId: number, idx: number) => {
-      if (updating) return;
-      try {
-        setUpdating(true);
-        await delFavors(delId, user.token);
-        const curr = contents[idx];
-        curr.favored = false;
-        setContents([
-          ...contents.slice(0, idx),
-          { ...curr },
-          ...contents.slice(idx + 1),
-        ]);
-        setSelectContent({ ...curr });
-      } catch (error) {
-        toast.error(error.message);
-      } finally {
-        setUpdating(false);
-      }
-    },
-    [updating, user.token, contents]
   );
 
   const removeContent = useCallback(
@@ -278,13 +255,14 @@ function Contents() {
           <ListBox
             onScrollBottom={() => {
               console.log('onScrollBottom LoadMore', loadingMore, hasMore);
+              if (newList.length === 0) return;
               if (loadingMore) return;
               if (!hasMore) return;
               loadMore(currPageNumber + 1);
               setCurrPageNumber(currPageNumber + 1);
             }}
           >
-            {formatCurrentContents(contents).map((item, idx) => {
+            {newList.map((item, idx) => {
               let isActive = false;
               if (item.id) {
                 isActive = item.id === selectContent?.id;
@@ -330,11 +308,7 @@ function Contents() {
                     vote(item);
                   }}
                   favorsAction={() => {
-                    if (item.favored && item.id) {
-                      delFavorsHandler(item.id, idx);
-                    } else {
-                      favors(item);
-                    }
+                    favors(item);
                   }}
                   hiddenAction={() => {
                     setContents([
