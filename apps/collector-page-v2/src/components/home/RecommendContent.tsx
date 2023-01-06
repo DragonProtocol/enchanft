@@ -57,22 +57,26 @@ function Card({
   clickAction: () => void;
 }) {
   return (
-    <CardBox onClick={clickAction}>
-      <h2>{title}</h2>
-      <div>
-        <Badge text="DeFi" />
-        <span>{author}</span>
-      </div>
-    </CardBox>
+    <CardWrapper>
+      <CardBox onClick={clickAction}>
+        <h2>{title}</h2>
+        <div>
+          <Badge text="DeFi" />
+          <span>{author}</span>
+        </div>
+      </CardBox>
+    </CardWrapper>
   );
 }
 
-const CardBox = styled.div`
+const CardWrapper = styled.div`
   flex: 50%;
   box-sizing: border-box;
   padding: 20px;
   height: 88px;
   border-top: 1px solid #39424c;
+  cursor: pointer;
+  overflow: hidden;
   &:nth-child(1) {
     border-top: none;
   }
@@ -82,7 +86,16 @@ const CardBox = styled.div`
   &:nth-child(even) {
     border-left: 1px solid #39424c;
   }
-  cursor: pointer;
+  &:hover {
+    & > * {
+      transform: scale(1.1);
+    }
+  }
+`;
+const CardBox = styled.div`
+  transform-origin: left center;
+  transition: all 0.3s;
+
   & h2 {
     margin: 0;
     font-weight: 500;

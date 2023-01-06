@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 15:42:20
+ * @LastEditTime: 2023-01-06 18:03:17
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -91,43 +91,49 @@ export default function EventExploreListItem({
       activeColor={activeColor}
       {...props}
     >
-      <TopBox>
-        <ChainIcon src={getChainInfo(data.chain)?.iconUrl} />
-        <EventName>{data.name}</EventName>
-      </TopBox>
+      <ListItemInner>
+        <TopBox>
+          <ChainIcon src={getChainInfo(data.chain)?.iconUrl} />
+          <EventName>{data.name}</EventName>
+        </TopBox>
 
-      <CenterBox>
-        <RewardTag value={data.reward} />
-        {data?.startTime && (
-          <EventStartTime>{defaultFormatDate(data.startTime)}</EventStartTime>
+        <CenterBox>
+          <RewardTag value={data.reward} />
+          {data?.startTime && (
+            <EventStartTime>{defaultFormatDate(data.startTime)}</EventStartTime>
+          )}
+          {data?.platform?.logo && (
+            <EventPlatformIcon src={data.platform.logo} />
+          )}
+        </CenterBox>
+        {displayHandles && (
+          <EventHandles>
+            <EventHandleButtonComplete
+              onClick={onComplete}
+              disabled={disabledComplete}
+            >
+              <EventHandleButtonIcon
+                src={isCompleted ? CompletedSvg : CompleteSvg}
+              />
+              <EventHandleButtonText>
+                {loadingComplete
+                  ? 'loading'
+                  : isCompleted
+                  ? 'Completed'
+                  : 'Mark as Complete'}
+              </EventHandleButtonText>
+            </EventHandleButtonComplete>
+            <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
+              <EventHandleButtonLikeIcon
+                fill={isFavored ? '#718096' : 'none'}
+              />
+            </EventHandleButton>
+            <EventHandleButton onClick={onShare}>
+              <EventHandleButtonIcon src={ShareSvg} />
+            </EventHandleButton>
+          </EventHandles>
         )}
-        {data?.platform?.logo && <EventPlatformIcon src={data.platform.logo} />}
-      </CenterBox>
-      {displayHandles && (
-        <EventHandles>
-          <EventHandleButtonComplete
-            onClick={onComplete}
-            disabled={disabledComplete}
-          >
-            <EventHandleButtonIcon
-              src={isCompleted ? CompletedSvg : CompleteSvg}
-            />
-            <EventHandleButtonText>
-              {loadingComplete
-                ? 'loading'
-                : isCompleted
-                ? 'Completed'
-                : 'Mark as Complete'}
-            </EventHandleButtonText>
-          </EventHandleButtonComplete>
-          <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
-            <EventHandleButtonLikeIcon fill={isFavored ? '#718096' : 'none'} />
-          </EventHandleButton>
-          <EventHandleButton onClick={onShare}>
-            <EventHandleButtonIcon src={ShareSvg} />
-          </EventHandleButton>
-        </EventHandles>
-      )}
+      </ListItemInner>
     </EventExploreListItemWrapper>
   );
 }
@@ -139,21 +145,27 @@ const EventExploreListItemWrapper = styled.div<{
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
   padding: 20px;
-  gap: 10px;
-
   background: ${({ bgc }) => bgc};
   border-bottom: 1px solid #39424c;
   ${({ isActive, activeColor }) =>
     isActive &&
     `
-    box-shadow: inset -4px 0px 0px ${activeColor};
+    border-right: 4px solid  ${activeColor};
   `}
   transition: background-color 0.5s, box-shadow 0.5s;
+  &:hover {
+    & > * {
+      transform: scale(1.1);
+    }
+  }
+`;
+const ListItemInner = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  transition: all 0.3s;
 `;
 const TopBox = styled.div`
   width: 100%;

@@ -58,68 +58,64 @@ export default function ListItem({
   }, [hidden, isActive]);
 
   return (
-    <ContentItem
-      ref={itemRef}
-      className={classNames}
-      isActive={isActive}
-      onClick={clickAction}
-      height={height}
-    >
-      <p>{title}</p>
-      <ContentItemTitle>
-        <div>
-          <Badge text={type} />
-          <span>{defaultFormatDate(createdAt)}</span>
-        </div>
-        {!isActive && <span>👏 &nbsp;{upVoteNum + (adminScore || 0)}</span>}
-      </ContentItemTitle>
+    <ContentItem ref={itemRef} className={classNames} onClick={clickAction}>
+      <ItemInner isActive={isActive} height={height}>
+        <p>{title}</p>
+        <ContentItemTitle>
+          <div>
+            <Badge text={type} />
+            <span>{defaultFormatDate(createdAt)}</span>
+          </div>
+          {!isActive && <span>👏 &nbsp;{upVoteNum + (adminScore || 0)}</span>}
+        </ContentItemTitle>
 
-      {isActive && (
-        <ContentItemFooter>
-          <span
-            className={
-              isActive ? (upVoted ? 'vote disable' : 'vote') : 'vote active'
-            }
-            onClick={(e) => {
-              e.stopPropagation();
-              if (voteAction) {
-                voteAction();
+        {isActive && (
+          <ContentItemFooter>
+            <span
+              className={
+                isActive ? (upVoted ? 'vote disable' : 'vote') : 'vote active'
               }
-            }}
-          >
-            👏 &nbsp;{upVoteNum + (adminScore || 0)}
-          </span>
+              onClick={(e) => {
+                e.stopPropagation();
+                if (voteAction) {
+                  voteAction();
+                }
+              }}
+            >
+              👏 &nbsp;{upVoteNum + (adminScore || 0)}
+            </span>
 
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              if (favorsAction) favorsAction();
-            }}
-          >
-            {favored ? <Heart fill="#718096" /> : <Heart />}
-          </span>
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                if (favorsAction) favorsAction();
+              }}
+            >
+              {favored ? <Heart fill="#718096" /> : <Heart />}
+            </span>
 
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              if (hiddenAction) {
-                hiddenAction();
-              }
-            }}
-          >
-            <EyeClose />
-          </span>
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                if (hiddenAction) {
+                  hiddenAction();
+                }
+              }}
+            >
+              <EyeClose />
+            </span>
 
-          <span
-            onClick={(e) => {
-              e.stopPropagation();
-              if (shareAction) shareAction();
-            }}
-          >
-            <Share />
-          </span>
-        </ContentItemFooter>
-      )}
+            <span
+              onClick={(e) => {
+                e.stopPropagation();
+                if (shareAction) shareAction();
+              }}
+            >
+              <Share />
+            </span>
+          </ContentItemFooter>
+        )}
+      </ItemInner>
     </ContentItem>
   );
 }
@@ -155,35 +151,46 @@ export function ListItemHidden({
   }, [hidden, isActive]);
 
   return (
-    <ContentItem isActive height={height} className={classNames} ref={itemRef}>
-      <div className="tint">
-        😊 Thanks, We will use this to make your list better.{' '}
-        <span
-          onClick={() => {
-            if (timerRef.current) {
-              clearTimeout(timerRef.current);
-            }
-            undoAction();
-          }}
-        >
-          Undo
-        </span>
-      </div>
+    <ContentItem className={classNames} ref={itemRef}>
+      <ItemInner isActive height={height}>
+        <div className="tint">
+          😊 Thanks, We will use this to make your list better.{' '}
+          <span
+            onClick={() => {
+              if (timerRef.current) {
+                clearTimeout(timerRef.current);
+              }
+              undoAction();
+            }}
+          >
+            Undo
+          </span>
+        </div>
+      </ItemInner>
     </ContentItem>
   );
 }
 
-const ContentItem = styled.div<{ isActive: boolean; height: string }>`
+const ContentItem = styled.div`
   box-sizing: border-box;
-  line-height: 27px;
   padding: 20px;
   gap: 10px;
-  position: relative;
   border-bottom: 1px solid #39424c;
-  flex-direction: column;
   cursor: pointer;
   border-bottom: 1px do lightgray;
   background: inherit;
+  &:hover {
+    & > * {
+      transform: scale(1.1);
+    }
+  }
+`;
+const ItemInner = styled.div<{ isActive: boolean; height: string }>`
+  line-height: 27px;
+  gap: 10px;
+  position: relative;
+  flex-direction: column;
+  transition: all 0.3s;
   color: '#fff';
   &:hover {
     /* background: #999; */
@@ -237,7 +244,6 @@ const ContentItem = styled.div<{ isActive: boolean; height: string }>`
     }
   }
 `;
-
 const ContentItemTitle = styled.div`
   display: flex;
   align-items: center;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 18:12:17
+ * @LastEditTime: 2023-01-06 17:55:50
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -51,32 +51,44 @@ const Box = styled.div`
 function Card(props: PlatformData & { clickAction: () => void }) {
   const { eventNumber, platform, platformLogo, clickAction } = props;
   return (
-    <CardBox onClick={clickAction}>
-      <img src={platformLogo} alt="" />
-      <h2>{platform}</h2>
-      <div>{eventNumber} events</div>
-    </CardBox>
+    <CardWrapper>
+      <CardBox onClick={clickAction}>
+        <img src={platformLogo} alt="" />
+        <h2>{platform}</h2>
+        <div>{eventNumber} events</div>
+      </CardBox>
+    </CardWrapper>
   );
 }
-
-const CardBox = styled.div`
+const CardWrapper = styled.div`
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  text-align: center;
   box-sizing: border-box;
   padding: 20px;
-  gap: 10px;
   cursor: pointer;
   width: 160px;
   height: 146px;
   background: #1b1e23;
   border-radius: 20px;
+  overflow: hidden;
+  &:hover {
+    & > * {
+      transform: scale(1.3);
+    }
+  }
+`;
+const CardBox = styled.div`
+  width: 100%;
+  height: 100%;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+  gap: 10px;
   > img {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    margin: 0 auto;
   }
 
   > h2 {
