@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 17:19:44
+ * @LastEditTime: 2023-01-06 14:18:58
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -41,7 +41,7 @@ export default function Projects() {
     completeQueueIds: eventCompleteQueueIds,
     onComplete: onEventComplete,
   } = useEventHandles();
-  const { onVote, votedIds, formatCurrentContents } = useContentHandles();
+  const { onVote, formatCurrentContents } = useContentHandles();
   const { favoredIds, favorQueueIds, onFavor, onShare } = useProjectHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
@@ -140,7 +140,6 @@ export default function Projects() {
                       eventCompletedIds={eventCompletedIds}
                       eventCompleteQueueIds={eventCompleteQueueIds}
                       onEventComplete={onEventComplete}
-                      contentVotedIds={votedIds}
                       onContentVote={onVote}
                     />
                   )}
