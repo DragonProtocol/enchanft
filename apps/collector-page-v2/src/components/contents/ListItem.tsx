@@ -21,6 +21,7 @@ export default function ListItem({
   hidden,
   hiddenAction,
   shareAction,
+  adminScore,
 }: {
   upVoteNum: number;
   title: string;
@@ -36,6 +37,7 @@ export default function ListItem({
   favored?: boolean;
   hiddenAction?: () => void;
   shareAction?: () => void;
+  adminScore?: number;
 }) {
   const itemRef = useRef<HTMLDivElement>();
   const [height, setHeight] = useState('fit-content');
@@ -69,7 +71,7 @@ export default function ListItem({
           <Badge text={type} />
           <span>{defaultFormatDate(createdAt)}</span>
         </div>
-        {!isActive && <span>👏 &nbsp;{upVoteNum}</span>}
+        {!isActive && <span>👏 &nbsp;{upVoteNum + (adminScore || 0)}</span>}
       </ContentItemTitle>
 
       {isActive && (
@@ -85,7 +87,7 @@ export default function ListItem({
               }
             }}
           >
-            👏 &nbsp;{upVoteNum}
+            👏 &nbsp;{upVoteNum + (adminScore || 0)}
           </span>
 
           <span
@@ -93,7 +95,6 @@ export default function ListItem({
               e.stopPropagation();
               if (favorsAction) favorsAction();
             }}
-            className={favored ? 'disable' : ''}
           >
             {favored ? <Heart fill="#718096" /> : <Heart />}
           </span>

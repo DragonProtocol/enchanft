@@ -17,6 +17,7 @@ import ContentsHeader from '../components/contents/Header';
 import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import {
   complete,
+  delFavors,
   fetchContents,
   personalComplete,
   updateContent,
@@ -133,6 +134,29 @@ function Contents() {
     [queryRef.current, contents]
   );
 
+  const delFavorsHandler = useCallback(
+    async (delId: number, idx: number) => {
+      if (updating) return;
+      try {
+        setUpdating(true);
+        await delFavors(delId, user.token);
+        const curr = contents[idx];
+        curr.favored = false;
+        setContents([
+          ...contents.slice(0, idx),
+          { ...curr },
+          ...contents.slice(idx + 1),
+        ]);
+        setSelectContent({ ...curr });
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setUpdating(false);
+      }
+    },
+    [updating, user.token, contents]
+  );
+
   const removeContent = useCallback(
     (idx: number) => {
       removeTimer.current = setTimeout(() => {
@@ -175,7 +199,7 @@ function Contents() {
         await updateContent({ id: editId, adminScore: 10 }, user.token);
         toast.success('score content success!!!');
 
-        curr.adminStore = Number(curr.adminStore || 0) + 10;
+        curr.adminScore = Number(curr.adminScore || 0) + 10;
         setContents([
           ...contents.slice(0, idx),
           { ...curr },
@@ -306,7 +330,11 @@ function Contents() {
                     vote(item);
                   }}
                   favorsAction={() => {
-                    favors(item);
+                    if (item.favored && item.id) {
+                      delFavorsHandler(item.id, idx);
+                    } else {
+                      favors(item);
+                    }
                   }}
                   hiddenAction={() => {
                     setContents([

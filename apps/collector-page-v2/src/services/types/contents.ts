@@ -26,6 +26,7 @@ export enum OrderBy {
   TRENDING = 'Trending',
   NEWEST = 'Newest',
   FORU = 'For U',
+  MEMPOOL = 'Mem Pool',
 }
 
 export type ContentListItem = {
@@ -65,7 +66,7 @@ export type ContentListItem = {
     image: string;
   };
   isForU?: boolean;
-  adminStore: null | number;
+  adminScore: null | number;
 };
 
 export type ContentsListResponse = ApiResp<Array<ContentListItem>>;
