@@ -75,9 +75,16 @@ function ContentCreate() {
       type: Yup.string().required('Required'),
     }),
     onSubmit: (values) => {
-      submitContent(values);
+      console.log(values);
+      // submitContent(values);
     },
   });
+
+  useEffect(() => {
+    if (isAdmin) {
+      formik.setFieldValue('adminScore', 10);
+    }
+  }, [isAdmin]);
 
   const reset = useCallback(() => {
     formik.resetForm();
@@ -349,10 +356,11 @@ function ContentCreate() {
                 type="number"
                 min={0}
                 step={10}
-                onChange={(e) =>
-                  formik.setFieldValue('adminScore', e.target.value)
-                }
-                value={formik.values.adminScore || '0'}
+                onChange={(e) => {
+                  if (Number.isNaN(Number(e.target.value))) return;
+                  formik.setFieldValue('adminScore', Number(e.target.value));
+                }}
+                value={`${formik.values.adminScore || '0'}`}
                 placeholder="admin score"
               />
             </FormField>
