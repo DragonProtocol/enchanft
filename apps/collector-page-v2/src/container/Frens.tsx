@@ -947,6 +947,7 @@ const FrensBody = styled.div`
 
   .feed-content {
     overflow-y: auto;
+    flex: 1;
   }
 
   .reco-card {
@@ -986,6 +987,7 @@ const FrensBody = styled.div`
   }
 
   .load-more {
+    height: 100%;
     margin: 20px;
     display: flex;
     justify-content: center;
@@ -1079,6 +1081,8 @@ const FrensFeed = styled.div`
   border-radius: 20px;
   padding: 0px 24px;
   margin-right: 24px;
+  display: flex;
+  flex-direction: column;
 `;
 const FrensRight = styled.div`
   /* flex-grow: 1; */
