@@ -8,8 +8,6 @@
 import { Provider as ReduxProvider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import Modal from 'react-modal';
-import Appsignal from '@appsignal/javascript';
-import { ErrorBoundary } from '@appsignal/react';
 import {
   WlUserReactProvider,
   handleAuthFailed,
@@ -30,35 +28,22 @@ import {
 injectStore(store);
 setApiBaseUrl(API_BASE_URL || '');
 injectHandleAxiosResponse401(handleAuthFailed);
-const appsignal = new Appsignal({
-  key: process.env.APPSIGNAL_FRONTEND_API_KEY,
-});
-function FallbackComponent() {
-  return <div>Uh oh! There was an error :(</div>;
-}
 
 Modal.setAppElement('#root');
 function App() {
-  appsignal.demo();
   return (
-    <ErrorBoundary
-      instance={appsignal}
-      tags={{ tag: 'value' }}
-      fallback={() => FallbackComponent}
+    <WlUserReactProvider
+      theme="dark"
+      authorizers={authorizers}
+      valueChange={(value) => injectWlUserReactContextValue(value)}
     >
-      <WlUserReactProvider
-        theme="dark"
-        authorizers={authorizers}
-        valueChange={(value) => injectWlUserReactContextValue(value)}
-      >
-        <ReduxProvider store={store}>
-          <GlobalStyle />
-          <BrowserRouter>
-            <Layout />
-          </BrowserRouter>
-        </ReduxProvider>
-      </WlUserReactProvider>
-    </ErrorBoundary>
+      <ReduxProvider store={store}>
+        <GlobalStyle />
+        <BrowserRouter>
+          <Layout />
+        </BrowserRouter>
+      </ReduxProvider>
+    </WlUserReactProvider>
   );
 }
 
