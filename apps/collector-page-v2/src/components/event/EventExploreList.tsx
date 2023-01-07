@@ -14,6 +14,7 @@ import EventExploreListItem, {
 import AnimatedListItem, {
   useAnimatedListTransition,
 } from '../animation/AnimatedListItem';
+import { useGAEvent } from '../../hooks/useGoogleAnalytics';
 
 export type EventExploreListProps = {
   data: EventExploreListItemData[];
@@ -42,6 +43,7 @@ export default function EventExploreList({
   onShare,
   onItemClick,
 }: EventExploreListProps) {
+  const gaEvent = useGAEvent('u3-event');
   const isFavored = useCallback(
     (item: EventExploreListItemData) =>
       item.favored || favoredIds.includes(item.id),
@@ -61,7 +63,6 @@ export default function EventExploreList({
     [completeQueueIds]
   );
   const transitions = useAnimatedListTransition(data);
-
   return (
     <EventExploreListWrapper>
       {transitions((styles, item) => {
@@ -75,9 +76,18 @@ export default function EventExploreList({
             <EventExploreListItem
               data={item}
               isActive={item.id === activeId}
-              onComplete={() => onComplete(item)}
-              onShare={() => onShare(item)}
-              onFavor={() => onFavor(item)}
+              onComplete={() => {
+                onComplete(item);
+                gaEvent('completeEvent', item.name);
+              }}
+              onShare={() => {
+                onShare(item);
+                gaEvent('shareEvent', item.name);
+              }}
+              onFavor={() => {
+                onFavor(item);
+                gaEvent('favorEvent', item.name);
+              }}
               displayHandles={
                 item.isDaylight ? false : displayHandles && item.id === activeId
               }

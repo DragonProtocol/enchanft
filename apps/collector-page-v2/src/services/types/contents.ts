@@ -6,6 +6,11 @@ export enum ContentLang {
   中文 = 'CN',
 }
 
+export enum ContentStatus {
+  HIDDEN = 'HIDDEN',
+  VISIBLE = 'VISIBLE',
+}
+
 export enum ContentType {
   NEWS = 'News',
   GAMING = 'Gaming',
@@ -21,6 +26,7 @@ export enum OrderBy {
   TRENDING = 'Trending',
   NEWEST = 'Newest',
   FORU = 'For U',
+  MEMPOOL = 'Mem Pool',
 }
 
 export type ContentListItem = {
@@ -59,6 +65,8 @@ export type ContentListItem = {
     name: string;
     image: string;
   };
+  isForU?: boolean;
+  adminScore: null | number;
 };
 
 export type ContentsListResponse = ApiResp<Array<ContentListItem>>;

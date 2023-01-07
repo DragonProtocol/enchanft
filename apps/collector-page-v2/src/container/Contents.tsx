@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 14:57:46
+ * @LastEditTime: 2023-01-03 17:19:57
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -14,13 +14,19 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContentsHeader from '../components/contents/Header';
 
+import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import {
   complete,
+  delFavors,
   fetchContents,
   personalComplete,
+  updateContent,
 } from '../services/api/contents';
-import { ContentLang, ContentListItem } from '../services/types/contents';
-import ListItem from '../components/contents/ListItem';
+import {
+  ContentLang,
+  ContentListItem,
+  ContentStatus,
+} from '../services/types/contents';
 import userFavored from '../hooks/useFavored';
 import { useVoteUp } from '../hooks/useVoteUp';
 import Loading from '../components/common/loading/Loading';
@@ -33,6 +39,7 @@ import ContentShowerBox, {
 } from '../components/contents/ContentShowerBox';
 import useContentHandles from '../hooks/useContentHandles';
 import { MainWrapper } from '../components/layout/Index';
+import FeedsMenu from '../components/layout/FeedsMenu';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -50,6 +57,7 @@ function Contents() {
     orderBy: 'For U',
     lang: ContentLang.All,
   });
+  const removeTimer = useRef<NodeJS.Timeout>();
 
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
@@ -58,23 +66,14 @@ function Contents() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   const {
     onFavor: favors,
     onVote: vote,
-    formatCurrentContents,
-  } = useContentHandles();
-
-  const hiddenContent = useCallback(
-    async (uuid: string | number) => {
-      if (Number.isNaN(Number(uuid))) {
-        await personalComplete(`${uuid}`, user.token);
-      } else {
-        await complete(Number(uuid), user.token);
-      }
-    },
-    [user.token]
-  );
+    onHidden: hiddenData,
+    newList,
+  } = useContentHandles(contents);
 
   const onShare = (data: ContentListItem) => {
     tweetShare(data.title, getProjectShareUrl(data.id));
@@ -135,12 +134,99 @@ function Contents() {
     [queryRef.current, contents]
   );
 
+  const removeContent = useCallback(
+    (idx: number) => {
+      removeTimer.current = setTimeout(() => {
+        if (idx === -1) return;
+
+        const dataItem = contents[idx];
+        clearTimeout(removeTimer.current);
+        removeTimer.current = undefined;
+        hiddenData(dataItem);
+        setContents([...contents.slice(0, idx), ...contents.slice(idx + 1)]);
+        let item;
+        if (contents[idx + 1]) {
+          item = contents[idx + 1];
+        } else if (contents[idx - 1]) {
+          item = contents[idx - 1];
+        } else {
+          setSelectContent(undefined);
+        }
+        if (item) {
+          navigate(`/contents/${item.id || item.uuid}`);
+          setSelectContent(item);
+        }
+      }, 3250);
+    },
+    [contents, hiddenData]
+  );
+
+  const scoreContent = useCallback(
+    async (editId: number) => {
+      if (updating) return;
+      setUpdating(true);
+      try {
+        const idx = contents.findIndex((item) => {
+          if (item?.id && item.id === editId) return true;
+          return false;
+        });
+        const curr = contents[idx];
+        if (!curr) return;
+
+        await updateContent({ id: editId, adminScore: 10 }, user.token);
+        toast.success('score content success!!!');
+
+        curr.adminScore = Number(curr.adminScore || 0) + 10;
+        setContents([
+          ...contents.slice(0, idx),
+          { ...curr },
+          ...contents.slice(idx + 1),
+        ]);
+        setSelectContent({
+          ...curr,
+        });
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setUpdating(false);
+      }
+    },
+    [user.token, updating, contents]
+  );
+
+  const delContent = useCallback(
+    async (editId: number) => {
+      if (updating) return;
+      setUpdating(true);
+      try {
+        await updateContent(
+          { id: editId, status: ContentStatus.HIDDEN },
+          user.token
+        );
+        const idx = contents.findIndex((item) => {
+          if (item?.id && item.id === editId) return true;
+          return false;
+        });
+
+        setContents([...contents.slice(0, idx), ...contents.slice(idx + 1)]);
+        setSelectContent(undefined);
+        toast.success('delete content success!!!');
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setUpdating(false);
+      }
+    },
+    [user.token, contents, updating]
+  );
+
   useEffect(() => {
     fetchData('', '', 'For U', ContentLang.All);
   }, []);
 
   return (
     <Box>
+      <FeedsMenu />
       <ContentsHeader
         filterAction={(
           keywords: string,
@@ -169,18 +255,42 @@ function Contents() {
           <ListBox
             onScrollBottom={() => {
               console.log('onScrollBottom LoadMore', loadingMore, hasMore);
+              if (newList.length === 0) return;
               if (loadingMore) return;
               if (!hasMore) return;
               loadMore(currPageNumber + 1);
               setCurrPageNumber(currPageNumber + 1);
             }}
           >
-            {formatCurrentContents(contents).map((item, idx) => {
+            {newList.map((item, idx) => {
               let isActive = false;
               if (item.id) {
                 isActive = item.id === selectContent?.id;
               } else {
                 isActive = item.uuid === selectContent?.uuid;
+              }
+
+              if (item.hidden) {
+                return (
+                  <ListItemHidden
+                    key={item.id || item.uuid}
+                    isActive={isActive}
+                    hidden
+                    undoAction={() => {
+                      setContents([
+                        ...contents.slice(0, idx),
+                        {
+                          ...contents[idx],
+                          hidden: false,
+                        },
+                        ...contents.slice(idx + 1),
+                      ]);
+                      if (removeTimer.current) {
+                        clearTimeout(removeTimer.current);
+                      }
+                    }}
+                  />
+                );
               }
 
               return (
@@ -195,13 +305,21 @@ function Contents() {
                     onShare(item);
                   }}
                   voteAction={() => {
-                    vote(selectContent);
+                    vote(item);
                   }}
                   favorsAction={() => {
-                    favors(selectContent);
+                    favors(item);
                   }}
                   hiddenAction={() => {
-                    setShowModal(true);
+                    setContents([
+                      ...contents.slice(0, idx),
+                      {
+                        ...contents[idx],
+                        hidden: true,
+                      },
+                      ...contents.slice(idx + 1),
+                    ]);
+                    removeContent(idx);
                   }}
                   {...item}
                 />
@@ -219,7 +337,19 @@ function Contents() {
             )}
           </ListBox>
           <ContentBoxContainer>
-            <ContentShowerBox selectContent={selectContent} />
+            <ContentShowerBox
+              selectContent={selectContent}
+              deleteAction={() => {
+                if (selectContent?.id) delContent(selectContent.id);
+              }}
+              editAction={() => {
+                if (selectContent?.id)
+                  navigate(`/contents/create?id=${selectContent.id}`);
+              }}
+              thumbUpAction={() => {
+                if (selectContent?.id) scoreContent(selectContent.id);
+              }}
+            />
           </ContentBoxContainer>
         </ContentsWrapper>
       )}
@@ -230,7 +360,6 @@ function Contents() {
         }}
         confirmAction={() => {
           try {
-            hiddenContent(selectContent?.uuid || selectContent.id);
             const idx = contents.findIndex((item) => {
               if (item?.uuid && item?.uuid === selectContent?.uuid) return true;
               if (item?.id && item.id === selectContent.id) return true;
@@ -245,25 +374,7 @@ function Contents() {
               },
               ...contents.slice(idx + 1),
             ]);
-            setTimeout(() => {
-              setContents([
-                ...contents.slice(0, idx),
-                ...contents.slice(idx + 1),
-              ]);
-              let item;
-              if (contents[idx + 1]) {
-                item = contents[idx + 1];
-              } else if (contents[idx - 1]) {
-                item = contents[idx - 1];
-              } else {
-                setSelectContent(undefined);
-              }
-              if (item) {
-                navigate(`/contents/${item.id || item.uuid}`);
-                setSelectContent(item);
-              }
-            }, 550);
-
+            removeContent(idx);
             setShowModal(false);
           } catch (error) {
             toast.error(error.message);
@@ -278,7 +389,7 @@ export default Contents;
 const Box = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
-  /* gap: 20px; */
+  gap: 24px;
 `;
 // const Box = styled.div`
 //   margin: 0 auto;
@@ -296,13 +407,15 @@ const ContentsWrapper = styled.div<{ loading?: string }>`
   border-radius: 20px;
   overflow: hidden;
   display: flex;
-  margin-top: 24px;
+  /* margin-top: 24px; */
+  flex-grow: 1;
 
   & .loading {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
   }
 `;
 const ListBox = styled(ListScrollBox)`
@@ -327,65 +440,3 @@ const ListBox = styled(ListScrollBox)`
     }
   }
 `;
-// const ContentBox = styled.div`
-//   height: calc(100%);
-//   width: calc(100% - 360px);
-
-//   overflow-x: hidden;
-//   overflow: hidden;
-
-//   & img {
-//     max-width: 100%;
-//   }
-
-//   & pre {
-//     overflow: scroll;
-//   }
-
-//   & div.tabs {
-//     height: 60px;
-//     background: #1b1e23;
-//     border-bottom: 1px solid #39424c;
-//     box-sizing: border-box;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-
-//     > div {
-//       width: 260px;
-//       height: 40px;
-//       background: #14171a;
-//       border-radius: 100px;
-//       padding: 4px;
-//       box-sizing: border-box;
-//       display: flex;
-//       align-items: center;
-//       justify-content: space-between;
-//       > button {
-//         cursor: pointer;
-//         width: 122px;
-//         height: 32px;
-//         border: none;
-
-//         box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
-//           0px 0px 4px rgba(20, 23, 26, 0.04);
-//         border-radius: 100px;
-//         outline: none;
-//         background: inherit;
-//         color: #a0aec0;
-
-//         &.active {
-//           color: #ffffff;
-//           background: #21262c;
-//         }
-//       }
-//     }
-//   }
-// `;
-
-// const LoadingBox = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   margin-top: 40px;
-// `;

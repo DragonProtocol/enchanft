@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-27 18:55:04
+ * @LastEditTime: 2023-01-06 14:06:15
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -24,7 +24,7 @@ export type ProjectDetailCardProps = {
   eventCompletedIds?: Array<number | string>;
   eventCompleteQueueIds: Array<number | string>;
   onEventComplete?: (event: ProjectExploreListItemEventResponse) => void;
-  contentVotedIds: Array<number | string>;
+  contentVotedIds?: Array<number | string>;
   onContentVote: (content: ContentListItem) => void;
 };
 export default function ProjectDetailCard({
@@ -32,7 +32,7 @@ export default function ProjectDetailCard({
   eventCompletedIds = [],
   eventCompleteQueueIds,
   onEventComplete,
-  contentVotedIds,
+  contentVotedIds = [],
   onContentVote,
 }: ProjectDetailCardProps) {
   const isCompletedEvent = useCallback(

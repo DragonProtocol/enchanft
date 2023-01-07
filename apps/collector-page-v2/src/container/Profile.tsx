@@ -19,7 +19,6 @@ import OnChainInterest, {
 import OffChainInterest from '../components/profile/OffChainInterest';
 import {
   addOrDelWallet,
-  fetchU3Profile,
   fetchU3Profiles,
   fetchU3ProfileWithWallet,
   fetchU3Wallets,
@@ -42,9 +41,7 @@ function Profile() {
   const fetchData = useCallback(async () => {
     try {
       const { data } = await fetchU3Profiles(user.token);
-      console.log(data.data);
       const r = mergeProfilesData(data.data);
-      console.log(r);
       setProfileData(r);
       // setProfileData(data.data);
     } catch (error) {
@@ -113,7 +110,7 @@ function Profile() {
   }, [fetchData, fetchDataWithWallet, wallet]);
 
   return (
-    <ProfileWrapper>
+    <ProfileWrapper id="profile-wrapper">
       <div>
         {!wallet && user && (
           <div className="infos">
@@ -180,6 +177,7 @@ function Profile() {
                 />
               )) || <OnChainNoItem />)}
             {tab === 'OffChain' && <OffChainInterest />}
+            <div className="placeholder" />
           </div>
         )}
       </div>
@@ -193,15 +191,18 @@ const ProfileWrapper = styled.div`
   & div.loading {
     display: flex;
     justify-content: center;
-    margin-top: 40px;
+    height: calc(100% - 210px);
+    align-items: center;
   }
   > div {
     margin: 0 auto;
     padding: 24px;
+    height: 100%;
+    box-sizing: border-box;
 
     .infos {
       display: flex;
-      gap: 24px;
+      gap: 40px;
       margin-bottom: 24px;
     }
 
@@ -250,6 +251,10 @@ const ProfileWrapper = styled.div`
             }
           }
         }
+      }
+
+      & .placeholder {
+        min-height: 100px;
       }
     }
   }

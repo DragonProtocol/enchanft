@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-27 14:14:00
+ * @LastEditTime: 2023-01-05 12:08:04
  * @Description: file description
  */
 import {
@@ -213,6 +213,7 @@ export const eventExploreListSlice = createSlice({
       });
     },
     setOne: (...args) => eventExploreListEntity.setOne(...args),
+    removeOne: (...args) => eventExploreListEntity.removeOne(...args),
     removeAll: (state) => eventExploreListEntity.removeAll(state),
     // setDaylightUid: (state, action: PayloadAction<string>) => {
     //   state.daylightUid = action.payload;
@@ -271,6 +272,7 @@ export const selectState = (state: RootState) => state.eventExploreList;
 export const {
   updateOne,
   setOne,
+  removeOne,
   removeAll,
   // setDaylightUid
 } = actions;

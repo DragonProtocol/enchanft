@@ -4,11 +4,10 @@ import Title from './Title';
 import Badge from '../contents/Badge';
 import { EventExploreListItemResponse } from '../../services/types/event';
 import isUrl from '../../utils/isUrl';
-import { MEDIA_BREAK_POINTS } from '../../constants';
 import RewardTag from '../event/RewardTag';
 import { Reward } from '../../services/types/common';
 
-export default function RecommendEvents({
+export default function TrendingEvents({
   data,
   viewAllAction,
 }: {
@@ -18,7 +17,7 @@ export default function RecommendEvents({
   const navigate = useNavigate();
   return (
     <Box>
-      <Title text="Recommended Events" viewAllAction={viewAllAction} />{' '}
+      <Title text="Trending Events" viewAllAction={viewAllAction} />{' '}
       <div className="lists">
         {data.map((item) => {
           const { image, project, platform } = item;
@@ -49,25 +48,9 @@ export default function RecommendEvents({
 
 const Box = styled.div`
   & .lists {
+    display: flex;
+    gap: 20px;
     margin-top: 20px;
-    width: 100%;
-    display: grid;
-    grid-gap: 20px;
-    grid-template-columns: repeat(4, minmax(240px, 1fr));
-    /* @media (min-width: ${MEDIA_BREAK_POINTS.xl}px) {
-      grid-template-columns: repeat(4, minmax(240px, 1fr));
-    }
-    @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
-      grid-template-columns: repeat(3, minmax(240px, 1fr));
-    }
-    @media (min-width: ${MEDIA_BREAK_POINTS.sm}px) and (max-width: ${MEDIA_BREAK_POINTS.md}px) {
-      grid-template-columns: repeat(2, minmax(240px, 1fr));
-    }
-    @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
-      display: flex;
-      flex-direction: column;
-      grid-gap: 20px;
-    } */
   }
 `;
 
@@ -87,29 +70,28 @@ function Card({
   return (
     <CardWrapper>
       <CardBox onClick={clickAction}>
-        <LeftBox>
+        <EventImg src={img} />
+        <BottomBox>
           <EventTitle>{title}</EventTitle>
-          <EventAuthor>{author}</EventAuthor>
           <EventRewardTagBox>
             <RewardTag value={reward} />
           </EventRewardTagBox>
-        </LeftBox>
-        <RightBox>
-          <EventImg src={img} />
-        </RightBox>
+
+          <EventAuthor>{author}</EventAuthor>
+        </BottomBox>
       </CardBox>
     </CardWrapper>
   );
 }
 
 const CardWrapper = styled.div`
-  width: 100%;
-  height: 110px;
+  flex: 1;
+  height: 315px;
+  cursor: pointer;
+  box-sizing: border-box;
   background: #1b1e23;
-  border: 1px solid #39424c;
   border-radius: 20px;
   overflow: hidden;
-  cursor: pointer;
   &:hover {
     & > * {
       transform: scale(1.1);
@@ -119,31 +101,41 @@ const CardWrapper = styled.div`
 const CardBox = styled.div`
   transition: all 0.3s;
   display: flex;
-`;
-const LeftBox = styled.div`
-  flex: 1;
-  padding: 14px 20px;
-  box-sizing: border-box;
-  display: flex;
   flex-direction: column;
-  gap: 4px;
-  justify-content: space-between;
-`;
-const RightBox = styled.div`
-  width: 110px;
-  height: 110px;
-  flex-shrink: 0;
 `;
 const EventImg = styled.img`
   width: 100%;
-  height: 100%;
+  height: 178px;
+  overflow: hidden;
+  flex-shrink: 0;
   object-fit: cover;
+  &:before {
+    content: ' ';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: inherit;
+    padding: 2px;
+    box-sizing: border-box;
+  }
+`;
+const BottomBox = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 20px;
 `;
 const EventTitle = styled.span`
+  margin: 0;
+  padding: 0;
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
+
   color: #ffffff;
+
   overflow: hidden;
 
   text-overflow: ellipsis;
@@ -156,13 +148,10 @@ const EventTitle = styled.span`
 `;
 const EventAuthor = styled.span`
   font-weight: 400;
-  font-size: 14px;
-  line-height: 17px;
+  font-size: 16px;
+  line-height: 19px;
 
-  background: linear-gradient(to right, #cd62ff, #62aaff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #718096;
 `;
 const EventRewardTagBox = styled.div`
   div {

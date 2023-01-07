@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-29 10:16:26
+ * @LastEditTime: 2023-01-06 14:06:20
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -190,19 +190,18 @@ function Favorites() {
     onFavor: onProjectFavor,
     onShare: onProjectShare,
   } = useProjectHandles();
+
+  const { events, projects, contents } = useUserFavorites();
   const {
-    votedIds: contentVotedIds,
-    voteQueueIds: contentVoteQueueIds,
-    favorQueueIds: contentFavorQueueIds,
-    hiddenQueueIds: contentHiddenQueueIds,
+    newList: showContentList,
+    votePendingIds: contentVotePendingIds,
+    favorPendingIds: contentFavorPendingIds,
+    hiddenPendingIds: contentHiddenPendingIds,
     onVote: onContentVote,
     onFavor: onContentFavor,
     onShare: onContentShare,
     onHidden: onContentHidden,
-    formatCurrentContents,
-  } = useContentHandles();
-
-  const { events, projects, contents } = useUserFavorites();
+  } = useContentHandles(contents);
   const { status } = useAppSelector(selectState);
   const isLoading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
@@ -228,20 +227,6 @@ function Favorites() {
   const [switchValue, setSwitchValue] = useState<FavoriteSwitchValue>(
     FavoriteSwitchValue.event
   );
-
-  const showProject = useMemo(
-    () =>
-      project
-        ? {
-            ...project,
-            contents: formatCurrentContents(
-              project.contents as ContentListItem[]
-            ),
-          }
-        : null,
-    [project, formatCurrentContents]
-  );
-  const showContentList = formatCurrentContents(contents);
 
   return (
     <FavoritesWrapper>
@@ -316,9 +301,9 @@ function Favorites() {
                       <ContentList
                         data={showContentList}
                         activeId={content?.id}
-                        loadingVoteIds={contentVoteQueueIds}
-                        loadingFavorIds={contentFavorQueueIds}
-                        loadingHiddenIds={contentHiddenQueueIds}
+                        loadingVoteIds={contentVotePendingIds}
+                        loadingFavorIds={contentFavorPendingIds}
+                        loadingHiddenIds={contentHiddenPendingIds}
                         onVote={onContentVote}
                         onFavor={onContentFavor}
                         onShare={onContentShare}
@@ -372,13 +357,12 @@ function Favorites() {
                 {switchValue === FavoriteSwitchValue.project &&
                   (project ? (
                     <ContentScrollBox>
-                      {showProject && (
+                      {project && (
                         <ProjectDetailView
-                          data={showProject}
+                          data={project}
                           eventCompletedIds={eventCompletedIds}
                           eventCompleteQueueIds={eventCompleteQueueIds}
                           onEventComplete={onEventComplete}
-                          contentVotedIds={contentVotedIds}
                           onContentVote={onContentVote}
                         />
                       )}

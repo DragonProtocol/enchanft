@@ -1,3 +1,4 @@
+import { usePermissions } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
@@ -7,6 +8,9 @@ import { ContentListItem } from '../../services/types/contents';
 import { useAppSelector } from '../../store/hooks';
 import ExtensionSupport from '../common/ExtensionSupport';
 import Loading from '../common/loading/Loading';
+import { Edit3 } from '../icons/edit';
+import { ThumbUp } from '../icons/thumbUp';
+import { Trash } from '../icons/trash';
 import ContentShower from './ContentShower';
 
 const urlCache: { [key: string]: string } = {};
@@ -14,8 +18,14 @@ export type Tab = 'original' | 'readerView';
 
 export default function ContentShowerBox({
   selectContent,
+  thumbUpAction,
+  deleteAction,
+  editAction,
 }: {
   selectContent: ContentListItem | undefined;
+  thumbUpAction?: () => void;
+  deleteAction?: () => void;
+  editAction?: () => void;
 }) {
   const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
   const [tab, setTab] = useState<Tab>(
@@ -71,14 +81,21 @@ export default function ContentShowerBox({
         tab={tab}
         setTab={(t) => setTab(t)}
         readerViewAction={() => {
-          if (selectContent.supportReaderView && !selectContent.value) {
+          if (selectContent?.supportReaderView && !selectContent.value) {
             loadDaylightContent(selectContent.link);
           }
         }}
+        showAdminOps={!!selectContent}
+        isForU={!!selectContent?.isForU}
+        adminScore={selectContent?.adminScore || 0}
+        thumbUpAction={thumbUpAction}
+        deleteAction={deleteAction}
+        editAction={editAction}
       />
       {(() => {
+        if (!selectContent) return null;
         if (tab === 'original') {
-          if (u3ExtensionInstalled || selectContent.supportIframe) {
+          if (u3ExtensionInstalled || selectContent?.supportIframe) {
             return (
               <div className="iframe-container">
                 {!iframeLoaded && (
@@ -88,7 +105,7 @@ export default function ContentShowerBox({
                 )}
                 <iframe
                   title="daylight"
-                  src={selectContent.link}
+                  src={selectContent?.link}
                   style={{
                     opacity: iframeLoaded ? 1 : 0,
                   }}
@@ -99,9 +116,9 @@ export default function ContentShowerBox({
               </div>
             );
           }
-
           return (
             <ExtensionSupport
+              btns
               url={selectContent.link}
               title={selectContent.title}
               img={
@@ -149,11 +166,24 @@ export function ContentShowerTab({
   tab,
   setTab,
   readerViewAction,
+  showAdminOps,
+  isForU,
+  thumbUpAction,
+  deleteAction,
+  editAction,
+  adminScore,
 }: {
   tab: Tab;
   setTab: (tab: Tab) => void;
   readerViewAction?: () => void;
+  showAdminOps?: boolean;
+  thumbUpAction?: () => void;
+  deleteAction?: () => void;
+  editAction?: () => void;
+  isForU?: boolean;
+  adminScore?: number;
 }) {
+  const { isAdmin } = usePermissions();
   return (
     <div className="tabs">
       <div>
@@ -177,6 +207,32 @@ export function ContentShowerTab({
           ReaderView
         </button>
       </div>
+      {showAdminOps && !isForU && isAdmin && (
+        <div className="admin-ops">
+          <span
+            onClick={() => {
+              if (thumbUpAction) thumbUpAction();
+            }}
+          >
+            <ThumbUp />
+            &nbsp; {adminScore || 0}
+          </span>
+          <span
+            onClick={() => {
+              if (editAction) editAction();
+            }}
+          >
+            <Edit3 />
+          </span>
+          <span
+            onClick={() => {
+              if (deleteAction) deleteAction();
+            }}
+          >
+            <Trash />
+          </span>
+        </div>
+      )}
     </div>
   );
 }
@@ -209,6 +265,7 @@ export const ContentBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
 
     > div {
       width: 260px;
@@ -239,6 +296,29 @@ export const ContentBox = styled.div`
         }
       }
     }
+
+    > div.admin-ops {
+      position: absolute;
+      right: 0;
+      background: inherit;
+      width: fit-content;
+      padding: 0 15px;
+      color: #ffffff;
+      gap: 10px;
+
+      > span {
+        cursor: pointer;
+        border: 1px solid #39424c;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 6px;
+        /* width: 32px; */
+        height: 32px;
+        box-sizing: border-box;
+      }
+    }
   }
 
   & .iframe-container {
@@ -257,5 +337,5 @@ export const LoadingBox = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 40px;
+  height: calc(100% - 60px);
 `;

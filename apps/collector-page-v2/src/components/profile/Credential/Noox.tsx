@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
 import { Platform } from '../../../services/types/common';
 import { NooxData } from '../../../services/types/profile';
 import { NoItem, NooxCard } from './Card';
+import { ContentBox } from './ItemContainer';
 import Title from './Title';
 
 export default function Noox({ data }: { data: NooxData }) {
@@ -45,17 +45,3 @@ export default function Noox({ data }: { data: NooxData }) {
     </ContentBox>
   );
 }
-
-const ContentBox = styled.div`
-  margin-top: 40px;
-  background: #1b1e23;
-  border-radius: 20px;
-  padding: 20px;
-  .data {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 20px;
-    /* height: 258px; */
-  }
-`;

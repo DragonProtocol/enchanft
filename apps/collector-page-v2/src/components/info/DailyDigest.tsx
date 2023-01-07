@@ -18,6 +18,7 @@ const DailyDigestBox = styled.div`
   gap: 10px;
   padding: 20px;
   width: 360px;
+  min-width: 360px;
   height: 170px;
 
   background: #1b1e23;

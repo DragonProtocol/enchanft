@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-30 14:58:27
+ * @LastEditTime: 2023-01-03 17:28:01
  * @Description: 首页任务看板
  */
 import React, {
@@ -38,6 +38,7 @@ import {
   getReco,
 } from '../features/frens/frensHandles';
 import { MainWrapper } from '../components/layout/Index';
+import FeedsMenu from '../components/layout/FeedsMenu';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
@@ -617,132 +618,213 @@ function Frens() {
 
   return (
     <FrensWrapper>
-      <FrensFeed>
-        <FrensFeedSwitch>
-          <div
-            onClick={() => setFeedTab('Explore')}
-            className={feedTab === 'Explore' ? 'active' : ''}
-          >
-            Explore
-          </div>
-          <div
-            onClick={() => setFeedTab('Following')}
-            className={feedTab === 'Following' ? 'active' : ''}
-          >
-            Following
-          </div>
-          <div className="tag-select">
-            <Select
-              options={tagTypeOptions}
-              onChange={(value) => setFilterTag(value)}
-              value={filterTag}
-              iconUrl={ProjectTypeSvg}
-            />
-          </div>
-        </FrensFeedSwitch>
-        <div className="feed-content">
-          {feed?.result?.map((item, index) => {
-            const {
-              owner,
-              tag,
-              type,
-              owner_name: ownerName,
-              owner_follower_num: ownerFollowerNum,
-              owner_following_num: ownerFollowingNum,
-            } = item;
-            return (
-              <FrensFeedCard>
-                <Popover
-                  content={renderUserInfo(
-                    owner,
-                    ownerName,
-                    owner in followingMap,
-                    ownerFollowerNum,
-                    ownerFollowingNum,
-                    false
-                  )}
-                  getPopupContainer={(triggerNode) =>
-                    (triggerNode as any).parentNode
-                  }
-                  color="#1b1e23"
-                  overlayInnerStyle={{
-                    background: '#1b1e23',
-                    color: '#718096',
+      <FrensHeader>
+        <FeedsMenu />
+      </FrensHeader>
+      <FrensBody>
+        <FrensFeed>
+          <FrensFeedSwitch>
+            <div
+              onClick={() => setFeedTab('Explore')}
+              className={feedTab === 'Explore' ? 'active' : ''}
+            >
+              Explore
+            </div>
+            <div
+              onClick={() => setFeedTab('Following')}
+              className={feedTab === 'Following' ? 'active' : ''}
+            >
+              Following
+            </div>
+            <div className="tag-select">
+              <Select
+                options={tagTypeOptions}
+                onChange={(value) => setFilterTag(value)}
+                value={filterTag}
+                iconUrl={ProjectTypeSvg}
+              />
+            </div>
+          </FrensFeedSwitch>
+          <div className="feed-content">
+            {feed?.result?.map((item, index) => {
+              const {
+                owner,
+                tag,
+                type,
+                owner_name: ownerName,
+                owner_follower_num: ownerFollowerNum,
+                owner_following_num: ownerFollowingNum,
+              } = item;
+              return (
+                <FrensFeedCard>
+                  <Popover
+                    content={renderUserInfo(
+                      owner,
+                      ownerName,
+                      owner in followingMap,
+                      ownerFollowerNum,
+                      ownerFollowingNum,
+                      false
+                    )}
+                    getPopupContainer={(triggerNode) =>
+                      (triggerNode as any).parentNode
+                    }
+                    color="#1b1e23"
+                    overlayInnerStyle={{
+                      background: '#1b1e23',
+                      color: '#718096',
+                    }}
+                  >
+                    <img
+                      id={`tooltip-anchor-children-${owner}-${index}`}
+                      className="avatar"
+                      src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
+                      alt={owner}
+                    />
+                  </Popover>
+                  <div className="content">
+                    <div className="owner">
+                      <span className="name color-white">{ownerName}</span>{' '}
+                      {renderAddress(owner)}
+                    </div>
+                    {tagComponentsMap?.[`${type}`]?.(item)}
+                    {/* {tagComponentsMap?.[`${tag}_${type}`]?.(item)} */}
+                  </div>
+                </FrensFeedCard>
+              );
+            })}
+            <div className="load-more">
+              {loading ? (
+                <Loading />
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    fetchData({
+                      cursor: feedRef?.current?.cursor,
+                    });
                   }}
                 >
-                  <img
-                    id={`tooltip-anchor-children-${owner}-${index}`}
-                    className="avatar"
-                    src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
-                    alt={owner}
-                  />
-                </Popover>
-                <div className="content">
-                  <div className="owner">
-                    <span className="name color-white">{ownerName}</span>{' '}
-                    {renderAddress(owner)}
-                  </div>
-                  {tagComponentsMap?.[`${type}`]?.(item)}
-                  {/* {tagComponentsMap?.[`${tag}_${type}`]?.(item)} */}
-                </div>
-              </FrensFeedCard>
-            );
-          })}
-          <div className="load-more">
-            {loading ? (
-              <Loading />
-            ) : (
-              <button
-                type="button"
-                onClick={() => {
-                  fetchData({
-                    cursor: feedRef?.current?.cursor,
-                  });
-                }}
-              >
-                Load More
-              </button>
-            )}
+                  Load More
+                </button>
+              )}
+            </div>
           </div>
-        </div>
-      </FrensFeed>
-      <FrensRight>
-        {isSearch && feed?.result?.[0] ? (
-          <div className="card search-card">
-            {renderUserInfo(
-              feed?.result?.[0]?.owner,
-              feed?.result?.[0]?.owner_name,
-              false,
-              feed?.result?.[0]?.owner_follower_num,
-              feed?.result?.[0]?.owner_following_num,
-              true
-            )}
-          </div>
-        ) : (
-          <SearchInput
-            onSearch={(value) => {
-              console.log(value, 'value');
-              setFilterAddress(value);
-            }}
-            placeholder="Search Address or ENS"
-          />
-        )}
-        <div className="card">
-          <FrensFeedSwitch>
-            <span className="title">You Might Like</span>
-          </FrensFeedSwitch>
-          {(() => {
-            const recoArr =
-              reco?.filter(({ address }) => {
-                return !following?.result?.find(
-                  ({ owner }) => address === owner
-                );
-              }) || [];
+        </FrensFeed>
+        <FrensRight>
+          {isSearch && feed?.result?.[0] ? (
+            <div className="card search-card">
+              {renderUserInfo(
+                feed?.result?.[0]?.owner,
+                feed?.result?.[0]?.owner_name,
+                false,
+                feed?.result?.[0]?.owner_follower_num,
+                feed?.result?.[0]?.owner_following_num,
+                true
+              )}
+            </div>
+          ) : (
+            <SearchInput
+              onSearch={(value) => {
+                console.log(value, 'value');
+                setFilterAddress(value);
+              }}
+              placeholder="Search Address or ENS"
+            />
+          )}
+          <div className="card">
+            <FrensFeedSwitch>
+              <span className="title">You Might Like</span>
+            </FrensFeedSwitch>
+            {(() => {
+              const recoArr =
+                reco?.filter(({ address }) => {
+                  return !following?.result?.find(
+                    ({ owner }) => address === owner
+                  );
+                }) || [];
 
-            return recoArr?.length ? (
-              <div className="reco-card">
-                {recoArr?.map(({ address: owner, domain: owner_name }) => (
-                  <div className="user-info" key={`frens-reco-card-${owner}`}>
+              return recoArr?.length ? (
+                <div className="reco-card">
+                  {recoArr?.map(({ address: owner, domain: owner_name }) => (
+                    <div className="user-info" key={`frens-reco-card-${owner}`}>
+                      <img
+                        className="avatar"
+                        src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
+                        alt={owner}
+                      />
+                      <div>
+                        <div className="name color-white">
+                          {owner_name || ' '}
+                        </div>
+                        <div>{renderAddress(owner, false)}</div>
+                      </div>
+                      <button
+                        className="frens-button"
+                        type="button"
+                        onClick={() => {
+                          dispatch(
+                            setFollow({ isFollow: false, target: owner })
+                          );
+                        }}
+                      >
+                        {(() => {
+                          if (followAddressLoading.includes(owner))
+                            return (
+                              <StyledLdsRing>
+                                <div />
+                                <div />
+                                <div />
+                                <div />
+                              </StyledLdsRing>
+                            );
+                          return false ? (
+                            <>
+                              <span className="btn-following">Following</span>
+                              <span className="btn-unfollow">UnFollow</span>
+                            </>
+                          ) : (
+                            'Follow'
+                          );
+                        })()}
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : null;
+            })()}
+          </div>
+
+          <div className="card">
+            <FrensFeedSwitch>
+              <div
+                onClick={() => setFollowTab('Following')}
+                className={`${
+                  followTab === 'Following' ? 'active' : ''
+                } follow-tab`}
+              >
+                Following {following?.total ? `(${following?.total})` : null}
+              </div>
+              <div
+                onClick={() => setFollowTab('Follower')}
+                className={`${
+                  followTab === 'Follower' ? 'active' : ''
+                } follow-tab`}
+              >
+                Follower {follower?.total ? `(${follower?.total})` : null}
+              </div>
+            </FrensFeedSwitch>
+            <div className="reco-card">
+              {!(followTab === 'Following' ? following : follower)?.result && (
+                <div className="follow-tip">
+                  {followTab === 'Following'
+                    ? 'you did NOT follow anyone!'
+                    : 'you have no follower!'}
+                </div>
+              )}
+              {(followTab === 'Following' ? following : follower)?.result?.map(
+                ({ owner, owner_name, is_follow }) => (
+                  <div className="user-info" key={`frens-feed-card-${owner}`}>
                     <img
                       className="avatar"
                       src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
@@ -758,7 +840,9 @@ function Frens() {
                       className="frens-button"
                       type="button"
                       onClick={() => {
-                        dispatch(setFollow({ isFollow: false, target: owner }));
+                        dispatch(
+                          setFollow({ isFollow: is_follow, target: owner })
+                        );
                       }}
                     >
                       {(() => {
@@ -771,7 +855,7 @@ function Frens() {
                               <div />
                             </StyledLdsRing>
                           );
-                        return false ? (
+                        return is_follow ? (
                           <>
                             <span className="btn-following">Following</span>
                             <span className="btn-unfollow">UnFollow</span>
@@ -782,85 +866,10 @@ function Frens() {
                       })()}
                     </button>
                   </div>
-                ))}
-              </div>
-            ) : null;
-          })()}
-        </div>
-
-        <div className="card">
-          <FrensFeedSwitch>
-            <div
-              onClick={() => setFollowTab('Following')}
-              className={`${
-                followTab === 'Following' ? 'active' : ''
-              } follow-tab`}
-            >
-              Following {following?.total ? `(${following?.total})` : null}
+                )
+              )}
             </div>
-            <div
-              onClick={() => setFollowTab('Follower')}
-              className={`${
-                followTab === 'Follower' ? 'active' : ''
-              } follow-tab`}
-            >
-              Follower {follower?.total ? `(${follower?.total})` : null}
-            </div>
-          </FrensFeedSwitch>
-          <div className="reco-card">
-            {!(followTab === 'Following' ? following : follower)?.result && (
-              <div className="follow-tip">
-                {followTab === 'Following'
-                  ? 'you did NOT follow anyone!'
-                  : 'you have no follower!'}
-              </div>
-            )}
-            {(followTab === 'Following' ? following : follower)?.result?.map(
-              ({ owner, owner_name, is_follow }) => (
-                <div className="user-info" key={`frens-feed-card-${owner}`}>
-                  <img
-                    className="avatar"
-                    src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
-                    alt={owner}
-                  />
-                  <div>
-                    <div className="name color-white">{owner_name || ' '}</div>
-                    <div>{renderAddress(owner, false)}</div>
-                  </div>
-                  <button
-                    className="frens-button"
-                    type="button"
-                    onClick={() => {
-                      dispatch(
-                        setFollow({ isFollow: is_follow, target: owner })
-                      );
-                    }}
-                  >
-                    {(() => {
-                      if (followAddressLoading.includes(owner))
-                        return (
-                          <StyledLdsRing>
-                            <div />
-                            <div />
-                            <div />
-                            <div />
-                          </StyledLdsRing>
-                        );
-                      return is_follow ? (
-                        <>
-                          <span className="btn-following">Following</span>
-                          <span className="btn-unfollow">UnFollow</span>
-                        </>
-                      ) : (
-                        'Follow'
-                      );
-                    })()}
-                  </button>
-                </div>
-              )
-            )}
-          </div>
-          {/* <div className="load-more-box">
+            {/* <div className="load-more-box">
             <button
               className="frens-button"
               type="button"
@@ -873,8 +882,9 @@ function Frens() {
               Load More
             </button>
           </div> */}
-        </div>
-      </FrensRight>
+          </div>
+        </FrensRight>
+      </FrensBody>
     </FrensWrapper>
   );
 }
@@ -925,10 +935,19 @@ const FrensWrapper = styled(MainWrapper)`
   height: auto;
   background: #14171a;
   color: #718096;
+`;
+const FrensHeader = styled.div`
+  margin-bottom: 24px;
+`;
+const FrensBody = styled.div`
+  height: auto;
+  background: #14171a;
+  color: #718096;
   display: flex;
 
   .feed-content {
     overflow-y: auto;
+    flex: 1;
   }
 
   .reco-card {
@@ -968,6 +987,7 @@ const FrensWrapper = styled(MainWrapper)`
   }
 
   .load-more {
+    height: 100%;
     margin: 20px;
     display: flex;
     justify-content: center;
@@ -1055,15 +1075,18 @@ const FrensWrapper = styled(MainWrapper)`
 `;
 const FrensFeed = styled.div`
   width: 100%;
-  max-width: 47.5rem;
+  /* max-width: 47.5rem; */
   min-width: 37.5rem;
   background: #1b1e23;
   border-radius: 20px;
   padding: 0px 24px;
   margin-right: 24px;
+  display: flex;
+  flex-direction: column;
 `;
 const FrensRight = styled.div`
-  flex-grow: 1;
+  /* flex-grow: 1; */
+  width: 360px;
 `;
 const FrensFeedSwitch = styled.div`
   display: flex;
@@ -1131,9 +1154,7 @@ const FrensFeedCard = styled.div`
   .content {
     display: flex;
     flex-direction: column;
-    /* row-gap: 0.675rem; */
     row-gap: 0.875rem;
-    /* row-gap: 0.575rem; */
     font-size: 14px;
   }
 

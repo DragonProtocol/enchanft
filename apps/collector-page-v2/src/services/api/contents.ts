@@ -3,6 +3,7 @@ import {
   ContentLang,
   ContentsListResponse,
   ContentsResponse,
+  ContentStatus,
   ContentType,
   URLParseResponse,
 } from '../types/contents';
@@ -14,6 +15,17 @@ export function getContentProjects(): RequestPromise<ContentsResponse> {
   });
 }
 
+export function getContent(id: number | string, token: string) {
+  return request({
+    url: `/contents/${id}`,
+    method: 'get',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
 export function saveContent(
   data: {
     title: string;
@@ -21,9 +33,10 @@ export function saveContent(
     url: string;
     type: ContentType;
     lang: ContentLang;
-    uniProjectId: number | Array<number>;
+    uniProjectIds: Array<number>;
     supportReaderView?: boolean;
     supportIframe?: boolean;
+    adminScore?: number;
   },
   token: string
 ) {
@@ -36,9 +49,48 @@ export function saveContent(
       url: data.url,
       type: data.type.toUpperCase().replace(' ', '_'),
       lang: data.lang === ContentLang.All ? null : data.lang,
-      uniProjedctId: data.uniProjectId,
+      uniProjectIds: data.uniProjectIds,
       supportReaderView: data.supportReaderView || false,
       supportIframe: data.supportIframe || false,
+      adminScore: data.adminScore,
+    },
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
+export function updateContent(
+  data: {
+    id: number;
+    title?: string;
+    author?: string;
+    url?: string;
+    type?: ContentType;
+    lang?: ContentLang;
+    uniProjectIds?: Array<number>;
+    supportReaderView?: boolean;
+    supportIframe?: boolean;
+    adminScore?: number;
+    status?: ContentStatus;
+  },
+  token: string
+) {
+  return request({
+    url: `/contents/${data.id}`,
+    method: 'post',
+    data: {
+      title: data.title,
+      author: data.author,
+      url: data.url,
+      type: data.type?.toUpperCase().replace(' ', '_') ?? undefined,
+      lang: data.lang === ContentLang.All ? undefined : data.lang,
+      uniProjectIds: data.uniProjectIds ?? undefined,
+      supportReaderView: data.supportReaderView,
+      supportIframe: data.supportIframe,
+      adminScore: data.adminScore || undefined,
+      status: data.status || undefined,
     },
     headers: {
       token,
@@ -101,6 +153,17 @@ export function personalComplete(uuid: string, token: string) {
   return request({
     url: `/contents/${uuid}/personalcompleting`,
     method: 'post',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
+export function delFavors(id: number, token: string) {
+  return request({
+    url: `/contents/${id}/favors`,
+    method: 'delete',
     headers: {
       token,
       needToken: true,
