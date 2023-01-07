@@ -25,6 +25,7 @@ export enum RouteKey {
   profile = 'profile',
   profileWallet = 'profileWallet',
   noMatch = 'noMatch',
+  policy = 'policy',
 }
 export enum RoutePermission {
   login = 'login',
@@ -112,6 +113,11 @@ export const routes: CutomRouteObject[] = [
     path: '/frens',
     element: loadContainerElement('Frens'),
     key: RouteKey.frens,
+  },
+  {
+    path: '/policy',
+    element: loadContainerElement('Policy'),
+    key: RouteKey.policy,
   },
   NoMatchRoute,
 ];
