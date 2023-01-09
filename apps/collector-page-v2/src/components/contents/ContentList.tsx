@@ -19,6 +19,7 @@ export type ContentListItem = {
   title: string;
   type: string;
   author: string;
+  link: string;
   createdAt: number;
   favored?: boolean;
   upVoted?: boolean;
@@ -99,7 +100,7 @@ export default function ContentList({
             <ListItem
               type={item.type}
               id={item.id}
-              author={item.author}
+              link={item.link}
               createdAt={item.createdAt}
               title={item.title}
               upVoteNum={item.upVoteNum}
