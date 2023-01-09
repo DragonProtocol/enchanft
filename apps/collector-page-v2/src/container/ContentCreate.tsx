@@ -278,7 +278,7 @@ function ContentCreate() {
           </FormField>
 
           <FormField>
-            <FormLabel htmlFor="support-iframe">Original</FormLabel>
+            <FormLabel htmlFor="support-iframe">Iframe Display</FormLabel>
             <SwitchRow>
               <Switch
                 onChange={(checked) =>
@@ -286,7 +286,7 @@ function ContentCreate() {
                 }
                 checked={formik.values.supportIframe}
               />
-              <SwitchText>Original</SwitchText>
+              <SwitchText>Iframe supports the website display 👉</SwitchText>
             </SwitchRow>
           </FormField>
 

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { LinkIcon } from '../icons/link';
 
-export default function Author({ text }: { text: string }) {
+export default function LinkBox({ text }: { text: string }) {
   if (!text) return null;
   return (
     <Box>

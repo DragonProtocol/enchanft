@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { MEDIA_BREAK_POINTS } from '../../constants';
 import { defaultFormatDate } from '../../utils/time';
-import Author from './Author';
+import LinkBox from './LinkBox';
 import Badge from './Badge';
 
 export function GridItemHidden({
@@ -56,7 +56,7 @@ export function GridItemHidden({
 
 export default function GridItem({
   type,
-  author,
+  link,
   createdAt,
   title,
   upVoteNum,
@@ -66,7 +66,7 @@ export default function GridItem({
   upVoteNum: number;
   title: string;
   type: string;
-  author: string;
+  link: string;
   createdAt: number;
   isActive: boolean;
   clickAction?: () => void;
@@ -81,7 +81,7 @@ export default function GridItem({
         <h2>{title}</h2>
         <div className="tags">
           <Badge text={type} />
-          <Author text={author} />
+          <LinkBox text={link} />
         </div>
         <div className="date">{defaultFormatDate(createdAt)}</div>
         <div className="footer">👏 &nbsp;{upVoteNum}</div>

@@ -5,14 +5,14 @@ import { EyeClose } from '../icons/eyeClose';
 import { Heart } from '../icons/heart';
 import Badge from './Badge';
 import { defaultFormatDate } from '../../utils/time';
-import Author from './Author';
+import LinkBox from './LinkBox';
 
 export default function ListItem({
   isActive,
   clickAction,
   type,
   id,
-  author,
+  link,
   createdAt,
   title,
   upVoteNum,
@@ -30,7 +30,7 @@ export default function ListItem({
   id: number;
   title: string;
   type: string;
-  author: string;
+  link: string;
   createdAt: number;
   isActive: boolean;
   hidden?: boolean;
@@ -80,7 +80,7 @@ export default function ListItem({
           <ContentItemTitle>
             <div>
               <Badge text={type} />
-              <Author text={author} />
+              <LinkBox text={link} />
             </div>
             <span>{defaultFormatDate(createdAt)}</span>
           </ContentItemTitle>
