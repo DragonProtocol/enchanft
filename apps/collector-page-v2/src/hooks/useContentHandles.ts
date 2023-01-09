@@ -61,7 +61,7 @@ export default (originList?: ContentListItem[]) => {
   ]);
   const onVote = useCallback(
     (data: ContentListItem) => {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         if (
           data.upVoted ||
           cacheContentVotePendingIds.has(data?.uuid || data.id)
@@ -72,16 +72,15 @@ export default (originList?: ContentListItem[]) => {
             cacheContentVotePendingIds.add(data?.uuid || data.id);
             setVotePendingIds([...cacheContentVotePendingIds]);
             if (data?.uuid) {
-              const resp = await personalVote(data.uuid, user.token);
-              resolve(resp);
+              await personalVote(data.uuid, user.token);
             } else {
-              const resp = await voteContent(data.id, user.token);
-              resolve(resp);
+              await voteContent(data.id, user.token);
             }
             updateOne(data.uuid || data.id, {
               upVoted: true,
               upVoteNum: data.upVoteNum + 1,
             });
+            resolve();
           } catch (error) {
             toast.error(error?.message || error?.msg);
             reject(error);
@@ -106,7 +105,7 @@ export default (originList?: ContentListItem[]) => {
   ]);
   const onFavor = useCallback(
     (data: ContentListItem) => {
-      return new Promise((resolve, reject) => {
+      return new Promise<void>((resolve, reject) => {
         if (cacheContentFavorPendingIds.has(data?.uuid || data.id)) return;
         handleCallbackVerifyLogin(async () => {
           try {
@@ -115,15 +114,14 @@ export default (originList?: ContentListItem[]) => {
             if (data.favored && data.id) {
               await delFavors(data.id, user.token);
             } else if (data?.uuid) {
-              const resp = await personalFavors(data.uuid, user.token);
-              resolve(resp);
+              await personalFavors(data.uuid, user.token);
             } else {
-              const resp = await favorsContent(data.id, user.token);
-              resolve(resp);
+              await favorsContent(data.id, user.token);
             }
             updateOne(data.uuid || data.id, {
               favored: !data.favored,
             });
+            resolve();
           } catch (error) {
             toast.error(error?.message || error?.msg);
             reject(error);

@@ -19,6 +19,7 @@ export type ContentListItem = {
   title: string;
   type: string;
   author: string;
+  link: string;
   createdAt: number;
   favored?: boolean;
   upVoted?: boolean;
@@ -98,7 +99,8 @@ export default function ContentList({
           <AnimatedListItem key={item.id} styles={{ ...styles }}>
             <ListItem
               type={item.type}
-              author={item.author}
+              id={item.id}
+              link={item.link}
               createdAt={item.createdAt}
               title={item.title}
               upVoteNum={item.upVoteNum}

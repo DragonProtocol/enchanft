@@ -29,7 +29,6 @@ export function getContent(id: number | string, token: string) {
 export function saveContent(
   data: {
     title: string;
-    author: string;
     url: string;
     type: ContentType;
     lang: ContentLang;
@@ -45,7 +44,6 @@ export function saveContent(
     method: 'post',
     data: {
       title: data.title,
-      author: data.author,
       url: data.url,
       type: data.type.toUpperCase().replace(' ', '_'),
       lang: data.lang === ContentLang.All ? null : data.lang,
@@ -65,7 +63,6 @@ export function updateContent(
   data: {
     id: number;
     title?: string;
-    author?: string;
     url?: string;
     type?: ContentType;
     lang?: ContentLang;
@@ -82,7 +79,6 @@ export function updateContent(
     method: 'post',
     data: {
       title: data.title,
-      author: data.author,
       url: data.url,
       type: data.type?.toUpperCase().replace(' ', '_') ?? undefined,
       lang: data.lang === ContentLang.All ? undefined : data.lang,
@@ -213,7 +209,7 @@ export function fetchContents(
     params: {
       lang: query.lang === ContentLang.All ? null : query.lang,
       contentId: query.contentId === ':id' ? null : query.contentId,
-      pageSize: query.pageSize ?? 10,
+      pageSize: query.pageSize ?? 30,
       pageNumber: query.pageNumber ?? 0,
       keywords: query.keywords ?? '',
       type: query.type ? query.type.toUpperCase().replace(' ', '_') : '',

@@ -58,7 +58,6 @@ function ContentCreate() {
     initialValues: {
       id: null,
       title: '',
-      author: '',
       url: searchParams.get('url') || '',
       type: ContentType.NEWS,
       lang: ContentLang.English,
@@ -70,7 +69,6 @@ function ContentCreate() {
     },
     validationSchema: Yup.object({
       title: Yup.string().required('Required'),
-      author: Yup.string().required('Required'),
       url: Yup.string().required('Required').url('Please enter a regular url'),
       type: Yup.string().required('Required'),
     }),
@@ -134,7 +132,6 @@ function ContentCreate() {
     async (data: {
       id?: number;
       title: string;
-      author: string;
       url: string;
       type: ContentType;
       lang: ContentLang;
@@ -150,7 +147,6 @@ function ContentCreate() {
           await saveContent(
             {
               title: data.title,
-              author: data.author,
               url: data.url,
               type: data.type,
               lang: data.lang,
@@ -167,7 +163,6 @@ function ContentCreate() {
             {
               id: data.id,
               title: data.title,
-              author: data.author,
               url: data.url,
               type: data.type,
               lang: data.lang,
@@ -233,16 +228,6 @@ function ContentCreate() {
           </FormField>
 
           <FormField>
-            <FormLabel htmlFor="author">Author</FormLabel>
-            <InputBase
-              onChange={(e) => formik.setFieldValue('author', e.target.value)}
-              value={formik.values.author}
-              placeholder="author"
-            />
-            {renderFieldError('author')}
-          </FormField>
-
-          <FormField>
             <FormLabel htmlFor="content-type">Content Type</FormLabel>
             <Select
               options={Object.values(ContentType).map((item) => {
@@ -293,7 +278,7 @@ function ContentCreate() {
           </FormField>
 
           <FormField>
-            <FormLabel htmlFor="support-iframe">Original</FormLabel>
+            <FormLabel htmlFor="support-iframe">Iframe Display</FormLabel>
             <SwitchRow>
               <Switch
                 onChange={(checked) =>
@@ -301,7 +286,7 @@ function ContentCreate() {
                 }
                 checked={formik.values.supportIframe}
               />
-              <SwitchText>Original</SwitchText>
+              <SwitchText>Iframe supports the website display 👉</SwitchText>
             </SwitchRow>
           </FormField>
 
