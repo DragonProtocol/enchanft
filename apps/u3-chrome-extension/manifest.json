@@ -24,8 +24,8 @@
     {
       "matches": ["<all_urls>"],
       "exclude_matches": ["*://u3.xyz/*", "*://dev.u3.xyz/*"],
-      "css": ["content.css", "./build/static/css/main.5ed85b77.css"],
-      "js": ["install_notifier.js", "./build/static/js/main.1ba6cb1e.js"],
+      "css": ["content.css", "./u3-build/static/css/main.5ed85b77.css"],
+      "js": ["install_notifier.js", "./u3-build/static/js/main.7b68a0d9.js"],
       "run_at": "document_idle"
     }
   ],

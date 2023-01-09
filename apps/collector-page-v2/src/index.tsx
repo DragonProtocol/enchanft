@@ -23,13 +23,12 @@ const toggle = () => {
 const root = ReactDOM.createRoot(document.getElementById('u3-extension-root'));
 root.render(
   <React.StrictMode>
-    <Extension token="test-token" onClose={() => toggle()} />
+    <Extension onClose={() => toggle()} />
   </React.StrictMode>
 );
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   const { token, message } = request;
-  console.log('token, message', request);
   if (message === 'clicked_browser_action') {
     toggle();
     if (token) {
