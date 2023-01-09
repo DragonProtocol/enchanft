@@ -202,7 +202,7 @@ function Contents() {
         setSelectContent(undefined);
       }
 
-      if (item && !selectContent) {
+      if (item) {
         navigate(`/contents/${item.id || item.uuid}`);
         setSelectContent(item);
       }
@@ -472,8 +472,9 @@ function Contents() {
         scoreContent={(currId) => {
           scoreContent(currId);
         }}
-        delContent={(currId) => {
-          delContent(currId);
+        delContent={async (currId) => {
+          await delContent(currId);
+          setGridModalShow(false);
         }}
         shareAction={() => {
           if (!selectContent) return;
@@ -502,35 +503,6 @@ function Contents() {
           if (!selectContent) return;
           hiddenAction(selectContent);
           setGridModalShow(false);
-        }}
-      />
-
-      <ConfirmModal
-        show={showModal}
-        closeModal={() => {
-          setShowModal(false);
-        }}
-        confirmAction={() => {
-          try {
-            const idx = contents.findIndex((item) => {
-              if (item?.uuid && item?.uuid === selectContent?.uuid) return true;
-              if (item?.id && item.id === selectContent.id) return true;
-              return false;
-            });
-
-            setContents([
-              ...contents.slice(0, idx),
-              {
-                ...contents[idx],
-                hidden: true,
-              },
-              ...contents.slice(idx + 1),
-            ]);
-            removeContent(idx);
-            setShowModal(false);
-          } catch (error) {
-            toast.error(error.message);
-          }
         }}
       />
     </Box>

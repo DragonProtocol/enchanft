@@ -53,6 +53,7 @@ export default function GridModal({
           {(selectContent && (
             <ContentItemActions
               isActive
+              withVote
               favorPendingIds={favorPendingIds}
               voteAction={() => {
                 if (voteAction) voteAction();

@@ -5,6 +5,7 @@ import { EyeClose } from '../icons/eyeClose';
 import { Heart } from '../icons/heart';
 import Badge from './Badge';
 import { defaultFormatDate } from '../../utils/time';
+import Author from './Author';
 
 export default function ListItem({
   isActive,
@@ -64,30 +65,42 @@ export default function ListItem({
   return (
     <ContentItem ref={itemRef} className={classNames} onClick={clickAction}>
       <ItemInner isActive={isActive} height={height}>
-        <p>{title}</p>
-        <ContentItemTitle>
-          <div>
-            <Badge text={type} />
+        <div
+          className="left"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (voteAction) voteAction();
+          }}
+        >
+          👏
+          <span>{upVoteNum + (adminScore || 0)}</span>
+        </div>
+        <div className="right">
+          <p>{title}</p>
+          <ContentItemTitle>
+            <div>
+              <Badge text={type} />
+              <Author text={author} />
+            </div>
             <span>{defaultFormatDate(createdAt)}</span>
-          </div>
-          {!isActive && <span>👏 &nbsp;{upVoteNum + (adminScore || 0)}</span>}
-        </ContentItemTitle>
+          </ContentItemTitle>
 
-        {isActive && (
-          <ContentItemActions
-            id={id}
-            isActive={isActive}
-            upVoted={upVoted}
-            favored={favored}
-            upVoteNum={upVoteNum}
-            adminScore={adminScore}
-            favorPendingIds={favorPendingIds}
-            voteAction={voteAction}
-            favorsAction={favorsAction}
-            hiddenAction={hiddenAction}
-            shareAction={shareAction}
-          />
-        )}
+          {isActive && (
+            <ContentItemActions
+              id={id}
+              isActive={isActive}
+              upVoted={upVoted}
+              favored={favored}
+              upVoteNum={upVoteNum}
+              adminScore={adminScore}
+              favorPendingIds={favorPendingIds}
+              voteAction={voteAction}
+              favorsAction={favorsAction}
+              hiddenAction={hiddenAction}
+              shareAction={shareAction}
+            />
+          )}
+        </div>
       </ItemInner>
     </ContentItem>
   );
@@ -105,6 +118,7 @@ export function ContentItemActions({
   hiddenAction,
   shareAction,
   favorPendingIds,
+  withVote,
 }: {
   id: number;
   isActive: boolean;
@@ -117,6 +131,7 @@ export function ContentItemActions({
   voteAction?: () => void;
   favorsAction?: () => void;
   favorPendingIds: (string | number)[];
+  withVote?: boolean;
 }) {
   const loadingFavor = useMemo(
     () => favorPendingIds.includes(id),
@@ -124,20 +139,22 @@ export function ContentItemActions({
   );
 
   return (
-    <ContentItemFooter>
-      <span
-        className={
-          isActive ? (upVoted ? 'vote disable' : 'vote') : 'vote active'
-        }
-        onClick={(e) => {
-          e.stopPropagation();
-          if (voteAction) {
-            voteAction();
+    <ContentItemFooter withVote={withVote}>
+      {withVote && (
+        <span
+          className={
+            isActive ? (upVoted ? 'vote disable' : 'vote') : 'vote active'
           }
-        }}
-      >
-        👏 &nbsp;{upVoteNum + (adminScore || 0)}
-      </span>
+          onClick={(e) => {
+            e.stopPropagation();
+            if (voteAction) {
+              voteAction();
+            }
+          }}
+        >
+          👏 &nbsp;{upVoteNum + (adminScore || 0)}
+        </span>
+      )}
 
       <span
         onClick={(e) => {
@@ -241,7 +258,7 @@ const ItemInner = styled.div<{ isActive: boolean; height: string }>`
   line-height: 27px;
   gap: 10px;
   position: relative;
-  flex-direction: column;
+  display: flex;
   transition: all 0.3s;
   color: '#fff';
   &:hover {
@@ -273,14 +290,6 @@ const ItemInner = styled.div<{ isActive: boolean; height: string }>`
       height: 0;
     }
   }
-  > p {
-    margin: 0%;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 19px;
-    color: #ffffff;
-    opacity: 0.8;
-  }
 
   & .tint {
     font-weight: 400;
@@ -293,6 +302,37 @@ const ItemInner = styled.div<{ isActive: boolean; height: string }>`
       line-height: 17px;
 
       color: #ffffff;
+    }
+  }
+
+  & div.left {
+    min-width: 50px;
+    width: 50px;
+    height: 50px;
+    background: #1a1e23;
+    border: 1px solid #39424c;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+    > span {
+      font-size: 12px;
+      line-height: 14px;
+    }
+  }
+
+  & div.right {
+    width: calc(100% - 62px);
+    overflow: hidden;
+    > p {
+      margin: 0%;
+      font-weight: 500;
+      font-size: 16px;
+      line-height: 19px;
+      color: #ffffff;
+      opacity: 0.8;
     }
   }
 `;
@@ -311,17 +351,18 @@ const ContentItemTitle = styled.div`
     display: flex;
     gap: 10px;
     align-items: center;
+    max-width: 160px;
   }
 
   > span {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #39424c;
+    /* border: 1px solid #39424c; */
     border-radius: 12px;
-    padding: 0 18px;
-    height: 32px;
-    box-sizing: border-box;
+    /* padding: 0 18px; */
+    /* height: 32px; */
+    /* box-sizing: border-box; */
   }
 
   & .author {
@@ -332,7 +373,7 @@ const ContentItemTitle = styled.div`
   }
 `;
 
-const ContentItemFooter = styled.div`
+const ContentItemFooter = styled.div<{ withVote: boolean }>`
   display: flex;
   font-weight: 400;
   font-size: 14px;
@@ -340,6 +381,7 @@ const ContentItemFooter = styled.div`
   margin-top: 10px;
   color: #718096;
   gap: 10px;
+  justify-content: ${(props) => (props.withVote ? 'start' : 'space-between')};
 
   & span {
     display: inline-flex;
