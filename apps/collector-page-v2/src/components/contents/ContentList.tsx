@@ -98,6 +98,7 @@ export default function ContentList({
           <AnimatedListItem key={item.id} styles={{ ...styles }}>
             <ListItem
               type={item.type}
+              id={item.id}
               author={item.author}
               createdAt={item.createdAt}
               title={item.title}

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Share } from '../icons/share';
 import { EyeClose } from '../icons/eyeClose';
 import { Heart } from '../icons/heart';
@@ -10,6 +10,7 @@ export default function ListItem({
   isActive,
   clickAction,
   type,
+  id,
   author,
   createdAt,
   title,
@@ -22,8 +23,10 @@ export default function ListItem({
   hiddenAction,
   shareAction,
   adminScore,
+  favorPendingIds,
 }: {
   upVoteNum: number;
+  id: number;
   title: string;
   type: string;
   author: string;
@@ -38,6 +41,7 @@ export default function ListItem({
   hiddenAction?: () => void;
   shareAction?: () => void;
   adminScore?: number;
+  favorPendingIds?: (string | number)[];
 }) {
   const itemRef = useRef<HTMLDivElement>();
   const [height, setHeight] = useState('fit-content');
@@ -70,53 +74,101 @@ export default function ListItem({
         </ContentItemTitle>
 
         {isActive && (
-          <ContentItemFooter>
-            <span
-              className={
-                isActive ? (upVoted ? 'vote disable' : 'vote') : 'vote active'
-              }
-              onClick={(e) => {
-                e.stopPropagation();
-                if (voteAction) {
-                  voteAction();
-                }
-              }}
-            >
-              👏 &nbsp;{upVoteNum + (adminScore || 0)}
-            </span>
-
-            <span
-              onClick={(e) => {
-                e.stopPropagation();
-                if (favorsAction) favorsAction();
-              }}
-            >
-              {favored ? <Heart fill="#718096" /> : <Heart />}
-            </span>
-
-            <span
-              onClick={(e) => {
-                e.stopPropagation();
-                if (hiddenAction) {
-                  hiddenAction();
-                }
-              }}
-            >
-              <EyeClose />
-            </span>
-
-            <span
-              onClick={(e) => {
-                e.stopPropagation();
-                if (shareAction) shareAction();
-              }}
-            >
-              <Share />
-            </span>
-          </ContentItemFooter>
+          <ContentItemActions
+            id={id}
+            isActive={isActive}
+            upVoted={upVoted}
+            favored={favored}
+            upVoteNum={upVoteNum}
+            adminScore={adminScore}
+            favorPendingIds={favorPendingIds}
+            voteAction={voteAction}
+            favorsAction={favorsAction}
+            hiddenAction={hiddenAction}
+            shareAction={shareAction}
+          />
         )}
       </ItemInner>
     </ContentItem>
+  );
+}
+
+export function ContentItemActions({
+  id,
+  isActive,
+  upVoted,
+  favored,
+  upVoteNum,
+  adminScore,
+  voteAction,
+  favorsAction,
+  hiddenAction,
+  shareAction,
+  favorPendingIds,
+}: {
+  id: number;
+  isActive: boolean;
+  adminScore: number;
+  upVoteNum: number;
+  favored: boolean;
+  upVoted: boolean;
+  shareAction?: () => void;
+  hiddenAction?: () => void;
+  voteAction?: () => void;
+  favorsAction?: () => void;
+  favorPendingIds: (string | number)[];
+}) {
+  const loadingFavor = useMemo(
+    () => favorPendingIds.includes(id),
+    [favorPendingIds, id]
+  );
+
+  return (
+    <ContentItemFooter>
+      <span
+        className={
+          isActive ? (upVoted ? 'vote disable' : 'vote') : 'vote active'
+        }
+        onClick={(e) => {
+          e.stopPropagation();
+          if (voteAction) {
+            voteAction();
+          }
+        }}
+      >
+        👏 &nbsp;{upVoteNum + (adminScore || 0)}
+      </span>
+
+      <span
+        onClick={(e) => {
+          e.stopPropagation();
+          if (favorsAction) favorsAction();
+        }}
+        className={loadingFavor ? 'disable' : ''}
+      >
+        {favored ? <Heart fill="#718096" /> : <Heart />}
+      </span>
+
+      <span
+        onClick={(e) => {
+          e.stopPropagation();
+          if (hiddenAction) {
+            hiddenAction();
+          }
+        }}
+      >
+        <EyeClose />
+      </span>
+
+      <span
+        onClick={(e) => {
+          e.stopPropagation();
+          if (shareAction) shareAction();
+        }}
+      >
+        <Share />
+      </span>
+    </ContentItemFooter>
   );
 }
 
@@ -298,6 +350,7 @@ const ContentItemFooter = styled.div`
     width: 32px;
     height: 32px;
     box-sizing: border-box;
+    cursor: pointer;
 
     &.disable {
       cursor: not-allowed;
