@@ -22,19 +22,19 @@
 
   "content_scripts": [
     {
-      "matches": [
-        "*://localhost/*",
-        "*://u3.xyz/*",
-        "*://dev.u3.xyz/*",
-        "*://www.chaincatcher.com/*"
-      ],
-      "css": ["content.css"],
-      "js": ["install_notifier.js", "content_script.js"],
+      "matches": ["<all_urls>"],
+      "exclude_matches": ["*://u3.xyz/*", "*://dev.u3.xyz/*"],
+      "css": ["content.css", "./build/static/css/main.5ed85b77.css"],
+      "js": ["install_notifier.js", "./build/static/js/main.1ba6cb1e.js"],
       "run_at": "document_idle"
     }
   ],
 
   "minimum_chrome_version": "96",
-  "permissions": ["declarativeNetRequestWithHostAccess", "contextMenus"],
+  "permissions": [
+    "declarativeNetRequestWithHostAccess",
+    "contextMenus",
+    "cookies"
+  ],
   "host_permissions": ["<all_urls>"]
 }

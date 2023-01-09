@@ -23,6 +23,7 @@ module.exports = {
       config.resolve.plugins = config.resolve.plugins.filter(
         (plugin) => !(plugin instanceof ModuleScopePlugin)
       );
+      config.output.publicPath = 'https://u3.xyz/';
       // Add support for importing workspace projects.
       config.resolve.plugins.push(
         new TsConfigPathsPlugin({

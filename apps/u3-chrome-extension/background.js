@@ -14,10 +14,12 @@ chrome.contextMenus.create({
   contexts: ['all'],
 });
 
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+  const token = await getCookie();
   chrome.tabs.sendMessage(tab.id, {
     message: 'clicked_browser_action',
     tab,
+    token,
   });
 });
 
@@ -56,14 +58,17 @@ async function getTab() {
   return tabs[0];
 }
 
-// async function getCookie() {
-//   return new Promise((res, rej) => {
-//     try {
-//       chrome.cookies.get({ url: "https://u3.xyz", name: "u3_token" }, (cookies) => {
-//         res(cookies?.value)
-//       })
-//     } catch (error) {
-//       rej(error)
-//     }
-//   })
-// }
+async function getCookie() {
+  return new Promise((res, rej) => {
+    try {
+      chrome.cookies.get(
+        { url: 'https://u3.xyz', name: 'u3_token' },
+        (cookies) => {
+          res(cookies?.value);
+        }
+      );
+    } catch (error) {
+      rej(error);
+    }
+  });
+}
