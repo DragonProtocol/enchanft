@@ -75,8 +75,7 @@ function ContentCreate() {
       type: Yup.string().required('Required'),
     }),
     onSubmit: (values) => {
-      console.log(values);
-      // submitContent(values);
+      submitContent(values);
     },
   });
 
