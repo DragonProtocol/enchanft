@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-05 17:43:16
+ * @LastEditTime: 2023-01-09 12:03:18
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -118,11 +118,15 @@ export default function Events() {
   const isEmpty = useMemo(() => !eventExploreList.length, [eventExploreList]);
   return (
     <EventsWrapper>
-      <FeedsMenu />
-      <EventExploreListFilter
-        values={filter}
-        onChange={(newFilter) => setSearchParams(newFilter)}
+      <FeedsMenu
+        right={
+          <EventExploreListFilter
+            values={filter}
+            onChange={(newFilter) => setSearchParams(newFilter)}
+          />
+        }
       />
+
       <MainBox>
         {isLoading ? (
           <Loading />
