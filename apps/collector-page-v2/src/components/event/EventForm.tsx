@@ -298,14 +298,16 @@ export default forwardRef(function EventForm(
           </SwitchRow>
         </FormField>
         <FormField>
-          <FormLabel htmlFor="adminScore">admin score</FormLabel>
+          <FormLabel htmlFor="editorScore">admin score</FormLabel>
           <InputBase
             placeholder="score"
             type="number"
             min={0}
             step={EVENT_ADMIN_PLUS_SCORE_STEP}
-            value={formik.values.adminScore as unknown as string}
-            onChange={(e) => formik.setFieldValue('adminScore', e.target.value)}
+            value={formik.values.editorScore as unknown as string}
+            onChange={(e) =>
+              formik.setFieldValue('editorScore', e.target.value)
+            }
           />
         </FormField>
 

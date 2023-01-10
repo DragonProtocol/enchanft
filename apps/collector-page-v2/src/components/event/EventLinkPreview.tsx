@@ -23,7 +23,7 @@ export type CannotOpenPlatFormLinkProps = {
     };
     link: string;
     supportIframe: boolean;
-    adminScore?: number;
+    editorScore?: number;
   };
   showAdminOps?: boolean;
   onAdminThumbUp?: () => void;
@@ -75,7 +75,7 @@ export default function EventLinkPreview({
             }}
           >
             <ThumbUp />
-            &nbsp; {data?.adminScore || 0}
+            &nbsp; {data?.editorScore || 0}
           </span>
           <span
             onClick={() => {

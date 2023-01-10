@@ -34,6 +34,7 @@ import { useAppSelector } from '../store/hooks';
 function Home() {
   const { homeBannerDisplay } = useAppSelector(selectWebsite);
   const navigate = useNavigate();
+  const [showOnBoard, setShowOnBoard] = useState(true);
   const [loading, setLoading] = useState(true);
   const [platforms, setPlatforms] = useState<Array<PlatformData>>([]);
   const [trendingProjects, setTrendingProjects] = useState<

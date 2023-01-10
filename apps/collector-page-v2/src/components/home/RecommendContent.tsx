@@ -25,7 +25,7 @@ export default function RecommendContent({
               }}
               key={item.id || item.title}
               {...item}
-              author={item.author || ''}
+              upVoteNum={item.upVoteNum || 0 + item.editorScore || 0}
             />
           );
         })}
@@ -49,11 +49,11 @@ const Box = styled.div`
 
 function Card({
   title,
-  author,
+  upVoteNum,
   clickAction,
 }: {
   title: string;
-  author: string;
+  upVoteNum: number;
   clickAction: () => void;
 }) {
   return (
@@ -62,7 +62,7 @@ function Card({
         <h2>{title}</h2>
         <div>
           <Badge text="DeFi" />
-          <span>{author}</span>
+          <span>👏 &nbsp;{upVoteNum}</span>
         </div>
       </CardBox>
     </CardWrapper>
