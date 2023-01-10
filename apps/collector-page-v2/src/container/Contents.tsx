@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 17:19:57
+ * @LastEditTime: 2023-01-10 16:25:46
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -39,9 +39,10 @@ import ContentShowerBox, {
 } from '../components/contents/ContentShowerBox';
 import useContentHandles from '../hooks/useContentHandles';
 import { MainWrapper } from '../components/layout/Index';
-import FeedsMenu, { Layout } from '../components/layout/FeedsMenu';
+import FeedsMenu from '../components/layout/FeedsMenu';
 import GridItem, { GridItemHidden } from '../components/contents/GridItem';
 import GridModal from '../components/contents/GridModal';
+import FeedsMenuRight, { Layout } from '../components/layout/FeedsMenuRight';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -279,11 +280,15 @@ function Contents() {
   return (
     <Box>
       <FeedsMenu
-        multiLayout
-        layout={layout}
-        setLayout={(l) => {
-          setLayout(l);
-        }}
+        rightEl={
+          <FeedsMenuRight
+            multiLayout
+            layout={layout}
+            setLayout={(l) => {
+              setLayout(l);
+            }}
+          />
+        }
       />
       <ContentsHeader
         filterAction={(

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-09 19:37:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 15:43:37
+ * @LastEditTime: 2023-01-09 14:21:53
  * @Description: file description
  */
 import React, { useCallback, useState } from 'react';
@@ -12,7 +12,7 @@ import SearchSvg from '../icons/svgs/search.svg';
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 48px;
+  height: 40px;
   display: flex;
   align-items: center;
   padding: 0px 12px;
