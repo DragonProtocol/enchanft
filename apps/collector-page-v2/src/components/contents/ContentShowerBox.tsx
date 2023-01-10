@@ -64,9 +64,9 @@ export default function ContentShowerBox({
       setTab('original');
     }
   }, [
-    selectContent.link,
+    selectContent?.link,
     selectContent?.supportReaderView,
-    selectContent.value,
+    selectContent?.value,
   ]);
 
   const contentValue = useMemo(() => {
@@ -91,7 +91,7 @@ export default function ContentShowerBox({
         }}
         showAdminOps={!!selectContent}
         isForU={!!selectContent?.isForU}
-        adminScore={selectContent?.adminScore || 0}
+        editorScore={selectContent?.editorScore || 0}
         thumbUpAction={thumbUpAction}
         deleteAction={deleteAction}
         editAction={editAction}
@@ -175,7 +175,7 @@ export function ContentShowerTab({
   thumbUpAction,
   deleteAction,
   editAction,
-  adminScore,
+  editorScore,
 }: {
   tab: Tab;
   setTab: (tab: Tab) => void;
@@ -185,7 +185,7 @@ export function ContentShowerTab({
   deleteAction?: () => void;
   editAction?: () => void;
   isForU?: boolean;
-  adminScore?: number;
+  editorScore?: number;
 }) {
   const { isAdmin } = usePermissions();
   return (
@@ -219,7 +219,7 @@ export function ContentShowerTab({
             }}
           >
             <ThumbUp />
-            &nbsp; {adminScore || 0}
+            &nbsp; {editorScore || 0}
           </span>
           <span
             onClick={() => {

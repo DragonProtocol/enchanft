@@ -66,7 +66,7 @@ export type ContentListItem = {
     image: string;
   };
   isForU?: boolean;
-  adminScore: null | number;
+  editorScore: null | number;
 };
 
 export type ContentsListResponse = ApiResp<Array<ContentListItem>>;

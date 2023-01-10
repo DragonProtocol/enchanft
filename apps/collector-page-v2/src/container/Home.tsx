@@ -18,6 +18,8 @@ import RecommendContent from '../components/home/RecommendContent';
 import RecommendEvents from '../components/home/RecommendEvents';
 import TrendingEvents from '../components/home/TrendingEvents';
 import { MainWrapper } from '../components/layout/Index';
+import OnBoard from '../components/onboard';
+import ConnectWallet from '../components/onboard/ConnectWallet';
 import { selectWebsite } from '../features/website/websiteSlice';
 import {
   getPlatforms,
@@ -34,6 +36,7 @@ import { useAppSelector } from '../store/hooks';
 function Home() {
   const { homeBannerDisplay } = useAppSelector(selectWebsite);
   const navigate = useNavigate();
+  const [showOnBoard, setShowOnBoard] = useState(true);
   const [loading, setLoading] = useState(true);
   const [platforms, setPlatforms] = useState<Array<PlatformData>>([]);
   const [trendingProjects, setTrendingProjects] = useState<

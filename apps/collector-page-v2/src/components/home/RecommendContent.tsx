@@ -25,7 +25,7 @@ export default function RecommendContent({
               }}
               key={item.id || item.title}
               {...item}
-              upVoteNum={item.upVoteNum || 0}
+              upVoteNum={item.upVoteNum || 0 + item.editorScore || 0}
             />
           );
         })}

@@ -64,7 +64,7 @@ function ContentCreate() {
       uniProjectIds: [],
       supportReaderView: true,
       supportIframe: true,
-      adminScore: null,
+      editorScore: null,
       status: ContentStatus.VISIBLE,
     },
     validationSchema: Yup.object({
@@ -79,7 +79,7 @@ function ContentCreate() {
 
   useEffect(() => {
     if (isAdmin) {
-      formik.setFieldValue('adminScore', 10);
+      formik.setFieldValue('editorScore', 10);
     }
   }, [isAdmin]);
 
@@ -138,7 +138,7 @@ function ContentCreate() {
       uniProjectIds: { id: number }[];
       supportReaderView: boolean;
       supportIframe: boolean;
-      adminScore: number | null;
+      editorScore: number | null;
     }) => {
       if (loading) return;
       setLoading(true);
@@ -153,7 +153,7 @@ function ContentCreate() {
               uniProjectIds: data.uniProjectIds.map((item) => item.id),
               supportReaderView: data.supportReaderView,
               supportIframe: data.supportIframe,
-              adminScore: data.adminScore,
+              editorScore: data.editorScore,
             },
             user.token
           );
@@ -169,7 +169,7 @@ function ContentCreate() {
               uniProjectIds: data.uniProjectIds.map((item) => item.id),
               supportReaderView: data.supportReaderView,
               supportIframe: data.supportIframe,
-              adminScore: data.adminScore,
+              editorScore: data.editorScore,
             },
             user.token
           );
@@ -342,9 +342,9 @@ function ContentCreate() {
                 step={10}
                 onChange={(e) => {
                   if (Number.isNaN(Number(e.target.value))) return;
-                  formik.setFieldValue('adminScore', Number(e.target.value));
+                  formik.setFieldValue('editorScore', Number(e.target.value));
                 }}
-                value={`${formik.values.adminScore || '0'}`}
+                value={`${formik.values.editorScore || '0'}`}
                 placeholder="admin score"
               />
             </FormField>

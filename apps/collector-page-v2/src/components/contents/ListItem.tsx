@@ -23,7 +23,7 @@ export default function ListItem({
   hidden,
   hiddenAction,
   shareAction,
-  adminScore,
+  editorScore,
   favorPendingIds,
 }: {
   upVoteNum: number;
@@ -41,7 +41,7 @@ export default function ListItem({
   favored?: boolean;
   hiddenAction?: () => void;
   shareAction?: () => void;
-  adminScore?: number;
+  editorScore?: number;
   favorPendingIds?: (string | number)[];
 }) {
   const itemRef = useRef<HTMLDivElement>();
@@ -73,7 +73,7 @@ export default function ListItem({
           }}
         >
           👏
-          <span>{upVoteNum + (adminScore || 0)}</span>
+          <span>{upVoteNum + (editorScore || 0)}</span>
         </div>
         <div className="right">
           <p>{title}</p>
@@ -92,7 +92,7 @@ export default function ListItem({
               upVoted={upVoted}
               favored={favored}
               upVoteNum={upVoteNum}
-              adminScore={adminScore}
+              editorScore={editorScore}
               favorPendingIds={favorPendingIds}
               voteAction={voteAction}
               favorsAction={favorsAction}
@@ -112,7 +112,7 @@ export function ContentItemActions({
   upVoted,
   favored,
   upVoteNum,
-  adminScore,
+  editorScore,
   voteAction,
   favorsAction,
   hiddenAction,
@@ -122,7 +122,7 @@ export function ContentItemActions({
 }: {
   id: number;
   isActive: boolean;
-  adminScore: number;
+  editorScore: number;
   upVoteNum: number;
   favored: boolean;
   upVoted: boolean;
@@ -152,7 +152,7 @@ export function ContentItemActions({
             }
           }}
         >
-          👏 &nbsp;{upVoteNum + (adminScore || 0)}
+          👏 &nbsp;{upVoteNum + (editorScore || 0)}
         </span>
       )}
 

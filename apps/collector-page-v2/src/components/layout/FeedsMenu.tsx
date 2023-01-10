@@ -77,7 +77,7 @@ export default function FeedsMenu({
               }}
             >
               {(layout === Layout.GRID && <LayoutGridActive />) || (
-                <LayoutList />
+                <LayoutGrid />
               )}
             </span>
           </div>

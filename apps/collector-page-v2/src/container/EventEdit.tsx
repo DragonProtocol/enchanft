@@ -43,7 +43,7 @@ export default function EventEdit() {
               startTime: data.startTime,
               endTime: data.endTime,
               supportIframe: data.supportIframe,
-              adminScore: data.adminScore,
+              editorScore: data.editorScore,
             });
           } else {
             toast.error(msg);
