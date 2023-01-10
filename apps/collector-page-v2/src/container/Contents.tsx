@@ -222,10 +222,13 @@ function Contents() {
         const curr = contents[idx];
         if (!curr) return;
 
-        await updateContent({ id: editId, adminScore: 10 }, user.token);
+        curr.adminScore = Number(curr.adminScore || 0) + 10;
+        await updateContent(
+          { id: editId, adminScore: curr.adminScore },
+          user.token
+        );
         toast.success('score content success!!!');
 
-        curr.adminScore = Number(curr.adminScore || 0) + 10;
         setContents([
           ...contents.slice(0, idx),
           { ...curr },

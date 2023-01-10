@@ -63,7 +63,11 @@ export default function ContentShowerBox({
     } else {
       setTab('original');
     }
-  }, [selectContent]);
+  }, [
+    selectContent.link,
+    selectContent?.supportReaderView,
+    selectContent.value,
+  ]);
 
   const contentValue = useMemo(() => {
     if (!selectContent?.value) return '';
