@@ -28,7 +28,7 @@ export default function Menu() {
     >
       <LogoBox onlyIcon={!isOpen} onClick={() => navigate('/')}>
         <LogoIcon src={LogoIconSvg} />
-        <LogoText>Beta</LogoText>
+        <LogoText>Alpha</LogoText>
       </LogoBox>
       <NavListBox>
         <Nav onlyIcon={!isOpen} />
