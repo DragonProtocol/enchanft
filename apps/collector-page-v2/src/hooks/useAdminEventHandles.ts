@@ -35,13 +35,14 @@ export default () => {
       try {
         cacheEventAdminThumbUpPendingIds.add(id);
         setAdminThumbUpPendingIds([...cacheEventAdminThumbUpPendingIds]);
-        const adminScore = (data.adminScore || 0) + EVENT_ADMIN_PLUS_SCORE_STEP;
-        const resp = await updateEvent(id, { adminScore });
+        const editorScore =
+          (data.editorScore || 0) + EVENT_ADMIN_PLUS_SCORE_STEP;
+        const resp = await updateEvent(id, { editorScore });
         const { code, msg } = resp.data;
         if (code === 0) {
           // update explore event data
-          dispatch(updateOneWithEventExplore({ id, adminScore }));
-          toast.success(`score event success! current score ${adminScore}.`);
+          dispatch(updateOneWithEventExplore({ id, editorScore }));
+          toast.success(`score event success! current score ${editorScore}.`);
         } else {
           toast.error(msg);
         }

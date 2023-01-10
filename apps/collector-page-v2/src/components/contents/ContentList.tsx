@@ -25,6 +25,7 @@ export type ContentListItem = {
   upVoted?: boolean;
   hidden?: boolean;
   uuid?: string;
+  editorScore?: number;
 };
 export type ContentListProps = {
   data: ContentListItem[];

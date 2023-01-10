@@ -35,7 +35,7 @@ function EventCreate() {
     startTime: new Date().getTime(),
     endTime: new Date().getTime(),
     supportIframe: true,
-    adminScore: 0,
+    editorScore: 0,
   };
   const formHandleRef = useRef(null);
   useEffect(() => {

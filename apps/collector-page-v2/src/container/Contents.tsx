@@ -222,9 +222,9 @@ function Contents() {
         const curr = contents[idx];
         if (!curr) return;
 
-        curr.adminScore = Number(curr.adminScore || 0) + 10;
+        curr.editorScore = Number(curr.editorScore || 0) + 10;
         await updateContent(
-          { id: editId, adminScore: curr.adminScore },
+          { id: editId, editorScore: curr.editorScore },
           user.token
         );
         toast.success('score content success!!!');

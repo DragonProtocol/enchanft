@@ -35,7 +35,7 @@ export function saveContent(
     uniProjectIds: Array<number>;
     supportReaderView?: boolean;
     supportIframe?: boolean;
-    adminScore?: number;
+    editorScore?: number;
   },
   token: string
 ) {
@@ -50,7 +50,7 @@ export function saveContent(
       uniProjectIds: data.uniProjectIds,
       supportReaderView: data.supportReaderView || false,
       supportIframe: data.supportIframe || false,
-      adminScore: data.adminScore,
+      editorScore: data.editorScore,
     },
     headers: {
       token,
@@ -69,7 +69,7 @@ export function updateContent(
     uniProjectIds?: Array<number>;
     supportReaderView?: boolean;
     supportIframe?: boolean;
-    adminScore?: number;
+    editorScore?: number;
     status?: ContentStatus;
   },
   token: string
@@ -85,7 +85,7 @@ export function updateContent(
       uniProjectIds: data.uniProjectIds ?? undefined,
       supportReaderView: data.supportReaderView,
       supportIframe: data.supportIframe,
-      adminScore: data.adminScore || undefined,
+      editorScore: data.editorScore || undefined,
       status: data.status || undefined,
     },
     headers: {
