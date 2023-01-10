@@ -62,7 +62,7 @@ export type EventExploreListItemResponse = {
   completed?: boolean;
   uuid?: string;
   isForU?: boolean;
-  adminScore?: number;
+  editorScore?: number;
 };
 export type FetchOneEventResponse = ApiResp<EventExploreListItemResponse>;
 export type EventExploreListResponse = ApiResp<
@@ -84,6 +84,6 @@ export type CreateEventData = {
   endTime: number;
   supportIframe: boolean;
   status?: EventStatus;
-  adminScore?: number;
+  editorScore?: number;
 };
 export type CreateEventResponse = ApiResp<unknown>;

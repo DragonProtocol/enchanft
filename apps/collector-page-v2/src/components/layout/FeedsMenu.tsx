@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-03 16:10:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-09 17:10:38
+ * @LastEditTime: 2023-01-10 16:22:24
  * @Description: file description
  */
 import { ReactNode, useEffect, useRef } from 'react';
@@ -59,6 +59,7 @@ const TopBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  justify-content: space-between;
   gap: 40px;
   border-bottom: 1px solid #39424c;
 `;

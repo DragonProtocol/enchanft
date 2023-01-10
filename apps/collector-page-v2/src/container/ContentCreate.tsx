@@ -58,31 +58,28 @@ function ContentCreate() {
     initialValues: {
       id: null,
       title: '',
-      author: '',
       url: searchParams.get('url') || '',
       type: ContentType.NEWS,
       lang: ContentLang.English,
       uniProjectIds: [],
       supportReaderView: true,
       supportIframe: true,
-      adminScore: null,
+      editorScore: null,
       status: ContentStatus.VISIBLE,
     },
     validationSchema: Yup.object({
       title: Yup.string().required('Required'),
-      author: Yup.string().required('Required'),
       url: Yup.string().required('Required').url('Please enter a regular url'),
       type: Yup.string().required('Required'),
     }),
     onSubmit: (values) => {
-      console.log(values);
-      // submitContent(values);
+      submitContent(values);
     },
   });
 
   useEffect(() => {
     if (isAdmin) {
-      formik.setFieldValue('adminScore', 10);
+      formik.setFieldValue('editorScore', 10);
     }
   }, [isAdmin]);
 
@@ -135,14 +132,13 @@ function ContentCreate() {
     async (data: {
       id?: number;
       title: string;
-      author: string;
       url: string;
       type: ContentType;
       lang: ContentLang;
       uniProjectIds: { id: number }[];
       supportReaderView: boolean;
       supportIframe: boolean;
-      adminScore: number | null;
+      editorScore: number | null;
     }) => {
       if (loading) return;
       setLoading(true);
@@ -151,14 +147,13 @@ function ContentCreate() {
           await saveContent(
             {
               title: data.title,
-              author: data.author,
               url: data.url,
               type: data.type,
               lang: data.lang,
               uniProjectIds: data.uniProjectIds.map((item) => item.id),
               supportReaderView: data.supportReaderView,
               supportIframe: data.supportIframe,
-              adminScore: data.adminScore,
+              editorScore: data.editorScore,
             },
             user.token
           );
@@ -168,14 +163,13 @@ function ContentCreate() {
             {
               id: data.id,
               title: data.title,
-              author: data.author,
               url: data.url,
               type: data.type,
               lang: data.lang,
               uniProjectIds: data.uniProjectIds.map((item) => item.id),
               supportReaderView: data.supportReaderView,
               supportIframe: data.supportIframe,
-              adminScore: data.adminScore,
+              editorScore: data.editorScore,
             },
             user.token
           );
@@ -234,16 +228,6 @@ function ContentCreate() {
           </FormField>
 
           <FormField>
-            <FormLabel htmlFor="author">Author</FormLabel>
-            <InputBase
-              onChange={(e) => formik.setFieldValue('author', e.target.value)}
-              value={formik.values.author}
-              placeholder="author"
-            />
-            {renderFieldError('author')}
-          </FormField>
-
-          <FormField>
             <FormLabel htmlFor="content-type">Content Type</FormLabel>
             <Select
               options={Object.values(ContentType).map((item) => {
@@ -294,7 +278,7 @@ function ContentCreate() {
           </FormField>
 
           <FormField>
-            <FormLabel htmlFor="support-iframe">Original</FormLabel>
+            <FormLabel htmlFor="support-iframe">Iframe Display</FormLabel>
             <SwitchRow>
               <Switch
                 onChange={(checked) =>
@@ -302,7 +286,7 @@ function ContentCreate() {
                 }
                 checked={formik.values.supportIframe}
               />
-              <SwitchText>Original</SwitchText>
+              <SwitchText>Iframe supports the website display 👉</SwitchText>
             </SwitchRow>
           </FormField>
 
@@ -358,9 +342,9 @@ function ContentCreate() {
                 step={10}
                 onChange={(e) => {
                   if (Number.isNaN(Number(e.target.value))) return;
-                  formik.setFieldValue('adminScore', Number(e.target.value));
+                  formik.setFieldValue('editorScore', Number(e.target.value));
                 }}
-                value={`${formik.values.adminScore || '0'}`}
+                value={`${formik.values.editorScore || '0'}`}
                 placeholder="admin score"
               />
             </FormField>

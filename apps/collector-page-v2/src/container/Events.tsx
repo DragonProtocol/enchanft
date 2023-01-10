@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-10 15:05:02
+ * @LastEditTime: 2023-01-10 16:30:37
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -141,6 +141,7 @@ export default function Events() {
       <FeedsMenu
         rightEl={
           <FeedsMenuRight
+            displayFilterButton
             isActiveFilter={isActiveFilter}
             onChangeActiveFilter={setIsActiveFilter}
             orderByEl={
