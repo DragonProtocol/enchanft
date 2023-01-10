@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 11:49:18
+ * @LastEditTime: 2023-01-05 18:55:40
  * @Description: file description
  */
 import { useState } from 'react';
@@ -12,29 +12,54 @@ import LoginButton from './LoginButton';
 import Nav from './Nav';
 import LogoSvg from '../imgs/logo.svg';
 import LogoIconSvg from '../imgs/logo-icon.svg';
+import LogoutConfirmModal from './LogoutConfirmModal';
+import useLogin from '../../hooks/useLogin';
 
 export default function Menu() {
+  const { logout } = useLogin();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
   return (
     <MenuWrapper
       onMouseEnter={() => setIsOpen(true)}
       onMouseLeave={() => setIsOpen(false)}
       isOpen={isOpen}
     >
-      <Logo onlyIcon={!isOpen} onClick={() => navigate('/')} />
+      <LogoBox onlyIcon={!isOpen} onClick={() => navigate('/')}>
+        <LogoIcon src={LogoIconSvg} />
+        <LogoText>Beta</LogoText>
+      </LogoBox>
       <NavListBox>
         <Nav onlyIcon={!isOpen} />
       </NavListBox>
       <LoginButtonBox>
-        <LoginButton onlyIcon={!isOpen} />
+        <LoginButton
+          onlyIcon={!isOpen}
+          onLogout={() => {
+            setOpenLogoutConfirm(true);
+          }}
+        />
       </LoginButtonBox>
+      <LogoutConfirmModal
+        isOpen={openLogoutConfirm}
+        onClose={() => {
+          setOpenLogoutConfirm(false);
+        }}
+        onConfirm={() => {
+          logout();
+          setOpenLogoutConfirm(false);
+        }}
+        onAfterOpen={() => {
+          setIsOpen(false);
+        }}
+      />
     </MenuWrapper>
   );
 }
 const MenuWrapper = styled.div<{ isOpen: boolean }>`
   background: #1b1e23;
-  width: ${({ isOpen }) => (isOpen ? '200px' : '60px')};
+  width: ${({ isOpen }) => (isOpen ? '160px' : '60px')};
   height: 100%;
   position: fixed;
   top: 0;
@@ -49,17 +74,25 @@ const MenuWrapper = styled.div<{ isOpen: boolean }>`
   flex-direction: column;
   gap: 20;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 `;
-const Logo = styled.div<{ onlyIcon?: boolean }>`
+const LogoBox = styled.div<{ onlyIcon?: boolean }>`
   width: ${({ onlyIcon }) => (onlyIcon ? '36px' : '142px')};
-  height: 36px;
-  background-image: url(${({ onlyIcon }) =>
-    onlyIcon ? LogoIconSvg : LogoSvg});
-  background-size: contain;
-  background-repeat: no-repeat;
-  cursor: pointer;
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  overflow: hidden;
   transition: all 0.3s ease-out;
+  cursor: pointer;
+`;
+const LogoIcon = styled.img`
+  width: 36px;
+  height: 36px;
+`;
+const LogoText = styled.span`
+  font-weight: 500;
+  font-size: 16px;
+  color: #ffffff;
 `;
 const NavListBox = styled.div`
   width: 100%;

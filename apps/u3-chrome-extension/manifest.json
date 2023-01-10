@@ -22,10 +22,19 @@
 
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "exclude_matches": ["*://u3.xyz/*", "*://dev.u3.xyz/*"],
+      "js": ["install_notifier.js"],
+      "matches": ["*://localhost/*", "*://u3.xyz/*", "*://dev.u3.xyz/*"],
+      "run_at": "document_idle"
+    },
+    {
       "css": ["content.css", "./u3-build/static/css/main.5ed85b77.css"],
-      "js": ["install_notifier.js", "./u3-build/static/js/main.7b68a0d9.js"],
+      "js": ["install_notifier.js", "./u3-build/static/js/main.90770ad4.js"],
+      "matches": ["<all_urls>"],
+      "exclude_matches": [
+        "*://localhost/*",
+        "*://u3.xyz/*",
+        "*://dev.u3.xyz/*"
+      ],
       "run_at": "document_idle"
     }
   ],

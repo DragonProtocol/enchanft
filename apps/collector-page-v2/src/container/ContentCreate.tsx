@@ -1,4 +1,4 @@
-import { useWlUserReact } from '@ecnft/wl-user-react';
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
@@ -15,10 +15,15 @@ import { MainWrapper } from '../components/layout/Index';
 import CrownImg from '../components/imgs/crown.svg';
 import {
   contentParse,
-  getContentProjects,
+  getContent,
   saveContent,
+  updateContent,
 } from '../services/api/contents';
-import { ContentLang, ContentType, Project } from '../services/types/contents';
+import {
+  ContentLang,
+  ContentStatus,
+  ContentType,
+} from '../services/types/contents';
 import { Close } from '../components/icons/close';
 import { ProjectAsyncSelectV2 } from '../components/business/form/ProjectAsyncSelect';
 import {
@@ -34,6 +39,7 @@ import isUrl from '../utils/isUrl';
 
 function ContentCreate() {
   const { user } = useWlUserReact();
+  const { isAdmin } = usePermissions();
   const [parsing, setParsing] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
@@ -50,18 +56,19 @@ function ContentCreate() {
 
   const formik = useFormik({
     initialValues: {
+      id: null,
       title: '',
-      author: '',
       url: searchParams.get('url') || '',
       type: ContentType.NEWS,
       lang: ContentLang.English,
-      uniProjectId: [],
+      uniProjectIds: [],
       supportReaderView: true,
       supportIframe: true,
+      adminScore: null,
+      status: ContentStatus.VISIBLE,
     },
     validationSchema: Yup.object({
       title: Yup.string().required('Required'),
-      author: Yup.string().required('Required'),
       url: Yup.string().required('Required').url('Please enter a regular url'),
       type: Yup.string().required('Required'),
     }),
@@ -69,6 +76,12 @@ function ContentCreate() {
       submitContent(values);
     },
   });
+
+  useEffect(() => {
+    if (isAdmin) {
+      formik.setFieldValue('adminScore', 10);
+    }
+  }, [isAdmin]);
 
   const reset = useCallback(() => {
     formik.resetForm();
@@ -82,6 +95,20 @@ function ContentCreate() {
     if (!formik.values.url) return;
     loadUrlContent(formik.values.url);
   }, [formik.values.url]);
+
+  useEffect(() => {
+    const id = searchParams.get('id');
+    if (!id || !user.token) return;
+    getContent(id, user.token)
+      .then((resp) => {
+        formik.setValues(resp.data.data);
+        formik.setFieldValue('url', resp.data.data.link);
+        formik.setFieldValue('type', ContentType[resp.data.data.type]);
+      })
+      .catch((err) => {
+        toast.error(err.message);
+      });
+  }, [searchParams.get('id'), user.token]);
 
   const loadUrlContent = useCallback(async (url: string) => {
     if (!url) return;
@@ -103,32 +130,51 @@ function ContentCreate() {
 
   const submitContent = useCallback(
     async (data: {
+      id?: number;
       title: string;
-      author: string;
       url: string;
       type: ContentType;
       lang: ContentLang;
-      uniProjectId: { id: number }[];
+      uniProjectIds: { id: number }[];
       supportReaderView: boolean;
       supportIframe: boolean;
+      adminScore: number | null;
     }) => {
       if (loading) return;
       setLoading(true);
       try {
-        await saveContent(
-          {
-            title: data.title,
-            author: data.author,
-            url: data.url,
-            type: data.type,
-            lang: data.lang,
-            uniProjectId: data.uniProjectId.map((item) => item.id),
-            supportReaderView: data.supportReaderView,
-            supportIframe: data.supportIframe,
-          },
-          user.token
-        );
-        toast.success('Add Content Success!!!');
+        if (!data.id) {
+          await saveContent(
+            {
+              title: data.title,
+              url: data.url,
+              type: data.type,
+              lang: data.lang,
+              uniProjectIds: data.uniProjectIds.map((item) => item.id),
+              supportReaderView: data.supportReaderView,
+              supportIframe: data.supportIframe,
+              adminScore: data.adminScore,
+            },
+            user.token
+          );
+          toast.success('Add Content Success!!!');
+        } else {
+          await updateContent(
+            {
+              id: data.id,
+              title: data.title,
+              url: data.url,
+              type: data.type,
+              lang: data.lang,
+              uniProjectIds: data.uniProjectIds.map((item) => item.id),
+              supportReaderView: data.supportReaderView,
+              supportIframe: data.supportIframe,
+              adminScore: data.adminScore,
+            },
+            user.token
+          );
+          toast.success('Edit Content Success!!!');
+        }
         reset();
       } catch (error) {
         toast.error('Add Content Fail!!!');
@@ -182,16 +228,6 @@ function ContentCreate() {
           </FormField>
 
           <FormField>
-            <FormLabel htmlFor="author">Author</FormLabel>
-            <InputBase
-              onChange={(e) => formik.setFieldValue('author', e.target.value)}
-              value={formik.values.author}
-              placeholder="author"
-            />
-            {renderFieldError('author')}
-          </FormField>
-
-          <FormField>
             <FormLabel htmlFor="content-type">Content Type</FormLabel>
             <Select
               options={Object.values(ContentType).map((item) => {
@@ -242,7 +278,7 @@ function ContentCreate() {
           </FormField>
 
           <FormField>
-            <FormLabel htmlFor="support-iframe">Original</FormLabel>
+            <FormLabel htmlFor="support-iframe">Iframe Display</FormLabel>
             <SwitchRow>
               <Switch
                 onChange={(checked) =>
@@ -250,14 +286,14 @@ function ContentCreate() {
                 }
                 checked={formik.values.supportIframe}
               />
-              <SwitchText>Original</SwitchText>
+              <SwitchText>Iframe supports the website display 👉</SwitchText>
             </SwitchRow>
           </FormField>
 
           <FormField>
             <FormLabel htmlFor="project">Tag Project</FormLabel>
             <div className="proj-list">
-              {formik.values.uniProjectId.map((item, idx) => {
+              {formik.values.uniProjectIds.map((item, idx) => {
                 return (
                   <div key={item.id}>
                     <div>
@@ -267,9 +303,9 @@ function ContentCreate() {
                     <span
                       className="close"
                       onClick={() => {
-                        formik.setFieldValue('uniProjectId', [
-                          ...formik.values.uniProjectId.slice(0, idx),
-                          ...formik.values.uniProjectId.slice(idx + 1),
+                        formik.setFieldValue('uniProjectIds', [
+                          ...formik.values.uniProjectIds.slice(0, idx),
+                          ...formik.values.uniProjectIds.slice(idx + 1),
                         ]);
                       }}
                     >
@@ -283,12 +319,12 @@ function ContentCreate() {
               value=""
               onChange={(value) => {
                 if (
-                  !formik.values.uniProjectId.find(
+                  !formik.values.uniProjectIds.find(
                     (item) => item.id === value.id
                   )
                 ) {
-                  formik.setFieldValue('uniProjectId', [
-                    ...formik.values.uniProjectId,
+                  formik.setFieldValue('uniProjectIds', [
+                    ...formik.values.uniProjectIds,
                     value,
                   ]);
                 }
@@ -296,6 +332,23 @@ function ContentCreate() {
               }}
             />
           </FormField>
+
+          {isAdmin && (
+            <FormField>
+              <FormLabel htmlFor="admin-sore">Admin Score</FormLabel>
+              <InputBase
+                type="number"
+                min={0}
+                step={10}
+                onChange={(e) => {
+                  if (Number.isNaN(Number(e.target.value))) return;
+                  formik.setFieldValue('adminScore', Number(e.target.value));
+                }}
+                value={`${formik.values.adminScore || '0'}`}
+                placeholder="admin score"
+              />
+            </FormField>
+          )}
 
           <FormButtons>
             <FormButtonSubmit

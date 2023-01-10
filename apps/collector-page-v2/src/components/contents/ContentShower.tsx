@@ -88,6 +88,29 @@ const ContentTitle = styled.div`
   }
 `;
 const ContentBody = styled.div`
-  color: white;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 19px;
+
+  color: #718096;
   padding-top: 20px;
+
+  & h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+
+    color: #ffffff;
+  }
+
+  & a {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: #a57dff;
+  }
 `;

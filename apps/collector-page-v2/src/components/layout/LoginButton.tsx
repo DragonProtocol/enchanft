@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 14:36:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-30 12:03:21
+ * @LastEditTime: 2023-01-04 10:38:06
  * @Description: file description
  */
 import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
@@ -12,8 +12,9 @@ import LogoutSvg from '../common/icons/svgs/logout.svg';
 
 type Props = {
   onlyIcon?: boolean;
+  onLogout?: () => void;
 };
-export default function LoginButton({ onlyIcon }: Props) {
+export default function LoginButton({ onlyIcon, onLogout }: Props) {
   const { authorizer, user, isLogin, login, logout } = useLogin();
   const nameStr = authorizer && getUserDisplayName(user, authorizer);
   return (
@@ -23,7 +24,7 @@ export default function LoginButton({ onlyIcon }: Props) {
         if (!isLogin) {
           login();
         } else {
-          logout();
+          onLogout();
         }
       }}
     >

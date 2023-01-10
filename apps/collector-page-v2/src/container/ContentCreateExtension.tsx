@@ -29,17 +29,15 @@ function ContentCreate({ token }: { token?: string }) {
   const formik = useFormik({
     initialValues: {
       title: '',
-      author: '',
       url: window?.location?.href || '', // TODO url
       type: ContentType.NEWS,
       lang: ContentLang.English,
-      uniProjectId: [],
+      uniProjectIds: [],
       supportReaderView: true,
       supportIframe: true,
     },
     validationSchema: Yup.object({
       title: Yup.string().required('Required'),
-      author: Yup.string().required('Required'),
       url: Yup.string().required('Required').url('Please enter a regular url'),
       type: Yup.string().required('Required'),
     }),
@@ -82,11 +80,10 @@ function ContentCreate({ token }: { token?: string }) {
   const submitContent = useCallback(
     async (data: {
       title: string;
-      author: string;
       url: string;
       type: ContentType;
       lang: ContentLang;
-      uniProjectId: { id: number }[];
+      uniProjectIds: { id: number }[];
       supportReaderView: boolean;
       supportIframe: boolean;
     }) => {
@@ -96,11 +93,10 @@ function ContentCreate({ token }: { token?: string }) {
         await saveContent(
           {
             title: data.title,
-            author: data.author,
             url: data.url,
             type: data.type,
             lang: data.lang,
-            uniProjectId: data.uniProjectId.map((item) => item.id),
+            uniProjectIds: data.uniProjectIds.map((item) => item.id),
             supportReaderView: data.supportReaderView,
             supportIframe: data.supportIframe,
           },
@@ -159,16 +155,6 @@ function ContentCreate({ token }: { token?: string }) {
         </FormField>
 
         <FormField>
-          <FormLabel htmlFor="author">Author</FormLabel>
-          <InputBase
-            onChange={(e) => formik.setFieldValue('author', e.target.value)}
-            value={formik.values.author}
-            placeholder="author"
-          />
-          {renderFieldError('author')}
-        </FormField>
-
-        <FormField>
           <FormLabel htmlFor="content-type">Content Type</FormLabel>
           <Select
             options={Object.values(ContentType).map((item) => {
@@ -219,7 +205,7 @@ function ContentCreate({ token }: { token?: string }) {
         </FormField>
 
         <FormField>
-          <FormLabel htmlFor="support-iframe">Original</FormLabel>
+          <FormLabel htmlFor="support-iframe">Iframe Display</FormLabel>
           <SwitchRow>
             <Switch
               onChange={(checked) =>
@@ -227,14 +213,14 @@ function ContentCreate({ token }: { token?: string }) {
               }
               checked={formik.values.supportIframe}
             />
-            <SwitchText>Original</SwitchText>
+            <SwitchText>Iframe supports the website display 👉</SwitchText>
           </SwitchRow>
         </FormField>
 
         <FormField>
           <FormLabel htmlFor="project">Tag Project</FormLabel>
           <div className="proj-list">
-            {formik.values.uniProjectId.map((item, idx) => {
+            {formik.values.uniProjectIds.map((item, idx) => {
               return (
                 <div key={item.id}>
                   <div>
@@ -245,8 +231,8 @@ function ContentCreate({ token }: { token?: string }) {
                     className="close"
                     onClick={() => {
                       formik.setFieldValue('uniProjectId', [
-                        ...formik.values.uniProjectId.slice(0, idx),
-                        ...formik.values.uniProjectId.slice(idx + 1),
+                        ...formik.values.uniProjectIds.slice(0, idx),
+                        ...formik.values.uniProjectIds.slice(idx + 1),
                       ]);
                     }}
                   >
@@ -260,10 +246,12 @@ function ContentCreate({ token }: { token?: string }) {
             value=""
             onChange={(value) => {
               if (
-                !formik.values.uniProjectId.find((item) => item.id === value.id)
+                !formik.values.uniProjectIds.find(
+                  (item) => item.id === value.id
+                )
               ) {
                 formik.setFieldValue('uniProjectId', [
-                  ...formik.values.uniProjectId,
+                  ...formik.values.uniProjectIds,
                   value,
                 ]);
               }

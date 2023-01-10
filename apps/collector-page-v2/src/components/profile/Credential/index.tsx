@@ -15,7 +15,7 @@ export default function Credential({
   noox: NooxData;
 }) {
   return (
-    <ContentBox>
+    <ContentBox id="profile-content-box">
       <Galxe data={galxe} />
       <Poap data={poap} />
       <Noox data={noox} />

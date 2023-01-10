@@ -4,6 +4,9 @@ import Title from './Title';
 import Badge from '../contents/Badge';
 import { EventExploreListItemResponse } from '../../services/types/event';
 import isUrl from '../../utils/isUrl';
+import { MEDIA_BREAK_POINTS } from '../../constants';
+import RewardTag from '../event/RewardTag';
+import { Reward } from '../../services/types/common';
 
 export default function RecommendEvents({
   data,
@@ -35,6 +38,7 @@ export default function RecommendEvents({
               title={item.name}
               img={img}
               author={item.project.name || ''}
+              reward={item.reward}
             />
           );
         })}
@@ -45,9 +49,25 @@ export default function RecommendEvents({
 
 const Box = styled.div`
   & .lists {
-    display: flex;
-    gap: 20px;
     margin-top: 20px;
+    width: 100%;
+    display: grid;
+    grid-gap: 20px;
+    grid-template-columns: repeat(4, minmax(240px, 1fr));
+    /* @media (min-width: ${MEDIA_BREAK_POINTS.xl}px) {
+      grid-template-columns: repeat(4, minmax(240px, 1fr));
+    }
+    @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
+      grid-template-columns: repeat(3, minmax(240px, 1fr));
+    }
+    @media (min-width: ${MEDIA_BREAK_POINTS.sm}px) and (max-width: ${MEDIA_BREAK_POINTS.md}px) {
+      grid-template-columns: repeat(2, minmax(240px, 1fr));
+    }
+    @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
+      display: flex;
+      flex-direction: column;
+      grid-gap: 20px;
+    } */
   }
 `;
 
@@ -55,86 +75,97 @@ function Card({
   title,
   img,
   author,
+  reward,
   clickAction,
 }: {
   title: string;
   img: string;
   author: string;
+  reward: Reward;
   clickAction: () => void;
 }) {
   return (
-    <CardBox onClick={clickAction}>
-      <img src={img} alt="" />
-      <div>
-        <h2>{title}</h2>
-        <div>
-          <div>
-            <Badge text="Badge" />
-          </div>
-
-          <span>{author}</span>
-        </div>
-      </div>
-    </CardBox>
+    <CardWrapper>
+      <CardBox onClick={clickAction}>
+        <LeftBox>
+          <EventTitle>{title}</EventTitle>
+          <EventAuthor>{author}</EventAuthor>
+          <EventRewardTagBox>
+            <RewardTag value={reward} />
+          </EventRewardTagBox>
+        </LeftBox>
+        <RightBox>
+          <EventImg src={img} />
+        </RightBox>
+      </CardBox>
+    </CardWrapper>
   );
 }
 
-const CardBox = styled.div`
-  flex: 1;
-  height: 315px;
-  cursor: pointer;
-  box-sizing: border-box;
+const CardWrapper = styled.div`
+  width: 100%;
+  height: 110px;
   background: #1b1e23;
+  border: 1px solid #39424c;
   border-radius: 20px;
   overflow: hidden;
-
-  > img {
-    width: 100%;
-    height: 178px;
-    overflow: hidden;
-    &:before {
-      content: ' ';
-      display: block;
-      width: 100%;
-      height: 100%;
-      background: #000;
-      border-radius: inherit;
-      padding: 2px;
-      box-sizing: border-box;
+  cursor: pointer;
+  &:hover {
+    & > * {
+      transform: scale(1.1);
     }
   }
+`;
+const CardBox = styled.div`
+  transition: all 0.3s;
+  display: flex;
+`;
+const LeftBox = styled.div`
+  flex: 1;
+  padding: 14px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: space-between;
+`;
+const RightBox = styled.div`
+  width: 110px;
+  height: 110px;
+  flex-shrink: 0;
+`;
+const EventImg = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+const EventTitle = styled.span`
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: #ffffff;
+  overflow: hidden;
 
-  > div {
-    padding: 20px;
-    h2 {
-      margin: 0;
-      margin-bottom: 10px;
-      font-weight: 500;
-      font-size: 16px;
-      line-height: 19px;
+  text-overflow: ellipsis;
 
-      color: #ffffff;
+  display: -webkit-box;
 
-      overflow: hidden;
+  -webkit-box-orient: vertical;
 
-      text-overflow: ellipsis;
+  -webkit-line-clamp: 2;
+`;
+const EventAuthor = styled.span`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
 
-      display: -webkit-box;
-
-      -webkit-box-orient: vertical;
-
-      -webkit-line-clamp: 2;
-    }
-
-    > div {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 19px;
-
-      color: #718096;
-    }
+  background: linear-gradient(to right, #cd62ff, #62aaff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+`;
+const EventRewardTagBox = styled.div`
+  div {
+    width: fit-content;
   }
 `;

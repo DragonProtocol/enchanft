@@ -2,12 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 13:29:09
+ * @LastEditTime: 2023-01-04 19:22:25
  * @Description: file description
  */
 import { ApiResp } from '.';
 import { ChainType, OrderBy, Platform, ProjectType, Reward } from './common';
 
+export enum EventStatus {
+  PERSONAL = 'PERSONAL',
+  HIDDEN = 'HIDDEN',
+  VISIBLE = 'VISIBLE',
+}
 export type EventEntity = {
   id: number;
   name: string;
@@ -56,7 +61,9 @@ export type EventExploreListItemResponse = {
   completed?: boolean;
   uuid?: string;
   isForU?: boolean;
+  adminScore?: number;
 };
+export type FetchOneEventResponse = ApiResp<EventExploreListItemResponse>;
 export type EventExploreListResponse = ApiResp<
   Array<EventExploreListItemResponse>
 >;
@@ -75,5 +82,7 @@ export type CreateEventData = {
   startTime: number;
   endTime: number;
   supportIframe: boolean;
+  status?: EventStatus;
+  adminScore?: number;
 };
 export type CreateEventResponse = ApiResp<unknown>;

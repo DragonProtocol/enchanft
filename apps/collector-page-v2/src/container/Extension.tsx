@@ -35,15 +35,22 @@ function Extension({
             <img src={LogoImg} alt="u3.xyz" />
           </div>
           <div className="title">Welcome to U3</div>
+          <div className="tip">
+            Thank you for sharing interesting content to u3.
+          </div>
+          <div className="tip">
+            Please <strong>login</strong> first and improve the content
+            {/* Please <strong>login</strong> first and improve the content information to help us better recommend it to others. */}
+          </div>
           <a
             href={`${website}/contents/create?url=${window?.location?.href}`}
             target="__blank"
           >
-            <div className="btn">START</div>
+            <div className="btn">LOGIN</div>
           </a>
-          <div className="tip">
+          {/* <div className="tip">
             {`You'll be redirected to U3 to sign up / connect`}
-          </div>
+          </div> */}
         </div>
       )}
     </ExtensionWrapper>
@@ -112,24 +119,28 @@ const ExtensionWrapper = styled.div`
     }
 
     .btn {
-      margin-top: 20px;
+      margin-top: 30px;
       width: 300px;
       font-size: 25px;
-      font-weight: bolder;
+      font-weight: 500;
       padding: 10px;
-      border: 1px solid rgb(57, 66, 76);
+      /* border: 1px solid rgb(57, 66, 76); */
+      background: linear-gradient(135.7deg, #64a7ff -4.05%, #cd62ff 97.84%);
+
       border-radius: 12px;
       line-height: 40px;
       height: 40px;
-      color: rgb(113, 128, 150);
+      color: black;
+      /* color: rgb(113, 128, 150); */
       letter-spacing: 0.0892857143em;
       text-align: center;
       box-shadow: 0 3px 1px -2px rgb(0 0 0 / 20%), 0 2px 2px 0 rgb(0 0 0 / 14%),
         0 1px 5px 0 rgb(0 0 0 / 12%);
     }
     .tip {
-      font-size: 12px;
-      margin-top: 1rem;
+      font-size: 14px;
+      margin-top: 2rem;
+      color: white;
     }
     a {
       text-decoration: none;

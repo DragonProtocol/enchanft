@@ -3,6 +3,7 @@ import {
   ContentLang,
   ContentsListResponse,
   ContentsResponse,
+  ContentStatus,
   ContentType,
   URLParseResponse,
 } from '../types/contents';
@@ -14,16 +15,27 @@ export function getContentProjects(): RequestPromise<ContentsResponse> {
   });
 }
 
+export function getContent(id: number | string, token: string) {
+  return request({
+    url: `/contents/${id}`,
+    method: 'get',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
 export function saveContent(
   data: {
     title: string;
-    author: string;
     url: string;
     type: ContentType;
     lang: ContentLang;
-    uniProjectId: number | Array<number>;
+    uniProjectIds: Array<number>;
     supportReaderView?: boolean;
     supportIframe?: boolean;
+    adminScore?: number;
   },
   token: string
 ) {
@@ -32,13 +44,49 @@ export function saveContent(
     method: 'post',
     data: {
       title: data.title,
-      author: data.author,
       url: data.url,
       type: data.type.toUpperCase().replace(' ', '_'),
       lang: data.lang === ContentLang.All ? null : data.lang,
-      uniProjedctId: data.uniProjectId,
+      uniProjectIds: data.uniProjectIds,
       supportReaderView: data.supportReaderView || false,
       supportIframe: data.supportIframe || false,
+      adminScore: data.adminScore,
+    },
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
+export function updateContent(
+  data: {
+    id: number;
+    title?: string;
+    url?: string;
+    type?: ContentType;
+    lang?: ContentLang;
+    uniProjectIds?: Array<number>;
+    supportReaderView?: boolean;
+    supportIframe?: boolean;
+    adminScore?: number;
+    status?: ContentStatus;
+  },
+  token: string
+) {
+  return request({
+    url: `/contents/${data.id}`,
+    method: 'post',
+    data: {
+      title: data.title,
+      url: data.url,
+      type: data.type?.toUpperCase().replace(' ', '_') ?? undefined,
+      lang: data.lang === ContentLang.All ? undefined : data.lang,
+      uniProjectIds: data.uniProjectIds ?? undefined,
+      supportReaderView: data.supportReaderView,
+      supportIframe: data.supportIframe,
+      adminScore: data.adminScore || undefined,
+      status: data.status || undefined,
     },
     headers: {
       token,
@@ -108,6 +156,17 @@ export function personalComplete(uuid: string, token: string) {
   });
 }
 
+export function delFavors(id: number, token: string) {
+  return request({
+    url: `/contents/${id}/favors`,
+    method: 'delete',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
+
 export function complete(id: number, token: string) {
   return request({
     url: `/contents/${id}/completing`,
@@ -150,7 +209,7 @@ export function fetchContents(
     params: {
       lang: query.lang === ContentLang.All ? null : query.lang,
       contentId: query.contentId === ':id' ? null : query.contentId,
-      pageSize: query.pageSize ?? 10,
+      pageSize: query.pageSize ?? 30,
       pageNumber: query.pageNumber ?? 0,
       keywords: query.keywords ?? '',
       type: query.type ? query.type.toUpperCase().replace(' ', '_') : '',

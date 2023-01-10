@@ -5,24 +5,24 @@
  * @LastEditTime: 2022-07-19 15:33:29
  * @Description: file description
  */
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga4';
+import { UaEventOptions } from 'react-ga4/types/ga4';
 
-const TRACKING_ID = 'UA-225058754-3';
+const TRACKING_ID = 'G-0NC4N1Y913';
 
 // Enable debug mode on the local development environment
-const isDev = process.env.NODE_ENV === 'development';
-ReactGA.initialize(TRACKING_ID, { debug: isDev });
+// const isDev = process.env.NODE_ENV === 'development';
+ReactGA.initialize(TRACKING_ID);
 
-function sendEvent(payload: ReactGA.EventArgs) {
+function sendEvent(payload: UaEventOptions) {
   ReactGA.event(payload);
 }
 
-function sendPageview(path: string) {
-  ReactGA.set({ page: path });
-  ReactGA.pageview(path);
+function sendPageView(path: string) {
+  ReactGA.send({ hitType: 'pageview', page: path });
 }
 
 export default {
   sendEvent,
-  sendPageview,
+  sendPageView,
 };

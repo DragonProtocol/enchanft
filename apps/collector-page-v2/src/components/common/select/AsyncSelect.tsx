@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:59:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 16:07:11
+ * @LastEditTime: 2023-01-05 17:55:19
  * @Description: file description
  */
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 
 import AsyncSelect from 'react-select/async';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -34,7 +34,7 @@ export default function ({
   labelField = 'name',
   getOptions,
 }: Props) {
-  const cacheOptions = useRef<Option[]>([]);
+  const [cacheOptions, setCacheOptions] = useState<Option[]>([]);
   const loadOptions = (inputValue, callback) => {
     getOptions(inputValue)
       .then((data) => {
@@ -44,11 +44,12 @@ export default function ({
           label: item[labelField],
         }));
         callback(options);
-        cacheOptions.current = options;
+        setCacheOptions(options);
       })
       .catch((err) => callback([]));
   };
-  const SelectValue = cacheOptions.current.find((item) => item.value === value);
+  const SelectValue = cacheOptions.find((item) => item.value === value);
+
   return (
     <AsyncSelectWrapper>
       <AsyncSelect

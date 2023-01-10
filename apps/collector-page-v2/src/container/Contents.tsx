@@ -14,13 +14,19 @@ import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import ContentsHeader from '../components/contents/Header';
 
+import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import {
   complete,
+  delFavors,
   fetchContents,
   personalComplete,
+  updateContent,
 } from '../services/api/contents';
-import { ContentLang, ContentListItem } from '../services/types/contents';
-import ListItem from '../components/contents/ListItem';
+import {
+  ContentLang,
+  ContentListItem,
+  ContentStatus,
+} from '../services/types/contents';
 import userFavored from '../hooks/useFavored';
 import { useVoteUp } from '../hooks/useVoteUp';
 import Loading from '../components/common/loading/Loading';
@@ -33,7 +39,9 @@ import ContentShowerBox, {
 } from '../components/contents/ContentShowerBox';
 import useContentHandles from '../hooks/useContentHandles';
 import { MainWrapper } from '../components/layout/Index';
-import FeedsMenu from '../components/layout/FeedsMenu';
+import FeedsMenu, { Layout } from '../components/layout/FeedsMenu';
+import GridItem, { GridItemHidden } from '../components/contents/GridItem';
+import GridModal from '../components/contents/GridModal';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -51,6 +59,7 @@ function Contents() {
     orderBy: 'For U',
     lang: ContentLang.All,
   });
+  const removeTimer = useRef<NodeJS.Timeout>();
 
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
@@ -59,27 +68,66 @@ function Contents() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [updating, setUpdating] = useState(false);
+  const [layout, setLayout] = useState(Layout.LIST);
+  const [gridModalShow, setGridModalShow] = useState(false);
 
   const {
     onFavor: favors,
     onVote: vote,
-    formatCurrentContents,
-  } = useContentHandles();
-
-  const hiddenContent = useCallback(
-    async (uuid: string | number) => {
-      if (Number.isNaN(Number(uuid))) {
-        await personalComplete(`${uuid}`, user.token);
-      } else {
-        await complete(Number(uuid), user.token);
-      }
-    },
-    [user.token]
-  );
+    onHidden: hiddenData,
+    favorPendingIds,
+    newList,
+  } = useContentHandles(contents);
 
   const onShare = (data: ContentListItem) => {
     tweetShare(data.title, getProjectShareUrl(data.id));
   };
+
+  const undoHiddenAction = useCallback(
+    (idx: number) => {
+      setContents([
+        ...contents.slice(0, idx),
+        {
+          ...contents[idx],
+          hidden: false,
+        },
+        ...contents.slice(idx + 1),
+      ]);
+      if (removeTimer.current) {
+        clearTimeout(removeTimer.current);
+      }
+    },
+    [contents, removeTimer]
+  );
+
+  const hiddenAction = useCallback(
+    (itemData: ContentListItem) => {
+      const idx = contents.findIndex((item) => {
+        if (item?.uuid && item?.uuid === itemData?.uuid) return true;
+        if (item?.id && item.id === itemData.id) return true;
+        return false;
+      });
+      if (idx === -1) return;
+      setContents([
+        ...contents.slice(0, idx),
+        {
+          ...contents[idx],
+          hidden: true,
+        },
+        ...contents.slice(idx + 1),
+      ]);
+      if (removeTimer.current) {
+        clearTimeout(removeTimer.current);
+        removeTimer.current = undefined;
+        console.log('have a remove timer');
+      }
+      removeTimer.current = setTimeout(() => {
+        removeContent(idx);
+      }, 3000);
+    },
+    [contents]
+  );
 
   const fetchData = useCallback(
     async (keywords: string, type: string, orderBy: string, lang: string) => {
@@ -136,13 +184,107 @@ function Contents() {
     [queryRef.current, contents]
   );
 
+  const removeContent = useCallback(
+    async (idx: number) => {
+      if (idx === -1) return;
+
+      const dataItem = contents[idx];
+      clearTimeout(removeTimer.current);
+      removeTimer.current = undefined;
+      await hiddenData(dataItem);
+      setContents([...contents.slice(0, idx), ...contents.slice(idx + 1)]);
+      let item;
+      if (contents[idx + 1]) {
+        item = contents[idx + 1];
+      } else if (contents[idx - 1]) {
+        item = contents[idx - 1];
+      } else {
+        setSelectContent(undefined);
+      }
+
+      if (item) {
+        navigate(`/contents/${item.id || item.uuid}`);
+        setSelectContent(item);
+      }
+    },
+    [contents, hiddenData, selectContent]
+  );
+
+  const scoreContent = useCallback(
+    async (editId: number) => {
+      if (updating) return;
+      setUpdating(true);
+      try {
+        const idx = contents.findIndex((item) => {
+          if (item?.id && item.id === editId) return true;
+          return false;
+        });
+        const curr = contents[idx];
+        if (!curr) return;
+
+        curr.adminScore = Number(curr.adminScore || 0) + 10;
+        await updateContent(
+          { id: editId, adminScore: curr.adminScore },
+          user.token
+        );
+        toast.success('score content success!!!');
+
+        setContents([
+          ...contents.slice(0, idx),
+          { ...curr },
+          ...contents.slice(idx + 1),
+        ]);
+        setSelectContent({
+          ...curr,
+        });
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setUpdating(false);
+      }
+    },
+    [user.token, updating, contents]
+  );
+
+  const delContent = useCallback(
+    async (editId: number) => {
+      if (updating) return;
+      setUpdating(true);
+      try {
+        await updateContent(
+          { id: editId, status: ContentStatus.HIDDEN },
+          user.token
+        );
+        const idx = contents.findIndex((item) => {
+          if (item?.id && item.id === editId) return true;
+          return false;
+        });
+
+        setContents([...contents.slice(0, idx), ...contents.slice(idx + 1)]);
+        setSelectContent(undefined);
+        toast.success('delete content success!!!');
+      } catch (error) {
+        toast.error(error.message);
+      } finally {
+        setUpdating(false);
+      }
+    },
+    [user.token, contents, updating]
+  );
+
   useEffect(() => {
     fetchData('', '', 'For U', ContentLang.All);
   }, []);
 
   return (
     <Box>
-      <FeedsMenu />
+      <FeedsMenu
+        multiLayout
+        layout={layout}
+        setLayout={(l) => {
+          setLayout(l);
+        }}
+      />
       <ContentsHeader
         filterAction={(
           keywords: string,
@@ -160,116 +302,210 @@ function Contents() {
           navigate('/contents/:id');
         }}
       />
-      {(loading && (
-        <ContentsWrapper loading="true">
-          <div className="loading">
-            <Loading />
-          </div>
-        </ContentsWrapper>
-      )) || (
-        <ContentsWrapper>
-          <ListBox
-            onScrollBottom={() => {
-              console.log('onScrollBottom LoadMore', loadingMore, hasMore);
-              if (loadingMore) return;
-              if (!hasMore) return;
-              loadMore(currPageNumber + 1);
-              setCurrPageNumber(currPageNumber + 1);
-            }}
-          >
-            {formatCurrentContents(contents).map((item, idx) => {
-              let isActive = false;
-              if (item.id) {
-                isActive = item.id === selectContent?.id;
-              } else {
-                isActive = item.uuid === selectContent?.uuid;
-              }
+      {(() => {
+        if (loading) {
+          return (
+            <ContentsWrapper loading="true">
+              <div className="loading">
+                <Loading />
+              </div>
+            </ContentsWrapper>
+          );
+        }
+        if (layout === Layout.LIST) {
+          return (
+            <ContentsWrapper>
+              <ListBox
+                onScrollBottom={() => {
+                  console.log('onScrollBottom LoadMore', loadingMore, hasMore);
+                  if (newList.length === 0) return;
+                  if (loadingMore) return;
+                  if (!hasMore) return;
+                  loadMore(currPageNumber + 1);
+                  setCurrPageNumber(currPageNumber + 1);
+                }}
+              >
+                {newList.map((item, idx) => {
+                  let isActive = false;
+                  if (item.id) {
+                    isActive = item.id === selectContent?.id;
+                  } else {
+                    isActive = item.uuid === selectContent?.uuid;
+                  }
 
-              return (
-                <ListItem
-                  key={item.id || item.uuid}
-                  isActive={isActive}
-                  clickAction={() => {
-                    setSelectContent(item);
-                    navigate(`/contents/${item.id || item.uuid}`);
+                  if (item.hidden) {
+                    return (
+                      <ListItemHidden
+                        key={item.id || item.uuid}
+                        isActive={isActive}
+                        hidden
+                        undoAction={() => undoHiddenAction(idx)}
+                      />
+                    );
+                  }
+
+                  return (
+                    <ListItem
+                      key={item.id || item.uuid}
+                      isActive={isActive}
+                      favorPendingIds={favorPendingIds}
+                      clickAction={() => {
+                        setSelectContent(item);
+                        navigate(`/contents/${item.id || item.uuid}`);
+                      }}
+                      shareAction={() => {
+                        onShare(item);
+                      }}
+                      voteAction={() => {
+                        vote(item);
+                      }}
+                      favorsAction={() => {
+                        favors(item);
+                      }}
+                      hiddenAction={() => {
+                        hiddenAction(item);
+                      }}
+                      {...item}
+                    />
+                  );
+                })}
+                {(!hasMore && (
+                  <LoadingMore className="load-more nomore">
+                    No other contents
+                  </LoadingMore>
+                )) || (
+                  <LoadingMore
+                    className={
+                      loadingMore ? 'load-more loadmoreing' : 'load-more'
+                    }
+                  >
+                    loading
+                  </LoadingMore>
+                )}
+              </ListBox>
+              <ContentBoxContainer>
+                <ContentShowerBox
+                  selectContent={selectContent}
+                  deleteAction={() => {
+                    if (selectContent?.id) delContent(selectContent.id);
                   }}
-                  shareAction={() => {
-                    onShare(item);
+                  editAction={() => {
+                    if (selectContent?.id)
+                      navigate(`/contents/create?id=${selectContent.id}`);
                   }}
-                  voteAction={() => {
-                    vote(selectContent);
+                  thumbUpAction={() => {
+                    if (selectContent?.id) scoreContent(selectContent.id);
                   }}
-                  favorsAction={() => {
-                    favors(selectContent);
-                  }}
-                  hiddenAction={() => {
-                    setShowModal(true);
-                  }}
-                  {...item}
                 />
-              );
-            })}
-            {!hasMore && (
-              <div className="load-more">
-                <div>No other contents</div>
+              </ContentBoxContainer>
+            </ContentsWrapper>
+          );
+        }
+        if (layout === Layout.GRID) {
+          return (
+            <ContentsGridWrapper
+              onScrollBottom={() => {
+                console.log('onScrollBottom LoadMore', loadingMore, hasMore);
+                if (newList.length === 0) return;
+                if (loadingMore) return;
+                if (!hasMore) return;
+                loadMore(currPageNumber + 1);
+                setCurrPageNumber(currPageNumber + 1);
+              }}
+            >
+              <div className="list">
+                {newList.map((item, idx) => {
+                  let isActive = false;
+                  if (item.id) {
+                    isActive = item.id === selectContent?.id;
+                  } else {
+                    isActive = item.uuid === selectContent?.uuid;
+                  }
+
+                  if (item.hidden) {
+                    return (
+                      <GridItemHidden
+                        key={item.id || item.uuid}
+                        isActive={isActive}
+                        hidden
+                        undoAction={() => undoHiddenAction(idx)}
+                      />
+                    );
+                  }
+
+                  return (
+                    <GridItem
+                      key={item.id || item.uuid}
+                      clickAction={() => {
+                        setSelectContent(item);
+                        navigate(`/contents/${item.id || item.uuid}`);
+                        setGridModalShow(true);
+                      }}
+                      {...{ isActive, ...item }}
+                    />
+                  );
+                })}
               </div>
-            )}
-            {loadingMore && (
-              <div className="load-more">
-                <div className="loading">loading</div>
-              </div>
-            )}
-          </ListBox>
-          <ContentBoxContainer>
-            <ContentShowerBox selectContent={selectContent} />
-          </ContentBoxContainer>
-        </ContentsWrapper>
-      )}
-      <ConfirmModal
-        show={showModal}
+              {(!hasMore && (
+                <LoadingMore className="load-more nomore">
+                  No other contents
+                </LoadingMore>
+              )) || (
+                <LoadingMore
+                  className={
+                    loadingMore ? 'load-more loadmoreing' : 'load-more'
+                  }
+                >
+                  loading
+                </LoadingMore>
+              )}
+            </ContentsGridWrapper>
+          );
+        }
+        return null;
+      })()}
+
+      <GridModal
+        show={gridModalShow}
+        favorPendingIds={favorPendingIds}
         closeModal={() => {
-          setShowModal(false);
+          setGridModalShow(false);
         }}
-        confirmAction={() => {
-          try {
-            hiddenContent(selectContent?.uuid || selectContent.id);
-            const idx = contents.findIndex((item) => {
-              if (item?.uuid && item?.uuid === selectContent?.uuid) return true;
-              if (item?.id && item.id === selectContent.id) return true;
-              return false;
-            });
-
-            setContents([
-              ...contents.slice(0, idx),
-              {
-                ...contents[idx],
-                hidden: true,
-              },
-              ...contents.slice(idx + 1),
-            ]);
-            setTimeout(() => {
-              setContents([
-                ...contents.slice(0, idx),
-                ...contents.slice(idx + 1),
-              ]);
-              let item;
-              if (contents[idx + 1]) {
-                item = contents[idx + 1];
-              } else if (contents[idx - 1]) {
-                item = contents[idx - 1];
-              } else {
-                setSelectContent(undefined);
-              }
-              if (item) {
-                navigate(`/contents/${item.id || item.uuid}`);
-                setSelectContent(item);
-              }
-            }, 550);
-
-            setShowModal(false);
-          } catch (error) {
-            toast.error(error.message);
-          }
+        selectContent={selectContent}
+        scoreContent={(currId) => {
+          scoreContent(currId);
+        }}
+        delContent={async (currId) => {
+          await delContent(currId);
+          setGridModalShow(false);
+        }}
+        shareAction={() => {
+          if (!selectContent) return;
+          onShare(selectContent);
+        }}
+        voteAction={async () => {
+          if (!selectContent) return;
+          if (selectContent.upVoted) return;
+          await vote(selectContent);
+          setSelectContent({
+            ...selectContent,
+            upVoted: true,
+            upVoteNum: selectContent.upVoteNum + 1,
+          });
+        }}
+        favorsAction={async () => {
+          if (!selectContent) return;
+          const favorsAgain = !selectContent.favored;
+          await favors(selectContent);
+          setSelectContent({
+            ...selectContent,
+            favored: favorsAgain,
+          });
+        }}
+        hiddenAction={() => {
+          if (!selectContent) return;
+          hiddenAction(selectContent);
+          setGridModalShow(false);
         }}
       />
     </Box>
@@ -299,12 +535,14 @@ const ContentsWrapper = styled.div<{ loading?: string }>`
   overflow: hidden;
   display: flex;
   /* margin-top: 24px; */
+  flex-grow: 1;
 
   & .loading {
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 100%;
   }
 `;
 const ListBox = styled(ListScrollBox)`
@@ -329,65 +567,31 @@ const ListBox = styled(ListScrollBox)`
     }
   }
 `;
-// const ContentBox = styled.div`
-//   height: calc(100%);
-//   width: calc(100% - 360px);
 
-//   overflow-x: hidden;
-//   overflow: hidden;
+const ContentsGridWrapper = styled(ListScrollBox)`
+  height: 100%;
+  overflow: scroll;
+  & .list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+`;
 
-//   & img {
-//     max-width: 100%;
-//   }
+const LoadingMore = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 0;
+  color: #fff;
+  opacity: 0;
+  min-height: 25px;
 
-//   & pre {
-//     overflow: scroll;
-//   }
+  &.nomore {
+    opacity: 1;
+  }
 
-//   & div.tabs {
-//     height: 60px;
-//     background: #1b1e23;
-//     border-bottom: 1px solid #39424c;
-//     box-sizing: border-box;
-//     display: flex;
-//     align-items: center;
-//     justify-content: center;
-
-//     > div {
-//       width: 260px;
-//       height: 40px;
-//       background: #14171a;
-//       border-radius: 100px;
-//       padding: 4px;
-//       box-sizing: border-box;
-//       display: flex;
-//       align-items: center;
-//       justify-content: space-between;
-//       > button {
-//         cursor: pointer;
-//         width: 122px;
-//         height: 32px;
-//         border: none;
-
-//         box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
-//           0px 0px 4px rgba(20, 23, 26, 0.04);
-//         border-radius: 100px;
-//         outline: none;
-//         background: inherit;
-//         color: #a0aec0;
-
-//         &.active {
-//           color: #ffffff;
-//           background: #21262c;
-//         }
-//       }
-//     }
-//   }
-// `;
-
-// const LoadingBox = styled.div`
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   margin-top: 40px;
-// `;
+  &.loadmoreing {
+    opacity: 1;
+  }
+`;
