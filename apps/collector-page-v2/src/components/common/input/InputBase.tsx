@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-13 14:37:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 14:40:29
+ * @LastEditTime: 2023-01-09 14:21:35
  * @Description: file description
  */
 import React, { useCallback } from 'react';
@@ -11,7 +11,7 @@ import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
 const Input = styled.input`
   width: 100%;
-  height: 48px;
+  height: 40px;
   font-weight: 400;
   font-size: 16px;
   color: #fff;

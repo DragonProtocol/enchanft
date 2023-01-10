@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 14:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 13:25:15
+ * @LastEditTime: 2023-01-09 18:17:51
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -66,3 +66,11 @@ export type PlatformsItemResponse = {
   eventNumber: number;
 };
 export type PlatformsResponse = ApiResp<Array<PlatformsItemResponse>>;
+
+export type ConfigTopicsResponse = ApiResp<{
+  eventRewards: string[];
+  eventTypes: string[];
+  projectTypes: string[];
+  contentTypes: string[];
+  langs: string[];
+}>;

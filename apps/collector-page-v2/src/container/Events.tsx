@@ -2,16 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-09 12:03:18
+ * @LastEditTime: 2023-01-10 15:05:02
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import {
+  URLSearchParamsInit,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import { usePermissions } from '@ecnft/wl-user-react';
 import EventExploreList from '../components/event/EventExploreList';
 import EventExploreListFilter, {
-  defaultEventExploreListFilterValues,
   EventExploreListFilterValues,
 } from '../components/event/EventExploreListFilter';
 import { MainWrapper } from '../components/layout/Index';
@@ -24,14 +28,27 @@ import {
 } from '../features/event/eventExploreList';
 import useEventHandles from '../hooks/useEventHandles';
 import { AsyncRequestStatus } from '../services/types';
-import { EventExploreListItemResponse } from '../services/types/event';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import EventLinkPreview from '../components/event/EventLinkPreview';
 import Loading from '../components/common/loading/Loading';
 import NoResult from '../components/common/NoResult';
 import FeedsMenu from '../components/layout/FeedsMenu';
 import useAdminEventHandles from '../hooks/useAdminEventHandles';
+import FeedsMenuRight from '../components/layout/FeedsMenuRight';
+import FeedsFilterBox from '../components/layout/FeedsFilterBox';
+import SearchInput from '../components/common/input/SearchInput';
+import EventOrderBySelect, {
+  defaultEventOrderBy,
+} from '../components/event/EventOrderBySelect';
 
+const filterValuesToSearchParams = (values: EventExploreListFilterValues) => {
+  return {
+    platforms: values.platforms.join(','),
+    rewards: values.rewards.join(','),
+    eventTypes: values.eventTypes.join(','),
+    projectTypes: values.projectTypes.join(','),
+  };
+};
 export default function Events() {
   const navigate = useNavigate();
   const { isAdmin } = usePermissions();
@@ -54,44 +71,47 @@ export default function Events() {
     () => status === AsyncRequestStatus.PENDING,
     [status]
   );
-  const [filter, setFilter] = useState<EventExploreListFilterValues>(
-    defaultEventExploreListFilterValues
-  );
+  const [isActiveFilter, setIsActiveFilter] = useState(true);
   const [activeId, setActiveId] = useState<string | number>('');
-  useEffect(() => {
-    const params = {
-      orderBy:
-        searchParams.get('orderBy') ||
-        defaultEventExploreListFilterValues.orderBy,
-      platform:
-        searchParams.get('platform') ||
-        defaultEventExploreListFilterValues.platform,
-      reward:
-        searchParams.get('reward') ||
-        defaultEventExploreListFilterValues.reward,
-      projectType:
+  const currentSearchParams = useMemo(
+    () => ({
+      orderBy: searchParams.get('orderBy') || defaultEventOrderBy,
+      platforms:
+        searchParams.get('platform') || searchParams.get('platforms') || '',
+      rewards: searchParams.get('reward') || searchParams.get('rewards') || '',
+      eventTypes:
+        searchParams.get('eventType') || searchParams.get('eventTypes') || '',
+      projectTypes:
         searchParams.get('projectType') ||
-        defaultEventExploreListFilterValues.projectType,
-      keywords:
-        searchParams.get('keywords') ||
-        defaultEventExploreListFilterValues.keywords,
-    } as EventExploreListFilterValues;
-    setFilter(params);
-  }, [searchParams]);
+        searchParams.get('projectTypes') ||
+        '',
+      keywords: searchParams.get('keywords') || '',
+    }),
+    [searchParams]
+  );
+  const filterValues = useMemo(
+    () => ({
+      platforms: currentSearchParams.platforms.split(','),
+      rewards: currentSearchParams.rewards.split(','),
+      eventTypes: currentSearchParams.eventTypes.split(','),
+      projectTypes: currentSearchParams.projectTypes.split(','),
+    }),
+    [currentSearchParams]
+  );
   useEffect(() => {
-    const params = { ...filter };
+    const params = { ...currentSearchParams };
     if (id) {
       Object.assign(params, { eventId: Number(id) });
     }
     dispatch(fetchEventExploreList({ ...params }));
-  }, [id, filter]);
+  }, [id, currentSearchParams]);
   const isInitActive = useRef(false);
   useEffect(() => {
     if (!isInitActive.current && status === AsyncRequestStatus.FULFILLED) {
       if (id) {
         setActiveId(id);
       } else {
-        setActiveId(eventExploreList[0].id);
+        setActiveId(eventExploreList[0]?.id);
       }
       isInitActive.current = true;
     }
@@ -106,10 +126,10 @@ export default function Events() {
     () =>
       dispatch(
         fetchMoreEventExploreList({
-          ...filter,
+          ...currentSearchParams,
         })
       ),
-    [filter]
+    [currentSearchParams]
   );
   const isLoadingMore = useMemo(
     () => moreStatus === AsyncRequestStatus.PENDING,
@@ -119,11 +139,45 @@ export default function Events() {
   return (
     <EventsWrapper>
       <FeedsMenu
-        right={
-          <EventExploreListFilter
-            values={filter}
-            onChange={(newFilter) => setSearchParams(newFilter)}
+        rightEl={
+          <FeedsMenuRight
+            isActiveFilter={isActiveFilter}
+            onChangeActiveFilter={setIsActiveFilter}
+            orderByEl={
+              <EventOrderBySelect
+                value={currentSearchParams.orderBy}
+                onChange={(value) =>
+                  setSearchParams({
+                    ...currentSearchParams,
+                    orderBy: value,
+                  } as unknown as URLSearchParamsInit)
+                }
+              />
+            }
+            searchEl={
+              <SearchInput
+                onSearch={(value) =>
+                  setSearchParams({
+                    ...currentSearchParams,
+                    keywords: value,
+                  } as unknown as URLSearchParamsInit)
+                }
+              />
+            }
           />
+        }
+        bottomEl={
+          <FeedsFilterBox open={isActiveFilter}>
+            <EventExploreListFilter
+              values={filterValues}
+              onChange={(values) =>
+                setSearchParams({
+                  ...currentSearchParams,
+                  ...filterValuesToSearchParams(values),
+                })
+              }
+            />
+          </FeedsFilterBox>
         }
       />
 
@@ -178,6 +232,7 @@ const EventsWrapper = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-top: 0px;
 `;
 const MainBox = styled.div`
   width: 100%;

@@ -2,146 +2,102 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-14 18:32:23
+ * @LastEditTime: 2023-01-10 15:47:40
  * @Description: file description
  */
 import styled from 'styled-components';
-import { OrderBy, ProjectType, Reward } from '../../services/types/common';
-import { EventExploreListParams } from '../../services/types/event';
-import SearchInput from '../common/input/SearchInput';
-import Select, { SelectOption } from '../common/select/Select';
-import OrderBySvg from '../common/icons/svgs/activity-heart.svg';
-import RewardSvg from '../common/icons/svgs/gift.svg';
-import ProjectTypeSvg from '../common/icons/svgs/grid.svg';
-import PlatformFilter from '../business/filter/PlatformFilter';
+import { useMemo } from 'react';
+import CardBase from '../common/card/CardBase';
+import CheckboxMultiChoice from '../common/checkbox/CheckboxMultiChoice';
+import useConfigsTopics from '../../hooks/useConfigsTopics';
+import useConfigsPlatforms from '../../hooks/useConfigsPlatforms';
+import { TopicItem } from '../../features/configs/topics';
+import { formatFilterShowName } from '../../utils/filter';
 
-export type EventExploreListFilterValues = Pick<
-  EventExploreListParams,
-  'orderBy' | 'platform' | 'reward' | 'projectType' | 'keywords'
->;
-const orderByOptions: Array<SelectOption> = [
-  {
-    value: OrderBy.FORU,
-    label: 'For U',
-  },
-  {
-    value: OrderBy.NEWEST,
-    label: 'Newest',
-  },
-  {
-    value: OrderBy.EARLIEST,
-    label: 'Earliest',
-  },
-  {
-    value: OrderBy.TRENDING,
-    label: 'Trending',
-  },
-];
-const rewardOptions: Array<SelectOption> = [
-  {
-    value: '',
-    label: 'All Reward',
-  },
-  {
-    value: Reward.BADGE,
-    label: 'Badge',
-  },
-  {
-    value: Reward.NFT,
-    label: 'NFT',
-  },
-  {
-    value: Reward.TOKEN,
-    label: 'Token',
-  },
-  {
-    value: Reward.WL,
-    label: 'WL',
-  },
-];
-const projectTypeOptions: Array<SelectOption> = [
-  {
-    value: '',
-    label: 'All Project',
-  },
-  {
-    value: ProjectType.DAO,
-    label: 'Dao',
-  },
-  {
-    value: ProjectType.DEFI,
-    label: 'DeFi',
-  },
-  {
-    value: ProjectType.GAME,
-    label: 'Game',
-  },
-  {
-    value: ProjectType.NFT,
-    label: 'NFT',
-  },
-];
+export type EventExploreListFilterValues = {
+  platforms: string[];
+  rewards: string[];
+  eventTypes: string[];
+  projectTypes: string[];
+};
 
-export const defaultEventExploreListFilterValues: EventExploreListFilterValues =
-  {
-    orderBy: orderByOptions[0].value,
-    platform: '',
-    reward: rewardOptions[0].value,
-    projectType: projectTypeOptions[0].value,
-    keywords: '',
-  };
 type EventExploreListFilterProps = {
   values: EventExploreListFilterValues;
   onChange: (values: EventExploreListFilterValues) => void;
 };
+
+const topicsToOptions = (ary: TopicItem[]) =>
+  ary.map((item) => ({
+    label: item.name,
+    value: item.value,
+  }));
 export default function EventExploreListFilter({
   values,
   onChange,
 }: EventExploreListFilterProps) {
-  const { orderBy, platform, reward, projectType } = values;
+  const { platforms } = useConfigsPlatforms();
+  const { topics } = useConfigsTopics();
+  const { eventRewards, eventTypes, projectTypes } = topics;
+  const {
+    platforms: selectedPlatforms,
+    rewards: selectedRewards,
+    eventTypes: selectedEventTypes,
+    projectTypes: selectedProjectTypes,
+  } = values;
+  const platformsOptions = useMemo(
+    () =>
+      platforms.map((item) => ({
+        label: formatFilterShowName(item.platform),
+        value: item.platform,
+        iconUrl: item.platformLogo,
+      })),
+    [platforms]
+  );
+  const eventRewardsOptions = useMemo(
+    () => topicsToOptions(eventRewards),
+    [eventRewards]
+  );
+  const eventTypesOptions = useMemo(
+    () => topicsToOptions(eventTypes),
+    [eventTypes]
+  );
+  const projectTypesOptions = useMemo(
+    () => topicsToOptions(projectTypes),
+    [projectTypes]
+  );
   return (
     <EventExploreListFilterWrapper>
-      <Left>
-        <Select
-          options={orderByOptions}
-          onChange={(value) => onChange({ ...values, orderBy: value })}
-          value={orderBy}
-          iconUrl={OrderBySvg}
-        />
-        <PlatformFilter
-          onChange={(value) => onChange({ ...values, platform: value })}
-          value={platform}
-        />
-        <Select
-          options={rewardOptions}
-          onChange={(value) => onChange({ ...values, reward: value })}
-          value={reward}
-          iconUrl={RewardSvg}
-        />
-        <Select
-          options={projectTypeOptions}
-          onChange={(value) => onChange({ ...values, projectType: value })}
-          value={projectType}
-          iconUrl={ProjectTypeSvg}
-        />
-      </Left>
-
-      <Search onSearch={(value) => onChange({ ...values, keywords: value })} />
+      <CheckboxMultiChoice
+        label="Platform"
+        options={platformsOptions}
+        onChange={(value) => onChange({ ...values, platforms: value })}
+        value={selectedPlatforms}
+      />
+      <CheckboxMultiChoice
+        label="Reward"
+        options={eventRewardsOptions}
+        onChange={(value) => onChange({ ...values, rewards: value })}
+        value={selectedRewards}
+      />
+      <CheckboxMultiChoice
+        label="Event Type"
+        options={eventTypesOptions}
+        onChange={(value) => onChange({ ...values, eventTypes: value })}
+        value={selectedEventTypes}
+      />
+      <CheckboxMultiChoice
+        label="Project Type"
+        options={projectTypesOptions}
+        onChange={(value) => onChange({ ...values, projectTypes: value })}
+        value={selectedProjectTypes}
+      />
     </EventExploreListFilterWrapper>
   );
 }
-const EventExploreListFilterWrapper = styled.div`
+const EventExploreListFilterWrapper = styled(CardBase)`
+  border: none;
   width: 100%;
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 20px;
-`;
-const Left = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-`;
-const Search = styled(SearchInput)`
-  max-width: 400px;
 `;

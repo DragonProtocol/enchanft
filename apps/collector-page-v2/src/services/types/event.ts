@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-04 19:22:25
+ * @LastEditTime: 2023-01-10 10:34:42
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -26,10 +26,11 @@ export type EventEntity = {
 };
 export type EventExploreListParams = {
   keywords?: string;
-  platform?: Platform | '';
-  reward?: Reward | '';
-  projectType?: ProjectType | '';
-  orderBy?: OrderBy | '';
+  platforms?: string;
+  rewards?: string;
+  eventTypes?: string;
+  projectTypes?: string;
+  orderBy?: OrderBy;
   pageSize?: number;
   pageNumber?: number;
   eventId?: number;

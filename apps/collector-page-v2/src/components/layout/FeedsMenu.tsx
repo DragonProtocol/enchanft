@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-03 16:10:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-09 11:59:12
+ * @LastEditTime: 2023-01-09 17:10:38
  * @Description: file description
  */
 import { ReactNode, useEffect, useRef } from 'react';
@@ -31,27 +31,13 @@ const FeedsSwitchOptions = [
   },
 ];
 type FeedsMenuProps = StyledComponentPropsWithRef<'div'> & {
-  right?: ReactNode;
-  bottom?: ReactNode;
-  displayBottom?: boolean;
+  rightEl?: ReactNode;
+  bottomEl?: ReactNode;
 };
-export default function FeedsMenu({
-  right,
-  bottom,
-  displayBottom,
-}: FeedsMenuProps) {
+export default function FeedsMenu({ rightEl, bottomEl }: FeedsMenuProps) {
   const navigate = useNavigate();
   const { firstRouteMeta } = useRoute();
-  const bottomInnerRef = useRef<HTMLDivElement>();
-  useEffect(() => {
-    if (bottom && bottomInnerRef) {
-      if (displayBottom) {
-        bottomInnerRef.current.parentElement.style.height = `${bottomInnerRef.current.offsetHeight}px`;
-      } else {
-        bottomInnerRef.current.parentElement.style.height = '0px';
-      }
-    }
-  }, [bottom, displayBottom]);
+
   return (
     <FeedsMenuWrapper>
       <TopBox>
@@ -60,28 +46,14 @@ export default function FeedsMenu({
           value={firstRouteMeta.key}
           onChange={(value) => navigate(getRoute(value).path)}
         />
-        {right && <RightBox>{right}</RightBox>}
+        {rightEl && <RightBox>{rightEl}</RightBox>}
       </TopBox>
-      {bottom && (
-        <BottomBox>
-          <BottomInner
-            ref={(el) => {
-              if (el) {
-                bottomInnerRef.current = el;
-              }
-            }}
-          >
-            {bottom}
-          </BottomInner>
-        </BottomBox>
-      )}
+      {bottomEl}
     </FeedsMenuWrapper>
   );
 }
 const FeedsMenuWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  width: 100%;
 `;
 const TopBox = styled.div`
   display: flex;
@@ -93,15 +65,8 @@ const TopBox = styled.div`
 const TabSwitch = styled(Tab)`
   border-bottom: none;
   justify-content: flex-start;
-  height: 32px;
-  flex-shrink: 0;
+  height: 72px;
 `;
 const RightBox = styled.div`
   flex: 1;
 `;
-const BottomBox = styled.div`
-  width: 100%;
-  transition: all 0.3s;
-  overflow: hidden;
-`;
-const BottomInner = styled.div``;

@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-09 11:21:06
+ * @LastEditTime: 2023-01-10 15:36:30
  * @Description: file description
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
-import CheckSvg from '../icons/svgs/check.svg';
+import { ButtonPrimaryLine } from '../button/ButtonBase';
+import ChoiceCheckedSvg from '../icons/svgs/choice-checked.svg';
 
 type ValueType = any;
 export type CheckboxMultiChoiceOption = {
@@ -36,38 +37,47 @@ export default function CheckboxMultiChoice({
   );
   return (
     <CheckboxMultiChoiceWrapper {...wrapperProps}>
-      {label && <CheckboxMultiChoiceLabel>{label}: </CheckboxMultiChoiceLabel>}
+      {label && (
+        <CheckboxMultiChoiceLabel className="checkbox-multi-choice-label">
+          {label}:{' '}
+        </CheckboxMultiChoiceLabel>
+      )}
 
-      <OptionsBox className="select-options-box">
+      <OptionsBox className="checkbox-multi-choice-box">
         {options.map((item) => {
           const isChecked = value.includes(item.value);
           return (
             <OptionItem
-              className="select-option-item"
+              className="option-item"
               key={item.value}
               isChecked={isChecked}
               onClick={() => {
                 if (onSelectOption) {
-                  onSelectOption([...selectOptions, item]);
+                  onSelectOption(
+                    isChecked
+                      ? selectOptions.filter((o) => o.value !== item.value)
+                      : [...selectOptions, item]
+                  );
                 }
                 if (onChange) {
-                  onChange([...value, item.value]);
+                  onChange(
+                    isChecked
+                      ? value.filter((v) => v !== item.value)
+                      : [...value, item.value]
+                  );
                 }
               }}
             >
               {item.iconUrl && (
-                <OptionIcon
-                  src={item.iconUrl}
-                  className="select-option-item-icon"
-                />
+                <OptionIcon src={item.iconUrl} className="option-item-icon" />
               )}
-              <OptionLabel className="select-option-item-label">
+              <OptionLabel className="option-item-label">
                 {item.label}
               </OptionLabel>
               {isChecked && (
                 <CheckedIcon
-                  src={CheckSvg}
-                  className="select-option-item-icon"
+                  src={ChoiceCheckedSvg}
+                  className="option-item-checked-icon"
                 />
               )}
             </OptionItem>
@@ -78,56 +88,35 @@ export default function CheckboxMultiChoice({
   );
 }
 const CheckboxMultiChoiceWrapper = styled.div`
-  height: 40px;
-  position: relative;
+  display: flex;
+  align-items: flex-start;
 `;
 
-const CheckboxMultiChoiceLabel = styled.img`
+const CheckboxMultiChoiceLabel = styled.div`
+  width: 100px;
+  height: 40px;
+  margin-right: 20px;
   font-weight: 400;
   font-size: 16px;
-  line-height: 19px;
+  line-height: 40px;
   color: #748094;
 `;
 const OptionsBox = styled.div`
-  min-width: 100%;
-  position: absolute;
-  left: 0;
-  top: 100%;
-  margin-bottom: 10px;
-  margin-top: 10px;
-
+  flex: 1;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-
-  background: #1b1e23;
-  border: 1px solid #39424c;
-  border-radius: 20px;
-  z-index: 1;
-`;
-const OptionItem = styled.div<{ isChecked: boolean }>`
-  height: 40px;
-  padding: 20px;
-  box-sizing: border-box;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 19px;
-  border-radius: 20px;
-  cursor: pointer;
-  display: flex;
-  justify-content: flex-start;
   align-items: center;
-  gap: 10px;
-  background: ${(props) => (props.isChecked ? '#14171A' : 'none')};
+  gap: 20px;
+  flex-flow: wrap;
+`;
+const OptionItem = styled(ButtonPrimaryLine)<{ isChecked: boolean }>`
+  height: 40px;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: ${(props) => (props.isChecked ? '#fff' : '#718096')};
-  &:hover {
-    ${(props) =>
-      !props.isChecked &&
-      `
-        background: #14171a;
-        opacity: 0.6;
-      `};
-  }
+  border-color: ${(props) => (props.isChecked ? '#fff' : '#39424C')};
 `;
 const OptionIcon = styled.img`
   width: 20px;
@@ -138,7 +127,6 @@ const OptionLabel = styled.span`
   white-space: nowrap;
 `;
 const CheckedIcon = styled.img`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
+  width: 18px;
+  height: 18px;
 `;
