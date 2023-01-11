@@ -32,6 +32,7 @@ import {
   EVENT_ADMIN_PLUS_SCORE_STEP,
   NO_ENDTIME_TIMESTRAMP,
 } from '../../utils/event';
+import useConfigsTopics from '../../hooks/useConfigsTopics';
 
 const rewardOptions: Array<{
   value: Reward;
@@ -91,6 +92,15 @@ export default forwardRef(function EventForm(
   const [noEndTime, setNoEndTime] = useState(
     !initialValues.endTime || initialValues.endTime === NO_ENDTIME_TIMESTRAMP
   );
+  const { topics } = useConfigsTopics();
+  const typesOptions = useMemo(
+    () =>
+      topics.eventTypes.map((item) => ({
+        value: item.value,
+        label: item.name,
+      })),
+    [topics]
+  );
   const handleSubmit = useCallback(
     (form: CreateEventData) => {
       const data = {
@@ -111,6 +121,7 @@ export default forwardRef(function EventForm(
       chain: Yup.string().required('Required'),
       reward: Yup.string().required('Required'),
       startTime: Yup.number().required('Required'),
+      types: Yup.array().required('Required'),
     }),
     onSubmit: (values) => {
       handleSubmit(values);
@@ -147,58 +158,6 @@ export default forwardRef(function EventForm(
     <EventCreateWrapper>
       <EventCreateFormCard>
         <FormField>
-          <FormLabel htmlFor="name">Title</FormLabel>
-          <InputBase
-            placeholder="Title"
-            onChange={(e) => formik.setFieldValue('name', e.target.value)}
-            value={formik.values.name}
-          />
-          {renderFieldError('name')}
-        </FormField>
-
-        <FormField>
-          <FormLabel htmlFor="description">Description</FormLabel>
-          <InputBase
-            placeholder="Description"
-            onChange={(e) =>
-              formik.setFieldValue('description', e.target.value)
-            }
-            value={formik.values.description}
-          />
-          {renderFieldError('description')}
-        </FormField>
-
-        <FormField>
-          <FormLabel htmlFor="image">Image</FormLabel>
-          <UploadImage
-            url={formik.values.image}
-            onSuccess={(url) => formik.setFieldValue('image', url)}
-          />
-          {renderFieldError('image')}
-        </FormField>
-
-        <FormField>
-          <FormLabel htmlFor="platform">Platform</FormLabel>
-          <PlatformSelect
-            placeholder="Filter by Platform"
-            onChange={(value) => formik.setFieldValue('platform', value)}
-            onSelectOption={(option) => setSelectPlatformLogo(option.iconUrl)}
-            value={formik.values.platform}
-          />
-          {renderFieldError('platform')}
-        </FormField>
-
-        <FormField>
-          <FormLabel htmlFor="project">Project</FormLabel>
-          <ProjectAsyncSelect
-            placeholder="Filter by Project"
-            value={formik.values.project}
-            onChange={(value) => formik.setFieldValue('project', value)}
-          />
-          {renderFieldError('project')}
-        </FormField>
-
-        <FormField>
           <FormLabel htmlFor="link">Original URL</FormLabel>
           <InputBase
             placeholder="Original URL"
@@ -218,24 +177,34 @@ export default forwardRef(function EventForm(
         </FormField>
 
         <FormField>
-          <FormLabel htmlFor="chain">Blockchain</FormLabel>
-          <Select
-            options={chainOptions}
-            onChange={(value) => formik.setFieldValue('chain', value)}
-            value={formik.values.chain}
+          <FormLabel htmlFor="name">Title</FormLabel>
+          <InputBase
+            placeholder="Title"
+            onChange={(e) => formik.setFieldValue('name', e.target.value)}
+            value={formik.values.name}
           />
-          {renderFieldError('chain')}
+          {renderFieldError('name')}
         </FormField>
 
-        <FormField>
-          <FormLabel htmlFor="reward">Reward</FormLabel>
-          <Select
-            id="reward"
-            options={rewardOptions}
-            onChange={(value) => formik.setFieldValue('reward', value)}
-            value={formik.values.reward}
+        {/* <FormField>
+          <FormLabel htmlFor="description">Description</FormLabel>
+          <InputBase
+            placeholder="Description"
+            onChange={(e) =>
+              formik.setFieldValue('description', e.target.value)
+            }
+            value={formik.values.description}
           />
-          {renderFieldError('reward')}
+          {renderFieldError('description')}
+        </FormField> */}
+
+        <FormField>
+          <FormLabel htmlFor="image">Image</FormLabel>
+          <UploadImage
+            url={formik.values.image}
+            onSuccess={(url) => formik.setFieldValue('image', url)}
+          />
+          {renderFieldError('image')}
         </FormField>
 
         <FormField>
@@ -283,6 +252,59 @@ export default forwardRef(function EventForm(
             />
             <SwitchText>No end</SwitchText>
           </SwitchRow>
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="platform">Platform</FormLabel>
+          <PlatformSelect
+            placeholder="Filter by Platform"
+            onChange={(value) => formik.setFieldValue('platform', value)}
+            onSelectOption={(option) => setSelectPlatformLogo(option.iconUrl)}
+            value={formik.values.platform}
+          />
+          {renderFieldError('platform')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="chain">Blockchain</FormLabel>
+          <Select
+            options={chainOptions}
+            onChange={(value) => formik.setFieldValue('chain', value)}
+            value={formik.values.chain}
+          />
+          {renderFieldError('chain')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="types">Event Type</FormLabel>
+          <Select
+            id="types"
+            options={typesOptions}
+            onChange={(value) => formik.setFieldValue('types', [value])}
+            value={formik.values.types[0]}
+          />
+          {renderFieldError('types')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="reward">Reward</FormLabel>
+          <Select
+            id="reward"
+            options={rewardOptions}
+            onChange={(value) => formik.setFieldValue('reward', value)}
+            value={formik.values.reward}
+          />
+          {renderFieldError('reward')}
+        </FormField>
+
+        <FormField>
+          <FormLabel htmlFor="project">Project</FormLabel>
+          <ProjectAsyncSelect
+            placeholder="Filter by Project"
+            value={formik.values.project}
+            onChange={(value) => formik.setFieldValue('project', value)}
+          />
+          {renderFieldError('project')}
         </FormField>
 
         <FormField>

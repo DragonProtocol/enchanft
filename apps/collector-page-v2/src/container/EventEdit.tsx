@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-05 17:31:18
+ * @LastEditTime: 2023-01-11 18:38:59
  * @Description: file description
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -44,6 +44,7 @@ export default function EventEdit() {
               endTime: data.endTime,
               supportIframe: data.supportIframe,
               editorScore: data.editorScore,
+              types: data.types,
             });
           } else {
             toast.error(msg);

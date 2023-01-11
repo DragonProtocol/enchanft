@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:28:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 16:53:47
+ * @LastEditTime: 2023-01-11 18:28:15
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -14,6 +14,7 @@ import { Edit3 } from '../icons/edit';
 import { ThumbUp } from '../icons/thumbUp';
 import { Trash } from '../icons/trash';
 import Loading from '../common/loading/Loading';
+import isUrl from '../../utils/isUrl';
 
 export type CannotOpenPlatFormLinkProps = {
   data: {
@@ -53,19 +54,21 @@ export default function EventLinkPreview({
           title={name}
         />
       ) : (
-        <EventIframeBox>
-          <EventIframe
-            src={link}
-            onLoad={() => {
-              setIframeLoading(false);
-            }}
-          />
-          {iframeLoading && (
-            <EventIframeLoadingBox>
-              <Loading />
-            </EventIframeLoadingBox>
-          )}
-        </EventIframeBox>
+        isUrl(link) && (
+          <EventIframeBox>
+            <EventIframe
+              src={link}
+              onLoad={() => {
+                setIframeLoading(false);
+              }}
+            />
+            {iframeLoading && (
+              <EventIframeLoadingBox>
+                <Loading />
+              </EventIframeLoadingBox>
+            )}
+          </EventIframeBox>
+        )
       )}
       {showAdminOps && (
         <div className="admin-ops">
