@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 // import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import styled from 'styled-components';
@@ -42,12 +44,19 @@ function Extension({
             Please <strong>login</strong> first and improve the content
             {/* Please <strong>login</strong> first and improve the content information to help us better recommend it to others. */}
           </div>
+
           <a
-            href={`${website}/contents/create?url=${window?.location?.href}`}
-            target="__blank"
+            href="javascript:void(0)"
+            onClick={() =>
+              window.open(
+                `${website}/contents/create?url=${window?.location?.href}`,
+                '_blank'
+              )
+            }
           >
             <div className="btn">LOGIN</div>
           </a>
+
           {/* <div className="tip">
             {`You'll be redirected to U3 to sign up / connect`}
           </div> */}

@@ -1,7 +1,7 @@
 {
   "name": "U3 - Your Web3 Data Hub",
   "description": "Hub For Your Self Sovereign Data",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "manifest_version": 3,
   "action": {
     "default_icon": {
@@ -27,8 +27,8 @@
       "run_at": "document_idle"
     },
     {
-      "css": ["content.css", "./u3-build/static/css/main.5ed85b77.css"],
-      "js": ["install_notifier.js", "./u3-build/static/js/main.90770ad4.js"],
+      "css": ["content.css"],
+      "js": ["content_script.js"],
       "matches": ["<all_urls>"],
       "exclude_matches": [
         "*://localhost/*",

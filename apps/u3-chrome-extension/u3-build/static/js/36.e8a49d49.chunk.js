@@ -1,1 +1,0 @@
-(globalThis.webpackChunkenchanft_collector_page_v2=globalThis.webpackChunkenchanft_collector_page_v2||[]).push([[36],{29036:()=>{}}]);
