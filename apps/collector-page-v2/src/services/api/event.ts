@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-04 19:23:14
+ * @LastEditTime: 2023-01-11 18:29:58
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
@@ -116,22 +116,3 @@ export function completeEvent({
     },
   });
 }
-
-// TODO 获取用户完成的events
-export function fetchListForEventCompletedList(): Array<number> {
-  return [];
-}
-
-// export type DaylightListParams = {
-//   pubkey: string;
-//   after: string;
-//   limit: number;
-// };
-// export function fetchListByDaylight(
-//   params: DaylightListParams
-// ): AxiosPromise<any> {
-//   const { pubkey, after, limit } = params;
-//   return axios.get(
-//     `https://api.daylight.xyz/v1/wallets/${pubkey}/abilities?type=access&type=mint&type=airdrop&type=claim&type=vote&type=misc&sortDirection=desc&sort=magic&limit=${limit}&after=${after}`
-//   );
-// }

@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-06 14:06:20
+ * @LastEditTime: 2023-01-11 18:02:03
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -215,8 +215,12 @@ function Favorites() {
     [completedEvents]
   );
   const isEmpty = useMemo(
-    () => isEmptyEvents && isEmptyProjects && isEmptyContents,
-    [isEmptyEvents, isEmptyProjects, isEmptyContents]
+    () =>
+      isEmptyEvents &&
+      isEmptyProjects &&
+      isEmptyContents &&
+      isEmptyCompletedEvents,
+    [isEmptyEvents, isEmptyProjects, isEmptyContents, isEmptyCompletedEvents]
   );
   const [event, setEvent] = useState<EventsEntityItem | null>(null);
   const [completedEvent, setCompletedEvent] = useState<EventsEntityItem | null>(

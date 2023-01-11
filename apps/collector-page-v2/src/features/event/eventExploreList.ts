@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-05 12:08:04
+ * @LastEditTime: 2023-01-11 18:23:37
  * @Description: file description
  */
 import {
@@ -12,11 +12,7 @@ import {
   createSlice,
   PayloadAction,
 } from '@reduxjs/toolkit';
-import {
-  // DaylightListParams,
-  // fetchListByDaylight,
-  fetchListForEventExplore,
-} from '../../services/api/event';
+import { fetchListForEventExplore } from '../../services/api/event';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
 // import { OrderBy } from '../../services/types/common';
 import {
@@ -24,10 +20,6 @@ import {
   EventExploreListParams,
 } from '../../services/types/event';
 import type { RootState } from '../../store/store';
-// import {
-//   daylightAbilityListToEventList,
-//   getHideDaylightIdsByStorage,
-// } from '../../utils/daylight';
 
 export type EventExploreListItem = EventExploreListItemResponse & {
   isDaylight?: boolean;
@@ -40,7 +32,6 @@ type EventExploreListStore = EntityState<EventExploreListItem> & {
   errorMsg: string;
   moreErrorMsg: string;
   currentRequestId: string; // 当前正在请求的id(由createAsyncThunk生成的唯一id)
-  // daylightUid: string;
 };
 const PAGE_SIZE = 20;
 const PAGE_NUMBER_FIRST = 0;
@@ -58,44 +49,8 @@ const initTodoTasksState: EventExploreListStore =
     errorMsg: '',
     moreErrorMsg: '',
     currentRequestId: '',
-    // daylightUid: '',
   });
 
-// const getEventsByForu = async (
-//   apiParams: EventExploreListParams,
-//   daylightParmas: DaylightListParams
-// ) => {
-//   const daylightResponse = fetchListByDaylight(daylightParmas);
-//   const trendingResponse = fetchListForEventExplore({
-//     ...apiParams,
-//     orderBy: OrderBy.TRENDING,
-//   });
-//   const [daylightData, trendingData] = await Promise.all([
-//     daylightResponse,
-//     trendingResponse,
-//   ]);
-//   // 如果trending数据请求有问题
-//   if (trendingData.data.code === ApiRespCode.ERROR) {
-//     throw new Error(trendingData.data.msg);
-//   }
-//   // 看过后隐藏的daylight数据从获取的数据中过滤掉
-//   const hideIds = getHideDaylightIdsByStorage();
-//   const daylightAbilityList = (daylightData.data?.abilities || []).filter(
-//     (item) => !hideIds.includes(item.uid)
-//   );
-//   // 最终的event数据
-//   const daylightEventList = daylightAbilityListToEventList(daylightAbilityList);
-//   const trendingEventList = trendingData.data.data;
-
-//   // 合并数据
-//   const data = [...daylightEventList, ...trendingEventList];
-
-//   // 最后一个daylight数据的uid
-//   const daylightAfterUid =
-//     daylightAbilityList[(daylightAbilityList.length || 1) - 1]?.uid;
-
-//   return { data, daylightAfterUid };
-// };
 type AdaptationEventExploreListParams = EventExploreListParams;
 // 重新获取列表
 export const fetchEventExploreList = createAsyncThunk<
@@ -109,26 +64,6 @@ export const fetchEventExploreList = createAsyncThunk<
       pageSize: PAGE_SIZE,
       pageNumber: PAGE_NUMBER_FIRST,
     };
-    // if (params.orderBy === OrderBy.FORU) {
-    //   if (params.pubkey) {
-    //     const state = getState() as RootState;
-    //     const { eventExploreList } = state;
-    //     const { daylightUid } = eventExploreList;
-    //     const daylightParmas = {
-    //       // pubkey: '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4',
-    //       pubkey: params.pubkey,
-    //       after: daylightUid,
-    //       limit: PAGE_SIZE,
-    //     };
-    //     const { data, daylightAfterUid } = await getEventsByForu(
-    //       apiParams,
-    //       daylightParmas
-    //     );
-    //     dispatch(setDaylightUid(daylightAfterUid));
-    //     return data;
-    //   }
-    //   apiParams.orderBy = OrderBy.TRENDING;
-    // }
     const resp = await fetchListForEventExplore(apiParams);
     if (resp.data.code === ApiRespCode.SUCCESS) {
       return resp.data.data.map((item) => ({
@@ -158,20 +93,6 @@ export const fetchMoreEventExploreList = createAsyncThunk<
       pageSize: PAGE_SIZE,
       pageNumber: pageNumber + 1,
     };
-    // if (params.orderBy === OrderBy.FORU && params.pubkey) {
-    //   const daylightParmas = {
-    //     // pubkey: '0xee3ca4dd4ceb3416915eddc6cdadb4a6060434d4',
-    //     pubkey: params.pubkey,
-    //     after: daylightUid,
-    //     limit: PAGE_SIZE,
-    //   };
-    //   const { data, daylightAfterUid } = await getEventsByForu(
-    //     apiParams,
-    //     daylightParmas
-    //   );
-    //   dispatch(setDaylightUid(daylightAfterUid));
-    //   return data;
-    // }
     const resp = await fetchListForEventExplore(apiParams);
     if (resp.data.code === ApiRespCode.SUCCESS) {
       return resp.data.data.map((item) => ({
@@ -215,9 +136,6 @@ export const eventExploreListSlice = createSlice({
     setOne: (...args) => eventExploreListEntity.setOne(...args),
     removeOne: (...args) => eventExploreListEntity.removeOne(...args),
     removeAll: (state) => eventExploreListEntity.removeAll(state),
-    // setDaylightUid: (state, action: PayloadAction<string>) => {
-    //   state.daylightUid = action.payload;
-    // },
   },
   extraReducers: (builder) => {
     builder
@@ -269,11 +187,5 @@ export const { selectAll, selectById } = eventExploreListEntity.getSelectors(
   (state: RootState) => state.eventExploreList
 );
 export const selectState = (state: RootState) => state.eventExploreList;
-export const {
-  updateOne,
-  setOne,
-  removeOne,
-  removeAll,
-  // setDaylightUid
-} = actions;
+export const { updateOne, setOne, removeOne, removeAll } = actions;
 export default reducer;
