@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 10:30:23
+ * @LastEditTime: 2023-01-11 14:02:08
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -41,7 +41,6 @@ export default function Projects() {
     completeQueueIds: eventCompleteQueueIds,
     onComplete: onEventComplete,
   } = useEventHandles();
-  const { onVote, formatCurrentContents } = useContentHandles();
   const { favoredIds, favorQueueIds, onFavor, onShare } = useProjectHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
@@ -57,18 +56,7 @@ export default function Projects() {
   const [project, setProject] = useState<ProjectExploreListItemResponse | null>(
     null
   );
-  const showProject = useMemo(
-    () =>
-      project
-        ? {
-            ...project,
-            contents: formatCurrentContents(
-              project.contents as ContentListItem[]
-            ),
-          }
-        : null,
-    [project, formatCurrentContents]
-  );
+  const { onVote } = useContentHandles();
   useEffect(() => {
     const params = { ...filter };
     if (id) {
@@ -134,9 +122,9 @@ export default function Projects() {
                   ) : null}
                 </ListBox>
                 <ContentBox>
-                  {showProject && (
+                  {project && (
                     <ProjectDetailView
-                      data={showProject}
+                      data={project}
                       eventCompletedIds={eventCompletedIds}
                       eventCompleteQueueIds={eventCompleteQueueIds}
                       onEventComplete={onEventComplete}
