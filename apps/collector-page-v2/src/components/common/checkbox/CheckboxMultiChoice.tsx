@@ -93,7 +93,7 @@ const CheckboxMultiChoiceWrapper = styled.div`
 `;
 
 const CheckboxMultiChoiceLabel = styled.div`
-  width: 100px;
+  min-width: 100px;
   height: 40px;
   margin-right: 20px;
   font-weight: 400;
