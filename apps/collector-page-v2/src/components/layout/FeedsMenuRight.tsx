@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-10 16:30:27
+ * @LastEditTime: 2023-01-11 14:27:42
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -56,7 +56,6 @@ export default function FeedsMenuRight({
 
       {searchEl && <SearchBox>{searchEl}</SearchBox>}
       <MultiLayoutBox>
-        <div className="filter" />
         {multiLayout && (
           <div className="layout">
             <span

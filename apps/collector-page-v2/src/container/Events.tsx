@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 11:42:57
+ * @LastEditTime: 2023-01-11 17:29:08
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -34,12 +34,14 @@ import Loading from '../components/common/loading/Loading';
 import NoResult from '../components/common/NoResult';
 import FeedsMenu from '../components/layout/FeedsMenu';
 import useAdminEventHandles from '../hooks/useAdminEventHandles';
-import FeedsMenuRight from '../components/layout/FeedsMenuRight';
+import FeedsMenuRight, { Layout } from '../components/layout/FeedsMenuRight';
 import FeedsFilterBox from '../components/layout/FeedsFilterBox';
 import SearchInput from '../components/common/input/SearchInput';
 import EventOrderBySelect, {
   defaultEventOrderBy,
 } from '../components/event/EventOrderBySelect';
+import EventExploreGridList from '../components/event/EventExploreGridList';
+import EventPreviewModal from '../components/event/EventPreviewModal';
 
 const filterValuesToSearchParams = (values: EventExploreListFilterValues) => {
   return {
@@ -73,6 +75,9 @@ export default function Events() {
   );
   const [isActiveFilter, setIsActiveFilter] = useState(false);
   const [activeId, setActiveId] = useState<string | number>('');
+  const [layout, setLayout] = useState(Layout.LIST);
+  const [openEventPreviewModal, setOpenEventPreviewModal] = useState(false);
+
   const currentSearchParams = useMemo(
     () => ({
       orderBy: searchParams.get('orderBy') || defaultEventOrderBy,
@@ -136,6 +141,17 @@ export default function Events() {
     [moreStatus]
   );
   const isEmpty = useMemo(() => !eventExploreList.length, [eventExploreList]);
+
+  const renderMoreLoading = useMemo(
+    () =>
+      isLoadingMore ? (
+        <MoreLoading>loading ...</MoreLoading>
+      ) : noMore ? (
+        <MoreLoading>No other events</MoreLoading>
+      ) : null,
+    [isLoadingMore, noMore]
+  );
+
   return (
     <EventsWrapper>
       <FeedsMenu
@@ -165,6 +181,11 @@ export default function Events() {
                 }
               />
             }
+            multiLayout
+            layout={layout}
+            setLayout={(l) => {
+              setLayout(l);
+            }}
           />
         }
         bottomEl={
@@ -186,44 +207,84 @@ export default function Events() {
         {isLoading ? (
           <Loading />
         ) : (
-          <MainBody>
-            {!isEmpty ? (
-              <>
-                <ListBox onScrollBottom={getMore}>
-                  <EventExploreList
-                    data={eventExploreList}
-                    activeId={event?.id || 0}
-                    favoredIds={favoredIds}
-                    favorQueueIds={favorQueueIds}
-                    completedIds={completedIds}
-                    completeQueueIds={completeQueueIds}
-                    onComplete={onComplete}
-                    onFavor={onFavor}
-                    onShare={onShare}
-                    onItemClick={(item) => setActiveId(item.id)}
-                  />
-                  {isLoadingMore ? (
-                    <MoreLoading>loading ...</MoreLoading>
-                  ) : noMore ? (
-                    <MoreLoading>No other events</MoreLoading>
-                  ) : null}
-                </ListBox>
-                <ContentBox>
-                  {event ? (
-                    <EventLinkPreview
-                      data={event}
-                      showAdminOps={!event.isForU && isAdmin}
-                      onAdminThumbUp={() => onAdminThumbUp(event)}
-                      onAdminDelete={() => onAdminDelete(event)}
-                      onAdminEdit={() => navigate(`/events/${event.id}/edit`)}
-                    />
-                  ) : null}
-                </ContentBox>
-              </>
-            ) : (
-              <NoResult />
+          <>
+            {layout === Layout.LIST && (
+              <MainBody>
+                {!isEmpty ? (
+                  <>
+                    <ListBox onScrollBottom={getMore}>
+                      <EventExploreList
+                        data={eventExploreList}
+                        activeId={event?.id || 0}
+                        favoredIds={favoredIds}
+                        favorQueueIds={favorQueueIds}
+                        completedIds={completedIds}
+                        completeQueueIds={completeQueueIds}
+                        onComplete={onComplete}
+                        onFavor={onFavor}
+                        onShare={onShare}
+                        onItemClick={(item) => setActiveId(item.id)}
+                      />
+
+                      {renderMoreLoading}
+                    </ListBox>
+                    <ContentBox>
+                      {event ? (
+                        <EventLinkPreview
+                          data={event}
+                          showAdminOps={!event.isForU && isAdmin}
+                          onAdminThumbUp={() => onAdminThumbUp(event)}
+                          onAdminDelete={() => onAdminDelete(event)}
+                          onAdminEdit={() =>
+                            navigate(`/events/${event.id}/edit`)
+                          }
+                        />
+                      ) : null}
+                    </ContentBox>
+                  </>
+                ) : (
+                  <NoResult />
+                )}
+              </MainBody>
             )}
-          </MainBody>
+            {layout === Layout.GRID && (
+              <GrideListBox onScrollBottom={getMore}>
+                <EventExploreGridList
+                  data={eventExploreList}
+                  onItemClick={(item) => {
+                    setActiveId(item.id);
+                    setOpenEventPreviewModal(true);
+                  }}
+                />
+
+                {renderMoreLoading}
+                <EventPreviewModal
+                  isOpen={openEventPreviewModal}
+                  data={event}
+                  onComplete={() => {
+                    onComplete(event);
+                  }}
+                  onShare={() => {
+                    onShare(event);
+                  }}
+                  onFavor={() => {
+                    onFavor(event);
+                  }}
+                  onClose={() => {
+                    setActiveId('');
+                    setOpenEventPreviewModal(false);
+                  }}
+                  isFavored={event?.favored}
+                  loadingFavor={favorQueueIds.includes(event?.id)}
+                  disabledFavor={
+                    event?.favored || favorQueueIds.includes(event?.id)
+                  }
+                  isCompleted={event?.completed}
+                  loadingComplete={completeQueueIds.includes(event?.id)}
+                />
+              </GrideListBox>
+            )}
+          </>
         )}
       </MainBox>
     </EventsWrapper>
@@ -257,6 +318,12 @@ const ListBox = styled(ListScrollBox)`
   width: 360px;
   height: 100%;
   border-right: 1px solid #39424c;
+  box-sizing: border-box;
+  overflow-y: auto;
+`;
+const GrideListBox = styled(ListScrollBox)`
+  width: 100%;
+  height: 100%;
   box-sizing: border-box;
   overflow-y: auto;
 `;
