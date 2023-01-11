@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-06 16:04:45
+ * @LastEditTime: 2023-01-11 13:45:51
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -200,11 +200,6 @@ export default (originList?: ContentListItem[]) => {
     tweetShare(data.title, getContentShareUrl(data.id));
   }, []);
 
-  const formatCurrentContents = useCallback(
-    (data: ContentListItem[]) => newList,
-    [newList]
-  );
-
   return {
     newList,
     votePendingIds,
@@ -214,6 +209,5 @@ export default (originList?: ContentListItem[]) => {
     hiddenPendingIds,
     onHidden,
     onShare,
-    formatCurrentContents,
   };
 };
