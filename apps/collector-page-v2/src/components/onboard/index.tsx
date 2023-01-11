@@ -4,7 +4,7 @@ import { TopicItem } from '../../features/configs/topics';
 import { ContentLang } from '../../services/types/contents';
 import { ButtonPrimary } from '../common/button/ButtonBase';
 
-type ItemData = {
+export type ItemData = {
   type: string;
 } & TopicItem;
 export default function OnBoard({
@@ -127,6 +127,7 @@ export default function OnBoard({
 
 const OnBoardBox = styled.div`
   height: 100vh;
+  width: 100%;
   overflow: scroll;
   > div {
     display: flex;

@@ -1,16 +1,52 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { getPreference, updatePreference } from '../services/api/profile';
 import {
   addLocalPreference,
   getLocalPreference,
 } from '../utils/localPreference';
+import useConfigsTopics from './useConfigsTopics';
 
 export default function usePreference(userToken: string) {
   const [loading, setLoading] = useState(false);
   const [preference, setPreference] = useState<{ [key: string]: any }>(
     getLocalPreference()
   );
+  const { topics } = useConfigsTopics();
+  const lists = useMemo(() => {
+    const { contentTypes, eventRewards, eventTypes, projectTypes } = topics;
+    const listData: Array<{
+      type: string;
+      value: string;
+      name: string;
+    }> = [];
+
+    return listData
+      .concat(
+        contentTypes.map((item) => ({
+          type: 'contentTypes',
+          ...item,
+        }))
+      )
+      .concat(
+        eventRewards.map((item) => ({
+          type: 'eventRewards',
+          ...item,
+        }))
+      )
+      .concat(
+        eventTypes.map((item) => ({
+          type: 'eventTypes',
+          ...item,
+        }))
+      )
+      .concat(
+        projectTypes.map((item) => ({
+          type: 'projectTypes',
+          ...item,
+        }))
+      );
+  }, [topics]);
 
   const fetchPreference = useCallback(
     async (token: string) => {
@@ -56,5 +92,5 @@ export default function usePreference(userToken: string) {
     fetchPreference(userToken);
   }, [userToken]);
 
-  return { preference, postPreference };
+  return { preferenceList: lists, preference, postPreference };
 }

@@ -27,9 +27,6 @@ import {
 import { ProfileEntity, ProfileWallet } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
 import { mergeProfilesData } from '../utils/mergeProfilesData';
-import useConfigsTopics from '../hooks/useConfigsTopics';
-import OnBoard from '../components/onboard';
-import usePreference from '../hooks/usePreference';
 
 function Profile() {
   const { wallet } = useParams();
@@ -37,11 +34,9 @@ function Profile() {
   const [tab, setTab] = useState<'Credential' | 'OnChain' | 'OffChain'>(
     'Credential'
   );
-  const { topics } = useConfigsTopics();
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileEntity>();
   const [wallets, setWallets] = useState<ProfileWallet[]>([]);
-  const { preference, postPreference } = usePreference(user.token);
 
   const fetchData = useCallback(async () => {
     if (!user.token) return;
@@ -117,52 +112,6 @@ function Profile() {
     }
     fetchWallets();
   }, [fetchData, fetchDataWithWallet, wallet]);
-
-  const lists = useMemo(() => {
-    const { contentTypes, eventRewards, eventTypes, projectTypes } = topics;
-    const listData: Array<{
-      type: string;
-      value: string;
-      name: string;
-    }> = [];
-
-    return listData
-      .concat(
-        contentTypes.map((item) => ({
-          type: 'contentTypes',
-          ...item,
-        }))
-      )
-      .concat(
-        eventRewards.map((item) => ({
-          type: 'eventRewards',
-          ...item,
-        }))
-      )
-      .concat(
-        eventTypes.map((item) => ({
-          type: 'eventTypes',
-          ...item,
-        }))
-      )
-      .concat(
-        projectTypes.map((item) => ({
-          type: 'projectTypes',
-          ...item,
-        }))
-      );
-  }, [topics]);
-
-  if (Object.keys(preference).length === 0) {
-    return (
-      <OnBoard
-        lists={lists}
-        finishAction={(data) => {
-          postPreference(data);
-        }}
-      />
-    );
-  }
 
   return (
     <ProfileWrapper id="profile-wrapper">

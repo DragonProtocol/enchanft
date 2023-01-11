@@ -21,6 +21,7 @@ import useRoute from '../../route/useRoute';
 import useLogin from '../../hooks/useLogin';
 import NoLogin from './NoLogin';
 import usePreference from '../../hooks/usePreference';
+import OnboardModal from '../onboard/OnboardModal';
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -45,7 +46,9 @@ function Main() {
       login();
     }
   }, [lastRouteMeta, isLogin]);
-  usePreference(user.token);
+  const { preference, postPreference, preferenceList } = usePreference(
+    user.token
+  );
 
   const renderElement = useCallback(
     ({ element, permissions }: CutomRouteObject) => {
@@ -75,12 +78,20 @@ function Main() {
     element: renderElement(item),
   }));
   const renderRoutes = useRoutes(routesMap);
+
   return (
     <MainWrapper>
       {renderRoutes}
       <EventCompleteGuideModal
         isOpen={openEventCompleteGuideModal}
         onGuideEnd={eventCompleteGuideEndCallback}
+      />
+      <OnboardModal
+        show={Object.keys(preference).length === 0}
+        lists={preferenceList}
+        finishAction={(data) => {
+          postPreference(data);
+        }}
       />
     </MainWrapper>
   );
