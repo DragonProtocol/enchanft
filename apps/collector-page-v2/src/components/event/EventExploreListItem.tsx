@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-06 18:03:17
+ * @LastEditTime: 2023-01-11 17:19:08
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -17,23 +17,24 @@ import CompletedSvg from '../common/icons/svgs/checked-circle.svg';
 import ShareSvg from '../common/icons/svgs/share.svg';
 import RewardTag from './RewardTag';
 
-export type EventExploreListItemData = EventExploreListItemResponse & {
-  isDaylight?: boolean;
-};
-export type EventExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
-  data: EventExploreListItemData;
-  isActive: boolean;
+export type EventExploreListItemData = EventExploreListItemResponse;
+export type EventExploreItemHandles = {
   disabledFavor?: boolean;
   loadingFavor?: boolean;
   isFavored?: boolean;
   disabledComplete?: boolean;
   loadingComplete?: boolean;
   isCompleted?: boolean;
-  displayHandles?: boolean;
   onComplete?: () => void;
   onShare?: () => void;
   onFavor?: () => void;
 };
+export type EventExploreListItemProps = StyledComponentPropsWithRef<'div'> &
+  EventExploreItemHandles & {
+    data: EventExploreListItemData;
+    isActive: boolean;
+    displayHandles?: boolean;
+  };
 export const defaultStyle = {
   bgc: 'rgba(16, 16, 20, 0.1)',
   activeColor: '#FFFFFF',
@@ -137,6 +138,46 @@ export default function EventExploreListItem({
     </EventExploreListItemWrapper>
   );
 }
+
+export type EventExploreListItemHandlesProps =
+  StyledComponentPropsWithRef<'div'> & EventExploreItemHandles;
+export function EventExploreListItemHandles({
+  disabledFavor,
+  loadingFavor,
+  isFavored,
+  disabledComplete,
+  loadingComplete,
+  isCompleted,
+  onComplete,
+  onShare,
+  onFavor,
+  ...props
+}: EventExploreListItemHandlesProps) {
+  return (
+    <EventHandles {...props}>
+      <EventHandleButtonComplete
+        onClick={onComplete}
+        disabled={disabledComplete}
+      >
+        <EventHandleButtonIcon src={isCompleted ? CompletedSvg : CompleteSvg} />
+        <EventHandleButtonText>
+          {loadingComplete
+            ? 'loading'
+            : isCompleted
+            ? 'Completed'
+            : 'Mark as Complete'}
+        </EventHandleButtonText>
+      </EventHandleButtonComplete>
+      <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
+        <EventHandleButtonLikeIcon fill={isFavored ? '#718096' : 'none'} />
+      </EventHandleButton>
+      <EventHandleButton onClick={onShare}>
+        <EventHandleButtonIcon src={ShareSvg} />
+      </EventHandleButton>
+    </EventHandles>
+  );
+}
+
 const EventExploreListItemWrapper = styled.div<{
   bgc: string;
   isActive: boolean;
@@ -154,11 +195,15 @@ const EventExploreListItemWrapper = styled.div<{
     border-right: 4px solid  ${activeColor};
   `}
   transition: background-color 0.5s, box-shadow 0.5s;
-  &:hover {
-    & > * {
-      transform: scale(1.1);
+  ${({ isActive }) =>
+    !isActive &&
+    `
+    &:hover {
+      & > * {
+        transform: scale(1.1);
+      }
     }
-  }
+  `}
 `;
 const ListItemInner = styled.div`
   display: flex;
@@ -206,7 +251,6 @@ const EventPlatformIcon = styled.img`
 `;
 
 const EventHandles = styled.div`
-  width: 100%;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -216,7 +260,7 @@ const EventHandleButton = styled(ButtonPrimaryLine)`
   height: 32px;
 `;
 const EventHandleButtonComplete = styled(EventHandleButton)`
-  flex: 1;
+  width: 230px;
 `;
 const EventHandleButtonLikeIcon = styled(IconLike)`
   width: 20px;

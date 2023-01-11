@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:28:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-05 19:37:56
+ * @LastEditTime: 2023-01-11 16:53:47
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -98,6 +98,7 @@ export default function EventLinkPreview({
 }
 const EventPreviewWrapper = styled.div`
   position: relative;
+  width: 100%;
   height: 100%;
   .admin-ops {
     position: absolute;

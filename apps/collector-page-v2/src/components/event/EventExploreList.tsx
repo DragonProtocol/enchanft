@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-27 14:12:36
+ * @LastEditTime: 2023-01-11 17:28:21
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -14,7 +14,6 @@ import EventExploreListItem, {
 import AnimatedListItem, {
   useAnimatedListTransition,
 } from '../animation/AnimatedListItem';
-import { useGAEvent } from '../../hooks/useGoogleAnalytics';
 
 export type EventExploreListProps = {
   data: EventExploreListItemData[];
@@ -43,7 +42,6 @@ export default function EventExploreList({
   onShare,
   onItemClick,
 }: EventExploreListProps) {
-  const gaEvent = useGAEvent('u3-event');
   const isFavored = useCallback(
     (item: EventExploreListItemData) =>
       item.favored || favoredIds.includes(item.id),
@@ -78,19 +76,14 @@ export default function EventExploreList({
               isActive={item.id === activeId}
               onComplete={() => {
                 onComplete(item);
-                gaEvent('completeEvent', item.name);
               }}
               onShare={() => {
                 onShare(item);
-                gaEvent('shareEvent', item.name);
               }}
               onFavor={() => {
                 onFavor(item);
-                gaEvent('favorEvent', item.name);
               }}
-              displayHandles={
-                item.isDaylight ? false : displayHandles && item.id === activeId
-              }
+              displayHandles={displayHandles && item.id === activeId}
               isFavored={isFavored(item)}
               loadingFavor={loadingFavor(item.id)}
               disabledFavor={isFavored(item) || loadingFavor(item.id)}

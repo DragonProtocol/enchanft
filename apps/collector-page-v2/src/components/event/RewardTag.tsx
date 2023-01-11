@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 11:03:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 11:15:14
+ * @LastEditTime: 2023-01-11 15:48:21
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -27,5 +27,6 @@ export default function RewardTag({ value, ...otherProps }: Props) {
   );
 }
 const RewardTagWrapper = styled(Tag)<{ bgc: string }>`
+  width: fit-content;
   background-color: ${({ bgc }) => bgc};
 `;
