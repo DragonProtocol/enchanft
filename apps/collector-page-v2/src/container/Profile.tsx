@@ -24,12 +24,17 @@ import {
   fetchU3Wallets,
   getPreference,
   ProfileDefault,
+  updatePreference,
 } from '../services/api/profile';
 import { ProfileEntity, ProfileWallet } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
 import { mergeProfilesData } from '../utils/mergeProfilesData';
 import useConfigsTopics from '../hooks/useConfigsTopics';
 import OnBoard from '../components/onboard';
+import {
+  addLocalPreference,
+  getLocalPreference,
+} from '../utils/localPreference';
 
 function Profile() {
   const { wallet } = useParams();
@@ -41,7 +46,9 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileEntity>();
   const [wallets, setWallets] = useState<ProfileWallet[]>([]);
-  const [preference, setPreference] = useState<{ [key: string]: any }>({});
+  const [preference, setPreference] = useState<{ [key: string]: any }>(
+    getLocalPreference()
+  );
 
   const fetchData = useCallback(async () => {
     try {
@@ -58,15 +65,33 @@ function Profile() {
   }, [user.token]);
 
   const fetchPreference = useCallback(async () => {
+    if (Object.keys(preference).length > 0) return;
     try {
       const { data } = await getPreference(user.token);
+      addLocalPreference(data.data);
       setPreference(data.data);
     } catch (error) {
       toast.error(error.message);
-    } finally {
-      setLoading(false);
     }
-  }, [user.token]);
+  }, [user.token, preference]);
+
+  const postPreference = useCallback(
+    async (data: {
+      eventRewards: string[];
+      eventTypes: string[];
+      projectTypes: string[];
+      contentTypes: string[];
+      langs: string[];
+    }) => {
+      try {
+        await updatePreference(data, user.token);
+        setPreference(data);
+      } catch (error) {
+        toast.error(error.message);
+      }
+    },
+    [user.token]
+  );
 
   const fetchWallets = useCallback(async () => {
     try {
@@ -166,8 +191,7 @@ function Profile() {
       <OnBoard
         lists={lists}
         finishAction={(data) => {
-          console.log('finishAction', data);
-          // TODO submit
+          postPreference(data);
         }}
       />
     );

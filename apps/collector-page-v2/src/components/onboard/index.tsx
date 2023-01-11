@@ -170,6 +170,7 @@ const OnBoardBox = styled.div`
       display: flex;
       gap: 20px;
       flex-wrap: wrap;
+      justify-content: center;
       margin-bottom: 20px;
       max-width: 760px;
 

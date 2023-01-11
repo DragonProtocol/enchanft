@@ -97,3 +97,24 @@ export function getPreference(token: string) {
     },
   });
 }
+
+export function updatePreference(
+  data: {
+    contentTypes: string[];
+    eventRewards: string[];
+    eventTypes: string[];
+    langs: string[];
+    projectTypes: string[];
+  },
+  token: string
+) {
+  return request({
+    url: `/users/preference`,
+    method: 'post',
+    data,
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}
