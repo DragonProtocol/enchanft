@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-10 16:30:37
+ * @LastEditTime: 2023-01-11 11:42:57
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -71,7 +71,7 @@ export default function Events() {
     () => status === AsyncRequestStatus.PENDING,
     [status]
   );
-  const [isActiveFilter, setIsActiveFilter] = useState(true);
+  const [isActiveFilter, setIsActiveFilter] = useState(false);
   const [activeId, setActiveId] = useState<string | number>('');
   const currentSearchParams = useMemo(
     () => ({

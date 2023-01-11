@@ -12,7 +12,7 @@ import type { RootState } from '../../store/store';
 import { formatFilterShowName } from '../../utils/filter';
 
 export type TopicItem = {
-  value: string | number;
+  value: string;
   name: string;
 };
 type Topics = {
