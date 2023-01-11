@@ -68,7 +68,7 @@ function Contents() {
   const [updating, setUpdating] = useState(false);
   const [layout, setLayout] = useState(Layout.LIST);
   const [gridModalShow, setGridModalShow] = useState(false);
-  const [isActiveFilter, setIsActiveFilter] = useState(true);
+  const [isActiveFilter, setIsActiveFilter] = useState(false);
 
   const {
     onFavor: favors,
@@ -118,7 +118,6 @@ function Contents() {
       if (removeTimer.current) {
         clearTimeout(removeTimer.current);
         removeTimer.current = undefined;
-        console.log('have a remove timer');
       }
       removeTimer.current = setTimeout(() => {
         removeContent(idx);
@@ -135,8 +134,10 @@ function Contents() {
       lang: string[],
       renav?: boolean
     ) => {
+      let queryId = id;
       if (renav) {
         navigate('/contents/:id');
+        queryId = ':id';
       }
       setLoading(true);
       setContents([]);
@@ -147,14 +148,14 @@ function Contents() {
         const langQuery =
           lang.length === 0 || lang.length === 2 ? ContentLang.All : lang[0];
         const { data } = await fetchContents(
-          { keywords, types, orderBy, contentId: id, lang: langQuery },
+          { keywords, types, orderBy, contentId: queryId, lang: langQuery },
           user.token
         );
         tmpData = data.data;
         setContents(tmpData);
-        if (id !== ':id' && id) {
+        if (queryId !== ':id' && queryId) {
           const itemData = tmpData.find(
-            (item) => `${item.id}` === id || item.uuid === id
+            (item) => `${item.id}` === queryId || item.uuid === queryId
           );
           setSelectContent(itemData);
         } else if (tmpData.length > 0) {
