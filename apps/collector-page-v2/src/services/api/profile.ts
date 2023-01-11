@@ -86,3 +86,14 @@ export function fetchU3Wallets(token: string) {
     },
   });
 }
+
+export function getPreference(token: string) {
+  return request({
+    url: `/users/preference`,
+    method: 'get',
+    headers: {
+      token,
+      needToken: true,
+    },
+  });
+}

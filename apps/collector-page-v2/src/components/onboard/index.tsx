@@ -1,16 +1,32 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { TopicItem } from '../../features/configs/topics';
 import { ContentLang } from '../../services/types/contents';
 import { ButtonPrimary } from '../common/button/ButtonBase';
 
-const FEEDS_LIST = ['NFT', 'Token', 'WL', 'Badge'];
-export default function OnBoard() {
+type ItemData = {
+  type: string;
+} & TopicItem;
+export default function OnBoard({
+  lists,
+  finishAction,
+}: {
+  lists: Array<ItemData>;
+  finishAction: (data: {
+    eventRewards: string[];
+    eventTypes: string[];
+    projectTypes: string[];
+    contentTypes: string[];
+    langs: string[];
+  }) => void;
+}) {
   const [selectFeeds, setSelectFeeds] = useState([]);
   const [lang, setLang] = useState(ContentLang.English);
 
   const selectFeedsHandler = useCallback(
-    (item: string, idx: number) => {
-      if (selectFeeds.includes(item)) {
+    (item: string) => {
+      const idx = selectFeeds.findIndex((data) => data === item);
+      if (idx !== -1) {
         setSelectFeeds([
           ...selectFeeds.slice(0, idx),
           ...selectFeeds.slice(idx + 1),
@@ -21,6 +37,31 @@ export default function OnBoard() {
     },
     [selectFeeds]
   );
+
+  const filterData = (data: ItemData[], type: string) => {
+    return data.filter((item) => item.type === type).map((item) => item.value);
+  };
+  const finishHandler = useCallback(() => {
+    const data = [];
+    selectFeeds.forEach((feed) => {
+      const tmpData = lists.filter((item) => item.name === feed);
+      data.push(...tmpData);
+    });
+
+    finishAction({
+      eventRewards: filterData(data, 'eventRewards'),
+      eventTypes: filterData(data, 'eventTypes'),
+      projectTypes: filterData(data, 'projectTypes'),
+      contentTypes: filterData(data, 'contentTypes'),
+      langs: [lang],
+    });
+  }, [selectFeeds, lists, lang]);
+
+  const uiList = useMemo(() => {
+    const data = new Set(lists.map((item) => item.name));
+    return new Array(...data);
+  }, [lists]);
+
   return (
     <OnBoardBox>
       <div>
@@ -28,13 +69,13 @@ export default function OnBoard() {
         <h2>Welcome to U3!</h2>
         <p>Pick your favorite topics to set up your feeds.</p>
         <div className="feed-list">
-          {FEEDS_LIST.map((item, idx) => {
+          {uiList.map((item) => {
             const hasSelect = selectFeeds.includes(item);
             return (
               <div
                 key={item}
                 onClick={() => {
-                  selectFeedsHandler(item, idx);
+                  selectFeedsHandler(item);
                 }}
                 className={hasSelect ? 'selected' : ''}
               >
@@ -77,7 +118,7 @@ export default function OnBoard() {
           </div>
         </div>
         <div className="btn">
-          <FinishBtn>Finish</FinishBtn>
+          <FinishBtn onClick={finishHandler}>Finish</FinishBtn>
         </div>
       </div>
     </OnBoardBox>
@@ -99,6 +140,7 @@ const OnBoardBox = styled.div`
     position: relative;
     padding: 40px;
     box-sizing: border-box;
+    overflow: scroll;
 
     > img {
       width: 55px;
@@ -129,10 +171,11 @@ const OnBoardBox = styled.div`
       gap: 20px;
       flex-wrap: wrap;
       margin-bottom: 20px;
+      max-width: 760px;
 
       > div {
         cursor: pointer;
-        width: 100px;
+        width: 108px;
         height: 48px;
         display: flex;
         justify-content: center;

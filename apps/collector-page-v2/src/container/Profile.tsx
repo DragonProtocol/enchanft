@@ -5,7 +5,7 @@
  * @LastEditTime: 2022-11-30 15:18:30
  * @Description: file description
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
@@ -22,11 +22,14 @@ import {
   fetchU3Profiles,
   fetchU3ProfileWithWallet,
   fetchU3Wallets,
+  getPreference,
   ProfileDefault,
 } from '../services/api/profile';
 import { ProfileEntity, ProfileWallet } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
 import { mergeProfilesData } from '../utils/mergeProfilesData';
+import useConfigsTopics from '../hooks/useConfigsTopics';
+import OnBoard from '../components/onboard';
 
 function Profile() {
   const { wallet } = useParams();
@@ -34,9 +37,11 @@ function Profile() {
   const [tab, setTab] = useState<'Credential' | 'OnChain' | 'OffChain'>(
     'Credential'
   );
+  const { topics } = useConfigsTopics();
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileEntity>();
   const [wallets, setWallets] = useState<ProfileWallet[]>([]);
+  const [preference, setPreference] = useState<{ [key: string]: any }>({});
 
   const fetchData = useCallback(async () => {
     try {
@@ -46,6 +51,17 @@ function Profile() {
       // setProfileData(data.data);
     } catch (error) {
       setProfileData(ProfileDefault);
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [user.token]);
+
+  const fetchPreference = useCallback(async () => {
+    try {
+      const { data } = await getPreference(user.token);
+      setPreference(data.data);
+    } catch (error) {
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -105,9 +121,57 @@ function Profile() {
       fetchDataWithWallet();
     } else {
       fetchData();
-      fetchWallets();
     }
-  }, [fetchData, fetchDataWithWallet, wallet]);
+    fetchPreference();
+    fetchWallets();
+  }, [fetchData, fetchPreference, fetchDataWithWallet, wallet]);
+
+  const lists = useMemo(() => {
+    const { contentTypes, eventRewards, eventTypes, projectTypes } = topics;
+    const listData: Array<{
+      type: string;
+      value: string;
+      name: string;
+    }> = [];
+
+    return listData
+      .concat(
+        contentTypes.map((item) => ({
+          type: 'contentTypes',
+          ...item,
+        }))
+      )
+      .concat(
+        eventRewards.map((item) => ({
+          type: 'eventRewards',
+          ...item,
+        }))
+      )
+      .concat(
+        eventTypes.map((item) => ({
+          type: 'eventTypes',
+          ...item,
+        }))
+      )
+      .concat(
+        projectTypes.map((item) => ({
+          type: 'projectTypes',
+          ...item,
+        }))
+      );
+  }, [topics]);
+
+  if (Object.keys(preference).length === 0) {
+    return (
+      <OnBoard
+        lists={lists}
+        finishAction={(data) => {
+          console.log('finishAction', data);
+          // TODO submit
+        }}
+      />
+    );
+  }
 
   return (
     <ProfileWrapper id="profile-wrapper">
