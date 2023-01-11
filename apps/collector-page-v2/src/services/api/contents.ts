@@ -195,7 +195,7 @@ export function fetchDaylight(
 export function fetchContents(
   query: {
     keywords?: string;
-    type?: string;
+    types?: string[];
     orderBy?: string;
     pageSize?: number;
     pageNumber?: number;
@@ -212,7 +212,7 @@ export function fetchContents(
       pageSize: query.pageSize ?? 30,
       pageNumber: query.pageNumber ?? 0,
       keywords: query.keywords ?? '',
-      type: query.type ? query.type.toUpperCase().replace(' ', '_') : '',
+      types: query.types ?? [],
       orderBy: query.orderBy
         ? query.orderBy.toUpperCase().replace(' ', '')
         : '',

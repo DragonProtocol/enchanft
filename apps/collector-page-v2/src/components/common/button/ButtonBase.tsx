@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 18:18:08
+ * @LastEditTime: 2023-01-10 13:47:06
  * @Description: 基础按钮
  */
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
@@ -13,25 +13,6 @@ function ButtonBase({ children, ...otherProps }: ButtonProps) {
   return <ButtonBaseWrapper {...otherProps}>{children}</ButtonBaseWrapper>;
 }
 export default ButtonBase;
-export const ButtonPrimary = styled(ButtonBase)`
-  background-color: #ffffff;
-  color: #14171a;
-`;
-export const ButtonPrimaryLine = styled(ButtonBase)`
-  border: 1px solid #39424c !important;
-  background-color: #1a1e23;
-  color: #718096;
-`;
-export const ButtonWarning = styled(ButtonBase)`
-  background-color: #ebb700;
-`;
-export const ButtonDanger = styled(ButtonBase)`
-  background-color: #d60606;
-`;
-export const ButtonInfo = styled(ButtonBase)`
-  background-color: #ebeee4;
-  color: #333333;
-`;
 
 export const ButtonBaseCss = css`
   height: 48px;
@@ -56,4 +37,24 @@ const ButtonBaseWrapper = styled.button`
     pointer-events: auto;
     opacity: 0.5;
   }
+`;
+
+export const ButtonPrimary = styled(ButtonBaseWrapper)`
+  background-color: #ffffff;
+  color: #14171a;
+`;
+export const ButtonPrimaryLine = styled(ButtonBaseWrapper)`
+  border: 1px solid #39424c;
+  background-color: #1a1e23;
+  color: #718096;
+`;
+export const ButtonWarning = styled(ButtonBaseWrapper)`
+  background-color: #ebb700;
+`;
+export const ButtonDanger = styled(ButtonBaseWrapper)`
+  background-color: #d60606;
+`;
+export const ButtonInfo = styled(ButtonBaseWrapper)`
+  background-color: #ebeee4;
+  color: #333333;
 `;

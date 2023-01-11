@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import styled from 'styled-components';
 import { defaultFormatDate } from '../../utils/time';
 import { Eye } from '../icons/eye';
@@ -10,13 +11,30 @@ export default function ContentShower({
   createdAt,
   author,
   content,
+  link,
 }: {
   title: string;
+  link: string;
   type: string;
   author: string;
   createdAt: number;
   content: string;
 }) {
+  const contentFix = useMemo(() => {
+    if (!link) return content;
+    const placeholder = document.createElement('div');
+    placeholder.innerHTML = content;
+    const imgs = placeholder.getElementsByTagName('img');
+    const linkUrl = new URL(link);
+    for (let i = 0; i < imgs.length; i++) {
+      const imgItem = imgs[i];
+      const srcAttr = imgItem.getAttribute('src');
+      if (srcAttr && srcAttr.startsWith('/')) {
+        imgItem.setAttribute('src', linkUrl.origin + srcAttr);
+      }
+    }
+    return placeholder.innerHTML;
+  }, [content, link]);
   return (
     <Shower>
       <ContentTitle>
@@ -31,7 +49,7 @@ export default function ContentShower({
           <div />
         </div>
       </ContentTitle>
-      <ContentBody dangerouslySetInnerHTML={{ __html: content }} />
+      <ContentBody dangerouslySetInnerHTML={{ __html: contentFix }} />
       <br />
     </Shower>
   );

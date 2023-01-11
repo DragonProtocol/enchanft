@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-09 19:37:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 15:43:37
+ * @LastEditTime: 2023-01-11 14:31:46
  * @Description: file description
  */
 import React, { useCallback, useState } from 'react';
@@ -12,14 +12,14 @@ import SearchSvg from '../icons/svgs/search.svg';
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 48px;
+  height: 40px;
   display: flex;
   align-items: center;
   padding: 0px 12px;
   box-sizing: border-box;
   background: #1a1e23;
   border: 1px solid #39424c;
-  border-radius: 12px;
+  border-radius: 20px;
   gap: 10px;
   &:focus-within {
     border-color: #555;

@@ -6,6 +6,11 @@ export enum ContentLang {
   中文 = 'CN',
 }
 
+export enum ContentLangRev {
+  EN = 'English',
+  CN = '中文',
+}
+
 export enum ContentStatus {
   HIDDEN = 'HIDDEN',
   VISIBLE = 'VISIBLE',

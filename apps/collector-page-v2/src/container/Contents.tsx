@@ -2,46 +2,44 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 17:19:57
+ * @LastEditTime: 2023-01-11 10:30:12
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
+import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
-
+import { debounce } from 'lodash';
 import { useNavigate, useParams } from 'react-router-dom';
-import ContentsHeader from '../components/contents/Header';
 
 import ListItem, { ListItemHidden } from '../components/contents/ListItem';
-import {
-  complete,
-  delFavors,
-  fetchContents,
-  personalComplete,
-  updateContent,
-} from '../services/api/contents';
+import { fetchContents, updateContent } from '../services/api/contents';
 import {
   ContentLang,
   ContentListItem,
   ContentStatus,
+  OrderBy,
 } from '../services/types/contents';
-import userFavored from '../hooks/useFavored';
-import { useVoteUp } from '../hooks/useVoteUp';
 import Loading from '../components/common/loading/Loading';
 import { getProjectShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
 import ListScrollBox from '../components/common/box/ListScrollBox';
-import ConfirmModal from '../components/contents/ConfirmModal';
 import ContentShowerBox, {
   ContentBoxContainer,
 } from '../components/contents/ContentShowerBox';
 import useContentHandles from '../hooks/useContentHandles';
 import { MainWrapper } from '../components/layout/Index';
-import FeedsMenu, { Layout } from '../components/layout/FeedsMenu';
+import FeedsMenu from '../components/layout/FeedsMenu';
 import GridItem, { GridItemHidden } from '../components/contents/GridItem';
 import GridModal from '../components/contents/GridModal';
+import FeedsMenuRight, { Layout } from '../components/layout/FeedsMenuRight';
+import FeedsFilterBox from '../components/layout/FeedsFilterBox';
+import Filter from '../components/contents/Filter';
+import SearchInput from '../components/common/input/SearchInput';
+import { DropDown } from '../components/contents/DropDown';
+import { Favors } from '../components/icons/favors';
+import NoResult from '../components/common/NoResult';
 
 function Contents() {
   const { user, getBindAccount } = useWlUserReact();
@@ -50,14 +48,14 @@ function Contents() {
 
   const queryRef = useRef<{
     keywords: string;
-    type: string;
+    types: string[];
     orderBy: string;
-    lang: string;
+    lang: string[];
   }>({
     keywords: '',
-    type: '',
+    types: [],
     orderBy: 'For U',
-    lang: ContentLang.All,
+    lang: [],
   });
   const removeTimer = useRef<NodeJS.Timeout>();
 
@@ -67,10 +65,10 @@ function Contents() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [showModal, setShowModal] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [layout, setLayout] = useState(Layout.LIST);
   const [gridModalShow, setGridModalShow] = useState(false);
+  const [isActiveFilter, setIsActiveFilter] = useState(false);
 
   const {
     onFavor: favors,
@@ -120,7 +118,6 @@ function Contents() {
       if (removeTimer.current) {
         clearTimeout(removeTimer.current);
         removeTimer.current = undefined;
-        console.log('have a remove timer');
       }
       removeTimer.current = setTimeout(() => {
         removeContent(idx);
@@ -130,25 +127,35 @@ function Contents() {
   );
 
   const fetchData = useCallback(
-    async (keywords: string, type: string, orderBy: string, lang: string) => {
+    async (
+      keywords: string,
+      types: string[],
+      orderBy: string,
+      lang: string[],
+      renav?: boolean
+    ) => {
+      let queryId = id;
+      if (renav) {
+        navigate('/contents/:id');
+        queryId = ':id';
+      }
       setLoading(true);
       setContents([]);
       setSelectContent(undefined);
-      if (type.toLowerCase() === 'all') {
-        type = '';
-      }
 
       try {
         let tmpData: ContentListItem[] = [];
+        const langQuery =
+          lang.length === 0 || lang.length === 2 ? ContentLang.All : lang[0];
         const { data } = await fetchContents(
-          { keywords, type, orderBy, contentId: id, lang },
+          { keywords, types, orderBy, contentId: queryId, lang: langQuery },
           user.token
         );
         tmpData = data.data;
         setContents(tmpData);
-        if (id !== ':id' && id) {
+        if (queryId !== ':id' && queryId) {
           const itemData = tmpData.find(
-            (item) => `${item.id}` === id || item.uuid === id
+            (item) => `${item.id}` === queryId || item.uuid === queryId
           );
           setSelectContent(itemData);
         } else if (tmpData.length > 0) {
@@ -165,11 +172,13 @@ function Contents() {
 
   const loadMore = useCallback(
     async (pageNumber: number) => {
-      const { keywords, type, orderBy, lang } = queryRef.current;
+      const { keywords, types, orderBy, lang } = queryRef.current;
+      const langQuery =
+        lang.length === 0 || lang.length === 2 ? ContentLang.All : lang[0];
       try {
         setLoadingMore(true);
         const { data } = await fetchContents(
-          { keywords, type, orderBy, pageNumber, lang },
+          { keywords, types, orderBy, pageNumber, lang: langQuery },
           user.token
         );
         setHasMore(data.data.length > 0);
@@ -272,35 +281,93 @@ function Contents() {
     [user.token, contents, updating]
   );
 
+  const fetchDataWithFilter = useCallback(
+    debounce((...args) => fetchData.apply(null, [...args, true]), 3000),
+    []
+  );
+
   useEffect(() => {
-    fetchData('', '', 'For U', ContentLang.All);
+    fetchData('', [], 'For U', []);
   }, []);
 
   return (
     <Box>
       <FeedsMenu
-        multiLayout
-        layout={layout}
-        setLayout={(l) => {
-          setLayout(l);
-        }}
-      />
-      <ContentsHeader
-        filterAction={(
-          keywords: string,
-          type: string,
-          orderBy: string,
-          lang: string
-        ) => {
-          queryRef.current = {
-            keywords,
-            type,
-            orderBy,
-            lang,
-          };
-          fetchData(keywords, type, orderBy, lang);
-          navigate('/contents/:id');
-        }}
+        rightEl={
+          <FeedsMenuRight
+            displayFilterButton
+            isActiveFilter={isActiveFilter}
+            onChangeActiveFilter={setIsActiveFilter}
+            orderByEl={
+              <DropDown
+                items={Object.values(OrderBy)}
+                Icon={<Favors />}
+                width={145}
+                title="For U"
+                selectAction={(item) => {
+                  queryRef.current = {
+                    keywords: queryRef.current.keywords,
+                    types: queryRef.current.types,
+                    orderBy: item,
+                    lang: queryRef.current.lang,
+                  };
+                  fetchData(
+                    queryRef.current.keywords,
+                    queryRef.current.types,
+                    queryRef.current.orderBy,
+                    queryRef.current.lang,
+                    true
+                  );
+                }}
+              />
+            }
+            searchEl={
+              <SearchInput
+                debounceMs={1000}
+                onSearch={(value) => {
+                  queryRef.current = {
+                    keywords: value,
+                    types: queryRef.current.types,
+                    orderBy: queryRef.current.orderBy,
+                    lang: queryRef.current.lang,
+                  };
+                  fetchData(
+                    queryRef.current.keywords,
+                    queryRef.current.types,
+                    queryRef.current.orderBy,
+                    queryRef.current.lang,
+                    true
+                  );
+                }}
+              />
+            }
+            multiLayout
+            layout={layout}
+            setLayout={(l) => {
+              setLayout(l);
+            }}
+          />
+        }
+        bottomEl={
+          <FeedsFilterBox open={isActiveFilter}>
+            <Filter
+              filterAction={(data) => {
+                queryRef.current = {
+                  keywords: queryRef.current.keywords,
+                  types: data.types,
+                  orderBy: queryRef.current.orderBy,
+                  lang: data.lang,
+                };
+                fetchDataWithFilter(
+                  queryRef.current.keywords,
+                  queryRef.current.types,
+                  queryRef.current.orderBy,
+                  queryRef.current.lang
+                );
+              }}
+            />
+          </FeedsFilterBox>
+        }
       />
       {(() => {
         if (loading) {
@@ -312,6 +379,14 @@ function Contents() {
             </ContentsWrapper>
           );
         }
+        if (newList.length === 0) {
+          return (
+            <ContentsWrapper>
+              <NoResult />
+            </ContentsWrapper>
+          );
+        }
+
         if (layout === Layout.LIST) {
           return (
             <ContentsWrapper>
@@ -517,6 +592,7 @@ const Box = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-top: 0;
 `;
 // const Box = styled.div`
 //   margin: 0 auto;
