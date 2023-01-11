@@ -68,7 +68,6 @@ function Contents() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [showModal, setShowModal] = useState(false);
   const [updating, setUpdating] = useState(false);
   const [layout, setLayout] = useState(Layout.LIST);
   const [gridModalShow, setGridModalShow] = useState(false);

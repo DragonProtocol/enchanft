@@ -5,7 +5,7 @@
  * @LastEditTime: 2022-11-30 15:18:30
  * @Description: file description
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
@@ -39,6 +39,7 @@ function Profile() {
   const [wallets, setWallets] = useState<ProfileWallet[]>([]);
 
   const fetchData = useCallback(async () => {
+    if (!user.token) return;
     try {
       const { data } = await fetchU3Profiles(user.token);
       const r = mergeProfilesData(data.data);
@@ -53,6 +54,7 @@ function Profile() {
   }, [user.token]);
 
   const fetchWallets = useCallback(async () => {
+    if (!user.token) return;
     try {
       const { data } = await fetchU3Wallets(user.token);
       setWallets(data.data);
@@ -75,6 +77,7 @@ function Profile() {
 
   const addOrRemoveWallet = useCallback(
     async (addr: string, add: boolean) => {
+      if (!user.token) return;
       try {
         await addOrDelWallet(addr, add, user.token);
       } catch (error) {
@@ -94,6 +97,7 @@ function Profile() {
   );
   const delWallet = useCallback(
     async (addr: string) => {
+      if (!user.token) return;
       await addOrRemoveWallet(addr, false);
       await fetchWallets();
     },
@@ -105,8 +109,8 @@ function Profile() {
       fetchDataWithWallet();
     } else {
       fetchData();
-      fetchWallets();
     }
+    fetchWallets();
   }, [fetchData, fetchDataWithWallet, wallet]);
 
   return (
