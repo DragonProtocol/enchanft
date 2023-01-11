@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-06 14:18:58
+ * @LastEditTime: 2023-01-11 10:30:23
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -158,6 +158,7 @@ const ProjectsWrapper = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
   gap: 24px;
+  padding-top: 0;
 `;
 const MainBox = styled.div`
   width: 100%;
