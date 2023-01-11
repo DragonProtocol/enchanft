@@ -7,7 +7,7 @@
  */
 import { useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
-import { usePermissions } from '@ecnft/wl-user-react';
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect } from 'react';
 import { CutomRouteObject, RoutePermission, routes } from '../../route/routes';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -20,10 +20,12 @@ import EventCompleteGuideModal from '../event/EventCompleteGuideModal';
 import useRoute from '../../route/useRoute';
 import useLogin from '../../hooks/useLogin';
 import NoLogin from './NoLogin';
+import usePreference from '../../hooks/usePreference';
 
 function Main() {
   const dispatch = useAppDispatch();
   const { isLogin, login } = useLogin();
+  const { user } = useWlUserReact();
   const { isAdmin } = usePermissions();
   const { openEventCompleteGuideModal, eventCompleteGuideEndCallback } =
     useAppSelector(selectWebsite);
@@ -43,6 +45,7 @@ function Main() {
       login();
     }
   }, [lastRouteMeta, isLogin]);
+  usePreference(user.token);
 
   const renderElement = useCallback(
     ({ element, permissions }: CutomRouteObject) => {

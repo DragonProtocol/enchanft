@@ -22,19 +22,14 @@ import {
   fetchU3Profiles,
   fetchU3ProfileWithWallet,
   fetchU3Wallets,
-  getPreference,
   ProfileDefault,
-  updatePreference,
 } from '../services/api/profile';
 import { ProfileEntity, ProfileWallet } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
 import { mergeProfilesData } from '../utils/mergeProfilesData';
 import useConfigsTopics from '../hooks/useConfigsTopics';
 import OnBoard from '../components/onboard';
-import {
-  addLocalPreference,
-  getLocalPreference,
-} from '../utils/localPreference';
+import usePreference from '../hooks/usePreference';
 
 function Profile() {
   const { wallet } = useParams();
@@ -46,11 +41,10 @@ function Profile() {
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileEntity>();
   const [wallets, setWallets] = useState<ProfileWallet[]>([]);
-  const [preference, setPreference] = useState<{ [key: string]: any }>(
-    getLocalPreference()
-  );
+  const { preference, postPreference } = usePreference(user.token);
 
   const fetchData = useCallback(async () => {
+    if (!user.token) return;
     try {
       const { data } = await fetchU3Profiles(user.token);
       const r = mergeProfilesData(data.data);
@@ -64,36 +58,8 @@ function Profile() {
     }
   }, [user.token]);
 
-  const fetchPreference = useCallback(async () => {
-    if (Object.keys(preference).length > 0) return;
-    try {
-      const { data } = await getPreference(user.token);
-      addLocalPreference(data.data);
-      setPreference(data.data);
-    } catch (error) {
-      toast.error(error.message);
-    }
-  }, [user.token, preference]);
-
-  const postPreference = useCallback(
-    async (data: {
-      eventRewards: string[];
-      eventTypes: string[];
-      projectTypes: string[];
-      contentTypes: string[];
-      langs: string[];
-    }) => {
-      try {
-        await updatePreference(data, user.token);
-        setPreference(data);
-      } catch (error) {
-        toast.error(error.message);
-      }
-    },
-    [user.token]
-  );
-
   const fetchWallets = useCallback(async () => {
+    if (!user.token) return;
     try {
       const { data } = await fetchU3Wallets(user.token);
       setWallets(data.data);
@@ -116,6 +82,7 @@ function Profile() {
 
   const addOrRemoveWallet = useCallback(
     async (addr: string, add: boolean) => {
+      if (!user.token) return;
       try {
         await addOrDelWallet(addr, add, user.token);
       } catch (error) {
@@ -135,6 +102,7 @@ function Profile() {
   );
   const delWallet = useCallback(
     async (addr: string) => {
+      if (!user.token) return;
       await addOrRemoveWallet(addr, false);
       await fetchWallets();
     },
@@ -147,9 +115,8 @@ function Profile() {
     } else {
       fetchData();
     }
-    fetchPreference();
     fetchWallets();
-  }, [fetchData, fetchPreference, fetchDataWithWallet, wallet]);
+  }, [fetchData, fetchDataWithWallet, wallet]);
 
   const lists = useMemo(() => {
     const { contentTypes, eventRewards, eventTypes, projectTypes } = topics;
