@@ -21,7 +21,7 @@ export default function OnBoard({
   }) => void;
 }) {
   const [selectFeeds, setSelectFeeds] = useState([]);
-  const [lang, setLang] = useState(ContentLang.English);
+  const [lang, setLang] = useState([ContentLang.English, ContentLang.中文]);
 
   const selectFeedsHandler = useCallback(
     (item: string) => {
@@ -53,7 +53,7 @@ export default function OnBoard({
       eventTypes: filterData(data, 'eventTypes'),
       projectTypes: filterData(data, 'projectTypes'),
       contentTypes: filterData(data, 'contentTypes'),
-      langs: [lang],
+      langs: lang,
     });
   }, [selectFeeds, lists, lang]);
 
@@ -90,13 +90,15 @@ export default function OnBoard({
             <input
               title="en"
               type="checkbox"
-              checked={lang === ContentLang.English}
+              checked={lang.includes(ContentLang.English)}
               onChange={(e) => {
-                if (!e.target.checked) {
-                  setLang(ContentLang.中文);
+                const langSet = new Set(lang);
+                if (e.target.checked) {
+                  langSet.add(ContentLang.English);
                 } else {
-                  setLang(ContentLang.English);
+                  langSet.delete(ContentLang.English);
                 }
+                setLang([...langSet]);
               }}
             />
             <span>English</span>
@@ -105,13 +107,15 @@ export default function OnBoard({
             <input
               title="zh"
               type="checkbox"
-              checked={lang === ContentLang.中文}
+              checked={lang.includes(ContentLang.中文)}
               onChange={(e) => {
+                const langSet = new Set(lang);
                 if (e.target.checked) {
-                  setLang(ContentLang.中文);
+                  langSet.add(ContentLang.中文);
                 } else {
-                  setLang(ContentLang.English);
+                  langSet.delete(ContentLang.中文);
                 }
+                setLang([...langSet]);
               }}
             />
             <span>中文</span>
