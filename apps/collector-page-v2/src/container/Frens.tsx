@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 17:28:01
+ * @LastEditTime: 2023-01-11 10:31:43
  * @Description: 首页任务看板
  */
 import React, {
@@ -935,6 +935,7 @@ const FrensWrapper = styled(MainWrapper)`
   height: auto;
   background: #14171a;
   color: #718096;
+  padding-top: 0;
 `;
 const FrensHeader = styled.div`
   margin-bottom: 24px;
