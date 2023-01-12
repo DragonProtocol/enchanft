@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:28:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 18:28:15
+ * @LastEditTime: 2023-01-12 16:54:56
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -15,6 +15,7 @@ import { ThumbUp } from '../icons/thumbUp';
 import { Trash } from '../icons/trash';
 import Loading from '../common/loading/Loading';
 import isUrl from '../../utils/isUrl';
+import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 
 export type CannotOpenPlatFormLinkProps = {
   data: {
@@ -72,28 +73,28 @@ export default function EventLinkPreview({
       )}
       {showAdminOps && (
         <div className="admin-ops">
-          <span
+          <EventHandleButton
             onClick={() => {
               if (onAdminThumbUp) onAdminThumbUp();
             }}
           >
             <ThumbUp />
             &nbsp; {data?.editorScore || 0}
-          </span>
-          <span
+          </EventHandleButton>
+          <EventHandleButton
             onClick={() => {
               if (onAdminEdit) onAdminEdit();
             }}
           >
             <Edit3 />
-          </span>
-          <span
+          </EventHandleButton>
+          <EventHandleButton
             onClick={() => {
               if (onAdminDelete) onAdminDelete();
             }}
           >
             <Trash />
-          </span>
+          </EventHandleButton>
         </div>
       )}
     </EventPreviewWrapper>
@@ -110,19 +111,6 @@ const EventPreviewWrapper = styled.div`
     padding: 15px;
     display: flex;
     gap: 10px;
-
-    > span {
-      cursor: pointer;
-      border: 1px solid #39424c;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-sizing: border-box;
-      background-color: #1b1e23;
-      padding: 5px;
-      color: #fff;
-    }
   }
 `;
 const EventIframeBox = styled.div`
@@ -145,4 +133,9 @@ const EventIframe = styled.iframe`
   width: 100%;
   height: 100%;
   border: none;
+`;
+const EventHandleButton = styled(ButtonPrimaryLine)`
+  padding: 6px;
+  height: 32px;
+  background-color: #1b1e23;
 `;

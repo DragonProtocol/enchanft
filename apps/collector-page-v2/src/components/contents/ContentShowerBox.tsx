@@ -6,6 +6,7 @@ import { selectWebsite } from '../../features/website/websiteSlice';
 import { contentParse } from '../../services/api/contents';
 import { ContentListItem } from '../../services/types/contents';
 import { useAppSelector } from '../../store/hooks';
+import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import ExtensionSupport from '../common/ExtensionSupport';
 import Loading from '../common/loading/Loading';
 import { Edit3 } from '../icons/edit';
@@ -193,7 +194,7 @@ export function ContentShowerTab({
       <div>
         <button
           type="button"
-          className={tab === 'original' ? 'active' : ''}
+          className={tab === 'original' ? 'tab-item active' : 'tab-item'}
           onClick={() => {
             setTab('original');
           }}
@@ -201,7 +202,7 @@ export function ContentShowerTab({
           Original
         </button>
         <button
-          className={tab === 'readerView' ? 'active' : ''}
+          className={tab === 'readerView' ? 'tab-item active' : 'tab-item'}
           type="button"
           onClick={() => {
             setTab('readerView');
@@ -213,28 +214,28 @@ export function ContentShowerTab({
       </div>
       {showAdminOps && !isForU && isAdmin && (
         <div className="admin-ops">
-          <span
+          <ContentHandleButton
             onClick={() => {
               if (thumbUpAction) thumbUpAction();
             }}
           >
             <ThumbUp />
             &nbsp; {editorScore || 0}
-          </span>
-          <span
+          </ContentHandleButton>
+          <ContentHandleButton
             onClick={() => {
               if (editAction) editAction();
             }}
           >
             <Edit3 />
-          </span>
-          <span
+          </ContentHandleButton>
+          <ContentHandleButton
             onClick={() => {
               if (deleteAction) deleteAction();
             }}
           >
             <Trash />
-          </span>
+          </ContentHandleButton>
         </div>
       )}
     </div>
@@ -281,7 +282,7 @@ export const ContentBox = styled.div`
       display: flex;
       align-items: center;
       justify-content: space-between;
-      > button {
+      > .tab-item {
         cursor: pointer;
         width: 122px;
         height: 32px;
@@ -309,19 +310,6 @@ export const ContentBox = styled.div`
       padding: 0 15px;
       color: #ffffff;
       gap: 10px;
-
-      > span {
-        cursor: pointer;
-        border: 1px solid #39424c;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 6px;
-        /* width: 32px; */
-        height: 32px;
-        box-sizing: border-box;
-      }
     }
   }
 
@@ -342,4 +330,8 @@ export const LoadingBox = styled.div`
   align-items: center;
   justify-content: center;
   height: calc(100% - 60px);
+`;
+const ContentHandleButton = styled(ButtonPrimaryLine)`
+  padding: 6px;
+  height: 32px;
 `;
