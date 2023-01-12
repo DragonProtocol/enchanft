@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from 'ethers';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
 import { MEDIA_BREAK_POINTS } from '../../constants';
 import {

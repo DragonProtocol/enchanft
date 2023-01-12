@@ -5,7 +5,6 @@
  * @LastEditTime: 2023-01-04 14:46:12
  * @Description: file description
  */
-import axios from 'axios';
 import { PlatformDataResponse } from '../types/home';
 import { ProjectExploreListResponse } from '../types/project';
 import request, { RequestPromise } from './request';

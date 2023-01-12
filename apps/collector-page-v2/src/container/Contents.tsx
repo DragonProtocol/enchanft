@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-01-11 10:30:12
  * @Description: 首页任务看板
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 // import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWlUserReact } from '@ecnft/wl-user-react';
@@ -42,7 +42,7 @@ import { Favors } from '../components/icons/favors';
 import NoResult from '../components/common/NoResult';
 
 function Contents() {
-  const { user, getBindAccount } = useWlUserReact();
+  const { user } = useWlUserReact();
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -480,7 +480,6 @@ function Contents() {
           return (
             <ContentsGridWrapper
               onScrollBottom={() => {
-                console.log('onScrollBottom LoadMore', loadingMore, hasMore);
                 if (newList.length === 0) return;
                 if (loadingMore) return;
                 if (!hasMore) return;

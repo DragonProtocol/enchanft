@@ -21,17 +21,13 @@ import { ProfileWallet } from '../../services/types/profile';
 import { defaultFormatDate } from '../../utils/time';
 
 export default function Info({
-  nickname,
   walletAddr,
-  avatar,
   date,
   wallets,
   addWallet,
   delWallet,
 }: {
-  nickname: string;
   walletAddr: string;
-  avatar: string;
   date: number;
   wallets: ProfileWallet[];
   delWallet: (addr: string) => void;
