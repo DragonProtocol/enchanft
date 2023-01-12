@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 17:19:08
+ * @LastEditTime: 2023-01-12 14:48:55
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -200,7 +200,7 @@ const EventExploreListItemWrapper = styled.div<{
     `
     &:hover {
       & > * {
-        transform: scale(1.1);
+        transform: scale(1.05);
       }
     }
   `}
@@ -248,6 +248,7 @@ const EventPlatformIcon = styled.img`
   width: 24px;
   height: 24px;
   border-radius: 50%;
+  margin-left: auto;
 `;
 
 const EventHandles = styled.div`

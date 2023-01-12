@@ -250,7 +250,7 @@ const ContentItem = styled.div`
   background: inherit;
   &:hover {
     & > * {
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
   }
 `;

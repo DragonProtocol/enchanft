@@ -159,7 +159,7 @@ const Box = styled.div<{ isActive?: boolean; width?: string }>`
 
   &:hover {
     & > .content {
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
   }
 
