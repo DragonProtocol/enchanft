@@ -71,7 +71,7 @@ const ListItemInner = styled.div`
   flex-direction: column;
   transition: all 0.3s;
   &:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
   }
 `;
 const TopBox = styled.div`

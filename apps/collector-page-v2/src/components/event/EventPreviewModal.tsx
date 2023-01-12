@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 16:48:41
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 17:10:46
+ * @LastEditTime: 2023-01-12 13:23:49
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -18,23 +18,32 @@ import { Close } from '../icons/close';
 export type EventPreviewModalProps = {
   isOpen: boolean;
   data?: EventExploreListItemData;
+  displayHandles?: boolean;
   disabledFavor?: boolean;
   loadingFavor?: boolean;
   isFavored?: boolean;
   disabledComplete?: boolean;
   loadingComplete?: boolean;
   isCompleted?: boolean;
-  displayHandles?: boolean;
   onComplete?: () => void;
   onShare?: () => void;
   onFavor?: () => void;
   onClose?: () => void;
+  showAdminOps?: boolean;
+  onAdminThumbUp?: () => void;
+  onAdminDelete?: () => void;
+  onAdminEdit?: () => void;
 };
 
 export default function EventPreviewModal({
   isOpen,
   data,
   onClose,
+  displayHandles,
+  showAdminOps,
+  onAdminDelete,
+  onAdminThumbUp,
+  onAdminEdit,
   ...handlesProps
 }: EventPreviewModalProps) {
   return (
@@ -43,12 +52,20 @@ export default function EventPreviewModal({
         {data && (
           <>
             <Header>
-              <EventExploreListItemHandles {...handlesProps} />
+              {displayHandles && (
+                <EventExploreListItemHandles {...handlesProps} />
+              )}
               <CloseBox onClick={onClose}>
                 <Close />
               </CloseBox>
             </Header>
-            <EventLinkPreview data={data} />
+            <EventLinkPreview
+              data={data}
+              showAdminOps={showAdminOps}
+              onAdminDelete={onAdminDelete}
+              onAdminThumbUp={onAdminThumbUp}
+              onAdminEdit={onAdminEdit}
+            />
           </>
         )}
       </ModalBody>
@@ -71,5 +88,6 @@ const Header = styled.div`
   align-items: center;
 `;
 const CloseBox = styled.div`
+  margin-left: auto;
   cursor: pointer;
 `;

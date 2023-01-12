@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 18:29:58
+ * @LastEditTime: 2023-01-12 11:24:11
  * @Description: file description
  */
 import axios, { AxiosPromise } from 'axios';
@@ -42,23 +42,29 @@ export function fetchListForEventComplete(
     },
   });
 }
-export function favorEvent({
-  id,
-  uuid,
-  isForU,
-}: {
-  id: number | string;
-  uuid: string;
-  isForU: boolean;
-}): RequestPromise<EventFavorHandleResponse> {
+export function favorEvent(
+  id: number | string
+): RequestPromise<EventFavorHandleResponse> {
   return request({
-    url: isForU ? `/events/${uuid}/personlfavors` : `/events/${id}/favors`,
+    url: `/events/${id}/favors`,
     method: 'post',
     headers: {
       needToken: true,
     },
   });
 }
+export function cancelFavorEvent(
+  id: number | string
+): RequestPromise<EventFavorHandleResponse> {
+  return request({
+    url: `/events/${id}/favors`,
+    method: 'delete',
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
 export function createEvent(
   data: CreateEventData
 ): RequestPromise<CreateEventResponse> {

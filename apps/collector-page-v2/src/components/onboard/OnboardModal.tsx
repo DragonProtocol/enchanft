@@ -1,5 +1,4 @@
 import Modal from 'react-modal';
-import styled from 'styled-components';
 import OnBoard, { ItemData } from '.';
 
 export default function OnboardModal({
@@ -32,6 +31,7 @@ export default function OnboardModal({
           margin: '0 auto',
           background: 'none',
           border: 'none',
+          padding: '0',
         },
       }}
     >

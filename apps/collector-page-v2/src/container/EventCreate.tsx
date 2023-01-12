@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 18:39:12
+ * @LastEditTime: 2023-01-12 14:26:41
  * @Description: file description
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -32,8 +32,8 @@ function EventCreate() {
     link: searchParams.get('url') || '',
     chain: ChainType.EVM,
     reward: Reward.BADGE,
-    startTime: new Date().getTime(),
-    endTime: new Date().getTime(),
+    startTime: Date.now(),
+    endTime: Date.now() + 48 * 60 * 60 * 1000,
     supportIframe: true,
     editorScore: 0,
     types: [],

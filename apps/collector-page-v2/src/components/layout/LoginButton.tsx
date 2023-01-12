@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 14:36:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-04 10:38:06
+ * @LastEditTime: 2023-01-12 10:45:36
  * @Description: file description
  */
 import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
@@ -57,7 +57,7 @@ const LoginButtonWrapper = styled.div<{ hiddenStyle?: boolean }>`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 12px 24px;
+  padding: 12px;
   gap: 4px;
   isolation: isolate;
 
@@ -75,7 +75,9 @@ const LoginButtonWrapper = styled.div<{ hiddenStyle?: boolean }>`
   transition: all 0.3s ease-out;
 `;
 const LoginButtonBody = styled.div`
+  width: 100%;
   display: flex;
+  justify-content: center;
   align-items: center;
   gap: 10px;
 `;
@@ -85,9 +87,13 @@ const LoginButtonAvatar = styled(UserAvatar)`
   border-radius: 20px;
 `;
 const LoginButtonName = styled.span`
+  flex: 1;
   font-weight: 500;
   font-size: 16px;
   color: #ffffff;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 const LogoutIconButton = styled.img`
   width: 24px;

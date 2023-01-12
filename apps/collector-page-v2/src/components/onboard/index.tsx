@@ -130,7 +130,7 @@ export default function OnBoard({
 }
 
 const OnBoardBox = styled.div`
-  height: 100vh;
+  height: 100%;
   width: 100%;
   overflow: scroll;
   > div {
@@ -140,7 +140,6 @@ const OnBoardBox = styled.div`
     align-items: center;
     background: #1b1e23;
     border-radius: 20px;
-    margin: 40px;
     height: calc(100vh - 80px);
     position: relative;
     padding: 40px;

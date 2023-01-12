@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 17:29:08
+ * @LastEditTime: 2023-01-12 13:45:22
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -276,11 +276,17 @@ export default function Events() {
                   }}
                   isFavored={event?.favored}
                   loadingFavor={favorQueueIds.includes(event?.id)}
-                  disabledFavor={
-                    event?.favored || favorQueueIds.includes(event?.id)
-                  }
+                  disabledFavor={favorQueueIds.includes(event?.id)}
                   isCompleted={event?.completed}
                   loadingComplete={completeQueueIds.includes(event?.id)}
+                  disabledComplete={
+                    completeQueueIds.includes(event?.id) || event?.completed
+                  }
+                  displayHandles={!event?.isForU}
+                  showAdminOps={!event?.isForU && isAdmin}
+                  onAdminThumbUp={() => onAdminThumbUp(event)}
+                  onAdminDelete={() => onAdminDelete(event)}
+                  onAdminEdit={() => navigate(`/events/${event?.id}/edit`)}
                 />
               </GrideListBox>
             )}

@@ -37,7 +37,7 @@ export default function RecommendEvents({
               key={item.uid || item.id}
               title={item.name}
               img={img}
-              author={item.project.name || ''}
+              author={item?.recReason || item.project.name || ''}
               reward={item.reward}
             />
           );
@@ -112,7 +112,7 @@ const CardWrapper = styled.div`
   cursor: pointer;
   &:hover {
     & > * {
-      transform: scale(1.1);
+      transform: scale(1.05);
     }
   }
 `;
