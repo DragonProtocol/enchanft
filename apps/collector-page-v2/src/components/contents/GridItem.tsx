@@ -60,7 +60,7 @@ export default function GridItem({
   createdAt,
   title,
   upVoteNum,
-  isActive,
+  editorScore,
   clickAction,
 }: {
   upVoteNum: number;
@@ -68,8 +68,8 @@ export default function GridItem({
   type: string;
   link: string;
   createdAt: number;
-  isActive: boolean;
   clickAction?: () => void;
+  editorScore?: number;
 }) {
   return (
     <Box
@@ -84,7 +84,7 @@ export default function GridItem({
           <LinkBox text={link} />
         </div>
         <div className="date">{defaultFormatDate(createdAt)}</div>
-        <div className="footer">👏 &nbsp;{upVoteNum}</div>
+        <div className="footer">👏 &nbsp;{upVoteNum + (editorScore || 0)}</div>
       </div>
     </Box>
   );

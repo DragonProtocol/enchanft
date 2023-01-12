@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Favors } from '../icons/favors';
 import { ChevronDown } from '../icons/chevron-down';
 
 export function DropDown({
@@ -51,7 +50,7 @@ export function DropDown({
       <div
         className="title"
         ref={titleRef}
-        onClick={(e) => {
+        onClick={() => {
           setShowList(!showList);
         }}
       >

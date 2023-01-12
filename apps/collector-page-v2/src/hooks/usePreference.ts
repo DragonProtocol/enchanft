@@ -9,6 +9,8 @@ import useConfigsTopics from './useConfigsTopics';
 
 export default function usePreference(userToken: string) {
   const [loading, setLoading] = useState(false);
+  // whatever value
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [preference, setPreference] = useState<{ [key: string]: any }>(
     getLocalPreference()
   );

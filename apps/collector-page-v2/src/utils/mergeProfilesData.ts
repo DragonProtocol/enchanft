@@ -7,6 +7,8 @@ export function mergeProfilesData(
 ): ProfileEntity {
   const result: ProfileEntity = JSON.parse(JSON.stringify(ProfileDefault));
   profilesData.forEach(({ data }) => {
+    // if error , the data has message
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result.erc20Balances = (data.erc20Balances as any).message
       ? [...result.erc20Balances]
       : [...result.erc20Balances, ...data.erc20Balances];

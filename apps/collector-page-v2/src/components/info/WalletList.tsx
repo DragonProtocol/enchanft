@@ -68,7 +68,7 @@ export default function WalletList({
             </span>
           </div>
           {wallets.map((item) => {
-            const { chain, wallet } = item;
+            const { wallet } = item;
             return (
               <div className="item" key={wallet}>
                 <div>

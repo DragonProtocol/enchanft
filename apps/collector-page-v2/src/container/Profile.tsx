@@ -5,7 +5,7 @@
  * @LastEditTime: 2022-11-30 15:18:30
  * @Description: file description
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
@@ -120,6 +120,8 @@ function Profile() {
           <div className="infos">
             <Info
               {...{
+                // User defined in package
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 date: (user as any).createdAt,
                 nickname: user.name,
                 avatar: user.avatar,
