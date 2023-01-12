@@ -5,10 +5,12 @@
  * @LastEditTime: 2022-11-28 19:45:27
  * @Description: file description
  */
-import { HTMLAttributes } from 'react';
 import Icon from './pngs/input_search_emoji.png';
 
-type Props = HTMLAttributes<HTMLImageElement> & {
+type Props = React.DetailedHTMLProps<
+  React.ImgHTMLAttributes<HTMLImageElement>,
+  HTMLImageElement
+> & {
   size?: string;
 };
 const PngIconInputSearchEmoji: React.FC<Props> = ({

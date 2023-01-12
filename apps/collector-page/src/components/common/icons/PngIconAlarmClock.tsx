@@ -5,10 +5,12 @@
  * @LastEditTime: 2022-11-28 18:31:29
  * @Description: file description
  */
-import { HTMLAttributes } from 'react';
 import Icon from './pngs/alarm_clock.png';
 
-type Props = HTMLAttributes<HTMLImageElement> & {
+type Props = React.DetailedHTMLProps<
+  React.ImgHTMLAttributes<HTMLImageElement>,
+  HTMLImageElement
+> & {
   size?: string;
 };
 const PngIconAlarmClock: React.FC<Props> = ({

@@ -5,10 +5,10 @@
  * @LastEditTime: 2022-08-02 11:46:17
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
-type OverflowEllipsisBoxProps = HTMLAttributes<HTMLDivElement> & {
+type OverflowEllipsisBoxProps = StyledComponentPropsWithRef<'div'> & {
   // 行数（超出多少行显示省略号）
   number?: number;
 };

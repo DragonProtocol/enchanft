@@ -6,13 +6,13 @@
  * @Description: file description
  */
 import InputBase from '@mui/material/InputBase';
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
 import CancelIcon from '@mui/icons-material/Cancel';
 import IconButton from '@mui/material/IconButton';
 import PngIconInputSearchEmoji from '../icons/PngIconInputSearchEmoji';
-export type InputSearchProps = HTMLAttributes<HTMLDivElement> & {
+export type InputSearchProps = StyledComponentPropsWithRef<'div'> & {
   value: string;
   placeholder?: string;
   onChange?: (value: string) => void;

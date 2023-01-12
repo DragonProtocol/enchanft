@@ -5,11 +5,11 @@
  * @LastEditTime: 2022-11-28 18:27:08
  * @Description: file description
  */
-import React, { ButtonHTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import ButtonBase from './ButtonBase';
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+export type ButtonProps = StyledComponentPropsWithRef<any>;
 
 const ButtonNavigation: React.FC<ButtonProps> = ({
   children,
