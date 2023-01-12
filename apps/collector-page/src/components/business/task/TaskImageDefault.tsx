@@ -5,11 +5,11 @@
  * @LastEditTime: 2022-11-29 11:14:42
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { TASK_DEFAULT_IMAGE_URL } from '../../../constants';
 
-type TaskImageDefaultProps = HTMLAttributes<HTMLImageElement> & {
+type TaskImageDefaultProps = StyledComponentPropsWithRef<'img'> & {
   src?: string;
 };
 const TaskImageDefault: React.FC<TaskImageDefaultProps> = ({

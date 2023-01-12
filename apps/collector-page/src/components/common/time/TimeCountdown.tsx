@@ -5,10 +5,10 @@
  * @LastEditTime: 2022-11-29 11:34:40
  * @Description: file description
  */
-import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useRef, useState } from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
-type TimeCountdownProps = HTMLAttributes<HTMLDivElement> & {
+type TimeCountdownProps = StyledComponentPropsWithRef<'div'> & {
   timestamp?: number;
   data?: {
     distance: number;

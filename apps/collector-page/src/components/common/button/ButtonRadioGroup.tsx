@@ -5,15 +5,15 @@
  * @LastEditTime: 2022-09-14 17:44:27
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
 type OptionValue = string | number;
 type Option = {
   label: string;
   value: OptionValue;
 };
-export type ButtonRadioGroupProps = HTMLAttributes<HTMLDivElement> & {
+export type ButtonRadioGroupProps = StyledComponentPropsWithRef<'div'> & {
   options: Option[];
   value: OptionValue;
   onChange?: (value: OptionValue) => void;

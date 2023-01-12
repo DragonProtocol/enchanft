@@ -5,12 +5,12 @@
  * @LastEditTime: 2022-09-13 15:47:24
  * @Description: 滚动盒子，提供视口滚动监听
  */
-import React, { HTMLAttributes, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useEffect } from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { useInView } from 'react-intersection-observer';
 import { ScrollBarCss } from '../../../GlobalStyle';
 type ScrollBarSize = 'sm' | 'md';
-export type ScrollBoxProps = HTMLAttributes<HTMLDivElement> & {
+export type ScrollBoxProps = StyledComponentPropsWithRef<'div'> & {
   // 当前滚动盒子的ID
   boxId?: string;
   // 当前滚动盒子的父级盒子元素

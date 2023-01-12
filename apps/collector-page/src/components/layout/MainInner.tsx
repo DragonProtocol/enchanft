@@ -5,10 +5,10 @@
  * @LastEditTime: 2022-10-24 00:04:17
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { MEDIA_BREAK_POINTS } from '../../constants/index';
-const MainInner: React.FC<HTMLAttributes<HTMLDivElement>> = ({
+const MainInner: React.FC<StyledComponentPropsWithRef<'div'>> = ({
   children,
   ...divProps
 }) => {

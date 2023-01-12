@@ -5,8 +5,8 @@
  * @LastEditTime: 2022-09-14 17:24:56
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { MintStage } from '../../../types/entities';
 
 const MintStageColors = {
@@ -20,7 +20,7 @@ export const MintStageLabels = {
   [MintStage.SOLDOUT]: 'Soldout',
   [MintStage.CLOSED]: 'Closed',
 };
-type MintStageLabelProps = HTMLAttributes<HTMLDivElement> & {
+type MintStageLabelProps = StyledComponentPropsWithRef<'div'> & {
   mintStage: MintStage;
 };
 const MintStageLabel: React.FC<MintStageLabelProps> = ({
