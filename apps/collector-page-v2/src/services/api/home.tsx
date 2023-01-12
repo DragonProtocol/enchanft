@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-04 14:46:12
+ * @LastEditTime: 2023-01-12 14:14:24
  * @Description: file description
  */
 import axios from 'axios';
@@ -39,7 +39,10 @@ export function getTrendingEvents() {
       pageNumber: 0,
       keywords: '',
       type: '',
-      orderBy: 'TRENDING',
+      orderBy: 'FORU',
+    },
+    headers: {
+      needToken: true,
     },
   });
 }
