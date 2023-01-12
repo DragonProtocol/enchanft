@@ -6,6 +6,7 @@ import { Heart } from '../icons/heart';
 import Badge from './Badge';
 import { defaultFormatDate } from '../../utils/time';
 import LinkBox from './LinkBox';
+import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 
 export default function ListItem({
   isActive,
@@ -65,8 +66,8 @@ export default function ListItem({
   return (
     <ContentItem ref={itemRef} className={classNames} onClick={clickAction}>
       <ItemInner isActive={isActive} height={height}>
-        <div
-          className="left"
+        <ContentItemLeftVoteButton
+          disabled={upVoted}
           onClick={(e) => {
             e.stopPropagation();
             if (voteAction) voteAction();
@@ -74,7 +75,7 @@ export default function ListItem({
         >
           👏
           <span>{upVoteNum + (editorScore || 0)}</span>
-        </div>
+        </ContentItemLeftVoteButton>
         <div className={isActive ? 'right active' : 'right'}>
           <p>{title}</p>
           <ContentItemTitle>
@@ -141,10 +142,8 @@ export function ContentItemActions({
   return (
     <ContentItemFooter withVote={withVote}>
       {withVote && (
-        <span
-          className={
-            isActive ? (upVoted ? 'vote disable' : 'vote') : 'vote active'
-          }
+        <ContentHandleButtonVote
+          disabled={upVoted}
           onClick={(e) => {
             e.stopPropagation();
             if (voteAction) {
@@ -153,20 +152,20 @@ export function ContentItemActions({
           }}
         >
           👏 &nbsp;{upVoteNum + (editorScore || 0)}
-        </span>
+        </ContentHandleButtonVote>
       )}
 
-      <span
+      <ContentHandleButton
+        disabled={loadingFavor}
         onClick={(e) => {
           e.stopPropagation();
           if (favorsAction) favorsAction();
         }}
-        className={loadingFavor ? 'disable' : ''}
       >
         {favored ? <Heart fill="#718096" /> : <Heart />}
-      </span>
+      </ContentHandleButton>
 
-      <span
+      <ContentHandleButton
         onClick={(e) => {
           e.stopPropagation();
           if (hiddenAction) {
@@ -175,16 +174,16 @@ export function ContentItemActions({
         }}
       >
         <EyeClose />
-      </span>
+      </ContentHandleButton>
 
-      <span
+      <ContentHandleButton
         onClick={(e) => {
           e.stopPropagation();
           if (shareAction) shareAction();
         }}
       >
         <Share />
-      </span>
+      </ContentHandleButton>
     </ContentItemFooter>
   );
 }
@@ -305,24 +304,6 @@ const ItemInner = styled.div<{ isActive: boolean; height: string }>`
     }
   }
 
-  & div.left {
-    min-width: 50px;
-    width: 50px;
-    height: 50px;
-    background: #1a1e23;
-    border: 1px solid #39424c;
-    border-radius: 12px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #ffffff;
-    > span {
-      font-size: 12px;
-      line-height: 14px;
-    }
-  }
-
   & div.right {
     width: calc(100% - 62px);
     overflow: hidden;
@@ -345,6 +326,19 @@ const ItemInner = styled.div<{ isActive: boolean; height: string }>`
         display: block;
       }
     }
+  }
+`;
+const ContentItemLeftVoteButton = styled(ButtonPrimaryLine)`
+  width: 50px;
+  height: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  > span {
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 14px;
   }
 `;
 const ContentItemTitle = styled.div`
@@ -386,34 +380,16 @@ const ContentItemTitle = styled.div`
 
 const ContentItemFooter = styled.div<{ withVote: boolean }>`
   display: flex;
-  font-weight: 400;
-  font-size: 14px;
-  line-height: 17px;
   margin-top: 10px;
-  color: #718096;
   gap: 10px;
   justify-content: ${(props) => (props.withVote ? 'start' : 'end')};
+`;
 
-  & span {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid #39424c;
-    border-radius: 12px;
-    width: 32px;
-    height: 32px;
-    box-sizing: border-box;
-    cursor: pointer;
+const ContentHandleButton = styled(ButtonPrimaryLine)`
+  padding: 6px;
+  height: 32px;
+`;
 
-    &.disable {
-      cursor: not-allowed;
-    }
-  }
-
-  & span.vote {
-    width: 190px;
-    &.active {
-      width: 100px;
-    }
-  }
+const ContentHandleButtonVote = styled(ContentHandleButton)`
+  width: 190px;
 `;
