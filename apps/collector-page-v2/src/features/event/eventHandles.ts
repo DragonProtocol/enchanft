@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 15:54:47
+ * @LastEditTime: 2023-01-12 11:29:31
  * @Description: file description
  */
 import {
@@ -21,9 +21,13 @@ import type { RootState } from '../../store/store';
 import {
   favorEvent as favorEventApi,
   completeEvent as completeEventApi,
+  cancelFavorEvent as cancelFavorEventApi,
 } from '../../services/api/event';
 import { addOne as addOneToCompletedEvents } from './eventCompletedList';
-import { addOneWithEvents } from '../favorite/userGroupFavorites';
+import {
+  addOneWithEvents,
+  removeOneWithEvents,
+} from '../favorite/userGroupFavorites';
 import { updateOne as updateOneWithEventExplore } from './eventExploreList';
 
 // 为event 点赞操作 创建一个执行队列
@@ -79,18 +83,26 @@ export const favorEvent = createAsyncThunk(
   'user/eventHandles/favorEvent',
   async (params: FavorEventParams, { dispatch }) => {
     dispatch(addOneToFavorEventQueue(params));
-    const resp = await favorEventApi({
-      id: params.id,
-      uuid: params?.uuid || '',
-      isForU: params?.isForU || false,
-    });
-    if (resp.data.code === 0) {
-      dispatch(updateOneWithEventExplore({ id: params.id, favored: true }));
-      dispatch(addOneWithEvents(params));
-      dispatch(removeOneForFavorEventQueue(params.id));
+    if (params.favored) {
+      const resp = await cancelFavorEventApi(params.id);
+      if (resp.data.code === 0) {
+        dispatch(updateOneWithEventExplore({ id: params.id, favored: false }));
+        dispatch(removeOneWithEvents(params.id));
+        dispatch(removeOneForFavorEventQueue(params.id));
+      } else {
+        dispatch(removeOneForFavorEventQueue(params.id));
+        throw new Error(resp.data.msg);
+      }
     } else {
-      dispatch(removeOneForFavorEventQueue(params.id));
-      throw new Error(resp.data.msg);
+      const resp = await favorEventApi(params.id);
+      if (resp.data.code === 0) {
+        dispatch(updateOneWithEventExplore({ id: params.id, favored: true }));
+        dispatch(addOneWithEvents(params));
+        dispatch(removeOneForFavorEventQueue(params.id));
+      } else {
+        dispatch(removeOneForFavorEventQueue(params.id));
+        throw new Error(resp.data.msg);
+      }
     }
   },
   {
