@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:59:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-05 17:55:19
+ * @LastEditTime: 2023-01-12 15:03:35
  * @Description: file description
  */
 import React, { useRef, useState } from 'react';
@@ -138,7 +138,7 @@ const AsyncSelectWrapper = styled.div`
     align-items: center;
     gap: 10px;
     &:hover {
-      border-color: #555;
+      border-color: #aaa;
     }
     .select__value-container {
       height: 100%;

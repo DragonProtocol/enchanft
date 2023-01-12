@@ -316,7 +316,7 @@ export default forwardRef(function EventForm(
               }
               checked={formik.values.supportIframe}
             />
-            <SwitchText>Support</SwitchText>
+            <SwitchText>Iframe supports the website display 👉</SwitchText>
           </SwitchRow>
         </FormField>
         <FormField>
@@ -396,7 +396,7 @@ const SwitchText = styled.span`
 const TimeRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 2px;
   color: #39424c;
 `;
 const FieldErrorText = styled.div`

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-21 18:15:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-27 14:29:19
+ * @LastEditTime: 2023-01-12 15:40:49
  * @Description: file description
  */
 import {
@@ -31,9 +31,9 @@ export function useAnimatedListTransition<T>(
   return useTransition(items, {
     keys: (item) => item[keyField || 'id'],
     from: {
-      transform: 'rotateX(90deg)',
+      transform: 'rotateX(45deg)',
       opacity: 0,
-      bottomTransform: 'rotateX(0deg)',
+      bottomTransform: 'rotateX(-45deg)',
       bottomOpacity: 0,
     },
     enter: {
@@ -43,14 +43,14 @@ export function useAnimatedListTransition<T>(
       bottomOpacity: 1,
     },
     leave: {
-      transform: 'rotateX(90deg)',
+      transform: 'rotateX(45deg)',
       opacity: 0,
-      bottomTransform: 'rotateX(0deg)',
+      bottomTransform: 'rotateX(-45deg)',
       bottomOpacity: 0,
     },
     trail: 200,
     config: {
-      duration: 500,
+      duration: 300,
       mass: 5,
       tension: 500,
       friction: 100,

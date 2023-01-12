@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-13 16:30:45
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-13 16:51:02
+ * @LastEditTime: 2023-01-12 15:30:06
  * @Description: file description
  */
 import ReactSwitch, { ReactSwitchProps } from 'react-switch';
@@ -28,7 +28,7 @@ const defaultProps = {
       <CheckedIcon src={CheckSvg} />
     </SwitchIconBox>
   ),
-  onColor: '#2173DF',
+  onColor: '#cd62ff',
   width: 44,
   height: 24,
   handleDiameter: 18,

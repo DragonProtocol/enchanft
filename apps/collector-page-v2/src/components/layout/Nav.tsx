@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 18:17:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 10:21:21
+ * @LastEditTime: 2023-01-12 15:56:34
  * @Description: file description
  */
 import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
@@ -21,10 +21,7 @@ export default function Nav({ onlyIcon }: Props) {
   const { isAdmin } = usePermissions();
   const navigate = useNavigate();
   const { firstRouteMeta } = useRoute();
-  const [openGroupKeys, setOpenGroupKeys] = useState<Array<string>>([
-    'feed',
-    'feed-submit',
-  ]);
+  const [openGroupKeys, setOpenGroupKeys] = useState<Array<string>>([]);
   const handleGroupClick = useCallback(
     (key: string) => {
       if (openGroupKeys.includes(key)) {
