@@ -75,7 +75,7 @@ export default function ListItem({
           👏
           <span>{upVoteNum + (editorScore || 0)}</span>
         </div>
-        <div className="right">
+        <div className={isActive ? 'right active' : 'right'}>
           <p>{title}</p>
           <ContentItemTitle>
             <div>
@@ -333,6 +333,17 @@ const ItemInner = styled.div<{ isActive: boolean; height: string }>`
       line-height: 19px;
       color: #ffffff;
       opacity: 0.8;
+
+      display: -webkit-box;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+    }
+    &.active {
+      > p {
+        display: block;
+      }
     }
   }
 `;
@@ -381,7 +392,7 @@ const ContentItemFooter = styled.div<{ withVote: boolean }>`
   margin-top: 10px;
   color: #718096;
   gap: 10px;
-  justify-content: ${(props) => (props.withVote ? 'start' : 'space-between')};
+  justify-content: ${(props) => (props.withVote ? 'start' : 'end')};
 
   & span {
     display: inline-flex;

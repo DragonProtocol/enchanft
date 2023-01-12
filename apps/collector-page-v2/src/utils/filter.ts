@@ -10,6 +10,9 @@ export const formatFilterShowName = (str: string) => {
   return str
     .split('_')
     .map((item) => {
+      if (item.toUpperCase() === 'DEFI') {
+        return 'DeFi';
+      }
       if (noFormatShowNameAry.includes(item)) {
         return item;
       }
