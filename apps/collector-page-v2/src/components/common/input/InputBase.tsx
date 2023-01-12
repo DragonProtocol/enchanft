@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-13 14:37:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-09 14:21:35
+ * @LastEditTime: 2023-01-12 15:10:09
  * @Description: file description
  */
 import React, { useCallback } from 'react';
@@ -25,7 +25,8 @@ const Input = styled.input`
   border-radius: 12px;
   gap: 10px;
   &:focus-within {
-    border-color: #555;
+    border-color: #aaa;
+    background-color: #14171a;
   }
 
   &::placeholder {

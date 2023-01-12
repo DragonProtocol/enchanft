@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-09 19:37:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 14:31:46
+ * @LastEditTime: 2023-01-12 14:59:56
  * @Description: file description
  */
 import React, { useCallback, useState } from 'react';
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
   border-radius: 20px;
   gap: 10px;
   &:focus-within {
-    border-color: #555;
+    border-color: #aaa;
   }
 `;
 

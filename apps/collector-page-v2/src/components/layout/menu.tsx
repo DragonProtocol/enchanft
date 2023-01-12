@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-05 18:55:40
+ * @LastEditTime: 2023-01-12 15:54:05
  * @Description: file description
  */
 import { useState } from 'react';
@@ -10,8 +10,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import LoginButton from './LoginButton';
 import Nav from './Nav';
-import LogoSvg from '../imgs/logo.svg';
-import LogoIconSvg from '../imgs/logo-icon.svg';
+import { ReactComponent as LogoIconSvg } from '../imgs/logo-icon.svg';
 import LogoutConfirmModal from './LogoutConfirmModal';
 import useLogin from '../../hooks/useLogin';
 
@@ -27,7 +26,10 @@ export default function Menu() {
       isOpen={isOpen}
     >
       <LogoBox onlyIcon={!isOpen} onClick={() => navigate('/')}>
-        <LogoIcon src={LogoIconSvg} />
+        <LogoIconBox onlyIcon={!isOpen}>
+          <LogoIconSvg />
+        </LogoIconBox>
+
         <LogoText>Alpha</LogoText>
       </LogoBox>
       <NavListBox>
@@ -85,9 +87,18 @@ const LogoBox = styled.div<{ onlyIcon?: boolean }>`
   transition: all 0.3s ease-out;
   cursor: pointer;
 `;
-const LogoIcon = styled.img`
+const LogoIconBox = styled.div<{ onlyIcon?: boolean }>`
   width: 36px;
   height: 36px;
+  path {
+    transition: all 0.3s ease-out;
+  }
+  ${({ onlyIcon }) =>
+    onlyIcon &&
+    `path {
+      fill: #fff;
+    }
+  `};
 `;
 const LogoText = styled.span`
   font-weight: 500;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 16:04:33
+ * @LastEditTime: 2023-01-12 15:21:25
  * @Description: file description
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -133,6 +133,10 @@ const SelectButton = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
+  &:hover {
+    border: 1px solid #aaa;
+    background-color: #14171a;
+  }
 `;
 const SelectButtonBeforeIcon = styled.img`
   width: 24px;
