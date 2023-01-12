@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-06 17:55:50
+ * @LastEditTime: 2023-01-12 14:34:52
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -72,7 +72,7 @@ const CardWrapper = styled.div`
   overflow: hidden;
   &:hover {
     & > * {
-      transform: scale(1.3);
+      transform: scale(1.05);
     }
   }
 `;

@@ -79,23 +79,22 @@ const CardWrapper = styled.div`
   cursor: pointer;
   height: 88px;
   padding: 20px;
-  border-bottom: 1px solid rgba(57, 66, 76, 0.5);
+  border-bottom: 1px solid #39424c;
   box-sizing: border-box;
   overflow: hidden;
+  &:last-child {
+    border: none;
+  }
   &:hover {
     & > * {
-      transform: scale(1.3);
+      transform: scale(1.05);
     }
   }
 `;
 const CardBox = styled.div`
-  transform-origin: left center;
   transition: all 0.3s;
   display: flex;
   gap: 10px;
-  &:last-child {
-    border: none;
-  }
   box-sizing: border-box;
   & > img {
     width: 48px;
