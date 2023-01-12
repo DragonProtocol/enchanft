@@ -14,9 +14,6 @@
   "landing-page": {
     "dir": "apps/landing-page"
   },
-  "baatarverse": {
-    "dir": "apps/mini-site/baatarverse"
-  },
   "wl": {
     "dir": "apps/wl"
   },
