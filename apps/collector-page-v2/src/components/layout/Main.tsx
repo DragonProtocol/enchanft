@@ -87,7 +87,7 @@ function Main() {
         onGuideEnd={eventCompleteGuideEndCallback}
       />
       <OnboardModal
-        show={Object.keys(preference).length === 0}
+        show={Object.keys(preference).length === 0 && isLogin}
         lists={preferenceList}
         finishAction={(data) => {
           postPreference(data);

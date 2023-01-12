@@ -31,6 +31,7 @@ export default function OnboardModal({
           margin: '0 auto',
           background: 'none',
           border: 'none',
+          padding: '0',
         },
       }}
     >
