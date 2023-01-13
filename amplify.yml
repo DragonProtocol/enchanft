@@ -53,10 +53,13 @@ applications:
       phases:
         preBuild:
           commands:
-            - npm i --legacy-peer-deps
+            - yarn
+            - cd ../../
+            - yarn
+            - cd apps/collector-page/
         build:
           commands:
-            - npm run build
+            - yarn build
       artifacts:
         baseDirectory: build
         files:
@@ -64,7 +67,7 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/collector-page-v2
+  - appRoot: apps/u3
     frontend:
       phases:
         preBuild:
@@ -72,7 +75,7 @@ applications:
             - npm i --legacy-peer-deps
             - cd ../../
             - npm i
-            - cd apps/collector-page-v2
+            - cd apps/u3
         build:
           commands:
             - npm run build
@@ -94,22 +97,6 @@ applications:
             - npm run build
       artifacts:
         baseDirectory: build
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - node_modules/**/*
-  - appRoot: apps/mini-site/baatarverse
-    frontend:
-      phases:
-        preBuild:
-          commands:
-            - npm i
-        build:
-          commands:
-            - npm run export
-      artifacts:
-        baseDirectory: out
         files:
           - '**/*'
       cache:

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 15:29:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-25 13:07:25
+ * @LastEditTime: 2022-12-16 18:32:46
  * @Description: file description
  */
 import '@rainbow-me/rainbowkit/styles.css';
@@ -11,6 +11,8 @@ import {
   getDefaultWallets,
   connectorsForWallets,
   useConnectModal,
+  darkTheme,
+  lightTheme,
 } from '@rainbow-me/rainbowkit';
 import {
   argentWallet,
@@ -87,7 +89,7 @@ const ActionProviderComponent: React.FC<Props> = function ({
   setBindAction,
 }: Props) {
   const currentActionType = useRef<CurrentActionType>(CurrentActionType.NONE);
-  const { user } = useWlUserReact();
+  const { user, theme } = useWlUserReact();
 
   const setOpenConnectModal = (fn: () => void) => {
     setLoginAction(() => {
@@ -190,9 +192,14 @@ const ActionProviderComponent: React.FC<Props> = function ({
     },
     [onLoginProcess, onLoginError, onBindProcess, onBindError]
   );
+  const rainbowkitTheme = theme === 'dark' ? darkTheme() : lightTheme();
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider appInfo={appInfo} chains={chains}>
+      <RainbowKitProvider
+        appInfo={appInfo}
+        chains={chains}
+        theme={rainbowkitTheme}
+      >
         <RainbowKitAuth
           setOpenConnectModal={setOpenConnectModal}
           onSignStart={onSignStart}

@@ -5,8 +5,7 @@
  * @LastEditTime: 2022-11-29 10:19:46
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { ChainIds } from '../../../utils/chain';
 import IconEthereumWhite from '../../common/icons/IconEthereumWhite';
 import IconSolana from '../../common/icons/IconSolana';
@@ -38,15 +37,11 @@ export const chainMap: { [key in ChainIds]: ChainTagType } = {
     bgc: '#171F1C',
   },
 };
-type ChainTagProps = HTMLAttributes<HTMLDivElement> & {
+type ChainTagProps = StyledComponentPropsWithRef<'div'> & {
   chainId: number;
   size?: number;
 };
-const ChainTag: React.FC<ChainTagProps> = ({
-  chainId,
-  size = 1,
-  ...otherProps
-}: ChainTagProps) => {
+function ChainTag({ chainId, size = 1, ...otherProps }: ChainTagProps) {
   const chain = chainMap[chainId];
   // // 要使用的字体大小
   // const nameSize = size * 12 + 'px'
@@ -80,7 +75,7 @@ const ChainTag: React.FC<ChainTagProps> = ({
     //   </ChainTagBodyBox>
     // </ChainTagWrapper>
   );
-};
+}
 export default ChainTag;
 const ChainTagWrapper = styled.div<{ bgc: string }>`
   height: 22px;

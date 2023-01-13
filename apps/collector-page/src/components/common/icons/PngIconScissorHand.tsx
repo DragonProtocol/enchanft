@@ -5,10 +5,12 @@
  * @LastEditTime: 2022-11-28 19:45:40
  * @Description: file description
  */
-import { HTMLAttributes } from 'react';
 import Icon from './pngs/scissor_hand.png';
 
-type Props = HTMLAttributes<HTMLImageElement> & {
+type Props = React.DetailedHTMLProps<
+  React.ImgHTMLAttributes<HTMLImageElement>,
+  HTMLImageElement
+> & {
   size?: string;
 };
 const PngIconScissorHand: React.FC<Props> = ({

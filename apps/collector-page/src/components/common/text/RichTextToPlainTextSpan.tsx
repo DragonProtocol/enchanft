@@ -5,15 +5,15 @@
  * @LastEditTime: 2022-11-29 11:34:32
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import DOMPurify from 'dompurify';
 import { marked } from 'marked';
 export enum RichTextToPlainTextMode {
   HTML,
   MARKDOWN,
 }
-type RichTextToPlainTextSpanProps = HTMLAttributes<HTMLSpanElement> & {
+type RichTextToPlainTextSpanProps = StyledComponentPropsWithRef<'span'> & {
   mode?: RichTextToPlainTextMode;
   value: string;
 };

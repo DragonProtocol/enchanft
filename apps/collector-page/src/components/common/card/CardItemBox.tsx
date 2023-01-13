@@ -5,8 +5,12 @@
  * @LastEditTime: 2022-11-29 11:31:05
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
+import React from 'react';
+import styled, {
+  css,
+  FlattenSimpleInterpolation,
+  StyledComponentPropsWithRef,
+} from 'styled-components';
 
 export enum CardItemBoxAnimationType {
   HOVER_MOVE_UP = 'HOVER_MOVE_UP',
@@ -22,7 +26,7 @@ const hoverMoveUpCss = css`
 export const CardItemBoxAnimationMap = {
   [CardItemBoxAnimationType.HOVER_MOVE_UP]: hoverMoveUpCss,
 };
-export type CardItemBoxProps = HTMLAttributes<HTMLDivElement> & {
+export type CardItemBoxProps = StyledComponentPropsWithRef<'div'> & {
   animationType?: CardItemBoxAnimationType;
 };
 const CardItemBox: React.FC<CardItemBoxProps> = ({

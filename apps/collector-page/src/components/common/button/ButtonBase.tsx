@@ -5,10 +5,10 @@
  * @LastEditTime: 2022-11-28 18:26:15
  * @Description: 基础按钮
  */
-import React, { ButtonHTMLAttributes } from 'react';
-import styled, { css } from 'styled-components';
+import React from 'react';
+import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
 
-export type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
+export type ButtonProps = StyledComponentPropsWithRef<'button'>;
 
 const ButtonBase: React.FC<ButtonProps> = ({
   children,

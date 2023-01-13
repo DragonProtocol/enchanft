@@ -5,10 +5,10 @@
  * @LastEditTime: 2022-08-16 13:11:56
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
-type CardBoxProps = HTMLAttributes<HTMLDivElement>;
+type CardBoxProps = StyledComponentPropsWithRef<'div'>;
 const CardBox: React.FC<CardBoxProps> = ({
   children,
   ...otherProps

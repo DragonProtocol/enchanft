@@ -5,10 +5,14 @@
  * @LastEditTime: 2022-11-29 11:06:14
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
+import React from 'react';
+import styled, {
+  css,
+  FlattenSimpleInterpolation,
+  StyledComponentPropsWithRef,
+} from 'styled-components';
 
-export type ActionNameSpanProps = HTMLAttributes<HTMLSpanElement> & {
+export type ActionNameSpanProps = StyledComponentPropsWithRef<'div'> & {
   allowHandle?: boolean;
   isDone?: boolean;
 };
