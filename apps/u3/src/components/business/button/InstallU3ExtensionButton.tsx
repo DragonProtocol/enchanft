@@ -1,5 +1,12 @@
-import { CHROME_EXTENSION_URL } from 'apps/collector-page-v2/src/constants';
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2023-01-12 18:42:59
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2023-01-13 17:55:39
+ * @Description: file description
+ */
 import styled from 'styled-components';
+import { CHROME_EXTENSION_URL } from '../../../constants';
 import { ButtonPrimary, ButtonProps } from '../../common/button/ButtonBase';
 import ChromeSvg from '../../common/icons/svgs/chrome.svg';
 

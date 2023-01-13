@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-21 18:15:07
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 15:40:49
+ * @LastEditTime: 2023-01-13 17:56:04
  * @Description: file description
  */
 import {
@@ -50,7 +50,7 @@ export function useAnimatedListTransition<T>(
     },
     trail: 200,
     config: {
-      duration: 300,
+      duration: 200,
       mass: 5,
       tension: 500,
       friction: 100,
@@ -62,7 +62,7 @@ type Props = StyledComponentPropsWithRef<'div'> & {
   styles: TransitionStyles;
   bottomFaceBgc?: string;
 };
-const bottomFaceBgcDefault = '#718096';
+const bottomFaceBgcDefault = 'none';
 export default function AnimatedListItem({
   children,
   styles,
