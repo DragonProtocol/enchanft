@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 16:06:47
+ * @LastEditTime: 2023-01-13 17:20:50
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -43,18 +43,16 @@ const EventExploreGridListWrapper = styled.div`
   width: 100%;
   display: grid;
   grid-gap: 20px;
-  @media (min-width: ${MEDIA_BREAK_POINTS.xl}px) {
-    grid-template-columns: repeat(6, minmax(180px, 1fr));
+  grid-template-columns: repeat(6, minmax(calc((100% - 20px * 5) / 6), 1fr));
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 5) / 6), 1fr));
   }
-  @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
-    grid-template-columns: repeat(5, minmax(180px, 1fr));
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 4) / 5), 1fr));
   }
-  @media (min-width: ${MEDIA_BREAK_POINTS.sm}px) and (max-width: ${MEDIA_BREAK_POINTS.md}px) {
-    grid-template-columns: repeat(4, minmax(180px, 1fr));
-  }
-  @media (max-width: ${MEDIA_BREAK_POINTS.sm}px) {
-    display: flex;
-    flex-direction: column;
-    grid-gap: 20px;
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 3) / 4), 1fr));
   }
 `;

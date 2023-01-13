@@ -1,3 +1,10 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2023-01-12 18:42:59
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2023-01-13 17:27:41
+ * @Description: file description
+ */
 import { ApiResp } from '.';
 
 export enum ContentLang {
@@ -28,10 +35,10 @@ export enum ContentType {
 
 export enum OrderBy {
   // EARLIEST = 'Earliest',
+  FORU = 'For U',
   TRENDING = 'Trending',
   NEWEST = 'Newest',
-  FORU = 'For U',
-  MEMPOOL = 'Mem Pool',
+  // MEMPOOL = 'Mem Pool',
 }
 
 export type ContentListItem = {
@@ -95,3 +102,4 @@ export type Project = {
   name: string;
 };
 export type ContentsResponse = ApiResp<Array<Project>>;
+export type ContentSaveResponse = ApiResp<ContentListItem>;

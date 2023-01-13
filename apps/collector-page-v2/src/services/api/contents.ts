@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
   ContentLang,
+  ContentSaveResponse,
   ContentsListResponse,
   ContentsResponse,
   ContentStatus,
@@ -38,7 +39,7 @@ export function saveContent(
     editorScore?: number;
   },
   token: string
-) {
+): RequestPromise<ContentSaveResponse> {
   return request({
     url: `/contents`,
     method: 'post',
@@ -209,7 +210,7 @@ export function fetchContents(
     params: {
       lang: query.lang === ContentLang.All ? null : query.lang,
       contentId: query.contentId === ':id' ? null : query.contentId,
-      pageSize: query.pageSize ?? 30,
+      pageSize: query.pageSize ?? 50,
       pageNumber: query.pageNumber ?? 0,
       keywords: query.keywords ?? '',
       types: query.types ?? [],

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 10:30:12
+ * @LastEditTime: 2023-01-13 17:21:54
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -40,6 +40,10 @@ import SearchInput from '../components/common/input/SearchInput';
 import { DropDown } from '../components/contents/DropDown';
 import { Favors } from '../components/icons/favors';
 import NoResult from '../components/common/NoResult';
+import AnimatedListItem, {
+  useAnimatedListTransition,
+} from '../components/animation/AnimatedListItem';
+import { MEDIA_BREAK_POINTS } from '../constants';
 
 function Contents() {
   const { user } = useWlUserReact();
@@ -290,6 +294,8 @@ function Contents() {
     fetchData('', [], 'For U', []);
   }, []);
 
+  const transitions = useAnimatedListTransition(newList);
+
   return (
     <Box>
       <FeedsMenu
@@ -392,7 +398,6 @@ function Contents() {
             <ContentsWrapper>
               <ListBox
                 onScrollBottom={() => {
-                  console.log('onScrollBottom LoadMore', loadingMore, hasMore);
                   if (newList.length === 0) return;
                   if (loadingMore) return;
                   if (!hasMore) return;
@@ -400,62 +405,62 @@ function Contents() {
                   setCurrPageNumber(currPageNumber + 1);
                 }}
               >
-                {newList.map((item, idx) => {
+                {transitions((styles, item, transition, idx) => {
                   let isActive = false;
                   if (item.id) {
                     isActive = item.id === selectContent?.id;
                   } else {
                     isActive = item.uuid === selectContent?.uuid;
                   }
-
-                  if (item.hidden) {
-                    return (
-                      <ListItemHidden
-                        key={item.id || item.uuid}
-                        isActive={isActive}
-                        hidden
-                        undoAction={() => undoHiddenAction(idx)}
-                      />
-                    );
-                  }
-
                   return (
-                    <ListItem
+                    <AnimatedListItem
                       key={item.id || item.uuid}
-                      isActive={isActive}
-                      favorPendingIds={favorPendingIds}
-                      clickAction={() => {
-                        setSelectContent(item);
-                        navigate(`/contents/${item.id || item.uuid}`);
-                      }}
-                      shareAction={() => {
-                        onShare(item);
-                      }}
-                      voteAction={() => {
-                        vote(item);
-                      }}
-                      favorsAction={() => {
-                        favors(item);
-                      }}
-                      hiddenAction={() => {
-                        hiddenAction(item);
-                      }}
-                      {...item}
-                    />
+                      styles={{ ...styles }}
+                    >
+                      {item.hidden ? (
+                        <ListItemHidden
+                          isActive={isActive}
+                          hidden
+                          undoAction={() => undoHiddenAction(idx)}
+                        />
+                      ) : (
+                        <ListItem
+                          isActive={isActive}
+                          favorPendingIds={favorPendingIds}
+                          clickAction={() => {
+                            setSelectContent(item);
+                            navigate(`/contents/${item.id || item.uuid}`);
+                          }}
+                          shareAction={() => {
+                            onShare(item);
+                          }}
+                          voteAction={() => {
+                            vote(item);
+                          }}
+                          favorsAction={() => {
+                            favors(item);
+                          }}
+                          hiddenAction={() => {
+                            hiddenAction(item);
+                          }}
+                          {...item}
+                        />
+                      )}
+                    </AnimatedListItem>
                   );
                 })}
                 {(!hasMore && (
-                  <LoadingMore className="load-more nomore">
+                  <MoreLoading className="load-more nomore">
                     No other contents
-                  </LoadingMore>
+                  </MoreLoading>
                 )) || (
-                  <LoadingMore
+                  <MoreLoading
                     className={
                       loadingMore ? 'load-more loadmoreing' : 'load-more'
                     }
                   >
                     loading
-                  </LoadingMore>
+                  </MoreLoading>
                 )}
               </ListBox>
               <ContentBoxContainer>
@@ -478,7 +483,7 @@ function Contents() {
         }
         if (layout === Layout.GRID) {
           return (
-            <ContentsGridWrapper
+            <GrideListBox
               onScrollBottom={() => {
                 if (newList.length === 0) return;
                 if (loadingMore) return;
@@ -487,53 +492,53 @@ function Contents() {
                 setCurrPageNumber(currPageNumber + 1);
               }}
             >
-              <div className="list">
-                {newList.map((item, idx) => {
+              <ContentsGridWrapper>
+                {transitions((styles, item, transition, idx) => {
                   let isActive = false;
                   if (item.id) {
                     isActive = item.id === selectContent?.id;
                   } else {
                     isActive = item.uuid === selectContent?.uuid;
                   }
-
-                  if (item.hidden) {
-                    return (
-                      <GridItemHidden
-                        key={item.id || item.uuid}
-                        isActive={isActive}
-                        hidden
-                        undoAction={() => undoHiddenAction(idx)}
-                      />
-                    );
-                  }
-
                   return (
-                    <GridItem
+                    <AnimatedListItem
                       key={item.id || item.uuid}
-                      clickAction={() => {
-                        setSelectContent(item);
-                        navigate(`/contents/${item.id || item.uuid}`);
-                        setGridModalShow(true);
-                      }}
-                      {...{ isActive, ...item }}
-                    />
+                      styles={{ ...styles }}
+                    >
+                      {item.hidden ? (
+                        <GridItemHidden
+                          isActive={isActive}
+                          hidden
+                          undoAction={() => undoHiddenAction(idx)}
+                        />
+                      ) : (
+                        <GridItem
+                          clickAction={() => {
+                            setSelectContent(item);
+                            navigate(`/contents/${item.id || item.uuid}`);
+                            setGridModalShow(true);
+                          }}
+                          {...{ isActive, ...item }}
+                        />
+                      )}
+                    </AnimatedListItem>
                   );
                 })}
-              </div>
+              </ContentsGridWrapper>
               {(!hasMore && (
-                <LoadingMore className="load-more nomore">
+                <MoreLoading className="load-more nomore">
                   No other contents
-                </LoadingMore>
+                </MoreLoading>
               )) || (
-                <LoadingMore
+                <MoreLoading
                   className={
                     loadingMore ? 'load-more loadmoreing' : 'load-more'
                   }
                 >
                   loading
-                </LoadingMore>
+                </MoreLoading>
               )}
-            </ContentsGridWrapper>
+            </GrideListBox>
           );
         }
         return null;
@@ -642,31 +647,33 @@ const ListBox = styled(ListScrollBox)`
     }
   }
 `;
-
-const ContentsGridWrapper = styled(ListScrollBox)`
+const GrideListBox = styled(ListScrollBox)`
+  width: 100%;
   height: 100%;
-  overflow: scroll;
-  & .list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+  box-sizing: border-box;
+  overflow-y: auto;
+`;
+
+const ContentsGridWrapper = styled.div`
+  width: 100%;
+  display: grid;
+  grid-gap: 20px;
+  grid-template-columns: repeat(6, minmax(calc((100% - 20px * 5) / 6), 1fr));
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 5) / 6), 1fr));
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 4) / 5), 1fr));
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 3) / 4), 1fr));
   }
 `;
 
-const LoadingMore = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 0;
-  color: #fff;
-  opacity: 0;
-  min-height: 25px;
-
-  &.nomore {
-    opacity: 1;
-  }
-
-  &.loadmoreing {
-    opacity: 1;
-  }
+const MoreLoading = styled.div`
+  padding: 20px;
+  text-align: center;
+  color: #748094;
 `;

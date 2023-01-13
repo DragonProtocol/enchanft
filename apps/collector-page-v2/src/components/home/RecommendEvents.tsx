@@ -37,7 +37,7 @@ export default function RecommendEvents({
               key={item.uid || item.id}
               title={item.name}
               img={img}
-              author={item?.recReason || item.project.name || ''}
+              author={item?.recReason || item?.project?.name || ''}
               reward={item.reward}
             />
           );

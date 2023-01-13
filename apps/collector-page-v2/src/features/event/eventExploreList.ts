@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 18:23:37
+ * @LastEditTime: 2023-01-13 10:58:23
  * @Description: file description
  */
 import {
@@ -33,7 +33,7 @@ type EventExploreListStore = EntityState<EventExploreListItem> & {
   moreErrorMsg: string;
   currentRequestId: string; // 当前正在请求的id(由createAsyncThunk生成的唯一id)
 };
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 30;
 const PAGE_NUMBER_FIRST = 0;
 export const eventExploreListEntity = createEntityAdapter<EventExploreListItem>(
   {

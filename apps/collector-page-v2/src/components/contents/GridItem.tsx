@@ -91,19 +91,6 @@ export default function GridItem({
 }
 
 const Box = styled.div<{ isActive?: boolean; width?: string }>`
-  width: calc((100% - 23px * 5) / 6);
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
-    width: calc((100% - 23px * 5) / 6);
-  }
-
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
-    width: calc((100% - 23px * 4) / 5);
-  }
-
-  @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xxl}px) {
-    width: calc((100% - 23px * 3) / 4);
-  }
-
   .tint {
     padding: 20px;
   }
