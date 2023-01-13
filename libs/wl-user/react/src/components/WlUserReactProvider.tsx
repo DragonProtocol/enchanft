@@ -41,6 +41,7 @@ import {
   WlUserReactContext,
   WlUserReactContextType,
 } from '../contexts/wlUserReact';
+import { ThemeType } from '../types';
 
 Modal.setAppElement('#root');
 let wlUserReactContextValue: Maybe<WlUserReactContextType>;
@@ -72,12 +73,14 @@ export interface WlUserReactProviderProps {
   children: ReactNode;
   authorizers: Authorizer[];
   valueChange?: (value: WlUserReactContextType) => void;
+  theme?: ThemeType;
 }
 
 export default function WlUserReactProvider({
   children,
   authorizers,
   valueChange,
+  theme = 'light',
 }: WlUserReactProviderProps) {
   const cachedAuthorizers: MutableRefObject<
     WlUserReactProviderProps['authorizers']
@@ -299,6 +302,7 @@ export default function WlUserReactProvider({
   // 监听value变化（将provider内部的能力提供给provider外部）
   useEffect(() => {
     const wlUserContextValue = {
+      theme,
       authorizers,
       authorizer,
       user,
@@ -314,6 +318,7 @@ export default function WlUserReactProvider({
       valueChange(wlUserContextValue);
     }
   }, [
+    theme,
     authorizers,
     authorizer,
     user,
@@ -342,6 +347,7 @@ export default function WlUserReactProvider({
     <WlUserReactContext.Provider
       value={useMemo(
         () => ({
+          theme,
           authorizers,
           authorizer,
           user,
@@ -353,6 +359,7 @@ export default function WlUserReactProvider({
           dispatchAction,
         }),
         [
+          theme,
           authorizers,
           authorizer,
           user,
@@ -419,11 +426,6 @@ export default function WlUserReactProvider({
         }}
       />
       {authorizersElement}
-      <ToastContainer
-        autoClose={2000}
-        position="top-right"
-        style={{ zIndex: 10000 }}
-      />
     </WlUserReactContext.Provider>
   );
 }

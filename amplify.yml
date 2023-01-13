@@ -53,10 +53,13 @@ applications:
       phases:
         preBuild:
           commands:
-            - npm i --legacy-peer-deps
+            - yarn
+            - cd ../../
+            - yarn
+            - cd apps/collector-page/
         build:
           commands:
-            - npm run build
+            - yarn build
       artifacts:
         baseDirectory: build
         files:

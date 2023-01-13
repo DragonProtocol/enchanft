@@ -1,5 +1,5 @@
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { Navigation, Autoplay } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -9,7 +9,7 @@ import IconCaretRight from '../icons/IconCaretRight';
 import ButtonNavigation from '../button/ButtonNavigation';
 import Loading from '../loading/Loading';
 
-export type RecommendSwiperProps = HTMLAttributes<HTMLDivElement> & {
+export type RecommendSwiperProps = StyledComponentPropsWithRef<'div'> & {
   loading?: boolean;
   loadingMsg?: string;
   emptyMsg?: string;

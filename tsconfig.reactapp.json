@@ -9,7 +9,8 @@
     "declaration": false,
     "declarationMap": false,
     "noEmit": true,
-    "allowJs": true
+    "allowJs": true,
+    "resolveJsonModule": true
   },
   "files": ["./typings/cssmodule.d.ts", "./typings/image.d.ts"],
   "include": [],

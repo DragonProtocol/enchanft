@@ -29,5 +29,5 @@
     "skipDefaultLibCheck": true,
     "paths": {}
   },
-  "exclude": ["node_modules", "tmp", "dist"]
+  "exclude": ["node_modules", "tmp"]
 }

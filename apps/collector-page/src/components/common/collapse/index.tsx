@@ -5,11 +5,11 @@
  * @LastEditTime: 2022-09-16 18:59:48
  * @Description: file description
  */
-import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import IconCaretLeft from '../icons/IconCaretLeft';
 
-type CollapseProps = HTMLAttributes<HTMLDivElement>;
+type CollapseProps = StyledComponentPropsWithRef<'div'>;
 const Collapse: React.FC<CollapseProps> = ({
   children,
   ...otherProps
@@ -18,7 +18,7 @@ const Collapse: React.FC<CollapseProps> = ({
 };
 export default Collapse;
 const CollapseWrapper = styled.div``;
-type CollapsePanelProps = HTMLAttributes<HTMLDivElement> & {
+type CollapsePanelProps = StyledComponentPropsWithRef<'div'> & {
   expanded?: boolean;
   header?: React.ReactNode;
   onChange?: (expanded: boolean) => void;
