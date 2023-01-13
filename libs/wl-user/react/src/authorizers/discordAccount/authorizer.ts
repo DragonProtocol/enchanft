@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 14:32:59
+ * @LastEditTime: 2022-11-25 12:08:36
  * @Description: file description
  */
 import {
@@ -175,14 +175,16 @@ export default ({
       };
       // 1. listen discord login oauth callback
       window.addEventListener('storage', handleDiscordCallback);
-      listenWindowClose(authWindow, () => {
-        if (isStartListenDiscordOauthStorage()) {
-          window.removeEventListener('storage', handleDiscordCallback);
-          clearListenDiscordOauthStorage();
-          onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
-          onLoginError(new DiscordError(ErrorName.OAUTH_WINDOW_CLOSE));
-        }
-      });
+      if (authWindow) {
+        listenWindowClose(authWindow, () => {
+          if (isStartListenDiscordOauthStorage()) {
+            window.removeEventListener('storage', handleDiscordCallback);
+            clearListenDiscordOauthStorage();
+            onLoginProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
+            onLoginError(new DiscordError(ErrorName.OAUTH_WINDOW_CLOSE));
+          }
+        });
+      }
     } catch (error) {
       onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
       onLoginError(error as Error);
@@ -232,14 +234,16 @@ export default ({
       };
       // 1. listen discord bind oauth callback
       window.addEventListener('storage', handleDiscordCallback);
-      listenWindowClose(authWindow, () => {
-        if (isStartListenDiscordOauthStorage()) {
-          window.removeEventListener('storage', handleDiscordCallback);
-          clearListenDiscordOauthStorage();
-          onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
-          onBindError(new DiscordError(ErrorName.OAUTH_WINDOW_CLOSE));
-        }
-      });
+      if (authWindow) {
+        listenWindowClose(authWindow, () => {
+          if (isStartListenDiscordOauthStorage()) {
+            window.removeEventListener('storage', handleDiscordCallback);
+            clearListenDiscordOauthStorage();
+            onBindProcess(AuthorizerActionProcessStatus.SIGNATURE_REJECTED);
+            onBindError(new DiscordError(ErrorName.OAUTH_WINDOW_CLOSE));
+          }
+        });
+      }
     } catch (error) {
       onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
       onBindError(error as Error);

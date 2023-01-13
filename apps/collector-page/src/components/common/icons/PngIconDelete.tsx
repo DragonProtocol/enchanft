@@ -1,4 +1,4 @@
-import Icon from './pngs/delete.png'
+import Icon from './pngs/delete.png';
 export default function PngIconDelete() {
-  return <img src={Icon} alt="" />
+  return <img src={Icon} alt="" />;
 }

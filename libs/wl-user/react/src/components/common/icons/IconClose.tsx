@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-28 12:35:59
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-16 14:43:43
+ * @LastEditTime: 2022-12-16 14:49:31
  * @Description: file description
  */
 import React from 'react';
@@ -12,8 +12,8 @@ interface Props {
   size?: string;
   opacity?: number;
 }
-const IconClose: React.FC<Props> = ({ size = '1.5rem', opacity = 1 }) => (
-  <CloseIcon width={size} height={size} opacity={opacity} />
-);
+function IconClose({ size = '1.5rem', opacity = 1 }: Props) {
+  return <CloseIcon width={size} height={size} opacity={opacity} />;
+}
 
 export default IconClose;

@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-18 11:19:04
+ * @LastEditTime: 2022-12-16 18:17:34
  * @Description: file description
  */
 import React from 'react';
 import { AccountType, BindResult, LoginResult } from '../api';
+import { ThemeType } from '../types';
 
 export enum AuthorizerType {
   TWITTER = 'TWITTER',
@@ -48,12 +49,12 @@ export type AuthorizerActionProcessComponentProps = {
 };
 
 export type AuthorizerActionProviderComponentProps = {
-  onLoginProcess?: (status: AuthorizerActionProcessStatus) => void;
-  onLoginSuccess?: (result: LoginResult) => void;
-  onLoginError?: (error: Error) => void;
-  onBindProcess?: (status: AuthorizerActionProcessStatus) => void;
-  onBindSuccess?: (result: BindResult) => void;
-  onBindError?: (error: Error) => void;
+  onLoginProcess: (status: AuthorizerActionProcessStatus) => void;
+  onLoginSuccess: (result: LoginResult) => void;
+  onLoginError: (error: Error) => void;
+  onBindProcess: (status: AuthorizerActionProcessStatus) => void;
+  onBindSuccess: (result: BindResult) => void;
+  onBindError: (error: Error) => void;
   setLoginAction: (fn: () => void) => void;
   setBindAction: (fn: () => void) => void;
 };

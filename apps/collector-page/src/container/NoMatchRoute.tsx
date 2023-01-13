@@ -5,9 +5,9 @@
  * @LastEditTime: 2022-09-13 19:13:42
  * @Description: 站点头部
  */
-import React from 'react'
+import React from 'react';
 
 const NoMatchRoute: React.FC = () => {
-  return <div>404</div>
-}
-export default NoMatchRoute
+  return <div>404</div>;
+};
+export default NoMatchRoute;

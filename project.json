@@ -1,0 +1,29 @@
+{
+  "collector-page": {
+    "dir": "apps/collector-page"
+  },
+  "creator-page": {
+    "dir": "apps/creator-page"
+  },
+  "demo": {
+    "dir": "apps/demo"
+  },
+  "landing-page": {
+    "dir": "apps/landing-page"
+  },
+  "baatarverse": {
+    "dir": "apps/mini-site/baatarverse"
+  },
+  "wl": {
+    "dir": "apps/wl"
+  },
+  "js-sdk-core": {
+    "dir": "libs/js-sdk/core"
+  },
+  "js-sdk-react": {
+    "dir": "libs/js-sdk/react"
+  },
+  "wl-user": {
+    "dir": "libs/wl-user/react"
+  }
+}

@@ -5,21 +5,23 @@
  * @LastEditTime: 2022-10-09 11:03:05
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
-import { MEDIA_BREAK_POINTS } from '../../../constants'
-import Loading from '../../common/loading/Loading'
-import ExploreProjectItem, { ExploreProjectItemDataViewType } from './ExploreProjectItem'
+import React from 'react';
+import styled from 'styled-components';
+import { MEDIA_BREAK_POINTS } from '../../../constants';
+import Loading from '../../common/loading/Loading';
+import ExploreProjectItem, {
+  ExploreProjectItemDataViewType,
+} from './ExploreProjectItem';
 
 export type ExploreProjectListViewConfigType = {
-  loading?: boolean
-  loadingMsg?: string
-  emptyMsg?: string
-}
-export type ExploreProjectListItemsType = ExploreProjectItemDataViewType[]
+  loading?: boolean;
+  loadingMsg?: string;
+  emptyMsg?: string;
+};
+export type ExploreProjectListItemsType = ExploreProjectItemDataViewType[];
 export type ExploreProjectListProps = ExploreProjectListViewConfigType & {
-  items: ExploreProjectListItemsType
-}
+  items: ExploreProjectListItemsType;
+};
 const ExploreProjectList: React.FC<ExploreProjectListProps> = ({
   items,
   loading,
@@ -32,18 +34,24 @@ const ExploreProjectList: React.FC<ExploreProjectListProps> = ({
         <Loading />
       </ListStatusBox>
     )}
-    {!loading && items.length === 0 && emptyMsg && <ListStatusBox>{emptyMsg}</ListStatusBox>}
+    {!loading && items.length === 0 && emptyMsg && (
+      <ListStatusBox>{emptyMsg}</ListStatusBox>
+    )}
 
     <ExploreProjectListWrapper>
       {!loading &&
         items.length > 0 &&
         items.map((item) => (
-          <ExploreProjectItem key={`${item.data.id}`} data={item.data} viewConfig={item.viewConfig} />
+          <ExploreProjectItem
+            key={`${item.data.id}`}
+            data={item.data}
+            viewConfig={item.viewConfig}
+          />
         ))}
     </ExploreProjectListWrapper>
   </>
-)
-export default ExploreProjectList
+);
+export default ExploreProjectList;
 const ExploreProjectListWrapper = styled.div`
   width: 100%;
   display: grid;
@@ -62,7 +70,7 @@ const ExploreProjectListWrapper = styled.div`
     flex-direction: column;
     grid-gap: 20px;
   }
-`
+`;
 const ListStatusBox = styled.div`
   width: 100%;
   height: 100%;
@@ -70,4 +78,4 @@ const ListStatusBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;

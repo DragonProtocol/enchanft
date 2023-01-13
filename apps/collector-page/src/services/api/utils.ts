@@ -5,19 +5,19 @@
  * @LastEditTime: 2022-11-15 11:07:18
  * @Description: file description
  */
-import { AxiosPromise } from 'axios'
-import request from '../../request/axios'
+import { AxiosPromise } from 'axios';
+import request from '../../request/axios';
 
 export function uploadImage(
   file: File,
-  onUploadProgress?: (progress: { total: number; loaded: number }) => void,
+  onUploadProgress?: (progress: { total: number; loaded: number }) => void
 ): AxiosPromise<{
-  url: string
+  url: string;
 }> {
-  const form = new FormData()
-  form.append('file', file)
-  const configs = {}
-  if (onUploadProgress) Object.assign(configs, { onUploadProgress })
+  const form = new FormData();
+  form.append('file', file);
+  const configs = {};
+  if (onUploadProgress) Object.assign(configs, { onUploadProgress });
   return request({
     url: '/medium/upload',
     method: 'post',
@@ -26,5 +26,5 @@ export function uploadImage(
       needToken: true,
     },
     ...configs,
-  })
+  });
 }

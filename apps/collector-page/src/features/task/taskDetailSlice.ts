@@ -2,29 +2,28 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-21 17:08:46
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-08-26 16:54:15
+ * @LastEditTime: 2022-11-28 19:05:22
  * @Description: file description
  */
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { fetchDetail, createTask as createTaskApi } from '../../services/api/task'
-import { RootState } from '../../store/store'
-import { AsyncRequestStatus } from '../../types'
-import { TaskDetailResponse, TodoTaskActionItem } from '../../types/api'
-import { State as CreateTaskState } from '../../components/business/task/create/state'
-import { getTaskEntityForUpdateActionAfter } from '../../utils/task'
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { fetchDetail } from '../../services/api/task';
+import type { RootState } from '../../store/store';
+import { AsyncRequestStatus } from '../../types';
+import { TaskDetailResponse, TodoTaskActionItem } from '../../types/api';
+import { getTaskEntityForUpdateActionAfter } from '../../utils/task';
 
-export type TaskDetailEntity = TaskDetailResponse
+export type TaskDetailEntity = TaskDetailResponse;
 type TaskState = {
-  data: TaskDetailEntity | null
-  status: AsyncRequestStatus
-  createStatus: AsyncRequestStatus
-  errorMsg: string
-  currentRequestId: string | undefined // 当前正在请求的id(由createAsyncThunk生成的唯一id)
-}
+  data: TaskDetailEntity | null;
+  status: AsyncRequestStatus;
+  createStatus: AsyncRequestStatus;
+  errorMsg: string;
+  currentRequestId: string | undefined; // 当前正在请求的id(由createAsyncThunk生成的唯一id)
+};
 type FetchDetailResp = {
-  data: TaskDetailEntity | null
-  errorMsg?: string
-}
+  data: TaskDetailEntity | null;
+  errorMsg?: string;
+};
 
 // 初始化数据
 const initTaskState: TaskState = {
@@ -33,92 +32,95 @@ const initTaskState: TaskState = {
   createStatus: AsyncRequestStatus.IDLE,
   errorMsg: '',
   currentRequestId: undefined,
-}
+};
 
 export const fetchTaskDetail = createAsyncThunk<
   FetchDetailResp,
   number,
   {
-    rejectValue: FetchDetailResp
+    rejectValue: FetchDetailResp;
   }
 >('task/fetchTaskDetail', async (id, { rejectWithValue }) => {
   try {
-    const resp = await fetchDetail(id)
-    return { data: resp.data.data || null }
+    const resp = await fetchDetail(id);
+    return { data: resp.data.data || null };
   } catch (error: any) {
     if (!error.response) {
-      throw error
+      throw error;
     }
-    return rejectWithValue({ data: null, errorMsg: error.response.data })
+    return rejectWithValue({ data: null, errorMsg: error.response.data });
   }
-})
-
-export const createTask = createAsyncThunk('task/create', async (data: CreateTaskState) => {
-  const resp = await createTaskApi(data)
-  return resp.data
-})
+});
 
 export const taskDetailSlice = createSlice({
   name: 'taskDetail',
   initialState: initTaskState,
   reducers: {
     updateTaskDetail: (state, action) => {
-      state.data = { ...state.data, ...action.payload }
+      state.data = { ...state.data, ...action.payload };
     },
-    updateTaskDetailAction: (state, action: PayloadAction<TodoTaskActionItem>) => {
+    updateTaskDetailAction: (
+      state,
+      action: PayloadAction<TodoTaskActionItem>
+    ) => {
       if (state.data) {
-        const task = state.data
-        const newTask = getTaskEntityForUpdateActionAfter(task, action.payload) as TaskDetailEntity
-        state.data = { ...newTask }
+        const task = state.data;
+        const newTask = getTaskEntityForUpdateActionAfter(
+          task,
+          action.payload
+        ) as TaskDetailEntity;
+        state.data = { ...newTask };
       }
     },
     resetTaskDetailState: (state) => {
-      Object.assign(state, initTaskState)
+      Object.assign(state, initTaskState);
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(fetchTaskDetail.pending, (state, action) => {
-        console.log('fetchTaskDetail.pending', action)
-        state.status = AsyncRequestStatus.PENDING
-        state.errorMsg = ''
-        state.currentRequestId = action.meta.requestId
+        console.log('fetchTaskDetail.pending', action);
+        state.status = AsyncRequestStatus.PENDING;
+        state.errorMsg = '';
+        state.currentRequestId = action.meta.requestId;
       })
       .addCase(fetchTaskDetail.fulfilled, (state, action) => {
-        console.log('fetchTaskDetail.fulfilled', action)
-        const { requestId } = action.meta
+        console.log('fetchTaskDetail.fulfilled', action);
+        const { requestId } = action.meta;
         // 前后两次不同的请求，使用最后一次请求返回的数据
-        if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
-        state.status = AsyncRequestStatus.FULFILLED
-        state.data = action.payload.data
+        if (
+          state.currentRequestId !== requestId ||
+          state.status !== AsyncRequestStatus.PENDING
+        )
+          return;
+        state.status = AsyncRequestStatus.FULFILLED;
+        state.data = action.payload.data;
       })
       .addCase(fetchTaskDetail.rejected, (state, action) => {
-        console.log('fetchTaskDetail.rejected', action)
-        const { requestId } = action.meta
+        console.log('fetchTaskDetail.rejected', action);
+        const { requestId } = action.meta;
         // 前后两次不同的请求，使用最后一次请求返回的数据
-        if (state.currentRequestId !== requestId || state.status !== AsyncRequestStatus.PENDING) return
-        state.status = AsyncRequestStatus.REJECTED
-        state.data = null
+        if (
+          state.currentRequestId !== requestId ||
+          state.status !== AsyncRequestStatus.PENDING
+        )
+          return;
+        state.status = AsyncRequestStatus.REJECTED;
+        state.data = null;
         if (action.payload) {
-          state.errorMsg = action.payload.errorMsg || ''
+          state.errorMsg = action.payload.errorMsg || '';
         } else {
-          state.errorMsg = action.error.message || ''
+          state.errorMsg = action.error.message || '';
         }
-      })
-      /////
-      .addCase(createTask.pending, (state) => {
-        state.createStatus = AsyncRequestStatus.PENDING
-      })
-      .addCase(createTask.fulfilled, (state) => {
-        state.createStatus = AsyncRequestStatus.FULFILLED
-      })
-      .addCase(createTask.rejected, (state) => {
-        state.createStatus = AsyncRequestStatus.REJECTED
-      })
+      });
   },
-})
+});
 
-const { actions, reducer } = taskDetailSlice
-export const selectTaskDetail = (state: RootState) => state.taskDetail
-export const { updateTaskDetail, updateTaskDetailAction, resetTaskDetailState } = actions
-export default reducer
+const { actions, reducer } = taskDetailSlice;
+export const selectTaskDetail = (state: RootState) => state.taskDetail;
+export const {
+  updateTaskDetail,
+  updateTaskDetailAction,
+  resetTaskDetailState,
+} = actions;
+export default reducer;

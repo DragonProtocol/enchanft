@@ -5,21 +5,21 @@
  * @LastEditTime: 2022-07-11 11:42:05
  * @Description: file description
  */
-import Tab from '@mui/material/Tab'
-import Tabs from '@mui/material/Tabs'
-import React from 'react'
-import styled from 'styled-components'
+import Tab from '@mui/material/Tab';
+import Tabs from '@mui/material/Tabs';
+import React from 'react';
+import styled from 'styled-components';
 
 export type CommunityProjectTabOption = {
-  label: string
-  value: any
-}
-export type CommunityProjectTabsOptions = CommunityProjectTabOption[]
+  label: string;
+  value: any;
+};
+export type CommunityProjectTabsOptions = CommunityProjectTabOption[];
 export type CommunityProjectTabsProps = {
-  options: CommunityProjectTabsOptions
-  value: any
-  onChange?: (value: any) => void
-}
+  options: CommunityProjectTabsOptions;
+  value: any;
+  onChange?: (value: any) => void;
+};
 const CommunityProjectTabs: React.FC<CommunityProjectTabsProps> = ({
   options,
   value,
@@ -27,18 +27,23 @@ const CommunityProjectTabs: React.FC<CommunityProjectTabsProps> = ({
 }: CommunityProjectTabsProps) => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     if (onChange) {
-      onChange(newValue)
+      onChange(newValue);
     }
-  }
+  };
   return (
     <CommunityProjectTabsWrapper>
-      <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto">
+      <Tabs
+        value={value}
+        onChange={handleChange}
+        variant="scrollable"
+        scrollButtons="auto"
+      >
         {options.map((option) => (
           <Tab key={option.value} label={option.label} value={option.value} />
         ))}
       </Tabs>
     </CommunityProjectTabsWrapper>
-  )
-}
-export default CommunityProjectTabs
-const CommunityProjectTabsWrapper = styled.div``
+  );
+};
+export default CommunityProjectTabs;
+const CommunityProjectTabsWrapper = styled.div``;

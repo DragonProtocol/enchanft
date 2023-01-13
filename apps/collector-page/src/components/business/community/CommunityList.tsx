@@ -5,21 +5,21 @@
  * @LastEditTime: 2022-09-15 14:29:41
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
-import { MEDIA_BREAK_POINTS } from '../../../constants'
-import Loading from '../../common/loading/Loading'
-import CommunityItem, { CommunityItemDataViewType } from './CommunityItem'
+import React from 'react';
+import styled from 'styled-components';
+import { MEDIA_BREAK_POINTS } from '../../../constants';
+import Loading from '../../common/loading/Loading';
+import CommunityItem, { CommunityItemDataViewType } from './CommunityItem';
 
 export type CommunityListViewConfigType = {
-  loading?: boolean
-  loadingMsg?: string
-  emptyMsg?: string
-}
-export type CommunityListItemsType = CommunityItemDataViewType[]
+  loading?: boolean;
+  loadingMsg?: string;
+  emptyMsg?: string;
+};
+export type CommunityListItemsType = CommunityItemDataViewType[];
 export type CommunityListProps = CommunityListViewConfigType & {
-  items: CommunityListItemsType
-}
+  items: CommunityListItemsType;
+};
 const CommunityList: React.FC<CommunityListProps> = ({
   items,
   loading,
@@ -32,15 +32,23 @@ const CommunityList: React.FC<CommunityListProps> = ({
         <Loading />
       </CommunityListLoading>
     )}
-    {!loading && items.length === 0 && emptyMsg && <CommunityListEmpty>{emptyMsg}</CommunityListEmpty>}
+    {!loading && items.length === 0 && emptyMsg && (
+      <CommunityListEmpty>{emptyMsg}</CommunityListEmpty>
+    )}
     <CommunityListWrapper>
       {!loading &&
         items.length > 0 &&
-        items.map((item) => <CommunityItem key={`${item.data.id}`} data={item.data} viewConfig={item.viewConfig} />)}
+        items.map((item) => (
+          <CommunityItem
+            key={`${item.data.id}`}
+            data={item.data}
+            viewConfig={item.viewConfig}
+          />
+        ))}
     </CommunityListWrapper>
   </>
-)
-export default CommunityList
+);
+export default CommunityList;
 const CommunityListWrapper = styled.div`
   width: 100%;
   min-height: 100px;
@@ -60,17 +68,17 @@ const CommunityListWrapper = styled.div`
     flex-direction: column;
     grid-gap: 20px;
   }
-`
+`;
 const CommunityListLoading = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 const CommunityListEmpty = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;

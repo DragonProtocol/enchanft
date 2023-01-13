@@ -6,27 +6,31 @@
  * @Description: 鼠标操作提示的包装盒子
  * @FilePath: \synft-app\src\components\common\TooltipWrapper.tsx
  */
-import { Tooltip } from '@mui/material'
+import { Tooltip } from '@mui/material';
 
 interface Props {
   /** 子元素 */
-  children: any
+  children: any;
   /** 提示标题 */
-  title: string
+  title: string;
   /**
    * @description: 如果启用，则会在鼠标悬浮时显示提示
    * @default true
    */
-  enable?: boolean
+  enable?: boolean;
 }
-const TooltipWrapper: React.FC<Props> = ({ children, title, enable = true }: Props) => {
+const TooltipWrapper: React.FC<Props> = ({
+  children,
+  title,
+  enable = true,
+}: Props) => {
   if (enable) {
     return (
       <Tooltip followCursor placement="top" title={title}>
         <span>{children}</span>
       </Tooltip>
-    )
+    );
   }
-  return children
-}
-export default TooltipWrapper
+  return children;
+};
+export default TooltipWrapper;

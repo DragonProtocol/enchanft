@@ -2,70 +2,90 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-08-15 15:37:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 16:00:22
+ * @LastEditTime: 2022-11-28 17:48:50
  * @Description: file description
  */
-import { TASK_NO_ENDTIME_TIMESTAMP } from '../constants'
-import { TaskDetailEntity } from '../features/task/taskDetailSlice'
-import { TodoTaskItemForEntity } from '../features/user/todoTasksSlice'
-import { TaskDetailResponse, TodoTaskActionItem, TodoTaskItem, UserActionStatus } from '../types/api'
-import { RewardData, RewardType, TaskTodoCompleteStatus } from '../types/entities'
+import { TASK_NO_ENDTIME_TIMESTAMP } from '../constants';
+import {
+  TaskDetailResponse,
+  TodoTaskActionItem,
+  TodoTaskItem,
+  UserActionStatus,
+} from '../types/api';
+import {
+  RewardData,
+  RewardType,
+  TaskTodoCompleteStatus,
+} from '../types/entities';
 
-export const getTaskRewardTypeLabel = (reward?: { type: RewardType; raffled: boolean }) => {
-  let rewardTypeLabel = 'Unknown Reward Type'
-  if (reward) {
-    switch (reward.type) {
-      case RewardType.CONTRIBUTION_TOKEN:
-        rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS'
-        break
-      case RewardType.WHITELIST:
-        rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS'
-        break
-      case RewardType.OTHERS:
-        rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS'
-        break
-    }
-  }
-  return rewardTypeLabel
-}
-export const getTaskRewardTypeValue = (reward?: {
-  type: RewardType
-  raffled: boolean
-  name: string
-  data: RewardData
+export const getTaskRewardTypeLabel = (reward?: {
+  type: RewardType;
+  raffled: boolean;
 }) => {
-  let rewardTypeValue = 'Unknown Reward'
+  let rewardTypeLabel = 'Unknown Reward Type';
   if (reward) {
     switch (reward.type) {
       case RewardType.CONTRIBUTION_TOKEN:
-        rewardTypeValue = `${reward.data?.token_num || ''} Contribution Scores`
-        break
+        rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS';
+        break;
       case RewardType.WHITELIST:
-        rewardTypeValue = reward?.name || 'Whitelist'
-        break
+        rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS';
+        break;
       case RewardType.OTHERS:
-        rewardTypeValue = reward?.name || 'Others'
-        break
+        rewardTypeLabel = reward.raffled ? 'Raffle' : 'FCFS';
+        break;
+      // no default
     }
   }
-  return rewardTypeValue
-}
+  return rewardTypeLabel;
+};
+export const getTaskRewardTypeValue = (reward?: {
+  type: RewardType;
+  raffled: boolean;
+  name: string;
+  data: RewardData;
+}) => {
+  let rewardTypeValue = 'Unknown Reward';
+  if (reward) {
+    switch (reward.type) {
+      case RewardType.CONTRIBUTION_TOKEN:
+        rewardTypeValue = `${reward.data?.token_num || ''} Contribution Scores`;
+        break;
+      case RewardType.WHITELIST:
+        rewardTypeValue = reward?.name || 'Whitelist';
+        break;
+      case RewardType.OTHERS:
+        rewardTypeValue = reward?.name || 'Others';
+        break;
+      // no default
+    }
+  }
+  return rewardTypeValue;
+};
 
-type TaskEntityType = TodoTaskItemForEntity | TaskDetailEntity
-export const getTaskEntityForUpdateActionAfter = (task: TaskEntityType, action: TodoTaskActionItem): TaskEntityType => {
-  const { id } = action
-  const actions = task.actions.map((item) => (item.id === id ? action : item))
-  const taskIsCompleted = actions.every((item) => item.status === UserActionStatus.DONE)
-  let status = task.status
+type TaskEntityType = TodoTaskItem | TaskDetailResponse;
+export const getTaskEntityForUpdateActionAfter = (
+  task: TaskEntityType,
+  action: TodoTaskActionItem
+): TaskEntityType => {
+  const { id } = action;
+  const actions = task.actions.map((item) => (item.id === id ? action : item));
+  const taskIsCompleted = actions.every(
+    (item) => item.status === UserActionStatus.DONE
+  );
+  let { status } = task;
   if (taskIsCompleted) {
-    status = TaskTodoCompleteStatus.COMPLETED
+    status = TaskTodoCompleteStatus.COMPLETED;
   } else {
-    const taskIsInProgress = actions.some((item) => item.status === UserActionStatus.DONE)
+    const taskIsInProgress = actions.some(
+      (item) => item.status === UserActionStatus.DONE
+    );
     if (taskIsInProgress) {
-      status = TaskTodoCompleteStatus.IN_PRGRESS
+      status = TaskTodoCompleteStatus.IN_PRGRESS;
     }
   }
-  return { ...task, status, actions }
-}
+  return { ...task, status, actions };
+};
 
-export const isNoEndTime = (timestamp: number) => timestamp === TASK_NO_ENDTIME_TIMESTAMP
+export const isNoEndTime = (timestamp: number) =>
+  timestamp === TASK_NO_ENDTIME_TIMESTAMP;

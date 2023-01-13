@@ -1,4 +1,4 @@
-import Icon from './pngs/done.png'
+import Icon from './pngs/done.png';
 export default function PngIconDone() {
-  return <img src={Icon} alt="" />
+  return <img src={Icon} alt="" />;
 }

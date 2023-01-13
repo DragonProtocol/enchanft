@@ -41,9 +41,10 @@ import {
   WlUserReactContext,
   WlUserReactContextType,
 } from '../contexts/wlUserReact';
+import { ThemeType } from '../types';
 
 Modal.setAppElement('#root');
-let wlUserReactContextValue: WlUserReactContextType | undefined;
+let wlUserReactContextValue: Maybe<WlUserReactContextType>;
 // 设定token认证失效的回调
 export const handleAuthFailed = () => {
   if (wlUserReactContextValue) {
@@ -72,12 +73,14 @@ export interface WlUserReactProviderProps {
   children: ReactNode;
   authorizers: Authorizer[];
   valueChange?: (value: WlUserReactContextType) => void;
+  theme?: ThemeType;
 }
 
 export default function WlUserReactProvider({
   children,
   authorizers,
   valueChange,
+  theme = 'light',
 }: WlUserReactProviderProps) {
   const cachedAuthorizers: MutableRefObject<
     WlUserReactProviderProps['authorizers']
@@ -111,14 +114,14 @@ export default function WlUserReactProvider({
   });
   const [bindModal, setBindModal] = useState<{
     isOpen: boolean;
-    authorizer: Authorizer | null;
+    authorizer: Maybe<Authorizer>;
   }>({
     isOpen: false,
     authorizer: null,
   });
   const [unbindConfirmModal, setUnbindConfirmModal] = useState<{
     isOpen: boolean;
-    authorizer: Authorizer | null;
+    authorizer: Maybe<Authorizer>;
     status: AsyncRequestStatus;
   }>({
     authorizer: null,
@@ -140,16 +143,16 @@ export default function WlUserReactProvider({
     [user]
   );
   const getBindAccount = useCallback(
-    (accountType: AccountType): Account | undefined =>
+    (accountType: AccountType): Maybe<Account> =>
       user.accounts.find((account) => account.accountType === accountType),
     [user]
   );
   const getAuthorizer = useCallback(
-    (authorizerType: AuthorizerType): Authorizer | undefined =>
+    (authorizerType: AuthorizerType): Maybe<Authorizer> =>
       authorizers.find((authorizer) => authorizer.type === authorizerType),
     [authorizers]
   );
-  const [authorizer, setAuthorizer] = useState<Authorizer | undefined>(
+  const [authorizer, setAuthorizer] = useState<Maybe<Authorizer>>(
     getAuthorizer(lastLoginInfo[StorageKey.LAST_LOGIN_AUTHORIZER_TYPE])
   );
   // 获取一次用户信息, 同步为最新的
@@ -235,26 +238,31 @@ export default function WlUserReactProvider({
 
   const dispatchAction = useCallback(
     (params: DispatchActionParams) => {
+      let authorizerTmp: Maybe<Authorizer>;
       switch (params.type) {
         case WlUserActionType.LOGIN:
-          getAuthorizer(params.payload).action.login();
+          getAuthorizer(params.payload)?.action.login();
           break;
         case WlUserActionType.BIND:
-          getAuthorizer(params.payload).action.bind(user.token);
+          getAuthorizer(params.payload)?.action.bind(user.token);
           break;
         case WlUserActionType.UNBIND:
-          unbindAccount(user.token, getAuthorizer(params.payload).accountType)
-            .then((result) => {
-              setUser({ ...user, accounts: result.data });
-              setUnbindConfirmModal({
-                isOpen: false,
-                authorizer: null,
-                status: AsyncRequestStatus.IDLE,
+          authorizerTmp = getAuthorizer(params.payload);
+          if (authorizerTmp) {
+            unbindAccount(user.token, authorizerTmp.accountType)
+              .then((result) => {
+                setUser({ ...user, accounts: result.data });
+                setUnbindConfirmModal({
+                  isOpen: false,
+                  authorizer: null,
+                  status: AsyncRequestStatus.IDLE,
+                });
+              })
+              .catch((error) => {
+                toast.error(error.message);
               });
-            })
-            .catch((error) => {
-              toast.error(error.message);
-            });
+          }
+
           break;
         case WlUserActionType.UPDATE_USER_PROFILE:
           setEditProfileModal({
@@ -262,8 +270,8 @@ export default function WlUserReactProvider({
             status: AsyncRequestStatus.PENDING,
           });
           updateUserInfo(user.token, {
-            userName: params.payload.name,
-            userAvatar: params.payload.avatar,
+            userName: params.payload.name || '',
+            userAvatar: params.payload.avatar || '',
           })
             .then((result) => {
               setUser({ ...user, ...params.payload });
@@ -294,6 +302,7 @@ export default function WlUserReactProvider({
   // 监听value变化（将provider内部的能力提供给provider外部）
   useEffect(() => {
     const wlUserContextValue = {
+      theme,
       authorizers,
       authorizer,
       user,
@@ -309,6 +318,7 @@ export default function WlUserReactProvider({
       valueChange(wlUserContextValue);
     }
   }, [
+    theme,
     authorizers,
     authorizer,
     user,
@@ -337,6 +347,7 @@ export default function WlUserReactProvider({
     <WlUserReactContext.Provider
       value={useMemo(
         () => ({
+          theme,
           authorizers,
           authorizer,
           user,
@@ -348,6 +359,7 @@ export default function WlUserReactProvider({
           dispatchAction,
         }),
         [
+          theme,
           authorizers,
           authorizer,
           user,
@@ -376,24 +388,27 @@ export default function WlUserReactProvider({
           })
         }
       />
-      <UnbindConfirmModal
-        isOpen={unbindConfirmModal.isOpen}
-        isLoading={unbindConfirmModal.status === AsyncRequestStatus.PENDING}
-        authorizer={unbindConfirmModal.authorizer}
-        onConfirm={(authorizerType) => {
-          dispatchAction({
-            type: WlUserActionType.UNBIND,
-            payload: authorizerType,
-          });
-        }}
-        onClose={() =>
-          setUnbindConfirmModal({
-            isOpen: false,
-            authorizer: null,
-            status: AsyncRequestStatus.IDLE,
-          })
-        }
-      />
+      {unbindConfirmModal.authorizer && (
+        <UnbindConfirmModal
+          isOpen={unbindConfirmModal.isOpen}
+          isLoading={unbindConfirmModal.status === AsyncRequestStatus.PENDING}
+          authorizer={unbindConfirmModal.authorizer}
+          onConfirm={(authorizerType) => {
+            dispatchAction({
+              type: WlUserActionType.UNBIND,
+              payload: authorizerType,
+            });
+          }}
+          onClose={() =>
+            setUnbindConfirmModal({
+              isOpen: false,
+              authorizer: null,
+              status: AsyncRequestStatus.IDLE,
+            })
+          }
+        />
+      )}
+
       <EditProfileModal
         isOpen={editProfileModal.isOpen}
         isLoading={editProfileModal.status === AsyncRequestStatus.PENDING}
@@ -411,11 +426,6 @@ export default function WlUserReactProvider({
         }}
       />
       {authorizersElement}
-      <ToastContainer
-        autoClose={2000}
-        position="top-right"
-        style={{ zIndex: 10000 }}
-      />
     </WlUserReactContext.Provider>
   );
 }

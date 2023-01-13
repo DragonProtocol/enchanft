@@ -5,21 +5,25 @@
  * @LastEditTime: 2022-10-09 13:13:03
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
-import { MEDIA_BREAK_POINTS } from '../../../constants'
-import Loading from '../../common/loading/Loading'
-import ExploreProjectIndexItem, { ExploreProjectIndexItemDataViewType } from './ExploreProjectIndexItem'
+import React from 'react';
+import styled from 'styled-components';
+import { MEDIA_BREAK_POINTS } from '../../../constants';
+import Loading from '../../common/loading/Loading';
+import ExploreProjectIndexItem, {
+  ExploreProjectIndexItemDataViewType,
+} from './ExploreProjectIndexItem';
 
 export type ExploreProjectIndexListViewConfigType = {
-  loading?: boolean
-  loadingMsg?: string
-  emptyMsg?: string
-}
-export type ExploreProjectIndexListItemsType = ExploreProjectIndexItemDataViewType[]
-export type ExploreProjectIndexListProps = ExploreProjectIndexListViewConfigType & {
-  items: ExploreProjectIndexListItemsType
-}
+  loading?: boolean;
+  loadingMsg?: string;
+  emptyMsg?: string;
+};
+export type ExploreProjectIndexListItemsType =
+  ExploreProjectIndexItemDataViewType[];
+export type ExploreProjectIndexListProps =
+  ExploreProjectIndexListViewConfigType & {
+    items: ExploreProjectIndexListItemsType;
+  };
 const ExploreProjectIndexList: React.FC<ExploreProjectIndexListProps> = ({
   items,
   loading,
@@ -32,18 +36,24 @@ const ExploreProjectIndexList: React.FC<ExploreProjectIndexListProps> = ({
         <Loading />
       </ListStatusBox>
     )}
-    {!loading && items.length === 0 && emptyMsg && <ListStatusBox>{emptyMsg}</ListStatusBox>}
+    {!loading && items.length === 0 && emptyMsg && (
+      <ListStatusBox>{emptyMsg}</ListStatusBox>
+    )}
 
     <ExploreProjectIndexListWrapper>
       {!loading &&
         items.length > 0 &&
         items.map((item) => (
-          <ExploreProjectIndexItem key={`${item.data.id}`} data={item.data} viewConfig={item.viewConfig} />
+          <ExploreProjectIndexItem
+            key={`${item.data.id}`}
+            data={item.data}
+            viewConfig={item.viewConfig}
+          />
         ))}
     </ExploreProjectIndexListWrapper>
   </>
-)
-export default ExploreProjectIndexList
+);
+export default ExploreProjectIndexList;
 const ExploreProjectIndexListWrapper = styled.div`
   width: 100%;
   display: grid;
@@ -62,7 +72,7 @@ const ExploreProjectIndexListWrapper = styled.div`
     flex-direction: column;
     grid-gap: 18px;
   }
-`
+`;
 const ListStatusBox = styled.div`
   width: 100%;
   height: 100%;
@@ -70,4 +80,4 @@ const ListStatusBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;

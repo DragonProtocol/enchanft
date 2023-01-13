@@ -2,27 +2,31 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-13 16:25:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-15 12:31:02
+ * @LastEditTime: 2022-11-29 11:21:15
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
-import { ScrollBarCss } from '../../../GlobalStyle'
-import { TaskTodoCompleteStatus } from '../../../types/entities'
-import Loading from '../../common/loading/Loading'
+import React from 'react';
+import styled from 'styled-components';
+import { ScrollBarCss } from '../../../GlobalStyle';
+import { TaskTodoCompleteStatus } from '../../../types/entities';
+import Loading from '../../common/loading/Loading';
 
-import TodoTaskItem, { TodoTaskItemDataViewType, TodoTaskItemHandlesType } from './TodoTaskItem'
+import TodoTaskItem, {
+  TodoTaskItemDataViewType,
+  TodoTaskItemHandlesType,
+} from './TodoTaskItem';
+
 export type TodoTaskListViewConfigType = {
-  loading?: boolean
-  loadingMsg?: string
-  emptyMsg?: string
-}
-export type TodoTaskListItemsType = TodoTaskItemDataViewType[]
+  loading?: boolean;
+  loadingMsg?: string;
+  emptyMsg?: string;
+};
+export type TodoTaskListItemsType = TodoTaskItemDataViewType[];
 export type TodoTaskListProps = TodoTaskListViewConfigType &
   TodoTaskItemHandlesType & {
-    status: TaskTodoCompleteStatus
-    items: TodoTaskListItemsType
-  }
+    status: TaskTodoCompleteStatus;
+    items: TodoTaskListItemsType;
+  };
 
 export const todoTaskCompleteStatusMap = {
   [TaskTodoCompleteStatus.TODO]: {
@@ -55,7 +59,7 @@ export const todoTaskCompleteStatusMap = {
     titleBgc: '#ADADAD',
     bodyBgc: 'rgba(173, 173, 173, 0.5)',
   },
-}
+};
 const TodoTaskList: React.FC<TodoTaskListProps> = ({
   status,
   items,
@@ -65,10 +69,12 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
   onMint,
   ...taskActionItemStaticProps
 }: TodoTaskListProps) => {
-  const itemLen = items.length
-  const title = todoTaskCompleteStatusMap[status].title || 'task list'
-  const titleBgc = todoTaskCompleteStatusMap[status].titleBgc || 'rgba(16, 16, 16, 100)'
-  const bodyBgc = todoTaskCompleteStatusMap[status].bodyBgc || 'rgba(173, 173, 173, 0.1)'
+  const itemLen = items.length;
+  const title = todoTaskCompleteStatusMap[status].title || 'task list';
+  const titleBgc =
+    todoTaskCompleteStatusMap[status].titleBgc || 'rgba(16, 16, 16, 100)';
+  const bodyBgc =
+    todoTaskCompleteStatusMap[status].bodyBgc || 'rgba(173, 173, 173, 0.1)';
   return (
     <TodoTaskListWrapper>
       <TodoTaskListHeader bgc={titleBgc}>
@@ -91,12 +97,14 @@ const TodoTaskList: React.FC<TodoTaskListProps> = ({
           ))
         )}
 
-        {!loading && itemLen === 0 && emptyMsg && <TodoTaskListEmpty>{emptyMsg}</TodoTaskListEmpty>}
+        {!loading && itemLen === 0 && emptyMsg && (
+          <TodoTaskListEmpty>{emptyMsg}</TodoTaskListEmpty>
+        )}
       </TodoTaskListBody>
     </TodoTaskListWrapper>
-  )
-}
-export default TodoTaskList
+  );
+};
+export default TodoTaskList;
 const TodoTaskListWrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
@@ -104,7 +112,7 @@ const TodoTaskListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-`
+`;
 
 const TodoTaskListHeader = styled.div<{ bgc?: string }>`
   width: 100%;
@@ -116,7 +124,7 @@ const TodoTaskListHeader = styled.div<{ bgc?: string }>`
   color: #ffffff;
   text-align: center;
   text-transform: capitalize;
-`
+`;
 const TodoTaskListBody = styled.div<{ bgc?: string }>`
   flex: 1;
   width: 100%;
@@ -128,18 +136,18 @@ const TodoTaskListBody = styled.div<{ bgc?: string }>`
   gap: 10px;
   overflow-y: auto;
   ${ScrollBarCss}
-`
+`;
 const TodoTaskListLoading = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 const TodoTaskListEmpty = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: rgba(51, 51, 51, 0.6);
-`
+`;

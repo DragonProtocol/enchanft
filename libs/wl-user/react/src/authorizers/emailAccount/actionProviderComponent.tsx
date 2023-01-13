@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { ChangeEvent, useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import validator from 'validator';
 import { toast } from 'react-toastify';
@@ -16,6 +16,7 @@ import {
   ButtonPrimary,
 } from '../../components/common/button/ButtonBase';
 import InputBase from '../../components/common/input/InputBase';
+import { createClassNamesByTheme } from '../../utils/style';
 
 enum ActionType {
   NONE = 'NONE',
@@ -46,7 +47,7 @@ const ActionProviderComponent: React.FC<AuthorizerActionProviderComponentProps> 
     setLoginAction,
     setBindAction,
   }: AuthorizerActionProviderComponentProps) {
-    const { user, getAuthorizer } = useWlUserReact();
+    const { user, getAuthorizer, theme } = useWlUserReact();
     const authorizer = getAuthorizer(authorizerType);
     if (!authorizer) throw Error(`${authorizerType} authorizer not found`);
     const [processState, setProcessState] = useState(defaultProcessState);
@@ -126,7 +127,7 @@ const ActionProviderComponent: React.FC<AuthorizerActionProviderComponentProps> 
               code,
             })
               .then(({ data }) => {
-                onBindSuccess(data);
+                if (onBindSuccess) onBindSuccess(data);
                 closeModal();
               })
               .catch((error) => {
@@ -190,10 +191,23 @@ const ActionProviderComponent: React.FC<AuthorizerActionProviderComponentProps> 
       // no default
     }
     return (
-      <AuthProcessModalWrapper backdropFilter isOpen={isOpen}>
-        <AuthProcessModalBody className="wl-user-modal-signature_body">
-          <ModalBaseTitle>Email Verify</ModalBaseTitle>
-          {desc && <AuthProcessModalDesc>{desc}</AuthProcessModalDesc>}
+      <AuthProcessModalWrapper
+        backdropFilter
+        isOpen={isOpen}
+        className={createClassNamesByTheme(
+          'wl-user-modal_email-signature',
+          theme
+        )}
+      >
+        <AuthProcessModalBody className="wl-user-modal_email-signature-body">
+          <ModalBaseTitle className="wl-user-modal_email-signature-title">
+            Email Verify
+          </ModalBaseTitle>
+          {desc && (
+            <AuthProcessModalDesc className="wl-user-modal_email-signature-desc">
+              {desc}
+            </AuthProcessModalDesc>
+          )}
 
           {displaySendCodeForm && (
             <EmailCodeForm
@@ -213,9 +227,15 @@ const ActionProviderComponent: React.FC<AuthorizerActionProviderComponentProps> 
             />
           )}
           {displayRetry && (
-            <AuthProcessModalBtns>
-              <CancelBtn onClick={() => closeModal()}>Cancel</CancelBtn>
+            <AuthProcessModalBtns className="wl-user-modal_email-signature-retry-btns">
+              <CancelBtn
+                onClick={() => closeModal()}
+                className="wl-user-modal_email-signature-retry-cancel"
+              >
+                Cancel
+              </CancelBtn>
               <ConfirmBtn
+                className="wl-user-modal_email-signature-retry-confirm"
                 onClick={() => {
                   if (processState.actionType === ActionType.LOGIN) {
                     authorizer.action.login();
@@ -244,7 +264,7 @@ type EmailCodeFormProps = {
   onCancel: () => void;
   type?: 'email' | 'code';
 };
-const EmailCodeForm: React.FC<EmailCodeFormProps> = ({
+function EmailCodeForm({
   value: defalutValue,
   loading = false,
   disabled = false,
@@ -253,31 +273,39 @@ const EmailCodeForm: React.FC<EmailCodeFormProps> = ({
   onConfirm,
   onCancel,
   type,
-}: EmailCodeFormProps) => {
+}: EmailCodeFormProps) {
   const [value, setValue] = useState(defalutValue || '');
   return (
-    <EmailCodeFormWrapper>
+    <EmailCodeFormWrapper className="wl-user-modal_email-signature-form">
       <EmailCodeFormInput
+        className="wl-user-modal_email-signature-code"
         type={type === 'email' ? 'email' : 'text'}
         placeholder={type === 'email' ? 'name@example.com' : 'input'}
         disabled={disabled || loading}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          setValue(e.target.value)
+        }
       />
-      <AuthProcessModalBtns>
-        <CancelBtn disabled={disabled || loading} onClick={() => onCancel()}>
+      <AuthProcessModalBtns className="wl-user-modal_email-signature-form-btns">
+        <CancelBtn
+          disabled={disabled || loading}
+          onClick={() => onCancel()}
+          className="wl-user-modal_email-signature-cancel"
+        >
           {cancelText}
         </CancelBtn>
         <ConfirmBtn
           disabled={disabled || loading}
           onClick={() => onConfirm(value)}
+          className="wl-user-modal_email-signature-confirm"
         >
           {loading ? 'Loading ...' : confirmText}{' '}
         </ConfirmBtn>
       </AuthProcessModalBtns>
     </EmailCodeFormWrapper>
   );
-};
+}
 const AuthProcessModalWrapper = styled(ModalBase)``;
 const AuthProcessModalBody = styled.div`
   width: 540px;

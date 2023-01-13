@@ -5,26 +5,30 @@
  * @LastEditTime: 2022-11-02 10:05:35
  * @Description: file description
  */
-import { AxiosPromise } from 'axios'
-import request from '../../request/axios'
-import { ApiResp } from '../../types'
-import { ProjectDetailResponse } from '../../types/api'
+import { AxiosPromise } from 'axios';
+import request from '../../request/axios';
+import { ApiResp } from '../../types';
+import { ProjectDetailResponse } from '../../types/api';
 
-export function fetchDetailByProjectSlug(slug: string): AxiosPromise<ApiResp<ProjectDetailResponse>> {
+export function fetchDetailByProjectSlug(
+  slug: string
+): AxiosPromise<ApiResp<ProjectDetailResponse>> {
   return request({
     url: `/projects/${slug}`,
     method: 'get',
     headers: {
       needToken: true,
     },
-  })
+  });
 }
-export function applyForVerificationByProjectId(id: number): AxiosPromise<ApiResp<null>> {
+export function applyForVerificationByProjectId(
+  id: number
+): AxiosPromise<ApiResp<null>> {
   return request({
     url: `/projects/${id}/claim`,
     method: 'post',
     headers: {
       needToken: true,
     },
-  })
+  });
 }

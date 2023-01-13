@@ -1,50 +1,72 @@
-import React from 'react'
-import styled from 'styled-components'
-import { ScrollBarCss } from '../../../GlobalStyle'
-import { RewardData, RewardType, TaskAcceptedStatus, TaskTodoCompleteStatus, TaskType } from '../../../types/entities'
-import RichTextBox from '../../common/text/RichTextBox'
-import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import PngIconGiftBox from '../../common/icons/PngIconGiftBox'
-import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock'
-import PngIconScissorHand from '../../common/icons/PngIconScissorHand'
-import { getTaskRewardTypeLabel, getTaskRewardTypeValue, isNoEndTime } from '../../../utils/task'
-import { MOBILE_BREAK_POINT } from '../../../constants'
-import { formatDateTime } from '../../../utils/time'
+import React from 'react';
+import styled from 'styled-components';
+import { ScrollBarCss } from '../../../GlobalStyle';
+import {
+  RewardData,
+  RewardType,
+  TaskAcceptedStatus,
+  TaskTodoCompleteStatus,
+  TaskType,
+} from '../../../types/entities';
+import RichTextBox from '../../common/text/RichTextBox';
+import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox';
+import PngIconGiftBox from '../../common/icons/PngIconGiftBox';
+import PngIconAlarmClock from '../../common/icons/PngIconAlarmClock';
+import PngIconScissorHand from '../../common/icons/PngIconScissorHand';
+import {
+  getTaskRewardTypeLabel,
+  getTaskRewardTypeValue,
+  isNoEndTime,
+} from '../../../utils/task';
+import { MOBILE_BREAK_POINT } from '../../../constants';
+import { formatDateTime } from '../../../utils/time';
 
 export type TaskDetailContentDataType = {
-  id: number
-  name: string
-  image: string
-  description: string
-  type: TaskType
-  startTime: number
-  endTime: number
-  winnerNum?: number
+  id: number;
+  name: string;
+  image: string;
+  description: string;
+  type: TaskType;
+  startTime: number;
+  endTime: number;
+  winnerNum?: number;
   reward?: {
-    name: string
-    type: RewardType
-    raffled: boolean
-    data: RewardData
-  }
-}
+    name: string;
+    type: RewardType;
+    raffled: boolean;
+    data: RewardData;
+  };
+};
 
 export type TaskDetailContentDataViewType = {
-  data: TaskDetailContentDataType
-}
+  data: TaskDetailContentDataType;
+};
 
-export type TaskDetailContentProps = TaskDetailContentDataViewType
+export type TaskDetailContentProps = TaskDetailContentDataViewType;
 
-const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetailContentProps) => {
-  const { id, name, type, startTime, endTime, winnerNum, image, description, reward } = data
-  const rewardTypeLabel = getTaskRewardTypeLabel(reward)
-  const startDate = formatDateTime(startTime)
-  const rewardValue = getTaskRewardTypeValue(reward)
+const TaskDetailContent: React.FC<TaskDetailContentProps> = ({
+  data,
+}: TaskDetailContentProps) => {
+  const {
+    id,
+    name,
+    type,
+    startTime,
+    endTime,
+    winnerNum,
+    image,
+    description,
+    reward,
+  } = data;
+  const rewardTypeLabel = getTaskRewardTypeLabel(reward);
+  const startDate = formatDateTime(startTime);
+  const rewardValue = getTaskRewardTypeValue(reward);
   return (
     <TaskDetailContentWrapper>
       <TaskTypeLabel>{rewardTypeLabel}</TaskTypeLabel>
       <TaskDateAndWinnerBox>
         <TaskDateAndWinnerItem>
-          <PngIconAlarmClock size={'16px'} />
+          <PngIconAlarmClock size="16px" />
           <TaskDateTime>
             {startDate}
             {!isNoEndTime(endTime) && ` — ${formatDateTime(endTime)}`}
@@ -52,23 +74,23 @@ const TaskDetailContent: React.FC<TaskDetailContentProps> = ({ data }: TaskDetai
         </TaskDateAndWinnerItem>
         {winnerNum !== undefined && (
           <TaskDateAndWinnerItem>
-            <PngIconScissorHand size={'16px'} />
+            <PngIconScissorHand size="16px" />
             <TaskWinners>Winners : {winnerNum}</TaskWinners>
           </TaskDateAndWinnerItem>
         )}
       </TaskDateAndWinnerBox>
       {reward && (
         <TaskRemarkBox>
-          <PngIconGiftBox size={'16px'} />
+          <PngIconGiftBox size="16px" />
           <TaskRemark>Reward : {rewardValue}</TaskRemark>
         </TaskRemarkBox>
       )}
 
       <TaskDescription value={description} />
     </TaskDetailContentWrapper>
-  )
-}
-export default TaskDetailContent
+  );
+};
+export default TaskDetailContent;
 const TaskDetailContentWrapper = styled.div`
   width: 100%;
   display: flex;
@@ -77,7 +99,7 @@ const TaskDetailContentWrapper = styled.div`
   @media (max-width: ${MOBILE_BREAK_POINT}px) {
     gap: 8px;
   }
-`
+`;
 const TaskTypeLabel = styled.div`
   font-weight: 700;
   font-size: 18px;
@@ -87,7 +109,7 @@ const TaskTypeLabel = styled.div`
     font-size: 14px;
     line-height: 21px;
   }
-`
+`;
 const TaskDateAndWinnerBox = styled.div`
   display: flex;
   gap: 20px;
@@ -102,7 +124,7 @@ const TaskDateAndWinnerBox = styled.div`
     font-size: 12px;
     line-height: 18px;
   }
-`
+`;
 const TaskDateAndWinnerItem = styled.div`
   display: flex;
   flex-direction: row;
@@ -112,14 +134,14 @@ const TaskDateAndWinnerItem = styled.div`
 
   background: #d3ed85;
   border-radius: 20px;
-`
-const TaskDateTime = styled.span``
-const TaskWinners = styled.span``
+`;
+const TaskDateTime = styled.span``;
+const TaskWinners = styled.span``;
 const TaskRemarkBox = styled.div`
   display: flex;
   gap: 4px;
   align-items: center;
-`
+`;
 const TaskRemark = styled.span`
   flex: 1;
   font-weight: 700;
@@ -130,7 +152,7 @@ const TaskRemark = styled.span`
     font-size: 12px;
     line-height: 18px;
   }
-`
+`;
 const TaskDescription = styled(RichTextBox)`
   flex: 1;
   overflow-y: auto;
@@ -143,4 +165,4 @@ const TaskDescription = styled(RichTextBox)`
     font-size: 12px;
     line-height: 18px;
   }
-`
+`;

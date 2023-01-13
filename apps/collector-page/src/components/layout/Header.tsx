@@ -2,21 +2,25 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-24 00:06:48
+ * @LastEditTime: 2022-11-29 11:34:57
  * @Description: 站点头部
  */
-import React, { useCallback } from 'react'
-import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-import { isDesktop } from 'react-device-detect'
-import LogoImg from '../imgs/logo.svg'
-import useRoute from '../../hooks/useRoute'
-import { navs } from '../../route/routes'
-import { LoginButton, useWlUserReact, WlUserModalType } from '@ecnft/wl-user-react'
+import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
+import { isDesktop } from 'react-device-detect';
+import {
+  LoginButton,
+  useWlUserReact,
+  WlUserModalType,
+} from '@ecnft/wl-user-react';
+import LogoImg from '../imgs/logo.svg';
+import useRoute from '../../hooks/useRoute';
+import { navs } from '../../route/routes';
 const Header: React.FC = () => {
-  const { isLogin, dispatchModal } = useWlUserReact()
-  const navigate = useNavigate()
-  const { routeKey } = useRoute()
+  const { isLogin, dispatchModal } = useWlUserReact();
+  const navigate = useNavigate();
+  const { routeKey } = useRoute();
 
   const PcNav = useCallback(
     () => (
@@ -32,8 +36,8 @@ const Header: React.FC = () => {
         ))}
       </PcNavList>
     ),
-    [navs, routeKey],
-  )
+    [navs, routeKey]
+  );
   return (
     <HeaderWrapper>
       <HeaderLeft>
@@ -44,14 +48,18 @@ const Header: React.FC = () => {
         <ConnectBtnBox>
           {/* <ConnectBtn /> */}
           <LoginButton
-            onClick={() => (isLogin ? navigate('/profile') : dispatchModal({ type: WlUserModalType.LOGIN }))}
+            onClick={() =>
+              isLogin
+                ? navigate('/profile')
+                : dispatchModal({ type: WlUserModalType.LOGIN })
+            }
           />
         </ConnectBtnBox>
       </HeaderRight>
     </HeaderWrapper>
-  )
-}
-export default Header
+  );
+};
+export default Header;
 
 // header style
 const HeaderWrapper = styled.div`
@@ -60,14 +68,14 @@ const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 const HeaderLeft = styled.div`
   display: flex;
-`
+`;
 const HeaderLogo = styled.img`
   height: 48px;
   cursor: pointer;
-`
+`;
 const HeaderRight = styled.div`
   flex: 1;
   height: 100%;
@@ -75,15 +83,15 @@ const HeaderRight = styled.div`
   justify-content: end;
   align-items: center;
   gap: 80px;
-`
-const ConnectBtnBox = styled.div``
+`;
+const ConnectBtnBox = styled.div``;
 // nav style
 const PcNavList = styled.div`
   height: 100%;
   display: flex;
   justify-content: center;
   gap: 80px;
-`
+`;
 const PcNavItemBox = styled.div<{ isActive: boolean }>`
   height: 100%;
   display: flex;
@@ -91,7 +99,7 @@ const PcNavItemBox = styled.div<{ isActive: boolean }>`
   cursor: pointer;
   box-shadow: ${(props) => (props.isActive ? 'inset 0 -4px #3DD606' : 'none')};
   transition: all 1s ease-out;
-`
+`;
 const PcNavItemText = styled.span`
   font-weight: 700;
   font-size: 18px;
@@ -107,4 +115,4 @@ const PcNavItemText = styled.span`
     transform: scale(0.98);
   }
   transition: all 0.5s ease-out;
-`
+`;

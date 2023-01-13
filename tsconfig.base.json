@@ -2,23 +2,32 @@
   "compileOnSave": false,
   "compilerOptions": {
     "rootDir": ".",
-    "sourceMap": true,
-    "declaration": false,
+    "baseUrl": ".",
+    "pretty": true,
+    // 启用哪些内置js api的默认类型定义
+    "lib": ["es2017", "dom"],
+    // 设定编译目标，会根据目标调整 lib 启用的类型定义
+    "target": "es2015",
+    // 设定要使用的模块系统，会影响moduleResolution
+    "module": "esnext",
+    // 模仿哪种运行时解析策略，让ts编译时定位到模块的定义文件
     "moduleResolution": "node",
+
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "importHelpers": true,
-    "isolatedModules": true,
-    "target": "es2015",
-    "module": "esnext",
-    "lib": ["es2017", "dom"],
+
+    // 为js,ts文件生成.d.ts文件
+    "declaration": true,
+    // 为生成.d.ts文件的源文件生成映射文件，用于编辑器通过类型定义跳转到源文件
+    "declarationMap": true,
+    // 生成资源映射文件，允许调试器等外部工具显示原始代码
+    "sourceMap": true,
+
+    // 跳过声明文件的类型检查
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "baseUrl": ".",
-    "jsx": "react-jsx",
-    "paths": {
-      "@ecnft/wl-user-react": ["libs/wl-user/react/src/index.ts"]
-    }
+    "paths": {}
   },
   "exclude": ["node_modules", "tmp"]
 }

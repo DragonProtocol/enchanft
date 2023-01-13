@@ -5,19 +5,22 @@
  * @LastEditTime: 2022-08-03 14:20:55
  * @Description: file description
  */
-import React from 'react'
-import styled from 'styled-components'
-import ProjectTeamMemberItem, { ProjectTeamMemberItemDataViewType } from './ProjectTeamMemberItem'
+import React from 'react';
+import styled from 'styled-components';
+import ProjectTeamMemberItem, {
+  ProjectTeamMemberItemDataViewType,
+} from './ProjectTeamMemberItem';
 
 export type ProjectTeamMemberListViewConfigType = {
-  loading?: boolean
-  loadingMsg?: string
-  emptyMsg?: string
-}
-export type ProjectTeamMemberListItemsType = ProjectTeamMemberItemDataViewType[]
+  loading?: boolean;
+  loadingMsg?: string;
+  emptyMsg?: string;
+};
+export type ProjectTeamMemberListItemsType =
+  ProjectTeamMemberItemDataViewType[];
 export type ProjectTeamMemberListProps = ProjectTeamMemberListViewConfigType & {
-  items: ProjectTeamMemberListItemsType
-}
+  items: ProjectTeamMemberListItemsType;
+};
 const ProjectTeamMemberList: React.FC<ProjectTeamMemberListProps> = ({
   items,
   loading,
@@ -29,7 +32,10 @@ const ProjectTeamMemberList: React.FC<ProjectTeamMemberListProps> = ({
       items.length > 0 &&
       items.map((item) => (
         <ProjectTeamMemberItemBox key={`${item.data.id}`}>
-          <ProjectTeamMemberItem data={item.data} viewConfig={item.viewConfig} />
+          <ProjectTeamMemberItem
+            data={item.data}
+            viewConfig={item.viewConfig}
+          />
         </ProjectTeamMemberItemBox>
       ))}
     {loading && (
@@ -47,12 +53,12 @@ const ProjectTeamMemberList: React.FC<ProjectTeamMemberListProps> = ({
       <div style={{ textAlign: 'center', marginTop: '50px' }}>{emptyMsg}</div>
     )}
   </ProjectTeamMemberListWrapper>
-)
-export default ProjectTeamMemberList
+);
+export default ProjectTeamMemberList;
 const ProjectTeamMemberListWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 40px;
-`
-const ProjectTeamMemberItemBox = styled.div``
+`;
+const ProjectTeamMemberItemBox = styled.div``;

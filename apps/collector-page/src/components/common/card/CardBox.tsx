@@ -5,14 +5,17 @@
  * @LastEditTime: 2022-08-16 13:11:56
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
-type CardBoxProps = HTMLAttributes<HTMLDivElement>
-const CardBox: React.FC<CardBoxProps> = ({ children, ...otherProps }: CardBoxProps) => {
-  return <CardBoxWrapper {...otherProps}>{children}</CardBoxWrapper>
-}
-export default CardBox
+type CardBoxProps = StyledComponentPropsWithRef<'div'>;
+const CardBox: React.FC<CardBoxProps> = ({
+  children,
+  ...otherProps
+}: CardBoxProps) => {
+  return <CardBoxWrapper {...otherProps}>{children}</CardBoxWrapper>;
+};
+export default CardBox;
 const CardBoxWrapper = styled.div`
   width: 100%;
   padding: 20px;
@@ -21,4 +24,4 @@ const CardBoxWrapper = styled.div`
   border-radius: 20px;
   box-sizing: border-box;
   overflow: hidden;
-`
+`;

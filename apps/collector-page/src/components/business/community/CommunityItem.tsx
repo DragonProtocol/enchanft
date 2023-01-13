@@ -1,61 +1,78 @@
-import React from 'react'
-import styled from 'styled-components'
-import { ButtonInfo } from '../../common/button/ButtonBase'
-import { useNavigate } from 'react-router-dom'
-import { ScrollBarCss } from '../../../GlobalStyle'
-import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox'
-import CardItemBox, { CardItemBoxAnimationType } from '../../common/card/CardItemBox'
-import { formatNumberToUnitString } from '../../../utils/number'
+import React from 'react';
+import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
+import { ButtonInfo } from '../../common/button/ButtonBase';
+import { ScrollBarCss } from '../../../GlobalStyle';
+import OverflowEllipsisBox from '../../common/text/OverflowEllipsisBox';
+import CardItemBox, {
+  CardItemBoxAnimationType,
+} from '../../common/card/CardItemBox';
+import { formatNumberToUnitString } from '../../../utils/number';
 
 export type CommunityItemDataType = {
-  id: number
-  name: string
-  icon: string
-  website: string
-  description: string
-  memberNums?: number
-  contribution?: number
+  id: number;
+  name: string;
+  icon: string;
+  website: string;
+  description: string;
+  memberNums?: number;
+  contribution?: number;
   project?: {
-    slug: string
-  }
-  isFollowed: boolean
-}
+    slug: string;
+  };
+  isFollowed: boolean;
+};
 
 export type CommunityItemViewConfigType = {
-  displayFollow?: boolean
-  disabledFollow?: boolean
-  loadingFollow?: boolean
-}
+  displayFollow?: boolean;
+  disabledFollow?: boolean;
+  loadingFollow?: boolean;
+};
 
 export type CommunityItemDataViewType = {
-  data: CommunityItemDataType
-  viewConfig?: CommunityItemViewConfigType
-}
+  data: CommunityItemDataType;
+  viewConfig?: CommunityItemViewConfigType;
+};
 
 export type CommunityItemHandlesType = {
-  onFollowChange?: (isFollowed: boolean) => void
-}
+  onFollowChange?: (isFollowed: boolean) => void;
+};
 
-export type CommunityItemProps = CommunityItemDataViewType & CommunityItemHandlesType
+export type CommunityItemProps = CommunityItemDataViewType &
+  CommunityItemHandlesType;
 
 const defaultViewConfig: CommunityItemViewConfigType = {
   displayFollow: false,
   disabledFollow: false,
   loadingFollow: false,
-}
+};
 
-const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollowChange }: CommunityItemProps) => {
-  const navigate = useNavigate()
-  const { id, name, icon, website, description, memberNums, contribution, project, isFollowed } = data
+const CommunityItem: React.FC<CommunityItemProps> = ({
+  data,
+  viewConfig,
+  onFollowChange,
+}: CommunityItemProps) => {
+  const navigate = useNavigate();
+  const {
+    id,
+    name,
+    icon,
+    website,
+    description,
+    memberNums,
+    contribution,
+    project,
+    isFollowed,
+  } = data;
   const { disabledFollow, displayFollow, loadingFollow } = {
     ...defaultViewConfig,
     ...viewConfig,
-  }
+  };
   const onFollowChangeClick = () => {
     if (onFollowChange) {
-      onFollowChange(!isFollowed)
+      onFollowChange(!isFollowed);
     }
-  }
+  };
   return (
     <CommunityItemWrapper
       onClick={() => project?.slug && navigate(`/${project.slug}`)}
@@ -85,21 +102,21 @@ const CommunityItem: React.FC<CommunityItemProps> = ({ data, viewConfig, onFollo
         )} */}
       </CommunityInfoBox>
     </CommunityItemWrapper>
-  )
-}
-export default CommunityItem
+  );
+};
+export default CommunityItem;
 const CommunityItemWrapper = styled(CardItemBox)`
   height: 400px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   cursor: pointer;
-`
+`;
 const CommunityImage = styled.img`
   width: 100%;
   height: 265px;
   object-fit: cover;
-`
+`;
 const CommunityInfoBox = styled.div`
   flex: 1;
   padding: 20px;
@@ -107,7 +124,7 @@ const CommunityInfoBox = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-`
+`;
 const NumberInfoBox = styled.div`
   flex: 1;
   display: flex;
@@ -116,30 +133,30 @@ const NumberInfoBox = styled.div`
   border-top: 1px dashed rgba(51, 51, 51, 0.3);
   border-bottom: 1px dashed rgba(51, 51, 51, 0.3);
   padding: 8px 0;
-`
+`;
 const NumberRow = styled.div`
   display: flex;
   justify-content: space-between;
-`
+`;
 const NumberLabel = styled.div`
   font-size: 12px;
   line-height: 18px;
   color: rgba(51, 51, 51, 0.6);
-`
+`;
 const NumberValue = styled.div`
   font-weight: 700;
   font-size: 12px;
   line-height: 18px;
   color: #333333;
-`
+`;
 
 const CommunityName = styled(OverflowEllipsisBox)`
   color: rgba(16, 16, 16, 100);
   font-size: 18px;
   font-weight: bold;
   flex-shrink: 0;
-`
+`;
 const CommunityFollow = styled(ButtonInfo)<{ isFollowed: boolean }>`
   height: 40px;
   color: ${(props) => (props.isFollowed ? 'rgba(51, 53, 54, 100)' : '#f8f8f8')};
-`
+`;

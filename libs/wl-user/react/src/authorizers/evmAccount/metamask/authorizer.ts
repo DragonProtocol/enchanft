@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-17 14:36:19
+ * @LastEditTime: 2022-11-25 12:20:16
  * @Description: file description
  */
 import { ethers } from 'ethers';
@@ -52,9 +52,7 @@ export async function getMetaMaskAddr() {
   return walletAddr;
 }
 
-export async function signMsgWithMetaMask(): Promise<
-  SignMsgResult | undefined
-> {
+export async function signMsgWithMetaMask(): Promise<Maybe<SignMsgResult>> {
   const ethProvider = await getEthProvider();
   if (!ethProvider) {
     alert('metamask required');

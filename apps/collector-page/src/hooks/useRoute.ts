@@ -5,23 +5,28 @@
  * @LastEditTime: 2022-09-14 11:06:59
  * @Description: file description
  */
-import React, { useEffect, useState } from 'react'
-import { matchRoutes, useLocation } from 'react-router-dom'
-import { CutomRouteObject, permissionRoutes, RouteKeys, routes as routeAry } from '../route/routes'
+import React, { useEffect, useState } from 'react';
+import { matchRoutes, useLocation } from 'react-router-dom';
+import {
+  CutomRouteObject,
+  permissionRoutes,
+  RouteKeys,
+  routes as routeAry,
+} from '../route/routes';
 
 function useRoute() {
-  const location = useLocation()
-  const [routeKey, setRouteKey] = useState<RouteKeys>(RouteKeys.noMatch)
+  const location = useLocation();
+  const [routeKey, setRouteKey] = useState<RouteKeys>(RouteKeys.noMatch);
   useEffect(() => {
-    const match = matchRoutes([...permissionRoutes, ...routeAry], location)
+    const match = matchRoutes([...permissionRoutes, ...routeAry], location);
     if (!match) {
-      setRouteKey(RouteKeys.noMatch)
+      setRouteKey(RouteKeys.noMatch);
     } else {
-      const { key } = match[0].route as CutomRouteObject
-      setRouteKey(key || RouteKeys.noMatch)
+      const { key } = match[0].route as CutomRouteObject;
+      setRouteKey(key || RouteKeys.noMatch);
     }
-  }, [location])
-  return { routeKey }
+  }, [location]);
+  return { routeKey };
 }
 
-export default useRoute
+export default useRoute;

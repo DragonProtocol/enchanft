@@ -5,21 +5,21 @@
  * @LastEditTime: 2022-09-13 15:47:24
  * @Description: 滚动盒子，提供视口滚动监听
  */
-import React, { HTMLAttributes, useEffect } from 'react'
-import styled from 'styled-components'
-import { useInView } from 'react-intersection-observer'
-import { ScrollBarCss } from '../../../GlobalStyle'
-type ScrollBarSize = 'sm' | 'md'
-export type ScrollBoxProps = HTMLAttributes<HTMLDivElement> & {
+import React, { useEffect } from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import { useInView } from 'react-intersection-observer';
+import { ScrollBarCss } from '../../../GlobalStyle';
+type ScrollBarSize = 'sm' | 'md';
+export type ScrollBoxProps = StyledComponentPropsWithRef<'div'> & {
   // 当前滚动盒子的ID
-  boxId?: string
+  boxId?: string;
   // 当前滚动盒子的父级盒子元素
-  rootEl?: HTMLElement | null
+  rootEl?: HTMLElement | null;
   // 当前滚动盒子的锚点进入视口时触发
-  onInView?: () => void
+  onInView?: () => void;
   // scroll bar css
-  barSize?: ScrollBarSize
-}
+  barSize?: ScrollBarSize;
+};
 const ScrollBox: React.FC<ScrollBoxProps> = ({
   children,
   rootEl,
@@ -31,22 +31,22 @@ const ScrollBox: React.FC<ScrollBoxProps> = ({
   const { ref: inViewRef, inView } = useInView({
     root: rootEl || null,
     threshold: 0,
-  })
+  });
   useEffect(() => {
-    if (inView && onInView) onInView()
-  }, [inView, onInView])
+    if (inView && onInView) onInView();
+  }, [inView, onInView]);
   return (
     <ScrollBoxWrapper id={boxId} barSize={barSize} {...divProps}>
       {children}
       {/* 当前滚动盒子的锚点 */}
       <div ref={inViewRef} />
     </ScrollBoxWrapper>
-  )
-}
-export default ScrollBox
+  );
+};
+export default ScrollBox;
 const ScrollBoxWrapper = styled.div<{ barSize?: ScrollBarSize }>`
   width: 100%;
   height: 100%;
   overflow-y: overlay;
   ${({ barSize }) => barSize && barSize === 'sm' && ScrollBarCss}
-`
+`;

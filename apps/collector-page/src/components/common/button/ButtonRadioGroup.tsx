@@ -5,19 +5,19 @@
  * @LastEditTime: 2022-09-14 17:44:27
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react'
-import styled from 'styled-components'
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
-type OptionValue = string | number
+type OptionValue = string | number;
 type Option = {
-  label: string
-  value: OptionValue
-}
-export type ButtonRadioGroupProps = HTMLAttributes<HTMLDivElement> & {
-  options: Option[]
-  value: OptionValue
-  onChange?: (value: OptionValue) => void
-}
+  label: string;
+  value: OptionValue;
+};
+export type ButtonRadioGroupProps = StyledComponentPropsWithRef<'div'> & {
+  options: Option[];
+  value: OptionValue;
+  onChange?: (value: OptionValue) => void;
+};
 
 const ButtonRadioGroup: React.FC<ButtonRadioGroupProps> = ({
   options,
@@ -27,20 +27,24 @@ const ButtonRadioGroup: React.FC<ButtonRadioGroupProps> = ({
 }: ButtonRadioGroupProps) => {
   const handleChange = (v: OptionValue) => {
     if (onChange) {
-      onChange(v)
+      onChange(v);
     }
-  }
+  };
   return (
     <ButtonRadioGroupWrapper {...divProps}>
       {options.map(({ label, value: v }) => (
-        <ButtonRadioGroupOption key={v} isActive={v === value} onClick={() => handleChange(v)}>
+        <ButtonRadioGroupOption
+          key={v}
+          isActive={v === value}
+          onClick={() => handleChange(v)}
+        >
           {label}
         </ButtonRadioGroupOption>
       ))}
     </ButtonRadioGroupWrapper>
-  )
-}
-export default ButtonRadioGroup
+  );
+};
+export default ButtonRadioGroup;
 const ButtonRadioGroupWrapper = styled.div`
   width: 100%;
   height: 50px;
@@ -52,7 +56,7 @@ const ButtonRadioGroupWrapper = styled.div`
   font-size: 18px;
   font-weight: 700;
   line-height: 27px;
-`
+`;
 const ButtonRadioGroupOption = styled.div<{ isActive?: boolean }>`
   flex: 1;
   height: 100%;
@@ -68,4 +72,4 @@ const ButtonRadioGroupOption = styled.div<{ isActive?: boolean }>`
   &:last-child {
     border: none;
   }
-`
+`;

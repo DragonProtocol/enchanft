@@ -5,16 +5,16 @@
  * @LastEditTime: 2022-09-28 14:53:38
  * @Description: file description
  */
-const LOCAL_STORAGE_TOKEN = 'token'
+const LOCAL_STORAGE_TOKEN = 'token';
 
-export const DEFAULT_WALLET = 'defaultWallet'
-export const LAST_LOGIN_TYPE = 'lastLoginType'
-export const LAST_LOGIN_NAME = 'last_login_name'
-export const LAST_LOGIN_AVATAR = 'last_login_avatar'
-export const LAST_LOGIN_TOKEN = 'last_login_token'
-export const LAST_LOGIN_PUBKEY = 'last_login_pubkey'
+export const DEFAULT_WALLET = 'defaultWallet';
+export const LAST_LOGIN_TYPE = 'lastLoginType';
+export const LAST_LOGIN_NAME = 'last_login_name';
+export const LAST_LOGIN_AVATAR = 'last_login_avatar';
+export const LAST_LOGIN_TOKEN = 'last_login_token';
+export const LAST_LOGIN_PUBKEY = 'last_login_pubkey';
 
-export const SIGN_MSG = 'Sign this message to sign into ' + window.location.hostname
+export const SIGN_MSG = `Sign this message to sign into ${window.location.hostname}`;
 export enum TokenType {
   Solana = 'solana',
   Ethereum = 'ethereum',
@@ -22,33 +22,33 @@ export enum TokenType {
   Aptos = 'aptos',
 }
 export function setLoginToken(type: TokenType, token: string, pubkey?: string) {
-  const key = genTokenKey(type, pubkey)
-  localStorage.setItem(key, token)
+  const key = genTokenKey(type, pubkey);
+  localStorage.setItem(key, token);
 }
 
 export function getLoginToken(type: TokenType, pubkey?: string) {
-  const key = genTokenKey(type, pubkey)
-  return localStorage.getItem(key)
+  const key = genTokenKey(type, pubkey);
+  return localStorage.getItem(key);
 }
 
 export function clearLoginToken(type: TokenType, pubkey?: string) {
-  const key = genTokenKey(type, pubkey)
-  localStorage.removeItem(key)
-  localStorage.removeItem(DEFAULT_WALLET)
+  const key = genTokenKey(type, pubkey);
+  localStorage.removeItem(key);
+  localStorage.removeItem(DEFAULT_WALLET);
   // record last login
-  const lastLoginType = getLastLoginType()
-  localStorage.setItem(lastLoginType, type)
+  const lastLoginType = getLastLoginType();
+  localStorage.setItem(lastLoginType, type);
 }
 
 function genTokenKey(type: TokenType, pubkeyStr?: string) {
   switch (type) {
     case TokenType.Twitter:
-      return `${type}:${LOCAL_STORAGE_TOKEN}`
+      return `${type}:${LOCAL_STORAGE_TOKEN}`;
     default:
-      return `${type}:${LOCAL_STORAGE_TOKEN}:${pubkeyStr || ''}`
+      return `${type}:${LOCAL_STORAGE_TOKEN}:${pubkeyStr || ''}`;
   }
 }
 
 function getLastLoginType() {
-  return LAST_LOGIN_TYPE
+  return LAST_LOGIN_TYPE;
 }
