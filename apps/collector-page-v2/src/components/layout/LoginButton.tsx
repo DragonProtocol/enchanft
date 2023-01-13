@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 14:36:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 10:45:36
+ * @LastEditTime: 2023-01-13 10:23:37
  * @Description: file description
  */
 import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
 import styled from 'styled-components';
 import useLogin from '../../hooks/useLogin';
+import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import LogoutSvg from '../common/icons/svgs/logout.svg';
 
 type Props = {
@@ -42,16 +43,17 @@ export default function LoginButton({ onlyIcon, onLogout }: Props) {
             )}
           </>
         ) : (
-          <LoginButtonName className="wl-user-button_login-name">
+          <NoLoginText className="wl-user-button_no-login-text">
             Login
-          </LoginButtonName>
+          </NoLoginText>
         )}
       </LoginButtonBody>
     </LoginButtonWrapper>
   );
 }
 
-const LoginButtonWrapper = styled.div<{ hiddenStyle?: boolean }>`
+const LoginButtonWrapper = styled(ButtonPrimaryLine)<{ hiddenStyle?: boolean }>`
+  width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
@@ -60,12 +62,6 @@ const LoginButtonWrapper = styled.div<{ hiddenStyle?: boolean }>`
   padding: 12px;
   gap: 4px;
   isolation: isolate;
-
-  height: 48px;
-
-  border: 1px solid #39424c;
-  border-radius: 12px;
-  cursor: pointer;
   ${({ hiddenStyle }) =>
     hiddenStyle &&
     `
@@ -88,6 +84,7 @@ const LoginButtonAvatar = styled(UserAvatar)`
 `;
 const LoginButtonName = styled.span`
   flex: 1;
+  text-align: center;
   font-weight: 500;
   font-size: 16px;
   color: #ffffff;
@@ -98,4 +95,10 @@ const LoginButtonName = styled.span`
 const LogoutIconButton = styled.img`
   width: 24px;
   height: 24px;
+`;
+
+const NoLoginText = styled.span`
+  font-weight: 500;
+  font-size: 16px;
+  color: #ffffff;
 `;
