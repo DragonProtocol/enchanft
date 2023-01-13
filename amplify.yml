@@ -99,19 +99,3 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/mini-site/baatarverse
-    frontend:
-      phases:
-        preBuild:
-          commands:
-            - npm i
-        build:
-          commands:
-            - npm run export
-      artifacts:
-        baseDirectory: out
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - node_modules/**/*
