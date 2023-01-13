@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import ScrollBox from '../components/common/box/ScrollBox';
 import { ButtonPrimary } from '../components/common/button/ButtonBase';
 import CardBase from '../components/common/card/CardBase';
@@ -38,6 +38,7 @@ import Loading from '../components/common/loading/Loading';
 import isUrl from '../utils/isUrl';
 
 function ContentCreate() {
+  const navigate = useNavigate();
   const { user } = useWlUserReact();
   const { isAdmin } = usePermissions();
   const [parsing, setParsing] = useState(false);
@@ -144,7 +145,7 @@ function ContentCreate() {
       setLoading(true);
       try {
         if (!data.id) {
-          await saveContent(
+          const resp = await saveContent(
             {
               title: data.title,
               url: data.url,
@@ -157,7 +158,10 @@ function ContentCreate() {
             },
             user.token
           );
-          toast.success('Add Content Success!!!');
+          if (resp.data.code === 0) {
+            navigate(`/contents/${resp.data.data.id}`);
+            toast.success('Add Content Success!!!');
+          }
         } else {
           await updateContent(
             {

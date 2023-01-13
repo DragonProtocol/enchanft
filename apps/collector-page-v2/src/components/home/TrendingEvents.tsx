@@ -36,7 +36,7 @@ export default function TrendingEvents({
               key={item.uid || item.id}
               title={item.name}
               img={img}
-              author={item.project.name || ''}
+              author={item?.project?.name || ''}
               reward={item.reward}
             />
           );
