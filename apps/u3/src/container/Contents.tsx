@@ -2,16 +2,21 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-13 17:21:54
+ * @LastEditTime: 2023-01-16 17:06:36
  * @Description: 首页任务看板
  */
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 import { debounce } from 'lodash';
-import { useNavigate, useParams } from 'react-router-dom';
+import {
+  URLSearchParamsInit,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 
 import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import { fetchContents, updateContent } from '../services/api/contents';
@@ -44,23 +49,34 @@ import AnimatedListItem, {
   useAnimatedListTransition,
 } from '../components/animation/AnimatedListItem';
 import { MEDIA_BREAK_POINTS } from '../constants';
+import ContentOrderBySelect, {
+  defaultContentOrderBy,
+} from '../components/contents/ContentOrderBySelect';
 
 function Contents() {
   const { user } = useWlUserReact();
   const navigate = useNavigate();
   const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const queryRef = useRef<{
-    keywords: string;
-    types: string[];
-    orderBy: string;
-    lang: string[];
-  }>({
-    keywords: '',
-    types: [],
-    orderBy: 'For U',
-    lang: [],
-  });
+  const currentUrlQuery = useMemo(
+    () => ({
+      orderBy: searchParams.get('orderBy') || defaultContentOrderBy,
+      types: searchParams.get('types') || '',
+      lang: searchParams.get('lang') || '',
+      keywords: searchParams.get('keywords') || '',
+    }),
+    [searchParams]
+  );
+  const currentSearchParams = useMemo(
+    () => ({
+      orderBy: currentUrlQuery.orderBy,
+      types: currentUrlQuery.types.split(','),
+      lang: currentUrlQuery.lang.split(','),
+      keywords: currentUrlQuery.keywords,
+    }),
+    [currentUrlQuery]
+  );
   const removeTimer = useRef<NodeJS.Timeout>();
 
   const [currPageNumber, setCurrPageNumber] = useState(0);
@@ -176,7 +192,7 @@ function Contents() {
 
   const loadMore = useCallback(
     async (pageNumber: number) => {
-      const { keywords, types, orderBy, lang } = queryRef.current;
+      const { keywords, types, orderBy, lang } = currentSearchParams;
       const langQuery =
         lang.length === 0 || lang.length === 2 ? ContentLang.All : lang[0];
       try {
@@ -194,7 +210,7 @@ function Contents() {
         setLoadingMore(false);
       }
     },
-    [queryRef.current, contents]
+    [currentSearchParams, contents]
   );
 
   const removeContent = useCallback(
@@ -285,16 +301,30 @@ function Contents() {
     [user.token, contents, updating]
   );
 
-  const fetchDataWithFilter = useCallback(
-    debounce((...args) => fetchData.apply(null, [...args, true]), 3000),
-    []
-  );
-
   useEffect(() => {
-    fetchData('', [], 'For U', []);
-  }, []);
+    const { keywords, types, orderBy, lang } = currentSearchParams;
+    fetchData(keywords, types, orderBy, lang);
+  }, [currentSearchParams]);
 
   const transitions = useAnimatedListTransition(newList);
+
+  const getMore = useCallback(() => {
+    if (newList.length === 0) return;
+    if (loadingMore) return;
+    if (!hasMore) return;
+    loadMore(currPageNumber + 1);
+    setCurrPageNumber(currPageNumber + 1);
+  }, [newList, loadingMore, hasMore, currPageNumber]);
+
+  const renderMoreLoading = useMemo(
+    () =>
+      loadingMore ? (
+        <MoreLoading>loading ...</MoreLoading>
+      ) : !hasMore ? (
+        <MoreLoading>No other contents</MoreLoading>
+      ) : null,
+    [loadingMore, hasMore]
+  );
 
   return (
     <Box>
@@ -305,45 +335,24 @@ function Contents() {
             isActiveFilter={isActiveFilter}
             onChangeActiveFilter={setIsActiveFilter}
             orderByEl={
-              <DropDown
-                items={Object.values(OrderBy)}
-                Icon={<Favors />}
-                width={145}
-                title="For U"
-                selectAction={(item) => {
-                  queryRef.current = {
-                    keywords: queryRef.current.keywords,
-                    types: queryRef.current.types,
-                    orderBy: item,
-                    lang: queryRef.current.lang,
-                  };
-                  fetchData(
-                    queryRef.current.keywords,
-                    queryRef.current.types,
-                    queryRef.current.orderBy,
-                    queryRef.current.lang,
-                    true
-                  );
-                }}
+              <ContentOrderBySelect
+                value={currentSearchParams.orderBy}
+                onChange={(value) =>
+                  setSearchParams({
+                    ...currentUrlQuery,
+                    orderBy: value,
+                  } as unknown as URLSearchParamsInit)
+                }
               />
             }
             searchEl={
               <SearchInput
                 debounceMs={1000}
                 onSearch={(value) => {
-                  queryRef.current = {
+                  setSearchParams({
+                    ...currentUrlQuery,
                     keywords: value,
-                    types: queryRef.current.types,
-                    orderBy: queryRef.current.orderBy,
-                    lang: queryRef.current.lang,
-                  };
-                  fetchData(
-                    queryRef.current.keywords,
-                    queryRef.current.types,
-                    queryRef.current.orderBy,
-                    queryRef.current.lang,
-                    true
-                  );
+                  } as unknown as URLSearchParamsInit);
                 }}
               />
             }
@@ -357,19 +366,13 @@ function Contents() {
         bottomEl={
           <FeedsFilterBox open={isActiveFilter}>
             <Filter
+              values={currentSearchParams}
               filterAction={(data) => {
-                queryRef.current = {
-                  keywords: queryRef.current.keywords,
-                  types: data.types,
-                  orderBy: queryRef.current.orderBy,
-                  lang: data.lang,
-                };
-                fetchDataWithFilter(
-                  queryRef.current.keywords,
-                  queryRef.current.types,
-                  queryRef.current.orderBy,
-                  queryRef.current.lang
-                );
+                setSearchParams({
+                  ...currentUrlQuery,
+                  types: data.types.join(','),
+                  lang: data.lang.join(','),
+                });
               }}
             />
           </FeedsFilterBox>
@@ -392,19 +395,10 @@ function Contents() {
             </ContentsWrapper>
           );
         }
-
         if (layout === Layout.LIST) {
           return (
             <ContentsWrapper>
-              <ListBox
-                onScrollBottom={() => {
-                  if (newList.length === 0) return;
-                  if (loadingMore) return;
-                  if (!hasMore) return;
-                  loadMore(currPageNumber + 1);
-                  setCurrPageNumber(currPageNumber + 1);
-                }}
-              >
+              <ListBox onScrollBottom={getMore}>
                 {transitions((styles, item, transition, idx) => {
                   let isActive = false;
                   if (item.id) {
@@ -449,19 +443,7 @@ function Contents() {
                     </AnimatedListItem>
                   );
                 })}
-                {(!hasMore && (
-                  <MoreLoading className="load-more nomore">
-                    No other contents
-                  </MoreLoading>
-                )) || (
-                  <MoreLoading
-                    className={
-                      loadingMore ? 'load-more loadmoreing' : 'load-more'
-                    }
-                  >
-                    loading
-                  </MoreLoading>
-                )}
+                {renderMoreLoading}
               </ListBox>
               <ContentBoxContainer>
                 <ContentShowerBox
@@ -483,15 +465,7 @@ function Contents() {
         }
         if (layout === Layout.GRID) {
           return (
-            <GrideListBox
-              onScrollBottom={() => {
-                if (newList.length === 0) return;
-                if (loadingMore) return;
-                if (!hasMore) return;
-                loadMore(currPageNumber + 1);
-                setCurrPageNumber(currPageNumber + 1);
-              }}
-            >
+            <GrideListBox onScrollBottom={getMore}>
               <ContentsGridWrapper>
                 {transitions((styles, item, transition, idx) => {
                   let isActive = false;
@@ -525,22 +499,11 @@ function Contents() {
                   );
                 })}
               </ContentsGridWrapper>
-              {(!hasMore && (
-                <MoreLoading className="load-more nomore">
-                  No other contents
-                </MoreLoading>
-              )) || (
-                <MoreLoading
-                  className={
-                    loadingMore ? 'load-more loadmoreing' : 'load-more'
-                  }
-                >
-                  loading
-                </MoreLoading>
-              )}
+              {renderMoreLoading}
             </GrideListBox>
           );
         }
+
         return null;
       })()}
 

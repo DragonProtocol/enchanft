@@ -5,10 +5,12 @@
  * @LastEditTime: 2022-11-28 19:45:47
  * @Description: file description
  */
-import { HTMLAttributes } from 'react';
 import Icon from './pngs/trophy.png';
 
-type Props = HTMLAttributes<HTMLImageElement> & {
+type Props = React.DetailedHTMLProps<
+  React.ImgHTMLAttributes<HTMLImageElement>,
+  HTMLImageElement
+> & {
   size?: string;
 };
 const PngIconTrophy: React.FC<Props> = ({

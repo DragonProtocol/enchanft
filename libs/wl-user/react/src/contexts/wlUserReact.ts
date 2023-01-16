@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-17 15:36:32
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-25 12:22:16
+ * @LastEditTime: 2022-12-16 18:10:06
  * @Description: file description
  */
 import { createContext } from 'react';
 import { User, AccountType, Account } from '../api';
 import { AuthorizerType, Authorizer } from '../authorizers/authorizer';
+import { ThemeType } from '../types';
 
 export enum WlUserModalType {
   LOGIN = 'LOGIN',
@@ -24,39 +25,39 @@ export enum WlUserActionType {
 }
 export type DispatchActionModalParams =
   | {
-    type: WlUserModalType.LOGIN;
-  }
+      type: WlUserModalType.LOGIN;
+    }
   | {
-    type: WlUserModalType.BIND;
-    payload: AuthorizerType;
-  }
+      type: WlUserModalType.BIND;
+      payload: AuthorizerType;
+    }
   | {
-    type: WlUserModalType.UNBIND_CONFIRM;
-    payload: AuthorizerType;
-  }
+      type: WlUserModalType.UNBIND_CONFIRM;
+      payload: AuthorizerType;
+    }
   | {
-    type: WlUserModalType.EDIT_PROFILE;
-  };
+      type: WlUserModalType.EDIT_PROFILE;
+    };
 export type DispatchActionParams =
   | {
-    type: WlUserActionType.LOGIN;
-    payload: AuthorizerType;
-  }
+      type: WlUserActionType.LOGIN;
+      payload: AuthorizerType;
+    }
   | {
-    type: WlUserActionType.BIND;
-    payload: AuthorizerType;
-  }
+      type: WlUserActionType.BIND;
+      payload: AuthorizerType;
+    }
   | {
-    type: WlUserActionType.UNBIND;
-    payload: AuthorizerType;
-  }
+      type: WlUserActionType.UNBIND;
+      payload: AuthorizerType;
+    }
   | {
-    type: WlUserActionType.UPDATE_USER_PROFILE;
-    payload: Partial<User>;
-  }
+      type: WlUserActionType.UPDATE_USER_PROFILE;
+      payload: Partial<User>;
+    }
   | {
-    type: WlUserActionType.LOGOUT;
-  };
+      type: WlUserActionType.LOGOUT;
+    };
 
 export type WlUserReactContextType = {
   // 所有注入的authorizer实例
@@ -77,6 +78,8 @@ export type WlUserReactContextType = {
   dispatchModal: (params: DispatchActionModalParams) => void;
   // 指定行为的触发器
   dispatchAction: (params: DispatchActionParams) => void;
+  // 当前主题
+  theme: ThemeType;
 };
 export const WlUserReactContext = createContext<
   WlUserReactContextType | undefined

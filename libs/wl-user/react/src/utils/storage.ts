@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-30 11:45:27
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-25 13:14:13
+ * @LastEditTime: 2022-12-16 14:43:08
  * @Description: file description
  */
 import { LoginResult } from '../api';
@@ -88,13 +88,13 @@ function oldVersionLastLoginAuthorizerTypeAdapter() {
   if (cOldVersionLoginAuthorizerType) {
     newLastLoginAuthorizerType =
       oldVersionLastLoginAuthorizerTypeMap[
-      cOldVersionLoginAuthorizerType as keyof typeof oldVersionLastLoginAuthorizerTypeMap
+        cOldVersionLoginAuthorizerType as keyof typeof oldVersionLastLoginAuthorizerTypeMap
       ];
     localStorage.removeItem('lastLoginType');
   } else if (bOldVersionLoginAuthorizerType) {
     newLastLoginAuthorizerType =
       oldVersionLastLoginAuthorizerTypeMap[
-      bOldVersionLoginAuthorizerType as keyof typeof oldVersionLastLoginAuthorizerTypeMap
+        bOldVersionLoginAuthorizerType as keyof typeof oldVersionLastLoginAuthorizerTypeMap
       ];
     localStorage.removeItem('last_login_type');
   }

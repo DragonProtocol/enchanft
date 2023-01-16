@@ -5,10 +5,10 @@
  * @LastEditTime: 2022-08-12 17:01:28
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import MainInner from './MainInner';
-const MainInnerStatusBox: React.FC<HTMLAttributes<HTMLDivElement>> = ({
+const MainInnerStatusBox: React.FC<StyledComponentPropsWithRef<'div'>> = ({
   children,
   ...divProps
 }) => {

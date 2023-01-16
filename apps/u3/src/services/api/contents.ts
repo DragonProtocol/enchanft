@@ -210,13 +210,11 @@ export function fetchContents(
     params: {
       lang: query.lang === ContentLang.All ? null : query.lang,
       contentId: query.contentId === ':id' ? null : query.contentId,
-      pageSize: query.pageSize ?? 50,
+      pageSize: query.pageSize ?? 30,
       pageNumber: query.pageNumber ?? 0,
       keywords: query.keywords ?? '',
       types: query.types ?? [],
-      orderBy: query.orderBy
-        ? query.orderBy.toUpperCase().replace(' ', '')
-        : '',
+      orderBy: query.orderBy ?? '',
     },
     method: 'get',
     headers: {

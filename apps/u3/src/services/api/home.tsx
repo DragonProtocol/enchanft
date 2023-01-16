@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 14:14:24
+ * @LastEditTime: 2023-01-16 18:41:28
  * @Description: file description
  */
 import { PlatformDataResponse } from '../types/home';
@@ -26,6 +26,9 @@ export function getTrendingContents() {
       orderBy: 'TRENDING',
     },
     method: 'get',
+    headers: {
+      needToken: true,
+    },
   });
 }
 

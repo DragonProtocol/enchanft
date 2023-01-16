@@ -5,8 +5,8 @@
  * @LastEditTime: 2022-11-29 10:53:35
  * @Description: file description
  */
-import React, { HTMLAttributes } from 'react';
-import styled from 'styled-components';
+import React from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { GradeType } from '../../../types/entities';
 import IconOfficialCertification from '../../common/icons/IconOfficialCertification';
 import IconVIP from '../../common/icons/IconVIP';
@@ -21,7 +21,7 @@ export const gradeStyleMap = {
     bgc: '#FFF500',
   },
 };
-type ProjectGradeTagProps = HTMLAttributes<HTMLDivElement> & {
+type ProjectGradeTagProps = StyledComponentPropsWithRef<'div'> & {
   grade: GradeType;
   size?: number;
 };
