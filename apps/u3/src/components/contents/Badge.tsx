@@ -5,7 +5,9 @@ export default function Badge({ text }: { text: string }) {
 }
 
 const Box = styled.span`
+  height: 18px;
   padding: 2px 4px;
+  box-sizing: border-box;
   background: #718096;
   border-radius: 4px;
   font-weight: 400;

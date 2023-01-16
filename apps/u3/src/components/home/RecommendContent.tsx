@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Badge from '../contents/Badge';
 import { ContentListItem } from '../contents/ContentList';
+import LinkBox from '../contents/LinkBox';
 
 import Title from './Title';
 
@@ -51,19 +52,36 @@ function Card({
   title,
   upVoteNum,
   clickAction,
+  link,
+  type,
 }: {
   title: string;
   upVoteNum: number;
   clickAction: () => void;
+  link: string;
+  type: string;
 }) {
+  const linkSplitAry = link.split('/');
+  const contentImgUrl = `${linkSplitAry[0]}//${linkSplitAry[2]}/favicon.ico`;
   return (
     <CardWrapper>
       <CardBox onClick={clickAction}>
-        <h2>{title}</h2>
-        <div>
-          <Badge text="DeFi" />
-          <span>👏 &nbsp;{upVoteNum}</span>
-        </div>
+        <ContentImg
+          src={contentImgUrl}
+          onError={(e) => {
+            e.currentTarget.style.display = 'none';
+          }}
+        />
+        <CardRight>
+          <ContentTitle>{title}</ContentTitle>
+          <RightRow>
+            <Badge text={type} />
+            <ContentVote>👏 &nbsp;{upVoteNum}</ContentVote>
+            <RightRowLine />
+            <ContentLink text={link} />
+          </RightRow>
+          <ContentRecReason>Interested Project</ContentRecReason>
+        </CardRight>
       </CardBox>
     </CardWrapper>
   );
@@ -73,7 +91,7 @@ const CardWrapper = styled.div`
   flex: 50%;
   box-sizing: border-box;
   padding: 20px;
-  height: 88px;
+  height: 120px;
   border-top: 1px solid #39424c;
   cursor: pointer;
   overflow: hidden;
@@ -93,38 +111,74 @@ const CardWrapper = styled.div`
   }
 `;
 const CardBox = styled.div`
+  height: 100%;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
 
-  & h2 {
-    margin: 0;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 19px;
-    color: #ffffff;
+const ContentImg = styled.img`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+`;
+const CardRight = styled.div`
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`;
+const RightRow = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+const ContentTitle = styled.div`
+  margin: 0;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 19px;
+  color: #ffffff;
 
-    overflow: hidden;
+  overflow: hidden;
 
-    text-overflow: ellipsis;
+  text-overflow: ellipsis;
 
-    display: -webkit-box;
+  display: -webkit-box;
 
-    -webkit-box-orient: vertical;
+  -webkit-box-orient: vertical;
 
-    -webkit-line-clamp: 1;
-  }
-  > div {
-    margin-top: 10px;
-    display: flex;
-    gap: 10px;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    /* identical to box height */
-
-    /* #718096 */
-
-    color: #718096;
-    & span {
-    }
-  }
+  -webkit-line-clamp: 1;
+`;
+const ContentLink = styled(LinkBox)`
+  width: 0;
+  flex: 1;
+`;
+const ContentVote = styled.div`
+  flex-shrink: 0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  text-align: center;
+  color: #ffffff;
+`;
+const ContentRecReason = styled.div`
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+  background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+`;
+const RightRowLine = styled.div`
+  width: 1px;
+  height: 10px;
+  background: #718096;
 `;
