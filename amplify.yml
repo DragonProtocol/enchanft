@@ -16,7 +16,7 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/wl-landing-page
+  - appRoot: apps/landing-page
     frontend:
       phases:
         preBuild:
@@ -32,7 +32,7 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/wl
+  - appRoot: apps/wl-landing-page
     frontend:
       phases:
         preBuild:
@@ -67,15 +67,12 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/u3
+  - appRoot: apps/wl-creator-page
     frontend:
       phases:
         preBuild:
           commands:
-            - npm i --legacy-peer-deps
-            - cd ../../
             - npm i
-            - cd apps/u3
         build:
           commands:
             - npm run build
@@ -86,12 +83,15 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/wl-creator-page
+  - appRoot: apps/u3
     frontend:
       phases:
         preBuild:
           commands:
+            - npm i --legacy-peer-deps
+            - cd ../../
             - npm i
+            - cd apps/u3
         build:
           commands:
             - npm run build
