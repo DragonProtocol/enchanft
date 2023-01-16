@@ -73,9 +73,6 @@ applications:
         preBuild:
           commands:
             - yarn
-            - cd ../../
-            - yarn
-            - cd -
         build:
           commands:
             - yarn build
