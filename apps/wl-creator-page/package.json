@@ -56,6 +56,12 @@
       "last 1 safari version"
     ]
   },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
   "devDependencies": {
     "assert": "^2.0.0",
     "browserify-zlib": "^0.2.0",
