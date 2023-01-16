@@ -214,9 +214,7 @@ export function fetchContents(
       pageNumber: query.pageNumber ?? 0,
       keywords: query.keywords ?? '',
       types: query.types ?? [],
-      orderBy: query.orderBy
-        ? query.orderBy.toUpperCase().replace(' ', '')
-        : '',
+      orderBy: query.orderBy ?? '',
     },
     method: 'get',
     headers: {
