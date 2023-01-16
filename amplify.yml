@@ -72,10 +72,12 @@ applications:
       phases:
         preBuild:
           commands:
-            - npm i
+            - yarn
+            - cd ../../
+            - yarn
         build:
           commands:
-            - npm run build
+            - yarn build
       artifacts:
         baseDirectory: build
         files:
