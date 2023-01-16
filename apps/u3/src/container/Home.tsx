@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-04 14:55:00
+ * @LastEditTime: 2023-01-16 18:12:38
  * @Description: file description
  */
 
@@ -83,12 +83,6 @@ function Home() {
         </div>
       )) || (
         <>
-          <RecommendEvents
-            data={recommendEvents}
-            viewAllAction={() => {
-              navigate('/events');
-            }}
-          />
           <div className="row-2">
             <div className="left">
               <RecommendContent
@@ -107,6 +101,13 @@ function Home() {
               />
             </div>
           </div>
+          <RecommendEvents
+            data={recommendEvents}
+            viewAllAction={() => {
+              navigate('/events');
+            }}
+          />
+
           <Platform
             platforms={platforms}
             viewAllAction={() => {
