@@ -1,0 +1,29 @@
+{
+  "u3": {
+    "dir": "apps/u3"
+  },
+  "wl-collector-page": {
+    "dir": "apps/wl-collector-page"
+  },
+  "wl-creator-page": {
+    "dir": "apps/wl-creator-page"
+  },
+  "demo": {
+    "dir": "apps/demo"
+  },
+  "landing-page": {
+    "dir": "apps/landing-page"
+  },
+  "wl-landing-page": {
+    "dir": "apps/wl-landing-page"
+  },
+  "js-sdk-core": {
+    "dir": "libs/js-sdk/core"
+  },
+  "js-sdk-react": {
+    "dir": "libs/js-sdk/react"
+  },
+  "wl-user": {
+    "dir": "libs/wl-user/react"
+  }
+}

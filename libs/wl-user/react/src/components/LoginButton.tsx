@@ -2,25 +2,23 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-10-26 10:43:31
+ * @LastEditTime: 2022-12-17 14:29:33
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useCallback } from 'react';
 import styled from 'styled-components';
-import { useWlUserReact, WlUserModalType } from '../provider';
 import { getUserDisplayName } from '../utils';
 import UserAvatar from './UserAvatar';
 import { ButtonPrimary } from './common/button/ButtonBase';
+import { WlUserModalType } from '../contexts/wlUserReact';
+import { useWlUserReact } from '../hooks';
+import { createClassNamesByTheme } from '../utils/style';
 
 export type LoginButtonProps = ButtonHTMLAttributes<HTMLButtonElement>;
 
-const LoginButton: React.FC<LoginButtonProps> = ({
-  children,
-  onClick,
-  ...otherProps
-}: LoginButtonProps) => {
-  const { signer, user, isLogin, dispatchModal } = useWlUserReact();
-  const nameStr = signer && getUserDisplayName(user, signer.signerType);
+function LoginButton({ children, onClick, ...otherProps }: LoginButtonProps) {
+  const { authorizer, user, isLogin, dispatchModal, theme } = useWlUserReact();
+  const nameStr = authorizer && getUserDisplayName(user, authorizer);
   const handleClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       if (onClick) {
@@ -31,16 +29,20 @@ const LoginButton: React.FC<LoginButtonProps> = ({
         });
       }
     },
-    [onClick, isLogin]
+    [onClick, dispatchModal]
   );
   return (
-    <LoginButtonWrapper onClick={handleClick} {...otherProps}>
+    <LoginButtonWrapper
+      onClick={handleClick}
+      className={createClassNamesByTheme('wl-user-button_login', theme)}
+      {...otherProps}
+    >
       <LoginButtonBody className="wl-user-button_login-body">
         {children ||
           (isLogin ? (
             <>
-              <LoginButtonAvatar className="wl-user-button_login-avatar" />
-              <LoginButtonName className="wl-user-button_login-name">
+              <LoginButtonAvatar className="login-avatar" />
+              <LoginButtonName className="login-name">
                 {nameStr}
               </LoginButtonName>
             </>
@@ -50,7 +52,7 @@ const LoginButton: React.FC<LoginButtonProps> = ({
       </LoginButtonBody>
     </LoginButtonWrapper>
   );
-};
+}
 export default LoginButton;
 
 const LoginButtonWrapper = styled(ButtonPrimary)`

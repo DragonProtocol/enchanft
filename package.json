@@ -2,28 +2,40 @@
   "name": "ecnft",
   "version": "0.0.1",
   "license": "MIT",
-  "scripts": {
-    "start": "nx serve",
-    "build": "nx build",
-    "test": "nx test",
-    "nx": "nx"
-  },
   "private": true,
+  "scripts": {
+    "lint:all": "eslint . --ext .{js,ts,tsx} --cache",
+    "lint:fix:all": "pnpm lint --fix",
+    "format:all": "prettier --write \"**/*.{js,ts,tsx}\"  --parser typescript ",
+    "format:check:all": "prettier --check \"**/*.{js,ts,tsx}\"  --parser typescript ",
+    "start:all": "pnpm --stream -r start",
+    "build:all": "pnpm --stream -r build",
+    "test:all": "pnpm --stream -r test",
+    "project:script": "node ./tools/scripts/project.script.mjs",
+    "project:exec": "node ./tools/scripts/project.exec.mjs",
+    "start": "pnpm project:script start",
+    "build": "pnpm project:script build",
+    "test": "pnpm project:script test",
+    "lint": "pnpm project:script lint",
+    "lint:fix": "pnpm project:script lint:fix",
+    "format": "pnpm project:script format",
+    "format:check": "pnpm project:script format:check",
+    "prepare": "husky install",
+    "format:staged": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,json,md,yml}": [
+      "prettier --write"
+    ],
+    "*.ts?(x)": [
+      "eslint",
+      "prettier --parser=typescript --write"
+    ]
+  },
   "devDependencies": {
-    "@nrwl/cli": "14.3.6",
-    "@nrwl/cypress": "14.3.6",
-    "@nrwl/devkit": "14.3.6",
-    "@nrwl/eslint-plugin-nx": "14.3.6",
-    "@nrwl/jest": "14.3.6",
-    "@nrwl/js": "14.3.6",
-    "@nrwl/linter": "14.3.6",
-    "@nrwl/next": "14.4.0",
-    "@nrwl/nx-cloud": "latest",
-    "@nrwl/react": "14.3.6",
-    "@nrwl/web": "14.3.6",
-    "@nrwl/workspace": "14.3.6",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "13.3.0",
+    "@tsconfig/recommended": "^1.0.1",
     "@types/jest": "27.4.1",
     "@types/node": "16.11.7",
     "@types/react": "18.0.13",
@@ -31,39 +43,36 @@
     "@types/react-is": "17.0.3",
     "@types/react-router-dom": "5.3.3",
     "@types/styled-components": "5.1.25",
-    "@typescript-eslint/eslint-plugin": "~5.24.0",
-    "@typescript-eslint/parser": "~5.24.0",
-    "babel-jest": "27.5.1",
-    "babel-plugin-styled-components": "1.10.7",
+    "@typescript-eslint/eslint-plugin": "~5.44.0",
+    "@typescript-eslint/parser": "~5.44.0",
     "chalk": "^5.1.2",
     "cypress": "^9.1.0",
     "eslint": "~8.15.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "8.1.0",
     "eslint-plugin-cypress": "^2.10.3",
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-jsx-a11y": "6.5.1",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "7.30.0",
     "eslint-plugin-react-hooks": "4.6.0",
     "eslint-plugin-sort-destructure-keys": "^1.4.0",
+    "husky": "^8.0.0",
     "jest": "27.5.1",
     "jest-watch-typeahead": "^1.1.0",
-    "nx": "14.3.6",
+    "lint-staged": "^13.0.3",
     "prettier": "^2.6.2",
-    "react-test-renderer": "18.2.0",
+    "rimraf": "^3.0.2",
     "ts-jest": "27.1.4",
     "ts-node": "~10.8.0",
     "typescript": "~4.7.2",
     "web-vitals": "^2.1.4"
   },
-  "dependencies": {
-    "core-js": "^3.6.5",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-is": "18.2.0",
-    "react-router-dom": "6.3.0",
-    "regenerator-runtime": "0.13.7",
-    "styled-components": "5.3.5",
-    "tslib": "^2.3.0"
+  "pnpm": {
+    "overrides": {
+      "ethereumjs-abi": "https://registry.npmjs.org/ethereumjs-abi/-/ethereumjs-abi-0.6.8.tgz"
+    }
   }
 }
