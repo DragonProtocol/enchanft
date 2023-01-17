@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-13 12:40:07
+ * @LastEditTime: 2022-11-25 12:20:16
  * @Description: file description
  */
 import { ethers } from 'ethers';
@@ -27,8 +27,9 @@ import {
   AuthorizerWebVersion,
 } from '../../authorizer';
 import iconUrl from './icon.svg';
+
 export const web3Window: typeof window & {
-  ethereum?: any;
+  ethereum?: ethers.providers.ExternalProvider;
 } = window;
 export type SignMsgResult = {
   signature: string;
@@ -40,9 +41,8 @@ export async function getEthProvider() {
     const provider = new ethers.providers.Web3Provider(web3Window.ethereum);
     await provider.send('eth_requestAccounts', []);
     return provider;
-  } else {
-    return null;
   }
+  return null;
 }
 export async function getMetaMaskAddr() {
   const ethProvider = await getEthProvider();
@@ -52,9 +52,7 @@ export async function getMetaMaskAddr() {
   return walletAddr;
 }
 
-export async function signMsgWithMetaMask(): Promise<
-  SignMsgResult | undefined
-> {
+export async function signMsgWithMetaMask(): Promise<Maybe<SignMsgResult>> {
   const ethProvider = await getEthProvider();
   if (!ethProvider) {
     alert('metamask required');
@@ -68,7 +66,6 @@ export async function signMsgWithMetaMask(): Promise<
 export enum MetamaskErrorName {
   METAMASK_SIGNATURE_REQUEST_ERROR = 'METAMASK_SIGNATURE_REQUEST_ERROR',
 }
-type ErrorName = MetamaskErrorName | ApiErrorName;
 const ErrorName = { ...MetamaskErrorName, ...ApiErrorName };
 const MetamaskErrorMessageMap: {
   [name in keyof typeof ErrorName]: string;
@@ -127,7 +124,7 @@ export default (): Authorizer => {
               onLoginProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onLoginSuccess(result.data);
             })
-            .catch((error) => {
+            .catch((error: Error) => {
               apiCatch(error.message);
             });
         } else {
@@ -175,7 +172,7 @@ export default (): Authorizer => {
                 apiCatch('result data is null');
               }
             })
-            .catch((error) => {
+            .catch((error: Error) => {
               apiCatch(error.message);
             });
         } else {

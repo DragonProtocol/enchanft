@@ -2,14 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-11 01:03:39
+ * @LastEditTime: 2022-12-17 14:24:55
  * @Description: file description
  */
 import React, { ButtonHTMLAttributes, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { AuthorizerActionProcessStatus, AuthorizerType } from '../authorizers';
-import { useWlUserReact, WlUserModalType } from '../provider';
+import { WlUserModalType } from '../contexts/wlUserReact';
+import { useWlUserReact } from '../hooks';
 import { getAccountDisplayName } from '../utils';
+import { createClassNamesByTheme } from '../utils/style';
 import ButtonBase from './common/button/ButtonBase';
 import IconUnlink from './common/icons/IconUnlink';
 
@@ -18,13 +20,19 @@ export type BindWithAuthorizerButtonProps =
     authorizerType: AuthorizerType;
   };
 
-const BindWithAuthorizerButton: React.FC<BindWithAuthorizerButtonProps> = ({
+function BindWithAuthorizerButton({
   children,
   authorizerType,
   ...otherProps
-}: BindWithAuthorizerButtonProps) => {
-  const { getAuthorizer, user, isLogin, validateBindAccount, dispatchModal } =
-    useWlUserReact();
+}: BindWithAuthorizerButtonProps) {
+  const {
+    getAuthorizer,
+    user,
+    isLogin,
+    validateBindAccount,
+    dispatchModal,
+    theme,
+  } = useWlUserReact();
   const authorizer = getAuthorizer(authorizerType);
   if (!authorizer) throw Error(`${authorizerType} authorizer not found`);
   const { name, bgColor, iconUrl, nameColor } = authorizer;
@@ -34,7 +42,7 @@ const BindWithAuthorizerButton: React.FC<BindWithAuthorizerButtonProps> = ({
     : `Bind ${name}`;
   const [loading, setLoading] = useState(false);
   authorizer.action.bindListener({
-    process: (status) =>
+    process: (status: AuthorizerActionProcessStatus) =>
       setLoading(
         [
           AuthorizerActionProcessStatus.SIGNATURE_PENDING,
@@ -45,24 +53,23 @@ const BindWithAuthorizerButton: React.FC<BindWithAuthorizerButtonProps> = ({
 
   return (
     <BindWithAuthorizerButtonWrapper
+      className={createClassNamesByTheme(
+        'wl-user-button-bind_authorizer',
+        theme
+      )}
       bgColor={bgColor}
       disabled={!isLogin || loading}
       onClick={() => !isBind && authorizer.action.bind(user.token)}
       {...otherProps}
     >
-      <AuthorizerIcon
-        src={iconUrl}
-        className="wl-user-button-bind_authorizer-icon"
-      />
+      <AuthorizerIcon src={iconUrl} className="authorizer-icon" />
 
-      <AuthorizerName
-        color={nameColor}
-        className="wl-user-button-bind_authorizer-name"
-      >
+      <AuthorizerName color={nameColor} className="authorizer-name">
         {loading ? 'Binding ...' : nameStr}
       </AuthorizerName>
       {isBind && (
         <AuthorizerUnbindBox
+          className="authorizer-unbind"
           color={nameColor}
           onClick={(e: any) => {
             e.stopPropagation();
@@ -77,7 +84,7 @@ const BindWithAuthorizerButton: React.FC<BindWithAuthorizerButtonProps> = ({
       )}
     </BindWithAuthorizerButtonWrapper>
   );
-};
+}
 export default BindWithAuthorizerButton;
 
 const BindWithAuthorizerButtonWrapper = styled(ButtonBase)<{ bgColor: string }>`
@@ -91,7 +98,6 @@ const BindWithAuthorizerButtonWrapper = styled(ButtonBase)<{ bgColor: string }>`
 const AuthorizerIcon = styled.img`
   width: 24px;
   height: 24px;
-  border-radius: 50%;
 `;
 const AuthorizerName = styled.span<{ color: string }>`
   font-weight: 700;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-13 12:18:32
+ * @LastEditTime: 2022-11-17 15:04:18
  * @Description: file description
  */
 import {
@@ -26,6 +26,7 @@ import {
   AuthorizerActionProcessStatus,
 } from '../authorizer';
 import iconUrl from './icon.svg';
+
 export interface TwitterAccountArgs {
   twitterClientId: string;
   oauthCallbackUri: string;
@@ -45,7 +46,6 @@ export type TwitterBindCallbackParams = {
 export enum TwitterErrorName {
   OAUTH_WINDOW_CLOSE = 'OAUTH_WINDOW_CLOSE',
 }
-type ErrorName = TwitterErrorName | ApiErrorName;
 const ErrorName = { ...TwitterErrorName, ...ApiErrorName };
 const TwitterErrorMessageMap: {
   [name in keyof typeof ErrorName]: string;
@@ -115,9 +115,9 @@ const isStartListenTwitterOauthStorage = () =>
   ) === ListenTwitterOauthStatus.START;
 
 function oauthCallbackUrlListener(oauthCallbackUri: string) {
-  if (location.href.startsWith(oauthCallbackUri)) {
+  if (window.location.href.startsWith(oauthCallbackUri)) {
     if (!isStartListenTwitterOauthStorage()) return;
-    const urlParams = new URLSearchParams(location.search);
+    const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
     if (code) {
       endListenTwitterOauthStorage();
@@ -168,7 +168,7 @@ export default ({
               onLoginProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onLoginSuccess(result.data);
             })
-            .catch((error) => {
+            .catch((error: Error) => {
               onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
               onLoginError(
                 new TwitterError(
@@ -182,7 +182,7 @@ export default ({
       window.addEventListener('storage', handleTwitterCallback);
     } catch (error) {
       onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
-      onLoginError(error);
+      onLoginError(error as Error);
     }
   };
   const bindAction: BindActionStaticFunction = (
@@ -213,7 +213,7 @@ export default ({
               onBindProcess(AuthorizerActionProcessStatus.API_FULFILLED);
               onBindSuccess(result.data);
             })
-            .catch((error) => {
+            .catch((error: Error) => {
               onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
               onBindError(
                 new TwitterError(
@@ -227,7 +227,7 @@ export default ({
       window.addEventListener('storage', handleTwitterCallback);
     } catch (error) {
       onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
-      onBindError(error);
+      onBindError(error as Error);
     }
   };
   return {

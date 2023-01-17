@@ -2,53 +2,63 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 18:57:28
+ * @LastEditTime: 2022-12-17 14:31:46
  * @Description: file description
  */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useWlUserReact } from '../provider';
+import { isDesktop, isMobile } from 'react-device-detect';
 import ModalBase, {
   ModalBaseProps,
   ModalBaseTitle,
 } from './common/modal/ModalBase';
-import { isDesktop, isMobile } from 'react-device-detect';
 import LoginWithAuthorizerButton from './LoginWithAuthorizerButton';
-import { AuthorizerType } from '../authorizers';
+import { useWlUserReact } from '../hooks';
+import { AuthorizerType } from '../authorizers/authorizer';
+import { createClassNamesByTheme } from '../utils/style';
+
 export type LoginModalProps = ModalBaseProps;
 
-const LoginModal: React.FC<LoginModalProps> = ({
-  isOpen,
-  ...modalProps
-}: LoginModalProps) => {
-  const { authorizers, getAuthorizer, authorizer } = useWlUserReact();
+function LoginModal({ isOpen, ...modalProps }: LoginModalProps) {
+  const { authorizers, authorizer, theme } = useWlUserReact();
+  // TODO email 登录接口完成后删除此筛选程序
+  const supportedAuthorizers = authorizers.filter(
+    (item) => item.type !== AuthorizerType.EMAIL
+  );
   // 推荐authorizer暂时先默认使用Twitter
-  const recommendAuthorizer = authorizer || authorizers[0];
+  const recommendAuthorizer = authorizer || supportedAuthorizers[0];
   // 将支持的otherAuthorizers作为登录选项
-  const otherAuthorizers = authorizers.filter(
+  const otherAuthorizers = supportedAuthorizers.filter(
     (item) => recommendAuthorizer.type !== item.type
   );
   const [otherAuthorizersDisplay, setOtherAuthorizersDisplay] = useState(false);
   return (
-    <LoginModalWrapper isOpen={isOpen} {...modalProps}>
+    <LoginModalWrapper
+      isOpen={isOpen}
+      className={createClassNamesByTheme('wl-user-modal_login', theme)}
+      {...modalProps}
+    >
       <LoginModalBody className="wl-user-modal_login-body">
         <ModalBaseTitle>Login With</ModalBaseTitle>
-        <LoginAuthorizerList>
+        <LoginAuthorizerList className="login-options">
           {recommendAuthorizer && (
             <RecommendLoginButton
               authorizerType={recommendAuthorizer.type}
-            ></RecommendLoginButton>
+              className="login-option-recomend"
+            />
           )}
           {isDesktop && (
             <>
               {otherAuthorizersDisplay &&
-                otherAuthorizers.map((authorizer) => (
+                otherAuthorizers.map((item) => (
                   <MoreLoginButton
-                    key={authorizer.type}
-                    authorizerType={authorizer.type}
-                  ></MoreLoginButton>
+                    key={item.type}
+                    authorizerType={item.type}
+                    className="login-option-other"
+                  />
                 ))}
               <OtherAuthorizersDisplayBtn
+                className="login-other-display"
                 onClick={() =>
                   setOtherAuthorizersDisplay(!otherAuthorizersDisplay)
                 }
@@ -61,7 +71,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
       </LoginModalBody>
     </LoginModalWrapper>
   );
-};
+}
 export default LoginModal;
 
 const LoginModalWrapper = styled(ModalBase)``;
@@ -92,7 +102,7 @@ const RecommendLoginButton = styled(LoginWithAuthorizerButton)`
   width: 100%;
   height: 160px;
   flex-direction: column;
-  .wl-user-button-login_authorizer-icon {
+  .authorizer-icon {
     width: 50px;
     height: 50px;
   }

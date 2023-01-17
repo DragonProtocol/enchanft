@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 19:28:17
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-13 12:25:40
+ * @LastEditTime: 2022-11-17 17:24:31
  * @Description: file description
  */
 import { AccountType } from '../../../api';
@@ -13,18 +13,17 @@ import {
   AuthorizerType,
   AuthorizerWebVersion,
 } from '../../authorizer';
-import { ActionProviderComponent } from './actionProviderComponent';
+import ActionProviderComponent from './actionProviderComponent';
 import iconUrl from './icon.svg';
-export default (): Authorizer => {
-  return {
-    type: AuthorizerType.EVM_WALLET_KIT,
-    accountType: AccountType.EVM,
-    webVersion: AuthorizerWebVersion.web3,
-    name: 'Evm Wallet Kit',
-    bgColor: '#F6851B',
-    nameColor: '#FFFFFF',
-    iconUrl,
-    actionProcessComponent: AuthProcessModal,
-    ...createActionConfigByProviderComponent(ActionProviderComponent),
-  };
-};
+
+export default (): Authorizer => ({
+  type: AuthorizerType.EVM_WALLET_KIT,
+  accountType: AccountType.EVM,
+  webVersion: AuthorizerWebVersion.web3,
+  name: 'Evm Wallet Kit',
+  bgColor: '#F6851B',
+  nameColor: '#FFFFFF',
+  iconUrl,
+  actionProcessComponent: AuthProcessModal,
+  ...createActionConfigByProviderComponent(ActionProviderComponent),
+});

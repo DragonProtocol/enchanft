@@ -2,21 +2,22 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-10 22:04:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 22:52:42
+ * @LastEditTime: 2022-11-25 13:21:27
  * @Description: file description
  */
-export class Pubsub {
-  constructor() {}
-  private clientList = [];
+export default class Pubsub {
+  private clientList: any[] = [];
+
   public listen(key: string | number, fn: any): void {
     if (!fn) return;
-    if (!this.clientList[key]) {
-      this.clientList[key] = [];
+    if (!this.clientList[key as number]) {
+      this.clientList[key as number] = [];
     }
-    this.clientList[key].push(fn);
+    this.clientList[key as number].push(fn);
   }
+
   public trigger(key: string | number, ...arg: any[]): void {
-    const fns = this.clientList[key];
+    const fns = this.clientList[key as number];
     if (!fns || fns.length === 0) {
       return;
     }
@@ -27,17 +28,18 @@ export class Pubsub {
       }
     }
   }
+
   public remove(key: string | number, fn: any): void {
-    const fns = this.clientList[key];
+    const fns = this.clientList[key as number];
     if (!fns) {
       return;
     }
     if (!fn) {
-      fns && (fns.length = 0);
+      if (fns) fns.length = 0;
     } else {
       for (let l = fns.length - 1; l >= 0; l--) {
-        const _fn = fns[l];
-        if (_fn === fn) {
+        const f = fns[l];
+        if (f === fn) {
           fns.splice(l, 1);
         }
       }

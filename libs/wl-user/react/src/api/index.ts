@@ -2,17 +2,25 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-29 16:51:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-07 14:37:16
+ * @LastEditTime: 2022-11-18 17:07:56
  * @Description: file description
  */
 import axios, { AxiosInstance, AxiosPromise } from 'axios';
 import qs from 'qs';
+
+export enum AsyncRequestStatus {
+  IDLE = 'idle',
+  PENDING = 'pending',
+  FULFILLED = 'fulfilled',
+  REJECTED = 'rejected',
+}
 export enum AccountType {
   TWITTER = 'TWITTER',
   DISCORD = 'DISCORD',
   SOLANA = 'SOLANA',
   EVM = 'EVM',
   APTOS = 'APTOS',
+  EMAIL = 'EMAIL',
 }
 
 export enum RoleType {
@@ -79,7 +87,7 @@ export class ApiError extends Error {
 }
 
 // 添加响应拦截器
-let authFailedCallback: any;
+let authFailedCallback: () => void;
 export const setAuthFailedCallback = (callback: () => void) => {
   authFailedCallback = callback;
 };
@@ -106,13 +114,11 @@ axiosInstance.interceptors.response.use(
           authFailedCallback();
         }
         return undefined;
-      } else {
-        return Promise.reject(error.response?.data || error);
       }
-    } else {
-      // 对响应错误做点什么
       return Promise.reject(error.response?.data || error);
     }
+    // 对响应错误做点什么
+    return Promise.reject(error.response?.data || error);
   }
 );
 
@@ -141,9 +147,15 @@ type LoginParamsForDiscordAccount = {
   code: string;
   callback?: string;
 };
+type LoginAccountParamsForEmailAccount = {
+  type: AccountType;
+  code: string;
+  pubkey: string;
+};
 type LoginParamsMap = {
   [AccountType.TWITTER]: LoginParamsForTwitterAccount;
   [AccountType.DISCORD]: LoginParamsForDiscordAccount;
+  [AccountType.EMAIL]: LoginAccountParamsForEmailAccount;
   [AccountType.EVM]: HandleAccountParamsForWeb3Account;
   [AccountType.SOLANA]: HandleAccountParamsForWeb3Account;
   [AccountType.APTOS]: HandleAccountParamsForWeb3Account;
@@ -162,9 +174,9 @@ export function login<K extends keyof LoginParamsMap>(
 ): AxiosPromise<LoginResult> {
   const data = qs.stringify(params);
   return axiosInstance({
-    url: `/users/login`,
+    url: '/users/login',
     method: 'post',
-    data: params,
+    data,
   });
 }
 
@@ -179,9 +191,15 @@ type BindAccountParamsForDiscordAccount = {
   code: string;
   callback: string;
 };
+type BindAccountParamsForEmailAccount = {
+  type: AccountType;
+  code: string;
+  pubkey: string;
+};
 type BindAccountParamsMap = {
   [AccountType.TWITTER]: BindAccountParamsForTwitterAccount;
   [AccountType.DISCORD]: BindAccountParamsForDiscordAccount;
+  [AccountType.EMAIL]: BindAccountParamsForEmailAccount;
   [AccountType.EVM]: HandleAccountParamsForWeb3Account;
   [AccountType.SOLANA]: HandleAccountParamsForWeb3Account;
   [AccountType.APTOS]: HandleAccountParamsForWeb3Account;
@@ -196,7 +214,7 @@ export function bindAccount<K extends keyof BindAccountParamsMap>(
   return axiosInstance({
     url: '/users/link',
     method: 'post',
-    data: data,
+    data,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -213,7 +231,7 @@ export function unbindAccount(
   return axiosInstance({
     url: '/users/unlink',
     method: 'post',
-    data: data,
+    data,
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -270,16 +288,17 @@ export function uploadUserAvatar(
     },
   });
 }
-// get twittier oauth1 request token ==================================
-type GetTwitterOauth1RequestTokenResult = {
-  oauthToken: string;
-  oauthTokenSecret: string;
-};
-export function getTwittierOauth1RequestToken(
-  callbackUri: string
-): AxiosPromise<ApiResp<GetTwitterOauth1RequestTokenResult>> {
+// send email
+export function sendEmailAuthRequest(
+  email: string,
+  token?: string
+): AxiosPromise<ApiResp<unknown>> {
   return axiosInstance({
-    url: `/users/twitter/oauth/request_token?callback=${callbackUri}`,
-    method: 'get',
+    url: '/users/email',
+    method: 'post',
+    data: qs.stringify({ email }),
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
   });
 }

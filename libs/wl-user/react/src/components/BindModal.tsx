@@ -2,38 +2,48 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-27 18:36:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-10 19:09:02
+ * @LastEditTime: 2022-12-17 14:23:42
  * @Description: file description
  */
 import React from 'react';
 import styled from 'styled-components';
-import ModalBase, { ModalBaseTitle } from './common/modal/ModalBase';
-import { isMobile } from 'react-device-detect';
+import ModalBase, {
+  ModalBaseBody,
+  ModalBaseTitle,
+} from './common/modal/ModalBase';
 import BindWithAuthorizerButton from './BindWithAuthorizerButton';
 import IconClose from './common/icons/IconClose';
 import { Authorizer } from '../authorizers';
+import { useWlUserReact } from '../hooks';
+import { createClassNamesByTheme } from '../utils/style';
+
 export type BindModalProps = {
   isOpen: boolean;
-  authorizer: Authorizer | null;
+  authorizer: Maybe<Authorizer>;
   onClose?: () => void;
 };
 
-const BindModal: React.FC<BindModalProps> = ({
+const BindModal: React.FC<BindModalProps> = function ({
   isOpen,
   authorizer,
   onClose,
-}: BindModalProps) => {
+}: BindModalProps) {
+  const { theme } = useWlUserReact();
   if (!authorizer) return null;
   const { name, type } = authorizer;
   return (
-    <BindModalWrapper isOpen={isOpen}>
-      <BindModalBody className="wl-user-modal_login-body">
-        <BindModalCloseButton onClick={onClose}>
+    <BindModalWrapper
+      className={createClassNamesByTheme('wl-user-modal_bind', theme)}
+      isOpen={isOpen}
+    >
+      <BindModalBody className="wl-user-modal_bind-body">
+        <BindModalCloseButton className="btn-close" onClick={onClose}>
           <IconClose />
         </BindModalCloseButton>
-        <ModalBaseTitle>Bind With</ModalBaseTitle>
-        <BindModalDesc>
-          {name} is not connected. Please connect {name}.
+        <ModalBaseTitle className="bind-title">Bind With</ModalBaseTitle>
+        <BindModalDesc className="bind-desc">
+          {name} is not connected. Please connect
+          {name}.
         </BindModalDesc>
         <BindButton authorizerType={type} />
       </BindModalBody>
@@ -43,14 +53,11 @@ const BindModal: React.FC<BindModalProps> = ({
 export default BindModal;
 
 const BindModalWrapper = styled(ModalBase)``;
-const BindModalBody = styled.div`
+const BindModalBody = styled(ModalBaseBody)`
   display: flex;
   flex-direction: column;
-  padding: 20px;
   gap: 20px;
   position: relative;
-  background: #f7f9f1;
-  border-radius: 20px;
 `;
 const BindModalCloseButton = styled.div`
   position: absolute;

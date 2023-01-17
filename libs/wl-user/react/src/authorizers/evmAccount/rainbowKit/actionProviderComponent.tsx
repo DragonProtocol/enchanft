@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-07 15:29:49
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-11-14 13:24:36
+ * @LastEditTime: 2022-12-16 18:32:46
  * @Description: file description
  */
 import '@rainbow-me/rainbowkit/styles.css';
@@ -11,6 +11,8 @@ import {
   getDefaultWallets,
   connectorsForWallets,
   useConnectModal,
+  darkTheme,
+  lightTheme,
 } from '@rainbow-me/rainbowkit';
 import {
   argentWallet,
@@ -30,12 +32,13 @@ import {
 import { publicProvider } from 'wagmi/providers/public';
 import { useCallback, useEffect, useRef } from 'react';
 import { AccountType, login, bindAccount } from '../../../api';
-import { useWlUserReact } from '../../../provider';
 import {
   AuthorizerActionProcessStatus,
   AuthorizerActionProviderComponentProps,
 } from '../../authorizer';
 import { SIGN_MSG } from '../../../constants';
+import { useWlUserReact } from '../../../hooks';
+
 const { chains, provider, webSocketProvider } = configureChains(
   [chain.mainnet, chain.polygon, chain.optimism, chain.arbitrum],
   [publicProvider()]
@@ -74,8 +77,8 @@ enum CurrentActionType {
   LOGIN = 'LOGIN',
   BIND = 'BIND',
 }
-
-export function ActionProviderComponent({
+type Props = AuthorizerActionProviderComponentProps;
+const ActionProviderComponent: React.FC<Props> = function ({
   onLoginProcess,
   onLoginSuccess,
   onLoginError,
@@ -84,9 +87,9 @@ export function ActionProviderComponent({
   onBindError,
   setLoginAction,
   setBindAction,
-}: AuthorizerActionProviderComponentProps) {
+}: Props) {
   const currentActionType = useRef<CurrentActionType>(CurrentActionType.NONE);
-  const { user } = useWlUserReact();
+  const { user, theme } = useWlUserReact();
 
   const setOpenConnectModal = (fn: () => void) => {
     setLoginAction(() => {
@@ -119,9 +122,9 @@ export function ActionProviderComponent({
         onLoginProcess(AuthorizerActionProcessStatus.API_PENDING);
         login({
           type: AccountType.EVM,
-          signature: signature,
+          signature,
           payload: message,
-          pubkey: pubkey,
+          pubkey,
         })
           .then((result) => {
             const authenticated = !!result.data.token;
@@ -133,7 +136,7 @@ export function ActionProviderComponent({
               onLoginError(new Error('Login Failed'));
             }
           })
-          .catch((error) => {
+          .catch((error: Error) => {
             onLoginProcess(AuthorizerActionProcessStatus.API_REJECTED);
             onLoginError(error);
           })
@@ -144,9 +147,9 @@ export function ActionProviderComponent({
         onBindProcess(AuthorizerActionProcessStatus.API_PENDING);
         bindAccount(user.token, {
           type: AccountType.EVM,
-          signature: signature,
+          signature,
           payload: message,
-          pubkey: pubkey,
+          pubkey,
         })
           .then((result) => {
             const authenticated = !!result.data;
@@ -158,7 +161,7 @@ export function ActionProviderComponent({
               onBindError(new Error('Bind Failed'));
             }
           })
-          .catch((error) => {
+          .catch((error: Error) => {
             onBindProcess(AuthorizerActionProcessStatus.API_REJECTED);
             onBindError(error);
           })
@@ -172,6 +175,7 @@ export function ActionProviderComponent({
       onLoginSuccess,
       onLoginError,
       onBindProcess,
+      user.token,
       onBindSuccess,
       onBindError,
     ]
@@ -186,11 +190,16 @@ export function ActionProviderComponent({
         onBindError(error);
       }
     },
-    [onLoginError, onBindError]
+    [onLoginProcess, onLoginError, onBindProcess, onBindError]
   );
+  const rainbowkitTheme = theme === 'dark' ? darkTheme() : lightTheme();
   return (
     <WagmiConfig client={wagmiClient}>
-      <RainbowKitProvider appInfo={appInfo} chains={chains}>
+      <RainbowKitProvider
+        appInfo={appInfo}
+        chains={chains}
+        theme={rainbowkitTheme}
+      >
         <RainbowKitAuth
           setOpenConnectModal={setOpenConnectModal}
           onSignStart={onSignStart}
@@ -200,19 +209,20 @@ export function ActionProviderComponent({
       </RainbowKitProvider>
     </WagmiConfig>
   );
-}
+};
+export default ActionProviderComponent;
 type RainbowKitAuthProps = {
   setOpenConnectModal: (fn: () => void) => void;
   onSignStart: () => void;
   onSignSuccess: (signature: string, message: string, pubkey: string) => void;
   onSignError: (error: Error) => void;
 };
-const RainbowKitAuth: React.FC<RainbowKitAuthProps> = ({
+const RainbowKitAuth: React.FC<RainbowKitAuthProps> = function ({
   setOpenConnectModal,
   onSignStart,
   onSignSuccess,
   onSignError,
-}) => {
+}: RainbowKitAuthProps) {
   const { isLogin } = useWlUserReact();
   const { disconnect } = useDisconnect();
   const { openConnectModal } = useConnectModal();
@@ -234,10 +244,10 @@ const RainbowKitAuth: React.FC<RainbowKitAuthProps> = ({
   }, [resetSign, disconnect]);
   useEffect(() => {
     if (isSignLoading) {
-      onSignStart && onSignStart();
+      onSignStart();
     } else if (isConnected) {
       if (!isSignSuccess && !isSignError) {
-        signMessage && signMessage();
+        signMessage();
       } else if (isSignSuccess) {
         if (signData && address && onSignSuccess)
           onSignSuccess(signData, SIGN_MSG, address);
@@ -266,6 +276,9 @@ const RainbowKitAuth: React.FC<RainbowKitAuthProps> = ({
   useEffect(() => {
     handleReset();
   }, [isLogin, handleReset]);
-  useEffect(() => setOpenConnectModal(openConnectModal), [openConnectModal]);
+  useEffect(
+    () => openConnectModal && setOpenConnectModal(openConnectModal),
+    [openConnectModal, setOpenConnectModal]
+  );
   return null;
 };

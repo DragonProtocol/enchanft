@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "files": ["../../typings/cssmodule.d.ts", "../../typings/image.d.ts"],
+  "exclude": [
+    "./src/setupTests.ts",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/*.spec.tsx",
+    "**/*.test.tsx"
+  ],
+  "include": ["**/*.ts", "**/*.tsx"]
+}
