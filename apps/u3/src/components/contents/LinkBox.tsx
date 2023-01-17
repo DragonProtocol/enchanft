@@ -25,6 +25,7 @@ const Box = styled.div`
   gap: 4px;
 
   > span {
+    flex: 1;
     font-weight: 400;
     font-size: 12px;
     line-height: 14px;

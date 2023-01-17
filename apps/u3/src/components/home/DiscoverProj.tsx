@@ -77,7 +77,7 @@ function Card({
 }
 const CardWrapper = styled.div`
   cursor: pointer;
-  height: 88px;
+  height: 96px;
   padding: 20px;
   border-bottom: 1px solid #39424c;
   box-sizing: border-box;
@@ -92,8 +92,10 @@ const CardWrapper = styled.div`
   }
 `;
 const CardBox = styled.div`
+  height: 100%;
   transition: all 0.3s;
   display: flex;
+  align-items: center;
   gap: 10px;
   box-sizing: border-box;
   & > img {

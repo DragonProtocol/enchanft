@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-16 17:06:36
+ * @LastEditTime: 2023-01-17 15:31:55
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -423,7 +423,6 @@ function Contents() {
                           favorPendingIds={favorPendingIds}
                           clickAction={() => {
                             setSelectContent(item);
-                            navigate(`/contents/${item.id || item.uuid}`);
                           }}
                           shareAction={() => {
                             onShare(item);
