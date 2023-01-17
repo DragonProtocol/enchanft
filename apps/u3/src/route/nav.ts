@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 13:59:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 15:20:26
+ * @LastEditTime: 2023-01-17 16:02:53
  * @Description: file description
  */
 import React, { ReactNode } from 'react';
@@ -11,6 +11,7 @@ import { ReactComponent as ProfileSvg } from '../components/common/icons/svgs/pr
 import { ReactComponent as FeedSvg } from '../components/common/icons/svgs/feed.svg';
 import { ReactComponent as LikeSvg } from '../components/common/icons/svgs/like.svg';
 import { ReactComponent as PlusSquareSvg } from '../components/common/icons/svgs/plus-square.svg';
+import { ReactComponent as GridSvg } from '../components/common/icons/svgs/grid.svg';
 
 import { CutomRouteObject, getRoute, RouteKey } from './routes';
 
@@ -39,13 +40,14 @@ export const navs: CutomNavObject[] = [
     key: 'feed',
     name: 'Feed',
     icon: React.createElement(FeedSvg),
-    activeRouteKeys: [
-      RouteKey.events,
-      RouteKey.contents,
-      RouteKey.frens,
-      RouteKey.projects,
-    ],
+    activeRouteKeys: [RouteKey.events, RouteKey.contents, RouteKey.frens],
     route: getRoute(RouteKey.contents),
+  },
+  {
+    name: 'dapp',
+    activeRouteKeys: [RouteKey.projects, RouteKey.project],
+    icon: React.createElement(GridSvg),
+    route: getRoute(RouteKey.projects),
   },
   {
     name: 'favorite',

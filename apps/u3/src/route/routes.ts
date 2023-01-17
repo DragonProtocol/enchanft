@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-05 16:09:09
+ * @LastEditTime: 2023-01-17 13:05:29
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -77,8 +77,8 @@ export const routes: CutomRouteObject[] = [
   },
   {
     path: '/projects/:id',
-    element: loadContainerElement('Projects'),
-    key: RouteKey.projects,
+    element: loadContainerElement('ProjectDetail'),
+    key: RouteKey.project,
   },
   {
     path: '/contents/:id',

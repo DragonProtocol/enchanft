@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 14:02:08
+ * @LastEditTime: 2023-01-17 16:09:49
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -11,10 +11,6 @@ import styled from 'styled-components';
 import { MainWrapper } from '../components/layout/Index';
 import ListScrollBox from '../components/common/box/ListScrollBox';
 import ProjectExploreList from '../components/project/ProjectExploreList';
-import ProjectExploreListFilter, {
-  defaultProjectExploreListFilterValues,
-  ProjectExploreListFilterValues,
-} from '../components/project/ProjectExploreListFilter';
 import {
   fetchMoreProjectExploreList,
   fetchProjectExploreList,
@@ -27,12 +23,13 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import ScrollBox from '../components/common/box/ScrollBox';
 import Loading from '../components/common/loading/Loading';
 import useProjectHandles from '../hooks/useProjectHandles';
-import ProjectDetailView from '../components/project/ProjectDetailView';
 import useEventHandles from '../hooks/useEventHandles';
 import useContentHandles from '../hooks/useContentHandles';
 import { ContentListItem } from '../services/types/contents';
 import NoResult from '../components/common/NoResult';
-import FeedsMenu from '../components/layout/FeedsMenu';
+import DappExploreListFilter, {
+  defaultDappExploreListFilterValues,
+} from '../components/dapp/DappExploreListFilter';
 
 export default function Projects() {
   const { id } = useParams();
@@ -50,9 +47,7 @@ export default function Projects() {
     () => status === AsyncRequestStatus.PENDING,
     [status]
   );
-  const [filter, setFilter] = useState<ProjectExploreListFilterValues>(
-    defaultProjectExploreListFilterValues
-  );
+  const [filter, setFilter] = useState(defaultDappExploreListFilterValues);
   const [project, setProject] = useState<ProjectExploreListItemResponse | null>(
     null
   );
@@ -93,8 +88,7 @@ export default function Projects() {
   );
   return (
     <ProjectsWrapper>
-      <FeedsMenu />
-      <ProjectExploreListFilter
+      <DappExploreListFilter
         values={filter}
         onChange={(newFilter) => setFilter(newFilter)}
       />
@@ -104,35 +98,22 @@ export default function Projects() {
         ) : (
           <MainBody>
             {!isEmpty ? (
-              <>
-                <ListBox onScrollBottom={getMore}>
-                  <ProjectExploreList
-                    data={projectExploreList}
-                    activeId={project?.id || 0}
-                    favoredIds={favoredIds}
-                    favorQueueIds={favorQueueIds}
-                    onFavor={onFavor}
-                    onShare={onShare}
-                    onItemClick={setProject}
-                  />
-                  {isLoadingMore ? (
-                    <MoreLoading>loading ...</MoreLoading>
-                  ) : noMore ? (
-                    <MoreLoading>No other projects</MoreLoading>
-                  ) : null}
-                </ListBox>
-                <ContentBox>
-                  {project && (
-                    <ProjectDetailView
-                      data={project}
-                      eventCompletedIds={eventCompletedIds}
-                      eventCompleteQueueIds={eventCompleteQueueIds}
-                      onEventComplete={onEventComplete}
-                      onContentVote={onVote}
-                    />
-                  )}
-                </ContentBox>
-              </>
+              <ListBox onScrollBottom={getMore}>
+                <ProjectExploreList
+                  data={projectExploreList}
+                  activeId={project?.id || 0}
+                  favoredIds={favoredIds}
+                  favorQueueIds={favorQueueIds}
+                  onFavor={onFavor}
+                  onShare={onShare}
+                  onItemClick={setProject}
+                />
+                {isLoadingMore ? (
+                  <MoreLoading>loading ...</MoreLoading>
+                ) : noMore ? (
+                  <MoreLoading>No other projects</MoreLoading>
+                ) : null}
+              </ListBox>
             ) : (
               <NoResult />
             )}

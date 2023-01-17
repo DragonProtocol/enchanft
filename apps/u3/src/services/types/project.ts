@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 15:23:18
+ * @LastEditTime: 2023-01-17 14:34:38
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -26,6 +26,8 @@ export type ProjectExploreListParams = {
   keywords?: string;
   orderBy?: OrderBy | '';
   type?: ProjectType | '';
+  types?: string[];
+  chains?: string[];
   pageSize?: number;
   pageNumber?: number;
   projectId?: number;
