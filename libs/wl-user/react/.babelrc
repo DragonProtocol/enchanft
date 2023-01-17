@@ -1,0 +1,54 @@
+{
+  "presets": [
+    [
+      "@babel/preset-env",
+      {
+        "runtime": "automatic",
+        // 自动注入core-js (core-js: 填充浏览器未支持的功能，取代了polyfill, 需单独安装此包）
+        "useBuiltIns": "usage",
+        "corejs": 3,
+        // Do not transform modules to CJS
+        "modules": false,
+        "targets": {
+          "esmodules": true
+        },
+        "bugfixes": true,
+        // Exclude transforms that make all code slower
+        "exclude": ["transform-typeof-symbol"],
+        // This must match the setting for `@babel/plugin-proposal-class-properties`
+        "loose": true
+      }
+    ],
+    [
+      "@babel/preset-typescript",
+      {
+        "allowDeclareFields": true
+      }
+    ],
+    [
+      "@babel/preset-react",
+      {
+        "runtime": "automatic",
+        "useBuiltIns": true
+      }
+    ]
+  ],
+  "plugins": [
+    [
+      // 1.重用注入的core-js程序代码，以节省代码大小（运行时再编译core-js的代码中，这更适合多个文件的应用程序），
+      // 2.会创建一个沙盒环境避免变量污染
+      "@babel/plugin-transform-runtime",
+      {
+        "absoluteRuntime": false,
+        "helpers": true,
+        "regenerator": true,
+        "useESModules": true
+      }
+    ],
+    "babel-plugin-macros",
+    "babel-plugin-transform-typescript-metadata",
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    ["@babel/plugin-proposal-class-properties", { "loose": true }],
+    ["styled-components", { "pure": true, "ssr": true }]
+  ]
+}
