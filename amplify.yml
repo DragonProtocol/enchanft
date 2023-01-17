@@ -32,7 +32,7 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/wl
+  - appRoot: apps/wl-landing-page
     frontend:
       phases:
         preBuild:
@@ -48,15 +48,18 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/collector-page
+  - appRoot: apps/wl-collector-page
     frontend:
       phases:
         preBuild:
           commands:
-             - npm i
+            - yarn
+            - cd ../../
+            - yarn
+            - cd -
         build:
           commands:
-            - npm run build
+            - yarn build
       artifacts:
         baseDirectory: build
         files:
@@ -64,17 +67,36 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/mini-site/baatarverse
+  - appRoot: apps/wl-creator-page
     frontend:
       phases:
         preBuild:
           commands:
-            - npm i
+            - yarn
         build:
           commands:
-            - npm run export
+            - yarn build
       artifacts:
-        baseDirectory: out
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+  - appRoot: apps/u3
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - yarn
+            - cd ../../
+            - yarn
+            - cd -
+        build:
+          commands:
+            - yarn build
+      artifacts:
+        baseDirectory: build
         files:
           - '**/*'
       cache:

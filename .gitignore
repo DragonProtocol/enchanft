@@ -35,9 +35,14 @@ npm-debug.log
 yarn-error.log
 testem.log
 .pnpm-debug.log
-/typings
 
 # System Files
 .DS_Store
 Thumbs.db
-node_modules
+
+# lock Files
+pnpm-lock.yaml
+yarn.lock
+
+.rollup-stats.html
+.eslintcache
