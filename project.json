@@ -2,11 +2,11 @@
   "u3": {
     "dir": "apps/u3"
   },
-  "collector-page": {
-    "dir": "apps/collector-page"
+  "wl-collector-page": {
+    "dir": "apps/wl-collector-page"
   },
-  "creator-page": {
-    "dir": "apps/creator-page"
+  "wl-creator-page": {
+    "dir": "apps/wl-creator-page"
   },
   "demo": {
     "dir": "apps/demo"
@@ -14,8 +14,8 @@
   "landing-page": {
     "dir": "apps/landing-page"
   },
-  "wl": {
-    "dir": "apps/wl"
+  "wl-landing-page": {
+    "dir": "apps/wl-landing-page"
   },
   "js-sdk-core": {
     "dir": "libs/js-sdk/core"

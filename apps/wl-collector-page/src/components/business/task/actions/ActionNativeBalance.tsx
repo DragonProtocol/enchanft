@@ -7,7 +7,7 @@
  */
 import React from 'react';
 import styled, { css } from 'styled-components';
-import { Chain } from 'apps/collector-page/src/types/entities';
+import { Chain } from '../../../../types/entities';
 import { UserActionStatus } from '../../../../types/api';
 import type { TaskActionItemDataType } from '../TaskActionItem';
 import TooltipWrapper from '../../../common/tooltip/TooltipWrapper';

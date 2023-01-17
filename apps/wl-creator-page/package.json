@@ -1,5 +1,5 @@
 {
-  "name": "creator-page",
+  "name": "wl-creator-page",
   "version": "0.5.0",
   "private": true,
   "dependencies": {
@@ -54,6 +54,12 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
     ]
   },
   "devDependencies": {

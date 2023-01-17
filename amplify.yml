@@ -32,7 +32,7 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/wl
+  - appRoot: apps/wl-landing-page
     frontend:
       phases:
         preBuild:
@@ -48,7 +48,7 @@ applications:
       cache:
         paths:
           - node_modules/**/*
-  - appRoot: apps/collector-page
+  - appRoot: apps/wl-collector-page
     frontend:
       phases:
         preBuild:
@@ -56,7 +56,23 @@ applications:
             - yarn
             - cd ../../
             - yarn
-            - cd apps/collector-page/
+            - cd -
+        build:
+          commands:
+            - yarn build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
+  - appRoot: apps/wl-creator-page
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - yarn
         build:
           commands:
             - yarn build
@@ -72,29 +88,13 @@ applications:
       phases:
         preBuild:
           commands:
-            - npm i --legacy-peer-deps
+            - yarn
             - cd ../../
-            - npm i
-            - cd apps/u3
+            - yarn
+            - cd -
         build:
           commands:
-            - npm run build
-      artifacts:
-        baseDirectory: build
-        files:
-          - '**/*'
-      cache:
-        paths:
-          - node_modules/**/*
-  - appRoot: apps/creator-page
-    frontend:
-      phases:
-        preBuild:
-          commands:
-            - npm i
-        build:
-          commands:
-            - npm run build
+            - yarn build
       artifacts:
         baseDirectory: build
         files:
