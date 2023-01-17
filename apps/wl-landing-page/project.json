@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "apps/landing-page/src",
+  "sourceRoot": "apps/wl/src",
   "projectType": "application",
   "tags": []
 }

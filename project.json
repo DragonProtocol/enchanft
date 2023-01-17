@@ -11,11 +11,11 @@
   "demo": {
     "dir": "apps/demo"
   },
+  "landing-page": {
+    "dir": "apps/landing-page"
+  },
   "wl-landing-page": {
     "dir": "apps/wl-landing-page"
-  },
-  "wl": {
-    "dir": "apps/wl"
   },
   "js-sdk-core": {
     "dir": "libs/js-sdk/core"

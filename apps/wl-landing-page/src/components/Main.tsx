@@ -10,18 +10,12 @@ import React, { useEffect } from 'react';
 import { useRoutes, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import About from '../container/About';
-import Launchpad from '../container/Launchpad';
-import MyEnchaNFT from '../container/MyEnchaNFT';
-import Info from '../container/Info';
 import { backToTop } from '../utils/tools';
 
 const Main: React.FC = () => {
   const location = useLocation();
   const routes = useRoutes([
     { path: '/', element: <About /> },
-    { path: '/launchpad', element: <Launchpad /> },
-    { path: '/myenchanft', element: <MyEnchaNFT /> },
-    { path: '/info/:mint', element: <Info /> },
     { path: '*', element: <div>404</div> },
   ]);
   useEffect(() => {

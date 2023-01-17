@@ -1,8 +1,15 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2022-07-04 10:38:47
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2022-11-29 15:35:25
+ * @Description: file description
+ */
+
 const path = require('path');
 const webpack = require('webpack');
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 const ModuleScopePlugin = require('react-dev-utils/ModuleScopePlugin');
-
 module.exports = {
   webpack: {
     configure: (config) => {
@@ -14,7 +21,7 @@ module.exports = {
       // Add support for importing workspace projects.
       config.resolve.plugins.push(
         new TsConfigPathsPlugin({
-          configFile: path.resolve(__dirname, 'tsconfig.json'),
+          configFile: path.resolve(__dirname, 'tsconfig.app.json'),
           extensions: ['.ts', '.tsx', '.js', '.jsx'],
           mainFields: ['module', 'main'],
         })
