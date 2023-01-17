@@ -20,6 +20,8 @@ import AddWalletModal from './AddWalletModal';
 import { ProfileWallet } from '../../services/types/profile';
 import { defaultFormatDate } from '../../utils/time';
 import Karma from '../common/Karma';
+import { useAppSelector } from '../../store/hooks';
+import { selectKarmaState } from '../../features/profile/karma';
 
 export default function Info({
   walletAddr,
@@ -36,6 +38,8 @@ export default function Info({
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
   const { dispatchModal, user, authorizer, getBindAccount } = useWlUserReact();
+  const { score } = useAppSelector(selectKarmaState);
+
   const nameStr = getUserDisplayName(user, authorizer);
   const twitterAccount = getBindAccount(AccountType.TWITTER);
   const discordAccount = getBindAccount(AccountType.DISCORD);
@@ -57,7 +61,7 @@ export default function Info({
           <div className="nickname">
             <div>
               <span className="name">{nameStr}</span>
-              <Karma score="1234" />
+              <Karma score={`${score}`} />
             </div>
             <div className="wallet">
               <WalletList

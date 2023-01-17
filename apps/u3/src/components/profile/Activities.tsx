@@ -10,6 +10,7 @@ import Karma from '../common/Karma';
 
 export default function Activities() {
   const [list, setList] = useState([{ id: 1 }, { id: 2 }]);
+
   if (list.length === 0) {
     return <NoActivities />;
   }
@@ -24,7 +25,7 @@ export default function Activities() {
         <div className="u-karma-item title">U Karma</div>
         <div className="u-karma-item">
           <div>
-            <Karma score="1234" />
+            <Karma score="score" />
             <span>{dayjs('1999-01-01').fromNow()}</span>
           </div>
           <div>GM have a nice day in U3</div>
