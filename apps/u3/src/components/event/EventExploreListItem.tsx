@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 14:48:55
+ * @LastEditTime: 2023-01-17 16:20:07
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -85,6 +85,7 @@ export default function EventExploreListItem({
     style = styleMaps[data.platform.name] || defaultStyle;
   }
   const { bgc, activeColor } = style;
+  const chainIconUrl = getChainInfo(data.chain)?.iconUrl;
   return (
     <EventExploreListItemWrapper
       bgc={bgc}
@@ -94,7 +95,10 @@ export default function EventExploreListItem({
     >
       <ListItemInner>
         <TopBox>
-          <ChainIcon src={getChainInfo(data.chain)?.iconUrl} />
+          {data?.platform?.logo && (
+            <EventPlatformIcon src={data.platform.logo} />
+          )}
+
           <EventName>{data.name}</EventName>
         </TopBox>
 
@@ -103,9 +107,7 @@ export default function EventExploreListItem({
           {data?.startTime && (
             <EventStartTime>{defaultFormatDate(data.startTime)}</EventStartTime>
           )}
-          {data?.platform?.logo && (
-            <EventPlatformIcon src={data.platform.logo} />
-          )}
+          {chainIconUrl && <ChainIcon src={chainIconUrl} />}
         </CenterBox>
         {displayHandles && (
           <EventHandles>

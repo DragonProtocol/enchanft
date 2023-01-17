@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 16:05:46
+ * @LastEditTime: 2023-01-17 16:21:56
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -30,6 +30,7 @@ export default function EventExploreGridListItem({
     : isUrl(platform?.logo)
     ? platform.logo
     : '';
+  const chainIconUrl = getChainInfo(data.chain)?.iconUrl;
   return (
     <EventExploreGridListItemWrapper {...props}>
       <ListItemInner>
@@ -42,7 +43,8 @@ export default function EventExploreGridListItem({
           <BottomColumn>
             <RewardTag value={data.reward} />
             <BottomRow>
-              <ChainIcon src={getChainInfo(data.chain)?.iconUrl} />
+              {chainIconUrl && <ChainIcon src={chainIconUrl} />}
+
               {data?.startTime && (
                 <EventStartTime>
                   {defaultFormatDate(data.startTime)}
