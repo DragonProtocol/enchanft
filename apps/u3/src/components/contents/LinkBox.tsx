@@ -1,19 +1,22 @@
-import styled from 'styled-components';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { LinkIcon } from '../icons/link';
 
-export default function LinkBox({ text }: { text: string }) {
+type Props = StyledComponentPropsWithRef<'div'> & { text: string };
+
+export default function LinkBox({ text, ...otherProps }: Props) {
   if (!text) return null;
   return (
-    <Box>
+    <Box {...otherProps}>
       <LinkIcon />
       <span>{text}</span>
     </Box>
   );
 }
 
-const Box = styled.span`
+const Box = styled.div`
   padding: 2px 4px;
-  /* height: 18px; */
+  height: 18px;
+  box-sizing: border-box;
   background: #14171a;
   border-radius: 4px;
   overflow: hidden;
@@ -22,6 +25,7 @@ const Box = styled.span`
   gap: 4px;
 
   > span {
+    flex: 1;
     font-weight: 400;
     font-size: 12px;
     line-height: 14px;

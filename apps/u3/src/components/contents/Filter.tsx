@@ -6,14 +6,14 @@ import CardBase from '../common/card/CardBase';
 import CheckboxMultiChoice from '../common/checkbox/CheckboxMultiChoice';
 
 export default function Filter({
+  values,
   filterAction,
 }: {
+  values: { types: string[]; lang: string[] };
   filterAction: (data: { types: string[]; lang: string[] }) => void;
 }) {
   const { topics } = useConfigsTopics();
   const { contentTypes, langs } = topics;
-  const [types, setTypes] = useState([]);
-  const [lang, setLang] = useState([]);
   return (
     <FilterWrapper>
       <CheckboxMultiChoice
@@ -25,10 +25,9 @@ export default function Filter({
           };
         })}
         onChange={(value) => {
-          setTypes(value);
-          filterAction({ types: value, lang });
+          filterAction({ ...values, types: value });
         }}
-        value={types}
+        value={values.types}
       />
       <CheckboxMultiChoice
         label="Language"
@@ -50,10 +49,9 @@ export default function Filter({
           })
           .filter((item) => !!item)}
         onChange={(value) => {
-          setLang(value);
-          filterAction({ lang: value, types });
+          filterAction({ ...values, lang: value });
         }}
-        value={lang}
+        value={values.lang}
       />
     </FilterWrapper>
   );
