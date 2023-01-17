@@ -10,7 +10,7 @@ export default function RecommendContent({
   data,
   viewAllAction,
 }: {
-  data: ContentListItem[];
+  data: Array<ContentListItem & { recReason: string }>;
   viewAllAction: () => void;
 }) {
   const navigate = useNavigate();
@@ -54,12 +54,14 @@ function Card({
   clickAction,
   link,
   type,
+  recReason,
 }: {
   title: string;
   upVoteNum: number;
   clickAction: () => void;
   link: string;
   type: string;
+  recReason: string;
 }) {
   const linkSplitAry = link.split('/');
   const contentImgUrl = `${linkSplitAry[0]}//${linkSplitAry[2]}/favicon.ico`;
@@ -75,12 +77,12 @@ function Card({
         <CardRight>
           <ContentTitle>{title}</ContentTitle>
           <RightRow>
-            <Badge text={type} />
+            {type && <Badge text={type} />}
             <ContentVote>👏 &nbsp;{upVoteNum}</ContentVote>
             <RightRowLine />
             <ContentLink text={link} />
           </RightRow>
-          <ContentRecReason>Interested Project</ContentRecReason>
+          <ContentRecReason>{recReason}</ContentRecReason>
         </CardRight>
       </CardBox>
     </CardWrapper>

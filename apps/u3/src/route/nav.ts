@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 13:59:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 17:30:20
+ * @LastEditTime: 2023-01-17 15:20:26
  * @Description: file description
  */
 import React, { ReactNode } from 'react';
@@ -45,7 +45,7 @@ export const navs: CutomNavObject[] = [
       RouteKey.frens,
       RouteKey.projects,
     ],
-    route: getRoute(RouteKey.events),
+    route: getRoute(RouteKey.contents),
   },
   {
     name: 'favorite',
