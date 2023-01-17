@@ -10,7 +10,7 @@ export default function RecommendContent({
   data,
   viewAllAction,
 }: {
-  data: Array<ContentListItem & { recReason: string }>;
+  data: Array<ContentListItem & { recReason?: string }>;
   viewAllAction: () => void;
 }) {
   const navigate = useNavigate();
@@ -61,7 +61,7 @@ function Card({
   clickAction: () => void;
   link: string;
   type: string;
-  recReason: string;
+  recReason?: string;
 }) {
   const linkSplitAry = link.split('/');
   const contentImgUrl = `${linkSplitAry[0]}//${linkSplitAry[2]}/favicon.ico`;
