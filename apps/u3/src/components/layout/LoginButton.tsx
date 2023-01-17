@@ -14,8 +14,9 @@ import LogoutSvg from '../common/icons/svgs/logout.svg';
 type Props = {
   onlyIcon?: boolean;
   onLogout?: () => void;
+  karmaScore?: number;
 };
-export default function LoginButton({ onlyIcon, onLogout }: Props) {
+export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
   const { authorizer, user, isLogin, login, logout } = useLogin();
   const nameStr = authorizer && getUserDisplayName(user, authorizer);
   return (
@@ -33,13 +34,18 @@ export default function LoginButton({ onlyIcon, onLogout }: Props) {
         {isLogin ? (
           <>
             <LoginButtonAvatar className="wl-user-button_login-avatar" />
-            {!onlyIcon && (
+            {(!onlyIcon && (
               <>
                 <LoginButtonName className="wl-user-button_login-name">
                   {nameStr}
                 </LoginButtonName>
                 <LogoutIconButton src={LogoutSvg} />
               </>
+            )) || (
+              <div className="score">
+                <span>{karmaScore || 0}</span>
+                <span className="triangle" />
+              </div>
             )}
           </>
         ) : (
@@ -76,6 +82,37 @@ const LoginButtonBody = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
+  position: relative;
+  & .score {
+    position: absolute;
+    top: -30px;
+    padding: 2px 4px;
+    box-sizing: border-box;
+
+    width: 40px;
+    height: 18px;
+
+    background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+    border-radius: 22px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+
+    color: #ffffff;
+
+    & .triangle {
+      z-index: -1;
+      position: absolute;
+      left: 17px;
+      bottom: -2px;
+      width: 7px;
+      height: 7px;
+
+      background: linear-gradient(12.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+      transform: rotate(120deg) skewX(-30deg) scale(1, 0.866);
+      border-top-right-radius: 30%;
+    }
+  }
 `;
 const LoginButtonAvatar = styled(UserAvatar)`
   width: 24px;

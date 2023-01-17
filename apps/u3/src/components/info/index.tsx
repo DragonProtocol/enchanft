@@ -19,6 +19,7 @@ import WalletList from './WalletList';
 import AddWalletModal from './AddWalletModal';
 import { ProfileWallet } from '../../services/types/profile';
 import { defaultFormatDate } from '../../utils/time';
+import Karma from '../common/Karma';
 
 export default function Info({
   walletAddr,
@@ -54,7 +55,10 @@ export default function Info({
 
         <div className="info">
           <div className="nickname">
-            <span className="name">{nameStr}</span>
+            <div>
+              <span className="name">{nameStr}</span>
+              <Karma score="1234" />
+            </div>
             <div className="wallet">
               <WalletList
                 currAddr={walletAddr}
@@ -193,6 +197,14 @@ const InfoBox = styled.div`
       & .nickname {
         display: flex;
         justify-content: space-between;
+        & > div {
+          &:first-child {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+          }
+        }
+
         & .name {
           font-size: 25px;
           font-weight: 700;

@@ -27,13 +27,14 @@ import {
 import { ProfileEntity, ProfileWallet } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
 import { mergeProfilesData } from '../utils/mergeProfilesData';
+import Activities from '../components/profile/Activities';
 
 function Profile() {
   const { wallet } = useParams();
   const { user } = useWlUserReact();
-  const [tab, setTab] = useState<'Credential' | 'OnChain' | 'OffChain'>(
-    'Credential'
-  );
+  const [tab, setTab] = useState<
+    'Credential' | 'OnChain' | 'OffChain' | 'Activities'
+  >('Credential');
   const [loading, setLoading] = useState(true);
   const [profileData, setProfileData] = useState<ProfileEntity>();
   const [wallets, setWallets] = useState<ProfileWallet[]>([]);
@@ -163,6 +164,12 @@ function Profile() {
                 Off-Chain Interest
                 <span>Soon</span>
               </div>
+              <div
+                onClick={() => setTab('Activities')}
+                className={tab === 'Activities' ? 'active' : ''}
+              >
+                Activities
+              </div>
             </div>
 
             {tab === 'Credential' && profileData && (
@@ -183,6 +190,7 @@ function Profile() {
                 />
               )) || <OnChainNoItem />)}
             {tab === 'OffChain' && <OffChainInterest />}
+            {tab === 'Activities' && <Activities />}
             <div className="placeholder" />
           </div>
         )}
