@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-03 16:10:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 15:19:08
+ * @LastEditTime: 2023-01-17 16:02:01
  * @Description: file description
  */
 import { ReactNode, useEffect, useRef } from 'react';
@@ -20,10 +20,6 @@ const FeedsSwitchOptions = [
   {
     label: 'Events',
     value: RouteKey.events,
-  },
-  {
-    label: 'Projects',
-    value: RouteKey.projects,
   },
   {
     label: 'Frens',

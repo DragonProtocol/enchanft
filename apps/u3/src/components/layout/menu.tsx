@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 15:54:05
+ * @LastEditTime: 2023-01-17 21:38:11
  * @Description: file description
  */
 import { useState } from 'react';
@@ -68,6 +68,7 @@ const MenuWrapper = styled.div<{ isOpen: boolean }>`
   left: 0;
   z-index: 1;
   padding: 20px 10px;
+  border-right: 1px solid #39424c;
   box-sizing: border-box;
   overflow-y: auto;
   overflow-x: hidden;

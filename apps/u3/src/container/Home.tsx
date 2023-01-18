@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-16 18:12:38
+ * @LastEditTime: 2023-01-18 10:47:35
  * @Description: file description
  */
 
@@ -96,7 +96,7 @@ function Home() {
               <DiscoverProj
                 data={trendingProjects}
                 viewAllAction={() => {
-                  navigate('/projects');
+                  navigate('/dapps');
                 }}
               />
             </div>

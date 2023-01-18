@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 17:47:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 13:06:03
+ * @LastEditTime: 2023-01-17 20:27:33
  * @Description: file description
  */
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback } from 'react';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { useInView } from 'react-intersection-observer';
 
@@ -18,20 +18,19 @@ function ListScrollBox({
   onScrollBottom,
   ...divProps
 }: ListScrollBoxProps) {
-  const { ref: inViewRef, inView } = useInView({
-    root: null,
+  const { ref: inviewRef, inView } = useInView({
     threshold: 0,
   });
-  useEffect(() => {
+  const handleScroll = useCallback(() => {
     if (inView && onScrollBottom) {
       onScrollBottom();
     }
   }, [inView, onScrollBottom]);
   return (
-    <ListScrollBoxWrapper {...divProps}>
+    <ListScrollBoxWrapper {...divProps} onScroll={handleScroll}>
       {children}
       {/* 当前滚动盒子的锚点 */}
-      {!!onScrollBottom && <div style={{ height: '2px' }} ref={inViewRef} />}
+      <div style={{ height: '30px' }} ref={inviewRef} />
     </ListScrollBoxWrapper>
   );
 }

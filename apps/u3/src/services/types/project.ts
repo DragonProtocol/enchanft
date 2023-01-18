@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 15:23:18
+ * @LastEditTime: 2023-01-18 13:06:35
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -26,6 +26,8 @@ export type ProjectExploreListParams = {
   keywords?: string;
   orderBy?: OrderBy | '';
   type?: ProjectType | '';
+  types?: string[];
+  chains?: string[];
   pageSize?: number;
   pageNumber?: number;
   projectId?: number;
@@ -46,6 +48,7 @@ export type ProjectExploreListItemResponse = {
   favored?: boolean;
   events?: ProjectExploreListItemEventResponse[];
   contents?: ProjectExploreListItemContentResponse[];
+  url: string;
 };
 export type ProjectExploreListResponse = ApiResp<
   Array<ProjectExploreListItemResponse>
@@ -55,3 +58,4 @@ export type ProjectFavoriteListResponse = ApiResp<
   Array<ProjectFavoriteListItemResponse>
 >;
 export type ProjectFavorHandleResponse = ApiResp<unknown>;
+export type FetchOneProjectResponse = ApiResp<ProjectExploreListItemResponse>;

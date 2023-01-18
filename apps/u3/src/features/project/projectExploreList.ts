@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-27 14:14:46
+ * @LastEditTime: 2023-01-17 18:54:42
  * @Description: file description
  */
 import {
@@ -10,6 +10,7 @@ import {
   createAsyncThunk,
   createEntityAdapter,
   createSlice,
+  PayloadAction,
 } from '@reduxjs/toolkit';
 import { fetchListForProjectExplore } from '../../services/api/project';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
@@ -30,7 +31,7 @@ type ProjectExploreListStore = EntityState<ProjectExploreListItem> & {
   currentRequestId: string; // 当前正在请求的id(由createAsyncThunk生成的唯一id)
 };
 
-const PAGE_SIZE = 30;
+const PAGE_SIZE = 50;
 const PAGE_NUMBER_FIRST = 0;
 export const projectExploreListEntity =
   createEntityAdapter<ProjectExploreListItem>({
@@ -102,7 +103,18 @@ export const fetchMoreProjectExploreList = createAsyncThunk<
 export const projectExploreListSlice = createSlice({
   name: 'projectExploreList',
   initialState: initTodoTasksState,
-  reducers: {},
+  reducers: {
+    updateOne: (
+      state,
+      action: PayloadAction<Partial<ProjectExploreListItem>>
+    ) => {
+      const updateData = action.payload;
+      projectExploreListEntity.updateOne(state, {
+        id: updateData.id,
+        changes: updateData,
+      });
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProjectExploreList.pending, (state, action) => {
@@ -148,9 +160,10 @@ export const projectExploreListSlice = createSlice({
   },
 });
 
-const { reducer } = projectExploreListSlice;
+const { actions, reducer } = projectExploreListSlice;
 export const { selectAll, selectById } = projectExploreListEntity.getSelectors(
   (state: RootState) => state.projectExploreList
 );
 export const selectState = (state: RootState) => state.projectExploreList;
+export const { updateOne } = actions;
 export default reducer;
