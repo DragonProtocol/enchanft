@@ -13,6 +13,8 @@ import {
   handleAuthFailed,
   setApiBaseUrl,
 } from '@ecnft/wl-user-react';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import Layout from './components/layout/Index';
 import { store } from './store/store';
 import GlobalStyle from './GlobalStyle';
@@ -24,6 +26,8 @@ import {
   injectStore,
   injectWlUserReactContextValue,
 } from './services/api/request';
+
+dayjs.extend(relativeTime);
 
 injectStore(store);
 setApiBaseUrl(API_BASE_URL || '');

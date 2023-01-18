@@ -6,6 +6,7 @@
  * @Description: file description
  */
 import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
+import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import useLogin from '../../hooks/useLogin';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
@@ -14,10 +15,36 @@ import LogoutSvg from '../common/icons/svgs/logout.svg';
 type Props = {
   onlyIcon?: boolean;
   onLogout?: () => void;
+  karmaScore?: number;
 };
-export default function LoginButton({ onlyIcon, onLogout }: Props) {
+export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
   const { authorizer, user, isLogin, login, logout } = useLogin();
+  const preScore = useRef<number>(karmaScore || 0);
   const nameStr = authorizer && getUserDisplayName(user, authorizer);
+  const [diffScore, setDiffScore] = useState(0);
+  const flowerRef = useRef<HTMLDivElement>();
+
+  useEffect(() => {
+    const diff = (karmaScore || 0) - preScore.current;
+    if (diff > 0) {
+      setDiffScore(diff);
+      const flowerScore = document.getElementById('flower-score');
+      const flowerScoreNumber = document.getElementById('flower-score-num');
+
+      flowerScore.style.transition = 'none';
+      flowerScore.style.opacity = '1';
+      flowerScoreNumber.style.transition = 'none';
+      flowerScoreNumber.style.transform = 'translateY(0px)';
+      setTimeout(() => {
+        flowerScore.style.transition = 'all 0.5s ease-out';
+        flowerScore.style.opacity = '0';
+        flowerScoreNumber.style.transition = 'all 0.3s ease-out';
+        flowerScoreNumber.style.transform = 'translateY(-5px)';
+      }, 300);
+    }
+    preScore.current = karmaScore || 0;
+  }, [karmaScore, preScore]);
+
   return (
     <LoginButtonWrapper
       hiddenStyle={onlyIcon}
@@ -33,13 +60,26 @@ export default function LoginButton({ onlyIcon, onLogout }: Props) {
         {isLogin ? (
           <>
             <LoginButtonAvatar className="wl-user-button_login-avatar" />
-            {!onlyIcon && (
+            {(!onlyIcon && (
               <>
                 <LoginButtonName className="wl-user-button_login-name">
                   {nameStr}
                 </LoginButtonName>
                 <LogoutIconButton src={LogoutSvg} />
               </>
+            )) || (
+              <div className="score">
+                <span>{karmaScore || 0}</span>
+                <span className="triangle" />
+
+                <div id="flower-score" className="flower show" ref={flowerRef}>
+                  <span />
+                  <span className="score-add" id="flower-score-num">
+                    +{diffScore}
+                  </span>
+                  <span />
+                </div>
+              </div>
             )}
           </>
         ) : (
@@ -76,6 +116,64 @@ const LoginButtonBody = styled.div`
   justify-content: center;
   align-items: center;
   gap: 10px;
+  position: relative;
+  & .score {
+    position: absolute;
+    top: -30px;
+    padding: 2px 4px;
+    box-sizing: border-box;
+
+    width: 40px;
+    height: 18px;
+
+    background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+    border-radius: 22px;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+
+    color: #ffffff;
+
+    & .triangle {
+      z-index: -1;
+      position: absolute;
+      left: 17px;
+      bottom: -2px;
+      width: 7px;
+      height: 7px;
+
+      background: linear-gradient(12.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+      transform: rotate(120deg) skewX(-30deg) scale(1, 0.866);
+      border-top-right-radius: 30%;
+    }
+
+    & .flower {
+      position: absolute;
+      top: -18px;
+      width: 100%;
+      left: 0;
+      opacity: 0;
+      & .score-add {
+        display: inline-block;
+        color: #ffffff;
+      }
+
+      & span:last-child,
+      & span:first-child {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        width: 1px;
+        height: 5px;
+        background: linear-gradient(12.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+        transform: rotate(35deg);
+      }
+      & span:first-child {
+        left: 0;
+        transform: rotate(-35deg);
+      }
+    }
+  }
 `;
 const LoginButtonAvatar = styled(UserAvatar)`
   width: 24px;

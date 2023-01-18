@@ -19,6 +19,10 @@ import WalletList from './WalletList';
 import AddWalletModal from './AddWalletModal';
 import { ProfileWallet } from '../../services/types/profile';
 import { defaultFormatDate } from '../../utils/time';
+import Karma from '../common/Karma';
+import { useAppSelector } from '../../store/hooks';
+import { selectKarmaState } from '../../features/profile/karma';
+import KarmaModal from './KarmaModal';
 
 export default function Info({
   walletAddr,
@@ -34,7 +38,10 @@ export default function Info({
   addWallet: (addr: string) => Promise<boolean>;
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showKarmaModal, setShowKarmaModal] = useState(false);
   const { dispatchModal, user, authorizer, getBindAccount } = useWlUserReact();
+  const { totalScore } = useAppSelector(selectKarmaState);
+
   const nameStr = getUserDisplayName(user, authorizer);
   const twitterAccount = getBindAccount(AccountType.TWITTER);
   const discordAccount = getBindAccount(AccountType.DISCORD);
@@ -54,7 +61,15 @@ export default function Info({
 
         <div className="info">
           <div className="nickname">
-            <span className="name">{nameStr}</span>
+            <div>
+              <span className="name">{nameStr}</span>
+              <Karma
+                score={`${totalScore}`}
+                clickAction={() => {
+                  setShowKarmaModal(true);
+                }}
+              />
+            </div>
             <div className="wallet">
               <WalletList
                 currAddr={walletAddr}
@@ -139,6 +154,12 @@ export default function Info({
           return r;
         }}
       />
+      <KarmaModal
+        show={showKarmaModal}
+        closeAction={() => {
+          setShowKarmaModal(false);
+        }}
+      />
     </InfoBox>
   );
 }
@@ -193,6 +214,14 @@ const InfoBox = styled.div`
       & .nickname {
         display: flex;
         justify-content: space-between;
+        & > div {
+          &:first-child {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+          }
+        }
+
         & .name {
           font-size: 25px;
           font-weight: 700;

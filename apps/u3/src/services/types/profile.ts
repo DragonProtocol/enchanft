@@ -1,3 +1,4 @@
+import { type } from 'os';
 import { ApiResp } from '.';
 
 export type PoapData = {
@@ -145,6 +146,37 @@ export type ProfileResponse = ApiResp<ProfileEntity>;
 
 type ProfilesEntity = { data: ProfileEntity; wallet: string; chain: string };
 export type ProfilesResponse = ApiResp<ProfilesEntity[]>;
+export type KarmaResponse = ApiResp<{
+  seqCnt: number;
+  score: number;
+  totalScore: number;
+  checked: boolean;
+}>;
+
+export type KarmaCheckInResponse = ApiResp<{
+  seqCnt: number;
+  score: number;
+  totalScore: number;
+}>;
+
+export enum KarmaType {
+  DAILY_CHECKIN = 'DAILY_CHECKIN',
+  SUBMIT_CONTENT = 'SUBMIT_CONTENT',
+  CONTENT_SCORE = 'CONTENT_SCORE',
+  APPLAUSE_CONTENT = 'APPLAUSE_CONTENT',
+}
+export type KarmaListItem = {
+  contentId: null | number;
+  createdAt: number;
+  id: number;
+  score: number;
+  type: KarmaType;
+  userId: number;
+};
+export type KarmaListResponse = ApiResp<{
+  list: Array<KarmaListItem>;
+  total: number;
+}>;
 
 export type ProfileWallet = {
   chain: string; // 'eth'
