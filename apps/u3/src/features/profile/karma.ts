@@ -38,6 +38,11 @@ const initKarmaState: KarmaState = {
   hasMore: false,
 };
 
+export const SCORE = {
+  SubmitContent: 1,
+  ApplaudContent: 1,
+};
+
 export const fetchUserKarma = createAsyncThunk(
   'profile/userKarma',
   async ({ token }: { token: string }, { rejectWithValue }) => {

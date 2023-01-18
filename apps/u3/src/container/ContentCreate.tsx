@@ -36,6 +36,8 @@ import { useAppSelector } from '../store/hooks';
 import { selectWebsite } from '../features/website/websiteSlice';
 import Loading from '../components/common/loading/Loading';
 import isUrl from '../utils/isUrl';
+import { incScore, SCORE } from '../features/profile/karma';
+import { store } from '../store/store';
 
 function ContentCreate() {
   const navigate = useNavigate();
@@ -161,6 +163,7 @@ function ContentCreate() {
           if (resp.data.code === 0) {
             navigate(`/contents/${resp.data.data.id}`);
             toast.success('Add Content Success!!!');
+            store.dispatch(incScore(SCORE.SubmitContent));
           }
         } else {
           await updateContent(

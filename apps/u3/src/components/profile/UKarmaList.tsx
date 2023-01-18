@@ -22,7 +22,7 @@ export default function UKarmaList() {
     if (pageNumber === 0 && list.length === 0) {
       dispatch(fetchUserKarmaList({ token: user.token, pageNumber, pageSize }));
     }
-  }, [user.token, pageNumber, pageSize, list]);
+  }, [user.token]);
 
   return (
     <ListBox
