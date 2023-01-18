@@ -31,6 +31,7 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
       const flowerScore = document.getElementById('flower-score');
       const flowerScoreNumber = document.getElementById('flower-score-num');
 
+      if (!flowerScore || !flowerScoreNumber) return;
       flowerScore.style.transition = 'none';
       flowerScore.style.opacity = '1';
       flowerScoreNumber.style.transition = 'none';
