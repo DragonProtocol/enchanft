@@ -25,6 +25,7 @@ const Box = styled.div`
   align-items: center;
   background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
   border-radius: 22px;
+  cursor: pointer;
 
   & span {
     font-weight: 500;

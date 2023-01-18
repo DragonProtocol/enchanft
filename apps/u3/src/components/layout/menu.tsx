@@ -76,6 +76,7 @@ export default function Menu() {
           isOpen={isOpen}
           onClick={() => {
             if (!user.token) return;
+            // store.dispatch(incScore(1)); // for test
             store.dispatch(checkIn({ token: user.token }));
           }}
         >

@@ -98,7 +98,7 @@ export const karmaSlice = createSlice({
   initialState: initKarmaState,
   reducers: {
     incScore: (state, action) => {
-      state.score += action.payload;
+      state.totalScore += action.payload;
     },
   },
   extraReducers: (builder) => {
