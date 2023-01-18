@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 14:56:03
+ * @LastEditTime: 2023-01-17 16:47:42
  * @Description: file description
  */
 import { useMemo } from 'react';
@@ -19,9 +19,18 @@ export type DappExploreListFilterValues = Pick<
   'chains' | 'types' | 'keywords'
 >;
 
+export const defaultChainOption = {
+  value: '',
+  label: 'All Chains',
+};
+export const defaultTypeOption = {
+  value: '',
+  label: 'All Categories',
+};
+
 export const defaultDappExploreListFilterValues: DappExploreListFilterValues = {
-  chains: [],
-  types: [],
+  chains: [defaultChainOption.value],
+  types: [defaultTypeOption.value],
   keywords: '',
 };
 type DappExploreListFilterProps = {
@@ -34,20 +43,24 @@ export default function DappExploreListFilter({
 }: DappExploreListFilterProps) {
   const { topics } = useConfigsTopics();
   const chainOptions = useMemo(
-    () =>
-      topics.chains.map((item) => ({
+    () => [
+      defaultChainOption,
+      ...topics.chains.map((item) => ({
         value: item.chainEnum,
         label: item.name,
         iconUrl: item.image,
       })),
+    ],
     [topics]
   );
   const typeOptions = useMemo(
-    () =>
-      topics.projectTypes.map((item) => ({
+    () => [
+      defaultTypeOption,
+      ...topics.projectTypes.map((item) => ({
         value: item.value,
         label: item.name,
       })),
+    ],
     [topics]
   );
   const { types, chains, keywords } = values;

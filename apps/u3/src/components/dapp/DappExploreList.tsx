@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 14:02:37
+ * @LastEditTime: 2023-01-17 17:54:19
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -50,6 +50,15 @@ export default function DappExploreList({
 }
 const DappExploreListWrapper = styled.div`
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(calc((100% - 0px) / 3), 1fr));
+  & > div {
+    & {
+      border-bottom: 1px solid rgba(57, 66, 76, 0.5);
+      border-right: 1px solid rgba(57, 66, 76, 0.5);
+    }
+    &:nth-child(3n) {
+      border-right: none;
+    }
+  }
 `;

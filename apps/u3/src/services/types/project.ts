@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 14:34:38
+ * @LastEditTime: 2023-01-18 10:28:17
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -57,3 +57,4 @@ export type ProjectFavoriteListResponse = ApiResp<
   Array<ProjectFavoriteListItemResponse>
 >;
 export type ProjectFavorHandleResponse = ApiResp<unknown>;
+export type FetchOneProjectResponse = ApiResp<ProjectExploreListItemResponse>;

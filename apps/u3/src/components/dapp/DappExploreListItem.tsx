@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 14:44:01
+ * @LastEditTime: 2023-01-18 09:57:27
  * @Description: file description
  */
-import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
 import { ProjectExploreListItemResponse } from '../../services/types/project';
 import { ButtonPrimary, ButtonPrimaryLine } from '../common/button/ButtonBase';
+import EllipsisText from '../common/text/EllipsisText';
 import ProjectImgDefault from '../project/ProjectImgDefault';
 
 export type DappExploreListItemData = ProjectExploreListItemResponse;
@@ -37,10 +38,10 @@ export default function DappExploreListItem({
           <InnerDesc>{data.description}</InnerDesc>
         </InnerCenter>
         {isInstalled ? (
-          <OpenButton onClick={onOpen} />
+          <OpenButton onClick={onOpen}>Open</OpenButton>
         ) : (
           <InstallButton disabled={disabledInstall} onClick={onInstall}>
-            {loadingInstall ? 'Installing ...' : 'Install'}
+            {loadingInstall ? 'Installing' : 'Install'}
           </InstallButton>
         )}
       </ListItemInner>
@@ -70,35 +71,42 @@ const ItemImg = styled(ProjectImgDefault)`
   width: 48px;
   height: 48px;
   border-radius: 50%;
+  flex-shrink: 0;
 `;
 const InnerCenter = styled.div`
+  width: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 4px;
   justify-content: center;
 `;
-const ItemName = styled.span`
+const ItemName = styled(EllipsisText)`
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
   color: #ffffff;
 `;
-const InnerDesc = styled.span`
+const InnerDesc = styled(EllipsisText)`
   font-weight: 400;
   font-size: 12px;
   line-height: 14px;
   color: #718096;
-  overflow: hidden;
-  text-overflow: ellipsis;
 `;
-
-const InstallButton = styled(ButtonPrimary)`
+const ButtonCss = css`
   width: 74px;
   height: 32px;
+  padding: 6px 12px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+  flex-shrink: 0;
+`;
+const InstallButton = styled(ButtonPrimary)`
+  ${ButtonCss}
 `;
 const OpenButton = styled(ButtonPrimaryLine)`
-  width: 74px;
-  height: 32px;
+  ${ButtonCss}
   background: #14171a;
+  color: #ffffff;
 `;

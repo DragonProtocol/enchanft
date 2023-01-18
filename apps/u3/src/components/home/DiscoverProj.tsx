@@ -14,13 +14,13 @@ export default function DiscoverProj({
   const navigate = useNavigate();
   return (
     <Box>
-      <Title text="Discover Projects" viewAllAction={viewAllAction} />{' '}
+      <Title text="Popular Dapps" viewAllAction={viewAllAction} />{' '}
       <div className="lists">
         {data.map((item) => {
           return (
             <Card
               clickAction={() => {
-                navigate(`/projects/${item.id}`);
+                navigate(`/dapps/${item.id}`);
               }}
               key={item.id}
               {...item}
