@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 13:06:35
+ * @LastEditTime: 2023-01-18 17:15:42
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -49,6 +49,13 @@ export type ProjectExploreListItemResponse = {
   events?: ProjectExploreListItemEventResponse[];
   contents?: ProjectExploreListItemContentResponse[];
   url: string;
+  mediaLinks?: {
+    twitter?: string;
+    discord?: string;
+    facebook?: string;
+    telegram?: string;
+  };
+  types?: string[];
 };
 export type ProjectExploreListResponse = ApiResp<
   Array<ProjectExploreListItemResponse>
