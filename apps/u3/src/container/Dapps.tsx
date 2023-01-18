@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 20:30:50
+ * @LastEditTime: 2023-01-18 15:16:54
  * @Description:
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -24,9 +24,11 @@ import DappExploreListFilter, {
   defaultDappExploreListFilterValues,
 } from '../components/dapp/DappExploreListFilter';
 import DappExploreList from '../components/dapp/DappExploreList';
+import useDappWebsite from '../hooks/useDappWebsite';
 
 export default function Dapps() {
   const dispatch = useAppDispatch();
+  const { openDappModal } = useDappWebsite();
   const { favorQueueIds, onFavor } = useProjectHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const projectExploreList = useAppSelector(selectAll);
@@ -76,6 +78,7 @@ export default function Dapps() {
               data={projectExploreList}
               installPendingIds={favorQueueIds}
               onInstall={onFavor}
+              onOpen={(item) => openDappModal(item.id)}
             />
             {isLoadingMore ? (
               <MoreLoading>loading ...</MoreLoading>

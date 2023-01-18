@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 10:28:17
+ * @LastEditTime: 2023-01-18 13:06:35
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -48,6 +48,7 @@ export type ProjectExploreListItemResponse = {
   favored?: boolean;
   events?: ProjectExploreListItemEventResponse[];
   contents?: ProjectExploreListItemContentResponse[];
+  url: string;
 };
 export type ProjectExploreListResponse = ApiResp<
   Array<ProjectExploreListItemResponse>

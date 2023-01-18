@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 22:41:14
+ * @LastEditTime: 2023-01-18 13:10:22
  * @Description: file description
  */
 import { useMemo, useRef, useState } from 'react';
@@ -13,8 +13,11 @@ import useRoute from '../../route/useRoute';
 import { RouteKey } from '../../route/routes';
 import useUserFavorites from '../../hooks/useUserFavorites';
 import DappSideBarListItem from './DappSideBarListItem';
+import useDappWebsite from '../../hooks/useDappWebsite';
+import DappWebsiteModal from './DappWebsiteModal';
 
 export default function DappsSideBarList() {
+  const { openDappModal } = useDappWebsite();
   const { projects } = useUserFavorites();
   const { isLogin } = useLogin();
   const { firstRouteMeta } = useRoute();
@@ -48,16 +51,22 @@ export default function DappsSideBarList() {
   });
 
   return (
-    <DappsSideBarListWrapper isOpen={isOpen}>
-      <DappsSideBarListInner>
-        <Title>Your Dapps</Title>
-        {transitions((styles, item) => (
-          <animated.div style={styles}>
-            <DappSideBarListItem data={item} />
-          </animated.div>
-        ))}
-      </DappsSideBarListInner>
-    </DappsSideBarListWrapper>
+    <>
+      <DappsSideBarListWrapper isOpen={isOpen}>
+        <DappsSideBarListInner>
+          <Title>Your Dapps</Title>
+          {transitions((styles, item) => (
+            <animated.div style={styles}>
+              <DappSideBarListItem
+                data={item}
+                onOpen={() => openDappModal(item.id)}
+              />
+            </animated.div>
+          ))}
+        </DappsSideBarListInner>
+      </DappsSideBarListWrapper>
+      <DappWebsiteModal />
+    </>
   );
 }
 const DappsSideBarListWrapper = styled.div<{ isOpen: boolean }>`
