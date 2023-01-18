@@ -2,11 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 15:16:54
+ * @LastEditTime: 2023-01-18 18:33:11
  * @Description:
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { MainWrapper } from '../components/layout/Index';
 import ListScrollBox from '../components/common/box/ListScrollBox';
 import {
@@ -27,6 +28,7 @@ import DappExploreList from '../components/dapp/DappExploreList';
 import useDappWebsite from '../hooks/useDappWebsite';
 
 export default function Dapps() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { openDappModal } = useDappWebsite();
   const { favorQueueIds, onFavor } = useProjectHandles();
@@ -79,6 +81,7 @@ export default function Dapps() {
               installPendingIds={favorQueueIds}
               onInstall={onFavor}
               onOpen={(item) => openDappModal(item.id)}
+              onItemClick={(item) => navigate(`/dapps/${item.id}`)}
             />
             {isLoadingMore ? (
               <MoreLoading>loading ...</MoreLoading>
