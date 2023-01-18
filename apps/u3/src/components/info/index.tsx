@@ -22,6 +22,7 @@ import { defaultFormatDate } from '../../utils/time';
 import Karma from '../common/Karma';
 import { useAppSelector } from '../../store/hooks';
 import { selectKarmaState } from '../../features/profile/karma';
+import KarmaModal from './KarmaModal';
 
 export default function Info({
   walletAddr,
@@ -37,8 +38,9 @@ export default function Info({
   addWallet: (addr: string) => Promise<boolean>;
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showKarmaModal, setShowKarmaModal] = useState(false);
   const { dispatchModal, user, authorizer, getBindAccount } = useWlUserReact();
-  const { score } = useAppSelector(selectKarmaState);
+  const { totalScore } = useAppSelector(selectKarmaState);
 
   const nameStr = getUserDisplayName(user, authorizer);
   const twitterAccount = getBindAccount(AccountType.TWITTER);
@@ -61,7 +63,12 @@ export default function Info({
           <div className="nickname">
             <div>
               <span className="name">{nameStr}</span>
-              <Karma score={`${score}`} />
+              <Karma
+                score={`${totalScore}`}
+                clickAction={() => {
+                  setShowKarmaModal(true);
+                }}
+              />
             </div>
             <div className="wallet">
               <WalletList
@@ -145,6 +152,12 @@ export default function Info({
             setShowAddModal(false);
           }
           return r;
+        }}
+      />
+      <KarmaModal
+        show={showKarmaModal}
+        closeAction={() => {
+          setShowKarmaModal(false);
         }}
       />
     </InfoBox>

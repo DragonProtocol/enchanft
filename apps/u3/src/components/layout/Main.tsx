@@ -22,6 +22,7 @@ import useLogin from '../../hooks/useLogin';
 import NoLogin from './NoLogin';
 import usePreference from '../../hooks/usePreference';
 import OnboardModal from '../onboard/OnboardModal';
+import { fetchUserKarma } from '../../features/profile/karma';
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -49,6 +50,11 @@ function Main() {
   const { preference, postPreference, preferenceList } = usePreference(
     user.token
   );
+
+  useEffect(() => {
+    if (!user.token) return;
+    dispatch(fetchUserKarma({ token: user.token }));
+  }, [user.token]);
 
   const renderElement = useCallback(
     ({ element, permissions }: CutomRouteObject) => {

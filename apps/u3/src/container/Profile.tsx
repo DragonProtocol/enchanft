@@ -191,7 +191,6 @@ function Profile() {
               )) || <OnChainNoItem />)}
             {tab === 'OffChain' && <OffChainInterest />}
             {tab === 'Activities' && <Activities />}
-            <div className="placeholder" />
           </div>
         )}
       </div>

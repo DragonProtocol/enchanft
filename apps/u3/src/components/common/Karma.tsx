@@ -1,9 +1,15 @@
 import styled from 'styled-components';
 import { Atom2 } from '../icons/atom';
 
-export default function Karma({ score }: { score: string }) {
+export default function Karma({
+  score,
+  clickAction,
+}: {
+  score: string;
+  clickAction?: () => void;
+}) {
   return (
-    <Box className="karma">
+    <Box className="karma" onClick={() => clickAction && clickAction()}>
       <Atom2 />
       <span>U Karma</span>
       <span className="score">{score}</span>

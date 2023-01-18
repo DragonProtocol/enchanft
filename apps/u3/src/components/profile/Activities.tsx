@@ -1,36 +1,31 @@
 import { UserAvatar } from '@ecnft/wl-user-react';
-import { useState } from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import Badge from '../contents/Badge';
 import { Copy } from '../icons/copy';
 import { CurrencyETH } from '../icons/currency-eth';
 import { GasPump } from '../icons/gas-pump';
-import Karma from '../common/Karma';
+import { useAppSelector } from '../../store/hooks';
+import { selectKarmaState } from '../../features/profile/karma';
+import UKarmaList, { UKarmaTitle } from './UKarmaList';
 
 export default function Activities() {
-  const [list, setList] = useState([{ id: 1 }, { id: 2 }]);
+  const { transList } = useAppSelector(selectKarmaState);
 
-  if (list.length === 0) {
-    return <NoActivities />;
-  }
   return (
     <ContentBox>
-      <div className="lists">
-        {list.map((item, idx) => {
-          return <ActivityItem key={item.id} {...item} />;
-        })}
-      </div>
-      <div className="u-karma">
-        <div className="u-karma-item title">U Karma</div>
-        <div className="u-karma-item">
-          <div>
-            <Karma score="score" />
-            <span>{dayjs('1999-01-01').fromNow()}</span>
-          </div>
-          <div>GM have a nice day in U3</div>
-        </div>
-        <div className="u-karma-item">u karma</div>
+      {(transList.length > 0 &&
+        transList.map((item, idx) => {
+          return (
+            <div className="lists">
+              <ActivityItem key={item.id} {...item} />
+            </div>
+          );
+        })) || <NoActivities />}
+
+      <div className="karma-list">
+        <UKarmaTitle />
+        <UKarmaList />
       </div>
     </ContentBox>
   );
@@ -38,12 +33,10 @@ export default function Activities() {
 
 export function NoActivities() {
   return (
-    <ContentBox>
-      <div className="no-item">
-        <CurrencyETH />
-        <p>No transactions found on Ethereum.</p>
-      </div>
-    </ContentBox>
+    <div className="no-item">
+      <CurrencyETH />
+      <p>No transactions found on Ethereum.</p>
+    </div>
   );
 }
 
@@ -96,15 +89,20 @@ const ContentBox = styled.div`
   display: flex;
   gap: 40px;
   margin-top: 40px;
+  width: 100%;
+  > div {
+    max-height: calc(100vh - 170px - 24px - 24px - 73px - 40px);
+    height: fit-content;
+  }
 
   & .no-item {
-    width: 100%;
     box-sizing: border-box;
     text-align: center;
-    padding: 40px 20px;
-    height: 219px;
+    height: fit-content;
     background: #1b1e23;
     border-radius: 20px;
+    padding: 40px 0 40px 0;
+    flex-grow: 1;
     & p {
       font-weight: 400;
       font-size: 16px;
@@ -114,43 +112,11 @@ const ContentBox = styled.div`
     }
   }
 
-  & .u-karma {
-    min-width: 360px;
-    width: 360px;
-    background: #1b1e23;
-    border-radius: 20px;
-    height: fit-content;
-    color: #ffffff;
-
-    & .u-karma-item {
-      padding: 20px;
-      box-sizing: border-box;
-      border-bottom: 1px solid #14171a;
-      font-weight: 400;
-      font-size: 16px;
-      line-height: 19px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      > div {
-        &:first-child {
-          display: flex;
-          justify-content: space-between;
-        }
-      }
-
-      &.title {
-        font-weight: 700;
-        font-size: 24px;
-        line-height: 28px;
-        font-style: italic;
-      }
-    }
-  }
   & .lists {
     background: #1b1e23;
     border-radius: 20px;
     padding: 0 20px;
+    flex-grow: 1;
   }
   & .activity {
     &:last-child {
@@ -225,6 +191,15 @@ const ContentBox = styled.div`
         }
       }
     }
+  }
+
+  & .karma-list {
+    min-width: 360px;
+    width: 360px;
+    background: #1b1e23;
+    border-radius: 20px;
+    color: #ffffff;
+    overflow: scroll;
   }
 `;
 

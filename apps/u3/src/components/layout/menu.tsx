@@ -8,22 +8,28 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useWlUserReact } from '@ecnft/wl-user-react';
 import LoginButton from './LoginButton';
 import Nav from './Nav';
 import { ReactComponent as LogoIconSvg } from '../imgs/logo-icon.svg';
 import LogoutConfirmModal from './LogoutConfirmModal';
 import useLogin from '../../hooks/useLogin';
 import { useAppSelector } from '../../store/hooks';
-import { incScore, selectKarmaState } from '../../features/profile/karma';
+import {
+  checkIn,
+  incScore,
+  selectKarmaState,
+} from '../../features/profile/karma';
 import { Atom02 } from '../icons/atom';
 import { store } from '../../store/store';
 
 export default function Menu() {
   const { logout } = useLogin();
+  const { user } = useWlUserReact();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
-  const { score } = useAppSelector(selectKarmaState);
+  const { totalScore, checked } = useAppSelector(selectKarmaState);
 
   return (
     <>
@@ -48,7 +54,7 @@ export default function Menu() {
             onLogout={() => {
               setOpenLogoutConfirm(true);
             }}
-            karmaScore={score}
+            karmaScore={totalScore}
           />
         </LoginButtonBox>
         <LogoutConfirmModal
@@ -65,15 +71,18 @@ export default function Menu() {
           }}
         />
       </MenuWrapper>
-      <KarmaGM
-        isOpen={isOpen}
-        onClick={() => {
-          store.dispatch(incScore(1));
-        }}
-      >
-        GM
-        <Atom02 />
-      </KarmaGM>
+      {!checked && (
+        <KarmaGM
+          isOpen={isOpen}
+          onClick={() => {
+            if (!user.token) return;
+            store.dispatch(checkIn({ token: user.token }));
+          }}
+        >
+          GM
+          <Atom02 />
+        </KarmaGM>
+      )}
     </>
   );
 }
