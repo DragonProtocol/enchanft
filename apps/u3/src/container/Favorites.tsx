@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 18:02:03
+ * @LastEditTime: 2023-01-19 09:55:57
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -136,17 +136,18 @@ enum FavoriteSwitchValue {
 }
 export const FavoriteSwitchOptions = [
   {
-    label: 'Event',
-    value: FavoriteSwitchValue.event,
-  },
-  {
     label: 'Content',
     value: FavoriteSwitchValue.content,
   },
   {
-    label: 'Project',
-    value: FavoriteSwitchValue.project,
+    label: 'Event',
+    value: FavoriteSwitchValue.event,
   },
+
+  // {
+  //   label: 'Project',
+  //   value: FavoriteSwitchValue.project,
+  // },
 ];
 
 function Favorites() {
@@ -184,12 +185,12 @@ function Favorites() {
     onFavor: onEventFavor,
     onShare: onEventShare,
   } = useEventHandles();
-  const {
-    favoredIds: projectFavoredIds,
-    favorQueueIds: projectFavorQueueIds,
-    onFavor: onProjectFavor,
-    onShare: onProjectShare,
-  } = useProjectHandles();
+  // const {
+  //   favoredIds: projectFavoredIds,
+  //   favorQueueIds: projectFavorQueueIds,
+  //   onFavor: onProjectFavor,
+  //   onShare: onProjectShare,
+  // } = useProjectHandles();
 
   const { events, projects, contents } = useUserFavorites();
   const {
@@ -208,28 +209,24 @@ function Favorites() {
     [status]
   );
   const isEmptyEvents = useMemo(() => !events.length, [events]);
-  const isEmptyProjects = useMemo(() => !projects.length, [projects]);
+  // const isEmptyProjects = useMemo(() => !projects.length, [projects]);
   const isEmptyContents = useMemo(() => !contents.length, [contents]);
   const isEmptyCompletedEvents = useMemo(
     () => !completedEvents.length,
     [completedEvents]
   );
   const isEmpty = useMemo(
-    () =>
-      isEmptyEvents &&
-      isEmptyProjects &&
-      isEmptyContents &&
-      isEmptyCompletedEvents,
-    [isEmptyEvents, isEmptyProjects, isEmptyContents, isEmptyCompletedEvents]
+    () => isEmptyEvents && isEmptyContents && isEmptyCompletedEvents,
+    [isEmptyEvents, isEmptyContents, isEmptyCompletedEvents]
   );
   const [event, setEvent] = useState<EventsEntityItem | null>(null);
   const [completedEvent, setCompletedEvent] = useState<EventsEntityItem | null>(
     null
   );
-  const [project, setProject] = useState<ProjectsEntityItem | null>(null);
+  // const [project, setProject] = useState<ProjectsEntityItem | null>(null);
   const [content, setContent] = useState<ContentsEntityItem | null>(null);
   const [switchValue, setSwitchValue] = useState<FavoriteSwitchValue>(
-    FavoriteSwitchValue.event
+    FavoriteSwitchValue.content
   );
 
   return (
@@ -250,7 +247,7 @@ function Favorites() {
                     onChange={(value) => setSwitchValue(value)}
                   />
                   <HeaderLine />
-                  <TabSwitch
+                  <RightTabSwitch
                     options={[
                       {
                         label: <ArchiveIconButton src={ArchiveSvg} />,
@@ -281,7 +278,7 @@ function Favorites() {
                       />
                     </FavoritesList>
                   ))}
-                {switchValue === FavoriteSwitchValue.project &&
+                {/* {switchValue === FavoriteSwitchValue.project &&
                   (isEmptyProjects ? (
                     <EmptyList />
                   ) : (
@@ -296,7 +293,7 @@ function Favorites() {
                         onItemClick={setProject}
                       />
                     </FavoritesList>
-                  ))}
+                  ))} */}
                 {switchValue === FavoriteSwitchValue.content &&
                   (isEmptyContents ? (
                     <EmptyList />
@@ -358,7 +355,7 @@ function Favorites() {
                     <EmptyCompletedEventContent />
                   ))}
 
-                {switchValue === FavoriteSwitchValue.project &&
+                {/* {switchValue === FavoriteSwitchValue.project &&
                   (project ? (
                     <ContentScrollBox>
                       {project && (
@@ -373,7 +370,7 @@ function Favorites() {
                     </ContentScrollBox>
                   ) : (
                     <EmptyContent />
-                  ))}
+                  ))} */}
 
                 {switchValue === FavoriteSwitchValue.content &&
                   (content ? (
@@ -415,15 +412,23 @@ const FavoritesListBox = styled.div`
   flex-direction: column;
 `;
 const FavoritesListHeader = styled.div`
+  width: 100%;
   display: flex;
   align-items: center;
   gap: 32px;
   border-bottom: 1px solid #39424c;
   padding: 0 20px;
+  box-sizing: border-box;
 `;
 const TabSwitch = styled(Tab)`
+  flex: 1;
   border-bottom: none;
   justify-content: flex-start;
+`;
+const RightTabSwitch = styled(Tab)`
+  width: 24px;
+  border-bottom: none;
+  justify-content: flex-end;
 `;
 const HeaderLine = styled.div`
   width: 1px;

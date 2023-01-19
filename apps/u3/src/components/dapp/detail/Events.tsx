@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-18 17:12:51
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 18:02:11
+ * @LastEditTime: 2023-01-19 11:46:00
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -12,14 +12,19 @@ import Card, { CardTitle } from './Card';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: ProjectExploreListItemEventResponse[];
+  onItemClick?: (data: ProjectExploreListItemEventResponse) => void;
 };
-export default function Events({ data, ...otherProps }: Props) {
+export default function Events({ data, onItemClick, ...otherProps }: Props) {
   return (
     <EventsWrapper {...otherProps}>
       <CardTitle>Events({data.length})</CardTitle>
       <EventsList>
         {data.map((item) => (
-          <EventExploreGridListItem data={item} />
+          <EventExploreGridListItem
+            key={item.id}
+            data={item}
+            onClick={() => onItemClick && onItemClick(item)}
+          />
         ))}
       </EventsList>
     </EventsWrapper>

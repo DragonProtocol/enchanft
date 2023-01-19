@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-18 17:12:51
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 18:37:10
+ * @LastEditTime: 2023-01-19 11:47:16
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -12,14 +12,19 @@ import Card, { CardTitle } from './Card';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: ProjectExploreListItemContentResponse[];
+  onItemClick?: (data: ProjectExploreListItemContentResponse) => void;
 };
-export default function Conents({ data, ...otherProps }: Props) {
+export default function Conents({ data, onItemClick, ...otherProps }: Props) {
   return (
     <ConentsWrapper {...otherProps}>
       <CardTitle>Conents({data.length})</CardTitle>
       <ConentsList>
         {data.map((item) => (
-          <GridItem {...item} />
+          <GridItem
+            key={item.id}
+            clickAction={() => onItemClick && onItemClick(item)}
+            {...item}
+          />
         ))}
       </ConentsList>
     </ConentsWrapper>

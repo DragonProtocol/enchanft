@@ -1,7 +1,10 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { formatFilterShowName } from '../../../utils/filter';
 import { ProjectExploreListItemResponse } from '../../../services/types/project';
-import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
+import {
+  ButtonPrimary,
+  ButtonPrimaryLine,
+} from '../../common/button/ButtonBase';
 import Tag from '../../common/tag/Tag';
 import EllipsisText from '../../common/text/EllipsisText';
 import ProjectImgDefault from '../../project/ProjectImgDefault';
@@ -10,13 +13,24 @@ import TwitterSvg from '../../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../../common/icons/svgs/discord.svg';
 import FacebookSvg from '../../common/icons/svgs/facebook.svg';
 import TelegramSvg from '../../common/icons/svgs/telegram.svg';
-import useDappWebsite from '../../../hooks/useDappWebsite';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: ProjectExploreListItemResponse;
+  disabledInstall?: boolean;
+  loadingInstall?: boolean;
+  isInstalled?: boolean;
+  onInstall?: () => void;
+  onOpen?: () => void;
 };
-export default function Header({ data, ...otherProps }: Props) {
-  const { openDappModal } = useDappWebsite();
+export default function Header({
+  data,
+  disabledInstall,
+  loadingInstall,
+  isInstalled,
+  onInstall,
+  onOpen,
+  ...otherProps
+}: Props) {
   return (
     <HeaderWrapper {...otherProps}>
       <HeaderImg src={data.image} />
@@ -62,9 +76,26 @@ export default function Header({ data, ...otherProps }: Props) {
               <LinkIcon src={TelegramSvg} />
             </LinkButton>
           )}
-          <OpenButton onClick={() => openDappModal(data.id)}>
-            Open Dapp
-          </OpenButton>
+          {isInstalled ? (
+            <OpenButton
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onOpen) onOpen();
+              }}
+            >
+              Open Dapp
+            </OpenButton>
+          ) : (
+            <InstallButton
+              disabled={disabledInstall}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onInstall) onInstall();
+              }}
+            >
+              {loadingInstall ? 'Installing' : 'Install'}
+            </InstallButton>
+          )}
         </RightButtons>
       </HeaderRight>
     </HeaderWrapper>
@@ -132,3 +163,4 @@ const LinkIcon = styled.img`
   height: 100%;
 `;
 const OpenButton = styled(ButtonPrimaryLine)``;
+const InstallButton = styled(ButtonPrimary)``;
