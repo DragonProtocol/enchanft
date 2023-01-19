@@ -8,83 +8,60 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 import LoginButton from './LoginButton';
 import Nav from './Nav';
 import { ReactComponent as LogoIconSvg } from '../imgs/logo-icon.svg';
 import LogoutConfirmModal from './LogoutConfirmModal';
 import useLogin from '../../hooks/useLogin';
 import { useAppSelector } from '../../store/hooks';
-import {
-  checkIn,
-  incScore,
-  selectKarmaState,
-} from '../../features/profile/karma';
-import { Atom02 } from '../icons/atom';
-import { store } from '../../store/store';
+import { selectKarmaState } from '../../features/profile/karma';
 
 export default function Menu() {
   const { logout } = useLogin();
-  const { user } = useWlUserReact();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
-  const { totalScore, checked } = useAppSelector(selectKarmaState);
+  const { totalScore } = useAppSelector(selectKarmaState);
 
   return (
-    <>
-      <MenuWrapper
-        onMouseEnter={() => setIsOpen(true)}
-        onMouseLeave={() => setIsOpen(false)}
-        isOpen={isOpen}
-      >
-        <LogoBox onlyIcon={!isOpen} onClick={() => navigate('/')}>
-          <LogoIconBox onlyIcon={!isOpen}>
-            <LogoIconSvg />
-          </LogoIconBox>
+    <MenuWrapper
+      onMouseEnter={() => setIsOpen(true)}
+      onMouseLeave={() => setIsOpen(false)}
+      isOpen={isOpen}
+    >
+      <LogoBox onlyIcon={!isOpen} onClick={() => navigate('/')}>
+        <LogoIconBox onlyIcon={!isOpen}>
+          <LogoIconSvg />
+        </LogoIconBox>
 
-          <LogoText>Alpha</LogoText>
-        </LogoBox>
-        <NavListBox>
-          <Nav onlyIcon={!isOpen} />
-        </NavListBox>
-        <LoginButtonBox>
-          <LoginButton
-            onlyIcon={!isOpen}
-            onLogout={() => {
-              setOpenLogoutConfirm(true);
-            }}
-            karmaScore={totalScore}
-          />
-        </LoginButtonBox>
-        <LogoutConfirmModal
-          isOpen={openLogoutConfirm}
-          onClose={() => {
-            setOpenLogoutConfirm(false);
+        <LogoText>Alpha</LogoText>
+      </LogoBox>
+      <NavListBox>
+        <Nav onlyIcon={!isOpen} />
+      </NavListBox>
+      <LoginButtonBox>
+        <LoginButton
+          onlyIcon={!isOpen}
+          onLogout={() => {
+            setOpenLogoutConfirm(true);
           }}
-          onConfirm={() => {
-            logout();
-            setOpenLogoutConfirm(false);
-          }}
-          onAfterOpen={() => {
-            setIsOpen(false);
-          }}
+          karmaScore={totalScore}
         />
-      </MenuWrapper>
-      {!checked && (
-        <KarmaGM
-          isOpen={isOpen}
-          onClick={() => {
-            if (!user.token) return;
-            // store.dispatch(incScore(1)); // for test
-            store.dispatch(checkIn({ token: user.token }));
-          }}
-        >
-          GM
-          <Atom02 />
-        </KarmaGM>
-      )}
-    </>
+      </LoginButtonBox>
+      <LogoutConfirmModal
+        isOpen={openLogoutConfirm}
+        onClose={() => {
+          setOpenLogoutConfirm(false);
+        }}
+        onConfirm={() => {
+          logout();
+          setOpenLogoutConfirm(false);
+        }}
+        onAfterOpen={() => {
+          setIsOpen(false);
+        }}
+      />
+    </MenuWrapper>
   );
 }
 const MenuWrapper = styled.div<{ isOpen: boolean }>`
@@ -143,26 +120,4 @@ const NavListBox = styled.div`
 const LoginButtonBox = styled.div`
   width: 100%;
   transition: all 0.3s ease-out;
-`;
-
-const KarmaGM = styled.div<{ isOpen: boolean }>`
-  position: fixed;
-  transition: all 0.3s ease-out;
-  left: ${({ isOpen }) => (isOpen ? '160px' : '60px')};
-  bottom: 100px;
-  color: #fff;
-  padding: 4px 8px;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  width: 82px;
-  height: 36px;
-  background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
-  border-radius: 0px 22px 22px 0px;
-
-  font-size: 24px;
-  line-height: 28px;
-
-  cursor: pointer;
 `;
