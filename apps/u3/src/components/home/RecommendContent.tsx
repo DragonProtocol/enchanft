@@ -118,11 +118,11 @@ const CardWrapper = styled(CardBase)`
     grid-column-start: 4;
     grid-column-end: 7;
     .card-body {
-      gap: 10px;
+      gap: 6px;
     }
     .title {
       font-size: 24px;
-      line-height: 24px;
+      line-height: 28px;
       -webkit-line-clamp: 2;
     }
   }
@@ -144,9 +144,12 @@ const CardWrapper = styled(CardBase)`
   &:nth-child(6) {
     grid-row-start: 3;
     grid-row-end: 4;
+    .card-body {
+      gap: 15px;
+    }
     .title {
       font-size: 18px;
-      line-height: 20px;
+      line-height: 21px;
       -webkit-line-clamp: 2;
     }
   }
