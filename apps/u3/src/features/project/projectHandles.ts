@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 09:46:14
+ * @LastEditTime: 2023-01-19 10:46:30
  * @Description: file description
  */
 import {
@@ -83,10 +83,10 @@ export const favorProject = createAsyncThunk(
       dispatch(updateOneWithProjectExplore(newData));
       dispatch(addOneWithProjects(newData));
       dispatch(removeOneForFavorProjectQueue(params.id));
-    } else {
-      dispatch(removeOneForFavorProjectQueue(params.id));
-      throw new Error(resp.data.msg);
+      return newData;
     }
+    dispatch(removeOneForFavorProjectQueue(params.id));
+    throw new Error(resp.data.msg);
   },
   {
     condition: (params: FavorProjectParams, { getState }) => {

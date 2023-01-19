@@ -2,17 +2,20 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 17:45:37
+ * @LastEditTime: 2023-01-19 11:49:59
  * @Description: file description
  */
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { MainWrapper } from '../components/layout/Index';
 import Loading from '../components/common/loading/Loading';
 import { ProjectExploreListItemResponse } from '../services/types/project';
-import { fetchOneProject } from '../services/api/project';
+import {
+  fetchListForProjectExplore,
+  fetchOneProject,
+} from '../services/api/project';
 import { ApiRespCode } from '../services/types';
 import Header from '../components/dapp/detail/Header';
 import Screeshots from '../components/dapp/detail/Screeshots';
@@ -21,11 +24,44 @@ import Conents from '../components/dapp/detail/Conents';
 import UserScore from '../components/dapp/detail/UserScore';
 import Contributor from '../components/dapp/detail/Contributor';
 import QA from '../components/dapp/detail/QA';
+import useDappWebsite from '../hooks/useDappWebsite';
+import useProjectHandles from '../hooks/useProjectHandles';
+import RecommendDapps from '../components/dapp/detail/RecommendDapps';
 
 export default function Dapp() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const [isPending, setIsPending] = useState(false);
   const [data, setData] = useState<ProjectExploreListItemResponse | null>(null);
+  const { openDappModal } = useDappWebsite();
+  const { favorQueueIds, onFavor } = useProjectHandles();
+  const [isPendingRecommend, setIsPendingRecommend] = useState(false);
+  const [recommendDapps, setRecommendDapps] = useState<
+    ProjectExploreListItemResponse[]
+  >([]);
+  const getRecommendDapps = useCallback((types: string[]) => {
+    setIsPendingRecommend(true);
+    fetchListForProjectExplore({
+      types,
+      pageSize: 6,
+      pageNumber: 0,
+    })
+      .then((resp) => {
+        if (resp.data.code === ApiRespCode.SUCCESS) {
+          setRecommendDapps(resp.data.data);
+        } else {
+          setRecommendDapps([]);
+          toast.error(resp.data.msg);
+        }
+      })
+      .catch((error) => {
+        setRecommendDapps([]);
+        toast.error(error.message || error.msg);
+      })
+      .finally(() => {
+        setIsPendingRecommend(false);
+      });
+  }, []);
   useEffect(() => {
     if (id) {
       setIsPending(true);
@@ -33,6 +69,7 @@ export default function Dapp() {
         .then((resp) => {
           if (resp.data.code === ApiRespCode.SUCCESS) {
             setData(resp.data.data);
+            getRecommendDapps(resp.data.data?.types || []);
           } else {
             setData(null);
             toast.error(resp.data.msg);
@@ -47,6 +84,12 @@ export default function Dapp() {
         });
     }
   }, [id]);
+  const handleInstall = useCallback(async () => {
+    const newData = await onFavor(data);
+    if (newData) {
+      setData(newData as ProjectExploreListItemResponse);
+    }
+  }, [onFavor, data]);
 
   return isPending ? (
     <StatusBox>
@@ -54,17 +97,35 @@ export default function Dapp() {
     </StatusBox>
   ) : data ? (
     <DappWrapper>
-      <Header data={data} />
+      <Header
+        data={data}
+        disabledInstall={data.favored || favorQueueIds.includes(data.id)}
+        loadingInstall={favorQueueIds.includes(data.id)}
+        isInstalled={data.favored}
+        onInstall={handleInstall}
+        onOpen={() => openDappModal(data.id)}
+      />
       <ContentLayout>
         <ContentLayoutLeft>
           <Screeshots />
-          <Events data={data.events ?? []} />
-          <Conents data={data.contents ?? []} />
+          <Events
+            data={data.events ?? []}
+            onItemClick={(item) => navigate(`/events/${item.id}`)}
+          />
+          <Conents
+            data={data.contents ?? []}
+            onItemClick={(item) => navigate(`/contents/${item.id}`)}
+          />
           <UserScore />
         </ContentLayoutLeft>
         <ContentLayoutRight>
           <Contributor />
           <QA />
+          <RecommendDapps
+            data={recommendDapps}
+            loading={isPendingRecommend}
+            onItemClick={(item) => navigate(`/dapps/${item.id}`)}
+          />
         </ContentLayoutRight>
       </ContentLayout>
     </DappWrapper>

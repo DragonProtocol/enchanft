@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 09:57:27
+ * @LastEditTime: 2023-01-19 11:40:18
  * @Description: file description
  */
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
@@ -19,6 +19,7 @@ export type DappExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   isInstalled?: boolean;
   onInstall?: () => void;
   onOpen?: () => void;
+  displayButtons?: boolean;
 };
 export default function DappExploreListItem({
   data,
@@ -27,6 +28,7 @@ export default function DappExploreListItem({
   isInstalled,
   onInstall,
   onOpen,
+  displayButtons = true,
   ...props
 }: DappExploreListItemProps) {
   return (
@@ -37,13 +39,27 @@ export default function DappExploreListItem({
           <ItemName>{data.name}</ItemName>
           <InnerDesc>{data.description}</InnerDesc>
         </InnerCenter>
-        {isInstalled ? (
-          <OpenButton onClick={onOpen}>Open</OpenButton>
-        ) : (
-          <InstallButton disabled={disabledInstall} onClick={onInstall}>
-            {loadingInstall ? 'Installing' : 'Install'}
-          </InstallButton>
-        )}
+        {displayButtons &&
+          (isInstalled ? (
+            <OpenButton
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onOpen) onOpen();
+              }}
+            >
+              Open
+            </OpenButton>
+          ) : (
+            <InstallButton
+              disabled={disabledInstall}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onInstall) onInstall();
+              }}
+            >
+              {loadingInstall ? 'Installing' : 'Install'}
+            </InstallButton>
+          ))}
       </ListItemInner>
     </ExploreListItemWrapper>
   );
@@ -70,7 +86,7 @@ const ListItemInner = styled.div`
 const ItemImg = styled(ProjectImgDefault)`
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 10px;
   flex-shrink: 0;
 `;
 const InnerCenter = styled.div`
