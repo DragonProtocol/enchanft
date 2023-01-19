@@ -11,6 +11,8 @@ import styled from 'styled-components';
 import useLogin from '../../hooks/useLogin';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import LogoutSvg from '../common/icons/svgs/logout.svg';
+import Karma from '../common/Karma';
+import { Atom2 } from '../icons/atom';
 
 type Props = {
   onlyIcon?: boolean;
@@ -60,27 +62,34 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
         {isLogin ? (
           <>
             <LoginButtonAvatar className="wl-user-button_login-avatar" />
-            {(!onlyIcon && (
+            {!onlyIcon && (
               <>
                 <LoginButtonName className="wl-user-button_login-name">
                   {nameStr}
                 </LoginButtonName>
                 <LogoutIconButton src={LogoutSvg} />
               </>
-            )) || (
-              <div className="score">
-                <span>{karmaScore || 0}</span>
-                <span className="triangle" />
-
-                <div id="flower-score" className="flower show" ref={flowerRef}>
-                  <span />
-                  <span className="score-add" id="flower-score-num">
-                    +{diffScore}
-                  </span>
-                  <span />
-                </div>
-              </div>
             )}
+            <ScoreBox onlyIcon={onlyIcon}>
+              <span className="triangle" />
+              {(onlyIcon && (
+                <>
+                  <span>{karmaScore || 0}</span>
+
+                  <div
+                    id="flower-score"
+                    className="flower show"
+                    ref={flowerRef}
+                  >
+                    <span />
+                    <span className="score-add" id="flower-score-num">
+                      +{diffScore}
+                    </span>
+                    <span />
+                  </div>
+                </>
+              )) || <Karma score={`${karmaScore || 0}`} />}
+            </ScoreBox>
           </>
         ) : (
           <NoLoginText className="wl-user-button_no-login-text">
@@ -117,64 +126,70 @@ const LoginButtonBody = styled.div`
   align-items: center;
   gap: 10px;
   position: relative;
-  & .score {
+`;
+const ScoreBox = styled.div<{ onlyIcon: boolean }>`
+  position: absolute;
+  top: ${({ onlyIcon }) => (onlyIcon ? '-30px' : '-43px')};
+  padding: ${({ onlyIcon }) => (onlyIcon ? '2px 0 2px 0' : '0px')};
+  box-sizing: border-box;
+
+  width: ${({ onlyIcon }) => (onlyIcon ? '40px' : '130px')};
+  height: ${({ onlyIcon }) => (onlyIcon ? '18px' : '23px')};
+
+  background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+  border-radius: 22px;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14px;
+
+  color: #ffffff;
+
+  & .triangle {
+    z-index: -1;
     position: absolute;
-    top: -30px;
-    padding: 2px 4px;
-    box-sizing: border-box;
+    left: ${({ onlyIcon }) => (onlyIcon ? '17px' : '60px')};
+    bottom: -2px;
+    width: 7px;
+    height: 7px;
+    transition: all 0.2s ease-out;
+    background: linear-gradient(12.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+    transform: rotate(120deg) skewX(-30deg) scale(1, 0.866);
+    border-top-right-radius: 30%;
+  }
 
-    width: 40px;
-    height: 18px;
+  & .karma {
+    display: flex;
+    align-items: center;
+  }
 
-    background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
-    border-radius: 22px;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 14px;
-
-    color: #ffffff;
-
-    & .triangle {
-      z-index: -1;
-      position: absolute;
-      left: 17px;
-      bottom: -2px;
-      width: 7px;
-      height: 7px;
-
-      background: linear-gradient(12.42deg, #cd62ff 35.31%, #62aaff 89.64%);
-      transform: rotate(120deg) skewX(-30deg) scale(1, 0.866);
-      border-top-right-radius: 30%;
+  & .flower {
+    position: absolute;
+    top: -18px;
+    width: 100%;
+    left: 0;
+    opacity: 0;
+    & .score-add {
+      display: inline-block;
+      color: #ffffff;
     }
 
-    & .flower {
+    & span:last-child,
+    & span:first-child {
       position: absolute;
-      top: -18px;
-      width: 100%;
+      bottom: 0;
+      right: 0;
+      width: 1px;
+      height: 5px;
+      background: linear-gradient(12.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+      transform: rotate(35deg);
+    }
+    & span:first-child {
       left: 0;
-      opacity: 0;
-      & .score-add {
-        display: inline-block;
-        color: #ffffff;
-      }
-
-      & span:last-child,
-      & span:first-child {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 1px;
-        height: 5px;
-        background: linear-gradient(12.42deg, #cd62ff 35.31%, #62aaff 89.64%);
-        transform: rotate(35deg);
-      }
-      & span:first-child {
-        left: 0;
-        transform: rotate(-35deg);
-      }
+      transform: rotate(-35deg);
     }
   }
 `;
+
 const LoginButtonAvatar = styled(UserAvatar)`
   width: 24px;
   height: 24px;
