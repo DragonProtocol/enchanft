@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 15:13:00
+ * @LastEditTime: 2023-01-19 16:57:06
  * @Description: file description
  */
 import { PlatformDataResponse } from '../types/home';
@@ -19,7 +19,7 @@ export function getTrendingContents() {
   return request({
     url: `/contents/searching`,
     params: {
-      pageSize: 8,
+      pageSize: 6,
       pageNumber: 0,
       keywords: '',
       type: '',
@@ -53,7 +53,7 @@ export function getTrendingProjects(): RequestPromise<ProjectExploreListResponse
   return request({
     url: `/uniProjects/searching`,
     params: {
-      pageSize: 5,
+      pageSize: 6,
       pageNumber: 0,
       keywords: '',
       type: '',
