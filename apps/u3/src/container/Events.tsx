@@ -42,6 +42,11 @@ import EventOrderBySelect, {
 } from '../components/event/EventOrderBySelect';
 import EventExploreGridList from '../components/event/EventExploreGridList';
 import EventPreviewModal from '../components/event/EventPreviewModal';
+import {
+  getEventsLayoutFromLocal,
+  setContentsLayoutToLocal,
+  setEventsLayoutToLocal,
+} from '../utils/localLayout';
 
 const filterValuesToSearchParams = (values: EventExploreListFilterValues) => {
   return {
@@ -75,7 +80,7 @@ export default function Events() {
   );
   const [isActiveFilter, setIsActiveFilter] = useState(false);
   const [activeId, setActiveId] = useState<string | number>('');
-  const [layout, setLayout] = useState(Layout.LIST);
+  const [layout, setLayout] = useState(getEventsLayoutFromLocal());
   const [openEventPreviewModal, setOpenEventPreviewModal] = useState(false);
 
   const currentSearchParams = useMemo(
@@ -184,6 +189,7 @@ export default function Events() {
             multiLayout
             layout={layout}
             setLayout={(l) => {
+              setEventsLayoutToLocal(l);
               setLayout(l);
             }}
           />

@@ -24,7 +24,6 @@ import {
   ContentLang,
   ContentListItem,
   ContentStatus,
-  OrderBy,
 } from '../services/types/contents';
 import Loading from '../components/common/loading/Loading';
 import { getProjectShareUrl } from '../utils/share';
@@ -42,8 +41,6 @@ import FeedsMenuRight, { Layout } from '../components/layout/FeedsMenuRight';
 import FeedsFilterBox from '../components/layout/FeedsFilterBox';
 import Filter from '../components/contents/Filter';
 import SearchInput from '../components/common/input/SearchInput';
-import { DropDown } from '../components/contents/DropDown';
-import { Favors } from '../components/icons/favors';
 import NoResult from '../components/common/NoResult';
 import AnimatedListItem, {
   useAnimatedListTransition,
@@ -52,6 +49,10 @@ import { MEDIA_BREAK_POINTS } from '../constants';
 import ContentOrderBySelect, {
   defaultContentOrderBy,
 } from '../components/contents/ContentOrderBySelect';
+import {
+  getContentsLayoutFromLocal,
+  setContentsLayoutToLocal,
+} from '../utils/localLayout';
 
 function Contents() {
   const { user } = useWlUserReact();
@@ -86,7 +87,7 @@ function Contents() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [layout, setLayout] = useState(Layout.LIST);
+  const [layout, setLayout] = useState(getContentsLayoutFromLocal());
   const [gridModalShow, setGridModalShow] = useState(false);
   const [isActiveFilter, setIsActiveFilter] = useState(false);
 
@@ -359,6 +360,7 @@ function Contents() {
             multiLayout
             layout={layout}
             setLayout={(l) => {
+              setContentsLayoutToLocal(l);
               setLayout(l);
             }}
           />
