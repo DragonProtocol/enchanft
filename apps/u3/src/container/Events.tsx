@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 13:45:22
+ * @LastEditTime: 2023-01-20 12:39:15
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -29,7 +29,6 @@ import {
 import useEventHandles from '../hooks/useEventHandles';
 import { AsyncRequestStatus } from '../services/types';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import EventLinkPreview from '../components/event/EventLinkPreview';
 import Loading from '../components/common/loading/Loading';
 import NoResult from '../components/common/NoResult';
 import FeedsMenu from '../components/layout/FeedsMenu';
@@ -47,6 +46,7 @@ import {
   setContentsLayoutToLocal,
   setEventsLayoutToLocal,
 } from '../utils/localLayout';
+import EventPreview from '../components/event/EventPreview';
 
 const filterValuesToSearchParams = (values: EventExploreListFilterValues) => {
   return {
@@ -236,7 +236,7 @@ export default function Events() {
                     </ListBox>
                     <ContentBox>
                       {event ? (
-                        <EventLinkPreview
+                        <EventPreview
                           data={event}
                           showAdminOps={!event.isForU && isAdmin}
                           onAdminThumbUp={() => onAdminThumbUp(event)}
@@ -265,7 +265,7 @@ export default function Events() {
 
                 {renderMoreLoading}
                 <EventPreviewModal
-                  isOpen={openEventPreviewModal}
+                  isOpen={event && openEventPreviewModal}
                   data={event}
                   onComplete={() => {
                     onComplete(event);
