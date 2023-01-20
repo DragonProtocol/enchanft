@@ -66,7 +66,7 @@ export default function Menu() {
 }
 const MenuWrapper = styled.div<{ isOpen: boolean }>`
   background: #1b1e23;
-  width: ${({ isOpen }) => (isOpen ? '160px' : '60px')};
+  width: ${({ isOpen }) => (isOpen ? '180px' : '60px')};
   height: 100%;
   position: fixed;
   top: 0;

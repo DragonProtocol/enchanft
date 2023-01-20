@@ -147,7 +147,7 @@ const KarmaGMBox = styled.div`
 const KarmaGM = styled.div`
   position: fixed;
   transition: all 0.3s ease-out;
-  bottom: 0px;
+  bottom: 24px;
   color: #fff;
   padding: 4px 8px;
   box-sizing: border-box;
@@ -158,7 +158,7 @@ const KarmaGM = styled.div`
   width: 106px;
   height: 48px;
   background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
-  border-radius: 10px 10px 0px 0px;
+  border-radius: 10px;
 
   font-size: 24px;
   line-height: 28px;
