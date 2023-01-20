@@ -468,7 +468,7 @@ export default function Rss3Content({ address, emptyText }: Rss3ContentProps) {
       if (loading) return;
       dispatch(
         getFeed({
-          category: 'following',
+          category: 'activities',
           cursor,
           reset,
         })
