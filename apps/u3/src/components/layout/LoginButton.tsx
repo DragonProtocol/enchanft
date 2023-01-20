@@ -7,11 +7,11 @@
  */
 import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
 import { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import useLogin from '../../hooks/useLogin';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import LogoutSvg from '../common/icons/svgs/logout.svg';
-import Karma from '../common/Karma';
 import { Atom2 } from '../icons/atom';
 
 type Props = {
@@ -24,6 +24,7 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
   const preScore = useRef<number>(karmaScore || 0);
   const nameStr = authorizer && getUserDisplayName(user, authorizer);
   const [diffScore, setDiffScore] = useState(0);
+  const navigate = useNavigate();
   const flowerRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
@@ -49,32 +50,51 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
   }, [karmaScore, preScore]);
 
   return (
-    <LoginButtonWrapper
-      hiddenStyle={onlyIcon}
-      onClick={() => {
-        if (!isLogin) {
-          login();
-        } else {
-          onLogout();
-        }
-      }}
-    >
-      <LoginButtonBody className="wl-user-button_login-body">
-        {isLogin ? (
-          <>
-            <LoginButtonAvatar className="wl-user-button_login-avatar" />
-            {!onlyIcon && (
-              <>
-                <LoginButtonName className="wl-user-button_login-name">
-                  {nameStr}
-                </LoginButtonName>
-                <LogoutIconButton src={LogoutSvg} />
-              </>
-            )}
-            <ScoreBox onlyIcon={onlyIcon}>
-              <span className="triangle" />
+    <>
+      {isLogin && !onlyIcon && (
+        <KarmaWrapper
+          onClick={() => {
+            navigate('/profile');
+          }}
+        >
+          <UserAvatar className="user-avatar" />
+          <div>
+            <span className="user-name">{nameStr}</span>
+            <div className="karma">
+              <Atom2 />
+              <span>{karmaScore || 0}</span>
+            </div>
+          </div>
+        </KarmaWrapper>
+      )}
+
+      <LoginButtonWrapper
+        hiddenStyle={onlyIcon}
+        onClick={() => {
+          if (!isLogin) {
+            login();
+          } else {
+            onLogout();
+          }
+        }}
+      >
+        <LoginButtonBody className="wl-user-button_login-body">
+          {isLogin ? (
+            <>
               {(onlyIcon && (
+                <LoginButtonAvatar className="wl-user-button_login-avatar" />
+              )) || (
                 <>
+                  <LoginButtonName className="wl-user-button_login-name">
+                    Logout
+                  </LoginButtonName>
+                  <LogoutIconButton src={LogoutSvg} />
+                </>
+              )}
+              {onlyIcon && (
+                <ScoreBox onlyIcon>
+                  <span className="triangle" />
+
                   <span>{karmaScore || 0}</span>
 
                   <div
@@ -88,17 +108,17 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
                     </span>
                     <span />
                   </div>
-                </>
-              )) || <Karma score={`${karmaScore || 0}`} />}
-            </ScoreBox>
-          </>
-        ) : (
-          <NoLoginText className="wl-user-button_no-login-text">
-            Login
-          </NoLoginText>
-        )}
-      </LoginButtonBody>
-    </LoginButtonWrapper>
+                </ScoreBox>
+              )}
+            </>
+          ) : (
+            <NoLoginText className="wl-user-button_no-login-text">
+              Login
+            </NoLoginText>
+          )}
+        </LoginButtonBody>
+      </LoginButtonWrapper>
+    </>
   );
 }
 
@@ -197,11 +217,13 @@ const LoginButtonAvatar = styled(UserAvatar)`
   border-radius: 20px;
 `;
 const LoginButtonName = styled.span`
-  flex: 1;
+  /* flex: 1; */
   text-align: center;
-  font-weight: 500;
-  font-size: 16px;
-  color: #ffffff;
+  font-weight: 400;
+  line-height: 17px;
+  text-align: center;
+
+  color: #718096;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -215,4 +237,52 @@ const NoLoginText = styled.span`
   font-weight: 500;
   font-size: 16px;
   color: #ffffff;
+`;
+
+const KarmaWrapper = styled(ButtonPrimaryLine)`
+  padding: 12px 10px;
+  height: 72px;
+  gap: 8px;
+  width: 100%;
+  isolation: isolate;
+  display: flex;
+  margin-bottom: 10px;
+  background: #1a1e23;
+  justify-content: start;
+  border: 1px solid #39424c;
+  border-radius: 12px;
+  color: #ffffff;
+  & .user-avatar {
+    width: 42px;
+    height: 42px;
+  }
+
+  > div {
+    text-align: start;
+  }
+
+  & .user-name {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+
+    color: #ffffff;
+  }
+  & .karma {
+    display: flex;
+    padding: 2px 8px;
+    gap: 4px;
+    align-items: center;
+    height: 21px;
+    width: fit-content;
+
+    background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+    border-radius: 22px;
+
+    & span {
+      flex: 1;
+      text-align: center;
+    }
+  }
 `;
