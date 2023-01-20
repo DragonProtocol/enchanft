@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 10:47:35
+ * @LastEditTime: 2023-01-19 18:32:37
  * @Description: file description
  */
 
@@ -51,7 +51,13 @@ function Home() {
   }, []);
   const loadContents = useCallback(async () => {
     const { data } = await getTrendingContents();
-    setContents(data.data);
+    // 按总体分值排序
+    const sortData = [...(data?.data || [])].sort((a, b) => {
+      const aScore = Number(a?.upVoteNum) + Number(a?.editorScore);
+      const bScore = Number(b?.upVoteNum) + Number(b?.editorScore);
+      return bScore - aScore;
+    });
+    setContents(sortData);
   }, []);
   const loadEvents = useCallback(async () => {
     const { data } = await getTrendingEvents();
