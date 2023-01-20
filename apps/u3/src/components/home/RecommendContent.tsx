@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { fetchPlatformImgUrlByLink } from '../../utils/platform';
 import CardBase from '../common/card/CardBase';
 import EllipsisText from '../common/text/EllipsisText';
 import Badge from '../contents/Badge';
@@ -61,8 +63,16 @@ function Card({
   };
   clickAction: () => void;
 }) {
-  const linkSplitAry = link.split('/');
-  const platformImgUrl = `${linkSplitAry[0]}//${linkSplitAry[2]}/favicon.ico`;
+  const [url, setUrl] = useState('');
+  useEffect(() => {
+    fetchPlatformImgUrlByLink(link)
+      .then((resp) => {
+        setUrl(resp);
+      })
+      .catch(() => {
+        setUrl('');
+      });
+  }, [link]);
   return (
     <CardWrapper className="card-wraper">
       <CardBody onClick={clickAction} className="card-body">
@@ -78,12 +88,7 @@ function Card({
           </BottomRow>
           <BottomRow>
             <ContentRecReason>{recReason}</ContentRecReason>
-            <PlatformImg
-              src={platformImgUrl}
-              onError={(e) => {
-                e.currentTarget.style.display = 'none';
-              }}
-            />
+            {url && <PlatformImg src={url} />}
           </BottomRow>
         </CardBottom>
       </CardBody>

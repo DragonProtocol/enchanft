@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 17:00:03
+ * @LastEditTime: 2023-01-20 18:08:51
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -83,7 +83,9 @@ function Contents() {
 
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
-  const [selectContent, setSelectContent] = useState<ContentListItem>();
+  const [selectContentId, setSelectContentId] = useState<string | number>(
+    undefined
+  );
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
@@ -103,7 +105,14 @@ function Contents() {
     onHiddenUndoAction,
     onShare,
     deleteOne,
+    updateOne,
   } = useContentHandles(contents);
+
+  const selectContent = useMemo(() => {
+    return newList.find(
+      (item) => item?.id === selectContentId || item?.uuid === selectContentId
+    );
+  }, [newList, selectContentId]);
 
   const fetchData = useCallback(
     async (
@@ -120,7 +129,7 @@ function Contents() {
       }
       setLoading(true);
       setContents([]);
-      setSelectContent(undefined);
+      setSelectContentId(undefined);
 
       try {
         let tmpData: ContentListItem[] = [];
@@ -136,9 +145,9 @@ function Contents() {
           const itemData = tmpData.find(
             (item) => `${item.id}` === queryId || item.uuid === queryId
           );
-          setSelectContent(itemData);
+          setSelectContentId(itemData?.id || itemData?.uuid);
         } else if (tmpData.length > 0) {
-          setSelectContent(tmpData[0]);
+          setSelectContentId(tmpData[0]?.id || tmpData[0]?.uuid);
         }
       } catch (error) {
         toast.error(error.message);
@@ -161,7 +170,7 @@ function Contents() {
           user.token
         );
         setHasMore(data.data.length > 0);
-        setContents([...contents, ...data.data]);
+        setContents([...newList, ...data.data]);
       } catch (error) {
         toast.error(error.message);
         setHasMore(false);
@@ -169,7 +178,7 @@ function Contents() {
         setLoadingMore(false);
       }
     },
-    [currentSearchParams, contents]
+    [currentSearchParams, newList]
   );
 
   const scoreContent = useCallback(
@@ -177,11 +186,11 @@ function Contents() {
       if (updating) return;
       setUpdating(true);
       try {
-        const idx = contents.findIndex((item) => {
+        const idx = newList.findIndex((item) => {
           if (item?.id && item.id === editId) return true;
           return false;
         });
-        const curr = contents[idx];
+        const curr = newList[idx];
         if (!curr) return;
 
         curr.editorScore = Number(curr.editorScore || 0) + 10;
@@ -189,23 +198,17 @@ function Contents() {
           { id: editId, editorScore: curr.editorScore },
           user.token
         );
-        toast.success('score content success!!!');
-
-        setContents([
-          ...contents.slice(0, idx),
-          { ...curr },
-          ...contents.slice(idx + 1),
-        ]);
-        setSelectContent({
-          ...curr,
+        updateOne(editId, {
+          editorScore: curr.editorScore,
         });
+        toast.success('score content success!!!');
       } catch (error) {
         toast.error(error.message);
       } finally {
         setUpdating(false);
       }
     },
-    [user.token, updating, contents]
+    [user.token, updating, updateOne, newList]
   );
 
   const delContent = useCallback(
@@ -218,7 +221,7 @@ function Contents() {
           user.token
         );
         deleteOne(editId);
-        setSelectContent(undefined);
+        setSelectContentId(undefined);
         toast.success('delete content success!!!');
       } catch (error) {
         toast.error(error.message);
@@ -328,7 +331,7 @@ function Contents() {
               <ListBox onScrollBottom={getMore}>
                 <ContentList
                   data={newList}
-                  activeId={selectContent?.uuid || selectContent?.id}
+                  activeId={selectContentId}
                   loadingVoteIds={votePendingIds}
                   loadingFavorIds={favorPendingIds}
                   loadingHiddenIds={hiddenPendingIds}
@@ -338,7 +341,7 @@ function Contents() {
                   onHidden={onHiddenAction}
                   onHiddenUndo={onHiddenUndoAction}
                   onItemClick={(item) => {
-                    setSelectContent(item as unknown as ContentListItem);
+                    setSelectContentId(item?.id || item?.uuid);
                   }}
                 />
                 {renderMoreLoading}
@@ -369,8 +372,7 @@ function Contents() {
                 activeId={selectContent?.uuid || selectContent?.id}
                 onHiddenUndo={onHiddenUndoAction}
                 onItemClick={(item) => {
-                  setSelectContent(item as ContentListItem);
-                  navigate(`/contents/${item.id || item.uuid}`);
+                  setSelectContentId(item?.id || item?.uuid);
                   setGridModalShow(true);
                 }}
               />
@@ -404,20 +406,11 @@ function Contents() {
           if (!selectContent) return;
           if (selectContent.upVoted) return;
           await onVote(selectContent);
-          setSelectContent({
-            ...selectContent,
-            upVoted: true,
-            upVoteNum: selectContent.upVoteNum + 1,
-          });
         }}
         favorsAction={async () => {
           if (!selectContent) return;
           const favorsAgain = !selectContent.favored;
           await onFavor(selectContent);
-          setSelectContent({
-            ...selectContent,
-            favored: favorsAgain,
-          });
         }}
         hiddenAction={() => {
           if (!selectContent) return;

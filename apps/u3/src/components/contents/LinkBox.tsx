@@ -2,10 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:00:23
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 17:55:59
+ * @LastEditTime: 2023-01-20 19:22:52
  * @Description: file description
  */
+import { useEffect, useState } from 'react';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import { fetchPlatformImgUrlByLink } from '../../utils/platform';
 import LinkSvgUrl from '../common/icons/svgs/link.svg';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
@@ -19,12 +21,20 @@ export default function LinkBox({
   ...otherProps
 }: Props) {
   if (!text) return null;
-  const linkSplitAry = text.split('/');
-  const platformImgUrl = `${linkSplitAry[0]}//${linkSplitAry[2]}/favicon.ico`;
+  const [url, setUrl] = useState('');
+  useEffect(() => {
+    fetchPlatformImgUrlByLink(text)
+      .then((resp) => {
+        setUrl(resp);
+      })
+      .catch(() => {
+        setUrl('');
+      });
+  }, [text]);
   return (
     <Box {...otherProps}>
       <PlatformImg
-        src={displayOriginIcon ? platformImgUrl : LinkSvgUrl}
+        src={displayOriginIcon ? url : LinkSvgUrl}
         onError={(e) => {
           if (displayOriginIcon) {
             e.currentTarget.src = LinkSvgUrl;
