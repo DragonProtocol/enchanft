@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 15:31:55
+ * @LastEditTime: 2023-01-20 17:00:03
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -53,6 +53,8 @@ import {
   getContentsLayoutFromLocal,
   setContentsLayoutToLocal,
 } from '../utils/localLayout';
+import ContentList from '../components/contents/ContentList';
+import ContentGridList from '../components/contents/ContentGridList';
 
 function Contents() {
   const { user } = useWlUserReact();
@@ -78,7 +80,6 @@ function Contents() {
     }),
     [currentUrlQuery]
   );
-  const removeTimer = useRef<NodeJS.Timeout>();
 
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
@@ -92,60 +93,17 @@ function Contents() {
   const [isActiveFilter, setIsActiveFilter] = useState(false);
 
   const {
-    onFavor: favors,
-    onVote: vote,
-    onHidden: hiddenData,
-    favorPendingIds,
     newList,
+    votePendingIds,
+    onVote,
+    favorPendingIds,
+    onFavor,
+    hiddenPendingIds,
+    onHiddenAction,
+    onHiddenUndoAction,
+    onShare,
+    deleteOne,
   } = useContentHandles(contents);
-
-  const onShare = (data: ContentListItem) => {
-    tweetShare(data.title, getProjectShareUrl(data.id));
-  };
-
-  const undoHiddenAction = useCallback(
-    (idx: number) => {
-      setContents([
-        ...contents.slice(0, idx),
-        {
-          ...contents[idx],
-          hidden: false,
-        },
-        ...contents.slice(idx + 1),
-      ]);
-      if (removeTimer.current) {
-        clearTimeout(removeTimer.current);
-      }
-    },
-    [contents, removeTimer]
-  );
-
-  const hiddenAction = useCallback(
-    (itemData: ContentListItem) => {
-      const idx = contents.findIndex((item) => {
-        if (item?.uuid && item?.uuid === itemData?.uuid) return true;
-        if (item?.id && item.id === itemData.id) return true;
-        return false;
-      });
-      if (idx === -1) return;
-      setContents([
-        ...contents.slice(0, idx),
-        {
-          ...contents[idx],
-          hidden: true,
-        },
-        ...contents.slice(idx + 1),
-      ]);
-      if (removeTimer.current) {
-        clearTimeout(removeTimer.current);
-        removeTimer.current = undefined;
-      }
-      removeTimer.current = setTimeout(() => {
-        removeContent(idx);
-      }, 3000);
-    },
-    [contents]
-  );
 
   const fetchData = useCallback(
     async (
@@ -214,32 +172,6 @@ function Contents() {
     [currentSearchParams, contents]
   );
 
-  const removeContent = useCallback(
-    async (idx: number) => {
-      if (idx === -1) return;
-
-      const dataItem = contents[idx];
-      clearTimeout(removeTimer.current);
-      removeTimer.current = undefined;
-      await hiddenData(dataItem);
-      setContents([...contents.slice(0, idx), ...contents.slice(idx + 1)]);
-      let item;
-      if (contents[idx + 1]) {
-        item = contents[idx + 1];
-      } else if (contents[idx - 1]) {
-        item = contents[idx - 1];
-      } else {
-        setSelectContent(undefined);
-      }
-
-      if (item) {
-        navigate(`/contents/${item.id || item.uuid}`);
-        setSelectContent(item);
-      }
-    },
-    [contents, hiddenData, selectContent]
-  );
-
   const scoreContent = useCallback(
     async (editId: number) => {
       if (updating) return;
@@ -285,12 +217,7 @@ function Contents() {
           { id: editId, status: ContentStatus.HIDDEN },
           user.token
         );
-        const idx = contents.findIndex((item) => {
-          if (item?.id && item.id === editId) return true;
-          return false;
-        });
-
-        setContents([...contents.slice(0, idx), ...contents.slice(idx + 1)]);
+        deleteOne(editId);
         setSelectContent(undefined);
         toast.success('delete content success!!!');
       } catch (error) {
@@ -299,15 +226,13 @@ function Contents() {
         setUpdating(false);
       }
     },
-    [user.token, contents, updating]
+    [user.token, deleteOne, updating]
   );
 
   useEffect(() => {
     const { keywords, types, orderBy, lang } = currentSearchParams;
     fetchData(keywords, types, orderBy, lang);
   }, [currentSearchParams]);
-
-  const transitions = useAnimatedListTransition(newList);
 
   const getMore = useCallback(() => {
     if (newList.length === 0) return;
@@ -401,49 +326,21 @@ function Contents() {
           return (
             <ContentsWrapper>
               <ListBox onScrollBottom={getMore}>
-                {transitions((styles, item, transition, idx) => {
-                  let isActive = false;
-                  if (item.id) {
-                    isActive = item.id === selectContent?.id;
-                  } else {
-                    isActive = item.uuid === selectContent?.uuid;
-                  }
-                  return (
-                    <AnimatedListItem
-                      key={item.id || item.uuid}
-                      styles={{ ...styles }}
-                    >
-                      {item.hidden ? (
-                        <ListItemHidden
-                          isActive={isActive}
-                          hidden
-                          undoAction={() => undoHiddenAction(idx)}
-                        />
-                      ) : (
-                        <ListItem
-                          isActive={isActive}
-                          favorPendingIds={favorPendingIds}
-                          clickAction={() => {
-                            setSelectContent(item);
-                          }}
-                          shareAction={() => {
-                            onShare(item);
-                          }}
-                          voteAction={() => {
-                            vote(item);
-                          }}
-                          favorsAction={() => {
-                            favors(item);
-                          }}
-                          hiddenAction={() => {
-                            hiddenAction(item);
-                          }}
-                          {...item}
-                        />
-                      )}
-                    </AnimatedListItem>
-                  );
-                })}
+                <ContentList
+                  data={newList}
+                  activeId={selectContent?.uuid || selectContent?.id}
+                  loadingVoteIds={votePendingIds}
+                  loadingFavorIds={favorPendingIds}
+                  loadingHiddenIds={hiddenPendingIds}
+                  onVote={onVote}
+                  onFavor={onFavor}
+                  onShare={onShare}
+                  onHidden={onHiddenAction}
+                  onHiddenUndo={onHiddenUndoAction}
+                  onItemClick={(item) => {
+                    setSelectContent(item as unknown as ContentListItem);
+                  }}
+                />
                 {renderMoreLoading}
               </ListBox>
               <ContentBoxContainer>
@@ -467,39 +364,16 @@ function Contents() {
         if (layout === Layout.GRID) {
           return (
             <GrideListBox onScrollBottom={getMore}>
-              <ContentsGridWrapper>
-                {transitions((styles, item, transition, idx) => {
-                  let isActive = false;
-                  if (item.id) {
-                    isActive = item.id === selectContent?.id;
-                  } else {
-                    isActive = item.uuid === selectContent?.uuid;
-                  }
-                  return (
-                    <AnimatedListItem
-                      key={item.id || item.uuid}
-                      styles={{ ...styles }}
-                    >
-                      {item.hidden ? (
-                        <GridItemHidden
-                          isActive={isActive}
-                          hidden
-                          undoAction={() => undoHiddenAction(idx)}
-                        />
-                      ) : (
-                        <GridItem
-                          clickAction={() => {
-                            setSelectContent(item);
-                            navigate(`/contents/${item.id || item.uuid}`);
-                            setGridModalShow(true);
-                          }}
-                          {...{ isActive, ...item }}
-                        />
-                      )}
-                    </AnimatedListItem>
-                  );
-                })}
-              </ContentsGridWrapper>
+              <ContentGridList
+                data={newList}
+                activeId={selectContent?.uuid || selectContent?.id}
+                onHiddenUndo={onHiddenUndoAction}
+                onItemClick={(item) => {
+                  setSelectContent(item as ContentListItem);
+                  navigate(`/contents/${item.id || item.uuid}`);
+                  setGridModalShow(true);
+                }}
+              />
               {renderMoreLoading}
             </GrideListBox>
           );
@@ -529,7 +403,7 @@ function Contents() {
         voteAction={async () => {
           if (!selectContent) return;
           if (selectContent.upVoted) return;
-          await vote(selectContent);
+          await onVote(selectContent);
           setSelectContent({
             ...selectContent,
             upVoted: true,
@@ -539,7 +413,7 @@ function Contents() {
         favorsAction={async () => {
           if (!selectContent) return;
           const favorsAgain = !selectContent.favored;
-          await favors(selectContent);
+          await onFavor(selectContent);
           setSelectContent({
             ...selectContent,
             favored: favorsAgain,
@@ -547,7 +421,7 @@ function Contents() {
         }}
         hiddenAction={() => {
           if (!selectContent) return;
-          hiddenAction(selectContent);
+          onHiddenAction(selectContent);
           setGridModalShow(false);
         }}
       />
@@ -616,24 +490,6 @@ const GrideListBox = styled(ListScrollBox)`
   height: 100%;
   box-sizing: border-box;
   overflow-y: auto;
-`;
-
-const ContentsGridWrapper = styled.div`
-  width: 100%;
-  display: grid;
-  grid-gap: 20px;
-  grid-template-columns: repeat(6, minmax(calc((100% - 20px * 5) / 6), 1fr));
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
-    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 5) / 6), 1fr));
-  }
-
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
-    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 4) / 5), 1fr));
-  }
-
-  @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xxl}px) {
-    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 3) / 4), 1fr));
-  }
 `;
 
 const MoreLoading = styled.div`

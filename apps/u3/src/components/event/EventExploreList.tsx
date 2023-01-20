@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 13:47:03
+ * @LastEditTime: 2023-01-20 14:29:34
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -83,9 +83,7 @@ export default function EventExploreList({
               onFavor={() => {
                 onFavor(item);
               }}
-              displayHandles={
-                displayHandles && !item.isForU && item.id === activeId
-              }
+              displayHandles={displayHandles && item.id === activeId}
               isFavored={isFavored(item)}
               loadingFavor={loadingFavor(item.id)}
               disabledFavor={loadingFavor(item.id)}

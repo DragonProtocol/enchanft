@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 16:48:41
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 14:21:44
+ * @LastEditTime: 2023-01-20 14:47:21
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -57,7 +57,12 @@ export default function EventPreviewModal({
             <Header>
               {displayHandles && (
                 <ExploreHandlesBox>
-                  <EventExploreListItemHandles {...handlesProps} />
+                  <EventExploreListItemHandles
+                    displayFavor={!data?.isForU}
+                    displayComplete
+                    displayShare={!data?.isForU}
+                    {...handlesProps}
+                  />
                 </ExploreHandlesBox>
               )}
               <EventPreviewHandles

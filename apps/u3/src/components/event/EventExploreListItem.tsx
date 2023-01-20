@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 16:20:07
+ * @LastEditTime: 2023-01-20 14:46:27
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -19,6 +19,9 @@ import RewardTag from './RewardTag';
 
 export type EventExploreListItemData = EventExploreListItemResponse;
 export type EventExploreItemHandles = {
+  displayFavor?: boolean;
+  displayComplete?: boolean;
+  displayShare?: boolean;
   disabledFavor?: boolean;
   loadingFavor?: boolean;
   isFavored?: boolean;
@@ -110,31 +113,20 @@ export default function EventExploreListItem({
           {chainIconUrl && <ChainIcon src={chainIconUrl} />}
         </CenterBox>
         {displayHandles && (
-          <EventHandles>
-            <EventHandleButtonComplete
-              onClick={onComplete}
-              disabled={disabledComplete}
-            >
-              <EventHandleButtonIcon
-                src={isCompleted ? CompletedSvg : CompleteSvg}
-              />
-              <EventHandleButtonText>
-                {loadingComplete
-                  ? 'loading'
-                  : isCompleted
-                  ? 'Completed'
-                  : 'Mark as Complete'}
-              </EventHandleButtonText>
-            </EventHandleButtonComplete>
-            <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
-              <EventHandleButtonLikeIcon
-                fill={isFavored ? '#718096' : 'none'}
-              />
-            </EventHandleButton>
-            <EventHandleButton onClick={onShare}>
-              <EventHandleButtonIcon src={ShareSvg} />
-            </EventHandleButton>
-          </EventHandles>
+          <EventExploreListItemHandles
+            displayFavor={!data?.isForU}
+            displayComplete
+            displayShare={!data?.isForU}
+            disabledFavor={disabledFavor}
+            loadingFavor={loadingFavor}
+            isFavored={isFavored}
+            disabledComplete={disabledComplete}
+            loadingComplete={loadingComplete}
+            isCompleted={isCompleted}
+            onComplete={onComplete}
+            onShare={onShare}
+            onFavor={onFavor}
+          />
         )}
       </ListItemInner>
     </EventExploreListItemWrapper>
@@ -144,6 +136,9 @@ export default function EventExploreListItem({
 export type EventExploreListItemHandlesProps =
   StyledComponentPropsWithRef<'div'> & EventExploreItemHandles;
 export function EventExploreListItemHandles({
+  displayFavor = true,
+  displayComplete = true,
+  displayShare = true,
   disabledFavor,
   loadingFavor,
   isFavored,
@@ -157,25 +152,34 @@ export function EventExploreListItemHandles({
 }: EventExploreListItemHandlesProps) {
   return (
     <EventHandles {...props}>
-      <EventHandleButtonComplete
-        onClick={onComplete}
-        disabled={disabledComplete}
-      >
-        <EventHandleButtonIcon src={isCompleted ? CompletedSvg : CompleteSvg} />
-        <EventHandleButtonText>
-          {loadingComplete
-            ? 'loading'
-            : isCompleted
-            ? 'Completed'
-            : 'Mark as Complete'}
-        </EventHandleButtonText>
-      </EventHandleButtonComplete>
-      <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
-        <EventHandleButtonLikeIcon fill={isFavored ? '#718096' : 'none'} />
-      </EventHandleButton>
-      <EventHandleButton onClick={onShare}>
-        <EventHandleButtonIcon src={ShareSvg} />
-      </EventHandleButton>
+      {displayComplete && (
+        <EventHandleButtonComplete
+          onClick={onComplete}
+          disabled={disabledComplete}
+        >
+          <EventHandleButtonIcon
+            src={isCompleted ? CompletedSvg : CompleteSvg}
+          />
+          <EventHandleButtonText>
+            {loadingComplete
+              ? 'loading'
+              : isCompleted
+              ? 'Completed'
+              : 'Mark as Complete'}
+          </EventHandleButtonText>
+        </EventHandleButtonComplete>
+      )}
+
+      {displayFavor && (
+        <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
+          <EventHandleButtonLikeIcon fill={isFavored ? '#718096' : 'none'} />
+        </EventHandleButton>
+      )}
+      {displayShare && (
+        <EventHandleButton onClick={onShare}>
+          <EventHandleButtonIcon src={ShareSvg} />
+        </EventHandleButton>
+      )}
     </EventHandles>
   );
 }

@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 09:55:57
+ * @LastEditTime: 2023-01-20 16:44:55
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -201,7 +201,8 @@ function Favorites() {
     onVote: onContentVote,
     onFavor: onContentFavor,
     onShare: onContentShare,
-    onHidden: onContentHidden,
+    onHiddenAction: onContentHiddenAction,
+    onHiddenUndoAction: onContentHiddenUndoAction,
   } = useContentHandles(contents);
   const { status } = useAppSelector(selectState);
   const isLoading = useMemo(
@@ -308,7 +309,8 @@ function Favorites() {
                         onVote={onContentVote}
                         onFavor={onContentFavor}
                         onShare={onContentShare}
-                        onHidden={onContentHidden}
+                        onHidden={onContentHiddenAction}
+                        onHiddenUndo={onContentHiddenUndoAction}
                         onItemClick={(item) =>
                           setContent(item as unknown as ContentListItem)
                         }
