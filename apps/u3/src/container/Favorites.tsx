@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 16:44:55
+ * @LastEditTime: 2023-01-28 16:18:12
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -193,8 +193,11 @@ function Favorites() {
   // } = useProjectHandles();
 
   const { events, projects, contents } = useUserFavorites();
+  const [showContentList, setShowContentList] = useState<ContentListItem[]>([]);
+  useEffect(() => {
+    setShowContentList(contents);
+  }, [contents]);
   const {
-    newList: showContentList,
     votePendingIds: contentVotePendingIds,
     favorPendingIds: contentFavorPendingIds,
     hiddenPendingIds: contentHiddenPendingIds,
@@ -203,7 +206,7 @@ function Favorites() {
     onShare: onContentShare,
     onHiddenAction: onContentHiddenAction,
     onHiddenUndoAction: onContentHiddenUndoAction,
-  } = useContentHandles(contents);
+  } = useContentHandles(showContentList, setShowContentList);
   const { status } = useAppSelector(selectState);
   const isLoading = useMemo(
     () => status === AsyncRequestStatus.PENDING,

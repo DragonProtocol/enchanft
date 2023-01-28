@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 16:34:37
+ * @LastEditTime: 2023-01-28 16:43:16
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -30,32 +30,36 @@ const cacheContentFavorPendingIds = new Set<number | string>();
 const cacheContentHiddenPendingIds = new Set<number | string>();
 const cacheContentHiddenTimer = new Map<number | string, NodeJS.Timeout>();
 
-export default (originList?: ContentListItem[]) => {
+export default (
+  contents?: ContentListItem[],
+  setContents?: (newContents: ContentListItem[]) => void
+) => {
   const { handleCallbackVerifyLogin } = useLogin();
   const { user } = useWlUserReact();
 
-  // manage list
-  const [newList, setNewList] = useState([...(originList || [])]);
-  useEffect(() => {
-    setNewList([...(originList || [])]);
-  }, [originList]);
-
   const updateOne = useCallback(
     (id: string | number, data: Partial<ContentListItem>) => {
-      setNewList((list) =>
-        list.map((item) =>
-          item.id === id || item.uuid === id ? { ...item, ...data } : item
-        )
-      );
+      if (setContents) {
+        setContents(
+          (contents ?? []).map((item) =>
+            item.id === id || item.uuid === id ? { ...item, ...data } : item
+          )
+        );
+      }
     },
-    []
+    [contents, setContents]
   );
 
-  const deleteOne = useCallback((id: string | number) => {
-    setNewList((list) =>
-      list.filter((item) => item.id !== id && item.uuid !== id)
-    );
-  }, []);
+  const deleteOne = useCallback(
+    (id: string | number) => {
+      if (setContents) {
+        setContents(
+          (contents ?? []).filter((item) => item.id !== id && item.uuid !== id)
+        );
+      }
+    },
+    [contents, setContents]
+  );
 
   // vote
   const [votePendingIds, setVotePendingIds] = useState([
@@ -229,7 +233,6 @@ export default (originList?: ContentListItem[]) => {
   }, []);
 
   return {
-    newList,
     votePendingIds,
     onVote,
     favorPendingIds,
