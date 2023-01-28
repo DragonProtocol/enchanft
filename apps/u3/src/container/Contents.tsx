@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 18:08:51
+ * @LastEditTime: 2023-01-28 16:42:42
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -71,6 +71,7 @@ function Contents() {
     }),
     [searchParams]
   );
+
   const currentSearchParams = useMemo(
     () => ({
       orderBy: currentUrlQuery.orderBy,
@@ -95,7 +96,6 @@ function Contents() {
   const [isActiveFilter, setIsActiveFilter] = useState(false);
 
   const {
-    newList,
     votePendingIds,
     onVote,
     favorPendingIds,
@@ -106,13 +106,13 @@ function Contents() {
     onShare,
     deleteOne,
     updateOne,
-  } = useContentHandles(contents);
+  } = useContentHandles(contents, setContents);
 
   const selectContent = useMemo(() => {
-    return newList.find(
+    return contents.find(
       (item) => item?.id === selectContentId || item?.uuid === selectContentId
     );
-  }, [newList, selectContentId]);
+  }, [contents, selectContentId]);
 
   const fetchData = useCallback(
     async (
@@ -157,40 +157,39 @@ function Contents() {
     },
     [currPageNumber, user.token, id]
   );
+  const loadMore = useCallback(async () => {
+    const pageNumber = currPageNumber + 1;
+    const { keywords, types, orderBy, lang } = currentSearchParams;
+    const langQuery =
+      lang.length === 0 || lang.length === 2 ? ContentLang.All : lang[0];
+    try {
+      setLoadingMore(true);
+      const { data } = await fetchContents(
+        { keywords, types, orderBy, pageNumber, lang: langQuery },
+        user.token
+      );
+      setHasMore(data.data.length > 0);
 
-  const loadMore = useCallback(
-    async (pageNumber: number) => {
-      const { keywords, types, orderBy, lang } = currentSearchParams;
-      const langQuery =
-        lang.length === 0 || lang.length === 2 ? ContentLang.All : lang[0];
-      try {
-        setLoadingMore(true);
-        const { data } = await fetchContents(
-          { keywords, types, orderBy, pageNumber, lang: langQuery },
-          user.token
-        );
-        setHasMore(data.data.length > 0);
-        setContents([...newList, ...data.data]);
-      } catch (error) {
-        toast.error(error.message);
-        setHasMore(false);
-      } finally {
-        setLoadingMore(false);
-      }
-    },
-    [currentSearchParams, newList]
-  );
+      setContents([...contents, ...data.data]);
+      setCurrPageNumber(pageNumber);
+    } catch (error) {
+      toast.error(error.message);
+      setHasMore(false);
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [currentSearchParams, contents, currPageNumber]);
 
   const scoreContent = useCallback(
     async (editId: number) => {
       if (updating) return;
       setUpdating(true);
       try {
-        const idx = newList.findIndex((item) => {
+        const idx = contents.findIndex((item) => {
           if (item?.id && item.id === editId) return true;
           return false;
         });
-        const curr = newList[idx];
+        const curr = contents[idx];
         if (!curr) return;
 
         curr.editorScore = Number(curr.editorScore || 0) + 10;
@@ -208,7 +207,7 @@ function Contents() {
         setUpdating(false);
       }
     },
-    [user.token, updating, updateOne, newList]
+    [user.token, updating, updateOne, contents]
   );
 
   const delContent = useCallback(
@@ -238,12 +237,10 @@ function Contents() {
   }, [currentSearchParams]);
 
   const getMore = useCallback(() => {
-    if (newList.length === 0) return;
     if (loadingMore) return;
     if (!hasMore) return;
-    loadMore(currPageNumber + 1);
-    setCurrPageNumber(currPageNumber + 1);
-  }, [newList, loadingMore, hasMore, currPageNumber]);
+    loadMore();
+  }, [loadingMore, hasMore, loadMore]);
 
   const renderMoreLoading = useMemo(
     () =>
@@ -318,7 +315,7 @@ function Contents() {
             </ContentsWrapper>
           );
         }
-        if (newList.length === 0) {
+        if (contents.length === 0) {
           return (
             <ContentsWrapper>
               <NoResult />
@@ -330,7 +327,7 @@ function Contents() {
             <ContentsWrapper>
               <ListBox onScrollBottom={getMore}>
                 <ContentList
-                  data={newList}
+                  data={contents}
                   activeId={selectContentId}
                   loadingVoteIds={votePendingIds}
                   loadingFavorIds={favorPendingIds}
@@ -368,7 +365,7 @@ function Contents() {
           return (
             <GrideListBox onScrollBottom={getMore}>
               <ContentGridList
-                data={newList}
+                data={contents}
                 activeId={selectContent?.uuid || selectContent?.id}
                 onHiddenUndo={onHiddenUndoAction}
                 onItemClick={(item) => {
