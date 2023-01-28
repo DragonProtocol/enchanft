@@ -1,9 +1,9 @@
 /*
  * @Author: shixuewen friendlysxw@163.com
- * @Date: 2022-07-05 15:35:42
+ * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 10:31:43
- * @Description: 首页任务看板
+ * @LastEditTime: 2022-12-23 15:50:14
+ * @Description: file description
  */
 import React, {
   useCallback,
@@ -13,22 +13,10 @@ import React, {
   useRef,
 } from 'react';
 import styled from 'styled-components';
-
-import { toast } from 'react-toastify';
 import { Popover } from 'antd';
-import { useWlUserReact } from '@ecnft/wl-user-react';
-
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
-import { TagType } from '../services/types/common';
-import { AsyncRequestStatus } from '../services/types';
-
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import SearchInput from '../components/common/input/SearchInput';
-import Loading from '../components/common/loading/Loading';
-
-import Select, { SelectOption } from '../components/common/select/Select';
-import ProjectTypeSvg from '../components/common/icons/svgs/grid.svg';
+import { toast } from 'react-toastify';
 
 import {
   getFeed,
@@ -37,44 +25,14 @@ import {
   getFollowing,
   setFollow,
   getReco,
-} from '../features/frens/frensHandles';
-import { MainWrapper } from '../components/layout/Index';
-import FeedsMenu from '../components/layout/FeedsMenu';
-import ListScrollBox from '../components/common/box/ListScrollBox';
+} from '../../features/frens/frensHandles';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { AsyncRequestStatus } from '../../services/types';
+import Loading from '../common/loading/Loading';
+import ListScrollBox from '../common/box/ListScrollBox';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
-
-const tagTypeOptions: Array<SelectOption> = [
-  {
-    value: '',
-    label: 'Type',
-  },
-  {
-    value: TagType.SOCIAL,
-    label: 'social',
-  },
-  {
-    value: TagType.TRANSACTION,
-    label: 'transaction',
-  },
-  {
-    value: TagType.EXCHANGE,
-    label: 'exchange',
-  },
-  {
-    value: TagType.COLLECTIBLE,
-    label: 'collectible',
-  },
-  {
-    value: TagType.DONATION,
-    label: 'donation',
-  },
-  {
-    value: TagType.GOVERNANCE,
-    label: 'governance',
-  },
-];
 
 const renderAddress = (address: string, isIcon = true, className?: string) => {
   const formatAddress = `${address.substring(0, 6)}...${address.substring(
@@ -478,18 +436,12 @@ const tagComponentsMap = {
   },
 };
 
-function Frens() {
-  const [feedTab, setFeedTab] = useState<'Explore' | 'Following'>('Explore');
-  const [followTab, setFollowTab] = useState<'Following' | 'Follower'>(
-    'Following'
-  );
-  const [filterTag, setFilterTag] = useState('');
-  const [filterAddress, setFilterAddress] = useState(null);
-
+export type Rss3ContentProps = {
+  address: Array<string>;
+  emptyText: string;
+};
+export default function Rss3Content({ address, emptyText }: Rss3ContentProps) {
   const dispatch = useAppDispatch();
-  const feedRef = useRef(null);
-  const { isLogin } = useWlUserReact();
-
   const {
     feed,
     status,
@@ -500,6 +452,7 @@ function Frens() {
     followAddressLoading,
     followingMap,
   } = useAppSelector(selectFrensHandlesState);
+  const feedRef = useRef(null);
 
   const loading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
@@ -508,74 +461,34 @@ function Frens() {
 
   useEffect(() => {
     feedRef.current = feed;
-  }, []);
-
-  useEffect(() => {
-    if (isLogin) {
-      dispatch(getFollowing({ reset: true }));
-      dispatch(getFollower({ reset: true }));
-      dispatch(getReco({}));
-    }
-  }, [isLogin]);
+  }, [feed]);
 
   const fetchData = useCallback(
-    ({
-      category,
-      cursor,
-      address,
-      reset = false,
-    }: {
-      category?: string;
-      cursor?: string;
-      address?: string;
-      reset?: boolean;
-    }) => {
+    ({ cursor, reset = false }: { cursor?: string; reset?: boolean }) => {
+      if (loading) return;
       dispatch(
         getFeed({
-          category: feedTab?.toLowerCase(),
+          category: 'activities',
           cursor,
-          address: filterAddress,
           reset,
-          tag: filterTag,
         })
       );
     },
-    [dispatch, filterTag, feedTab, filterAddress]
+    [dispatch]
   );
 
   useEffect(() => {
     fetchData({ reset: true });
-  }, [filterTag, feedTab, filterAddress]);
+  }, []);
 
   const renderUserInfo = (
     owner: string,
     owner_name: string,
     is_follow: boolean,
     owner_follower_num?: number,
-    owner_following_num?: number,
-    isClose?: boolean
+    owner_following_num?: number
   ) => (
     <div className="user-item">
-      {isClose && (
-        <svg
-          width="14"
-          height="14"
-          viewBox="0 0 36 36"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="user-item-close"
-          onClick={() => setFilterAddress(null)}
-        >
-          <path
-            d="M0 0H4V4H0V0ZM8 8H4V4H8V8ZM12 12H8V8H12V12ZM16 16H12V12H16V16ZM20 20H16V16H20V20ZM24 24H20V20H24V24ZM28 28H24V24H28V28ZM32 32V28H28V32H32ZM32 32V36H36V32H32Z"
-            fill="#333333"
-          />
-          <path
-            d="M0 36H4V32H0V36ZM8 28H4V32H8V28ZM12 24H8V28H12V24ZM16 20H12V24H16V20ZM20 16H16V20H20V16ZM24 12H20V16H24V12ZM28 8H24V12H28V8ZM32 4V8H28V4H32ZM32 4V0H36V4H32Z"
-            fill="#333333"
-          />
-        </svg>
-      )}
       <div className="user-info">
         <img
           className="avatar"
@@ -627,394 +540,87 @@ function Frens() {
   );
 
   return (
-    <FrensWrapper>
-      <FrensHeader>
-        <FeedsMenu />
-      </FrensHeader>
-      <FrensBody>
-        <FrensFeed>
-          <FrensFeedSwitch>
-            <div
-              onClick={() => setFeedTab('Explore')}
-              className={feedTab === 'Explore' ? 'active' : ''}
-            >
-              Explore
-            </div>
-            <div
-              onClick={() => setFeedTab('Following')}
-              className={feedTab === 'Following' ? 'active' : ''}
-            >
-              Following
-            </div>
-            <div className="tag-select">
-              <Select
-                options={tagTypeOptions}
-                onChange={(value) => setFilterTag(value)}
-                value={filterTag}
-                iconUrl={ProjectTypeSvg}
-              />
-            </div>
-          </FrensFeedSwitch>
-          <ListScrollBox
-            onScrollBottom={() => {
-              fetchData({
-                cursor: feedRef?.current?.cursor,
-              });
-            }}
-          >
-            <div className="feed-content">
-              {feed?.result?.map((item, index) => {
-                const {
+    <ListScrollBox
+      onScrollBottom={() => {
+        fetchData({
+          cursor: feedRef?.current?.cursor,
+        });
+      }}
+    >
+      <Rss3ContentWrapper>
+        {!(feed?.result?.length > 0) && !loading ? <p>{emptyText}</p> : null}
+        {feed?.result?.map((item, index) => {
+          const {
+            owner,
+            tag,
+            type,
+            owner_name: ownerName,
+            owner_follower_num: ownerFollowerNum,
+            owner_following_num: ownerFollowingNum,
+            hash,
+          } = item;
+
+          return (
+            <Rss3ContentCard key={hash}>
+              <Popover
+                content={renderUserInfo(
                   owner,
-                  tag,
-                  type,
-                  owner_name: ownerName,
-                  owner_follower_num: ownerFollowerNum,
-                  owner_following_num: ownerFollowingNum,
-                } = item;
-                return (
-                  <FrensFeedCard>
-                    <Popover
-                      content={renderUserInfo(
-                        owner,
-                        ownerName,
-                        owner in followingMap,
-                        ownerFollowerNum,
-                        ownerFollowingNum,
-                        false
-                      )}
-                      getPopupContainer={(triggerNode) =>
-                        (triggerNode as any).parentNode
-                      }
-                      color="#1b1e23"
-                      overlayInnerStyle={{
-                        background: '#1b1e23',
-                        color: '#718096',
-                      }}
-                    >
-                      <img
-                        id={`tooltip-anchor-children-${owner}-${index}`}
-                        className="avatar"
-                        src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
-                        alt={owner}
-                      />
-                    </Popover>
-                    <div className="content">
-                      <div className="owner">
-                        <span className="name color-white">{ownerName}</span>{' '}
-                        {renderAddress(owner)}
-                      </div>
-                      {tagComponentsMap?.[`${type}`]?.(item)}
-                      {/* {tagComponentsMap?.[`${tag}_${type}`]?.(item)} */}
-                    </div>
-                  </FrensFeedCard>
-                );
-              })}
-              <div className="load-more">
-                {
-                  loading ? (
-                    <div className="loading-box">
-                      <Loading />
-                    </div>
-                  ) : null
-                  // <button
-                  //   type="button"
-                  //   onClick={() => {
-                  //     fetchData({
-                  //       cursor: feedRef?.current?.cursor,
-                  //     });
-                  //   }}
-                  // >
-                  //   Load More
-                  // </button>
+                  ownerName,
+                  owner in followingMap,
+                  ownerFollowerNum,
+                  ownerFollowingNum
+                )}
+                getPopupContainer={(triggerNode) =>
+                  (triggerNode as any).parentNode
                 }
-              </div>
-            </div>
-          </ListScrollBox>
-        </FrensFeed>
-        <FrensRight>
-          {isSearch && feed?.result?.[0] ? (
-            <div className="card search-card">
-              {renderUserInfo(
-                feed?.result?.[0]?.owner,
-                feed?.result?.[0]?.owner_name,
-                false,
-                feed?.result?.[0]?.owner_follower_num,
-                feed?.result?.[0]?.owner_following_num,
-                true
-              )}
-            </div>
-          ) : (
-            <SearchInput
-              onSearch={(value) => {
-                setFilterAddress(value);
-              }}
-              placeholder="Search Address or ENS"
-            />
-          )}
-          <div className="card">
-            <FrensFeedSwitch>
-              <span className="title">You Might Like</span>
-            </FrensFeedSwitch>
-            {(() => {
-              const recoArr =
-                reco?.filter(({ address }) => {
-                  return !following?.result?.find(
-                    ({ owner }) => address === owner
-                  );
-                }) || [];
-
-              return recoArr?.length ? (
-                <div className="reco-card">
-                  {recoArr?.map(({ address: owner, domain: owner_name }) => (
-                    <div className="user-info" key={`frens-reco-card-${owner}`}>
-                      <img
-                        className="avatar"
-                        src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
-                        alt={owner}
-                      />
-                      <div>
-                        <div className="name color-white">
-                          {owner_name || ' '}
-                        </div>
-                        <div>{renderAddress(owner, false)}</div>
-                      </div>
-                      <button
-                        className="frens-button"
-                        type="button"
-                        onClick={() => {
-                          dispatch(
-                            setFollow({ isFollow: false, target: owner })
-                          );
-                        }}
-                      >
-                        {(() => {
-                          if (followAddressLoading.includes(owner))
-                            return (
-                              <StyledLdsRing>
-                                <div />
-                                <div />
-                                <div />
-                                <div />
-                              </StyledLdsRing>
-                            );
-                          return false ? (
-                            <>
-                              <span className="btn-following">Following</span>
-                              <span className="btn-unfollow">UnFollow</span>
-                            </>
-                          ) : (
-                            'Follow'
-                          );
-                        })()}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ) : null;
-            })()}
-          </div>
-
-          <div className="card">
-            <FrensFeedSwitch>
-              <div
-                onClick={() => setFollowTab('Following')}
-                className={`${
-                  followTab === 'Following' ? 'active' : ''
-                } follow-tab`}
+                color="#1b1e23"
+                overlayInnerStyle={{
+                  background: '#1b1e23',
+                  color: '#718096',
+                }}
               >
-                Following {following?.total ? `(${following?.total})` : null}
-              </div>
-              <div
-                onClick={() => setFollowTab('Follower')}
-                className={`${
-                  followTab === 'Follower' ? 'active' : ''
-                } follow-tab`}
-              >
-                Follower {follower?.total ? `(${follower?.total})` : null}
-              </div>
-            </FrensFeedSwitch>
-            <div className="reco-card">
-              {!(followTab === 'Following' ? following : follower)?.result && (
-                <div className="follow-tip">
-                  {followTab === 'Following'
-                    ? 'you did NOT follow anyone!'
-                    : 'you have no follower!'}
+                <img
+                  id={`tooltip-anchor-children-${owner}-${index}`}
+                  className="avatar"
+                  src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
+                  alt={owner}
+                />
+              </Popover>
+              <div className="content">
+                <div className="owner">
+                  <span className="name color-white">{ownerName}</span>{' '}
+                  {renderAddress(owner)}
                 </div>
-              )}
-              {(followTab === 'Following' ? following : follower)?.result?.map(
-                ({ owner, owner_name, is_follow }) => (
-                  <div className="user-info" key={`frens-feed-card-${owner}`}>
-                    <img
-                      className="avatar"
-                      src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
-                      alt={owner}
-                    />
-                    <div>
-                      <div className="name color-white">
-                        {owner_name || ' '}
-                      </div>
-                      <div>{renderAddress(owner, false)}</div>
-                    </div>
-                    <button
-                      className="frens-button"
-                      type="button"
-                      onClick={() => {
-                        dispatch(
-                          setFollow({ isFollow: is_follow, target: owner })
-                        );
-                      }}
-                    >
-                      {(() => {
-                        if (followAddressLoading.includes(owner))
-                          return (
-                            <StyledLdsRing>
-                              <div />
-                              <div />
-                              <div />
-                              <div />
-                            </StyledLdsRing>
-                          );
-                        return is_follow ? (
-                          <>
-                            <span className="btn-following">Following</span>
-                            <span className="btn-unfollow">UnFollow</span>
-                          </>
-                        ) : (
-                          'Follow'
-                        );
-                      })()}
-                    </button>
-                  </div>
-                )
-              )}
+                {tagComponentsMap?.[`${type}`]?.(item)}
+              </div>
+            </Rss3ContentCard>
+          );
+        })}
+        <div className="load-more">
+          {loading ? (
+            <div className="loading-box">
+              <Loading />
             </div>
-            {/* <div className="load-more-box">
-            <button
-              className="frens-button"
-              type="button"
-              onClick={() => {
-                fetchData({
-                  cursor: feedRef?.current?.cursor,
-                });
-              }}
-            >
-              Load More
-            </button>
-          </div> */}
-          </div>
-        </FrensRight>
-      </FrensBody>
-    </FrensWrapper>
+          ) : null}
+        </div>
+      </Rss3ContentWrapper>
+    </ListScrollBox>
   );
 }
-
-export default React.memo(Frens);
-const StyledLdsRing = styled.div`
-  display: inline-block;
-  position: relative;
-  width: 56px;
-  height: 15px;
-  cursor: default;
-
-  div:nth-child(1) {
-    animation-delay: -0.45s;
-  }
-  div:nth-child(2) {
-    animation-delay: -0.3s;
-  }
-  div:nth-child(3) {
-    animation-delay: -0.15s;
-  }
-
-  div {
-    box-sizing: border-box;
-    display: block;
-    position: absolute;
-    left: 50%;
-    width: 15px;
-    height: 15px;
-    /* margin: 8px; */
-    border: 2px solid #fff;
-    border-radius: 50%;
-    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    margin-left: -15%;
-    border-color: #fff transparent transparent transparent;
-  }
-
-  @keyframes lds-ring {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-`;
-const FrensWrapper = styled(MainWrapper)`
-  height: auto;
-  background: #14171a;
-  color: #718096;
-  padding-top: 0;
-
-  .address {
-    color: inherit;
-    text-decoration: none;
-  }
-`;
-const FrensHeader = styled.div`
-  margin-bottom: 24px;
-`;
-const FrensBody = styled.div`
-  height: auto;
-  background: #14171a;
-  color: #718096;
+const Rss3ContentWrapper = styled.div`
+  /* overflow-y: auto; */
+  flex: 1;
   display: flex;
+  flex-direction: column;
 
-  .feed-content {
-    /* overflow-y: auto; */
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    /* justify-content: center;
-    align-items: center; */
-  }
+  p {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
 
-  .reco-card {
-    max-height: 320px;
-    overflow-y: auto;
-  }
-
-  .card {
-    background: #1b1e23;
-    border-radius: 20px;
-    padding: 0px 20px;
-    margin-top: 24px;
-    /* flex-grow: 1; */
-    & > div {
-      justify-content: space-between;
-    }
-  }
-
-  .search-card {
-    margin: 0;
-  }
-
-  .follow-tip {
-    padding: 30px 0;
+    color: #748094;
     text-align: center;
-  }
-  /* .rubiks-loader {
-    margin: 0 auto;
-    padding: 30px 0;
-  } */
-
-  .name {
-    font-weight: bolder;
-  }
-
-  .color-white {
-    color: white;
+    margin-top: 70px;
   }
 
   .load-more {
@@ -1063,6 +669,56 @@ const FrensBody = styled.div`
     }
     /* background: #14171a; */
   }
+`;
+
+const Rss3ContentCard = styled.div`
+  display: flex;
+  padding: 24px 0;
+  border-bottom: 1px solid #39424c;
+  width: 100%;
+  color: #718096;
+
+  .address {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .reco-card {
+    max-height: 320px;
+    overflow-y: auto;
+  }
+
+  .card {
+    background: #1b1e23;
+    border-radius: 20px;
+    padding: 0px 20px;
+    margin-top: 24px;
+    /* flex-grow: 1; */
+    & > div {
+      justify-content: space-between;
+    }
+  }
+
+  .search-card {
+    margin: 0;
+  }
+
+  .follow-tip {
+    padding: 30px 0;
+    text-align: center;
+  }
+  /* .rubiks-loader {
+    margin: 0 auto;
+    padding: 30px 0;
+  } */
+
+  .name {
+    font-weight: bolder;
+  }
+
+  .color-white {
+    color: white;
+  }
 
   .user-item {
     position: relative;
@@ -1104,73 +760,6 @@ const FrensBody = styled.div`
       margin-left: auto;
     }
   }
-`;
-const FrensFeed = styled.div`
-  width: 100%;
-  /* max-width: 47.5rem; */
-  min-width: 37.5rem;
-  height: calc(100vh - 125px);
-  min-height: 850px;
-  background: #1b1e23;
-  border-radius: 20px;
-  padding: 0px 24px;
-  margin-right: 24px;
-  display: flex;
-  flex-direction: column;
-`;
-const FrensRight = styled.div`
-  /* flex-grow: 1; */
-  min-width: 360px;
-  display: flex;
-  flex-direction: column;
-`;
-const FrensFeedSwitch = styled.div`
-  display: flex;
-  column-gap: 20px;
-  border-bottom: 1px solid #39424c;
-  position: relative;
-
-  .title {
-    font-weight: 700;
-    padding: 12px 0;
-    font-size: 22px;
-    line-height: 26px;
-    color: #ffffff;
-  }
-
-  & > div {
-    padding: 24px 0 18px 0;
-    font-weight: bolder;
-    cursor: pointer;
-    font-size: 18px;
-  }
-
-  .active {
-    color: white;
-    border-bottom: 4px solid white;
-    border-radius: 100px 100px 0px 0px;
-  }
-
-  .tag-select {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    padding: 0;
-  }
-
-  .follow-tab {
-    width: 50%;
-    text-align: center;
-    white-space: pre;
-  }
-`;
-
-const FrensFeedCard = styled.div`
-  display: flex;
-  padding: 24px 0;
-  border-bottom: 1px solid #39424c;
-  width: 100%;
 
   .avatar {
     width: 48px;
@@ -1301,5 +890,47 @@ const FrensFeedCard = styled.div`
   .follow-name {
     margin-left: 5px;
     font-weight: bolder;
+  }
+`;
+
+const StyledLdsRing = styled.div`
+  display: inline-block;
+  position: relative;
+  width: 56px;
+  height: 15px;
+  cursor: default;
+
+  div:nth-child(1) {
+    animation-delay: -0.45s;
+  }
+  div:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+  div:nth-child(3) {
+    animation-delay: -0.15s;
+  }
+
+  div {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    left: 50%;
+    width: 15px;
+    height: 15px;
+    /* margin: 8px; */
+    border: 2px solid #fff;
+    border-radius: 50%;
+    animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    margin-left: -15%;
+    border-color: #fff transparent transparent transparent;
+  }
+
+  @keyframes lds-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;

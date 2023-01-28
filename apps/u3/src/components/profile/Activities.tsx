@@ -8,20 +8,27 @@ import { GasPump } from '../icons/gas-pump';
 import { useAppSelector } from '../../store/hooks';
 import { selectKarmaState } from '../../features/profile/karma';
 import UKarmaList, { UKarmaTitle } from './UKarmaList';
+import Rss3Content from '../fren/Rss3Content';
 
 export default function Activities() {
   const { transList } = useAppSelector(selectKarmaState);
 
   return (
     <ContentBox>
-      {(transList.length > 0 &&
+      <div className="lists">
+        <Rss3Content
+          address={['0x74667801993b457b8ccf19d03bbbaa52b7fff43b']}
+          emptyText="No activities found on Ethereum."
+        />
+      </div>
+      {/* {(transList.length > 0 &&
         transList.map((item, idx) => {
           return (
             <div className="lists">
               <ActivityItem key={item.id} {...item} />
             </div>
           );
-        })) || <NoActivities />}
+        })) || <NoActivities />} */}
 
       <div className="karma-list">
         <UKarmaTitle />
@@ -90,10 +97,11 @@ const ContentBox = styled.div`
   gap: 40px;
   margin-top: 40px;
   width: 100%;
-  > div {
+  padding-bottom: 24px;
+  /* > div {
     max-height: calc(100vh - 170px - 24px - 24px - 73px - 40px);
     height: fit-content;
-  }
+  } */
 
   & .no-item {
     box-sizing: border-box;
@@ -117,6 +125,9 @@ const ContentBox = styled.div`
     border-radius: 20px;
     padding: 0 20px;
     flex-grow: 1;
+    display: flex;
+    min-width: 37.5rem;
+    max-height: 700px;
   }
   & .activity {
     &:last-child {
@@ -200,6 +211,8 @@ const ContentBox = styled.div`
     border-radius: 20px;
     color: #ffffff;
     overflow: scroll;
+    max-height: calc(100vh - 170px - 24px - 24px - 73px - 40px);
+    height: fit-content;
   }
 `;
 
