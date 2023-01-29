@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 17:31:43
+ * @LastEditTime: 2023-01-29 13:59:52
  * @Description: 基础按钮
  */
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
@@ -51,7 +51,6 @@ export const ButtonPrimaryLine = styled(ButtonBaseWrapper)`
     cursor: not-allowed;
     pointer-events: auto;
     opacity: 0.5;
-    border: none;
     background-color: #14171a;
   }
   &:not(:disabled):hover {

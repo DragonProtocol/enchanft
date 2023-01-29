@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-28 16:18:12
+ * @LastEditTime: 2023-01-29 14:06:42
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -49,6 +49,7 @@ import CheckCircleSvg from '../components/imgs/check-circle.svg';
 import { ButtonPrimaryLine } from '../components/common/button/ButtonBase';
 import ListScrollBox from '../components/common/box/ListScrollBox';
 import ContentShowerBox from '../components/contents/ContentShowerBox';
+import ContentPreview from '../components/contents/ContentPreview';
 
 function EmptyFavorites() {
   const navigate = useNavigate();
@@ -379,7 +380,7 @@ function Favorites() {
 
                 {switchValue === FavoriteSwitchValue.content &&
                   (content ? (
-                    <ContentShowerBox selectContent={content} />
+                    <ContentPreview data={content} showAdminOps={false} />
                   ) : (
                     <EmptyContent />
                   ))}

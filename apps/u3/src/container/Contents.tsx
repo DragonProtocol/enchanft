@@ -2,50 +2,34 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-28 16:42:42
+ * @LastEditTime: 2023-01-29 13:40:30
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 // import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { useWlUserReact } from '@ecnft/wl-user-react';
+import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
-import { debounce } from 'lodash';
 import {
   URLSearchParamsInit,
   useNavigate,
   useParams,
   useSearchParams,
 } from 'react-router-dom';
-
-import ListItem, { ListItemHidden } from '../components/contents/ListItem';
 import { fetchContents, updateContent } from '../services/api/contents';
-import {
-  ContentLang,
-  ContentListItem,
-  ContentStatus,
-} from '../services/types/contents';
+import { ContentLang, ContentListItem } from '../services/types/contents';
 import Loading from '../components/common/loading/Loading';
-import { getProjectShareUrl } from '../utils/share';
-import { tweetShare } from '../utils/twitter';
 import ListScrollBox from '../components/common/box/ListScrollBox';
-import ContentShowerBox, {
-  ContentBoxContainer,
-} from '../components/contents/ContentShowerBox';
+import { ContentBoxContainer } from '../components/contents/ContentShowerBox';
 import useContentHandles from '../hooks/useContentHandles';
 import { MainWrapper } from '../components/layout/Index';
 import FeedsMenu from '../components/layout/FeedsMenu';
-import GridItem, { GridItemHidden } from '../components/contents/GridItem';
 import GridModal from '../components/contents/GridModal';
 import FeedsMenuRight, { Layout } from '../components/layout/FeedsMenuRight';
 import FeedsFilterBox from '../components/layout/FeedsFilterBox';
 import Filter from '../components/contents/Filter';
 import SearchInput from '../components/common/input/SearchInput';
 import NoResult from '../components/common/NoResult';
-import AnimatedListItem, {
-  useAnimatedListTransition,
-} from '../components/animation/AnimatedListItem';
-import { MEDIA_BREAK_POINTS } from '../constants';
 import ContentOrderBySelect, {
   defaultContentOrderBy,
 } from '../components/contents/ContentOrderBySelect';
@@ -55,9 +39,12 @@ import {
 } from '../utils/localLayout';
 import ContentList from '../components/contents/ContentList';
 import ContentGridList from '../components/contents/ContentGridList';
+import useAdminContentHandles from '../hooks/useAdminContentHandles';
+import ContentPreview from '../components/contents/ContentPreview';
 
 function Contents() {
   const { user } = useWlUserReact();
+  const { isAdmin } = usePermissions();
   const navigate = useNavigate();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -90,7 +77,6 @@ function Contents() {
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
-  const [updating, setUpdating] = useState(false);
   const [layout, setLayout] = useState(getContentsLayoutFromLocal());
   const [gridModalShow, setGridModalShow] = useState(false);
   const [isActiveFilter, setIsActiveFilter] = useState(false);
@@ -104,9 +90,12 @@ function Contents() {
     onHiddenAction,
     onHiddenUndoAction,
     onShare,
-    deleteOne,
-    updateOne,
   } = useContentHandles(contents, setContents);
+
+  const { onAdminScore, onAdminDelete } = useAdminContentHandles(
+    contents,
+    setContents
+  );
 
   const selectContent = useMemo(() => {
     return contents.find(
@@ -179,57 +168,6 @@ function Contents() {
       setLoadingMore(false);
     }
   }, [currentSearchParams, contents, currPageNumber]);
-
-  const scoreContent = useCallback(
-    async (editId: number) => {
-      if (updating) return;
-      setUpdating(true);
-      try {
-        const idx = contents.findIndex((item) => {
-          if (item?.id && item.id === editId) return true;
-          return false;
-        });
-        const curr = contents[idx];
-        if (!curr) return;
-
-        curr.editorScore = Number(curr.editorScore || 0) + 10;
-        await updateContent(
-          { id: editId, editorScore: curr.editorScore },
-          user.token
-        );
-        updateOne(editId, {
-          editorScore: curr.editorScore,
-        });
-        toast.success('score content success!!!');
-      } catch (error) {
-        toast.error(error.message);
-      } finally {
-        setUpdating(false);
-      }
-    },
-    [user.token, updating, updateOne, contents]
-  );
-
-  const delContent = useCallback(
-    async (editId: number) => {
-      if (updating) return;
-      setUpdating(true);
-      try {
-        await updateContent(
-          { id: editId, status: ContentStatus.HIDDEN },
-          user.token
-        );
-        deleteOne(editId);
-        setSelectContentId(undefined);
-        toast.success('delete content success!!!');
-      } catch (error) {
-        toast.error(error.message);
-      } finally {
-        setUpdating(false);
-      }
-    },
-    [user.token, deleteOne, updating]
-  );
 
   useEffect(() => {
     const { keywords, types, orderBy, lang } = currentSearchParams;
@@ -344,19 +282,18 @@ function Contents() {
                 {renderMoreLoading}
               </ListBox>
               <ContentBoxContainer>
-                <ContentShowerBox
-                  selectContent={selectContent}
-                  deleteAction={() => {
-                    if (selectContent?.id) delContent(selectContent.id);
-                  }}
-                  editAction={() => {
-                    if (selectContent?.id)
-                      navigate(`/contents/create?id=${selectContent.id}`);
-                  }}
-                  thumbUpAction={() => {
-                    if (selectContent?.id) scoreContent(selectContent.id);
-                  }}
-                />
+                {selectContent && (
+                  <ContentPreview
+                    data={selectContent}
+                    showAdminOps={!selectContent.isForU && isAdmin}
+                    onAdminScore={() => {
+                      onAdminScore(selectContent);
+                    }}
+                    onAdminDelete={() => {
+                      onAdminDelete(selectContent);
+                    }}
+                  />
+                )}
               </ContentBoxContainer>
             </ContentsWrapper>
           );
@@ -388,12 +325,13 @@ function Contents() {
           setGridModalShow(false);
         }}
         selectContent={selectContent}
-        scoreContent={(currId) => {
-          scoreContent(currId);
+        onAdminScore={() => {
+          onAdminScore(selectContent);
         }}
-        delContent={async (currId) => {
-          await delContent(currId);
-          setGridModalShow(false);
+        onAdminDelete={() => {
+          onAdminDelete(selectContent).then(() => {
+            setGridModalShow(false);
+          });
         }}
         shareAction={() => {
           if (!selectContent) return;
@@ -406,7 +344,6 @@ function Contents() {
         }}
         favorsAction={async () => {
           if (!selectContent) return;
-          const favorsAgain = !selectContent.favored;
           await onFavor(selectContent);
         }}
         hiddenAction={() => {
