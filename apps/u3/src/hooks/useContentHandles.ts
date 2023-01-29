@@ -21,7 +21,7 @@ import {
 import { ContentListItem } from '../services/types/contents';
 import { getContentShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
-import { incScore, SCORE } from '../features/profile/karma';
+import { fetchUserKarma } from '../features/profile/karma';
 import { store } from '../store/store';
 
 // cache content handle pending ids
@@ -86,7 +86,7 @@ export default (
               upVoted: true,
               upVoteNum: data.upVoteNum + 1,
             });
-            store.dispatch(incScore(SCORE.ApplaudContent));
+            store.dispatch(fetchUserKarma({ token: user.token }));
             resolve();
           } catch (error) {
             toast.error(error?.message || error?.msg);
