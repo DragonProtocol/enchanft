@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 14:27:42
+ * @LastEditTime: 2023-01-29 16:33:37
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -89,7 +89,11 @@ const FeedsMenuRightWrapper = styled.div`
   align-items: center;
   gap: 20px;
 `;
-const OrderByBox = styled.div``;
+const OrderByBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
 const FilterButton = styled(ButtonPrimaryLine)<{ isActive?: boolean }>`
   width: 52px;
   height: 40px;
@@ -105,6 +109,13 @@ const FilterButton = styled(ButtonPrimaryLine)<{ isActive?: boolean }>`
       transition: all 0.3s ease-out;
     }
   `}
+  &:not(:disabled):hover {
+    ${({ isActive }) =>
+      isActive &&
+      `
+        background: #718096;
+      `}
+  }
 `;
 const SearchBox = styled.div`
   width: 200px;
