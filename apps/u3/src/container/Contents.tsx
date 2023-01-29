@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-29 17:00:03
+ * @LastEditTime: 2023-01-29 18:12:58
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -103,7 +103,7 @@ function Contents() {
         });
         if (data.code === 0) {
           const newId = data.data[0]?.id;
-          if (oldId && newId !== oldId) {
+          if (newId !== oldId) {
             setHasNewest(true);
           }
           setNewestContentIdToStore(newId);

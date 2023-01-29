@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 17:15:42
+ * @LastEditTime: 2023-01-29 18:05:24
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -10,6 +10,11 @@ import type { OrderBy, ProjectType } from './common';
 import { ContentListItem } from './contents';
 import type { EventExploreListItemResponse } from './event';
 
+export enum UniprojectStatus {
+  HIDDEN = 'HIDDEN',
+  VISIBLE = 'VISIBLE',
+  VERIFIED = 'VERIFIED',
+}
 export enum UniProjectType {
   DEFI = 'DEFI',
   GAME = 'GAME',
@@ -56,6 +61,9 @@ export type ProjectExploreListItemResponse = {
     telegram?: string;
   };
   types?: string[];
+  dappUrl: string;
+  chains?: string[];
+  status?: UniprojectStatus;
 };
 export type ProjectExploreListResponse = ApiResp<
   Array<ProjectExploreListItemResponse>
