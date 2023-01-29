@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 11:49:59
+ * @LastEditTime: 2023-01-29 18:10:38
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -108,14 +108,19 @@ export default function Dapp() {
       <ContentLayout>
         <ContentLayoutLeft>
           <Screeshots />
-          <Events
-            data={data.events ?? []}
-            onItemClick={(item) => navigate(`/events/${item.id}`)}
-          />
-          <Conents
-            data={data.contents ?? []}
-            onItemClick={(item) => navigate(`/contents/${item.id}`)}
-          />
+          {data?.events?.length && (
+            <Events
+              data={data.events}
+              onItemClick={(item) => navigate(`/events/${item.id}`)}
+            />
+          )}
+          {data?.contents?.length && (
+            <Conents
+              data={data.contents}
+              onItemClick={(item) => navigate(`/contents/${item.id}`)}
+            />
+          )}
+
           <UserScore />
         </ContentLayoutLeft>
         <ContentLayoutRight>

@@ -1,6 +1,9 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { formatFilterShowName } from '../../../utils/filter';
-import { ProjectExploreListItemResponse } from '../../../services/types/project';
+import {
+  ProjectExploreListItemResponse,
+  UniprojectStatus,
+} from '../../../services/types/project';
 import {
   ButtonPrimary,
   ButtonPrimaryLine,
@@ -13,6 +16,8 @@ import TwitterSvg from '../../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../../common/icons/svgs/discord.svg';
 import FacebookSvg from '../../common/icons/svgs/facebook.svg';
 import TelegramSvg from '../../common/icons/svgs/telegram.svg';
+import useConfigsTopics from '../../../hooks/useConfigsTopics';
+import { ReactComponent as CheckVerifiedSvg } from '../../common/icons/svgs/check-verified.svg';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: ProjectExploreListItemResponse;
@@ -31,18 +36,28 @@ export default function Header({
   onOpen,
   ...otherProps
 }: Props) {
+  const { topics } = useConfigsTopics();
+  const { chains } = topics;
+  const showChains = chains.filter((item) =>
+    data?.chains.includes(item.chainEnum)
+  );
+
   return (
     <HeaderWrapper {...otherProps}>
       <HeaderImg src={data.image} />
       <HeaderCenter>
-        <Title>{data.name}</Title>
-        {data?.types && (
-          <TagsRow>
-            {data.types.map((item) => (
-              <Tag>{formatFilterShowName(item)}</Tag>
-            ))}
-          </TagsRow>
-        )}
+        <Title>
+          {data.name}{' '}
+          {data.status === UniprojectStatus.VERIFIED && <CheckVerifiedSvg />}
+        </Title>
+        <TagsRow>
+          {data?.types.map((item) => (
+            <Tag>{formatFilterShowName(item)}</Tag>
+          ))}
+          {showChains.map((item) => (
+            <ChainIcon src={item.image} alt={item.name} title={item.name} />
+          ))}
+        </TagsRow>
 
         <Description row={2}>{data.description}</Description>
       </HeaderCenter>
@@ -76,26 +91,27 @@ export default function Header({
               <LinkIcon src={TelegramSvg} />
             </LinkButton>
           )}
-          {isInstalled ? (
-            <OpenButton
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onOpen) onOpen();
-              }}
-            >
-              Open Dapp
-            </OpenButton>
-          ) : (
-            <InstallButton
-              disabled={disabledInstall}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onInstall) onInstall();
-              }}
-            >
-              {loadingInstall ? 'Installing' : 'Install'}
-            </InstallButton>
-          )}
+          {data?.dappUrl &&
+            (isInstalled ? (
+              <OpenButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onOpen) onOpen();
+                }}
+              >
+                Open Dapp
+              </OpenButton>
+            ) : (
+              <InstallButton
+                disabled={disabledInstall}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onInstall) onInstall();
+                }}
+              >
+                {loadingInstall ? 'Installing' : 'Install'}
+              </InstallButton>
+            ))}
         </RightButtons>
       </HeaderRight>
     </HeaderWrapper>
@@ -131,6 +147,9 @@ const Title = styled.span`
   font-size: 24px;
   line-height: 28px;
   color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
 const TagsRow = styled.div`
   display: flex;
@@ -156,7 +175,11 @@ const RightButtons = styled.div`
 const LinkButton = styled(ButtonPrimaryLine)`
   width: 40px;
   height: 40px;
+  padding: 5px;
+  box-sizing: border-box;
+  border-radius: 50%;
   background-color: #14171a;
+  border: none;
 `;
 const LinkIcon = styled.img`
   width: 100%;
@@ -164,3 +187,9 @@ const LinkIcon = styled.img`
 `;
 const OpenButton = styled(ButtonPrimaryLine)``;
 const InstallButton = styled(ButtonPrimary)``;
+const ChainIcon = styled.img`
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #14171a;
+`;
