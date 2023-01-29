@@ -50,7 +50,7 @@ export default function UKarmaList() {
                 <Karma score={`+${item.score}`} />
                 <span>{dayjs(item.createdAt).fromNow()}</span>
               </div>
-              <div>GM have a nice day in U3</div>
+              <div>{item.contentTitle}</div>
             </div>
           );
         })

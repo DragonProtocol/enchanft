@@ -5,14 +5,10 @@ import Badge from '../contents/Badge';
 import { Copy } from '../icons/copy';
 import { CurrencyETH } from '../icons/currency-eth';
 import { GasPump } from '../icons/gas-pump';
-import { useAppSelector } from '../../store/hooks';
-import { selectKarmaState } from '../../features/profile/karma';
 import UKarmaList, { UKarmaTitle } from './UKarmaList';
 import Rss3Content from '../fren/Rss3Content';
 
 export default function Activities() {
-  const { transList } = useAppSelector(selectKarmaState);
-
   return (
     <ContentBox>
       <div className="lists">
@@ -128,6 +124,7 @@ const ContentBox = styled.div`
     display: flex;
     min-width: 37.5rem;
     max-height: 700px;
+    height: fit-content;
   }
   & .activity {
     &:last-child {

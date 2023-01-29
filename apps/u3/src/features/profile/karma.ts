@@ -61,7 +61,7 @@ export const fetchUserKarmaList = createAsyncThunk(
       pageNumber,
       pageSize,
       token,
-    }: { pageSize: number; pageNumber: number; token: string },
+    }: { pageSize?: number; pageNumber?: number; token: string },
     { rejectWithValue }
   ) => {
     const resp = await getKarmaList({ pageNumber, pageSize }, token);
@@ -92,8 +92,9 @@ export const fetchUserKarmaListMore = createAsyncThunk(
 
 export const checkIn = createAsyncThunk(
   'profile/checkIn',
-  async ({ token }: { token: string }) => {
+  async ({ token }: { token: string }, thunkAPI) => {
     const resp = await dailyCheckIn(token);
+    thunkAPI.dispatch(fetchUserKarmaList({ token }));
     return resp.data.data;
   }
 );
