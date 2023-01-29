@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-29 13:40:30
+ * @LastEditTime: 2023-01-29 17:00:03
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -41,6 +41,16 @@ import ContentList from '../components/contents/ContentList';
 import ContentGridList from '../components/contents/ContentGridList';
 import useAdminContentHandles from '../hooks/useAdminContentHandles';
 import ContentPreview from '../components/contents/ContentPreview';
+import { ButtonPrimaryLine } from '../components/common/button/ButtonBase';
+
+const NEWEST_CONTENT_ID_KEY = 'NEWEST_CONTENT_ID';
+function getNewestContentIdForStore(): number {
+  return Number(localStorage.getItem(NEWEST_CONTENT_ID_KEY));
+}
+
+function setNewestContentIdToStore(id: number) {
+  localStorage.setItem(NEWEST_CONTENT_ID_KEY, String(id));
+}
 
 function Contents() {
   const { user } = useWlUserReact();
@@ -80,6 +90,28 @@ function Contents() {
   const [layout, setLayout] = useState(getContentsLayoutFromLocal());
   const [gridModalShow, setGridModalShow] = useState(false);
   const [isActiveFilter, setIsActiveFilter] = useState(false);
+
+  const [hasNewest, setHasNewest] = useState(false);
+  useEffect(() => {
+    (async () => {
+      try {
+        const oldId = getNewestContentIdForStore();
+        const { data } = await fetchContents({
+          orderBy: 'NEWEST',
+          pageSize: 1,
+          pageNumber: 0,
+        });
+        if (data.code === 0) {
+          const newId = data.data[0]?.id;
+          if (oldId && newId !== oldId) {
+            setHasNewest(true);
+          }
+          setNewestContentIdToStore(newId);
+        }
+        // eslint-disable-next-line no-empty
+      } catch (error) {}
+    })();
+  }, []);
 
   const {
     votePendingIds,
@@ -137,6 +169,9 @@ function Contents() {
           setSelectContentId(itemData?.id || itemData?.uuid);
         } else if (tmpData.length > 0) {
           setSelectContentId(tmpData[0]?.id || tmpData[0]?.uuid);
+        }
+        if (orderBy === 'NEWEST') {
+          setHasNewest(false);
         }
       } catch (error) {
         toast.error(error.message);
@@ -199,15 +234,29 @@ function Contents() {
             isActiveFilter={isActiveFilter}
             onChangeActiveFilter={setIsActiveFilter}
             orderByEl={
-              <ContentOrderBySelect
-                value={currentSearchParams.orderBy}
-                onChange={(value) =>
-                  setSearchParams({
-                    ...currentUrlQuery,
-                    orderBy: value,
-                  } as unknown as URLSearchParamsInit)
-                }
-              />
+              <>
+                <ContentOrderBySelect
+                  value={currentSearchParams.orderBy}
+                  onChange={(value) =>
+                    setSearchParams({
+                      ...currentUrlQuery,
+                      orderBy: value,
+                    } as unknown as URLSearchParamsInit)
+                  }
+                />
+                <NewestButton
+                  isActive={currentUrlQuery.orderBy === 'NEWEST'}
+                  onClick={() => {
+                    setSearchParams({
+                      ...currentUrlQuery,
+                      orderBy: 'NEWEST',
+                    } as unknown as URLSearchParamsInit);
+                  }}
+                >
+                  Mempool
+                  {hasNewest && <HasNewestTag />}
+                </NewestButton>
+              </>
             }
             searchEl={
               <SearchInput
@@ -423,4 +472,34 @@ const MoreLoading = styled.div`
   padding: 20px;
   text-align: center;
   color: #748094;
+`;
+const NewestButton = styled(ButtonPrimaryLine)<{ isActive?: boolean }>`
+  height: 40px;
+  border-radius: 100px;
+  position: relative;
+  ${({ isActive }) =>
+    isActive &&
+    `
+    background: #718096;
+    transition: all 0.3s ease-out;
+    color: #14171A;
+  `}
+  &:not(:disabled):hover {
+    ${({ isActive }) =>
+      isActive &&
+      `
+        background: #718096;
+        color: #14171A;
+      `}
+  }
+`;
+const HasNewestTag = styled.div`
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff0000;
+  position: absolute;
+  top: 0;
+  right: 10px;
+  transform: translateY(-50%);
 `;
