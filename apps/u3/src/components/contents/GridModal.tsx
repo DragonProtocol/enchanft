@@ -141,10 +141,11 @@ const ContentBox = styled.div`
     align-items: center;
     position: relative;
     .content-shower-tabs {
-      position: absolute;
+      /* position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%); */
+      margin: 0 auto;
     }
     .content-shower-handles {
       margin-left: auto;
