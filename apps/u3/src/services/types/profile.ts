@@ -167,6 +167,7 @@ export enum KarmaType {
 }
 export type KarmaListItem = {
   contentId: null | number;
+  contentTitle: string;
   createdAt: number;
   id: number;
   score: number;
