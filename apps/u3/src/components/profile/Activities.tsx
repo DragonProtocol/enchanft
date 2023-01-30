@@ -123,7 +123,7 @@ const ContentBox = styled.div`
     flex-grow: 1;
     display: flex;
     min-width: 37.5rem;
-    max-height: 700px;
+    /* max-height: 700px; */
     height: fit-content;
   }
   & .activity {
