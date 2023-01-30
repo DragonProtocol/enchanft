@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 18:32:37
+ * @LastEditTime: 2023-01-30 17:49:59
  * @Description: file description
  */
 
@@ -149,7 +149,7 @@ const HomeWrapper = styled(MainWrapper)`
     display: flex;
     gap: 20px;
     .left {
-      flex: 2;
+      flex: 3;
     }
     .right {
       flex: 1;

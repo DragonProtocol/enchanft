@@ -6,6 +6,7 @@ import { EventExploreListItemResponse } from '../../services/types/event';
 import isUrl from '../../utils/isUrl';
 import RewardTag from '../event/RewardTag';
 import { Reward } from '../../services/types/common';
+import EventExploreGridListItem from '../event/EventExploreGridListItem';
 
 export default function TrendingEvents({
   data,
@@ -20,24 +21,13 @@ export default function TrendingEvents({
       <Title text="Trending Events" viewAllAction={viewAllAction} />{' '}
       <div className="lists">
         {data.map((item) => {
-          const { image, project, platform } = item;
-          const img = isUrl(image)
-            ? image
-            : isUrl(project?.image)
-            ? project.image
-            : isUrl(platform?.logo)
-            ? platform.logo
-            : '';
           return (
-            <Card
-              clickAction={() => {
+            <EventExploreGridListItem
+              data={item}
+              key={item.id || item.uuid}
+              onClick={() => {
                 navigate(`/events/${item.uid || item.id}`);
               }}
-              key={item.uid || item.id}
-              title={item.name}
-              img={img}
-              author={item?.project?.name || ''}
-              reward={item.reward}
             />
           );
         })}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 16:21:56
+ * @LastEditTime: 2023-01-30 17:00:50
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -30,24 +30,24 @@ export default function EventExploreGridListItem({
     : isUrl(platform?.logo)
     ? platform.logo
     : '';
-  const chainIconUrl = getChainInfo(data.chain)?.iconUrl;
+  // const chainIconUrl = getChainInfo(data.chain)?.iconUrl;
   return (
     <EventExploreGridListItemWrapper {...props}>
       <ListItemInner>
         <TopBox>
           <EventImg src={img} />
-          <PlatformIcon src={data.platform.logo} />
+          <PlatformIcon src={data.platform.logo} title={data.link} />
         </TopBox>
         <BottomBox>
           <EventTitle>{data.name}</EventTitle>
           <BottomColumn>
-            <RewardTag value={data.reward} />
             <BottomRow>
-              {chainIconUrl && <ChainIcon src={chainIconUrl} />}
+              <RewardTag value={data.reward} />
+              {/* {chainIconUrl && <ChainIcon src={chainIconUrl} />} */}
 
-              {data?.startTime && (
+              {data?.endTime && (
                 <EventStartTime>
-                  {defaultFormatDate(data.startTime)}
+                  {defaultFormatDate(data.endTime)}
                 </EventStartTime>
               )}
             </BottomRow>
@@ -59,7 +59,7 @@ export default function EventExploreGridListItem({
 }
 const EventExploreGridListItemWrapper = styled.div`
   width: 100%;
-  height: 336px;
+  height: 312px;
   background: #1b1e23;
   border: 1px solid #39424c;
   border-radius: 20px;
@@ -149,10 +149,9 @@ const ChainIcon = styled.img`
   border-radius: 50%;
 `;
 const EventStartTime = styled.span`
-  width: 0;
-  flex: 1;
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
   color: #718096;
+  margin-left: auto;
 `;

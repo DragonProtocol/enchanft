@@ -83,14 +83,14 @@ function Card({
             <ContentVote>
               👏 &nbsp;{(upVoteNum ?? 0) + (editorScore ?? 0)}
             </ContentVote>
-            <BottomRowLine />
-            <ContentLink text={link} />
+            {/* <BottomRowLine /> */}
+            {/* <ContentLink text={link} /> */}
           </BottomRow>
           <BottomRow>
             <ContentRecReason>{recReason}</ContentRecReason>
-            {url && <PlatformImg src={url} />}
           </BottomRow>
         </CardBottom>
+        {url && <PlatformImg src={url} title={link} />}
       </CardBody>
     </CardWrapper>
   );
@@ -106,7 +106,7 @@ const CardWrapper = styled(CardBase)`
     grid-row-end: 3;
     .title {
       font-size: 30px;
-      line-height: 47px;
+      line-height: 36px;
       -webkit-line-clamp: 3;
     }
   }
@@ -126,9 +126,10 @@ const CardWrapper = styled(CardBase)`
       gap: 6px;
     }
     .title {
-      font-size: 24px;
-      line-height: 28px;
+      font-size: 18px;
+      line-height: 24px;
       -webkit-line-clamp: 2;
+      margin-bottom: 5px;
     }
   }
 
@@ -153,7 +154,7 @@ const CardWrapper = styled(CardBase)`
       gap: 15px;
     }
     .title {
-      font-size: 18px;
+      font-size: 16px;
       line-height: 21px;
       -webkit-line-clamp: 2;
     }
@@ -171,6 +172,7 @@ const CardBody = styled.div`
   flex-direction: column;
   justify-content: space-between;
   gap: 20px;
+  position: relative;
 `;
 const ContentTitle = styled(EllipsisText)`
   font-weight: 700;
@@ -220,10 +222,14 @@ const BottomRowLine = styled.div`
   background: #718096;
 `;
 const PlatformImg = styled.img`
+  float: right;
   width: 24px;
   height: 24px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
   margin-left: auto;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 `;
