@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 16:56:21
+ * @LastEditTime: 2023-01-30 17:17:23
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -60,16 +60,16 @@ const ContentGridListWrapper = styled.div`
   width: 100%;
   display: grid;
   grid-gap: 20px;
-  grid-template-columns: repeat(6, minmax(calc((100% - 20px * 5) / 6), 1fr));
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+  grid-template-columns: repeat(6, minmax(calc((100% - 20px * 3) / 4), 1fr));
+  /* @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
     grid-template-columns: repeat(6, minmax(calc((100% - 20px * 5) / 6), 1fr));
-  }
+  } */
 
-  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+  /* @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
     grid-template-columns: repeat(6, minmax(calc((100% - 20px * 4) / 5), 1fr));
-  }
+  } */
 
   @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xxl}px) {
-    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 3) / 4), 1fr));
+    grid-template-columns: repeat(6, minmax(calc((100% - 20px * 2) / 3), 1fr));
   }
 `;

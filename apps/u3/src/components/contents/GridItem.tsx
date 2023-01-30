@@ -78,13 +78,18 @@ export default function GridItem({
       }}
     >
       <div className="content">
-        <h2>{title}</h2>
-        <div className="tags">
-          <Badge text={type} />
+        <div className="link">
           <LinkBox text={link} />
         </div>
-        <div className="date">{defaultFormatDate(createdAt)}</div>
-        <div className="footer">👏 &nbsp;{upVoteNum + (editorScore || 0)}</div>
+
+        <h2>{title}</h2>
+        <div className="row">
+          <Badge text={type} />
+          <div className="date">{defaultFormatDate(createdAt)}</div>
+        </div>
+        <div className="row">
+          <div>👏 &nbsp;{upVoteNum + (editorScore || 0)}</div>
+        </div>
       </div>
     </Box>
   );
@@ -101,8 +106,12 @@ const Box = styled.div<{ isActive?: boolean; width?: string }>`
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     gap: 8px;
     transition: all 0.3s;
+    .link {
+      margin-bottom: -8px;
+    }
   }
 
   background: #1b1e23;
@@ -150,8 +159,9 @@ const Box = styled.div<{ isActive?: boolean; width?: string }>`
     }
   }
 
-  & div.tags {
+  & div.row {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 8px;
   }
@@ -161,11 +171,5 @@ const Box = styled.div<{ isActive?: boolean; width?: string }>`
     font-size: 14px;
     line-height: 17px;
     color: #718096;
-  }
-
-  & div.footer {
-    position: absolute;
-    bottom: 20px;
-    height: 20px;
   }
 `;

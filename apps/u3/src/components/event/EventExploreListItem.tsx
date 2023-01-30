@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 14:46:27
+ * @LastEditTime: 2023-01-30 16:59:26
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -15,6 +15,7 @@ import IconLike from '../common/icons/IconLike';
 import CompleteSvg from '../common/icons/svgs/check-circle.svg';
 import CompletedSvg from '../common/icons/svgs/checked-circle.svg';
 import ShareSvg from '../common/icons/svgs/share.svg';
+import EllipsisText from '../common/text/EllipsisText';
 import RewardTag from './RewardTag';
 
 export type EventExploreListItemData = EventExploreListItemResponse;
@@ -88,7 +89,7 @@ export default function EventExploreListItem({
     style = styleMaps[data.platform.name] || defaultStyle;
   }
   const { bgc, activeColor } = style;
-  const chainIconUrl = getChainInfo(data.chain)?.iconUrl;
+  // const chainIconUrl = getChainInfo(data.chain)?.iconUrl;
   return (
     <EventExploreListItemWrapper
       bgc={bgc}
@@ -97,37 +98,33 @@ export default function EventExploreListItem({
       {...props}
     >
       <ListItemInner>
-        <TopBox>
-          {data?.platform?.logo && (
-            <EventPlatformIcon src={data.platform.logo} />
+        {data?.platform?.logo && <EventPlatformIcon src={data.platform.logo} />}
+        <RightBox>
+          <EventName row={isActive ? 999 : 2}>{data.name}</EventName>
+          <CenterBox>
+            <RewardTag value={data.reward} />
+            {data?.endTime && (
+              <EventStartTime>{defaultFormatDate(data.endTime)}</EventStartTime>
+            )}
+            {/* {chainIconUrl && <ChainIcon src={chainIconUrl} />} */}
+          </CenterBox>
+          {displayHandles && (
+            <EventExploreListItemHandles
+              displayFavor={!data?.isForU}
+              displayComplete
+              displayShare={!data?.isForU}
+              disabledFavor={disabledFavor}
+              loadingFavor={loadingFavor}
+              isFavored={isFavored}
+              disabledComplete={disabledComplete}
+              loadingComplete={loadingComplete}
+              isCompleted={isCompleted}
+              onComplete={onComplete}
+              onShare={onShare}
+              onFavor={onFavor}
+            />
           )}
-
-          <EventName>{data.name}</EventName>
-        </TopBox>
-
-        <CenterBox>
-          <RewardTag value={data.reward} />
-          {data?.startTime && (
-            <EventStartTime>{defaultFormatDate(data.startTime)}</EventStartTime>
-          )}
-          {chainIconUrl && <ChainIcon src={chainIconUrl} />}
-        </CenterBox>
-        {displayHandles && (
-          <EventExploreListItemHandles
-            displayFavor={!data?.isForU}
-            displayComplete
-            displayShare={!data?.isForU}
-            disabledFavor={disabledFavor}
-            loadingFavor={loadingFavor}
-            isFavored={isFavored}
-            disabledComplete={disabledComplete}
-            loadingComplete={loadingComplete}
-            isCompleted={isCompleted}
-            onComplete={onComplete}
-            onShare={onShare}
-            onFavor={onFavor}
-          />
-        )}
+        </RightBox>
       </ListItemInner>
     </EventExploreListItemWrapper>
   );
@@ -192,7 +189,7 @@ const EventExploreListItemWrapper = styled.div<{
   width: 100%;
   box-sizing: border-box;
   cursor: pointer;
-  padding: 20px;
+  padding: 16px;
   background: ${({ bgc }) => bgc};
   border-bottom: 1px solid #39424c;
   ${({ isActive, activeColor }) =>
@@ -213,23 +210,21 @@ const EventExploreListItemWrapper = styled.div<{
 `;
 const ListItemInner = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
   gap: 10px;
   transition: all 0.3s;
 `;
-const TopBox = styled.div`
+const RightBox = styled.div`
   width: 100%;
   display: flex;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 12px;
 `;
 const ChainIcon = styled.img`
   width: 20px;
   height: 20px;
   border-radius: 50%;
 `;
-const EventName = styled.div`
+const EventName = styled(EllipsisText)`
   flex: 1;
   font-weight: 500;
   font-size: 16px;
@@ -239,12 +234,11 @@ const EventName = styled.div`
 const CenterBox = styled.div`
   width: 100%;
   display: flex;
+  justify-content: space-between;
   align-items: center;
   gap: 10px;
 `;
 const EventStartTime = styled.span`
-  width: 0;
-  flex: 1;
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
@@ -267,7 +261,7 @@ const EventHandleButton = styled(ButtonPrimaryLine)`
   height: 32px;
 `;
 const EventHandleButtonComplete = styled(EventHandleButton)`
-  width: 230px;
+  width: 200px;
 `;
 const EventHandleButtonLikeIcon = styled(IconLike)`
   width: 20px;

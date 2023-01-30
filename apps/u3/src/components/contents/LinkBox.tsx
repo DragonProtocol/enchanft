@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:00:23
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 19:22:52
+ * @LastEditTime: 2023-01-30 17:29:44
  * @Description: file description
  */
 import { useEffect, useState } from 'react';
@@ -41,21 +41,21 @@ export default function LinkBox({
           }
         }}
       />
-      <span>{text}</span>
+      <span>{text.replace(/(^\w+:|^)\/\//, '')}</span>
     </Box>
   );
 }
 
 const Box = styled.div`
-  padding: 2px 4px;
-  height: 18px;
+  /* padding: 2px 4px; */
+  height: 16px;
   box-sizing: border-box;
   background: #14171a;
   border-radius: 4px;
   overflow: hidden;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
 
   > span {
     flex: 1;
@@ -72,8 +72,8 @@ const Box = styled.div`
   }
 `;
 const PlatformImg = styled.img`
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   object-fit: cover;
   flex-shrink: 0;
