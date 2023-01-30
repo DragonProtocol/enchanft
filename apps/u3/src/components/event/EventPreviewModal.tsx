@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 16:48:41
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 14:47:21
+ * @LastEditTime: 2023-01-29 18:51:59
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -66,6 +66,7 @@ export default function EventPreviewModal({
                 </ExploreHandlesBox>
               )}
               <EventPreviewHandles
+                className="event-preview-handles"
                 editorScore={data?.editorScore}
                 showAdminOps={showAdminOps}
                 onAdminThumbUp={onAdminThumbUp}
@@ -109,6 +110,9 @@ const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+  .event-preview-handles {
+    margin-left: auto;
+  }
 `;
 const ExploreHandlesBox = styled.div`
   height: 100%;

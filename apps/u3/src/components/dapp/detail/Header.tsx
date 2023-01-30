@@ -9,7 +9,6 @@ import {
   ButtonPrimaryLine,
 } from '../../common/button/ButtonBase';
 import Tag from '../../common/tag/Tag';
-import EllipsisText from '../../common/text/EllipsisText';
 import ProjectImgDefault from '../../project/ProjectImgDefault';
 import Card from './Card';
 import TwitterSvg from '../../common/icons/svgs/twitter.svg';
@@ -18,6 +17,7 @@ import FacebookSvg from '../../common/icons/svgs/facebook.svg';
 import TelegramSvg from '../../common/icons/svgs/telegram.svg';
 import useConfigsTopics from '../../../hooks/useConfigsTopics';
 import { ReactComponent as CheckVerifiedSvg } from '../../common/icons/svgs/check-verified.svg';
+import EllipsisTextExpandMore from '../../common/text/EllipsisTextExpandMore';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: ProjectExploreListItemResponse;
@@ -120,7 +120,7 @@ export default function Header({
 
 const HeaderWrapper = styled(Card)`
   width: 100%;
-  height: 160px;
+  min-height: 160px;
   display: flex;
   align-items: center;
   flex-shrink: 0;
@@ -155,7 +155,7 @@ const TagsRow = styled.div`
   display: flex;
   gap: 10px;
 `;
-const Description = styled(EllipsisText)`
+const Description = styled(EllipsisTextExpandMore)`
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
