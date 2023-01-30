@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 12:39:15
+ * @LastEditTime: 2023-01-30 18:34:43
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -157,6 +157,11 @@ export default function Events() {
     [isLoadingMore, noMore]
   );
 
+  useEffect(() => {
+    if (id && event && layout === Layout.GRID) {
+      setOpenEventPreviewModal(true);
+    }
+  }, [id, event, layout]);
   return (
     <EventsWrapper>
       <FeedsMenu

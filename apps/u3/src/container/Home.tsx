@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-30 17:49:59
+ * @LastEditTime: 2023-01-30 18:16:14
  * @Description: file description
  */
 
@@ -113,15 +113,14 @@ function Home() {
               navigate('/events');
             }}
           />
-
-          <Platform
-            platforms={platforms}
+          <TrendingEvents
+            data={trendingEvents}
             viewAllAction={() => {
               navigate('/events');
             }}
           />
-          <TrendingEvents
-            data={trendingEvents}
+          <Platform
+            platforms={platforms}
             viewAllAction={() => {
               navigate('/events');
             }}

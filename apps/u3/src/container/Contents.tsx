@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-29 18:12:58
+ * @LastEditTime: 2023-01-30 18:30:14
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -225,6 +225,11 @@ function Contents() {
     [loadingMore, hasMore]
   );
 
+  useEffect(() => {
+    if (id && id !== ':id' && selectContent && layout === Layout.GRID) {
+      setGridModalShow(true);
+    }
+  }, [id, selectContent, layout]);
   return (
     <Box>
       <FeedsMenu
