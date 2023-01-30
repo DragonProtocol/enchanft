@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 17:47:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 13:06:03
+ * @LastEditTime: 2023-01-28 15:55:52
  * @Description: file description
  */
-import React, { useEffect, useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { useInView } from 'react-intersection-observer';
 
@@ -18,20 +18,27 @@ function ListScrollBox({
   onScrollBottom,
   ...divProps
 }: ListScrollBoxProps) {
-  const { ref: inViewRef, inView } = useInView({
-    root: null,
+  const { ref: inviewRef, inView } = useInView({
     threshold: 0,
   });
-  useEffect(() => {
-    if (inView && onScrollBottom) {
-      onScrollBottom();
-    }
-  }, [inView, onScrollBottom]);
+  const prevScrollTop = useRef(0);
   return (
-    <ListScrollBoxWrapper {...divProps}>
+    <ListScrollBoxWrapper
+      {...divProps}
+      onScroll={(event) => {
+        const currentScrollTop = event.currentTarget.scrollTop;
+        // 向下滚动时再判断是否滚动到底部
+        if (currentScrollTop > prevScrollTop.current) {
+          if (inView && onScrollBottom) {
+            onScrollBottom();
+          }
+        }
+        prevScrollTop.current = currentScrollTop;
+      }}
+    >
       {children}
       {/* 当前滚动盒子的锚点 */}
-      {!!onScrollBottom && <div style={{ height: '2px' }} ref={inViewRef} />}
+      <div style={{ height: '30px' }} ref={inviewRef} />
     </ListScrollBoxWrapper>
   );
 }

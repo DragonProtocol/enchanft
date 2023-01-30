@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-09 17:55:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-10 15:46:51
+ * @LastEditTime: 2023-01-17 14:20:58
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getConfigsTopics } from '../../services/api/common';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
+import { ConfigTopicsChain } from '../../services/types/common';
 import type { RootState } from '../../store/store';
 import { formatFilterShowName } from '../../utils/filter';
 
@@ -21,6 +22,7 @@ type Topics = {
   projectTypes: TopicItem[];
   contentTypes: TopicItem[];
   langs: TopicItem[];
+  chains: ConfigTopicsChain[];
 };
 type ConfigsTopicsState = {
   status: AsyncRequestStatus;
@@ -34,6 +36,7 @@ const initConfigsTopicsState: ConfigsTopicsState = {
     projectTypes: [],
     contentTypes: [],
     langs: [],
+    chains: [],
   },
 };
 
@@ -51,6 +54,7 @@ export const fetchConfigsTopics = createAsyncThunk<Topics, undefined>(
       const { eventRewards, eventTypes, projectTypes, contentTypes, langs } =
         resp.data.data;
       return {
+        ...resp.data.data,
         eventRewards: formatTopics(eventRewards || []),
         eventTypes: formatTopics(eventTypes || []),
         projectTypes: formatTopics(projectTypes || []),

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 13:45:51
+ * @LastEditTime: 2023-01-28 16:43:16
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -21,38 +21,44 @@ import {
 import { ContentListItem } from '../services/types/contents';
 import { getContentShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
+import { fetchUserKarma } from '../features/profile/karma';
+import { store } from '../store/store';
 
 // cache content handle pending ids
 const cacheContentVotePendingIds = new Set<number | string>();
 const cacheContentFavorPendingIds = new Set<number | string>();
 const cacheContentHiddenPendingIds = new Set<number | string>();
+const cacheContentHiddenTimer = new Map<number | string, NodeJS.Timeout>();
 
-export default (originList?: ContentListItem[]) => {
+export default (
+  contents?: ContentListItem[],
+  setContents?: (newContents: ContentListItem[]) => void
+) => {
   const { handleCallbackVerifyLogin } = useLogin();
   const { user } = useWlUserReact();
 
-  // manage list
-  const [newList, setNewList] = useState([...(originList || [])]);
-  useEffect(() => {
-    setNewList([...(originList || [])]);
-  }, [originList]);
-
   const updateOne = useCallback(
     (id: string | number, data: Partial<ContentListItem>) => {
-      setNewList(
-        newList.map((item) =>
-          item.id === id || item.uuid === id ? { ...item, ...data } : item
-        )
-      );
+      if (setContents) {
+        setContents(
+          (contents ?? []).map((item) =>
+            item.id === id || item.uuid === id ? { ...item, ...data } : item
+          )
+        );
+      }
     },
-    [newList]
+    [contents, setContents]
   );
 
   const deleteOne = useCallback(
     (id: string | number) => {
-      setNewList(newList.filter((item) => item.id !== id && item.uuid !== id));
+      if (setContents) {
+        setContents(
+          (contents ?? []).filter((item) => item.id !== id && item.uuid !== id)
+        );
+      }
     },
-    [newList]
+    [contents, setContents]
   );
 
   // vote
@@ -80,6 +86,7 @@ export default (originList?: ContentListItem[]) => {
               upVoted: true,
               upVoteNum: data.upVoteNum + 1,
             });
+            store.dispatch(fetchUserKarma({ token: user.token }));
             resolve();
           } catch (error) {
             toast.error(error?.message || error?.msg);
@@ -195,19 +202,47 @@ export default (originList?: ContentListItem[]) => {
       deleteOne,
     ]
   );
+  // hidden action
+  const onHiddenAction = useCallback(
+    (data: ContentListItem) => {
+      handleCallbackVerifyLogin(() => {
+        const key = data?.uuid || data?.id;
+        updateOne(key, { hidden: true });
+        const timer = setTimeout(() => {
+          onHidden(data);
+        }, 3000);
+        cacheContentHiddenTimer.set(key, timer);
+      });
+    },
+    [handleCallbackVerifyLogin, updateOne, onHidden]
+  );
+  // hidden undo action
+  const onHiddenUndoAction = useCallback(
+    (data: ContentListItem) => {
+      const key = data?.uuid || data?.id;
+      if (cacheContentHiddenTimer.has(key)) {
+        clearTimeout(cacheContentHiddenTimer.get(key));
+        updateOne(key, { hidden: false });
+      }
+    },
+    [handleCallbackVerifyLogin, updateOne]
+  );
   // share
   const onShare = useCallback((data: ContentListItem) => {
     tweetShare(data.title, getContentShareUrl(data.id));
   }, []);
 
   return {
-    newList,
     votePendingIds,
     onVote,
     favorPendingIds,
     onFavor,
     hiddenPendingIds,
+    onHiddenAction,
+    onHiddenUndoAction,
     onHidden,
     onShare,
+    updateOne,
+    deleteOne,
   };
 };

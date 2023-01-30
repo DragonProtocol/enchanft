@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-16 18:12:38
+ * @LastEditTime: 2023-01-30 18:16:14
  * @Description: file description
  */
 
@@ -51,7 +51,13 @@ function Home() {
   }, []);
   const loadContents = useCallback(async () => {
     const { data } = await getTrendingContents();
-    setContents(data.data);
+    // 按总体分值排序
+    const sortData = [...(data?.data || [])].sort((a, b) => {
+      const aScore = Number(a?.upVoteNum) + Number(a?.editorScore);
+      const bScore = Number(b?.upVoteNum) + Number(b?.editorScore);
+      return bScore - aScore;
+    });
+    setContents(sortData);
   }, []);
   const loadEvents = useCallback(async () => {
     const { data } = await getTrendingEvents();
@@ -96,7 +102,7 @@ function Home() {
               <DiscoverProj
                 data={trendingProjects}
                 viewAllAction={() => {
-                  navigate('/projects');
+                  navigate('/dapps');
                 }}
               />
             </div>
@@ -107,15 +113,14 @@ function Home() {
               navigate('/events');
             }}
           />
-
-          <Platform
-            platforms={platforms}
+          <TrendingEvents
+            data={trendingEvents}
             viewAllAction={() => {
               navigate('/events');
             }}
           />
-          <TrendingEvents
-            data={trendingEvents}
+          <Platform
+            platforms={platforms}
             viewAllAction={() => {
               navigate('/events');
             }}
@@ -143,7 +148,7 @@ const HomeWrapper = styled(MainWrapper)`
     display: flex;
     gap: 20px;
     .left {
-      flex: 2;
+      flex: 3;
     }
     .right {
       flex: 1;

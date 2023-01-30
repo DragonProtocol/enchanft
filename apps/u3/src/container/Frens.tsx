@@ -14,6 +14,7 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 
+import { toast } from 'react-toastify';
 import { Popover } from 'antd';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 
@@ -39,6 +40,7 @@ import {
 } from '../features/frens/frensHandles';
 import { MainWrapper } from '../components/layout/Index';
 import FeedsMenu from '../components/layout/FeedsMenu';
+import ListScrollBox from '../components/common/box/ListScrollBox';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
@@ -81,7 +83,15 @@ const renderAddress = (address: string, isIcon = true, className?: string) => {
 
   return (
     <>
-      <span className={`address ${className}`}>{formatAddress}</span>
+      <a
+        className={`address ${className}`}
+        href={`/profile/${address}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {formatAddress}
+      </a>
+      {/* <span className={`address ${className}`} >{formatAddress}</span> */}
       {isIcon && (
         <svg
           width="16"
@@ -92,6 +102,7 @@ const renderAddress = (address: string, isIcon = true, className?: string) => {
           className="address-svg"
           onClick={async () => {
             await navigator.clipboard.writeText(address);
+            toast.success('Copied!');
           }}
         >
           <path
@@ -336,7 +347,6 @@ const tagComponentsMap = {
                 src={image}
                 alt={name}
                 onError={(e) => {
-                  // console.log('---------->', e);
                   e.currentTarget.src = 'https://rss3.io/images/default.svg';
                   // e.target.src = 'https://rss3.io/images/default.svg';
                   // this.onerror=null;
@@ -645,71 +655,82 @@ function Frens() {
               />
             </div>
           </FrensFeedSwitch>
-          <div className="feed-content">
-            {feed?.result?.map((item, index) => {
-              const {
-                owner,
-                tag,
-                type,
-                owner_name: ownerName,
-                owner_follower_num: ownerFollowerNum,
-                owner_following_num: ownerFollowingNum,
-              } = item;
-              return (
-                <FrensFeedCard>
-                  <Popover
-                    content={renderUserInfo(
-                      owner,
-                      ownerName,
-                      owner in followingMap,
-                      ownerFollowerNum,
-                      ownerFollowingNum,
-                      false
-                    )}
-                    getPopupContainer={(triggerNode) =>
-                      (triggerNode as any).parentNode
-                    }
-                    color="#1b1e23"
-                    overlayInnerStyle={{
-                      background: '#1b1e23',
-                      color: '#718096',
-                    }}
-                  >
-                    <img
-                      id={`tooltip-anchor-children-${owner}-${index}`}
-                      className="avatar"
-                      src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
-                      alt={owner}
-                    />
-                  </Popover>
-                  <div className="content">
-                    <div className="owner">
-                      <span className="name color-white">{ownerName}</span>{' '}
-                      {renderAddress(owner)}
+          <ListScrollBox
+            onScrollBottom={() => {
+              fetchData({
+                cursor: feedRef?.current?.cursor,
+              });
+            }}
+          >
+            <div className="feed-content">
+              {feed?.result?.map((item, index) => {
+                const {
+                  owner,
+                  tag,
+                  type,
+                  owner_name: ownerName,
+                  owner_follower_num: ownerFollowerNum,
+                  owner_following_num: ownerFollowingNum,
+                } = item;
+                return (
+                  <FrensFeedCard>
+                    <Popover
+                      content={renderUserInfo(
+                        owner,
+                        ownerName,
+                        owner in followingMap,
+                        ownerFollowerNum,
+                        ownerFollowingNum,
+                        false
+                      )}
+                      getPopupContainer={(triggerNode) =>
+                        (triggerNode as any).parentNode
+                      }
+                      color="#1b1e23"
+                      overlayInnerStyle={{
+                        background: '#1b1e23',
+                        color: '#718096',
+                      }}
+                    >
+                      <img
+                        id={`tooltip-anchor-children-${owner}-${index}`}
+                        className="avatar"
+                        src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
+                        alt={owner}
+                      />
+                    </Popover>
+                    <div className="content">
+                      <div className="owner">
+                        <span className="name color-white">{ownerName}</span>{' '}
+                        {renderAddress(owner)}
+                      </div>
+                      {tagComponentsMap?.[`${type}`]?.(item)}
+                      {/* {tagComponentsMap?.[`${tag}_${type}`]?.(item)} */}
                     </div>
-                    {tagComponentsMap?.[`${type}`]?.(item)}
-                    {/* {tagComponentsMap?.[`${tag}_${type}`]?.(item)} */}
-                  </div>
-                </FrensFeedCard>
-              );
-            })}
-            <div className="load-more">
-              {loading ? (
-                <Loading />
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    fetchData({
-                      cursor: feedRef?.current?.cursor,
-                    });
-                  }}
-                >
-                  Load More
-                </button>
-              )}
+                  </FrensFeedCard>
+                );
+              })}
+              <div className="load-more">
+                {
+                  loading ? (
+                    <div className="loading-box">
+                      <Loading />
+                    </div>
+                  ) : null
+                  // <button
+                  //   type="button"
+                  //   onClick={() => {
+                  //     fetchData({
+                  //       cursor: feedRef?.current?.cursor,
+                  //     });
+                  //   }}
+                  // >
+                  //   Load More
+                  // </button>
+                }
+              </div>
             </div>
-          </div>
+          </ListScrollBox>
         </FrensFeed>
         <FrensRight>
           {isSearch && feed?.result?.[0] ? (
@@ -726,7 +747,6 @@ function Frens() {
           ) : (
             <SearchInput
               onSearch={(value) => {
-                console.log(value, 'value');
                 setFilterAddress(value);
               }}
               placeholder="Search Address or ENS"
@@ -936,6 +956,11 @@ const FrensWrapper = styled(MainWrapper)`
   background: #14171a;
   color: #718096;
   padding-top: 0;
+
+  .address {
+    color: inherit;
+    text-decoration: none;
+  }
 `;
 const FrensHeader = styled.div`
   margin-bottom: 24px;
@@ -947,8 +972,12 @@ const FrensBody = styled.div`
   display: flex;
 
   .feed-content {
-    overflow-y: auto;
+    /* overflow-y: auto; */
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center;
+    align-items: center; */
   }
 
   .reco-card {
@@ -961,6 +990,7 @@ const FrensBody = styled.div`
     border-radius: 20px;
     padding: 0px 20px;
     margin-top: 24px;
+    /* flex-grow: 1; */
     & > div {
       justify-content: space-between;
     }
@@ -988,7 +1018,8 @@ const FrensBody = styled.div`
   }
 
   .load-more {
-    height: 100%;
+    /* height: 100%; */
+    flex-grow: 1;
     margin: 20px;
     display: flex;
     justify-content: center;
@@ -1078,6 +1109,8 @@ const FrensFeed = styled.div`
   width: 100%;
   /* max-width: 47.5rem; */
   min-width: 37.5rem;
+  height: calc(100vh - 125px);
+  min-height: 850px;
   background: #1b1e23;
   border-radius: 20px;
   padding: 0px 24px;
@@ -1087,7 +1120,9 @@ const FrensFeed = styled.div`
 `;
 const FrensRight = styled.div`
   /* flex-grow: 1; */
-  width: 360px;
+  min-width: 360px;
+  display: flex;
+  flex-direction: column;
 `;
 const FrensFeedSwitch = styled.div`
   display: flex;
@@ -1135,6 +1170,7 @@ const FrensFeedCard = styled.div`
   display: flex;
   padding: 24px 0;
   border-bottom: 1px solid #39424c;
+  width: 100%;
 
   .avatar {
     width: 48px;
@@ -1210,6 +1246,7 @@ const FrensFeedCard = styled.div`
     .nft-media {
       width: 4.375rem;
       height: 4.375rem;
+      flex-shrink: 0;
       video,
       img {
         object-fit: cover;

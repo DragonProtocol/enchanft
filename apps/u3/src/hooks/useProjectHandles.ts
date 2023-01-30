@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-13 09:39:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-20 14:51:24
+ * @LastEditTime: 2023-01-19 10:47:52
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -29,8 +29,11 @@ export default () => {
   }, []);
   const onFavor = useCallback(
     (item: ProjectExploreListItemResponse) => {
-      handleCallbackVerifyLogin(() => {
-        dispatch(favorProject(item));
+      return new Promise((resolve, reject) => {
+        handleCallbackVerifyLogin(async () => {
+          const data = await dispatch(favorProject(item));
+          resolve(data.payload);
+        });
       });
     },
     [dispatch, handleCallbackVerifyLogin]

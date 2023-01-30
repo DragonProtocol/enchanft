@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 14:27:42
+ * @LastEditTime: 2023-01-29 16:33:37
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -15,11 +15,10 @@ import {
   LayoutList,
   LayoutListActive,
 } from '../icons/layout';
+import { Layout } from '../../utils/localLayout';
 
-export enum Layout {
-  LIST,
-  GRID,
-}
+export { Layout } from '../../utils/localLayout';
+
 type FeedsMenuRightProps = {
   orderByEl?: ReactNode;
   searchEl?: ReactNode;
@@ -59,6 +58,7 @@ export default function FeedsMenuRight({
         {multiLayout && (
           <div className="layout">
             <span
+              className={(layout === Layout.LIST && 'active') || ''}
               onClick={() => {
                 if (setLayout) setLayout(Layout.LIST);
               }}
@@ -68,6 +68,7 @@ export default function FeedsMenuRight({
               )}
             </span>
             <span
+              className={(layout === Layout.GRID && 'active') || ''}
               onClick={() => {
                 setLayout(Layout.GRID);
               }}
@@ -88,7 +89,11 @@ const FeedsMenuRightWrapper = styled.div`
   align-items: center;
   gap: 20px;
 `;
-const OrderByBox = styled.div``;
+const OrderByBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+`;
 const FilterButton = styled(ButtonPrimaryLine)<{ isActive?: boolean }>`
   width: 52px;
   height: 40px;
@@ -104,6 +109,13 @@ const FilterButton = styled(ButtonPrimaryLine)<{ isActive?: boolean }>`
       transition: all 0.3s ease-out;
     }
   `}
+  &:not(:disabled):hover {
+    ${({ isActive }) =>
+      isActive &&
+      `
+        background: #718096;
+      `}
+  }
 `;
 const SearchBox = styled.div`
   width: 200px;
@@ -118,8 +130,26 @@ const MultiLayoutBox = styled.div`
     display: flex;
     align-items: center;
     gap: 10px;
+    background: #14171a;
+    border: 1px solid #39424c;
+    border-radius: 100px;
+    width: 124px;
+    height: 40px;
+    padding: 0px 2px;
     > span {
       cursor: pointer;
+      width: 60px;
+      height: 36px;
+
+      box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
+        0px 0px 4px rgba(20, 23, 26, 0.04);
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      &.active {
+        background: #718096;
+      }
     }
   }
 `;

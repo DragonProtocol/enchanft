@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 14:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-09 18:17:51
+ * @LastEditTime: 2023-01-17 14:20:09
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -67,10 +67,18 @@ export type PlatformsItemResponse = {
 };
 export type PlatformsResponse = ApiResp<Array<PlatformsItemResponse>>;
 
-export type ConfigTopicsResponse = ApiResp<{
+export type ConfigTopicsChain = {
+  chainEnum: string;
+  image: string;
+  link: string;
+  name: string;
+};
+export type ConfigTopics = {
   eventRewards: string[];
   eventTypes: string[];
   projectTypes: string[];
   contentTypes: string[];
   langs: string[];
-}>;
+  chains: ConfigTopicsChain[];
+};
+export type ConfigTopicsResponse = ApiResp<ConfigTopics>;

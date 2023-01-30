@@ -7,6 +7,7 @@ import { contentParse } from '../../services/api/contents';
 import { ContentListItem } from '../../services/types/contents';
 import { useAppSelector } from '../../store/hooks';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
+import ButtonFullScreen from '../common/button/ButtonFullScreen';
 import ExtensionSupport from '../common/ExtensionSupport';
 import Loading from '../common/loading/Loading';
 import { Edit3 } from '../icons/edit';
@@ -19,19 +20,12 @@ export type Tab = 'original' | 'readerView';
 
 export default function ContentShowerBox({
   selectContent,
-  thumbUpAction,
-  deleteAction,
-  editAction,
+  tab,
 }: {
   selectContent: ContentListItem | undefined;
-  thumbUpAction?: () => void;
-  deleteAction?: () => void;
-  editAction?: () => void;
+  tab: Tab;
 }) {
   const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
-  const [tab, setTab] = useState<Tab>(
-    u3ExtensionInstalled ? 'original' : 'readerView'
-  );
   const [daylightContentLoading, setDaylightContentLoading] = useState(false);
   const [daylightContent, setDaylightContent] = useState('');
   const [iframeLoaded, setIframeLoaded] = useState(false);
@@ -55,20 +49,19 @@ export default function ContentShowerBox({
   }, []);
 
   useEffect(() => {
-    // console.log('selectContent', selectContent);
+    if (
+      tab === 'readerView' &&
+      selectContent?.supportReaderView &&
+      !selectContent.value
+    ) {
+      loadDaylightContent(selectContent.link);
+    }
+  }, [tab]);
+
+  useEffect(() => {
     setIframeLoaded(false);
     setDaylightContent('');
-    if (selectContent?.supportReaderView) {
-      if (!selectContent.value) loadDaylightContent(selectContent.link);
-      setTab('readerView');
-    } else {
-      setTab('original');
-    }
-  }, [
-    selectContent?.link,
-    selectContent?.supportReaderView,
-    selectContent?.value,
-  ]);
+  }, [selectContent?.link]);
 
   const contentValue = useMemo(() => {
     if (!selectContent?.value) return '';
@@ -82,21 +75,6 @@ export default function ContentShowerBox({
 
   return (
     <ContentBox>
-      <ContentShowerTab
-        tab={tab}
-        setTab={(t) => setTab(t)}
-        readerViewAction={() => {
-          if (selectContent?.supportReaderView && !selectContent.value) {
-            loadDaylightContent(selectContent.link);
-          }
-        }}
-        showAdminOps={!!selectContent}
-        isForU={!!selectContent?.isForU}
-        editorScore={selectContent?.editorScore || 0}
-        thumbUpAction={thumbUpAction}
-        deleteAction={deleteAction}
-        editAction={editAction}
-      />
       {(() => {
         if (!selectContent) return null;
         if (tab === 'original') {
@@ -166,54 +144,63 @@ export default function ContentShowerBox({
     </ContentBox>
   );
 }
-
-export function ContentShowerTab({
+export function ContentShowerTabs({
   tab,
   setTab,
-  readerViewAction,
-  showAdminOps,
+}: {
+  tab: Tab;
+  setTab: (tab: Tab) => void;
+}) {
+  return (
+    <ContentShowerTabsWrapper className="content-shower-tabs">
+      <button
+        type="button"
+        className={tab === 'original' ? 'tab-item active' : 'tab-item'}
+        onClick={() => {
+          setTab('original');
+        }}
+      >
+        Original
+      </button>
+      <button
+        className={tab === 'readerView' ? 'tab-item active' : 'tab-item'}
+        type="button"
+        onClick={() => {
+          setTab('readerView');
+        }}
+      >
+        ReaderView
+      </button>
+    </ContentShowerTabsWrapper>
+  );
+}
+
+export function ContentShowerHandles({
+  showAdminOps = true,
   isForU,
   thumbUpAction,
   deleteAction,
   editAction,
   editorScore,
+  isFullscreen,
+  onFullscreenRequest,
+  onFullscreenExit,
 }: {
-  tab: Tab;
-  setTab: (tab: Tab) => void;
-  readerViewAction?: () => void;
   showAdminOps?: boolean;
   thumbUpAction?: () => void;
   deleteAction?: () => void;
   editAction?: () => void;
   isForU?: boolean;
   editorScore?: number;
+  isFullscreen?: boolean;
+  onFullscreenRequest?: () => void;
+  onFullscreenExit?: () => void;
 }) {
   const { isAdmin } = usePermissions();
   return (
-    <div className="tabs">
-      <div>
-        <button
-          type="button"
-          className={tab === 'original' ? 'tab-item active' : 'tab-item'}
-          onClick={() => {
-            setTab('original');
-          }}
-        >
-          Original
-        </button>
-        <button
-          className={tab === 'readerView' ? 'tab-item active' : 'tab-item'}
-          type="button"
-          onClick={() => {
-            setTab('readerView');
-            if (readerViewAction) readerViewAction();
-          }}
-        >
-          ReaderView
-        </button>
-      </div>
+    <ContentShowerHandlesWrapper className="content-shower-handles">
       {showAdminOps && !isForU && isAdmin && (
-        <div className="admin-ops">
+        <>
           <ContentHandleButton
             onClick={() => {
               if (thumbUpAction) thumbUpAction();
@@ -236,14 +223,20 @@ export function ContentShowerTab({
           >
             <Trash />
           </ContentHandleButton>
-        </div>
+          <VerticalDividingLine />
+        </>
       )}
-    </div>
+      <ButtonFullScreen
+        className="content-fullscreen-button"
+        isFullscreen={isFullscreen}
+        onClick={isFullscreen ? onFullscreenExit : onFullscreenRequest}
+      />
+    </ContentShowerHandlesWrapper>
   );
 }
 
 export const ContentBoxContainer = styled.div`
-  height: calc(100%);
+  height: 100%;
   width: calc(100% - 360px);
 `;
 
@@ -262,66 +255,53 @@ export const ContentBox = styled.div`
     overflow: scroll;
   }
 
-  & div.tabs {
-    height: 60px;
-    background: #1b1e23;
-    border-bottom: 1px solid #39424c;
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-
-    > div {
-      width: 260px;
-      height: 40px;
-      background: #14171a;
-      border-radius: 100px;
-      padding: 4px;
-      box-sizing: border-box;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      > .tab-item {
-        cursor: pointer;
-        width: 122px;
-        height: 32px;
-        border: none;
-
-        box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
-          0px 0px 4px rgba(20, 23, 26, 0.04);
-        border-radius: 100px;
-        outline: none;
-        background: inherit;
-        color: #a0aec0;
-
-        &.active {
-          color: #ffffff;
-          background: #21262c;
-        }
-      }
-    }
-
-    > div.admin-ops {
-      position: absolute;
-      right: 0;
-      background: inherit;
-      width: fit-content;
-      padding: 0 15px;
-      color: #ffffff;
-      gap: 10px;
-    }
-  }
-
   & .iframe-container {
     width: 100%;
-    height: calc(100% - 60px);
+    height: 100%;
 
     & iframe {
       border: 0;
       width: 100%;
       height: 100%;
     }
+  }
+`;
+const ContentShowerTabsWrapper = styled.div`
+  width: 260px;
+  height: 40px;
+  background: #14171a;
+  border-radius: 100px;
+  padding: 4px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .tab-item {
+    cursor: pointer;
+    width: 122px;
+    height: 32px;
+    border: none;
+
+    box-shadow: 0px 0px 8px rgba(20, 23, 26, 0.08),
+      0px 0px 4px rgba(20, 23, 26, 0.04);
+    border-radius: 100px;
+    outline: none;
+    background: inherit;
+    color: #a0aec0;
+
+    &.active {
+      color: #ffffff;
+      background: #21262c;
+    }
+  }
+`;
+const ContentShowerHandlesWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  .content-fullscreen-button {
+    margin-left: auto;
   }
 `;
 
@@ -334,4 +314,10 @@ export const LoadingBox = styled.div`
 const ContentHandleButton = styled(ButtonPrimaryLine)`
   padding: 6px;
   height: 32px;
+`;
+const VerticalDividingLine = styled.span`
+  display: inline-block;
+  width: 1px;
+  height: 10px;
+  background: #718096;
 `;

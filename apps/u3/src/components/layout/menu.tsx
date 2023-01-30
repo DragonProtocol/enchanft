@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 15:54:05
+ * @LastEditTime: 2023-01-17 21:38:11
  * @Description: file description
  */
 import { useState } from 'react';
@@ -13,12 +13,16 @@ import Nav from './Nav';
 import { ReactComponent as LogoIconSvg } from '../imgs/logo-icon.svg';
 import LogoutConfirmModal from './LogoutConfirmModal';
 import useLogin from '../../hooks/useLogin';
+import { useAppSelector } from '../../store/hooks';
+import { selectKarmaState } from '../../features/profile/karma';
 
 export default function Menu() {
   const { logout } = useLogin();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
+  const { totalScore } = useAppSelector(selectKarmaState);
+
   return (
     <MenuWrapper
       onMouseEnter={() => setIsOpen(true)}
@@ -41,6 +45,7 @@ export default function Menu() {
           onLogout={() => {
             setOpenLogoutConfirm(true);
           }}
+          karmaScore={totalScore}
         />
       </LoginButtonBox>
       <LogoutConfirmModal
@@ -61,13 +66,14 @@ export default function Menu() {
 }
 const MenuWrapper = styled.div<{ isOpen: boolean }>`
   background: #1b1e23;
-  width: ${({ isOpen }) => (isOpen ? '160px' : '60px')};
+  width: ${({ isOpen }) => (isOpen ? '180px' : '60px')};
   height: 100%;
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1;
   padding: 20px 10px;
+  border-right: 1px solid #39424c;
   box-sizing: border-box;
   overflow-y: auto;
   overflow-x: hidden;

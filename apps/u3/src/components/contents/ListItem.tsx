@@ -140,7 +140,7 @@ export function ContentItemActions({
   );
 
   return (
-    <ContentItemFooter withVote={withVote}>
+    <ContentItemActionsWrapper withVote={withVote}>
       {withVote && (
         <ContentHandleButtonVote
           disabled={upVoted}
@@ -184,7 +184,7 @@ export function ContentItemActions({
       >
         <Share />
       </ContentHandleButton>
-    </ContentItemFooter>
+    </ContentItemActionsWrapper>
   );
 }
 
@@ -307,6 +307,9 @@ const ItemInner = styled.div<{ isActive: boolean; height: string }>`
   & div.right {
     width: calc(100% - 62px);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     > p {
       margin: 0%;
       font-weight: 500;
@@ -346,7 +349,6 @@ const ContentItemTitle = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-top: 10px;
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
@@ -378,11 +380,11 @@ const ContentItemTitle = styled.div`
   }
 `;
 
-const ContentItemFooter = styled.div<{ withVote: boolean }>`
+const ContentItemActionsWrapper = styled.div<{ withVote: boolean }>`
   display: flex;
-  margin-top: 10px;
   gap: 10px;
   justify-content: ${(props) => (props.withVote ? 'start' : 'end')};
+  align-items: center;
 `;
 
 const ContentHandleButton = styled(ButtonPrimaryLine)`

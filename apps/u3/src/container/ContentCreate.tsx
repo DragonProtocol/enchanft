@@ -28,7 +28,7 @@ import { Close } from '../components/icons/close';
 import { ProjectAsyncSelectV2 } from '../components/business/form/ProjectAsyncSelect';
 import {
   ContentBox,
-  ContentShowerTab,
+  ContentShowerTabs,
   LoadingBox,
   Tab,
 } from '../components/contents/ContentShowerBox';
@@ -36,6 +36,8 @@ import { useAppSelector } from '../store/hooks';
 import { selectWebsite } from '../features/website/websiteSlice';
 import Loading from '../components/common/loading/Loading';
 import isUrl from '../utils/isUrl';
+import { fetchUserKarma } from '../features/profile/karma';
+import { store } from '../store/store';
 
 function ContentCreate() {
   const navigate = useNavigate();
@@ -161,6 +163,7 @@ function ContentCreate() {
           if (resp.data.code === 0) {
             navigate(`/contents/${resp.data.data.id}`);
             toast.success('Add Content Success!!!');
+            store.dispatch(fetchUserKarma({ token: user.token }));
           }
         } else {
           await updateContent(
@@ -366,7 +369,10 @@ function ContentCreate() {
         </CreateBox>
         <ShowBox>
           <ContentBox>
-            <ContentShowerTab tab={tab} setTab={(t) => setTab(t)} />
+            <ContentShowerTabsBox>
+              <ContentShowerTabs tab={tab} setTab={(t) => setTab(t)} />
+            </ContentShowerTabsBox>
+
             {(() => {
               if (tab === 'original') {
                 return (
@@ -536,4 +542,15 @@ const FormButtonIcon = styled.img`
 
 const FieldErrorText = styled.div`
   color: red;
+`;
+const ContentShowerTabsBox = styled.div`
+  width: 100%;
+  height: 60px;
+  padding: 14px;
+  box-sizing: border-box;
+  background: #1b1e23;
+  border-bottom: 1px solid #39424c;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

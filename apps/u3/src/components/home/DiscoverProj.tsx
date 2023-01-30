@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Title from './Title';
 import { Subtract } from '../icons/subtract';
 import { ProjectExploreListItemResponse } from '../../services/types/project';
+import CardBase from '../common/card/CardBase';
 
 export default function DiscoverProj({
   data,
@@ -14,13 +15,13 @@ export default function DiscoverProj({
   const navigate = useNavigate();
   return (
     <Box>
-      <Title text="Discover Projects" viewAllAction={viewAllAction} />{' '}
-      <div className="lists">
+      <Title text="Popular Dapps" viewAllAction={viewAllAction} />{' '}
+      <CardList>
         {data.map((item) => {
           return (
             <Card
               clickAction={() => {
-                navigate(`/projects/${item.id}`);
+                navigate(`/dapps/${item.id}`);
               }}
               key={item.id}
               {...item}
@@ -29,19 +30,17 @@ export default function DiscoverProj({
             />
           );
         })}
-      </div>
+      </CardList>
     </Box>
   );
 }
 
 const Box = styled.div`
   width: 100%;
-
-  & .lists {
-    margin-top: 20px;
-    background: #1b1e23;
-    border-radius: 20px;
-  }
+`;
+const CardList = styled(CardBase)`
+  margin-top: 20px;
+  padding: 0;
 `;
 
 function Card({
@@ -77,7 +76,7 @@ function Card({
 }
 const CardWrapper = styled.div`
   cursor: pointer;
-  height: 96px;
+  height: 89px;
   padding: 20px;
   border-bottom: 1px solid #39424c;
   box-sizing: border-box;

@@ -31,10 +31,11 @@ export default function RecommendEvents({
             : '';
           return (
             <Card
+              data={item}
               clickAction={() => {
-                navigate(`/events/${item.uid || item.id}`);
+                navigate(`/events/${item?.uuid || item.id || ''}`);
               }}
-              key={item.uid || item.id}
+              key={item?.uuid || item.id}
               title={item.name}
               img={img}
               author={item?.recReason || item?.project?.name || ''}
@@ -72,12 +73,14 @@ const Box = styled.div`
 `;
 
 function Card({
+  data,
   title,
   img,
   author,
   reward,
   clickAction,
 }: {
+  data: EventExploreListItemResponse;
   title: string;
   img: string;
   author: string;
@@ -96,6 +99,7 @@ function Card({
         </LeftBox>
         <RightBox>
           <EventImg src={img} />
+          <PlatformIcon src={data.platform.logo} title={data.link} />
         </RightBox>
       </CardBox>
     </CardWrapper>
@@ -133,11 +137,21 @@ const RightBox = styled.div`
   width: 110px;
   height: 110px;
   flex-shrink: 0;
+  position: relative;
 `;
 const EventImg = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover;
+`;
+const PlatformIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  position: absolute;
+  left: 0;
+  bottom: 10px;
+  transform: translateX(-50%);
 `;
 const EventTitle = styled.span`
   font-weight: 500;
