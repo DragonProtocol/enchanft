@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-29 18:05:24
+ * @LastEditTime: 2023-01-31 14:32:22
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -74,3 +74,23 @@ export type ProjectFavoriteListResponse = ApiResp<
 >;
 export type ProjectFavorHandleResponse = ApiResp<unknown>;
 export type FetchOneProjectResponse = ApiResp<ProjectExploreListItemResponse>;
+
+export type UpdateProjectData = {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  mediaLinks?: {
+    twitter?: string;
+    discord?: string;
+    facebook?: string;
+    telegram?: string;
+  };
+  types?: string[];
+  dappUrl: string;
+  url: string;
+  chains?: string[];
+  status?: UniprojectStatus;
+  editorScore?: number;
+};
+export type UpdateProjectResponse = ApiResp<unknown>;

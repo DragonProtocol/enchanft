@@ -1,4 +1,5 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import { usePermissions } from '@ecnft/wl-user-react';
 import { formatFilterShowName } from '../../../utils/filter';
 import {
   ProjectExploreListItemResponse,
@@ -18,6 +19,7 @@ import TelegramSvg from '../../common/icons/svgs/telegram.svg';
 import useConfigsTopics from '../../../hooks/useConfigsTopics';
 import { ReactComponent as CheckVerifiedSvg } from '../../common/icons/svgs/check-verified.svg';
 import EllipsisTextExpandMore from '../../common/text/EllipsisTextExpandMore';
+import { Edit } from '../../icons/edit';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: ProjectExploreListItemResponse;
@@ -26,6 +28,7 @@ type Props = StyledComponentPropsWithRef<'div'> & {
   isInstalled?: boolean;
   onInstall?: () => void;
   onOpen?: () => void;
+  onEdit?: () => void;
 };
 export default function Header({
   data,
@@ -34,8 +37,10 @@ export default function Header({
   isInstalled,
   onInstall,
   onOpen,
+  onEdit,
   ...otherProps
 }: Props) {
+  const { isAdmin } = usePermissions();
   const { topics } = useConfigsTopics();
   const { chains } = topics;
   const showChains = chains.filter((item) =>
@@ -49,6 +54,11 @@ export default function Header({
         <Title>
           {data.name}{' '}
           {data.status === UniprojectStatus.VERIFIED && <CheckVerifiedSvg />}
+          {isAdmin && (
+            <EditBtn onClick={onEdit}>
+              <Edit />
+            </EditBtn>
+          )}
         </Title>
         <TagsRow>
           {data?.types.map((item) => (
@@ -192,4 +202,7 @@ const ChainIcon = styled.img`
   height: 18px;
   border-radius: 50%;
   background-color: #14171a;
+`;
+const EditBtn = styled.div`
+  cursor: pointer;
 `;

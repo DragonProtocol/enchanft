@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:14:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-04 14:20:10
+ * @LastEditTime: 2023-01-31 19:20:51
  * @Description: 基础按钮
  */
 import React from 'react';
@@ -16,6 +16,9 @@ export type ModalBaseProps = ReactModal.Props & {
 const customStyles = {
   overlay: {
     position: 'fixed',
+    width: '100vw',
+    height: '100vh',
+    overflow: 'auto',
     top: 0,
     left: 0,
     right: 0,
@@ -24,16 +27,12 @@ const customStyles = {
     zIndex: 1,
   },
   content: {
-    position: 'absolute',
     width: 'fit-content',
     height: 'fit-content',
     padding: 0,
-    margin: 0,
-    top: '50%',
-    left: '50%',
+    margin: '0 auto',
     overflow: 'auto',
     WebkitOverflowScrolling: 'touch',
-    transform: 'translate(-50%,-50%)',
     border: 'none',
     background: 'none',
   },
