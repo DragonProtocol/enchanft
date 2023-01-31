@@ -102,3 +102,20 @@ applications:
       cache:
         paths:
           - node_modules/**/*
+
+  - appRoot: apps/cscan
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - yarn
+        build:
+          commands:
+            - yarn build
+      artifacts:
+        baseDirectory: build
+        files:
+          - '**/*'
+      cache:
+        paths:
+          - node_modules/**/*
