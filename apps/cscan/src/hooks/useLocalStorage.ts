@@ -22,9 +22,11 @@ export function useLocalStorage<T>(
 
     return defaultState;
   });
+
   const value = state[0];
 
   const isFirstRenderRef = useRef(true);
+
   useEffect(() => {
     if (isFirstRenderRef.current) {
       isFirstRenderRef.current = false;

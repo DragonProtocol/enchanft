@@ -23,7 +23,10 @@ export default function Family() {
   return (
     <div>
       <Title>
-        <h2>Family or App </h2>
+        <h2>
+          Activity for the family: <span>{familyOrApp}</span> on{' '}
+          <span>{network}</span>
+        </h2>
       </Title>
       <InfiniteScroll
         dataLength={data.length}
@@ -49,6 +52,14 @@ const Title = styled.div`
 
   > h2 {
     margin: 0;
+    font-weight: 500;
+    > span {
+      text-transform: capitalize;
+      border: 1px solid #a86ecb;
+      border-radius: 10px;
+      padding: 5px 10px;
+      color: #a86ecb;
+    }
   }
 `;
 
