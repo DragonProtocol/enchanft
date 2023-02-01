@@ -36,7 +36,7 @@ export default function StreamTable({
           <div>{network}</div>
         </div>
         <div>
-          <span>indexing time:</span>
+          <span>Indexing time:</span>
           <div>{dayjs(data.indexingTime).fromNow()}</div>
         </div>
         <div>
