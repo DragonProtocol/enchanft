@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-29 18:37:49
+ * @LastEditTime: 2023-01-31 19:15:46
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -11,10 +11,14 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { MainWrapper } from '../components/layout/Index';
 import Loading from '../components/common/loading/Loading';
-import { ProjectExploreListItemResponse } from '../services/types/project';
+import {
+  UpdateProjectData,
+  ProjectExploreListItemResponse,
+} from '../services/types/project';
 import {
   fetchListForProjectExplore,
   fetchOneProject,
+  updateProject,
 } from '../services/api/project';
 import { ApiRespCode } from '../services/types';
 import Header from '../components/dapp/detail/Header';
@@ -27,6 +31,7 @@ import QA from '../components/dapp/detail/QA';
 import useDappWebsite from '../hooks/useDappWebsite';
 import useProjectHandles from '../hooks/useProjectHandles';
 import RecommendDapps from '../components/dapp/detail/RecommendDapps';
+import DappEditModal from '../components/dapp/DappEditModal';
 
 export default function Dapp() {
   const navigate = useNavigate();
@@ -90,7 +95,31 @@ export default function Dapp() {
       setData(newData as ProjectExploreListItemResponse);
     }
   }, [onFavor, data]);
+  const [openEdit, setOpenEdit] = useState(false);
 
+  const [adminEditPending, setAdminEditPending] = useState(false);
+  const handleEditSubmit = useCallback(
+    async (form: UpdateProjectData) => {
+      if (adminEditPending) return;
+      try {
+        setAdminEditPending(true);
+        const resp = await updateProject(id, form);
+        const { code, msg } = resp.data;
+        if (code === 0) {
+          setData((oldData) => ({ ...oldData, ...form }));
+          toast.success('update project success!!!');
+          setOpenEdit(false);
+        } else {
+          toast.error(msg);
+        }
+      } catch (error) {
+        toast.error(error.message || error.msg);
+      } finally {
+        setAdminEditPending(false);
+      }
+    },
+    [adminEditPending]
+  );
   return isPending ? (
     <StatusBox>
       <Loading />
@@ -104,6 +133,7 @@ export default function Dapp() {
         isInstalled={data.favored}
         onInstall={handleInstall}
         onOpen={() => openDappModal(data.id)}
+        onEdit={() => setOpenEdit(true)}
       />
       <ContentLayout>
         <ContentLayoutLeft>
@@ -133,6 +163,14 @@ export default function Dapp() {
           />
         </ContentLayoutRight>
       </ContentLayout>
+      <DappEditModal
+        isOpen={openEdit}
+        data={data}
+        disabled={adminEditPending}
+        loading={adminEditPending}
+        onCancel={() => setOpenEdit(false)}
+        onSubmit={handleEditSubmit}
+      />
     </DappWrapper>
   ) : (
     <StatusBox>The dapp query with id {id} failed</StatusBox>

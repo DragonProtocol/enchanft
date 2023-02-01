@@ -12,7 +12,6 @@ import {
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
 import { login, useWlUserReact } from '@ecnft/wl-user-react';
-import { ChainType, Platform, Reward } from '../../services/types/common';
 import { CreateEventData } from '../../services/types/event';
 import UploadImgMaskImg from '../imgs/upload_img_mask.svg';
 import { uploadImage } from '../../services/api/upload';
@@ -27,59 +26,13 @@ import RefreshSvg from '../common/icons/svgs/refresh.svg';
 import TimePicker from '../common/time/TimePicker';
 import EventLinkPreview from './EventLinkPreview';
 import ProjectAsyncSelect from '../business/form/ProjectAsyncSelect';
-import PlatformSelect from '../business/form/PlatformSelect';
 import {
   EVENT_ADMIN_PLUS_SCORE_STEP,
   NO_ENDTIME_TIMESTRAMP,
 } from '../../utils/event';
 import useConfigsTopics from '../../hooks/useConfigsTopics';
+import useConfigsPlatforms from '../../hooks/useConfigsPlatforms';
 
-const rewardOptions: Array<{
-  value: Reward;
-  label: string;
-}> = [
-  {
-    value: Reward.BADGE,
-    label: 'Badge',
-  },
-  {
-    value: Reward.NFT,
-    label: 'NFT',
-  },
-  {
-    value: Reward.TOKEN,
-    label: 'Token',
-  },
-  {
-    value: Reward.WL,
-    label: 'WL',
-  },
-];
-const chainOptions: Array<{
-  value: ChainType;
-  label: string;
-}> = [
-  {
-    value: ChainType.EVM,
-    label: 'Ethereum',
-  },
-  {
-    value: ChainType.SOLANA,
-    label: 'Solana',
-  },
-  {
-    value: ChainType.BSC,
-    label: 'Bsc',
-  },
-  {
-    value: ChainType.MATIC,
-    label: 'Polygon',
-  },
-  {
-    value: ChainType.APTOS,
-    label: 'Aptos',
-  },
-];
 type Props = {
   initialValues: CreateEventData;
   loading?: boolean;
@@ -93,6 +46,7 @@ export default forwardRef(function EventForm(
     !initialValues.endTime || initialValues.endTime === NO_ENDTIME_TIMESTRAMP
   );
   const { topics } = useConfigsTopics();
+  const { eventPlatforms } = useConfigsPlatforms();
   const typesOptions = useMemo(
     () =>
       topics.eventTypes.map((item) => ({
@@ -101,6 +55,32 @@ export default forwardRef(function EventForm(
       })),
     [topics]
   );
+  const rewardOptions = useMemo(
+    () =>
+      topics.eventRewards.map((item) => ({
+        value: item.value,
+        label: item.name,
+      })),
+    [topics]
+  );
+  const chainOptions = useMemo(
+    () =>
+      topics.chains.map((item) => ({
+        value: item.chainEnum,
+        label: item.name,
+      })),
+    [topics]
+  );
+  const platformOptions = useMemo(
+    () =>
+      eventPlatforms.map((item) => ({
+        value: item.platform,
+        label: item.platform,
+        iconUrl: item.platformLogo,
+      })),
+    [eventPlatforms]
+  );
+
   const handleSubmit = useCallback(
     (form: CreateEventData) => {
       const data = {
@@ -256,8 +236,9 @@ export default forwardRef(function EventForm(
 
         <FormField>
           <FormLabel htmlFor="platform">Platform</FormLabel>
-          <PlatformSelect
+          <Select
             placeholder="Filter by Platform"
+            options={platformOptions}
             onChange={(value) => formik.setFieldValue('platform', value)}
             onSelectOption={(option) => setSelectPlatformLogo(option.iconUrl)}
             value={formik.values.platform}

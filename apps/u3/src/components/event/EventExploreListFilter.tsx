@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-10 15:47:40
+ * @LastEditTime: 2023-02-01 14:56:34
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -35,7 +35,7 @@ export default function EventExploreListFilter({
   values,
   onChange,
 }: EventExploreListFilterProps) {
-  const { platforms } = useConfigsPlatforms();
+  const { eventPlatforms } = useConfigsPlatforms();
   const { topics } = useConfigsTopics();
   const { eventRewards, eventTypes, projectTypes } = topics;
   const {
@@ -46,12 +46,12 @@ export default function EventExploreListFilter({
   } = values;
   const platformsOptions = useMemo(
     () =>
-      platforms.map((item) => ({
+      eventPlatforms.map((item) => ({
         label: formatFilterShowName(item.platform),
         value: item.platform,
         iconUrl: item.platformLogo,
       })),
-    [platforms]
+    [eventPlatforms]
   );
   const eventRewardsOptions = useMemo(
     () => topicsToOptions(eventRewards),

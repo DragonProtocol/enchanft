@@ -2,25 +2,31 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 14:34:52
+ * @LastEditTime: 2023-02-01 16:24:25
  * @Description: file description
  */
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Title from './Title';
-import { PlatformData } from '../../services/types/home';
+import { MEDIA_BREAK_POINTS } from '../../constants';
+import {
+  PlatformsItemResponse,
+  PlatformType,
+} from '../../services/types/common';
+import ProjectImgDefault from '../project/ProjectImgDefault';
+import { formatFilterShowName } from '../../utils/filter';
 
 export default function Platform({
   platforms,
   viewAllAction,
 }: {
-  platforms: Array<PlatformData>;
+  platforms: Array<PlatformsItemResponse>;
   viewAllAction: () => void;
 }) {
   const navigate = useNavigate();
   return (
     <Box>
-      <Title text="Browse by Platform" viewAllAction={viewAllAction} />{' '}
+      <Title text="Browse by Platform" />{' '}
       <div className="lists">
         {platforms.map((item) => {
           return (
@@ -28,8 +34,12 @@ export default function Platform({
               key={item.platform}
               {...item}
               clickAction={() => {
-                if (item.platformUrl) {
+                if (item.type === PlatformType.EVENT && item.platformUrl) {
                   navigate(`/events?platform=${item.platform}`);
+                  return;
+                }
+                if (item.type === PlatformType.CONTENT) {
+                  navigate(`/contents/:id`);
                 }
               }}
             />
@@ -42,20 +52,43 @@ export default function Platform({
 
 const Box = styled.div`
   & .lists {
-    display: flex;
-    gap: 20px;
     margin-top: 20px;
+    display: grid;
+    grid-gap: 20px;
+    @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+      grid-template-columns: repeat(
+        8,
+        minmax(calc((100% - 20px * 7) / 8), 1fr)
+      );
+    }
+
+    @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) and (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
+      grid-template-columns: repeat(
+        7,
+        minmax(calc((100% - 20px * 6) / 7), 1fr)
+      );
+    }
+
+    @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+      grid-template-columns: repeat(
+        6,
+        minmax(calc((100% - 20px * 5) / 6), 1fr)
+      );
+    }
   }
 `;
 
-function Card(props: PlatformData & { clickAction: () => void }) {
-  const { eventNumber, platform, platformLogo, clickAction } = props;
+function Card(props: PlatformsItemResponse & { clickAction: () => void }) {
+  const { number, platform, platformLogo, type, clickAction } = props;
   return (
     <CardWrapper>
       <CardBox onClick={clickAction}>
-        <img src={platformLogo} alt="" />
-        <h2>{platform}</h2>
-        <div>{eventNumber} events</div>
+        <PlatformImg src={platformLogo} alt="" />
+        <h2>{formatFilterShowName(platform)}</h2>
+        <div>
+          {number} {type === PlatformType.EVENT && 'events'}{' '}
+          {type === PlatformType.CONTENT && 'contents'}
+        </div>
       </CardBox>
     </CardWrapper>
   );
@@ -65,7 +98,6 @@ const CardWrapper = styled.div`
   box-sizing: border-box;
   padding: 20px;
   cursor: pointer;
-  width: 160px;
   height: 146px;
   background: #1b1e23;
   border-radius: 20px;
@@ -76,6 +108,11 @@ const CardWrapper = styled.div`
     }
   }
 `;
+const PlatformImg = styled(ProjectImgDefault)`
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+`;
 const CardBox = styled.div`
   width: 100%;
   height: 100%;
@@ -85,11 +122,6 @@ const CardBox = styled.div`
   align-items: center;
   box-sizing: border-box;
   gap: 10px;
-  > img {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-  }
 
   > h2 {
     font-weight: 500;

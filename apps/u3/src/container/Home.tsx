@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-30 18:16:14
+ * @LastEditTime: 2023-02-01 16:09:17
  * @Description: file description
  */
 
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../components/common/loading/Loading';
@@ -19,6 +19,7 @@ import RecommendEvents from '../components/home/RecommendEvents';
 import TrendingEvents from '../components/home/TrendingEvents';
 import { MainWrapper } from '../components/layout/Index';
 import { selectWebsite } from '../features/website/websiteSlice';
+import useConfigsPlatforms from '../hooks/useConfigsPlatforms';
 import {
   getPlatforms,
   getTrendingProjects,
@@ -36,7 +37,11 @@ function Home() {
   const navigate = useNavigate();
   const [showOnBoard, setShowOnBoard] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [platforms, setPlatforms] = useState<Array<PlatformData>>([]);
+  const { platforms, loading: platformsLoading } = useConfigsPlatforms();
+  const showPlatforms = useMemo(
+    () => platforms.filter((item) => !!item.number),
+    [platforms]
+  );
   const [trendingProjects, setTrendingProjects] = useState<
     Array<ProjectExploreListItemResponse>
   >([]);
@@ -63,19 +68,10 @@ function Home() {
     const { data } = await getTrendingEvents();
     setEvents(data.data);
   }, []);
-  const loadPlatforms = useCallback(async () => {
-    const { data } = await getPlatforms();
-    setPlatforms(data.data);
-  }, []);
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([
-      loadPlatforms(),
-      loadEvents(),
-      loadContents(),
-      loadProjects(),
-    ]).finally(() => {
+    Promise.all([loadEvents(), loadContents(), loadProjects()]).finally(() => {
       setLoading(false);
     });
   }, []);
@@ -113,14 +109,14 @@ function Home() {
               navigate('/events');
             }}
           />
-          <TrendingEvents
+          {/* <TrendingEvents
             data={trendingEvents}
             viewAllAction={() => {
               navigate('/events');
             }}
-          />
+          /> */}
           <Platform
-            platforms={platforms}
+            platforms={showPlatforms}
             viewAllAction={() => {
               navigate('/events');
             }}

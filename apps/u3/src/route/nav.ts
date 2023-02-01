@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 13:59:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 16:38:16
+ * @LastEditTime: 2023-02-01 10:51:35
  * @Description: file description
  */
 import React, { ReactNode } from 'react';
@@ -71,6 +71,11 @@ export const navs: CutomNavObject[] = [
         name: 'event',
         activeRouteKeys: [RouteKey.eventCreate],
         route: getRoute(RouteKey.eventCreate),
+      },
+      {
+        name: 'dapp',
+        activeRouteKeys: [RouteKey.dappCreate],
+        route: getRoute(RouteKey.dappCreate),
       },
     ],
   },
