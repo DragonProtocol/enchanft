@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-09 18:47:23
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-10 15:17:48
+ * @LastEditTime: 2023-02-01 14:52:04
  * @Description: file description
  */
 import { useEffect, useMemo } from 'react';
@@ -12,10 +12,20 @@ import {
   selectState,
 } from '../features/configs/platforms';
 import { AsyncRequestStatus } from '../services/types';
+import { PlatformType } from '../services/types/common';
 
 export default () => {
   const dispatch = useAppDispatch();
   const { status, platforms } = useAppSelector(selectState);
+  const eventPlatforms = useMemo(
+    () => platforms.filter((item) => item.type === PlatformType.EVENT),
+    [platforms]
+  );
+  const contentPlatforms = useMemo(
+    () => platforms.filter((item) => item.type === PlatformType.CONTENT),
+    [platforms]
+  );
+
   useEffect(() => {
     if (status === AsyncRequestStatus.IDLE) {
       dispatch(fetchConfigsPlatforms());
@@ -28,5 +38,7 @@ export default () => {
   return {
     loading,
     platforms,
+    eventPlatforms,
+    contentPlatforms,
   };
 };
