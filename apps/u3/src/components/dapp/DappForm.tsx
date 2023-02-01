@@ -34,9 +34,19 @@ type Props = {
   loading?: boolean;
   onCancel?: () => void;
   onSubmit?: (values: UpdateProjectData) => void;
+  displayReset?: boolean;
+  displayCancel?: boolean;
 };
 export default forwardRef(function DappForm(
-  { initialValues, disabled, loading, onSubmit, onCancel }: Props,
+  {
+    initialValues,
+    disabled,
+    loading,
+    onSubmit,
+    onCancel,
+    displayReset,
+    displayCancel,
+  }: Props,
   ref
 ) {
   const { topics } = useConfigsTopics();
@@ -138,7 +148,6 @@ export default forwardRef(function DappForm(
     },
     [formik.touched, formik.errors]
   );
-  console.log({ formik });
 
   return (
     <DappFormWrapper>
@@ -358,9 +367,20 @@ export default forwardRef(function DappForm(
       </FormField>
 
       <FormButtons>
-        <ButtonPrimaryLine disabled={disabled || loading} onClick={onCancel}>
-          Cancel
-        </ButtonPrimaryLine>
+        {displayCancel && (
+          <ButtonPrimaryLine disabled={disabled || loading} onClick={onCancel}>
+            Cancel
+          </ButtonPrimaryLine>
+        )}
+        {displayReset && (
+          <ButtonPrimaryLine
+            disabled={disabled || loading}
+            onClick={() => formik.resetForm()}
+          >
+            Reset
+          </ButtonPrimaryLine>
+        )}
+
         <ButtonPrimary
           disabled={disabled || loading}
           onClick={() => formik.submitForm()}

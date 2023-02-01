@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-31 18:44:07
+ * @LastEditTime: 2023-02-01 11:03:21
  * @Description: file description
  */
 import {
@@ -56,6 +56,19 @@ export function updateProject(
 ): RequestPromise<UpdateProjectResponse> {
   return request({
     url: `/uniProjects/${id}`,
+    method: 'post',
+    data,
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
+export function createProject(
+  data: UpdateProjectData
+): RequestPromise<UpdateProjectResponse> {
+  return request({
+    url: `/uniProjects`,
     method: 'post',
     data,
     headers: {

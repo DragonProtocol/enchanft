@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-31 14:32:22
+ * @LastEditTime: 2023-02-01 10:47:45
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -76,7 +76,6 @@ export type ProjectFavorHandleResponse = ApiResp<unknown>;
 export type FetchOneProjectResponse = ApiResp<ProjectExploreListItemResponse>;
 
 export type UpdateProjectData = {
-  id: number;
   name: string;
   description: string;
   image: string;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-31 14:23:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 10:10:19
+ * @LastEditTime: 2023-02-01 11:21:27
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -37,6 +37,7 @@ export default function DappEditModal({
             loading={loading}
             onCancel={onCancel}
             onSubmit={onSubmit}
+            displayCancel
           />
         )}
       </ModalBody>
