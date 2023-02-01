@@ -37,9 +37,11 @@ export default function Home() {
         <Search
           searchAction={(text) => {
             if (text.startsWith('did')) {
-              navigate(`/${network}/profile/${text}`);
+              navigate(`/${network.toLowerCase()}/profile/${text}`);
+            } else if (text.length < 62) {
+              navigate(`/${network.toLowerCase()}/family/${text}`);
             } else {
-              navigate(`/${network}/stream/${text}`);
+              navigate(`/${network.toLowerCase()}/stream/${text}`);
             }
           }}
         />
