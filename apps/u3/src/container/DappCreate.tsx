@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 11:26:03
+ * @LastEditTime: 2023-02-01 14:24:14
  * @Description: file description
  */
 import { useCallback, useRef, useState } from 'react';
@@ -67,7 +67,6 @@ function DappCreate() {
           loading={pending}
           onSubmit={handleSubmit}
           displayReset
-          onReset={handleReset}
         />
       </CardBase>
     </MainWrapper>

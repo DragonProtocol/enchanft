@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-20 18:27:13
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 19:21:57
+ * @LastEditTime: 2023-02-01 13:43:53
  * @Description: file description
  */
 const loadImg = (url: string): Promise<string> => {
@@ -32,11 +32,30 @@ const loadImg = (url: string): Promise<string> => {
     };
   });
 };
-export const fetchPlatformImgUrlByLink = (link: string): Promise<string> => {
+export const fetchPlatformImgUrlByLink = async (
+  link: string
+): Promise<string> => {
   const linkSplitAry = link.split('/');
   const platformImgUrl = `${linkSplitAry[0]}//${linkSplitAry[2]}/favicon`;
-  const ico = `${platformImgUrl}.ico`;
-  const png = `${platformImgUrl}.png`;
-  const gif = `${platformImgUrl}.gif`;
-  return Promise.any([loadImg(ico), loadImg(png), loadImg(gif)]);
+
+  try {
+    const img = `${platformImgUrl}.ico`;
+    return await loadImg(img);
+  } catch (error) {
+    /* empty */
+  }
+  try {
+    const img = `${platformImgUrl}.png`;
+    return await loadImg(img);
+  } catch (error) {
+    /* empty */
+  }
+  try {
+    const img = `${platformImgUrl}.gif`;
+    return await loadImg(img);
+  } catch (error) {
+    /* empty */
+  }
+
+  return '';
 };
