@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-10 15:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 16:28:02
+ * @LastEditTime: 2023-02-01 17:49:46
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -42,13 +42,14 @@ export const fetchConfigsPlatforms = createAsyncThunk<Platforms, undefined>(
           platform: getDomainNameByUrl(item.platformUrl),
           platformLogo: '',
         }));
-
+      // eslint-disable-next-line @typescript-eslint/await-thenable
+      await dispatch(setAll([...eventPlatforms, ...contentPlatforms]));
       for (const item of contentPlatforms) {
         fetchPlatformImgUrlByLink(item.platformUrl).then((url) => {
           dispatch(updateOneByUrl({ ...item, platformLogo: url }));
         });
       }
-      return [...eventPlatforms, ...contentPlatforms];
+      return undefined;
     }
     return rejectWithValue(new Error(resp.data.msg));
   }
@@ -69,6 +70,9 @@ export const configsPlatformsSlice = createSlice({
         state.platforms[findIndex] = { ...updateData };
       }
     },
+    setAll: (state, action) => {
+      state.platforms = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -77,7 +81,7 @@ export const configsPlatformsSlice = createSlice({
       })
       .addCase(fetchConfigsPlatforms.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED;
-        state.platforms = action.payload;
+        // state.platforms = action.payload;
       })
       .addCase(fetchConfigsPlatforms.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED;
@@ -86,6 +90,6 @@ export const configsPlatformsSlice = createSlice({
 });
 
 const { actions, reducer } = configsPlatformsSlice;
-const { updateOneByUrl } = actions;
+const { setAll, updateOneByUrl } = actions;
 export const selectState = (state: RootState) => state.configsPlatforms;
 export default reducer;
