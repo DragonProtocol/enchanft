@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:59:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-31 17:49:25
+ * @LastEditTime: 2023-02-01 10:09:25
  * @Description: file description
  */
 import React, { useRef, useState } from 'react';
@@ -41,8 +41,6 @@ export default function ({
         options={options}
         value={SelectValue}
         onChange={(ops) => {
-          console.log({ ops });
-
           if (onChange) {
             onChange(ops.map((item) => item.value));
           }

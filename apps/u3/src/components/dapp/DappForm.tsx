@@ -105,8 +105,6 @@ export default forwardRef(function DappForm(
         .nullable(),
     }),
     onSubmit: (values) => {
-      console.log({ values });
-
       onSubmit(values);
     },
   });
