@@ -199,6 +199,26 @@ export default forwardRef(function DappForm(
         </FormValueBox>
       </FormField>
       <FormField>
+        <FormLabel>Url</FormLabel>
+        <FormValueBox>
+          <InputBase
+            placeholder="Url"
+            onChange={(e) => formik.setFieldValue('url', e.target.value)}
+            value={formik.values.url}
+            onBlur={() => {
+              if (
+                !formik.values?.url.startsWith('http') &&
+                formik.values.url.length > 4
+              ) {
+                const urlWithProtocol = `https://${formik.values.url}`;
+                formik.setFieldValue('url', urlWithProtocol);
+              }
+            }}
+          />
+          {renderFieldError('url')}
+        </FormValueBox>
+      </FormField>
+      <FormField>
         <FormLabel htmlFor="supportIframe">Verify</FormLabel>
         <Switch
           onChange={(checked) =>
@@ -323,7 +343,7 @@ export default forwardRef(function DappForm(
         </FormValueBox>
       </FormField>
 
-      <FormGroupLabel>admin score</FormGroupLabel>
+      <FormGroupLabel>Editor Score</FormGroupLabel>
       <FormField>
         <InputBase
           placeholder="score"
@@ -361,6 +381,7 @@ const FormGroupLabel = styled.label`
   font-size: 20px;
   line-height: 24px;
   color: #ffffff;
+  text-transform: 'capitalize';
 `;
 const FormField = styled.div`
   width: 100%;
