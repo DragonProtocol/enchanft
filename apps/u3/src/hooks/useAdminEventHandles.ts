@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-05 10:34:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-05 16:16:57
+ * @LastEditTime: 2023-02-01 19:06:58
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
@@ -19,6 +19,7 @@ import {
   removeOne as removeOneWithEventExplore,
 } from '../features/event/eventExploreList';
 import { EVENT_ADMIN_PLUS_SCORE_STEP } from '../utils/event';
+import { messages } from '../utils/message';
 
 const cacheEventAdminThumbUpPendingIds = new Set();
 const cacheEventAdminDeletePendingIds = new Set();
@@ -42,12 +43,12 @@ export default () => {
         if (code === 0) {
           // update explore event data
           dispatch(updateOneWithEventExplore({ id, editorScore }));
-          toast.success(`score event success! current score ${editorScore}.`);
+          toast.success(messages.event.admin_add_score);
         } else {
-          toast.error(msg);
+          toast.error(msg || messages.common.error);
         }
       } catch (error) {
-        toast.error(error.message || error.msg);
+        toast.error(error.message || error.msg || messages.common.error);
       } finally {
         cacheEventAdminThumbUpPendingIds.delete(data.id);
         setAdminThumbUpPendingIds([...cacheEventAdminThumbUpPendingIds]);
@@ -72,12 +73,12 @@ export default () => {
         if (code === 0) {
           // remove one explore event
           dispatch(removeOneWithEventExplore(id));
-          toast.success('delete event success!!!');
+          toast.success(messages.event.hide);
         } else {
-          toast.error(msg);
+          toast.error(msg || messages.common.error);
         }
       } catch (error) {
-        toast.error(error.message || error.msg);
+        toast.error(error.message || error.msg || messages.common.error);
       } finally {
         cacheEventAdminDeletePendingIds.delete(id);
         setAdminDeletePendingIds([...cacheEventAdminDeletePendingIds]);
@@ -96,12 +97,12 @@ export default () => {
         const resp = await updateEvent(id, data);
         const { code, msg } = resp.data;
         if (code === 0) {
-          toast.success('update event success!!!');
+          toast.success(messages.event.admin_update);
         } else {
-          toast.error(msg);
+          toast.error(msg || messages.common.error);
         }
       } catch (error) {
-        toast.error(error.message || error.msg);
+        toast.error(error.message || error.msg || messages.common.error);
       } finally {
         setAdminEditPending(false);
       }

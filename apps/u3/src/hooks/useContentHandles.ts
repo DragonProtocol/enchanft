@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-28 16:43:16
+ * @LastEditTime: 2023-02-01 19:11:35
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -23,6 +23,7 @@ import { getContentShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
 import { fetchUserKarma } from '../features/profile/karma';
 import { store } from '../store/store';
+import { messages } from '../utils/message';
 
 // cache content handle pending ids
 const cacheContentVotePendingIds = new Set<number | string>();
@@ -89,7 +90,7 @@ export default (
             store.dispatch(fetchUserKarma({ token: user.token }));
             resolve();
           } catch (error) {
-            toast.error(error?.message || error?.msg);
+            toast.error(error?.message || error?.msg || messages.common.error);
             reject(error);
           } finally {
             cacheContentVotePendingIds.delete(data?.uuid || data.id);
@@ -130,7 +131,7 @@ export default (
             });
             resolve();
           } catch (error) {
-            toast.error(error?.message || error?.msg);
+            toast.error(error?.message || error?.msg || messages.common.error);
             reject(error);
           } finally {
             cacheContentFavorPendingIds.delete(data?.uuid || data.id);
@@ -185,7 +186,7 @@ export default (
             if (callback && callback.error) {
               callback.error(error);
             }
-            toast.error(error?.message || error?.msg);
+            toast.error(error?.message || error?.msg || messages.common.error);
             reject(error);
           } finally {
             cacheContentHiddenPendingIds.delete(data?.uuid || data.id);

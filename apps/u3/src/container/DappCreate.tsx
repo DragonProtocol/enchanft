@@ -4,7 +4,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 14:24:14
+ * @LastEditTime: 2023-02-01 18:59:14
  * @Description: file description
  */
 import { useCallback, useRef, useState } from 'react';
@@ -14,6 +14,7 @@ import DappForm from '../components/dapp/DappForm';
 import { MainWrapper } from '../components/layout/Index';
 import { createProject } from '../services/api/project';
 import { UniprojectStatus, UpdateProjectData } from '../services/types/project';
+import { messages } from '../utils/message';
 
 function DappCreate() {
   const initialValues = {
@@ -44,13 +45,13 @@ function DappCreate() {
         const resp = await createProject(form);
         const { code, msg } = resp.data;
         if (code === 0) {
-          toast.success('create project success!!!');
+          toast.success(messages.dapp.admin_submit);
           handleReset();
         } else {
-          toast.error(msg);
+          toast.error(msg || messages.common.error);
         }
       } catch (error) {
-        toast.error(error.message || error.msg);
+        toast.error(error.message || error.msg || messages.common.error);
       } finally {
         setPending(false);
       }

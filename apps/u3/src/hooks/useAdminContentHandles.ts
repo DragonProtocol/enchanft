@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-05 10:34:33
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-29 15:18:24
+ * @LastEditTime: 2023-02-01 18:43:57
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
@@ -11,6 +11,7 @@ import { useWlUserReact } from '@ecnft/wl-user-react';
 import { ContentListItem, ContentStatus } from '../services/types/contents';
 import { CONTENT_ADMIN_PLUS_SCORE_STEP } from '../utils/content';
 import { updateContent } from '../services/api/contents';
+import { messages } from '../utils/message';
 
 // cache content admin handle pending ids
 const cacheContentAdminScorePendingIds = new Set();
@@ -64,14 +65,14 @@ export default (
               updateOne(id, {
                 editorScore,
               });
-              toast.success('score content success!!!');
+              toast.success(messages.content.admin_add_score);
               resolve();
             } else {
-              toast.error(msg);
+              toast.error(msg || messages.common.error);
               reject(new Error(msg));
             }
           } catch (error) {
-            toast.error(error.message || error.msg);
+            toast.error(error.message || error.msg || messages.common.error);
             reject(error);
           } finally {
             cacheContentAdminScorePendingIds.delete(data.id);
@@ -101,14 +102,14 @@ export default (
             const { code, msg } = resp.data;
             if (code === 0) {
               deleteOne(id);
-              toast.success('delete content success!!!');
+              toast.success(messages.content.hide);
               resolve();
             } else {
-              toast.error(msg);
+              toast.error(msg || messages.common.error);
               reject(new Error(msg));
             }
           } catch (error) {
-            toast.error(error.message || error.msg);
+            toast.error(error.message || error.msg || messages.common.error);
             reject(error);
           } finally {
             cacheContentAdminDeletePendingIds.delete(id);
