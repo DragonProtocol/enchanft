@@ -20,7 +20,7 @@ type Props = {
   karmaScore?: number;
 };
 export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
-  const { authorizer, user, isLogin, login, logout } = useLogin();
+  const { authorizer, user, isLogin, login } = useLogin();
   const preScore = useRef<number>(karmaScore || 0);
   const nameStr = authorizer && getUserDisplayName(user, authorizer);
   const [diffScore, setDiffScore] = useState(0);
@@ -28,6 +28,10 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
   const flowerRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
+    if (preScore.current === 0) {
+      preScore.current = karmaScore || 0;
+      return;
+    }
     const diff = (karmaScore || 0) - preScore.current;
     if (diff > 0) {
       setDiffScore(diff);
@@ -49,6 +53,8 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
     preScore.current = karmaScore || 0;
   }, [karmaScore, preScore]);
 
+  const showScore = karmaScore > 0 ? `${karmaScore}` : '';
+
   return (
     <>
       {isLogin && !onlyIcon && (
@@ -62,7 +68,7 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
             <span className="user-name">{nameStr}</span>
             <div className="karma">
               <Atom2 />
-              <span>{karmaScore || 0}</span>
+              <span>{showScore}</span>
             </div>
           </div>
         </KarmaWrapper>
@@ -91,11 +97,11 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
                   <LogoutIconButton src={LogoutSvg} />
                 </>
               )}
-              {onlyIcon && (
+              {onlyIcon && showScore && (
                 <ScoreBox onlyIcon>
                   <span className="triangle" />
 
-                  <span>{karmaScore || 0}</span>
+                  <span>{showScore}</span>
 
                   <div
                     id="flower-score"

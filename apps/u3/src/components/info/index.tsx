@@ -64,7 +64,7 @@ export default function Info({
             <div>
               <span className="name">{nameStr}</span>
               <Karma
-                score={`${totalScore}`}
+                score={`${totalScore || ''}`}
                 clickAction={() => {
                   setShowKarmaModal(true);
                 }}
