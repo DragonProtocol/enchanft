@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 16:36:00
+ * @LastEditTime: 2023-02-01 11:30:46
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -17,6 +17,7 @@ export enum RouteKey {
   event = 'event',
   dapps = 'dapps',
   dapp = 'dapp',
+  dappCreate = 'dappCreate',
   contents = 'contents',
   content = 'content',
   contentCreate = 'contentCreate',
@@ -79,6 +80,12 @@ export const routes: CutomRouteObject[] = [
     path: '/dapps/:id',
     element: loadContainerElement('Dapp'),
     key: RouteKey.dapp,
+  },
+  {
+    path: '/dapps/create',
+    element: loadContainerElement('DappCreate'),
+    key: RouteKey.dappCreate,
+    permissions: [RoutePermission.login, RoutePermission.admin],
   },
   {
     path: '/contents/:id',

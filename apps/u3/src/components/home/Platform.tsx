@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 14:34:52
+ * @LastEditTime: 2023-01-31 16:08:06
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -20,7 +20,7 @@ export default function Platform({
   const navigate = useNavigate();
   return (
     <Box>
-      <Title text="Browse by Platform" viewAllAction={viewAllAction} />{' '}
+      <Title text="Browse by Platform" />{' '}
       <div className="lists">
         {platforms.map((item) => {
           return (
