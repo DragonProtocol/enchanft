@@ -12,6 +12,7 @@ export type Stream = {
   status: string;
   hash: string;
   schema: string;
+  model?: string;
   anchorStatus: string;
   commitIds: string[];
   content: Json;

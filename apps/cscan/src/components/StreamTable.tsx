@@ -8,6 +8,7 @@ import { TableBox } from './TableBox';
 import { useMemo } from 'react';
 import { sortPubKey } from '../utils/sortPubkey';
 import { Link } from 'react-router-dom';
+import Check from './icons/Check';
 
 export default function StreamTable({
   data,
@@ -20,15 +21,15 @@ export default function StreamTable({
     return data.did.split(':').pop() || '';
   }, [data.did]);
 
+  const net = network.toLowerCase();
+
   return (
     <TableBox>
       <TableContainer>
         <div>
           <span>Stream ID:</span>
           <div>
-            <Link to={`/${network}/stream/${data.streamId}`}>
-              {data.streamId}
-            </Link>
+            <Link to={`/${net}/stream/${data.streamId}`}>{data.streamId}</Link>
           </div>
         </div>
         <div className="network">
@@ -41,15 +42,15 @@ export default function StreamTable({
         </div>
         <div>
           <span>Family or App:</span>
-          <div>
-            {(data.familyOrApp && (
-              <Link to={`/${network}/family/${data.familyOrApp}`}>
+          {(data.familyOrApp && (
+            <div>
+              <Link to={`/${net}/family/${data.familyOrApp}`}>
                 <div className="family">
                   {FamilyOrAppMapReverse[data.familyOrApp] || data.familyOrApp}
                 </div>
               </Link>
-            )) || <div>-</div>}
-          </div>
+            </div>
+          )) || <div>-</div>}
         </div>
         <div>
           <span>Type:</span>
@@ -58,7 +59,7 @@ export default function StreamTable({
         <div className="from">
           <span>From:</span>
           <div>
-            <Link to={`/${network}/profile/${data.did}`}>
+            <Link to={`/${net}/profile/${data.did}`}>
               <div
                 dangerouslySetInnerHTML={{
                   __html: multiavatar(pubkey),
@@ -84,15 +85,28 @@ export default function StreamTable({
           <span>Date:</span>
           <div>...</div>
         </div> */}
-        <div>
-          <span>Schema:</span>
+        {(data.model && (
+          <div className="model">
+            <span>Modal:</span>
+            <div>
+              <a href={`/${net}/stream/${data.model}`}>{data.model}</a>
+              <div>
+                <Check />
+                <span>ComposeDB</span>
+              </div>
+            </div>
+          </div>
+        )) || (
           <div>
+            <span>Schema:</span>
             {(data.schema && (
-              <a href={`/${network}/stream/${data.schema}`}>{data.schema}</a>
+              <div>
+                <a href={`/${net}/stream/${data.schema}`}>{data.schema}</a>
+              </div>
             )) ||
               '-'}
           </div>
-        </div>
+        )}
         <div>
           <span>Commit IDs:</span>
           <div>{data.commitIds.join('\n')}</div>
@@ -142,11 +156,8 @@ const TableContainer = styled.div`
       flex-grow: 1;
     }
 
-    &.content,
-    &.metadata {
-      & div {
-        overflow: scroll;
-      }
+    & div {
+      overflow: scroll;
     }
   }
 
@@ -165,6 +176,22 @@ const TableContainer = styled.div`
   & .network {
     > div {
       text-transform: capitalize;
+    }
+  }
+
+  & .model {
+    & div {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+
+      & > div {
+        padding: 5px 10px;
+        border-radius: 10px;
+        border: 1px solid #39424c;
+        background: #1a1e23;
+        font-weight: 500;
+      }
     }
   }
 `;
