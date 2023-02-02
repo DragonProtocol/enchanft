@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-31 14:23:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 11:21:27
+ * @LastEditTime: 2023-02-02 11:52:39
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -46,5 +46,6 @@ export default function DappEditModal({
 }
 
 const ModalBody = styled(ModalBaseBody)`
+  margin: 20px 0;
   width: 976px;
 `;

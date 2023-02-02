@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 16:48:41
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-29 18:51:59
+ * @LastEditTime: 2023-02-02 11:57:46
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -97,6 +97,7 @@ export default function EventPreviewModal({
 }
 
 const ModalBody = styled(ModalBaseBody)`
+  margin-top: 40px;
   width: 976px;
   height: calc(100vh - 80px);
   display: flex;

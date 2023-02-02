@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-20 15:45:55
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 19:11:35
+ * @LastEditTime: 2023-02-02 10:24:07
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -83,6 +83,7 @@ export default (
             } else {
               await voteContent(data.id, user.token);
             }
+            toast.success(messages.content.applause);
             updateOne(data.uuid || data.id, {
               upVoted: true,
               upVoteNum: data.upVoteNum + 1,
@@ -119,12 +120,15 @@ export default (
           try {
             cacheContentFavorPendingIds.add(data?.uuid || data.id);
             setFavorPendingIds([...cacheContentFavorPendingIds]);
-            if (data.favored && data.id) {
+            if (data.favored) {
               await delFavors(data.id, user.token);
-            } else if (data?.uuid) {
-              await personalFavors(data.uuid, user.token);
             } else {
-              await favorsContent(data.id, user.token);
+              if (data?.uuid) {
+                await personalFavors(data.uuid, user.token);
+              } else {
+                await favorsContent(data.id, user.token);
+              }
+              toast.success(messages.content.favor);
             }
             updateOne(data.uuid || data.id, {
               favored: !data.favored,

@@ -23,6 +23,7 @@ import Karma from '../common/Karma';
 import { useAppSelector } from '../../store/hooks';
 import { selectKarmaState } from '../../features/profile/karma';
 import KarmaModal from './KarmaModal';
+import { messages } from '../../utils/message';
 
 export default function Info({
   walletAddr,
@@ -94,7 +95,7 @@ export default function Info({
               onClick={() => {
                 navigator.clipboard.writeText(walletAddr).then(
                   () => {
-                    toast.success('copied');
+                    toast.success(messages.common.copy);
                   },
                   (err) => {
                     console.error('Async: Could not copy text: ', err);
