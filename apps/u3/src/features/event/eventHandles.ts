@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 11:29:31
+ * @LastEditTime: 2023-02-01 19:01:45
  * @Description: file description
  */
 import {
@@ -29,6 +29,7 @@ import {
   removeOneWithEvents,
 } from '../favorite/userGroupFavorites';
 import { updateOne as updateOneWithEventExplore } from './eventExploreList';
+import { messages } from '../../utils/message';
 
 // 为event 点赞操作 创建一个执行队列
 export type FavorEventParams = EventExploreListItemResponse;
@@ -177,13 +178,13 @@ export const eventHandlesSlice = createSlice({
         state.favorEvent.params = null;
         state.favorEvent.status = AsyncRequestStatus.FULFILLED;
         state.favorEvent.errorMsg = '';
-        toast.success('Ok.');
+        toast.success(messages.event.favor);
       })
       .addCase(favorEvent.rejected, (state, action) => {
         state.favorEvent.params = null;
         state.favorEvent.status = AsyncRequestStatus.REJECTED;
         state.favorEvent.errorMsg = action.error.message || '';
-        toast.error(action.error.message);
+        toast.error(action.error.message || messages.common.error);
       })
       .addCase(completeEvent.pending, (state, action) => {
         state.completeEvent.params = action.meta.arg;
@@ -194,13 +195,13 @@ export const eventHandlesSlice = createSlice({
         state.completeEvent.params = null;
         state.completeEvent.status = AsyncRequestStatus.FULFILLED;
         state.completeEvent.errorMsg = '';
-        toast.success('Ok.');
+        toast.success(messages.event.complete);
       })
       .addCase(completeEvent.rejected, (state, action) => {
         state.completeEvent.params = null;
         state.completeEvent.status = AsyncRequestStatus.REJECTED;
         state.completeEvent.errorMsg = action.error.message || '';
-        toast.error(action.error.message);
+        toast.error(action.error.message || messages.common.error);
       });
   },
 });

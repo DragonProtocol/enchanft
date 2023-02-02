@@ -38,6 +38,7 @@ import Loading from '../components/common/loading/Loading';
 import isUrl from '../utils/isUrl';
 import { fetchUserKarma } from '../features/profile/karma';
 import { store } from '../store/store';
+import { messages } from '../utils/message';
 
 function ContentCreate() {
   const navigate = useNavigate();
@@ -162,7 +163,7 @@ function ContentCreate() {
           );
           if (resp.data.code === 0) {
             navigate(`/contents/${resp.data.data.id}`);
-            toast.success('Add Content Success!!!');
+            toast.success(messages.content.admin_submit);
             store.dispatch(fetchUserKarma({ token: user.token }));
           }
         } else {
@@ -180,11 +181,11 @@ function ContentCreate() {
             },
             user.token
           );
-          toast.success('Edit Content Success!!!');
+          toast.success(messages.content.admin_update);
         }
         reset();
       } catch (error) {
-        toast.error('Add Content Fail!!!');
+        toast.error(error.message || error.msg || messages.common.error);
       } finally {
         setLoading(false);
       }

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 15:50:14
+ * @LastEditTime: 2023-02-02 14:04:29
  * @Description: file description
  */
 import React, {
@@ -30,6 +30,7 @@ import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { AsyncRequestStatus } from '../../services/types';
 import Loading from '../common/loading/Loading';
 import ListScrollBox from '../common/box/ListScrollBox';
+import { messages } from '../../utils/message';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
@@ -60,7 +61,7 @@ const renderAddress = (address: string, isIcon = true, className?: string) => {
           className="address-svg"
           onClick={async () => {
             await navigator.clipboard.writeText(address);
-            toast.success('Copied!');
+            toast.success(messages.common.copy);
           }}
         >
           <path

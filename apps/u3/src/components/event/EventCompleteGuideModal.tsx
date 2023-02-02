@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 16:48:41
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-04 14:27:30
+ * @LastEditTime: 2023-02-02 14:25:22
  * @Description: file description
  */
 import React, { useState } from 'react';
@@ -24,7 +24,11 @@ export default function EventCompleteGuideModal({
 }: EventCompleteGuideModalProps) {
   const [step, setStep] = useState(1);
   return (
-    <EventCompleteGuideModalWrapper backdropFilter={false} isOpen={isOpen}>
+    <ModalBase
+      backdropFilter={false}
+      isOpen={isOpen}
+      style={{ overlay: { zIndex: 1000 } }}
+    >
       <ModalBody>
         {step === 1 ? (
           <>
@@ -49,12 +53,13 @@ export default function EventCompleteGuideModal({
           </>
         )}
       </ModalBody>
-    </EventCompleteGuideModalWrapper>
+    </ModalBase>
   );
 }
 
-const EventCompleteGuideModalWrapper = styled(ModalBase)``;
 const ModalBody = styled(ModalBaseBody)`
+  margin-top: 50vh;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   align-items: flex-start;

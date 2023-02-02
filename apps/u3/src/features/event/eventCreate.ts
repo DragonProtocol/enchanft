@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-07 18:28:25
+ * @LastEditTime: 2023-02-01 19:01:15
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -11,6 +11,7 @@ import { createEvent } from '../../services/api/event';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
 import { CreateEventData } from '../../services/types/event';
 import type { RootState } from '../../store/store';
+import { messages } from '../../utils/message';
 
 type EventExploreListState = {
   status: AsyncRequestStatus;
@@ -46,12 +47,12 @@ export const eventCreateSlice = createSlice({
       .addCase(eventCreate.fulfilled, (state, action) => {
         state.status = AsyncRequestStatus.FULFILLED;
         state.errorMsg = '';
-        toast.success('ok.');
+        toast.success(messages.event.admin_submit);
       })
       .addCase(eventCreate.rejected, (state, action) => {
         state.status = AsyncRequestStatus.REJECTED;
         state.errorMsg = action.error.message || '';
-        toast.error(state.errorMsg);
+        toast.error(state.errorMsg || messages.common.error);
       });
   },
 });

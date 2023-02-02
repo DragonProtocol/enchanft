@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-31 19:15:46
+ * @LastEditTime: 2023-02-01 18:57:59
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -32,6 +32,7 @@ import useDappWebsite from '../hooks/useDappWebsite';
 import useProjectHandles from '../hooks/useProjectHandles';
 import RecommendDapps from '../components/dapp/detail/RecommendDapps';
 import DappEditModal from '../components/dapp/DappEditModal';
+import { messages } from '../utils/message';
 
 export default function Dapp() {
   const navigate = useNavigate();
@@ -107,13 +108,13 @@ export default function Dapp() {
         const { code, msg } = resp.data;
         if (code === 0) {
           setData((oldData) => ({ ...oldData, ...form }));
-          toast.success('update project success!!!');
+          toast.success(messages.dapp.admin_update);
           setOpenEdit(false);
         } else {
-          toast.error(msg);
+          toast.error(msg || messages.common.error);
         }
       } catch (error) {
-        toast.error(error.message || error.msg);
+        toast.error(error.message || error.msg || messages.common.error);
       } finally {
         setAdminEditPending(false);
       }
