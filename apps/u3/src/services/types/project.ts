@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 10:47:45
+ * @LastEditTime: 2023-02-02 17:44:47
  * @Description: file description
  */
 import type { ApiResp } from '.';
@@ -37,22 +37,15 @@ export type ProjectExploreListParams = {
   pageNumber?: number;
   projectId?: number;
 };
-export type ProjectExploreListItemEventResponse = Omit<
-  EventExploreListItemResponse,
-  'project'
->;
-export type ProjectExploreListItemContentResponse = Omit<
-  ContentListItem,
-  'uniProject'
->;
+
 export type ProjectExploreListItemResponse = {
   id: number;
   name: string;
   description: string;
   image: string;
   favored?: boolean;
-  events?: ProjectExploreListItemEventResponse[];
-  contents?: ProjectExploreListItemContentResponse[];
+  events?: EventExploreListItemResponse[];
+  contents?: ContentListItem[];
   url: string;
   mediaLinks?: {
     twitter?: string;

@@ -2,17 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-18 17:12:51
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 11:46:00
+ * @LastEditTime: 2023-02-02 17:43:46
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { ProjectExploreListItemEventResponse } from '../../../services/types/project';
+import { EventExploreListItemResponse } from '../../../services/types/event';
 import EventExploreGridListItem from '../../event/EventExploreGridListItem';
 import Card, { CardTitle } from './Card';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
-  data: ProjectExploreListItemEventResponse[];
-  onItemClick?: (data: ProjectExploreListItemEventResponse) => void;
+  data: EventExploreListItemResponse[];
+  onItemClick?: (data: EventExploreListItemResponse) => void;
 };
 export default function Events({ data, onItemClick, ...otherProps }: Props) {
   return (
