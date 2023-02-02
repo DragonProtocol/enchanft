@@ -182,7 +182,7 @@ function Profile() {
               />
             )}
             {tab === 'OnChain' &&
-              ((profileData.nfts.total && (
+              ((profileData.nfts.result.length > 0 && (
                 <OnChainInterest
                   data={profileData.nfts}
                   wallet={profileData.erc20Balances}
