@@ -2,28 +2,25 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-06 14:06:15
+ * @LastEditTime: 2023-02-02 17:44:38
  * @Description: file description
  */
 import styled from 'styled-components';
 import { useCallback } from 'react';
-import type {
-  ProjectExploreListItemContentResponse,
-  ProjectExploreListItemEventResponse,
-  ProjectExploreListItemResponse,
-} from '../../services/types/project';
+import type { ProjectExploreListItemResponse } from '../../services/types/project';
 import EventLinkCard from '../event/EventLinkCard';
 import TwitterSvg from '../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../common/icons/svgs/discord.svg';
 import ContentLinkCard from '../contents/ContentLinkCard';
-import { ContentListItem } from '../contents/ContentList';
 import ProjectImgDefault from './ProjectImgDefault';
+import { ContentListItem } from '../../services/types/contents';
+import { EventExploreListItemResponse } from '../../services/types/event';
 
 export type ProjectDetailCardProps = {
   data: ProjectExploreListItemResponse;
   eventCompletedIds?: Array<number | string>;
   eventCompleteQueueIds: Array<number | string>;
-  onEventComplete?: (event: ProjectExploreListItemEventResponse) => void;
+  onEventComplete?: (event: EventExploreListItemResponse) => void;
   contentVotedIds?: Array<number | string>;
   onContentVote: (content: ContentListItem) => void;
 };
@@ -36,7 +33,7 @@ export default function ProjectDetailCard({
   onContentVote,
 }: ProjectDetailCardProps) {
   const isCompletedEvent = useCallback(
-    (item: ProjectExploreListItemEventResponse) =>
+    (item: EventExploreListItemResponse) =>
       item.completed || eventCompletedIds.includes(item.id),
     [eventCompletedIds]
   );
@@ -45,7 +42,7 @@ export default function ProjectDetailCard({
     [eventCompleteQueueIds]
   );
   const isVotedContent = useCallback(
-    (item: ProjectExploreListItemContentResponse) =>
+    (item: ContentListItem) =>
       item.upVoted || contentVotedIds.includes(item.id),
     [contentVotedIds]
   );

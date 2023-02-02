@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import { ContentListItem } from '../../services/types/contents';
-import { defaultFormatDate } from '../../utils/time';
+import { defaultFormatFromNow } from '../../utils/time';
 import Badge from './Badge';
 
 export default function ContentShower({
@@ -36,7 +36,7 @@ export default function ContentShower({
             <Badge text={type} />
             <span>{author}</span>
             <span>|</span>
-            <span>{defaultFormatDate(createdAt)}</span>
+            <span>{defaultFormatFromNow(createdAt)}</span>
           </div>
           <div />
         </div>

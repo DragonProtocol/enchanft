@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-30 17:00:50
+ * @LastEditTime: 2023-02-02 17:21:32
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { EventExploreListItemResponse } from '../../services/types/event';
 import { getChainInfo } from '../../utils/chain';
 import isUrl from '../../utils/isUrl';
-import { defaultFormatDate } from '../../utils/time';
+import { defaultFormatFromNow } from '../../utils/time';
 import RewardTag from './RewardTag';
 
 export type EventExploreGridListItemData = EventExploreListItemResponse;
@@ -47,7 +47,7 @@ export default function EventExploreGridListItem({
 
               {data?.endTime && (
                 <EventStartTime>
-                  {defaultFormatDate(data.endTime)}
+                  {defaultFormatFromNow(data.endTime)}
                 </EventStartTime>
               )}
             </BottomRow>

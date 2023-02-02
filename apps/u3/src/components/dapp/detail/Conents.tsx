@@ -2,17 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-18 17:12:51
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 11:47:16
+ * @LastEditTime: 2023-02-02 17:30:56
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { ProjectExploreListItemContentResponse } from '../../../services/types/project';
+import { ContentListItem } from '../../../services/types/contents';
 import GridItem from '../../contents/GridItem';
 import Card, { CardTitle } from './Card';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
-  data: ProjectExploreListItemContentResponse[];
-  onItemClick?: (data: ProjectExploreListItemContentResponse) => void;
+  data: ContentListItem[];
+  onItemClick?: (data: ContentListItem) => void;
 };
 export default function Conents({ data, onItemClick, ...otherProps }: Props) {
   return (
@@ -21,9 +21,9 @@ export default function Conents({ data, onItemClick, ...otherProps }: Props) {
       <ConentsList>
         {data.map((item) => (
           <GridItem
+            data={item}
             key={item.id}
             clickAction={() => onItemClick && onItemClick(item)}
-            {...item}
           />
         ))}
       </ConentsList>
