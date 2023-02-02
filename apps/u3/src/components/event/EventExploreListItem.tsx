@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-30 16:59:26
+ * @LastEditTime: 2023-02-02 17:24:26
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { Platform } from '../../services/types/common';
 import { EventExploreListItemResponse } from '../../services/types/event';
 import { getChainInfo } from '../../utils/chain';
-import { defaultFormatDate } from '../../utils/time';
+import { defaultFormatFromNow } from '../../utils/time';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import IconLike from '../common/icons/IconLike';
 import CompleteSvg from '../common/icons/svgs/check-circle.svg';
@@ -104,7 +104,9 @@ export default function EventExploreListItem({
           <CenterBox>
             <RewardTag value={data.reward} />
             {data?.endTime && (
-              <EventStartTime>{defaultFormatDate(data.endTime)}</EventStartTime>
+              <EventStartTime>
+                {defaultFormatFromNow(data.endTime)}
+              </EventStartTime>
             )}
             {/* {chainIconUrl && <ChainIcon src={chainIconUrl} />} */}
           </CenterBox>

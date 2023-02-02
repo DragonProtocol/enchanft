@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { MEDIA_BREAK_POINTS } from '../../constants';
-import { defaultFormatDate } from '../../utils/time';
+import { defaultFormatFromNow } from '../../utils/time';
 import LinkBox from './LinkBox';
 import Badge from './Badge';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
@@ -79,7 +79,7 @@ export default function GridItem({
         <h2>{title}</h2>
         <div className="row">
           <Badge text={type} />
-          <div className="date">{defaultFormatDate(createdAt)}</div>
+          <div className="date">{defaultFormatFromNow(createdAt)}</div>
         </div>
         <div className="row">
           <div>👏 &nbsp;{upVoteNum + (editorScore || 0)}</div>

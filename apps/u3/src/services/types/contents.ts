@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-12 18:42:59
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-13 17:27:41
+ * @LastEditTime: 2023-02-02 17:29:21
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -45,7 +45,7 @@ export type ContentListItem = {
   uid?: string;
   // action?: { linkUrl: string };
   imageUrl?: string;
-  uniProjects: Array<{
+  uniProjects?: Array<{
     description: string;
     favored: boolean;
     id: number;

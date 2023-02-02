@@ -4,7 +4,7 @@ import { Share } from '../icons/share';
 import { EyeClose } from '../icons/eyeClose';
 import { Heart } from '../icons/heart';
 import Badge from './Badge';
-import { defaultFormatDate } from '../../utils/time';
+import { defaultFormatFromNow } from '../../utils/time';
 import LinkBox from './LinkBox';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
@@ -84,7 +84,7 @@ export default function ListItem({
               <Badge text={type} />
               <LinkBox text={link} logo={platformLogo} />
             </div>
-            <span>{defaultFormatDate(createdAt)}</span>
+            <span>{defaultFormatFromNow(createdAt)}</span>
           </ContentItemTitle>
 
           {isActive && (
