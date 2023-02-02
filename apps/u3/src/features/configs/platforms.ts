@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-10 15:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-02 16:14:30
+ * @LastEditTime: 2023-02-02 16:49:22
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -31,12 +31,16 @@ export const fetchConfigsPlatforms = createAsyncThunk<Platforms, undefined>(
   'configs/platforms',
   async (params, { rejectWithValue, dispatch }) => {
     const resp = await getAllPlatform();
+    console.log({ resp });
     if (resp.data.code === ApiRespCode.SUCCESS) {
+      console.log({ platforms1: resp.data.data });
       const platforms = resp.data.data.map((item) => ({
         ...item,
         platform: item?.platform || getDomainNameByUrl(item.platformUrl),
         platformLogo: item?.platformLogo || '',
       }));
+      console.log({ platforms });
+
       // eslint-disable-next-line @typescript-eslint/await-thenable
       await dispatch(setAll(platforms));
       for (const item of platforms) {
