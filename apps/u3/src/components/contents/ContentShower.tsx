@@ -1,23 +1,17 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
+import { ContentListItem } from '../../services/types/contents';
 import { defaultFormatDate } from '../../utils/time';
 import Badge from './Badge';
 
 export default function ContentShower({
-  title,
-  type,
-  createdAt,
-  author,
+  data,
   content,
-  link,
 }: {
-  title: string;
-  link: string;
-  type: string;
-  author: string;
-  createdAt: number;
+  data: ContentListItem;
   content: string;
 }) {
+  const { title, type, createdAt, author, link } = data;
   const contentFix = useMemo(() => {
     if (!link) return content;
     const placeholder = document.createElement('div');

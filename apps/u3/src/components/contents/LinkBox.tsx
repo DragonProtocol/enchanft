@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:00:23
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-30 17:29:44
+ * @LastEditTime: 2023-02-02 14:56:46
  * @Description: file description
  */
 import { useEffect, useState } from 'react';
@@ -11,11 +11,13 @@ import { fetchPlatformImgUrlByLink } from '../../utils/platform';
 import LinkSvgUrl from '../common/icons/svgs/link.svg';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
+  logo?: string;
   text: string;
   displayOriginIcon?: boolean;
 };
 
 export default function LinkBox({
+  logo,
   text,
   displayOriginIcon = true,
   ...otherProps
@@ -23,6 +25,10 @@ export default function LinkBox({
   if (!text) return null;
   const [url, setUrl] = useState('');
   useEffect(() => {
+    if (logo) {
+      setUrl(logo);
+      return;
+    }
     fetchPlatformImgUrlByLink(text)
       .then((resp) => {
         setUrl(resp);
@@ -30,7 +36,7 @@ export default function LinkBox({
       .catch(() => {
         setUrl('');
       });
-  }, [text]);
+  }, [logo, text]);
   return (
     <Box {...otherProps}>
       <PlatformImg

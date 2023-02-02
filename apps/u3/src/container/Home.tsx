@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 16:09:17
+ * @LastEditTime: 2023-02-02 17:09:07
  * @Description: file description
  */
 
@@ -39,7 +39,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const { platforms, loading: platformsLoading } = useConfigsPlatforms();
   const showPlatforms = useMemo(
-    () => platforms.filter((item) => !!item.number),
+    () => platforms.filter((item) => !!item.number).slice(0, 16),
     [platforms]
   );
   const [trendingProjects, setTrendingProjects] = useState<

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 16:24:25
+ * @LastEditTime: 2023-02-02 17:07:54
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -15,6 +15,7 @@ import {
 } from '../../services/types/common';
 import ProjectImgDefault from '../project/ProjectImgDefault';
 import { formatFilterShowName } from '../../utils/filter';
+import EllipsisText from '../common/text/EllipsisText';
 
 export default function Platform({
   platforms,
@@ -31,7 +32,7 @@ export default function Platform({
         {platforms.map((item) => {
           return (
             <Card
-              key={item.platform}
+              key={item.platformUrl}
               {...item}
               clickAction={() => {
                 if (item.type === PlatformType.EVENT && item.platformUrl) {
@@ -84,10 +85,14 @@ function Card(props: PlatformsItemResponse & { clickAction: () => void }) {
     <CardWrapper>
       <CardBox onClick={clickAction}>
         <PlatformImg src={platformLogo} alt="" />
-        <h2>{formatFilterShowName(platform)}</h2>
+        <h2>
+          <EllipsisText>{formatFilterShowName(platform)}</EllipsisText>
+        </h2>
         <div>
-          {number} {type === PlatformType.EVENT && 'events'}{' '}
-          {type === PlatformType.CONTENT && 'contents'}
+          <EllipsisText>
+            {number} {type === PlatformType.EVENT && 'events'}{' '}
+            {type === PlatformType.CONTENT && 'contents'}
+          </EllipsisText>
         </div>
       </CardBox>
     </CardWrapper>
@@ -119,6 +124,7 @@ const CardBox = styled.div`
   transition: all 0.3s;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
   gap: 10px;
