@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { ContentListItem } from '../../services/types/contents';
+import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import { fetchPlatformImgUrlByLink } from '../../utils/platform';
 import CardBase from '../common/card/CardBase';
 import EllipsisText from '../common/text/EllipsisText';
 import Badge from '../contents/Badge';
-import { ContentListItem } from '../contents/ContentList';
 import LinkBox from '../contents/LinkBox';
 
 import Title from './Title';
@@ -50,7 +51,7 @@ const CardsLayout = styled(CardBase)`
   grid-auto-rows: auto;
 `;
 function Card({
-  data: { title, upVoteNum, editorScore, link, type, recReason },
+  data: { title, upVoteNum, editorScore, link, type, recReason, value },
   clickAction,
 }: {
   data: {
@@ -60,11 +61,20 @@ function Card({
     link: string;
     type: string;
     recReason?: string;
+    value?: string;
   };
   clickAction: () => void;
 }) {
+  const platformLogo = useMemo(
+    () => getContentPlatformLogoWithJsonValue(value),
+    [value]
+  );
   const [url, setUrl] = useState('');
   useEffect(() => {
+    if (platformLogo) {
+      setUrl(platformLogo);
+      return;
+    }
     fetchPlatformImgUrlByLink(link)
       .then((resp) => {
         setUrl(resp);
@@ -72,7 +82,7 @@ function Card({
       .catch(() => {
         setUrl('');
       });
-  }, [link]);
+  }, [platformLogo, link]);
   return (
     <CardWrapper className="card-wraper">
       <CardBody onClick={clickAction} className="card-body">

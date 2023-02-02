@@ -123,7 +123,7 @@ export default function ContentShowerBox({
           if (contentValue || daylightContent) {
             return (
               <ContentShower
-                {...selectContent}
+                data={selectContent}
                 content={daylightContent || contentValue}
               />
             );

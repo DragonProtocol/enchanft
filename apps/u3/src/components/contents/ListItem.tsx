@@ -7,44 +7,41 @@ import Badge from './Badge';
 import { defaultFormatDate } from '../../utils/time';
 import LinkBox from './LinkBox';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
+import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
+import { ContentListItem } from '../../services/types/contents';
 
 export default function ListItem({
+  data,
   isActive,
   clickAction,
-  type,
-  id,
-  link,
-  createdAt,
-  title,
-  upVoteNum,
   voteAction,
   favorsAction,
-  favored,
-  upVoted,
-  hidden,
   hiddenAction,
   shareAction,
-  editorScore,
   favorPendingIds,
 }: {
-  upVoteNum: number;
-  id: number;
-  title: string;
-  type: string;
-  link: string;
-  createdAt: number;
+  data: ContentListItem;
   isActive: boolean;
-  hidden?: boolean;
   clickAction: () => void;
   voteAction?: () => void;
-  upVoted?: boolean;
   favorsAction?: () => void;
-  favored?: boolean;
   hiddenAction?: () => void;
   shareAction?: () => void;
-  editorScore?: number;
   favorPendingIds?: (string | number)[];
 }) {
+  const {
+    value,
+    type,
+    id,
+    link,
+    createdAt,
+    title,
+    upVoteNum,
+    favored,
+    upVoted,
+    hidden,
+    editorScore,
+  } = data;
   const itemRef = useRef<HTMLDivElement>();
   const [height, setHeight] = useState('fit-content');
   const [classNames, setClassNames] = useState('');
@@ -62,6 +59,10 @@ export default function ListItem({
       setClassNames('');
     }
   }, [hidden, isActive]);
+  const platformLogo = useMemo(
+    () => getContentPlatformLogoWithJsonValue(value),
+    [value]
+  );
 
   return (
     <ContentItem ref={itemRef} className={classNames} onClick={clickAction}>
@@ -81,7 +82,7 @@ export default function ListItem({
           <ContentItemTitle>
             <div>
               <Badge text={type} />
-              <LinkBox text={link} />
+              <LinkBox text={link} logo={platformLogo} />
             </div>
             <span>{defaultFormatDate(createdAt)}</span>
           </ContentItemTitle>

@@ -4,6 +4,8 @@ import { MEDIA_BREAK_POINTS } from '../../constants';
 import { defaultFormatDate } from '../../utils/time';
 import LinkBox from './LinkBox';
 import Badge from './Badge';
+import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
+import { ContentListItem } from '../../services/types/contents';
 
 export function GridItemHidden({
   undoAction,
@@ -55,22 +57,14 @@ export function GridItemHidden({
 }
 
 export default function GridItem({
-  type,
-  link,
-  createdAt,
-  title,
-  upVoteNum,
-  editorScore,
+  data,
   clickAction,
 }: {
-  upVoteNum: number;
-  title: string;
-  type: string;
-  link: string;
-  createdAt: number;
+  data: ContentListItem;
   clickAction?: () => void;
-  editorScore?: number;
 }) {
+  const { type, link, createdAt, title, upVoteNum, editorScore, value } = data;
+  const platformLogo = getContentPlatformLogoWithJsonValue(value);
   return (
     <Box
       onClick={() => {
@@ -79,7 +73,7 @@ export default function GridItem({
     >
       <div className="content">
         <div className="link">
-          <LinkBox text={link} />
+          <LinkBox text={link} logo={platformLogo} />
         </div>
 
         <h2>{title}</h2>

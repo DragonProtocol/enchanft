@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 16:24:25
+ * @LastEditTime: 2023-02-02 16:05:52
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -31,7 +31,7 @@ export default function Platform({
         {platforms.map((item) => {
           return (
             <Card
-              key={item.platform}
+              key={item.platformUrl}
               {...item}
               clickAction={() => {
                 if (item.type === PlatformType.EVENT && item.platformUrl) {
