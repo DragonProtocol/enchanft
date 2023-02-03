@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 18:55:10
+ * @LastEditTime: 2023-02-03 16:52:41
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -73,8 +73,8 @@ function Contents() {
   const currentSearchParams = useMemo(
     () => ({
       orderBy: currentUrlQuery.orderBy,
-      types: currentUrlQuery.types.split(','),
-      lang: currentUrlQuery.lang.split(','),
+      types: currentUrlQuery.types.split(',').filter((item) => !!item),
+      lang: currentUrlQuery.lang.split(',').filter((item) => !!item),
       keywords: currentUrlQuery.keywords,
     }),
     [currentUrlQuery]
