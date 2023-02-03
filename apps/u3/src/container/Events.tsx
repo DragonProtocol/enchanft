@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-30 18:34:43
+ * @LastEditTime: 2023-02-03 16:50:28
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -215,50 +215,49 @@ export default function Events() {
       />
 
       <MainBox>
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <>
-            {layout === Layout.LIST && (
+        {(() => {
+          if (isLoading) return <Loading />;
+          if (isEmpty)
+            return (
               <MainBody>
-                {!isEmpty ? (
-                  <>
-                    <ListBox onScrollBottom={getMore}>
-                      <EventExploreList
-                        data={eventExploreList}
-                        activeId={event?.id || 0}
-                        favoredIds={favoredIds}
-                        favorQueueIds={favorQueueIds}
-                        completedIds={completedIds}
-                        completeQueueIds={completeQueueIds}
-                        onComplete={onComplete}
-                        onFavor={onFavor}
-                        onShare={onShare}
-                        onItemClick={(item) => setActiveId(item.id)}
-                      />
-
-                      {renderMoreLoading}
-                    </ListBox>
-                    <ContentBox>
-                      {event ? (
-                        <EventPreview
-                          data={event}
-                          showAdminOps={!event.isForU && isAdmin}
-                          onAdminThumbUp={() => onAdminThumbUp(event)}
-                          onAdminDelete={() => onAdminDelete(event)}
-                          onAdminEdit={() =>
-                            navigate(`/events/${event.id}/edit`)
-                          }
-                        />
-                      ) : null}
-                    </ContentBox>
-                  </>
-                ) : (
-                  <NoResult />
-                )}
+                <NoResult />
               </MainBody>
-            )}
-            {layout === Layout.GRID && (
+            );
+          if (layout === Layout.LIST) {
+            return (
+              <MainBody>
+                <ListBox onScrollBottom={getMore}>
+                  <EventExploreList
+                    data={eventExploreList}
+                    activeId={event?.id || 0}
+                    favoredIds={favoredIds}
+                    favorQueueIds={favorQueueIds}
+                    completedIds={completedIds}
+                    completeQueueIds={completeQueueIds}
+                    onComplete={onComplete}
+                    onFavor={onFavor}
+                    onShare={onShare}
+                    onItemClick={(item) => setActiveId(item.id)}
+                  />
+
+                  {renderMoreLoading}
+                </ListBox>
+                <ContentBox>
+                  {event ? (
+                    <EventPreview
+                      data={event}
+                      showAdminOps={!event.isForU && isAdmin}
+                      onAdminThumbUp={() => onAdminThumbUp(event)}
+                      onAdminDelete={() => onAdminDelete(event)}
+                      onAdminEdit={() => navigate(`/events/${event.id}/edit`)}
+                    />
+                  ) : null}
+                </ContentBox>
+              </MainBody>
+            );
+          }
+          if (layout === Layout.GRID) {
+            return (
               <GrideListBox onScrollBottom={getMore}>
                 <EventExploreGridList
                   data={eventExploreList}
@@ -300,9 +299,10 @@ export default function Events() {
                   onAdminEdit={() => navigate(`/events/${event?.id}/edit`)}
                 />
               </GrideListBox>
-            )}
-          </>
-        )}
+            );
+          }
+          return null;
+        })()}
       </MainBox>
     </EventsWrapper>
   );
