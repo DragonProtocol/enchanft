@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-30 18:30:14
+ * @LastEditTime: 2023-02-01 18:55:10
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -42,6 +42,7 @@ import ContentGridList from '../components/contents/ContentGridList';
 import useAdminContentHandles from '../hooks/useAdminContentHandles';
 import ContentPreview from '../components/contents/ContentPreview';
 import { ButtonPrimaryLine } from '../components/common/button/ButtonBase';
+import { messages } from '../utils/message';
 
 const NEWEST_CONTENT_ID_KEY = 'NEWEST_CONTENT_ID';
 function getNewestContentIdForStore(): number {
@@ -174,7 +175,7 @@ function Contents() {
           setHasNewest(false);
         }
       } catch (error) {
-        toast.error(error.message);
+        toast.error(error.message || messages.common.error);
       } finally {
         setLoading(false);
       }
@@ -197,7 +198,7 @@ function Contents() {
       setContents([...contents, ...data.data]);
       setCurrPageNumber(pageNumber);
     } catch (error) {
-      toast.error(error.message);
+      toast.error(error.message || messages.common.error);
       setHasMore(false);
     } finally {
       setLoadingMore(false);

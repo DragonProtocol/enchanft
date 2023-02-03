@@ -2,30 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-08 14:04:04
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-20 16:41:18
+ * @LastEditTime: 2023-02-02 15:24:04
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { ContentListItem } from '../../services/types/contents';
 import AnimatedListItem, {
   useAnimatedListTransition,
 } from '../animation/AnimatedListItem';
 import ListItem, { ListItemHidden } from './ListItem';
 
-export type ContentListItem = {
-  id: number;
-  upVoteNum: number;
-  title: string;
-  type: string;
-  author: string;
-  link: string;
-  createdAt: number;
-  favored?: boolean;
-  upVoted?: boolean;
-  hidden?: boolean;
-  uuid?: string;
-  editorScore?: number;
-};
 export type ContentListProps = {
   data: ContentListItem[];
   activeId: string | number;
@@ -99,17 +86,8 @@ export default function ContentList({
               />
             ) : (
               <ListItem
-                type={item.type}
-                id={item.id}
-                link={item.link}
-                createdAt={item.createdAt}
-                title={item.title}
-                upVoteNum={item.upVoteNum}
+                data={item}
                 isActive={item.id === activeId}
-                upVoted={item.upVoted}
-                hidden={item.hidden}
-                editorScore={item.editorScore}
-                favored={isFavored(item)}
                 favorPendingIds={loadingFavorIds}
                 clickAction={() => onItemClick && onItemClick(item)}
                 voteAction={() => onVote && onVote(item)}

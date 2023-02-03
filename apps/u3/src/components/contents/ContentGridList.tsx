@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-30 17:17:23
+ * @LastEditTime: 2023-02-02 15:29:50
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -10,8 +10,8 @@ import AnimatedListItem, {
   useAnimatedListTransition,
 } from '../animation/AnimatedListItem';
 import { MEDIA_BREAK_POINTS } from '../../constants';
-import { ContentListItem } from './ContentList';
 import GridItem, { GridItemHidden } from './GridItem';
+import { ContentListItem } from '../../services/types/contents';
 
 export type ContentGridListProps = {
   data: ContentListItem[];
@@ -46,8 +46,8 @@ export default function ContentGridList({
               />
             ) : (
               <GridItem
+                data={item}
                 clickAction={() => onItemClick && onItemClick(item)}
-                {...{ isActive, ...item }}
               />
             )}
           </AnimatedListItem>

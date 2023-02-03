@@ -10,12 +10,7 @@ import {
   useState,
 } from 'react';
 import dayjs from 'dayjs';
-import { toast } from 'react-toastify';
-import { login, useWlUserReact } from '@ecnft/wl-user-react';
 import { CreateEventData } from '../../services/types/event';
-import UploadImgMaskImg from '../imgs/upload_img_mask.svg';
-import { uploadImage } from '../../services/api/upload';
-import { EVENT_IMAGE_SIZE_LIMIT } from '../../constants';
 import { MainWrapper } from '../layout/Index';
 import CardBase from '../common/card/CardBase';
 import InputBase from '../common/input/InputBase';
@@ -32,6 +27,7 @@ import {
 } from '../../utils/event';
 import useConfigsTopics from '../../hooks/useConfigsTopics';
 import useConfigsPlatforms from '../../hooks/useConfigsPlatforms';
+import UploadImage from '../common/upload/UploadImage';
 
 type Props = {
   initialValues: CreateEventData;
@@ -399,82 +395,4 @@ const EventPreviewBox = styled(CardBase)`
   height: 100%;
   flex: 1;
   padding: 0;
-`;
-function UploadImage({
-  url,
-  onSuccess,
-}: {
-  url: string;
-  onSuccess: (url: string) => void;
-}) {
-  const [loading, setLoading] = useState(false);
-  const { user } = useWlUserReact();
-  return (
-    <UploadImageWrapper
-      onClick={() => {
-        document.getElementById('uploadInput')?.click();
-      }}
-    >
-      <input
-        title="uploadInput"
-        id="uploadInput"
-        style={{ display: 'none' }}
-        type="file"
-        accept="image/png, image/gif, image/jpeg"
-        onChange={(e) => {
-          const file = e.target.files && e.target.files[0];
-          if (!file) return;
-          if (file.size > EVENT_IMAGE_SIZE_LIMIT) {
-            toast.error(
-              `File Too Large, ${EVENT_IMAGE_SIZE_LIMIT / 1024}k limit`
-            );
-            return;
-          }
-          setLoading(true);
-          uploadImage(file, user.token)
-            .then((result) => {
-              onSuccess(result.data.url);
-              toast.success('upload success');
-            })
-            .catch((error) => toast.error(error.message))
-            .finally(() => setLoading(false));
-        }}
-      />
-
-      {(loading && <div className="uploading">Uploading ...</div>) ||
-        (url && <UploadImagePreview src={url} />)}
-    </UploadImageWrapper>
-  );
-}
-
-const UploadImageWrapper = styled(CardBase)`
-  width: 160px;
-  height: 160px;
-  padding: 0;
-  position: relative;
-  &:hover {
-    cursor: pointer;
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url(${UploadImgMaskImg});
-    }
-  }
-  & .uploading {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #4e5a6e;
-  }
-`;
-const UploadImagePreview = styled.img`
-  width: 160px;
-  height: 160px;
-  object-fit: cover;
 `;

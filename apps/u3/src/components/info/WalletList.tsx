@@ -9,6 +9,7 @@ import { Copy2 } from '../icons/copy';
 import { Trash } from '../icons/trash';
 import { Wallet } from '../icons/wallet';
 import { ProfileWallet } from '../../services/types/profile';
+import { messages } from '../../utils/message';
 
 export default function WalletList({
   wallets,
@@ -81,7 +82,7 @@ export default function WalletList({
                     onClick={() => {
                       navigator.clipboard.writeText(wallet).then(
                         () => {
-                          toast.success('copied');
+                          toast.success(messages.common.copy);
                         },
                         (err) => {
                           console.error('Async: Could not copy text: ', err);

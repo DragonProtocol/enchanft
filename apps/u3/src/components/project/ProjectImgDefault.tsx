@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-27 17:29:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-28 11:09:31
+ * @LastEditTime: 2023-02-02 17:07:47
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -10,6 +10,7 @@ import styled, { StyledComponentPropsWithRef } from 'styled-components';
 const ProjectImgDefaultWrapper = styled.img`
   overflow: hidden;
   position: relative;
+  object-fit: cover;
   &:before {
     content: ' ';
     display: block;
