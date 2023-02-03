@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 13:59:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 10:51:35
+ * @LastEditTime: 2023-02-03 16:35:24
  * @Description: file description
  */
 import React, { ReactNode } from 'react';
@@ -30,12 +30,12 @@ export const navs: CutomNavObject[] = [
     icon: React.createElement(HomeSvg),
     route: getRoute(RouteKey.home),
   },
-  {
-    name: 'profile',
-    activeRouteKeys: [RouteKey.profile],
-    icon: React.createElement(ProfileSvg),
-    route: getRoute(RouteKey.profile),
-  },
+  // {
+  //   name: 'profile',
+  //   activeRouteKeys: [RouteKey.profile],
+  //   icon: React.createElement(ProfileSvg),
+  //   route: getRoute(RouteKey.profile),
+  // },
   {
     key: 'feed',
     name: 'Feed',

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-16 14:18:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-16 15:22:36
+ * @LastEditTime: 2023-02-03 16:54:47
  * @Description: file description
  */
 import Select, { SelectOption } from '../common/select/Select';
@@ -20,7 +20,7 @@ const orderByOptions: Array<SelectOption> = [
   },
   {
     value: OrderBy.NEWEST,
-    label: 'Newest',
+    label: 'Mempool',
   },
 ];
 export const defaultContentOrderBy = orderByOptions[0].value;
