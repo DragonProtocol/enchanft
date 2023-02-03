@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-01-28 15:55:52
  * @Description: file description
  */
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { useInView } from 'react-intersection-observer';
 
@@ -22,16 +22,24 @@ function ListScrollBox({
     threshold: 0,
   });
   const prevScrollTop = useRef(0);
+  const [scrollDown, setScrollDown] = useState(false);
+  useEffect(() => {
+    if (scrollDown && inView && onScrollBottom) {
+      onScrollBottom();
+      setScrollDown(false);
+    }
+  }, [inView, scrollDown, onScrollBottom]);
   return (
     <ListScrollBoxWrapper
       {...divProps}
       onScroll={(event) => {
         const currentScrollTop = event.currentTarget.scrollTop;
-        // 向下滚动时再判断是否滚动到底部
         if (currentScrollTop > prevScrollTop.current) {
-          if (inView && onScrollBottom) {
-            onScrollBottom();
-          }
+          // 滚轮向下滚动
+          setScrollDown(true);
+        } else {
+          // 滚轮向上滚动
+          setScrollDown(false);
         }
         prevScrollTop.current = currentScrollTop;
       }}
