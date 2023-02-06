@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-06 18:10:01
+ * @LastEditTime: 2023-02-02 17:24:44
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { Reward } from '../../services/types/common';
-import { defaultFormatDate } from '../../utils/time';
+import { defaultFormatFromNow } from '../../utils/time';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import CardBase from '../common/card/CardBase';
 import CompleteSvg from '../common/icons/svgs/check-circle.svg';
@@ -60,7 +60,7 @@ export default function EventLinkCard({
           </LayoutCenterRow>
           <LayoutCenterRow>
             <RewardTag value={data.reward} />
-            <LayoutText>{defaultFormatDate(data.startTime)}</LayoutText>
+            <LayoutText>{defaultFormatFromNow(data.startTime)}</LayoutText>
           </LayoutCenterRow>
         </LayoutCenter>
         {displayComplete && (

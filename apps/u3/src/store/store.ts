@@ -20,6 +20,8 @@ import userGroupFavorites from '../features/favorite/userGroupFavorites';
 import configsTopics from '../features/configs/topics';
 import configsPlatforms from '../features/configs/platforms';
 
+import karma from '../features/profile/karma';
+
 export const store = configureStore({
   reducer: {
     website: websiteReducer,
@@ -33,6 +35,7 @@ export const store = configureStore({
     frensHandles,
     configsTopics,
     configsPlatforms,
+    karma,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

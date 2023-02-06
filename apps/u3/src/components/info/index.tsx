@@ -7,7 +7,7 @@ import {
   WlUserModalType,
 } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { sortPubKey } from '../../utils/solana';
 import { Copy } from '../icons/copy';
 
@@ -19,6 +19,17 @@ import WalletList from './WalletList';
 import AddWalletModal from './AddWalletModal';
 import { ProfileWallet } from '../../services/types/profile';
 import { defaultFormatDate } from '../../utils/time';
+import Karma from '../common/Karma';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+
+import { selectKarmaState } from '../../features/profile/karma';
+import KarmaModal from './KarmaModal';
+import { messages } from '../../utils/message';
+import {
+  selectFrensHandlesState,
+  getFollower,
+  getFollowing,
+} from '../../features/frens/frensHandles';
 
 export default function Info({
   walletAddr,
@@ -34,10 +45,22 @@ export default function Info({
   addWallet: (addr: string) => Promise<boolean>;
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showKarmaModal, setShowKarmaModal] = useState(false);
   const { dispatchModal, user, authorizer, getBindAccount } = useWlUserReact();
+  const { totalScore } = useAppSelector(selectKarmaState);
+
   const nameStr = getUserDisplayName(user, authorizer);
   const twitterAccount = getBindAccount(AccountType.TWITTER);
   const discordAccount = getBindAccount(AccountType.DISCORD);
+
+  const dispatch = useAppDispatch();
+  const { following, follower } = useAppSelector(selectFrensHandlesState);
+
+  useEffect(() => {
+    dispatch(getFollowing({ reset: true }));
+    dispatch(getFollower({ reset: true }));
+  }, []);
+
   return (
     <InfoBox>
       <div className="user-info">
@@ -54,7 +77,15 @@ export default function Info({
 
         <div className="info">
           <div className="nickname">
-            <span className="name">{nameStr}</span>
+            <div>
+              <span className="name">{nameStr}</span>
+              <Karma
+                score={`${totalScore || ''}`}
+                clickAction={() => {
+                  setShowKarmaModal(true);
+                }}
+              />
+            </div>
             <div className="wallet">
               <WalletList
                 currAddr={walletAddr}
@@ -79,7 +110,7 @@ export default function Info({
               onClick={() => {
                 navigator.clipboard.writeText(walletAddr).then(
                   () => {
-                    toast.success('copied');
+                    toast.success(messages.common.copy);
                   },
                   (err) => {
                     console.error('Async: Could not copy text: ', err);
@@ -92,12 +123,12 @@ export default function Info({
           </div>
           <div className="attach">
             <div>
-              {/* <span>
-                <span className="num">90</span>Following
+              <span>
+                <span className="num">{following?.total || 0}</span>Following
               </span>
               <span>
-                <span className="num">90</span>Follower
-              </span> */}
+                <span className="num">{follower?.total || 0}</span>Follower
+              </span>
               <span>|</span>
               <span>{defaultFormatDate(date || Date.now())}</span>
             </div>
@@ -137,6 +168,12 @@ export default function Info({
             setShowAddModal(false);
           }
           return r;
+        }}
+      />
+      <KarmaModal
+        show={showKarmaModal}
+        closeAction={() => {
+          setShowKarmaModal(false);
         }}
       />
     </InfoBox>
@@ -193,6 +230,14 @@ const InfoBox = styled.div`
       & .nickname {
         display: flex;
         justify-content: space-between;
+        & > div {
+          &:first-child {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+          }
+        }
+
         & .name {
           font-size: 25px;
           font-weight: 700;

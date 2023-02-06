@@ -22,6 +22,13 @@ import useLogin from '../../hooks/useLogin';
 import NoLogin from './NoLogin';
 import usePreference from '../../hooks/usePreference';
 import OnboardModal from '../onboard/OnboardModal';
+import {
+  fetchUserKarma,
+  selectKarmaState,
+  checkIn,
+} from '../../features/profile/karma';
+import { Atom02 } from '../icons/atom';
+import { store } from '../../store/store';
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -49,6 +56,11 @@ function Main() {
   const { preference, postPreference, preferenceList } = usePreference(
     user.token
   );
+
+  useEffect(() => {
+    if (!user.token) return;
+    dispatch(fetchUserKarma({ token: user.token }));
+  }, [user.token]);
 
   const renderElement = useCallback(
     ({ element, permissions }: CutomRouteObject) => {
@@ -78,9 +90,10 @@ function Main() {
     element: renderElement(item),
   }));
   const renderRoutes = useRoutes(routesMap);
+  const { checked } = useAppSelector(selectKarmaState);
 
   return (
-    <MainWrapper>
+    <MainWrapper id="main-wrapper">
       {renderRoutes}
       <EventCompleteGuideModal
         isOpen={openEventCompleteGuideModal}
@@ -93,6 +106,19 @@ function Main() {
           postPreference(data);
         }}
       />
+      {!checked && (
+        <KarmaGMBox>
+          <KarmaGM
+            onClick={() => {
+              if (!user.token) return;
+              store.dispatch(checkIn({ token: user.token }));
+            }}
+          >
+            <Atom02 />
+            GM
+          </KarmaGM>
+        </KarmaGMBox>
+      )}
     </MainWrapper>
   );
 }
@@ -100,6 +126,7 @@ export default Main;
 const MainWrapper = styled.div`
   width: 100%;
   height: 100%;
+  position: relative;
 `;
 const NoPermission = styled.div`
   width: 100%;
@@ -109,4 +136,31 @@ const NoPermission = styled.div`
   align-items: center;
   font-size: 30px;
   color: #ffffff;
+`;
+
+const KarmaGMBox = styled.div`
+  position: absolute;
+  right: 130px;
+`;
+
+const KarmaGM = styled.div`
+  position: fixed;
+  transition: all 0.3s ease-out;
+  bottom: 24px;
+  color: #fff;
+  padding: 4px 8px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 106px;
+  height: 48px;
+  background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+  border-radius: 10px;
+
+  font-size: 24px;
+  line-height: 28px;
+
+  cursor: pointer;
 `;

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-03 16:10:28
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-10 16:22:24
+ * @LastEditTime: 2023-01-17 16:02:01
  * @Description: file description
  */
 import { ReactNode, useEffect, useRef } from 'react';
@@ -14,16 +14,12 @@ import Tab from '../common/tab/Tab';
 
 const FeedsSwitchOptions = [
   {
-    label: 'Events',
-    value: RouteKey.events,
-  },
-  {
     label: 'Contents',
     value: RouteKey.contents,
   },
   {
-    label: 'Projects',
-    value: RouteKey.projects,
+    label: 'Events',
+    value: RouteKey.events,
   },
   {
     label: 'Frens',

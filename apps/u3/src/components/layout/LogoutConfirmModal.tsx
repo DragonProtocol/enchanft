@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-04 10:17:44
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-04 16:46:32
+ * @LastEditTime: 2023-02-02 14:12:50
  * @Description: file description
  */
 import Modal from 'react-modal';
@@ -45,6 +45,8 @@ export default function LogoutConfirmModal({
 }
 
 const ModalBody = styled(ModalBaseBody)`
+  margin-top: 50vh;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   gap: 20px;

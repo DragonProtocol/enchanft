@@ -10,13 +10,7 @@ import {
   useState,
 } from 'react';
 import dayjs from 'dayjs';
-import { toast } from 'react-toastify';
-import { login, useWlUserReact } from '@ecnft/wl-user-react';
-import { ChainType, Platform, Reward } from '../../services/types/common';
 import { CreateEventData } from '../../services/types/event';
-import UploadImgMaskImg from '../imgs/upload_img_mask.svg';
-import { uploadImage } from '../../services/api/upload';
-import { EVENT_IMAGE_SIZE_LIMIT } from '../../constants';
 import { MainWrapper } from '../layout/Index';
 import CardBase from '../common/card/CardBase';
 import InputBase from '../common/input/InputBase';
@@ -27,59 +21,14 @@ import RefreshSvg from '../common/icons/svgs/refresh.svg';
 import TimePicker from '../common/time/TimePicker';
 import EventLinkPreview from './EventLinkPreview';
 import ProjectAsyncSelect from '../business/form/ProjectAsyncSelect';
-import PlatformSelect from '../business/form/PlatformSelect';
 import {
   EVENT_ADMIN_PLUS_SCORE_STEP,
   NO_ENDTIME_TIMESTRAMP,
 } from '../../utils/event';
 import useConfigsTopics from '../../hooks/useConfigsTopics';
+import useConfigsPlatforms from '../../hooks/useConfigsPlatforms';
+import UploadImage from '../common/upload/UploadImage';
 
-const rewardOptions: Array<{
-  value: Reward;
-  label: string;
-}> = [
-  {
-    value: Reward.BADGE,
-    label: 'Badge',
-  },
-  {
-    value: Reward.NFT,
-    label: 'NFT',
-  },
-  {
-    value: Reward.TOKEN,
-    label: 'Token',
-  },
-  {
-    value: Reward.WL,
-    label: 'WL',
-  },
-];
-const chainOptions: Array<{
-  value: ChainType;
-  label: string;
-}> = [
-  {
-    value: ChainType.EVM,
-    label: 'Ethereum',
-  },
-  {
-    value: ChainType.SOLANA,
-    label: 'Solana',
-  },
-  {
-    value: ChainType.BSC,
-    label: 'Bsc',
-  },
-  {
-    value: ChainType.MATIC,
-    label: 'Polygon',
-  },
-  {
-    value: ChainType.APTOS,
-    label: 'Aptos',
-  },
-];
 type Props = {
   initialValues: CreateEventData;
   loading?: boolean;
@@ -93,6 +42,7 @@ export default forwardRef(function EventForm(
     !initialValues.endTime || initialValues.endTime === NO_ENDTIME_TIMESTRAMP
   );
   const { topics } = useConfigsTopics();
+  const { eventPlatforms } = useConfigsPlatforms();
   const typesOptions = useMemo(
     () =>
       topics.eventTypes.map((item) => ({
@@ -101,6 +51,32 @@ export default forwardRef(function EventForm(
       })),
     [topics]
   );
+  const rewardOptions = useMemo(
+    () =>
+      topics.eventRewards.map((item) => ({
+        value: item.value,
+        label: item.name,
+      })),
+    [topics]
+  );
+  const chainOptions = useMemo(
+    () =>
+      topics.chains.map((item) => ({
+        value: item.chainEnum,
+        label: item.name,
+      })),
+    [topics]
+  );
+  const platformOptions = useMemo(
+    () =>
+      eventPlatforms.map((item) => ({
+        value: item.platform,
+        label: item.platform,
+        iconUrl: item.platformLogo,
+      })),
+    [eventPlatforms]
+  );
+
   const handleSubmit = useCallback(
     (form: CreateEventData) => {
       const data = {
@@ -256,8 +232,9 @@ export default forwardRef(function EventForm(
 
         <FormField>
           <FormLabel htmlFor="platform">Platform</FormLabel>
-          <PlatformSelect
+          <Select
             placeholder="Filter by Platform"
+            options={platformOptions}
             onChange={(value) => formik.setFieldValue('platform', value)}
             onSelectOption={(option) => setSelectPlatformLogo(option.iconUrl)}
             value={formik.values.platform}
@@ -418,82 +395,4 @@ const EventPreviewBox = styled(CardBase)`
   height: 100%;
   flex: 1;
   padding: 0;
-`;
-function UploadImage({
-  url,
-  onSuccess,
-}: {
-  url: string;
-  onSuccess: (url: string) => void;
-}) {
-  const [loading, setLoading] = useState(false);
-  const { user } = useWlUserReact();
-  return (
-    <UploadImageWrapper
-      onClick={() => {
-        document.getElementById('uploadInput')?.click();
-      }}
-    >
-      <input
-        title="uploadInput"
-        id="uploadInput"
-        style={{ display: 'none' }}
-        type="file"
-        accept="image/png, image/gif, image/jpeg"
-        onChange={(e) => {
-          const file = e.target.files && e.target.files[0];
-          if (!file) return;
-          if (file.size > EVENT_IMAGE_SIZE_LIMIT) {
-            toast.error(
-              `File Too Large, ${EVENT_IMAGE_SIZE_LIMIT / 1024}k limit`
-            );
-            return;
-          }
-          setLoading(true);
-          uploadImage(file, user.token)
-            .then((result) => {
-              onSuccess(result.data.url);
-              toast.success('upload success');
-            })
-            .catch((error) => toast.error(error.message))
-            .finally(() => setLoading(false));
-        }}
-      />
-
-      {(loading && <div className="uploading">Uploading ...</div>) ||
-        (url && <UploadImagePreview src={url} />)}
-    </UploadImageWrapper>
-  );
-}
-
-const UploadImageWrapper = styled(CardBase)`
-  width: 160px;
-  height: 160px;
-  padding: 0;
-  position: relative;
-  &:hover {
-    cursor: pointer;
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: url(${UploadImgMaskImg});
-    }
-  }
-  & .uploading {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #4e5a6e;
-  }
-`;
-const UploadImagePreview = styled.img`
-  width: 160px;
-  height: 160px;
-  object-fit: cover;
 `;

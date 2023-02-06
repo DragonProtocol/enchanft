@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-04 14:55:00
+ * @LastEditTime: 2023-02-02 17:09:07
  * @Description: file description
  */
 
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../components/common/loading/Loading';
@@ -19,6 +19,7 @@ import RecommendEvents from '../components/home/RecommendEvents';
 import TrendingEvents from '../components/home/TrendingEvents';
 import { MainWrapper } from '../components/layout/Index';
 import { selectWebsite } from '../features/website/websiteSlice';
+import useConfigsPlatforms from '../hooks/useConfigsPlatforms';
 import {
   getPlatforms,
   getTrendingProjects,
@@ -36,7 +37,11 @@ function Home() {
   const navigate = useNavigate();
   const [showOnBoard, setShowOnBoard] = useState(true);
   const [loading, setLoading] = useState(true);
-  const [platforms, setPlatforms] = useState<Array<PlatformData>>([]);
+  const { platforms, loading: platformsLoading } = useConfigsPlatforms();
+  const showPlatforms = useMemo(
+    () => platforms.filter((item) => !!item.number).slice(0, 16),
+    [platforms]
+  );
   const [trendingProjects, setTrendingProjects] = useState<
     Array<ProjectExploreListItemResponse>
   >([]);
@@ -51,25 +56,22 @@ function Home() {
   }, []);
   const loadContents = useCallback(async () => {
     const { data } = await getTrendingContents();
-    setContents(data.data);
+    // 按总体分值排序
+    const sortData = [...(data?.data || [])].sort((a, b) => {
+      const aScore = Number(a?.upVoteNum) + Number(a?.editorScore);
+      const bScore = Number(b?.upVoteNum) + Number(b?.editorScore);
+      return bScore - aScore;
+    });
+    setContents(sortData);
   }, []);
   const loadEvents = useCallback(async () => {
     const { data } = await getTrendingEvents();
     setEvents(data.data);
   }, []);
-  const loadPlatforms = useCallback(async () => {
-    const { data } = await getPlatforms();
-    setPlatforms(data.data);
-  }, []);
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([
-      loadPlatforms(),
-      loadEvents(),
-      loadContents(),
-      loadProjects(),
-    ]).finally(() => {
+    Promise.all([loadEvents(), loadContents(), loadProjects()]).finally(() => {
       setLoading(false);
     });
   }, []);
@@ -83,12 +85,6 @@ function Home() {
         </div>
       )) || (
         <>
-          <RecommendEvents
-            data={recommendEvents}
-            viewAllAction={() => {
-              navigate('/events');
-            }}
-          />
           <div className="row-2">
             <div className="left">
               <RecommendContent
@@ -102,19 +98,25 @@ function Home() {
               <DiscoverProj
                 data={trendingProjects}
                 viewAllAction={() => {
-                  navigate('/projects');
+                  navigate('/dapps');
                 }}
               />
             </div>
           </div>
-          <Platform
-            platforms={platforms}
+          <RecommendEvents
+            data={recommendEvents}
             viewAllAction={() => {
               navigate('/events');
             }}
           />
-          <TrendingEvents
+          {/* <TrendingEvents
             data={trendingEvents}
+            viewAllAction={() => {
+              navigate('/events');
+            }}
+          /> */}
+          <Platform
+            platforms={showPlatforms}
             viewAllAction={() => {
               navigate('/events');
             }}
@@ -142,7 +144,7 @@ const HomeWrapper = styled(MainWrapper)`
     display: flex;
     gap: 20px;
     .left {
-      flex: 2;
+      flex: 3;
     }
     .right {
       flex: 1;

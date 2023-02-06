@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 13:59:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 17:30:20
+ * @LastEditTime: 2023-02-03 16:35:24
  * @Description: file description
  */
 import React, { ReactNode } from 'react';
@@ -11,6 +11,7 @@ import { ReactComponent as ProfileSvg } from '../components/common/icons/svgs/pr
 import { ReactComponent as FeedSvg } from '../components/common/icons/svgs/feed.svg';
 import { ReactComponent as LikeSvg } from '../components/common/icons/svgs/like.svg';
 import { ReactComponent as PlusSquareSvg } from '../components/common/icons/svgs/plus-square.svg';
+import { ReactComponent as GridSvg } from '../components/common/icons/svgs/grid.svg';
 
 import { CutomRouteObject, getRoute, RouteKey } from './routes';
 
@@ -29,23 +30,24 @@ export const navs: CutomNavObject[] = [
     icon: React.createElement(HomeSvg),
     route: getRoute(RouteKey.home),
   },
-  {
-    name: 'profile',
-    activeRouteKeys: [RouteKey.profile],
-    icon: React.createElement(ProfileSvg),
-    route: getRoute(RouteKey.profile),
-  },
+  // {
+  //   name: 'profile',
+  //   activeRouteKeys: [RouteKey.profile],
+  //   icon: React.createElement(ProfileSvg),
+  //   route: getRoute(RouteKey.profile),
+  // },
   {
     key: 'feed',
     name: 'Feed',
     icon: React.createElement(FeedSvg),
-    activeRouteKeys: [
-      RouteKey.events,
-      RouteKey.contents,
-      RouteKey.frens,
-      RouteKey.projects,
-    ],
-    route: getRoute(RouteKey.events),
+    activeRouteKeys: [RouteKey.events, RouteKey.contents, RouteKey.frens],
+    route: getRoute(RouteKey.contents),
+  },
+  {
+    name: 'dapp',
+    activeRouteKeys: [RouteKey.dapps, RouteKey.dapp],
+    icon: React.createElement(GridSvg),
+    route: getRoute(RouteKey.dapps),
   },
   {
     name: 'favorite',
@@ -69,6 +71,11 @@ export const navs: CutomNavObject[] = [
         name: 'event',
         activeRouteKeys: [RouteKey.eventCreate],
         route: getRoute(RouteKey.eventCreate),
+      },
+      {
+        name: 'dapp',
+        activeRouteKeys: [RouteKey.dappCreate],
+        route: getRoute(RouteKey.dappCreate),
       },
     ],
   },

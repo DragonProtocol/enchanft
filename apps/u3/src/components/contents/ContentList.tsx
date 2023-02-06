@@ -2,31 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-08 14:04:04
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 13:48:01
+ * @LastEditTime: 2023-02-02 15:24:04
  * @Description: file description
  */
 import { useCallback, useState } from 'react';
 import styled from 'styled-components';
+import { ContentListItem } from '../../services/types/contents';
 import AnimatedListItem, {
   useAnimatedListTransition,
 } from '../animation/AnimatedListItem';
-import ConfirmModal from './ConfirmModal';
-import ListItem from './ListItem';
+import ListItem, { ListItemHidden } from './ListItem';
 
-export type ContentListItem = {
-  id: number;
-  upVoteNum: number;
-  title: string;
-  type: string;
-  author: string;
-  link: string;
-  createdAt: number;
-  favored?: boolean;
-  upVoted?: boolean;
-  hidden?: boolean;
-  uuid?: string;
-  editorScore?: number;
-};
 export type ContentListProps = {
   data: ContentListItem[];
   activeId: string | number;
@@ -39,13 +25,8 @@ export type ContentListProps = {
   onVote?: (item: ContentListItem) => void;
   onFavor?: (item: ContentListItem) => void;
   onShare?: (item: ContentListItem) => void;
-  onHidden?: (
-    item: ContentListItem,
-    callback?: {
-      success?: () => void;
-      error?: (error: Error) => void;
-    }
-  ) => void;
+  onHidden?: (item: ContentListItem) => void;
+  onHiddenUndo?: (item: ContentListItem) => void;
   onItemClick?: (item: ContentListItem) => void;
 };
 export default function ContentList({
@@ -61,6 +42,7 @@ export default function ContentList({
   onFavor,
   onShare,
   onHidden,
+  onHiddenUndo,
   onItemClick,
 }: ContentListProps) {
   const isVoted = useCallback(
@@ -90,44 +72,33 @@ export default function ContentList({
     (id: number | string) => loadingHiddenIds.includes(id),
     [loadingHiddenIds]
   );
-  const [confirmHiddenContent, setConfirmHiddenContent] =
-    useState<ContentListItem>(null);
   const transitions = useAnimatedListTransition(data);
   return (
     <ContentListWrapper>
       {transitions((styles, item) => {
         return (
           <AnimatedListItem key={item.id} styles={{ ...styles }}>
-            <ListItem
-              type={item.type}
-              id={item.id}
-              link={item.link}
-              createdAt={item.createdAt}
-              title={item.title}
-              upVoteNum={item.upVoteNum}
-              isActive={item.id === activeId}
-              clickAction={() => onItemClick && onItemClick(item)}
-              favored={isFavored(item)}
-              voteAction={() => onVote && onVote(item)}
-              favorsAction={() => onFavor && onFavor(item)}
-              shareAction={() => onShare && onShare(item)}
-              hiddenAction={() => setConfirmHiddenContent(item)}
-              favorPendingIds={loadingFavorIds}
-            />
+            {item.hidden ? (
+              <ListItemHidden
+                isActive={item.id === activeId}
+                hidden
+                undoAction={() => onHiddenUndo && onHiddenUndo(item)}
+              />
+            ) : (
+              <ListItem
+                data={item}
+                isActive={item.id === activeId}
+                favorPendingIds={loadingFavorIds}
+                clickAction={() => onItemClick && onItemClick(item)}
+                voteAction={() => onVote && onVote(item)}
+                favorsAction={() => onFavor && onFavor(item)}
+                shareAction={() => onShare && onShare(item)}
+                hiddenAction={() => onHidden && onHidden(item)}
+              />
+            )}
           </AnimatedListItem>
         );
       })}
-      <ConfirmModal
-        show={!!confirmHiddenContent}
-        closeModal={() => {
-          setConfirmHiddenContent(null);
-        }}
-        confirmAction={() => {
-          onHidden(confirmHiddenContent, {
-            success: () => setConfirmHiddenContent(null),
-          });
-        }}
-      />
     </ContentListWrapper>
   );
 }

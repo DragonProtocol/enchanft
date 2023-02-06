@@ -1,9 +1,16 @@
+import { useEffect, useState } from 'react';
 import Modal from 'react-modal';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import useFullScreen from '../../hooks/useFullScreen';
 import { ContentListItem } from '../../services/types/contents';
+import ButtonFullScreen from '../common/button/ButtonFullScreen';
 import { Close } from '../icons/close';
-import ContentShowerBox from './ContentShowerBox';
+import ContentShowerBox, {
+  ContentShowerHandles,
+  ContentShowerTabs,
+  Tab,
+} from './ContentShowerBox';
 import { ContentItemActions } from './ListItem';
 
 export default function GridModal({
@@ -15,8 +22,8 @@ export default function GridModal({
   hiddenAction,
   shareAction,
   voteAction,
-  scoreContent,
-  delContent,
+  onAdminScore,
+  onAdminDelete,
 }: {
   show: boolean;
   closeModal: () => void;
@@ -26,10 +33,19 @@ export default function GridModal({
   hiddenAction?: () => void;
   shareAction?: () => void;
   voteAction?: () => void;
-  scoreContent?: (id: number) => void;
-  delContent?: (id: number) => void;
+  onAdminScore?: () => void;
+  onAdminDelete?: () => void;
 }) {
   const navigate = useNavigate();
+  const { ref, isFullscreen, onToggle } = useFullScreen();
+  const [tab, setTab] = useState<Tab>('readerView');
+  useEffect(() => {
+    if (selectContent?.supportReaderView) {
+      setTab('readerView');
+    } else {
+      setTab('original');
+    }
+  }, [selectContent]);
   return (
     <Modal
       isOpen={show}
@@ -50,44 +66,54 @@ export default function GridModal({
     >
       <ContentBox>
         <div className="title">
-          {(selectContent && (
-            <ContentItemActions
-              isActive
-              withVote
-              favorPendingIds={favorPendingIds}
-              voteAction={() => {
-                if (voteAction) voteAction();
-              }}
-              shareAction={() => {
-                if (shareAction) shareAction();
-              }}
-              hiddenAction={() => {
-                if (hiddenAction) hiddenAction();
-              }}
-              favorsAction={() => {
-                if (favorsAction) favorsAction();
-              }}
-              {...selectContent}
-            />
-          )) || <div />}
+          {selectContent && (
+            <>
+              <ContentItemActions
+                isActive
+                withVote
+                favorPendingIds={favorPendingIds}
+                voteAction={() => {
+                  if (voteAction) voteAction();
+                }}
+                shareAction={() => {
+                  if (shareAction) shareAction();
+                }}
+                hiddenAction={() => {
+                  if (hiddenAction) hiddenAction();
+                }}
+                favorsAction={() => {
+                  if (favorsAction) favorsAction();
+                }}
+                {...selectContent}
+              />
+              <ContentShowerTabs tab={tab} setTab={(t) => setTab(t)} />
+              <ContentShowerHandles
+                isForU={!!selectContent?.isForU}
+                editorScore={selectContent?.editorScore || 0}
+                deleteAction={onAdminDelete}
+                editAction={() => {
+                  navigate(`/contents/create?id=${selectContent.id}`);
+                }}
+                thumbUpAction={onAdminScore}
+                onFullscreenRequest={onToggle}
+                onFullscreenExit={onToggle}
+              />
+            </>
+          )}
+
           <span onClick={closeModal}>
             <Close />
           </span>
         </div>
         {selectContent && (
-          <ContentShowerBoxWrapper>
-            <ContentShowerBox
-              selectContent={selectContent}
-              deleteAction={() => {
-                if (delContent) delContent(selectContent.id);
-              }}
-              editAction={() => {
-                navigate(`/contents/create?id=${selectContent.id}`);
-              }}
-              thumbUpAction={() => {
-                if (scoreContent) scoreContent(selectContent.id);
-              }}
-            />
+          <ContentShowerBoxWrapper ref={ref}>
+            <ContentShowerBox selectContent={selectContent} tab={tab} />
+            {isFullscreen && (
+              <EventLinkPreviewFullscreen
+                isFullscreen={isFullscreen}
+                onClick={onToggle}
+              />
+            )}
           </ContentShowerBoxWrapper>
         )}
       </ContentBox>
@@ -113,7 +139,17 @@ const ContentBox = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
-
+    position: relative;
+    .content-shower-tabs {
+      /* position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%); */
+      margin: 0 auto;
+    }
+    .content-shower-handles {
+      margin-left: auto;
+    }
     & > span {
       cursor: pointer;
       padding: 10px;
@@ -169,4 +205,11 @@ const ContentShowerBoxWrapper = styled.div`
   border-radius: 10px;
   height: 100%;
   overflow: hidden;
+  position: relative;
+`;
+const EventLinkPreviewFullscreen = styled(ButtonFullScreen)`
+  z-index: 1;
+  position: absolute;
+  top: 10px;
+  right: 10px;
 `;

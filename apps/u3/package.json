@@ -51,6 +51,7 @@
     "react-switch": "^7.0.0",
     "react-text-transition": "^3.0.2",
     "react-toastify": "^9.0.8",
+    "screenfull": "^6.0.2",
     "styled-components": "^5.3.5",
     "swiper": "^8.2.4",
     "three": "^0.147.0",

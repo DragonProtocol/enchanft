@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 10:31:43
+ * @LastEditTime: 2023-02-02 14:06:49
  * @Description: 首页任务看板
  */
 import React, {
@@ -14,6 +14,7 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 
+import { toast } from 'react-toastify';
 import { Popover } from 'antd';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 
@@ -39,6 +40,8 @@ import {
 } from '../features/frens/frensHandles';
 import { MainWrapper } from '../components/layout/Index';
 import FeedsMenu from '../components/layout/FeedsMenu';
+import ListScrollBox from '../components/common/box/ListScrollBox';
+import { messages } from '../utils/message';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
@@ -81,7 +84,15 @@ const renderAddress = (address: string, isIcon = true, className?: string) => {
 
   return (
     <>
-      <span className={`address ${className}`}>{formatAddress}</span>
+      <span
+        className={`address ${className}`}
+        // href={`/profile/${address}`}
+        // target="_blank"
+        // rel="noopener noreferrer"
+      >
+        {formatAddress}
+      </span>
+      {/* <span className={`address ${className}`} >{formatAddress}</span> */}
       {isIcon && (
         <svg
           width="16"
@@ -92,6 +103,7 @@ const renderAddress = (address: string, isIcon = true, className?: string) => {
           className="address-svg"
           onClick={async () => {
             await navigator.clipboard.writeText(address);
+            toast.success(messages.common.copy);
           }}
         >
           <path
@@ -328,23 +340,27 @@ const tagComponentsMap = {
         <div className="nft-box">
           {/* TODO 显示策略 + 闪光效果 */}
           {/* https://rss3.io/images/default.svg */}
-          <div className="nft-media">
-            {image?.includes('.mp4') ? (
-              <video src={image} />
-            ) : (
-              <img
-                src={image}
-                alt={name}
-                onError={(e) => {
-                  // console.log('---------->', e);
-                  e.currentTarget.src = 'https://rss3.io/images/default.svg';
-                  // e.target.src = 'https://rss3.io/images/default.svg';
-                  // this.onerror=null;
-                  // this.src='https://rss3.io/images/default.svg';
-                }}
-              />
-            )}
-          </div>
+          {image && (
+            <div className="nft-media">
+              {image?.includes('.mp4') ? (
+                <video src={image} />
+              ) : (
+                <img
+                  src={image}
+                  alt={name}
+                  onError={(e) => {
+                    // if (
+                    //   e.currentTarget.src !== 'https://rss3.io/images/default.svg'
+                    // )
+                    e.currentTarget.src = 'https://rss3.io/images/default.svg';
+                    // e.target.src = 'https://rss3.io/images/default.svg';
+                    // this.onerror=null;
+                    // this.src='https://rss3.io/images/default.svg';
+                  }}
+                />
+              )}
+            </div>
+          )}
 
           <div>
             <div className="name">{name}</div>
@@ -370,19 +386,21 @@ const tagComponentsMap = {
         <div className="nft-box">
           {/* TODO 显示策略 + 闪光效果 */}
           {/* https://rss3.io/images/default.svg */}
-          <div className="nft-media">
-            {image?.includes('.mp4') ? (
-              <video src={image} />
-            ) : (
-              <img
-                src={image}
-                alt={name}
-                onError={(e) => {
-                  e.currentTarget.src = 'https://rss3.io/images/default.svg';
-                }}
-              />
-            )}
-          </div>
+          {image && (
+            <div className="nft-media">
+              {image?.includes('.mp4') ? (
+                <video src={image} />
+              ) : (
+                <img
+                  src={image}
+                  alt={name}
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://rss3.io/images/default.svg';
+                  }}
+                />
+              )}
+            </div>
+          )}
 
           <div>
             <div className="name">{name}</div>
@@ -455,16 +473,25 @@ const tagComponentsMap = {
         <div className="nft-box">
           {/* TODO 金额显示方式 */}
           {/* https://rss3.io/images/default.svg */}
-          <div className="trans">
-            <img src={image} alt={name} />
-          </div>
-
-          <div>
-            <strong>{`${valueDisplay} ${symbol}`}</strong>
-          </div>
+          {image && (
+            <div className="trans">
+              <img src={image} alt={name} />
+            </div>
+          )}
+          {valueDisplay && (
+            <div>
+              <strong>{`${valueDisplay} ${symbol}`}</strong>
+            </div>
+          )}
         </div>
       </>
     );
+  },
+  get revise() {
+    return this.post;
+  },
+  get approval() {
+    return this.transfer;
   },
 };
 
@@ -548,8 +575,8 @@ function Frens() {
     <div className="user-item">
       {isClose && (
         <svg
-          width="14"
-          height="14"
+          width="12"
+          height="12"
           viewBox="0 0 36 36"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
@@ -558,11 +585,11 @@ function Frens() {
         >
           <path
             d="M0 0H4V4H0V0ZM8 8H4V4H8V8ZM12 12H8V8H12V12ZM16 16H12V12H16V16ZM20 20H16V16H20V20ZM24 24H20V20H24V24ZM28 28H24V24H28V28ZM32 32V28H28V32H32ZM32 32V36H36V32H32Z"
-            fill="#333333"
+            fill="#718096"
           />
           <path
             d="M0 36H4V32H0V36ZM8 28H4V32H8V28ZM12 24H8V28H12V24ZM16 20H12V24H16V20ZM20 16H16V20H20V16ZM24 12H20V16H24V12ZM28 8H24V12H28V8ZM32 4V8H28V4H32ZM32 4V0H36V4H32Z"
-            fill="#333333"
+            fill="#718096"
           />
         </svg>
       )}
@@ -645,71 +672,82 @@ function Frens() {
               />
             </div>
           </FrensFeedSwitch>
-          <div className="feed-content">
-            {feed?.result?.map((item, index) => {
-              const {
-                owner,
-                tag,
-                type,
-                owner_name: ownerName,
-                owner_follower_num: ownerFollowerNum,
-                owner_following_num: ownerFollowingNum,
-              } = item;
-              return (
-                <FrensFeedCard>
-                  <Popover
-                    content={renderUserInfo(
-                      owner,
-                      ownerName,
-                      owner in followingMap,
-                      ownerFollowerNum,
-                      ownerFollowingNum,
-                      false
-                    )}
-                    getPopupContainer={(triggerNode) =>
-                      (triggerNode as any).parentNode
-                    }
-                    color="#1b1e23"
-                    overlayInnerStyle={{
-                      background: '#1b1e23',
-                      color: '#718096',
-                    }}
-                  >
-                    <img
-                      id={`tooltip-anchor-children-${owner}-${index}`}
-                      className="avatar"
-                      src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
-                      alt={owner}
-                    />
-                  </Popover>
-                  <div className="content">
-                    <div className="owner">
-                      <span className="name color-white">{ownerName}</span>{' '}
-                      {renderAddress(owner)}
+          <ListScrollBox
+            onScrollBottom={() => {
+              fetchData({
+                cursor: feedRef?.current?.cursor,
+              });
+            }}
+          >
+            <div className="feed-content">
+              {feed?.result?.map((item, index) => {
+                const {
+                  owner,
+                  tag,
+                  type,
+                  owner_name: ownerName,
+                  owner_follower_num: ownerFollowerNum,
+                  owner_following_num: ownerFollowingNum,
+                } = item;
+                return (
+                  <FrensFeedCard>
+                    <Popover
+                      content={renderUserInfo(
+                        owner,
+                        ownerName,
+                        owner in followingMap,
+                        ownerFollowerNum,
+                        ownerFollowingNum,
+                        false
+                      )}
+                      getPopupContainer={(triggerNode) =>
+                        (triggerNode as any).parentNode
+                      }
+                      color="#1b1e23"
+                      overlayInnerStyle={{
+                        background: '#1b1e23',
+                        color: '#718096',
+                      }}
+                    >
+                      <img
+                        id={`tooltip-anchor-children-${owner}-${index}`}
+                        className="avatar"
+                        src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
+                        alt={owner}
+                      />
+                    </Popover>
+                    <div className="content">
+                      <div className="owner">
+                        <span className="name color-white">{ownerName}</span>{' '}
+                        {renderAddress(owner)}
+                      </div>
+                      {tagComponentsMap?.[`${type}`]?.(item)}
+                      {/* {tagComponentsMap?.[`${tag}_${type}`]?.(item)} */}
                     </div>
-                    {tagComponentsMap?.[`${type}`]?.(item)}
-                    {/* {tagComponentsMap?.[`${tag}_${type}`]?.(item)} */}
-                  </div>
-                </FrensFeedCard>
-              );
-            })}
-            <div className="load-more">
-              {loading ? (
-                <Loading />
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => {
-                    fetchData({
-                      cursor: feedRef?.current?.cursor,
-                    });
-                  }}
-                >
-                  Load More
-                </button>
-              )}
+                  </FrensFeedCard>
+                );
+              })}
+              <div className="load-more">
+                {
+                  loading ? (
+                    <div className="loading-box">
+                      <Loading />
+                    </div>
+                  ) : null
+                  // <button
+                  //   type="button"
+                  //   onClick={() => {
+                  //     fetchData({
+                  //       cursor: feedRef?.current?.cursor,
+                  //     });
+                  //   }}
+                  // >
+                  //   Load More
+                  // </button>
+                }
+              </div>
             </div>
-          </div>
+          </ListScrollBox>
         </FrensFeed>
         <FrensRight>
           {isSearch && feed?.result?.[0] ? (
@@ -726,7 +764,6 @@ function Frens() {
           ) : (
             <SearchInput
               onSearch={(value) => {
-                console.log(value, 'value');
                 setFilterAddress(value);
               }}
               placeholder="Search Address or ENS"
@@ -936,6 +973,11 @@ const FrensWrapper = styled(MainWrapper)`
   background: #14171a;
   color: #718096;
   padding-top: 0;
+
+  .address {
+    color: inherit;
+    text-decoration: none;
+  }
 `;
 const FrensHeader = styled.div`
   margin-bottom: 24px;
@@ -947,8 +989,12 @@ const FrensBody = styled.div`
   display: flex;
 
   .feed-content {
-    overflow-y: auto;
+    /* overflow-y: auto; */
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center;
+    align-items: center; */
   }
 
   .reco-card {
@@ -961,6 +1007,7 @@ const FrensBody = styled.div`
     border-radius: 20px;
     padding: 0px 20px;
     margin-top: 24px;
+    /* flex-grow: 1; */
     & > div {
       justify-content: space-between;
     }
@@ -988,7 +1035,8 @@ const FrensBody = styled.div`
   }
 
   .load-more {
-    height: 100%;
+    /* height: 100%; */
+    flex-grow: 1;
     margin: 20px;
     display: flex;
     justify-content: center;
@@ -1078,6 +1126,8 @@ const FrensFeed = styled.div`
   width: 100%;
   /* max-width: 47.5rem; */
   min-width: 37.5rem;
+  height: calc(100vh - 125px);
+  min-height: 850px;
   background: #1b1e23;
   border-radius: 20px;
   padding: 0px 24px;
@@ -1087,7 +1137,9 @@ const FrensFeed = styled.div`
 `;
 const FrensRight = styled.div`
   /* flex-grow: 1; */
-  width: 360px;
+  min-width: 360px;
+  display: flex;
+  flex-direction: column;
 `;
 const FrensFeedSwitch = styled.div`
   display: flex;
@@ -1135,6 +1187,7 @@ const FrensFeedCard = styled.div`
   display: flex;
   padding: 24px 0;
   border-bottom: 1px solid #39424c;
+  width: 100%;
 
   .avatar {
     width: 48px;
@@ -1210,6 +1263,7 @@ const FrensFeedCard = styled.div`
     .nft-media {
       width: 4.375rem;
       height: 4.375rem;
+      flex-shrink: 0;
       video,
       img {
         object-fit: cover;

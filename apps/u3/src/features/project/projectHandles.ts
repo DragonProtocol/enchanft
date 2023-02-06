@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-07 07:44:43
+ * @LastEditTime: 2023-02-01 19:03:21
  * @Description: file description
  */
 import {
@@ -20,6 +20,8 @@ import {
 import type { RootState } from '../../store/store';
 import { favorProject as favorProjectApi } from '../../services/api/project';
 import { addOneWithProjects } from '../favorite/userGroupFavorites';
+import { updateOne as updateOneWithProjectExplore } from './projectExploreList';
+import { messages } from '../../utils/message';
 
 // 为project 点赞操作 创建一个执行队列
 export type FavorProjectParams = ProjectExploreListItemResponse;
@@ -78,12 +80,14 @@ export const favorProject = createAsyncThunk(
     dispatch(addOneToFavorProjectQueue(params));
     const resp = await favorProjectApi(params.id);
     if (resp.data.code === 0) {
-      dispatch(addOneWithProjects(params));
+      const newData = { ...params, favored: true };
+      dispatch(updateOneWithProjectExplore(newData));
+      dispatch(addOneWithProjects(newData));
       dispatch(removeOneForFavorProjectQueue(params.id));
-    } else {
-      dispatch(removeOneForFavorProjectQueue(params.id));
-      throw new Error(resp.data.msg);
+      return newData;
     }
+    dispatch(removeOneForFavorProjectQueue(params.id));
+    throw new Error(resp.data.msg);
   },
   {
     condition: (params: FavorProjectParams, { getState }) => {
@@ -124,13 +128,13 @@ export const projectHandlesSlice = createSlice({
         state.favorProject.params = null;
         state.favorProject.status = AsyncRequestStatus.FULFILLED;
         state.favorProject.errorMsg = '';
-        toast.success('Ok.');
+        toast.success(messages.dapp.install, { style: { right: '80px' } });
       })
       .addCase(favorProject.rejected, (state, action) => {
         state.favorProject.params = null;
         state.favorProject.status = AsyncRequestStatus.REJECTED;
         state.favorProject.errorMsg = action.error.message || '';
-        toast.error(action.error.message);
+        toast.error(action.error.message || messages.common.error);
       });
   },
 });

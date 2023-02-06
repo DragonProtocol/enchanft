@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 14:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-09 18:17:51
+ * @LastEditTime: 2023-02-01 14:31:23
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -60,17 +60,32 @@ export enum PlatformLogo {
   POAP = 'https://poap.xyz/favicon-32x32.dba5403f.png',
   QUEST3 = 'https://quest3.xyz/favicon.ico',
 }
+
+export enum PlatformType {
+  EVENT = 'EVENT',
+  CONTENT = 'CONTENT',
+}
 export type PlatformsItemResponse = {
   platform: string;
   platformLogo: string;
-  eventNumber: number;
+  platformUrl: string;
+  number: number;
+  type: PlatformType;
 };
 export type PlatformsResponse = ApiResp<Array<PlatformsItemResponse>>;
 
-export type ConfigTopicsResponse = ApiResp<{
+export type ConfigTopicsChain = {
+  chainEnum: string;
+  image: string;
+  link: string;
+  name: string;
+};
+export type ConfigTopics = {
   eventRewards: string[];
   eventTypes: string[];
   projectTypes: string[];
   contentTypes: string[];
   langs: string[];
-}>;
+  chains: ConfigTopicsChain[];
+};
+export type ConfigTopicsResponse = ApiResp<ConfigTopics>;

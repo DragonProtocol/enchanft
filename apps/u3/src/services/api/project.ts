@@ -2,14 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-23 16:05:04
+ * @LastEditTime: 2023-02-01 11:03:21
  * @Description: file description
  */
-import qs from 'qs';
 import {
+  FetchOneProjectResponse,
   ProjectExploreListParams,
   ProjectExploreListResponse,
   ProjectFavorHandleResponse,
+  UpdateProjectData,
+  UpdateProjectResponse,
 } from '../types/project';
 import request, { RequestPromise } from './request';
 
@@ -25,12 +27,50 @@ export function fetchListForProjectExplore(
     },
   });
 }
+export function fetchOneProject(
+  id: string | number
+): RequestPromise<FetchOneProjectResponse> {
+  return request({
+    url: `/uniProjects/${id}`,
+    method: 'get',
+    headers: {
+      needToken: true,
+    },
+  });
+}
 export function favorProject(
   id: number
 ): RequestPromise<ProjectFavorHandleResponse> {
   return request({
     url: `/uniProjects/${id}/favors`,
     method: 'post',
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
+export function updateProject(
+  id: string | number,
+  data: Partial<UpdateProjectData>
+): RequestPromise<UpdateProjectResponse> {
+  return request({
+    url: `/uniProjects/${id}`,
+    method: 'post',
+    data,
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
+export function createProject(
+  data: UpdateProjectData
+): RequestPromise<UpdateProjectResponse> {
+  return request({
+    url: `/uniProjects`,
+    method: 'post',
+    data,
     headers: {
       needToken: true,
     },

@@ -4,47 +4,44 @@ import { Share } from '../icons/share';
 import { EyeClose } from '../icons/eyeClose';
 import { Heart } from '../icons/heart';
 import Badge from './Badge';
-import { defaultFormatDate } from '../../utils/time';
+import { defaultFormatFromNow } from '../../utils/time';
 import LinkBox from './LinkBox';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
+import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
+import { ContentListItem } from '../../services/types/contents';
 
 export default function ListItem({
+  data,
   isActive,
   clickAction,
-  type,
-  id,
-  link,
-  createdAt,
-  title,
-  upVoteNum,
   voteAction,
   favorsAction,
-  favored,
-  upVoted,
-  hidden,
   hiddenAction,
   shareAction,
-  editorScore,
   favorPendingIds,
 }: {
-  upVoteNum: number;
-  id: number;
-  title: string;
-  type: string;
-  link: string;
-  createdAt: number;
+  data: ContentListItem;
   isActive: boolean;
-  hidden?: boolean;
   clickAction: () => void;
   voteAction?: () => void;
-  upVoted?: boolean;
   favorsAction?: () => void;
-  favored?: boolean;
   hiddenAction?: () => void;
   shareAction?: () => void;
-  editorScore?: number;
   favorPendingIds?: (string | number)[];
 }) {
+  const {
+    value,
+    type,
+    id,
+    link,
+    createdAt,
+    title,
+    upVoteNum,
+    favored,
+    upVoted,
+    hidden,
+    editorScore,
+  } = data;
   const itemRef = useRef<HTMLDivElement>();
   const [height, setHeight] = useState('fit-content');
   const [classNames, setClassNames] = useState('');
@@ -62,6 +59,10 @@ export default function ListItem({
       setClassNames('');
     }
   }, [hidden, isActive]);
+  const platformLogo = useMemo(
+    () => getContentPlatformLogoWithJsonValue(value),
+    [value]
+  );
 
   return (
     <ContentItem ref={itemRef} className={classNames} onClick={clickAction}>
@@ -81,9 +82,9 @@ export default function ListItem({
           <ContentItemTitle>
             <div>
               <Badge text={type} />
-              <LinkBox text={link} />
+              <LinkBox text={link} logo={platformLogo} />
             </div>
-            <span>{defaultFormatDate(createdAt)}</span>
+            <span>{defaultFormatFromNow(createdAt)}</span>
           </ContentItemTitle>
 
           {isActive && (
@@ -140,7 +141,7 @@ export function ContentItemActions({
   );
 
   return (
-    <ContentItemFooter withVote={withVote}>
+    <ContentItemActionsWrapper withVote={withVote}>
       {withVote && (
         <ContentHandleButtonVote
           disabled={upVoted}
@@ -184,7 +185,7 @@ export function ContentItemActions({
       >
         <Share />
       </ContentHandleButton>
-    </ContentItemFooter>
+    </ContentItemActionsWrapper>
   );
 }
 
@@ -307,6 +308,9 @@ const ItemInner = styled.div<{ isActive: boolean; height: string }>`
   & div.right {
     width: calc(100% - 62px);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     > p {
       margin: 0%;
       font-weight: 500;
@@ -346,7 +350,6 @@ const ContentItemTitle = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-top: 10px;
   font-weight: 400;
   font-size: 14px;
   line-height: 17px;
@@ -378,11 +381,11 @@ const ContentItemTitle = styled.div`
   }
 `;
 
-const ContentItemFooter = styled.div<{ withVote: boolean }>`
+const ContentItemActionsWrapper = styled.div<{ withVote: boolean }>`
   display: flex;
-  margin-top: 10px;
   gap: 10px;
   justify-content: ${(props) => (props.withVote ? 'start' : 'end')};
+  align-items: center;
 `;
 
 const ContentHandleButton = styled(ButtonPrimaryLine)`
