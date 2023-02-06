@@ -102,3 +102,9 @@ applications:
       cache:
         paths:
           - node_modules/**/*
+  - appRoot: apps/us3r-landing-page
+    frontend:
+      artifacts:
+        baseDirectory: ./
+        files:
+          - '**/*'
