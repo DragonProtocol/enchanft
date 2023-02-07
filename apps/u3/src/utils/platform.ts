@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-20 18:27:13
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 13:43:53
+ * @LastEditTime: 2023-02-07 17:13:04
  * @Description: file description
  */
 const loadImg = (url: string): Promise<string> => {
@@ -58,4 +58,11 @@ export const fetchPlatformImgUrlByLink = async (
   }
 
   return '';
+};
+
+export const platformLogoReplaceMap = {
+  'https://cointelegraph.com/favicons/favicon.ico':
+    'https://cointelegraph.com/favicons/apple-touch-icon.png',
+  'https://filecoin.io/images/favicons/favicon-16x16.png':
+    'https://filecoin.io/images/favicons/favicon-196x196.png',
 };
