@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-10 15:09:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-02 16:49:22
+ * @LastEditTime: 2023-02-07 17:38:00
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -13,7 +13,10 @@ import {
   PlatformType,
 } from '../../services/types/common';
 import type { RootState } from '../../store/store';
-import { fetchPlatformImgUrlByLink } from '../../utils/platform';
+import {
+  fetchPlatformImgUrlByLink,
+  platformLogoReplaceMap,
+} from '../../utils/platform';
 import { getDomainNameByUrl } from '../../utils/url';
 
 type PlatformItem = PlatformsItemResponse;
@@ -37,7 +40,10 @@ export const fetchConfigsPlatforms = createAsyncThunk<Platforms, undefined>(
       const platforms = resp.data.data.map((item) => ({
         ...item,
         platform: item?.platform || getDomainNameByUrl(item.platformUrl),
-        platformLogo: item?.platformLogo || '',
+        platformLogo:
+          platformLogoReplaceMap[item?.platformLogo] ||
+          item?.platformLogo ||
+          '',
       }));
       console.log({ platforms });
 
@@ -46,7 +52,12 @@ export const fetchConfigsPlatforms = createAsyncThunk<Platforms, undefined>(
       for (const item of platforms) {
         if (!item?.platformLogo) {
           fetchPlatformImgUrlByLink(item.platformUrl).then((url) => {
-            dispatch(updateOneByUrl({ ...item, platformLogo: url }));
+            dispatch(
+              updateOneByUrl({
+                ...item,
+                platformLogo: platformLogoReplaceMap[url] || url,
+              })
+            );
           });
         }
       }
