@@ -132,28 +132,6 @@ export default function Info({
               <span>|</span>
               <span>{defaultFormatDate(date || Date.now())}</span>
             </div>
-            <div>
-              <span
-                className="twitter"
-                title={
-                  twitterAccount
-                    ? twitterAccount.thirdpartyName
-                    : 'twitter unbound'
-                }
-              >
-                <IconTwitter fill={twitterAccount ? '#FFFFFF' : '#718096'} />
-              </span>
-              <span
-                className="discord"
-                title={
-                  discordAccount
-                    ? discordAccount.thirdpartyName
-                    : 'discord unbound'
-                }
-              >
-                <IconDiscord fill={discordAccount ? '#FFFFFF' : '#718096'} />
-              </span>
-            </div>
           </div>
         </div>
       </div>

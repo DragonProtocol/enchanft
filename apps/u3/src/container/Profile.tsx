@@ -158,13 +158,6 @@ function Profile() {
                 On-Chain Interest
               </div>
               <div
-                onClick={() => setTab('OffChain')}
-                className={tab === 'OffChain' ? 'active' : ''}
-              >
-                Off-Chain Interest
-                <span>Soon</span>
-              </div>
-              <div
                 onClick={() => setTab('Activities')}
                 className={tab === 'Activities' ? 'active' : ''}
               >
@@ -189,7 +182,6 @@ function Profile() {
                   ethBalance={profileData.ethBalance}
                 />
               )) || <OnChainNoItem />)}
-            {tab === 'OffChain' && <OffChainInterest />}
             {tab === 'Activities' && <Activities />}
           </div>
         )}
