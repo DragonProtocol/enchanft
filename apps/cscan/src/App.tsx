@@ -19,6 +19,7 @@ import Family from './container/Family';
 import Home from './container/Home';
 import Nav from './components/Nav';
 import NoMatch from './components/NoMatch';
+import { useGAPageView } from './hooks/useGoogleAnalytics';
 
 dayjs.extend(relativeTime);
 setApiBaseUrl(USER_API_BASE_URL || '');
@@ -47,6 +48,7 @@ export default function App() {
 }
 
 function Layout() {
+  useGAPageView();
   return (
     <AppContainer>
       <Nav />

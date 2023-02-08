@@ -2,13 +2,14 @@ import { AxiosError, isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+
 import { getStreamInfo } from '../api';
 import BackBtn from '../components/BackBtn';
 import StreamTable from '../components/StreamTable';
 import { Network, Stream } from '../types';
 
 export default function StreamPage() {
-  let { network, streamId } = useParams();
+  const { network, streamId } = useParams();
   const navigate = useNavigate();
   const [stream, setStream] = useState<Stream>();
   const [serverErrMsg, setServerErrMsg] = useState<{
