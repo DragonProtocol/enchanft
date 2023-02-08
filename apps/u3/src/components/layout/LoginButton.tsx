@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 14:36:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-13 10:23:37
+ * @LastEditTime: 2023-02-08 16:44:26
  * @Description: file description
  */
 import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
@@ -259,8 +259,8 @@ const KarmaWrapper = styled(ButtonPrimaryLine)`
   border-radius: 12px;
   color: #ffffff;
   & .user-avatar {
-    width: 42px;
-    height: 42px;
+    width: 48px;
+    height: 48px;
   }
 
   > div {
@@ -269,7 +269,7 @@ const KarmaWrapper = styled(ButtonPrimaryLine)`
 
   & .user-name {
     font-weight: 500;
-    font-size: 14px;
+    font-size: 16px;
     line-height: 24px;
     text-align: center;
 
@@ -278,6 +278,7 @@ const KarmaWrapper = styled(ButtonPrimaryLine)`
   & .karma {
     display: flex;
     padding: 2px 8px;
+    box-sizing: border-box;
     gap: 4px;
     align-items: center;
     height: 21px;
@@ -289,6 +290,10 @@ const KarmaWrapper = styled(ButtonPrimaryLine)`
     & span {
       flex: 1;
       text-align: center;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17px;
+      color: #ffffff;
     }
   }
 `;

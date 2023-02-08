@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-13 14:37:26
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 15:10:09
+ * @LastEditTime: 2023-02-08 18:04:52
  * @Description: file description
  */
 import React, { useCallback } from 'react';
 import { debounce } from 'lodash';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import ClearSvg from '../icons/svgs/close.svg';
 
 const Input = styled.input`
   width: 100%;
@@ -31,6 +32,16 @@ const Input = styled.input`
 
   &::placeholder {
     color: #4e5a6e;
+  }
+  &::-webkit-search-cancel-button {
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background-color: #14171a;
+    background-image: url(${ClearSvg});
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 `;
 
@@ -68,7 +79,7 @@ export default function InputBase({
 
   return (
     <Input
-      type="text"
+      type="search"
       placeholder={placeholder}
       value={value}
       onChange={handleInputChange}
