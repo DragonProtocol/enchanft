@@ -42,14 +42,14 @@ const renderAddress = (address: string, isIcon = true, className?: string) => {
 
   return (
     <>
-      <a
+      <span
         className={`address ${className}`}
-        href={`/profile/${address}`}
-        target="_blank"
-        rel="noopener noreferrer"
+        // href={`/profile/${address}`}
+        // target="_blank"
+        // rel="noopener noreferrer"
       >
         {formatAddress}
-      </a>
+      </span>
       {/* <span className={`address ${className}`} >{formatAddress}</span> */}
       {isIcon && (
         <svg
@@ -298,22 +298,27 @@ const tagComponentsMap = {
         <div className="nft-box">
           {/* TODO 显示策略 + 闪光效果 */}
           {/* https://rss3.io/images/default.svg */}
-          <div className="nft-media">
-            {image?.includes('.mp4') ? (
-              <video src={image} />
-            ) : (
-              <img
-                src={image}
-                alt={name}
-                onError={(e) => {
-                  e.currentTarget.src = 'https://rss3.io/images/default.svg';
-                  // e.target.src = 'https://rss3.io/images/default.svg';
-                  // this.onerror=null;
-                  // this.src='https://rss3.io/images/default.svg';
-                }}
-              />
-            )}
-          </div>
+          {image && (
+            <div className="nft-media">
+              {image?.includes('.mp4') ? (
+                <video src={image} />
+              ) : (
+                <img
+                  src={image}
+                  alt={name}
+                  onError={(e) => {
+                    // if (
+                    //   e.currentTarget.src !== 'https://rss3.io/images/default.svg'
+                    // )
+                    e.currentTarget.src = 'https://rss3.io/images/default.svg';
+                    // e.target.src = 'https://rss3.io/images/default.svg';
+                    // this.onerror=null;
+                    // this.src='https://rss3.io/images/default.svg';
+                  }}
+                />
+              )}
+            </div>
+          )}
 
           <div>
             <div className="name">{name}</div>
@@ -339,19 +344,21 @@ const tagComponentsMap = {
         <div className="nft-box">
           {/* TODO 显示策略 + 闪光效果 */}
           {/* https://rss3.io/images/default.svg */}
-          <div className="nft-media">
-            {image?.includes('.mp4') ? (
-              <video src={image} />
-            ) : (
-              <img
-                src={image}
-                alt={name}
-                onError={(e) => {
-                  e.currentTarget.src = 'https://rss3.io/images/default.svg';
-                }}
-              />
-            )}
-          </div>
+          {image && (
+            <div className="nft-media">
+              {image?.includes('.mp4') ? (
+                <video src={image} />
+              ) : (
+                <img
+                  src={image}
+                  alt={name}
+                  onError={(e) => {
+                    e.currentTarget.src = 'https://rss3.io/images/default.svg';
+                  }}
+                />
+              )}
+            </div>
+          )}
 
           <div>
             <div className="name">{name}</div>
@@ -424,16 +431,25 @@ const tagComponentsMap = {
         <div className="nft-box">
           {/* TODO 金额显示方式 */}
           {/* https://rss3.io/images/default.svg */}
-          <div className="trans">
-            <img src={image} alt={name} />
-          </div>
-
-          <div>
-            <strong>{`${valueDisplay} ${symbol}`}</strong>
-          </div>
+          {image && (
+            <div className="trans">
+              <img src={image} alt={name} />
+            </div>
+          )}
+          {valueDisplay && (
+            <div>
+              <strong>{`${valueDisplay} ${symbol}`}</strong>
+            </div>
+          )}
         </div>
       </>
     );
+  },
+  get revise() {
+    return this.post;
+  },
+  get approval() {
+    return this.transfer;
   },
 };
 

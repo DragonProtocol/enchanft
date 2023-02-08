@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-20 18:27:13
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 13:43:53
+ * @LastEditTime: 2023-02-08 18:31:32
  * @Description: file description
  */
 const loadImg = (url: string): Promise<string> => {
@@ -58,4 +58,17 @@ export const fetchPlatformImgUrlByLink = async (
   }
 
   return '';
+};
+
+export const platformLogoReplaceMap = {
+  'https://cointelegraph.com/favicons/favicon.ico':
+    'https://cointelegraph.com/favicons/apple-touch-icon.png',
+  'https://filecoin.io/images/favicons/favicon-16x16.png':
+    'https://filecoin.io/images/favicons/favicon-196x196.png',
+  'https://miro.medium.com/1*m-R_BkNf1Qjr1YbyOIJY2w.png':
+    'https://miro.medium.com/fit/c/60/60/1*sHhtYhaCe2Uc3IU0IgKwIQ.png',
+  'https://www.blocktempo.com/favicon.ico':
+    'https://storage.googleapis.com/image.blocktempo.com/2019/04/cropped-黑字白框動區Logo_工作區域-1-750x750-2-2-e1555450212503-1-180x180.png',
+  'http://sites.libsyn.com/favicon.png':
+    'https://libsyn.com/blog/wp-content/uploads/2019/08/cropped-libsynV3-192x192.png',
 };

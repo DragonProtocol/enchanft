@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-09 19:37:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 14:59:56
+ * @LastEditTime: 2023-02-08 18:04:29
  * @Description: file description
  */
 import React, { useCallback, useState } from 'react';
 import { debounce } from 'lodash';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import SearchSvg from '../icons/svgs/search.svg';
+import ClearSvg from '../icons/svgs/close.svg';
 
 const Wrapper = styled.div`
   width: 100%;
@@ -43,6 +44,16 @@ const Input = styled.input`
 
   &::placeholder {
     color: #4e5a6e;
+  }
+  &::-webkit-search-cancel-button {
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    border-radius: 50%;
+    background-color: #14171a;
+    background-image: url(${ClearSvg});
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 `;
 
@@ -86,7 +97,7 @@ export default function SearchInput({
       <Icon src={SearchSvg} className="search-input-icon" />
       <Input
         className="search-input-input"
-        type="text"
+        type="search"
         placeholder={placeholder}
         value={value}
         onChange={handleInputChange}

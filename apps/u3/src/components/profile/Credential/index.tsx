@@ -17,8 +17,8 @@ export default function Credential({
   return (
     <>
       <ContentBox id="profile-content-box">
-        <Galxe data={galxe} />
         <Poap data={poap} />
+        <Galxe data={galxe} />
         <Noox data={noox} />
       </ContentBox>
       <div className="placeholder" />

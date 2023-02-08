@@ -1,29 +1,32 @@
 import styled from 'styled-components';
 import {
-  AccountType,
   getUserDisplayName,
   UserAvatar,
   useWlUserReact,
   WlUserModalType,
 } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { sortPubKey } from '../../utils/solana';
 import { Copy } from '../icons/copy';
 
 import { Refresh } from '../icons/refresh';
 import { Edit } from '../icons/edit';
-import IconTwitter from '../common/icons/IconTwitter';
-import IconDiscord from '../common/icons/IconDiscord';
 import WalletList from './WalletList';
 import AddWalletModal from './AddWalletModal';
 import { ProfileWallet } from '../../services/types/profile';
 import { defaultFormatDate } from '../../utils/time';
 import Karma from '../common/Karma';
-import { useAppSelector } from '../../store/hooks';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+
 import { selectKarmaState } from '../../features/profile/karma';
 import KarmaModal from './KarmaModal';
 import { messages } from '../../utils/message';
+import {
+  selectFrensHandlesState,
+  getFollower,
+  getFollowing,
+} from '../../features/frens/frensHandles';
 
 export default function Info({
   walletAddr,
@@ -40,12 +43,19 @@ export default function Info({
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showKarmaModal, setShowKarmaModal] = useState(false);
-  const { dispatchModal, user, authorizer, getBindAccount } = useWlUserReact();
+  const { dispatchModal, user, authorizer } = useWlUserReact();
   const { totalScore } = useAppSelector(selectKarmaState);
 
   const nameStr = getUserDisplayName(user, authorizer);
-  const twitterAccount = getBindAccount(AccountType.TWITTER);
-  const discordAccount = getBindAccount(AccountType.DISCORD);
+
+  const dispatch = useAppDispatch();
+  const { following, follower } = useAppSelector(selectFrensHandlesState);
+
+  useEffect(() => {
+    dispatch(getFollowing({ reset: true }));
+    dispatch(getFollower({ reset: true }));
+  }, []);
+
   return (
     <InfoBox>
       <div className="user-info">
@@ -108,36 +118,14 @@ export default function Info({
           </div>
           <div className="attach">
             <div>
-              {/* <span>
-                <span className="num">90</span>Following
+              <span>
+                <span className="num">{following?.total || 0}</span>Following
               </span>
               <span>
-                <span className="num">90</span>Follower
-              </span> */}
+                <span className="num">{follower?.total || 0}</span>Follower
+              </span>
               <span>|</span>
               <span>{defaultFormatDate(date || Date.now())}</span>
-            </div>
-            <div>
-              <span
-                className="twitter"
-                title={
-                  twitterAccount
-                    ? twitterAccount.thirdpartyName
-                    : 'twitter unbound'
-                }
-              >
-                <IconTwitter fill={twitterAccount ? '#FFFFFF' : '#718096'} />
-              </span>
-              <span
-                className="discord"
-                title={
-                  discordAccount
-                    ? discordAccount.thirdpartyName
-                    : 'discord unbound'
-                }
-              >
-                <IconDiscord fill={discordAccount ? '#FFFFFF' : '#718096'} />
-              </span>
             </div>
           </div>
         </div>
