@@ -9,8 +9,11 @@ import ListTable from '../components/ListTable';
 import useListData from '../hooks/useListData';
 import { sortPubKey } from '../utils/sortPubkey';
 import BackBtn from '../components/BackBtn';
+import { useGAPageView } from '../hooks/useGoogleAnalytics';
 
 export default function Profile() {
+  useGAPageView();
+
   const { network, did } = useParams();
   const navigate = useNavigate();
   const { pageNum, data, hasMore, loadData, fetchMoreData } = useListData({

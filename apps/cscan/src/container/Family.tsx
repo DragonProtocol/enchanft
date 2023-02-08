@@ -2,12 +2,16 @@ import { useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
+
 import { Network } from '../types';
 import ListTable from '../components/ListTable';
 import useListData from '../hooks/useListData';
 import BackBtn from '../components/BackBtn';
+import { useGAPageView } from '../hooks/useGoogleAnalytics';
 
 export default function Family() {
+  useGAPageView();
+
   const { network, familyOrApp } = useParams();
   const navigate = useNavigate();
   const { pageNum, data, hasMore, loadData, fetchMoreData } = useListData({

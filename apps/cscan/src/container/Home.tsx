@@ -9,8 +9,11 @@ import Search from '../components/Search';
 import NetworkSwitch from '../components/NetworkSwitch';
 import useListData from '../hooks/useListData';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useGAPageView } from '../hooks/useGoogleAnalytics';
 
 export default function Home() {
+  useGAPageView();
+
   const [network, setNetwork] = useLocalStorage(
     'network-select',
     Network.MAINNET
