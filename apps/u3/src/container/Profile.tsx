@@ -16,7 +16,6 @@ import Credential from '../components/profile/Credential';
 import OnChainInterest, {
   OnChainNoItem,
 } from '../components/profile/OnChainInterest';
-import OffChainInterest from '../components/profile/OffChainInterest';
 import {
   addOrDelWallet,
   fetchU3Profiles,
