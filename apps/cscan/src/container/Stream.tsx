@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { getStreamInfo } from '../api';
-import Back from '../components/icons/Back';
+import BackBtn from '../components/BackBtn';
 import StreamTable from '../components/StreamTable';
 import { Network, Stream } from '../types';
 
@@ -70,14 +70,11 @@ export default function StreamPage() {
   return (
     <PageBox>
       <BackContainer>
-        <div
-          onClick={() => {
+        <BackBtn
+          backAction={() => {
             navigate(-1);
           }}
-        >
-          <Back />
-          <span>Back</span>
-        </div>
+        />
       </BackContainer>
       {stream && <StreamTable data={stream} network={network as Network} />}
     </PageBox>

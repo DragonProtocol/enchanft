@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import multiavatar from '@multiavatar/multiavatar';
 
@@ -8,10 +8,11 @@ import { Network } from '../types';
 import ListTable from '../components/ListTable';
 import useListData from '../hooks/useListData';
 import { sortPubKey } from '../utils/sortPubkey';
+import BackBtn from '../components/BackBtn';
 
 export default function Profile() {
-  let { network, did } = useParams();
-
+  const { network, did } = useParams();
+  const navigate = useNavigate();
   const { pageNum, data, hasMore, loadData, fetchMoreData } = useListData({
     network: network as Network,
     did,
@@ -31,6 +32,13 @@ export default function Profile() {
   return (
     <div>
       <Title>
+        <div>
+          <BackBtn
+            backAction={() => {
+              navigate(-1);
+            }}
+          />
+        </div>
         <div
           className="avatar"
           dangerouslySetInnerHTML={{
@@ -59,6 +67,7 @@ export default function Profile() {
 
 const Title = styled.div`
   position: sticky;
+  z-index: 100;
   background-color: #14171a;
   padding: 20px 0;
   top: 0;

@@ -70,12 +70,13 @@ export default function ListTable({
                             item.familyOrApp}
                         </div>
                       </Link>
-                    )) || <div className="xxxx">xxxx</div>}
+                    )) || <div className="xxxx">-</div>}
                   </div>
                 </td>
                 <td>
                   <div className="xxxx">
-                    <span>xxxx</span>
+                    {(item.tags.length > 0 ? item.tags.join(',') : item.type) ||
+                      '-'}
                   </div>
                 </td>
                 <td>
@@ -83,7 +84,7 @@ export default function ListTable({
                     <Link to={`/${network}/stream/${item.schema}`}>
                       {sortPubKey(item.schema, { len: 8, split: '-' })}
                     </Link>
-                  )) || <div className="xxxx">xxxx</div>}
+                  )) || <div className="xxxx">-</div>}
                 </td>
                 <td>
                   <span>

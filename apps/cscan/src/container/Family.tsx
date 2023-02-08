@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Network } from '../types';
 import ListTable from '../components/ListTable';
 import useListData from '../hooks/useListData';
+import BackBtn from '../components/BackBtn';
 
 export default function Family() {
-  let { network, familyOrApp } = useParams();
-
+  const { network, familyOrApp } = useParams();
+  const navigate = useNavigate();
   const { pageNum, data, hasMore, loadData, fetchMoreData } = useListData({
     network: network as Network,
     familyOrApp,
@@ -23,6 +24,13 @@ export default function Family() {
   return (
     <div>
       <Title>
+        <div>
+          <BackBtn
+            backAction={() => {
+              navigate(-1);
+            }}
+          />
+        </div>
         <h3>
           Activity for the family: <span>{familyOrApp}</span> on{' '}
           <span>{network}</span>
@@ -53,6 +61,7 @@ const Title = styled.div`
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  gap: 10px;
   z-index: 100;
 
   > h3 {
