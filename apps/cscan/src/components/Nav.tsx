@@ -90,28 +90,6 @@ const NavContainer = styled.nav`
     }
   }
 
-  &:hover {
-    width: 150px;
-    .logo-container {
-      width: 180px;
-
-      path {
-        fill: url(#paint0_linear_1480_7447);
-      }
-
-      > span {
-        opacity: 1;
-      }
-    }
-
-    .avatar-container {
-      /* justify-content: start; */
-      > span {
-        display: block;
-      }
-    }
-  }
-
   .App-logo {
     width: 40px;
     height: 40px;
