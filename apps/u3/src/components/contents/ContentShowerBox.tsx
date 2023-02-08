@@ -133,7 +133,7 @@ export default function ContentShowerBox({
           <ExtensionSupport
             url={selectContent.link}
             title={selectContent.title}
-            msg="Reader view is not supported for this page! Please view it in new tab."
+            msg="Reader view is not supported for this page! Please view it in the original tab."
             img={
               selectContent.imageUrl ||
               (selectContent.uniProjects && selectContent.uniProjects[0]?.image)
