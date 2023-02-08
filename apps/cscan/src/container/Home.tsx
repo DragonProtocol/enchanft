@@ -96,4 +96,5 @@ const FilterBox = styled.div`
   position: sticky;
   background-color: #14171a;
   top: 0;
+  z-index: 100;
 `;

@@ -31,8 +31,8 @@ export default function NetworkSwitch({
 }
 
 const NetworkBox = styled.div`
-  width: 260px;
-  padding: 4px;
+  width: 204px;
+  padding: 1px;
   height: 40px;
   box-sizing: border-box;
   background: #14171a;
@@ -40,14 +40,14 @@ const NetworkBox = styled.div`
   display: flex;
   gap: 6px;
   align-items: center;
-  border: 1px solid #21262c;
+  border: 1px solid #39424c;
 
   > button {
     cursor: pointer;
     border: none;
     outline: none;
-    width: 122px;
-    height: 32px;
+    width: 100px;
+    height: 36px;
 
     border-radius: 100px;
     background: #14171a;
@@ -59,9 +59,9 @@ const NetworkBox = styled.div`
     text-transform: capitalize;
 
     &.active {
-      background: #21262c;
+      background: #718096;
       font-weight: 500;
-      color: #ffffff;
+      color: #14171a;
     }
   }
 `;

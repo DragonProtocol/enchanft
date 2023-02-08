@@ -1,39 +1,9 @@
-import { useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import {
-  AuthorizerType,
-  useWlUserReact,
-  WlUserActionType,
-  UserAvatar,
-} from '@ecnft/wl-user-react';
 
 import Logo from './Logo';
-import { sortPubKey } from '../utils/sortPubkey';
 
 export default function Nav() {
-  const wlUser = useWlUserReact();
-  const { isLogin, dispatchAction, user } = wlUser;
-
-  const logout = useCallback(() => {
-    dispatchAction({ type: WlUserActionType.LOGOUT });
-  }, [dispatchAction]);
-
-  const login = useCallback(() => {
-    console.log('Date.now', Date.now());
-    dispatchAction({
-      type: WlUserActionType.LOGIN,
-      payload: AuthorizerType.EVM_WALLET_KIT,
-    });
-  }, [dispatchAction]);
-
-  const account = useMemo(() => {
-    if (user && user.accounts && user.accounts[0]) {
-      return user.accounts[0];
-    }
-    return { thirdpartyId: '' };
-  }, [user]);
-
   return (
     <NavContainer>
       <div className="fixed">
@@ -43,26 +13,10 @@ export default function Nav() {
             <span>Alpha</span>
           </div>
         </Link>
-        <div className="login-container">
-          {isLogin && (
-            <div className="avatar-container">
-              <Avatar user={{ id: user.id, avatar: user.avatar }} />
-              <span>{sortPubKey(account.thirdpartyId)}</span>
-            </div>
-          )}
-          {(isLogin && <button onClick={logout}>Disconnect</button>) || (
-            <button onClick={login}>Connect</button>
-          )}
-        </div>
       </div>
     </NavContainer>
   );
 }
-
-const Avatar = styled(UserAvatar)`
-  width: 40px;
-  height: 40px;
-`;
 
 const NavContainer = styled.nav`
   width: 70px;

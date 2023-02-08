@@ -70,12 +70,12 @@ export default function ListTable({
                             item.familyOrApp}
                         </div>
                       </Link>
-                    )) || <div>-</div>}
+                    )) || <div className="xxxx">xxxx</div>}
                   </div>
                 </td>
                 <td>
-                  <div>
-                    <span>-</span>
+                  <div className="xxxx">
+                    <span>xxxx</span>
                   </div>
                 </td>
                 <td>
@@ -83,8 +83,7 @@ export default function ListTable({
                     <Link to={`/${network}/stream/${item.schema}`}>
                       {sortPubKey(item.schema, { len: 8, split: '-' })}
                     </Link>
-                  )) ||
-                    '-'}
+                  )) || <div className="xxxx">xxxx</div>}
                 </td>
                 <td>
                   <span>
@@ -113,29 +112,71 @@ const TableContainer = styled.table`
   tbody tr,
   thead tr {
     font-size: 15px;
-    text-align: center;
-    height: 40px;
+    /* text-align: center; */
+    height: 60px;
+  }
+
+  thead tr th {
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 19px;
+    color: #718096;
+    opacity: 0.8;
+    text-align: start;
+
+    width: 231px !important;
+    overflow: hidden;
+
+    &:first-child {
+      padding-left: 20px;
+    }
+
+    &:last-child {
+      width: 106px !important;
+      padding-left: 0px;
+      padding-right: 20px;
+    }
+  }
+
+  tbody tr td {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    width: 231px !important;
+    overflow: hidden;
+    color: #71aaff;
+
+    &:first-child {
+      padding-left: 20px;
+    }
+
+    &:last-child {
+      width: 106px !important;
+      padding-left: 0px;
+      padding-right: 20px;
+    }
   }
 
   tbody tr {
-    border-top: 1px solid #e7eaf2;
+    border-top: 1px solid #39424c;
   }
 
   tbody td {
-    padding: 10px;
+    height: 88px;
+    /* padding: 10px 0; */
   }
 
   .did-container {
     display: flex;
     gap: 10px;
-    justify-content: center;
+    /* justify-content: center; */
 
     & div {
       text-align: start;
     }
 
     .badge {
-      background-color: #f1f2f3;
+      background-color: #718096;
       border-radius: 20px;
       padding: 4px 10px;
       font-size: 13px;
@@ -145,26 +186,44 @@ const TableContainer = styled.table`
       display: flex;
     }
     .grey {
-      color: #79838e;
+      color: #14171a;
     }
   }
 
   & .family-container {
-    text-align: center;
+    /* text-align: center; */
+    max-width: 166px;
+    overflow: hidden;
+    box-sizing: border-box;
     .family {
-      margin: 0 auto;
+      /* margin: 0 auto; */
       font-weight: 400;
       font-size: 12px;
       line-height: 14px;
 
-      color: #a86ecb;
+      color: #6c8fc1;
 
-      padding: 5px 10px;
-
+      padding: 2px 4px;
       width: fit-content;
 
-      border: 1px solid #a86ecb;
+      border: 1px solid #6c8fc1;
       border-radius: 4px;
     }
+  }
+
+  & .xxxx {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+
+    color: #ffffff;
+  }
+
+  & time {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+
+    color: #ffffff;
   }
 `;

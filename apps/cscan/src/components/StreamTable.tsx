@@ -137,7 +137,7 @@ const TableContainer = styled.div`
   > div {
     display: flex;
     padding: 20px 0;
-    border-bottom: 1px solid #e7eaf2;
+    border-bottom: 1px solid #39424c;
     &:first-child {
       padding-top: 15px;
     }

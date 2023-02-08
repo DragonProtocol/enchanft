@@ -1,13 +1,15 @@
 import { AxiosError, isAxiosError } from 'axios';
 import { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { getStreamInfo } from '../api';
+import Back from '../components/icons/Back';
 import StreamTable from '../components/StreamTable';
 import { Network, Stream } from '../types';
 
 export default function StreamPage() {
   let { network, streamId } = useParams();
+  const navigate = useNavigate();
   const [stream, setStream] = useState<Stream>();
   const [serverErrMsg, setServerErrMsg] = useState<{
     status: number;
@@ -67,14 +69,55 @@ export default function StreamPage() {
 
   return (
     <PageBox>
+      <BackContainer>
+        <div
+          onClick={() => {
+            navigate(-1);
+          }}
+        >
+          <Back />
+          <span>Back</span>
+        </div>
+      </BackContainer>
       {stream && <StreamTable data={stream} network={network as Network} />}
     </PageBox>
   );
 }
 
-const PageBox = styled.div`
-  margin: 20px 0;
+const BackContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0;
+  position: sticky;
+  background-color: #14171a;
+  top: 0;
+  z-index: 100;
 
+  > div {
+    cursor: pointer;
+    padding: 10px;
+    gap: 8px;
+    box-sizing: border-box;
+    width: 81px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+
+    background: #1a1e23;
+    border: 1px solid #39424c;
+    border-radius: 100px;
+
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+
+    color: #718096;
+  }
+`;
+
+const PageBox = styled.div`
+  margin-bottom: 50px;
   > .err {
     display: flex;
     height: 100vh;

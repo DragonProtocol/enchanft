@@ -42,7 +42,7 @@ export default function Search({
 }
 
 const SearchBox = styled.div`
-  border: 1px solid #21262c;
+  border: 1px solid #39424c;
   width: 400px;
   height: 40px;
   padding: 5px;

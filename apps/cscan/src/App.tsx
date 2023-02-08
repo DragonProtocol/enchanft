@@ -64,6 +64,7 @@ const AppContainer = styled.div`
   > main {
     flex-grow: 1;
     margin: 0 auto;
-    max-width: calc(100vw - 300px);
+    width: calc(100vw - 300px);
+    max-width: 1300px;
   }
 `;
