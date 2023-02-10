@@ -2,12 +2,15 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:00:23
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-02 14:56:46
+ * @LastEditTime: 2023-02-07 17:35:08
  * @Description: file description
  */
 import { useEffect, useState } from 'react';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { fetchPlatformImgUrlByLink } from '../../utils/platform';
+import {
+  fetchPlatformImgUrlByLink,
+  platformLogoReplaceMap,
+} from '../../utils/platform';
 import LinkSvgUrl from '../common/icons/svgs/link.svg';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
@@ -26,12 +29,12 @@ export default function LinkBox({
   const [url, setUrl] = useState('');
   useEffect(() => {
     if (logo) {
-      setUrl(logo);
+      setUrl(platformLogoReplaceMap[logo] || logo);
       return;
     }
     fetchPlatformImgUrlByLink(text)
       .then((resp) => {
-        setUrl(resp);
+        setUrl(platformLogoReplaceMap[resp] || resp);
       })
       .catch(() => {
         setUrl('');

@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import {
-  AccountType,
   getUserDisplayName,
   UserAvatar,
   useWlUserReact,
@@ -13,8 +12,6 @@ import { Copy } from '../icons/copy';
 
 import { Refresh } from '../icons/refresh';
 import { Edit } from '../icons/edit';
-import IconTwitter from '../common/icons/IconTwitter';
-import IconDiscord from '../common/icons/IconDiscord';
 import WalletList from './WalletList';
 import AddWalletModal from './AddWalletModal';
 import { ProfileWallet } from '../../services/types/profile';
@@ -46,12 +43,10 @@ export default function Info({
 }) {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showKarmaModal, setShowKarmaModal] = useState(false);
-  const { dispatchModal, user, authorizer, getBindAccount } = useWlUserReact();
+  const { dispatchModal, user, authorizer } = useWlUserReact();
   const { totalScore } = useAppSelector(selectKarmaState);
 
   const nameStr = getUserDisplayName(user, authorizer);
-  const twitterAccount = getBindAccount(AccountType.TWITTER);
-  const discordAccount = getBindAccount(AccountType.DISCORD);
 
   const dispatch = useAppDispatch();
   const { following, follower } = useAppSelector(selectFrensHandlesState);
@@ -131,28 +126,6 @@ export default function Info({
               </span>
               <span>|</span>
               <span>{defaultFormatDate(date || Date.now())}</span>
-            </div>
-            <div>
-              <span
-                className="twitter"
-                title={
-                  twitterAccount
-                    ? twitterAccount.thirdpartyName
-                    : 'twitter unbound'
-                }
-              >
-                <IconTwitter fill={twitterAccount ? '#FFFFFF' : '#718096'} />
-              </span>
-              <span
-                className="discord"
-                title={
-                  discordAccount
-                    ? discordAccount.thirdpartyName
-                    : 'discord unbound'
-                }
-              >
-                <IconDiscord fill={discordAccount ? '#FFFFFF' : '#718096'} />
-              </span>
             </div>
           </div>
         </div>

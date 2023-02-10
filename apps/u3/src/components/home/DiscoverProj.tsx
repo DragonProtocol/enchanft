@@ -65,10 +65,10 @@ function Card({
             <h3>{name}</h3>
             <span>{/* <Subtract /> */}</span>
           </div>
-          <div>
+          {/* <div>
             <span>{events.length} events</span>
             <span>{contents.length} content</span>
-          </div>
+          </div> */}
         </div>
       </CardBox>
     </CardWrapper>

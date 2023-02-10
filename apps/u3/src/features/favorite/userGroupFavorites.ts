@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-06 14:31:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-08 14:48:28
+ * @LastEditTime: 2023-02-09 14:44:15
  * @Description: 用户的 favorites 分组数据
  */
 import {
@@ -55,13 +55,28 @@ const initGroupFavoritesState: GroupFavoritesState = {
 export const fetchUserGroupFavorites = createAsyncThunk<
   UserGroupFavorites,
   undefined
->('favorite/userGroupFavorites', async (params, { rejectWithValue }) => {
-  const resp = await fetchUserFavoritesByGroup();
-  if (resp.data.code === ApiRespCode.SUCCESS) {
-    return resp.data.data;
+>(
+  'favorite/userGroupFavorites',
+  async (params, { rejectWithValue }) => {
+    const resp = await fetchUserFavoritesByGroup();
+    if (resp.data.code === ApiRespCode.SUCCESS) {
+      return resp.data.data;
+    }
+    return rejectWithValue(new Error(resp.data.msg));
+  },
+  {
+    condition: (params, { getState }) => {
+      const state = getState() as RootState;
+      const { userGroupFavorites } = state;
+      const { status } = userGroupFavorites;
+      // 之前的请求正在进行中,则阻止新的请求
+      if (status === AsyncRequestStatus.PENDING) {
+        return false;
+      }
+      return true;
+    },
   }
-  return rejectWithValue(new Error(resp.data.msg));
-});
+);
 
 export const userGroupFavoritesSlice = createSlice({
   name: 'userGroupFavorites',

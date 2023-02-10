@@ -3,7 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { ContentListItem } from '../../services/types/contents';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
-import { fetchPlatformImgUrlByLink } from '../../utils/platform';
+import {
+  fetchPlatformImgUrlByLink,
+  platformLogoReplaceMap,
+} from '../../utils/platform';
 import CardBase from '../common/card/CardBase';
 import EllipsisText from '../common/text/EllipsisText';
 import Badge from '../contents/Badge';
@@ -77,12 +80,13 @@ function Card({
     }
     fetchPlatformImgUrlByLink(link)
       .then((resp) => {
-        setUrl(resp);
+        setUrl(platformLogoReplaceMap[resp] || resp);
       })
       .catch(() => {
         setUrl('');
       });
   }, [platformLogo, link]);
+
   return (
     <CardWrapper className="card-wraper">
       <CardBody onClick={clickAction} className="card-body">
