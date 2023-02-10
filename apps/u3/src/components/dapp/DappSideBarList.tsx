@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-10 10:25:32
+ * @LastEditTime: 2023-02-10 10:50:25
  * @Description: file description
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -106,64 +106,60 @@ export default function DappsSideBarList() {
   }, []);
 
   return (
-    <>
-      <DappsSideBarListWrapper isOpen={isOpen}>
-        <DappsSideBarListInner
-          onScroll={() => {
-            updatePopperStyle();
-          }}
-        >
-          <Title>Your Dapps</Title>
-          {transitions((styles, item) => (
-            <animated.div style={styles}>
-              <DappSideBarListItem
-                data={item}
-                onOpen={() => openDappModal(item.id)}
-                onOpenHandles={() => setHandlesItemId(item.id)}
-                disabled={favorQueueIds.includes(item.id)}
-                ref={(el) => {
-                  if (el) {
-                    itemElsWeakMap.current.set(item, el);
-                  }
-                }}
-              />
-            </animated.div>
-          ))}
-        </DappsSideBarListInner>
-        <HandlesPopperBox
-          className="handles-pop-box"
-          ref={(el) => {
-            if (el) {
-              handlesPopperEl.current = el;
-            }
-          }}
-        >
-          <HandlesPopperInner>
-            <OptionItem
-              onClick={() =>
-                handlesItem && navigate(`/dapps/${handlesItem.id}`)
-              }
-            >
-              <OptionIcon src={InfoCircleSvgUrl} />
-              <OptionLabel>Dapp Info</OptionLabel>
-            </OptionItem>
-            <OptionItem
-              onClick={() => {
-                if (handlesItem) {
-                  onUnfavor(handlesItem);
-                  setHandlesItemId(null);
+    <DappsSideBarListWrapper isOpen={isOpen}>
+      <DappsSideBarListInner
+        onScroll={() => {
+          updatePopperStyle();
+        }}
+      >
+        <Title>Your Dapps</Title>
+        {transitions((styles, item) => (
+          <animated.div style={styles}>
+            <DappSideBarListItem
+              data={item}
+              onOpen={() => openDappModal(item.id)}
+              onOpenHandles={() => setHandlesItemId(item.id)}
+              disabled={favorQueueIds.includes(item.id)}
+              ref={(el) => {
+                if (el) {
+                  itemElsWeakMap.current.set(item, el);
                 }
               }}
-            >
-              <OptionIcon src={TrashSvgUrl} />
-              <OptionLabel>Uninstall</OptionLabel>
-            </OptionItem>
-          </HandlesPopperInner>
-          <HandlesPopperArrow />
-        </HandlesPopperBox>
-      </DappsSideBarListWrapper>
+            />
+          </animated.div>
+        ))}
+      </DappsSideBarListInner>
+      <HandlesPopperBox
+        className="handles-pop-box"
+        ref={(el) => {
+          if (el) {
+            handlesPopperEl.current = el;
+          }
+        }}
+      >
+        <HandlesPopperInner>
+          <OptionItem
+            onClick={() => handlesItem && navigate(`/dapps/${handlesItem.id}`)}
+          >
+            <OptionIcon src={InfoCircleSvgUrl} />
+            <OptionLabel>Dapp Info</OptionLabel>
+          </OptionItem>
+          <OptionItem
+            onClick={() => {
+              if (handlesItem) {
+                onUnfavor(handlesItem);
+                setHandlesItemId(null);
+              }
+            }}
+          >
+            <OptionIcon src={TrashSvgUrl} />
+            <OptionLabel>Uninstall</OptionLabel>
+          </OptionItem>
+        </HandlesPopperInner>
+        <HandlesPopperArrow />
+      </HandlesPopperBox>
       <DappWebsiteModal />
-    </>
+    </DappsSideBarListWrapper>
   );
 }
 const DappsSideBarListWrapper = styled.div<{ isOpen: boolean }>`
@@ -196,7 +192,7 @@ const Title = styled.div`
 
 const HandlesPopperBox = styled.div`
   visibility: hidden;
-  z-index: 1;
+  z-index: 2;
   position: absolute;
   right: 100%;
   display: flex;
