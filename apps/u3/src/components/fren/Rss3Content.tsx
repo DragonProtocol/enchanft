@@ -455,9 +455,10 @@ const tagComponentsMap = {
 
 export type Rss3ContentProps = {
   address: Array<string>;
-  emptyText: string;
+  empty: JSX.Element;
 };
-export default function Rss3Content({ address, emptyText }: Rss3ContentProps) {
+
+export default function Rss3Content({ address, empty }: Rss3ContentProps) {
   const dispatch = useAppDispatch();
   const {
     feed,
@@ -565,7 +566,7 @@ export default function Rss3Content({ address, emptyText }: Rss3ContentProps) {
       }}
     >
       <Rss3ContentWrapper>
-        {!(feed?.result?.length > 0) && !loading ? <p>{emptyText}</p> : null}
+        {!(feed?.result?.length > 0) && !loading ? empty : null}
         {feed?.result?.map((item, index) => {
           const {
             owner,
@@ -640,10 +641,14 @@ const Rss3ContentWrapper = styled.div`
     margin-top: 70px;
   }
 
+  .no-item {
+    margin-bottom: -50px;
+  }
+
   .load-more {
     /* height: 100%; */
     flex-grow: 1;
-    margin: 20px;
+    margin-top: 20px;
     display: flex;
     justify-content: center;
     align-items: center;

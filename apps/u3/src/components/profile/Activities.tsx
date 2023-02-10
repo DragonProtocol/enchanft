@@ -14,7 +14,7 @@ export default function Activities() {
       <div className="lists">
         <Rss3Content
           address={['0x74667801993b457b8ccf19d03bbbaa52b7fff43b']}
-          emptyText="No activities found on Ethereum."
+          empty={<NoActivities />}
         />
       </div>
       {/* {(transList.length > 0 &&
