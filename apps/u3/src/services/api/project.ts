@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 11:03:21
+ * @LastEditTime: 2023-02-09 13:53:17
  * @Description: file description
  */
 import {
@@ -44,6 +44,18 @@ export function favorProject(
   return request({
     url: `/uniProjects/${id}/favors`,
     method: 'post',
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
+export function unfavorProject(
+  id: number
+): RequestPromise<ProjectFavorHandleResponse> {
+  return request({
+    url: `/uniProjects/${id}/favors`,
+    method: 'delete',
     headers: {
       needToken: true,
     },

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 12:51:57
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 19:03:21
+ * @LastEditTime: 2023-02-09 15:25:46
  * @Description: file description
  */
 import {
@@ -18,8 +18,14 @@ import {
   ProjectExploreListItemResponse,
 } from '../../services/types/project';
 import type { RootState } from '../../store/store';
-import { favorProject as favorProjectApi } from '../../services/api/project';
-import { addOneWithProjects } from '../favorite/userGroupFavorites';
+import {
+  favorProject as favorProjectApi,
+  unfavorProject as unfavorProjectApi,
+} from '../../services/api/project';
+import {
+  addOneWithProjects,
+  removeOneWithProjects,
+} from '../favorite/userGroupFavorites';
 import { updateOne as updateOneWithProjectExplore } from './projectExploreList';
 import { messages } from '../../utils/message';
 
@@ -83,6 +89,36 @@ export const favorProject = createAsyncThunk(
       const newData = { ...params, favored: true };
       dispatch(updateOneWithProjectExplore(newData));
       dispatch(addOneWithProjects(newData));
+      dispatch(removeOneForFavorProjectQueue(params.id));
+      return newData;
+    }
+    dispatch(removeOneForFavorProjectQueue(params.id));
+    throw new Error(resp.data.msg);
+  },
+  {
+    condition: (params: FavorProjectParams, { getState }) => {
+      const state = getState() as RootState;
+      const { selectById } = favorProjectQueueEntity.getSelectors();
+      const item = selectById(
+        state.projectHandles.favorProjectQueue,
+        params.id
+      );
+      // 如果正在请求阻止新的请求
+      return !item;
+    },
+  }
+);
+
+// unfavor project
+export const unfavorProject = createAsyncThunk(
+  'user/projectHandles/unfavorProject',
+  async (params: FavorProjectParams, { dispatch }) => {
+    dispatch(addOneToFavorProjectQueue(params));
+    const resp = await unfavorProjectApi(params.id);
+    if (resp.data.code === 0) {
+      const newData = { ...params, favored: false };
+      dispatch(updateOneWithProjectExplore(newData));
+      dispatch(removeOneWithProjects(params.id));
       dispatch(removeOneForFavorProjectQueue(params.id));
       return newData;
     }

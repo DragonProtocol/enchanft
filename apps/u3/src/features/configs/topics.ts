@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-09 17:55:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-17 14:20:58
+ * @LastEditTime: 2023-02-09 14:57:39
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -63,6 +63,18 @@ export const fetchConfigsTopics = createAsyncThunk<Topics, undefined>(
       };
     }
     return rejectWithValue(new Error(resp.data.msg));
+  },
+  {
+    condition: (params, { getState }) => {
+      const state = getState() as RootState;
+      const { configsTopics } = state;
+      const { status } = configsTopics;
+      // 之前的请求正在进行中,则阻止新的请求
+      if (status === AsyncRequestStatus.PENDING) {
+        return false;
+      }
+      return true;
+    },
   }
 );
 
