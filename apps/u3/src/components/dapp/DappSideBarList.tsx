@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-10 10:02:19
+ * @LastEditTime: 2023-02-10 10:50:25
  * @Description: file description
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -75,9 +75,9 @@ export default function DappsSideBarList() {
     if (handlesItem && itemElsWeakMap.current.has(handlesItem)) {
       const itemEl = itemElsWeakMap.current.get(handlesItem);
       const contentRect = (itemEl as HTMLElement).getBoundingClientRect();
-      const { bottom } = contentRect;
+      const { bottom, height } = contentRect;
       const { offsetHeight } = handlesPopperEl.current;
-      const top = bottom - offsetHeight / 2;
+      const top = bottom - height / 2 - offsetHeight / 2;
       handlesPopperEl.current.style.top = `${top}px`;
     }
   };
@@ -106,64 +106,60 @@ export default function DappsSideBarList() {
   }, []);
 
   return (
-    <>
-      <DappsSideBarListWrapper isOpen={isOpen}>
-        <DappsSideBarListInner
-          onScroll={() => {
-            updatePopperStyle();
-          }}
-        >
-          <Title>Your Dapps</Title>
-          {transitions((styles, item) => (
-            <animated.div style={styles}>
-              <DappSideBarListItem
-                data={item}
-                onOpen={() => openDappModal(item.id)}
-                onOpenHandles={() => setHandlesItemId(item.id)}
-                disabled={favorQueueIds.includes(item.id)}
-                ref={(el) => {
-                  if (el) {
-                    itemElsWeakMap.current.set(item, el);
-                  }
-                }}
-              />
-            </animated.div>
-          ))}
-        </DappsSideBarListInner>
-        <HandlesPopperBox
-          className="handles-pop-box"
-          ref={(el) => {
-            if (el) {
-              handlesPopperEl.current = el;
-            }
-          }}
-        >
-          <HandlesPopperInner>
-            <OptionItem
-              onClick={() =>
-                handlesItem && navigate(`/dapps/${handlesItem.id}`)
-              }
-            >
-              <OptionIcon src={InfoCircleSvgUrl} />
-              <OptionLabel>Dapp Info</OptionLabel>
-            </OptionItem>
-            <OptionItem
-              onClick={() => {
-                if (handlesItem) {
-                  onUnfavor(handlesItem);
-                  setHandlesItemId(null);
+    <DappsSideBarListWrapper isOpen={isOpen}>
+      <DappsSideBarListInner
+        onScroll={() => {
+          updatePopperStyle();
+        }}
+      >
+        <Title>Your Dapps</Title>
+        {transitions((styles, item) => (
+          <animated.div style={styles}>
+            <DappSideBarListItem
+              data={item}
+              onOpen={() => openDappModal(item.id)}
+              onOpenHandles={() => setHandlesItemId(item.id)}
+              disabled={favorQueueIds.includes(item.id)}
+              ref={(el) => {
+                if (el) {
+                  itemElsWeakMap.current.set(item, el);
                 }
               }}
-            >
-              <OptionIcon src={TrashSvgUrl} />
-              <OptionLabel>Uninstall</OptionLabel>
-            </OptionItem>
-          </HandlesPopperInner>
-          <HandlesPopperArrow />
-        </HandlesPopperBox>
-      </DappsSideBarListWrapper>
+            />
+          </animated.div>
+        ))}
+      </DappsSideBarListInner>
+      <HandlesPopperBox
+        className="handles-pop-box"
+        ref={(el) => {
+          if (el) {
+            handlesPopperEl.current = el;
+          }
+        }}
+      >
+        <HandlesPopperInner>
+          <OptionItem
+            onClick={() => handlesItem && navigate(`/dapps/${handlesItem.id}`)}
+          >
+            <OptionIcon src={InfoCircleSvgUrl} />
+            <OptionLabel>Dapp Info</OptionLabel>
+          </OptionItem>
+          <OptionItem
+            onClick={() => {
+              if (handlesItem) {
+                onUnfavor(handlesItem);
+                setHandlesItemId(null);
+              }
+            }}
+          >
+            <OptionIcon src={TrashSvgUrl} />
+            <OptionLabel>Uninstall</OptionLabel>
+          </OptionItem>
+        </HandlesPopperInner>
+        <HandlesPopperArrow />
+      </HandlesPopperBox>
       <DappWebsiteModal />
-    </>
+    </DappsSideBarListWrapper>
   );
 }
 const DappsSideBarListWrapper = styled.div<{ isOpen: boolean }>`
@@ -196,7 +192,7 @@ const Title = styled.div`
 
 const HandlesPopperBox = styled.div`
   visibility: hidden;
-  z-index: 1;
+  z-index: 2;
   position: absolute;
   right: 100%;
   display: flex;
@@ -240,7 +236,7 @@ const OptionItem = styled.div<{ isActive?: boolean }>`
       !props.isActive &&
       `
         background: #14171a;
-        opacity: 0.6;
+        color: #FFFFFF;
       `};
   }
 `;
