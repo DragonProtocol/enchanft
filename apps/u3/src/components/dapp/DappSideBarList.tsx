@@ -75,9 +75,9 @@ export default function DappsSideBarList() {
     if (handlesItem && itemElsWeakMap.current.has(handlesItem)) {
       const itemEl = itemElsWeakMap.current.get(handlesItem);
       const contentRect = (itemEl as HTMLElement).getBoundingClientRect();
-      const { bottom } = contentRect;
+      const { bottom, height } = contentRect;
       const { offsetHeight } = handlesPopperEl.current;
-      const top = bottom - offsetHeight / 2;
+      const top = bottom - height / 2 - offsetHeight / 2;
       handlesPopperEl.current.style.top = `${top}px`;
     }
   };
