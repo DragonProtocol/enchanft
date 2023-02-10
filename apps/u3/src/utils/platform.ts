@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-20 18:27:13
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-08 18:31:32
+ * @LastEditTime: 2023-02-09 17:45:06
  * @Description: file description
  */
 const loadImg = (url: string): Promise<string> => {
@@ -36,7 +36,8 @@ export const fetchPlatformImgUrlByLink = async (
   link: string
 ): Promise<string> => {
   const linkSplitAry = link.split('/');
-  const platformImgUrl = `${linkSplitAry[0]}//${linkSplitAry[2]}/favicon`;
+  const platformUrl = `${linkSplitAry[0]}//${linkSplitAry[2]}`;
+  const platformImgUrl = `${platformUrl}/favicon`;
 
   try {
     const img = `${platformImgUrl}.ico`;
@@ -57,7 +58,7 @@ export const fetchPlatformImgUrlByLink = async (
     /* empty */
   }
 
-  return '';
+  return platformLogoEmptyMap[platformUrl] || '';
 };
 
 export const platformLogoReplaceMap = {
@@ -71,4 +72,8 @@ export const platformLogoReplaceMap = {
     'https://storage.googleapis.com/image.blocktempo.com/2019/04/cropped-黑字白框動區Logo_工作區域-1-750x750-2-2-e1555450212503-1-180x180.png',
   'http://sites.libsyn.com/favicon.png':
     'https://libsyn.com/blog/wp-content/uploads/2019/08/cropped-libsynV3-192x192.png',
+};
+
+export const platformLogoEmptyMap = {
+  'https://www.simplecast.com': 'https://www.simplecast.com/hubfs/favicon.ico',
 };

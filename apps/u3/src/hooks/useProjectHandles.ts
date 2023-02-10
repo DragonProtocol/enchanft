@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-13 09:39:52
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 10:47:52
+ * @LastEditTime: 2023-02-09 14:11:54
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -10,6 +10,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
   favorProject,
   selectIdsFavorProjectQueue,
+  unfavorProject,
 } from '../features/project/projectHandles';
 import { ProjectExploreListItemResponse } from '../services/types/project';
 import useUserFavorites from './useUserFavorites';
@@ -38,10 +39,22 @@ export default () => {
     },
     [dispatch, handleCallbackVerifyLogin]
   );
+  const onUnfavor = useCallback(
+    (item: ProjectExploreListItemResponse) => {
+      return new Promise((resolve, reject) => {
+        handleCallbackVerifyLogin(async () => {
+          const data = await dispatch(unfavorProject(item));
+          resolve(data.payload);
+        });
+      });
+    },
+    [dispatch, handleCallbackVerifyLogin]
+  );
   return {
     favoredIds,
     favorQueueIds,
     onFavor,
+    onUnfavor,
     onShare,
   };
 };
