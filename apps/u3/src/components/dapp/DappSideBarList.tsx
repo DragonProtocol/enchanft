@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-10 10:02:19
+ * @LastEditTime: 2023-02-10 10:25:32
  * @Description: file description
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -240,7 +240,7 @@ const OptionItem = styled.div<{ isActive?: boolean }>`
       !props.isActive &&
       `
         background: #14171a;
-        opacity: 0.6;
+        color: #FFFFFF;
       `};
   }
 `;
