@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-02-06 10:47:32
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-08 14:19:25
+ * @LastEditTime: 2023-02-11 12:11:15
  * @Description: file description
 -->
 <!DOCTYPE html>
@@ -48,16 +48,11 @@
       }
       html,
       body {
-        -moz-osx-font-smoothing: grayscale;
-        -webkit-font-smoothing: antialiased;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
         background-color: #14171a;
         margin: 0;
         padding: 0;
-        width: 100%;
+        width: 100vw;
         height: 100vh;
-        box-sizing: border-box;
         font-family: 'Rubik';
         font-style: normal;
       }
@@ -83,7 +78,7 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 40px;
+        padding: 38px;
         box-sizing: border-box;
       }
       .logo {
@@ -108,12 +103,24 @@
         margin-top: 20px;
         text-align: center;
       }
+      @media (max-width: 768px) {
+        .description {
+          font-size: 14px;
+          line-height: 17px;
+        }
+      }
       .form-box {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 10px;
         margin-top: 20px;
+      }
+      @media (max-width: 768px) {
+        .form-box {
+          flex-direction: column;
+          gap: 20px;
+        }
       }
       .form-box .email {
         box-sizing: border-box;
@@ -144,33 +151,25 @@
         text-align: center;
         color: #ffffff;
       }
-      .follow-btn {
-        width: 240px;
-        height: 52px;
-        background: linear-gradient(0deg, #ffffff, #ffffff),
-          linear-gradient(92.8deg, #4ba0eb 0%, #4b78eb 96.23%);
-        margin-top: 40px;
-        gap: 10px;
-      }
-      .follow-btn .text {
-        font-weight: 400;
-        font-size: 16px;
-        line-height: 19px;
-        color: #14171a;
-      }
       .links-box {
         display: flex;
         justify-content: center;
         align-items: center;
         gap: 20px;
         align-content: flex-end;
-        margin-top: 130px;
+        margin-top: 76px;
       }
       .links-box .btn {
         width: 240px;
         height: 52px;
         background: #1b1e23;
         gap: 10px;
+      }
+      @media (max-width: 768px) {
+        .links-box {
+          flex-direction: column;
+          margin-top: 80px;
+        }
       }
       .links-box .btn .text {
         font-weight: 400;
@@ -183,7 +182,7 @@
   <body>
     <div id="root">
       <img src="/imgs/logo.svg" alt="us3r" class="logo" />
-      <div class="title">Your Wallet is your own Bank, and Data Center</div>
+      <!-- <div class="title">Your Wallet is your own Bank, and Data Center</div> -->
       <div class="description">
         Be the first to learn about unstoppable hybrid dapp!
       </div>
@@ -197,21 +196,21 @@
         />
         <button type="submit" class="submit-btn">Subscribe</button>
       </form>
-      <button
-        class="follow-btn"
-        onclick="window.open('https://twitter.com/getus3r')"
-      >
-        <img src="/imgs/twitter.svg" alt="twitter" class="icon" />
-        <span class="text">Follow us on Twitter</span>
-      </button>
       <div class="links-box">
+        <button
+          class="btn"
+          onclick="window.open('https://twitter.com/getus3r')"
+        >
+          <img src="/imgs/twitter.svg" alt="twitter" class="icon" />
+          <span class="text">Twitter</span>
+        </button>
         <button class="btn" onclick="window.open('https://u3.xyz')">
-          <img src="/imgs/u3-logo.svg" alt="u3" class="icon" />
-          <span class="text">u3.xyz</span>
+          <!-- <img src="/imgs/u3-logo.svg" alt="u3" class="icon" /> -->
+          <span class="text">U3.xyz</span>
         </button>
         <button class="btn" onclick="window.open('https://s3.xyz')">
-          <img src="/imgs/s3-logo.svg" alt="u3" class="icon" />
-          <span class="text">s3.xyz</span>
+          <!-- <img src="/imgs/s3-logo.svg" alt="u3" class="icon" /> -->
+          <span class="text">S3.xyz</span>
         </button>
       </div>
     </div>
