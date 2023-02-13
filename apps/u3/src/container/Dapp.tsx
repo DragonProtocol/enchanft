@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 18:57:59
+ * @LastEditTime: 2023-02-13 12:07:11
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -179,6 +179,7 @@ export default function Dapp() {
 }
 
 const DappWrapper = styled(MainWrapper)`
+  height: auto;
   display: flex;
   flex-direction: column;
   gap: 20px;
