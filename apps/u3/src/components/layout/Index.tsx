@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 10:49:57
+ * @LastEditTime: 2023-02-13 14:58:45
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
@@ -21,7 +21,9 @@ function Layout() {
       <Menu />
       <RightBox>
         <RightInner>
-          <Main />
+          <MainBox className="main-box">
+            <Main />
+          </MainBox>
         </RightInner>
         <DappsSideBarList />
       </RightBox>
@@ -51,32 +53,36 @@ const RightBox = styled.div`
   margin-left: 60px;
   height: 100%;
   width: calc(100% - 60px);
-  box-sizing: border-box;
-  overflow-y: auto;
-  overflow-x: hidden;
   display: flex;
 `;
 const RightInner = styled.div`
   height: 100%;
-  margin: 0 auto;
   box-sizing: border-box;
+  width: 0;
+  flex: 1;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+`;
+const MainBox = styled.div`
   @media (max-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
-    width: 0;
-    flex: 1;
+    width: 100%;
   }
   @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
     width: calc(${MEDIA_BREAK_POINTS.xxxl}px - 60px);
+    max-width: 100%;
   }
+  height: 100%;
+  margin: 0 auto;
 `;
 
 export const MainWrapper = styled.div`
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 24px;
   box-sizing: border-box;
-  overflow-y: auto;
+  overflow-x: auto;
   @media (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
     width: ${MEDIA_BREAK_POINTS.xl}px;
-    overflow-x: auto;
   }
 `;
