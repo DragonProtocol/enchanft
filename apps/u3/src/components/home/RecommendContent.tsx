@@ -13,6 +13,7 @@ import Badge from '../contents/Badge';
 import LinkBox from '../contents/LinkBox';
 
 import Title from './Title';
+import LinkSvgUrl from '../common/icons/svgs/link.svg';
 
 export default function RecommendContent({
   data,
@@ -104,7 +105,15 @@ function Card({
             <ContentRecReason>{recReason}</ContentRecReason>
           </BottomRow>
         </CardBottom>
-        {url && <PlatformImg src={url} title={link} />}
+        {url && (
+          <PlatformImg
+            src={url}
+            title={link}
+            onError={(e) => {
+              e.currentTarget.src = LinkSvgUrl;
+            }}
+          />
+        )}
       </CardBody>
     </CardWrapper>
   );

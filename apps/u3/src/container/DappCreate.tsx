@@ -4,11 +4,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 18:59:14
+ * @LastEditTime: 2023-02-13 15:02:29
  * @Description: file description
  */
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+import styled from 'styled-components';
 import CardBase from '../components/common/card/CardBase';
 import DappForm from '../components/dapp/DappForm';
 import { MainWrapper } from '../components/layout/Index';
@@ -59,7 +60,7 @@ function DappCreate() {
     [pending]
   );
   return (
-    <MainWrapper>
+    <ContainerWrapper>
       <CardBase>
         <DappForm
           initialValues={initialValues}
@@ -70,7 +71,10 @@ function DappCreate() {
           displayReset
         />
       </CardBase>
-    </MainWrapper>
+    </ContainerWrapper>
   );
 }
 export default DappCreate;
+const ContainerWrapper = styled(MainWrapper)`
+  height: auto;
+`;

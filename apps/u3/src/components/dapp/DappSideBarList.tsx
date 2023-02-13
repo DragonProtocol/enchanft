@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-10 10:50:25
+ * @LastEditTime: 2023-02-13 11:25:59
  * @Description: file description
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -83,9 +83,7 @@ export default function DappsSideBarList() {
   };
   useEffect(() => {
     if (handlesPopperEl.current) {
-      handlesPopperEl.current.style.visibility = handlesItem
-        ? 'visible'
-        : 'hidden';
+      handlesPopperEl.current.style.display = handlesItem ? 'flex' : 'none';
       updatePopperStyle();
     }
   }, [handlesItem]);
@@ -139,7 +137,12 @@ export default function DappsSideBarList() {
       >
         <HandlesPopperInner>
           <OptionItem
-            onClick={() => handlesItem && navigate(`/dapps/${handlesItem.id}`)}
+            onClick={() => {
+              if (handlesItem) {
+                navigate(`/dapps/${handlesItem.id}`);
+                setHandlesItemId(null);
+              }
+            }}
           >
             <OptionIcon src={InfoCircleSvgUrl} />
             <OptionLabel>Dapp Info</OptionLabel>
@@ -191,7 +194,6 @@ const Title = styled.div`
 `;
 
 const HandlesPopperBox = styled.div`
-  visibility: hidden;
   z-index: 2;
   position: absolute;
   right: 100%;
