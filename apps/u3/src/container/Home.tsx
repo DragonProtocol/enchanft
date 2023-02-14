@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-13 10:56:22
+ * @LastEditTime: 2023-02-14 11:34:23
  * @Description: file description
  */
 
@@ -129,7 +129,6 @@ function Home() {
 export default Home;
 const HomeWrapper = styled(MainWrapper)`
   height: auto;
-  overflow: scroll;
   display: flex;
   flex-direction: column;
   gap: 40px;
