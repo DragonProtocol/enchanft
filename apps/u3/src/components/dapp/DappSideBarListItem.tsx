@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-10 10:07:46
+ * @LastEditTime: 2023-02-16 16:42:41
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -30,11 +30,13 @@ export default React.forwardRef(function DappSideBarListItem(
     >
       <ListItemInner>
         <ItemImg
+          draggable={false}
           src={data.image}
           onClick={() => !disabled && onOpen && onOpen()}
           title={data.name}
         />
         <HandleIconBox
+          draggable={false}
           className="handle-icon-box"
           onClick={(e) => {
             e.stopPropagation();

@@ -789,6 +789,7 @@ importers:
       js-file-download: ^0.4.12
       lint-staged: ^13.0.3
       lodash: ^4.17.21
+      lodash-move: ^1.1.1
       marked: ^4.0.18
       material-ui-popup-state: ^4.0.1
       mockjs: ^1.1.0
@@ -816,6 +817,7 @@ importers:
       react-test-renderer: 18.2.0
       react-text-transition: ^3.0.2
       react-toastify: ^9.0.8
+      react-use-gesture: ^9.1.3
       screenfull: ^6.0.2
       stream-browserify: ^3.0.0
       stream-http: ^3.2.0
@@ -858,6 +860,7 @@ importers:
       javascript-time-ago: 2.5.9
       js-file-download: 0.4.12
       lodash: 4.17.21
+      lodash-move: 1.1.1
       marked: 4.2.3
       material-ui-popup-state: 4.1.0_ocvlaah2275pzedeuxsmtxxp2y
       node-sass: 7.0.3
@@ -880,6 +883,7 @@ importers:
       react-switch: 7.0.0_biqbaboplfbrettd7655fr4n2y
       react-text-transition: 3.0.2_qidajadjtlaylha4g4eobfhkta
       react-toastify: 9.1.1_biqbaboplfbrettd7655fr4n2y
+      react-use-gesture: 9.1.3_react@18.2.0
       screenfull: 6.0.2
       styled-components: 5.3.6_7i5myeigehqah43i5u7wbekgba
       swiper: 8.4.5
@@ -16904,6 +16908,12 @@ packages:
     resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
     dev: false
 
+  /lodash-move/1.1.1:
+    resolution: {integrity: sha512-Gm8/lC16NXv2tweIiX7pYhgAQdoSwXzO/WsSmNX/un8rBQUIC7YkauFK2Sdt4NBqWV28BW25P8eDkHWPt91YqQ==}
+    dependencies:
+      lodash: 4.17.21
+    dev: false
+
   /lodash.camelcase/4.3.0:
     resolution: {integrity: sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==}
     dev: true
@@ -21983,6 +21993,15 @@ packages:
       prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+    dev: false
+
+  /react-use-gesture/9.1.3_react@18.2.0:
+    resolution: {integrity: sha512-CdqA2SmS/fj3kkS2W8ZU8wjTbVBAIwDWaRprX7OKaj7HlGwBasGEFggmk5qNklknqk9zK/h8D355bEJFTpqEMg==}
+    deprecated: This package is no longer maintained. Please use @use-gesture/react instead
+    peerDependencies:
+      react: '>= 16.8.0'
+    dependencies:
+      react: 18.2.0
     dev: false
 
   /react-use-measure/2.1.1_biqbaboplfbrettd7655fr4n2y:

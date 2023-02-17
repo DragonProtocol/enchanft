@@ -2,13 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-29 18:44:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-13 11:25:59
+ * @LastEditTime: 2023-02-17 11:54:26
  * @Description: file description
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { animated, useTransition } from '@react-spring/web';
+import { animated, useTransition, useSprings } from '@react-spring/web';
 import { useNavigate } from 'react-router-dom';
+import { useDrag } from 'react-use-gesture';
+import { clamp } from 'lodash';
+import swap from 'lodash-move';
 import useLogin from '../../hooks/useLogin';
 import useRoute from '../../route/useRoute';
 import { RouteKey } from '../../route/routes';
@@ -19,6 +22,27 @@ import DappWebsiteModal from './DappWebsiteModal';
 import useProjectHandles from '../../hooks/useProjectHandles';
 import InfoCircleSvgUrl from '../common/icons/svgs/info-circle.svg';
 import TrashSvgUrl from '../common/icons/svgs/trash.svg';
+import {
+  getDappSideBarOrderForStore,
+  setDappSideBarOrderToStore,
+} from '../../utils/dapp';
+
+const dragFn =
+  (orders: number[], active = false, originalIndex = 0, curIndex = 0, y = 0) =>
+  (index: number) =>
+    active && index === originalIndex
+      ? {
+          y: curIndex * 76 + y,
+          scale: 1.1,
+          zIndex: 1,
+          immediate: (key: string) => key === 'y' || key === 'zIndex',
+        }
+      : {
+          y: orders.indexOf(index) * 76,
+          scale: 1,
+          zIndex: 0,
+          immediate: false,
+        };
 
 export default function DappsSideBarList() {
   const navigate = useNavigate();
@@ -31,40 +55,47 @@ export default function DappsSideBarList() {
       isLogin && [RouteKey.dapps, RouteKey.dapp].includes(firstRouteMeta.key)
     );
   }, [isLogin, firstRouteMeta]);
-  const showProjects = useMemo(() => [...projects].reverse(), [projects]);
-  const transitions = useTransition(showProjects, {
-    keys: (item) => item.id,
-    from: {
-      opacity: 0,
-      transform: 'scale(0)',
-    },
-    enter: {
-      opacity: 1,
-      transform: 'scale(1)',
-    },
-    leave: {
-      opacity: 0,
-      transform: 'scale(0)',
-    },
-    // trail: 200,
-    config: {
-      duration: 500,
-      mass: 5,
-      tension: 500,
-      friction: 100,
-    },
-  });
+
+  // const showProjects = useMemo(
+  //   () =>
+  //     [...projects].sort(
+  //       (a, b) => order.current?.indexOf(a.id) - order.current?.indexOf(b.id)
+  //     ),
+  //   [projects]
+  // );
+  // const transitions = useTransition(showProjects, {
+  //   keys: (item) => item.id,
+  //   from: {
+  //     opacity: 0,
+  //     transform: 'scale(0)',
+  //   },
+  //   enter: {
+  //     opacity: 1,
+  //     transform: 'scale(1)',
+  //   },
+  //   leave: {
+  //     opacity: 0,
+  //     transform: 'scale(0)',
+  //   },
+  //   // trail: 200,
+  //   config: {
+  //     duration: 500,
+  //     mass: 5,
+  //     tension: 500,
+  //     friction: 100,
+  //   },
+  // });
 
   const { onUnfavor, favorQueueIds } = useProjectHandles();
   const [handlesItemId, setHandlesItemId] = useState<string | number | null>(
     null
   );
-  const handlesItem = showProjects.find(
+  const handlesItem = projects.find(
     (item) => handlesItemId && item.id === handlesItemId
   );
 
   /**
-   * 列表项中的操作选项框逻辑
+   * 列表项中的操作选项框跟随列表项的位置移动
    */
   // 存储列表项对应的dom元素
   const itemElsWeakMap = useRef(new WeakMap());
@@ -87,7 +118,7 @@ export default function DappsSideBarList() {
       updatePopperStyle();
     }
   }, [handlesItem]);
-  // 点击其它位置一次操作框
+  // 点击其它位置隐藏操作框
   useEffect(() => {
     const windowClick = (e: Event) => {
       if (
@@ -103,6 +134,55 @@ export default function DappsSideBarList() {
     };
   }, []);
 
+  /**
+   * 列表项拖拽排序
+   */
+  const orderStore = useRef(getDappSideBarOrderForStore());
+  const order = useRef<Array<number>>([]);
+
+  const [springs, api] = useSprings(projects.length, dragFn(order.current)); // Create springs, each corresponds to an item, controlling its transform, scale, etc.
+  useEffect(() => {
+    const newOrder = projects
+      .map((item, i) => ({ ...item, originIndex: i }))
+      .sort(
+        (a, b) =>
+          orderStore.current.indexOf(a.id) - orderStore.current.indexOf(b.id)
+      )
+      .map((item) => item.originIndex);
+    if (newOrder.length !== order.current.length) {
+      api.start(dragFn(newOrder));
+    }
+    order.current = [...newOrder];
+  }, [projects]);
+
+  const bind = useDrag(
+    ({ args: [originalIndex], active, movement: [, y] }) => {
+      const curIndex = order.current?.indexOf(originalIndex);
+      const curRow = clamp(
+        Math.round((curIndex * 76 + y) / 76),
+        0,
+        projects.length - 1
+      );
+      const newOrder = swap(order.current, curIndex, curRow);
+      api.start(dragFn(newOrder, active, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
+      setHandlesItemId(null);
+      if (!active) {
+        order.current = newOrder;
+        const newOrderStore = [
+          ...new Set(
+            order.current?.map((i: string | number) => projects[i]?.id)
+          ),
+        ];
+        orderStore.current = newOrderStore;
+        setDappSideBarOrderToStore(newOrderStore);
+      }
+    },
+    {
+      preventDefault: true,
+      filterTaps: true,
+    }
+  );
+
   return (
     <DappsSideBarListWrapper isOpen={isOpen}>
       <DappsSideBarListInner
@@ -111,21 +191,31 @@ export default function DappsSideBarList() {
         }}
       >
         <Title>Your Dapps</Title>
-        {transitions((styles, item) => (
-          <animated.div style={styles}>
-            <DappSideBarListItem
-              data={item}
-              onOpen={() => openDappModal(item.id)}
-              onOpenHandles={() => setHandlesItemId(item.id)}
-              disabled={favorQueueIds.includes(item.id)}
-              ref={(el) => {
-                if (el) {
-                  itemElsWeakMap.current.set(item, el);
-                }
+        <DappList style={{ height: projects.length * 76 }}>
+          {springs.map(({ zIndex, y, scale }, i) => (
+            <animated.div
+              {...bind(i)}
+              key={projects[i].id}
+              style={{
+                zIndex,
+                y,
+                scale,
               }}
-            />
-          </animated.div>
-        ))}
+            >
+              <DappSideBarListItem
+                data={projects[i]}
+                onOpen={() => openDappModal(projects[i].id)}
+                onOpenHandles={() => setHandlesItemId(projects[i].id)}
+                disabled={favorQueueIds.includes(projects[i].id)}
+                ref={(el) => {
+                  if (el) {
+                    itemElsWeakMap.current.set(projects[i], el);
+                  }
+                }}
+              />
+            </animated.div>
+          ))}
+        </DappList>
       </DappsSideBarListInner>
       <HandlesPopperBox
         className="handles-pop-box"
@@ -136,6 +226,28 @@ export default function DappsSideBarList() {
         }}
       >
         <HandlesPopperInner>
+          <OptionItem
+            onClick={() => {
+              if (handlesItem) {
+                const originIndex = projects.findIndex(
+                  (item) => item.id === handlesItem.id
+                );
+                if (originIndex !== -1) {
+                  order.current = [...new Set([originIndex, ...order.current])];
+                }
+
+                api.start(dragFn(order.current));
+                setHandlesItemId(null);
+              }
+            }}
+          >
+            <OptionLabel
+              style={{ width: '20px', textAlign: 'center', color: '#718096' }}
+            >
+              ↑
+            </OptionLabel>
+            <OptionLabel>Top</OptionLabel>
+          </OptionItem>
           <OptionItem
             onClick={() => {
               if (handlesItem) {
@@ -152,6 +264,11 @@ export default function DappsSideBarList() {
               if (handlesItem) {
                 onUnfavor(handlesItem);
                 setHandlesItemId(null);
+                const newOrderStore = orderStore.current.filter(
+                  (id) => handlesItem.id !== id
+                );
+                orderStore.current = [...newOrderStore];
+                setDappSideBarOrderToStore(newOrderStore);
               }
             }}
           >
@@ -191,6 +308,20 @@ const Title = styled.div`
   line-height: 14px;
   text-align: center;
   color: #718096;
+`;
+const DappList = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: flex-start;
+  position: relative;
+  & > div {
+    position: absolute;
+    width: 100%;
+    height: 76px;
+    transform-origin: 50% 50% 0px;
+  }
 `;
 
 const HandlesPopperBox = styled.div`
