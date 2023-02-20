@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-13 14:58:45
+ * @LastEditTime: 2023-02-14 11:24:21
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
@@ -48,6 +48,7 @@ const LayoutWrapper = styled.div`
   width: 100vw;
   height: 100vh;
   background: #14171a;
+  overflow: hidden;
 `;
 const RightBox = styled.div`
   margin-left: 60px;
@@ -57,7 +58,6 @@ const RightBox = styled.div`
 `;
 const RightInner = styled.div`
   height: 100%;
-  box-sizing: border-box;
   width: 0;
   flex: 1;
   box-sizing: border-box;
@@ -70,7 +70,6 @@ const MainBox = styled.div`
   }
   @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
     width: calc(${MEDIA_BREAK_POINTS.xxxl}px - 60px);
-    max-width: 100%;
   }
   height: 100%;
   margin: 0 auto;
@@ -81,7 +80,8 @@ export const MainWrapper = styled.div`
   height: 100vh;
   padding: 24px;
   box-sizing: border-box;
-  overflow-x: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   @media (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
     width: ${MEDIA_BREAK_POINTS.xl}px;
   }

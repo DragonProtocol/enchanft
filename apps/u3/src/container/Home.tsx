@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-13 10:56:22
+ * @LastEditTime: 2023-02-17 11:31:00
  * @Description: file description
  */
 
@@ -128,12 +128,13 @@ function Home() {
 }
 export default Home;
 const HomeWrapper = styled(MainWrapper)`
+  min-height: 100vh;
   height: auto;
-  overflow: scroll;
   display: flex;
   flex-direction: column;
   gap: 40px;
   & div.loading {
+    height: 0;
     flex: 1;
     width: 100%;
     display: flex;
