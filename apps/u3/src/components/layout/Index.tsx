@@ -2,31 +2,39 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-14 11:24:21
+ * @LastEditTime: 2023-02-22 15:40:42
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
+import { isMobile } from 'react-device-detect';
 import { MEDIA_BREAK_POINTS } from '../../constants/index';
 import Main from './Main';
 import { useGAPageView } from '../../hooks/useGoogleAnalytics';
 import Menu from './menu';
 import DappsSideBarList from '../dapp/DappSideBarList';
+import MobileLayoutHeader from './MobileLayoutHeader';
 
 function Layout() {
   useGAPageView();
   return (
     <LayoutWrapper id="layout-wrapper">
-      <Menu />
-      <RightBox>
-        <RightInner>
-          <MainBox className="main-box">
-            <Main />
-          </MainBox>
-        </RightInner>
-        <DappsSideBarList />
-      </RightBox>
+      {isMobile ? <MobileLayoutHeader /> : <Menu />}
+      {isMobile ? (
+        <MobileContentBox>
+          <Main />
+        </MobileContentBox>
+      ) : (
+        <RightBox>
+          <RightInner>
+            <MainBox className="main-box">
+              <Main />
+            </MainBox>
+          </RightInner>
+          <DappsSideBarList />
+        </RightBox>
+      )}
 
       <ToastContainer
         position="top-right"
@@ -49,6 +57,7 @@ const LayoutWrapper = styled.div`
   height: 100vh;
   background: #14171a;
   overflow: hidden;
+  overflow-y: ${isMobile ? 'auto' : 'hidden'};
 `;
 const RightBox = styled.div`
   margin-left: 60px;
@@ -85,4 +94,12 @@ export const MainWrapper = styled.div`
   @media (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
     width: ${MEDIA_BREAK_POINTS.xl}px;
   }
+`;
+
+/**
+ * mobile styles
+ */
+const MobileContentBox = styled.div`
+  margin-top: 60px;
+  width: 100%;
 `;

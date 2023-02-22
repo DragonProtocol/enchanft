@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-17 11:31:00
+ * @LastEditTime: 2023-02-22 16:01:07
  * @Description: file description
  */
 
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { useState, useCallback, useEffect, useMemo } from 'react';
+import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../components/common/loading/Loading';
@@ -78,7 +79,7 @@ function Home() {
 
   return (
     <HomeWrapper>
-      {homeBannerDisplay && <Carousel />}
+      {!isMobile && homeBannerDisplay && <Carousel />}
       {(loading && (
         <div className="loading">
           <Loading />
