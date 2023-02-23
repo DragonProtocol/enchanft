@@ -2,14 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 18:33:11
+ * @LastEditTime: 2023-02-23 11:59:36
  * @Description:
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { MainWrapper } from '../components/layout/Index';
-import ListScrollBox from '../components/common/box/ListScrollBox';
+import { isMobile } from 'react-device-detect';
 import {
   fetchMoreProjectExploreList,
   fetchProjectExploreList,
@@ -18,22 +15,36 @@ import {
 } from '../features/project/projectExploreList';
 import { AsyncRequestStatus } from '../services/types';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import Loading from '../components/common/loading/Loading';
 import useProjectHandles from '../hooks/useProjectHandles';
-import NoResult from '../components/common/NoResult';
-import DappExploreListFilter, {
+import {
+  DappExploreListFilterValues,
   defaultDappExploreListFilterValues,
 } from '../components/dapp/DappExploreListFilter';
-import DappExploreList from '../components/dapp/DappExploreList';
-import useDappWebsite from '../hooks/useDappWebsite';
+import { ProjectExploreListItemResponse } from '../services/types/project';
+import DappsPageMobile from '../components/dapp/DappsPageMobile';
+import DappsPage from '../components/dapp/DappsPage';
+
+export type DappsPageProps = {
+  // Queries
+  dapps: ProjectExploreListItemResponse[];
+  isLoading?: boolean;
+  isLoadingMore?: boolean;
+  isEmpty?: boolean;
+  filter?: DappExploreListFilterValues;
+  filterChange?: (values: DappExploreListFilterValues) => void;
+  noMore?: boolean;
+  getMore?: () => void;
+  // Mutations
+  installPendingIds?: (string | number)[];
+  onInstall?: (item: ProjectExploreListItemResponse) => Promise<unknown>;
+  // Others
+};
 
 export default function Dapps() {
-  const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { openDappModal } = useDappWebsite();
   const { favorQueueIds, onFavor } = useProjectHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
-  const projectExploreList = useAppSelector(selectAll);
+  const dapps = useAppSelector(selectAll);
   const [filter, setFilter] = useState(defaultDappExploreListFilterValues);
   useEffect(() => {
     dispatch(fetchProjectExploreList({ ...filter }));
@@ -43,10 +54,7 @@ export default function Dapps() {
     () => status === AsyncRequestStatus.PENDING,
     [status]
   );
-  const isEmpty = useMemo(
-    () => !projectExploreList.length,
-    [projectExploreList]
-  );
+  const isEmpty = useMemo(() => !dapps.length, [dapps]);
 
   const isLoadingMore = useMemo(
     () => moreStatus === AsyncRequestStatus.PENDING,
@@ -57,66 +65,46 @@ export default function Dapps() {
     [filter]
   );
 
-  return (
-    <DappsWrapper>
-      <DappExploreListFilter
-        values={filter}
-        onChange={(newFilter) => setFilter(newFilter)}
-      />
-      <MainBox>
-        {isLoading ? (
-          <Loading />
-        ) : isEmpty ? (
-          <MainBody>
-            <NoResult />
-          </MainBody>
-        ) : (
-          <MainBody
-            onScrollBottom={() => {
-              getMore();
-            }}
-          >
-            <DappExploreList
-              data={projectExploreList}
-              installPendingIds={favorQueueIds}
-              onInstall={onFavor}
-              onOpen={(item) => openDappModal(item.id)}
-              onItemClick={(item) => navigate(`/dapps/${item.id}`)}
-            />
-            {isLoadingMore ? (
-              <MoreLoading>loading ...</MoreLoading>
-            ) : noMore ? (
-              <MoreLoading>No other projects</MoreLoading>
-            ) : null}
-          </MainBody>
-        )}
-      </MainBox>
-    </DappsWrapper>
+  const filterChange = useCallback(
+    (values: DappExploreListFilterValues) => {
+      const newFilter = { ...filter };
+      // eslint-disable-next-line guard-for-in
+      for (const key in values) {
+        newFilter[key] = values[key];
+      }
+      setFilter(newFilter);
+    },
+    [filter]
+  );
+  return isMobile ? (
+    <DappsPageMobile
+      // Queries
+      dapps={dapps}
+      isLoading={isLoading}
+      isLoadingMore={isLoadingMore}
+      isEmpty={isEmpty}
+      filter={filter}
+      filterChange={filterChange}
+      noMore={noMore}
+      getMore={getMore}
+      // Mutations
+      installPendingIds={favorQueueIds}
+      onInstall={onFavor}
+    />
+  ) : (
+    <DappsPage
+      // Queries
+      dapps={dapps}
+      isLoading={isLoading}
+      isLoadingMore={isLoadingMore}
+      isEmpty={isEmpty}
+      filter={filter}
+      filterChange={filterChange}
+      noMore={noMore}
+      getMore={getMore}
+      // Mutations
+      installPendingIds={favorQueueIds}
+      onInstall={onFavor}
+    />
   );
 }
-const DappsWrapper = styled(MainWrapper)`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-`;
-const MainBox = styled.div`
-  width: 100%;
-  height: 0px;
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-const MainBody = styled(ListScrollBox)`
-  width: 100%;
-  height: 100%;
-  background: #1b1e23;
-  border: 1px solid #39424c;
-  box-sizing: border-box;
-  border-radius: 20px;
-`;
-const MoreLoading = styled.div`
-  padding: 20px;
-  text-align: center;
-  color: #748094;
-`;
