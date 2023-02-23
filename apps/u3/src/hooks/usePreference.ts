@@ -23,31 +23,33 @@ export default function usePreference(userToken: string) {
       name: string;
     }> = [];
 
-    return listData
-      .concat(
-        contentTypes.map((item) => ({
-          type: 'contentTypes',
-          ...item,
-        }))
-      )
-      .concat(
-        eventRewards.map((item) => ({
-          type: 'eventRewards',
-          ...item,
-        }))
-      )
-      .concat(
-        eventTypes.map((item) => ({
-          type: 'eventTypes',
-          ...item,
-        }))
-      )
-      .concat(
-        projectTypes.map((item) => ({
-          type: 'projectTypes',
-          ...item,
-        }))
-      );
+    return (
+      listData
+        .concat(
+          contentTypes.map((item) => ({
+            type: 'contentTypes',
+            ...item,
+          }))
+        )
+        // .concat(
+        //   eventRewards.map((item) => ({
+        //     type: 'eventRewards',
+        //     ...item,
+        //   }))
+        // )
+        // .concat(
+        //   eventTypes.map((item) => ({
+        //     type: 'eventTypes',
+        //     ...item,
+        //   }))
+        // )
+        .concat(
+          projectTypes.map((item) => ({
+            type: 'projectTypes',
+            ...item,
+          }))
+        )
+    );
   }, [topics]);
 
   const fetchPreference = useCallback(
