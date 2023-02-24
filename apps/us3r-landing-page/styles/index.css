@@ -124,9 +124,13 @@
 }
 
 @media (max-width: 768px) {
+    .banner .introduction {
+        top: 105px;
+    }
+
     .banner .introduction .title {
-        font-size: 30px;
-        line-height: 36px;
+        font-size: 28px;
+        line-height: 34px;
     }
 
 
