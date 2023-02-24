@@ -99,7 +99,7 @@ var geometry = new THREE.TubeGeometry(
 
 for (i = 0; i < geometry.faces.length; i++) {
   // geometry.faces[i].color = new THREE.Color("hsl(" + i / 2 + ",100%,50%)");
-  geometry.faces[i].color = new THREE.Color(`rgba(255,255,255,${1 / i})`);
+  geometry.faces[i].color = new THREE.Color(`rgba(180,180,180,${1 / i})`);
 }
 
 var material = new THREE.MeshLambertMaterial({
