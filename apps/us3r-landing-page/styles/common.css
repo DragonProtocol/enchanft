@@ -133,7 +133,6 @@ button:disabled {
     right: -6px;
     background: #718096;
     border-radius: 50%;
-    z-index: 1;
 }
 
 /* 奇数为左，偶数为右 */
@@ -199,5 +198,8 @@ button:disabled {
     .timeline-container:nth-child(odd) .timeline-container-content,
     .timeline-container:nth-child(even) .timeline-container-content {
         text-align: left;
+        font-size: 14px;
+        line-height: 17px;
+        padding: 20px;
     }
 }

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @timeline-container-Date: 2023-02-06 10:47:32
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-24 15:31:45
+ * @LastEditTime: 2023-02-24 17:55:43
  * @Description: file description
 -->
 <!DOCTYPE html>
@@ -33,6 +33,18 @@
         </div>
       </div>
     </section>
+    <script>
+      window.addEventListener('scroll', function () {
+        var header = document.querySelector('.header');
+        var scrollPosition = window.scrollY;
+
+        if (scrollPosition > header.offsetHeight) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+      });
+    </script>
     <!-- banner -->
     <section id="banner" class="inner banner">
       <div class="tunnel-animation"></div>
@@ -60,9 +72,9 @@
           >
         </div>
         <div class="logos">
-          <img src="/imgs/u3-logo.svg" alt="u3.xyz" srcset="" />
-          <img src="/imgs/plus.svg" alt="u3.xyz" srcset="" />
-          <img src="/imgs/s3-logo.svg" alt="u3.xyz" srcset="" />
+          <img src="/imgs/u3-logo.svg" alt="u3.xyz" srcset="" class="logo" />
+          <img src="/imgs/plus.svg" alt="u3.xyz" srcset="" class="plus" />
+          <img src="/imgs/s3-logo.svg" alt="u3.xyz" srcset="" class="logo" />
         </div>
       </div>
     </section>
@@ -103,11 +115,12 @@
       </div>
     </section>
     <!-- products -->
-    <section id="products" class="inner products">
+    <span id="products"></span>
+    <section class="inner products">
       <p class="section-title">Our Products</p>
       <div class="wrapper">
         <div class="product u3">
-          <img src="/imgs/products/u3.png" alt="" srcset="" />
+          <div class="img"></div>
           <p>U3</p>
           <span
             >U3 is a user-centric super app that aggregates everything the
@@ -119,7 +132,8 @@
             target="_blank"
             rel="noopener noreferrer"
             class="btn-link"
-            >Discover U3
+          >
+            <span>Discover U3</span>
             <img src="/imgs/arrow-narrow-right.svg" alt="" srcset="" />
           </a>
         </div>
@@ -134,7 +148,7 @@
           <img src="/imgs/products/network-bottom.svg" alt="" />
         </div>
         <div class="product s3">
-          <img src="/imgs/products/s3.png" alt="" srcset="" />
+          <div class="img"></div>
           <p>S3</p>
           <span
             >S3 is the only open-source data explorer on Ceramic Network, and as
@@ -146,10 +160,9 @@
             target="_blank"
             rel="noopener noreferrer"
             class="btn-link"
-            >Discover S3<img
-              src="/imgs/arrow-narrow-right.svg"
-              alt=""
-              srcset=""
+          >
+            <span>Discover S3</span>
+            <img src="/imgs/arrow-narrow-right.svg" alt="" srcset=""
           /></a>
         </div>
       </div>
@@ -162,7 +175,8 @@
       </div>
     </section>
     <!-- roadmap -->
-    <section id="roadmap" class="inner roadmap">
+    <span id="roadmap"></span>
+    <section class="inner roadmap">
       <p class="section-title">Roadmap</p>
       <div class="timeline">
         <div class="timeline-container">
