@@ -1,6 +1,7 @@
-@import 'styles/common.css';
+@import './common.css';
 
 .inner {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
 }
@@ -12,6 +13,8 @@
     top: 0;
     left: 0;
     z-index: 1;
+    /* background-color: rgba(255, 255, 255, 0.1); */
+    padding: 0px 20px;
 }
 
 .header-inner {
@@ -46,15 +49,21 @@
     position: relative;
 }
 
+.banner .tunnel-animation {
+    width: 100%;
+    height: 623px;
+}
+
 .banner .introduction {
+    width: 100%;
     position: absolute;
     top: 165px;
     left: 50%;
     transform: translateX(-50%);
-    width: 1097px;
     display: flex;
     flex-direction: column;
     gap: 40px;
+    padding: 0px 20px;
 }
 
 .banner .introduction .title {
@@ -70,9 +79,6 @@
     align-items: center;
 }
 
-.banner .introduction .title span {
-    white-space: nowrap;
-}
 
 .banner .introduction .texts {
     display: flex;
@@ -124,6 +130,7 @@
 }
 
 .our-strategy .grid {
+    width: 100%;
     margin-top: 40px;
     display: grid;
     grid-gap: 40px;
@@ -137,7 +144,7 @@
     align-items: center;
     padding: 20px;
     gap: 20px;
-    width: 270px;
+    /* width: 270px; */
     height: 300px;
     background: #1B1E23;
     border: 1px solid #39424C;
@@ -253,7 +260,8 @@
 
 .products .caip {
     margin-top: 156px;
-    width: 1000px;
+    width: 100%;
+    max-width: 1000px;
     height: 180px;
     background-image: url("/imgs/products/bg1.png");
     background-repeat: no-repeat;
@@ -288,36 +296,44 @@
 /* Roadmap */
 .roadmap {
     margin-top: 120px;
+    padding: 0 20px;
 }
 
-/* <!-- before code ============================================ --> */
-
-
-/* @media (max-width: 768px) {
-    .logo {
-        width: 196px;
-        height: 60px;
-    }
-} */
-
-/* .title {
-    max-width: 554px;
-    font-weight: 500;
-    font-size: 36px;
-    line-height: 43px;
-    color: #ffffff;
-    margin-top: 40px;
-    text-align: center;
+.roadmap .timeline {
+    max-width: 910px;
+    margin: 40px auto;
 }
 
-.description {
-    max-width: 600px;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    color: #718096;
-    margin-top: 20px;
+/* contact-us */
+.contact-us {
+    margin-top: 100px;
+    padding: 40px 0px;
+    background-image: url("/imgs/contact-us/bg-img.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.contact-us .subscribe {
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    border-top: 1px solid #39424C;
+    border-bottom: 1px solid #39424C;
+    padding: 40px 0px;
+    box-sizing: border-box;
+}
+
+.contact-us .subscribe .description {
+    max-width: 800px;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 47px;
     text-align: center;
+    text-transform: capitalize;
+    color: #FFFFFF;
 }
 
 @media (max-width: 768px) {
@@ -327,22 +343,21 @@
     }
 }
 
-.form-box {
+.contact-us .subscribe .form-box {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
-    margin-top: 20px;
 }
 
 @media (max-width: 768px) {
-    .form-box {
+    .contact-us .subscribe .form-box {
         flex-direction: column;
         gap: 20px;
     }
 }
 
-.form-box .email {
+.contact-us .subscribe .form-box .email {
     box-sizing: border-box;
     display: flex;
     flex-direction: row;
@@ -356,14 +371,14 @@
     color: #ffffff;
 }
 
-.form-box .email::placeholder {
+.contact-us .subscribe .form-box .email::placeholder {
     font-weight: 400;
     font-size: 16px;
     line-height: 24px;
     color: #4e5a6e;
 }
 
-.form-box .submit-btn {
+.contact-us .subscribe .form-box .submit-btn {
     min-width: 120px;
     height: 48px;
     background: #718096;
@@ -374,32 +389,8 @@
     color: #ffffff;
 }
 
-.links-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    align-content: flex-end;
-    margin-top: 76px;
-}
-
-.links-box .btn {
+.contact-us .twitter-link {
+    margin: 0 auto;
+    margin-top: 40px;
     width: 240px;
-    height: 52px;
-    background: #1b1e23;
-    gap: 10px;
 }
-
-@media (max-width: 768px) {
-    .links-box {
-        flex-direction: column;
-        margin-top: 80px;
-    }
-}
-
-.links-box .btn .text {
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    color: #718096;
-} */

@@ -32,14 +32,15 @@
 
 html,
 body {
-    background-color: #14171a;
+    background-color: #000000;
     margin: 0;
     padding: 0;
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     font-family: 'Rubik';
     font-style: normal;
     word-break: break-word;
+    scroll-behavior: smooth;
 }
 
 *,
@@ -78,13 +79,18 @@ button:disabled {
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 10px;
     padding: 12px 24px;
     box-sizing: border-box;
     isolation: isolate;
-    width: 177px;
     height: 46px;
     background: #FFFFFF;
     border-radius: 12px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    color: #14171A;
 }
 
 
@@ -93,11 +99,10 @@ button:disabled {
 .timeline {
     position: relative;
     width: 100%;
-    max-width: 1140px;
     margin: 0 auto;
-    padding: 15px 0;
 }
 
+/* 轴线 */
 .timeline::after {
     content: '';
     position: absolute;
@@ -109,21 +114,16 @@ button:disabled {
     margin-left: -1px;
 }
 
+
+
+/* 单个节点和内容容器 */
 .timeline-container {
-    padding: 15px 30px;
     position: relative;
     background: inherit;
     width: 50%;
 }
 
-.timeline-container.timeline-container-left {
-    left: 0;
-}
-
-.timeline-container.timeline-container-right {
-    left: 50%;
-}
-
+/* 轴上节点 */
 .timeline-container::after {
     content: '';
     position: absolute;
@@ -136,129 +136,68 @@ button:disabled {
     z-index: 1;
 }
 
-.timeline-container.timeline-container-right::after {
+/* 奇数为左，偶数为右 */
+.timeline-container:nth-child(odd) {
+    left: 0;
+}
+
+.timeline-container:nth-child(even) {
+    left: 50%;
+}
+
+.timeline-container:nth-child(even)::after {
     left: -6px;
 }
 
-.timeline-container::before {
-    content: '';
-    position: absolute;
-    width: 50px;
-    height: 2px;
-    top: calc(50% - 1px);
-    right: 6px;
-    background: #006E51;
-    z-index: 1;
-}
-
-.timeline-container.timeline-container-right::before {
+.timeline-container:nth-child(even)::before {
     left: 6px;
 }
 
-.timeline-container .timeline-container-date {
-    position: absolute;
-    display: inline-block;
-    top: calc(50% - 6px);
-    text-align: center;
-    font-size: 14px;
-    font-weight: bold;
-    color: #006E51;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    z-index: 1;
-}
-
-.timeline-container.timeline-container-left .timeline-container-date {
-    right: -75px;
-}
-
-.timeline-container.timeline-container-right .timeline-container-date {
-    left: -75px;
-}
-
-.timeline-container .timeline-container-icon {
-    position: absolute;
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    padding: 9px 0;
-    top: calc(50% - 20px);
-    background: #F6D155;
-    border: 2px solid #006E51;
-    border-radius: 40px;
-    text-align: center;
+/* 左右内容 */
+.timeline-container .timeline-container-content {
+    padding: 20px 30px;
+    box-sizing: border-box;
+    font-weight: 500;
     font-size: 16px;
-    color: #006E51;
-    z-index: 1;
-}
-
-.timeline-container.timeline-container-left .timeline-container-icon {
-    right: 56px;
-}
-
-.timeline-container.timeline-container-right .timeline-container-icon {
-    left: 56px;
+    line-height: 19px;
+    text-align: right;
+    color: #FFFFFF;
 }
 
 
-.timeline-container.timeline-container-right .timeline-container-content {
-    padding: 0 20px;
+.timeline-container:nth-child(odd) .timeline-container-content {
+    text-align: right;
 }
 
-.timeline-container .timeline-container-content h2 {
-    margin: 0 0 10px 0;
-    font-size: 16px;
-    font-weight: normal;
-    color: #006E51;
+.timeline-container:nth-child(even) .timeline-container-content {
+    text-align: left;
 }
 
-.timeline-container .timeline-container-content p {
-    margin: 0;
-    font-size: 16px;
-    line-height: 22px;
-    color: #000000;
-}
-
-@media (max-width: 767.96px) {
+@media (max-width: 768px) {
     .timeline::after {
-        left: 90px;
+        left: 0px;
     }
 
-    .timeline-container {
+    .timeline-container:nth-child(odd),
+    .timeline-container:nth-child(even) {
         width: 100%;
-        padding-left: 120px;
-        padding-right: 30px;
+        left: 0;
     }
 
-    .timeline-container.timeline-container-right {
-        left: 0%;
+    .timeline-container::after {
+        left: -6px;
     }
 
-    .timeline-container.timeline-container-left::after,
-    .timeline-container.timeline-container-right::after {
-        left: 82px;
+    .timeline-container:nth-child(even)::after {
+        left: -6px;
     }
 
-    .timeline-container.timeline-container-left::before,
-    .timeline-container.timeline-container-right::before {
-        left: 100px;
-        border-color: transparent #006E51 transparent transparent;
+    .timeline-container:nth-child(even)::before {
+        left: 6px;
     }
 
-    .timeline-container.timeline-container-left .timeline-container-date,
-    .timeline-container.timeline-container-right .timeline-container-date {
-        right: auto;
-        left: 15px;
-    }
-
-    .timeline-container.timeline-container-left .timeline-container-icon,
-    .timeline-container.timeline-container-right .timeline-container-icon {
-        right: auto;
-        left: 146px;
-    }
-
-    .timeline-container.timeline-container-left .timeline-container-content,
-    .timeline-container.timeline-container-right .timeline-container-content {
-        padding: 0 20px;
+    .timeline-container:nth-child(odd) .timeline-container-content,
+    .timeline-container:nth-child(even) .timeline-container-content {
+        text-align: left;
     }
 }
