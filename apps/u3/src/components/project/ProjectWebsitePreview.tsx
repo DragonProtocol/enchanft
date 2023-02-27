@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:28:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 15:36:24
+ * @LastEditTime: 2023-02-27 12:18:01
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -13,17 +13,17 @@ import Loading from '../common/loading/Loading';
 import isUrl from '../../utils/isUrl';
 import CannotOpenPlatFormLink from '../event/CannotOpenPlatFormLink';
 
-export type DappWebsitePreviewProps = StyledComponentPropsWithRef<'div'> & {
+export type ProjectWebsitePreviewProps = StyledComponentPropsWithRef<'div'> & {
   data: {
     name: string;
     image: string;
     url: string;
   };
 };
-export default function DappWebsitePreview({
+export default function ProjectWebsitePreview({
   data,
   ...otherProps
-}: DappWebsitePreviewProps) {
+}: ProjectWebsitePreviewProps) {
   const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
   const { image, url, name } = data;
   const displayCannotOpen = !u3ExtensionInstalled;

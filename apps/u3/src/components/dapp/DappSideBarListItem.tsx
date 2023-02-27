@@ -2,16 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-16 16:42:41
+ * @LastEditTime: 2023-02-27 11:50:17
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import React from 'react';
-import { ProjectExploreListItemResponse } from '../../services/types/project';
-import ProjectImgDefault from '../project/ProjectImgDefault';
+import { DappExploreListItemResponse } from '../../services/types/dapp';
+import ImgDefault from '../common/ImgDefault';
 import { ReactComponent as DappHandleIcon } from '../common/icons/svgs/dots-vertical.svg';
 
-export type DappSideBarListItemData = ProjectExploreListItemResponse;
+export type DappSideBarListItemData = DappExploreListItemResponse;
 export type DappSideBarListItemProps = StyledComponentPropsWithRef<'div'> & {
   data: DappSideBarListItemData;
   onOpen?: () => void;
@@ -72,7 +72,7 @@ const ListItemInner = styled.div`
   }
 `;
 
-const ItemImg = styled(ProjectImgDefault)`
+const ItemImg = styled(ImgDefault)`
   width: 40px;
   height: 40px;
   border-radius: 10px;

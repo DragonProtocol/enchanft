@@ -2,33 +2,38 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-18 11:11:59
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 11:50:33
+ * @LastEditTime: 2023-02-27 12:16:13
  * @Description: file description
  */
 import styled from 'styled-components';
-import useDappWebsite from '../../hooks/useDappWebsite';
+import useProjectWebsite from '../../hooks/useProjectWebsite';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import ImgDefault from '../common/ImgDefault';
-import DappWebsitePreview from './DappWebsitePreview';
+import ProjectWebsitePreview from './ProjectWebsitePreview';
 
 import CloseSvg from '../common/icons/svgs/close.svg';
 import useFullScreen from '../../hooks/useFullScreen';
 import ButtonFullScreen from '../common/button/ButtonFullScreen';
 
-export default function DappWebsiteModal() {
-  const { isOpenDappModal, dappModalData, closeDappModal } = useDappWebsite();
+export default function ProjectWebsiteModal() {
+  const { isOpenProjectModal, projectModalData, closeProjectModal } =
+    useProjectWebsite();
   const { ref, isFullscreen, onToggle } = useFullScreen();
-  return isOpenDappModal ? (
-    <DappWebsiteModalWrapper>
+  return isOpenProjectModal ? (
+    <ProjectWebsiteModalWrapper>
       <Header>
         <HeaderLeft>
-          {dappModalData?.image && <DappImg src={dappModalData.image} />}
-          {dappModalData?.name && <DappName>{dappModalData.name}</DappName>}
+          {projectModalData?.image && (
+            <ProjectImg src={projectModalData.image} />
+          )}
+          {projectModalData?.name && (
+            <ProjectName>{projectModalData.name}</ProjectName>
+          )}
         </HeaderLeft>
         <HeaderRight>
           <ButtonFullScreen isFullscreen={isFullscreen} onClick={onToggle} />
           <RightLine />
-          <CloseButton onClick={closeDappModal}>
+          <CloseButton onClick={closeProjectModal}>
             <ButtonIcon src={CloseSvg} />
           </CloseButton>
         </HeaderRight>
@@ -40,13 +45,13 @@ export default function DappWebsiteModal() {
             onClick={onToggle}
           />
         )}
-        {dappModalData && <DappWebsitePreview data={dappModalData} />}
+        {projectModalData && <ProjectWebsitePreview data={projectModalData} />}
       </Body>
-    </DappWebsiteModalWrapper>
+    </ProjectWebsiteModalWrapper>
   ) : null;
 }
 
-const DappWebsiteModalWrapper = styled.div`
+const ProjectWebsiteModalWrapper = styled.div`
   width: calc(100vw - 60px);
   height: 100vh;
   background: #1b1e23;
@@ -74,13 +79,13 @@ const HeaderLeft = styled.div`
   align-items: center;
   gap: 10px;
 `;
-const DappImg = styled(ImgDefault)`
+const ProjectImg = styled(ImgDefault)`
   width: 40px;
   height: 40px;
   border: 1px solid #39424c;
   border-radius: 10px;
 `;
-const DappName = styled.span`
+const ProjectName = styled.span`
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;

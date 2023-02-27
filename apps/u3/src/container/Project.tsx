@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 15:50:13
+ * @LastEditTime: 2023-02-27 15:06:48
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -12,67 +12,34 @@ import styled from 'styled-components';
 import { MainWrapper } from '../components/layout/Index';
 import Loading from '../components/common/loading/Loading';
 import {
-  UpdateDappData,
-  DappExploreListItemResponse,
-} from '../services/types/dapp';
-import {
-  fetchListForDappExplore,
-  fetchOneDapp,
-  updateDapp,
-} from '../services/api/dapp';
+  UpdateProjectData,
+  ProjectExploreListItemResponse,
+} from '../services/types/project';
+import { fetchOneProject, updateProject } from '../services/api/project';
 import { ApiRespCode } from '../services/types';
-import Header from '../components/dapp/detail/Header';
-import Screeshots from '../components/dapp/detail/Screeshots';
-import UserScore from '../components/dapp/detail/UserScore';
-import Project from '../components/dapp/detail/Project';
-import useDappWebsite from '../hooks/useDappWebsite';
-import useDappHandles from '../hooks/useDappHandles';
-import RecommendDapps from '../components/dapp/detail/RecommendDapps';
-import DappEditModal from '../components/dapp/DappEditModal';
+import Header from '../components/project/detail/Header';
+import Events from '../components/project/detail/Events';
+import Conents from '../components/project/detail/Conents';
+import Team from '../components/project/detail/Team';
+import QA from '../components/project/detail/QA';
+import useProjectHandles from '../hooks/useProjectHandles';
+import Dapps from '../components/project/detail/Dapps';
+import ProjectEditModal from '../components/project/ProjectEditModal';
 import { messages } from '../utils/message';
 
-export default function Dapp() {
+export default function Project() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [isPending, setIsPending] = useState(false);
-  const [data, setData] = useState<DappExploreListItemResponse | null>(null);
-  const { openDappModal } = useDappWebsite();
-  const { favorQueueIds, onFavor } = useDappHandles();
-  const [isPendingRecommend, setIsPendingRecommend] = useState(false);
-  const [recommendDapps, setRecommendDapps] = useState<
-    DappExploreListItemResponse[]
-  >([]);
-  const getRecommendDapps = useCallback((types: string[]) => {
-    setIsPendingRecommend(true);
-    fetchListForDappExplore({
-      types,
-      pageSize: 6,
-      pageNumber: 0,
-    })
-      .then((resp) => {
-        if (resp.data.code === ApiRespCode.SUCCESS) {
-          setRecommendDapps(resp.data.data);
-        } else {
-          setRecommendDapps([]);
-          toast.error(resp.data.msg);
-        }
-      })
-      .catch((error) => {
-        setRecommendDapps([]);
-        toast.error(error.message || error.msg);
-      })
-      .finally(() => {
-        setIsPendingRecommend(false);
-      });
-  }, []);
+  const [data, setData] = useState<ProjectExploreListItemResponse | null>(null);
+  const { favorQueueIds, onFavor, onUnfavor } = useProjectHandles();
   useEffect(() => {
     if (id) {
       setIsPending(true);
-      fetchOneDapp(id)
+      fetchOneProject(id)
         .then((resp) => {
           if (resp.data.code === ApiRespCode.SUCCESS) {
             setData(resp.data.data);
-            getRecommendDapps(resp.data.data?.types || []);
           } else {
             setData(null);
             toast.error(resp.data.msg);
@@ -87,25 +54,31 @@ export default function Dapp() {
         });
     }
   }, [id]);
-  const handleInstall = useCallback(async () => {
+  const handleFavor = useCallback(async () => {
     const newData = await onFavor(data);
     if (newData) {
-      setData(newData as DappExploreListItemResponse);
+      setData(newData as ProjectExploreListItemResponse);
     }
   }, [onFavor, data]);
+  const handleUnfavor = useCallback(async () => {
+    const newData = await onUnfavor(data);
+    if (newData) {
+      setData(newData as ProjectExploreListItemResponse);
+    }
+  }, [onUnfavor, data]);
   const [openEdit, setOpenEdit] = useState(false);
 
   const [adminEditPending, setAdminEditPending] = useState(false);
   const handleEditSubmit = useCallback(
-    async (form: UpdateDappData) => {
+    async (form: UpdateProjectData) => {
       if (adminEditPending) return;
       try {
         setAdminEditPending(true);
-        const resp = await updateDapp(id, form);
+        const resp = await updateProject(id, form);
         const { code, msg } = resp.data;
         if (code === 0) {
           setData((oldData) => ({ ...oldData, ...form }));
-          toast.success(messages.dapp.admin_update);
+          toast.success(messages.project.admin_update);
           setOpenEdit(false);
         } else {
           toast.error(msg || messages.common.error);
@@ -123,46 +96,58 @@ export default function Dapp() {
       <Loading />
     </StatusBox>
   ) : data ? (
-    <DappWrapper>
+    <ProjectWrapper>
       <Header
         data={data}
-        disabledInstall={data.favored || favorQueueIds.includes(data.id)}
-        loadingInstall={favorQueueIds.includes(data.id)}
-        isInstalled={data.favored}
-        onInstall={handleInstall}
-        onOpen={() => openDappModal(data.id)}
+        disabledFavor={data.favored || favorQueueIds.includes(data.id)}
+        loadingFavor={favorQueueIds.includes(data.id)}
+        isFavored={data.favored}
+        onFavor={handleFavor}
+        onUnfavor={handleUnfavor}
         onEdit={() => setOpenEdit(true)}
       />
       <ContentLayout>
         <ContentLayoutLeft>
-          <Screeshots />
-          <UserScore />
+          {data?.contents?.length && (
+            <Conents
+              data={data.contents}
+              onItemClick={(item) => navigate(`/contents/${item.id}`)}
+            />
+          )}
+          {data?.events?.length && (
+            <Events
+              data={data.events}
+              onItemClick={(item) => navigate(`/events/${item.id}`)}
+            />
+          )}
         </ContentLayoutLeft>
         <ContentLayoutRight>
-          {data.project && <Project data={data.project} />}
-
-          <RecommendDapps
-            data={recommendDapps}
-            loading={isPendingRecommend}
-            onItemClick={(item) => navigate(`/dapps/${item.id}`)}
-          />
+          <Team />
+          {data?.dapps?.length && (
+            <Dapps
+              data={data.dapps}
+              onItemClick={(item) => navigate(`/dapps/${item.id}`)}
+            />
+          )}
+          <QA />
         </ContentLayoutRight>
       </ContentLayout>
-      <DappEditModal
+
+      <ProjectEditModal
         isOpen={openEdit}
-        data={{ ...data, uniProjectId: data?.project?.id }}
+        data={data}
         disabled={adminEditPending}
         loading={adminEditPending}
         onCancel={() => setOpenEdit(false)}
         onSubmit={handleEditSubmit}
       />
-    </DappWrapper>
+    </ProjectWrapper>
   ) : (
-    <StatusBox>The dapp query with id {id} failed</StatusBox>
+    <StatusBox>The project query with id {id} failed</StatusBox>
   );
 }
 
-const DappWrapper = styled(MainWrapper)`
+const ProjectWrapper = styled(MainWrapper)`
   height: auto;
   display: flex;
   flex-direction: column;
