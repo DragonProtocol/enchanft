@@ -2,13 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 19:00:45
+ * @LastEditTime: 2023-02-27 19:05:59
  * @Description: file description
  */
-import 'slick-carousel/slick/slick.css';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import Slider from 'react-slick';
 import { useRef } from 'react';
 import Title from './Title';
 import { MEDIA_BREAK_POINTS } from '../../constants';
