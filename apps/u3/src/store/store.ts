@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-10 15:16:32
+ * @LastEditTime: 2023-02-27 10:43:30
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit';
@@ -15,6 +15,8 @@ import eventCreate from '../features/event/eventCreate';
 import eventCompletedList from '../features/event/eventCompletedList';
 import projectExploreList from '../features/project/projectExploreList';
 import projectHandles from '../features/project/projectHandles';
+import dappExploreList from '../features/dapp/dappExploreList';
+import dappHandles from '../features/dapp/dappHandles';
 import frensHandles from '../features/frens/frensHandles';
 import userGroupFavorites from '../features/favorite/userGroupFavorites';
 import configsTopics from '../features/configs/topics';
@@ -31,6 +33,8 @@ export const store = configureStore({
     eventCompletedList,
     projectExploreList,
     projectHandles,
+    dappExploreList,
+    dappHandles,
     userGroupFavorites,
     frensHandles,
     configsTopics,

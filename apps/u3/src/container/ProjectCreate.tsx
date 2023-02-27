@@ -4,29 +4,27 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-07 10:41:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 17:35:45
+ * @LastEditTime: 2023-02-27 13:31:22
  * @Description: file description
  */
 import { useCallback, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import CardBase from '../components/common/card/CardBase';
-import DappForm from '../components/dapp/DappForm';
+import ProjectForm from '../components/project/ProjectForm';
 import { MainWrapper } from '../components/layout/Index';
-import { createDapp } from '../services/api/dapp';
 import { createProject } from '../services/api/project';
-import { DappStatus, UpdateDappData } from '../services/types/dapp';
-import { UpdateProjectData } from '../services/types/project';
+import { UniprojectStatus, UpdateProjectData } from '../services/types/project';
 import { messages } from '../utils/message';
 
-function DappCreate() {
-  const initialValues: UpdateDappData = {
+function ProjectCreate() {
+  const initialValues = {
     name: '',
     description: '',
     image: '',
     types: [],
     url: '',
-    status: DappStatus.VISIBLE,
+    status: UniprojectStatus.VISIBLE,
     chains: [],
     mediaLinks: {
       twitter: '',
@@ -35,34 +33,19 @@ function DappCreate() {
       telegram: '',
     },
     editorScore: 0,
-    uniProjectId: undefined,
   };
   const formHandleRef = useRef(null);
   const [pending, setPending] = useState(false);
   const handleReset = () => formHandleRef.current?.resetForm();
   const handleSubmit = useCallback(
-    async (form: UpdateDappData, isCreateProject: boolean) => {
+    async (form: UpdateProjectData) => {
       if (pending) return;
       try {
         setPending(true);
-        let { uniProjectId } = form;
-        // 如果要同步创建project
-        if (isCreateProject) {
-          const resp = await createProject(
-            form as unknown as UpdateProjectData
-          );
-          const { code, msg, data } = resp.data;
-          if (code === 0) {
-            toast.success(messages.project.admin_submit);
-            uniProjectId = data.id;
-          } else {
-            toast.error(msg || messages.common.error);
-          }
-        }
-        const resp = await createDapp({ ...form, uniProjectId });
+        const resp = await createProject(form);
         const { code, msg } = resp.data;
         if (code === 0) {
-          toast.success(messages.dapp.admin_submit);
+          toast.success(messages.project.admin_submit);
           handleReset();
         } else {
           toast.error(msg || messages.common.error);
@@ -78,20 +61,19 @@ function DappCreate() {
   return (
     <ContainerWrapper>
       <CardBase>
-        <DappForm
+        <ProjectForm
           initialValues={initialValues}
           ref={formHandleRef}
           disabled={pending}
           loading={pending}
           onSubmit={handleSubmit}
           displayReset
-          displayCreateProject
         />
       </CardBase>
     </ContainerWrapper>
   );
 }
-export default DappCreate;
+export default ProjectCreate;
 const ContainerWrapper = styled(MainWrapper)`
   height: auto;
 `;

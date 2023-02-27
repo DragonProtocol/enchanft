@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-02 17:07:54
+ * @LastEditTime: 2023-02-27 13:35:49
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -13,7 +13,7 @@ import {
   PlatformsItemResponse,
   PlatformType,
 } from '../../services/types/common';
-import ProjectImgDefault from '../project/ProjectImgDefault';
+import ImgDefault from '../common/ImgDefault';
 import { formatFilterShowName } from '../../utils/filter';
 import EllipsisText from '../common/text/EllipsisText';
 
@@ -113,7 +113,7 @@ const CardWrapper = styled.div`
     }
   }
 `;
-const PlatformImg = styled(ProjectImgDefault)`
+const PlatformImg = styled(ImgDefault)`
   width: 48px;
   height: 48px;
   border-radius: 50%;

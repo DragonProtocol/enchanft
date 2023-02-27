@@ -8,14 +8,14 @@
 import { useMemo } from 'react';
 import styled from 'styled-components';
 import useConfigsTopics from '../../hooks/useConfigsTopics';
-import { ProjectExploreListParams } from '../../services/types/project';
+import { DappExploreListParams } from '../../services/types/dapp';
 import SearchInput from '../common/input/SearchInput';
 import Select from '../common/select/Select';
 import GridSvgUrl from '../common/icons/svgs/grid.svg';
 import ListSvgUrl from '../common/icons/svgs/list.svg';
 
 export type DappExploreListFilterValues = Pick<
-  ProjectExploreListParams,
+  DappExploreListParams,
   'chains' | 'types' | 'keywords'
 >;
 
@@ -56,7 +56,7 @@ export default function DappExploreListFilter({
   const typeOptions = useMemo(
     () => [
       defaultTypeOption,
-      ...topics.projectTypes.map((item) => ({
+      ...topics.dappTypes.map((item) => ({
         value: item.value,
         label: item.name,
       })),

@@ -19,7 +19,7 @@ import useUserFavorites from '../../hooks/useUserFavorites';
 import DappSideBarListItem from './DappSideBarListItem';
 import useDappWebsite from '../../hooks/useDappWebsite';
 import DappWebsiteModal from './DappWebsiteModal';
-import useProjectHandles from '../../hooks/useProjectHandles';
+import useDappHandles from '../../hooks/useDappHandles';
 import InfoCircleSvgUrl from '../common/icons/svgs/info-circle.svg';
 import TrashSvgUrl from '../common/icons/svgs/trash.svg';
 import {
@@ -47,7 +47,7 @@ const dragFn =
 export default function DappsSideBarList() {
   const navigate = useNavigate();
   const { openDappModal } = useDappWebsite();
-  const { projects } = useUserFavorites();
+  const { dapps } = useUserFavorites();
   const { isLogin } = useLogin();
   const { firstRouteMeta } = useRoute();
   const isOpen = useMemo(() => {
@@ -56,14 +56,14 @@ export default function DappsSideBarList() {
     );
   }, [isLogin, firstRouteMeta]);
 
-  // const showProjects = useMemo(
+  // const showDapps = useMemo(
   //   () =>
-  //     [...projects].sort(
+  //     [...dapps].sort(
   //       (a, b) => order.current?.indexOf(a.id) - order.current?.indexOf(b.id)
   //     ),
-  //   [projects]
+  //   [dapps]
   // );
-  // const transitions = useTransition(showProjects, {
+  // const transitions = useTransition(showDapps, {
   //   keys: (item) => item.id,
   //   from: {
   //     opacity: 0,
@@ -86,11 +86,11 @@ export default function DappsSideBarList() {
   //   },
   // });
 
-  const { onUnfavor, favorQueueIds } = useProjectHandles();
+  const { onUnfavor, favorQueueIds } = useDappHandles();
   const [handlesItemId, setHandlesItemId] = useState<string | number | null>(
     null
   );
-  const handlesItem = projects.find(
+  const handlesItem = dapps.find(
     (item) => handlesItemId && item.id === handlesItemId
   );
 
@@ -140,9 +140,9 @@ export default function DappsSideBarList() {
   const orderStore = useRef(getDappSideBarOrderForStore());
   const order = useRef<Array<number>>([]);
 
-  const [springs, api] = useSprings(projects.length, dragFn(order.current)); // Create springs, each corresponds to an item, controlling its transform, scale, etc.
+  const [springs, api] = useSprings(dapps.length, dragFn(order.current)); // Create springs, each corresponds to an item, controlling its transform, scale, etc.
   useEffect(() => {
-    const newOrder = projects
+    const newOrder = dapps
       .map((item, i) => ({ ...item, originIndex: i }))
       .sort(
         (a, b) =>
@@ -153,7 +153,7 @@ export default function DappsSideBarList() {
       api.start(dragFn(newOrder));
     }
     order.current = [...newOrder];
-  }, [projects]);
+  }, [dapps]);
 
   const bind = useDrag(
     ({ args: [originalIndex], active, movement: [, y] }) => {
@@ -161,7 +161,7 @@ export default function DappsSideBarList() {
       const curRow = clamp(
         Math.round((curIndex * 76 + y) / 76),
         0,
-        projects.length - 1
+        dapps.length - 1
       );
       const newOrder = swap(order.current, curIndex, curRow);
       api.start(dragFn(newOrder, active, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
@@ -169,9 +169,7 @@ export default function DappsSideBarList() {
       if (!active) {
         order.current = newOrder;
         const newOrderStore = [
-          ...new Set(
-            order.current?.map((i: string | number) => projects[i]?.id)
-          ),
+          ...new Set(order.current?.map((i: string | number) => dapps[i]?.id)),
         ];
         orderStore.current = newOrderStore;
         setDappSideBarOrderToStore(newOrderStore);
@@ -191,11 +189,11 @@ export default function DappsSideBarList() {
         }}
       >
         <Title>Your Dapps</Title>
-        <DappList style={{ height: projects.length * 76 }}>
+        <DappList style={{ height: dapps.length * 76 }}>
           {springs.map(({ zIndex, y, scale }, i) => (
             <animated.div
               {...bind(i)}
-              key={projects[i].id}
+              key={dapps[i].id}
               style={{
                 zIndex,
                 y,
@@ -203,13 +201,13 @@ export default function DappsSideBarList() {
               }}
             >
               <DappSideBarListItem
-                data={projects[i]}
-                onOpen={() => openDappModal(projects[i].id)}
-                onOpenHandles={() => setHandlesItemId(projects[i].id)}
-                disabled={favorQueueIds.includes(projects[i].id)}
+                data={dapps[i]}
+                onOpen={() => openDappModal(dapps[i].id)}
+                onOpenHandles={() => setHandlesItemId(dapps[i].id)}
+                disabled={favorQueueIds.includes(dapps[i].id)}
                 ref={(el) => {
                   if (el) {
-                    itemElsWeakMap.current.set(projects[i], el);
+                    itemElsWeakMap.current.set(dapps[i], el);
                   }
                 }}
               />
@@ -229,7 +227,7 @@ export default function DappsSideBarList() {
           <OptionItem
             onClick={() => {
               if (handlesItem) {
-                const originIndex = projects.findIndex(
+                const originIndex = dapps.findIndex(
                   (item) => item.id === handlesItem.id
                 );
                 if (originIndex !== -1) {

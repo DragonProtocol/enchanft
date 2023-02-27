@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 11:33:42
+ * @LastEditTime: 2023-02-27 13:32:14
  * @Description:
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -11,52 +11,55 @@ import { useNavigate } from 'react-router-dom';
 import { MainWrapper } from '../components/layout/Index';
 import ListScrollBox from '../components/common/box/ListScrollBox';
 import {
-  fetchMoreDappExploreList,
-  fetchDappExploreList,
+  fetchMoreProjectExploreList,
+  fetchProjectExploreList,
   selectAll,
   selectState,
-} from '../features/dapp/dappExploreList';
+} from '../features/project/projectExploreList';
 import { AsyncRequestStatus } from '../services/types';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Loading from '../components/common/loading/Loading';
-import useDappHandles from '../hooks/useDappHandles';
+import useProjectHandles from '../hooks/useProjectHandles';
 import NoResult from '../components/common/NoResult';
-import DappExploreListFilter, {
-  defaultDappExploreListFilterValues,
-} from '../components/dapp/DappExploreListFilter';
-import DappExploreList from '../components/dapp/DappExploreList';
-import useDappWebsite from '../hooks/useDappWebsite';
+import ProjectExploreListFilter, {
+  defaultProjectExploreListFilterValues,
+} from '../components/project/ProjectExploreListFilter';
+import ProjectExploreList from '../components/project/ProjectExploreList';
+import useProjectWebsite from '../hooks/useProjectWebsite';
 
-export default function Dapps() {
+export default function Projects() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { openDappModal } = useDappWebsite();
-  const { favorQueueIds, onFavor } = useDappHandles();
+  const { openProjectModal } = useProjectWebsite();
+  const { favorQueueIds, onFavor } = useProjectHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
-  const dappExploreList = useAppSelector(selectAll);
-  const [filter, setFilter] = useState(defaultDappExploreListFilterValues);
+  const projectExploreList = useAppSelector(selectAll);
+  const [filter, setFilter] = useState(defaultProjectExploreListFilterValues);
   useEffect(() => {
-    dispatch(fetchDappExploreList({ ...filter }));
+    dispatch(fetchProjectExploreList({ ...filter }));
   }, [filter]);
 
   const isLoading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
     [status]
   );
-  const isEmpty = useMemo(() => !dappExploreList.length, [dappExploreList]);
+  const isEmpty = useMemo(
+    () => !projectExploreList.length,
+    [projectExploreList]
+  );
 
   const isLoadingMore = useMemo(
     () => moreStatus === AsyncRequestStatus.PENDING,
     [moreStatus]
   );
   const getMore = useCallback(
-    () => dispatch(fetchMoreDappExploreList(filter)),
+    () => dispatch(fetchMoreProjectExploreList(filter)),
     [filter]
   );
 
   return (
-    <DappsWrapper>
-      <DappExploreListFilter
+    <ProjectsWrapper>
+      <ProjectExploreListFilter
         values={filter}
         onChange={(newFilter) => setFilter(newFilter)}
       />
@@ -73,25 +76,25 @@ export default function Dapps() {
               getMore();
             }}
           >
-            <DappExploreList
-              data={dappExploreList}
+            <ProjectExploreList
+              data={projectExploreList}
               installPendingIds={favorQueueIds}
               onInstall={onFavor}
-              onOpen={(item) => openDappModal(item.id)}
-              onItemClick={(item) => navigate(`/dapps/${item.id}`)}
+              onOpen={(item) => openProjectModal(item.id)}
+              onItemClick={(item) => navigate(`/projects/${item.id}`)}
             />
             {isLoadingMore ? (
               <MoreLoading>loading ...</MoreLoading>
             ) : noMore ? (
-              <MoreLoading>No other dapps</MoreLoading>
+              <MoreLoading>No other projects</MoreLoading>
             ) : null}
           </MainBody>
         )}
       </MainBox>
-    </DappsWrapper>
+    </ProjectsWrapper>
   );
 }
-const DappsWrapper = styled(MainWrapper)`
+const ProjectsWrapper = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
   gap: 24px;

@@ -2,9 +2,9 @@ import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { usePermissions } from '@ecnft/wl-user-react';
 import { formatFilterShowName } from '../../../utils/filter';
 import {
-  DappExploreListItemResponse,
-  DappStatus,
-} from '../../../services/types/dapp';
+  ProjectExploreListItemResponse,
+  UniprojectStatus,
+} from '../../../services/types/project';
 import {
   ButtonPrimary,
   ButtonPrimaryLine,
@@ -22,21 +22,21 @@ import EllipsisTextExpandMore from '../../common/text/EllipsisTextExpandMore';
 import { Edit } from '../../icons/edit';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
-  data: DappExploreListItemResponse;
-  disabledInstall?: boolean;
-  loadingInstall?: boolean;
-  isInstalled?: boolean;
-  onInstall?: () => void;
-  onOpen?: () => void;
+  data: ProjectExploreListItemResponse;
+  disabledFavor?: boolean;
+  loadingFavor?: boolean;
+  isFavored?: boolean;
+  onFavor?: () => void;
+  onUnfavor?: () => void;
   onEdit?: () => void;
 };
 export default function Header({
   data,
-  disabledInstall,
-  loadingInstall,
-  isInstalled,
-  onInstall,
-  onOpen,
+  disabledFavor,
+  loadingFavor,
+  isFavored,
+  onFavor,
+  onUnfavor,
   onEdit,
   ...otherProps
 }: Props) {
@@ -53,7 +53,7 @@ export default function Header({
       <HeaderCenter>
         <Title>
           {data.name}{' '}
-          {data.status === DappStatus.VERIFIED && <CheckVerifiedSvg />}
+          {data.status === UniprojectStatus.VERIFIED && <CheckVerifiedSvg />}
           {isAdmin && (
             <EditBtn onClick={onEdit}>
               <Edit />
@@ -101,27 +101,26 @@ export default function Header({
               <LinkIcon src={TelegramSvg} />
             </LinkButton>
           )}
-          {data?.url &&
-            (isInstalled ? (
-              <OpenButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onOpen) onOpen();
-                }}
-              >
-                Open Dapp
-              </OpenButton>
-            ) : (
-              <InstallButton
-                disabled={disabledInstall}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onInstall) onInstall();
-                }}
-              >
-                {loadingInstall ? 'Installing' : 'Install'}
-              </InstallButton>
-            ))}
+          {/* {isFavored ? (
+            <UnfavorButton
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onUnfavor) onUnfavor();
+              }}
+            >
+              {loadingFavor ? 'Loading ...' : 'Remove From Favorite'}
+            </UnfavorButton>
+          ) : (
+            <FavorButton
+              disabled={disabledFavor}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onFavor) onFavor();
+              }}
+            >
+              {loadingFavor ? 'Loading ...' : 'Add To Favorite'}
+            </FavorButton>
+          )} */}
         </RightButtons>
       </HeaderRight>
     </HeaderWrapper>
@@ -195,8 +194,8 @@ const LinkIcon = styled.img`
   width: 100%;
   height: 100%;
 `;
-const OpenButton = styled(ButtonPrimaryLine)``;
-const InstallButton = styled(ButtonPrimary)``;
+const UnfavorButton = styled(ButtonPrimaryLine)``;
+const FavorButton = styled(ButtonPrimary)``;
 const ChainIcon = styled.img`
   width: 18px;
   height: 18px;

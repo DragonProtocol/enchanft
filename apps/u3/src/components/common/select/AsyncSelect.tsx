@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:59:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 15:03:35
+ * @LastEditTime: 2023-02-27 16:18:53
  * @Description: file description
  */
 import React, { useRef, useState } from 'react';
@@ -25,6 +25,7 @@ type Props = StyledComponentPropsWithRef<'div'> & {
   valueField?: string;
   labelField?: string;
   getOptions: (inputValue: string) => Promise<any[]>;
+  disabled?: boolean;
 };
 export default function ({
   value,
@@ -33,6 +34,7 @@ export default function ({
   valueField = 'id',
   labelField = 'name',
   getOptions,
+  disabled,
 }: Props) {
   const [cacheOptions, setCacheOptions] = useState<Option[]>([]);
   const loadOptions = (inputValue, callback) => {
@@ -53,6 +55,7 @@ export default function ({
   return (
     <AsyncSelectWrapper>
       <AsyncSelect
+        isDisabled={!!disabled}
         defaultOptions
         value={SelectValue}
         onChange={(option) => {
@@ -81,6 +84,7 @@ export function AsyncSelectV2({
   valueField = 'id',
   labelField = 'name',
   getOptions,
+  disabled,
 }: Props) {
   const cacheOptions = useRef<Option[]>([]);
   const loadOptions = (inputValue, callback) => {
@@ -101,6 +105,7 @@ export function AsyncSelectV2({
   return (
     <AsyncSelectWrapper>
       <AsyncSelect
+        isDisabled={disabled}
         defaultOptions
         value={value}
         onChange={(option) => onChange(option)}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-02-01 18:00:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-02 14:05:43
+ * @LastEditTime: 2023-02-27 13:29:52
  * @Description: file description
  */
 import { EVENT_IMAGE_SIZE_LIMIT } from '../constants';
@@ -27,6 +27,11 @@ export const messages = {
     hide: 'Hide successfully!',
   },
   dapp: {
+    install: 'Successful installation!',
+    admin_submit: 'Submit successfully!',
+    admin_update: 'Save successfully!',
+  },
+  project: {
     install: 'Successful installation!',
     admin_submit: 'Submit successfully!',
     admin_update: 'Save successfully!',
