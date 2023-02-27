@@ -2,11 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:20
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 13:35:49
+ * @LastEditTime: 2023-02-27 19:00:45
  * @Description: file description
  */
+import 'slick-carousel/slick/slick.css';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import Slider from 'react-slick';
+import { useRef } from 'react';
 import Title from './Title';
 import { MEDIA_BREAK_POINTS } from '../../constants';
 import {
@@ -25,36 +28,85 @@ export default function Platform({
   viewAllAction: () => void;
 }) {
   const navigate = useNavigate();
+  const settings = {
+    className: 'lists',
+    infinite: false,
+    slidesToShow: 6,
+    nextArrow: null,
+    prevArrow: null,
+  };
+  const listScrollState = useRef({
+    isDown: false,
+    startX: null,
+    scrollLeft: null,
+  });
   return (
     <Box>
       <Title text="Browse by Platform" />{' '}
-      <div className="lists">
-        {platforms.map((item) => {
-          return (
-            <Card
-              key={item.platformUrl}
-              {...item}
-              clickAction={() => {
-                if (item.type === PlatformType.EVENT && item.platformUrl) {
-                  navigate(`/events?platform=${item.platform}`);
-                  return;
-                }
-                if (item.type === PlatformType.CONTENT) {
-                  navigate(`/contents/:id`);
-                }
-              }}
-            />
-          );
-        })}
+      <div
+        className="container"
+        onMouseDown={(e) => {
+          listScrollState.current = {
+            isDown: true,
+            startX: e.pageX - e.currentTarget.offsetLeft,
+            scrollLeft: e.currentTarget.scrollLeft,
+          };
+          e.currentTarget.classList.add('active');
+        }}
+        onMouseMove={(e) => {
+          if (!listScrollState.current.isDown) return;
+          e.preventDefault();
+          const x = e.pageX - e.currentTarget.offsetLeft;
+          const walk = (x - listScrollState.current.startX) * 2;
+          e.currentTarget.scrollLeft =
+            listScrollState.current.scrollLeft - walk;
+        }}
+        onMouseUp={(e) => {
+          listScrollState.current.isDown = false;
+          e.currentTarget.classList.remove('active');
+        }}
+      >
+        <div className="lists">
+          {platforms.map((item) => {
+            return (
+              <Card
+                key={item.platformUrl}
+                {...item}
+                clickAction={() => {
+                  if (item.type === PlatformType.EVENT && item.platformUrl) {
+                    navigate(`/events?platform=${item.platform}`);
+                    return;
+                  }
+                  if (item.type === PlatformType.CONTENT) {
+                    navigate(`/contents/:id`);
+                  }
+                }}
+              />
+            );
+          })}
+        </div>
       </div>
     </Box>
   );
 }
 
 const Box = styled.div`
+  .container {
+    width: 100%;
+    overflow-x: scroll;
+    white-space: nowrap;
+    cursor: grab;
+  }
+
+  .container:active {
+    cursor: grabbing;
+  }
   & .lists {
     margin-top: 20px;
-    display: grid;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    /* display: grid;
     grid-gap: 20px;
     @media (min-width: ${MEDIA_BREAK_POINTS.xxxl}px) {
       grid-template-columns: repeat(
@@ -75,7 +127,7 @@ const Box = styled.div`
         6,
         minmax(calc((100% - 20px * 5) / 6), 1fr)
       );
-    }
+    } */
   }
 `;
 
@@ -85,28 +137,25 @@ function Card(props: PlatformsItemResponse & { clickAction: () => void }) {
     <CardWrapper>
       <CardBox onClick={clickAction}>
         <PlatformImg src={platformLogo} alt="" />
-        <h2>
-          <EllipsisText>{formatFilterShowName(platform)}</EllipsisText>
-        </h2>
+        <h2>{formatFilterShowName(platform)}</h2>
         <div>
-          <EllipsisText>
-            {number} {type === PlatformType.EVENT && 'events'}{' '}
-            {type === PlatformType.CONTENT && 'contents'}
-          </EllipsisText>
+          {number} {type === PlatformType.EVENT && 'events'}{' '}
+          {type === PlatformType.CONTENT && 'contents'}
         </div>
       </CardBox>
     </CardWrapper>
   );
 }
 const CardWrapper = styled.div`
-  flex: 1;
+  /* flex: 1; */
+  width: auto;
   box-sizing: border-box;
   padding: 20px;
   cursor: pointer;
   height: 146px;
   background: #1b1e23;
   border-radius: 20px;
-  overflow: hidden;
+  /* overflow: hidden; */
   &:hover {
     & > * {
       transform: scale(1.05);
@@ -119,7 +168,7 @@ const PlatformImg = styled(ImgDefault)`
   border-radius: 50%;
 `;
 const CardBox = styled.div`
-  width: 100%;
+  width: auto;
   height: 100%;
   transition: all 0.3s;
   display: flex;
@@ -138,6 +187,7 @@ const CardBox = styled.div`
     text-align: center;
 
     color: #ffffff;
+    white-space: nowrap;
   }
   > div {
     font-weight: 400;
@@ -145,5 +195,6 @@ const CardBox = styled.div`
     line-height: 19px;
 
     color: #718096;
+    white-space: nowrap;
   }
 `;
