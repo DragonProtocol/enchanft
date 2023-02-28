@@ -2,31 +2,32 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-23 11:59:36
+ * @LastEditTime: 2023-02-28 11:21:19
  * @Description:
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { isMobile } from 'react-device-detect';
 import {
-  fetchMoreProjectExploreList,
-  fetchProjectExploreList,
+  fetchMoreDappExploreList,
+  fetchDappExploreList,
   selectAll,
   selectState,
-} from '../features/project/projectExploreList';
+} from '../features/dapp/dappExploreList';
 import { AsyncRequestStatus } from '../services/types';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import useProjectHandles from '../hooks/useProjectHandles';
+import useDappHandles from '../hooks/useDappHandles';
 import {
   DappExploreListFilterValues,
   defaultDappExploreListFilterValues,
 } from '../components/dapp/DappExploreListFilter';
-import { ProjectExploreListItemResponse } from '../services/types/project';
+import { DappExploreListItemResponse } from '../services/types/dapp';
 import DappsPageMobile from '../components/dapp/DappsPageMobile';
 import DappsPage from '../components/dapp/DappsPage';
+import useDappWebsite from '../hooks/useDappWebsite';
 
 export type DappsPageProps = {
   // Queries
-  dapps: ProjectExploreListItemResponse[];
+  dapps: DappExploreListItemResponse[];
   isLoading?: boolean;
   isLoadingMore?: boolean;
   isEmpty?: boolean;
@@ -36,18 +37,19 @@ export type DappsPageProps = {
   getMore?: () => void;
   // Mutations
   installPendingIds?: (string | number)[];
-  onInstall?: (item: ProjectExploreListItemResponse) => Promise<unknown>;
+  onInstall?: (item: DappExploreListItemResponse) => Promise<unknown>;
   // Others
 };
 
 export default function Dapps() {
   const dispatch = useAppDispatch();
-  const { favorQueueIds, onFavor } = useProjectHandles();
+  const { openDappModal } = useDappWebsite();
+  const { favorQueueIds, onFavor } = useDappHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dapps = useAppSelector(selectAll);
   const [filter, setFilter] = useState(defaultDappExploreListFilterValues);
   useEffect(() => {
-    dispatch(fetchProjectExploreList({ ...filter }));
+    dispatch(fetchDappExploreList({ ...filter }));
   }, [filter]);
 
   const isLoading = useMemo(
@@ -61,7 +63,7 @@ export default function Dapps() {
     [moreStatus]
   );
   const getMore = useCallback(
-    () => dispatch(fetchMoreProjectExploreList(filter)),
+    () => dispatch(fetchMoreDappExploreList(filter)),
     [filter]
   );
 

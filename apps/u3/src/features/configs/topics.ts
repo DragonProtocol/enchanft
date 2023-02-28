@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-09 17:55:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-09 14:57:39
+ * @LastEditTime: 2023-02-27 11:47:39
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -20,6 +20,7 @@ type Topics = {
   eventRewards: TopicItem[];
   eventTypes: TopicItem[];
   projectTypes: TopicItem[];
+  dappTypes: TopicItem[];
   contentTypes: TopicItem[];
   langs: TopicItem[];
   chains: ConfigTopicsChain[];
@@ -34,6 +35,7 @@ const initConfigsTopicsState: ConfigsTopicsState = {
     eventRewards: [],
     eventTypes: [],
     projectTypes: [],
+    dappTypes: [],
     contentTypes: [],
     langs: [],
     chains: [],
@@ -51,13 +53,20 @@ export const fetchConfigsTopics = createAsyncThunk<Topics, undefined>(
   async (params, { rejectWithValue }) => {
     const resp = await getConfigsTopics();
     if (resp.data.code === ApiRespCode.SUCCESS) {
-      const { eventRewards, eventTypes, projectTypes, contentTypes, langs } =
-        resp.data.data;
+      const {
+        eventRewards,
+        eventTypes,
+        projectTypes,
+        dappTypes,
+        contentTypes,
+        langs,
+      } = resp.data.data;
       return {
         ...resp.data.data,
         eventRewards: formatTopics(eventRewards || []),
         eventTypes: formatTopics(eventTypes || []),
         projectTypes: formatTopics(projectTypes || []),
+        dappTypes: formatTopics(dappTypes || []),
         contentTypes: formatTopics(contentTypes || []),
         langs: formatTopics(langs || []),
       };

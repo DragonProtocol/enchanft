@@ -2,12 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-27 17:29:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-02 17:07:47
+ * @LastEditTime: 2023-02-27 11:38:52
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
-const ProjectImgDefaultWrapper = styled.img`
+const ImgDefaultWrapper = styled.img`
   overflow: hidden;
   position: relative;
   object-fit: cover;
@@ -33,8 +33,6 @@ const ProjectImgDefaultWrapper = styled.img`
     background: #000;
   }
 `;
-export default function ProjectImgDefault(
-  props: StyledComponentPropsWithRef<'img'>
-) {
-  return <ProjectImgDefaultWrapper {...props} />;
+export default function ImgDefault(props: StyledComponentPropsWithRef<'img'>) {
+  return <ImgDefaultWrapper {...props} />;
 }

@@ -2,28 +2,26 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 17:29:09
+ * @LastEditTime: 2023-02-27 17:29:00
  * @Description: file description
  */
 import type { ApiResp } from '.';
 import type { OrderBy } from './common';
-import { ContentListItem } from './contents';
-import type { DappExploreListItemResponse } from './dapp';
-import type { EventExploreListItemResponse } from './event';
+import { ProjectExploreListItemResponse } from './project';
 
-export enum UniprojectStatus {
+export enum DappStatus {
   HIDDEN = 'HIDDEN',
   VISIBLE = 'VISIBLE',
   VERIFIED = 'VERIFIED',
 }
 
-export type ProjectEntity = {
+export type DappEntity = {
   id: number;
   name: string;
   description: string;
   image: string;
 };
-export type ProjectExploreListParams = {
+export type DappExploreListParams = {
   keywords?: string;
   orderBy?: OrderBy | '';
   type?: string;
@@ -34,15 +32,12 @@ export type ProjectExploreListParams = {
   projectId?: number;
 };
 
-export type ProjectExploreListItemResponse = {
+export type DappExploreListItemResponse = {
   id: number;
   name: string;
   description: string;
   image: string;
   favored?: boolean;
-  events?: EventExploreListItemResponse[];
-  contents?: ContentListItem[];
-  dapps?: DappExploreListItemResponse[];
   url: string;
   mediaLinks?: {
     twitter?: string;
@@ -52,19 +47,20 @@ export type ProjectExploreListItemResponse = {
   };
   types?: string[];
   chains?: string[];
-  status?: UniprojectStatus;
+  status?: DappStatus;
+  project?: ProjectExploreListItemResponse;
 };
-export type ProjectExploreListResponse = ApiResp<
-  Array<ProjectExploreListItemResponse>
+export type DappExploreListResponse = ApiResp<
+  Array<DappExploreListItemResponse>
 >;
-export type ProjectFavoriteListItemResponse = ProjectExploreListItemResponse;
-export type ProjectFavoriteListResponse = ApiResp<
-  Array<ProjectFavoriteListItemResponse>
+export type DappFavoriteListItemResponse = DappExploreListItemResponse;
+export type DappFavoriteListResponse = ApiResp<
+  Array<DappFavoriteListItemResponse>
 >;
-export type ProjectFavorHandleResponse = ApiResp<unknown>;
-export type FetchOneProjectResponse = ApiResp<ProjectExploreListItemResponse>;
+export type DappFavorHandleResponse = ApiResp<unknown>;
+export type FetchOneDappResponse = ApiResp<DappExploreListItemResponse>;
 
-export type UpdateProjectData = {
+export type UpdateDappData = {
   name: string;
   description: string;
   image: string;
@@ -77,7 +73,8 @@ export type UpdateProjectData = {
   types?: string[];
   url: string;
   chains?: string[];
-  status?: UniprojectStatus;
+  status?: DappStatus;
   editorScore?: number;
+  uniProjectId: number;
 };
-export type UpdateProjectResponse = ApiResp<ProjectExploreListItemResponse>;
+export type UpdateDappResponse = ApiResp<DappExploreListItemResponse>;

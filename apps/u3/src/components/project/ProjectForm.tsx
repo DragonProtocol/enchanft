@@ -1,37 +1,31 @@
 import styled from 'styled-components';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useImperativeHandle,
-  useMemo,
-  useState,
-} from 'react';
+import { forwardRef, useCallback, useImperativeHandle, useMemo } from 'react';
 import InputBase from '../common/input/InputBase';
 import { ButtonPrimary, ButtonPrimaryLine } from '../common/button/ButtonBase';
 import Switch from '../common/switch/Switch';
 import useConfigsTopics from '../../hooks/useConfigsTopics';
-import { UpdateDappData, DappStatus } from '../../services/types/dapp';
+import {
+  UpdateProjectData,
+  UniprojectStatus,
+} from '../../services/types/project';
 import TextareaBase from '../common/input/TextareaBase';
 import MultiSelect from '../common/select/MultiSelect';
 import UploadImage from '../common/upload/UploadImage';
-import ProjectAsyncSelect from '../business/form/ProjectAsyncSelect';
 
 export const PROJECT_ADMIN_PLUS_SCORE_STEP = 10;
 
 type Props = {
-  initialValues: UpdateDappData;
+  initialValues: UpdateProjectData;
   disabled?: boolean;
   loading?: boolean;
   onCancel?: () => void;
-  onSubmit?: (values: UpdateDappData, isCreateProject?: boolean) => void;
+  onSubmit?: (values: UpdateProjectData) => void;
   displayReset?: boolean;
   displayCancel?: boolean;
-  displayCreateProject?: boolean;
 };
-export default forwardRef(function DappForm(
+export default forwardRef(function ProjectForm(
   {
     initialValues,
     disabled,
@@ -40,14 +34,13 @@ export default forwardRef(function DappForm(
     onCancel,
     displayReset,
     displayCancel,
-    displayCreateProject,
   }: Props,
   ref
 ) {
   const { topics } = useConfigsTopics();
   const typeOptions = useMemo(
     () =>
-      topics.dappTypes.map((item) => ({
+      topics.projectTypes.map((item) => ({
         value: item.value,
         label: item.name,
       })),
@@ -62,62 +55,51 @@ export default forwardRef(function DappForm(
     [topics]
   );
   const formik = useFormik({
-    initialValues: { ...initialValues, isCreateProject: false },
-    validationSchema: Yup.lazy((values) => {
-      return Yup.object({
-        name: Yup.string()
-          .transform((value) => value || '')
-          .required('Required'),
-        description: Yup.string()
-          .transform((value) => value || '')
-          .required('Required'),
-        image: Yup.string()
-          .transform((value) => value || '')
-          .required('Required')
-          .url('Please upload dapp logo'),
-        isCreateProject: Yup.boolean()
-          .transform((value) => !!value)
-          .nullable(),
-        uniProjectId:
-          !displayCreateProject || !values.isCreateProject
-            ? Yup.number()
-                .transform((value) => value || '')
-                .required('Required')
-            : Yup.number().transform((value) => value || ''),
-        types: Yup.array(),
-        url: Yup.string()
+    initialValues,
+    validationSchema: Yup.object({
+      name: Yup.string()
+        .transform((value) => value || '')
+        .required('Required'),
+      description: Yup.string()
+        .transform((value) => value || '')
+        .required('Required'),
+      image: Yup.string()
+        .transform((value) => value || '')
+        .required('Required')
+        .url('Please upload project logo'),
+      types: Yup.array(),
+      url: Yup.string()
+        .transform((value) => value || '')
+        .nullable()
+        .url('Please enter a regular url'),
+      status: Yup.string()
+        .transform((value) => value || '')
+        .nullable(),
+      chains: Yup.array(),
+      mediaLinks: Yup.object({
+        twitter: Yup.string()
           .transform((value) => value || '')
           .nullable()
           .url('Please enter a regular url'),
-        status: Yup.string()
+        discord: Yup.string()
           .transform((value) => value || '')
-          .nullable(),
-        chains: Yup.array(),
-        mediaLinks: Yup.object({
-          twitter: Yup.string()
-            .transform((value) => value || '')
-            .nullable()
-            .url('Please enter a regular url'),
-          discord: Yup.string()
-            .transform((value) => value || '')
-            .nullable()
-            .url('Please enter a regular url'),
-          facebook: Yup.string()
-            .transform((value) => value || '')
-            .nullable()
-            .url('Please enter a regular url'),
-          telegram: Yup.string()
-            .transform((value) => value || '')
-            .nullable()
-            .url('Please enter a regular url'),
-        }),
-        editorScore: Yup.number()
-          .transform((value) => value || 0)
-          .nullable(),
-      });
+          .nullable()
+          .url('Please enter a regular url'),
+        facebook: Yup.string()
+          .transform((value) => value || '')
+          .nullable()
+          .url('Please enter a regular url'),
+        telegram: Yup.string()
+          .transform((value) => value || '')
+          .nullable()
+          .url('Please enter a regular url'),
+      }),
+      editorScore: Yup.number()
+        .transform((value) => value || 0)
+        .nullable(),
     }),
     onSubmit: (values) => {
-      onSubmit(values, values.isCreateProject);
+      onSubmit(values);
     },
   });
   useImperativeHandle(
@@ -152,13 +134,13 @@ export default forwardRef(function DappForm(
   );
 
   return (
-    <DappFormWrapper>
+    <ProjectFormWrapper>
       <FormGroupLabel>Information</FormGroupLabel>
       <FormField>
-        <FormLabel htmlFor="name">Dapp name</FormLabel>
+        <FormLabel htmlFor="name">Project name</FormLabel>
         <FormValueBox>
           <InputBase
-            placeholder="Dapp name"
+            placeholder="Project name"
             onChange={(e) => formik.setFieldValue('name', e.target.value)}
             value={formik.values.name}
           />
@@ -215,36 +197,12 @@ export default forwardRef(function DappForm(
           onChange={(checked) =>
             formik.setFieldValue(
               'status',
-              checked ? DappStatus.VERIFIED : DappStatus.VISIBLE
+              checked ? UniprojectStatus.VERIFIED : UniprojectStatus.VISIBLE
             )
           }
-          checked={formik.values.status === DappStatus.VERIFIED}
+          checked={formik.values.status === UniprojectStatus.VERIFIED}
         />
       </FormField>
-      <FormField>
-        <FormLabel htmlFor="type">Project</FormLabel>
-        <FormValueBox>
-          <ProjectAsyncSelect
-            disabled={formik.values.isCreateProject}
-            placeholder="Select"
-            value={formik.values.uniProjectId}
-            onChange={(value) => formik.setFieldValue('uniProjectId', value)}
-          />
-          {renderFieldError('uniProjectId')}
-        </FormValueBox>
-      </FormField>
-      {displayCreateProject && (
-        <FormField>
-          <FormLabel htmlFor="supportIframe">Create Project</FormLabel>
-          <Switch
-            onChange={(checked) =>
-              formik.setFieldValue('isCreateProject', checked)
-            }
-            checked={formik.values.isCreateProject}
-          />
-        </FormField>
-      )}
-
       <FormField>
         <FormLabel htmlFor="type">Type</FormLabel>
         <FormValueBox>
@@ -394,10 +352,10 @@ export default forwardRef(function DappForm(
           Submit
         </ButtonPrimary>
       </FormButtons>
-    </DappFormWrapper>
+    </ProjectFormWrapper>
   );
 });
-const DappFormWrapper = styled.div`
+const ProjectFormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -416,7 +374,7 @@ const FormField = styled.div`
   gap: 20px;
 `;
 const FormLabel = styled.label`
-  width: 100px;
+  width: 80px;
   font-size: 14px;
   line-height: 24px;
   color: #ffffff;

@@ -7,31 +7,31 @@
  */
 import styled from 'styled-components';
 import ModalBase, { ModalBaseBody } from '../common/modal/ModalBase';
-import { UpdateDappData } from '../../services/types/dapp';
-import DappForm from './DappForm';
+import { UpdateProjectData } from '../../services/types/project';
+import ProjectForm from './ProjectForm';
 
-export type DappEditModalProps = {
+export type ProjectEditModalProps = {
   isOpen: boolean;
-  data?: UpdateDappData;
+  data?: UpdateProjectData;
   disabled?: boolean;
   loading?: boolean;
   onCancel?: () => void;
-  onSubmit?: (values: UpdateDappData) => void;
+  onSubmit?: (values: UpdateProjectData) => void;
 };
 
-export default function DappEditModal({
+export default function ProjectEditModal({
   isOpen,
   data,
   disabled,
   loading,
   onCancel,
   onSubmit,
-}: DappEditModalProps) {
+}: ProjectEditModalProps) {
   return (
     <ModalBase isOpen={isOpen}>
       <ModalBody>
         {data && (
-          <DappForm
+          <ProjectForm
             initialValues={data}
             disabled={disabled}
             loading={loading}

@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-18 17:12:51
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 11:53:04
+ * @LastEditTime: 2023-02-27 14:36:55
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { DappExploreListItemResponse } from '../../../services/types/dapp';
 import Loading from '../../common/loading/Loading';
-import DappExploreListItem from '../DappExploreListItem';
+import DappExploreListItem from '../../dapp/DappExploreListItem';
 import Card, { CardTitle } from './Card';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
@@ -16,48 +16,48 @@ type Props = StyledComponentPropsWithRef<'div'> & {
   loading?: boolean;
   onItemClick?: (data: DappExploreListItemResponse) => void;
 };
-export default function RecommendDapps({
+export default function Dapps({
   data,
   loading,
   onItemClick,
   ...otherProps
 }: Props) {
   return (
-    <RecommendDappsWrapper {...otherProps}>
-      <CardTitle>Recommended</CardTitle>
+    <DappsWrapper {...otherProps}>
+      <CardTitle>Dapps</CardTitle>
       {loading ? (
         <ListStatusBox>
           <Loading />
         </ListStatusBox>
       ) : (
-        <RecommendDappsList>
+        <DappsList>
           {data.map((item) => (
-            <RecommendDappItem
+            <DappItem
               key={item.id}
               data={item}
               displayButtons={false}
               onClick={() => onItemClick && onItemClick(item)}
             />
           ))}
-        </RecommendDappsList>
+        </DappsList>
       )}
-    </RecommendDappsWrapper>
+    </DappsWrapper>
   );
 }
 
-const RecommendDappsWrapper = styled(Card)`
+const DappsWrapper = styled(Card)`
   width: 100%;
   min-height: 424px;
   display: flex;
   flex-direction: column;
 `;
-const RecommendDappsList = styled.div`
+const DappsList = styled.div`
   margin-top: 20px;
   display: flex;
   flex-direction: column;
   gap: 20px;
 `;
-const RecommendDappItem = styled(DappExploreListItem)`
+const DappItem = styled(DappExploreListItem)`
   padding: 0;
 `;
 const ListStatusBox = styled.div`
