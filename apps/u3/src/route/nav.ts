@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 13:59:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 13:47:27
+ * @LastEditTime: 2023-02-28 09:41:30
  * @Description: file description
  */
 import React, { ReactNode } from 'react';
@@ -49,12 +49,12 @@ export const navs: CutomNavObject[] = [
     icon: React.createElement(GridSvg),
     route: getRoute(RouteKey.dapps),
   },
-  {
-    name: 'project',
-    activeRouteKeys: [RouteKey.projects, RouteKey.project],
-    icon: React.createElement(GridSvg),
-    route: getRoute(RouteKey.projects),
-  },
+  // {
+  //   name: 'project',
+  //   activeRouteKeys: [RouteKey.projects, RouteKey.project],
+  //   icon: React.createElement(GridSvg),
+  //   route: getRoute(RouteKey.projects),
+  // },
   {
     name: 'favorite',
     activeRouteKeys: [RouteKey.favorites],

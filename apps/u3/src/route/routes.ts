@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 10:50:25
+ * @LastEditTime: 2023-02-28 09:41:12
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
@@ -90,11 +90,11 @@ export const routes: CutomRouteObject[] = [
     key: RouteKey.dappCreate,
     permissions: [RoutePermission.login, RoutePermission.admin],
   },
-  {
-    path: '/projects',
-    element: loadContainerElement('Projects'),
-    key: RouteKey.projects,
-  },
+  // {
+  //   path: '/projects',
+  //   element: loadContainerElement('Projects'),
+  //   key: RouteKey.projects,
+  // },
   {
     path: '/projects/:id',
     element: loadContainerElement('Project'),
