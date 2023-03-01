@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-22 15:40:42
+ * @LastEditTime: 2023-03-01 12:26:01
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
@@ -14,13 +14,13 @@ import Main from './Main';
 import { useGAPageView } from '../../hooks/useGoogleAnalytics';
 import Menu from './menu';
 import DappsSideBarList from '../dapp/DappSideBarList';
-import MobileLayoutHeader from './MobileLayoutHeader';
+import MobileHeader from './mobile/MobileHeader';
 
 function Layout() {
   useGAPageView();
   return (
     <LayoutWrapper id="layout-wrapper">
-      {isMobile ? <MobileLayoutHeader /> : <Menu />}
+      {isMobile ? <MobileHeader /> : <Menu />}
       {isMobile ? (
         <MobileContentBox>
           <Main />
@@ -94,6 +94,13 @@ export const MainWrapper = styled.div`
   @media (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
     width: ${MEDIA_BREAK_POINTS.xl}px;
   }
+  ${isMobile &&
+  `
+    padding: 10px;
+    @media (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
+      width: 100%;
+    }
+  `}
 `;
 
 /**

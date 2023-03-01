@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-28 11:21:19
+ * @LastEditTime: 2023-02-28 23:37:56
  * @Description:
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -23,7 +23,7 @@ import {
 import { DappExploreListItemResponse } from '../services/types/dapp';
 import DappsPageMobile from '../components/dapp/DappsPageMobile';
 import DappsPage from '../components/dapp/DappsPage';
-import useDappWebsite from '../hooks/useDappWebsite';
+import useDappsSearchParams from '../hooks/useDappsSearchParams';
 
 export type DappsPageProps = {
   // Queries
@@ -43,14 +43,13 @@ export type DappsPageProps = {
 
 export default function Dapps() {
   const dispatch = useAppDispatch();
-  const { openDappModal } = useDappWebsite();
   const { favorQueueIds, onFavor } = useDappHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dapps = useAppSelector(selectAll);
-  const [filter, setFilter] = useState(defaultDappExploreListFilterValues);
+  const { currentSearchParams, searchParamsChange } = useDappsSearchParams();
   useEffect(() => {
-    dispatch(fetchDappExploreList({ ...filter }));
-  }, [filter]);
+    dispatch(fetchDappExploreList({ ...currentSearchParams }));
+  }, [currentSearchParams]);
 
   const isLoading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
@@ -63,20 +62,8 @@ export default function Dapps() {
     [moreStatus]
   );
   const getMore = useCallback(
-    () => dispatch(fetchMoreDappExploreList(filter)),
-    [filter]
-  );
-
-  const filterChange = useCallback(
-    (values: DappExploreListFilterValues) => {
-      const newFilter = { ...filter };
-      // eslint-disable-next-line guard-for-in
-      for (const key in values) {
-        newFilter[key] = values[key];
-      }
-      setFilter(newFilter);
-    },
-    [filter]
+    () => dispatch(fetchMoreDappExploreList(currentSearchParams)),
+    [currentSearchParams]
   );
   return isMobile ? (
     <DappsPageMobile
@@ -85,8 +72,8 @@ export default function Dapps() {
       isLoading={isLoading}
       isLoadingMore={isLoadingMore}
       isEmpty={isEmpty}
-      filter={filter}
-      filterChange={filterChange}
+      filter={currentSearchParams}
+      filterChange={searchParamsChange}
       noMore={noMore}
       getMore={getMore}
       // Mutations
@@ -100,8 +87,8 @@ export default function Dapps() {
       isLoading={isLoading}
       isLoadingMore={isLoadingMore}
       isEmpty={isEmpty}
-      filter={filter}
-      filterChange={filterChange}
+      filter={currentSearchParams}
+      filterChange={searchParamsChange}
       noMore={noMore}
       getMore={getMore}
       // Mutations

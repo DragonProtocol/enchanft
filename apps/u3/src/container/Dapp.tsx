@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 15:50:13
+ * @LastEditTime: 2023-03-01 18:43:03
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import { isMobile } from 'react-device-detect';
 import { MainWrapper } from '../components/layout/Index';
 import Loading from '../components/common/loading/Loading';
 import {
@@ -171,6 +172,12 @@ const DappWrapper = styled(MainWrapper)`
 const ContentLayout = styled.div`
   display: flex;
   gap: 20px;
+
+  ${isMobile &&
+  `
+    flex-direction: column;
+    gap: 10px;
+  `}
 `;
 const ContentLayoutLeft = styled.div`
   width: 0;
@@ -178,6 +185,11 @@ const ContentLayoutLeft = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  ${isMobile &&
+  `
+  width: 100%;
+  gap: 10px;
+  `}
 `;
 const ContentLayoutRight = styled.div`
   width: 360px;
@@ -185,6 +197,11 @@ const ContentLayoutRight = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  ${isMobile &&
+  `
+  width: 100%;
+  gap: 10px;
+  `}
 `;
 const StatusBox = styled(MainWrapper)`
   display: flex;

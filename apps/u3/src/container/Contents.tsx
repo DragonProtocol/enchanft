@@ -2,27 +2,22 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-22 19:17:29
+ * @LastEditTime: 2023-02-28 22:00:20
  * @Description: 首页任务看板
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
-import {
-  URLSearchParamsInit,
-  useNavigate,
-  useParams,
-  useSearchParams,
-} from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 import { fetchContents } from '../services/api/contents';
 import { ContentLang, ContentListItem } from '../services/types/contents';
 import useContentHandles from '../hooks/useContentHandles';
-import { defaultContentOrderBy } from '../components/contents/ContentOrderBySelect';
 import useAdminContentHandles from '../hooks/useAdminContentHandles';
 import { messages } from '../utils/message';
 import ContentsPage from '../components/contents/ContentsPage';
 import ContentsPageMobile from '../components/contents/ContentsPageMobile';
+import useContentsSearchParams from '../hooks/useContentsSearchParams';
 
 const NEWEST_CONTENT_ID_KEY = 'NEWEST_CONTENT_ID';
 function getNewestContentIdForStore(): number {
@@ -70,27 +65,8 @@ function Contents() {
   const { user } = useWlUserReact();
   const navigate = useNavigate();
   const { id } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
 
-  const currentUrlQuery = useMemo(
-    () => ({
-      orderBy: searchParams.get('orderBy') || defaultContentOrderBy,
-      types: searchParams.get('types') || '',
-      lang: searchParams.get('lang') || '',
-      keywords: searchParams.get('keywords') || '',
-    }),
-    [searchParams]
-  );
-
-  const currentSearchParams = useMemo(
-    () => ({
-      orderBy: currentUrlQuery.orderBy,
-      types: currentUrlQuery.types.split(',').filter((item) => !!item),
-      lang: currentUrlQuery.lang.split(',').filter((item) => !!item),
-      keywords: currentUrlQuery.keywords,
-    }),
-    [currentUrlQuery]
-  );
+  const { currentSearchParams, searchParamsChange } = useContentsSearchParams();
 
   const [currPageNumber, setCurrPageNumber] = useState(0);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
@@ -205,31 +181,6 @@ function Contents() {
     if (!hasMore) return;
     loadMore();
   }, [loadingMore, hasMore, loadMore]);
-
-  const searchParamsChange = useCallback(
-    (values: {
-      orderBy?: any;
-      types?: string[];
-      lang?: string[];
-      keywords?: string;
-    }) => {
-      const newUrlQuery = { ...currentUrlQuery };
-      // eslint-disable-next-line guard-for-in
-      for (const key in values) {
-        switch (key) {
-          case 'types':
-          case 'lang':
-            newUrlQuery[key] = values[key].join(',');
-            break;
-          default:
-            newUrlQuery[key] = values[key];
-            break;
-        }
-      }
-      setSearchParams(newUrlQuery as unknown as URLSearchParamsInit);
-    },
-    [currentUrlQuery]
-  );
 
   return isMobile ? (
     <ContentsPageMobile

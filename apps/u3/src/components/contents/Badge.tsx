@@ -2,10 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-13 18:01:38
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-30 16:21:36
+ * @LastEditTime: 2023-03-01 11:15:09
  * @Description: file description
  */
-import styled from 'styled-components';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 
 const contentTagStyleDefault = {
   color: '#718096',
@@ -36,9 +36,16 @@ const contentTagStyleMap = {
     color: '#97B556',
   },
 };
-export default function Badge({ text }: { text: string }) {
+type Props = StyledComponentPropsWithRef<'span'> & {
+  text: string;
+};
+export default function Badge({ text, ...otherProps }: Props) {
   const color = contentTagStyleMap[text]?.color ?? contentTagStyleDefault.color;
-  return <Box color={color}>{text}</Box>;
+  return (
+    <Box color={color} {...otherProps}>
+      {text}
+    </Box>
+  );
 }
 
 const Box = styled.span<{ color: string }>`

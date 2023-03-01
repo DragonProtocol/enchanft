@@ -2,10 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-10 15:36:30
+ * @LastEditTime: 2023-02-28 22:49:19
  * @Description: file description
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
 import { ButtonPrimaryLine } from '../button/ButtonBase';
 import ChoiceCheckedSvg from '../icons/svgs/choice-checked.svg';
@@ -90,6 +91,11 @@ export default function CheckboxMultiChoice({
 const CheckboxMultiChoiceWrapper = styled.div`
   display: flex;
   align-items: flex-start;
+
+  ${isMobile &&
+  `
+    flex-direction: column;
+  `}
 `;
 
 const CheckboxMultiChoiceLabel = styled.div`
@@ -100,6 +106,11 @@ const CheckboxMultiChoiceLabel = styled.div`
   font-size: 16px;
   line-height: 40px;
   color: #748094;
+  ${isMobile &&
+  `
+    font-weight: 500;
+    color: #fff;
+  `}
 `;
 const OptionsBox = styled.div`
   flex: 1;
@@ -107,6 +118,10 @@ const OptionsBox = styled.div`
   align-items: center;
   gap: 20px;
   flex-flow: wrap;
+  ${isMobile &&
+  `
+    gap: 10px;
+  `}
 `;
 const OptionItem = styled(ButtonPrimaryLine)<{ isChecked: boolean }>`
   height: 40px;

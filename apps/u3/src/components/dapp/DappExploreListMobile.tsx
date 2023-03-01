@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-23 12:09:23
+ * @LastEditTime: 2023-03-01 16:42:33
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -33,16 +33,11 @@ export default function DappExploreListMobile({
     <DappExploreListWrapper>
       {data.map((item) => {
         return (
-          <DappExploreListItem
+          <DappExploreListItemMobile
             key={item.id}
             data={item}
-            // isInstalled={!!item?.favored}
-            // loadingInstall={loadingInstall(item.id)}
-            // disabledInstall={!!item?.favored || loadingInstall(item.id)}
-            // onInstall={() => onInstall && onInstall(item)}
-            // onOpen={() => onOpen && onOpen(item)}
             onClick={() => onItemClick && onItemClick(item)}
-            // displayButtons={!!item.dappUrl}
+            displayButtons={false}
           />
         );
       })}
@@ -53,11 +48,11 @@ const DappExploreListWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  & > div {
-    & {
-      border: 1px solid rgba(57, 66, 76, 0.5);
-      border-right: 1px solid rgba(57, 66, 76, 0.5);
-    }
-  }
+  gap: 10px;
+`;
+const DappExploreListItemMobile = styled(DappExploreListItem)`
+  padding: 10px;
+  border: 1px solid #39424c;
+  background: #1b1e23;
+  border-radius: 10px;
 `;

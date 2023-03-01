@@ -1,5 +1,6 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { usePermissions } from '@ecnft/wl-user-react';
+import { isMobile } from 'react-device-detect';
 import { formatFilterShowName } from '../../../utils/filter';
 import {
   DappExploreListItemResponse,
@@ -54,7 +55,7 @@ export default function Header({
         <Title>
           {data.name}{' '}
           {data.status === DappStatus.VERIFIED && <CheckVerifiedSvg />}
-          {isAdmin && (
+          {!isMobile && isAdmin && (
             <EditBtn onClick={onEdit}>
               <Edit />
             </EditBtn>
@@ -101,7 +102,8 @@ export default function Header({
               <LinkIcon src={TelegramSvg} />
             </LinkButton>
           )}
-          {data?.url &&
+          {!isMobile &&
+            data?.url &&
             (isInstalled ? (
               <OpenButton
                 onClick={(e) => {

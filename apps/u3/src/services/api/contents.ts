@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
   ContentLang,
+  ContentResponse,
   ContentSaveResponse,
   ContentsListResponse,
   ContentsResponse,
@@ -16,7 +17,10 @@ export function getContentProjects(): RequestPromise<ContentsResponse> {
   });
 }
 
-export function getContent(id: number | string, token: string) {
+export function getContent(
+  id: number | string,
+  token?: string
+): RequestPromise<ContentResponse> {
   return request({
     url: `/contents/${id}`,
     method: 'get',

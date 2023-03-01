@@ -1,4 +1,12 @@
+/*
+ * @Author: shixuewen friendlysxw@163.com
+ * @Date: 2023-02-06 10:27:08
+ * @LastEditors: shixuewen friendlysxw@163.com
+ * @LastEditTime: 2023-02-28 22:38:49
+ * @Description: file description
+ */
 import { useState } from 'react';
+import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
 import useConfigsTopics from '../../hooks/useConfigsTopics';
 import { ContentLangRev } from '../../services/types/contents';
@@ -18,6 +26,7 @@ export default function Filter({
     <FilterWrapper>
       <CheckboxMultiChoice
         label="Content Type"
+        className="filter-multi-choice"
         options={contentTypes.map((item) => {
           return {
             value: item.value,
@@ -31,6 +40,7 @@ export default function Filter({
       />
       <CheckboxMultiChoice
         label="Language"
+        className="filter-multi-choice"
         options={langs
           .map((item) => {
             if (item.value === 'EN') {
@@ -63,4 +73,8 @@ const FilterWrapper = styled(CardBase)`
   display: flex;
   flex-direction: column;
   gap: 20px;
+  ${isMobile &&
+  `
+    padding: 0px;
+  `}
 `;

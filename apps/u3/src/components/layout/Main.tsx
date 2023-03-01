@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-03 18:27:18
+ * @LastEditTime: 2023-03-01 18:35:10
  * @Description: 站点主体内容（路由导航）
  */
 import { useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
 import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect } from 'react';
+import { isMobile } from 'react-device-detect';
 import { CutomRouteObject, RoutePermission, routes } from '../../route/routes';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import useU3Extension from '../../hooks/useU3Extension';
@@ -99,14 +100,17 @@ function Main() {
         isOpen={openEventCompleteGuideModal}
         onGuideEnd={eventCompleteGuideEndCallback}
       />
-      <OnboardModal
-        show={Object.keys(preference).length === 0 && isLogin}
-        lists={preferenceList}
-        finishAction={(data) => {
-          postPreference(data);
-        }}
-      />
-      {!checked && (
+      {!isMobile && (
+        <OnboardModal
+          show={Object.keys(preference).length === 0 && isLogin}
+          lists={preferenceList}
+          finishAction={(data) => {
+            postPreference(data);
+          }}
+        />
+      )}
+
+      {!isMobile && !checked && (
         <KarmaGMBox>
           <KarmaGM
             onClick={() => {

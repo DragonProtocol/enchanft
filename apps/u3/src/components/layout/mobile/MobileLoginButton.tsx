@@ -2,14 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 14:36:31
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-22 15:48:45
+ * @LastEditTime: 2023-02-28 16:06:46
  * @Description: file description
  */
 import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
 import styled from 'styled-components';
-import useLogin from '../../hooks/useLogin';
-import { ButtonPrimaryLine } from '../common/button/ButtonBase';
-import LogoutSvg from '../common/icons/svgs/logout.svg';
+import useLogin from '../../../hooks/useLogin';
+import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
+import LogoutSvg from '../../common/icons/svgs/logout.svg';
 
 type Props = {
   onLogout?: () => void;
@@ -57,6 +57,7 @@ const MobileLoginButtonWrapper = styled(ButtonPrimaryLine)`
   gap: 4px;
   isolation: isolate;
   transition: all 0.3s ease-out;
+  height: 36px;
 `;
 const MobileLoginButtonBody = styled.div`
   display: flex;
@@ -65,8 +66,8 @@ const MobileLoginButtonBody = styled.div`
   gap: 10px;
   position: relative;
   & .user-avatar {
-    width: 30px;
-    height: 30px;
+    width: 24px;
+    height: 24px;
   }
 `;
 
@@ -83,8 +84,8 @@ const MobileLoginButtonName = styled.span`
   white-space: nowrap;
 `;
 const LogoutIconButton = styled.img`
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
 `;
 
 const NoLoginText = styled.span`

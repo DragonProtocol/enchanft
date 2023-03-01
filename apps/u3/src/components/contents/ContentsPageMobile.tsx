@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-22 19:22:14
+ * @LastEditTime: 2023-03-01 16:36:52
  * @Description: 首页任务看板
  */
 import { useEffect, useMemo, useState } from 'react';
@@ -26,6 +26,7 @@ import {
 import ContentList from './ContentList';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import type { ContentsPageProps } from '../../container/Contents';
+import ContentListMobile from './ContentListMobile';
 
 export default function ContentsPageMobile({
   // Queries
@@ -53,7 +54,6 @@ export default function ContentsPageMobile({
   const [selectContentId, setSelectContentId] = useState<string | number>(
     undefined
   );
-  const [isActiveFilter, setIsActiveFilter] = useState(false);
 
   const renderMoreLoading = useMemo(
     () =>
@@ -67,25 +67,6 @@ export default function ContentsPageMobile({
 
   return (
     <Box>
-      <FeedsMenu
-        rightEl={
-          <FeedsMenuRight
-            displayFilterButton
-            isActiveFilter={isActiveFilter}
-            onChangeActiveFilter={setIsActiveFilter}
-          />
-        }
-        bottomEl={
-          <FeedsFilterBox open={isActiveFilter}>
-            <Filter
-              values={currentSearchParams}
-              filterAction={(data) => {
-                searchParamsChange(data);
-              }}
-            />
-          </FeedsFilterBox>
-        }
-      />
       {(() => {
         if (loading) {
           return (
@@ -106,17 +87,8 @@ export default function ContentsPageMobile({
 
         return (
           <ListBox onScrollBottom={getMore}>
-            <ContentList
+            <ContentListMobile
               data={contents}
-              activeId={selectContentId}
-              loadingVoteIds={votePendingIds}
-              loadingFavorIds={favorPendingIds}
-              loadingHiddenIds={hiddenPendingIds}
-              onVote={onVote}
-              onFavor={onFavor}
-              onShare={onShare}
-              onHidden={onHiddenAction}
-              onHiddenUndo={onHiddenUndoAction}
               onItemClick={(item) => {
                 setSelectContentId(item?.id || item?.uuid);
               }}
