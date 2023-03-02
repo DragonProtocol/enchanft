@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-01 12:26:01
+ * @LastEditTime: 2023-03-02 14:34:36
  * @Description: 站点布局入口
  */
 import styled from 'styled-components';
@@ -97,6 +97,7 @@ export const MainWrapper = styled.div`
   ${isMobile &&
   `
     padding: 10px;
+    height: calc(100vh - 56px);
     @media (max-width: ${MEDIA_BREAK_POINTS.xl}px) {
       width: 100%;
     }

@@ -19,17 +19,8 @@ export default function ContentPageMobile({
   loading,
   data,
   // Mutations
-  votePendingIds,
   onVote,
-  favorPendingIds,
   onFavor,
-  hiddenPendingIds,
-  onHiddenAction,
-  onHiddenUndoAction,
-  onAdminScore,
-  onAdminDelete,
-  // Others
-  onShare,
 }: ContentPageProps) {
   return loading ? (
     <StatusWrapper>

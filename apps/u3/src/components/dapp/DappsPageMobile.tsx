@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-01 16:40:04
+ * @LastEditTime: 2023-03-02 14:32:21
  * @Description:
  */
 import styled from 'styled-components';
@@ -20,13 +20,8 @@ export default function DappsPageMobile({
   isLoading,
   isLoadingMore,
   isEmpty,
-  filter,
-  filterChange,
   noMore,
   getMore,
-  // Mutations
-  installPendingIds,
-  onInstall,
 }: DappsPageProps) {
   const navigate = useNavigate();
 
