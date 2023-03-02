@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-03-01 17:24:29
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-01 18:32:35
+ * @LastEditTime: 2023-03-02 10:00:38
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -73,6 +73,7 @@ const StatusWrapper = styled(MainWrapper)`
 const MainBody = styled.div`
   & > div > div {
     padding: 10px;
+    padding-top: 20px;
   }
 `;
 const Actions = styled.div`
