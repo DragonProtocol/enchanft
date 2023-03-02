@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-01 16:36:52
+ * @LastEditTime: 2023-03-02 09:36:01
  * @Description: 首页任务看板
  */
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { usePermissions } from '@ecnft/wl-user-react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Loading from '../common/loading/Loading';
 import ListScrollBox from '../common/box/ListScrollBox';
 import { MainWrapper } from '../layout/Index';
@@ -51,9 +51,7 @@ export default function ContentsPageMobile({
   // Others
   onShare,
 }: ContentsPageProps) {
-  const [selectContentId, setSelectContentId] = useState<string | number>(
-    undefined
-  );
+  const navigate = useNavigate();
 
   const renderMoreLoading = useMemo(
     () =>
@@ -90,7 +88,7 @@ export default function ContentsPageMobile({
             <ContentListMobile
               data={contents}
               onItemClick={(item) => {
-                setSelectContentId(item?.id || item?.uuid);
+                navigate(`/contents/${item?.id || item?.uid}`);
               }}
             />
             {renderMoreLoading}
