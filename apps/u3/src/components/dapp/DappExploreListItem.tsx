@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 11:49:27
+ * @LastEditTime: 2023-03-02 12:14:37
  * @Description: file description
  */
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
@@ -125,4 +125,11 @@ const OpenButton = styled(ButtonPrimaryLine)`
   ${ButtonCss}
   background: #14171a;
   color: #ffffff;
+`;
+
+export const DappExploreListItemMobile = styled(DappExploreListItem)`
+  padding: 10px;
+  border: 1px solid #39424c;
+  background: #1b1e23;
+  border-radius: 10px;
 `;

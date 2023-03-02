@@ -2,14 +2,17 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-18 17:12:51
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 11:53:04
+ * @LastEditTime: 2023-03-02 12:27:04
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { DappExploreListItemResponse } from '../../../services/types/dapp';
 import Loading from '../../common/loading/Loading';
-import DappExploreListItem from '../DappExploreListItem';
+import DappExploreListItem, {
+  DappExploreListItemMobile,
+} from '../DappExploreListItem';
 import Card, { CardTitle } from './Card';
+import { SectionTitle } from './SectionTitle';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: DappExploreListItemResponse[];
@@ -67,4 +70,45 @@ const ListStatusBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+export function RecommendDappsMobile({
+  data,
+  loading,
+  onItemClick,
+  ...otherProps
+}: Props) {
+  return (
+    <RecommendDappsWrapperMobile {...otherProps}>
+      <SectionTitle>Recommended</SectionTitle>
+      {loading ? (
+        <ListStatusBox>
+          <Loading />
+        </ListStatusBox>
+      ) : (
+        <RecommendDappsListMobile>
+          {data.map((item) => (
+            <DappExploreListItemMobile
+              key={item.id}
+              data={item}
+              displayButtons={false}
+              onClick={() => onItemClick && onItemClick(item)}
+            />
+          ))}
+        </RecommendDappsListMobile>
+      )}
+    </RecommendDappsWrapperMobile>
+  );
+}
+
+const RecommendDappsWrapperMobile = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+const RecommendDappsListMobile = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;

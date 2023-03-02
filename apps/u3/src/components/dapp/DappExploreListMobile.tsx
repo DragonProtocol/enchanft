@@ -2,13 +2,14 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-01 16:42:33
+ * @LastEditTime: 2023-03-02 12:15:13
  * @Description: file description
  */
 import { useCallback } from 'react';
 import styled from 'styled-components';
-import DappExploreListItem, {
+import {
   DappExploreListItemData,
+  DappExploreListItemMobile,
 } from './DappExploreListItem';
 
 export type DappExploreListProps = {
@@ -49,10 +50,4 @@ const DappExploreListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-`;
-const DappExploreListItemMobile = styled(DappExploreListItem)`
-  padding: 10px;
-  border: 1px solid #39424c;
-  background: #1b1e23;
-  border-radius: 10px;
 `;
