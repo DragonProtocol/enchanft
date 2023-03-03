@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-03-01 10:08:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-01 14:45:53
+ * @LastEditTime: 2023-03-03 17:09:37
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -18,7 +18,16 @@ type Props = StyledComponentPropsWithRef<'div'> & {
   data: ContentListItem;
 };
 export default function ContentListItemMobile({ data, ...otherProps }: Props) {
-  const { type, link, title, upVoteNum, editorScore, value, favored } = data;
+  const {
+    type,
+    link,
+    title,
+    upVoteNum,
+    editorScore,
+    value,
+    favored,
+    favorNum,
+  } = data;
   const platformLogo = getContentPlatformLogoWithJsonValue(value);
   return (
     <Wrapper {...otherProps}>
@@ -28,7 +37,7 @@ export default function ContentListItemMobile({ data, ...otherProps }: Props) {
         <LinkBox text={link} logo={platformLogo} />
         <ActionsWrapper>
           <UpVote number={upVoteNum + (editorScore || 0)} />
-          <ContentActionFavor number={0} isFavored={favored} />
+          <ContentActionFavor number={favorNum || 0} isFavored={favored} />
         </ActionsWrapper>
       </BottomWrapper>
     </Wrapper>

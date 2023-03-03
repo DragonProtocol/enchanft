@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-03-01 17:24:29
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-02 10:00:38
+ * @LastEditTime: 2023-03-03 17:11:31
  * @Description: file description
  */
 import styled from 'styled-components';
@@ -38,7 +38,7 @@ export default function ContentPageMobile({
         />
         <ActionItemLine />
         <ContentActionFavor
-          number={0}
+          number={data.favorNum ?? 0}
           isFavored={data?.favored}
           onClick={() => {
             if (onFavor) onFavor();

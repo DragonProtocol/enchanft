@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-03-01 16:57:22
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-01 18:33:32
+ * @LastEditTime: 2023-03-03 17:14:34
  * @Description: file description
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
@@ -77,7 +77,11 @@ export default function Content() {
   };
   const handleFavor = async () => {
     await onFavor(data);
-    setData({ ...data, favored: !data.favored });
+    setData({
+      ...data,
+      favored: !data.favored,
+      favorNum: data.favored ? data.favorNum - 1 : data.favorNum + 1,
+    });
   };
   return (
     <ContentPageMobile
