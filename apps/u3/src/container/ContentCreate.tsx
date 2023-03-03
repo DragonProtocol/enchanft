@@ -105,7 +105,7 @@ function ContentCreate() {
     if (!id || !user.token) return;
     getContent(id, user.token)
       .then((resp) => {
-        formik.setValues(resp.data.data);
+        formik.setValues(resp.data.data as any);
         formik.setFieldValue('url', resp.data.data.link);
         formik.setFieldValue('type', ContentType[resp.data.data.type]);
       })

@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-28 09:41:12
+ * @LastEditTime: 2023-03-01 17:01:28
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
 import loadable from '@loadable/component';
 import React, { ReactNode } from 'react';
+import { isMobile } from 'react-device-detect';
 
 export enum RouteKey {
   home = 'home',
@@ -107,9 +108,16 @@ export const routes: CutomRouteObject[] = [
     permissions: [RoutePermission.login, RoutePermission.admin],
   },
   {
-    path: '/contents/:id',
+    path: '/contents',
     element: loadContainerElement('Contents'),
     key: RouteKey.contents,
+  },
+  {
+    path: '/contents/:id',
+    element: isMobile
+      ? loadContainerElement('Content')
+      : loadContainerElement('Contents'),
+    key: isMobile ? RouteKey.content : RouteKey.contents,
   },
   {
     path: '/contents/create',

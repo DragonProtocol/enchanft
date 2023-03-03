@@ -103,3 +103,4 @@ export type Project = {
 };
 export type ContentsResponse = ApiResp<Array<Project>>;
 export type ContentSaveResponse = ApiResp<ContentListItem>;
+export type ContentResponse = ApiResp<ContentListItem>;

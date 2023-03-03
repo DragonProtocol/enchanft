@@ -2,11 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-26 10:22:21
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 16:57:06
+ * @LastEditTime: 2023-03-01 15:09:21
  * @Description: file description
  */
 import { PlatformDataResponse } from '../types/home';
-import { ProjectExploreListResponse } from '../types/project';
+import { DappExploreListResponse } from '../types/dapp';
 import request, { RequestPromise } from './request';
 
 export function getPlatforms(): RequestPromise<PlatformDataResponse> {
@@ -49,9 +49,9 @@ export function getTrendingEvents() {
   });
 }
 
-export function getTrendingProjects(): RequestPromise<ProjectExploreListResponse> {
+export function getTrendingDapps(): RequestPromise<DappExploreListResponse> {
   return request({
-    url: `/uniProjects/searching`,
+    url: `/dapps/searching`,
     params: {
       pageSize: 6,
       pageNumber: 0,

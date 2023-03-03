@@ -2,42 +2,38 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-17 16:35:10
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 15:50:13
+ * @LastEditTime: 2023-03-02 11:23:45
  * @Description: file description
  */
-import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import styled from 'styled-components';
-import { MainWrapper } from '../components/layout/Index';
-import Loading from '../components/common/loading/Loading';
-import {
-  UpdateDappData,
-  DappExploreListItemResponse,
-} from '../services/types/dapp';
-import {
-  fetchListForDappExplore,
-  fetchOneDapp,
-  updateDapp,
-} from '../services/api/dapp';
+import { isMobile } from 'react-device-detect';
+import { DappExploreListItemResponse } from '../services/types/dapp';
+import { fetchListForDappExplore, fetchOneDapp } from '../services/api/dapp';
 import { ApiRespCode } from '../services/types';
-import Header from '../components/dapp/detail/Header';
-import Screeshots from '../components/dapp/detail/Screeshots';
-import UserScore from '../components/dapp/detail/UserScore';
-import Project from '../components/dapp/detail/Project';
-import useDappWebsite from '../hooks/useDappWebsite';
 import useDappHandles from '../hooks/useDappHandles';
-import RecommendDapps from '../components/dapp/detail/RecommendDapps';
-import DappEditModal from '../components/dapp/DappEditModal';
-import { messages } from '../utils/message';
+import DappPageMobile from '../components/dapp/DappPageMobile';
+import DappPage from '../components/dapp/DappPage';
 
+export type DappPageProps = {
+  id: string | number;
+  // Queries
+  data: DappExploreListItemResponse;
+  loading: boolean;
+  recommendDapps: DappExploreListItemResponse[];
+  recommendDappsLoading: boolean;
+  // Mutations
+  onInstall?: () => void;
+  installLoading?: boolean;
+  updateData?: (newData: DappExploreListItemResponse) => void;
+  // Others
+};
 export default function Dapp() {
-  const navigate = useNavigate();
   const { id } = useParams();
+  // Queries
   const [isPending, setIsPending] = useState(false);
   const [data, setData] = useState<DappExploreListItemResponse | null>(null);
-  const { openDappModal } = useDappWebsite();
-  const { favorQueueIds, onFavor } = useDappHandles();
   const [isPendingRecommend, setIsPendingRecommend] = useState(false);
   const [recommendDapps, setRecommendDapps] = useState<
     DappExploreListItemResponse[]
@@ -87,111 +83,47 @@ export default function Dapp() {
         });
     }
   }, [id]);
+
+  // Mutations
+  const { favorQueueIds, onFavor } = useDappHandles();
   const handleInstall = useCallback(async () => {
     const newData = await onFavor(data);
     if (newData) {
       setData(newData as DappExploreListItemResponse);
     }
   }, [onFavor, data]);
-  const [openEdit, setOpenEdit] = useState(false);
-
-  const [adminEditPending, setAdminEditPending] = useState(false);
-  const handleEditSubmit = useCallback(
-    async (form: UpdateDappData) => {
-      if (adminEditPending) return;
-      try {
-        setAdminEditPending(true);
-        const resp = await updateDapp(id, form);
-        const { code, msg } = resp.data;
-        if (code === 0) {
-          setData((oldData) => ({ ...oldData, ...form }));
-          toast.success(messages.dapp.admin_update);
-          setOpenEdit(false);
-        } else {
-          toast.error(msg || messages.common.error);
-        }
-      } catch (error) {
-        toast.error(error.message || error.msg || messages.common.error);
-      } finally {
-        setAdminEditPending(false);
-      }
-    },
-    [adminEditPending]
+  const installLoading = useMemo(
+    () => favorQueueIds.includes(data?.id),
+    [data, favorQueueIds]
   );
-  return isPending ? (
-    <StatusBox>
-      <Loading />
-    </StatusBox>
-  ) : data ? (
-    <DappWrapper>
-      <Header
-        data={data}
-        disabledInstall={data.favored || favorQueueIds.includes(data.id)}
-        loadingInstall={favorQueueIds.includes(data.id)}
-        isInstalled={data.favored}
-        onInstall={handleInstall}
-        onOpen={() => openDappModal(data.id)}
-        onEdit={() => setOpenEdit(true)}
-      />
-      <ContentLayout>
-        <ContentLayoutLeft>
-          <Screeshots />
-          <UserScore />
-        </ContentLayoutLeft>
-        <ContentLayoutRight>
-          {data.project && <Project data={data.project} />}
+  const updateData = useCallback(
+    (newData) => {
+      setData({ ...data, ...newData });
+    },
+    [data, setData]
+  );
 
-          <RecommendDapps
-            data={recommendDapps}
-            loading={isPendingRecommend}
-            onItemClick={(item) => navigate(`/dapps/${item.id}`)}
-          />
-        </ContentLayoutRight>
-      </ContentLayout>
-      <DappEditModal
-        isOpen={openEdit}
-        data={{ ...data, uniProjectId: data?.project?.id }}
-        disabled={adminEditPending}
-        loading={adminEditPending}
-        onCancel={() => setOpenEdit(false)}
-        onSubmit={handleEditSubmit}
-      />
-    </DappWrapper>
+  return isMobile ? (
+    <DappPageMobile
+      id={id}
+      data={data}
+      recommendDapps={recommendDapps}
+      loading={isPending}
+      recommendDappsLoading={isPendingRecommend}
+      onInstall={handleInstall}
+      installLoading={installLoading}
+      updateData={updateData}
+    />
   ) : (
-    <StatusBox>The dapp query with id {id} failed</StatusBox>
+    <DappPage
+      id={id}
+      data={data}
+      recommendDapps={recommendDapps}
+      loading={isPending}
+      recommendDappsLoading={isPendingRecommend}
+      onInstall={handleInstall}
+      installLoading={installLoading}
+      updateData={updateData}
+    />
   );
 }
-
-const DappWrapper = styled(MainWrapper)`
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-const ContentLayout = styled.div`
-  display: flex;
-  gap: 20px;
-`;
-const ContentLayoutLeft = styled.div`
-  width: 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-const ContentLayoutRight = styled.div`
-  width: 360px;
-  flex-shrink: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-`;
-const StatusBox = styled(MainWrapper)`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 19px;
-  color: #748094;
-`;

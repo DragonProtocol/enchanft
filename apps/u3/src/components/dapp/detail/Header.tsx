@@ -62,13 +62,17 @@ export default function Header({
         </Title>
         <TagsRow>
           {data?.types.map((item) => (
-            <Tag>{formatFilterShowName(item)}</Tag>
+            <Tag key={item}>{formatFilterShowName(item)}</Tag>
           ))}
           {showChains.map((item) => (
-            <ChainIcon src={item.image} alt={item.name} title={item.name} />
+            <ChainIcon
+              key={item.chainEnum}
+              src={item.image}
+              alt={item.name}
+              title={item.name}
+            />
           ))}
         </TagsRow>
-
         <Description row={2}>{data.description}</Description>
       </HeaderCenter>
       <HeaderRight>
@@ -205,4 +209,74 @@ const ChainIcon = styled.img`
 `;
 const EditBtn = styled.div`
   cursor: pointer;
+`;
+
+export function HeaderMobile({ data, ...otherProps }: Props) {
+  const { topics } = useConfigsTopics();
+  const { chains } = topics;
+  const showChains = chains.filter((item) =>
+    data?.chains.includes(item.chainEnum)
+  );
+
+  return (
+    <HeaderWrapperMobile {...otherProps}>
+      <HeaderImgMobile src={data.image} />
+      <HeaderRightMobile>
+        <TitleMobile>
+          {data.name}{' '}
+          {data.status === DappStatus.VERIFIED && <CheckVerifiedSvg />}
+        </TitleMobile>
+        <TagsRowMobile>
+          {data?.types.map((item) => (
+            <Tag key={item}>{formatFilterShowName(item)}</Tag>
+          ))}
+          {showChains.map((item) => (
+            <ChainIcon
+              key={item.chainEnum}
+              src={item.image}
+              alt={item.name}
+              title={item.name}
+            />
+          ))}
+        </TagsRowMobile>
+      </HeaderRightMobile>
+    </HeaderWrapperMobile>
+  );
+}
+
+const HeaderWrapperMobile = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+`;
+const HeaderImgMobile = styled(ImgDefault)`
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  flex-shrink: 0;
+`;
+const HeaderRightMobile = styled.div`
+  width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-evenly;
+`;
+const TitleMobile = styled.span`
+  font-style: italic;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+const TagsRowMobile = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
