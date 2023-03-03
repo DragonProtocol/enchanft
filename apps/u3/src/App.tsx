@@ -27,8 +27,6 @@ import {
   injectWlUserReactContextValue,
 } from './services/api/request';
 
-import Poster from './components/home/Poster';
-
 dayjs.extend(relativeTime);
 
 injectStore(store);
@@ -38,19 +36,18 @@ injectHandleAxiosResponse401(handleAuthFailed);
 Modal.setAppElement('#root');
 function App() {
   return (
-    <Poster data="1" />
-    //   <WlUserReactProvider
-    //     theme="dark"
-    //     authorizers={authorizers}
-    //     valueChange={(value) => injectWlUserReactContextValue(value)}
-    //   >
-    //     <ReduxProvider store={store}>
-    //       <GlobalStyle />
-    //       <BrowserRouter>
-    //         <Layout />
-    //       </BrowserRouter>
-    //     </ReduxProvider>
-    //   </WlUserReactProvider>
+    <WlUserReactProvider
+      theme="dark"
+      authorizers={authorizers}
+      valueChange={(value) => injectWlUserReactContextValue(value)}
+    >
+      <ReduxProvider store={store}>
+        <GlobalStyle />
+        <BrowserRouter>
+          <Layout />
+        </BrowserRouter>
+      </ReduxProvider>
+    </WlUserReactProvider>
   );
 }
 

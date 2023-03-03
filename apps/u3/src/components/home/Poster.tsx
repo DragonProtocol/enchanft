@@ -1,82 +1,257 @@
 /* eslint-disable */
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import html2canvas from 'html2canvas';
+import { toast } from 'react-toastify';
 
+import {
+  UserAvatar,
+  useWlUserReact,
+  uploadUserAvatar,
+} from '@ecnft/wl-user-react';
+
+import { MOBILE_BREAK_POINT } from '../../constants';
+import ModalBase, { ModalBaseTitle } from '../common/modal/ModalBase';
+
+import { ReactComponent as LogoIconSvg } from '../imgs/logo-icon.svg';
+import { ReactComponent as MultipleSvg } from '../imgs/multiple.svg';
 import qrCodeU3 from '../imgs/qrcode_u3.xyz.png';
 
 export default function Poster({ data }: { data: any }) {
+  const { contents, dapps, events } = data;
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const { user, isLogin } = useWlUserReact();
+
+  const dataURLtoBlob = (dataURL) => {
+    let array, binary, i, len;
+    binary = atob(dataURL.split(',')[1]);
+    array = [];
+    i = 0;
+    len = binary.length;
+    while (i < len) {
+      array.push(binary.charCodeAt(i));
+      i++;
+    }
+    return new Blob([new Uint8Array(array)], {
+      type: 'image/png',
+    });
+  };
+
+  const sharePosterOnTwitter = async () => {
+    setIsOpen(true);
+
+    try {
+      console.time('is to canvas time:');
+      const canvas = await html2canvas(document.querySelector('#poster'), {
+        allowTaint: true,
+        useCORS: true,
+        onclone: function (document) {
+          (document.querySelector('#poster') as any).style.display = 'block';
+        },
+      });
+      console.timeEnd('is to canvas time:');
+
+      // document.body.appendChild(canvas);
+
+      const blob = dataURLtoBlob(canvas.toDataURL('image/png'));
+
+      var file = new File([blob], 'name');
+
+      uploadUserAvatar(user.token, file)
+        .then((result) => {
+          window.open(
+            `https://twitter.com/intent/tweet?text=Daily Poster ${result.data.url}&url=https%3A%2F%2Fu3.xyz%2F`,
+            '_blank'
+          );
+          // setUserForm({ ...userForm, avatar: result.data.url });
+          toast.success('poster share success');
+        })
+        .catch((error) =>
+          toast.error('An error occurred in the generation of the poster')
+        );
+    } catch (error) {
+      toast.error('An error occurred in the generation of the poster');
+    } finally {
+      setIsOpen(false);
+    }
+
+    console.log();
+  };
   return (
-    <Box>
-      <h1 className="topic">Daily Poster</h1>
-      <div className="flex">
-        <div>Today‘s Referrers</div>
-        <div>u3</div>
-      </div>
-      <div className="line-box">
-        <div className="line" />
-        <div className="line" />
-      </div>
-      <div className="contents">
-        <div>
-          <div className="title">u3</div>
-          <div className="desc">u3</div>
-        </div>
-        <div>
-          <div className="title">u3</div>
-          <div className="desc">u3</div>
-        </div>
-
-        {/* dapp */}
-        <div>
-          <h2 className="topic-h2">Which Dapps are Popular?</h2>
-
-          <div className="dapp-box">
-            <div className="dapp-item"></div>
+    <>
+      {isLogin && (
+        <ShareButton onClick={() => sharePosterOnTwitter()}>
+          Share Daily Poster
+        </ShareButton>
+      )}
+      <Box id="poster">
+        <h1 className="topic">Daily Poster</h1>
+        <div className="flex items-center sub-title justify-center">
+          <div className="text">Today‘s Referrers</div>
+          <div className="flex items-center col-gap-7">
+            <LogoIconSvg />
+            <MultipleSvg />
+            <span>{user?.name}</span>
+          </div>
+          <div className="flex items-center avatar-box">
+            <div className="user-avatar u3-avatar">
+              <LogoIconSvg />
+            </div>
+            <UserAvatar className="user-avatar" />
+            {/* <img
+            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgBAMAAAB54XoeAAAAElBMVEUzMzP/+9siIiLk/9u/vKQZGRkml3AdAAAA8UlEQVRo3u3ZAQqCMBSH8Rh0gDrB6w+dwCvUBaLuf5Waw6EtHEPJqd9HUcTrx6NAEQ9ERERrScUBpuCpKEBAQEBAQMDdgvJ1k7HB933JGGAfbHqTTVsfjJ8OxgABAesGxw4OgHkwHyAgIOC2QZWDWhbUj5YBY8Wg1yaCm7rWAwQEBAQE3BlY/93b1YHX1/MWu78epaDJDR4JmAwUbmiTNzST+2ThTbrhcODTv39DObPwlGtfvsGwdzcgy4FOXW5kQ+sGLL+hKfx9Utj0mG5oXrN2wG9YmNPlFDvLDrk0c/sEmxkDBAQEBASsG6z/vFw5+AYAFLz3C2BQfgAAAABJRU5ErkJggg=="
+            onError={(el: React.SyntheticEvent<HTMLImageElement, Event>) => {
+              el.currentTarget.src = AvatarDefault;
+            }}
+            className="user-avatar"
+          /> */}
           </div>
         </div>
-        {/* event */}
-        <div>
-          <div className="flag">Trending Event</div>
-          <div className="title">u3</div>
+        <div className="line-box">
+          <div className="line" />
+          <div className="line" />
         </div>
-        <div>
-          <div className="flag">Trending Event</div>
-          <div className="title">u3</div>
-        </div>
-        <div>
-          <div className="flag">Trending Event</div>
-          <div className="title">u3</div>
-        </div>
-        <div>
-          <div className="flag">Trending Event</div>
-          <div className="title">u3</div>
-        </div>
-      </div>
+        <div className="contents">
+          {contents?.slice(0, 3)?.map((content, index) => (
+            <div key={content?.id}>
+              <div className={index === 0 ? `big-title` : `title`}>
+                {content?.title}
+              </div>
+              {content?.description && (
+                <div className="desc">{content?.description}</div>
+              )}
+            </div>
+          ))}
 
-      <div className="line-box">
-        <div className="line" />
-        <div className="line" />
-      </div>
+          {/* dapp */}
+          <div>
+            <h2 className="topic-h2">Which Dapps are Popular?</h2>
 
-      <img className="qrcode" src={qrCodeU3} />
+            <div className="dapp-box">
+              {dapps?.slice(0, 6)?.map((dapp) => {
+                const { image, name } = dapp;
+                return (
+                  <div className="dapp-item" key={dapp?.id}>
+                    <img src={image} className="dapp-img" />
+                    <div className="">{name}</div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          {/* event */}
+          {events?.slice(0, 3)?.map((event) => (
+            <div key={event?.id}>
+              <div className="flag">Trending Event</div>
+              <div className="title">{event?.name}</div>
+            </div>
+          ))}
+        </div>
 
-      <div className="website">U3.XYZ</div>
-    </Box>
+        <div className="line-box">
+          <div className="line" />
+          <div className="line" />
+        </div>
+
+        <img className="qrcode" src={qrCodeU3} />
+
+        <div className="website">U3.XYZ</div>
+      </Box>
+
+      <AuthProcessModalWrapper
+        backdropFilter
+        isOpen={isOpen}
+        className={'wl-user-modal_signature wl-user-modal_signature_dark'}
+        style={{
+          content: {
+            // position: 'absolute',
+            // transform: 'translate(-50%, -50%)',
+            top: '40%',
+            left: '50%',
+            marginTop: '25%',
+            outline: 'none',
+          },
+        }}
+      >
+        <AuthProcessModalBody className="wl-user-modal_signature-body">
+          <ModalBaseTitle className="signature-title">
+            🕹 Generate posters and share them on Twitter
+          </ModalBaseTitle>
+          <AuthProcessModalDesc className="signature-desc">
+            Poster generation in progress. About 2 minutes
+          </AuthProcessModalDesc>
+        </AuthProcessModalBody>
+      </AuthProcessModalWrapper>
+    </>
   );
 }
 
+const ShareButton = styled.div`
+  position: relative;
+  width: 185px;
+  /* padding: 0 28px; */
+  height: 48px;
+  line-height: 48px;
+  font-weight: 300;
+  background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%), #ffffff;
+  border-radius: 12px;
+
+  text-align: center;
+  margin: 0 auto;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    width: calc(calc(100vw / 2) - 50px);
+    height: 1px;
+
+    background: rgba(113, 128, 150, 0.5);
+    position: absolute;
+    left: calc(calc(100vw / 2) * -1);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  &::after {
+    content: '';
+    width: calc(calc(100vw / 2) - 50px);
+    height: 1px;
+
+    background: rgba(113, 128, 150, 0.5);
+    position: absolute;
+    right: calc(calc(100vw / 2) * -1);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  @media (max-width: ${MOBILE_BREAK_POINT}px) {
+    width: 100%;
+    &::before {
+      content: none;
+    }
+    &::after {
+      content: none;
+    }
+  }
+`;
+
 const Box = styled.div`
   width: 375px;
-  background: black;
+  background: #131819;
   color: white;
 
   font-family: 'Marion';
   font-style: normal;
   padding: 20px 10px 75px;
 
+  display: none;
+
   .topic {
     font-weight: 700;
     font-size: 60px;
     line-height: 63px;
+    text-align: center;
+    margin: 20px 0;
   }
 
   .topic-h2 {
@@ -85,7 +260,54 @@ const Box = styled.div`
 
     text-align: center;
 
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+  }
+
+  .sub-title {
+    font-family: 'Snell Roundhand';
+    /* font-style: italic; */
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 20px;
+    .multiple {
+      margin: 0 7px;
+    }
+    & svg:first-of-type {
+      width: 25px;
+      height: 25px;
+    }
+    & path {
+      fill: rgb(255, 255, 255);
+    }
+  }
+
+  .text {
+    margin-right: 20px;
+  }
+
+  .user-avatar {
+    width: 25px;
+    height: 25px;
+
+    border-radius: 60px;
+  }
+
+  .u3-avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
+
+    margin-right: -12px;
+    margin-left: 20px;
+    & svg {
+      width: 20px;
+      height: 20px;
+    }
+    & path {
+      fill: rgb(255, 255, 255);
+    }
   }
 
   /* .line-box{
@@ -119,8 +341,9 @@ const Box = styled.div`
   }
 
   .big-title {
-    font-size: 36px;
+    font-size: 30px;
     line-height: 38px;
+    font-weight: bold;
   }
 
   .desc {
@@ -129,12 +352,16 @@ const Box = styled.div`
     line-height: 13px;
 
     margin-top: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
   }
 
   .flag {
     font-weight: 400;
     font-size: 12px;
     line-height: 13px;
+    display: inline-block;
     /* identical to box height */
 
     background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
@@ -147,9 +374,20 @@ const Box = styled.div`
   }
 
   .dapp-box {
-    .dapp {
+    /* .dapp {
+      border-radius: 20px; */
+    display: grid;
+    grid-gap: 36px;
+    grid-template-columns: repeat(auto-fill, minmax(82px, 1fr));
+    text-align: center;
+    .dapp-img {
+      width: 100px;
+      height: 100px;
       border-radius: 20px;
+      margin-bottom: 10px;
+      background: black;
     }
+    /* } */
   }
 
   .qrcode {
@@ -174,28 +412,54 @@ const Box = styled.div`
   .flex {
     display: flex;
   }
-  /* display: flex;
-  align-items: center;
-  justify-content: space-between; */
-  > span {
-    font-style: italic;
-    font-weight: 700;
-    font-size: 24px;
-    line-height: 28px;
 
-    color: #ffffff;
+  .items-center {
+    align-items: center;
   }
 
-  > button {
-    outline: none;
-    border: none;
-    font-weight: 400;
-    font-size: 16px;
-    line-height: 19px;
-    background-color: inherit;
-    cursor: pointer;
-    text-align: center;
+  .justify-center {
+    justify-content: center;
+  }
 
-    color: #718096;
+  .col-gap-7 {
+    column-gap: 7px;
   }
 `;
+
+const AuthProcessModalWrapper = styled(ModalBase)``;
+const AuthProcessModalBody = styled.div`
+  /* width: 540px; */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  /* background: #f7f9f1; */
+  border-radius: 20px;
+  width: 380px;
+  background: rgb(27, 30, 35);
+  box-sizing: border-box;
+
+  &:focus {
+    border: none;
+  }
+`;
+const AuthProcessModalDesc = styled.div`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #333333;
+`;
+const AuthProcessModalBtns = styled.div`
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  gap: 24px;
+`;
+// const CloseBtn = styled(ButtonInfo)`
+//   width: 120px;
+//   height: 48px;
+// `;
+// const RetryBtn = styled(ButtonPrimary)`
+//   width: 120px;
+//   height: 48px;
+// `;

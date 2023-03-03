@@ -17,6 +17,7 @@ import Platform from '../components/home/Platform';
 import RecommendContent from '../components/home/RecommendContent';
 import RecommendEvents from '../components/home/RecommendEvents';
 import TrendingEvents from '../components/home/TrendingEvents';
+import Poster from '../components/home/Poster';
 import { MainWrapper } from '../components/layout/Index';
 import { selectWebsite } from '../features/website/websiteSlice';
 import useConfigsPlatforms from '../hooks/useConfigsPlatforms';
@@ -119,6 +120,13 @@ function Home() {
             platforms={showPlatforms}
             viewAllAction={() => {
               navigate('/events');
+            }}
+          />
+          <Poster
+            data={{
+              contents,
+              dapps: trendingProjects,
+              events: recommendEvents,
             }}
           />
         </>

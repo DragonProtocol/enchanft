@@ -36,7 +36,7 @@ export const fetchConfigsPlatforms = createAsyncThunk<Platforms, undefined>(
     const resp = await getAllPlatform();
     console.log({ resp });
     if (resp.data.code === ApiRespCode.SUCCESS) {
-      console.log({ platforms1: resp.data.data });
+      // console.log({ platforms1: resp.data.data });
       const platforms = resp.data.data.map((item) => ({
         ...item,
         platform: item?.platform || getDomainNameByUrl(item.platformUrl),
