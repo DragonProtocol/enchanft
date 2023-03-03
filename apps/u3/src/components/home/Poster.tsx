@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas-strengthen';
 import { toast } from 'react-toastify';
 
 import {
@@ -39,6 +39,16 @@ export default function Poster({ data }: { data: any }) {
     });
   };
 
+  const openUrl = (url) => {
+    var a = document.createElement('a');
+    a.setAttribute('href', url);
+    a.setAttribute('style', 'display:none');
+    a.setAttribute('target', '_blank');
+    document.body.appendChild(a);
+    a.click();
+    a.parentNode.removeChild(a);
+  };
+
   const sharePosterOnTwitter = async () => {
     setIsOpen(true);
 
@@ -61,10 +71,10 @@ export default function Poster({ data }: { data: any }) {
 
       uploadUserAvatar(user.token, file)
         .then((result) => {
-          window.open(
-            `https://twitter.com/intent/tweet?text=Daily Poster ${result.data.url}&url=https%3A%2F%2Fu3.xyz%2F`,
-            '_blank'
+          openUrl(
+            `https://twitter.com/intent/tweet?text=Daily Poster ${result.data.url}&url=https%3A%2F%2Fu3.xyz%2F`
           );
+
           // setUserForm({ ...userForm, avatar: result.data.url });
           toast.success('poster share success');
         })
