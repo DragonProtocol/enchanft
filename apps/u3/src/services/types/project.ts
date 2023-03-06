@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 10:28:53
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-02 17:44:47
+ * @LastEditTime: 2023-02-27 17:29:09
  * @Description: file description
  */
 import type { ApiResp } from '.';
-import type { OrderBy, ProjectType } from './common';
+import type { OrderBy } from './common';
 import { ContentListItem } from './contents';
+import type { DappExploreListItemResponse } from './dapp';
 import type { EventExploreListItemResponse } from './event';
 
 export enum UniprojectStatus {
@@ -15,12 +16,7 @@ export enum UniprojectStatus {
   VISIBLE = 'VISIBLE',
   VERIFIED = 'VERIFIED',
 }
-export enum UniProjectType {
-  DEFI = 'DEFI',
-  GAME = 'GAME',
-  DAO = 'DAO',
-  NFTS = 'NFTS',
-}
+
 export type ProjectEntity = {
   id: number;
   name: string;
@@ -30,7 +26,7 @@ export type ProjectEntity = {
 export type ProjectExploreListParams = {
   keywords?: string;
   orderBy?: OrderBy | '';
-  type?: ProjectType | '';
+  type?: string;
   types?: string[];
   chains?: string[];
   pageSize?: number;
@@ -46,6 +42,7 @@ export type ProjectExploreListItemResponse = {
   favored?: boolean;
   events?: EventExploreListItemResponse[];
   contents?: ContentListItem[];
+  dapps?: DappExploreListItemResponse[];
   url: string;
   mediaLinks?: {
     twitter?: string;
@@ -54,7 +51,6 @@ export type ProjectExploreListItemResponse = {
     telegram?: string;
   };
   types?: string[];
-  dappUrl: string;
   chains?: string[];
   status?: UniprojectStatus;
 };
@@ -79,10 +75,9 @@ export type UpdateProjectData = {
     telegram?: string;
   };
   types?: string[];
-  dappUrl: string;
   url: string;
   chains?: string[];
   status?: UniprojectStatus;
   editorScore?: number;
 };
-export type UpdateProjectResponse = ApiResp<unknown>;
+export type UpdateProjectResponse = ApiResp<ProjectExploreListItemResponse>;

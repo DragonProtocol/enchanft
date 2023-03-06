@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 14:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 14:31:23
+ * @LastEditTime: 2023-02-27 11:48:19
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -36,13 +36,6 @@ export enum Reward {
   NFT = 'NFT',
   TOKEN = 'TOKEN',
   WL = 'WL',
-}
-
-export enum ProjectType {
-  DAO = 'DAO',
-  DEFI = 'DEFI',
-  GAME = 'GAME',
-  NFT = 'NFT',
 }
 
 export enum TagType {
@@ -84,6 +77,7 @@ export type ConfigTopics = {
   eventRewards: string[];
   eventTypes: string[];
   projectTypes: string[];
+  dappTypes: string[];
   contentTypes: string[];
   langs: string[];
   chains: ConfigTopicsChain[];

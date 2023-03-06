@@ -3,7 +3,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-29 14:06:42
+ * @LastEditTime: 2023-02-27 13:36:52
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
@@ -34,7 +34,6 @@ import Loading from '../components/common/loading/Loading';
 import useProjectHandles from '../hooks/useProjectHandles';
 import useContentHandles from '../hooks/useContentHandles';
 import { ContentListItem } from '../services/types/contents';
-import ProjectDetailView from '../components/project/ProjectDetailView';
 import ContentShower from '../components/contents/ContentShower';
 import { getContentWithJsonValue } from '../utils/content';
 import {

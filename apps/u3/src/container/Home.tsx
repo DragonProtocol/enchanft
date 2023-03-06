@@ -2,19 +2,22 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-17 11:31:00
+ * @LastEditTime: 2023-03-01 19:13:28
  * @Description: file description
  */
 
 import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { useState, useCallback, useEffect, useMemo } from 'react';
+import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import Loading from '../components/common/loading/Loading';
+import DappExploreListMobile from '../components/dapp/DappExploreListMobile';
 import Carousel from '../components/home/Carousel';
 import DiscoverProj from '../components/home/DiscoverProj';
 import Platform from '../components/home/Platform';
 import RecommendContent from '../components/home/RecommendContent';
+import RecommendContentMobile from '../components/home/RecommendContentMobile';
 import RecommendEvents from '../components/home/RecommendEvents';
 import TrendingEvents from '../components/home/TrendingEvents';
 import Poster from '../components/home/Poster';
@@ -23,15 +26,17 @@ import { selectWebsite } from '../features/website/websiteSlice';
 import useConfigsPlatforms from '../hooks/useConfigsPlatforms';
 import {
   getPlatforms,
-  getTrendingProjects,
+  getTrendingDapps,
   getTrendingEvents,
   getTrendingContents,
 } from '../services/api/home';
 import { ContentListItem } from '../services/types/contents';
 import { EventExploreListItemResponse } from '../services/types/event';
 import { PlatformData } from '../services/types/home';
-import { ProjectExploreListItemResponse } from '../services/types/project';
+import { DappExploreListItemResponse } from '../services/types/dapp';
 import { useAppSelector } from '../store/hooks';
+import PopularDappsMobile from '../components/home/PopularDappsMobile';
+import RecommendEventMobile from '../components/home/RecommendEventsMobile';
 
 function Home() {
   const { homeBannerDisplay } = useAppSelector(selectWebsite);
@@ -43,17 +48,17 @@ function Home() {
     () => platforms.filter((item) => !!item.number).slice(0, 16),
     [platforms]
   );
-  const [trendingProjects, setTrendingProjects] = useState<
-    Array<ProjectExploreListItemResponse>
+  const [trendingDapps, setTrendingDapps] = useState<
+    Array<DappExploreListItemResponse>
   >([]);
   const [contents, setContents] = useState<Array<ContentListItem>>([]);
   const [events, setEvents] = useState<Array<EventExploreListItemResponse>>([]);
   const recommendEvents = events.slice(0, 8);
   const trendingEvents = events.slice(-6);
 
-  const loadProjects = useCallback(async () => {
-    const { data } = await getTrendingProjects();
-    setTrendingProjects(data.data);
+  const loadDapps = useCallback(async () => {
+    const { data } = await getTrendingDapps();
+    setTrendingDapps(data.data);
   }, []);
   const loadContents = useCallback(async () => {
     const { data } = await getTrendingContents();
@@ -72,63 +77,79 @@ function Home() {
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([loadEvents(), loadContents(), loadProjects()]).finally(() => {
+    Promise.all([loadEvents(), loadContents(), loadDapps()]).finally(() => {
       setLoading(false);
     });
   }, []);
 
   return (
     <HomeWrapper>
-      {homeBannerDisplay && <Carousel />}
+      {!isMobile && homeBannerDisplay && <Carousel />}
       {(loading && (
         <div className="loading">
           <Loading />
         </div>
       )) || (
         <>
-          <div className="row-2">
-            <div className="left">
-              <RecommendContent
+          {isMobile && (
+            <>
+              <RecommendContentMobile
                 data={contents}
                 viewAllAction={() => {
-                  navigate('/contents/:id');
+                  navigate('/contents');
                 }}
               />
-            </div>
-            <div className="right">
-              <DiscoverProj
-                data={trendingProjects}
+              <PopularDappsMobile
+                data={trendingDapps}
+                viewAllAction={() => navigate('/dapps')}
+              />
+              <RecommendEventMobile data={recommendEvents} />
+            </>
+          )}
+
+          {!isMobile && (
+            <>
+              <div className="row-2">
+                <div className="left">
+                  <RecommendContent
+                    data={contents}
+                    viewAllAction={() => {
+                      navigate('/contents/:id');
+                    }}
+                  />
+                </div>
+                <div className="right">
+                  <DiscoverProj
+                    data={trendingDapps}
+                    viewAllAction={() => {
+                      navigate('/dapps');
+                    }}
+                  />
+                </div>
+              </div>
+
+              <RecommendEvents
+                data={recommendEvents}
                 viewAllAction={() => {
-                  navigate('/dapps');
+                  navigate('/events');
                 }}
               />
-            </div>
-          </div>
-          <RecommendEvents
-            data={recommendEvents}
-            viewAllAction={() => {
-              navigate('/events');
-            }}
-          />
-          {/* <TrendingEvents
-            data={trendingEvents}
-            viewAllAction={() => {
-              navigate('/events');
-            }}
-          /> */}
-          <Platform
-            platforms={showPlatforms}
-            viewAllAction={() => {
-              navigate('/events');
-            }}
-          />
-          <Poster
-            data={{
-              contents,
-              dapps: trendingProjects,
-              events: recommendEvents,
-            }}
-          />
+              <Platform
+                platforms={showPlatforms}
+                viewAllAction={() => {
+                  navigate('/events');
+                }}
+              />
+              <Poster
+                data={{
+                  contents,
+                  dapps: trendingDapps,
+                  // dapps: trendingProjects,
+                  events: recommendEvents,
+                }}
+              />
+            </>
+          )}
         </>
       )}
     </HomeWrapper>
@@ -141,6 +162,10 @@ const HomeWrapper = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
   gap: 40px;
+  ${isMobile &&
+  `
+    gap: 20px;
+  `}
   & div.loading {
     height: 0;
     flex: 1;

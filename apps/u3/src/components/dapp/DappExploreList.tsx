@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:42:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-29 17:24:36
+ * @LastEditTime: 2023-02-27 15:35:43
  * @Description: file description
  */
 import { useCallback } from 'react';
@@ -42,7 +42,7 @@ export default function DappExploreList({
             onInstall={() => onInstall && onInstall(item)}
             onOpen={() => onOpen && onOpen(item)}
             onClick={() => onItemClick && onItemClick(item)}
-            displayButtons={!!item.dappUrl}
+            displayButtons={!!item.url}
           />
         );
       })}

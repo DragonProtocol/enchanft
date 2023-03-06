@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-12 18:42:59
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-02 17:29:21
+ * @LastEditTime: 2023-03-03 17:07:56
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -79,6 +79,7 @@ export type ContentListItem = {
   };
   isForU?: boolean;
   editorScore: null | number;
+  favorNum?: number;
 };
 
 export type ContentsListResponse = ApiResp<Array<ContentListItem>>;
@@ -103,3 +104,4 @@ export type Project = {
 };
 export type ContentsResponse = ApiResp<Array<Project>>;
 export type ContentSaveResponse = ApiResp<ContentListItem>;
+export type ContentResponse = ApiResp<ContentListItem>;

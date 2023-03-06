@@ -2,13 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-18 11:11:59
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-18 15:11:38
+ * @LastEditTime: 2023-02-27 11:50:33
  * @Description: file description
  */
 import styled from 'styled-components';
 import useDappWebsite from '../../hooks/useDappWebsite';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
-import ProjectImgDefault from '../project/ProjectImgDefault';
+import ImgDefault from '../common/ImgDefault';
 import DappWebsitePreview from './DappWebsitePreview';
 
 import CloseSvg from '../common/icons/svgs/close.svg';
@@ -74,7 +74,7 @@ const HeaderLeft = styled.div`
   align-items: center;
   gap: 10px;
 `;
-const DappImg = styled(ProjectImgDefault)`
+const DappImg = styled(ImgDefault)`
   width: 40px;
   height: 40px;
   border: 1px solid #39424c;

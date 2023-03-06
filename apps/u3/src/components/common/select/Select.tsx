@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-12 15:24:35
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 15:21:25
+ * @LastEditTime: 2023-02-27 13:59:33
  * @Description: file description
  */
 import { useEffect, useMemo, useRef, useState } from 'react';
@@ -165,6 +165,7 @@ const SelectButtonChevronIcon = styled.img`
 `;
 const OptionsBox = styled.div`
   min-width: 100%;
+  max-height: 50vh;
   position: absolute;
   left: 0;
   top: 100%;
@@ -179,6 +180,7 @@ const OptionsBox = styled.div`
   border: 1px solid #39424c;
   border-radius: 20px;
   z-index: 1;
+  overflow-y: auto;
 `;
 const OptionItem = styled.div<{ isActive: boolean }>`
   height: 40px;

@@ -2,15 +2,15 @@ import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { usePermissions } from '@ecnft/wl-user-react';
 import { formatFilterShowName } from '../../../utils/filter';
 import {
-  ProjectExploreListItemResponse,
-  UniprojectStatus,
-} from '../../../services/types/project';
+  DappExploreListItemResponse,
+  DappStatus,
+} from '../../../services/types/dapp';
 import {
   ButtonPrimary,
   ButtonPrimaryLine,
 } from '../../common/button/ButtonBase';
 import Tag from '../../common/tag/Tag';
-import ProjectImgDefault from '../../project/ProjectImgDefault';
+import ImgDefault from '../../common/ImgDefault';
 import Card from './Card';
 import TwitterSvg from '../../common/icons/svgs/twitter.svg';
 import DiscordSvg from '../../common/icons/svgs/discord.svg';
@@ -22,7 +22,7 @@ import EllipsisTextExpandMore from '../../common/text/EllipsisTextExpandMore';
 import { Edit } from '../../icons/edit';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
-  data: ProjectExploreListItemResponse;
+  data: DappExploreListItemResponse;
   disabledInstall?: boolean;
   loadingInstall?: boolean;
   isInstalled?: boolean;
@@ -53,7 +53,7 @@ export default function Header({
       <HeaderCenter>
         <Title>
           {data.name}{' '}
-          {data.status === UniprojectStatus.VERIFIED && <CheckVerifiedSvg />}
+          {data.status === DappStatus.VERIFIED && <CheckVerifiedSvg />}
           {isAdmin && (
             <EditBtn onClick={onEdit}>
               <Edit />
@@ -62,13 +62,17 @@ export default function Header({
         </Title>
         <TagsRow>
           {data?.types.map((item) => (
-            <Tag>{formatFilterShowName(item)}</Tag>
+            <Tag key={item}>{formatFilterShowName(item)}</Tag>
           ))}
           {showChains.map((item) => (
-            <ChainIcon src={item.image} alt={item.name} title={item.name} />
+            <ChainIcon
+              key={item.chainEnum}
+              src={item.image}
+              alt={item.name}
+              title={item.name}
+            />
           ))}
         </TagsRow>
-
         <Description row={2}>{data.description}</Description>
       </HeaderCenter>
       <HeaderRight>
@@ -101,7 +105,7 @@ export default function Header({
               <LinkIcon src={TelegramSvg} />
             </LinkButton>
           )}
-          {data?.dappUrl &&
+          {data?.url &&
             (isInstalled ? (
               <OpenButton
                 onClick={(e) => {
@@ -136,7 +140,7 @@ const HeaderWrapper = styled(Card)`
   flex-shrink: 0;
 `;
 
-const HeaderImg = styled(ProjectImgDefault)`
+const HeaderImg = styled(ImgDefault)`
   width: 120px;
   height: 120px;
   border-radius: 10px;
@@ -205,4 +209,74 @@ const ChainIcon = styled.img`
 `;
 const EditBtn = styled.div`
   cursor: pointer;
+`;
+
+export function HeaderMobile({ data, ...otherProps }: Props) {
+  const { topics } = useConfigsTopics();
+  const { chains } = topics;
+  const showChains = chains.filter((item) =>
+    data?.chains.includes(item.chainEnum)
+  );
+
+  return (
+    <HeaderWrapperMobile {...otherProps}>
+      <HeaderImgMobile src={data.image} />
+      <HeaderRightMobile>
+        <TitleMobile>
+          {data.name}{' '}
+          {data.status === DappStatus.VERIFIED && <CheckVerifiedSvg />}
+        </TitleMobile>
+        <TagsRowMobile>
+          {data?.types.map((item) => (
+            <Tag key={item}>{formatFilterShowName(item)}</Tag>
+          ))}
+          {showChains.map((item) => (
+            <ChainIcon
+              key={item.chainEnum}
+              src={item.image}
+              alt={item.name}
+              title={item.name}
+            />
+          ))}
+        </TagsRowMobile>
+      </HeaderRightMobile>
+    </HeaderWrapperMobile>
+  );
+}
+
+const HeaderWrapperMobile = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+`;
+const HeaderImgMobile = styled(ImgDefault)`
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  flex-shrink: 0;
+`;
+const HeaderRightMobile = styled.div`
+  width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: space-evenly;
+`;
+const TitleMobile = styled.span`
+  font-style: italic;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+const TagsRowMobile = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;

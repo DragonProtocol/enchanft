@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
 import { ContentListItem } from '../../services/types/contents';
 import { defaultFormatFromNow } from '../../utils/time';
@@ -64,6 +65,11 @@ const ContentTitle = styled.div`
       font-size: 24px;
       line-height: 28px;
       color: #ffffff;
+      ${isMobile &&
+      `
+        font-size: 20px;
+        line-height: 24px;
+      `}
     }
     > div {
       display: flex;

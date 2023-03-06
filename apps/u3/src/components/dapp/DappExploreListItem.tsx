@@ -2,16 +2,16 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 15:41:39
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-19 11:40:18
+ * @LastEditTime: 2023-03-02 12:14:37
  * @Description: file description
  */
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
-import { ProjectExploreListItemResponse } from '../../services/types/project';
+import { DappExploreListItemResponse } from '../../services/types/dapp';
 import { ButtonPrimary, ButtonPrimaryLine } from '../common/button/ButtonBase';
 import EllipsisText from '../common/text/EllipsisText';
-import ProjectImgDefault from '../project/ProjectImgDefault';
+import ImgDefault from '../common/ImgDefault';
 
-export type DappExploreListItemData = ProjectExploreListItemResponse;
+export type DappExploreListItemData = DappExploreListItemResponse;
 export type DappExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   data: DappExploreListItemData;
   disabledInstall?: boolean;
@@ -83,7 +83,7 @@ const ListItemInner = styled.div`
   transition: all 0.3s;
 `;
 
-const ItemImg = styled(ProjectImgDefault)`
+const ItemImg = styled(ImgDefault)`
   width: 48px;
   height: 48px;
   border-radius: 10px;
@@ -125,4 +125,11 @@ const OpenButton = styled(ButtonPrimaryLine)`
   ${ButtonCss}
   background: #14171a;
   color: #ffffff;
+`;
+
+export const DappExploreListItemMobile = styled(DappExploreListItem)`
+  padding: 10px;
+  border: 1px solid #39424c;
+  background: #1b1e23;
+  border-radius: 10px;
 `;
