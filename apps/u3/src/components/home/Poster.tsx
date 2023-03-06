@@ -1,5 +1,6 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
+import ReactDOM from 'react-dom/client';
 import styled from 'styled-components';
 import html2canvas from 'html2canvas-strengthen';
 import { toast } from 'react-toastify';
@@ -12,17 +13,28 @@ import {
 
 import { MOBILE_BREAK_POINT } from '../../constants';
 import ModalBase, { ModalBaseTitle } from '../common/modal/ModalBase';
+import { ButtonInfo, ButtonPrimary } from '../common/button/ButtonBase';
 
 import { ReactComponent as LogoIconSvg } from '../imgs/logo-icon.svg';
 import { ReactComponent as MultipleSvg } from '../imgs/multiple.svg';
+import { ReactComponent as TwitterSvg } from '../imgs/twitter.svg';
+// import { ReactComponent as TwitterSvg } from '../imgs/twitter.svg';
+// import CloseSvg from '../common/icons/svgs/close.svg';
+// import IconClose from '../icons/close';
+import { Close } from '../icons/close';
+
 import qrCodeU3 from '../imgs/qrcode_u3.xyz.png';
 
 export default function Poster({ data }: { data: any }) {
   const { contents, dapps, events } = data;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [posterCanvas, setPosterCanvas] = useState(null);
+  const [posterUrl, setPosterUrl] = useState(null);
 
   const { user, isLogin } = useWlUserReact();
+
+  const posterModalBody = useRef(null);
 
   const dataURLtoBlob = (dataURL) => {
     let array, binary, i, len;
@@ -39,6 +51,25 @@ export default function Poster({ data }: { data: any }) {
     });
   };
 
+  const download = async (url, name = 'u3-daily-poster', type = 'png') => {
+    const toDataURL = (url) => {
+      return fetch(url)
+        .then((response) => {
+          return response.blob();
+        })
+        .then((blob) => {
+          return URL.createObjectURL(blob);
+        });
+    };
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = await toDataURL(url);
+    a.download = name + '.' + type;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
   const openUrl = (url) => {
     var a = document.createElement('a');
     a.setAttribute('href', url);
@@ -48,6 +79,8 @@ export default function Poster({ data }: { data: any }) {
     a.click();
     a.parentNode.removeChild(a);
   };
+
+  // const
 
   const sharePosterOnTwitter = async () => {
     setIsOpen(true);
@@ -64,6 +97,13 @@ export default function Poster({ data }: { data: any }) {
       console.timeEnd('is to canvas time:');
 
       // document.body.appendChild(canvas);
+      console.log(canvas, posterModalBody?.current?.lastChild, 'canvas');
+      posterModalBody?.current.insertBefore(
+        canvas,
+        posterModalBody?.current?.lastChild
+      );
+      // ReactDOM.createRoot(posterModalBody?.current).render(canvas);
+      setPosterCanvas(canvas);
 
       const blob = dataURLtoBlob(canvas.toDataURL('image/png'));
 
@@ -71,23 +111,19 @@ export default function Poster({ data }: { data: any }) {
 
       uploadUserAvatar(user.token, file)
         .then((result) => {
-          openUrl(
-            `https://twitter.com/intent/tweet?text=Daily Poster ${result.data.url}&url=https%3A%2F%2Fu3.xyz%2F`
-          );
-
+          setPosterUrl(result.data.url);
           // setUserForm({ ...userForm, avatar: result.data.url });
-          toast.success('poster share success');
+          // toast.success('poster share success');
         })
         .catch((error) =>
           toast.error('An error occurred in the generation of the poster')
         );
     } catch (error) {
       toast.error('An error occurred in the generation of the poster');
-    } finally {
-      setIsOpen(false);
     }
-
-    console.log();
+    // finally {
+    //   setIsOpen(false);
+    // }
   };
   return (
     <>
@@ -180,20 +216,78 @@ export default function Poster({ data }: { data: any }) {
             // transform: 'translate(-50%, -50%)',
             top: '40%',
             left: '50%',
-            marginTop: '25%',
+            marginTop: '15%',
             outline: 'none',
           },
         }}
       >
-        <AuthProcessModalBody className="wl-user-modal_signature-body">
-          <ModalBaseTitle className="signature-title">
+        <AuthProcessModalBody
+          className="wl-user-modal_signature-body"
+          id="poster-modal-body"
+          ref={posterModalBody}
+        >
+          {!posterCanvas && (
+            <div className="poster-tip">Poster generation in progress... </div>
+          )}
+          <div className="poster-modal-close" onClick={() => setIsOpen(false)}>
+            <Close />
+          </div>
+          {/* <ModalBaseTitle className="signature-title">
             🕹 Generate posters and share them on Twitter
           </ModalBaseTitle>
           <AuthProcessModalDesc className="signature-desc">
             Poster generation in progress. About 2 minutes
-          </AuthProcessModalDesc>
+          </AuthProcessModalDesc> */}
+
+          <AuthProcessModalBtns className="signature-btns">
+            <CloseBtn
+              className="signature-btn-cancel"
+              onClick={() => {
+                if (!posterUrl) return;
+                download(posterUrl);
+              }}
+              disabled={!posterUrl}
+            >
+              <svg
+                // class="icon"
+                viewBox="0 0 1024 1024"
+                version="1.1"
+                xmlns="http://www.w3.org/2000/svg"
+                p-id="19235"
+                width="17"
+                height="17"
+              >
+                <path
+                  d="M489.6 790.4c3.2 3.2 6.4 6.4 9.6 6.4 3.2 0 6.4 3.2 12.8 3.2 3.2 0 9.6 0 12.8-3.2 3.2-3.2 6.4-3.2 9.6-6.4l272-272c12.8-12.8 12.8-32 0-44.8-12.8-12.8-32-12.8-44.8 0L544 691.2V96c0-19.2-12.8-32-32-32s-32 12.8-32 32v595.2l-217.6-217.6c-12.8-12.8-32-12.8-44.8 0-12.8 12.8-12.8 32 0 44.8l272 272z"
+                  p-id="19236"
+                  fill="#718096"
+                ></path>
+                <path
+                  d="M960 576c-19.2 0-32 12.8-32 32v256c0 19.2-12.8 32-32 32H128c-19.2 0-32-12.8-32-32v-256c0-19.2-12.8-32-32-32s-32 12.8-32 32v256c0 54.4 41.6 96 96 96h768c54.4 0 96-41.6 96-96v-256c0-19.2-12.8-32-32-32z"
+                  p-id="19237"
+                  fill="#718096"
+                ></path>
+              </svg>
+            </CloseBtn>
+            <RetryBtn
+              onClick={() => {
+                if (!posterUrl) return;
+
+                openUrl(
+                  `https://twitter.com/intent/tweet?text=Daily Poster ${posterUrl}&url=https%3A%2F%2Fu3.xyz%2F`
+                );
+              }}
+              className="signature-btn-retry"
+              disabled={!posterUrl}
+            >
+              <TwitterSvg />
+              Share To Twitter
+            </RetryBtn>
+          </AuthProcessModalBtns>
         </AuthProcessModalBody>
       </AuthProcessModalWrapper>
+
+      {/* <ModalBase isOpen={isOpen} backdropFilter></ModalBase> */}
     </>
   );
 }
@@ -442,12 +536,41 @@ const AuthProcessModalBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 20px;
+  /* padding: 20px; */
   /* background: #f7f9f1; */
   border-radius: 20px;
-  width: 380px;
-  background: rgb(27, 30, 35);
+  min-width: 380px;
+  /* background: rgb(27, 30, 35); */
   box-sizing: border-box;
+  min-height: 700px;
+  color: white;
+  text-align: center;
+  position: relative;
+  padding-bottom: 100px;
+
+  .poster-tip {
+    /* margin-top: 130px;
+    margin-bottom: 130px; */
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    background: rgb(27, 30, 35);
+    justify-content: center;
+    border-radius: 20px;
+    border: 1px solid #718096;
+  }
+
+  .poster-modal-close {
+    position: absolute;
+    top: 5px;
+    right: -30px;
+    cursor: pointer;
+  }
+
+  canvas {
+    border-radius: 20px;
+    border: 1px solid #718096;
+  }
 
   &:focus {
     border: none;
@@ -465,11 +588,13 @@ const AuthProcessModalBtns = styled.div`
   align-items: center;
   gap: 24px;
 `;
-// const CloseBtn = styled(ButtonInfo)`
-//   width: 120px;
-//   height: 48px;
-// `;
-// const RetryBtn = styled(ButtonPrimary)`
-//   width: 120px;
-//   height: 48px;
-// `;
+const CloseBtn = styled(ButtonInfo)`
+  width: 50px;
+  height: 48px;
+  flex-grow: 0.1 !important;
+`;
+const RetryBtn = styled(ButtonPrimary)`
+  width: 120px;
+  height: 48px;
+  flex-grow: 1;
+`;
