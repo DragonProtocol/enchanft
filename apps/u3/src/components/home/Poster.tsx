@@ -92,17 +92,21 @@ export default function Poster({ data }: { data: any }) {
         useCORS: true,
         onclone: function (document) {
           (document.querySelector('#poster') as any).style.display = 'block';
+          return new Promise((resolve, reject) => {
+            setTimeout(() => {
+              resolve(1);
+            }, 400);
+          });
         },
       });
       console.timeEnd('is to canvas time:');
 
       // document.body.appendChild(canvas);
-      console.log(canvas, posterModalBody?.current?.lastChild, 'canvas');
       posterModalBody?.current.insertBefore(
         canvas,
         posterModalBody?.current?.lastChild
       );
-      // ReactDOM.createRoot(posterModalBody?.current).render(canvas);
+
       setPosterCanvas(canvas);
 
       const blob = dataURLtoBlob(canvas.toDataURL('image/png'));
@@ -597,4 +601,5 @@ const RetryBtn = styled(ButtonPrimary)`
   width: 120px;
   height: 48px;
   flex-grow: 1;
+  font-weight: 700;
 `;
