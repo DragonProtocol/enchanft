@@ -40,8 +40,8 @@ import { fetchUserKarma } from '../features/profile/karma';
 import { store } from '../store/store';
 import { messages } from '../utils/message';
 import CreatableMultiSelect from '../components/common/select/CreatableMultiSelect';
-import useContentTags from '../hooks/useContentTags';
 import ButtonRefresh from '../components/common/button/ButtonRefresh';
+import useConfigsTopics from '../hooks/useConfigsTopics';
 
 function ContentCreate() {
   const navigate = useNavigate();
@@ -203,14 +203,20 @@ function ContentCreate() {
     },
     [formik.touched, formik.errors]
   );
-
-  const {
-    tagOptions,
-    loading: tagsLoading,
-    create: createTag,
-    createLoading: createTagLoading,
-  } = useContentTags();
-
+  const { topics } = useConfigsTopics();
+  const [tagOptions, setTagOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
+  useEffect(() => {
+    if (topics.contentTags) {
+      setTagOptions(
+        topics.contentTags.map((tag) => ({
+          value: tag.value,
+          label: tag.name,
+        }))
+      );
+    }
+  }, [topics.contentTags]);
   return (
     <ScrollBox>
       <ContentCreateWrapper>
@@ -250,12 +256,14 @@ function ContentCreate() {
               options={tagOptions}
               onChange={(value) => formik.setFieldValue('tags', value)}
               value={formik.values.tags}
-              onCreateOption={async (newValue) => {
-                await createTag(newValue);
-                formik.setFieldValue('tags', [...formik.values.tags, newValue]);
+              onCreateOption={(value) => {
+                const newTag = {
+                  value,
+                  label: value,
+                };
+                setTagOptions([...tagOptions, newTag]);
+                formik.setFieldValue('tags', [...formik.values.tags, value]);
               }}
-              disabled={createTagLoading}
-              loading={tagsLoading || createTagLoading}
             />
             {renderFieldError('types')}
             {/* <Select

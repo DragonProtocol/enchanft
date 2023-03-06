@@ -2,13 +2,12 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-02-06 10:27:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-06 18:01:58
+ * @LastEditTime: 2023-03-06 18:57:45
  * @Description: file description
  */
 import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
 import useConfigsTopics from '../../hooks/useConfigsTopics';
-import useContentTags from '../../hooks/useContentTags';
 import { ContentLangRev } from '../../services/types/contents';
 import CardBase from '../common/card/CardBase';
 import CheckboxMultiChoice from '../common/checkbox/CheckboxMultiChoice';
@@ -21,14 +20,16 @@ export default function Filter({
   filterAction: (data: { tags: string[]; lang: string[] }) => void;
 }) {
   const { topics } = useConfigsTopics();
-  const { langs } = topics;
-  const { tagOptions } = useContentTags();
+  const { langs, contentTags } = topics;
   return (
     <FilterWrapper>
       <CheckboxMultiChoice
         label="Tag"
         className="filter-multi-choice"
-        options={tagOptions}
+        options={contentTags.map((item) => ({
+          value: item.value,
+          label: item.name,
+        }))}
         onChange={(value) => {
           filterAction({ ...values, tags: value });
         }}

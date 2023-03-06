@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-09 17:55:15
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 11:47:39
+ * @LastEditTime: 2023-03-06 18:41:48
  * @Description: file description
  */
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -24,6 +24,7 @@ type Topics = {
   contentTypes: TopicItem[];
   langs: TopicItem[];
   chains: ConfigTopicsChain[];
+  contentTags: TopicItem[];
 };
 type ConfigsTopicsState = {
   status: AsyncRequestStatus;
@@ -39,6 +40,7 @@ const initConfigsTopicsState: ConfigsTopicsState = {
     contentTypes: [],
     langs: [],
     chains: [],
+    contentTags: [],
   },
 };
 
@@ -60,6 +62,7 @@ export const fetchConfigsTopics = createAsyncThunk<Topics, undefined>(
         dappTypes,
         contentTypes,
         langs,
+        contentTags,
       } = resp.data.data;
       return {
         ...resp.data.data,
@@ -69,6 +72,7 @@ export const fetchConfigsTopics = createAsyncThunk<Topics, undefined>(
         dappTypes: formatTopics(dappTypes || []),
         contentTypes: formatTopics(contentTypes || []),
         langs: formatTopics(langs || []),
+        contentTags: formatTopics(contentTags || []),
       };
     }
     return rejectWithValue(new Error(resp.data.msg));

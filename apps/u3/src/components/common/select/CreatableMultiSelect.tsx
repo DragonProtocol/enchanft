@@ -2,11 +2,9 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:59:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-06 17:51:32
+ * @LastEditTime: 2023-03-06 19:44:28
  * @Description: file description
  */
-import React, { useRef, useState } from 'react';
-
 import CreatableSelect from 'react-select/creatable';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { ScrollBarCss } from '../../../GlobalStyle';
@@ -23,9 +21,7 @@ type Props = StyledComponentPropsWithRef<'div'> & {
   placeholder?: string;
   onChange?: (values: ValueType[]) => void;
   onSelectOption?: (options: Option[]) => void;
-  disabled?: boolean;
-  loading?: boolean;
-  onCreateOption?: (value: string) => Promise<void>;
+  onCreateOption?: (inputValue: string) => void;
 };
 export default function ({
   options,
@@ -33,12 +29,17 @@ export default function ({
   placeholder,
   onChange,
   onSelectOption,
-  disabled,
-  loading,
   onCreateOption,
 }: Props) {
   const SelectValue = options.filter((item) => value.includes(item.value));
-
+  const handleChange = (ops: Option[]) => {
+    if (onChange) {
+      onChange(ops.map((item) => item.value));
+    }
+    if (onSelectOption) {
+      onSelectOption([...ops]);
+    }
+  };
   return (
     <AsyncSelectWrapper>
       <CreatableSelect
@@ -46,22 +47,12 @@ export default function ({
         placeholder={placeholder}
         options={options}
         value={SelectValue}
-        onChange={(ops) => {
-          if (onChange) {
-            onChange(ops.map((item) => item.value));
-          }
-          if (onSelectOption) {
-            onSelectOption([...ops]);
-          }
-        }}
+        onChange={handleChange}
         className="select-container"
         classNamePrefix="select"
         components={{
           IndicatorsContainer: CustomIndicatorsContainer,
         }}
-        isClearable
-        isDisabled={disabled}
-        isLoading={loading}
         onCreateOption={onCreateOption}
       />
     </AsyncSelectWrapper>
@@ -73,7 +64,7 @@ function CustomIndicatorsContainer({ innerProps }: any) {
 }
 
 const AsyncSelectWrapper = styled.div`
-  height: 40px;
+  min-height: 40px;
   .select-container {
     height: 100%;
   }

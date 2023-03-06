@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:59:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 10:09:25
+ * @LastEditTime: 2023-03-06 19:42:48
  * @Description: file description
  */
 import React, { useRef, useState } from 'react';
@@ -63,7 +63,7 @@ function CustomIndicatorsContainer({ innerProps }: any) {
 }
 
 const AsyncSelectWrapper = styled.div`
-  height: 40px;
+  min-height: 40px;
   .select-container {
     height: 100%;
   }

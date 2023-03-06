@@ -6,7 +6,6 @@ import {
   ContentsListResponse,
   ContentsResponse,
   ContentStatus,
-  ContentTagsResponse,
   URLParseResponse,
 } from '../types/contents';
 import request, { RequestPromise } from './request';
@@ -221,27 +220,6 @@ export function fetchContents(
       orderBy: query.orderBy ?? '',
     },
     method: 'get',
-    headers: {
-      token,
-      needToken: true,
-    },
-  });
-}
-
-export function fetchContentTags(): RequestPromise<ContentTagsResponse> {
-  return request({
-    url: `/contents/tags`,
-  });
-}
-
-export function createContentTag(
-  data: string,
-  token?: string
-): RequestPromise<ContentTagsResponse> {
-  return request({
-    url: `/contents/tags`,
-    method: 'post',
-    data,
     headers: {
       token,
       needToken: true,
