@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-02-01 18:00:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 13:29:52
+ * @LastEditTime: 2023-03-06 17:05:25
  * @Description: file description
  */
 import { EVENT_IMAGE_SIZE_LIMIT } from '../constants';
@@ -25,6 +25,7 @@ export const messages = {
     admin_update: 'Save successfully!',
     admin_add_score: `+${CONTENT_ADMIN_PLUS_SCORE_STEP} Score!`,
     hide: 'Hide successfully!',
+    tag_create: 'Create tag successfully!',
   },
   dapp: {
     install: 'Successful installation!',

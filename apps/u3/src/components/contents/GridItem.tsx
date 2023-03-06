@@ -63,7 +63,7 @@ export default function GridItem({
   data: ContentListItem;
   clickAction?: () => void;
 }) {
-  const { type, link, createdAt, title, upVoteNum, editorScore, value } = data;
+  const { tags, link, createdAt, title, upVoteNum, editorScore, value } = data;
   const platformLogo = getContentPlatformLogoWithJsonValue(value);
   return (
     <Box
@@ -78,7 +78,7 @@ export default function GridItem({
 
         <h2>{title}</h2>
         <div className="row">
-          <Badge text={type} />
+          {tags?.length > 0 && <Badge text={tags[0]} />}
           <div className="date">{defaultFormatFromNow(createdAt)}</div>
         </div>
         <div className="row">

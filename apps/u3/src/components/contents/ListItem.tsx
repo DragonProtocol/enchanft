@@ -3,7 +3,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Share } from '../icons/share';
 import { EyeClose } from '../icons/eyeClose';
 import { Heart } from '../icons/heart';
-import Badge from './Badge';
 import { defaultFormatFromNow } from '../../utils/time';
 import LinkBox from './LinkBox';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
@@ -81,7 +80,6 @@ export default function ListItem({
           <p>{title}</p>
           <ContentItemTitle>
             <div>
-              <Badge text={type} />
               <LinkBox text={link} logo={platformLogo} />
             </div>
             <span>{defaultFormatFromNow(createdAt)}</span>
@@ -371,6 +369,7 @@ const ContentItemTitle = styled.div`
     /* padding: 0 18px; */
     /* height: 32px; */
     /* box-sizing: border-box; */
+    flex-shrink: 0;
   }
 
   & .author {

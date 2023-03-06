@@ -4,7 +4,6 @@ import * as Yup from 'yup';
 import {
   forwardRef,
   useCallback,
-  useEffect,
   useImperativeHandle,
   useMemo,
   useState,
@@ -15,9 +14,8 @@ import { MainWrapper } from '../layout/Index';
 import CardBase from '../common/card/CardBase';
 import InputBase from '../common/input/InputBase';
 import Select from '../common/select/Select';
-import { ButtonPrimary, ButtonPrimaryLine } from '../common/button/ButtonBase';
+import { ButtonPrimary } from '../common/button/ButtonBase';
 import Switch from '../common/switch/Switch';
-import RefreshSvg from '../common/icons/svgs/refresh.svg';
 import TimePicker from '../common/time/TimePicker';
 import EventLinkPreview from './EventLinkPreview';
 import ProjectAsyncSelect from '../business/form/ProjectAsyncSelect';
@@ -28,6 +26,7 @@ import {
 import useConfigsTopics from '../../hooks/useConfigsTopics';
 import useConfigsPlatforms from '../../hooks/useConfigsPlatforms';
 import UploadImage from '../common/upload/UploadImage';
+import ButtonRefresh from '../common/button/ButtonRefresh';
 
 type Props = {
   initialValues: CreateEventData;
@@ -311,13 +310,11 @@ export default forwardRef(function EventForm(
         </FormField>
 
         <FormButtons>
-          <ButtonPrimaryLine
+          <ButtonRefresh
             type="reset"
             disabled={loading}
             onClick={formik.handleReset}
-          >
-            <FormButtonIcon src={RefreshSvg} />
-          </ButtonPrimaryLine>
+          />
           <FormButtonSubmit
             type="submit"
             disabled={loading}
@@ -385,10 +382,6 @@ const FormButtons = styled.div`
 `;
 const FormButtonSubmit = styled(ButtonPrimary)`
   flex: 1;
-`;
-const FormButtonIcon = styled.img`
-  width: 24px;
-  height: 24px;
 `;
 const EventPreviewBox = styled(CardBase)`
   width: 0;

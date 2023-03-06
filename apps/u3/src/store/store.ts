@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-01 15:09:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 10:43:30
+ * @LastEditTime: 2023-03-06 16:44:56
  * @Description: store
  */
 import { configureStore } from '@reduxjs/toolkit';
@@ -21,6 +21,7 @@ import frensHandles from '../features/frens/frensHandles';
 import userGroupFavorites from '../features/favorite/userGroupFavorites';
 import configsTopics from '../features/configs/topics';
 import configsPlatforms from '../features/configs/platforms';
+import contentTags from '../features/content/tags';
 
 import karma from '../features/profile/karma';
 
@@ -39,6 +40,7 @@ export const store = configureStore({
     frensHandles,
     configsTopics,
     configsPlatforms,
+    contentTags,
     karma,
   },
   middleware: (getDefaultMiddleware) =>

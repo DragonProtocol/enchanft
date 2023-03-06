@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-01-12 18:42:59
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-03 17:07:56
+ * @LastEditTime: 2023-03-06 16:08:20
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -63,6 +63,7 @@ export type ContentListItem = {
   link: string;
   upVoteNum: number;
   type: string;
+  tags: string[];
   platform: {
     logo: string;
   };
@@ -105,3 +106,4 @@ export type Project = {
 export type ContentsResponse = ApiResp<Array<Project>>;
 export type ContentSaveResponse = ApiResp<ContentListItem>;
 export type ContentResponse = ApiResp<ContentListItem>;
+export type ContentTagsResponse = ApiResp<Array<string>>;
