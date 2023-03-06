@@ -2,11 +2,11 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-30 10:25:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-12 14:16:34
+ * @LastEditTime: 2023-02-27 10:56:24
  * @Description: file description
  */
 import { ApiResp } from '.';
-import { ChainType, OrderBy, Platform, ProjectType, Reward } from './common';
+import { ChainType, OrderBy, Platform, Reward } from './common';
 
 export enum EventStatus {
   PERSONAL = 'PERSONAL',

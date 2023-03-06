@@ -49,8 +49,10 @@ export default function OnBoard({
     });
 
     finishAction({
-      eventRewards: filterData(data, 'eventRewards'),
-      eventTypes: filterData(data, 'eventTypes'),
+      // eventRewards: filterData(data, 'eventRewards'),
+      // eventTypes: filterData(data, 'eventTypes'),
+      eventRewards: [],
+      eventTypes: [],
       projectTypes: filterData(data, 'projectTypes'),
       contentTypes: filterData(data, 'contentTypes'),
       langs: lang,
@@ -191,8 +193,9 @@ const OnBoardBox = styled.div`
 
         font-weight: 500;
         font-size: 16px;
-        line-height: 24px;
+        line-height: 16px;
         color: #718096;
+        text-align: center;
         &.selected {
           background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
           color: #1b1e23;

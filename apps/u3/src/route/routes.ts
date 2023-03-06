@@ -2,12 +2,13 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-09-13 19:00:14
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-01 11:30:46
+ * @LastEditTime: 2023-03-01 17:01:28
  * @Description: file description
  */
 import { RouteObject } from 'react-router-dom';
 import loadable from '@loadable/component';
 import React, { ReactNode } from 'react';
+import { isMobile } from 'react-device-detect';
 
 export enum RouteKey {
   home = 'home',
@@ -18,6 +19,9 @@ export enum RouteKey {
   dapps = 'dapps',
   dapp = 'dapp',
   dappCreate = 'dappCreate',
+  projects = 'projects',
+  project = 'project',
+  projectCreate = 'projectCreate',
   contents = 'contents',
   content = 'content',
   contentCreate = 'contentCreate',
@@ -87,10 +91,33 @@ export const routes: CutomRouteObject[] = [
     key: RouteKey.dappCreate,
     permissions: [RoutePermission.login, RoutePermission.admin],
   },
+  // {
+  //   path: '/projects',
+  //   element: loadContainerElement('Projects'),
+  //   key: RouteKey.projects,
+  // },
   {
-    path: '/contents/:id',
+    path: '/projects/:id',
+    element: loadContainerElement('Project'),
+    key: RouteKey.project,
+  },
+  {
+    path: '/projects/create',
+    element: loadContainerElement('ProjectCreate'),
+    key: RouteKey.projectCreate,
+    permissions: [RoutePermission.login, RoutePermission.admin],
+  },
+  {
+    path: '/contents',
     element: loadContainerElement('Contents'),
     key: RouteKey.contents,
+  },
+  {
+    path: '/contents/:id',
+    element: isMobile
+      ? loadContainerElement('Content')
+      : loadContainerElement('Contents'),
+    key: isMobile ? RouteKey.content : RouteKey.contents,
   },
   {
     path: '/contents/create',

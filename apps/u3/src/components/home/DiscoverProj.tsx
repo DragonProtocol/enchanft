@@ -2,14 +2,14 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import Title from './Title';
 import { Subtract } from '../icons/subtract';
-import { ProjectExploreListItemResponse } from '../../services/types/project';
+import { DappExploreListItemResponse } from '../../services/types/dapp';
 import CardBase from '../common/card/CardBase';
 
 export default function DiscoverProj({
   data,
   viewAllAction,
 }: {
-  data: Array<ProjectExploreListItemResponse>;
+  data: Array<DappExploreListItemResponse>;
   viewAllAction: () => void;
 }) {
   const navigate = useNavigate();
@@ -25,8 +25,6 @@ export default function DiscoverProj({
               }}
               key={item.id}
               {...item}
-              events={item.events || []}
-              contents={item.contents || []}
             />
           );
         })}
@@ -46,14 +44,10 @@ const CardList = styled(CardBase)`
 function Card({
   name,
   image,
-  events,
-  contents,
   clickAction,
 }: {
   name: string;
   image: string;
-  events: any[];
-  contents: any[];
   clickAction: () => void;
 }) {
   return (
@@ -65,10 +59,6 @@ function Card({
             <h3>{name}</h3>
             <span>{/* <Subtract /> */}</span>
           </div>
-          {/* <div>
-            <span>{events.length} events</span>
-            <span>{contents.length} content</span>
-          </div> */}
         </div>
       </CardBox>
     </CardWrapper>

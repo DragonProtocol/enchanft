@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 12:43:01
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2022-12-26 15:46:44
+ * @LastEditTime: 2023-02-27 16:14:13
  * @Description: file description
  */
 import { StyledComponentPropsWithRef } from 'styled-components';
@@ -19,6 +19,7 @@ type Props = StyledComponentPropsWithRef<'div'> & {
   onChange?: (value: ValueType) => void;
   // eslint-disable-next-line react/no-unused-prop-types
   onSelectOption?: (option: Option) => void;
+  disabled?: boolean;
 };
 
 const getProjectOptions = (keywords: string) => {
@@ -36,9 +37,11 @@ export default function ProjectAsyncSelect({
   value,
   onChange,
   onSelectOption,
+  disabled,
 }: Props) {
   return (
     <AsyncSelect
+      disabled={disabled}
       value={value}
       onChange={onChange}
       onSelectOption={onSelectOption}
@@ -47,9 +50,10 @@ export default function ProjectAsyncSelect({
   );
 }
 
-export function ProjectAsyncSelectV2({ value, onChange }: Props) {
+export function ProjectAsyncSelectV2({ value, onChange, disabled }: Props) {
   return (
     <AsyncSelectV2
+      disabled={disabled}
       value={value}
       onChange={onChange}
       getOptions={getProjectOptions}

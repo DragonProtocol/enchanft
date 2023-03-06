@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:28:05
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-29 18:16:30
+ * @LastEditTime: 2023-02-27 15:36:24
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -18,7 +18,6 @@ export type DappWebsitePreviewProps = StyledComponentPropsWithRef<'div'> & {
     name: string;
     image: string;
     url: string;
-    dappUrl: string;
   };
 };
 export default function DappWebsitePreview({
@@ -26,25 +25,25 @@ export default function DappWebsitePreview({
   ...otherProps
 }: DappWebsitePreviewProps) {
   const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
-  const { image, dappUrl, name } = data;
+  const { image, url, name } = data;
   const displayCannotOpen = !u3ExtensionInstalled;
   const [iframeLoading, setIframeLoading] = useState(false);
   useEffect(() => {
     setIframeLoading(true);
-  }, [data.dappUrl]);
+  }, [data.url]);
   return (
     <PreviewWrapper {...otherProps}>
       {displayCannotOpen ? (
         <CannotOpenPlatFormLink
           iconUrl={image || ''}
-          linkUrl={dappUrl}
+          linkUrl={url}
           title={name}
         />
       ) : (
-        isUrl(dappUrl) && (
+        isUrl(url) && (
           <PreviewIframeBox>
             <PreviewIframe
-              src={dappUrl}
+              src={url}
               onLoad={() => {
                 setIframeLoading(false);
               }}
