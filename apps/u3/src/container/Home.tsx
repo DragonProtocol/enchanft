@@ -20,6 +20,7 @@ import RecommendContent from '../components/home/RecommendContent';
 import RecommendContentMobile from '../components/home/RecommendContentMobile';
 import RecommendEvents from '../components/home/RecommendEvents';
 import TrendingEvents from '../components/home/TrendingEvents';
+import Poster from '../components/home/Poster';
 import { MainWrapper } from '../components/layout/Index';
 import { selectWebsite } from '../features/website/websiteSlice';
 import useConfigsPlatforms from '../hooks/useConfigsPlatforms';
@@ -141,6 +142,16 @@ function Home() {
               />
             </>
           )}
+
+          <Poster
+            data={{
+              contents,
+              dapps: trendingDapps,
+              // dapps: trendingProjects,
+              events: recommendEvents,
+            }}
+            isMobile={isMobile}
+          />
         </>
       )}
     </HomeWrapper>
