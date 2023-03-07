@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-11-29 17:59:06
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-01 19:13:28
+ * @LastEditTime: 2023-03-07 15:52:58
  * @Description: file description
  */
 
@@ -114,7 +114,7 @@ function Home() {
                   <RecommendContent
                     data={contents}
                     viewAllAction={() => {
-                      navigate('/contents/:id');
+                      navigate('/contents');
                     }}
                   />
                 </div>

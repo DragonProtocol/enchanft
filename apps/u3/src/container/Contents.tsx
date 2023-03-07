@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-06 17:58:14
+ * @LastEditTime: 2023-03-07 15:41:38
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -63,7 +63,6 @@ export type ContentsPageProps = {
 };
 function Contents() {
   const { user } = useWlUserReact();
-  const navigate = useNavigate();
   const { id } = useParams();
 
   const { currentSearchParams, searchParamsChange } = useContentsSearchParams();
@@ -118,13 +117,8 @@ function Contents() {
       tags: string[],
       orderBy: string,
       lang: string[],
-      renav?: boolean
+      contentId: string
     ) => {
-      let queryId = id;
-      if (renav) {
-        navigate('/contents/:id');
-        queryId = ':id';
-      }
       setLoading(true);
       setContents([]);
       try {
@@ -132,7 +126,13 @@ function Contents() {
         const langQuery =
           lang.length === 0 || lang.length === 2 ? ContentLang.All : lang[0];
         const { data } = await fetchContents(
-          { keywords, tags, orderBy, contentId: queryId, lang: langQuery },
+          {
+            keywords,
+            tags,
+            orderBy,
+            contentId: contentId ?? '',
+            lang: langQuery,
+          },
           user.token
         );
         tmpData = data.data;
@@ -146,7 +146,7 @@ function Contents() {
         setLoading(false);
       }
     },
-    [currPageNumber, user.token, id]
+    [user.token]
   );
   const loadMore = useCallback(async () => {
     const pageNumber = currPageNumber + 1;
@@ -173,8 +173,8 @@ function Contents() {
 
   useEffect(() => {
     const { keywords, tags, orderBy, lang } = currentSearchParams;
-    fetchData(keywords, tags, orderBy, lang);
-  }, [currentSearchParams]);
+    fetchData(keywords, tags, orderBy, lang, id);
+  }, [currentSearchParams, id]);
 
   const getMore = useCallback(() => {
     if (loadingMore) return;
