@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-22 18:29:22
+ * @LastEditTime: 2023-03-07 16:11:03
  * @Description: 首页任务看板
  */
 import { useEffect, useMemo, useState } from 'react';
@@ -64,11 +64,19 @@ export default function ContentsPage({
   const [gridModalShow, setGridModalShow] = useState(false);
   const [isActiveFilter, setIsActiveFilter] = useState(false);
 
+  useEffect(() => {
+    setSelectContentId(id);
+  }, [id]);
   const selectContent = useMemo(() => {
-    return contents.find(
-      (item) => item?.id === selectContentId || item?.uuid === selectContentId
-    );
+    return selectContentId
+      ? contents.find(
+          (item) =>
+            Number(item?.id) === Number(selectContentId) ||
+            item?.uuid === selectContentId
+        )
+      : null;
   }, [contents, selectContentId]);
+
   const renderMoreLoading = useMemo(
     () =>
       loadingMore ? (
@@ -80,10 +88,11 @@ export default function ContentsPage({
   );
 
   useEffect(() => {
-    if (id && id !== ':id' && selectContent && layout === Layout.GRID) {
+    if (selectContent && layout === Layout.GRID) {
       setGridModalShow(true);
     }
-  }, [id, selectContent, layout]);
+  }, [selectContent, layout]);
+
   return (
     <Box>
       <FeedsMenu
@@ -167,7 +176,7 @@ export default function ContentsPage({
               <ListBox onScrollBottom={getMore}>
                 <ContentList
                   data={contents}
-                  activeId={selectContentId}
+                  activeId={Number(selectContentId)}
                   loadingVoteIds={votePendingIds}
                   loadingFavorIds={favorPendingIds}
                   loadingHiddenIds={hiddenPendingIds}
@@ -204,7 +213,7 @@ export default function ContentsPage({
             <GrideListBox onScrollBottom={getMore}>
               <ContentGridList
                 data={contents}
-                activeId={selectContent?.uuid || selectContent?.id}
+                activeId={Number(selectContentId)}
                 onHiddenUndo={onHiddenUndoAction}
                 onItemClick={(item) => {
                   setSelectContentId(item?.id || item?.uuid);

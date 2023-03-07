@@ -212,7 +212,7 @@ export function fetchContents(
     url: `/contents/searching`,
     params: {
       lang: query.lang === ContentLang.All ? null : query.lang,
-      contentId: query.contentId === ':id' ? null : query.contentId,
+      contentId: query.contentId ?? null,
       pageSize: query.pageSize ?? 30,
       pageNumber: query.pageNumber ?? 0,
       keywords: query.keywords ?? '',
