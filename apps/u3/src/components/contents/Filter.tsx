@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-02-06 10:27:08
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-06 18:57:45
+ * @LastEditTime: 2023-03-07 11:01:04
  * @Description: file description
  */
 import { isMobile } from 'react-device-detect';
@@ -26,7 +26,7 @@ export default function Filter({
       <CheckboxMultiChoice
         label="Tag"
         className="filter-multi-choice"
-        options={contentTags.map((item) => ({
+        options={contentTags.slice(0, 20).map((item) => ({
           value: item.value,
           label: item.name,
         }))}
