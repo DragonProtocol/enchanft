@@ -55,7 +55,7 @@ const CardsLayout = styled(CardBase)`
   grid-auto-rows: auto;
 `;
 function Card({
-  data: { title, upVoteNum, editorScore, link, type, recReason, value },
+  data: { title, upVoteNum, editorScore, link, tags, recReason, value },
   clickAction,
 }: {
   data: {
@@ -63,7 +63,7 @@ function Card({
     upVoteNum: number;
     editorScore?: number;
     link: string;
-    type: string;
+    tags: string[];
     recReason?: string;
     value?: string;
   };
@@ -94,7 +94,7 @@ function Card({
         <ContentTitle className="title">{title}</ContentTitle>
         <CardBottom>
           <BottomRow>
-            {type && <Badge text={type} />}
+            {tags?.length > 0 && <Badge text={tags[0]} />}
             <ContentVote>
               👏 &nbsp;{(upVoteNum ?? 0) + (editorScore ?? 0)}
             </ContentVote>

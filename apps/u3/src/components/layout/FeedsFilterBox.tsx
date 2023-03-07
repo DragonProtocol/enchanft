@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-05 14:33:02
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-01-11 11:41:03
+ * @LastEditTime: 2023-03-06 18:59:57
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -68,4 +68,6 @@ const FeedsFilterBoxWrapper = styled.div`
 `;
 const FeedsFilterBoxInner = styled.div`
   width: 100%;
+  max-height: 50vh;
+  overflow-y: auto;
 `;

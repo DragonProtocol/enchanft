@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-03-01 10:08:00
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-03 17:09:37
+ * @LastEditTime: 2023-03-06 14:37:14
  * @Description: file description
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
@@ -19,7 +19,7 @@ type Props = StyledComponentPropsWithRef<'div'> & {
 };
 export default function ContentListItemMobile({ data, ...otherProps }: Props) {
   const {
-    type,
+    tags,
     link,
     title,
     upVoteNum,
@@ -33,7 +33,7 @@ export default function ContentListItemMobile({ data, ...otherProps }: Props) {
     <Wrapper {...otherProps}>
       <Title row={2}>{title}</Title>
       <BottomWrapper>
-        <Badge text={type} />
+        {tags?.length > 0 && <Badge text={tags[0]} className="tag" />}
         <LinkBox text={link} logo={platformLogo} />
         <ActionsWrapper>
           <UpVote number={upVoteNum + (editorScore || 0)} />
@@ -72,9 +72,13 @@ const BottomWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  > .tag {
+    flex-shrink: 0;
+  }
 `;
 const ActionsWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-shrink: 0;
 `;

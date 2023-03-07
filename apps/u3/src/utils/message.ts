@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-02-01 18:00:12
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 13:29:52
+ * @LastEditTime: 2023-03-07 09:36:29
  * @Description: file description
  */
 import { EVENT_IMAGE_SIZE_LIMIT } from '../constants';

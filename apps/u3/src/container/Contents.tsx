@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-07-05 15:35:42
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-28 22:00:20
+ * @LastEditTime: 2023-03-06 17:58:14
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useState } from 'react';
@@ -36,13 +36,13 @@ export type ContentsPageProps = {
   contents?: Array<ContentListItem>;
   currentSearchParams?: {
     orderBy: any;
-    types: string[];
+    tags: string[];
     lang: string[];
     keywords: string;
   };
   searchParamsChange?: (values: {
     orderBy?: any;
-    types?: string[];
+    tags?: string[];
     lang?: string[];
     keywords?: string;
   }) => void;
@@ -115,7 +115,7 @@ function Contents() {
   const fetchData = useCallback(
     async (
       keywords: string,
-      types: string[],
+      tags: string[],
       orderBy: string,
       lang: string[],
       renav?: boolean
@@ -132,7 +132,7 @@ function Contents() {
         const langQuery =
           lang.length === 0 || lang.length === 2 ? ContentLang.All : lang[0];
         const { data } = await fetchContents(
-          { keywords, types, orderBy, contentId: queryId, lang: langQuery },
+          { keywords, tags, orderBy, contentId: queryId, lang: langQuery },
           user.token
         );
         tmpData = data.data;
@@ -150,13 +150,13 @@ function Contents() {
   );
   const loadMore = useCallback(async () => {
     const pageNumber = currPageNumber + 1;
-    const { keywords, types, orderBy, lang } = currentSearchParams;
+    const { keywords, tags, orderBy, lang } = currentSearchParams;
     const langQuery =
       lang.length === 0 || lang.length === 2 ? ContentLang.All : lang[0];
     try {
       setLoadingMore(true);
       const { data } = await fetchContents(
-        { keywords, types, orderBy, pageNumber, lang: langQuery },
+        { keywords, tags, orderBy, pageNumber, lang: langQuery },
         user.token
       );
       setHasMore(data.data.length > 0);
@@ -172,8 +172,8 @@ function Contents() {
   }, [currentSearchParams, contents, currPageNumber]);
 
   useEffect(() => {
-    const { keywords, types, orderBy, lang } = currentSearchParams;
-    fetchData(keywords, types, orderBy, lang);
+    const { keywords, tags, orderBy, lang } = currentSearchParams;
+    fetchData(keywords, tags, orderBy, lang);
   }, [currentSearchParams]);
 
   const getMore = useCallback(() => {

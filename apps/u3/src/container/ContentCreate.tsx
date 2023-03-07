@@ -39,6 +39,9 @@ import isUrl from '../utils/isUrl';
 import { fetchUserKarma } from '../features/profile/karma';
 import { store } from '../store/store';
 import { messages } from '../utils/message';
+import CreatableMultiSelect from '../components/common/select/CreatableMultiSelect';
+import ButtonRefresh from '../components/common/button/ButtonRefresh';
+import useConfigsTopics from '../hooks/useConfigsTopics';
 
 function ContentCreate() {
   const navigate = useNavigate();
@@ -63,18 +66,17 @@ function ContentCreate() {
       id: null,
       title: '',
       url: searchParams.get('url') || '',
-      type: ContentType.NEWS,
       lang: ContentLang.English,
       uniProjectIds: [],
       supportReaderView: true,
       supportIframe: true,
       editorScore: null,
       status: ContentStatus.VISIBLE,
+      tags: [],
     },
     validationSchema: Yup.object({
       title: Yup.string().required('Required'),
       url: Yup.string().required('Required').url('Please enter a regular url'),
-      type: Yup.string().required('Required'),
     }),
     onSubmit: (values) => {
       submitContent(values);
@@ -137,7 +139,7 @@ function ContentCreate() {
       id?: number;
       title: string;
       url: string;
-      type: ContentType;
+      tags: string[];
       lang: ContentLang;
       uniProjectIds: { id: number }[];
       supportReaderView: boolean;
@@ -152,7 +154,7 @@ function ContentCreate() {
             {
               title: data.title,
               url: data.url,
-              type: data.type,
+              tags: data.tags,
               lang: data.lang,
               uniProjectIds: data.uniProjectIds.map((item) => item.id),
               supportReaderView: data.supportReaderView,
@@ -172,7 +174,7 @@ function ContentCreate() {
               id: data.id,
               title: data.title,
               url: data.url,
-              type: data.type,
+              tags: data.tags,
               lang: data.lang,
               uniProjectIds: data.uniProjectIds.map((item) => item.id),
               supportReaderView: data.supportReaderView,
@@ -201,7 +203,20 @@ function ContentCreate() {
     },
     [formik.touched, formik.errors]
   );
-
+  const { topics } = useConfigsTopics();
+  const [tagOptions, setTagOptions] = useState<
+    { value: string; label: string }[]
+  >([]);
+  useEffect(() => {
+    if (topics.contentTags) {
+      setTagOptions(
+        topics.contentTags.map((tag) => ({
+          value: tag.value,
+          label: tag.name,
+        }))
+      );
+    }
+  }, [topics.contentTags]);
   return (
     <ScrollBox>
       <ContentCreateWrapper>
@@ -236,8 +251,22 @@ function ContentCreate() {
           </FormField>
 
           <FormField>
-            <FormLabel htmlFor="content-type">Content Type</FormLabel>
-            <Select
+            <FormLabel htmlFor="content-type">Content Tag</FormLabel>
+            <CreatableMultiSelect
+              options={tagOptions}
+              onChange={(value) => formik.setFieldValue('tags', value)}
+              value={formik.values.tags}
+              onCreateOption={(value) => {
+                const newTag = {
+                  value,
+                  label: value,
+                };
+                setTagOptions([...tagOptions, newTag]);
+                formik.setFieldValue('tags', [...formik.values.tags, value]);
+              }}
+            />
+            {renderFieldError('types')}
+            {/* <Select
               options={Object.values(ContentType).map((item) => {
                 return {
                   value: item,
@@ -249,7 +278,7 @@ function ContentCreate() {
               }
               value={formik.values.type}
             />
-            {renderFieldError('type')}
+            {renderFieldError('type')} */}
           </FormField>
 
           <FormField>
@@ -359,6 +388,7 @@ function ContentCreate() {
           )}
 
           <FormButtons>
+            <ButtonRefresh disabled={loading} onClick={reset} />
             <FormButtonSubmit
               type="submit"
               disabled={loading}

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2023-02-28 21:54:50
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-28 22:22:36
+ * @LastEditTime: 2023-03-06 17:58:45
  * @Description: file description
  */
 import { useCallback, useMemo } from 'react';
@@ -14,7 +14,7 @@ export default () => {
   const currentUrlQuery = useMemo(
     () => ({
       orderBy: searchParams.get('orderBy') || defaultContentOrderBy,
-      types: searchParams.get('types') || '',
+      tags: searchParams.get('tags') || '',
       lang: searchParams.get('lang') || '',
       keywords: searchParams.get('keywords') || '',
     }),
@@ -24,7 +24,7 @@ export default () => {
   const currentSearchParams = useMemo(
     () => ({
       orderBy: currentUrlQuery.orderBy,
-      types: currentUrlQuery.types.split(',').filter((item) => !!item),
+      tags: currentUrlQuery.tags.split(',').filter((item) => !!item),
       lang: currentUrlQuery.lang.split(',').filter((item) => !!item),
       keywords: currentUrlQuery.keywords,
     }),
@@ -33,7 +33,7 @@ export default () => {
   const searchParamsChange = useCallback(
     (values: {
       orderBy?: any;
-      types?: string[];
+      tags?: string[];
       lang?: string[];
       keywords?: string;
     }) => {
@@ -41,7 +41,7 @@ export default () => {
       // eslint-disable-next-line guard-for-in
       for (const key in values) {
         switch (key) {
-          case 'types':
+          case 'tags':
           case 'lang':
             newUrlQuery[key] = values[key].join(',');
             break;

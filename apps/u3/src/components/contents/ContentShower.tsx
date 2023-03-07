@@ -2,8 +2,10 @@ import { useMemo } from 'react';
 import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
 import { ContentListItem } from '../../services/types/contents';
+import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import { defaultFormatFromNow } from '../../utils/time';
 import Badge from './Badge';
+import LinkBox from './LinkBox';
 
 export default function ContentShower({
   data,
@@ -12,7 +14,7 @@ export default function ContentShower({
   data: ContentListItem;
   content: string;
 }) {
-  const { title, type, createdAt, author, link } = data;
+  const { title, tags, createdAt, link, value } = data;
   const contentFix = useMemo(() => {
     if (!link) return content;
     const placeholder = document.createElement('div');
@@ -28,18 +30,25 @@ export default function ContentShower({
     }
     return placeholder.innerHTML;
   }, [content, link]);
+  const platformLogo = useMemo(
+    () => getContentPlatformLogoWithJsonValue(value),
+    [value]
+  );
   return (
     <Shower>
       <ContentTitle>
-        <div>{title}</div>
-        <div>
-          <div>
-            <Badge text={type} />
-            <span>{author}</span>
-            <span>|</span>
-            <span>{defaultFormatFromNow(createdAt)}</span>
+        <div className="title">{title}</div>
+        {tags?.length > 0 && (
+          <div className="tags">
+            {tags.map((tag) => (
+              <Badge text={tag} key={tag} className="tag" />
+            ))}
           </div>
-          <div />
+        )}
+
+        <div className="info">
+          <LinkBox text={link} logo={platformLogo} />
+          <span>{defaultFormatFromNow(createdAt)}</span>
         </div>
       </ContentTitle>
       <ContentBody dangerouslySetInnerHTML={{ __html: contentFix }} />
@@ -56,50 +65,42 @@ const Shower = styled.div`
 
 const ContentTitle = styled.div`
   border-bottom: 1px dotted #39424c;
-  > div {
-    display: flex;
-    justify-content: space-between;
-    &:first-child {
-      font-style: italic;
-      font-weight: 700;
-      font-size: 24px;
-      line-height: 28px;
-      color: #ffffff;
-      ${isMobile &&
-      `
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 20px;
+  > .title {
+    font-style: italic;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 28px;
+    color: #ffffff;
+    ${isMobile &&
+    `
         font-size: 20px;
         line-height: 24px;
       `}
+  }
+  > .tags {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+    .tag {
+      flex-shrink: 0;
     }
-    > div {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 20px 0;
+  }
+  > .info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    > span {
       font-weight: 400;
       font-size: 14px;
       line-height: 17px;
       color: #718096;
-
-      &:last-child {
-        color: #fff;
-        > span {
-          cursor: pointer;
-          display: flex;
-          box-sizing: border-box;
-          flex-direction: row;
-          justify-content: center;
-          align-items: center;
-          padding: 6px 12px;
-          height: 32px;
-          background: #1a1e23;
-          border: 1px solid #39424c;
-          border-radius: 12px;
-          /* color: #fff; */
-        }
-
-        /* display: ; */
-      }
+      flex-shrink: 0;
+      margin-left: 20px;
     }
   }
 `;

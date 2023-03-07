@@ -2,12 +2,10 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-14 10:59:34
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-03-06 19:42:48
+ * @LastEditTime: 2023-03-06 19:44:28
  * @Description: file description
  */
-import React, { useRef, useState } from 'react';
-
-import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { ScrollBarCss } from '../../../GlobalStyle';
 import ChevronDownSvg from '../icons/svgs/chevron-down.svg';
@@ -23,6 +21,7 @@ type Props = StyledComponentPropsWithRef<'div'> & {
   placeholder?: string;
   onChange?: (values: ValueType[]) => void;
   onSelectOption?: (options: Option[]) => void;
+  onCreateOption?: (inputValue: string) => void;
 };
 export default function ({
   options,
@@ -30,29 +29,31 @@ export default function ({
   placeholder,
   onChange,
   onSelectOption,
+  onCreateOption,
 }: Props) {
   const SelectValue = options.filter((item) => value.includes(item.value));
-
+  const handleChange = (ops: Option[]) => {
+    if (onChange) {
+      onChange(ops.map((item) => item.value));
+    }
+    if (onSelectOption) {
+      onSelectOption([...ops]);
+    }
+  };
   return (
     <AsyncSelectWrapper>
-      <Select
+      <CreatableSelect
         isMulti
         placeholder={placeholder}
         options={options}
         value={SelectValue}
-        onChange={(ops) => {
-          if (onChange) {
-            onChange(ops.map((item) => item.value));
-          }
-          if (onSelectOption) {
-            onSelectOption([...ops]);
-          }
-        }}
+        onChange={handleChange}
         className="select-container"
         classNamePrefix="select"
         components={{
           IndicatorsContainer: CustomIndicatorsContainer,
         }}
+        onCreateOption={onCreateOption}
       />
     </AsyncSelectWrapper>
   );
