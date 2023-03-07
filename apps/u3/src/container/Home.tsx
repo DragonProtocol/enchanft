@@ -140,16 +140,18 @@ function Home() {
                   navigate('/events');
                 }}
               />
-              <Poster
-                data={{
-                  contents,
-                  dapps: trendingDapps,
-                  // dapps: trendingProjects,
-                  events: recommendEvents,
-                }}
-              />
             </>
           )}
+
+          <Poster
+            data={{
+              contents,
+              dapps: trendingDapps,
+              // dapps: trendingProjects,
+              events: recommendEvents,
+            }}
+            isMobile={isMobile}
+          />
         </>
       )}
     </HomeWrapper>

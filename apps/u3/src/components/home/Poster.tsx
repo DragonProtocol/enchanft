@@ -25,7 +25,13 @@ import { Close } from '../icons/close';
 
 import qrCodeU3 from '../imgs/qrcode_u3.xyz.png';
 
-export default function Poster({ data }: { data: any }) {
+export default function Poster({
+  data,
+  isMobile,
+}: {
+  data: any;
+  isMobile: boolean;
+}) {
   const { contents, dapps, events } = data;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -132,9 +138,13 @@ export default function Poster({ data }: { data: any }) {
   return (
     <>
       {isLogin && (
-        <ShareButton onClick={() => sharePosterOnTwitter()}>
-          Share Daily Poster
-        </ShareButton>
+        <ShareButtonBox isMobile={isMobile}>
+          <div className="line" />
+          <div className="button" onClick={() => sharePosterOnTwitter()}>
+            Share Daily Poster
+          </div>
+          <div className="line" />
+        </ShareButtonBox>
       )}
       <Box id="poster">
         <h1 className="topic">Daily Poster</h1>
@@ -296,50 +306,33 @@ export default function Poster({ data }: { data: any }) {
   );
 }
 
-const ShareButton = styled.div`
-  position: relative;
-  width: 185px;
-  /* padding: 0 28px; */
-  height: 48px;
-  line-height: 48px;
-  font-weight: 300;
-  background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%), #ffffff;
-  border-radius: 12px;
+const ShareButtonBox = styled.div<{ isMobile: boolean }>`
+  /* position: relative; */
+  display: flex;
+  align-items: center;
+  column-gap: 40px;
 
-  text-align: center;
-  margin: 0 auto;
-  cursor: pointer;
+  .button {
+    width: ${(props) => (props.isMobile ? '100%' : '185px')};
 
-  &::before {
-    content: '';
-    width: calc(calc(100vw / 2) - 50px);
-    height: 1px;
+    /* padding: 0 28px; */
+    height: 48px;
+    line-height: 48px;
+    font-weight: 300;
+    background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%),
+      #ffffff;
+    border-radius: 12px;
 
-    background: rgba(113, 128, 150, 0.5);
-    position: absolute;
-    left: calc(calc(100vw / 2) * -1);
-    top: 50%;
-    transform: translateY(-50%);
+    text-align: center;
+    /* margin: 0 auto; */
+    cursor: pointer;
   }
-  &::after {
-    content: '';
-    width: calc(calc(100vw / 2) - 50px);
-    height: 1px;
 
+  .line {
+    height: 1px;
+    flex-grow: 1;
     background: rgba(113, 128, 150, 0.5);
-    position: absolute;
-    right: calc(calc(100vw / 2) * -1);
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  @media (max-width: ${MOBILE_BREAK_POINT}px) {
-    width: 100%;
-    &::before {
-      content: none;
-    }
-    &::after {
-      content: none;
-    }
+    display: ${(props) => (props.isMobile ? 'none' : 'block')};
   }
 `;
 
