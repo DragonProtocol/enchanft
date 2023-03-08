@@ -1,5 +1,5 @@
 /* eslint-disable */
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import ReactDOM from 'react-dom/client';
 import styled from 'styled-components';
 import html2canvas from 'html2canvas-strengthen';
@@ -86,8 +86,6 @@ export default function Poster({
     a.parentNode.removeChild(a);
   };
 
-  // const
-
   const sharePosterOnTwitter = async () => {
     setIsOpen(true);
 
@@ -108,10 +106,11 @@ export default function Poster({
       console.timeEnd('is to canvas time:');
 
       // document.body.appendChild(canvas);
-      posterModalBody?.current.insertBefore(
-        canvas,
-        posterModalBody?.current?.lastChild
-      );
+
+      // posterModalBody?.current.insertBefore(
+      //   canvas,
+      //   posterModalBody?.current?.lastChild
+      // );
 
       setPosterCanvas(canvas);
 
@@ -135,18 +134,10 @@ export default function Poster({
     //   setIsOpen(false);
     // }
   };
-  return (
-    <>
-      {isLogin && (
-        <ShareButtonBox isMobile={isMobile}>
-          <div className="line" />
-          <div className="button" onClick={() => sharePosterOnTwitter()}>
-            Share Daily Poster
-          </div>
-          <div className="line" />
-        </ShareButtonBox>
-      )}
-      <Box id="poster">
+
+  const PosterBox = useCallback(
+    (isShowMobile?: boolean, isShow?: boolean) => (
+      <Box id="poster" isShowMobile={isShowMobile} isShow={isShow}>
         <h1 className="topic">Daily Poster</h1>
         <div className="flex items-center sub-title justify-center">
           <div className="text">Today‘s Referrers</div>
@@ -161,12 +152,12 @@ export default function Poster({
             </div>
             <UserAvatar className="user-avatar" />
             {/* <img
-            src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgBAMAAAB54XoeAAAAElBMVEUzMzP/+9siIiLk/9u/vKQZGRkml3AdAAAA8UlEQVRo3u3ZAQqCMBSH8Rh0gDrB6w+dwCvUBaLuf5Waw6EtHEPJqd9HUcTrx6NAEQ9ERERrScUBpuCpKEBAQEBAQMDdgvJ1k7HB933JGGAfbHqTTVsfjJ8OxgABAesGxw4OgHkwHyAgIOC2QZWDWhbUj5YBY8Wg1yaCm7rWAwQEBAQE3BlY/93b1YHX1/MWu78epaDJDR4JmAwUbmiTNzST+2ThTbrhcODTv39DObPwlGtfvsGwdzcgy4FOXW5kQ+sGLL+hKfx9Utj0mG5oXrN2wG9YmNPlFDvLDrk0c/sEmxkDBAQEBASsG6z/vFw5+AYAFLz3C2BQfgAAAABJRU5ErkJggg=="
-            onError={(el: React.SyntheticEvent<HTMLImageElement, Event>) => {
-              el.currentTarget.src = AvatarDefault;
-            }}
-            className="user-avatar"
-          /> */}
+      src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgBAMAAAB54XoeAAAAElBMVEUzMzP/+9siIiLk/9u/vKQZGRkml3AdAAAA8UlEQVRo3u3ZAQqCMBSH8Rh0gDrB6w+dwCvUBaLuf5Waw6EtHEPJqd9HUcTrx6NAEQ9ERERrScUBpuCpKEBAQEBAQMDdgvJ1k7HB933JGGAfbHqTTVsfjJ8OxgABAesGxw4OgHkwHyAgIOC2QZWDWhbUj5YBY8Wg1yaCm7rWAwQEBAQE3BlY/93b1YHX1/MWu78epaDJDR4JmAwUbmiTNzST+2ThTbrhcODTv39DObPwlGtfvsGwdzcgy4FOXW5kQ+sGLL+hKfx9Utj0mG5oXrN2wG9YmNPlFDvLDrk0c/sEmxkDBAQEBASsG6z/vFw5+AYAFLz3C2BQfgAAAABJRU5ErkJggg=="
+      onError={(el: React.SyntheticEvent<HTMLImageElement, Event>) => {
+        el.currentTarget.src = AvatarDefault;
+      }}
+      className="user-avatar"
+    /> */}
           </div>
         </div>
         <div className="line-box">
@@ -219,7 +210,22 @@ export default function Poster({
 
         <div className="website">U3.XYZ</div>
       </Box>
+    ),
+    [data]
+  );
 
+  return (
+    <>
+      {isLogin && (
+        <ShareButtonBox isMobile={isMobile}>
+          <div className="line" />
+          <div className="button" onClick={() => sharePosterOnTwitter()}>
+            Share Daily Poster
+          </div>
+          <div className="line" />
+        </ShareButtonBox>
+      )}
+      {PosterBox()}
       <AuthProcessModalWrapper
         backdropFilter
         isOpen={isOpen}
@@ -239,19 +245,19 @@ export default function Poster({
           className="wl-user-modal_signature-body"
           id="poster-modal-body"
           ref={posterModalBody}
+          isMobile={isMobile}
         >
-          {!posterCanvas && (
+          {/* {!posterCanvas && (
+            <div className="poster-tip">Poster generation in progress... </div>
+          )} */}
+          {posterCanvas ? (
+            PosterBox(isMobile, true)
+          ) : (
             <div className="poster-tip">Poster generation in progress... </div>
           )}
           <div className="poster-modal-close" onClick={() => setIsOpen(false)}>
             <Close />
           </div>
-          {/* <ModalBaseTitle className="signature-title">
-            🕹 Generate posters and share them on Twitter
-          </ModalBaseTitle>
-          <AuthProcessModalDesc className="signature-desc">
-            Poster generation in progress. About 2 minutes
-          </AuthProcessModalDesc> */}
 
           <AuthProcessModalBtns className="signature-btns">
             <CloseBtn
@@ -336,17 +342,21 @@ const ShareButtonBox = styled.div<{ isMobile: boolean }>`
   }
 `;
 
-const Box = styled.div`
-  width: 375px;
+const Box = styled.div<{ isShowMobile: boolean; isShow: boolean }>`
+  /* width: 375px; */
+  width: ${(props) => (props.isShowMobile ? '100vw' : '375px')};
+
   background: #131819;
   color: white;
 
   font-family: 'Marion';
   font-style: normal;
   padding: 20px 10px 75px;
+  box-sizing: border-box;
 
-  display: none;
-
+  display: ${(props) => (props.isShow ? 'block' : 'none')};
+  border: ${(props) => (props.isShow ? '1px solid #718096' : 'none')};
+  border-radius: ${(props) => (props.isShow ? '20px' : '0px')};
   .topic {
     font-weight: 700;
     font-size: 60px;
@@ -450,7 +460,9 @@ const Box = styled.div`
   .desc {
     font-weight: 400;
     font-size: 12px;
-    line-height: 13px;
+    line-height: 15px;
+    letter-spacing: 1.1px;
+    /* line-height: 13px; */
 
     margin-top: 10px;
     overflow: hidden;
@@ -528,7 +540,7 @@ const Box = styled.div`
 `;
 
 const AuthProcessModalWrapper = styled(ModalBase)``;
-const AuthProcessModalBody = styled.div`
+const AuthProcessModalBody = styled.div<{ isMobile: boolean }>`
   /* width: 540px; */
   display: flex;
   flex-direction: column;
@@ -536,18 +548,18 @@ const AuthProcessModalBody = styled.div`
   /* padding: 20px; */
   /* background: #f7f9f1; */
   border-radius: 20px;
-  min-width: 380px;
+  /* min-width: 380px; */
+  min-width: ${(props) => (props.isMobile ? '100vw' : '380px')};
+
   /* background: rgb(27, 30, 35); */
   box-sizing: border-box;
   min-height: 700px;
   color: white;
-  text-align: center;
+  /* text-align: center; */
   position: relative;
   padding-bottom: 100px;
 
   .poster-tip {
-    /* margin-top: 130px;
-    margin-bottom: 130px; */
     flex-grow: 1;
     display: flex;
     align-items: center;
@@ -559,8 +571,10 @@ const AuthProcessModalBody = styled.div`
 
   .poster-modal-close {
     position: absolute;
-    top: 5px;
-    right: -30px;
+    top: 15px;
+    right: 20px;
+    /* top: 5px;
+    right: -30px; */
     cursor: pointer;
   }
 
