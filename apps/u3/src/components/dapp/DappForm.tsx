@@ -18,6 +18,7 @@ import TextareaBase from '../common/input/TextareaBase';
 import MultiSelect from '../common/select/MultiSelect';
 import UploadImage from '../common/upload/UploadImage';
 import ProjectAsyncSelect from '../business/form/ProjectAsyncSelect';
+import ButtonRefresh from '../common/button/ButtonRefresh';
 
 export const PROJECT_ADMIN_PLUS_SCORE_STEP = 10;
 
@@ -379,12 +380,10 @@ export default forwardRef(function DappForm(
           </ButtonPrimaryLine>
         )}
         {displayReset && (
-          <ButtonPrimaryLine
+          <ButtonRefresh
             disabled={disabled || loading}
             onClick={() => formik.resetForm()}
-          >
-            Reset
-          </ButtonPrimaryLine>
+          />
         )}
 
         <ButtonPrimary

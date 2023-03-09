@@ -6,7 +6,6 @@ import {
   ContentsListResponse,
   ContentsResponse,
   ContentStatus,
-  ContentType,
   URLParseResponse,
 } from '../types/contents';
 import request, { RequestPromise } from './request';
@@ -35,7 +34,7 @@ export function saveContent(
   data: {
     title: string;
     url: string;
-    type: ContentType;
+    tags: string[];
     lang: ContentLang;
     uniProjectIds: Array<number>;
     supportReaderView?: boolean;
@@ -50,7 +49,7 @@ export function saveContent(
     data: {
       title: data.title,
       url: data.url,
-      type: data.type.toUpperCase().replace(' ', '_'),
+      tags: data.tags,
       lang: data.lang === ContentLang.All ? null : data.lang,
       uniProjectIds: data.uniProjectIds,
       supportReaderView: data.supportReaderView || false,
@@ -69,7 +68,7 @@ export function updateContent(
     id: number;
     title?: string;
     url?: string;
-    type?: ContentType;
+    tags?: string[];
     lang?: ContentLang;
     uniProjectIds?: Array<number>;
     supportReaderView?: boolean;
@@ -85,7 +84,7 @@ export function updateContent(
     data: {
       title: data.title,
       url: data.url,
-      type: data.type?.toUpperCase().replace(' ', '_') ?? undefined,
+      tags: data.tags,
       lang: data.lang === ContentLang.All ? undefined : data.lang,
       uniProjectIds: data.uniProjectIds ?? undefined,
       supportReaderView: data.supportReaderView,
@@ -200,7 +199,7 @@ export function fetchDaylight(
 export function fetchContents(
   query: {
     keywords?: string;
-    types?: string[];
+    tags?: string[];
     orderBy?: string;
     pageSize?: number;
     pageNumber?: number;
@@ -213,11 +212,11 @@ export function fetchContents(
     url: `/contents/searching`,
     params: {
       lang: query.lang === ContentLang.All ? null : query.lang,
-      contentId: query.contentId === ':id' ? null : query.contentId,
+      contentId: query.contentId ?? null,
       pageSize: query.pageSize ?? 30,
       pageNumber: query.pageNumber ?? 0,
       keywords: query.keywords ?? '',
-      types: query.types ?? [],
+      tags: query.tags ?? [],
       orderBy: query.orderBy ?? '',
     },
     method: 'get',

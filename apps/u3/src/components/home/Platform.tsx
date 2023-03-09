@@ -76,7 +76,7 @@ export default function Platform({
                     return;
                   }
                   if (item.type === PlatformType.CONTENT) {
-                    navigate(`/contents/:id`);
+                    navigate(`/contents`);
                   }
                 }}
               />

@@ -2,7 +2,7 @@
  * @Author: shixuewen friendlysxw@163.com
  * @Date: 2022-12-01 14:05:16
  * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 11:48:19
+ * @LastEditTime: 2023-03-06 18:40:30
  * @Description: file description
  */
 import { ApiResp } from '.';
@@ -81,5 +81,6 @@ export type ConfigTopics = {
   contentTypes: string[];
   langs: string[];
   chains: ConfigTopicsChain[];
+  contentTags: string[];
 };
 export type ConfigTopicsResponse = ApiResp<ConfigTopics>;
