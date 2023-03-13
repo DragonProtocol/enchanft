@@ -48,6 +48,10 @@ import {
 } from '../utils/localLayout';
 import EventPreview from '../components/event/EventPreview';
 
+const isUUid = (str: string) => {
+  return str.indexOf('-') > -1;
+};
+
 const filterValuesToSearchParams = (values: EventExploreListFilterValues) => {
   return {
     platforms: values.platforms.join(','),
@@ -111,7 +115,11 @@ export default function Events() {
   useEffect(() => {
     const params = { ...currentSearchParams };
     if (id) {
-      Object.assign(params, { eventId: Number(id) });
+      if (isUUid(id)) {
+        Object.assign(params, { uuid: id });
+      } else {
+        Object.assign(params, { eventId: Number(id) });
+      }
     }
     dispatch(fetchEventExploreList({ ...params }));
   }, [id, currentSearchParams]);
@@ -121,14 +129,17 @@ export default function Events() {
       if (id) {
         setActiveId(id);
       } else {
-        setActiveId(eventExploreList[0]?.id);
+        setActiveId(eventExploreList[0]?.uuid || eventExploreList[0]?.id);
       }
       isInitActive.current = true;
     }
   }, [id, eventExploreList, status]);
 
   const event = useMemo(
-    () => eventExploreList.find((item) => String(item.id) === String(activeId)),
+    () =>
+      eventExploreList.find(
+        (item) => String(item?.uuid || item?.id) === String(activeId)
+      ),
     [eventExploreList, activeId]
   );
 
