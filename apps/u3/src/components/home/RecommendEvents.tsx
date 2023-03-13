@@ -33,9 +33,9 @@ export default function RecommendEvents({
             <Card
               data={item}
               clickAction={() => {
-                navigate(`/events/${item?.uuid || item.id || ''}`);
+                navigate(`/events/${item.id}`);
               }}
-              key={item?.uuid || item.id}
+              key={item.id}
               title={item.name}
               img={img}
               author={item?.recReason || item?.project?.name || ''}
