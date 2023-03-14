@@ -13,7 +13,7 @@ import useUserFavorites from './useUserFavorites';
 
 const DAPP_MODAL_SEARCH_KEY = 'id';
 export default () => {
-  const { projects } = useUserFavorites();
+  const { dapps } = useUserFavorites();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // 是否是dapp相关路由
@@ -26,10 +26,10 @@ export default () => {
     if (!isDappRoute) return null;
     const id = searchParams.get(DAPP_MODAL_SEARCH_KEY);
     if (id) {
-      return projects.find((item) => Number(item.id) === Number(id));
+      return dapps.find((item) => Number(item.id) === Number(id));
     }
     return null;
-  }, [isDappRoute, searchParams, projects]);
+  }, [isDappRoute, searchParams, dapps]);
 
   // 是否打开dapp modal
   const isOpenDappModal = useMemo(() => {

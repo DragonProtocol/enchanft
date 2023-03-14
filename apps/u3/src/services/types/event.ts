@@ -34,6 +34,7 @@ export type EventExploreListParams = {
   pageSize?: number;
   pageNumber?: number;
   eventId?: number;
+  uuid?: string;
 };
 
 export type EventExploreListItemResponse = {
