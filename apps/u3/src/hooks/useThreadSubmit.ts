@@ -1,21 +1,16 @@
 import { useUs3rThreadContext } from '@us3r-network/thread';
 import { useCallback } from 'react';
 import { toast } from 'react-toastify';
-import {
-  getContentShareUrl,
-  getDappShareUrl,
-  getEventShareUrl,
-  getProjectShareUrl,
-} from '../utils/share';
 
 export default function useThreadSubmit() {
   const { createNewThread } = useUs3rThreadContext();
 
-  const createContentDetailPageThread = useCallback(
-    async (id: number | string) => {
+  const createContentThread = useCallback(
+    async (url: string) => {
+      if (!url) return;
       try {
         const thread = await createNewThread({
-          url: getContentShareUrl(id),
+          url,
           type: 'content',
         });
         toast.success(`thread created: ${thread.document.id}`);
@@ -26,11 +21,12 @@ export default function useThreadSubmit() {
     [createNewThread]
   );
 
-  const createEventDetailPageThread = useCallback(
-    async (id: number | string) => {
+  const createEventThread = useCallback(
+    async (url: string) => {
+      if (!url) return;
       try {
         const thread = await createNewThread({
-          url: getEventShareUrl(id),
+          url,
           type: 'event',
         });
         toast.success(`thread created: ${thread.document.id}`);
@@ -41,11 +37,12 @@ export default function useThreadSubmit() {
     [createNewThread]
   );
 
-  const createProjectDetailPageThread = useCallback(
-    async (id: number | string) => {
+  const createProjectThread = useCallback(
+    async (url: string) => {
+      if (!url) return;
       try {
         const thread = await createNewThread({
-          url: getProjectShareUrl(id),
+          url,
           type: 'project',
         });
         toast.success(`thread created: ${thread.document.id}`);
@@ -56,11 +53,12 @@ export default function useThreadSubmit() {
     [createNewThread]
   );
 
-  const createDappDetailPageThread = useCallback(
-    async (id: number | string) => {
+  const createDappThread = useCallback(
+    async (url: string) => {
+      if (!url) return;
       try {
         const thread = await createNewThread({
-          url: getDappShareUrl(id),
+          url,
           type: 'dapp',
         });
         toast.success(`thread created: ${thread.document.id}`);
@@ -72,9 +70,9 @@ export default function useThreadSubmit() {
   );
 
   return {
-    createContentDetailPageThread,
-    createEventDetailPageThread,
-    createProjectDetailPageThread,
-    createDappDetailPageThread,
+    createContentThread,
+    createEventThread,
+    createProjectThread,
+    createDappThread,
   };
 }

@@ -18,7 +18,7 @@ import { createEvent } from '../services/api/event';
 import { messages } from '../utils/message';
 
 function EventCreate() {
-  const { createEventDetailPageThread } = useThreadSubmit();
+  const { createEventThread } = useThreadSubmit();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   const initialValues = {
@@ -49,7 +49,7 @@ function EventCreate() {
         if (code === 0) {
           toast.success(messages.event.admin_submit);
           handleReset();
-          createEventDetailPageThread(resp.data.data.id);
+          createEventThread(resp.data.data.link);
         } else {
           toast.error(msg || messages.common.error);
         }

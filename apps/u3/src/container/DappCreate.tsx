@@ -21,8 +21,7 @@ import { UpdateProjectData } from '../services/types/project';
 import { messages } from '../utils/message';
 
 function DappCreate() {
-  const { createDappDetailPageThread, createProjectDetailPageThread } =
-    useThreadSubmit();
+  const { createDappThread, createProjectThread } = useThreadSubmit();
   const initialValues: UpdateDappData = {
     name: '',
     description: '',
@@ -58,7 +57,7 @@ function DappCreate() {
           if (code === 0) {
             toast.success(messages.project.admin_submit);
             uniProjectId = data.id;
-            createProjectDetailPageThread(data.id);
+            createProjectThread(data.url);
           } else {
             toast.error(msg || messages.common.error);
           }
@@ -68,7 +67,7 @@ function DappCreate() {
         if (code === 0) {
           toast.success(messages.dapp.admin_submit);
           handleReset();
-          createDappDetailPageThread(data.id);
+          createDappThread(data.url);
         } else {
           toast.error(msg || messages.common.error);
         }

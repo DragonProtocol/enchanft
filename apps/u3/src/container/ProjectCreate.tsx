@@ -19,7 +19,7 @@ import { messages } from '../utils/message';
 import useThreadSubmit from '../hooks/useThreadSubmit';
 
 function ProjectCreate() {
-  const { createProjectDetailPageThread } = useThreadSubmit();
+  const { createProjectThread } = useThreadSubmit();
   const initialValues = {
     name: '',
     description: '',
@@ -49,7 +49,7 @@ function ProjectCreate() {
         if (code === 0) {
           toast.success(messages.project.admin_submit);
           handleReset();
-          createProjectDetailPageThread(data.id);
+          createProjectThread(data.url);
         } else {
           toast.error(msg || messages.common.error);
         }

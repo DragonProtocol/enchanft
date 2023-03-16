@@ -45,7 +45,7 @@ import useConfigsTopics from '../hooks/useConfigsTopics';
 import useThreadSubmit from '../hooks/useThreadSubmit';
 
 function ContentCreate() {
-  const { createContentDetailPageThread } = useThreadSubmit();
+  const { createContentThread } = useThreadSubmit();
   const navigate = useNavigate();
   const { user } = useWlUserReact();
   const { isAdmin } = usePermissions();
@@ -170,7 +170,7 @@ function ContentCreate() {
             toast.success(messages.content.admin_submit);
             store.dispatch(fetchUserKarma({ token: user.token }));
 
-            createContentDetailPageThread(resp.data.data.id);
+            createContentThread(resp.data.data.link);
           }
         } else {
           await updateContent(
