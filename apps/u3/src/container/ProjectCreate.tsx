@@ -49,7 +49,7 @@ function ProjectCreate() {
         if (code === 0) {
           toast.success(messages.project.admin_submit);
           handleReset();
-          createProjectThread(data.url);
+          createProjectThread(data.url ?? form.url);
         } else {
           toast.error(msg || messages.common.error);
         }

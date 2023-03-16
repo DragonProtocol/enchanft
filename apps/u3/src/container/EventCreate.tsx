@@ -49,7 +49,7 @@ function EventCreate() {
         if (code === 0) {
           toast.success(messages.event.admin_submit);
           handleReset();
-          createEventThread(resp.data.data.link);
+          createEventThread(resp.data.data.link ?? form.link);
         } else {
           toast.error(msg || messages.common.error);
         }
