@@ -90,4 +90,4 @@ export type CreateEventData = {
   editorScore?: number;
   types: string[];
 };
-export type CreateEventResponse = ApiResp<unknown>;
+export type CreateEventResponse = ApiResp<EventExploreListItemResponse>;

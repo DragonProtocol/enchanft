@@ -42,8 +42,10 @@ import { messages } from '../utils/message';
 import CreatableMultiSelect from '../components/common/select/CreatableMultiSelect';
 import ButtonRefresh from '../components/common/button/ButtonRefresh';
 import useConfigsTopics from '../hooks/useConfigsTopics';
+import useThreadSubmit from '../hooks/useThreadSubmit';
 
 function ContentCreate() {
+  const { createContentThread } = useThreadSubmit();
   const navigate = useNavigate();
   const { user } = useWlUserReact();
   const { isAdmin } = usePermissions();
@@ -167,6 +169,8 @@ function ContentCreate() {
             navigate(`/contents/${resp.data.data.id}`);
             toast.success(messages.content.admin_submit);
             store.dispatch(fetchUserKarma({ token: user.token }));
+
+            createContentThread(resp.data.data.link);
           }
         } else {
           await updateContent(
