@@ -16,8 +16,10 @@ import { MainWrapper } from '../components/layout/Index';
 import { createProject } from '../services/api/project';
 import { UniprojectStatus, UpdateProjectData } from '../services/types/project';
 import { messages } from '../utils/message';
+import useThreadSubmit from '../hooks/useThreadSubmit';
 
 function ProjectCreate() {
+  const { createProjectDetailPageThread } = useThreadSubmit();
   const initialValues = {
     name: '',
     description: '',
@@ -43,10 +45,11 @@ function ProjectCreate() {
       try {
         setPending(true);
         const resp = await createProject(form);
-        const { code, msg } = resp.data;
+        const { code, msg, data } = resp.data;
         if (code === 0) {
           toast.success(messages.project.admin_submit);
           handleReset();
+          createProjectDetailPageThread(data.id);
         } else {
           toast.error(msg || messages.common.error);
         }

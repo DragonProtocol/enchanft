@@ -7,22 +7,20 @@
  * @LastEditTime: 2023-01-12 14:26:41
  * @Description: file description
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { ChainType, Platform, Reward } from '../services/types/common';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { eventCreate, selectState } from '../features/event/eventCreate';
-import { AsyncRequestStatus } from '../services/types';
 import EventForm from '../components/event/EventForm';
+import useThreadSubmit from '../hooks/useThreadSubmit';
+import { CreateEventData } from '../services/types/event';
+import { createEvent } from '../services/api/event';
+import { messages } from '../utils/message';
 
 function EventCreate() {
-  const dispatch = useAppDispatch();
-  const { status } = useAppSelector(selectState);
+  const { createEventDetailPageThread } = useThreadSubmit();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
-  const loading = useMemo(
-    () => status === AsyncRequestStatus.PENDING,
-    [status]
-  );
   const initialValues = {
     name: '',
     description: '',
@@ -39,17 +37,36 @@ function EventCreate() {
     types: [],
   };
   const formHandleRef = useRef(null);
-  useEffect(() => {
-    if (status === AsyncRequestStatus.FULFILLED) {
-      formHandleRef.current?.resetForm();
-    }
-  }, [status]);
+  const [pending, setPending] = useState(false);
+  const handleReset = () => formHandleRef.current?.resetForm();
+  const handleSubmit = useCallback(
+    async (form: CreateEventData) => {
+      if (pending) return;
+      try {
+        setPending(true);
+        const resp = await createEvent(form);
+        const { code, msg } = resp.data;
+        if (code === 0) {
+          toast.success(messages.event.admin_submit);
+          handleReset();
+          createEventDetailPageThread(resp.data.data.id);
+        } else {
+          toast.error(msg || messages.common.error);
+        }
+      } catch (error) {
+        toast.error(error.message || error.msg || messages.common.error);
+      } finally {
+        setPending(false);
+      }
+    },
+    [pending]
+  );
 
   return (
     <EventForm
       initialValues={initialValues}
-      loading={loading}
-      onSubmit={(values) => dispatch(eventCreate(values))}
+      loading={pending}
+      onSubmit={handleSubmit}
       ref={formHandleRef}
     />
   );

@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import CardBase from '../components/common/card/CardBase';
 import DappForm from '../components/dapp/DappForm';
 import { MainWrapper } from '../components/layout/Index';
+import useThreadSubmit from '../hooks/useThreadSubmit';
 import { createDapp } from '../services/api/dapp';
 import { createProject } from '../services/api/project';
 import { DappStatus, UpdateDappData } from '../services/types/dapp';
@@ -20,6 +21,8 @@ import { UpdateProjectData } from '../services/types/project';
 import { messages } from '../utils/message';
 
 function DappCreate() {
+  const { createDappDetailPageThread, createProjectDetailPageThread } =
+    useThreadSubmit();
   const initialValues: UpdateDappData = {
     name: '',
     description: '',
@@ -55,15 +58,17 @@ function DappCreate() {
           if (code === 0) {
             toast.success(messages.project.admin_submit);
             uniProjectId = data.id;
+            createProjectDetailPageThread(data.id);
           } else {
             toast.error(msg || messages.common.error);
           }
         }
         const resp = await createDapp({ ...form, uniProjectId });
-        const { code, msg } = resp.data;
+        const { code, msg, data } = resp.data;
         if (code === 0) {
           toast.success(messages.dapp.admin_submit);
           handleReset();
+          createDappDetailPageThread(data.id);
         } else {
           toast.error(msg || messages.common.error);
         }
