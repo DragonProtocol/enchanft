@@ -170,7 +170,7 @@ function ContentCreate() {
             toast.success(messages.content.admin_submit);
             store.dispatch(fetchUserKarma({ token: user.token }));
 
-            createContentThread(resp.data.data.link);
+            createContentThread(resp.data.data.link ?? data.url);
           }
         } else {
           await updateContent(

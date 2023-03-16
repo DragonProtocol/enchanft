@@ -57,7 +57,7 @@ function DappCreate() {
           if (code === 0) {
             toast.success(messages.project.admin_submit);
             uniProjectId = data.id;
-            createProjectThread(data.url);
+            createProjectThread(data.url ?? form.url);
           } else {
             toast.error(msg || messages.common.error);
           }
@@ -67,7 +67,7 @@ function DappCreate() {
         if (code === 0) {
           toast.success(messages.dapp.admin_submit);
           handleReset();
-          createDappThread(data.url);
+          createDappThread(data.url ?? form.url);
         } else {
           toast.error(msg || messages.common.error);
         }
