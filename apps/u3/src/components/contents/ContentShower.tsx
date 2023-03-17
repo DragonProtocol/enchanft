@@ -1,6 +1,7 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
+import { CommentList } from '@us3r-network/authkit';
 import { ContentListItem } from '../../services/types/contents';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import { defaultFormatFromNow } from '../../utils/time';
@@ -36,31 +37,37 @@ export default function ContentShower({
   );
   return (
     <Shower>
-      <ContentTitle>
-        <div className="title">{title}</div>
-        {tags?.length > 0 && (
-          <div className="tags">
-            {tags.map((tag) => (
-              <Badge text={tag} key={tag} className="tag" />
-            ))}
-          </div>
-        )}
+      <div className="content-container">
+        <ContentTitle>
+          <div className="title">{title}</div>
+          {tags?.length > 0 && (
+            <div className="tags">
+              {tags.map((tag) => (
+                <Badge text={tag} key={tag} className="tag" />
+              ))}
+            </div>
+          )}
 
-        <div className="info">
-          <LinkBox text={link} logo={platformLogo} />
-          <span>{defaultFormatFromNow(createdAt)}</span>
-        </div>
-      </ContentTitle>
-      <ContentBody dangerouslySetInnerHTML={{ __html: contentFix }} />
+          <div className="info">
+            <LinkBox text={link} logo={platformLogo} />
+            <span>{defaultFormatFromNow(createdAt)}</span>
+          </div>
+        </ContentTitle>
+        <ContentBody dangerouslySetInnerHTML={{ __html: contentFix }} />
+      </div>
       <br />
+      {data.threadStreamId && <CommentList threadId={data.threadStreamId} />}
     </Shower>
   );
 }
 
 const Shower = styled.div`
-  height: calc(100% - 60px);
+  height: calc(100% - 20px);
   overflow: scroll;
-  padding: 20px;
+
+  .content-container {
+    padding: 20px;
+  }
 `;
 
 const ContentTitle = styled.div`
