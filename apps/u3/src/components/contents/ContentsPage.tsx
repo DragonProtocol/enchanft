@@ -5,10 +5,10 @@
  * @LastEditTime: 2023-03-07 16:11:03
  * @Description: 首页任务看板
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { usePermissions } from '@ecnft/wl-user-react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Loading from '../common/loading/Loading';
 import ListScrollBox from '../common/box/ListScrollBox';
 import { ContentBoxContainer } from './ContentShowerBox';
@@ -54,28 +54,26 @@ export default function ContentsPage({
   // Others
   onShare,
 }: ContentsPageProps) {
+  const navigate = useNavigate();
   const { isAdmin } = usePermissions();
   const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const [selectContentId, setSelectContentId] = useState<string | number>(
-    undefined
-  );
   const [layout, setLayout] = useState(getContentsLayoutFromLocal());
   const [gridModalShow, setGridModalShow] = useState(false);
   const [isActiveFilter, setIsActiveFilter] = useState(false);
 
-  useEffect(() => {
-    setSelectContentId(id);
-  }, [id]);
-  const selectContent = useMemo(() => {
-    return selectContentId
-      ? contents.find(
-          (item) =>
-            Number(item?.id) === Number(selectContentId) ||
-            item?.uuid === selectContentId
-        )
-      : null;
-  }, [contents, selectContentId]);
+  const activeId = useMemo(() => {
+    return id === ':id' ? contents[0]?.uuid || contents[0]?.id : id;
+  }, [id, contents]);
+
+  const selectContent = useMemo(
+    () =>
+      contents.find(
+        (item) => String(item?.uuid || item?.id) === String(activeId)
+      ),
+    [contents, activeId]
+  );
 
   const renderMoreLoading = useMemo(
     () =>
@@ -88,10 +86,22 @@ export default function ContentsPage({
   );
 
   useEffect(() => {
-    if (selectContent && layout === Layout.GRID) {
+    if (id !== ':id' && selectContent && layout === Layout.GRID) {
       setGridModalShow(true);
+    } else {
+      setGridModalShow(false);
     }
-  }, [selectContent, layout]);
+  }, [id, selectContent, layout]);
+
+  const resetRouthPath = useCallback(() => {
+    navigate(`/contents/:id?${searchParams.toString()}`);
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!id) {
+      resetRouthPath();
+    }
+  }, [id, resetRouthPath]);
 
   return (
     <Box>
@@ -176,7 +186,7 @@ export default function ContentsPage({
               <ListBox onScrollBottom={getMore}>
                 <ContentList
                   data={contents}
-                  activeId={Number(selectContentId)}
+                  activeId={activeId}
                   loadingVoteIds={votePendingIds}
                   loadingFavorIds={favorPendingIds}
                   loadingHiddenIds={hiddenPendingIds}
@@ -186,7 +196,11 @@ export default function ContentsPage({
                   onHidden={onHiddenAction}
                   onHiddenUndo={onHiddenUndoAction}
                   onItemClick={(item) => {
-                    setSelectContentId(item?.id || item?.uuid);
+                    navigate(
+                      `/contents/${
+                        item?.id || item?.uuid || ''
+                      }?${searchParams.toString()}`
+                    );
                   }}
                 />
                 {renderMoreLoading}
@@ -213,11 +227,14 @@ export default function ContentsPage({
             <GrideListBox onScrollBottom={getMore}>
               <ContentGridList
                 data={contents}
-                activeId={Number(selectContentId)}
+                activeId={activeId}
                 onHiddenUndo={onHiddenUndoAction}
                 onItemClick={(item) => {
-                  setSelectContentId(item?.id || item?.uuid);
-                  setGridModalShow(true);
+                  navigate(
+                    `/contents/${
+                      item?.id || item?.uuid || ''
+                    }?${searchParams.toString()}`
+                  );
                 }}
               />
               {renderMoreLoading}
@@ -232,7 +249,7 @@ export default function ContentsPage({
         show={gridModalShow}
         favorPendingIds={favorPendingIds}
         closeModal={() => {
-          setGridModalShow(false);
+          resetRouthPath();
         }}
         selectContent={selectContent}
         onAdminScore={() => {
@@ -240,7 +257,7 @@ export default function ContentsPage({
         }}
         onAdminDelete={() => {
           onAdminDelete(selectContent).then(() => {
-            setGridModalShow(false);
+            resetRouthPath();
           });
         }}
         shareAction={() => {
@@ -259,7 +276,7 @@ export default function ContentsPage({
         hiddenAction={() => {
           if (!selectContent) return;
           onHiddenAction(selectContent);
-          setGridModalShow(false);
+          resetRouthPath();
         }}
       />
     </Box>
