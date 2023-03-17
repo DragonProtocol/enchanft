@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-03-07 15:41:38
  * @Description: 首页任务看板
  */
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -64,6 +64,11 @@ export type ContentsPageProps = {
 function Contents() {
   const { user } = useWlUserReact();
   const { id } = useParams();
+
+  const idCache = useRef('');
+  useEffect(() => {
+    idCache.current = id === ':id' ? '' : id;
+  }, [id]);
 
   const { currentSearchParams, searchParamsChange } = useContentsSearchParams();
 
@@ -173,8 +178,8 @@ function Contents() {
 
   useEffect(() => {
     const { keywords, tags, orderBy, lang } = currentSearchParams;
-    fetchData(keywords, tags, orderBy, lang, id);
-  }, [currentSearchParams, id]);
+    fetchData(keywords, tags, orderBy, lang, idCache.current);
+  }, [currentSearchParams]);
 
   const getMore = useCallback(() => {
     if (loadingMore) return;

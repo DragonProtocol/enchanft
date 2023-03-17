@@ -80,14 +80,14 @@ export default function ContentList({
           <AnimatedListItem key={item.id} styles={{ ...styles }}>
             {item.hidden ? (
               <ListItemHidden
-                isActive={item.id === activeId}
+                isActive={String(item.id || item.uuid) === String(activeId)}
                 hidden
                 undoAction={() => onHiddenUndo && onHiddenUndo(item)}
               />
             ) : (
               <ListItem
                 data={item}
-                isActive={item.id === activeId}
+                isActive={String(item.id || item.uuid) === String(activeId)}
                 favorPendingIds={loadingFavorIds}
                 clickAction={() => onItemClick && onItemClick(item)}
                 voteAction={() => onVote && onVote(item)}
