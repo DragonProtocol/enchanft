@@ -84,6 +84,7 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
       {isLogin ? (
         <>
           <UserAvatar
+            did={sessId}
             className="wl-user-button_login-avatar"
             onClick={() => {
               navigate('/profile');
