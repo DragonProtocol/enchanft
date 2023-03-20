@@ -5,12 +5,12 @@
  * @LastEditTime: 2023-03-03 17:11:31
  * @Description: file description
  */
+import { CommentList } from '@us3r-network/authkit';
 import styled from 'styled-components';
 import type { ContentPageProps } from '../../container/Content';
 import Loading from '../common/loading/Loading';
 import { MainWrapper } from '../layout/Index';
-import ContentActionFavor from './ContentActionFavor';
-import ContentActionUpVote from './ContentActionUpVote';
+
 import ContentShowerBox from './ContentShowerBox';
 
 export default function ContentPageMobile({
@@ -18,9 +18,6 @@ export default function ContentPageMobile({
   id,
   loading,
   data,
-  // Mutations
-  onVote,
-  onFavor,
 }: ContentPageProps) {
   return loading ? (
     <StatusWrapper>
@@ -29,22 +26,7 @@ export default function ContentPageMobile({
   ) : data ? (
     <MainBody>
       <ContentShowerBox selectContent={data} tab="readerView" />
-      <Actions>
-        <ContentActionUpVote
-          number={data.upVoteNum + data.editorScore}
-          onClick={() => {
-            if (onVote) onVote();
-          }}
-        />
-        <ActionItemLine />
-        <ContentActionFavor
-          number={data.favorNum ?? 0}
-          isFavored={data?.favored}
-          onClick={() => {
-            if (onFavor) onFavor();
-          }}
-        />
-      </Actions>
+      {data.threadStreamId && <CommentList threadId={data.threadStreamId} />}
     </MainBody>
   ) : (
     <StatusWrapper>The content query with id {id} failed</StatusWrapper>
@@ -66,17 +48,4 @@ const MainBody = styled.div`
     padding: 10px;
     padding-top: 20px;
   }
-`;
-const Actions = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  padding: 20px 0px;
-  background: #1b1e23;
-`;
-const ActionItemLine = styled.span`
-  width: 1px;
-  height: 10px;
-  background: #718096;
 `;

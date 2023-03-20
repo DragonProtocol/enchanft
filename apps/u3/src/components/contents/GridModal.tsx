@@ -68,36 +68,30 @@ export default function GridModal({
         <div className="title">
           {selectContent && (
             <>
-              <ContentItemActions
-                isActive
-                withVote
-                favorPendingIds={favorPendingIds}
-                voteAction={() => {
-                  if (voteAction) voteAction();
-                }}
-                shareAction={() => {
-                  if (shareAction) shareAction();
-                }}
-                hiddenAction={() => {
-                  if (hiddenAction) hiddenAction();
-                }}
-                favorsAction={() => {
-                  if (favorsAction) favorsAction();
-                }}
-                {...selectContent}
-              />
               <ContentShowerTabs tab={tab} setTab={(t) => setTab(t)} />
-              <ContentShowerHandles
-                isForU={!!selectContent?.isForU}
-                editorScore={selectContent?.editorScore || 0}
-                deleteAction={onAdminDelete}
-                editAction={() => {
-                  navigate(`/contents/create?id=${selectContent.id}`);
-                }}
-                thumbUpAction={onAdminScore}
-                onFullscreenRequest={onToggle}
-                onFullscreenExit={onToggle}
-              />
+              <HeaderRight>
+                <ContentItemActions
+                  isActive
+                  shareAction={() => {
+                    if (shareAction) shareAction();
+                  }}
+                  hiddenAction={() => {
+                    if (hiddenAction) hiddenAction();
+                  }}
+                  {...selectContent}
+                />
+                <ContentShowerHandles
+                  isForU={!!selectContent?.isForU}
+                  editorScore={selectContent?.editorScore || 0}
+                  deleteAction={onAdminDelete}
+                  editAction={() => {
+                    navigate(`/contents/create?id=${selectContent.id}`);
+                  }}
+                  thumbUpAction={onAdminScore}
+                  onFullscreenRequest={onToggle}
+                  onFullscreenExit={onToggle}
+                />
+              </HeaderRight>
             </>
           )}
 
@@ -140,16 +134,6 @@ const ContentBox = styled.div`
     justify-content: space-between;
     align-items: center;
     position: relative;
-    .content-shower-tabs {
-      /* position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%); */
-      margin: 0 auto;
-    }
-    .content-shower-handles {
-      margin-left: auto;
-    }
     & > span {
       cursor: pointer;
       padding: 10px;
@@ -198,6 +182,13 @@ const ContentBox = styled.div`
       color: #14171a;
     }
   }
+`;
+
+const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
 `;
 
 const ContentShowerBoxWrapper = styled.div`
