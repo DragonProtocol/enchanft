@@ -41,7 +41,7 @@ export default function ListItem({
     hidden,
     editorScore,
   } = data;
-  const itemRef = useRef<HTMLDivElement>();
+  const itemRef = useRef<HTMLDivElement & { isActive: boolean }>();
   const [height, setHeight] = useState('fit-content');
   const [classNames, setClassNames] = useState('');
   useEffect(() => {
@@ -64,7 +64,12 @@ export default function ListItem({
   );
 
   return (
-    <ContentItem ref={itemRef} className={classNames} onClick={clickAction}>
+    <ContentItem
+      ref={itemRef}
+      className={classNames}
+      onClick={clickAction}
+      isActive={isActive}
+    >
       <ItemInner isActive={isActive} height={height}>
         <ContentItemLeftVoteButton
           disabled={upVoted}
@@ -85,7 +90,7 @@ export default function ListItem({
             <span>{defaultFormatFromNow(createdAt)}</span>
           </ContentItemTitle>
 
-          {isActive && (
+          {/* {isActive && (
             <ContentItemActions
               id={id}
               isActive={isActive}
@@ -99,7 +104,7 @@ export default function ListItem({
               hiddenAction={hiddenAction}
               shareAction={shareAction}
             />
-          )}
+          )} */}
         </div>
       </ItemInner>
     </ContentItem>
@@ -113,34 +118,34 @@ export function ContentItemActions({
   favored,
   upVoteNum,
   editorScore,
-  voteAction,
-  favorsAction,
+  // voteAction,
+  // favorsAction,
   hiddenAction,
   shareAction,
-  favorPendingIds,
-  withVote,
-}: {
+}: // favorPendingIds,
+// withVote,
+{
   id: number;
-  isActive: boolean;
+  isActive?: boolean;
   editorScore: number;
   upVoteNum: number;
   favored: boolean;
   upVoted: boolean;
   shareAction?: () => void;
   hiddenAction?: () => void;
-  voteAction?: () => void;
-  favorsAction?: () => void;
-  favorPendingIds: (string | number)[];
-  withVote?: boolean;
+  // voteAction?: () => void;
+  // favorsAction?: () => void;
+  // favorPendingIds: (string | number)[];
+  // withVote?: boolean;
 }) {
-  const loadingFavor = useMemo(
-    () => favorPendingIds.includes(id),
-    [favorPendingIds, id]
-  );
+  // const loadingFavor = useMemo(
+  //   () => favorPendingIds.includes(id),
+  //   [favorPendingIds, id]
+  // );
 
   return (
-    <ContentItemActionsWrapper withVote={withVote}>
-      {withVote && (
+    <ContentItemActionsWrapper>
+      {/* {withVote && (
         <ContentHandleButtonVote
           disabled={upVoted}
           onClick={(e) => {
@@ -162,7 +167,7 @@ export function ContentItemActions({
         }}
       >
         {favored ? <Heart fill="#718096" /> : <Heart />}
-      </ContentHandleButton>
+      </ContentHandleButton> */}
 
       <ContentHandleButton
         onClick={(e) => {
@@ -218,8 +223,8 @@ export function ListItemHidden({
   }, [hidden, isActive]);
 
   return (
-    <ContentItem className={classNames} ref={itemRef}>
-      <ItemInner isActive height={height}>
+    <ContentItem isActive={isActive} className={classNames} ref={itemRef}>
+      <ItemInner isActive={isActive} height={height}>
         <div className="tint">
           😊 Thanks, We will use this to make your list better.{' '}
           <span
@@ -238,7 +243,7 @@ export function ListItemHidden({
   );
 }
 
-const ContentItem = styled.div`
+const ContentItem = styled.div<{ isActive: boolean }>`
   box-sizing: border-box;
   padding: 20px;
   gap: 10px;
@@ -251,6 +256,31 @@ const ContentItem = styled.div`
       transform: scale(1.05);
     }
   }
+
+  ${({ isActive }) =>
+    isActive &&
+    `
+      background: #14171a;
+      transition: all 0.5s ease-out;
+      &::after {
+        content: ' ';
+        top: 0;
+        right: 0;
+        height: 100%;
+        position: absolute;
+        width: 2px;
+        background-color: #ffffff;
+      }
+      &.hidden {
+        font-size: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        opacity: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 0;
+      }
+  `}
 `;
 const ItemInner = styled.div<{ isActive: boolean; height: string }>`
   line-height: 27px;
@@ -262,6 +292,7 @@ const ItemInner = styled.div<{ isActive: boolean; height: string }>`
   &:hover {
     /* background: #999; */
   }
+
   &.active {
     background: #14171a;
     transition: all 0.5s ease-out;
@@ -380,10 +411,10 @@ const ContentItemTitle = styled.div`
   }
 `;
 
-const ContentItemActionsWrapper = styled.div<{ withVote: boolean }>`
+const ContentItemActionsWrapper = styled.div`
   display: flex;
   gap: 10px;
-  justify-content: ${(props) => (props.withVote ? 'start' : 'end')};
+  justify-content: end;
   align-items: center;
 `;
 

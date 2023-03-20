@@ -202,6 +202,12 @@ export default function ContentsPage({
                     onAdminDelete={() => {
                       onAdminDelete(selectContent);
                     }}
+                    onShare={() => {
+                      onShare(selectContent);
+                    }}
+                    onHidden={() => {
+                      onHiddenAction(selectContent);
+                    }}
                   />
                 )}
               </ContentBoxContainer>
