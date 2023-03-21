@@ -5,8 +5,10 @@
  * @LastEditTime: 2023-02-27 11:56:55
  * @Description: file description
  */
-import { useWlUserReact } from '@ecnft/wl-user-react';
-import { useEffect } from 'react';
+import { useUs3rAuth } from '@us3r-network/authkit';
+import { useUs3rProfileContext } from '@us3r-network/profile';
+import { useUs3rThreadContext } from '@us3r-network/thread';
+import { useCallback, useEffect } from 'react';
 import {
   fetchUserGroupFavorites,
   removeAllFavorites,
@@ -20,9 +22,13 @@ import {
   selectIdsForDapps,
 } from '../features/favorite/userGroupFavorites';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
+import useLogin from './useLogin';
 
 export default () => {
-  const { isLogin } = useWlUserReact();
+  const { authComposeClientsValid } = useUs3rAuth();
+  const { isLogin } = useLogin();
+  const { relationsComposeClient, getPersonalFavorList } =
+    useUs3rThreadContext();
   const dispatch = useAppDispatch();
   const events = useAppSelector(selectAllForEvents);
   const eventIds = useAppSelector(selectIdsForEvents).map((id) => Number(id));
@@ -36,13 +42,55 @@ export default () => {
   const contentIds = useAppSelector(selectIdsForContents).map((id) =>
     Number(id)
   );
-  useEffect(() => {
+
+  const refreshFavorites = useCallback(() => {
     if (!isLogin) {
       dispatch(removeAllFavorites());
       return;
     }
-    dispatch(fetchUserGroupFavorites());
-  }, [isLogin]);
+    if (
+      authComposeClientsValid &&
+      relationsComposeClient.context.isAuthenticated()
+    ) {
+      getPersonalFavorList({})
+        .then((data) => {
+          const contentUrls =
+            data?.edges
+              ?.filter((item) => item.node.thread.type === 'content')
+              .map((item) => item.node.thread.url) || [];
+
+          const eventUrls =
+            data?.edges
+              ?.filter((item) => item.node.thread.type === 'event')
+              .map((item) => item.node.thread.url) || [];
+
+          const projectUrls =
+            data?.edges
+              ?.filter((item) => item.node.thread.type === 'project')
+              .map((item) => item.node.thread.url) || [];
+
+          const dappUrls =
+            data?.edges
+              ?.filter((item) => item.node.thread.type === 'dapp')
+              .map((item) => item.node.thread.url) || [];
+
+          dispatch(
+            fetchUserGroupFavorites({
+              contentUrls,
+              eventUrls,
+              projectUrls,
+              dappUrls,
+            })
+          );
+        })
+        .catch(console.error);
+    }
+  }, [
+    authComposeClientsValid,
+    relationsComposeClient.context,
+    getPersonalFavorList,
+  ]);
+
   return {
     events,
     eventIds,
@@ -52,5 +100,6 @@ export default () => {
     dappIds,
     contents,
     contentIds,
+    refreshFavorites,
   };
 };

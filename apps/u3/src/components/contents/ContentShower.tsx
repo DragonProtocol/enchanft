@@ -56,7 +56,9 @@ export default function ContentShower({
         <ContentBody dangerouslySetInnerHTML={{ __html: contentFix }} />
       </div>
       <br />
-      {data.threadStreamId && <CommentList threadId={data.threadStreamId} />}
+      {!isMobile && data.threadStreamId && (
+        <CommentList threadId={data.threadStreamId} />
+      )}
     </Shower>
   );
 }

@@ -11,7 +11,10 @@ import {
   createEntityAdapter,
   createSlice,
 } from '@reduxjs/toolkit';
-import { fetchUserFavoritesByGroup } from '../../services/api/favorite';
+import {
+  fetchContentFavorites,
+  fetchUserFavoritesByGroup,
+} from '../../services/api/favorite';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
 import {
   ContentFavoriteListItemResponse,
@@ -62,14 +65,27 @@ const initGroupFavoritesState: GroupFavoritesState = {
 };
 export const fetchUserGroupFavorites = createAsyncThunk<
   UserGroupFavorites,
-  undefined
+  {
+    contentUrls?: string[];
+    eventUrls?: string[];
+    projectUrls?: string[];
+    dappUrls?: string[];
+  }
 >(
   'favorite/userGroupFavorites',
   async (params, { rejectWithValue }) => {
     const resp = await fetchUserFavoritesByGroup();
     if (resp.data.code === ApiRespCode.SUCCESS) {
-      return resp.data.data;
+      // TODO: event, project, dapp 接口未提供，先兼容之前的接口数据
+      const contentsResponse = await fetchContentFavorites(
+        params.contentUrls ?? []
+      );
+      return {
+        ...resp.data.data,
+        contents: contentsResponse.data.data,
+      };
     }
+
     return rejectWithValue(new Error(resp.data.msg));
   },
   {
