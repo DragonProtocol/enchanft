@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { VoteBtn } from '@us3r-network/authkit';
 import { Share } from '../icons/share';
 import { EyeClose } from '../icons/eyeClose';
 import { Heart } from '../icons/heart';
@@ -8,6 +9,8 @@ import LinkBox from './LinkBox';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import { ContentListItem } from '../../services/types/contents';
+
+import './listitem.css';
 
 export default function ListItem({
   data,
@@ -71,16 +74,10 @@ export default function ListItem({
       isActive={isActive}
     >
       <ItemInner isActive={isActive} height={height}>
-        <ContentItemLeftVoteButton
-          disabled={upVoted}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (voteAction) voteAction();
-          }}
-        >
-          👏
-          <span>{upVoteNum + (editorScore || 0)}</span>
-        </ContentItemLeftVoteButton>
+        <div className="authkit">
+          {data.threadStreamId && <VoteBtn threadId={data.threadStreamId} />}
+        </div>
+
         <div className={isActive ? 'right active' : 'right'}>
           <p>{title}</p>
           <ContentItemTitle>
