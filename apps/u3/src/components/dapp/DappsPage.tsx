@@ -15,6 +15,7 @@ import DappExploreListFilter from './DappExploreListFilter';
 import DappExploreList from './DappExploreList';
 import useDappWebsite from '../../hooks/useDappWebsite';
 import type { DappsPageProps } from '../../container/Dapps';
+import useUserFavorites from '../../hooks/useUserFavorites';
 
 export default function DappsPage({
   // Queries
@@ -26,13 +27,11 @@ export default function DappsPage({
   filterChange,
   noMore,
   getMore,
-  // Mutations
-  installPendingIds,
-  onInstall,
 }: // Others
 DappsPageProps) {
   const navigate = useNavigate();
   const { openDappModal } = useDappWebsite();
+  const { addOneToFavoredDapps } = useUserFavorites();
 
   return (
     <DappsPageWrapper>
@@ -52,8 +51,7 @@ DappsPageProps) {
           >
             <DappExploreList
               data={dapps}
-              installPendingIds={installPendingIds}
-              onInstall={onInstall}
+              onFavorSuccess={addOneToFavoredDapps}
               onOpen={(item) => openDappModal(item.id)}
               onItemClick={(item) => navigate(`/dapps/${item.id}`)}
             />

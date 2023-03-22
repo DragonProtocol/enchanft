@@ -6,9 +6,8 @@
  * @Description: file description
  */
 import { useUs3rAuth } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
 import { useUs3rThreadContext } from '@us3r-network/thread';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
   fetchUserGroupFavorites,
   removeAllFavorites,
@@ -20,7 +19,11 @@ import {
   selectIdsForEvents,
   selectIdsForProjects,
   selectIdsForDapps,
+  addOneWithDapps,
+  selectState,
 } from '../features/favorite/userGroupFavorites';
+import { AsyncRequestStatus } from '../services/types';
+import { DappExploreListItemResponse } from '../services/types/dapp';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import useLogin from './useLogin';
 
@@ -42,6 +45,7 @@ export default () => {
   const contentIds = useAppSelector(selectIdsForContents).map((id) =>
     Number(id)
   );
+  const userFavoritesState = useAppSelector(selectState);
 
   const refreshFavorites = useCallback(() => {
     if (!isLogin) {
@@ -52,7 +56,7 @@ export default () => {
       authComposeClientsValid &&
       relationsComposeClient.context.isAuthenticated()
     ) {
-      getPersonalFavorList({})
+      getPersonalFavorList({ first: 1000 })
         .then((data) => {
           const contentUrls =
             data?.edges
@@ -91,6 +95,29 @@ export default () => {
     getPersonalFavorList,
   ]);
 
+  const addOneToFavoredDapps = useCallback(
+    (dapp: DappExploreListItemResponse) => {
+      dispatch(addOneWithDapps(dapp));
+    },
+    [dispatch]
+  );
+
+  const favoredDappStreamIds = useMemo(
+    () => dapps.map((item) => item.threadStreamId),
+    [dapps]
+  );
+
+  const isFavoredDapp = useCallback(
+    (threadStreamId: string) => {
+      return favoredDappStreamIds.includes(threadStreamId);
+    },
+    [favoredDappStreamIds]
+  );
+
+  const userFavoritesLoaded = useMemo(
+    () => userFavoritesState.status === AsyncRequestStatus.FULFILLED,
+    [userFavoritesState.status]
+  );
   return {
     events,
     eventIds,
@@ -101,5 +128,9 @@ export default () => {
     contents,
     contentIds,
     refreshFavorites,
+    addOneToFavoredDapps,
+    favoredDappStreamIds,
+    isFavoredDapp,
+    userFavoritesLoaded,
   };
 };

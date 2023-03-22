@@ -6,6 +6,7 @@
  * @Description: file description
  */
 import { ContentsListResponse } from '../types/contents';
+import { DappFavoriteListResponse } from '../types/dapp';
 import { UserGroupFavoritesResponse } from '../types/favorite';
 import request, { RequestPromise } from './request';
 
@@ -24,6 +25,21 @@ export function fetchContentFavorites(
 ): RequestPromise<ContentsListResponse> {
   return request({
     url: `/contents/indexing`,
+    method: 'post',
+    data: {
+      urls,
+    },
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
+export function fetchDappFavorites(
+  urls: string[]
+): RequestPromise<DappFavoriteListResponse> {
+  return request({
+    url: `/dapps/indexing`,
     method: 'post',
     data: {
       urls,
