@@ -34,7 +34,7 @@ export default function DappPageMobile({
       <HeaderMobile data={data} />
       <ScreeshotsMobile />
       <IntroductionMobile text={data.description} />
-      <UserScoreMobile />
+      <UserScoreMobile streamId={data.threadStreamId} />
       <RecommendDappsMobile
         data={recommendDapps}
         loading={recommendDappsLoading}

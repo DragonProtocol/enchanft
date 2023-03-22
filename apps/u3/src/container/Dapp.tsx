@@ -12,7 +12,6 @@ import { isMobile } from 'react-device-detect';
 import { DappExploreListItemResponse } from '../services/types/dapp';
 import { fetchListForDappExplore, fetchOneDapp } from '../services/api/dapp';
 import { ApiRespCode } from '../services/types';
-import useDappHandles from '../hooks/useDappHandles';
 import DappPageMobile from '../components/dapp/DappPageMobile';
 import DappPage from '../components/dapp/DappPage';
 
@@ -24,8 +23,6 @@ export type DappPageProps = {
   recommendDapps: DappExploreListItemResponse[];
   recommendDappsLoading: boolean;
   // Mutations
-  onInstall?: () => void;
-  installLoading?: boolean;
   updateData?: (newData: DappExploreListItemResponse) => void;
   // Others
 };
@@ -85,17 +82,6 @@ export default function Dapp() {
   }, [id]);
 
   // Mutations
-  const { favorQueueIds, onFavor } = useDappHandles();
-  const handleInstall = useCallback(async () => {
-    const newData = await onFavor(data);
-    if (newData) {
-      setData(newData as DappExploreListItemResponse);
-    }
-  }, [onFavor, data]);
-  const installLoading = useMemo(
-    () => favorQueueIds.includes(data?.id),
-    [data, favorQueueIds]
-  );
   const updateData = useCallback(
     (newData) => {
       setData({ ...data, ...newData });
@@ -110,8 +96,6 @@ export default function Dapp() {
       recommendDapps={recommendDapps}
       loading={isPending}
       recommendDappsLoading={isPendingRecommend}
-      onInstall={handleInstall}
-      installLoading={installLoading}
       updateData={updateData}
     />
   ) : (
@@ -121,8 +105,6 @@ export default function Dapp() {
       recommendDapps={recommendDapps}
       loading={isPending}
       recommendDappsLoading={isPendingRecommend}
-      onInstall={handleInstall}
-      installLoading={installLoading}
       updateData={updateData}
     />
   );

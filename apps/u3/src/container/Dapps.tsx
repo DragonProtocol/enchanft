@@ -15,7 +15,6 @@ import {
 } from '../features/dapp/dappExploreList';
 import { AsyncRequestStatus } from '../services/types';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import useDappHandles from '../hooks/useDappHandles';
 import {
   DappExploreListFilterValues,
   defaultDappExploreListFilterValues,
@@ -36,14 +35,11 @@ export type DappsPageProps = {
   noMore?: boolean;
   getMore?: () => void;
   // Mutations
-  installPendingIds?: (string | number)[];
-  onInstall?: (item: DappExploreListItemResponse) => Promise<unknown>;
   // Others
 };
 
 export default function Dapps() {
   const dispatch = useAppDispatch();
-  const { favorQueueIds, onFavor } = useDappHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dapps = useAppSelector(selectAll);
   const { currentSearchParams, searchParamsChange } = useDappsSearchParams();
@@ -65,6 +61,7 @@ export default function Dapps() {
     () => dispatch(fetchMoreDappExploreList(currentSearchParams)),
     [currentSearchParams]
   );
+
   return isMobile ? (
     <DappsPageMobile
       // Queries
@@ -76,9 +73,6 @@ export default function Dapps() {
       filterChange={searchParamsChange}
       noMore={noMore}
       getMore={getMore}
-      // Mutations
-      installPendingIds={favorQueueIds}
-      onInstall={onFavor}
     />
   ) : (
     <DappsPage
@@ -91,9 +85,6 @@ export default function Dapps() {
       filterChange={searchParamsChange}
       noMore={noMore}
       getMore={getMore}
-      // Mutations
-      installPendingIds={favorQueueIds}
-      onInstall={onFavor}
     />
   );
 }

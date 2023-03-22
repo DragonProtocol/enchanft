@@ -30,6 +30,7 @@ import {
 } from '../../features/profile/karma';
 import { Atom02 } from '../icons/atom';
 import { store } from '../../store/store';
+import useUserFavorites from '../../hooks/useUserFavorites';
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -62,6 +63,11 @@ function Main() {
     if (!user.token) return;
     dispatch(fetchUserKarma({ token: user.token }));
   }, [user.token]);
+
+  const { refreshFavorites } = useUserFavorites();
+  useEffect(() => {
+    refreshFavorites();
+  }, [refreshFavorites]);
 
   const renderElement = useCallback(
     ({ element, permissions }: CutomRouteObject) => {

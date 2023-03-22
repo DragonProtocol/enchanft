@@ -10,23 +10,20 @@ import { DappExploreListItemResponse } from '../../services/types/dapp';
 import { ButtonPrimary, ButtonPrimaryLine } from '../common/button/ButtonBase';
 import EllipsisText from '../common/text/EllipsisText';
 import ImgDefault from '../common/ImgDefault';
+import DappFavorButton from './DappFavorButton';
 
 export type DappExploreListItemData = DappExploreListItemResponse;
 export type DappExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   data: DappExploreListItemData;
-  disabledInstall?: boolean;
-  loadingInstall?: boolean;
   isInstalled?: boolean;
-  onInstall?: () => void;
+  onFavorSuccess?: () => void;
   onOpen?: () => void;
   displayButtons?: boolean;
 };
 export default function DappExploreListItem({
   data,
-  disabledInstall,
-  loadingInstall,
   isInstalled,
-  onInstall,
+  onFavorSuccess,
   onOpen,
   displayButtons = true,
   ...props
@@ -51,14 +48,9 @@ export default function DappExploreListItem({
             </OpenButton>
           ) : (
             <InstallButton
-              disabled={disabledInstall}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onInstall) onInstall();
-              }}
-            >
-              {loadingInstall ? 'Installing' : 'Install'}
-            </InstallButton>
+              threadId={data.threadStreamId}
+              onFavorSuccess={onFavorSuccess}
+            />
           ))}
       </ListItemInner>
     </ExploreListItemWrapper>
@@ -118,7 +110,7 @@ const ButtonCss = css`
   line-height: 20px;
   flex-shrink: 0;
 `;
-const InstallButton = styled(ButtonPrimary)`
+const InstallButton = styled(DappFavorButton)`
   ${ButtonCss}
 `;
 const OpenButton = styled(ButtonPrimaryLine)`

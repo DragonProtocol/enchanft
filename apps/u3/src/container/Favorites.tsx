@@ -8,7 +8,6 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 import { useNavigate } from 'react-router-dom';
 import ScrollBox from '../components/common/box/ScrollBox';
 import Tab from '../components/common/tab/Tab';
@@ -49,6 +48,7 @@ import { ButtonPrimaryLine } from '../components/common/button/ButtonBase';
 import ListScrollBox from '../components/common/box/ListScrollBox';
 import ContentShowerBox from '../components/contents/ContentShowerBox';
 import ContentPreview from '../components/contents/ContentPreview';
+import useLogin from '../hooks/useLogin';
 
 function EmptyFavorites() {
   const navigate = useNavigate();
@@ -151,7 +151,7 @@ export const FavoriteSwitchOptions = [
 ];
 
 function Favorites() {
-  const { isLogin } = useWlUserReact();
+  const { isLogin } = useLogin();
   const dispatch = useAppDispatch();
   const completedEvents = useAppSelector(selectAllForCompletedEvents);
   const {
@@ -167,15 +167,21 @@ function Favorites() {
     () => completedMoreStatus === AsyncRequestStatus.PENDING,
     [completedMoreStatus]
   );
+
+  const { events, projects, contents, refreshFavorites } = useUserFavorites();
+
   useEffect(() => {
     if (!isLogin) {
-      dispatch(removeAllFavorites());
       dispatch(removeAllForCompletedEvents());
       return;
     }
-    dispatch(fetchUserGroupFavorites());
     dispatch(fetchCompletedEvents());
   }, [isLogin]);
+
+  useEffect(() => {
+    refreshFavorites();
+  }, [refreshFavorites]);
+
   const {
     favoredIds: eventFavoredIds,
     favorQueueIds: eventFavorQueueIds,
@@ -192,7 +198,6 @@ function Favorites() {
   //   onShare: onProjectShare,
   // } = useProjectHandles();
 
-  const { events, projects, contents } = useUserFavorites();
   const [showContentList, setShowContentList] = useState<ContentListItem[]>([]);
   useEffect(() => {
     setShowContentList(contents);

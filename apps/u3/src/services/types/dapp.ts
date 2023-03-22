@@ -49,6 +49,7 @@ export type DappExploreListItemResponse = {
   chains?: string[];
   status?: DappStatus;
   project?: ProjectExploreListItemResponse;
+  threadStreamId?: string;
 };
 export type DappExploreListResponse = ApiResp<
   Array<DappExploreListItemResponse>

@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { VoteBtn } from '@us3r-network/authkit';
 import { MEDIA_BREAK_POINTS } from '../../constants';
 import { defaultFormatFromNow } from '../../utils/time';
 import LinkBox from './LinkBox';
 import Badge from './Badge';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import { ContentListItem } from '../../services/types/contents';
+
+import './griditem.css';
 
 export function GridItemHidden({
   undoAction,
@@ -81,8 +84,8 @@ export default function GridItem({
           {tags?.length > 0 && <Badge text={tags[0]} />}
           <div className="date">{defaultFormatFromNow(createdAt)}</div>
         </div>
-        <div className="row">
-          <div>👏 &nbsp;{upVoteNum + (editorScore || 0)}</div>
+        <div className="authkit-grid">
+          {data.threadStreamId && <VoteBtn threadId={data.threadStreamId} />}
         </div>
       </div>
     </Box>

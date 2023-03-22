@@ -16,18 +16,23 @@ import ContentShowerBox, {
   ContentShowerTabs,
   Tab,
 } from './ContentShowerBox';
+import { ContentItemActions } from './ListItem';
 
 export type ContentPreviewProps = StyledComponentPropsWithRef<'div'> & {
   data?: ContentListItem;
   showAdminOps?: boolean;
   onAdminScore?: () => void;
   onAdminDelete?: () => void;
+  onHidden?: () => void;
+  onShare?: () => void;
 };
 export default function ContentPreview({
   data,
   showAdminOps = true,
   onAdminScore,
   onAdminDelete,
+  onHidden,
+  onShare,
   ...otherProps
 }: ContentPreviewProps) {
   const navigate = useNavigate();
@@ -47,18 +52,29 @@ export default function ContentPreview({
         <>
           <Header>
             <ContentShowerTabs tab={tab} setTab={(t) => setTab(t)} />
-            <ContentShowerHandles
-              showAdminOps={showAdminOps}
-              isForU={!!data?.isForU}
-              editorScore={data?.editorScore || 0}
-              deleteAction={onAdminDelete}
-              thumbUpAction={onAdminScore}
-              editAction={() => {
-                navigate(`/contents/create?id=${data.id}`);
-              }}
-              onFullscreenRequest={onToggle}
-              onFullscreenExit={onToggle}
-            />
+            <HeaderRight>
+              <ContentItemActions
+                id={data.id}
+                upVoted={data.upVoted}
+                favored={data.favored}
+                upVoteNum={data.upVoteNum}
+                editorScore={data.editorScore}
+                hiddenAction={onHidden}
+                shareAction={onShare}
+              />
+              <ContentShowerHandles
+                showAdminOps={showAdminOps}
+                isForU={!!data?.isForU}
+                editorScore={data?.editorScore || 0}
+                deleteAction={onAdminDelete}
+                thumbUpAction={onAdminScore}
+                editAction={() => {
+                  navigate(`/contents/create?id=${data.id}`);
+                }}
+                onFullscreenRequest={onToggle}
+                onFullscreenExit={onToggle}
+              />
+            </HeaderRight>
           </Header>
           <ContentPreviewBox ref={ref}>
             <ContentShowerBox selectContent={data} tab={tab} />
@@ -88,16 +104,17 @@ const Header = styled.div`
   background: #1b1e23;
   border-bottom: 1px solid #39424c;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-items: center;
   position: relative;
-  .content-shower-tabs {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
 `;
+const HeaderRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+`;
+
 const ContentPreviewBox = styled.div`
   width: 100%;
   height: 0;
