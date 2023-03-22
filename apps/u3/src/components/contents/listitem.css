@@ -1,6 +1,7 @@
 .authkit .us3r-content-vote {
-    width: 80px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
+    padding-top: 10px;
     color: #fff;
     display: flex;
     flex-direction: column;
