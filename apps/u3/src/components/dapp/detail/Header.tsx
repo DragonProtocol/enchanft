@@ -5,10 +5,7 @@ import {
   DappExploreListItemResponse,
   DappStatus,
 } from '../../../services/types/dapp';
-import {
-  ButtonPrimary,
-  ButtonPrimaryLine,
-} from '../../common/button/ButtonBase';
+import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
 import Tag from '../../common/tag/Tag';
 import ImgDefault from '../../common/ImgDefault';
 import Card from './Card';
@@ -20,26 +17,23 @@ import useConfigsTopics from '../../../hooks/useConfigsTopics';
 import { ReactComponent as CheckVerifiedSvg } from '../../common/icons/svgs/check-verified.svg';
 import EllipsisTextExpandMore from '../../common/text/EllipsisTextExpandMore';
 import { Edit } from '../../icons/edit';
+import DappFavorButton from '../DappFavorButton';
+import useUserFavorites from '../../../hooks/useUserFavorites';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: DappExploreListItemResponse;
-  disabledInstall?: boolean;
-  loadingInstall?: boolean;
-  isInstalled?: boolean;
-  onInstall?: () => void;
+  onFavorSuccess?: () => void;
   onOpen?: () => void;
   onEdit?: () => void;
 };
 export default function Header({
   data,
-  disabledInstall,
-  loadingInstall,
-  isInstalled,
-  onInstall,
+  onFavorSuccess,
   onOpen,
   onEdit,
   ...otherProps
 }: Props) {
+  const { isFavoredDapp, userFavoritesLoaded } = useUserFavorites();
   const { isAdmin } = usePermissions();
   const { topics } = useConfigsTopics();
   const { chains } = topics;
@@ -106,7 +100,9 @@ export default function Header({
             </LinkButton>
           )}
           {data?.url &&
-            (isInstalled ? (
+            data?.threadStreamId &&
+            userFavoritesLoaded &&
+            (isFavoredDapp(data.threadStreamId) ? (
               <OpenButton
                 onClick={(e) => {
                   e.stopPropagation();
@@ -116,15 +112,10 @@ export default function Header({
                 Open Dapp
               </OpenButton>
             ) : (
-              <InstallButton
-                disabled={disabledInstall}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onInstall) onInstall();
-                }}
-              >
-                {loadingInstall ? 'Installing' : 'Install'}
-              </InstallButton>
+              <DappFavorButton
+                threadId={data.threadStreamId}
+                onFavorSuccess={onFavorSuccess}
+              />
             ))}
         </RightButtons>
       </HeaderRight>
@@ -200,7 +191,6 @@ const LinkIcon = styled.img`
   height: 100%;
 `;
 const OpenButton = styled(ButtonPrimaryLine)``;
-const InstallButton = styled(ButtonPrimary)``;
 const ChainIcon = styled.img`
   width: 18px;
   height: 18px;

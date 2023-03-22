@@ -16,7 +16,7 @@ import { SectionTitle } from './SectionTitle';
 
 // type Props = StyledComponentPropsWithRef<'div'>;
 export default function UserScore({
-  streamId = 'kjzl6kcym7w8y7dy1njfhc8ewv822i1qw1ty0o0vy5a4w5yu5cuqwqnbfcuh0qx',
+  streamId,
   ...otherProps
 }: {
   streamId?: string;
@@ -39,7 +39,7 @@ const ComingSoonImg = styled.img`
 `;
 
 export function UserScoreMobile({
-  streamId = 'kjzl6kcym7w8y7dy1njfhc8ewv822i1qw1ty0o0vy5a4w5yu5cuqwqnbfcuh0qx',
+  streamId,
   ...otherProps
 }: {
   streamId?: string;

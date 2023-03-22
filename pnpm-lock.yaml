@@ -595,7 +595,7 @@ importers:
       '@types/react-router-dom': 5.3.3
       '@types/styled-components': ^5.1.25
       '@types/three': ^0.146.0
-      '@us3r-network/authkit': ^0.3.2
+      '@us3r-network/authkit': ^0.4.0
       '@us3r-network/profile': ^0.1.6
       '@us3r-network/thread': ^0.1.2
       antd: ^5.0.7
@@ -680,7 +680,7 @@ importers:
       '@types/react-router-dom': 5.3.3
       '@types/styled-components': 5.1.26
       '@types/three': 0.146.0
-      '@us3r-network/authkit': 0.3.2_jm2yonarknyr4u5w4aqsvk3m7u
+      '@us3r-network/authkit': 0.4.0_jm2yonarknyr4u5w4aqsvk3m7u
       '@us3r-network/profile': 0.1.6
       '@us3r-network/thread': 0.1.2
       antd: 5.3.1_biqbaboplfbrettd7655fr4n2y
@@ -739,7 +739,7 @@ importers:
       cross-env: 7.0.3
       eslint-config-airbnb: 19.0.4_guhfqc3yvckhutqwrddiy54d5i
       eslint-import-resolver-typescript: 3.5.3_eakrjjutlgqjxe5ydhtnd4qdmy
-      eslint-plugin-prettier: 4.2.1_fm4dge7oa7adrk34hbwqwkeume
+      eslint-plugin-prettier: 4.2.1_bpfktk52wn6m2x6u3idob4lxru
       fs: 0.0.1-security
       https-browserify: 1.0.0
       husky: 8.0.3
@@ -5860,7 +5860,7 @@ packages:
       cosmiconfig: 5.2.1
       deepmerge: 3.3.0
       glob: 7.2.3
-      joi: 17.9.0
+      joi: 17.9.1
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -6005,7 +6005,7 @@ packages:
   /@react-native-community/cli-types/10.0.0:
     resolution: {integrity: sha512-31oUM6/rFBZQfSmDQsT1DX/5fjqfxg7sf2u8kTPJK7rXVya5SRpAMaCXsPAG0omsmJxXt+J9HxUi3Ic+5Ux5Iw==}
     dependencies:
-      joi: 17.9.0
+      joi: 17.9.1
     dev: false
 
   /@react-native-community/cli/10.2.0:
@@ -9208,8 +9208,8 @@ packages:
       - encoding
     dev: false
 
-  /@us3r-network/authkit/0.3.2_jm2yonarknyr4u5w4aqsvk3m7u:
-    resolution: {integrity: sha512-FtKtMySLioob5fhFiyoczxxaTGKHTrqzZhbOn5dqrkPpaBz4/33rpPy6O9Fuo98xwCIfO2QffFw7CzjPPv0lGQ==}
+  /@us3r-network/authkit/0.4.0_jm2yonarknyr4u5w4aqsvk3m7u:
+    resolution: {integrity: sha512-MkQZsBip0q55rUxfDNqqGV0aDbery4ooMhLgbtPSuz+noTcbKRmm2ihUw9+dtmgjy+kFZlzI1W1DGkthI8xuIw==}
     peerDependencies:
       '@us3r-network/profile': 0.1.6
       '@us3r-network/thread': ^0.1.2
@@ -9220,6 +9220,7 @@ packages:
       '@us3r-network/profile': 0.1.6
       '@us3r-network/thread': 0.1.2
       react: 18.2.0
+      react-intersection-observer: 9.4.3_react@18.2.0
       react-rating-stars-component: 2.2.0
       rebass: 4.0.7_react@18.2.0
       styled-components: 5.3.9_7i5myeigehqah43i5u7wbekgba
@@ -13903,6 +13904,22 @@ packages:
       semver: 6.3.0
     dev: true
 
+  /eslint-plugin-prettier/4.2.1_bpfktk52wn6m2x6u3idob4lxru:
+    resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      eslint: '>=7.28.0'
+      eslint-config-prettier: '*'
+      prettier: '>=2.0.0'
+    peerDependenciesMeta:
+      eslint-config-prettier:
+        optional: true
+    dependencies:
+      eslint: 8.36.0
+      prettier: 2.8.6
+      prettier-linter-helpers: 1.0.0
+    dev: true
+
   /eslint-plugin-prettier/4.2.1_bu6vhaiu3plh4ms6mvzdpnq2oy:
     resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
     engines: {node: '>=12.0.0'}
@@ -13917,22 +13934,6 @@ packages:
       eslint: 8.15.0
       eslint-config-prettier: 8.1.0_eslint@8.15.0
       prettier: 2.8.4
-      prettier-linter-helpers: 1.0.0
-    dev: true
-
-  /eslint-plugin-prettier/4.2.1_fm4dge7oa7adrk34hbwqwkeume:
-    resolution: {integrity: sha512-f/0rXLXUt0oFYs8ra4w49wYZBG5GKZpAYsJSm6rnYL5uVDjd+zowwMwVZHnAjf4edNrKpCDYfXDgmRE/Ak7QyQ==}
-    engines: {node: '>=12.0.0'}
-    peerDependencies:
-      eslint: '>=7.28.0'
-      eslint-config-prettier: '*'
-      prettier: '>=2.0.0'
-    peerDependenciesMeta:
-      eslint-config-prettier:
-        optional: true
-    dependencies:
-      eslint: 8.36.0
-      prettier: 2.8.5
       prettier-linter-helpers: 1.0.0
     dev: true
 
@@ -14191,7 +14192,7 @@ packages:
       imurmurhash: 0.1.4
       is-glob: 4.0.3
       is-path-inside: 3.0.3
-      js-sdsl: 4.3.0
+      js-sdsl: 4.4.0
       js-yaml: 4.1.0
       json-stable-stringify-without-jsonify: 1.0.1
       levn: 0.4.1
@@ -17327,8 +17328,8 @@ packages:
       '@sideway/pinpoint': 2.0.0
     dev: false
 
-  /joi/17.9.0:
-    resolution: {integrity: sha512-PWirKfKoZL3kWHfkGKzdCLGv23c00rI31PKVDMg33b/ANe+bMC/ZPdEnHAoHzn5Hy6BTg3J0A2yRVKzT64e6Xw==}
+  /joi/17.9.1:
+    resolution: {integrity: sha512-FariIi9j6QODKATGBrEX7HZcja8Bsh3rfdGYy/Sb65sGlZWK/QWesU1ghk7aJWDj95knjXlQfSmzFSPPkLVsfw==}
     dependencies:
       '@hapi/hoek': 9.3.0
       '@hapi/topo': 5.1.0
@@ -17347,8 +17348,8 @@ packages:
     resolution: {integrity: sha512-rML+NkoD08p5Dllpjo0ffy4jRHeY6Zsapvr/W86N7E0yuzAO6qa5X9+xog6zQNlH102J7IXljNY2FtS6Lj3ucg==}
     dev: false
 
-  /js-sdsl/4.3.0:
-    resolution: {integrity: sha512-mifzlm2+5nZ+lEcLJMoBK0/IH/bDg8XnJfd/Wq6IP+xoCjLZsTOnV2QpxlVbX9bMnkl5PdEjNtBJ9Cj1NjifhQ==}
+  /js-sdsl/4.4.0:
+    resolution: {integrity: sha512-FfVSdx6pJ41Oa+CF7RDaFmTnCaFhua+SNYQX74riGOpl96x+2jQCqEfQ2bnXu/5DPCqlRuiqyvTJM0Qjz26IVg==}
 
   /js-sha256/0.9.0:
     resolution: {integrity: sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==}
@@ -20428,8 +20429,8 @@ packages:
     hasBin: true
     dev: true
 
-  /prettier/2.8.5:
-    resolution: {integrity: sha512-3gzuxrHbKUePRBB4ZeU08VNkUcqEHaUaouNt0m7LGP4Hti/NuB07C7PPTM/LkWqXoJYJn2McEo5+kxPNrtQkLQ==}
+  /prettier/2.8.6:
+    resolution: {integrity: sha512-mtuzdiBbHwPEgl7NxWlqOkithPyp4VN93V7VeHVWBF+ad3I5avc0RVDT4oImXQy9H/AqxA2NSQH8pSxHW6FYbQ==}
     engines: {node: '>=10.13.0'}
     hasBin: true
     dev: true

@@ -13,6 +13,7 @@ import {
 } from '@reduxjs/toolkit';
 import {
   fetchContentFavorites,
+  fetchDappFavorites,
   fetchUserFavoritesByGroup,
 } from '../../services/api/favorite';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
@@ -76,13 +77,16 @@ export const fetchUserGroupFavorites = createAsyncThunk<
   async (params, { rejectWithValue }) => {
     const resp = await fetchUserFavoritesByGroup();
     if (resp.data.code === ApiRespCode.SUCCESS) {
-      // TODO: event, project, dapp 接口未提供，先兼容之前的接口数据
-      const contentsResponse = await fetchContentFavorites(
-        params.contentUrls ?? []
-      );
+      // TODO: event, project 接口未提供，先兼容之前的接口数据
+      const [contentsResponse, dappsResponse] = await Promise.all([
+        fetchContentFavorites(params.contentUrls ?? []),
+        fetchDappFavorites(params.dappUrls ?? []),
+      ]);
+
       return {
         ...resp.data.data,
         contents: contentsResponse.data.data,
+        dapps: dappsResponse.data.data,
       };
     }
 
