@@ -81,7 +81,7 @@ export default function GridItem({
 
         <h2>{title}</h2>
         <div className="row">
-          {tags?.length > 0 && <Badge text={tags[0]} />}
+          {tags?.length > 0 && <ContentBadge text={tags[0]} />}
           <div className="date">{defaultFormatFromNow(createdAt)}</div>
         </div>
         <div className="authkit-grid">
@@ -169,4 +169,13 @@ const Box = styled.div<{ isActive?: boolean; width?: string }>`
     line-height: 17px;
     color: #718096;
   }
+`;
+
+const ContentBadge = styled(Badge)`
+  max-width: 100%;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 `;
