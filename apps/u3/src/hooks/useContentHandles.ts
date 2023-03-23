@@ -6,7 +6,6 @@
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 import useLogin from './useLogin';
 import {
@@ -35,8 +34,7 @@ export default (
   contents?: ContentListItem[],
   setContents?: (newContents: ContentListItem[]) => void
 ) => {
-  const { handleCallbackVerifyLogin } = useLogin();
-  const { user } = useWlUserReact();
+  const { user, handleCallbackVerifyLogin } = useLogin();
 
   const updateOne = useCallback(
     (id: string | number, data: Partial<ContentListItem>) => {

@@ -7,7 +7,6 @@
  */
 import { useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
-import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
 import { CutomRouteObject, RoutePermission, routes } from '../../route/routes';
@@ -34,9 +33,7 @@ import useUserFavorites from '../../hooks/useUserFavorites';
 
 function Main() {
   const dispatch = useAppDispatch();
-  const { isLogin, login } = useLogin();
-  const { user } = useWlUserReact();
-  const { isAdmin } = usePermissions();
+  const { isLogin, login, user, isAdmin } = useLogin();
   const { openEventCompleteGuideModal, eventCompleteGuideEndCallback } =
     useAppSelector(selectWebsite);
   const { u3ExtensionInstalled } = useU3Extension();
@@ -56,13 +53,13 @@ function Main() {
     }
   }, [lastRouteMeta, isLogin]);
   const { preference, postPreference, preferenceList } = usePreference(
-    user.token
+    user?.token
   );
 
   useEffect(() => {
-    if (!user.token) return;
-    dispatch(fetchUserKarma({ token: user.token }));
-  }, [user.token]);
+    if (!user?.token) return;
+    dispatch(fetchUserKarma({ token: user?.token }));
+  }, [user?.token]);
 
   const { refreshFavorites } = useUserFavorites();
   useEffect(() => {
@@ -120,8 +117,8 @@ function Main() {
         <KarmaGMBox>
           <KarmaGM
             onClick={() => {
-              if (!user.token) return;
-              store.dispatch(checkIn({ token: user.token }));
+              if (!user?.token) return;
+              store.dispatch(checkIn({ token: user?.token }));
             }}
           >
             <Atom02 />

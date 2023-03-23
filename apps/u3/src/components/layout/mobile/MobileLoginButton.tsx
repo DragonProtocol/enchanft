@@ -5,7 +5,8 @@
  * @LastEditTime: 2023-02-28 16:06:46
  * @Description: file description
  */
-import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
+import { UserAvatar } from '@us3r-network/authkit';
+import { useUs3rProfileContext } from '@us3r-network/profile';
 import styled from 'styled-components';
 import useLogin from '../../../hooks/useLogin';
 import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
@@ -15,8 +16,8 @@ type Props = {
   onLogout?: () => void;
 };
 export default function MobileLoginButton({ onLogout }: Props) {
-  const { authorizer, user, isLogin, login } = useLogin();
-  const nameStr = authorizer && getUserDisplayName(user, authorizer);
+  const { sessId } = useUs3rProfileContext();
+  const { isLogin, login } = useLogin();
 
   return (
     <MobileLoginButtonWrapper
@@ -31,9 +32,9 @@ export default function MobileLoginButton({ onLogout }: Props) {
       <MobileLoginButtonBody className="wl-user-button_login-body">
         {isLogin ? (
           <>
-            <UserAvatar className="user-avatar" />
+            <UserAvatar className="user-avatar" did={sessId} />
             <MobileLoginButtonName className="wl-user-button_login-name">
-              {nameStr}
+              {sessId}
             </MobileLoginButtonName>
             <LogoutIconButton src={LogoutSvg} />
           </>

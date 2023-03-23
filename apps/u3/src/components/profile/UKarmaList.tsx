@@ -1,4 +1,3 @@
-import { AsyncRequestStatus, useWlUserReact } from '@ecnft/wl-user-react';
 import { useEffect } from 'react';
 import styled from 'styled-components';
 import dayjs from 'dayjs';
@@ -11,9 +10,11 @@ import ListScrollBox from '../common/box/ListScrollBox';
 import Karma from '../common/Karma';
 import Loading from '../common/loading/Loading';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import useLogin from '../../hooks/useLogin';
+import { AsyncRequestStatus } from '../../services/types';
 
 export default function UKarmaList() {
-  const { user } = useWlUserReact();
+  const { user } = useLogin();
   const { listStatus, loadMoreStatus, hasMore, list, pageNumber, pageSize } =
     useAppSelector(selectKarmaState);
   const dispatch = useAppDispatch();

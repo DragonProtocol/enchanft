@@ -1,5 +1,5 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { usePermissions } from '@ecnft/wl-user-react';
+import useLogin from 'apps/u3/src/hooks/useLogin';
 import { formatFilterShowName } from '../../../utils/filter';
 import {
   ProjectExploreListItemResponse,
@@ -40,7 +40,7 @@ export default function Header({
   onEdit,
   ...otherProps
 }: Props) {
-  const { isAdmin } = usePermissions();
+  const { isAdmin } = useLogin();
   const { topics } = useConfigsTopics();
   const { chains } = topics;
   const showChains = chains.filter((item) =>

@@ -13,7 +13,6 @@ import {
   useParams,
   useSearchParams,
 } from 'react-router-dom';
-import { usePermissions } from '@ecnft/wl-user-react';
 import EventExploreList from '../components/event/EventExploreList';
 import EventExploreListFilter, {
   EventExploreListFilterValues,
@@ -47,6 +46,7 @@ import {
   setEventsLayoutToLocal,
 } from '../utils/localLayout';
 import EventPreview from '../components/event/EventPreview';
+import useLogin from '../hooks/useLogin';
 
 const isUUid = (str: string) => {
   return str.indexOf('-') > -1;
@@ -62,7 +62,7 @@ const filterValuesToSearchParams = (values: EventExploreListFilterValues) => {
 };
 export default function Events() {
   const navigate = useNavigate();
-  const { isAdmin } = usePermissions();
+  const { isAdmin } = useLogin();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const {

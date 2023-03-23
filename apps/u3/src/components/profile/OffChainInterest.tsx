@@ -5,7 +5,6 @@
  * @LastEditTime: 2022-12-17 15:39:15
  * @Description: file description
  */
-import { AuthorizerType, BindWithAuthorizerButton } from '@ecnft/wl-user-react';
 import styled from 'styled-components';
 import { Discord } from '../icons/discord';
 import { Twitter } from '../icons/twitter';
@@ -20,8 +19,8 @@ export default function OffChainInterest() {
       </p>
       <p> You can start by authorizing a Twitter and Discord account.</p>
       <div className="btns">
-        <BindWithAuthorizerButton authorizerType={AuthorizerType.TWITTER} />
-        <BindWithAuthorizerButton authorizerType={AuthorizerType.DISCORD} />
+        {/* <BindWithAuthorizerButton authorizerType={AuthorizerType.TWITTER} />
+        <BindWithAuthorizerButton authorizerType={AuthorizerType.DISCORD} /> */}
         {/* <button type="button" className="twitter">
           <Twitter />
           Twitter

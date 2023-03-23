@@ -6,7 +6,7 @@
  * @Description: file description
  */
 
-import { User } from '@ecnft/wl-user-react';
+import { User } from '../services/api/login';
 
 /**
  * reference: https://developer.mozilla.org/zh-CN/docs/Web/API/Document/cookie

@@ -1,4 +1,3 @@
-import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
@@ -43,12 +42,12 @@ import CreatableMultiSelect from '../components/common/select/CreatableMultiSele
 import ButtonRefresh from '../components/common/button/ButtonRefresh';
 import useConfigsTopics from '../hooks/useConfigsTopics';
 import useThreadSubmit from '../hooks/useThreadSubmit';
+import useLogin from '../hooks/useLogin';
 
 function ContentCreate() {
   const { createContentThread } = useThreadSubmit();
   const navigate = useNavigate();
-  const { user } = useWlUserReact();
-  const { isAdmin } = usePermissions();
+  const { user, isAdmin } = useLogin();
   const [parsing, setParsing] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const { u3ExtensionInstalled } = useAppSelector(selectWebsite);

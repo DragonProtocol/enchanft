@@ -1,5 +1,4 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { usePermissions } from '@ecnft/wl-user-react';
 import { formatFilterShowName } from '../../../utils/filter';
 import {
   DappExploreListItemResponse,
@@ -19,6 +18,7 @@ import EllipsisTextExpandMore from '../../common/text/EllipsisTextExpandMore';
 import { Edit } from '../../icons/edit';
 import DappFavorButton from '../DappFavorButton';
 import useUserFavorites from '../../../hooks/useUserFavorites';
+import useLogin from '../../../hooks/useLogin';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: DappExploreListItemResponse;
@@ -34,7 +34,7 @@ export default function Header({
   ...otherProps
 }: Props) {
   const { isFavoredDapp, userFavoritesLoaded } = useUserFavorites();
-  const { isAdmin } = usePermissions();
+  const { isAdmin } = useLogin();
   const { topics } = useConfigsTopics();
   const { chains } = topics;
   const showChains = chains.filter((item) =>

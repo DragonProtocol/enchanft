@@ -5,8 +5,6 @@
  * @LastEditTime: 2023-03-07 15:52:58
  * @Description: file description
  */
-
-import { AccountType, useWlUserReact } from '@ecnft/wl-user-react';
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import { isMobile } from 'react-device-detect';
 import { useNavigate } from 'react-router-dom';

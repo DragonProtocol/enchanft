@@ -8,11 +8,6 @@
 import { Provider as ReduxProvider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import Modal from 'react-modal';
-import {
-  WlUserReactProvider,
-  handleAuthFailed,
-  setApiBaseUrl,
-} from '@ecnft/wl-user-react';
 import { Us3rProfileProvider } from '@us3r-network/profile';
 import { Us3rThreadProvider } from '@us3r-network/thread';
 import { Us3rAuthProvider, AuthToolType } from '@us3r-network/authkit';
@@ -23,13 +18,9 @@ import Layout from './components/layout/Index';
 import { store } from './store/store';
 import GlobalStyle from './GlobalStyle';
 
-import { authorizers } from './utils/wlUserReact';
-import { API_BASE_URL, CERAMIC_HOST } from './constants';
-import {
-  injectHandleAxiosResponse401,
-  injectStore,
-  injectWlUserReactContextValue,
-} from './services/api/request';
+import { CERAMIC_HOST } from './constants';
+import { injectStore, injectU3Token } from './services/api/request';
+import U3LoginProvider from './contexts/U3LoginContext';
 
 const authToolTypes = [
   AuthToolType.metamask_wallet,
@@ -39,8 +30,6 @@ const authToolTypes = [
 dayjs.extend(relativeTime);
 
 injectStore(store);
-setApiBaseUrl(API_BASE_URL || '');
-injectHandleAxiosResponse401(handleAuthFailed);
 
 Modal.setAppElement('#root');
 function App() {
@@ -51,10 +40,10 @@ function App() {
           authConfig={{ authToolTypes }}
           themeConfig={{ themeType: 'dark' }}
         >
-          <WlUserReactProvider
-            theme="dark"
-            authorizers={authorizers}
-            valueChange={(value) => injectWlUserReactContextValue(value)}
+          <U3LoginProvider
+            u3LoginSuccess={(token) => {
+              injectU3Token(token);
+            }}
           >
             <ReduxProvider store={store}>
               <GlobalStyle />
@@ -62,7 +51,7 @@ function App() {
                 <Layout />
               </BrowserRouter>
             </ReduxProvider>
-          </WlUserReactProvider>
+          </U3LoginProvider>
         </Us3rAuthProvider>
       </Us3rThreadProvider>
     </Us3rProfileProvider>
