@@ -133,7 +133,7 @@ function Profile() {
               addWallet={addWallet}
               delWallet={delWallet}
             />
-            <DailyDigest />
+            {/* <DailyDigest /> */}
           </div>
         )}
 
