@@ -105,8 +105,8 @@ function ContentCreate() {
 
   useEffect(() => {
     const id = searchParams.get('id');
-    if (!id || !user.token) return;
-    getContent(id, user.token)
+    if (!id || !user?.token) return;
+    getContent(id, user?.token)
       .then((resp) => {
         formik.setValues(resp.data.data as any);
         formik.setFieldValue('url', resp.data.data.link);
@@ -115,7 +115,7 @@ function ContentCreate() {
       .catch((err) => {
         toast.error(err.message);
       });
-  }, [searchParams.get('id'), user.token]);
+  }, [searchParams.get('id'), user?.token]);
 
   const loadUrlContent = useCallback(async (url: string) => {
     if (!url) return;
@@ -162,12 +162,12 @@ function ContentCreate() {
               supportIframe: data.supportIframe,
               editorScore: data.editorScore,
             },
-            user.token
+            user?.token
           );
           if (resp.data.code === 0) {
             navigate(`/contents/${resp.data.data.id}`);
             toast.success(messages.content.admin_submit);
-            store.dispatch(fetchUserKarma({ token: user.token }));
+            store.dispatch(fetchUserKarma({ token: user?.token }));
 
             createContentThread(resp.data.data.link ?? data.url);
           }
@@ -184,7 +184,7 @@ function ContentCreate() {
               supportIframe: data.supportIframe,
               editorScore: data.editorScore,
             },
-            user.token
+            user?.token
           );
           toast.success(messages.content.admin_update);
         }
@@ -195,7 +195,7 @@ function ContentCreate() {
         setLoading(false);
       }
     },
-    [user.token]
+    [user?.token]
   );
 
   const renderFieldError = useCallback(

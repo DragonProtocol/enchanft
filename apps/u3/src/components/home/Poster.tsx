@@ -117,7 +117,7 @@ export default function Poster({
 
       var file = new File([blob], 'name');
 
-      uploadImage(file, user.token)
+      uploadImage(file, user?.token)
         .then((result) => {
           setPosterUrl(result.data.url);
           // setUserForm({ ...userForm, avatar: result.data.url });

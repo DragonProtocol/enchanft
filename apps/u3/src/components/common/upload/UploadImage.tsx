@@ -37,7 +37,7 @@ export default function UploadImage({
             return;
           }
           setLoading(true);
-          uploadImage(file, user.token)
+          uploadImage(file, user?.token)
             .then((result) => {
               onSuccess(result.data.url);
               toast.success(messages.common.upload_img);

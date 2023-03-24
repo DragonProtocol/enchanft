@@ -138,7 +138,7 @@ function Contents() {
             contentId: contentId ?? '',
             lang: langQuery,
           },
-          user.token
+          user?.token
         );
         tmpData = data.data;
         setContents(tmpData);
@@ -151,7 +151,7 @@ function Contents() {
         setLoading(false);
       }
     },
-    [user.token]
+    [user?.token]
   );
   const loadMore = useCallback(async () => {
     const pageNumber = currPageNumber + 1;
@@ -162,7 +162,7 @@ function Contents() {
       setLoadingMore(true);
       const { data } = await fetchContents(
         { keywords, tags, orderBy, pageNumber, lang: langQuery },
-        user.token
+        user?.token
       );
       setHasMore(data.data.length > 0);
 

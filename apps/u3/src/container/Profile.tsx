@@ -39,9 +39,9 @@ function Profile() {
   const [wallets, setWallets] = useState<ProfileWallet[]>([]);
 
   const fetchData = useCallback(async () => {
-    if (!user.token) return;
+    if (!user?.token) return;
     try {
-      const { data } = await fetchU3Profiles(user.token);
+      const { data } = await fetchU3Profiles(user?.token);
       const r = mergeProfilesData(data.data);
       setProfileData(r);
       // setProfileData(data.data);
@@ -51,17 +51,17 @@ function Profile() {
     } finally {
       setLoading(false);
     }
-  }, [user.token]);
+  }, [user?.token]);
 
   const fetchWallets = useCallback(async () => {
-    if (!user.token) return;
+    if (!user?.token) return;
     try {
-      const { data } = await fetchU3Wallets(user.token);
+      const { data } = await fetchU3Wallets(user?.token);
       setWallets(data.data);
     } catch (error) {
       toast.error(error.message);
     }
-  }, [user.token]);
+  }, [user?.token]);
 
   const fetchDataWithWallet = useCallback(async () => {
     try {
@@ -77,14 +77,14 @@ function Profile() {
 
   const addOrRemoveWallet = useCallback(
     async (addr: string, add: boolean) => {
-      if (!user.token) return;
+      if (!user?.token) return;
       try {
-        await addOrDelWallet(addr, add, user.token);
+        await addOrDelWallet(addr, add, user?.token);
       } catch (error) {
         toast.error(error.message);
       }
     },
-    [user.token]
+    [user?.token]
   );
 
   const addWallet = useCallback(
@@ -93,15 +93,15 @@ function Profile() {
       await fetchWallets();
       return true;
     },
-    [user.token]
+    [user?.token]
   );
   const delWallet = useCallback(
     async (addr: string) => {
-      if (!user.token) return;
+      if (!user?.token) return;
       await addOrRemoveWallet(addr, false);
       await fetchWallets();
     },
-    [user.token]
+    [user?.token]
   );
 
   useEffect(() => {

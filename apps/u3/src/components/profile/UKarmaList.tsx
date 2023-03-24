@@ -21,9 +21,11 @@ export default function UKarmaList() {
 
   useEffect(() => {
     if (pageNumber === 0 && list.length === 0) {
-      dispatch(fetchUserKarmaList({ token: user.token, pageNumber, pageSize }));
+      dispatch(
+        fetchUserKarmaList({ token: user?.token, pageNumber, pageSize })
+      );
     }
-  }, [user.token]);
+  }, [user?.token]);
 
   return (
     <ListBox
@@ -31,7 +33,7 @@ export default function UKarmaList() {
         if (hasMore) {
           dispatch(
             fetchUserKarmaListMore({
-              token: user.token,
+              token: user?.token,
               pageNumber: pageNumber + 1,
               pageSize,
             })

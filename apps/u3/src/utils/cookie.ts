@@ -91,8 +91,8 @@ export const U3_COOKIE_KEY_TOKEN = 'u3_token';
 export const setU3ExtensionCookie = (user: UserAdaptationCookie) => {
   docCookies.setItem(
     U3_COOKIE_KEY_TOKEN,
-    user.token,
-    new Date(user.tokenExpiresAt),
+    user?.token,
+    new Date(user?.tokenExpiresAt),
     undefined,
     undefined,
     undefined

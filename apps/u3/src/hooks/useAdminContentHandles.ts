@@ -59,7 +59,7 @@ export default (
             setAdminScorePendingIds([...cacheContentAdminScorePendingIds]);
             const editorScore =
               (data.editorScore || 0) + CONTENT_ADMIN_PLUS_SCORE_STEP;
-            const resp = await updateContent({ id, editorScore }, user.token);
+            const resp = await updateContent({ id, editorScore }, user?.token);
             const { code, msg } = resp.data;
             if (code === 0) {
               updateOne(id, {
@@ -98,7 +98,7 @@ export default (
             cacheContentAdminDeletePendingIds.add(id);
             setAdminScorePendingIds([...cacheContentAdminDeletePendingIds]);
             const status = ContentStatus.HIDDEN;
-            const resp = await updateContent({ id, status }, user.token);
+            const resp = await updateContent({ id, status }, user?.token);
             const { code, msg } = resp.data;
             if (code === 0) {
               deleteOne(id);
