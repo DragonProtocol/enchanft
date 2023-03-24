@@ -90,6 +90,7 @@ export default () => {
         .catch(console.error);
     }
   }, [
+    isLogin,
     authComposeClientsValid,
     relationsComposeClient.context,
     getPersonalFavorList,
