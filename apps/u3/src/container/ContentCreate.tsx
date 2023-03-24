@@ -1,4 +1,3 @@
-import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
@@ -42,11 +41,13 @@ import { messages } from '../utils/message';
 import CreatableMultiSelect from '../components/common/select/CreatableMultiSelect';
 import ButtonRefresh from '../components/common/button/ButtonRefresh';
 import useConfigsTopics from '../hooks/useConfigsTopics';
+import useThreadSubmit from '../hooks/useThreadSubmit';
+import useLogin from '../hooks/useLogin';
 
 function ContentCreate() {
+  const { createContentThread } = useThreadSubmit();
   const navigate = useNavigate();
-  const { user } = useWlUserReact();
-  const { isAdmin } = usePermissions();
+  const { user, isAdmin } = useLogin();
   const [parsing, setParsing] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
@@ -104,8 +105,8 @@ function ContentCreate() {
 
   useEffect(() => {
     const id = searchParams.get('id');
-    if (!id || !user.token) return;
-    getContent(id, user.token)
+    if (!id || !user?.token) return;
+    getContent(id, user?.token)
       .then((resp) => {
         formik.setValues(resp.data.data as any);
         formik.setFieldValue('url', resp.data.data.link);
@@ -114,7 +115,7 @@ function ContentCreate() {
       .catch((err) => {
         toast.error(err.message);
       });
-  }, [searchParams.get('id'), user.token]);
+  }, [searchParams.get('id'), user?.token]);
 
   const loadUrlContent = useCallback(async (url: string) => {
     if (!url) return;
@@ -161,12 +162,14 @@ function ContentCreate() {
               supportIframe: data.supportIframe,
               editorScore: data.editorScore,
             },
-            user.token
+            user?.token
           );
           if (resp.data.code === 0) {
             navigate(`/contents/${resp.data.data.id}`);
             toast.success(messages.content.admin_submit);
-            store.dispatch(fetchUserKarma({ token: user.token }));
+            store.dispatch(fetchUserKarma({ token: user?.token }));
+
+            createContentThread(resp.data.data.link ?? data.url);
           }
         } else {
           await updateContent(
@@ -181,7 +184,7 @@ function ContentCreate() {
               supportIframe: data.supportIframe,
               editorScore: data.editorScore,
             },
-            user.token
+            user?.token
           );
           toast.success(messages.content.admin_update);
         }
@@ -192,7 +195,7 @@ function ContentCreate() {
         setLoading(false);
       }
     },
-    [user.token]
+    [user?.token]
   );
 
   const renderFieldError = useCallback(

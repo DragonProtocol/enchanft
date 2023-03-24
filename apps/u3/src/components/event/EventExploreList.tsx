@@ -73,7 +73,7 @@ export default function EventExploreList({
           >
             <EventExploreListItem
               data={item}
-              isActive={item.id === activeId}
+              isActive={String(item.id || item.uuid) === String(activeId)}
               onComplete={() => {
                 onComplete(item);
               }}
@@ -83,7 +83,10 @@ export default function EventExploreList({
               onFavor={() => {
                 onFavor(item);
               }}
-              displayHandles={displayHandles && item.id === activeId}
+              displayHandles={
+                displayHandles &&
+                String(item.id || item.uuid) === String(activeId)
+              }
               isFavored={isFavored(item)}
               loadingFavor={loadingFavor(item.id)}
               disabledFavor={loadingFavor(item.id)}

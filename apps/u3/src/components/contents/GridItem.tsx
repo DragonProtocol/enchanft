@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { VoteBtn } from '@us3r-network/authkit';
 import { MEDIA_BREAK_POINTS } from '../../constants';
 import { defaultFormatFromNow } from '../../utils/time';
 import LinkBox from './LinkBox';
 import Badge from './Badge';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import { ContentListItem } from '../../services/types/contents';
+
+import './griditem.css';
 
 export function GridItemHidden({
   undoAction,
@@ -78,11 +81,11 @@ export default function GridItem({
 
         <h2>{title}</h2>
         <div className="row">
-          {tags?.length > 0 && <Badge text={tags[0]} />}
+          {tags?.length > 0 && <ContentBadge text={tags[0]} />}
           <div className="date">{defaultFormatFromNow(createdAt)}</div>
         </div>
-        <div className="row">
-          <div>👏 &nbsp;{upVoteNum + (editorScore || 0)}</div>
+        <div className="authkit-grid">
+          {data.threadStreamId && <VoteBtn threadId={data.threadStreamId} />}
         </div>
       </div>
     </Box>
@@ -166,4 +169,13 @@ const Box = styled.div<{ isActive?: boolean; width?: string }>`
     line-height: 17px;
     color: #718096;
   }
+`;
+
+const ContentBadge = styled(Badge)`
+  max-width: 100%;
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 `;

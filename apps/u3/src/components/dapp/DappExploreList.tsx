@@ -7,28 +7,24 @@
  */
 import { useCallback } from 'react';
 import styled from 'styled-components';
+import useUserFavorites from '../../hooks/useUserFavorites';
 import DappExploreListItem, {
   DappExploreListItemData,
 } from './DappExploreListItem';
 
 export type DappExploreListProps = {
   data: DappExploreListItemData[];
-  installPendingIds: Array<string | number>;
-  onInstall?: (item: DappExploreListItemData) => void;
+  onFavorSuccess?: (item: DappExploreListItemData) => void;
   onOpen?: (item: DappExploreListItemData) => void;
   onItemClick?: (item: DappExploreListItemData) => void;
 };
 export default function DappExploreList({
   data,
-  installPendingIds,
-  onInstall,
+  onFavorSuccess,
   onOpen,
   onItemClick,
 }: DappExploreListProps) {
-  const loadingInstall = useCallback(
-    (id: string | number) => installPendingIds.includes(id),
-    [installPendingIds]
-  );
+  const { isFavoredDapp, userFavoritesLoaded } = useUserFavorites();
   return (
     <DappExploreListWrapper>
       {data.map((item) => {
@@ -36,13 +32,13 @@ export default function DappExploreList({
           <DappExploreListItem
             key={item.id}
             data={item}
-            isInstalled={!!item?.favored}
-            loadingInstall={loadingInstall(item.id)}
-            disabledInstall={!!item?.favored || loadingInstall(item.id)}
-            onInstall={() => onInstall && onInstall(item)}
+            isInstalled={isFavoredDapp(item.threadStreamId)}
+            onFavorSuccess={() => onFavorSuccess && onFavorSuccess(item)}
             onOpen={() => onOpen && onOpen(item)}
             onClick={() => onItemClick && onItemClick(item)}
-            displayButtons={!!item.url}
+            displayButtons={
+              !!item.url && !!item.threadStreamId && userFavoritesLoaded
+            }
           />
         );
       })}

@@ -11,11 +11,6 @@ import axios, {
   AxiosPromise,
 } from 'axios';
 import qs from 'qs';
-import {
-  AuthorizerType,
-  WlUserActionType,
-  WlUserReactContextType,
-} from '@ecnft/wl-user-react';
 import { API_BASE_URL } from '../../constants';
 
 export type RequestPromise<T> = AxiosPromise<T>;
@@ -35,14 +30,10 @@ export const injectStore = (storeInstance: any) => {
   store = storeInstance;
 };
 
-// 从外部注入wlUserReactProvider提供的功能数据 （为了在此文件中访问token等信息）
-let wlUserReactContextValue: WlUserReactContextType | undefined;
-export const injectWlUserReactContextValue = (value: any) => {
-  wlUserReactContextValue = value;
-};
-let handleAxiosResponse401: () => void | undefined;
-export const injectHandleAxiosResponse401 = (func: () => void) => {
-  handleAxiosResponse401 = func;
+// 从外部注入u3Token
+let u3Token: string;
+export const injectU3Token = (value: string) => {
+  u3Token = value;
 };
 // axios 实例
 const axiosInstance = axios.create();
@@ -55,16 +46,10 @@ axiosInstance.defaults.baseURL = API_BASE_URL;
 axiosInstance.interceptors.request.use(
   (config: AxiosCustomConfigType) => {
     // 1、凭证
-    const { needToken } = config.headers || {};
-    // TODO 这里先默认加Authorization，后续优化
     if (!config.headers) config.headers = {};
-    config.headers.Authorization = `Bearer `;
-    if (needToken && wlUserReactContextValue) {
-      const { isLogin, user } = wlUserReactContextValue;
-
-      const token = config.headers?.token || (isLogin ? user.token : ''); // token从store中获取
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+    config.headers['did-session'] = ``;
+    const token = config.headers?.token || u3Token || '';
+    config.headers['did-session'] = `${token}`;
     // 2、get请求，params参数序列化
     if (config.method === 'get') {
       config.paramsSerializer = (params) =>
@@ -85,10 +70,6 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     if (error.response.status === 401) {
-      wlUserReactContextValue.dispatchAction({
-        type: WlUserActionType.LOGIN,
-        payload: AuthorizerType.EVM_WALLET_KIT,
-      });
       return undefined;
     }
     // 对响应错误做点什么

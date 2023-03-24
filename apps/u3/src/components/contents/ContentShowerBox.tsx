@@ -1,8 +1,8 @@
-import { usePermissions } from '@ecnft/wl-user-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { selectWebsite } from '../../features/website/websiteSlice';
+import useLogin from '../../hooks/useLogin';
 import { contentParse } from '../../services/api/contents';
 import { ContentListItem } from '../../services/types/contents';
 import { useAppSelector } from '../../store/hooks';
@@ -196,7 +196,7 @@ export function ContentShowerHandles({
   onFullscreenRequest?: () => void;
   onFullscreenExit?: () => void;
 }) {
-  const { isAdmin } = usePermissions();
+  const { isAdmin } = useLogin();
   return (
     <ContentShowerHandlesWrapper className="content-shower-handles">
       {showAdminOps && !isForU && isAdmin && (

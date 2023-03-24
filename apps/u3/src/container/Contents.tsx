@@ -5,8 +5,7 @@
  * @LastEditTime: 2023-03-07 15:41:38
  * @Description: 首页任务看板
  */
-import { useCallback, useEffect, useState } from 'react';
-import { useWlUserReact } from '@ecnft/wl-user-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
@@ -18,6 +17,7 @@ import { messages } from '../utils/message';
 import ContentsPage from '../components/contents/ContentsPage';
 import ContentsPageMobile from '../components/contents/ContentsPageMobile';
 import useContentsSearchParams from '../hooks/useContentsSearchParams';
+import useLogin from '../hooks/useLogin';
 
 const NEWEST_CONTENT_ID_KEY = 'NEWEST_CONTENT_ID';
 function getNewestContentIdForStore(): number {
@@ -62,8 +62,13 @@ export type ContentsPageProps = {
   onShare?: (data: ContentListItem) => void;
 };
 function Contents() {
-  const { user } = useWlUserReact();
+  const { user } = useLogin();
   const { id } = useParams();
+
+  const idCache = useRef('');
+  useEffect(() => {
+    idCache.current = id === ':id' ? '' : id;
+  }, [id]);
 
   const { currentSearchParams, searchParamsChange } = useContentsSearchParams();
 
@@ -133,7 +138,7 @@ function Contents() {
             contentId: contentId ?? '',
             lang: langQuery,
           },
-          user.token
+          user?.token
         );
         tmpData = data.data;
         setContents(tmpData);
@@ -146,7 +151,7 @@ function Contents() {
         setLoading(false);
       }
     },
-    [user.token]
+    [user?.token]
   );
   const loadMore = useCallback(async () => {
     const pageNumber = currPageNumber + 1;
@@ -157,7 +162,7 @@ function Contents() {
       setLoadingMore(true);
       const { data } = await fetchContents(
         { keywords, tags, orderBy, pageNumber, lang: langQuery },
-        user.token
+        user?.token
       );
       setHasMore(data.data.length > 0);
 
@@ -173,8 +178,8 @@ function Contents() {
 
   useEffect(() => {
     const { keywords, tags, orderBy, lang } = currentSearchParams;
-    fetchData(keywords, tags, orderBy, lang, id);
-  }, [currentSearchParams, id]);
+    fetchData(keywords, tags, orderBy, lang, idCache.current);
+  }, [currentSearchParams]);
 
   const getMore = useCallback(() => {
     if (loadingMore) return;

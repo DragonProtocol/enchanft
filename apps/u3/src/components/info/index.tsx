@@ -1,12 +1,8 @@
 import styled from 'styled-components';
-import {
-  getUserDisplayName,
-  UserAvatar,
-  useWlUserReact,
-  WlUserModalType,
-} from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
+import { UserAvatar, Username } from '@us3r-network/authkit';
+import { useUs3rProfileContext } from '@us3r-network/profile';
 import { sortPubKey } from '../../utils/solana';
 import { Copy } from '../icons/copy';
 
@@ -41,12 +37,10 @@ export default function Info({
   delWallet: (addr: string) => void;
   addWallet: (addr: string) => Promise<boolean>;
 }) {
+  const { sessId } = useUs3rProfileContext();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showKarmaModal, setShowKarmaModal] = useState(false);
-  const { dispatchModal, user, authorizer } = useWlUserReact();
   const { totalScore } = useAppSelector(selectKarmaState);
-
-  const nameStr = getUserDisplayName(user, authorizer);
 
   const dispatch = useAppDispatch();
   const { following, follower } = useAppSelector(selectFrensHandlesState);
@@ -62,18 +56,20 @@ export default function Info({
         <div className="img-edit">
           <div
             onClick={() => {
-              dispatchModal({ type: WlUserModalType.EDIT_PROFILE });
+              console.log('TODO');
             }}
           >
             <Edit />
           </div>
-          <UserAvatar className="user-avatar" />
+          <UserAvatar className="user-avatar" did={sessId} />
         </div>
 
         <div className="info">
           <div className="nickname">
             <div>
-              <span className="name">{nameStr}</span>
+              <span className="name">
+                <Username did={sessId} />
+              </span>
               <Karma
                 score={`${totalScore || ''}`}
                 clickAction={() => {
@@ -211,7 +207,7 @@ const InfoBox = styled.div`
           }
         }
 
-        & .name {
+        & .name div {
           font-size: 25px;
           font-weight: 700;
           font-style: italic;

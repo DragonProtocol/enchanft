@@ -24,9 +24,10 @@ export default function DappWebsitePreview({
   data,
   ...otherProps
 }: DappWebsitePreviewProps) {
-  const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
+  // const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
   const { image, url, name } = data;
-  const displayCannotOpen = !u3ExtensionInstalled;
+  // const displayCannotOpen = !u3ExtensionInstalled;
+  const displayCannotOpen = false;
   const [iframeLoading, setIframeLoading] = useState(false);
   useEffect(() => {
     setIframeLoading(true);

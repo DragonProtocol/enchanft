@@ -27,3 +27,5 @@ export const CHROME_EXTENSION_URL = process.env.REACT_APP_CHROME_EXTENSION_URL;
 export const EVENT_IMAGE_SIZE_LIMIT = 200 * 1024;
 
 export const U3_HOST_URI = window.location.host;
+
+export const CERAMIC_HOST = process.env.REACT_APP_CERAMIC_HOST;

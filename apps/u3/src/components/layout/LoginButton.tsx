@@ -5,7 +5,8 @@
  * @LastEditTime: 2023-02-08 16:44:26
  * @Description: file description
  */
-import { UserAvatar, getUserDisplayName } from '@ecnft/wl-user-react';
+import { UserAvatar, Username } from '@us3r-network/authkit';
+import { useUs3rProfileContext } from '@us3r-network/profile';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
@@ -20,9 +21,9 @@ type Props = {
   karmaScore?: number;
 };
 export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
-  const { authorizer, user, isLogin, login } = useLogin();
+  const { sessId, profile } = useUs3rProfileContext();
+  const { user, isLogin, login } = useLogin();
   const preScore = useRef<number>(karmaScore || 0);
-  const nameStr = authorizer && getUserDisplayName(user, authorizer);
   const [diffScore, setDiffScore] = useState(0);
   const navigate = useNavigate();
   const flowerRef = useRef<HTMLDivElement>();
@@ -56,112 +57,70 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
   const showScore = karmaScore > 0 ? `${karmaScore}` : '';
 
   return (
-    <>
-      {isLogin && !onlyIcon && (
-        <KarmaWrapper
-          onClick={() => {
-            navigate('/profile');
-          }}
-        >
-          <UserAvatar className="user-avatar" />
-          <div>
-            <span className="user-name">{nameStr}</span>
-            <div className="karma">
-              <Atom2 />
-              <span>{showScore}</span>
-            </div>
-          </div>
-        </KarmaWrapper>
-      )}
-
-      <LoginButtonWrapper
-        hiddenStyle={onlyIcon}
-        onClick={() => {
-          if (!isLogin) {
-            login();
-          } else {
-            onLogout();
-          }
-        }}
-      >
-        <LoginButtonBody className="wl-user-button_login-body">
-          {isLogin ? (
-            <>
-              {(onlyIcon && (
-                <LoginButtonAvatar className="wl-user-button_login-avatar" />
-              )) || (
+    <LoginButtonWrapper>
+      {isLogin ? (
+        <>
+          {showScore && (
+            <ScoreBox onlyIcon>
+              <span className="triangle" />
+              {!onlyIcon && (
                 <>
-                  <LoginButtonName className="wl-user-button_login-name">
-                    Logout
-                  </LoginButtonName>
-                  <LogoutIconButton src={LogoutSvg} />
+                  <Atom2 />
+                  <span>U Karma</span>
                 </>
               )}
-              {onlyIcon && showScore && (
-                <ScoreBox onlyIcon>
-                  <span className="triangle" />
+              <span>{showScore}</span>
 
-                  <span>{showScore}</span>
-
-                  <div
-                    id="flower-score"
-                    className="flower show"
-                    ref={flowerRef}
-                  >
-                    <span />
-                    <span className="score-add" id="flower-score-num">
-                      +{diffScore}
-                    </span>
-                    <span />
-                  </div>
-                </ScoreBox>
-              )}
-            </>
-          ) : (
-            <NoLoginText className="wl-user-button_no-login-text">
-              Login
-            </NoLoginText>
+              <div id="flower-score" className="flower show" ref={flowerRef}>
+                <span />
+                <span className="score-add" id="flower-score-num">
+                  +{diffScore}
+                </span>
+                <span />
+              </div>
+            </ScoreBox>
           )}
-        </LoginButtonBody>
-      </LoginButtonWrapper>
-    </>
+          <LoginUser
+            onClick={() => {
+              navigate('/profile');
+            }}
+            onlyIcon={onlyIcon}
+          >
+            <UserAvatar did={sessId} />
+            <Username did={sessId} />
+          </LoginUser>
+
+          <Button onClick={onLogout} onlyIcon={onlyIcon}>
+            {!onlyIcon && `Logout`}
+            <LogoutIconButton src={LogoutSvg} />
+          </Button>
+        </>
+      ) : (
+        <Button onClick={login} onlyIcon={onlyIcon}>
+          <NoLoginText className="wl-user-button_no-login-text">
+            Login
+          </NoLoginText>
+        </Button>
+      )}
+    </LoginButtonWrapper>
   );
 }
 
-const LoginButtonWrapper = styled(ButtonPrimaryLine)<{ hiddenStyle?: boolean }>`
+const LoginButtonWrapper = styled.div`
   width: 100%;
   box-sizing: border-box;
   display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 12px;
-  gap: 4px;
-  isolation: isolate;
-  ${({ hiddenStyle }) =>
-    hiddenStyle &&
-    `
-    padding: 0;
-    border: none;
-  `}
-  transition: all 0.3s ease-out;
-`;
-const LoginButtonBody = styled.div`
-  width: 100%;
-  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 10px;
-  position: relative;
 `;
+
 const ScoreBox = styled.div<{ onlyIcon: boolean }>`
-  position: absolute;
-  top: ${({ onlyIcon }) => (onlyIcon ? '-30px' : '-43px')};
-  padding: ${({ onlyIcon }) => (onlyIcon ? '2px 0 2px 0' : '0px')};
   box-sizing: border-box;
 
-  width: ${({ onlyIcon }) => (onlyIcon ? '40px' : '130px')};
-  height: ${({ onlyIcon }) => (onlyIcon ? '18px' : '23px')};
+  width: 100%;
+  height: 23px;
 
   background: linear-gradient(52.42deg, #cd62ff 35.31%, #62aaff 89.64%);
   border-radius: 22px;
@@ -171,16 +130,23 @@ const ScoreBox = styled.div<{ onlyIcon: boolean }>`
 
   color: #ffffff;
 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+
+  position: relative;
   & .triangle {
     z-index: -1;
     position: absolute;
-    left: ${({ onlyIcon }) => (onlyIcon ? '17px' : '60px')};
+    left: 50%;
     bottom: -2px;
     width: 7px;
     height: 7px;
     transition: all 0.2s ease-out;
     background: linear-gradient(12.42deg, #cd62ff 35.31%, #62aaff 89.64%);
-    transform: rotate(120deg) skewX(-30deg) scale(1, 0.866);
+    transform: translateX(calc(-50%)) rotate(120deg) skewX(-30deg)
+      scale(1, 0.866);
     border-top-right-radius: 30%;
   }
 
@@ -216,23 +182,51 @@ const ScoreBox = styled.div<{ onlyIcon: boolean }>`
     }
   }
 `;
-
-const LoginButtonAvatar = styled(UserAvatar)`
-  width: 24px;
-  height: 24px;
-  border-radius: 20px;
+const Button = styled(ButtonPrimaryLine)<{ onlyIcon?: boolean }>`
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  gap: 10px;
+  isolation: isolate;
+  transition: all 0.3s ease-out;
+  ${({ onlyIcon }) =>
+    onlyIcon &&
+    `
+    padding: 0;
+    border: none;
+  `}
 `;
-const LoginButtonName = styled.span`
-  /* flex: 1; */
-  text-align: center;
-  font-weight: 400;
-  line-height: 17px;
-  text-align: center;
+const LoginUser = styled(Button)<{ onlyIcon?: boolean }>`
+  gap: 0;
+  img {
+    width: 30px;
+    height: 30px;
+  }
+  div {
+    flex: 1;
+    font-weight: 400;
+    line-height: 17px;
 
-  color: #718096;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+    color: #718096;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  ${({ onlyIcon }) =>
+    onlyIcon &&
+    `
+    img {
+      width: 40px;
+      height: 40px;
+    }
+    div {
+      width: 0;
+    }
+  `}
 `;
 const LogoutIconButton = styled.img`
   width: 24px;

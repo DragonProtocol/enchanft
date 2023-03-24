@@ -5,41 +5,28 @@
  * @LastEditTime: 2023-01-10 18:38:14
  * @Description: file description
  */
-import {
-  AuthorizerType,
-  User,
-  useWlUserReact,
-  WlUserActionType,
-} from '@ecnft/wl-user-react';
-import { useCallback, useEffect } from 'react';
-import {
-  removeU3ExtensionCookie,
-  setU3ExtensionCookie,
-  UserAdaptationCookie,
-} from '../utils/cookie';
-import { removeHomeBannerHiddenFromStore } from '../utils/homeStore';
+import { useUs3rAuth, useUs3rAuthModal } from '@us3r-network/authkit';
+import { useUs3rProfileContext } from '@us3r-network/profile';
+import { useCallback, useEffect, useMemo } from 'react';
+import { useU3Login } from '../contexts/U3LoginContext';
+import { RoleType } from '../services/api/login';
 
 export default () => {
-  const wlUser = useWlUserReact();
-  const { isLogin, dispatchAction, user } = wlUser;
-  useEffect(() => {
-    if (isLogin && user && (user as UserAdaptationCookie).tokenExpiresAt) {
-      setU3ExtensionCookie(user);
-    }
-  }, [isLogin, user]);
+  const { sessId } = useUs3rProfileContext();
+  const { user, u3IsLogin, u3logout } = useU3Login();
 
+  const { logout: us3rLogout } = useUs3rAuth();
+  const { openLoginModal } = useUs3rAuthModal();
   const login = useCallback(() => {
-    dispatchAction({
-      type: WlUserActionType.LOGIN,
-      payload: AuthorizerType.EVM_WALLET_KIT,
-    });
-  }, [dispatchAction]);
+    openLoginModal();
+  }, [openLoginModal]);
 
   const logout = useCallback(() => {
-    dispatchAction({ type: WlUserActionType.LOGOUT });
-    removeHomeBannerHiddenFromStore();
-    removeU3ExtensionCookie();
-  }, [dispatchAction]);
+    us3rLogout();
+    u3logout();
+  }, [us3rLogout, u3logout]);
+
+  const isLogin = useMemo(() => !!sessId && u3IsLogin, [sessId, u3IsLogin]);
 
   const handleCallbackVerifyLogin = useCallback(
     (callback?: () => void) => {
@@ -52,8 +39,12 @@ export default () => {
     [isLogin, login]
   );
 
+  const isAdmin = useMemo(() => user?.roles?.includes(RoleType.ADMIN), [user]);
+
   return {
-    ...wlUser,
+    user,
+    isLogin,
+    isAdmin,
     login,
     logout,
     handleCallbackVerifyLogin,

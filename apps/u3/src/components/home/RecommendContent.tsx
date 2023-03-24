@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import { VoteBtn } from '@us3r-network/authkit';
 import { ContentListItem } from '../../services/types/contents';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import {
@@ -55,7 +56,16 @@ const CardsLayout = styled(CardBase)`
   grid-auto-rows: auto;
 `;
 function Card({
-  data: { title, upVoteNum, editorScore, link, tags, recReason, value },
+  data: {
+    title,
+    upVoteNum,
+    editorScore,
+    link,
+    tags,
+    recReason,
+    value,
+    threadStreamId,
+  },
   clickAction,
 }: {
   data: {
@@ -66,6 +76,7 @@ function Card({
     tags: string[];
     recReason?: string;
     value?: string;
+    threadStreamId?: string;
   };
   clickAction: () => void;
 }) {
@@ -96,7 +107,7 @@ function Card({
           <BottomRow>
             {tags?.length > 0 && <Badge text={tags[0]} />}
             <ContentVote>
-              👏 &nbsp;{(upVoteNum ?? 0) + (editorScore ?? 0)}
+              {threadStreamId && <VoteBtn threadId={threadStreamId} />}
             </ContentVote>
             {/* <BottomRowLine /> */}
             {/* <ContentLink text={link} /> */}
@@ -228,6 +239,11 @@ const ContentVote = styled.div`
   line-height: 17px;
   text-align: center;
   color: #ffffff;
+
+  .us3r-content-vote {
+    width: fit-content;
+    border: none;
+  }
 `;
 const ContentRecReason = styled.div`
   font-weight: 400;

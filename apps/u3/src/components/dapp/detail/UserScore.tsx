@@ -5,17 +5,27 @@
  * @LastEditTime: 2023-03-02 12:08:41
  * @Description: file description
  */
-import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import { useEffect, useCallback, useState } from 'react';
+import styled from 'styled-components';
+
+import { ScoreBox } from '@us3r-network/authkit';
+
 import Card, { CardTitle } from './Card';
 import ComingSoonImgUrl from './imgs/user_score.png';
 import { SectionTitle } from './SectionTitle';
 
-type Props = StyledComponentPropsWithRef<'div'>;
-export default function UserScore({ ...otherProps }: Props) {
+// type Props = StyledComponentPropsWithRef<'div'>;
+export default function UserScore({
+  streamId,
+  ...otherProps
+}: {
+  streamId?: string;
+}) {
   return (
     <UserScoreWrapper {...otherProps}>
       <CardTitle>User Score</CardTitle>
-      <ComingSoonImg src={ComingSoonImgUrl} />
+      <ScoreBox threadId={streamId} />
+      {/* <ComingSoonImg src={ComingSoonImgUrl} /> */}
     </UserScoreWrapper>
   );
 }
@@ -28,11 +38,17 @@ const ComingSoonImg = styled.img`
   margin-top: 20px;
 `;
 
-export function UserScoreMobile({ ...otherProps }: Props) {
+export function UserScoreMobile({
+  streamId,
+  ...otherProps
+}: {
+  streamId?: string;
+}) {
   return (
     <UserScoreWrapperMobile {...otherProps}>
       <SectionTitle>User Score</SectionTitle>
-      <ComingSoonImg src={ComingSoonImgUrl} />
+      {/* <ComingSoonImg src={ComingSoonImgUrl} /> */}
+      <ScoreBox threadId={streamId} />
     </UserScoreWrapperMobile>
   );
 }

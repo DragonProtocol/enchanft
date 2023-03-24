@@ -5,10 +5,10 @@
  * @LastEditTime: 2023-01-12 15:56:34
  * @Description: file description
  */
-import { usePermissions, useWlUserReact } from '@ecnft/wl-user-react';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
+import useLogin from '../../hooks/useLogin';
 import { CutomNavObject, navs } from '../../route/nav';
 import useRoute from '../../route/useRoute';
 
@@ -17,8 +17,7 @@ type Props = {
 };
 
 export default function Nav({ onlyIcon }: Props) {
-  const { isLogin } = useWlUserReact();
-  const { isAdmin } = usePermissions();
+  const { isLogin, isAdmin } = useLogin();
   const navigate = useNavigate();
   const { firstRouteMeta } = useRoute();
   const [openGroupKeys, setOpenGroupKeys] = useState<Array<string>>([]);

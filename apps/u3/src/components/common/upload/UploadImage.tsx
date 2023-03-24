@@ -1,12 +1,12 @@
 import { toast } from 'react-toastify';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 import { useState } from 'react';
-import { EVENT_IMAGE_SIZE_LIMIT } from 'apps/u3/src/constants';
-import { uploadImage } from 'apps/u3/src/services/api/upload';
 import styled from 'styled-components';
-import { messages } from 'apps/u3/src/utils/message';
+import { EVENT_IMAGE_SIZE_LIMIT } from '../../../constants';
+import { uploadImage } from '../../../services/api/upload';
+import { messages } from '../../../utils/message';
 import UploadImgMaskImg from '../../imgs/upload_img_mask.svg';
 import CardBase from '../card/CardBase';
+import useLogin from '../../../hooks/useLogin';
 
 export default function UploadImage({
   url,
@@ -16,7 +16,7 @@ export default function UploadImage({
   onSuccess: (url: string) => void;
 }) {
   const [loading, setLoading] = useState(false);
-  const { user } = useWlUserReact();
+  const { user } = useLogin();
   return (
     <UploadImageWrapper
       onClick={() => {
@@ -37,7 +37,7 @@ export default function UploadImage({
             return;
           }
           setLoading(true);
-          uploadImage(file, user.token)
+          uploadImage(file, user?.token)
             .then((result) => {
               onSuccess(result.data.url);
               toast.success(messages.common.upload_img);

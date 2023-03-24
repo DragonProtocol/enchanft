@@ -22,6 +22,7 @@ import UserScore from './detail/UserScore';
 import Project from './detail/Project';
 import RecommendDapps from './detail/RecommendDapps';
 import DappEditModal from './DappEditModal';
+import useUserFavorites from '../../hooks/useUserFavorites';
 
 export default function DappPage({
   id,
@@ -31,12 +32,11 @@ export default function DappPage({
   recommendDapps,
   recommendDappsLoading,
   // Mutations
-  onInstall,
-  installLoading,
   updateData,
 }: DappPageProps) {
   const navigate = useNavigate();
   const { openDappModal } = useDappWebsite();
+  const { addOneToFavoredDapps } = useUserFavorites();
   const [openEdit, setOpenEdit] = useState(false);
   const [adminEditPending, setAdminEditPending] = useState(false);
   const handleEditSubmit = useCallback(
@@ -69,17 +69,14 @@ export default function DappPage({
     <Wrapper>
       <Header
         data={data}
-        disabledInstall={data.favored || installLoading}
-        loadingInstall={installLoading}
-        isInstalled={data.favored}
-        onInstall={onInstall}
+        onFavorSuccess={() => addOneToFavoredDapps(data)}
         onOpen={() => openDappModal(data.id)}
         onEdit={() => setOpenEdit(true)}
       />
       <ContentLayout>
         <ContentLayoutLeft>
           <Screeshots />
-          <UserScore />
+          <UserScore streamId={data.threadStreamId} />
         </ContentLayoutLeft>
         <ContentLayoutRight>
           {data.project && <Project data={data.project} />}

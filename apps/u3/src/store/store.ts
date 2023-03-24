@@ -11,7 +11,6 @@ import websiteReducer from '../features/website/websiteSlice';
 import eventExploreList from '../features/event/eventExploreList';
 import eventHandles from '../features/event/eventHandles';
 // eslint-disable-next-line import/no-named-as-default
-import eventCreate from '../features/event/eventCreate';
 import eventCompletedList from '../features/event/eventCompletedList';
 import projectExploreList from '../features/project/projectExploreList';
 import projectHandles from '../features/project/projectHandles';
@@ -29,7 +28,6 @@ export const store = configureStore({
     website: websiteReducer,
     eventExploreList,
     eventHandles,
-    eventCreate,
     eventCompletedList,
     projectExploreList,
     projectHandles,

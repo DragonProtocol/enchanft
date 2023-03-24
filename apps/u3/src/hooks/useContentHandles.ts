@@ -6,7 +6,6 @@
  * @Description: file description
  */
 import { useCallback, useEffect, useState } from 'react';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 import useLogin from './useLogin';
 import {
@@ -35,8 +34,7 @@ export default (
   contents?: ContentListItem[],
   setContents?: (newContents: ContentListItem[]) => void
 ) => {
-  const { handleCallbackVerifyLogin } = useLogin();
-  const { user } = useWlUserReact();
+  const { user, handleCallbackVerifyLogin } = useLogin();
 
   const updateOne = useCallback(
     (id: string | number, data: Partial<ContentListItem>) => {
@@ -79,16 +77,16 @@ export default (
             cacheContentVotePendingIds.add(data?.uuid || data.id);
             setVotePendingIds([...cacheContentVotePendingIds]);
             if (data?.uuid) {
-              await personalVote(data.uuid, user.token);
+              await personalVote(data.uuid, user?.token);
             } else {
-              await voteContent(data.id, user.token);
+              await voteContent(data.id, user?.token);
             }
             toast.success(messages.content.applause);
             updateOne(data.uuid || data.id, {
               upVoted: true,
               upVoteNum: data.upVoteNum + 1,
             });
-            store.dispatch(fetchUserKarma({ token: user.token }));
+            store.dispatch(fetchUserKarma({ token: user?.token }));
             resolve();
           } catch (error) {
             toast.error(error?.message || error?.msg || messages.common.error);
@@ -121,12 +119,12 @@ export default (
             cacheContentFavorPendingIds.add(data?.uuid || data.id);
             setFavorPendingIds([...cacheContentFavorPendingIds]);
             if (data.favored) {
-              await delFavors(data.id, user.token);
+              await delFavors(data.id, user?.token);
             } else {
               if (data?.uuid) {
-                await personalFavors(data.uuid, user.token);
+                await personalFavors(data.uuid, user?.token);
               } else {
-                await favorsContent(data.id, user.token);
+                await favorsContent(data.id, user?.token);
               }
               toast.success(messages.content.favor);
             }
@@ -176,10 +174,10 @@ export default (
             cacheContentHiddenPendingIds.add(data?.uuid || data.id);
             setHiddenPendingIds([...cacheContentHiddenPendingIds]);
             if (data?.uuid) {
-              const resp = await personalComplete(data.uuid, user.token);
+              const resp = await personalComplete(data.uuid, user?.token);
               resolve(resp);
             } else {
-              const resp = await complete(data.id, user.token);
+              const resp = await complete(data.id, user?.token);
               resolve(resp);
             }
             deleteOne(data.uuid || data.id);

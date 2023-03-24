@@ -13,7 +13,6 @@ import {
   useParams,
   useSearchParams,
 } from 'react-router-dom';
-import { usePermissions } from '@ecnft/wl-user-react';
 import EventExploreList from '../components/event/EventExploreList';
 import EventExploreListFilter, {
   EventExploreListFilterValues,
@@ -47,6 +46,7 @@ import {
   setEventsLayoutToLocal,
 } from '../utils/localLayout';
 import EventPreview from '../components/event/EventPreview';
+import useLogin from '../hooks/useLogin';
 
 const isUUid = (str: string) => {
   return str.indexOf('-') > -1;
@@ -62,7 +62,7 @@ const filterValuesToSearchParams = (values: EventExploreListFilterValues) => {
 };
 export default function Events() {
   const navigate = useNavigate();
-  const { isAdmin } = usePermissions();
+  const { isAdmin } = useLogin();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
   const {
@@ -83,7 +83,6 @@ export default function Events() {
     [status]
   );
   const [isActiveFilter, setIsActiveFilter] = useState(false);
-  const [activeId, setActiveId] = useState<string | number>('');
   const [layout, setLayout] = useState(getEventsLayoutFromLocal());
   const [openEventPreviewModal, setOpenEventPreviewModal] = useState(false);
 
@@ -112,28 +111,29 @@ export default function Events() {
     }),
     [currentSearchParams]
   );
+
+  const idCache = useRef('');
+  useEffect(() => {
+    idCache.current = id === ':id' ? '' : id;
+  }, [id]);
+
   useEffect(() => {
     const params = { ...currentSearchParams };
-    if (id) {
-      if (isUUid(id)) {
-        Object.assign(params, { uuid: id });
+    if (idCache.current) {
+      if (isUUid(idCache.current)) {
+        Object.assign(params, { uuid: idCache.current });
       } else {
-        Object.assign(params, { eventId: Number(id) });
+        Object.assign(params, { eventId: Number(idCache.current) });
       }
     }
     dispatch(fetchEventExploreList({ ...params }));
-  }, [id, currentSearchParams]);
-  const isInitActive = useRef(false);
-  useEffect(() => {
-    if (!isInitActive.current && status === AsyncRequestStatus.FULFILLED) {
-      if (id) {
-        setActiveId(id);
-      } else {
-        setActiveId(eventExploreList[0]?.uuid || eventExploreList[0]?.id);
-      }
-      isInitActive.current = true;
-    }
-  }, [id, eventExploreList, status]);
+  }, [currentSearchParams]);
+
+  const activeId = useMemo(() => {
+    return id === ':id'
+      ? eventExploreList[0]?.uuid || eventExploreList[0]?.id
+      : id;
+  }, [id, eventExploreList]);
 
   const event = useMemo(
     () =>
@@ -169,10 +169,23 @@ export default function Events() {
   );
 
   useEffect(() => {
-    if (id && event && layout === Layout.GRID) {
+    if (id !== ':id' && event && layout === Layout.GRID) {
       setOpenEventPreviewModal(true);
+    } else {
+      setOpenEventPreviewModal(false);
     }
   }, [id, event, layout]);
+
+  const resetRouthPath = useCallback(() => {
+    navigate(`/events/:id?${searchParams.toString()}`);
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (!id) {
+      resetRouthPath();
+    }
+  }, [id, resetRouthPath]);
+
   return (
     <EventsWrapper>
       <FeedsMenu
@@ -240,7 +253,7 @@ export default function Events() {
                 <ListBox onScrollBottom={getMore}>
                   <EventExploreList
                     data={eventExploreList}
-                    activeId={event?.id || 0}
+                    activeId={activeId}
                     favoredIds={favoredIds}
                     favorQueueIds={favorQueueIds}
                     completedIds={completedIds}
@@ -248,7 +261,13 @@ export default function Events() {
                     onComplete={onComplete}
                     onFavor={onFavor}
                     onShare={onShare}
-                    onItemClick={(item) => setActiveId(item.id)}
+                    onItemClick={(item) => {
+                      navigate(
+                        `/events/${
+                          item?.id || item?.uuid || ''
+                        }?${searchParams.toString()}`
+                      );
+                    }}
                   />
 
                   {renderMoreLoading}
@@ -273,8 +292,11 @@ export default function Events() {
                 <EventExploreGridList
                   data={eventExploreList}
                   onItemClick={(item) => {
-                    setActiveId(item.id);
-                    setOpenEventPreviewModal(true);
+                    navigate(
+                      `/events/${
+                        item?.id || item?.uuid || ''
+                      }?${searchParams.toString()}`
+                    );
                   }}
                 />
 
@@ -292,8 +314,7 @@ export default function Events() {
                     onFavor(event);
                   }}
                   onClose={() => {
-                    setActiveId('');
-                    setOpenEventPreviewModal(false);
+                    resetRouthPath();
                   }}
                   isFavored={event?.favored}
                   loadingFavor={favorQueueIds.includes(event?.id)}

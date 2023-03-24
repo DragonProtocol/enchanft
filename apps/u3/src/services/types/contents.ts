@@ -81,6 +81,7 @@ export type ContentListItem = {
   isForU?: boolean;
   editorScore: null | number;
   favorNum?: number;
+  threadStreamId?: string;
 };
 
 export type ContentsListResponse = ApiResp<Array<ContentListItem>>;

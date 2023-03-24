@@ -5,6 +5,8 @@
  * @LastEditTime: 2022-12-06 16:10:11
  * @Description: file description
  */
+import { ContentsListResponse } from '../types/contents';
+import { DappFavoriteListResponse } from '../types/dapp';
 import { UserGroupFavoritesResponse } from '../types/favorite';
 import request, { RequestPromise } from './request';
 
@@ -12,6 +14,36 @@ export function fetchUserFavoritesByGroup(): RequestPromise<UserGroupFavoritesRe
   return request({
     url: `/uniprojects/favors`,
     method: 'get',
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
+export function fetchContentFavorites(
+  urls: string[]
+): RequestPromise<ContentsListResponse> {
+  return request({
+    url: `/contents/indexing`,
+    method: 'post',
+    data: {
+      urls,
+    },
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
+export function fetchDappFavorites(
+  urls: string[]
+): RequestPromise<DappFavoriteListResponse> {
+  return request({
+    url: `/dapps/indexing`,
+    method: 'post',
+    data: {
+      urls,
+    },
     headers: {
       needToken: true,
     },
