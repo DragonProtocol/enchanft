@@ -7,7 +7,6 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { usePermissions } from '@ecnft/wl-user-react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Loading from '../common/loading/Loading';
 import ListScrollBox from '../common/box/ListScrollBox';
@@ -30,6 +29,7 @@ import ContentGridList from './ContentGridList';
 import ContentPreview from './ContentPreview';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import type { ContentsPageProps } from '../../container/Contents';
+import useLogin from '../../hooks/useLogin';
 
 export default function ContentsPage({
   // Queries
@@ -55,7 +55,7 @@ export default function ContentsPage({
   onShare,
 }: ContentsPageProps) {
   const navigate = useNavigate();
-  const { isAdmin } = usePermissions();
+  const { isAdmin } = useLogin();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 

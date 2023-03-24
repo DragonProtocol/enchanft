@@ -7,7 +7,6 @@
  */
 import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import Info from '../components/info';
@@ -27,10 +26,11 @@ import { ProfileEntity, ProfileWallet } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
 import { mergeProfilesData } from '../utils/mergeProfilesData';
 import Activities from '../components/profile/Activities';
+import useLogin from '../hooks/useLogin';
 
 function Profile() {
   const { wallet } = useParams();
-  const { user } = useWlUserReact();
+  const { user } = useLogin();
   const [tab, setTab] = useState<
     'Credential' | 'OnChain' | 'OffChain' | 'Activities'
   >('Credential');

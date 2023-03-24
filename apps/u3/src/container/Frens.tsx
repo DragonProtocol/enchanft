@@ -16,7 +16,6 @@ import styled from 'styled-components';
 
 import { toast } from 'react-toastify';
 import { Popover } from 'antd';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
@@ -42,6 +41,7 @@ import { MainWrapper } from '../components/layout/Index';
 import FeedsMenu from '../components/layout/FeedsMenu';
 import ListScrollBox from '../components/common/box/ListScrollBox';
 import { messages } from '../utils/message';
+import useLogin from '../hooks/useLogin';
 
 TimeAgo.addDefaultLocale(en);
 const timeAgo = new TimeAgo('en-US');
@@ -505,7 +505,7 @@ function Frens() {
 
   const dispatch = useAppDispatch();
   const feedRef = useRef(null);
-  const { isLogin } = useWlUserReact();
+  const { isLogin } = useLogin();
 
   const {
     feed,

@@ -7,11 +7,11 @@
  */
 import { useCallback, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 import { ContentListItem, ContentStatus } from '../services/types/contents';
 import { CONTENT_ADMIN_PLUS_SCORE_STEP } from '../utils/content';
 import { updateContent } from '../services/api/contents';
 import { messages } from '../utils/message';
+import useLogin from './useLogin';
 
 // cache content admin handle pending ids
 const cacheContentAdminScorePendingIds = new Set();
@@ -21,7 +21,7 @@ export default (
   contents?: ContentListItem[],
   setContents?: (newContents: ContentListItem[]) => void
 ) => {
-  const { user } = useWlUserReact();
+  const { user } = useLogin();
   const updateOne = useCallback(
     (id: string | number, data: Partial<ContentListItem>) => {
       if (setContents) {

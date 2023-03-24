@@ -6,7 +6,6 @@
  * @Description: 首页任务看板
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { useWlUserReact } from '@ecnft/wl-user-react';
 import { toast } from 'react-toastify';
 import { useNavigate, useParams } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
@@ -18,6 +17,7 @@ import { messages } from '../utils/message';
 import ContentsPage from '../components/contents/ContentsPage';
 import ContentsPageMobile from '../components/contents/ContentsPageMobile';
 import useContentsSearchParams from '../hooks/useContentsSearchParams';
+import useLogin from '../hooks/useLogin';
 
 const NEWEST_CONTENT_ID_KEY = 'NEWEST_CONTENT_ID';
 function getNewestContentIdForStore(): number {
@@ -62,7 +62,7 @@ export type ContentsPageProps = {
   onShare?: (data: ContentListItem) => void;
 };
 function Contents() {
-  const { user } = useWlUserReact();
+  const { user } = useLogin();
   const { id } = useParams();
 
   const idCache = useRef('');
