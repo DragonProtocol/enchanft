@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
-import { UserAvatar } from '@us3r-network/authkit';
+import { UserAvatar, Username } from '@us3r-network/authkit';
 import { useUs3rProfileContext } from '@us3r-network/profile';
 import { sortPubKey } from '../../utils/solana';
 import { Copy } from '../icons/copy';
@@ -67,7 +67,9 @@ export default function Info({
         <div className="info">
           <div className="nickname">
             <div>
-              <span className="name">{sessId}</span>
+              <span className="name">
+                <Username did={sessId} />
+              </span>
               <Karma
                 score={`${totalScore || ''}`}
                 clickAction={() => {
@@ -205,7 +207,7 @@ const InfoBox = styled.div`
           }
         }
 
-        & .name {
+        & .name div {
           font-size: 25px;
           font-weight: 700;
           font-style: italic;

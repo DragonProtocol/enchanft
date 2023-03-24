@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-02-08 16:44:26
  * @Description: file description
  */
-import { UserAvatar } from '@us3r-network/authkit';
+import { UserAvatar, Username } from '@us3r-network/authkit';
 import { useUs3rProfileContext } from '@us3r-network/profile';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -14,21 +14,6 @@ import useLogin from '../../hooks/useLogin';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import LogoutSvg from '../common/icons/svgs/logout.svg';
 import { Atom2 } from '../icons/atom';
-
-// TODO 从authkit中导出
-export const getUserDisplayName = (
-  sessId: string,
-  profile?:
-    | {
-        name: string;
-      }
-    | undefined
-) => {
-  if (profile && profile.name) {
-    return profile.name;
-  }
-  return sessId ? `${sessId.slice(0, 8)}..${sessId.slice(-4)}` : '';
-};
 
 type Props = {
   onlyIcon?: boolean;
@@ -39,7 +24,6 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
   const { sessId, profile } = useUs3rProfileContext();
   const { user, isLogin, login } = useLogin();
   const preScore = useRef<number>(karmaScore || 0);
-  const nameStr = getUserDisplayName(sessId, profile);
   const [diffScore, setDiffScore] = useState(0);
   const navigate = useNavigate();
   const flowerRef = useRef<HTMLDivElement>();
@@ -100,11 +84,10 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
             onClick={() => {
               navigate('/profile');
             }}
-            title={nameStr}
             onlyIcon={onlyIcon}
           >
             <UserAvatar did={sessId} />
-            {!onlyIcon && <span>{nameStr}</span>}
+            <Username did={sessId} />
           </LoginUser>
 
           <Button onClick={onLogout} onlyIcon={onlyIcon}>
@@ -218,11 +201,12 @@ const Button = styled(ButtonPrimaryLine)<{ onlyIcon?: boolean }>`
   `}
 `;
 const LoginUser = styled(Button)<{ onlyIcon?: boolean }>`
+  gap: 0;
   img {
     width: 30px;
     height: 30px;
   }
-  span {
+  div {
     flex: 1;
     font-weight: 400;
     line-height: 17px;
@@ -238,6 +222,9 @@ const LoginUser = styled(Button)<{ onlyIcon?: boolean }>`
     img {
       width: 40px;
       height: 40px;
+    }
+    div {
+      width: 0;
     }
   `}
 `;
