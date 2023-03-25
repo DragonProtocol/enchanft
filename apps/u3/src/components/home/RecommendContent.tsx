@@ -215,6 +215,7 @@ const ContentTitle = styled(EllipsisText)`
   color: #ffffff;
 `;
 const CardBottom = styled.div`
+  height: 47px;
   margin-top: auto;
   display: flex;
   flex-direction: column;
