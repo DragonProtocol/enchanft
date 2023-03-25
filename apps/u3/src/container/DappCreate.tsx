@@ -57,7 +57,9 @@ function DappCreate() {
           if (code === 0) {
             toast.success(messages.project.admin_submit);
             uniProjectId = data.id;
-            createProjectThread(data.url ?? form.url);
+            // TODO thread的url是唯一索引  不能创建两个一样的url的thread
+            // 后面需要考虑dapp和project的url是一样的情况要怎么整理, type字段支持数组？
+            // createProjectThread(data.url ?? form.url);
           } else {
             toast.error(msg || messages.common.error);
           }
