@@ -1,17 +1,10 @@
-/*
- * @Author: shixuewen friendlysxw@163.com
- * @Date: 2022-12-14 10:28:05
- * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 15:36:24
- * @Description: file description
- */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { useEffect, useState } from 'react';
-import { selectWebsite } from '../../features/website/websiteSlice';
-import { useAppSelector } from '../../store/hooks';
-import Loading from '../common/loading/Loading';
-import isUrl from '../../utils/isUrl';
-import CannotOpenPlatFormLink from '../event/CannotOpenPlatFormLink';
+import { selectWebsite } from '../../../features/website/websiteSlice';
+import { useAppSelector } from '../../../store/hooks';
+import Loading from '../../common/loading/Loading';
+import isUrl from '../../../utils/isUrl';
+import CannotOpenPlatFormLink from '../../event/CannotOpenPlatFormLink';
 
 export type DappWebsitePreviewProps = StyledComponentPropsWithRef<'div'> & {
   data: {

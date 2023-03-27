@@ -13,7 +13,7 @@ import { MEDIA_BREAK_POINTS } from '../../constants/index';
 import Main from './Main';
 import { useGAPageView } from '../../hooks/useGoogleAnalytics';
 import Menu from './menu';
-import DappsSideBarList from '../dapp/DappSideBarList';
+import DappMenu from '../dapp/your-dapps/DappMenu';
 import MobileHeader from './mobile/MobileHeader';
 
 function Layout() {
@@ -32,7 +32,7 @@ function Layout() {
               <Main />
             </MainBox>
           </RightInner>
-          <DappsSideBarList />
+          <DappMenu />
         </RightBox>
       )}
 
@@ -62,7 +62,8 @@ const LayoutWrapper = styled.div`
 const RightBox = styled.div`
   margin-left: 60px;
   height: 100%;
-  width: calc(100% - 60px);
+  // menu: 60px , dappSideBarList: 30px
+  width: calc(100% - 60px - 30px);
   display: flex;
 `;
 const RightInner = styled.div`

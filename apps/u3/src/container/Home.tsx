@@ -99,7 +99,7 @@ function Home() {
               />
               <PopularDappsMobile
                 data={trendingDapps}
-                viewAllAction={() => navigate('/dapps')}
+                viewAllAction={() => navigate('/dapp-store')}
               />
               <RecommendEventMobile data={recommendEvents} />
             </>
@@ -120,7 +120,7 @@ function Home() {
                   <DiscoverProj
                     data={trendingDapps}
                     viewAllAction={() => {
-                      navigate('/dapps');
+                      navigate('/dapp-store');
                     }}
                   />
                 </div>

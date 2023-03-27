@@ -71,7 +71,7 @@ const MenuWrapper = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1;
+  z-index: 2;
   padding: 20px 10px;
   border-right: 1px solid #39424c;
   box-sizing: border-box;

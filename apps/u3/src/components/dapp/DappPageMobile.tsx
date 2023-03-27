@@ -38,7 +38,7 @@ export default function DappPageMobile({
       <RecommendDappsMobile
         data={recommendDapps}
         loading={recommendDappsLoading}
-        onItemClick={(item) => navigate(`/dapps/${item.id}`)}
+        onItemClick={(item) => navigate(`/dapp-store/${item.id}`)}
       />
     </Wrapper>
   ) : (

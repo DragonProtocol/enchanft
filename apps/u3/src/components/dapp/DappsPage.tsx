@@ -53,7 +53,7 @@ DappsPageProps) {
               data={dapps}
               onFavorSuccess={addOneToFavoredDapps}
               onOpen={(item) => openDappModal(item.id)}
-              onItemClick={(item) => navigate(`/dapps/${item.id}`)}
+              onItemClick={(item) => navigate(`/dapp-store/${item.id}`)}
             />
             {isLoadingMore ? (
               <MoreLoading>loading ...</MoreLoading>

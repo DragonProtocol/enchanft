@@ -1,34 +1,27 @@
-/*
- * @Author: shixuewen friendlysxw@163.com
- * @Date: 2022-12-01 15:41:39
- * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 11:50:17
- * @Description: file description
- */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import React from 'react';
-import { DappExploreListItemResponse } from '../../services/types/dapp';
-import ImgDefault from '../common/ImgDefault';
-import { ReactComponent as DappHandleIcon } from '../common/icons/svgs/dots-vertical.svg';
+import { DappExploreListItemResponse } from '../../../services/types/dapp';
+import ImgDefault from '../../common/ImgDefault';
+import { ReactComponent as DappHandleIcon } from '../../common/icons/svgs/dots-vertical.svg';
 
-export type DappSideBarListItemData = DappExploreListItemResponse;
-export type DappSideBarListItemProps = StyledComponentPropsWithRef<'div'> & {
-  data: DappSideBarListItemData;
+type ItemData = DappExploreListItemResponse;
+type Props = StyledComponentPropsWithRef<'div'> & {
+  data: ItemData;
   onOpen?: () => void;
   onOpenHandles?: () => void;
   disabled?: boolean;
 };
-export default React.forwardRef(function DappSideBarListItem(
-  { data, onOpen, onOpenHandles, disabled, ...props }: DappSideBarListItemProps,
+export default React.forwardRef(function DappInstallListItem(
+  { data, onOpen, onOpenHandles, disabled, ...props }: Props,
   ref
 ) {
   return (
-    <ExploreListItemWrapper
+    <Wrapper
       {...props}
       disabled={disabled}
       ref={ref as React.Ref<HTMLDivElement>}
     >
-      <ListItemInner>
+      <ItemInner>
         <ItemImg
           draggable={false}
           src={data.image}
@@ -45,12 +38,12 @@ export default React.forwardRef(function DappSideBarListItem(
         >
           <DappHandleIcon />
         </HandleIconBox>
-      </ListItemInner>
-    </ExploreListItemWrapper>
+      </ItemInner>
+    </Wrapper>
   );
 });
-const ExploreListItemWrapper = styled.div<{ disabled?: boolean }>`
-  width: 100%;
+const Wrapper = styled.div<{ disabled?: boolean }>`
+  width: 40px;
   box-sizing: border-box;
   ${({ disabled }) =>
     disabled &&
@@ -60,7 +53,7 @@ const ExploreListItemWrapper = styled.div<{ disabled?: boolean }>`
     opacity: 0.5;
   `}
 `;
-const ListItemInner = styled.div`
+const ItemInner = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;

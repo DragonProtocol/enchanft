@@ -18,8 +18,8 @@ export default function MobileHeader() {
     const type = firstRouteMeta.key === RouteKey.contents ? 'list' : 'detail';
     return <MobileContentHeader type={type} />;
   }
-  if ([RouteKey.dapps, RouteKey.dapp].includes(firstRouteMeta.key)) {
-    const type = firstRouteMeta.key === RouteKey.dapps ? 'list' : 'detail';
+  if ([RouteKey.dappStore, RouteKey.dapp].includes(firstRouteMeta.key)) {
+    const type = firstRouteMeta.key === RouteKey.dappStore ? 'list' : 'detail';
     return <MobileDappHeader type={type} />;
   }
   return <MobileHomeHeader />;

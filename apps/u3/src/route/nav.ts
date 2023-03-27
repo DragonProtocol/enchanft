@@ -44,10 +44,10 @@ export const navs: CutomNavObject[] = [
     route: getRoute(RouteKey.contents),
   },
   {
-    name: 'dapp',
-    activeRouteKeys: [RouteKey.dapps, RouteKey.dapp],
+    name: 'dapp store',
+    activeRouteKeys: [RouteKey.dappStore, RouteKey.dapp],
     icon: React.createElement(GridSvg),
-    route: getRoute(RouteKey.dapps),
+    route: getRoute(RouteKey.dappStore),
   },
   // {
   //   name: 'project',
