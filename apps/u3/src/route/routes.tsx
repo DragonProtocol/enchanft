@@ -68,6 +68,7 @@ export const routes: CutomRouteObject[] = [
     path: '/activities',
     element: loadContainerElement('Activities'),
     key: RouteKey.activities,
+    permissions: [RoutePermission.login],
   },
   {
     path: '/events',
