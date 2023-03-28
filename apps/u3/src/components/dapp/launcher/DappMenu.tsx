@@ -32,7 +32,14 @@ export default function DappMenu() {
           }}
         >
           <Title>Your Dapps</Title>
-          <Web3TodayNavBtn> web3 today </Web3TodayNavBtn>
+          <Web3TodayNavBtn
+            onClick={() => {
+              navigate('/web3-today');
+            }}
+          >
+            {' '}
+            web3 today{' '}
+          </Web3TodayNavBtn>
           <DappInstallList ref={dappInstallListRef} />
         </ListInner>
         {isAdmin && (

@@ -12,10 +12,10 @@ import Loading from '../common/loading/Loading';
 import ListScrollBox from '../common/box/ListScrollBox';
 import { ContentBoxContainer } from './ContentShowerBox';
 import { MainWrapper } from '../layout/Index';
-import FeedsMenu from '../layout/FeedsMenu';
+import FeedsMenu from '../web3-today/feeds/FeedsMenu';
 import GridModal from './GridModal';
-import FeedsMenuRight, { Layout } from '../layout/FeedsMenuRight';
-import FeedsFilterBox from '../layout/FeedsFilterBox';
+import FeedsMenuRight, { Layout } from '../web3-today/feeds/FeedsMenuRight';
+import FeedsFilterBox from '../web3-today/feeds/FeedsFilterBox';
 import Filter from './Filter';
 import SearchInput from '../common/input/SearchInput';
 import NoResult from '../common/NoResult';
@@ -149,6 +149,10 @@ export default function ContentsPage({
             setLayout={(l) => {
               setContentsLayoutToLocal(l);
               setLayout(l);
+            }}
+            displaySubmitButton={isAdmin}
+            submitButtonOnClick={() => {
+              navigate('/contents/create');
             }}
           />
         }

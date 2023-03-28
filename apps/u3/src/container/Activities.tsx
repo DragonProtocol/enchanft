@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { MainWrapper } from '../components/layout/Index';
 
-function NoMatchRoute() {
-  return <Wrapper>404</Wrapper>;
+function Activities() {
+  return <Wrapper>Coming Soon</Wrapper>;
 }
-export default NoMatchRoute;
+export default Activities;
 const Wrapper = styled(MainWrapper)`
   display: flex;
   justify-content: center;

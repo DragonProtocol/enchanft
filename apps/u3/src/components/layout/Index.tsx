@@ -13,7 +13,7 @@ import { MEDIA_BREAK_POINTS } from '../../constants/index';
 import Main from './Main';
 import { useGAPageView } from '../../hooks/useGoogleAnalytics';
 import Menu from './menu';
-import DappMenu from '../dapp/your-dapps/DappMenu';
+import DappMenu from '../dapp/launcher/DappMenu';
 import MobileHeader from './mobile/MobileHeader';
 
 function Layout() {

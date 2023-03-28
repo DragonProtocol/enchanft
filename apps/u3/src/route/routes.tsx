@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-03-01 17:01:28
  * @Description: file description
  */
-import { RouteObject } from 'react-router-dom';
+import { Navigate, RouteObject } from 'react-router-dom';
 import loadable from '@loadable/component';
 import React, { ReactNode } from 'react';
 import { isMobile } from 'react-device-detect';
@@ -31,6 +31,8 @@ export enum RouteKey {
   profileWallet = 'profileWallet',
   noMatch = 'noMatch',
   policy = 'policy',
+  web3Today = 'web3Today',
+  activities = 'activities',
 }
 export enum RoutePermission {
   login = 'login',
@@ -52,7 +54,21 @@ export const NoMatchRoute: CutomRouteObject = {
   key: RouteKey.noMatch,
 };
 export const routes: CutomRouteObject[] = [
-  { path: '/', element: loadContainerElement('Home'), key: RouteKey.home },
+  {
+    path: '/',
+    element: <Navigate to="/dapp-store" />,
+    key: RouteKey.home,
+  },
+  {
+    path: '/web3-today',
+    element: loadContainerElement('Web3Today'),
+    key: RouteKey.web3Today,
+  },
+  {
+    path: '/activities',
+    element: loadContainerElement('Activities'),
+    key: RouteKey.activities,
+  },
   {
     path: '/events',
     element: loadContainerElement('Events'),

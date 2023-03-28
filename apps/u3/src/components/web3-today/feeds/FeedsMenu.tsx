@@ -8,9 +8,9 @@
 import { ReactNode, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { getRoute, RouteKey } from '../../route/routes';
-import useRoute from '../../route/useRoute';
-import Tab from '../common/tab/Tab';
+import { getRoute, RouteKey } from '../../../route/routes';
+import useRoute from '../../../route/useRoute';
+import Tab from '../../common/tab/Tab';
 
 const FeedsSwitchOptions = [
   {
@@ -37,11 +37,14 @@ export default function FeedsMenu({ rightEl, bottomEl }: FeedsMenuProps) {
   return (
     <FeedsMenuWrapper>
       <TopBox>
-        <TabSwitch
-          options={FeedsSwitchOptions}
-          value={firstRouteMeta.key}
-          onChange={(value) => navigate(getRoute(value).path)}
-        />
+        <LeftBox>
+          <GoBackButton onClick={() => navigate('/web3-today')}>‹</GoBackButton>
+          <TabSwitch
+            options={FeedsSwitchOptions}
+            value={firstRouteMeta.key}
+            onChange={(value) => navigate(getRoute(value).path)}
+          />
+        </LeftBox>
         {rightEl && <RightBox>{rightEl}</RightBox>}
       </TopBox>
       {bottomEl}
@@ -58,6 +61,16 @@ const TopBox = styled.div`
   justify-content: space-between;
   gap: 40px;
   border-bottom: 1px solid #39424c;
+`;
+const LeftBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 40px;
+`;
+const GoBackButton = styled.div`
+  font-size: 40px;
+  color: #718096;
+  cursor: pointer;
 `;
 const TabSwitch = styled(Tab)`
   border-bottom: none;

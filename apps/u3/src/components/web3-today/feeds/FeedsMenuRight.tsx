@@ -7,17 +7,18 @@
  */
 import styled from 'styled-components';
 import { ReactNode } from 'react';
-import { ReactComponent as FilterFunnelSvg } from '../common/icons/svgs/filter-funnel.svg';
-import { ButtonPrimaryLine } from '../common/button/ButtonBase';
+import { ReactComponent as FilterFunnelSvg } from '../../common/icons/svgs/filter-funnel.svg';
+import { ReactComponent as PlusSvg } from '../../common/icons/svgs/plus.svg';
+import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
 import {
   LayoutGrid,
   LayoutGridActive,
   LayoutList,
   LayoutListActive,
-} from '../icons/layout';
-import { Layout } from '../../utils/localLayout';
+} from '../../icons/layout';
+import { Layout } from '../../../utils/localLayout';
 
-export { Layout } from '../../utils/localLayout';
+export { Layout } from '../../../utils/localLayout';
 
 type FeedsMenuRightProps = {
   orderByEl?: ReactNode;
@@ -28,6 +29,8 @@ type FeedsMenuRightProps = {
   multiLayout?: boolean;
   layout?: Layout;
   setLayout?: (layout: Layout) => void;
+  displaySubmitButton?: boolean;
+  submitButtonOnClick?: () => void;
 };
 export default function FeedsMenuRight({
   orderByEl,
@@ -38,6 +41,8 @@ export default function FeedsMenuRight({
   multiLayout,
   layout,
   setLayout,
+  displaySubmitButton,
+  submitButtonOnClick,
 }: FeedsMenuRightProps) {
   return (
     <FeedsMenuRightWrapper>
@@ -54,6 +59,11 @@ export default function FeedsMenuRight({
       )}
 
       {searchEl && <SearchBox>{searchEl}</SearchBox>}
+      {displaySubmitButton && (
+        <SubmitButton onClick={submitButtonOnClick}>
+          <PlusSvg />
+        </SubmitButton>
+      )}
       <MultiLayoutBox>
         {multiLayout && (
           <div className="layout">
@@ -86,6 +96,7 @@ export default function FeedsMenuRight({
 const FeedsMenuRightWrapper = styled.div`
   width: 100%;
   display: flex;
+  justify-content: end;
   align-items: center;
   gap: 20px;
 `;
@@ -150,6 +161,18 @@ const MultiLayoutBox = styled.div`
       &.active {
         background: #718096;
       }
+    }
+  }
+`;
+
+const SubmitButton = styled(ButtonPrimaryLine)`
+  width: 52px;
+  height: 40px;
+  border-radius: 100px;
+  padding: 0;
+  svg {
+    path {
+      stroke: #718096;
     }
   }
 `;

@@ -30,10 +30,12 @@ import { AsyncRequestStatus } from '../services/types';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Loading from '../components/common/loading/Loading';
 import NoResult from '../components/common/NoResult';
-import FeedsMenu from '../components/layout/FeedsMenu';
+import FeedsMenu from '../components/web3-today/feeds/FeedsMenu';
 import useAdminEventHandles from '../hooks/useAdminEventHandles';
-import FeedsMenuRight, { Layout } from '../components/layout/FeedsMenuRight';
-import FeedsFilterBox from '../components/layout/FeedsFilterBox';
+import FeedsMenuRight, {
+  Layout,
+} from '../components/web3-today/feeds/FeedsMenuRight';
+import FeedsFilterBox from '../components/web3-today/feeds/FeedsFilterBox';
 import SearchInput from '../components/common/input/SearchInput';
 import EventOrderBySelect, {
   defaultEventOrderBy,
@@ -220,6 +222,10 @@ export default function Events() {
             setLayout={(l) => {
               setEventsLayoutToLocal(l);
               setLayout(l);
+            }}
+            displaySubmitButton={isAdmin}
+            submitButtonOnClick={() => {
+              navigate('/events/create');
             }}
           />
         }

@@ -24,30 +24,36 @@ export type CutomNavObject = {
   route?: CutomRouteObject;
 };
 export const navs: CutomNavObject[] = [
-  {
-    name: 'home',
-    activeRouteKeys: [RouteKey.home],
-    icon: React.createElement(HomeSvg),
-    route: getRoute(RouteKey.home),
-  },
+  // {
+  //   name: 'home',
+  //   activeRouteKeys: [RouteKey.home],
+  //   icon: React.createElement(HomeSvg),
+  //   route: getRoute(RouteKey.home),
+  // },
   // {
   //   name: 'profile',
   //   activeRouteKeys: [RouteKey.profile],
   //   icon: React.createElement(ProfileSvg),
   //   route: getRoute(RouteKey.profile),
   // },
-  {
-    key: 'feed',
-    name: 'Feed',
-    icon: React.createElement(FeedSvg),
-    activeRouteKeys: [RouteKey.events, RouteKey.contents, RouteKey.frens],
-    route: getRoute(RouteKey.contents),
-  },
+  // {
+  //   key: 'feed',
+  //   name: 'Feed',
+  //   icon: React.createElement(FeedSvg),
+  //   activeRouteKeys: [RouteKey.events, RouteKey.contents, RouteKey.frens],
+  //   route: getRoute(RouteKey.contents),
+  // },
   {
     name: 'dapp store',
     activeRouteKeys: [RouteKey.dappStore, RouteKey.dapp],
     icon: React.createElement(GridSvg),
     route: getRoute(RouteKey.dappStore),
+  },
+  {
+    name: 'activities',
+    activeRouteKeys: [RouteKey.activities],
+    icon: React.createElement(GridSvg),
+    route: getRoute(RouteKey.activities),
   },
   // {
   //   name: 'project',
@@ -61,33 +67,33 @@ export const navs: CutomNavObject[] = [
     icon: React.createElement(LikeSvg),
     route: getRoute(RouteKey.favorites),
   },
-  {
-    key: 'feed-submit',
-    name: 'Submit',
-    icon: React.createElement(PlusSquareSvg),
-    activeRouteKeys: [RouteKey.contentCreate],
-    route: getRoute(RouteKey.contentCreate),
-    children: [
-      {
-        name: 'content',
-        activeRouteKeys: [RouteKey.contentCreate],
-        route: getRoute(RouteKey.contentCreate),
-      },
-      {
-        name: 'event',
-        activeRouteKeys: [RouteKey.eventCreate],
-        route: getRoute(RouteKey.eventCreate),
-      },
-      {
-        name: 'dapp',
-        activeRouteKeys: [RouteKey.dappCreate],
-        route: getRoute(RouteKey.dappCreate),
-      },
-      {
-        name: 'project',
-        activeRouteKeys: [RouteKey.projectCreate],
-        route: getRoute(RouteKey.projectCreate),
-      },
-    ],
-  },
+  // {
+  //   key: 'feed-submit',
+  //   name: 'Submit',
+  //   icon: React.createElement(PlusSquareSvg),
+  //   activeRouteKeys: [RouteKey.contentCreate],
+  //   route: getRoute(RouteKey.contentCreate),
+  //   children: [
+  //     {
+  //       name: 'content',
+  //       activeRouteKeys: [RouteKey.contentCreate],
+  //       route: getRoute(RouteKey.contentCreate),
+  //     },
+  //     {
+  //       name: 'event',
+  //       activeRouteKeys: [RouteKey.eventCreate],
+  //       route: getRoute(RouteKey.eventCreate),
+  //     },
+  //     {
+  //       name: 'dapp',
+  //       activeRouteKeys: [RouteKey.dappCreate],
+  //       route: getRoute(RouteKey.dappCreate),
+  //     },
+  //     {
+  //       name: 'project',
+  //       activeRouteKeys: [RouteKey.projectCreate],
+  //       route: getRoute(RouteKey.projectCreate),
+  //     },
+  //   ],
+  // },
 ];
