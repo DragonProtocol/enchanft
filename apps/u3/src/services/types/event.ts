@@ -66,6 +66,7 @@ export type EventExploreListItemResponse = {
   editorScore?: number;
   types: string[];
   recReason?: string;
+  threadStreamId?: string;
 };
 export type FetchOneEventResponse = ApiResp<EventExploreListItemResponse>;
 export type EventExploreListResponse = ApiResp<

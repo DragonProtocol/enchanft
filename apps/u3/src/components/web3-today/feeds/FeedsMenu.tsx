@@ -21,10 +21,6 @@ const FeedsSwitchOptions = [
     label: 'Events',
     value: RouteKey.events,
   },
-  {
-    label: 'Favorites',
-    value: RouteKey.favorites,
-  },
 ];
 type FeedsMenuProps = StyledComponentPropsWithRef<'div'> & {
   rightEl?: ReactNode;

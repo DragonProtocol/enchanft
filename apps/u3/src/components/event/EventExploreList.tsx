@@ -18,48 +18,14 @@ import AnimatedListItem, {
 export type EventExploreListProps = {
   data: EventExploreListItemData[];
   activeId: number | string;
-  favorQueueIds: Array<number | string>;
-  favoredIds?: Array<number | string>;
-  completeQueueIds: Array<number | string>;
-  completedIds?: Array<number | string>;
-  displayHandles?: boolean;
-  onComplete: (event: EventExploreListItemData) => void;
-  onFavor: (event: EventExploreListItemData) => void;
-  onShare: (event: EventExploreListItemData) => void;
   onItemClick?: (item: EventExploreListItemData) => void;
 };
 
 export default function EventExploreList({
   data,
   activeId,
-  favorQueueIds,
-  favoredIds = [],
-  completeQueueIds,
-  completedIds = [],
-  displayHandles = true,
-  onComplete,
-  onFavor,
-  onShare,
   onItemClick,
 }: EventExploreListProps) {
-  const isFavored = useCallback(
-    (item: EventExploreListItemData) =>
-      item.favored || favoredIds.includes(item.id),
-    [favoredIds]
-  );
-  const loadingFavor = useCallback(
-    (id: number | string) => favorQueueIds.includes(id),
-    [favorQueueIds]
-  );
-  const isCompleted = useCallback(
-    (item: EventExploreListItemData) =>
-      item.completed || completedIds.includes(item.id),
-    [completedIds]
-  );
-  const loadingComplete = useCallback(
-    (id: number | string) => completeQueueIds.includes(id),
-    [completeQueueIds]
-  );
   const transitions = useAnimatedListTransition(data);
   return (
     <EventExploreListWrapper>
@@ -74,25 +40,6 @@ export default function EventExploreList({
             <EventExploreListItem
               data={item}
               isActive={String(item.id || item.uuid) === String(activeId)}
-              onComplete={() => {
-                onComplete(item);
-              }}
-              onShare={() => {
-                onShare(item);
-              }}
-              onFavor={() => {
-                onFavor(item);
-              }}
-              displayHandles={
-                displayHandles &&
-                String(item.id || item.uuid) === String(activeId)
-              }
-              isFavored={isFavored(item)}
-              loadingFavor={loadingFavor(item.id)}
-              disabledFavor={loadingFavor(item.id)}
-              isCompleted={isCompleted(item)}
-              loadingComplete={loadingComplete(item.id)}
-              disabledComplete={isCompleted(item) || loadingComplete(item.id)}
               onClick={() => onItemClick && onItemClick(item)}
             />
           </AnimatedListItem>

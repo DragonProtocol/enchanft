@@ -1,11 +1,4 @@
 /* eslint-disable react/no-unescaped-entities */
-/*
- * @Author: shixuewen friendlysxw@163.com
- * @Date: 2022-07-05 15:35:42
- * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 13:36:52
- * @Description: 首页任务看板
- */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
@@ -15,26 +8,18 @@ import ContentList from '../components/contents/ContentList';
 import EventExploreList from '../components/event/EventExploreList';
 import EventLinkPreview from '../components/event/EventLinkPreview';
 import { MainWrapper } from '../components/layout/Index';
-import ProjectExploreList from '../components/project/ProjectExploreList';
 import {
   ContentsEntityItem,
   EventsEntityItem,
-  fetchUserGroupFavorites,
-  ProjectsEntityItem,
-  removeAllFavorites,
   selectState,
 } from '../features/favorite/userGroupFavorites';
-import useEventHandles from '../hooks/useEventHandles';
 import useUserFavorites from '../hooks/useUserFavorites';
 import ArchiveSvg from '../components/common/icons/svgs/archive.svg';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { AsyncRequestStatus } from '../services/types';
 import Loading from '../components/common/loading/Loading';
-import useProjectHandles from '../hooks/useProjectHandles';
 import useContentHandles from '../hooks/useContentHandles';
 import { ContentListItem } from '../services/types/contents';
-import ContentShower from '../components/contents/ContentShower';
-import { getContentWithJsonValue } from '../utils/content';
 import {
   fetchCompletedEvents,
   fetchMoreEventCompletedList,
@@ -46,7 +31,6 @@ import TwoHeartSvg from '../components/imgs/two-heart.svg';
 import CheckCircleSvg from '../components/imgs/check-circle.svg';
 import { ButtonPrimaryLine } from '../components/common/button/ButtonBase';
 import ListScrollBox from '../components/common/box/ListScrollBox';
-import ContentShowerBox from '../components/contents/ContentShowerBox';
 import ContentPreview from '../components/contents/ContentPreview';
 import useLogin from '../hooks/useLogin';
 import FeedsMenu from '../components/web3-today/feeds/FeedsMenu';
@@ -183,22 +167,6 @@ function Favorites() {
     refreshFavorites();
   }, [refreshFavorites]);
 
-  const {
-    favoredIds: eventFavoredIds,
-    favorQueueIds: eventFavorQueueIds,
-    completedIds: eventCompletedIds,
-    completeQueueIds: eventCompleteQueueIds,
-    onComplete: onEventComplete,
-    onFavor: onEventFavor,
-    onShare: onEventShare,
-  } = useEventHandles();
-  // const {
-  //   favoredIds: projectFavoredIds,
-  //   favorQueueIds: projectFavorQueueIds,
-  //   onFavor: onProjectFavor,
-  //   onShare: onProjectShare,
-  // } = useProjectHandles();
-
   const [showContentList, setShowContentList] = useState<ContentListItem[]>([]);
   useEffect(() => {
     setShowContentList(contents);
@@ -241,162 +209,110 @@ function Favorites() {
 
   return (
     <FavoritesWrapper>
-      <FeedsMenu />
-      <MainBox>
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <FavoritesLayout>
-            {isEmpty ? (
-              <EmptyFavorites />
-            ) : (
-              <>
-                <FavoritesListBox>
-                  <FavoritesListHeader>
-                    <TabSwitch
-                      options={FavoriteSwitchOptions}
-                      value={switchValue}
-                      onChange={(value) => setSwitchValue(value)}
-                    />
-                    <HeaderLine />
-                    <RightTabSwitch
-                      options={[
-                        {
-                          label: <ArchiveIconButton src={ArchiveSvg} />,
-                          value: FavoriteSwitchValue.completeEvents,
-                        },
-                      ]}
-                      value={switchValue}
-                      onChange={(value) => setSwitchValue(value)}
-                    />
-                  </FavoritesListHeader>
-                  {switchValue === FavoriteSwitchValue.event &&
-                    (isEmptyEvents ? (
-                      <EmptyList />
-                    ) : (
-                      <FavoritesList>
-                        <EventExploreList
-                          data={events}
-                          activeId={event?.id || 0}
-                          favoredIds={eventFavoredIds}
-                          favorQueueIds={eventFavorQueueIds}
-                          completedIds={eventCompletedIds}
-                          completeQueueIds={eventCompleteQueueIds}
-                          displayHandles
-                          onComplete={onEventComplete}
-                          onFavor={onEventFavor}
-                          onShare={onEventShare}
-                          onItemClick={setEvent}
-                        />
-                      </FavoritesList>
-                    ))}
-                  {/* {switchValue === FavoriteSwitchValue.project &&
-                  (isEmptyProjects ? (
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <FavoritesLayout>
+          {isEmpty ? (
+            <EmptyFavorites />
+          ) : (
+            <>
+              <FavoritesListBox>
+                <FavoritesListHeader>
+                  <TabSwitch
+                    options={FavoriteSwitchOptions}
+                    value={switchValue}
+                    onChange={(value) => setSwitchValue(value)}
+                  />
+                  <HeaderLine />
+                  <RightTabSwitch
+                    options={[
+                      {
+                        label: <ArchiveIconButton src={ArchiveSvg} />,
+                        value: FavoriteSwitchValue.completeEvents,
+                      },
+                    ]}
+                    value={switchValue}
+                    onChange={(value) => setSwitchValue(value)}
+                  />
+                </FavoritesListHeader>
+                {switchValue === FavoriteSwitchValue.event &&
+                  (isEmptyEvents ? (
                     <EmptyList />
                   ) : (
                     <FavoritesList>
-                      <ProjectExploreList
-                        data={projects}
-                        activeId={project?.id || 0}
-                        favoredIds={projectFavoredIds}
-                        favorQueueIds={projectFavorQueueIds}
-                        onFavor={onProjectFavor}
-                        onShare={onProjectShare}
-                        onItemClick={setProject}
+                      <EventExploreList
+                        data={events}
+                        activeId={event?.id || 0}
+                        onItemClick={setEvent}
                       />
                     </FavoritesList>
-                  ))} */}
-                  {switchValue === FavoriteSwitchValue.content &&
-                    (isEmptyContents ? (
-                      <EmptyList />
-                    ) : (
-                      <FavoritesList>
-                        <ContentList
-                          data={showContentList}
-                          activeId={content?.id}
-                          loadingVoteIds={contentVotePendingIds}
-                          loadingFavorIds={contentFavorPendingIds}
-                          loadingHiddenIds={contentHiddenPendingIds}
-                          onVote={onContentVote}
-                          onFavor={onContentFavor}
-                          onShare={onContentShare}
-                          onHidden={onContentHiddenAction}
-                          onHiddenUndo={onContentHiddenUndoAction}
-                          onItemClick={(item) =>
-                            setContent(item as unknown as ContentListItem)
-                          }
-                        />
-                      </FavoritesList>
-                    ))}
-                  {switchValue === FavoriteSwitchValue.completeEvents &&
-                    (isEmptyCompletedEvents ? (
-                      <EmptyCompletedEventList />
-                    ) : (
-                      <ListScrollBox onScrollBottom={getMoreCompletedEvents}>
-                        <EventExploreList
-                          data={completedEvents}
-                          activeId={completedEvent?.id || 0}
-                          favoredIds={eventFavoredIds}
-                          favorQueueIds={eventFavorQueueIds}
-                          completedIds={eventCompletedIds}
-                          completeQueueIds={eventCompleteQueueIds}
-                          displayHandles
-                          onComplete={onEventComplete}
-                          onFavor={onEventFavor}
-                          onShare={onEventShare}
-                          onItemClick={setCompletedEvent}
-                        />
-                        {isLoadingMoreCompleted ? (
-                          <MoreLoading>loading ...</MoreLoading>
-                        ) : completedNoMore ? (
-                          <MoreLoading>No other events</MoreLoading>
-                        ) : null}
-                      </ListScrollBox>
-                    ))}
-                </FavoritesListBox>
-                <FavoritesContentBox>
-                  {FavoriteSwitchValue.event === switchValue &&
-                    (event ? (
-                      <EventLinkPreview data={event} />
-                    ) : (
-                      <EmptyContent />
-                    ))}
-                  {FavoriteSwitchValue.completeEvents === switchValue &&
-                    (completedEvent ? (
-                      <EventLinkPreview data={completedEvent} />
-                    ) : (
-                      <EmptyCompletedEventContent />
-                    ))}
-
-                  {/* {switchValue === FavoriteSwitchValue.project &&
-                  (project ? (
-                    <ContentScrollBox>
-                      {project && (
-                        <ProjectDetailView
-                          data={project}
-                          eventCompletedIds={eventCompletedIds}
-                          eventCompleteQueueIds={eventCompleteQueueIds}
-                          onEventComplete={onEventComplete}
-                          onContentVote={onContentVote}
-                        />
-                      )}
-                    </ContentScrollBox>
+                  ))}
+                {switchValue === FavoriteSwitchValue.content &&
+                  (isEmptyContents ? (
+                    <EmptyList />
+                  ) : (
+                    <FavoritesList>
+                      <ContentList
+                        data={showContentList}
+                        activeId={content?.id}
+                        loadingVoteIds={contentVotePendingIds}
+                        loadingFavorIds={contentFavorPendingIds}
+                        loadingHiddenIds={contentHiddenPendingIds}
+                        onVote={onContentVote}
+                        onFavor={onContentFavor}
+                        onShare={onContentShare}
+                        onHidden={onContentHiddenAction}
+                        onHiddenUndo={onContentHiddenUndoAction}
+                        onItemClick={(item) =>
+                          setContent(item as unknown as ContentListItem)
+                        }
+                      />
+                    </FavoritesList>
+                  ))}
+                {switchValue === FavoriteSwitchValue.completeEvents &&
+                  (isEmptyCompletedEvents ? (
+                    <EmptyCompletedEventList />
+                  ) : (
+                    <ListScrollBox onScrollBottom={getMoreCompletedEvents}>
+                      <EventExploreList
+                        data={completedEvents}
+                        activeId={completedEvent?.id || 0}
+                        onItemClick={setCompletedEvent}
+                      />
+                      {isLoadingMoreCompleted ? (
+                        <MoreLoading>loading ...</MoreLoading>
+                      ) : completedNoMore ? (
+                        <MoreLoading>No other events</MoreLoading>
+                      ) : null}
+                    </ListScrollBox>
+                  ))}
+              </FavoritesListBox>
+              <FavoritesContentBox>
+                {FavoriteSwitchValue.event === switchValue &&
+                  (event ? (
+                    <EventLinkPreview data={event} />
                   ) : (
                     <EmptyContent />
-                  ))} */}
+                  ))}
+                {FavoriteSwitchValue.completeEvents === switchValue &&
+                  (completedEvent ? (
+                    <EventLinkPreview data={completedEvent} />
+                  ) : (
+                    <EmptyCompletedEventContent />
+                  ))}
 
-                  {switchValue === FavoriteSwitchValue.content &&
-                    (content ? (
-                      <ContentPreview data={content} showAdminOps={false} />
-                    ) : (
-                      <EmptyContent />
-                    ))}
-                </FavoritesContentBox>
-              </>
-            )}
-          </FavoritesLayout>
-        )}
-      </MainBox>
+                {switchValue === FavoriteSwitchValue.content &&
+                  (content ? (
+                    <ContentPreview data={content} showAdminOps={false} />
+                  ) : (
+                    <EmptyContent />
+                  ))}
+              </FavoritesContentBox>
+            </>
+          )}
+        </FavoritesLayout>
+      )}
     </FavoritesWrapper>
   );
 }
@@ -404,18 +320,10 @@ export default Favorites;
 
 const FavoritesWrapper = styled(MainWrapper)`
   display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding-top: 0px;
-`;
-const MainBox = styled.div`
-  width: 100%;
-  height: 0px;
-  flex: 1;
-  display: flex;
   align-items: center;
   justify-content: center;
 `;
+
 const FavoritesLayout = styled.div`
   width: 100%;
   height: 100%;
@@ -471,11 +379,6 @@ const FavoritesContentBox = styled.div`
   width: 0;
   flex: 1;
   height: 100%;
-`;
-const ContentScrollBox = styled(ScrollBox)`
-  width: 100%;
-  height: 100%;
-  padding: 20px;
 `;
 const MoreLoading = styled.div`
   padding: 20px;

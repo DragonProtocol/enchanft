@@ -7,23 +7,17 @@
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import useFullScreen from '../../hooks/useFullScreen';
+import { EventExploreListItemResponse } from '../../services/types/event';
 import ButtonFullScreen from '../common/button/ButtonFullScreen';
-import { EventExploreListItemData } from './EventExploreListItem';
 import EventLinkPreview, { EventPreviewHandles } from './EventLinkPreview';
 
 export type EventPreviewProps = StyledComponentPropsWithRef<'div'> & {
-  data?: EventExploreListItemData;
+  data?: EventExploreListItemResponse;
   showAdminOps?: boolean;
-  onAdminThumbUp?: () => void;
-  onAdminDelete?: () => void;
-  onAdminEdit?: () => void;
 };
 export default function EventPreview({
   data,
   showAdminOps,
-  onAdminThumbUp,
-  onAdminDelete,
-  onAdminEdit,
   ...otherProps
 }: EventPreviewProps) {
   const { ref, isFullscreen, onToggle } = useFullScreen();
@@ -33,11 +27,8 @@ export default function EventPreview({
         <>
           <Header>
             <EventPreviewHandles
-              editorScore={data?.editorScore}
+              data={data}
               showAdminOps={showAdminOps}
-              onAdminThumbUp={onAdminThumbUp}
-              onAdminDelete={onAdminDelete}
-              onAdminEdit={onAdminEdit}
               isFullscreen={isFullscreen}
               onFullscreenRequest={onToggle}
               onFullscreenExit={onToggle}
