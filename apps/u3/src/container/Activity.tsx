@@ -3,20 +3,20 @@ import Rss3Content from '../components/fren/Rss3Content';
 import { CurrencyETH } from '../components/icons/currency-eth';
 import { MainWrapper } from '../components/layout/Index';
 
-function Activities() {
+function Activity() {
   return (
     <Wrapper>
       <div className="lists">
         <Rss3Content
           address={['0x74667801993b457b8ccf19d03bbbaa52b7fff43b']}
-          empty={<NoActivities />}
+          empty={<NoActivity />}
         />
       </div>
     </Wrapper>
   );
 }
-export default Activities;
-export function NoActivities() {
+export default Activity;
+export function NoActivity() {
   return (
     <div className="no-item">
       <CurrencyETH />

@@ -135,7 +135,7 @@ export const FavoriteSwitchOptions = [
   // },
 ];
 
-function Favorites() {
+function Favorite() {
   const { isLogin } = useLogin();
   const dispatch = useAppDispatch();
   const completedEvents = useAppSelector(selectAllForCompletedEvents);
@@ -316,7 +316,7 @@ function Favorites() {
     </FavoritesWrapper>
   );
 }
-export default Favorites;
+export default Favorite;
 
 const FavoritesWrapper = styled(MainWrapper)`
   display: flex;
