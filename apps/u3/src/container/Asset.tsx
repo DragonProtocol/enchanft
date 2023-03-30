@@ -75,4 +75,12 @@ export default function Asset() {
     </Wrapper>
   );
 }
-const Wrapper = styled(MainWrapper)``;
+const Wrapper = styled(MainWrapper)`
+  .loading {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+`;
