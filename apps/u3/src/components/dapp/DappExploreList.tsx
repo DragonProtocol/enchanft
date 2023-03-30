@@ -5,26 +5,20 @@
  * @LastEditTime: 2023-02-27 15:35:43
  * @Description: file description
  */
-import { useCallback } from 'react';
 import styled from 'styled-components';
-import useUserFavorites from '../../hooks/useUserFavorites';
+import { MEDIA_BREAK_POINTS } from '../../constants';
 import DappExploreListItem, {
   DappExploreListItemData,
 } from './DappExploreListItem';
 
 export type DappExploreListProps = {
   data: DappExploreListItemData[];
-  onFavorSuccess?: (item: DappExploreListItemData) => void;
-  onOpen?: (item: DappExploreListItemData) => void;
   onItemClick?: (item: DappExploreListItemData) => void;
 };
 export default function DappExploreList({
   data,
-  onFavorSuccess,
-  onOpen,
   onItemClick,
 }: DappExploreListProps) {
-  const { isFavoredDapp, userFavoritesLoaded } = useUserFavorites();
   return (
     <DappExploreListWrapper>
       {data.map((item) => {
@@ -32,13 +26,7 @@ export default function DappExploreList({
           <DappExploreListItem
             key={item.id}
             data={item}
-            isInstalled={isFavoredDapp(item.threadStreamId)}
-            onFavorSuccess={() => onFavorSuccess && onFavorSuccess(item)}
-            onOpen={() => onOpen && onOpen(item)}
             onClick={() => onItemClick && onItemClick(item)}
-            displayButtons={
-              !!item.url && !!item.threadStreamId && userFavoritesLoaded
-            }
           />
         );
       })}
@@ -48,14 +36,17 @@ export default function DappExploreList({
 const DappExploreListWrapper = styled.div`
   width: 100%;
   display: grid;
-  grid-template-columns: repeat(3, minmax(calc((100% - 0px) / 3), 1fr));
-  & > div {
-    & {
-      border-bottom: 1px solid rgba(57, 66, 76, 0.5);
-      border-right: 1px solid rgba(57, 66, 76, 0.5);
-    }
-    &:nth-child(3n) {
-      border-right: none;
-    }
+  grid-gap: 20px;
+  grid-template-columns: repeat(3, minmax(calc((100% - 20px * 2) / 3), 1fr));
+  @media (min-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+    grid-template-columns: repeat(3, minmax(calc((100% - 20px * 2) / 3), 1fr));
+  }
+
+  @media (min-width: ${MEDIA_BREAK_POINTS.md}px) and (max-width: ${MEDIA_BREAK_POINTS.xxl}px) {
+    grid-template-columns: repeat(3, minmax(calc((100% - 20px * 1) / 2), 1fr));
+  }
+
+  @media (max-width: ${MEDIA_BREAK_POINTS.md}px) {
+    grid-template-columns: repeat(1);
   }
 `;

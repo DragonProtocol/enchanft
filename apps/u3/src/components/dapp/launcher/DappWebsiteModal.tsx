@@ -4,7 +4,7 @@ import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
 import ImgDefault from '../../common/ImgDefault';
 import DappWebsitePreview from './DappWebsitePreview';
 
-import CloseSvg from '../../common/icons/svgs/close.svg';
+import PowerSvg from '../../common/icons/svgs/power.svg';
 import useFullScreen from '../../../hooks/useFullScreen';
 import ButtonFullScreen from '../../common/button/ButtonFullScreen';
 
@@ -22,7 +22,7 @@ export default function DappWebsiteModal() {
           <ButtonFullScreen isFullscreen={isFullscreen} onClick={onToggle} />
           <RightLine />
           <CloseButton onClick={closeDappModal}>
-            <ButtonIcon src={CloseSvg} />
+            <ButtonIcon src={PowerSvg} />
           </CloseButton>
         </HeaderRight>
       </Header>

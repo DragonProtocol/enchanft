@@ -5,7 +5,6 @@
  * @LastEditTime: 2023-03-02 12:15:13
  * @Description: file description
  */
-import { useCallback } from 'react';
 import styled from 'styled-components';
 import {
   DappExploreListItemData,
@@ -14,22 +13,12 @@ import {
 
 export type DappExploreListProps = {
   data: DappExploreListItemData[];
-  installPendingIds?: Array<string | number>;
-  onInstall?: (item: DappExploreListItemData) => void;
-  onOpen?: (item: DappExploreListItemData) => void;
   onItemClick?: (item: DappExploreListItemData) => void;
 };
 export default function DappExploreListMobile({
   data,
-  installPendingIds = [],
-  onInstall,
-  onOpen,
   onItemClick,
 }: DappExploreListProps) {
-  const loadingInstall = useCallback(
-    (id: string | number) => installPendingIds.includes(id),
-    [installPendingIds]
-  );
   return (
     <DappExploreListWrapper>
       {data.map((item) => {
@@ -38,7 +27,6 @@ export default function DappExploreListMobile({
             key={item.id}
             data={item}
             onClick={() => onItemClick && onItemClick(item)}
-            displayButtons={false}
           />
         );
       })}

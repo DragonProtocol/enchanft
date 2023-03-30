@@ -10,9 +10,8 @@ import styled from 'styled-components';
 import useConfigsTopics from '../../hooks/useConfigsTopics';
 import { DappExploreListParams } from '../../services/types/dapp';
 import SearchInput from '../common/input/SearchInput';
-import Select from '../common/select/Select';
-import GridSvgUrl from '../common/icons/svgs/grid.svg';
-import ListSvgUrl from '../common/icons/svgs/list.svg';
+import GridSvgUrl from '../common/icons/svgs/grid2.svg';
+import ListChoice from '../common/select/ListChoice';
 
 export type DappExploreListFilterValues = Pick<
   DappExploreListParams,
@@ -22,10 +21,12 @@ export type DappExploreListFilterValues = Pick<
 export const defaultChainOption = {
   value: '',
   label: 'All Chains',
+  iconUrl: GridSvgUrl,
 };
 export const defaultTypeOption = {
   value: '',
   label: 'All Categories',
+  iconUrl: GridSvgUrl,
 };
 
 export const defaultDappExploreListFilterValues: DappExploreListFilterValues = {
@@ -66,34 +67,28 @@ export default function DappExploreListFilter({
   const { types, chains, keywords } = values;
   return (
     <DappExploreListFilterWrapper>
-      <Left>
-        <Select
-          iconUrl={GridSvgUrl}
-          options={chainOptions}
-          onChange={(value) => onChange({ ...values, chains: [value] })}
-          value={chains[0]}
-        />
-        <Select
-          iconUrl={ListSvgUrl}
-          options={typeOptions}
-          onChange={(value) => onChange({ ...values, types: [value] })}
-          value={types[0]}
-        />
-      </Left>
-      <Search onSearch={(value) => onChange({ ...values, keywords: value })} />
+      {/* <Search onSearch={(value) => onChange({ ...values, keywords: value })} /> */}
+
+      <ListChoice
+        label="Categories"
+        options={typeOptions}
+        onChange={(value) => onChange({ ...values, types: [value] })}
+        value={types[0] ?? defaultTypeOption.value}
+      />
+      <ListChoice
+        label="Blockchains"
+        options={chainOptions}
+        onChange={(value) => onChange({ ...values, chains: [value] })}
+        value={chains[0] ?? defaultChainOption.value}
+      />
     </DappExploreListFilterWrapper>
   );
 }
 const DappExploreListFilterWrapper = styled.div`
   width: 100%;
   display: flex;
-  align-items: center;
-  gap: 20px;
-`;
-const Left = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
   gap: 20px;
 `;
 const Search = styled(SearchInput)`

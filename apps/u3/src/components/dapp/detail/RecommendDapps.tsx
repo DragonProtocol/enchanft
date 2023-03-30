@@ -8,10 +8,9 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { DappExploreListItemResponse } from '../../../services/types/dapp';
 import Loading from '../../common/loading/Loading';
-import DappExploreListItem, {
-  DappExploreListItemMobile,
-} from '../DappExploreListItem';
+import { DappExploreListItemMobile } from '../DappExploreListItem';
 import Card, { CardTitle } from './Card';
+import RecommendDappItem from './RecommendDappItem';
 import { SectionTitle } from './SectionTitle';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
@@ -38,7 +37,6 @@ export default function RecommendDapps({
             <RecommendDappItem
               key={item.id}
               data={item}
-              displayButtons={false}
               onClick={() => onItemClick && onItemClick(item)}
             />
           ))}
@@ -59,9 +57,6 @@ const RecommendDappsList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-`;
-const RecommendDappItem = styled(DappExploreListItem)`
-  padding: 0;
 `;
 const ListStatusBox = styled.div`
   width: 100%;
@@ -91,7 +86,6 @@ export function RecommendDappsMobile({
             <DappExploreListItemMobile
               key={item.id}
               data={item}
-              displayButtons={false}
               onClick={() => onItemClick && onItemClick(item)}
             />
           ))}
