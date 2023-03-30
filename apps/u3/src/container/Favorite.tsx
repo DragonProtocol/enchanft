@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unescaped-entities */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import ScrollBox from '../components/common/box/ScrollBox';
@@ -14,26 +14,14 @@ import {
   selectState,
 } from '../features/favorite/userGroupFavorites';
 import useUserFavorites from '../hooks/useUserFavorites';
-import ArchiveSvg from '../components/common/icons/svgs/archive.svg';
-import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { useAppSelector } from '../store/hooks';
 import { AsyncRequestStatus } from '../services/types';
 import Loading from '../components/common/loading/Loading';
 import useContentHandles from '../hooks/useContentHandles';
 import { ContentListItem } from '../services/types/contents';
-import {
-  fetchCompletedEvents,
-  fetchMoreEventCompletedList,
-  removeAll as removeAllForCompletedEvents,
-  selectAll as selectAllForCompletedEvents,
-  selectState as selectStateForCompletedEvents,
-} from '../features/event/eventCompletedList';
 import TwoHeartSvg from '../components/imgs/two-heart.svg';
-import CheckCircleSvg from '../components/imgs/check-circle.svg';
 import { ButtonPrimaryLine } from '../components/common/button/ButtonBase';
-import ListScrollBox from '../components/common/box/ListScrollBox';
 import ContentPreview from '../components/contents/ContentPreview';
-import useLogin from '../hooks/useLogin';
-import FeedsMenu from '../components/web3-today/feeds/FeedsMenu';
 
 function EmptyFavorites() {
   const navigate = useNavigate();
@@ -67,23 +55,7 @@ function EmptyContent() {
     </EmptyBox>
   );
 }
-function EmptyCompletedEventList() {
-  return (
-    <EmptyBox>
-      <EmptyDesc>
-        It looks like you didn't do anything. Don't forget to mark completed
-        events.
-      </EmptyDesc>
-    </EmptyBox>
-  );
-}
-function EmptyCompletedEventContent() {
-  return (
-    <EmptyBox>
-      <EmptyImg src={CheckCircleSvg} />
-    </EmptyBox>
-  );
-}
+
 const EmptyFavoritesWrapper = styled.div`
   width: 100%;
   height: 100%;
@@ -116,8 +88,6 @@ const EmptyDesc = styled.span`
 enum FavoriteSwitchValue {
   event = 'event',
   content = 'content',
-  project = 'project',
-  completeEvents = 'completeEvents',
 }
 export const FavoriteSwitchOptions = [
   {
@@ -128,40 +98,10 @@ export const FavoriteSwitchOptions = [
     label: 'Event',
     value: FavoriteSwitchValue.event,
   },
-
-  // {
-  //   label: 'Project',
-  //   value: FavoriteSwitchValue.project,
-  // },
 ];
 
 function Favorite() {
-  const { isLogin } = useLogin();
-  const dispatch = useAppDispatch();
-  const completedEvents = useAppSelector(selectAllForCompletedEvents);
-  const {
-    status: completedStatus,
-    moreStatus: completedMoreStatus,
-    noMore: completedNoMore,
-  } = useAppSelector(selectStateForCompletedEvents);
-  const getMoreCompletedEvents = useCallback(
-    () => dispatch(fetchMoreEventCompletedList()),
-    []
-  );
-  const isLoadingMoreCompleted = useMemo(
-    () => completedMoreStatus === AsyncRequestStatus.PENDING,
-    [completedMoreStatus]
-  );
-
-  const { events, projects, contents, refreshFavorites } = useUserFavorites();
-
-  useEffect(() => {
-    if (!isLogin) {
-      dispatch(removeAllForCompletedEvents());
-      return;
-    }
-    dispatch(fetchCompletedEvents());
-  }, [isLogin]);
+  const { events, contents, refreshFavorites } = useUserFavorites();
 
   useEffect(() => {
     refreshFavorites();
@@ -172,9 +112,6 @@ function Favorite() {
     setShowContentList(contents);
   }, [contents]);
   const {
-    votePendingIds: contentVotePendingIds,
-    favorPendingIds: contentFavorPendingIds,
-    hiddenPendingIds: contentHiddenPendingIds,
     onVote: onContentVote,
     onFavor: onContentFavor,
     onShare: onContentShare,
@@ -187,21 +124,12 @@ function Favorite() {
     [status]
   );
   const isEmptyEvents = useMemo(() => !events.length, [events]);
-  // const isEmptyProjects = useMemo(() => !projects.length, [projects]);
   const isEmptyContents = useMemo(() => !contents.length, [contents]);
-  const isEmptyCompletedEvents = useMemo(
-    () => !completedEvents.length,
-    [completedEvents]
-  );
   const isEmpty = useMemo(
-    () => isEmptyEvents && isEmptyContents && isEmptyCompletedEvents,
-    [isEmptyEvents, isEmptyContents, isEmptyCompletedEvents]
+    () => isEmptyEvents && isEmptyContents,
+    [isEmptyEvents, isEmptyContents]
   );
   const [event, setEvent] = useState<EventsEntityItem | null>(null);
-  const [completedEvent, setCompletedEvent] = useState<EventsEntityItem | null>(
-    null
-  );
-  // const [project, setProject] = useState<ProjectsEntityItem | null>(null);
   const [content, setContent] = useState<ContentsEntityItem | null>(null);
   const [switchValue, setSwitchValue] = useState<FavoriteSwitchValue>(
     FavoriteSwitchValue.content
@@ -221,17 +149,6 @@ function Favorite() {
                 <FavoritesListHeader>
                   <TabSwitch
                     options={FavoriteSwitchOptions}
-                    value={switchValue}
-                    onChange={(value) => setSwitchValue(value)}
-                  />
-                  <HeaderLine />
-                  <RightTabSwitch
-                    options={[
-                      {
-                        label: <ArchiveIconButton src={ArchiveSvg} />,
-                        value: FavoriteSwitchValue.completeEvents,
-                      },
-                    ]}
                     value={switchValue}
                     onChange={(value) => setSwitchValue(value)}
                   />
@@ -256,9 +173,6 @@ function Favorite() {
                       <ContentList
                         data={showContentList}
                         activeId={content?.id}
-                        loadingVoteIds={contentVotePendingIds}
-                        loadingFavorIds={contentFavorPendingIds}
-                        loadingHiddenIds={contentHiddenPendingIds}
                         onVote={onContentVote}
                         onFavor={onContentFavor}
                         onShare={onContentShare}
@@ -270,23 +184,6 @@ function Favorite() {
                       />
                     </FavoritesList>
                   ))}
-                {switchValue === FavoriteSwitchValue.completeEvents &&
-                  (isEmptyCompletedEvents ? (
-                    <EmptyCompletedEventList />
-                  ) : (
-                    <ListScrollBox onScrollBottom={getMoreCompletedEvents}>
-                      <EventExploreList
-                        data={completedEvents}
-                        activeId={completedEvent?.id || 0}
-                        onItemClick={setCompletedEvent}
-                      />
-                      {isLoadingMoreCompleted ? (
-                        <MoreLoading>loading ...</MoreLoading>
-                      ) : completedNoMore ? (
-                        <MoreLoading>No other events</MoreLoading>
-                      ) : null}
-                    </ListScrollBox>
-                  ))}
               </FavoritesListBox>
               <FavoritesContentBox>
                 {FavoriteSwitchValue.event === switchValue &&
@@ -294,12 +191,6 @@ function Favorite() {
                     <EventLinkPreview data={event} />
                   ) : (
                     <EmptyContent />
-                  ))}
-                {FavoriteSwitchValue.completeEvents === switchValue &&
-                  (completedEvent ? (
-                    <EventLinkPreview data={completedEvent} />
-                  ) : (
-                    <EmptyCompletedEventContent />
                   ))}
 
                 {switchValue === FavoriteSwitchValue.content &&
@@ -356,20 +247,6 @@ const TabSwitch = styled(Tab)`
   border-bottom: none;
   justify-content: flex-start;
 `;
-const RightTabSwitch = styled(Tab)`
-  width: 24px;
-  border-bottom: none;
-  justify-content: flex-end;
-`;
-const HeaderLine = styled.div`
-  width: 1px;
-  height: 10px;
-  background: #718096;
-`;
-const ArchiveIconButton = styled.img`
-  width: 24px;
-  height: 24px;
-`;
 const FavoritesList = styled(ScrollBox)`
   width: 100%;
   height: 0px;
@@ -379,9 +256,4 @@ const FavoritesContentBox = styled.div`
   width: 0;
   flex: 1;
   height: 100%;
-`;
-const MoreLoading = styled.div`
-  padding: 20px;
-  text-align: center;
-  color: #748094;
 `;

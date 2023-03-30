@@ -42,11 +42,9 @@ export default function ContentsPage({
   hasNewest,
   getMore,
   // Mutations
-  votePendingIds,
   onVote,
   favorPendingIds,
   onFavor,
-  hiddenPendingIds,
   onHiddenAction,
   onHiddenUndoAction,
   onAdminScore,
@@ -191,9 +189,7 @@ export default function ContentsPage({
                 <ContentList
                   data={contents}
                   activeId={activeId}
-                  loadingVoteIds={votePendingIds}
                   loadingFavorIds={favorPendingIds}
-                  loadingHiddenIds={hiddenPendingIds}
                   onVote={onVote}
                   onFavor={onFavor}
                   onShare={onShare}
