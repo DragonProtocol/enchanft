@@ -25,7 +25,7 @@ export default () => {
       chains: currentUrlQuery.chains.split(',').filter((item) => !!item),
       keywords: currentUrlQuery.keywords,
     }),
-    [currentUrlQuery]
+    [currentUrlQuery.types, currentUrlQuery.chains, currentUrlQuery.keywords]
   );
   const searchParamsChange = useCallback(
     (values: { types?: string[]; chains?: string[]; keywords?: string }) => {

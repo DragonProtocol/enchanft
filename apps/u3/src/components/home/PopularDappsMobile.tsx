@@ -29,7 +29,6 @@ export default function PopularDappsMobile({
               onClick={() => navigate(`/dapp-store/${item.id}`)}
               key={item.id || item.name}
               data={item}
-              displayButtons={false}
             />
           );
         })}

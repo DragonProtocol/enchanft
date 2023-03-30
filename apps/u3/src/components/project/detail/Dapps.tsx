@@ -35,7 +35,6 @@ export default function Dapps({
             <DappItem
               key={item.id}
               data={item}
-              displayButtons={false}
               onClick={() => onItemClick && onItemClick(item)}
             />
           ))}

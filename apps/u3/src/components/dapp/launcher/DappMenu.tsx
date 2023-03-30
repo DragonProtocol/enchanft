@@ -37,8 +37,8 @@ export default function DappMenu() {
               navigate('/web3-today');
             }}
           >
-            {' '}
-            web3 today{' '}
+            <Web3Text>web3</Web3Text>
+            <TodayText>today</TodayText>
           </Web3TodayNavBtn>
           <DappInstallList ref={dappInstallListRef} />
         </ListInner>
@@ -124,21 +124,36 @@ const Title = styled.div`
 
 const Web3TodayNavBtn = styled.div`
   width: 40px;
-  height: 50px;
-  border-radius: 10px;
+  height: 40px;
+  cursor: pointer;
+  font-family: 'Marion';
+  font-style: normal;
+  color: #ffffff;
+  text-transform: capitalize;
+
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 10px;
+
+  background: #323f53;
+  border: 1px solid #39424c;
   box-sizing: border-box;
-  cursor: pointer;
-  text-transform: capitalize;
-  background: #718096;
-  color: #fff;
-  font-size: 12px;
-  line-height: 16px;
+  border-radius: 10px;
   transition: all 0.3s;
   &:hover {
     transform: scale(1.2);
   }
+`;
+const Web3Text = styled.span`
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 13px;
+`;
+
+const TodayText = styled.span`
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 11px;
+  letter-spacing: 1px;
 `;
