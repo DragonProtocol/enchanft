@@ -28,6 +28,7 @@ export default function UploadImage({
     <UploadImageWrapper
       onClick={(e) => {
         e.stopPropagation();
+        if (loading) return;
         const input = e.currentTarget.querySelector('input');
         input?.click();
       }}

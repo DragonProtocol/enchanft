@@ -196,7 +196,7 @@ export default forwardRef(function DappForm(
         <FormLabel htmlFor="screenshots">Screenshots</FormLabel>
         <FormValueBox>
           <UploadImages
-            urls={formik.values.screenshots}
+            urls={formik.values.screenshots ?? []}
             onSuccess={(urls) => formik.setFieldValue('screenshots', urls)}
           />
           {renderFieldError('screenshots')}
@@ -294,6 +294,18 @@ export default forwardRef(function DappForm(
           {renderFieldError('chains')}
         </FormValueBox>
       </FormField>
+      <FormField>
+        <FormLabel htmlFor="supportIframe">Iframe Display</FormLabel>
+        <SwitchRow>
+          <Switch
+            onChange={(checked) =>
+              formik.setFieldValue('supportIframe', checked)
+            }
+            checked={formik.values.supportIframe}
+          />
+          <SwitchText>Iframe supports the website display 👉</SwitchText>
+        </SwitchRow>
+      </FormField>
 
       <FormGroupLabel>Social Network</FormGroupLabel>
       <FormField>
@@ -383,18 +395,6 @@ export default forwardRef(function DappForm(
           />
           {renderFieldError('mediaLinks.telegram')}
         </FormValueBox>
-      </FormField>
-      <FormField>
-        <FormLabel htmlFor="supportIframe">Iframe Display</FormLabel>
-        <SwitchRow>
-          <Switch
-            onChange={(checked) =>
-              formik.setFieldValue('supportIframe', checked)
-            }
-            checked={formik.values.supportIframe}
-          />
-          <SwitchText>Iframe supports the website display 👉</SwitchText>
-        </SwitchRow>
       </FormField>
 
       <FormGroupLabel>Editor Score</FormGroupLabel>

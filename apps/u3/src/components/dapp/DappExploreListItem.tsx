@@ -28,7 +28,7 @@ export default function DappExploreListItem({
   return (
     <ExploreListItemWrapper {...props}>
       <ListItemInner>
-        <Banner src={data.image} />
+        <Banner src={data.headerPhoto} />
         <Icon src={data.image} />
         <InnerBody>
           <Title>

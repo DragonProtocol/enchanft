@@ -44,6 +44,8 @@ const Wrapper = styled(CardBase)`
   display: flex;
   align-items: center;
   gap: 20px;
+  // 允许换行
+  flex-wrap: wrap;
 `;
 
 const AddBtn = styled(CardBase)`
@@ -53,6 +55,7 @@ const AddBtn = styled(CardBase)`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  border: 1px dashed #4e5a6e;
   svg {
     width: 50px;
     height: 50px;
