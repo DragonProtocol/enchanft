@@ -9,6 +9,8 @@ import { useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCallback, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
+import { useUs3rProfileContext } from '@us3r-network/profile';
+import { shortPubKey } from '@us3r-network/authkit';
 import { CutomRouteObject, RoutePermission, routes } from '../../route/routes';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import useU3Extension from '../../hooks/useU3Extension';
@@ -22,6 +24,7 @@ import useLogin from '../../hooks/useLogin';
 import NoLogin from './NoLogin';
 import usePreference from '../../hooks/usePreference';
 import OnboardModal from '../onboard/OnboardModal';
+
 import {
   fetchUserKarma,
   selectKarmaState,
@@ -33,6 +36,14 @@ import useUserFavorites from '../../hooks/useUserFavorites';
 
 function Main() {
   const dispatch = useAppDispatch();
+  const {
+    sessId,
+    profile,
+    connectUs3r,
+    us3rAuth,
+    us3rAuthValid,
+    updateProfile,
+  } = useUs3rProfileContext();
   const { isLogin, login, user, isAdmin } = useLogin();
   const { openEventCompleteGuideModal, eventCompleteGuideEndCallback } =
     useAppSelector(selectWebsite);
@@ -52,9 +63,7 @@ function Main() {
       login();
     }
   }, [lastRouteMeta, isLogin]);
-  const { preference, postPreference, preferenceList } = usePreference(
-    user?.token
-  );
+  const { preferenceList } = usePreference(user?.token);
 
   useEffect(() => {
     if (!user?.token) return;
@@ -105,10 +114,20 @@ function Main() {
       />
       {!isMobile && (
         <OnboardModal
-          show={Object.keys(preference).length === 0 && isLogin}
+          show={
+            (!profile?.tags || profile.tags.length === 0) &&
+            sessId &&
+            us3rAuthValid
+          }
           lists={preferenceList}
-          finishAction={(data) => {
-            postPreference(data);
+          finishAction={async (data) => {
+            const exist = profile || {};
+            await updateProfile({
+              ...exist,
+              name: exist?.name || shortPubKey(sessId),
+              tags: data.tags,
+              avatar: exist?.avatar || '',
+            });
           }}
         />
       )}
