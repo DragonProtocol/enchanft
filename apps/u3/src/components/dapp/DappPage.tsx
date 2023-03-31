@@ -75,7 +75,9 @@ export default function DappPage({
       />
       <ContentLayout>
         <ContentLayoutLeft>
-          <Screeshots />
+          {data?.screenshots?.length > 0 && (
+            <Screeshots urls={data?.screenshots ?? []} />
+          )}
           <UserScore streamId={data.threadStreamId} />
         </ContentLayoutLeft>
         <ContentLayoutRight>

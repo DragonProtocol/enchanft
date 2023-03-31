@@ -11,16 +11,16 @@ export type DappWebsitePreviewProps = StyledComponentPropsWithRef<'div'> & {
     name: string;
     image: string;
     url: string;
+    supportIframe: boolean;
   };
 };
 export default function DappWebsitePreview({
   data,
   ...otherProps
 }: DappWebsitePreviewProps) {
-  // const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
-  const { image, url, name } = data;
-  // const displayCannotOpen = !u3ExtensionInstalled;
-  const displayCannotOpen = false;
+  const { u3ExtensionInstalled } = useAppSelector(selectWebsite);
+  const { image, url, name, supportIframe } = data;
+  const displayCannotOpen = !supportIframe && !u3ExtensionInstalled;
   const [iframeLoading, setIframeLoading] = useState(false);
   useEffect(() => {
     setIframeLoading(true);

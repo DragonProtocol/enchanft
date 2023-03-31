@@ -32,7 +32,7 @@ export default function DappPageMobile({
   ) : data ? (
     <Wrapper>
       <HeaderMobile data={data} />
-      <ScreeshotsMobile />
+      <ScreeshotsMobile urls={data?.screenshots ?? []} />
       <IntroductionMobile text={data.description} />
       <UserScoreMobile streamId={data.threadStreamId} />
       <RecommendDappsMobile
