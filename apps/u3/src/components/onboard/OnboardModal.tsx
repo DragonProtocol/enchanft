@@ -8,17 +8,11 @@ export default function OnboardModal({
 }: {
   show: boolean;
   lists: ItemData[];
-  finishAction: (data: {
-    eventRewards: string[];
-    eventTypes: string[];
-    projectTypes: string[];
-    contentTypes: string[];
-    langs: string[];
-  }) => void;
+  finishAction: (data: { tags: string[]; langs: string[] }) => void;
 }) {
   return (
     <Modal
-      isOpen={show}
+      isOpen={!!show}
       style={{
         overlay: {
           backgroundColor: 'rgba(0,0,0,0.3)',

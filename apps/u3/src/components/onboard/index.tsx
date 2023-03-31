@@ -12,13 +12,7 @@ export default function OnBoard({
   finishAction,
 }: {
   lists: Array<ItemData>;
-  finishAction: (data: {
-    eventRewards: string[];
-    eventTypes: string[];
-    projectTypes: string[];
-    contentTypes: string[];
-    langs: string[];
-  }) => void;
+  finishAction: (data: { tags: string[]; langs: string[] }) => void;
 }) {
   const [selectFeeds, setSelectFeeds] = useState([]);
   const [lang, setLang] = useState([ContentLang.English, ContentLang.中文]);
@@ -38,23 +32,9 @@ export default function OnBoard({
     [selectFeeds]
   );
 
-  const filterData = (data: ItemData[], type: string) => {
-    return data.filter((item) => item.type === type).map((item) => item.value);
-  };
   const finishHandler = useCallback(() => {
-    const data = [];
-    selectFeeds.forEach((feed) => {
-      const tmpData = lists.filter((item) => item.name === feed);
-      data.push(...tmpData);
-    });
-
     finishAction({
-      // eventRewards: filterData(data, 'eventRewards'),
-      // eventTypes: filterData(data, 'eventTypes'),
-      eventRewards: [],
-      eventTypes: [],
-      projectTypes: filterData(data, 'projectTypes'),
-      contentTypes: filterData(data, 'contentTypes'),
+      tags: [...selectFeeds],
       langs: lang,
     });
   }, [selectFeeds, lists, lang]);
