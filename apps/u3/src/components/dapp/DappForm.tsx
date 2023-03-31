@@ -179,6 +179,11 @@ export default forwardRef(function DappForm(
             url={formik.values.image}
             onSuccess={(url) => formik.setFieldValue('image', url)}
           />
+          <ImageUrlInput
+            placeholder="Image"
+            onChange={(e) => formik.setFieldValue('image', e.target.value)}
+            value={formik.values.image}
+          />
           {renderFieldError('image')}
         </FormValueBox>
       </FormField>
@@ -189,6 +194,13 @@ export default forwardRef(function DappForm(
             url={formik.values.headerPhoto}
             onSuccess={(url) => formik.setFieldValue('headerPhoto', url)}
           />
+          <ImageUrlInput
+            placeholder="Header photo"
+            onChange={(e) =>
+              formik.setFieldValue('headerPhoto', e.target.value)
+            }
+            value={formik.values.headerPhoto}
+          />
           {renderFieldError('headerPhoto')}
         </FormValueBox>
       </FormField>
@@ -196,6 +208,7 @@ export default forwardRef(function DappForm(
         <FormLabel htmlFor="screenshots">Screenshots</FormLabel>
         <FormValueBox>
           <UploadImages
+            showInput
             urls={formik.values.screenshots ?? []}
             onSuccess={(urls) => formik.setFieldValue('screenshots', urls)}
           />
@@ -485,4 +498,7 @@ const SwitchText = styled.span`
   font-size: 16px;
   line-height: 24px;
   color: #4e5a6e;
+`;
+const ImageUrlInput = styled(InputBase)`
+  margin-top: 10px;
 `;
