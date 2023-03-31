@@ -65,6 +65,8 @@ export type UpdateDappData = {
   name: string;
   description: string;
   image: string;
+  headerPhoto: string;
+  screenshots: string[];
   mediaLinks?: {
     twitter?: string;
     discord?: string;
@@ -77,5 +79,6 @@ export type UpdateDappData = {
   status?: DappStatus;
   editorScore?: number;
   uniProjectId: number;
+  supportIframe: boolean;
 };
 export type UpdateDappResponse = ApiResp<DappExploreListItemResponse>;

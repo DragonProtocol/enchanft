@@ -1,61 +1,91 @@
 import { toast } from 'react-toastify';
 import { useState } from 'react';
-import styled from 'styled-components';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { EVENT_IMAGE_SIZE_LIMIT } from '../../../constants';
 import { uploadImage } from '../../../services/api/upload';
 import { messages } from '../../../utils/message';
 import UploadImgMaskImg from '../../imgs/upload_img_mask.svg';
 import CardBase from '../card/CardBase';
 import useLogin from '../../../hooks/useLogin';
+import { ReactComponent as CloseSvg } from '../icons/svgs/close.svg';
 
+type Props = StyledComponentPropsWithRef<'div'> & {
+  url: string;
+  onSuccess: (url: string) => void;
+  showDelete?: boolean;
+  onDelete?: () => void;
+};
 export default function UploadImage({
   url,
   onSuccess,
-}: {
-  url: string;
-  onSuccess: (url: string) => void;
-}) {
+  showDelete,
+  onDelete,
+  ...otherProps
+}: Props) {
   const [loading, setLoading] = useState(false);
   const { user } = useLogin();
   return (
     <UploadImageWrapper
-      onClick={() => {
-        document.getElementById('uploadInput')?.click();
+      onClick={(e) => {
+        e.stopPropagation();
+        const input = e.currentTarget.querySelector('input');
+        input?.click();
       }}
+      {...otherProps}
     >
-      <input
-        title="uploadInput"
-        id="uploadInput"
-        style={{ display: 'none' }}
-        type="file"
-        accept="image/png, image/gif, image/jpeg"
-        onChange={(e) => {
-          const file = e.target.files && e.target.files[0];
-          if (!file) return;
-          if (file.size > EVENT_IMAGE_SIZE_LIMIT) {
-            toast.error(messages.common.upload_img_limit);
-            return;
-          }
-          setLoading(true);
-          uploadImage(file, user?.token)
-            .then((result) => {
-              onSuccess(result.data.url);
-              toast.success(messages.common.upload_img);
-            })
-            .catch((error) =>
-              toast.error(error.message || messages.common.error)
-            )
-            .finally(() => setLoading(false));
-        }}
-      />
+      <UploadImageInner>
+        <input
+          title="uploadInput"
+          style={{ display: 'none' }}
+          type="file"
+          accept="image/png, image/gif, image/jpeg"
+          onChange={(e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            if (file.size > EVENT_IMAGE_SIZE_LIMIT) {
+              toast.error(messages.common.upload_img_limit);
+              return;
+            }
+            setLoading(true);
+            uploadImage(file, user?.token)
+              .then((result) => {
+                onSuccess(result.data.url);
+                toast.success(messages.common.upload_img);
+              })
+              .catch((error) =>
+                toast.error(error.message || messages.common.error)
+              )
+              .finally(() => setLoading(false));
+          }}
+        />
 
-      {(loading && <div className="uploading">Uploading ...</div>) ||
-        (url && <UploadImagePreview src={url} />)}
+        {(loading && <div className="uploading">Uploading ...</div>) ||
+          (url && <UploadImagePreview src={url} />)}
+      </UploadImageInner>
+      {showDelete && (
+        <DeleteBtn
+          className="delete-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            if (onDelete) {
+              onDelete();
+            }
+          }}
+        >
+          <CloseSvg />
+        </DeleteBtn>
+      )}
     </UploadImageWrapper>
   );
 }
 
-const UploadImageWrapper = styled(CardBase)`
+const UploadImageWrapper = styled.div`
+  width: 160px;
+  height: 160px;
+  position: relative;
+`;
+
+const UploadImageInner = styled(CardBase)`
   width: 160px;
   height: 160px;
   padding: 0;
@@ -85,4 +115,22 @@ const UploadImagePreview = styled.img`
   width: 160px;
   height: 160px;
   object-fit: cover;
+`;
+
+const DeleteBtn = styled.div`
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.2);
+    transition: all 0.3s;
+  }
 `;
