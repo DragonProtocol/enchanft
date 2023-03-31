@@ -22,11 +22,12 @@ import { ContentListItem } from '../services/types/contents';
 import TwoHeartSvg from '../components/imgs/two-heart.svg';
 import { ButtonPrimaryLine } from '../components/common/button/ButtonBase';
 import ContentPreview from '../components/contents/ContentPreview';
+import PageTitle from '../components/common/PageTitle';
 
 function EmptyFavorites() {
   const navigate = useNavigate();
   return (
-    <EmptyFavoritesWrapper>
+    <EmptyContentWrapper>
       <EmptyBox>
         <EmptyImg src={TwoHeartSvg} />
         <EmptyDesc>
@@ -36,7 +37,7 @@ function EmptyFavorites() {
           Explore
         </ButtonPrimaryLine>
       </EmptyBox>
-    </EmptyFavoritesWrapper>
+    </EmptyContentWrapper>
   );
 }
 function EmptyList() {
@@ -56,7 +57,7 @@ function EmptyContent() {
   );
 }
 
-const EmptyFavoritesWrapper = styled.div`
+const EmptyContentWrapper = styled.div`
   width: 100%;
   height: 100%;
   background-color: #1b1e23;
@@ -136,80 +137,90 @@ function Favorite() {
   );
 
   return (
-    <FavoritesWrapper>
-      {isLoading ? (
-        <Loading />
-      ) : (
-        <FavoritesLayout>
-          {isEmpty ? (
-            <EmptyFavorites />
-          ) : (
-            <>
-              <FavoritesListBox>
-                <FavoritesListHeader>
-                  <TabSwitch
-                    options={FavoriteSwitchOptions}
-                    value={switchValue}
-                    onChange={(value) => setSwitchValue(value)}
-                  />
-                </FavoritesListHeader>
-                {switchValue === FavoriteSwitchValue.event &&
-                  (isEmptyEvents ? (
-                    <EmptyList />
-                  ) : (
-                    <FavoritesList>
-                      <EventExploreList
-                        data={events}
-                        activeId={event?.id || 0}
-                        onItemClick={setEvent}
-                      />
-                    </FavoritesList>
-                  ))}
-                {switchValue === FavoriteSwitchValue.content &&
-                  (isEmptyContents ? (
-                    <EmptyList />
-                  ) : (
-                    <FavoritesList>
-                      <ContentList
-                        data={showContentList}
-                        activeId={content?.id}
-                        onVote={onContentVote}
-                        onFavor={onContentFavor}
-                        onShare={onContentShare}
-                        onHidden={onContentHiddenAction}
-                        onHiddenUndo={onContentHiddenUndoAction}
-                        onItemClick={(item) =>
-                          setContent(item as unknown as ContentListItem)
-                        }
-                      />
-                    </FavoritesList>
-                  ))}
-              </FavoritesListBox>
-              <FavoritesContentBox>
-                {FavoriteSwitchValue.event === switchValue &&
-                  (event ? (
-                    <EventLinkPreview data={event} />
-                  ) : (
-                    <EmptyContent />
-                  ))}
+    <Wrapper>
+      <PageTitle>Favorite</PageTitle>
+      <ContentWrapper>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <FavoritesLayout>
+            {isEmpty ? (
+              <EmptyFavorites />
+            ) : (
+              <>
+                <FavoritesListBox>
+                  <FavoritesListHeader>
+                    <TabSwitch
+                      options={FavoriteSwitchOptions}
+                      value={switchValue}
+                      onChange={(value) => setSwitchValue(value)}
+                    />
+                  </FavoritesListHeader>
+                  {switchValue === FavoriteSwitchValue.event &&
+                    (isEmptyEvents ? (
+                      <EmptyList />
+                    ) : (
+                      <FavoritesList>
+                        <EventExploreList
+                          data={events}
+                          activeId={event?.id || 0}
+                          onItemClick={setEvent}
+                        />
+                      </FavoritesList>
+                    ))}
+                  {switchValue === FavoriteSwitchValue.content &&
+                    (isEmptyContents ? (
+                      <EmptyList />
+                    ) : (
+                      <FavoritesList>
+                        <ContentList
+                          data={showContentList}
+                          activeId={content?.id}
+                          onVote={onContentVote}
+                          onFavor={onContentFavor}
+                          onShare={onContentShare}
+                          onHidden={onContentHiddenAction}
+                          onHiddenUndo={onContentHiddenUndoAction}
+                          onItemClick={(item) =>
+                            setContent(item as unknown as ContentListItem)
+                          }
+                        />
+                      </FavoritesList>
+                    ))}
+                </FavoritesListBox>
+                <FavoritesContentBox>
+                  {FavoriteSwitchValue.event === switchValue &&
+                    (event ? (
+                      <EventLinkPreview data={event} />
+                    ) : (
+                      <EmptyContent />
+                    ))}
 
-                {switchValue === FavoriteSwitchValue.content &&
-                  (content ? (
-                    <ContentPreview data={content} showAdminOps={false} />
-                  ) : (
-                    <EmptyContent />
-                  ))}
-              </FavoritesContentBox>
-            </>
-          )}
-        </FavoritesLayout>
-      )}
-    </FavoritesWrapper>
+                  {switchValue === FavoriteSwitchValue.content &&
+                    (content ? (
+                      <ContentPreview data={content} showAdminOps={false} />
+                    ) : (
+                      <EmptyContent />
+                    ))}
+                </FavoritesContentBox>
+              </>
+            )}
+          </FavoritesLayout>
+        )}
+      </ContentWrapper>
+    </Wrapper>
   );
 }
 export default Favorite;
 
-const FavoritesWrapper = styled(MainWrapper)`
+const Wrapper = styled(MainWrapper)`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const ContentWrapper = styled.div`
+  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;

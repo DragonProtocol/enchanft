@@ -16,6 +16,7 @@ import Loading from '../components/common/loading/Loading';
 import { mergeProfilesData } from '../utils/mergeProfilesData';
 import useLogin from '../hooks/useLogin';
 import { MainWrapper } from '../components/layout/Index';
+import PageTitle from '../components/common/PageTitle';
 
 export default function Asset() {
   const { wallet } = useParams();
@@ -60,22 +61,29 @@ export default function Asset() {
 
   return (
     <Wrapper>
-      {(loading && (
-        <div className="loading">
-          <Loading />
-        </div>
-      )) ||
-        (profileData.nfts.result.length > 0 && (
-          <OnChainInterest
-            data={profileData.nfts}
-            wallet={profileData.erc20Balances}
-            ethBalance={profileData.ethBalance}
-          />
-        )) || <OnChainNoItem />}
+      <PageTitle>Asset</PageTitle>
+      <ContentWrapper>
+        {(loading && (
+          <div className="loading">
+            <Loading />
+          </div>
+        )) ||
+          (profileData.nfts.result.length > 0 && (
+            <OnChainInterest
+              data={profileData.nfts}
+              wallet={profileData.erc20Balances}
+              ethBalance={profileData.ethBalance}
+            />
+          )) || <OnChainNoItem />}
+      </ContentWrapper>
     </Wrapper>
   );
 }
+
 const Wrapper = styled(MainWrapper)`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   .loading {
     width: 100%;
     height: 100%;
@@ -83,4 +91,8 @@ const Wrapper = styled(MainWrapper)`
     justify-content: center;
     align-items: center;
   }
+`;
+
+const ContentWrapper = styled.div`
+  flex: 1;
 `;

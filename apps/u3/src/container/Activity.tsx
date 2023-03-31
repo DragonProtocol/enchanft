@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import CardBase from '../components/common/card/CardBase';
+import PageTitle from '../components/common/PageTitle';
 import Rss3Content from '../components/fren/Rss3Content';
 import { CurrencyETH } from '../components/icons/currency-eth';
 import { MainWrapper } from '../components/layout/Index';
@@ -6,12 +8,13 @@ import { MainWrapper } from '../components/layout/Index';
 function Activity() {
   return (
     <Wrapper>
-      <div className="lists">
+      <PageTitle>Activity</PageTitle>
+      <ContentWrapper>
         <Rss3Content
           address={['0x74667801993b457b8ccf19d03bbbaa52b7fff43b']}
           empty={<NoActivity />}
         />
-      </div>
+      </ContentWrapper>
     </Wrapper>
   );
 }
@@ -25,16 +28,13 @@ export function NoActivity() {
   );
 }
 const Wrapper = styled(MainWrapper)`
-  padding-top: 0;
-  padding-bottom: 0;
-  & .lists {
-    background: #1b1e23;
-    padding: 0 20px;
-    flex-grow: 1;
-    display: flex;
-    min-width: 37.5rem;
-    height: 100%;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const ContentWrapper = styled(CardBase)`
+  flex: 1;
   & .no-item {
     box-sizing: border-box;
     text-align: center;

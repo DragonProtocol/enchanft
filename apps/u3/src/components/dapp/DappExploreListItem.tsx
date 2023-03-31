@@ -6,6 +6,7 @@
  * @Description: file description
  */
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
+import { ScoreMin } from '@us3r-network/authkit';
 import {
   DappExploreListItemResponse,
   DappStatus,
@@ -48,7 +49,9 @@ export default function DappExploreListItem({
                 <Tag key={item}>{formatFilterShowName(item)}</Tag>
               ))}
             </TagsRow>
-            {/* <Score>4.5</Score> */}
+            {data?.threadStreamId && (
+              <ScoreMin threadId={data.threadStreamId} />
+            )}
           </BottomBox>
         </InnerBody>
       </ListItemInner>
