@@ -2,31 +2,46 @@ import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import CardBase from '../card/CardBase';
 import UploadImage from './UploadImage';
 import { ReactComponent as PlusSvg } from '../icons/svgs/plus.svg';
+import InputBase from '../input/InputBase';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   urls: string[];
   onSuccess: (urls: string[]) => void;
+  showInput?: boolean;
 };
 export default function UploadImages({
   urls,
   onSuccess,
+  showInput,
   ...otherProps
 }: Props) {
   return (
     <Wrapper {...otherProps}>
       {urls.map((url, index) => (
-        <UploadImage
-          showDelete
-          url={url}
-          onSuccess={(u) => {
-            urls[index] = u;
-            onSuccess(urls);
-          }}
-          onDelete={() => {
-            urls.splice(index, 1);
-            onSuccess(urls);
-          }}
-        />
+        <ImageWrapper>
+          <UploadImage
+            showDelete
+            url={url}
+            onSuccess={(u) => {
+              urls[index] = u;
+              onSuccess(urls);
+            }}
+            onDelete={() => {
+              urls.splice(index, 1);
+              onSuccess(urls);
+            }}
+          />
+          {showInput && (
+            <ImageUrlInput
+              placeholder="Image url"
+              onChange={(e) => {
+                urls[index] = e.target.value;
+                onSuccess(urls);
+              }}
+              value={url}
+            />
+          )}
+        </ImageWrapper>
       ))}
       <AddBtn
         onClick={() => {
@@ -46,6 +61,13 @@ const Wrapper = styled(CardBase)`
   gap: 20px;
   // 允许换行
   flex-wrap: wrap;
+`;
+
+const ImageWrapper = styled.div`
+  width: 160px;
+`;
+const ImageUrlInput = styled(InputBase)`
+  margin-top: 10px;
 `;
 
 const AddBtn = styled(CardBase)`
