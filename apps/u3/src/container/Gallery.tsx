@@ -15,6 +15,7 @@ import Loading from '../components/common/loading/Loading';
 import { mergeProfilesData } from '../utils/mergeProfilesData';
 import useLogin from '../hooks/useLogin';
 import { MainWrapper } from '../components/layout/Index';
+import PageTitle from '../components/common/PageTitle';
 
 export default function Gallery() {
   const { wallet } = useParams();
@@ -58,24 +59,35 @@ export default function Gallery() {
   }, [fetchData, fetchDataWithWallet, wallet]);
 
   return (
-    <Wrapper id="profile-wrapper">
-      {(loading && (
-        <div className="loading">
-          <Loading />
-        </div>
-      )) || (
-        <Credential
-          {...{
-            poap: profileData.poap,
-            noox: profileData.noox,
-            galxe: profileData.galxe,
-          }}
-        />
-      )}
+    <Wrapper>
+      <PageTitle>Gallery</PageTitle>
+      <ContentWrapper id="profile-wrapper">
+        {(loading && (
+          <div className="loading">
+            <Loading />
+          </div>
+        )) || (
+          <Credential
+            {...{
+              poap: profileData.poap,
+              noox: profileData.noox,
+              galxe: profileData.galxe,
+            }}
+          />
+        )}
+      </ContentWrapper>
     </Wrapper>
   );
 }
+
 const Wrapper = styled(MainWrapper)`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+const ContentWrapper = styled.div`
+  flex: 1;
   .loading {
     width: 100%;
     height: 100%;
