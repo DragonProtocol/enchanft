@@ -17,10 +17,10 @@ import { useAppSelector } from '../../store/hooks';
 import { selectKarmaState } from '../../features/profile/karma';
 
 export default function Menu() {
-  const { logout } = useLogin();
+  // const { logout } = useLogin();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
+  // const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
   const { totalScore } = useAppSelector(selectKarmaState);
 
   return (
@@ -42,13 +42,13 @@ export default function Menu() {
       <LoginButtonBox>
         <LoginButton
           onlyIcon={!isOpen}
-          onLogout={() => {
-            setOpenLogoutConfirm(true);
-          }}
+          // onLogout={() => {
+          //   setOpenLogoutConfirm(true);
+          // }}
           karmaScore={totalScore}
         />
       </LoginButtonBox>
-      <LogoutConfirmModal
+      {/* <LogoutConfirmModal
         isOpen={openLogoutConfirm}
         onClose={() => {
           setOpenLogoutConfirm(false);
@@ -60,7 +60,7 @@ export default function Menu() {
         onAfterOpen={() => {
           setIsOpen(false);
         }}
-      />
+      /> */}
     </MenuWrapper>
   );
 }
