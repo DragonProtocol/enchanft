@@ -9,7 +9,7 @@ import { useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCallback, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
-import { useUs3rProfileContext } from '@us3r-network/profile';
+import { WalletChainType, useUs3rProfileContext } from '@us3r-network/profile';
 import { shortPubKey } from '@us3r-network/authkit';
 import { CutomRouteObject, RoutePermission, routes } from '../../route/routes';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -122,11 +122,26 @@ function Main() {
           lists={preferenceList}
           finishAction={async (data) => {
             const exist = profile || {};
+            const currWallet = sessId.split(':').pop() || '';
+            let wallets = [
+              {
+                address: currWallet,
+                primary: true,
+                chain: (sessId.startsWith('did:pkh:eip')
+                  ? 'EVM'
+                  : 'SOLANA') as WalletChainType,
+              },
+            ];
+            if (exist?.wallets && exist?.wallets.length > 0) {
+              wallets = exist?.wallets;
+            }
             await updateProfile({
               ...exist,
               name: exist?.name || shortPubKey(sessId),
               tags: data.tags,
               avatar: exist?.avatar || '',
+              bio: exist?.bio || 'bio',
+              wallets,
             });
           }}
         />
