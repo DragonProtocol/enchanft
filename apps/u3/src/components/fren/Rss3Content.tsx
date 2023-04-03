@@ -17,6 +17,7 @@ import { Popover } from 'antd';
 import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { toast } from 'react-toastify';
+import dayjs from 'dayjs';
 
 import {
   getFeed,
@@ -489,6 +490,7 @@ export default function Rss3Content({ address, empty }: Rss3ContentProps) {
           category: 'activities',
           cursor,
           reset,
+          pageSize: 20,
         })
       );
     },
@@ -576,6 +578,9 @@ export default function Rss3Content({ address, empty }: Rss3ContentProps) {
             owner_follower_num: ownerFollowerNum,
             owner_following_num: ownerFollowingNum,
             hash,
+            network,
+            platform,
+            timestamp,
           } = item;
 
           return (
@@ -608,8 +613,24 @@ export default function Rss3Content({ address, empty }: Rss3ContentProps) {
                 <div className="owner">
                   <span className="name color-white">{ownerName}</span>{' '}
                   {renderAddress(owner)}
+                  {[network, platform]?.map((text) =>
+                    text ? `  |  ${text}` : null
+                  )}
                 </div>
-                {tagComponentsMap?.[`${type}`]?.(item)}
+                {tagComponentsMap?.[`${type}`]?.(item) || (
+                  <div className="default-content">
+                    <div>
+                      {' '}
+                      Carried out an activity on <strong>{platform}</strong>
+                    </div>
+
+                    <div>
+                      {dayjs(new Date(timestamp).getTime()).format(
+                        'YYYY-MM-DD'
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
             </Rss3ContentCard>
           );
@@ -827,6 +848,14 @@ const Rss3ContentCard = styled.div`
   .owner {
     display: flex;
     align-items: center;
+
+    white-space: pre;
+  }
+
+  .default-content {
+    row-gap: 10px;
+    display: flex;
+    flex-direction: column;
   }
 
   .address {
