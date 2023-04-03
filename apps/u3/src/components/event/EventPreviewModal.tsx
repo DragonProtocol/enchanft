@@ -8,45 +8,24 @@
  */
 import styled from 'styled-components';
 import ModalBase, { ModalBaseBody } from '../common/modal/ModalBase';
-import {
-  EventExploreListItemData,
-  EventExploreListItemHandles,
-} from './EventExploreListItem';
 import EventLinkPreview, { EventPreviewHandles } from './EventLinkPreview';
 import { Close } from '../icons/close';
 import useFullScreen from '../../hooks/useFullScreen';
 import ButtonFullScreen from '../common/button/ButtonFullScreen';
+import { EventExploreListItemResponse } from '../../services/types/event';
 
 export type EventPreviewModalProps = {
   isOpen: boolean;
-  data?: EventExploreListItemData;
-  displayHandles?: boolean;
-  disabledFavor?: boolean;
-  loadingFavor?: boolean;
-  isFavored?: boolean;
-  disabledComplete?: boolean;
-  loadingComplete?: boolean;
-  isCompleted?: boolean;
-  onComplete?: () => void;
-  onShare?: () => void;
-  onFavor?: () => void;
+  data?: EventExploreListItemResponse;
   onClose?: () => void;
   showAdminOps?: boolean;
-  onAdminThumbUp?: () => void;
-  onAdminDelete?: () => void;
-  onAdminEdit?: () => void;
 };
 
 export default function EventPreviewModal({
   isOpen,
   data,
   onClose,
-  displayHandles,
   showAdminOps,
-  onAdminDelete,
-  onAdminThumbUp,
-  onAdminEdit,
-  ...handlesProps
 }: EventPreviewModalProps) {
   const { ref, isFullscreen, onToggle } = useFullScreen();
   return (
@@ -55,23 +34,10 @@ export default function EventPreviewModal({
         {data && (
           <>
             <Header>
-              {displayHandles && (
-                <ExploreHandlesBox>
-                  <EventExploreListItemHandles
-                    displayFavor={!data?.isForU}
-                    displayComplete
-                    displayShare={!data?.isForU}
-                    {...handlesProps}
-                  />
-                </ExploreHandlesBox>
-              )}
               <EventPreviewHandles
                 className="event-preview-handles"
-                editorScore={data?.editorScore}
+                data={data}
                 showAdminOps={showAdminOps}
-                onAdminThumbUp={onAdminThumbUp}
-                onAdminDelete={onAdminDelete}
-                onAdminEdit={onAdminEdit}
                 isFullscreen={isFullscreen}
                 onFullscreenRequest={onToggle}
                 onFullscreenExit={onToggle}
@@ -114,10 +80,6 @@ const Header = styled.div`
   .event-preview-handles {
     margin-left: auto;
   }
-`;
-const ExploreHandlesBox = styled.div`
-  height: 100%;
-  margin-right: auto;
 `;
 const CloseBox = styled.div`
   cursor: pointer;

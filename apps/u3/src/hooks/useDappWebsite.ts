@@ -11,25 +11,24 @@ import { RouteKey } from '../route/routes';
 import useRoute from '../route/useRoute';
 import useUserFavorites from './useUserFavorites';
 
-const DAPP_MODAL_SEARCH_KEY = 'id';
+const DAPP_MODAL_SEARCH_KEY = 'dappPreviewId';
 export default () => {
   const { dapps } = useUserFavorites();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // 是否是dapp相关路由
-  const { firstRouteMeta } = useRoute();
-  const isDappRoute = useMemo(() => {
-    return [RouteKey.dapps, RouteKey.dapp].includes(firstRouteMeta.key);
-  }, [firstRouteMeta]);
+  // const { firstRouteMeta } = useRoute();
+  // const isDappRoute = useMemo(() => {
+  //   return [RouteKey.dappStore, RouteKey.dapp].includes(firstRouteMeta.key);
+  // }, [firstRouteMeta]);
   // 当前的dapp信息
   const dappModalData = useMemo(() => {
-    if (!isDappRoute) return null;
     const id = searchParams.get(DAPP_MODAL_SEARCH_KEY);
     if (id) {
       return dapps.find((item) => Number(item.id) === Number(id));
     }
     return null;
-  }, [isDappRoute, searchParams, dapps]);
+  }, [searchParams, dapps]);
 
   // 是否打开dapp modal
   const isOpenDappModal = useMemo(() => {

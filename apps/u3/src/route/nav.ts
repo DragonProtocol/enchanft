@@ -6,12 +6,13 @@
  * @Description: file description
  */
 import React, { ReactNode } from 'react';
-import { ReactComponent as HomeSvg } from '../components/common/icons/svgs/home.svg';
-import { ReactComponent as ProfileSvg } from '../components/common/icons/svgs/profile.svg';
-import { ReactComponent as FeedSvg } from '../components/common/icons/svgs/feed.svg';
-import { ReactComponent as LikeSvg } from '../components/common/icons/svgs/like.svg';
-import { ReactComponent as PlusSquareSvg } from '../components/common/icons/svgs/plus-square.svg';
-import { ReactComponent as GridSvg } from '../components/common/icons/svgs/grid.svg';
+import { ReactComponent as CompassSvg } from './svgs/compass.svg';
+import { ReactComponent as LineChartUpSvg } from './svgs/line-chart-up.svg';
+import { ReactComponent as HeartSvg } from './svgs/heart.svg';
+import { ReactComponent as WalletSvg } from './svgs/wallet.svg';
+import { ReactComponent as ImageSvg } from './svgs/image.svg';
+import { ReactComponent as BellSvg } from './svgs/bell.svg';
+import { ReactComponent as MessageChatSquareSvg } from './svgs/message-chat-square.svg';
 
 import { CutomRouteObject, getRoute, RouteKey } from './routes';
 
@@ -25,69 +26,45 @@ export type CutomNavObject = {
 };
 export const navs: CutomNavObject[] = [
   {
-    name: 'home',
-    activeRouteKeys: [RouteKey.home],
-    icon: React.createElement(HomeSvg),
-    route: getRoute(RouteKey.home),
-  },
-  // {
-  //   name: 'profile',
-  //   activeRouteKeys: [RouteKey.profile],
-  //   icon: React.createElement(ProfileSvg),
-  //   route: getRoute(RouteKey.profile),
-  // },
-  {
-    key: 'feed',
-    name: 'Feed',
-    icon: React.createElement(FeedSvg),
-    activeRouteKeys: [RouteKey.events, RouteKey.contents, RouteKey.frens],
-    route: getRoute(RouteKey.contents),
+    name: 'dapp store',
+    activeRouteKeys: [RouteKey.dappStore, RouteKey.dapp],
+    icon: React.createElement(CompassSvg),
+    route: getRoute(RouteKey.dappStore),
   },
   {
-    name: 'dapp',
-    activeRouteKeys: [RouteKey.dapps, RouteKey.dapp],
-    icon: React.createElement(GridSvg),
-    route: getRoute(RouteKey.dapps),
-  },
-  // {
-  //   name: 'project',
-  //   activeRouteKeys: [RouteKey.projects, RouteKey.project],
-  //   icon: React.createElement(GridSvg),
-  //   route: getRoute(RouteKey.projects),
-  // },
-  {
-    name: 'favorite',
-    activeRouteKeys: [RouteKey.favorites],
-    icon: React.createElement(LikeSvg),
-    route: getRoute(RouteKey.favorites),
+    name: 'activity',
+    activeRouteKeys: [RouteKey.activity],
+    icon: React.createElement(LineChartUpSvg),
+    route: getRoute(RouteKey.activity),
   },
   {
-    key: 'feed-submit',
-    name: 'Submit',
-    icon: React.createElement(PlusSquareSvg),
-    activeRouteKeys: [RouteKey.contentCreate],
-    route: getRoute(RouteKey.contentCreate),
-    children: [
-      {
-        name: 'content',
-        activeRouteKeys: [RouteKey.contentCreate],
-        route: getRoute(RouteKey.contentCreate),
-      },
-      {
-        name: 'event',
-        activeRouteKeys: [RouteKey.eventCreate],
-        route: getRoute(RouteKey.eventCreate),
-      },
-      {
-        name: 'dapp',
-        activeRouteKeys: [RouteKey.dappCreate],
-        route: getRoute(RouteKey.dappCreate),
-      },
-      {
-        name: 'project',
-        activeRouteKeys: [RouteKey.projectCreate],
-        route: getRoute(RouteKey.projectCreate),
-      },
-    ],
+    name: 'save',
+    activeRouteKeys: [RouteKey.save],
+    icon: React.createElement(HeartSvg),
+    route: getRoute(RouteKey.save),
+  },
+  {
+    name: 'asset',
+    activeRouteKeys: [RouteKey.asset],
+    icon: React.createElement(WalletSvg),
+    route: getRoute(RouteKey.asset),
+  },
+  {
+    name: 'gallery',
+    activeRouteKeys: [RouteKey.gallery],
+    icon: React.createElement(ImageSvg),
+    route: getRoute(RouteKey.gallery),
+  },
+  {
+    name: 'notification',
+    activeRouteKeys: [RouteKey.notification],
+    icon: React.createElement(BellSvg),
+    route: getRoute(RouteKey.notification),
+  },
+  {
+    name: 'message',
+    activeRouteKeys: [RouteKey.message],
+    icon: React.createElement(MessageChatSquareSvg),
+    route: getRoute(RouteKey.message),
   },
 ];

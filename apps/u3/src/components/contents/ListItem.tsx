@@ -166,7 +166,7 @@ export function ContentItemActions({
         {favored ? <Heart fill="#718096" /> : <Heart />}
       </ContentHandleButton> */}
 
-      <ContentHandleButton
+      {/* <ContentHandleButton
         onClick={(e) => {
           e.stopPropagation();
           if (hiddenAction) {
@@ -175,7 +175,7 @@ export function ContentItemActions({
         }}
       >
         <EyeClose />
-      </ContentHandleButton>
+      </ContentHandleButton> */}
 
       <ContentHandleButton
         onClick={(e) => {

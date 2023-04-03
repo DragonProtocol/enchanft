@@ -1,10 +1,3 @@
-/*
- * @Author: shixuewen friendlysxw@163.com
- * @Date: 2022-07-05 15:35:42
- * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-03 16:50:28
- * @Description: 首页任务看板
- */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import {
@@ -25,15 +18,15 @@ import {
   selectAll,
   selectState,
 } from '../features/event/eventExploreList';
-import useEventHandles from '../hooks/useEventHandles';
 import { AsyncRequestStatus } from '../services/types';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Loading from '../components/common/loading/Loading';
 import NoResult from '../components/common/NoResult';
-import FeedsMenu from '../components/layout/FeedsMenu';
-import useAdminEventHandles from '../hooks/useAdminEventHandles';
-import FeedsMenuRight, { Layout } from '../components/layout/FeedsMenuRight';
-import FeedsFilterBox from '../components/layout/FeedsFilterBox';
+import FeedsMenu from '../components/web3-today/feeds/FeedsMenu';
+import FeedsMenuRight, {
+  Layout,
+} from '../components/web3-today/feeds/FeedsMenuRight';
+import FeedsFilterBox from '../components/web3-today/feeds/FeedsFilterBox';
 import SearchInput from '../components/common/input/SearchInput';
 import EventOrderBySelect, {
   defaultEventOrderBy,
@@ -65,16 +58,6 @@ export default function Events() {
   const { isAdmin } = useLogin();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
-  const {
-    favoredIds,
-    favorQueueIds,
-    completedIds,
-    completeQueueIds,
-    onComplete,
-    onFavor,
-    onShare,
-  } = useEventHandles();
-  const { onAdminThumbUp, onAdminDelete } = useAdminEventHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const dispatch = useAppDispatch();
   const eventExploreList = useAppSelector(selectAll);
@@ -221,6 +204,10 @@ export default function Events() {
               setEventsLayoutToLocal(l);
               setLayout(l);
             }}
+            displaySubmitButton={isAdmin}
+            submitButtonOnClick={() => {
+              navigate('/events/create');
+            }}
           />
         }
         bottomEl={
@@ -254,13 +241,6 @@ export default function Events() {
                   <EventExploreList
                     data={eventExploreList}
                     activeId={activeId}
-                    favoredIds={favoredIds}
-                    favorQueueIds={favorQueueIds}
-                    completedIds={completedIds}
-                    completeQueueIds={completeQueueIds}
-                    onComplete={onComplete}
-                    onFavor={onFavor}
-                    onShare={onShare}
                     onItemClick={(item) => {
                       navigate(
                         `/events/${
@@ -277,9 +257,6 @@ export default function Events() {
                     <EventPreview
                       data={event}
                       showAdminOps={!event.isForU && isAdmin}
-                      onAdminThumbUp={() => onAdminThumbUp(event)}
-                      onAdminDelete={() => onAdminDelete(event)}
-                      onAdminEdit={() => navigate(`/events/${event.id}/edit`)}
                     />
                   ) : null}
                 </ContentBox>
@@ -304,31 +281,10 @@ export default function Events() {
                 <EventPreviewModal
                   isOpen={event && openEventPreviewModal}
                   data={event}
-                  onComplete={() => {
-                    onComplete(event);
-                  }}
-                  onShare={() => {
-                    onShare(event);
-                  }}
-                  onFavor={() => {
-                    onFavor(event);
-                  }}
                   onClose={() => {
                     resetRouthPath();
                   }}
-                  isFavored={event?.favored}
-                  loadingFavor={favorQueueIds.includes(event?.id)}
-                  disabledFavor={favorQueueIds.includes(event?.id)}
-                  isCompleted={event?.completed}
-                  loadingComplete={completeQueueIds.includes(event?.id)}
-                  disabledComplete={
-                    completeQueueIds.includes(event?.id) || event?.completed
-                  }
-                  displayHandles={!event?.isForU}
                   showAdminOps={!event?.isForU && isAdmin}
-                  onAdminThumbUp={() => onAdminThumbUp(event)}
-                  onAdminDelete={() => onAdminDelete(event)}
-                  onAdminEdit={() => navigate(`/events/${event?.id}/edit`)}
                 />
               </GrideListBox>
             );

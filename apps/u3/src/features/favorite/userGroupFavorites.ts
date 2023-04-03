@@ -14,9 +14,9 @@ import {
 import {
   fetchContentFavorites,
   fetchDappFavorites,
-  fetchUserFavoritesByGroup,
+  fetchEventFavorites,
 } from '../../services/api/favorite';
-import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
+import { AsyncRequestStatus } from '../../services/types';
 import {
   ContentFavoriteListItemResponse,
   EventFavoriteListItemResponse,
@@ -74,23 +74,21 @@ export const fetchUserGroupFavorites = createAsyncThunk<
   }
 >(
   'favorite/userGroupFavorites',
-  async (params, { rejectWithValue }) => {
-    const resp = await fetchUserFavoritesByGroup();
-    if (resp.data.code === ApiRespCode.SUCCESS) {
-      // TODO: event, project 接口未提供，先兼容之前的接口数据
-      const [contentsResponse, dappsResponse] = await Promise.all([
+  async (params) => {
+    const [contentsResponse, dappsResponse, eventsResponse] = await Promise.all(
+      [
         fetchContentFavorites(params.contentUrls ?? []),
         fetchDappFavorites(params.dappUrls ?? []),
-      ]);
+        fetchEventFavorites(params.eventUrls ?? []),
+      ]
+    );
 
-      return {
-        ...resp.data.data,
-        contents: contentsResponse.data.data,
-        dapps: dappsResponse.data.data,
-      };
-    }
-
-    return rejectWithValue(new Error(resp.data.msg));
+    return {
+      contents: contentsResponse.data.data,
+      dapps: dappsResponse.data.data,
+      events: eventsResponse.data.data,
+      projects: [],
+    };
   },
   {
     condition: (params, { getState }) => {

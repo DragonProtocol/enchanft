@@ -10,35 +10,14 @@ import { Platform } from '../../services/types/common';
 import { EventExploreListItemResponse } from '../../services/types/event';
 import { getChainInfo } from '../../utils/chain';
 import { defaultFormatFromNow } from '../../utils/time';
-import { ButtonPrimaryLine } from '../common/button/ButtonBase';
-import IconLike from '../common/icons/IconLike';
-import CompleteSvg from '../common/icons/svgs/check-circle.svg';
-import CompletedSvg from '../common/icons/svgs/checked-circle.svg';
-import ShareSvg from '../common/icons/svgs/share.svg';
 import EllipsisText from '../common/text/EllipsisText';
 import RewardTag from './RewardTag';
 
 export type EventExploreListItemData = EventExploreListItemResponse;
-export type EventExploreItemHandles = {
-  displayFavor?: boolean;
-  displayComplete?: boolean;
-  displayShare?: boolean;
-  disabledFavor?: boolean;
-  loadingFavor?: boolean;
-  isFavored?: boolean;
-  disabledComplete?: boolean;
-  loadingComplete?: boolean;
-  isCompleted?: boolean;
-  onComplete?: () => void;
-  onShare?: () => void;
-  onFavor?: () => void;
+export type EventExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
+  data: EventExploreListItemData;
+  isActive: boolean;
 };
-export type EventExploreListItemProps = StyledComponentPropsWithRef<'div'> &
-  EventExploreItemHandles & {
-    data: EventExploreListItemData;
-    isActive: boolean;
-    displayHandles?: boolean;
-  };
 export const defaultStyle = {
   bgc: 'rgba(16, 16, 20, 0.1)',
   activeColor: '#FFFFFF',
@@ -72,16 +51,6 @@ export const styleMaps = {
 export default function EventExploreListItem({
   data,
   isActive,
-  disabledFavor,
-  loadingFavor,
-  isFavored,
-  disabledComplete,
-  loadingComplete,
-  isCompleted,
-  displayHandles = true,
-  onComplete,
-  onShare,
-  onFavor,
   ...props
 }: EventExploreListItemProps) {
   let style = defaultStyle;
@@ -110,76 +79,9 @@ export default function EventExploreListItem({
             )}
             {/* {chainIconUrl && <ChainIcon src={chainIconUrl} />} */}
           </CenterBox>
-          {displayHandles && (
-            <EventExploreListItemHandles
-              displayFavor={!data?.isForU}
-              displayComplete
-              displayShare={!data?.isForU}
-              disabledFavor={disabledFavor}
-              loadingFavor={loadingFavor}
-              isFavored={isFavored}
-              disabledComplete={disabledComplete}
-              loadingComplete={loadingComplete}
-              isCompleted={isCompleted}
-              onComplete={onComplete}
-              onShare={onShare}
-              onFavor={onFavor}
-            />
-          )}
         </RightBox>
       </ListItemInner>
     </EventExploreListItemWrapper>
-  );
-}
-
-export type EventExploreListItemHandlesProps =
-  StyledComponentPropsWithRef<'div'> & EventExploreItemHandles;
-export function EventExploreListItemHandles({
-  displayFavor = true,
-  displayComplete = true,
-  displayShare = true,
-  disabledFavor,
-  loadingFavor,
-  isFavored,
-  disabledComplete,
-  loadingComplete,
-  isCompleted,
-  onComplete,
-  onShare,
-  onFavor,
-  ...props
-}: EventExploreListItemHandlesProps) {
-  return (
-    <EventHandles {...props}>
-      {displayComplete && (
-        <EventHandleButtonComplete
-          onClick={onComplete}
-          disabled={disabledComplete}
-        >
-          <EventHandleButtonIcon
-            src={isCompleted ? CompletedSvg : CompleteSvg}
-          />
-          <EventHandleButtonText>
-            {loadingComplete
-              ? 'loading'
-              : isCompleted
-              ? 'Completed'
-              : 'Mark as Complete'}
-          </EventHandleButtonText>
-        </EventHandleButtonComplete>
-      )}
-
-      {displayFavor && (
-        <EventHandleButton onClick={onFavor} disabled={disabledFavor}>
-          <EventHandleButtonLikeIcon fill={isFavored ? '#718096' : 'none'} />
-        </EventHandleButton>
-      )}
-      {displayShare && (
-        <EventHandleButton onClick={onShare}>
-          <EventHandleButtonIcon src={ShareSvg} />
-        </EventHandleButton>
-      )}
-    </EventHandles>
   );
 }
 
@@ -251,32 +153,4 @@ const EventPlatformIcon = styled.img`
   height: 24px;
   border-radius: 50%;
   margin-left: auto;
-`;
-
-const EventHandles = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-const EventHandleButton = styled(ButtonPrimaryLine)`
-  padding: 6px;
-  height: 32px;
-`;
-const EventHandleButtonComplete = styled(EventHandleButton)`
-  width: 200px;
-`;
-const EventHandleButtonLikeIcon = styled(IconLike)`
-  width: 20px;
-  height: 20px;
-`;
-const EventHandleButtonIcon = styled.img`
-  width: 20px;
-  height: 20px;
-`;
-const EventHandleButtonText = styled.span`
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
-  color: #ffffff;
-  white-space: nowrap;
 `;

@@ -19,6 +19,7 @@ import MultiSelect from '../common/select/MultiSelect';
 import UploadImage from '../common/upload/UploadImage';
 import ProjectAsyncSelect from '../business/form/ProjectAsyncSelect';
 import ButtonRefresh from '../common/button/ButtonRefresh';
+import UploadImages from '../common/upload/UploadImages';
 
 export const PROJECT_ADMIN_PLUS_SCORE_STEP = 10;
 
@@ -76,6 +77,11 @@ export default forwardRef(function DappForm(
           .transform((value) => value || '')
           .required('Required')
           .url('Please upload dapp logo'),
+        headerPhoto: Yup.string()
+          .transform((value) => value || '')
+          .required('Required')
+          .url('Please upload dapp logo'),
+        screenshots: Yup.array(),
         isCreateProject: Yup.boolean()
           .transform((value) => !!value)
           .nullable(),
@@ -173,7 +179,40 @@ export default forwardRef(function DappForm(
             url={formik.values.image}
             onSuccess={(url) => formik.setFieldValue('image', url)}
           />
+          <ImageUrlInput
+            placeholder="Image"
+            onChange={(e) => formik.setFieldValue('image', e.target.value)}
+            value={formik.values.image}
+          />
           {renderFieldError('image')}
+        </FormValueBox>
+      </FormField>
+      <FormField>
+        <FormLabel htmlFor="headerPhoto">Header photo</FormLabel>
+        <FormValueBox>
+          <UploadImage
+            url={formik.values.headerPhoto}
+            onSuccess={(url) => formik.setFieldValue('headerPhoto', url)}
+          />
+          <ImageUrlInput
+            placeholder="Header photo"
+            onChange={(e) =>
+              formik.setFieldValue('headerPhoto', e.target.value)
+            }
+            value={formik.values.headerPhoto}
+          />
+          {renderFieldError('headerPhoto')}
+        </FormValueBox>
+      </FormField>
+      <FormField>
+        <FormLabel htmlFor="screenshots">Screenshots</FormLabel>
+        <FormValueBox>
+          <UploadImages
+            showInput
+            urls={formik.values.screenshots ?? []}
+            onSuccess={(urls) => formik.setFieldValue('screenshots', urls)}
+          />
+          {renderFieldError('screenshots')}
         </FormValueBox>
       </FormField>
       <FormField>
@@ -267,6 +306,18 @@ export default forwardRef(function DappForm(
           />
           {renderFieldError('chains')}
         </FormValueBox>
+      </FormField>
+      <FormField>
+        <FormLabel htmlFor="supportIframe">Iframe Display</FormLabel>
+        <SwitchRow>
+          <Switch
+            onChange={(checked) =>
+              formik.setFieldValue('supportIframe', checked)
+            }
+            checked={formik.values.supportIframe}
+          />
+          <SwitchText>Iframe supports the website display 👉</SwitchText>
+        </SwitchRow>
       </FormField>
 
       <FormGroupLabel>Social Network</FormGroupLabel>
@@ -435,4 +486,19 @@ const FieldErrorText = styled.div`
 const FormButtons = styled.div`
   display: flex;
   gap: 20px;
+`;
+
+const SwitchRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+const SwitchText = styled.span`
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  color: #4e5a6e;
+`;
+const ImageUrlInput = styled(InputBase)`
+  margin-top: 10px;
 `;

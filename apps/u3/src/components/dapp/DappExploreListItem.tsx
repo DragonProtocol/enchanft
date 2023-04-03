@@ -6,59 +6,62 @@
  * @Description: file description
  */
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
-import { DappExploreListItemResponse } from '../../services/types/dapp';
-import { ButtonPrimary, ButtonPrimaryLine } from '../common/button/ButtonBase';
+import { ScoreMin } from '@us3r-network/authkit';
+import {
+  DappExploreListItemResponse,
+  DappStatus,
+} from '../../services/types/dapp';
 import EllipsisText from '../common/text/EllipsisText';
 import ImgDefault from '../common/ImgDefault';
-import DappFavorButton from './DappFavorButton';
+import CardBase from '../common/card/CardBase';
+import CheckVerifiedSvg from '../common/icons/svgs/check-verified.svg';
+import Tag from '../common/tag/Tag';
+import { formatFilterShowName } from '../../utils/filter';
 
 export type DappExploreListItemData = DappExploreListItemResponse;
 export type DappExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   data: DappExploreListItemData;
-  isInstalled?: boolean;
-  onFavorSuccess?: () => void;
-  onOpen?: () => void;
-  displayButtons?: boolean;
 };
 export default function DappExploreListItem({
   data,
-  isInstalled,
-  onFavorSuccess,
-  onOpen,
-  displayButtons = true,
   ...props
 }: DappExploreListItemProps) {
   return (
     <ExploreListItemWrapper {...props}>
       <ListItemInner>
-        <ItemImg src={data.image} />
-        <InnerCenter>
-          <ItemName>{data.name}</ItemName>
-          <InnerDesc>{data.description}</InnerDesc>
-        </InnerCenter>
-        {displayButtons &&
-          (isInstalled ? (
-            <OpenButton
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onOpen) onOpen();
-              }}
-            >
-              Open
-            </OpenButton>
-          ) : (
-            <InstallButton
-              threadId={data.threadStreamId}
-              onFavorSuccess={onFavorSuccess}
-            />
-          ))}
+        <Banner src={data.headerPhoto} />
+        <Icon src={data.image} />
+        <InnerBody>
+          <Title>
+            <Name>
+              {data.name} {data.name} {data.name}
+            </Name>
+            {data.status === DappStatus.VERIFIED && (
+              <CheckVerified src={CheckVerifiedSvg} />
+            )}
+          </Title>
+
+          <Desc row={4}>{data.description}</Desc>
+
+          <BottomBox>
+            <TagsRow>
+              {data?.types.map((item) => (
+                <Tag key={item}>{formatFilterShowName(item)}</Tag>
+              ))}
+            </TagsRow>
+            {data?.threadStreamId && (
+              <ScoreMin threadId={data.threadStreamId} />
+            )}
+          </BottomBox>
+        </InnerBody>
       </ListItemInner>
     </ExploreListItemWrapper>
   );
 }
-const ExploreListItemWrapper = styled.div`
+const ExploreListItemWrapper = styled(CardBase)`
   width: 100%;
-  padding: 20px;
+  height: 292px;
+  padding: 0;
   box-sizing: border-box;
   cursor: pointer;
   overflow: hidden;
@@ -69,55 +72,83 @@ const ExploreListItemWrapper = styled.div`
   }
 `;
 const ListItemInner = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
+  width: 100%;
+  height: 100%;
   transition: all 0.3s;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+`;
+const Banner = styled.img`
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
 `;
 
-const ItemImg = styled(ImgDefault)`
+const Icon = styled(ImgDefault)`
   width: 48px;
   height: 48px;
   border-radius: 10px;
-  flex-shrink: 0;
+  border: 4px solid #1b1e23;
+  box-sizing: border-box;
+  position: absolute;
+  top: 120px;
+  left: 20px;
+  transform: translateY(-50%);
 `;
-const InnerCenter = styled.div`
-  width: 0;
+const InnerBody = styled.div`
+  width: 100%;
+  height: 0px;
   flex: 1;
+  padding: 20px;
+  padding-top: 38px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  justify-content: center;
+  gap: 10px;
 `;
-const ItemName = styled(EllipsisText)`
+
+const Title = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+const Name = styled(EllipsisText)`
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;
   color: #ffffff;
 `;
-const InnerDesc = styled(EllipsisText)`
+const CheckVerified = styled.img`
+  width: 18px;
+  height: 18px;
+`;
+const Desc = styled(EllipsisText)`
+  display: inline-block;
+  width: 100%;
+  height: 0px;
+  flex: 1;
   font-weight: 400;
   font-size: 12px;
   line-height: 14px;
   color: #718096;
 `;
-const ButtonCss = css`
-  width: 74px;
-  height: 32px;
-  padding: 6px 12px;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 20px;
-  flex-shrink: 0;
+
+const BottomBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
 `;
-const InstallButton = styled(DappFavorButton)`
-  ${ButtonCss}
+
+const TagsRow = styled.div`
+  width: 0px;
+  flex: 1;
+  display: flex;
+  gap: 10px;
+  overflow: hidden;
 `;
-const OpenButton = styled(ButtonPrimaryLine)`
-  ${ButtonCss}
-  background: #14171a;
-  color: #ffffff;
-`;
+
+const Score = styled.div``;
 
 export const DappExploreListItemMobile = styled(DappExploreListItem)`
   padding: 10px;

@@ -7,7 +7,7 @@
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { useCallback, useEffect, useRef } from 'react';
-import useWindowSize from '../../hooks/useWindowSize';
+import useWindowSize from '../../../hooks/useWindowSize';
 
 type FeedsFilterBoxProps = StyledComponentPropsWithRef<'div'> & {
   open?: boolean;
