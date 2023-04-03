@@ -1,19 +1,12 @@
-/*
- * @Author: shixuewen friendlysxw@163.com
- * @Date: 2023-01-18 11:11:59
- * @LastEditors: shixuewen friendlysxw@163.com
- * @LastEditTime: 2023-02-27 11:50:33
- * @Description: file description
- */
 import styled from 'styled-components';
-import useDappWebsite from '../../hooks/useDappWebsite';
-import { ButtonPrimaryLine } from '../common/button/ButtonBase';
-import ImgDefault from '../common/ImgDefault';
+import useDappWebsite from '../../../hooks/useDappWebsite';
+import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
+import ImgDefault from '../../common/ImgDefault';
 import DappWebsitePreview from './DappWebsitePreview';
 
-import CloseSvg from '../common/icons/svgs/close.svg';
-import useFullScreen from '../../hooks/useFullScreen';
-import ButtonFullScreen from '../common/button/ButtonFullScreen';
+import PowerSvg from '../../common/icons/svgs/power.svg';
+import useFullScreen from '../../../hooks/useFullScreen';
+import ButtonFullScreen from '../../common/button/ButtonFullScreen';
 
 export default function DappWebsiteModal() {
   const { isOpenDappModal, dappModalData, closeDappModal } = useDappWebsite();
@@ -29,7 +22,7 @@ export default function DappWebsiteModal() {
           <ButtonFullScreen isFullscreen={isFullscreen} onClick={onToggle} />
           <RightLine />
           <CloseButton onClick={closeDappModal}>
-            <ButtonIcon src={CloseSvg} />
+            <ButtonIcon src={PowerSvg} />
           </CloseButton>
         </HeaderRight>
       </Header>
@@ -52,7 +45,7 @@ const DappWebsiteModalWrapper = styled.div`
   background: #1b1e23;
   position: fixed;
   top: 0;
-  left: 0;
+  right: 0;
   z-index: 1;
   display: flex;
   flex-direction: column;

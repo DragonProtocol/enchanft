@@ -75,7 +75,9 @@ export default function DappPage({
       />
       <ContentLayout>
         <ContentLayoutLeft>
-          <Screeshots />
+          {data?.screenshots?.length > 0 && (
+            <Screeshots urls={data?.screenshots ?? []} />
+          )}
           <UserScore streamId={data.threadStreamId} />
         </ContentLayoutLeft>
         <ContentLayoutRight>
@@ -84,7 +86,7 @@ export default function DappPage({
           <RecommendDapps
             data={recommendDapps}
             loading={recommendDappsLoading}
-            onItemClick={(item) => navigate(`/dapps/${item.id}`)}
+            onItemClick={(item) => navigate(`/dapp-store/${item.id}`)}
           />
         </ContentLayoutRight>
       </ContentLayout>

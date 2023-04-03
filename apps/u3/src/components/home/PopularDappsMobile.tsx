@@ -26,10 +26,9 @@ export default function PopularDappsMobile({
         {data.map((item) => {
           return (
             <DappExploreListItemMobile
-              onClick={() => navigate(`/dapps/${item.id}`)}
+              onClick={() => navigate(`/dapp-store/${item.id}`)}
               key={item.id || item.name}
               data={item}
-              displayButtons={false}
             />
           );
         })}

@@ -126,7 +126,7 @@ export default function Project() {
           {data?.dapps?.length && (
             <Dapps
               data={data.dapps}
-              onItemClick={(item) => navigate(`/dapps/${item.id}`)}
+              onItemClick={(item) => navigate(`/dapp-store/${item.id}`)}
             />
           )}
           <QA />

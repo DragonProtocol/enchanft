@@ -259,7 +259,6 @@ const CardBox = styled.div`
 const ContentBox = styled.div`
   display: flex;
   gap: 40px;
-  margin-top: 40px;
   .no-item {
     width: 100%;
     box-sizing: border-box;

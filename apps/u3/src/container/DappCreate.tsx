@@ -26,6 +26,8 @@ function DappCreate() {
     name: '',
     description: '',
     image: '',
+    headerPhoto: '',
+    screenshots: [],
     types: [],
     url: '',
     status: DappStatus.VISIBLE,
@@ -38,6 +40,7 @@ function DappCreate() {
     },
     editorScore: 0,
     uniProjectId: undefined,
+    supportIframe: true,
   };
   const formHandleRef = useRef(null);
   const [pending, setPending] = useState(false);

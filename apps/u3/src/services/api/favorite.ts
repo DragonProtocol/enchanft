@@ -7,6 +7,7 @@
  */
 import { ContentsListResponse } from '../types/contents';
 import { DappFavoriteListResponse } from '../types/dapp';
+import { EventExploreListResponse } from '../types/event';
 import { UserGroupFavoritesResponse } from '../types/favorite';
 import request, { RequestPromise } from './request';
 
@@ -40,6 +41,21 @@ export function fetchDappFavorites(
 ): RequestPromise<DappFavoriteListResponse> {
   return request({
     url: `/dapps/indexing`,
+    method: 'post',
+    data: {
+      urls,
+    },
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
+export function fetchEventFavorites(
+  urls: string[]
+): RequestPromise<EventExploreListResponse> {
+  return request({
+    url: `/events/indexing`,
     method: 'post',
     data: {
       urls,

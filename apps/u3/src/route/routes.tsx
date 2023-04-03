@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-03-01 17:01:28
  * @Description: file description
  */
-import { RouteObject } from 'react-router-dom';
+import { Navigate, RouteObject } from 'react-router-dom';
 import loadable from '@loadable/component';
 import React, { ReactNode } from 'react';
 import { isMobile } from 'react-device-detect';
@@ -16,7 +16,7 @@ export enum RouteKey {
   eventCreate = 'eventCreate',
   eventEdit = 'eventEdit',
   event = 'event',
-  dapps = 'dapps',
+  dappStore = 'dappStore',
   dapp = 'dapp',
   dappCreate = 'dappCreate',
   projects = 'projects',
@@ -25,12 +25,19 @@ export enum RouteKey {
   contents = 'contents',
   content = 'content',
   contentCreate = 'contentCreate',
-  favorites = 'favorites',
+  favorite = 'favorite',
   frens = 'frens',
   profile = 'profile',
   profileWallet = 'profileWallet',
   noMatch = 'noMatch',
   policy = 'policy',
+  web3Today = 'web3Today',
+  activity = 'activity',
+  asset = 'asset',
+  gallery = 'gallery',
+  notification = 'notification',
+  message = 'message',
+  save = 'save',
 }
 export enum RoutePermission {
   login = 'login',
@@ -52,7 +59,70 @@ export const NoMatchRoute: CutomRouteObject = {
   key: RouteKey.noMatch,
 };
 export const routes: CutomRouteObject[] = [
-  { path: '/', element: loadContainerElement('Home'), key: RouteKey.home },
+  {
+    path: '/',
+    element: <Navigate to="/dapp-store" />,
+    key: RouteKey.home,
+  },
+  {
+    path: '/web3-today',
+    element: loadContainerElement('Web3Today'),
+    key: RouteKey.web3Today,
+  },
+  {
+    path: '/activity',
+    element: loadContainerElement('Activity'),
+    key: RouteKey.activity,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/asset',
+    element: loadContainerElement('Asset'),
+    key: RouteKey.asset,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/gallery',
+    element: loadContainerElement('Gallery'),
+    key: RouteKey.gallery,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/notification',
+    element: loadContainerElement('Notification'),
+    key: RouteKey.notification,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/message',
+    element: loadContainerElement('Message'),
+    key: RouteKey.message,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/favorite',
+    element: loadContainerElement('Favorite'),
+    key: RouteKey.favorite,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/save',
+    element: loadContainerElement('Save'),
+    key: RouteKey.save,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/profile',
+    element: loadContainerElement('ProfileRe'),
+    key: RouteKey.profile,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/profile/:wallet',
+    element: loadContainerElement('Profile'),
+    key: RouteKey.profileWallet,
+    permissions: [RoutePermission.login],
+  },
   {
     path: '/events',
     element: loadContainerElement('Events'),
@@ -76,17 +146,17 @@ export const routes: CutomRouteObject[] = [
     permissions: [RoutePermission.login, RoutePermission.admin],
   },
   {
-    path: '/dapps',
+    path: '/dapp-store',
     element: loadContainerElement('Dapps'),
-    key: RouteKey.dapps,
+    key: RouteKey.dappStore,
   },
   {
-    path: '/dapps/:id',
+    path: '/dapp-store/:id',
     element: loadContainerElement('Dapp'),
     key: RouteKey.dapp,
   },
   {
-    path: '/dapps/create',
+    path: '/dapp-store/create',
     element: loadContainerElement('DappCreate'),
     key: RouteKey.dappCreate,
     permissions: [RoutePermission.login, RoutePermission.admin],
@@ -123,24 +193,6 @@ export const routes: CutomRouteObject[] = [
     path: '/contents/create',
     element: loadContainerElement('ContentCreate'),
     key: RouteKey.contentCreate,
-    permissions: [RoutePermission.login],
-  },
-  {
-    path: '/favorites',
-    element: loadContainerElement('Favorites'),
-    key: RouteKey.favorites,
-    permissions: [RoutePermission.login],
-  },
-  {
-    path: '/profile',
-    element: loadContainerElement('Profile'),
-    key: RouteKey.profile,
-    permissions: [RoutePermission.login],
-  },
-  {
-    path: '/profile/:wallet',
-    element: loadContainerElement('Profile'),
-    key: RouteKey.profileWallet,
     permissions: [RoutePermission.login],
   },
   {

@@ -32,13 +32,13 @@ export default function DappPageMobile({
   ) : data ? (
     <Wrapper>
       <HeaderMobile data={data} />
-      <ScreeshotsMobile />
+      <ScreeshotsMobile urls={data?.screenshots ?? []} />
       <IntroductionMobile text={data.description} />
       <UserScoreMobile streamId={data.threadStreamId} />
       <RecommendDappsMobile
         data={recommendDapps}
         loading={recommendDappsLoading}
-        onItemClick={(item) => navigate(`/dapps/${item.id}`)}
+        onItemClick={(item) => navigate(`/dapp-store/${item.id}`)}
       />
     </Wrapper>
   ) : (

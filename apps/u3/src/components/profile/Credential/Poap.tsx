@@ -48,7 +48,6 @@ export default function Poap({ data }: { data: Array<PoapData> }) {
 }
 
 const ContentBox = styled.div`
-  margin-top: 40px;
   background: #1b1e23;
   border-radius: 20px;
   padding: 20px;

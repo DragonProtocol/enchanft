@@ -5,27 +5,30 @@
  * @LastEditTime: 2023-02-17 11:54:26
  * @Description: file description
  */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import styled from 'styled-components';
-import { animated, useTransition, useSprings } from '@react-spring/web';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import { animated, useSprings } from '@react-spring/web';
 import { useNavigate } from 'react-router-dom';
 import { useDrag } from 'react-use-gesture';
 import { clamp } from 'lodash';
 import swap from 'lodash-move';
-import useLogin from '../../hooks/useLogin';
-import useRoute from '../../route/useRoute';
-import { RouteKey } from '../../route/routes';
-import useUserFavorites from '../../hooks/useUserFavorites';
-import DappSideBarListItem from './DappSideBarListItem';
-import useDappWebsite from '../../hooks/useDappWebsite';
-import DappWebsiteModal from './DappWebsiteModal';
-import useDappHandles from '../../hooks/useDappHandles';
-import InfoCircleSvgUrl from '../common/icons/svgs/info-circle.svg';
-import TrashSvgUrl from '../common/icons/svgs/trash.svg';
+import useUserFavorites from '../../../hooks/useUserFavorites';
+import DappSideBarListItem from './DappInstallListItem';
+import useDappWebsite from '../../../hooks/useDappWebsite';
+import useDappHandles from '../../../hooks/useDappHandles';
+import InfoCircleSvgUrl from '../../common/icons/svgs/info-circle.svg';
+import TrashSvgUrl from '../../common/icons/svgs/trash.svg';
 import {
   getDappSideBarOrderForStore,
   setDappSideBarOrderToStore,
-} from '../../utils/dapp';
+} from '../../../utils/dapp';
 
 const dragFn =
   (orders: number[], active = false, originalIndex = 0, curIndex = 0, y = 0) =>
@@ -44,47 +47,11 @@ const dragFn =
           immediate: false,
         };
 
-export default function DappsSideBarList() {
+type Props = StyledComponentPropsWithRef<'div'>;
+export default forwardRef(function DappInstallList(props: Props, ref) {
   const navigate = useNavigate();
   const { openDappModal } = useDappWebsite();
   const { dapps } = useUserFavorites();
-  const { isLogin } = useLogin();
-  const { firstRouteMeta } = useRoute();
-  const isOpen = useMemo(() => {
-    return (
-      isLogin && [RouteKey.dapps, RouteKey.dapp].includes(firstRouteMeta.key)
-    );
-  }, [isLogin, firstRouteMeta]);
-
-  // const showDapps = useMemo(
-  //   () =>
-  //     [...dapps].sort(
-  //       (a, b) => order.current?.indexOf(a.id) - order.current?.indexOf(b.id)
-  //     ),
-  //   [dapps]
-  // );
-  // const transitions = useTransition(showDapps, {
-  //   keys: (item) => item.id,
-  //   from: {
-  //     opacity: 0,
-  //     transform: 'scale(0)',
-  //   },
-  //   enter: {
-  //     opacity: 1,
-  //     transform: 'scale(1)',
-  //   },
-  //   leave: {
-  //     opacity: 0,
-  //     transform: 'scale(0)',
-  //   },
-  //   // trail: 200,
-  //   config: {
-  //     duration: 500,
-  //     mass: 5,
-  //     tension: 500,
-  //     friction: 100,
-  //   },
-  // });
 
   const { onUnfavor, favorQueueIds } = useDappHandles();
   const [handlesItemId, setHandlesItemId] = useState<string | number | null>(
@@ -102,16 +69,18 @@ export default function DappsSideBarList() {
   // 操作框dom元素
   const handlesPopperEl = useRef<HTMLElement | null>(null);
   // 更新操作框元素的距离
-  const updatePopperStyle = () => {
+  const updatePopperStyle = useCallback(() => {
     if (handlesItem && itemElsWeakMap.current.has(handlesItem)) {
       const itemEl = itemElsWeakMap.current.get(handlesItem);
       const contentRect = (itemEl as HTMLElement).getBoundingClientRect();
-      const { bottom, height } = contentRect;
+      const { bottom, left, height } = contentRect;
       const { offsetHeight } = handlesPopperEl.current;
       const top = bottom - height / 2 - offsetHeight / 2;
       handlesPopperEl.current.style.top = `${top}px`;
+      handlesPopperEl.current.style.right = `calc(100vw - ${left}px + 5px)`;
     }
-  };
+  }, [handlesItem]);
+
   useEffect(() => {
     if (handlesPopperEl.current) {
       handlesPopperEl.current.style.display = handlesItem ? 'flex' : 'none';
@@ -133,6 +102,15 @@ export default function DappsSideBarList() {
       window.removeEventListener('click', windowClick);
     };
   }, []);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      updatePopperStyle,
+      setHandlesItemId,
+    }),
+    [updatePopperStyle, setHandlesItemId]
+  );
 
   /**
    * 列表项拖拽排序
@@ -182,39 +160,33 @@ export default function DappsSideBarList() {
   );
 
   return (
-    <DappsSideBarListWrapper isOpen={isOpen}>
-      <DappsSideBarListInner
-        onScroll={() => {
-          updatePopperStyle();
-        }}
-      >
-        <Title>Your Dapps</Title>
-        <DappList style={{ height: dapps.length * 76 }}>
-          {springs.map(({ zIndex, y, scale }, i) => (
-            <animated.div
-              {...bind(i)}
-              key={dapps[i].id}
-              style={{
-                zIndex,
-                y,
-                scale,
+    <Wrapper {...props}>
+      <DappList style={{ height: dapps.length * 76 }}>
+        {springs.map(({ zIndex, y, scale }, i) => (
+          <animated.div
+            {...bind(i)}
+            key={dapps[i].id}
+            style={{
+              zIndex,
+              y,
+              scale,
+            }}
+          >
+            <DappSideBarListItem
+              data={dapps[i]}
+              onOpen={() => openDappModal(dapps[i].id)}
+              onOpenHandles={() => setHandlesItemId(dapps[i].id)}
+              disabled={favorQueueIds.includes(dapps[i].id)}
+              ref={(el) => {
+                if (el) {
+                  itemElsWeakMap.current.set(dapps[i], el);
+                }
               }}
-            >
-              <DappSideBarListItem
-                data={dapps[i]}
-                onOpen={() => openDappModal(dapps[i].id)}
-                onOpenHandles={() => setHandlesItemId(dapps[i].id)}
-                disabled={favorQueueIds.includes(dapps[i].id)}
-                ref={(el) => {
-                  if (el) {
-                    itemElsWeakMap.current.set(dapps[i], el);
-                  }
-                }}
-              />
-            </animated.div>
-          ))}
-        </DappList>
-      </DappsSideBarListInner>
+            />
+          </animated.div>
+        ))}
+      </DappList>
+
       <HandlesPopperBox
         className="handles-pop-box"
         ref={(el) => {
@@ -249,7 +221,7 @@ export default function DappsSideBarList() {
           <OptionItem
             onClick={() => {
               if (handlesItem) {
-                navigate(`/dapps/${handlesItem.id}`);
+                navigate(`/dapp-store/${handlesItem.id}`);
                 setHandlesItemId(null);
               }
             }}
@@ -276,47 +248,21 @@ export default function DappsSideBarList() {
         </HandlesPopperInner>
         <HandlesPopperArrow />
       </HandlesPopperBox>
-      <DappWebsiteModal />
-    </DappsSideBarListWrapper>
+    </Wrapper>
   );
-}
-const DappsSideBarListWrapper = styled.div<{ isOpen: boolean }>`
-  background: #1b1e23;
-  width: ${({ isOpen }) => (isOpen ? '60px' : '0px')};
-  height: 100%;
-  z-index: 1;
-  transition: all 0.3s ease-out;
+});
+const Wrapper = styled.div`
   position: relative;
-`;
-const DappsSideBarListInner = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 20px 10px;
-  border-left: 1px solid #39424c;
-  box-sizing: border-box;
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  align-items: flex-start;
-`;
-const Title = styled.div`
-  font-weight: 400;
-  font-size: 12px;
-  line-height: 14px;
-  text-align: center;
-  color: #718096;
 `;
 const DappList = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 20px;
-  align-items: flex-start;
+  align-items: center;
   position: relative;
   & > div {
     position: absolute;
-    width: 100%;
     height: 76px;
     transform-origin: 50% 50% 0px;
   }
@@ -324,8 +270,7 @@ const DappList = styled.div`
 
 const HandlesPopperBox = styled.div`
   z-index: 2;
-  position: absolute;
-  right: 100%;
+  position: fixed;
   display: flex;
   align-items: center;
 `;

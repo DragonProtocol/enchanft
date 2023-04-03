@@ -7,6 +7,8 @@
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import React, { useEffect, useState } from 'react';
+import { FavorBtn } from '@us3r-network/authkit';
+import { useNavigate } from 'react-router-dom';
 import { selectWebsite } from '../../features/website/websiteSlice';
 import { useAppSelector } from '../../store/hooks';
 import CannotOpenPlatFormLink from './CannotOpenPlatFormLink';
@@ -17,6 +19,10 @@ import Loading from '../common/loading/Loading';
 import isUrl from '../../utils/isUrl';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import ButtonFullScreen from '../common/button/ButtonFullScreen';
+import { EventExploreListItemResponse } from '../../services/types/event';
+import useAdminEventHandles from '../../hooks/useAdminEventHandles';
+import { Share } from '../icons/share';
+import useEventHandles from '../../hooks/useEventHandles';
 
 export type EventPreviewDataType = {
   name: string;
@@ -97,11 +103,8 @@ const EventIframe = styled.iframe`
 `;
 
 export type EventPreviewHandlesType = {
-  editorScore?: number;
+  data?: EventExploreListItemResponse;
   showAdminOps?: boolean;
-  onAdminThumbUp?: () => void;
-  onAdminDelete?: () => void;
-  onAdminEdit?: () => void;
   isFullscreen?: boolean;
   onFullscreenRequest?: () => void;
   onFullscreenExit?: () => void;
@@ -109,38 +112,47 @@ export type EventPreviewHandlesType = {
 export type EventPreviewHandlesProps = StyledComponentPropsWithRef<'div'> &
   EventPreviewHandlesType;
 export function EventPreviewHandles({
-  editorScore,
+  data,
   showAdminOps,
-  onAdminThumbUp,
-  onAdminDelete,
-  onAdminEdit,
   isFullscreen,
   onFullscreenRequest,
   onFullscreenExit,
   ...props
 }: EventPreviewHandlesProps) {
+  const navigate = useNavigate();
+  const { onAdminThumbUp, onAdminDelete } = useAdminEventHandles();
+  const { onShare } = useEventHandles();
   return (
     <EventPreviewHandlesWrapper {...props}>
+      {!!data?.threadStreamId && <FavorBtn threadId={data.threadStreamId} />}
+
+      <EventHandleButton
+        onClick={() => {
+          onShare(data);
+        }}
+      >
+        <Share />
+      </EventHandleButton>
       {showAdminOps && (
         <>
           <EventHandleButton
             onClick={() => {
-              if (onAdminThumbUp) onAdminThumbUp();
+              if (onAdminThumbUp) onAdminThumbUp(data);
             }}
           >
             <ThumbUp />
-            &nbsp; {editorScore || 0}
+            &nbsp; {data?.editorScore || 0}
           </EventHandleButton>
           <EventHandleButton
             onClick={() => {
-              if (onAdminEdit) onAdminEdit();
+              navigate(`/events/${data?.id}/edit`);
             }}
           >
             <Edit3 />
           </EventHandleButton>
           <EventHandleButton
             onClick={() => {
-              if (onAdminDelete) onAdminDelete();
+              if (onAdminDelete) onAdminDelete(data);
             }}
           >
             <Trash />

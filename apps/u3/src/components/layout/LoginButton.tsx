@@ -9,7 +9,7 @@ import { UserAvatar, Username } from '@us3r-network/authkit';
 import { useUs3rProfileContext } from '@us3r-network/profile';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import useLogin from '../../hooks/useLogin';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import LogoutSvg from '../common/icons/svgs/logout.svg';
@@ -90,10 +90,7 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
             <Username did={sessId} />
           </LoginUser>
 
-          <Button onClick={onLogout} onlyIcon={onlyIcon}>
-            {!onlyIcon && `Logout`}
-            <LogoutIconButton src={LogoutSvg} />
-          </Button>
+          {/* <LogoutButton onClick={onLogout} onlyIcon={onlyIcon} /> */}
         </>
       ) : (
         <Button onClick={login} onlyIcon={onlyIcon}>
@@ -103,6 +100,20 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
         </Button>
       )}
     </LoginButtonWrapper>
+  );
+}
+
+export function LogoutButton({
+  onlyIcon,
+  ...otherProps
+}: StyledComponentPropsWithRef<'button'> & {
+  onlyIcon?: boolean;
+}) {
+  return (
+    <Button onlyIcon={onlyIcon} {...otherProps}>
+      {!onlyIcon && `Logout`}
+      <LogoutIconButton src={LogoutSvg} />
+    </Button>
   );
 }
 

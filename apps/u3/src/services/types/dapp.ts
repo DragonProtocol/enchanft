@@ -37,6 +37,8 @@ export type DappExploreListItemResponse = {
   name: string;
   description: string;
   image: string;
+  headerPhoto: string;
+  screenshots: string[];
   favored?: boolean;
   url: string;
   mediaLinks?: {
@@ -50,6 +52,7 @@ export type DappExploreListItemResponse = {
   status?: DappStatus;
   project?: ProjectExploreListItemResponse;
   threadStreamId?: string;
+  supportIframe: boolean;
 };
 export type DappExploreListResponse = ApiResp<
   Array<DappExploreListItemResponse>
@@ -65,6 +68,8 @@ export type UpdateDappData = {
   name: string;
   description: string;
   image: string;
+  headerPhoto: string;
+  screenshots: string[];
   mediaLinks?: {
     twitter?: string;
     discord?: string;
@@ -77,5 +82,6 @@ export type UpdateDappData = {
   status?: DappStatus;
   editorScore?: number;
   uniProjectId: number;
+  supportIframe: boolean;
 };
 export type UpdateDappResponse = ApiResp<DappExploreListItemResponse>;

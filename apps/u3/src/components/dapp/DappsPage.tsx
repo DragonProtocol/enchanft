@@ -7,15 +7,17 @@
  */
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 import { MainWrapper } from '../layout/Index';
 import ListScrollBox from '../common/box/ListScrollBox';
 import Loading from '../common/loading/Loading';
 import NoResult from '../common/NoResult';
 import DappExploreListFilter from './DappExploreListFilter';
 import DappExploreList from './DappExploreList';
-import useDappWebsite from '../../hooks/useDappWebsite';
 import type { DappsPageProps } from '../../container/Dapps';
-import useUserFavorites from '../../hooks/useUserFavorites';
+import { useAppSelector } from '../../store/hooks';
+import { selectWebsite } from '../../features/website/websiteSlice';
+import Carousel from '../home/Carousel';
 
 export default function DappsPage({
   // Queries
@@ -30,38 +32,42 @@ export default function DappsPage({
 }: // Others
 DappsPageProps) {
   const navigate = useNavigate();
-  const { openDappModal } = useDappWebsite();
-  const { addOneToFavoredDapps } = useUserFavorites();
+  const { homeBannerDisplay } = useAppSelector(selectWebsite);
 
   return (
     <DappsPageWrapper>
-      <DappExploreListFilter values={filter} onChange={filterChange} />
+      {!isMobile && homeBannerDisplay && <Carousel />}
+
       <MainBox>
-        {isLoading ? (
-          <Loading />
-        ) : isEmpty ? (
-          <MainBody>
+        <FilterBox>
+          <DappExploreListFilter values={filter} onChange={filterChange} />
+        </FilterBox>
+
+        <ListBox>
+          {isLoading ? (
+            <Loading />
+          ) : isEmpty ? (
             <NoResult />
-          </MainBody>
-        ) : (
-          <MainBody
-            onScrollBottom={() => {
-              getMore();
-            }}
-          >
-            <DappExploreList
-              data={dapps}
-              onFavorSuccess={addOneToFavoredDapps}
-              onOpen={(item) => openDappModal(item.id)}
-              onItemClick={(item) => navigate(`/dapps/${item.id}`)}
-            />
-            {isLoadingMore ? (
-              <MoreLoading>loading ...</MoreLoading>
-            ) : noMore ? (
-              <MoreLoading>No other dapps</MoreLoading>
-            ) : null}
-          </MainBody>
-        )}
+          ) : (
+            <ListScrollBox
+              onScrollBottom={() => {
+                getMore();
+              }}
+            >
+              <DappExploreList
+                data={dapps}
+                onItemClick={(item) => navigate(`/dapp-store/${item.id}`)}
+              />
+              {isLoadingMore ? (
+                <MoreLoading>
+                  <Loading />
+                </MoreLoading>
+              ) : noMore ? (
+                <MoreLoading>No other dapps</MoreLoading>
+              ) : null}
+            </ListScrollBox>
+          )}
+        </ListBox>
       </MainBox>
     </DappsPageWrapper>
   );
@@ -69,26 +75,30 @@ DappsPageProps) {
 const DappsPageWrapper = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 40px;
+  height: auto;
 `;
 const MainBox = styled.div`
   width: 100%;
-  height: 0px;
+  height: calc(100vh - 48px);
+  display: flex;
+  gap: 40px;
+`;
+const FilterBox = styled.div`
+  width: 260px;
+  height: 100%;
+  overflow-y: auto;
+`;
+const ListBox = styled.div`
+  height: 100%;
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
-const MainBody = styled(ListScrollBox)`
-  width: 100%;
-  height: 100%;
-  background: #1b1e23;
-  border: 1px solid #39424c;
-  box-sizing: border-box;
-  border-radius: 20px;
-`;
 const MoreLoading = styled.div`
   padding: 20px;
-  text-align: center;
   color: #748094;
+  display: flex;
+  justify-content: center;
 `;
