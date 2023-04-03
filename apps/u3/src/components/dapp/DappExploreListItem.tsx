@@ -33,15 +33,13 @@ export default function DappExploreListItem({
         <Icon src={data.image} />
         <InnerBody>
           <Title>
-            <Name>
-              {data.name} {data.name} {data.name}
-            </Name>
+            <Name>{data.name}</Name>
             {data.status === DappStatus.VERIFIED && (
               <CheckVerified src={CheckVerifiedSvg} />
             )}
           </Title>
 
-          <Desc row={4}>{data.description}</Desc>
+          <Desc row={3}>{data.description}</Desc>
 
           <BottomBox>
             <TagsRow>
@@ -124,13 +122,11 @@ const CheckVerified = styled.img`
   height: 18px;
 `;
 const Desc = styled(EllipsisText)`
-  display: inline-block;
   width: 100%;
-  height: 0px;
-  flex: 1;
+  height: 50px;
   font-weight: 400;
   font-size: 12px;
-  line-height: 14px;
+  line-height: 16px;
   color: #718096;
 `;
 
@@ -138,6 +134,7 @@ const BottomBox = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-top: auto;
 `;
 
 const TagsRow = styled.div`
