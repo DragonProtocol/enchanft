@@ -52,17 +52,17 @@ function Main() {
     dispatch(setU3ExtensionInstalled(u3ExtensionInstalled));
   }, [u3ExtensionInstalled]);
 
-  const { lastRouteMeta } = useRoute();
-  useEffect(() => {
-    const { permissions } = lastRouteMeta;
-    if (
-      permissions &&
-      permissions.includes(RoutePermission.login) &&
-      !isLogin
-    ) {
-      login();
-    }
-  }, [lastRouteMeta, isLogin]);
+  // const { lastRouteMeta } = useRoute();
+  // useEffect(() => {
+  //   const { permissions } = lastRouteMeta;
+  //   if (
+  //     permissions &&
+  //     permissions.includes(RoutePermission.login) &&
+  //     !isLogin
+  //   ) {
+  //     login();
+  //   }
+  // }, [lastRouteMeta, isLogin]);
   const { preferenceList } = usePreference(user?.token);
 
   useEffect(() => {

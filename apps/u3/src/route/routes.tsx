@@ -37,6 +37,7 @@ export enum RouteKey {
   gallery = 'gallery',
   notification = 'notification',
   message = 'message',
+  save = 'save',
 }
 export enum RoutePermission {
   login = 'login',
@@ -102,6 +103,12 @@ export const routes: CutomRouteObject[] = [
     path: '/favorite',
     element: loadContainerElement('Favorite'),
     key: RouteKey.favorite,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/save',
+    element: loadContainerElement('Save'),
+    key: RouteKey.save,
     permissions: [RoutePermission.login],
   },
   {
