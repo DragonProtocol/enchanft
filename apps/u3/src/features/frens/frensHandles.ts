@@ -75,12 +75,14 @@ export const getFeed = createAsyncThunk(
       address,
       tag,
       reset = false,
+      pageSize,
     }: {
       category?: string;
       cursor?: string;
       address?: string;
       tag?: string;
       reset?: boolean;
+      pageSize?: number;
     },
     { dispatch }
   ) => {
@@ -95,7 +97,13 @@ export const getFeed = createAsyncThunk(
       }
     } else {
       dispatch(handleSearch(false));
-      const resp = await getFeedApi({ category, cursor, address, tag });
+      const resp = await getFeedApi({
+        category,
+        cursor,
+        address,
+        tag,
+        page_size: pageSize || 10,
+      });
       if (resp.data.code === 0) {
         dispatch(getFeedSuccess({ data: resp?.data?.data, reset }));
       } else {
