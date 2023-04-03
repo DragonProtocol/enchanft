@@ -35,13 +35,14 @@ export default function SaveExploreList({
 const SaveExploreListWrapper = styled(CardBase)`
   padding: 0;
   width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   & > div {
     & {
       border-bottom: 1px solid rgba(57, 66, 76, 0.5);
     }
-    &:last-child {
+    &:last-child:not(:first-child) {
       border-bottom: none;
     }
   }
