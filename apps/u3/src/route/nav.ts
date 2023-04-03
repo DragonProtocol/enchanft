@@ -38,10 +38,10 @@ export const navs: CutomNavObject[] = [
     route: getRoute(RouteKey.activity),
   },
   {
-    name: 'favorite',
-    activeRouteKeys: [RouteKey.favorite],
+    name: 'save',
+    activeRouteKeys: [RouteKey.save],
     icon: React.createElement(HeartSvg),
-    route: getRoute(RouteKey.favorite),
+    route: getRoute(RouteKey.save),
   },
   {
     name: 'asset',
