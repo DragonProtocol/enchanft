@@ -85,12 +85,12 @@ export default function EventExploreListFilter({
         onChange={(value) => onChange({ ...values, eventTypes: value })}
         value={selectedEventTypes}
       />
-      <CheckboxMultiChoice
+      {/* <CheckboxMultiChoice
         label="Project Type"
         options={projectTypesOptions}
         onChange={(value) => onChange({ ...values, projectTypes: value })}
         value={selectedProjectTypes}
-      />
+      /> */}
     </EventExploreListFilterWrapper>
   );
 }

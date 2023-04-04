@@ -8,13 +8,17 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { getConfigsTopics } from '../../services/api/common';
 import { ApiRespCode, AsyncRequestStatus } from '../../services/types';
-import { ConfigTopicsChain } from '../../services/types/common';
+import {
+  ConfigTopicsChain,
+  ConfigTopicsType,
+} from '../../services/types/common';
 import type { RootState } from '../../store/store';
 import { formatFilterShowName } from '../../utils/filter';
 
 export type TopicItem = {
   value: string;
   name: string;
+  image?: string;
 };
 type Topics = {
   eventRewards: TopicItem[];
@@ -50,6 +54,13 @@ const formatTopics = (topics: string[]) => {
     name: formatFilterShowName(item),
   }));
 };
+const formatTypeTopics = (topics: ConfigTopicsType[]) => {
+  return topics.map((item) => ({
+    ...item,
+    value: item.name,
+    name: formatFilterShowName(item.name),
+  }));
+};
 export const fetchConfigsTopics = createAsyncThunk<Topics, undefined>(
   'configs/topics',
   async (params, { rejectWithValue }) => {
@@ -66,13 +77,13 @@ export const fetchConfigsTopics = createAsyncThunk<Topics, undefined>(
       } = resp.data.data;
       return {
         ...resp.data.data,
-        eventRewards: formatTopics(eventRewards || []),
-        eventTypes: formatTopics(eventTypes || []),
+        eventRewards: formatTypeTopics(eventRewards || []),
+        eventTypes: formatTypeTopics(eventTypes || []),
         projectTypes: formatTopics(projectTypes || []),
-        dappTypes: formatTopics(dappTypes || []),
+        dappTypes: formatTypeTopics(dappTypes || []),
         contentTypes: formatTopics(contentTypes || []),
         langs: formatTopics(langs || []),
-        contentTags: formatTopics(contentTags || []),
+        contentTags: formatTypeTopics(contentTags || []),
       };
     }
     return rejectWithValue(new Error(resp.data.msg));

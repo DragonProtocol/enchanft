@@ -60,6 +60,7 @@ export default function DappExploreListFilter({
       ...topics.dappTypes.map((item) => ({
         value: item.value,
         label: item.name,
+        iconUrl: item.image,
       })),
     ],
     [topics]
