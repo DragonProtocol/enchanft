@@ -22,11 +22,7 @@ export default function Reviews() {
             data?.edges
               ?.filter((edge) => edge.node.thread.type === 'dapp')
               ?.map((edge) => edge.node) ?? [];
-          // 再异步获取并更新dapp详细信息
-          const dappUrls =
-            data?.edges
-              ?.filter((edge) => edge.node.thread.type === 'dapp')
-              .map((edge) => edge.node.thread.url) ?? [];
+          const dappUrls = dappNodes.map((node) => node.thread.url) ?? [];
           const resp = await fetchDappFavorites(dappUrls);
           const dapps = resp?.data?.data ?? [];
           setList(
