@@ -22,18 +22,6 @@ export default function Reviews() {
             data?.edges
               ?.filter((edge) => edge.node.thread.type === 'dapp')
               ?.map((edge) => edge.node) ?? [];
-
-          // 先展示原始评分数据
-          setList(
-            dappNodes.map((node) => ({
-              ...node,
-              threadLogo: '',
-              threadTitle: node?.thread?.url,
-              isVerified: false,
-            })) ?? []
-          );
-          setLoading(false);
-
           // 再异步获取并更新dapp详细信息
           const dappUrls =
             data?.edges
@@ -41,17 +29,16 @@ export default function Reviews() {
               .map((edge) => edge.node.thread.url) ?? [];
           const resp = await fetchDappFavorites(dappUrls);
           const dapps = resp?.data?.data ?? [];
-          // eslint-disable-next-line @typescript-eslint/no-shadow
-          setList((list) =>
-            list.map((item) => {
-              const findDapp = dapps.find(
-                (dapp) => dapp.threadStreamId === item.thread.id
+          setList(
+            dapps.map((dapp) => {
+              const findNode = dappNodes.find(
+                (node) => dapp.threadStreamId === node.thread.id
               );
               return {
-                ...item,
-                threadLogo: findDapp?.image,
-                threadTitle: findDapp?.name,
-                isVerified: findDapp?.status === DappStatus.VERIFIED,
+                ...findNode,
+                threadLogo: dapp?.image,
+                threadTitle: dapp?.name,
+                isVerified: dapp?.status === DappStatus.VERIFIED,
               };
             })
           );

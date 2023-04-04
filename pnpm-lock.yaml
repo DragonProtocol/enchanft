@@ -596,7 +596,7 @@ importers:
       '@types/react-slick': ^0.23.10
       '@types/styled-components': ^5.1.25
       '@types/three': ^0.146.0
-      '@us3r-network/authkit': ^0.6.10
+      '@us3r-network/authkit': ^0.6.11
       '@us3r-network/profile': ^0.2.1
       '@us3r-network/thread': ^0.3.0
       antd: ^5.0.7
@@ -685,7 +685,7 @@ importers:
       '@types/react-slick': 0.23.10
       '@types/styled-components': 5.1.26
       '@types/three': 0.146.0
-      '@us3r-network/authkit': 0.6.10_g4tcvbymmad3rw245xirluw6u4
+      '@us3r-network/authkit': 0.6.11_g4tcvbymmad3rw245xirluw6u4
       '@us3r-network/profile': 0.2.1
       '@us3r-network/thread': 0.3.0
       antd: 5.3.1_biqbaboplfbrettd7655fr4n2y
@@ -1771,7 +1771,7 @@ packages:
     resolution: {integrity: sha512-bde1etTx6ZyTmobl9LLMMQsaizFVZrquTEHOqKeQESMKo4PlObf+8+JA25ZsIpZhT/WEd39+vOdLXAFG/nELpA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/types': 7.21.4
+      '@babel/types': 7.21.3
 
   /@babel/helper-string-parser/7.19.4:
     resolution: {integrity: sha512-nHtDoQcuqFmwYNYPz3Rah5ph2p8PFeFCsZk9A/48dPc/rGocJ5J3hAAZ7pb76VWX3fZKu+uEr/FhH5jLx7umrw==}
@@ -10653,8 +10653,8 @@ packages:
       - encoding
     dev: false
 
-  /@us3r-network/authkit/0.6.10_g4tcvbymmad3rw245xirluw6u4:
-    resolution: {integrity: sha512-dxFj/PlRDE44g/cSMWpdgfzNUWsjAjuOedPO91RdaTVbCDwxw9CjywqVlPXx4scIGrQQRDdY4l/JbR2BG9JZHQ==}
+  /@us3r-network/authkit/0.6.11_g4tcvbymmad3rw245xirluw6u4:
+    resolution: {integrity: sha512-6mtoJ+6uQEZW3K0/lcuBHEchfqs1oWQOjY7/87TucSz1NMab6b2Q+A7nF6RUmbKl+LySCQYadPIHe4fRmtAOOQ==}
     peerDependencies:
       '@us3r-network/profile': ^0.2.1
       '@us3r-network/thread': ^0.3.0

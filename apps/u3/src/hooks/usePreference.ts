@@ -16,40 +16,32 @@ export default function usePreference(userToken: string) {
   );
   const { topics } = useConfigsTopics();
   const lists = useMemo(() => {
-    const { contentTypes, eventRewards, eventTypes, projectTypes } = topics;
+    const { contentTags, eventTypes, dappTypes } = topics;
     const listData: Array<{
       type: string;
       value: string;
       name: string;
     }> = [];
 
-    return (
-      listData
-        .concat(
-          contentTypes.map((item) => ({
-            type: 'contentTypes',
-            ...item,
-          }))
-        )
-        // .concat(
-        //   eventRewards.map((item) => ({
-        //     type: 'eventRewards',
-        //     ...item,
-        //   }))
-        // )
-        // .concat(
-        //   eventTypes.map((item) => ({
-        //     type: 'eventTypes',
-        //     ...item,
-        //   }))
-        // )
-        .concat(
-          projectTypes.map((item) => ({
-            type: 'projectTypes',
-            ...item,
-          }))
-        )
-    );
+    return listData
+      .concat(
+        dappTypes.map((item) => ({
+          type: 'dappTypes',
+          ...item,
+        }))
+      )
+      .concat(
+        contentTags.slice(0, 10).map((item) => ({
+          type: 'contentTags',
+          ...item,
+        }))
+      )
+      .concat(
+        eventTypes.map((item) => ({
+          type: 'eventTypes',
+          ...item,
+        }))
+      );
   }, [topics]);
 
   const fetchPreference = useCallback(
