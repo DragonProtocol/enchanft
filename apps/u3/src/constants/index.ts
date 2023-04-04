@@ -24,7 +24,7 @@ export const WL_DISCORD_URL = 'https://discord.com/invite/ZXEgc3UrjB';
 export const WL_APP_VERSION = process.env.REACT_APP_VERSION;
 export const CHROME_EXTENSION_URL = process.env.REACT_APP_CHROME_EXTENSION_URL;
 
-export const EVENT_IMAGE_SIZE_LIMIT = 200 * 1024;
+export const UPLOAD_IMAGE_SIZE_LIMIT = 500 * 1024;
 
 export const U3_HOST_URI = window.location.host;
 
