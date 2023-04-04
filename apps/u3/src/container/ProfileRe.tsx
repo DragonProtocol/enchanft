@@ -5,6 +5,7 @@ import { useState } from 'react';
 import LogoutConfirmModal from '../components/layout/LogoutConfirmModal';
 import useLogin from '../hooks/useLogin';
 import { LogoutButton } from '../components/layout/LoginButton';
+import Reviews from '../components/profile/review/Reviews';
 
 export default function ProfileRe() {
   const { sessId } = useUs3rProfileContext();
@@ -21,11 +22,9 @@ export default function ProfileRe() {
           }}
         />
       </div>
-      {/* <div className="reviews-warp">
-        <div className="reviews">
-          <h3>My Reviews (17)</h3>
-        </div>
-      </div> */}
+      <div className="reviews-warp">
+        <Reviews />
+      </div>
       <LogoutConfirmModal
         isOpen={openLogoutConfirm}
         onClose={() => {
@@ -56,15 +55,5 @@ const ProfileWrapper = styled.div`
   .reviews-warp {
     padding-top: 40px;
     flex-grow: 1;
-  }
-
-  .reviews {
-    color: #ffffff;
-
-    padding: 20px;
-    gap: 20px;
-
-    background: #1b1e23;
-    border-radius: 20px;
   }
 `;
