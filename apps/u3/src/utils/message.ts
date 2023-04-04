@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-03-07 09:36:29
  * @Description: file description
  */
-import { EVENT_IMAGE_SIZE_LIMIT } from '../constants';
+import { UPLOAD_IMAGE_SIZE_LIMIT } from '../constants';
 import { CONTENT_ADMIN_PLUS_SCORE_STEP } from './content';
 import { EVENT_ADMIN_PLUS_SCORE_STEP } from './event';
 
@@ -39,7 +39,9 @@ export const messages = {
   common: {
     error: 'Something seems wrong, please try again.',
     upload_img: 'Upload successfully!',
-    upload_img_limit: `File Too Large, ${EVENT_IMAGE_SIZE_LIMIT / 1024}k limit`,
+    upload_img_limit: `File Too Large, ${
+      UPLOAD_IMAGE_SIZE_LIMIT / 1024
+    }k limit`,
     copy: 'Copied!',
   },
 };
