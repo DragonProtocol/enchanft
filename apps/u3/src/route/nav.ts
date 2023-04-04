@@ -13,6 +13,7 @@ import { ReactComponent as WalletSvg } from './svgs/wallet.svg';
 import { ReactComponent as ImageSvg } from './svgs/image.svg';
 import { ReactComponent as BellSvg } from './svgs/bell.svg';
 import { ReactComponent as MessageChatSquareSvg } from './svgs/message-chat-square.svg';
+import { ReactComponent as UserCircleSvg } from './svgs/user-circle.svg';
 
 import { CutomRouteObject, getRoute, RouteKey } from './routes';
 
@@ -30,6 +31,12 @@ export const navs: CutomNavObject[] = [
     activeRouteKeys: [RouteKey.dappStore, RouteKey.dapp],
     icon: React.createElement(CompassSvg),
     route: getRoute(RouteKey.dappStore),
+  },
+  {
+    name: 'profile',
+    activeRouteKeys: [RouteKey.profile],
+    icon: React.createElement(UserCircleSvg),
+    route: getRoute(RouteKey.profile),
   },
   {
     name: 'activity',

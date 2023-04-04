@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify';
 import { useState } from 'react';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { EVENT_IMAGE_SIZE_LIMIT } from '../../../constants';
+import { UPLOAD_IMAGE_SIZE_LIMIT } from '../../../constants';
 import { uploadImage } from '../../../services/api/upload';
 import { messages } from '../../../utils/message';
 import UploadImgMaskImg from '../../imgs/upload_img_mask.svg';
@@ -43,7 +43,7 @@ export default function UploadImage({
           onChange={(e) => {
             const file = e.target.files && e.target.files[0];
             if (!file) return;
-            if (file.size > EVENT_IMAGE_SIZE_LIMIT) {
+            if (file.size > UPLOAD_IMAGE_SIZE_LIMIT) {
               toast.error(messages.common.upload_img_limit);
               return;
             }
