@@ -28,7 +28,7 @@ export default function ListChoice({
     <ListChoiceWrapper {...wrapperProps}>
       {label && (
         <ListChoiceLabel className="list-choice-label">
-          {label}:{' '}
+          {label}
         </ListChoiceLabel>
       )}
 
