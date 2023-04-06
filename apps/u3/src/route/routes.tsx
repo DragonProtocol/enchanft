@@ -33,6 +33,8 @@ export enum RouteKey {
   policy = 'policy',
   web3Today = 'web3Today',
   activity = 'activity',
+  stream = 'stream',
+  family = 'family',
   asset = 'asset',
   gallery = 'gallery',
   notification = 'notification',
@@ -73,6 +75,18 @@ export const routes: CutomRouteObject[] = [
     path: '/activity',
     element: loadContainerElement('Activity'),
     key: RouteKey.activity,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/stream/:streamId',
+    element: loadContainerElement('Stream'),
+    key: RouteKey.stream,
+    permissions: [RoutePermission.login],
+  },
+  {
+    path: '/family/:familyOrApp',
+    element: loadContainerElement('StreamFamily'),
+    key: RouteKey.family,
     permissions: [RoutePermission.login],
   },
   {

@@ -7,6 +7,17 @@ import {
 } from '../types/contents';
 import request, { RequestPromise } from './request';
 
+export function queryRss3(data): RequestPromise<ContentsResponse> {
+  return request({
+    url: `/frens/queryRss3`,
+    method: 'post',
+    data,
+    headers: {
+      needToken: true,
+    },
+  });
+}
+
 export function getFeed(params): RequestPromise<ContentsResponse> {
   return request({
     url: `/frens/feed`,

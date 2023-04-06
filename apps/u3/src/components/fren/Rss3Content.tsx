@@ -18,6 +18,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
+import { useUs3rProfileContext } from '@us3r-network/profile';
 
 import {
   getFeed,
@@ -26,6 +27,7 @@ import {
   getFollowing,
   setFollow,
   getReco,
+  getRss3,
 } from '../../features/frens/frensHandles';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { AsyncRequestStatus } from '../../services/types';
@@ -472,6 +474,8 @@ export default function Rss3Content({ address, empty }: Rss3ContentProps) {
     followingMap,
   } = useAppSelector(selectFrensHandlesState);
   const feedRef = useRef(null);
+  const { getProfileWithDid, sessId, profile } = useUs3rProfileContext()!;
+  console.log(profile, 'profile');
 
   const loading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
@@ -486,15 +490,17 @@ export default function Rss3Content({ address, empty }: Rss3ContentProps) {
     ({ cursor, reset = false }: { cursor?: string; reset?: boolean }) => {
       if (loading) return;
       dispatch(
-        getFeed({
-          category: 'activities',
+        getRss3({
+          address: profile?.wallets?.map(
+            ({ address: walletAddress }) => walletAddress
+          ),
           cursor,
           reset,
           pageSize: 20,
         })
       );
     },
-    [dispatch]
+    [dispatch, profile]
   );
 
   useEffect(() => {
@@ -602,16 +608,16 @@ export default function Rss3Content({ address, empty }: Rss3ContentProps) {
                   color: '#718096',
                 }}
               >
-                <img
+                {/* <img
                   id={`tooltip-anchor-children-${owner}-${index}`}
                   className="avatar"
                   src={`https://cdn.stamp.fyi/avatar/${owner}?s=300`}
                   alt={owner}
-                />
+                /> */}
               </Popover>
               <div className="content">
                 <div className="owner">
-                  <span className="name color-white">{ownerName}</span>{' '}
+                  {/* <span className="name color-white">{ownerName}</span>{' '} */}
                   {renderAddress(owner)}
                   {[network, platform]?.map((text) =>
                     text ? `  |  ${text}` : null
