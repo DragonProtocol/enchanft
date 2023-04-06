@@ -23,7 +23,7 @@ export default function DappMenu() {
         }
       }}
     >
-      <OpenIcon>{'<'}</OpenIcon>
+      {!isOpen && <OpenIcon>{'<'}</OpenIcon>}
       <ListWrapper isOpen={isOpen}>
         <ListInner
           onScroll={() => {
@@ -67,6 +67,7 @@ const Wrapper = styled.div<{ isOpen: boolean }>`
   box-sizing: border-box;
   overflow-x: hidden;
   display: flex;
+  justify-content: center;
   gap: 20;
   transition: all 0.3s ease-out;
 `;

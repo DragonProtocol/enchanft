@@ -15,8 +15,8 @@ import EllipsisText from '../common/text/EllipsisText';
 import ImgDefault from '../common/ImgDefault';
 import CardBase from '../common/card/CardBase';
 import CheckVerifiedSvg from '../common/icons/svgs/check-verified.svg';
-import Tag from '../common/tag/Tag';
 import { formatFilterShowName } from '../../utils/filter';
+import Badge from './Badge';
 
 export type DappExploreListItemData = DappExploreListItemResponse;
 export type DappExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
@@ -44,7 +44,7 @@ export default function DappExploreListItem({
           <BottomBox>
             <TagsRow>
               {data?.types.map((item) => (
-                <Tag key={item}>{formatFilterShowName(item)}</Tag>
+                <Badge key={item} text={formatFilterShowName(item)} />
               ))}
             </TagsRow>
             {data?.threadStreamId && (
