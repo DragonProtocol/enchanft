@@ -3,9 +3,7 @@ import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import { useParams } from 'react-router-dom';
 import { useUs3rProfileContext } from '@us3r-network/profile';
-import OnChainInterest, {
-  OnChainNoItem,
-} from '../components/profile/OnChainInterest';
+import OnChainInterest from '../components/profile/OnChainInterest';
 import { fetchU3Assets, ProfileDefault } from '../services/api/profile';
 import { ProfileEntity } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
@@ -51,14 +49,13 @@ export default function Asset() {
           <div className="loading">
             <Loading />
           </div>
-        )) ||
-          (profileData.nfts.result.length > 0 && (
-            <OnChainInterest
-              data={profileData.nfts}
-              wallet={profileData.erc20Balances}
-              ethBalance={profileData.ethBalance}
-            />
-          )) || <OnChainNoItem />}
+        )) || (
+          <OnChainInterest
+            data={profileData.nfts}
+            wallet={profileData.erc20Balances}
+            ethBalance={profileData.ethBalance}
+          />
+        )}
       </ContentWrapper>
     </Wrapper>
   );

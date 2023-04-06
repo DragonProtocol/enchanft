@@ -49,20 +49,24 @@ export default function OnChainInterest({
             />
           </div>
         </div>
-        <div className="data">
-          {data.result
-            .filter((item) => {
-              if (collection) {
-                return item.name === collection;
-              }
-              return true;
-            })
-            .map((item) => {
-              return (
-                <NFTCard key={item.normalized_metadata.name} data={item} />
-              );
-            })}
-        </div>
+        {data.result.length > 0 ? (
+          <div className="data">
+            {data.result
+              .filter((item) => {
+                if (collection) {
+                  return item.name === collection;
+                }
+                return true;
+              })
+              .map((item) => {
+                return (
+                  <NFTCard key={item.normalized_metadata.name} data={item} />
+                );
+              })}
+          </div>
+        ) : (
+          <OnChainNoItem />
+        )}
       </div>
       <div className="wallet">
         <h2>Wallet</h2>

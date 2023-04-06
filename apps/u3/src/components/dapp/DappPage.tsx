@@ -81,7 +81,7 @@ export default function DappPage({
           <UserScore streamId={data.threadStreamId} />
         </ContentLayoutLeft>
         <ContentLayoutRight>
-          {data.project && <Project data={data.project} />}
+          {/* {data.project && <Project data={data.project} />} */}
 
           <RecommendDapps
             data={recommendDapps}
