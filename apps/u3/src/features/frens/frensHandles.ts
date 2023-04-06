@@ -25,6 +25,7 @@ import {
   follow,
   unFollow,
   reco,
+  queryRss3,
 } from '../../services/api/frens';
 
 // // 统一管理操作
@@ -109,6 +110,41 @@ export const getFeed = createAsyncThunk(
       } else {
         throw new Error(resp.data.msg);
       }
+    }
+  }
+);
+
+export const getRss3 = createAsyncThunk(
+  'user/frensHandles/favorFrens',
+  async (
+    {
+      address,
+      cursor,
+      tag,
+      reset = false,
+      pageSize,
+    }: {
+      cursor?: string;
+      address: string[];
+      tag?: string;
+      reset?: boolean;
+      pageSize?: number;
+    },
+    { dispatch }
+  ) => {
+    if (reset) dispatch(resetFeed({}));
+
+    dispatch(handleSearch(false));
+    const resp = await queryRss3({
+      cursor,
+      address,
+      tag,
+      pageSize,
+    });
+    if (resp.data.code === 0) {
+      dispatch(getFeedSuccess({ data: resp?.data?.data, reset }));
+    } else {
+      throw new Error(resp.data.msg);
     }
   }
 );

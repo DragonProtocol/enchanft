@@ -73,14 +73,19 @@ export type ConfigTopicsChain = {
   link: string;
   name: string;
 };
+export type ConfigTopicsType = {
+  name: string;
+  num: number;
+  image?: string;
+};
 export type ConfigTopics = {
-  eventRewards: string[];
-  eventTypes: string[];
+  eventRewards: ConfigTopicsType[];
+  eventTypes: ConfigTopicsType[];
   projectTypes: string[];
-  dappTypes: string[];
+  dappTypes: ConfigTopicsType[];
   contentTypes: string[];
   langs: string[];
   chains: ConfigTopicsChain[];
-  contentTags: string[];
+  contentTags: ConfigTopicsType[];
 };
 export type ConfigTopicsResponse = ApiResp<ConfigTopics>;

@@ -5,6 +5,7 @@ import useLogin from '../../../hooks/useLogin';
 import DappWebsiteModal from './DappWebsiteModal';
 import { ReactComponent as PlusSquareSvg } from '../../common/icons/svgs/plus-square.svg';
 import DappInstallList from './DappInstallList';
+import Web3TodaySvgUrl from './imgs/web3-today.svg';
 
 export default function DappMenu() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function DappMenu() {
         }
       }}
     >
-      <OpenIcon>{'<'}</OpenIcon>
+      {!isOpen && <OpenIcon>{'<'}</OpenIcon>}
       <ListWrapper isOpen={isOpen}>
         <ListInner
           onScroll={() => {
@@ -33,13 +34,11 @@ export default function DappMenu() {
         >
           <Title>Your Dapps</Title>
           <Web3TodayNavBtn
+            src={Web3TodaySvgUrl}
             onClick={() => {
               navigate('/web3-today');
             }}
-          >
-            <Web3Text>web3</Web3Text>
-            <TodayText>today</TodayText>
-          </Web3TodayNavBtn>
+          />
           <DappInstallList ref={dappInstallListRef} />
         </ListInner>
         {isAdmin && (
@@ -57,9 +56,9 @@ export default function DappMenu() {
 }
 const Wrapper = styled.div<{ isOpen: boolean }>`
   background: #1b1e23;
-  width: ${({ isOpen }) => (isOpen ? '110px' : '30px')};
+  width: ${({ isOpen }) => (isOpen ? '60px' : '30px')};
   height: 100vh;
-  padding: 20px 10px;
+  padding: 20px 0px;
   position: fixed;
   top: 0;
   right: 0;
@@ -68,6 +67,7 @@ const Wrapper = styled.div<{ isOpen: boolean }>`
   box-sizing: border-box;
   overflow-x: hidden;
   display: flex;
+  justify-content: center;
   gap: 20;
   transition: all 0.3s ease-out;
 `;
@@ -122,38 +122,12 @@ const Title = styled.div`
   color: #718096;
 `;
 
-const Web3TodayNavBtn = styled.div`
+const Web3TodayNavBtn = styled.img`
   width: 40px;
   height: 40px;
-  cursor: pointer;
-  font-family: 'Marion';
-  font-style: normal;
-  color: #ffffff;
-  text-transform: capitalize;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  background: #323f53;
-  border: 1px solid #39424c;
-  box-sizing: border-box;
-  border-radius: 10px;
   transition: all 0.3s;
+  cursor: pointer;
   &:hover {
     transform: scale(1.2);
   }
-`;
-const Web3Text = styled.span`
-  font-weight: 700;
-  font-size: 12px;
-  line-height: 13px;
-`;
-
-const TodayText = styled.span`
-  font-weight: 400;
-  font-size: 10px;
-  line-height: 11px;
-  letter-spacing: 1px;
 `;

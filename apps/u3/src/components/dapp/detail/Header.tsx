@@ -5,7 +5,6 @@ import {
   DappStatus,
 } from '../../../services/types/dapp';
 import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
-import Tag from '../../common/tag/Tag';
 import ImgDefault from '../../common/ImgDefault';
 import Card from './Card';
 import TwitterSvg from '../../common/icons/svgs/twitter.svg';
@@ -19,6 +18,7 @@ import { Edit } from '../../icons/edit';
 import DappFavorButton from '../DappFavorButton';
 import useUserFavorites from '../../../hooks/useUserFavorites';
 import useLogin from '../../../hooks/useLogin';
+import Badge from '../Badge';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: DappExploreListItemResponse;
@@ -56,7 +56,7 @@ export default function Header({
         </Title>
         <TagsRow>
           {data?.types.map((item) => (
-            <Tag key={item}>{formatFilterShowName(item)}</Tag>
+            <Badge key={item} text={formatFilterShowName(item)} />
           ))}
           {showChains.map((item) => (
             <ChainIcon
@@ -218,7 +218,7 @@ export function HeaderMobile({ data, ...otherProps }: Props) {
         </TitleMobile>
         <TagsRowMobile>
           {data?.types.map((item) => (
-            <Tag key={item}>{formatFilterShowName(item)}</Tag>
+            <Badge key={item} text={formatFilterShowName(item)} />
           ))}
           {showChains.map((item) => (
             <ChainIcon

@@ -1,20 +1,43 @@
 import styled from 'styled-components';
+import { useState } from 'react';
+
 import CardBase from '../components/common/card/CardBase';
 import PageTitle from '../components/common/PageTitle';
 import Rss3Content from '../components/fren/Rss3Content';
 import { CurrencyETH } from '../components/icons/currency-eth';
 import { MainWrapper } from '../components/layout/Index';
 
+import Streams from '../components/activity/Streams';
+
 function Activity() {
+  const [tab, setTab] = useState<string>('Etherscan');
+  // const [tab, setTab] = useState<'Etherscan' | 'Streams'>('Etherscan');
   return (
     <Wrapper>
-      <PageTitle>Activity</PageTitle>
-      <ContentWrapper>
-        <Rss3Content
-          address={['0x74667801993b457b8ccf19d03bbbaa52b7fff43b']}
-          empty={<NoActivity />}
-        />
-      </ContentWrapper>
+      <PageHeader tab={tab}>
+        <PageTitle>Activity</PageTitle>
+        <i>{' / '}</i>
+
+        {['Etherscan', 'Streams']?.map((key) => (
+          <div
+            key={key}
+            className={tab === key ? 'tab active' : 'tab'}
+            onClick={() => setTab(key)}
+          >
+            {key}
+          </div>
+        ))}
+      </PageHeader>
+
+      {tab === 'Etherscan' && (
+        <ContentWrapper>
+          <Rss3Content
+            address={['0x74667801993b457b8ccf19d03bbbaa52b7fff43b']}
+            empty={<NoActivity />}
+          />
+        </ContentWrapper>
+      )}
+      {tab === 'Streams' && <Streams />}
     </Wrapper>
   );
 }
@@ -124,6 +147,42 @@ const ContentWrapper = styled(CardBase)`
           border-radius: 50%;
         }
       }
+    }
+  }
+`;
+
+const PageHeader = styled.div<{ tab: string }>`
+  display: flex;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #39424c;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+  color: #ffffff;
+  white-space: pre;
+  column-gap: 40px;
+
+  i {
+    color: #39424c;
+  }
+
+  .tab {
+    cursor: pointer;
+    color: #39424c;
+  }
+
+  .active {
+    color: white;
+    position: relative;
+    &:after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -10px;
+      width: 100%;
+      height: 2px;
+      background: white;
     }
   }
 `;
