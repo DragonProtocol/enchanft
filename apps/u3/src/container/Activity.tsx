@@ -155,7 +155,6 @@ const PageHeader = styled.div<{ tab: string }>`
   display: flex;
   padding-bottom: 8px;
   border-bottom: 1px solid #39424c;
-//   font-style: italic;
   font-weight: 700;
   font-size: 16px;
   line-height: 28px;
