@@ -27,9 +27,7 @@ export default function ListChoice({
   return (
     <ListChoiceWrapper {...wrapperProps}>
       {label && (
-        <ListChoiceLabel className="list-choice-label">
-          {label}
-        </ListChoiceLabel>
+        <ListChoiceLabel className="list-choice-label">{label}</ListChoiceLabel>
       )}
 
       <OptionsBox className="list-choice-box">
