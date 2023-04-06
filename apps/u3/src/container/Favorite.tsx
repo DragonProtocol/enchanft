@@ -23,6 +23,7 @@ import TwoHeartSvg from '../components/imgs/two-heart.svg';
 import { ButtonPrimaryLine } from '../components/common/button/ButtonBase';
 import ContentPreview from '../components/contents/ContentPreview';
 import PageTitle from '../components/common/PageTitle';
+import ButtonBack from '../components/common/button/ButtonBack';
 
 function EmptyFavorites() {
   const navigate = useNavigate();
@@ -102,6 +103,7 @@ export const FavoriteSwitchOptions = [
 ];
 
 function Favorite() {
+  const navigate = useNavigate();
   const { events, contents, refreshFavorites } = useUserFavorites();
 
   useEffect(() => {
@@ -138,7 +140,11 @@ function Favorite() {
 
   return (
     <Wrapper>
-      <PageTitle>Favorite</PageTitle>
+      <Header>
+        <ButtonBack onClick={() => navigate('/web3-today')} />
+        <PageTitle>Favorite</PageTitle>
+      </Header>
+
       <ContentWrapper>
         {isLoading ? (
           <Loading />
@@ -216,6 +222,11 @@ export default Favorite;
 const Wrapper = styled(MainWrapper)`
   display: flex;
   flex-direction: column;
+  gap: 20px;
+`;
+const Header = styled.div`
+  display: flex;
+  align-items: center;
   gap: 20px;
 `;
 
