@@ -56,9 +56,9 @@ export default function DappMenu() {
 }
 const Wrapper = styled.div<{ isOpen: boolean }>`
   background: #1b1e23;
-  width: ${({ isOpen }) => (isOpen ? '110px' : '30px')};
+  width: ${({ isOpen }) => (isOpen ? '60px' : '30px')};
   height: 100vh;
-  padding: 20px 10px;
+  padding: 20px 0px;
   position: fixed;
   top: 0;
   right: 0;
