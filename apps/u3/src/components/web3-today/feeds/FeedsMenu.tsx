@@ -11,6 +11,7 @@ import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { getRoute, RouteKey } from '../../../route/routes';
 import useRoute from '../../../route/useRoute';
 import Tab from '../../common/tab/Tab';
+import ButtonBack from '../../common/button/ButtonBack';
 
 const FeedsSwitchOptions = [
   {
@@ -34,7 +35,7 @@ export default function FeedsMenu({ rightEl, bottomEl }: FeedsMenuProps) {
     <FeedsMenuWrapper>
       <TopBox>
         <LeftBox>
-          <GoBackButton onClick={() => navigate('/web3-today')}>‹</GoBackButton>
+          <ButtonBack onClick={() => navigate('/web3-today')} />
           <TabSwitch
             options={FeedsSwitchOptions}
             value={firstRouteMeta.key}
@@ -62,11 +63,6 @@ const LeftBox = styled.div`
   display: flex;
   align-items: center;
   gap: 40px;
-`;
-const GoBackButton = styled.div`
-  font-size: 40px;
-  color: #718096;
-  cursor: pointer;
 `;
 const TabSwitch = styled(Tab)`
   border-bottom: none;

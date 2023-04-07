@@ -58,6 +58,19 @@ export function fetchU3Profiles(
     },
   });
 }
+export function fetchU3Assets(
+  wallet: string[],
+  asset?: string[]
+): RequestPromise<ProfilesResponse> {
+  return request({
+    url: `/users/assets`,
+    method: 'get',
+    params: {
+      wallet,
+      asset,
+    },
+  });
+}
 
 export function fetchU3ProfileWithWallet(wallet: string) {
   return request({

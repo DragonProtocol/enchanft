@@ -505,7 +505,7 @@ export default function Rss3Content({ address, empty }: Rss3ContentProps) {
 
   useEffect(() => {
     fetchData({ reset: true });
-  }, []);
+  }, [profile]);
 
   const renderUserInfo = (
     owner: string,

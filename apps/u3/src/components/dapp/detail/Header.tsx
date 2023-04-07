@@ -1,4 +1,5 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import { formatFilterShowName } from '../../../utils/filter';
 import {
   DappExploreListItemResponse,
@@ -33,6 +34,7 @@ export default function Header({
   onEdit,
   ...otherProps
 }: Props) {
+  const navigate = useNavigate();
   const { isFavoredDapp, userFavoritesLoaded } = useUserFavorites();
   const { isAdmin } = useLogin();
   const { topics } = useConfigsTopics();
@@ -40,6 +42,8 @@ export default function Header({
   const showChains = chains.filter((item) =>
     data?.chains.includes(item.chainEnum)
   );
+  const isU3Dapp = data.url.startsWith('https://u3.xyz');
+  const u3DappRoutePath = data.url.replace('https://u3.xyz', '');
 
   return (
     <HeaderWrapper {...otherProps}>
@@ -99,7 +103,17 @@ export default function Header({
               <LinkIcon src={TelegramSvg} />
             </LinkButton>
           )}
-          {data?.url &&
+          {isU3Dapp ? (
+            <OpenButton
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(u3DappRoutePath);
+              }}
+            >
+              Open Dapp
+            </OpenButton>
+          ) : (
+            data?.url &&
             data?.threadStreamId &&
             userFavoritesLoaded &&
             (isFavoredDapp(data.threadStreamId) ? (
@@ -116,7 +130,8 @@ export default function Header({
                 threadId={data.threadStreamId}
                 onFavorSuccess={onFavorSuccess}
               />
-            ))}
+            ))
+          )}
         </RightButtons>
       </HeaderRight>
     </HeaderWrapper>

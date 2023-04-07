@@ -10,15 +10,15 @@ import { MainWrapper } from '../components/layout/Index';
 import Streams from '../components/activity/Streams';
 
 function Activity() {
-  const [tab, setTab] = useState<string>('Etherscan');
-  // const [tab, setTab] = useState<'Etherscan' | 'Streams'>('Etherscan');
+  const [tab, setTab] = useState<string>('Feeds');
+  // const [tab, setTab] = useState<'Feeds' | 'Streams'>('Feeds');
   return (
     <Wrapper>
       <PageHeader tab={tab}>
         <PageTitle>Activity</PageTitle>
         <i>{' / '}</i>
 
-        {['Etherscan', 'Streams']?.map((key) => (
+        {['Feeds', 'Streams']?.map((key) => (
           <div
             key={key}
             className={tab === key ? 'tab active' : 'tab'}
@@ -29,7 +29,7 @@ function Activity() {
         ))}
       </PageHeader>
 
-      {tab === 'Etherscan' && (
+      {tab === 'Feeds' && (
         <ContentWrapper>
           <Rss3Content
             address={['0x74667801993b457b8ccf19d03bbbaa52b7fff43b']}
@@ -155,9 +155,8 @@ const PageHeader = styled.div<{ tab: string }>`
   display: flex;
   padding-bottom: 8px;
   border-bottom: 1px solid #39424c;
-  font-style: italic;
   font-weight: 700;
-  font-size: 20px;
+  font-size: 16px;
   line-height: 28px;
   color: #ffffff;
   white-space: pre;

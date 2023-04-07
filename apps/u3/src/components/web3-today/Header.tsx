@@ -5,16 +5,24 @@ import { useNavigate } from 'react-router-dom';
 import CardBase from '../common/card/CardBase';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import { ReactComponent as BookmarkSvg } from '../common/icons/svgs/bookmark.svg';
+import useLogin from '../../hooks/useLogin';
 
 export default function Header() {
   const { sessId } = useUs3rProfileContext();
   const navigate = useNavigate();
+  const { login } = useLogin();
   return (
     <Wrapper>
       <Avatar did={sessId} />
       <Title>
-        Welcome to Web 3 Today, <Username did={sessId} />!
+        Welcome to Web 3 Today
+        {!!sessId && (
+          <>
+            , <Username did={sessId} /> !
+          </>
+        )}
       </Title>
+      {!sessId && <ButtonPrimaryLine onClick={login}>Login</ButtonPrimaryLine>}
       <RightBox>
         <BookmarkButton
           onClick={() => {
