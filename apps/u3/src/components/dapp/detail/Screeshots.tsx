@@ -5,10 +5,15 @@
  * @LastEditTime: 2023-03-02 11:52:09
  * @Description: file description
  */
+import { useState } from 'react';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import Slider from 'react-slick';
 import Card, { CardTitle } from './Card';
+import ModalBase, { ModalBaseBody } from '../../common/modal/ModalBase';
 import ComingSoonImgUrl from './imgs/screeshots.png';
+// import ComingSoonImgUrl from './imgs/screeshots.png';
+import picNextCur from './imgs/pic_next.png';
+import picPrevCur from './imgs/pic_prev.png';
 import { SectionTitle } from './SectionTitle';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -28,16 +33,52 @@ const settings = {
   dotsClass: 'slick-dots slick-thumb',
 };
 export default function Screeshots({ urls, ...otherProps }: Props) {
+  const [showImgIndex, setShowImgIndex] = useState(-1);
+
+  const closePictureViewer = () => setShowImgIndex(-1);
+
   return (
     <ScreeshotsWrapper {...otherProps}>
       <CardTitle>Screeshots</CardTitle>
       <SliderWrapper>
         <Slider {...settings}>
-          {urls.map((url) => (
-            <ScreeshotImg src={url} />
+          {urls.map((url, index) => (
+            <ScreeshotImg src={url} onClick={() => setShowImgIndex(index)} />
           ))}
         </Slider>
       </SliderWrapper>
+      <ModalBase
+        isOpen={showImgIndex !== -1}
+        onRequestClose={closePictureViewer}
+        style={{ overlay: { zIndex: 1000 } }}
+      >
+        <ModalBody onClick={closePictureViewer}>
+          {showImgIndex > 0 && (
+            <div
+              className="picture-viewer prev"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowImgIndex((index) => index - 1);
+              }}
+            />
+          )}
+          {showImgIndex < urls.length - 1 && (
+            <div
+              className="picture-viewer next"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowImgIndex((index) => index + 1);
+              }}
+            />
+          )}
+
+          <ScreeshotImg
+            src={urls?.[showImgIndex]}
+            isZoomOut
+            onClick={closePictureViewer}
+          />
+        </ModalBody>
+      </ModalBase>
     </ScreeshotsWrapper>
   );
 }
@@ -87,15 +128,53 @@ const SliderWrapper = styled.div`
   }
 `;
 
-const ScreeshotImg = styled.img`
+const ScreeshotImg = styled.img<{ isZoomOut?: boolean }>`
   width: 100%;
   height: 200px;
   border-radius: 10px;
   object-fit: cover;
+
+  ${(props) =>
+    props.isZoomOut
+      ? `
+    cursor: zoom-out;
+    width: auto;
+    height: auto;
+    max-width: 1380px;
+    max-height: 100%;
+
+  `
+      : `cursor: zoom-in;`}
 `;
+
 const ComingSoonImg = styled.img`
   width: 100%;
   margin-top: 20px;
+`;
+
+const ModalBody = styled(ModalBaseBody)`
+  background: transparent;
+  padding-top: 12%;
+  position: relative;
+
+  .picture-viewer {
+    width: 130px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: url(${picPrevCur}), auto;
+  }
+
+  .next {
+    left: unset;
+    right: 0;
+    cursor: url(${picNextCur}), auto;
+  }
+  /* position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%); */
 `;
 
 export function ScreeshotsMobile({ ...otherProps }: Props) {
