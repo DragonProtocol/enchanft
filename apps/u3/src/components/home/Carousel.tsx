@@ -68,9 +68,9 @@ export default function Carousel() {
         {/* <img src={MagicCubeImg} alt="" /> */}
       </div>
 
-      <CloseButton onClick={() => dispatch(setHomeBannerHidden())}>
+      {/* <CloseButton onClick={() => dispatch(setHomeBannerHidden())}>
         <img src={CloseSvg} alt="" />
-      </CloseButton>
+      </CloseButton> */}
     </Box>
   );
 }
