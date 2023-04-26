@@ -17,7 +17,7 @@ import DappExploreList from './DappExploreList';
 import type { DappsPageProps } from '../../container/Dapps';
 import { useAppSelector } from '../../store/hooks';
 import { selectWebsite } from '../../features/website/websiteSlice';
-import Carousel from '../home/Carousel';
+import Banner from '../home/Banner';
 
 export default function DappsPage({
   // Queries
@@ -36,7 +36,8 @@ DappsPageProps) {
 
   return (
     <DappsPageWrapper>
-      {!isMobile && homeBannerDisplay && <Carousel />}
+      {!isMobile && <Banner />}
+      {/* {!isMobile && homeBannerDisplay && <Banner />} */}
 
       <MainBox>
         <FilterBox>
