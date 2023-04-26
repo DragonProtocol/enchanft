@@ -48,7 +48,7 @@ export default function Banner() {
   return (
     <SliderWrapper>
       <Slider {...settings}>
-        {/* <Carousel /> */}
+        <Carousel />
         <Today contents={contents} />
       </Slider>
     </SliderWrapper>
@@ -57,13 +57,6 @@ export default function Banner() {
 const SliderWrapper = styled.div`
   width: 100%;
   height: 300px;
-
-  /* margin-top: 20px; */
-  /* height: 312px; */
-
-  /* .slick-slide div {
-    padding: 0 10px;
-  } */
 
   /* 设置 dots 容器样式 */
   .slick-dots {

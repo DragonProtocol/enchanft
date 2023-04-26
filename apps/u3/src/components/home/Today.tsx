@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import Slider from 'react-slick';
+import { useNavigate } from 'react-router-dom';
 
 import { useAppDispatch } from '../../store/hooks';
 import { ContentListItem } from '../../services/types/contents';
@@ -10,12 +10,44 @@ export default function Today({
 }: {
   contents: Array<ContentListItem>;
 }) {
+  const navigate = useNavigate();
+
   return (
     <Box>
-      <div className="flex items-center">
+      <div className="flex items-center row">
         <h1 className="topic">Daily Poster</h1>
         <div className="text sub-title">Web3 Today</div>
-        <div className="viewBtn">View →</div>
+        <div
+          className="viewBtn"
+          onClick={() => {
+            navigate(`/contents`);
+            // navigate(`/contents/create?id=${data.id}`);
+          }}
+        >
+          View
+          <svg
+            viewBox="0 0 1024 1024"
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+          >
+            <path
+              d="M951.127 483.716L668.284 200.873c-7.811-7.811-18.048-11.716-28.284-11.716-10.237 0-20.474 3.905-28.284 11.716-15.621 15.621-15.621 40.947 0 56.568L826.274 472H104c-22.092 0-40 17.908-40 40 0 22.091 17.908 40 40 40h722.274L611.716 766.559c-15.621 15.62-15.621 40.947 0 56.568 7.811 7.811 18.047 11.716 28.284 11.716 10.236 0 20.474-3.905 28.284-11.716l282.843-282.843c15.621-15.621 15.621-40.948 0-56.568z"
+              fill="#e6e6e6"
+            />
+          </svg>
+          {/* <svg
+            viewBox="0 0 1024 1024"
+            xmlns="http://www.w3.org/2000/svg"
+            width="30"
+            height="30"
+          >
+            <path
+              d="M885.113 489.373L628.338 232.599c-12.496-12.497-32.758-12.497-45.254 0-12.497 12.497-12.497 32.758 0 45.255l203.3 203.3H158.025c-17.036 0-30.846 13.811-30.846 30.846 0 17.036 13.811 30.846 30.846 30.846h628.36L583.084 746.147c-12.497 12.496-12.497 32.758 0 45.255 6.248 6.248 14.438 9.372 22.627 9.372s16.379-3.124 22.627-9.372l256.775-256.775a31.999 31.999 0 0 0 0-45.254z"
+              fill="#ffffff"
+            />
+          </svg> */}
+        </div>
       </div>
       <div className="line-box">
         <div className="line" />
@@ -23,7 +55,12 @@ export default function Today({
       </div>
       <div className="contents">
         {contents?.slice(0, 3)?.map((content, index) => (
-          <div key={content?.id}>
+          <div
+            key={content?.id}
+            onClick={() => {
+              navigate(`/contents/${content?.id}`);
+            }}
+          >
             <div className="title">{content?.title}</div>
             {content?.description && (
               <div className="desc">{content?.description}</div>
@@ -37,28 +74,34 @@ export default function Today({
 
 const Box = styled.div`
   width: 100%;
-  max-height: 300px;
+  /* max-height: 300px; */
 
   background: #f7f6f4;
   color: black;
 
   font-family: 'Marion';
   font-style: normal;
-  padding: 20px 10px 75px;
+  padding: 33px 40px 44px;
   box-sizing: border-box;
   border-radius: 8px;
+  height: 300px;
+
+  .row {
+    margin-bottom: 29px;
+  }
 
   .topic {
     font-weight: 700;
     font-size: 60px;
-    line-height: 63px;
+    line-height: 84px;
     /* text-align: center; */
-    margin: 20px 0;
+    font-style: normal;
+    margin: 0;
   }
 
   .topic-h2 {
     font-size: 30px;
-    line-height: 32px;
+    line-height: 50px;
 
     text-align: center;
 
@@ -70,8 +113,9 @@ const Box = styled.div`
     /* font-style: italic; */
     font-weight: 700;
     font-size: 40px;
-    line-height: 18px;
-    margin-left: 40px;
+    line-height: 50px;
+    margin-left: 50px;
+    margin-bottom: -10px;
     .multiple {
       margin: 0 7px;
     }
@@ -89,7 +133,7 @@ const Box = styled.div`
   }
 
   .viewBtn {
-    width: 193px;
+    /* width: 193px; */
     height: 66px;
     text-align: center;
     line-height: 66px;
@@ -103,13 +147,20 @@ const Box = styled.div`
     font-weight: 700;
     font-size: 30px;
     color: #f7f6f4;
+    padding: 0 40px 0 46px;
 
     cursor: pointer;
     margin-left: auto;
+    display: flex;
+    /* justify-content: space-around; */
+    align-items: center;
+    svg {
+      margin-left: 10px;
+    }
   }
 
   .line {
-    height: 2px;
+    height: 4px;
     background: black;
     &:last-child {
       margin-top: 4px;
@@ -119,15 +170,22 @@ const Box = styled.div`
   .contents {
     position: relative;
     display: grid;
-    grid-gap: 10px;
+    grid-gap: 30px;
     grid-template-columns: repeat(auto-fill, minmax(282px, 1fr));
     padding-top: 30px;
     & > div {
       /* width: 33%; */
       /* padding: 20px 0; */
       border-bottom: 1px solid white;
+      cursor: pointer;
       &:last-child {
         border: none;
+      }
+      &:hover {
+        .title,
+        .desc {
+          text-decoration: underline;
+        }
       }
     }
 
@@ -137,9 +195,9 @@ const Box = styled.div`
       height: calc(100% - 30px);
       background: black;
       position: absolute;
-      top: 50%;
+      top: 30px;
       left: 33%;
-      transform: translate(0, -50%);
+      /* transform: translate(0, -50%); */
     }
     &::after {
       content: '';
@@ -147,9 +205,9 @@ const Box = styled.div`
       height: calc(100% - 30px);
       background: black;
       position: absolute;
-      top: 50%;
-      left: 66%;
-      transform: translate(0, -50%);
+      top: 30px;
+      left: 67%;
+      /* transform: translate(0, -50%); */
     }
   }
 
