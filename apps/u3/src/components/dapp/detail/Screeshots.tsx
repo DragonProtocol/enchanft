@@ -10,6 +10,8 @@ import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import Slider from 'react-slick';
 import Card, { CardTitle } from './Card';
 import ModalBase, { ModalBaseBody } from '../../common/modal/ModalBase';
+// import CloseSvg from '../../common/icons/svgs/close.svg';
+
 import ComingSoonImgUrl from './imgs/screeshots.png';
 // import ComingSoonImgUrl from './imgs/screeshots.png';
 import picNextCur from './imgs/pic_next.png';
@@ -36,7 +38,6 @@ export default function Screeshots({ urls, ...otherProps }: Props) {
   const [showImgIndex, setShowImgIndex] = useState(-1);
 
   const closePictureViewer = () => setShowImgIndex(-1);
-
   return (
     <ScreeshotsWrapper {...otherProps}>
       <CardTitle>Screeshots</CardTitle>
@@ -50,9 +51,22 @@ export default function Screeshots({ urls, ...otherProps }: Props) {
       <ModalBase
         isOpen={showImgIndex !== -1}
         onRequestClose={closePictureViewer}
-        style={{ overlay: { zIndex: 1000 } }}
+        backdropFilter
+        style={{ overlay: { zIndex: 1000 }, content: { overflow: 'visible' } }}
       >
         <ModalBody onClick={closePictureViewer}>
+          <svg
+            className="icon"
+            viewBox="0 0 1024 1024"
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+          >
+            <path
+              d="M574.55 522.35L904.4 192.5c16.65-16.65 16.65-44.1 0-60.75l-1.8-1.8c-16.65-16.65-44.1-16.65-60.75 0L512 460.25l-329.85-330.3c-16.65-16.65-44.1-16.65-60.75 0l-1.8 1.8c-17.1 16.65-17.1 44.1 0 60.75l329.85 329.85L119.6 852.2c-16.65 16.65-16.65 44.1 0 60.75l1.8 1.8c16.65 16.65 44.1 16.65 60.75 0L512 584.9l329.85 329.85c16.65 16.65 44.1 16.65 60.75 0l1.8-1.8c16.65-16.65 16.65-44.1 0-60.75L574.55 522.35z"
+              fill="#718096"
+            />
+          </svg>
           {showImgIndex > 0 && (
             <div
               className="picture-viewer prev"
@@ -60,7 +74,19 @@ export default function Screeshots({ urls, ...otherProps }: Props) {
                 e.stopPropagation();
                 setShowImgIndex((index) => index - 1);
               }}
-            />
+            >
+              <svg
+                viewBox="0 0 1024 1024"
+                xmlns="http://www.w3.org/2000/svg"
+                width="19"
+                height="19"
+              >
+                <path
+                  d="M614.213818 71.819636a58.181818 58.181818 0 0 1 77.940364 86.318546l-3.095273 2.792727-379.880727 319.092364a34.909091 34.909091 0 0 0-4.282182 49.198545l1.861818 2.024727 1.978182 1.861819 381.021091 330.589091A58.181818 58.181818 0 0 1 616.750545 954.181818l-3.258181-2.629818L232.494545 621.032727a151.272727 151.272727 0 0 1-2.56-226.280727l4.398546-3.816727L614.213818 71.819636z"
+                  fill="#14171A"
+                />
+              </svg>
+            </div>
           )}
           {showImgIndex < urls.length - 1 && (
             <div
@@ -69,7 +95,19 @@ export default function Screeshots({ urls, ...otherProps }: Props) {
                 e.stopPropagation();
                 setShowImgIndex((index) => index + 1);
               }}
-            />
+            >
+              <svg
+                viewBox="0 0 1024 1024"
+                xmlns="http://www.w3.org/2000/svg"
+                width="19"
+                height="19"
+              >
+                <path
+                  d="M312.888889 995.555556c-17.066667 0-28.444444-5.688889-39.822222-17.066667-22.755556-22.755556-17.066667-56.888889 5.688889-79.644445l364.088888-329.955555c11.377778-11.377778 17.066667-22.755556 17.066667-34.133333 0-11.377778-5.688889-22.755556-17.066667-34.133334L273.066667 187.733333c-22.755556-22.755556-28.444444-56.888889-5.688889-79.644444 22.755556-22.755556 56.888889-28.444444 79.644444-5.688889l364.088889 312.888889c34.133333 28.444444 56.888889 73.955556 56.888889 119.466667s-17.066667 85.333333-51.2 119.466666l-364.088889 329.955556c-11.377778 5.688889-28.444444 11.377778-39.822222 11.377778z"
+                  fill="#14171A"
+                />
+              </svg>
+            </div>
           )}
 
           <ScreeshotImg
@@ -153,23 +191,41 @@ const ComingSoonImg = styled.img`
 `;
 
 const ModalBody = styled(ModalBaseBody)`
-  background: transparent;
-  padding-top: 12%;
+  /* background: transparent; */
+  background: #1b1e23;
+  border-radius: 20px;
+  margin-top: 12%;
+  padding: 64px 20px 20px;
   position: relative;
+  min-width: 80vw;
+  min-height: 700px;
+
+  .icon {
+    position: absolute;
+    right: 26px;
+    top: 26px;
+    cursor: pointer;
+  }
 
   .picture-viewer {
-    width: 130px;
-    height: 100%;
+    width: 44px;
+    height: 44px;
+    background: #718096;
+    border-radius: 36px;
     position: absolute;
-    top: 0;
-    left: 0;
-    cursor: url(${picPrevCur}), auto;
+    top: 50%;
+    left: -50px;
+    transform: translate(0, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
   }
 
   .next {
     left: unset;
-    right: 0;
-    cursor: url(${picNextCur}), auto;
+    right: -50px;
+    background: #718096;
   }
   /* position: absolute;
   left: 50%;
