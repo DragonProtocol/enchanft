@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { MEDIA_BREAK_POINTS } from '../../constants';
+import dailyPosterBg from '../imgs/daily-poster.png';
+import web3TodayBg from '../imgs/web3-today.png';
 
 import { useAppDispatch } from '../../store/hooks';
 import { ContentListItem } from '../../services/types/contents';
@@ -14,13 +17,15 @@ export default function Today({
 
   return (
     <Box>
-      <div className="flex items-center row">
-        <h1 className="topic">Daily Poster</h1>
-        <div className="text sub-title">Web3 Today</div>
+      <div className="flex items-center row imgBox">
+        <img src={dailyPosterBg} alt="daily poster" />
+        <img src={web3TodayBg} alt="web3 today" />
+        {/* <h1 className="topic">Daily Poster</h1> */}
+        {/* <div className="text sub-title">Web3 Today</div> */}
         <div
           className="viewBtn"
           onClick={() => {
-            navigate(`/contents`);
+            navigate(`/web3-today`);
             // navigate(`/contents/create?id=${data.id}`);
           }}
         >
@@ -108,6 +113,17 @@ const Box = styled.div`
     margin-bottom: 20px;
   }
 
+  .imgBox {
+    img:first-of-type {
+      width: 434px;
+    }
+    img:last-of-type {
+      width: 216px;
+      margin-left: 40px;
+      margin-bottom: -10px;
+    }
+  }
+
   .sub-title {
     font-family: 'Snell Roundhand';
     /* font-style: italic; */
@@ -169,13 +185,15 @@ const Box = styled.div`
 
   .contents {
     position: relative;
-    display: grid;
-    grid-gap: 30px;
-    grid-template-columns: repeat(auto-fill, minmax(282px, 1fr));
+    display: flex;
+    column-gap: 30px;
+    align-items: center;
+    justify-content: space-between;
+
     padding-top: 30px;
     & > div {
-      /* width: 33%; */
-      /* padding: 20px 0; */
+      width: 0;
+      flex: 1;
       border-bottom: 1px solid white;
       cursor: pointer;
       &:last-child {

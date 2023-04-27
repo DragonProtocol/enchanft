@@ -14,7 +14,9 @@ import 'slick-carousel/slick/slick-theme.css';
 
 const settings = {
   //   dots: true,
-  //   infinite: true,
+  infinite: true,
+  autoplay: true,
+  autoplaySpeed: 5000,
   arrows: false,
   dots: true,
   speed: 500,
