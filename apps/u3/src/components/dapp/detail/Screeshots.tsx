@@ -197,7 +197,7 @@ const ModalBody = styled(ModalBaseBody)`
   margin-top: 12%;
   padding: 64px 20px 20px;
   position: relative;
-  min-width: 80vw;
+  min-width: 800px;
   min-height: 700px;
 
   .icon {
