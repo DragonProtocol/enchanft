@@ -12,7 +12,7 @@ export default function NFTShower({
   calcHeight?: boolean;
 }) {
   const videoEl = useRef<HTMLVideoElement>(null);
-  const [contentType, setContentType] = useState('');
+  const [contentType, setContentType] = useState<string>('');
 
   const attemptPlay = () => {
     if (videoEl && videoEl.current) {
@@ -26,7 +26,7 @@ export default function NFTShower({
     if (!imageUrl) return;
     try {
       const resp = await axios.get(imageUrl);
-      setContentType(resp.headers['content-type']);
+      setContentType(resp.headers['content-type'] || '');
     } catch (error) {
       console.error(error);
     }
