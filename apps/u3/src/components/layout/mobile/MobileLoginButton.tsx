@@ -33,10 +33,10 @@ export default function MobileLoginButton({ onLogout }: Props) {
         {isLogin ? (
           <>
             <UserAvatar className="user-avatar" did={sessId} />
-            <MobileLoginButtonName className="wl-user-button_login-name">
+            {/* <MobileLoginButtonName className="wl-user-button_login-name">
               {sessId}
             </MobileLoginButtonName>
-            <LogoutIconButton src={LogoutSvg} />
+            <LogoutIconButton src={LogoutSvg} /> */}
           </>
         ) : (
           <NoLoginText className="wl-user-button_no-login-text">
@@ -54,11 +54,13 @@ const MobileLoginButtonWrapper = styled(ButtonPrimaryLine)`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 12px;
+  padding: 0;
   gap: 4px;
   isolation: isolate;
   transition: all 0.3s ease-out;
   height: 36px;
+
+  border: none;
 `;
 const MobileLoginButtonBody = styled.div`
   display: flex;
@@ -67,8 +69,8 @@ const MobileLoginButtonBody = styled.div`
   gap: 10px;
   position: relative;
   & .user-avatar {
-    width: 24px;
-    height: 24px;
+    width: 36px;
+    height: 36px;
   }
 `;
 

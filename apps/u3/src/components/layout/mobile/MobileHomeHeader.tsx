@@ -25,8 +25,9 @@ export default function MobileHomeHeader() {
           <LogoIconSvg />
         </LogoIconBox>
 
-        <LogoText>Alpha</LogoText>
+        {/* <LogoText>Alpha</LogoText> */}
       </LogoBox>
+      <Title>U3.XYZ</Title>
       <MobileLoginButton
         onLogout={() => {
           setOpenLogoutConfirm(true);
@@ -76,6 +77,17 @@ const LogoIconBox = styled.div`
   path {
     fill: #fff;
   }
+`;
+const Title = styled.div`
+  font-style: italic;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 24px;
+  color: #ffffff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;
 const LogoText = styled.span`
   font-weight: 500;
