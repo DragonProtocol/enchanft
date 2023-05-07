@@ -1,33 +1,39 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 
+import { isMobile } from 'react-device-detect';
 import CardBase from '../components/common/card/CardBase';
 import PageTitle from '../components/common/PageTitle';
+import MobilePageHeader from '../components/common/mobile/MobilePageHeader';
 import Rss3Content from '../components/fren/Rss3Content';
 import { CurrencyETH } from '../components/icons/currency-eth';
 import { MainWrapper } from '../components/layout/Index';
-
 import Streams from '../components/activity/Streams';
 
+const tabs = ['Feeds', 'Streams'];
 function Activity() {
   const [tab, setTab] = useState<string>('Feeds');
   // const [tab, setTab] = useState<'Feeds' | 'Streams'>('Feeds');
   return (
     <Wrapper>
-      <PageHeader tab={tab}>
-        <PageTitle>Activity</PageTitle>
-        <i>{' / '}</i>
+      {isMobile ? (
+        <MobilePageHeader tabs={tabs} curTab={tab} setTab={setTab} />
+      ) : (
+        <PageHeader tab={tab}>
+          <PageTitle>Activity</PageTitle>
+          <i>{' / '}</i>
 
-        {['Feeds', 'Streams']?.map((key) => (
-          <div
-            key={key}
-            className={tab === key ? 'tab active' : 'tab'}
-            onClick={() => setTab(key)}
-          >
-            {key}
-          </div>
-        ))}
-      </PageHeader>
+          {tabs?.map((key) => (
+            <div
+              key={key}
+              className={tab === key ? 'tab active' : 'tab'}
+              onClick={() => setTab(key)}
+            >
+              {key}
+            </div>
+          ))}
+        </PageHeader>
+      )}
 
       {tab === 'Feeds' && (
         <ContentWrapper>

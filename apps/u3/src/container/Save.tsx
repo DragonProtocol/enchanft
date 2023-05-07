@@ -1,11 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Thread, useUs3rThreadContext } from '@us3r-network/thread';
+import { isMobile } from 'react-device-detect';
+
 import { MainWrapper } from '../components/layout/Index';
 import Loading from '../components/common/loading/Loading';
 import PageTitle from '../components/common/PageTitle';
 import { contentParse } from '../services/api/contents';
 import SaveExploreList from '../components/save/SaveExploreList';
+import SaveExploreListMobile from '../components/save/SaveExploreListMobile';
 import { getContentPlatformLogoWithJsonValue } from '../utils/content';
 
 function EmptyList() {
@@ -92,12 +95,19 @@ export default function Save() {
 
   return (
     <Wrapper>
-      <PageTitle>Saves</PageTitle>
+      {isMobile ? null : <PageTitle>Saves</PageTitle>}
       <ContentWrapper>
         {isLoading ? (
           <Loading />
         ) : isEmpty ? (
           <EmptyList />
+        ) : isMobile ? (
+          <SaveExploreListMobile
+            data={list}
+            onItemClick={(item) => {
+              window.open(item.url, '_blank');
+            }}
+          />
         ) : (
           <SaveExploreList
             data={list}

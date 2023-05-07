@@ -6,8 +6,10 @@
  * @Description: file description
  */
 import { UserAvatar } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
 import styled from 'styled-components';
+import { useUs3rProfileContext } from '@us3r-network/profile';
+import { useNavigate } from 'react-router-dom';
+
 import useLogin from '../../../hooks/useLogin';
 import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
 import LogoutSvg from '../../common/icons/svgs/logout.svg';
@@ -17,6 +19,7 @@ type Props = {
 };
 export default function MobileLoginButton({ onLogout }: Props) {
   const { sessId } = useUs3rProfileContext();
+  const navigate = useNavigate();
   const { isLogin, login } = useLogin();
 
   return (
@@ -25,7 +28,8 @@ export default function MobileLoginButton({ onLogout }: Props) {
         if (!isLogin) {
           login();
         } else {
-          onLogout();
+          navigate('/profile');
+          // onLogout();
         }
       }}
     >

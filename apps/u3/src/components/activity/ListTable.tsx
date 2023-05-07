@@ -2,6 +2,8 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import multiavatar from '@multiavatar/multiavatar';
 import dayjs from 'dayjs';
+import { isMobile } from 'react-device-detect';
+import { TableBox } from './TableBox';
 
 import { Stream } from '../../services/types/activity';
 import { shortPubKey } from '../../utils/shortPubKey';
@@ -17,11 +19,11 @@ export default function ListTable({
   showDid?: boolean;
 }) {
   return (
-    <TableBox>
-      <TableContainer>
+    <TableBox isMobile={isMobile}>
+      <TableContainer isMobile={isMobile}>
         <thead>
           <tr>
-            <th>Stream ID</th>
+            <th>Stream ID222</th>
             {showDid && <th>DID</th>}
             <th>Family or app</th>
             <th>Tags</th>
@@ -134,8 +136,9 @@ const Avatar = styled.div`
   height: 40px;
 `;
 
-const TableContainer = styled.table`
-  width: 100%;
+const TableContainer = styled.table<{ isMobile?: boolean }>`
+  ${({ isMobile: isMobileProps }) => (isMobileProps ? `` : 'width: 100%;')}
+
   table-layout: fixed;
   border-collapse: collapse;
 
@@ -164,6 +167,8 @@ const TableContainer = styled.table`
       padding-left: 0px;
       padding-right: 20px;
     }
+    ${({ isMobile: isMobileProps }) =>
+      isMobileProps ? `padding: 0 20px !important;` : ''};
   }
 
   tbody tr td {
@@ -179,6 +184,8 @@ const TableContainer = styled.table`
       padding-left: 0px;
       padding-right: 20px;
     }
+    ${({ isMobile: isMobileProps }) =>
+      isMobileProps ? `padding: 0 20px !important;` : ''};
 
     > div {
       text-overflow: ellipsis;
@@ -263,9 +270,4 @@ const TableContainer = styled.table`
 
     color: #718096;
   }
-`;
-export const TableBox = styled.div`
-  border-radius: 20px;
-  border: 1px solid #39424c;
-  background: #1b1e23;
 `;

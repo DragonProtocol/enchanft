@@ -233,15 +233,33 @@ const ModalBody = styled(ModalBaseBody)`
   transform: translate(-50%, -50%); */
 `;
 
-export function ScreeshotsMobile({ ...otherProps }: Props) {
+export function ScreeshotsMobile({ urls, ...otherProps }: Props) {
   return (
     <ScreeshotsWrapperMobile {...otherProps}>
       <SectionTitle>Screeshots</SectionTitle>
-      <ComingSoonImg src={ComingSoonImgUrl} />
+      {/* <ComingSoonImg src={ComingSoonImgUrl} /> */}
+      <ImgsWrapperMobile>
+        {urls.map((url, index) => (
+          <ScreeshotImg src={url} />
+        ))}
+      </ImgsWrapperMobile>
     </ScreeshotsWrapperMobile>
   );
 }
 
 const ScreeshotsWrapperMobile = styled.div`
   width: 100%;
+`;
+const ImgsWrapperMobile = styled.div`
+  margin-top: 10px;
+  width: 100%;
+  height: 100px;
+  /* padding: 0 10px; */
+  overflow-x: auto;
+  display: flex;
+  column-gap: 15px;
+  & > img {
+    width: auto;
+    height: 100%;
+  }
 `;

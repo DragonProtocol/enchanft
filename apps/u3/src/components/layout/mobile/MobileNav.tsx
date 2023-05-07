@@ -10,9 +10,6 @@ import { useEffect, useState } from 'react';
 import Nav from '../Nav';
 
 export default function MobileNav() {
-  return (
-    <>
-      <Nav />
-    </>
-  );
+  return null;
+  //   return <>{/* <Nav /> */}</>;
 }

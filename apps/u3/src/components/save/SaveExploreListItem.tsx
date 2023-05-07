@@ -22,10 +22,12 @@ export default function SaveExploreListItem({
         <TopBox>
           <TitleText>{data.title}</TitleText>
 
-          <TimeText>{defaultFormatFromNow(data.date)}</TimeText>
+          <TimeText className="timeText">
+            {defaultFormatFromNow(data.date)}
+          </TimeText>
         </TopBox>
-        <BottomBox>
-          <IconLink text={data.url} logo={data?.logo} />
+        <BottomBox className="bottomBox">
+          <IconLink text={data.url} logo={data?.logo} className="iconLink" />
         </BottomBox>
       </ListItemInner>
     </Wrapper>
@@ -99,5 +101,28 @@ const IconLink = styled(LinkBox)`
     font-size: 14px;
     line-height: 17px;
     color: #718096;
+  }
+`;
+
+export const SaveExploreListItemMobile = styled(SaveExploreListItem)`
+  padding: 10px;
+  height: auto;
+
+  & > div {
+    position: relative;
+  }
+
+  .timeText {
+    position: absolute;
+    right: 10px;
+    bottom: 2px;
+  }
+
+  .bottomBox {
+    padding-right: 100px;
+    .iconLink {
+      padding: 0;
+      height: auto;
+    }
   }
 `;
