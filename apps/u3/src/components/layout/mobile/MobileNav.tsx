@@ -6,10 +6,40 @@
  * @Description: file description
  */
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 import Nav from '../Nav';
 
 export default function MobileNav() {
-  return null;
-  //   return <>{/* <Nav /> */}</>;
+  return (
+    <MobileNavWrapper>
+      <Nav />
+    </MobileNavWrapper>
+  );
 }
+
+const MobileNavWrapper = styled.div`
+  position: fixed;
+  bottom: 0;
+  width: 100vw;
+  z-index: 2;
+  background: #1b1e23;
+  border-top: 1px solid #39424c;
+  & > div {
+    flex-direction: row;
+    & > div {
+      flex: 1;
+      justify-content: center;
+      background: transparent !important;
+      div:last-of-type {
+        display: none;
+      }
+    }
+    & > div:nth-child(2),
+    /* & > div:nth-child(5), */
+    & > div:nth-child(6),
+    & > div:nth-child(8) {
+      display: none;
+    }
+  }
+`;
