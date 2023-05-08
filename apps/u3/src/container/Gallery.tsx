@@ -5,7 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useUs3rProfileContext } from '@us3r-network/profile';
 import { isMobile } from 'react-device-detect';
 
-import Credential from '../components/profile/Credential';
+import Credential, { CredentialMobile } from '../components/profile/Credential';
 import { fetchU3Assets, ProfileDefault } from '../services/api/profile';
 import { ProfileEntity } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
@@ -40,7 +40,8 @@ export default function Gallery() {
   }, []);
 
   useEffect(() => {
-    fetchData(wallet || sessWallet);
+    // fetchData(wallet || sessWallet);
+    fetchData('0xEE3CA4dd4CeB3416915Eddc6cDaDB4A6060434d4'); // TODO test
   }, [fetchData, sessWallet, wallet]);
 
   return (
@@ -59,15 +60,24 @@ export default function Gallery() {
           <div className="loading">
             <Loading />
           </div>
-        )) || (
-          <Credential
-            {...{
-              poap: profileData.poap,
-              noox: profileData.noox,
-              galxe: profileData.galxe,
-            }}
-          />
-        )}
+        )) ||
+          (isMobile ? (
+            <CredentialMobile
+              {...{
+                poap: profileData.poap,
+                noox: profileData.noox,
+                galxe: profileData.galxe,
+              }}
+            />
+          ) : (
+            <Credential
+              {...{
+                poap: profileData.poap,
+                noox: profileData.noox,
+                galxe: profileData.galxe,
+              }}
+            />
+          ))}
       </ContentWrapper>
     </Wrapper>
   );

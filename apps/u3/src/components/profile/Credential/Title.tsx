@@ -16,7 +16,7 @@ export default function Title({
   return (
     <TitleBox>
       <span>{name}</span>
-      <div>
+      <div className="expand-box">
         <button
           type="button"
           onClick={() => {

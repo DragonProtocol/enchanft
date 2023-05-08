@@ -5,7 +5,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useUs3rProfileContext } from '@us3r-network/profile';
 import { isMobile } from 'react-device-detect';
 
-import OnChainInterest from '../components/profile/OnChainInterest';
+import OnChainInterest, {
+  OnChainInterestMobile,
+} from '../components/profile/OnChainInterest';
 import { fetchU3Assets, ProfileDefault } from '../services/api/profile';
 import { ProfileEntity } from '../services/types/profile';
 import Loading from '../components/common/loading/Loading';
@@ -43,7 +45,9 @@ export default function Asset() {
   }, []);
 
   useEffect(() => {
-    fetchData(wallet || sessWallet);
+    // console.log('---------------------------->', wallet || sessWallet);
+    // fetchData(wallet || sessWallet);
+    fetchData('0xEE3CA4dd4CeB3416915Eddc6cDaDB4A6060434d4'); // TODO test
   }, [fetchData, sessWallet, wallet]);
 
   return (
@@ -62,13 +66,20 @@ export default function Asset() {
           <div className="loading">
             <Loading />
           </div>
-        )) || (
-          <OnChainInterest
-            data={profileData.nfts}
-            wallet={profileData.erc20Balances}
-            ethBalance={profileData.ethBalance}
-          />
-        )}
+        )) ||
+          (isMobile ? (
+            <OnChainInterestMobile
+              data={profileData.nfts}
+              wallet={profileData.erc20Balances}
+              ethBalance={profileData.ethBalance}
+            />
+          ) : (
+            <OnChainInterest
+              data={profileData.nfts}
+              wallet={profileData.erc20Balances}
+              ethBalance={profileData.ethBalance}
+            />
+          ))}
       </ContentWrapper>
     </Wrapper>
   );

@@ -21,7 +21,7 @@ export function NooxCard({
   const targetRef = useRef<HTMLDivElement>();
   const { infoShow, infoLeft, infoTop, infoShowVisible } = useInfo(targetRef);
   return (
-    <Box ref={targetRef}>
+    <Box ref={targetRef} className="card-box">
       <NFTShower url={data?.uriMetaData?.image || ''} ipfs />
       <div className="hover">
         <button type="button" onClick={oatAction}>
@@ -123,7 +123,7 @@ export function GalxeCard({
     true
   );
   return (
-    <CircleCardBox ref={targetRef}>
+    <CircleCardBox ref={targetRef} className="card-box">
       <NFTShower url={data?.image || ''} />
       <div className="hover">
         <button type="button" onClick={oatAction}>
@@ -165,7 +165,7 @@ export function PoapCard({
     true
   );
   return (
-    <CircleCardBox ref={targetRef}>
+    <CircleCardBox ref={targetRef} className="card-box">
       <NFTShower url={data?.event?.image_url || ''} />
       <div className="hover">
         <button type="button" onClick={oatAction}>
@@ -254,6 +254,7 @@ const NoItemBox = styled.div`
 const CircleCardBox = styled.div`
   display: inline-block;
   width: 198px;
+
   /* height: 198px; */
   border-radius: 50%;
   overflow: hidden;
