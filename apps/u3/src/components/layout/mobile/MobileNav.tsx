@@ -8,9 +8,17 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import useRoute from '../../../route/useRoute';
+import { RouteKey } from '../../../route/routes';
 import Nav from '../Nav';
 
 export default function MobileNav() {
+  const { firstRouteMeta } = useRoute();
+
+  if ([RouteKey.dapp, RouteKey.profile].includes(firstRouteMeta.key)) {
+    return null;
+  }
+
   return (
     <MobileNavWrapper>
       <Nav />

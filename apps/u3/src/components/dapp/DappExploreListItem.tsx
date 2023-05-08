@@ -29,9 +29,9 @@ export default function DappExploreListItem({
   return (
     <ExploreListItemWrapper {...props}>
       <ListItemInner>
-        <Banner src={data.headerPhoto} />
-        <Icon src={data.image} />
-        <InnerBody>
+        <Banner src={data.headerPhoto} className="banner" />
+        <Icon src={data.image} className="icon" />
+        <InnerBody className="innerBody">
           <Title>
             <Name>{data.name}</Name>
             {data.status === DappStatus.VERIFIED && (
@@ -39,9 +39,11 @@ export default function DappExploreListItem({
             )}
           </Title>
 
-          <Desc row={3}>{data.description}</Desc>
+          <Desc row={3} className="desc">
+            {data.description}
+          </Desc>
 
-          <BottomBox>
+          <BottomBox className="bottomBox">
             <TagsRow>
               {data?.types.map((item) => (
                 <Badge key={item} text={formatFilterShowName(item)} />
@@ -152,4 +154,46 @@ export const DappExploreListItemMobile = styled(DappExploreListItem)`
   border: 1px solid #39424c;
   background: #1b1e23;
   border-radius: 10px;
+  height: auto;
+
+  & > div {
+    flex-direction: row;
+  }
+
+  .banner {
+    display: none;
+  }
+
+  .icon {
+    position: relative;
+    left: unset;
+    top: unset;
+    transform: none;
+    width: 60px;
+    height: 60px;
+    margin-right: 10px;
+  }
+
+  .innerBody {
+    padding: 0;
+    height: auto;
+    gap: 0px;
+  }
+
+  .bottomBox {
+    order: 1;
+
+    & > div:first-of-type {
+      order: 2;
+    }
+    & > div:last-of-type {
+      order: 1;
+    }
+  }
+
+  .desc {
+    -webkit-line-clamp: 1;
+    height: auto;
+    order: 2;
+  }
 `;
