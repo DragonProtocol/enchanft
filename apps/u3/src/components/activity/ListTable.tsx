@@ -23,7 +23,7 @@ export default function ListTable({
       <TableContainer isMobile={isMobile}>
         <thead>
           <tr>
-            <th>Stream ID222</th>
+            <th>Stream ID</th>
             {showDid && <th>DID</th>}
             <th>Family or app</th>
             <th>Tags</th>
