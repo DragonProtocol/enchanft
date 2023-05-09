@@ -18,3 +18,8 @@ export const omitIntermediateStr = (
   const repeatNum = symbolNum || len - preNum - afterNum;
   return `${front}${'*'.repeat(repeatNum)}${back}`;
 };
+
+export const capitalizeFirstLetter = (str: string) => {
+  if (!str) return str;
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};

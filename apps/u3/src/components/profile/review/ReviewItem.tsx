@@ -26,13 +26,13 @@ export default function ReviewItem({ data }: ReviewItemProps) {
         <Title>{data.threadTitle}</Title>
         {data.isVerified && <CheckVerifiedSvg />}
       </Header>
-      <Divider />
+      <Divider className="divider" />
       <ScoreRow>
-        <Avatar did={sessId} />
-        <Name did={sessId} />
-        <ScoreValue value={data.value} />
+        <Avatar did={sessId} className="avatar-box" />
+        <Name did={sessId} className="name-box" />
+        <ScoreValue value={data.value} className="score-box" />
       </ScoreRow>
-      <Text>{data.text}</Text>
+      <Text className="text-box">{data.text}</Text>
     </Wrapper>
   );
 }

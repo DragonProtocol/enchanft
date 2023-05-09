@@ -6,8 +6,10 @@
  * @Description: file description
  */
 import { UserAvatar } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
 import styled from 'styled-components';
+import { useUs3rProfileContext } from '@us3r-network/profile';
+import { useNavigate } from 'react-router-dom';
+
 import useLogin from '../../../hooks/useLogin';
 import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
 import LogoutSvg from '../../common/icons/svgs/logout.svg';
@@ -17,6 +19,7 @@ type Props = {
 };
 export default function MobileLoginButton({ onLogout }: Props) {
   const { sessId } = useUs3rProfileContext();
+  const navigate = useNavigate();
   const { isLogin, login } = useLogin();
 
   return (
@@ -25,7 +28,8 @@ export default function MobileLoginButton({ onLogout }: Props) {
         if (!isLogin) {
           login();
         } else {
-          onLogout();
+          navigate('/profile');
+          // onLogout();
         }
       }}
     >
@@ -33,10 +37,10 @@ export default function MobileLoginButton({ onLogout }: Props) {
         {isLogin ? (
           <>
             <UserAvatar className="user-avatar" did={sessId} />
-            <MobileLoginButtonName className="wl-user-button_login-name">
+            {/* <MobileLoginButtonName className="wl-user-button_login-name">
               {sessId}
             </MobileLoginButtonName>
-            <LogoutIconButton src={LogoutSvg} />
+            <LogoutIconButton src={LogoutSvg} /> */}
           </>
         ) : (
           <NoLoginText className="wl-user-button_no-login-text">
@@ -54,11 +58,13 @@ const MobileLoginButtonWrapper = styled(ButtonPrimaryLine)`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  padding: 12px;
+  padding: 0;
   gap: 4px;
   isolation: isolate;
   transition: all 0.3s ease-out;
   height: 36px;
+
+  border: none;
 `;
 const MobileLoginButtonBody = styled.div`
   display: flex;
@@ -67,8 +73,8 @@ const MobileLoginButtonBody = styled.div`
   gap: 10px;
   position: relative;
   & .user-avatar {
-    width: 24px;
-    height: 24px;
+    width: 36px;
+    height: 36px;
   }
 `;
 

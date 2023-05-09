@@ -2,29 +2,49 @@ import styled from 'styled-components';
 import { Profile } from '@us3r-network/authkit';
 import { useUs3rProfileContext } from '@us3r-network/profile';
 import { useState } from 'react';
+import { isMobile } from 'react-device-detect';
+
 import LogoutConfirmModal from '../components/layout/LogoutConfirmModal';
 import useLogin from '../hooks/useLogin';
 import { LogoutButton } from '../components/layout/LoginButton';
 import Reviews from '../components/profile/review/Reviews';
+import ReviewsMobile from '../components/profile/review/ReviewsMobile';
 
 export default function ProfileRe() {
   const { sessId } = useUs3rProfileContext();
   const { logout } = useLogin();
   const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
+
   return (
     <ProfileWrapper>
-      <div className="profile-wrap">
-        <Profile did={sessId} />
-        <LogoutButton
-          className="logout-button"
-          onClick={() => {
-            setOpenLogoutConfirm(true);
-          }}
-        />
-      </div>
-      <div className="reviews-warp">
-        <Reviews />
-      </div>
+      {isMobile ? (
+        <div className="profile-wrap_mobile">
+          <Profile did={sessId} />
+          <ReviewsMobile />
+          <LogoutButton
+            className="logout-button"
+            onClick={() => {
+              setOpenLogoutConfirm(true);
+            }}
+          />
+        </div>
+      ) : (
+        <>
+          <div className="profile-wrap">
+            <Profile did={sessId} />
+            <LogoutButton
+              className="logout-button"
+              onClick={() => {
+                setOpenLogoutConfirm(true);
+              }}
+            />
+          </div>
+          <div className="reviews-warp">
+            <Reviews />
+          </div>
+        </>
+      )}
+
       <LogoutConfirmModal
         isOpen={openLogoutConfirm}
         onClose={() => {
@@ -55,5 +75,54 @@ const ProfileWrapper = styled.div`
   .reviews-warp {
     padding-top: 40px;
     flex-grow: 1;
+  }
+
+  .profile-wrap_mobile {
+    width: 100vw;
+    padding: 10px;
+    & > div:first-of-type {
+      width: auto;
+      & > div {
+        width: auto;
+      }
+      & > div:nth-of-type(2) {
+        background: transparent;
+        padding: 0;
+        .wallet-item {
+          background: #1b1e23;
+          border-radius: 20px;
+          padding: 11.2px;
+        }
+      }
+      & > div:last-of-type {
+        padding: 0;
+        background: transparent;
+      }
+      & > div:first-of-type {
+        /* background: red; */
+        & > div {
+          & > div {
+            padding: 10px;
+            height: 100px;
+            display: block;
+            border: 1px solid #39424c;
+            border-radius: 10px;
+            width: auto;
+            /* margin-top: 8px; */
+            /* flex-direction: row; */
+            .name-box {
+              text-align: left;
+              margin-top: 15px;
+            }
+            .avatar-box {
+              float: left;
+              width: 80px;
+              height: 80px;
+              margin-right: 10px;
+            }
+          }
+        }
+      }
+    }
   }
 `;
