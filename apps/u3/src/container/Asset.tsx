@@ -45,9 +45,7 @@ export default function Asset() {
   }, []);
 
   useEffect(() => {
-    // console.log('---------------------------->', wallet || sessWallet);
-    // fetchData(wallet || sessWallet);
-    fetchData('0xEE3CA4dd4CeB3416915Eddc6cDaDB4A6060434d4'); // TODO test
+    fetchData(wallet || sessWallet);
   }, [fetchData, sessWallet, wallet]);
 
   return (
