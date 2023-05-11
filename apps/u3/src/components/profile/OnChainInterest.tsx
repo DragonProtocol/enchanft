@@ -363,6 +363,34 @@ const ContentBox = styled.div`
 export const OnChainInterestMobile = styled(OnChainInterest)`
   flex-direction: column;
   padding-bottom: 45px;
+  gap: 10px;
+
+  .nft {
+    background: transparent;
+    width: 100%;
+    padding: 0;
+    .title {
+      & > div {
+        width: 133px;
+      }
+    }
+
+    .select-options-box {
+      width: 133px;
+      & > div {
+        padding: 10px;
+        font-size: 12px;
+      }
+    }
+
+    .data {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      & > div {
+        flex-shrink: 0;
+      }
+    }
+  }
 
   .wallet {
     background: transparent;
