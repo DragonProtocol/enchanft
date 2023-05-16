@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useUs3rProfileContext } from '@us3r-network/profile';
 import { isMobile } from 'react-device-detect';
 
+import { useSession } from '@us3r-network/auth-with-rainbowkit';
 import OnChainInterest, {
   OnChainInterestMobile,
 } from '../components/profile/OnChainInterest';
@@ -18,7 +18,8 @@ import MobilePageHeader from '../components/common/mobile/MobilePageHeader';
 
 export default function Asset() {
   const { wallet } = useParams();
-  const { sessId } = useUs3rProfileContext();
+  const session = useSession();
+  const sessId = session?.id || '';
   const navigate = useNavigate();
 
   const sessWallet = useMemo(() => sessId.split(':').pop() || '', [sessId]);

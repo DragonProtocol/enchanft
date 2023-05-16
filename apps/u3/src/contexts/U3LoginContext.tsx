@@ -1,4 +1,3 @@
-import { useUs3rProfileContext } from '@us3r-network/profile';
 import {
   ReactNode,
   useCallback,
@@ -8,6 +7,10 @@ import {
   useMemo,
   useEffect,
 } from 'react';
+import {
+  useIsAuthenticated,
+  useSession,
+} from '@us3r-network/auth-with-rainbowkit';
 import { u3login, User } from '../services/api/login';
 import {
   removeU3ExtensionCookie,
@@ -37,10 +40,11 @@ export default function U3LoginProvider({
   children,
   u3LoginSuccess,
 }: U3LoginProviderProps) {
-  const { sessId, us3rAuth, us3rAuthValid } = useUs3rProfileContext();
+  const isAuthenticated = useIsAuthenticated();
+  const session = useSession();
   const didSessionStr = useMemo(() => {
-    return us3rAuthValid && sessId ? us3rAuth.session.serialize() : '';
-  }, [us3rAuthValid, sessId, us3rAuth]);
+    return isAuthenticated ? session.serialize() : '';
+  }, [isAuthenticated, session]);
 
   const [user, setUser] = useState<User | null>(null);
   const u3IsLogin = useMemo(() => !!user?.token, [user]);

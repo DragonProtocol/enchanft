@@ -8,7 +8,7 @@
 import { useEffect, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
-import { ScoreBox, ReviewScoreCardList } from '@us3r-network/authkit';
+import { ScoreReviews } from '@us3r-network/link';
 
 import Card, { CardTitle } from './Card';
 import ComingSoonImgUrl from './imgs/user_score.png';
@@ -24,7 +24,7 @@ export default function UserScore({
   return (
     <UserScoreWrapper {...otherProps}>
       <CardTitle>User Score</CardTitle>
-      <ScoreBox threadId={streamId} />
+      <ScoreReviews linkId={streamId} />
       {/* <ComingSoonImg src={ComingSoonImgUrl} /> */}
     </UserScoreWrapper>
   );
@@ -49,7 +49,7 @@ export function UserScoreMobile({
       <SectionTitle>Review</SectionTitle>
       {/* <ComingSoonImg src={ComingSoonImgUrl} /> */}
       {/* <ScoreBox threadId={streamId} /> */}
-      <ReviewScoreCardListMobile threadId={streamId} />
+      <ReviewScoreCardListMobile linkId={streamId} />
     </UserScoreWrapperMobile>
   );
 }
@@ -57,7 +57,7 @@ export function UserScoreMobile({
 const UserScoreWrapperMobile = styled.div`
   width: 100%;
 `;
-const ReviewScoreCardListMobile = styled(ReviewScoreCardList)`
+const ReviewScoreCardListMobile = styled(ScoreReviews)`
   margin-top: 10px;
   & > div {
     padding: 10px;

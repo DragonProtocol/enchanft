@@ -9,8 +9,8 @@ import { useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCallback, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
-import { WalletChainType, useUs3rProfileContext } from '@us3r-network/profile';
-import { shortPubKey } from '@us3r-network/authkit';
+import { useProfileState } from '@us3r-network/profile';
+import { useSession } from '@us3r-network/auth-with-rainbowkit';
 import { CutomRouteObject, RoutePermission, routes } from '../../route/routes';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import useU3Extension from '../../hooks/useU3Extension';
@@ -36,14 +36,8 @@ import useUserFavorites from '../../hooks/useUserFavorites';
 
 function Main() {
   const dispatch = useAppDispatch();
-  const {
-    sessId,
-    profile,
-    connectUs3r,
-    us3rAuth,
-    us3rAuthValid,
-    updateProfile,
-  } = useUs3rProfileContext();
+  const session = useSession();
+  const { profile, updateProfile } = useProfileState();
   const { isLogin, login, user, isAdmin } = useLogin();
   const { openEventCompleteGuideModal, eventCompleteGuideEndCallback } =
     useAppSelector(selectWebsite);
@@ -114,34 +108,11 @@ function Main() {
       />
       {!isMobile && (
         <OnboardModal
-          show={
-            (!profile?.tags || profile.tags.length === 0) &&
-            sessId &&
-            us3rAuthValid
-          }
+          show={(!profile?.tags || profile.tags.length === 0) && !!session?.id}
           lists={preferenceList}
           finishAction={async (data) => {
-            const exist = profile || {};
-            const currWallet = sessId.split(':').pop() || '';
-            let wallets = [
-              {
-                address: currWallet,
-                primary: true,
-                chain: (sessId.startsWith('did:pkh:eip')
-                  ? 'EVM'
-                  : 'SOLANA') as WalletChainType,
-              },
-            ];
-            if (exist?.wallets && exist?.wallets.length > 0) {
-              wallets = exist?.wallets;
-            }
             await updateProfile({
-              ...exist,
-              name: exist?.name || shortPubKey(sessId),
               tags: data.tags,
-              avatar: exist?.avatar || '',
-              bio: exist?.bio || 'bio',
-              wallets,
             });
           }}
         />

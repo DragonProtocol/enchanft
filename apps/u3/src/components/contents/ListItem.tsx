@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { VoteBtn } from '@us3r-network/authkit';
+import { VoteButton } from '@us3r-network/link';
 import { Share } from '../icons/share';
 import { EyeClose } from '../icons/eyeClose';
 import { Heart } from '../icons/heart';
@@ -75,7 +75,7 @@ export default function ListItem({
     >
       <ItemInner isActive={isActive} height={height}>
         <div className="authkit">
-          {data.threadStreamId && <VoteBtn threadId={data.threadStreamId} />}
+          {data.threadStreamId && <VoteButton linkId={data.threadStreamId} />}
         </div>
 
         <div className={isActive ? 'right active' : 'right'}>

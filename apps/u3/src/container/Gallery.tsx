@@ -2,9 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useUs3rProfileContext } from '@us3r-network/profile';
 import { isMobile } from 'react-device-detect';
 
+import { useSession } from '@us3r-network/auth-with-rainbowkit';
 import Credential, { CredentialMobile } from '../components/profile/Credential';
 import { fetchU3Assets, ProfileDefault } from '../services/api/profile';
 import { ProfileEntity } from '../services/types/profile';
@@ -16,7 +16,8 @@ import MobilePageHeader from '../components/common/mobile/MobilePageHeader';
 
 export default function Gallery() {
   const { wallet } = useParams();
-  const { sessId } = useUs3rProfileContext();
+  const session = useSession();
+  const sessId = session?.id;
   const navigate = useNavigate();
 
   const sessWallet = useMemo(() => sessId.split(':').pop() || '', [sessId]);

@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
-import { CommentList } from '@us3r-network/authkit';
+import { Comments } from '@us3r-network/link';
 import { ContentListItem } from '../../services/types/contents';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import { defaultFormatFromNow } from '../../utils/time';
@@ -57,7 +57,7 @@ export default function ContentShower({
       </div>
       <br />
       {!isMobile && data.threadStreamId && (
-        <CommentList threadId={data.threadStreamId} />
+        <Comments linkId={data.threadStreamId} />
       )}
     </Shower>
   );

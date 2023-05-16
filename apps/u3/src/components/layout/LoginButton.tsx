@@ -5,11 +5,10 @@
  * @LastEditTime: 2023-02-08 16:44:26
  * @Description: file description
  */
-import { UserAvatar, Username } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import { UserAvatar, UserName } from '@us3r-network/profile';
 import useLogin from '../../hooks/useLogin';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import LogoutSvg from '../common/icons/svgs/logout.svg';
@@ -21,7 +20,6 @@ type Props = {
   karmaScore?: number;
 };
 export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
-  const { sessId, profile } = useUs3rProfileContext();
   const { user, isLogin, login } = useLogin();
   const preScore = useRef<number>(karmaScore || 0);
   const [diffScore, setDiffScore] = useState(0);
@@ -86,11 +84,9 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
             }}
             onlyIcon={onlyIcon}
           >
-            <UserAvatar did={sessId} />
-            <Username did={sessId} />
+            <UserAvatar />
+            <UserName />
           </LoginUser>
-
-          {/* <LogoutButton onClick={onLogout} onlyIcon={onlyIcon} /> */}
         </>
       ) : (
         <Button onClick={login} onlyIcon={onlyIcon}>

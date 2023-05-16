@@ -20,8 +20,7 @@ import { Close } from '../icons/close';
 import qrCodeU3 from '../imgs/qrcode_u3.xyz.png';
 import useLogin from '../../hooks/useLogin';
 import { uploadImage } from '../../services/api/upload';
-import { UserAvatar } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
+import { UserAvatar } from '@us3r-network/profile';
 
 export default function Poster({
   data,
@@ -30,7 +29,6 @@ export default function Poster({
   data: any;
   isMobile: boolean;
 }) {
-  const { sessId } = useUs3rProfileContext();
   const { contents, dapps, events } = data;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -149,7 +147,7 @@ export default function Poster({
             <div className="user-avatar u3-avatar">
               <LogoIconSvg />
             </div>
-            <UserAvatar className="user-avatar" did={sessId} />
+            <UserAvatar className="user-avatar" />
             {/* <img
       src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKAAAACgBAMAAAB54XoeAAAAElBMVEUzMzP/+9siIiLk/9u/vKQZGRkml3AdAAAA8UlEQVRo3u3ZAQqCMBSH8Rh0gDrB6w+dwCvUBaLuf5Waw6EtHEPJqd9HUcTrx6NAEQ9ERERrScUBpuCpKEBAQEBAQMDdgvJ1k7HB933JGGAfbHqTTVsfjJ8OxgABAesGxw4OgHkwHyAgIOC2QZWDWhbUj5YBY8Wg1yaCm7rWAwQEBAQE3BlY/93b1YHX1/MWu78epaDJDR4JmAwUbmiTNzST+2ThTbrhcODTv39DObPwlGtfvsGwdzcgy4FOXW5kQ+sGLL+hKfx9Utj0mG5oXrN2wG9YmNPlFDvLDrk0c/sEmxkDBAQEBASsG6z/vFw5+AYAFLz3C2BQfgAAAABJRU5ErkJggg=="
       onError={(el: React.SyntheticEvent<HTMLImageElement, Event>) => {

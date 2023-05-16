@@ -5,9 +5,8 @@
  * @LastEditTime: 2023-02-27 11:56:55
  * @Description: file description
  */
-import { useUs3rAuth } from '@us3r-network/authkit';
-import { useUs3rThreadContext } from '@us3r-network/thread';
 import { useCallback, useEffect, useMemo } from 'react';
+import { getS3LinkModel, useLinkState } from '@us3r-network/link';
 import {
   fetchUserGroupFavorites,
   removeAllFavorites,
@@ -28,10 +27,9 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import useLogin from './useLogin';
 
 export default () => {
-  const { authComposeClientsValid } = useUs3rAuth();
+  const s3LinkModel = getS3LinkModel();
+  const { s3LinkModalAuthed } = useLinkState();
   const { isLogin } = useLogin();
-  const { relationsComposeClient, getPersonalFavorList } =
-    useUs3rThreadContext();
   const dispatch = useAppDispatch();
   const events = useAppSelector(selectAllForEvents);
   const eventIds = useAppSelector(selectIdsForEvents).map((id) => Number(id));
@@ -52,31 +50,29 @@ export default () => {
       dispatch(removeAllFavorites());
       return;
     }
-    if (
-      authComposeClientsValid &&
-      relationsComposeClient.context.isAuthenticated()
-    ) {
-      getPersonalFavorList({ first: 1000 })
+    if (s3LinkModalAuthed) {
+      s3LinkModel
+        .queryPersonalFavors({ first: 1000 })
         .then((data) => {
           const contentUrls =
-            data?.edges
-              ?.filter((item) => item.node.thread.type === 'content')
-              .map((item) => item.node.thread.url) || [];
+            data?.data.viewer.favorList.edges
+              ?.filter((item) => item.node.link.type === 'content')
+              .map((item) => item.node.link.url) || [];
 
           const eventUrls =
-            data?.edges
-              ?.filter((item) => item.node.thread.type === 'event')
-              .map((item) => item.node.thread.url) || [];
+            data?.data.viewer.favorList.edges
+              ?.filter((item) => item.node.link.type === 'event')
+              .map((item) => item.node.link.url) || [];
 
           const projectUrls =
-            data?.edges
-              ?.filter((item) => item.node.thread.type === 'project')
-              .map((item) => item.node.thread.url) || [];
+            data?.data.viewer.favorList.edges
+              ?.filter((item) => item.node.link.type === 'project')
+              .map((item) => item.node.link.url) || [];
 
           const dappUrls =
-            data?.edges
-              ?.filter((item) => item.node.thread.type === 'dapp')
-              .map((item) => item.node.thread.url) || [];
+            data?.data.viewer.favorList.edges
+              ?.filter((item) => item.node.link.type === 'dapp')
+              .map((item) => item.node.link.url) || [];
 
           dispatch(
             fetchUserGroupFavorites({
@@ -89,12 +85,7 @@ export default () => {
         })
         .catch(console.error);
     }
-  }, [
-    isLogin,
-    authComposeClientsValid,
-    relationsComposeClient.context,
-    getPersonalFavorList,
-  ]);
+  }, [isLogin, s3LinkModalAuthed]);
 
   const addOneToFavoredDapps = useCallback(
     (dapp: DappExploreListItemResponse) => {

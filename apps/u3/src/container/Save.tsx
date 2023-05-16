@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Thread, useUs3rThreadContext } from '@us3r-network/thread';
+import { Link, getS3LinkModel, useLinkState } from '@us3r-network/link';
 import { isMobile } from 'react-device-detect';
 
 import { MainWrapper } from '../components/layout/Index';
@@ -43,11 +43,11 @@ const EmptyDesc = styled.span`
 `;
 
 export default function Save() {
-  const { relationsComposeClient, getPersonalFavorList } =
-    useUs3rThreadContext();
+  const s3LinkModel = getS3LinkModel();
+  const { s3LinkModalAuthed } = useLinkState();
   const [list, setList] = useState<
     Array<
-      Thread & {
+      Link & {
         title?: string;
         logo?: string;
       }
@@ -57,17 +57,19 @@ export default function Save() {
   const isEmpty = useMemo(() => list.length === 0, [list]);
 
   useEffect(() => {
-    if (relationsComposeClient.context.isAuthenticated()) {
+    if (s3LinkModalAuthed) {
       setIsLoading(true);
-      getPersonalFavorList({ first: 1000 })
+      s3LinkModel
+        .queryPersonalFavors({ first: 1000 })
         .then((d) => {
           // 先显示url列表
-          const threads = d?.edges.map((item) => item.node.thread) || [];
-          setList(threads);
+          const links =
+            d?.data.viewer.favorList.edges.map((item) => item.node.link) || [];
+          setList(links);
 
           // 再异步获取url对应的title
-          for (let i = 0; i < threads.length; i++) {
-            const thread = threads[i];
+          for (let i = 0; i < links.length; i++) {
+            const thread = links[i];
             contentParse(thread.url).then(({ data }) => {
               setList((prev) => {
                 const index = prev.findIndex((item) => item.id === thread.id);
@@ -91,7 +93,7 @@ export default function Save() {
           setIsLoading(false);
         });
     }
-  }, [relationsComposeClient.context, getPersonalFavorList]);
+  }, [s3LinkModalAuthed]);
 
   return (
     <Wrapper>

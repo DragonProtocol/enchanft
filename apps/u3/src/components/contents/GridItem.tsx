@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { VoteBtn } from '@us3r-network/authkit';
+import { VoteButton } from '@us3r-network/link';
 import { MEDIA_BREAK_POINTS } from '../../constants';
 import { defaultFormatFromNow } from '../../utils/time';
 import LinkBox from './LinkBox';
@@ -85,7 +85,7 @@ export default function GridItem({
           <div className="date">{defaultFormatFromNow(createdAt)}</div>
         </div>
         <div className="authkit-grid">
-          {data.threadStreamId && <VoteBtn threadId={data.threadStreamId} />}
+          {data.threadStreamId && <VoteButton linkId={data.threadStreamId} />}
         </div>
       </div>
     </Box>

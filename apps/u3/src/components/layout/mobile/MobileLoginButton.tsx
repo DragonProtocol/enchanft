@@ -5,9 +5,8 @@
  * @LastEditTime: 2023-02-28 16:06:46
  * @Description: file description
  */
-import { UserAvatar } from '@us3r-network/authkit';
+import { UserAvatar } from '@us3r-network/profile';
 import styled from 'styled-components';
-import { useUs3rProfileContext } from '@us3r-network/profile';
 import { useNavigate } from 'react-router-dom';
 
 import useLogin from '../../../hooks/useLogin';
@@ -18,7 +17,6 @@ type Props = {
   onLogout?: () => void;
 };
 export default function MobileLoginButton({ onLogout }: Props) {
-  const { sessId } = useUs3rProfileContext();
   const navigate = useNavigate();
   const { isLogin, login } = useLogin();
 
@@ -36,7 +34,7 @@ export default function MobileLoginButton({ onLogout }: Props) {
       <MobileLoginButtonBody className="wl-user-button_login-body">
         {isLogin ? (
           <>
-            <UserAvatar className="user-avatar" did={sessId} />
+            <UserAvatar className="user-avatar" />
             {/* <MobileLoginButtonName className="wl-user-button_login-name">
               {sessId}
             </MobileLoginButtonName>

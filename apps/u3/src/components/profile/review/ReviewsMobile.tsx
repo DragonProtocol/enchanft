@@ -1,4 +1,4 @@
-import { useUs3rThreadContext } from '@us3r-network/thread';
+import { getS3LinkModel, useLinkState } from '@us3r-network/link';
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import CardBase from '../../common/card/CardBase';
@@ -8,27 +8,28 @@ import { fetchDappFavorites } from '../../../services/api/favorite';
 import { DappStatus } from '../../../services/types/dapp';
 
 export default function ReviewsMobile() {
-  const { relationsComposeClient, getPersonalScoreList } =
-    useUs3rThreadContext();
+  const s3LinkModel = getS3LinkModel();
+  const { s3LinkModalAuthed } = useLinkState();
   const [list, setList] = useState<Array<ReviewItemData>>([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    if (relationsComposeClient.context.isAuthenticated()) {
+    if (s3LinkModalAuthed) {
       setLoading(true);
-      getPersonalScoreList({ first: 1000 })
+      s3LinkModel
+        .queryPersonalScores({ first: 1000 })
         .then(async (data) => {
           // 获取dapp相关的评分数据
           const dappNodes =
-            data?.edges
-              ?.filter((edge) => edge.node.thread.type === 'dapp')
+            data?.data.viewer.scoreList.edges
+              ?.filter((edge) => edge.node.link.type === 'dapp')
               ?.map((edge) => edge.node) ?? [];
-          const dappUrls = dappNodes.map((node) => node.thread.url) ?? [];
+          const dappUrls = dappNodes.map((node) => node.link.url) ?? [];
           const resp = await fetchDappFavorites(dappUrls);
           const dapps = resp?.data?.data ?? [];
           setList(
             dapps.map((dapp) => {
               const findNode = dappNodes.find(
-                (node) => dapp.threadStreamId === node.thread.id
+                (node) => dapp.threadStreamId === node.link.id
               );
               return {
                 ...findNode,
@@ -42,7 +43,7 @@ export default function ReviewsMobile() {
         .catch(console.error)
         .finally(() => setLoading(false));
     }
-  }, [relationsComposeClient.context, getPersonalScoreList]);
+  }, [s3LinkModalAuthed]);
 
   return (
     <Wrapper>

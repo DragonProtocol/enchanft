@@ -1,10 +1,10 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { Thread } from '@us3r-network/thread';
+import { Link } from '@us3r-network/link';
 import { defaultFormatFromNow } from '../../utils/time';
 import EllipsisText from '../common/text/EllipsisText';
 import LinkBox from '../contents/LinkBox';
 
-export type SaveExploreListItemData = Thread & {
+export type SaveExploreListItemData = Link & {
   title?: string;
   logo?: string;
 };
@@ -23,7 +23,7 @@ export default function SaveExploreListItem({
           <TitleText>{data.title}</TitleText>
 
           <TimeText className="timeText">
-            {defaultFormatFromNow(data.date)}
+            {defaultFormatFromNow(data.createAt)}
           </TimeText>
         </TopBox>
         <BottomBox className="bottomBox">

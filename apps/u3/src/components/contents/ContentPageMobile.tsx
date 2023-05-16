@@ -5,7 +5,7 @@
  * @LastEditTime: 2023-03-03 17:11:31
  * @Description: file description
  */
-import { CommentList } from '@us3r-network/authkit';
+import { Comments } from '@us3r-network/link';
 import styled from 'styled-components';
 import type { ContentPageProps } from '../../container/Content';
 import Loading from '../common/loading/Loading';
@@ -26,7 +26,7 @@ export default function ContentPageMobile({
   ) : data ? (
     <MainBody>
       <ContentShowerBox selectContent={data} tab="readerView" />
-      {data.threadStreamId && <CommentList threadId={data.threadStreamId} />}
+      {data.threadStreamId && <Comments linkId={data.threadStreamId} />}
     </MainBody>
   ) : (
     <StatusWrapper>The content query with id {id} failed</StatusWrapper>

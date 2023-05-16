@@ -127,8 +127,8 @@ export default function Header({
               </OpenButton>
             ) : (
               <DappFavorButton
-                threadId={data.threadStreamId}
-                onFavorSuccess={onFavorSuccess}
+                linkId={data.threadStreamId}
+                onSuccessfullyFavor={onFavorSuccess}
               />
             ))
           )}

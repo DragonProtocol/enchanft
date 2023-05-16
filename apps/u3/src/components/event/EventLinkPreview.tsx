@@ -7,7 +7,7 @@
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import React, { useEffect, useState } from 'react';
-import { FavorBtn } from '@us3r-network/authkit';
+import { FavorButton } from '@us3r-network/link';
 import { useNavigate } from 'react-router-dom';
 import { selectWebsite } from '../../features/website/websiteSlice';
 import { useAppSelector } from '../../store/hooks';
@@ -124,7 +124,7 @@ export function EventPreviewHandles({
   const { onShare } = useEventHandles();
   return (
     <EventPreviewHandlesWrapper {...props}>
-      {!!data?.threadStreamId && <FavorBtn threadId={data.threadStreamId} />}
+      {!!data?.threadStreamId && <FavorButton linkId={data.threadStreamId} />}
 
       <EventHandleButton
         onClick={() => {
