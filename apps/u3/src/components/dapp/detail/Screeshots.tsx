@@ -44,7 +44,11 @@ export default function Screeshots({ urls, ...otherProps }: Props) {
       <SliderWrapper>
         <Slider {...settings}>
           {urls.map((url, index) => (
-            <ScreeshotImg src={url} onClick={() => setShowImgIndex(index)} />
+            <ScreeshotImg
+              key={url}
+              src={url}
+              onClick={() => setShowImgIndex(index)}
+            />
           ))}
         </Slider>
       </SliderWrapper>

@@ -7,9 +7,9 @@
  */
 import React, { useCallback } from 'react';
 import { debounce } from 'lodash';
-import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import styled, { StyledComponentPropsWithRef, css } from 'styled-components';
 
-const Textarea = styled.textarea`
+export const TextareaBaseCss = css`
   width: 100%;
   height: 80px;
   resize: both;
@@ -33,6 +33,9 @@ const Textarea = styled.textarea`
   &::placeholder {
     color: #4e5a6e;
   }
+`;
+const Textarea = styled.textarea`
+  ${TextareaBaseCss}
 `;
 
 export interface Props extends StyledComponentPropsWithRef<'textarea'> {

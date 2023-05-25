@@ -5,6 +5,8 @@
  * @LastEditTime: 2023-01-05 18:19:27
  * @Description: file description
  */
+import { EventLinkData } from '../services/types/event';
+
 const EVENT_COMPLETE_GUIDE_KEY = 'EVENT_COMPLETE_GUIDE';
 export function getEventCompleteGuideForStore(): number {
   return Number(localStorage.getItem(EVENT_COMPLETE_GUIDE_KEY));
@@ -20,3 +22,15 @@ export function verifyEventCompleteGuideEndByStore(): boolean {
 
 export const NO_ENDTIME_TIMESTRAMP = 4102416000 * 1000;
 export const EVENT_ADMIN_PLUS_SCORE_STEP = 10;
+
+export const getEventLinkDataWithJsonValue = (
+  value: string
+): EventLinkData | null => {
+  if (!value) return null;
+  try {
+    const data = JSON.parse(value);
+    return data;
+  } catch (error) {
+    return null;
+  }
+};

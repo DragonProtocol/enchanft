@@ -35,11 +35,11 @@ export default function DappPageMobile({
     <Wrapper>
       <HeaderMobile data={data} />
       <QuotaBox>
-        <ScoresAvg linkId={data.threadStreamId} />
+        <ScoresAvg linkId={data.linkStreamId} />
       </QuotaBox>
       <ScreeshotsMobile urls={data?.screenshots ?? []} />
       <IntroductionMobile text={data.description} />
-      <UserScoreMobile streamId={data.threadStreamId} />
+      <UserScoreMobile streamId={data.linkStreamId} />
       <RecommendDappsMobile
         data={recommendDapps}
         loading={recommendDappsLoading}

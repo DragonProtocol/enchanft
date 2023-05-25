@@ -1,14 +1,18 @@
 import { FavorButton, FavorButtonProps } from '@us3r-network/link';
 import styled from 'styled-components';
+import { ButtonPrimaryCss } from '../common/button/ButtonBase';
 
 function DappFavorButton(props: FavorButtonProps) {
   return (
-    <FavorButtonStyled {...props}>
+    <FavorBtn {...props}>
       {({ isFavored, isFavoring }) =>
         isFavored ? 'Installed' : isFavoring ? 'Installing' : 'Install'
       }
-    </FavorButtonStyled>
+    </FavorBtn>
   );
 }
 export default DappFavorButton;
-const FavorButtonStyled = styled(FavorButton)``;
+const FavorBtn = styled(FavorButton)`
+  ${ButtonPrimaryCss}
+  background: #fff;
+`;

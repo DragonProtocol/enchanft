@@ -54,11 +54,11 @@ export default function ContentShower({
           </div>
         </ContentTitle>
         <ContentBody dangerouslySetInnerHTML={{ __html: contentFix }} />
+        <br />
+        {!isMobile && data.linkStreamId && (
+          <Comments linkId={data.linkStreamId} className="comments" />
+        )}
       </div>
-      <br />
-      {!isMobile && data.threadStreamId && (
-        <Comments linkId={data.threadStreamId} />
-      )}
     </Shower>
   );
 }
@@ -69,6 +69,9 @@ const Shower = styled.div`
 
   .content-container {
     padding: 20px;
+    .comments {
+      margin-top: 20px;
+    }
   }
 `;
 

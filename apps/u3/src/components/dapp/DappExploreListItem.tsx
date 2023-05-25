@@ -49,7 +49,7 @@ export default function DappExploreListItem({
                 <Badge key={item} text={formatFilterShowName(item)} />
               ))}
             </TagsRow>
-            {data?.threadStreamId && <ScoresAvg linkId={data.threadStreamId} />}
+            {data?.linkStreamId && <ScoresAvg linkId={data.linkStreamId} />}
           </BottomBox>
         </InnerBody>
       </ListItemInner>

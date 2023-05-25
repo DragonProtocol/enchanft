@@ -13,16 +13,15 @@ import {
   useRef,
   useState,
 } from 'react';
-import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import styled, { StyledComponentPropsWithRef, css } from 'styled-components';
 import { animated, useSprings } from '@react-spring/web';
 import { useNavigate } from 'react-router-dom';
 import { useDrag } from 'react-use-gesture';
 import { clamp } from 'lodash';
 import swap from 'lodash-move';
-import useUserFavorites from '../../../hooks/useUserFavorites';
+import { useFavorAction } from '@us3r-network/link';
 import DappSideBarListItem from './DappInstallListItem';
 import useDappWebsite from '../../../hooks/useDappWebsite';
-import useDappHandles from '../../../hooks/useDappHandles';
 import InfoCircleSvgUrl from '../../common/icons/svgs/info-circle.svg';
 import TrashSvgUrl from '../../common/icons/svgs/trash.svg';
 import {
@@ -50,14 +49,12 @@ const dragFn =
 type Props = StyledComponentPropsWithRef<'div'>;
 export default forwardRef(function DappInstallList(props: Props, ref) {
   const navigate = useNavigate();
-  const { openDappModal } = useDappWebsite();
-  const { dapps } = useUserFavorites();
+  const { personalDapps, openDappModal } = useDappWebsite();
 
-  const { onUnfavor, favorQueueIds } = useDappHandles();
   const [handlesItemId, setHandlesItemId] = useState<string | number | null>(
     null
   );
-  const handlesItem = dapps.find(
+  const handlesItem = personalDapps.find(
     (item) => handlesItemId && item.id === handlesItemId
   );
 
@@ -118,9 +115,12 @@ export default forwardRef(function DappInstallList(props: Props, ref) {
   const orderStore = useRef(getDappSideBarOrderForStore());
   const order = useRef<Array<number>>([]);
 
-  const [springs, api] = useSprings(dapps.length, dragFn(order.current)); // Create springs, each corresponds to an item, controlling its transform, scale, etc.
+  const [springs, api] = useSprings(
+    personalDapps.length,
+    dragFn(order.current)
+  ); // Create springs, each corresponds to an item, controlling its transform, scale, etc.
   useEffect(() => {
-    const newOrder = dapps
+    const newOrder = personalDapps
       .map((item, i) => ({ ...item, originIndex: i }))
       .sort(
         (a, b) =>
@@ -131,7 +131,7 @@ export default forwardRef(function DappInstallList(props: Props, ref) {
       api.start(dragFn(newOrder));
     }
     order.current = [...newOrder];
-  }, [dapps]);
+  }, [personalDapps]);
 
   const bind = useDrag(
     ({ args: [originalIndex], active, movement: [, y] }) => {
@@ -139,7 +139,7 @@ export default forwardRef(function DappInstallList(props: Props, ref) {
       const curRow = clamp(
         Math.round((curIndex * 76 + y) / 76),
         0,
-        dapps.length - 1
+        personalDapps.length - 1
       );
       const newOrder = swap(order.current, curIndex, curRow);
       api.start(dragFn(newOrder, active, originalIndex, curIndex, y)); // Feed springs new style data, they'll animate the view without causing a single render
@@ -147,7 +147,9 @@ export default forwardRef(function DappInstallList(props: Props, ref) {
       if (!active) {
         order.current = newOrder;
         const newOrderStore = [
-          ...new Set(order.current?.map((i: string | number) => dapps[i]?.id)),
+          ...new Set(
+            order.current?.map((i: string | number) => personalDapps[i]?.id)
+          ),
         ];
         orderStore.current = newOrderStore;
         setDappSideBarOrderToStore(newOrderStore);
@@ -161,11 +163,11 @@ export default forwardRef(function DappInstallList(props: Props, ref) {
 
   return (
     <Wrapper {...props}>
-      <DappList style={{ height: dapps.length * 76 }}>
+      <DappList style={{ height: personalDapps.length * 76 }}>
         {springs.map(({ zIndex, y, scale }, i) => (
           <animated.div
             {...bind(i)}
-            key={dapps[i].id}
+            key={personalDapps[i].id}
             style={{
               zIndex,
               y,
@@ -173,13 +175,12 @@ export default forwardRef(function DappInstallList(props: Props, ref) {
             }}
           >
             <DappSideBarListItem
-              data={dapps[i]}
-              onOpen={() => openDappModal(dapps[i].id)}
-              onOpenHandles={() => setHandlesItemId(dapps[i].id)}
-              disabled={favorQueueIds.includes(dapps[i].id)}
+              data={personalDapps[i]}
+              onOpen={() => openDappModal(personalDapps[i].id)}
+              onOpenHandles={() => setHandlesItemId(personalDapps[i].id)}
               ref={(el) => {
                 if (el) {
-                  itemElsWeakMap.current.set(dapps[i], el);
+                  itemElsWeakMap.current.set(personalDapps[i], el);
                 }
               }}
             />
@@ -199,7 +200,7 @@ export default forwardRef(function DappInstallList(props: Props, ref) {
           <OptionItem
             onClick={() => {
               if (handlesItem) {
-                const originIndex = dapps.findIndex(
+                const originIndex = personalDapps.findIndex(
                   (item) => item.id === handlesItem.id
                 );
                 if (originIndex !== -1) {
@@ -229,10 +230,10 @@ export default forwardRef(function DappInstallList(props: Props, ref) {
             <OptionIcon src={InfoCircleSvgUrl} />
             <OptionLabel>Dapp Info</OptionLabel>
           </OptionItem>
-          <OptionItem
-            onClick={() => {
+          <UninstallOptionItem
+            linkId={handlesItem?.id}
+            onSuccessfullyFavor={() => {
               if (handlesItem) {
-                onUnfavor(handlesItem);
                 setHandlesItemId(null);
                 const newOrderStore = orderStore.current.filter(
                   (id) => handlesItem.id !== id
@@ -241,16 +242,40 @@ export default forwardRef(function DappInstallList(props: Props, ref) {
                 setDappSideBarOrderToStore(newOrderStore);
               }
             }}
-          >
-            <OptionIcon src={TrashSvgUrl} />
-            <OptionLabel>Uninstall</OptionLabel>
-          </OptionItem>
+          />
         </HandlesPopperInner>
         <HandlesPopperArrow />
       </HandlesPopperBox>
     </Wrapper>
   );
 });
+
+function UninstallOptionItem({
+  linkId,
+  onSuccessfullyFavor,
+}: {
+  linkId: string;
+  onSuccessfullyFavor: () => void;
+}) {
+  const { isDisabled, isFavoring, isFavored, onFavor } = useFavorAction(
+    linkId,
+    {
+      onSuccessfullyFavor,
+    }
+  );
+  return (
+    <OptionItem
+      onClick={() => {
+        if (isFavored && !isDisabled) {
+          onFavor();
+        }
+      }}
+    >
+      <OptionIcon src={TrashSvgUrl} />
+      <OptionLabel>{isFavoring ? 'Uninstalling...' : 'Uninstall'}</OptionLabel>
+    </OptionItem>
+  );
+}
 const Wrapper = styled.div`
   position: relative;
 `;
@@ -292,6 +317,7 @@ const HandlesPopperArrow = styled.div`
   transform: translateX(-5px) rotate(90deg);
   margin-right: -10px;
 `;
+
 const OptionItem = styled.div<{ isActive?: boolean }>`
   height: 60px;
   padding: 20px;
@@ -316,6 +342,7 @@ const OptionItem = styled.div<{ isActive?: boolean }>`
       `};
   }
 `;
+
 const OptionIcon = styled.img`
   width: 20px;
   height: 20px;

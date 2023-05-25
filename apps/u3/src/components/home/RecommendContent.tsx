@@ -64,7 +64,7 @@ function Card({
     tags,
     recReason,
     value,
-    threadStreamId,
+    linkStreamId,
   },
   clickAction,
 }: {
@@ -76,7 +76,7 @@ function Card({
     tags: string[];
     recReason?: string;
     value?: string;
-    threadStreamId?: string;
+    linkStreamId?: string;
   };
   clickAction: () => void;
 }) {
@@ -107,7 +107,7 @@ function Card({
           <BottomRow>
             {tags?.length > 0 && <Badge text={tags[0]} />}
             <ContentVote>
-              {threadStreamId && <VoteButton linkId={threadStreamId} />}
+              {linkStreamId && <VoteButton linkId={linkStreamId} />}
             </ContentVote>
             {/* <BottomRowLine /> */}
             {/* <ContentLink text={link} /> */}

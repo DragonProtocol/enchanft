@@ -26,7 +26,7 @@ export default function ContentPageMobile({
   ) : data ? (
     <MainBody>
       <ContentShowerBox selectContent={data} tab="readerView" />
-      {data.threadStreamId && <Comments linkId={data.threadStreamId} />}
+      {data.linkStreamId && <Comments linkId={data.linkStreamId} />}
     </MainBody>
   ) : (
     <StatusWrapper>The content query with id {id} failed</StatusWrapper>

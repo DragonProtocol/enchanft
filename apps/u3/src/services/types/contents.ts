@@ -81,7 +81,7 @@ export type ContentListItem = {
   isForU?: boolean;
   editorScore: null | number;
   favorNum?: number;
-  threadStreamId?: string;
+  linkStreamId?: string;
 };
 
 export type ContentsListResponse = ApiResp<Array<ContentListItem>>;
@@ -107,3 +107,20 @@ export type Project = {
 export type ContentsResponse = ApiResp<Array<Project>>;
 export type ContentSaveResponse = ApiResp<ContentListItem>;
 export type ContentResponse = ApiResp<ContentListItem>;
+
+export type ContentLinkData = {
+  title: string;
+  author?: string;
+  value?: string;
+  description: string;
+  platform?: {
+    logo?: string;
+  };
+  chain: string;
+  createdAt: number;
+
+  supportReaderView: boolean;
+  supportIframe: boolean;
+
+  tags: string[];
+};

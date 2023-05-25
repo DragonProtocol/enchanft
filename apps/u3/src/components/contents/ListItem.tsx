@@ -2,48 +2,23 @@ import styled from 'styled-components';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { VoteButton } from '@us3r-network/link';
 import { Share } from '../icons/share';
-import { EyeClose } from '../icons/eyeClose';
-import { Heart } from '../icons/heart';
+// import { EyeClose } from '../icons/eyeClose';
 import { defaultFormatFromNow } from '../../utils/time';
 import LinkBox from './LinkBox';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
-import { ContentListItem } from '../../services/types/contents';
-
-import './listitem.css';
+import type { ContentExploreListItemData } from './ContentList';
 
 export default function ListItem({
   data,
   isActive,
   clickAction,
-  voteAction,
-  favorsAction,
-  hiddenAction,
-  shareAction,
-  favorPendingIds,
 }: {
-  data: ContentListItem;
+  data: ContentExploreListItemData;
   isActive: boolean;
   clickAction: () => void;
-  voteAction?: () => void;
-  favorsAction?: () => void;
-  hiddenAction?: () => void;
-  shareAction?: () => void;
-  favorPendingIds?: (string | number)[];
 }) {
-  const {
-    value,
-    type,
-    id,
-    link,
-    createdAt,
-    title,
-    upVoteNum,
-    favored,
-    upVoted,
-    hidden,
-    editorScore,
-  } = data;
+  const { value, link, createdAt, title, hidden, linkStreamId } = data;
   const itemRef = useRef<HTMLDivElement & { isActive: boolean }>();
   const [height, setHeight] = useState('fit-content');
   const [classNames, setClassNames] = useState('');
@@ -74,8 +49,8 @@ export default function ListItem({
       isActive={isActive}
     >
       <ItemInner isActive={isActive} height={height}>
-        <div className="authkit">
-          {data.threadStreamId && <VoteButton linkId={data.threadStreamId} />}
+        <div className="left">
+          {linkStreamId && <VoteButtonStyled linkId={linkStreamId} />}
         </div>
 
         <div className={isActive ? 'right active' : 'right'}>
@@ -86,86 +61,41 @@ export default function ListItem({
             </div>
             <span>{defaultFormatFromNow(createdAt)}</span>
           </ContentItemTitle>
-
-          {/* {isActive && (
-            <ContentItemActions
-              id={id}
-              isActive={isActive}
-              upVoted={upVoted}
-              favored={favored}
-              upVoteNum={upVoteNum}
-              editorScore={editorScore}
-              favorPendingIds={favorPendingIds}
-              voteAction={voteAction}
-              favorsAction={favorsAction}
-              hiddenAction={hiddenAction}
-              shareAction={shareAction}
-            />
-          )} */}
         </div>
       </ItemInner>
     </ContentItem>
   );
 }
+const VoteButtonStyled = styled(VoteButton)`
+  width: 60px !important;
+  height: 60px !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 5px !important;
+  svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+`;
 
 export function ContentItemActions({
   id,
   isActive,
-  upVoted,
-  favored,
-  upVoteNum,
   editorScore,
-  // voteAction,
-  // favorsAction,
   hiddenAction,
   shareAction,
-}: // favorPendingIds,
-// withVote,
+}: // withVote,
 {
   id: number;
   isActive?: boolean;
   editorScore: number;
-  upVoteNum: number;
-  favored: boolean;
-  upVoted: boolean;
   shareAction?: () => void;
   hiddenAction?: () => void;
-  // voteAction?: () => void;
-  // favorsAction?: () => void;
-  // favorPendingIds: (string | number)[];
   // withVote?: boolean;
 }) {
-  // const loadingFavor = useMemo(
-  //   () => favorPendingIds.includes(id),
-  //   [favorPendingIds, id]
-  // );
-
   return (
     <ContentItemActionsWrapper>
-      {/* {withVote && (
-        <ContentHandleButtonVote
-          disabled={upVoted}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (voteAction) {
-              voteAction();
-            }
-          }}
-        >
-          👏 &nbsp;{upVoteNum + (editorScore || 0)}
-        </ContentHandleButtonVote>
-      )}
-
-      <ContentHandleButton
-        disabled={loadingFavor}
-        onClick={(e) => {
-          e.stopPropagation();
-          if (favorsAction) favorsAction();
-        }}
-      >
-        {favored ? <Heart fill="#718096" /> : <Heart />}
-      </ContentHandleButton> */}
-
       {/* <ContentHandleButton
         onClick={(e) => {
           e.stopPropagation();

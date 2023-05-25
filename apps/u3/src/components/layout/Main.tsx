@@ -19,7 +19,6 @@ import {
   setU3ExtensionInstalled,
 } from '../../features/website/websiteSlice';
 import EventCompleteGuideModal from '../event/EventCompleteGuideModal';
-import useRoute from '../../route/useRoute';
 import useLogin from '../../hooks/useLogin';
 import NoLogin from './NoLogin';
 import usePreference from '../../hooks/usePreference';
@@ -32,13 +31,12 @@ import {
 } from '../../features/profile/karma';
 import { Atom02 } from '../icons/atom';
 import { store } from '../../store/store';
-import useUserFavorites from '../../hooks/useUserFavorites';
 
 function Main() {
   const dispatch = useAppDispatch();
   const session = useSession();
-  const { profile, updateProfile } = useProfileState();
-  const { isLogin, login, user, isAdmin } = useLogin();
+  const { profile, updateProfile, profileLoading } = useProfileState();
+  const { isLogin, user, isAdmin } = useLogin();
   const { openEventCompleteGuideModal, eventCompleteGuideEndCallback } =
     useAppSelector(selectWebsite);
   const { u3ExtensionInstalled } = useU3Extension();
@@ -46,28 +44,12 @@ function Main() {
     dispatch(setU3ExtensionInstalled(u3ExtensionInstalled));
   }, [u3ExtensionInstalled]);
 
-  // const { lastRouteMeta } = useRoute();
-  // useEffect(() => {
-  //   const { permissions } = lastRouteMeta;
-  //   if (
-  //     permissions &&
-  //     permissions.includes(RoutePermission.login) &&
-  //     !isLogin
-  //   ) {
-  //     login();
-  //   }
-  // }, [lastRouteMeta, isLogin]);
   const { preferenceList } = usePreference(user?.token);
 
   useEffect(() => {
     if (!user?.token) return;
     dispatch(fetchUserKarma({ token: user?.token }));
   }, [user?.token]);
-
-  const { refreshFavorites } = useUserFavorites();
-  useEffect(() => {
-    refreshFavorites();
-  }, [refreshFavorites]);
 
   const renderElement = useCallback(
     ({ element, permissions }: CutomRouteObject) => {
@@ -108,7 +90,12 @@ function Main() {
       />
       {!isMobile && (
         <OnboardModal
-          show={(!profile?.tags || profile.tags.length === 0) && !!session?.id}
+          show={
+            !!session?.id &&
+            !profileLoading &&
+            !!profile &&
+            (!profile?.tags || profile.tags.length === 0)
+          }
           lists={preferenceList}
           finishAction={async (data) => {
             await updateProfile({

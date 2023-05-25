@@ -209,11 +209,11 @@ const Button = styled(ButtonPrimaryLine)<{ onlyIcon?: boolean }>`
 `;
 const LoginUser = styled(Button)<{ onlyIcon?: boolean }>`
   gap: 0;
-  img {
+  [data-us3r-component='UserAvatar'] {
     width: 30px;
     height: 30px;
   }
-  div {
+  [data-us3r-component='UserName'] {
     flex: 1;
     font-weight: 400;
     line-height: 17px;
@@ -226,11 +226,12 @@ const LoginUser = styled(Button)<{ onlyIcon?: boolean }>`
   ${({ onlyIcon }) =>
     onlyIcon &&
     `
-    img {
+    [data-us3r-component='UserAvatar'] {
       width: 40px;
       height: 40px;
     }
-    div {
+    [data-us3r-component="UserName"] {
+      flex: 0;
       width: 0;
     }
   `}

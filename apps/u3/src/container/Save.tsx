@@ -1,15 +1,22 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
-import { Link, getS3LinkModel, useLinkState } from '@us3r-network/link';
+import { usePersonalFavors } from '@us3r-network/link';
 import { isMobile } from 'react-device-detect';
 
 import { MainWrapper } from '../components/layout/Index';
 import Loading from '../components/common/loading/Loading';
 import PageTitle from '../components/common/PageTitle';
-import { contentParse } from '../services/api/contents';
 import SaveExploreList from '../components/save/SaveExploreList';
 import SaveExploreListMobile from '../components/save/SaveExploreListMobile';
-import { getContentPlatformLogoWithJsonValue } from '../utils/content';
+import {
+  getContentLinkDataWithJsonValue,
+  getContentPlatformLogoWithJsonValue,
+} from '../utils/content';
+import { getDappLinkDataWithJsonValue } from '../utils/dapp';
+import { getEventLinkDataWithJsonValue } from '../utils/event';
+import { DappLinkData } from '../services/types/dapp';
+import { ContentLinkData } from '../services/types/contents';
+import { EventLinkData } from '../services/types/event';
 
 function EmptyList() {
   return (
@@ -43,63 +50,45 @@ const EmptyDesc = styled.span`
 `;
 
 export default function Save() {
-  const s3LinkModel = getS3LinkModel();
-  const { s3LinkModalAuthed } = useLinkState();
-  const [list, setList] = useState<
-    Array<
-      Link & {
-        title?: string;
-        logo?: string;
-      }
-    >
-  >([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const isEmpty = useMemo(() => list.length === 0, [list]);
-
-  useEffect(() => {
-    if (s3LinkModalAuthed) {
-      setIsLoading(true);
-      s3LinkModel
-        .queryPersonalFavors({ first: 1000 })
-        .then((d) => {
-          // 先显示url列表
-          const links =
-            d?.data.viewer.favorList.edges.map((item) => item.node.link) || [];
-          setList(links);
-
-          // 再异步获取url对应的title
-          for (let i = 0; i < links.length; i++) {
-            const thread = links[i];
-            contentParse(thread.url).then(({ data }) => {
-              setList((prev) => {
-                const index = prev.findIndex((item) => item.id === thread.id);
-                if (index === -1) {
-                  return prev;
-                }
-                prev[index] = {
-                  ...thread,
-                  title: data?.data?.title,
-                  logo: getContentPlatformLogoWithJsonValue(
-                    data?.data?.content
-                  ),
-                };
-                return [...prev];
-              });
-            });
-          }
-        })
-        .catch(console.error)
-        .finally(() => {
-          setIsLoading(false);
-        });
+  const { isFetching, personalFavors } = usePersonalFavors();
+  const links = personalFavors
+    .map((item) => item?.link)
+    .filter((link) => !!link);
+  const list = links.map((link) => {
+    let linkData;
+    let title = '';
+    let logo = '';
+    switch (link.type) {
+      case 'dapp':
+        linkData = getDappLinkDataWithJsonValue(link?.data);
+        title = linkData?.name || link.title;
+        logo = linkData?.image || '';
+        break;
+      case 'content':
+        linkData = getContentLinkDataWithJsonValue(link?.data);
+        title = linkData?.title || link.title;
+        logo =
+          getContentPlatformLogoWithJsonValue(linkData?.value) ||
+          linkData?.platform?.logo ||
+          '';
+        break;
+      case 'event':
+        linkData = getEventLinkDataWithJsonValue(link?.data);
+        title = linkData?.name || link.title;
+        logo = linkData?.image || linkData?.platform?.logo || '';
+        break;
+      default:
+        break;
     }
-  }, [s3LinkModalAuthed]);
+    return { ...link, id: link.id, title, logo };
+  });
+  const isEmpty = useMemo(() => list.length === 0, [list]);
 
   return (
     <Wrapper>
       {isMobile ? null : <PageTitle>Saves</PageTitle>}
       <ContentWrapper>
-        {isLoading ? (
+        {isFetching ? (
           <Loading />
         ) : isEmpty ? (
           <EmptyList />

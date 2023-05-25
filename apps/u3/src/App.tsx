@@ -10,6 +10,7 @@ import { BrowserRouter } from 'react-router-dom';
 import Modal from 'react-modal';
 import { Us3rAuthWithRainbowkitProvider } from '@us3r-network/auth-with-rainbowkit';
 import { ProfileStateProvider } from '@us3r-network/profile';
+import { LinkStateProvider } from '@us3r-network/link';
 
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -31,18 +32,20 @@ function App() {
   return (
     <Us3rAuthWithRainbowkitProvider>
       <ProfileStateProvider ceramicHost={CERAMIC_HOST}>
-        <U3LoginProvider
-          u3LoginSuccess={(token) => {
-            injectU3Token(token);
-          }}
-        >
-          <ReduxProvider store={store}>
-            <GlobalStyle />
-            <BrowserRouter>
-              <Layout />
-            </BrowserRouter>
-          </ReduxProvider>
-        </U3LoginProvider>
+        <LinkStateProvider ceramicHost={CERAMIC_HOST}>
+          <U3LoginProvider
+            u3LoginSuccess={(token) => {
+              injectU3Token(token);
+            }}
+          >
+            <ReduxProvider store={store}>
+              <GlobalStyle />
+              <BrowserRouter>
+                <Layout />
+              </BrowserRouter>
+            </ReduxProvider>
+          </U3LoginProvider>
+        </LinkStateProvider>
       </ProfileStateProvider>
     </Us3rAuthWithRainbowkitProvider>
   );

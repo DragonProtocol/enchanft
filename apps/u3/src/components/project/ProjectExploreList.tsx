@@ -13,14 +13,14 @@ import ProjectExploreListItem, {
 
 export type ProjectExploreListProps = {
   data: ProjectExploreListItemData[];
-  installPendingIds: Array<string | number>;
+  installPendingIds?: Array<string | number>;
   onInstall?: (item: ProjectExploreListItemData) => void;
   onOpen?: (item: ProjectExploreListItemData) => void;
   onItemClick?: (item: ProjectExploreListItemData) => void;
 };
 export default function ProjectExploreList({
   data,
-  installPendingIds,
+  installPendingIds = [],
   onInstall,
   onOpen,
   onItemClick,

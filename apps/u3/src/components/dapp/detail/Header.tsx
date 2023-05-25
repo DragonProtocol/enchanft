@@ -1,5 +1,6 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useFavorAction } from '@us3r-network/link';
 import { formatFilterShowName } from '../../../utils/filter';
 import {
   DappExploreListItemResponse,
@@ -17,25 +18,24 @@ import { ReactComponent as CheckVerifiedSvg } from '../../common/icons/svgs/chec
 import EllipsisTextExpandMore from '../../common/text/EllipsisTextExpandMore';
 import { Edit } from '../../icons/edit';
 import DappFavorButton from '../DappFavorButton';
-import useUserFavorites from '../../../hooks/useUserFavorites';
 import useLogin from '../../../hooks/useLogin';
 import Badge from '../Badge';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: DappExploreListItemResponse;
-  onFavorSuccess?: () => void;
   onOpen?: () => void;
   onEdit?: () => void;
+  hiddenEdit?: boolean;
 };
 export default function Header({
   data,
-  onFavorSuccess,
   onOpen,
   onEdit,
+  hiddenEdit,
   ...otherProps
 }: Props) {
+  const { isFavored } = useFavorAction(data.linkStreamId);
   const navigate = useNavigate();
-  const { isFavoredDapp, userFavoritesLoaded } = useUserFavorites();
   const { isAdmin } = useLogin();
   const { topics } = useConfigsTopics();
   const { chains } = topics;
@@ -52,7 +52,7 @@ export default function Header({
         <Title>
           {data.name}{' '}
           {data.status === DappStatus.VERIFIED && <CheckVerifiedSvg />}
-          {isAdmin && (
+          {isAdmin && !hiddenEdit && (
             <EditBtn onClick={onEdit}>
               <Edit />
             </EditBtn>
@@ -114,9 +114,8 @@ export default function Header({
             </OpenButton>
           ) : (
             data?.url &&
-            data?.threadStreamId &&
-            userFavoritesLoaded &&
-            (isFavoredDapp(data.threadStreamId) ? (
+            data?.linkStreamId &&
+            (isFavored ? (
               <OpenButton
                 onClick={(e) => {
                   e.stopPropagation();
@@ -126,10 +125,7 @@ export default function Header({
                 Open Dapp
               </OpenButton>
             ) : (
-              <DappFavorButton
-                linkId={data.threadStreamId}
-                onSuccessfullyFavor={onFavorSuccess}
-              />
+              <DappFavorButton linkId={data.linkStreamId} />
             ))
           )}
         </RightButtons>

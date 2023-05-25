@@ -17,22 +17,16 @@ export default function GridModal({
   show,
   closeModal,
   selectContent,
-  favorPendingIds,
-  favorsAction,
   hiddenAction,
   shareAction,
-  voteAction,
   onAdminScore,
   onAdminDelete,
 }: {
   show: boolean;
   closeModal: () => void;
   selectContent: ContentListItem | undefined;
-  favorPendingIds: (string | number)[];
-  favorsAction?: () => void;
   hiddenAction?: () => void;
   shareAction?: () => void;
-  voteAction?: () => void;
   onAdminScore?: () => void;
   onAdminDelete?: () => void;
 }) {

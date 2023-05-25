@@ -1,13 +1,9 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { Link } from '@us3r-network/link';
 import { defaultFormatFromNow } from '../../utils/time';
 import EllipsisText from '../common/text/EllipsisText';
 import LinkBox from '../contents/LinkBox';
+import type { SaveExploreListItemData } from './SaveExploreList';
 
-export type SaveExploreListItemData = Link & {
-  title?: string;
-  logo?: string;
-};
 export type SaveExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   data: SaveExploreListItemData;
 };
@@ -41,9 +37,7 @@ const Wrapper = styled.div`
   box-sizing: border-box;
   cursor: pointer;
   &:hover {
-    & > * {
-      transform: scale(1.05);
-    }
+    background: rgba(20, 23, 26, 0.3);
   }
 `;
 const ListItemInner = styled.div`

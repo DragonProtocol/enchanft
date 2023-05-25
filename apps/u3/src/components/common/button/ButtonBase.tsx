@@ -29,21 +29,26 @@ export const ButtonBaseCss = css`
   gap: 10px;
   cursor: pointer;
   border: none;
-`;
-const ButtonBaseWrapper = styled.button`
-  ${ButtonBaseCss}
   &:disabled {
     cursor: not-allowed;
     pointer-events: auto;
     opacity: 0.5;
   }
 `;
-
-export const ButtonPrimary = styled(ButtonBaseWrapper)`
+const ButtonBaseWrapper = styled.button`
+  ${ButtonBaseCss}
+`;
+export const ButtonPrimaryCss = css`
+  ${ButtonBaseCss}
   background-color: #ffffff;
   color: #14171a;
 `;
-export const ButtonPrimaryLine = styled(ButtonBaseWrapper)`
+export const ButtonPrimary = styled.button`
+  ${ButtonPrimaryCss}
+`;
+
+export const ButtonPrimaryLineCss = css`
+  ${ButtonBaseCss}
   border: 1px solid #39424c;
   background-color: #1a1e23;
   color: #718096;
@@ -57,6 +62,9 @@ export const ButtonPrimaryLine = styled(ButtonBaseWrapper)`
     border: 1px solid #aaa;
     background-color: #14171a;
   }
+`;
+export const ButtonPrimaryLine = styled.button`
+  ${ButtonPrimaryLineCss}
 `;
 export const ButtonWarning = styled(ButtonBaseWrapper)`
   background-color: #ebb700;

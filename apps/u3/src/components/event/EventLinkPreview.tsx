@@ -5,10 +5,10 @@
  * @LastEditTime: 2023-01-20 14:05:29
  * @Description: file description
  */
-import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import styled, { StyledComponentPropsWithRef, css } from 'styled-components';
 import React, { useEffect, useState } from 'react';
-import { FavorButton } from '@us3r-network/link';
 import { useNavigate } from 'react-router-dom';
+import { FavorButton } from '@us3r-network/link';
 import { selectWebsite } from '../../features/website/websiteSlice';
 import { useAppSelector } from '../../store/hooks';
 import CannotOpenPlatFormLink from './CannotOpenPlatFormLink';
@@ -124,7 +124,7 @@ export function EventPreviewHandles({
   const { onShare } = useEventHandles();
   return (
     <EventPreviewHandlesWrapper {...props}>
-      {!!data?.threadStreamId && <FavorButton linkId={data.threadStreamId} />}
+      {!!data?.linkStreamId && <FavorBtn linkId={data.linkStreamId} />}
 
       <EventHandleButton
         onClick={() => {
@@ -179,8 +179,22 @@ const EventButtonLine = styled.span`
   height: 10px;
   background: #718096;
 `;
-const EventHandleButton = styled(ButtonPrimaryLine)`
+const EventButtonBaseCss = css`
   padding: 6px;
   height: 32px;
   background-color: #1b1e23;
+`;
+const EventHandleButton = styled(ButtonPrimaryLine)`
+  ${EventButtonBaseCss}
+`;
+const FavorBtn = styled(FavorButton)`
+  padding: 6px !important;
+  height: 32px !important;
+  background-color: #1b1e23;
+  svg {
+    fill: #718096;
+  }
+  span {
+    color: #718096;
+  }
 `;

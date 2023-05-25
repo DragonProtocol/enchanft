@@ -6,11 +6,14 @@ import { ReactComponent as CheckVerifiedSvg } from '../../common/icons/svgs/chec
 import EllipsisText from '../../common/text/EllipsisText';
 import ScoreRateValue from '../../common/score/ScoreRateValue';
 import ImgDefault from '../../common/ImgDefault';
+import { DappStatus } from '../../../services/types/dapp';
 
-export type ReviewItemData = Score & {
-  threadLogo?: string;
-  threadTitle?: string;
-  isVerified?: boolean;
+export type ReviewItemData = Omit<Score, 'link'> & {
+  link?: {
+    name?: string;
+    image?: string;
+    status?: string;
+  };
 };
 
 type ReviewItemProps = StyledComponentPropsWithRef<'div'> & {
@@ -20,9 +23,9 @@ export default function ReviewItem({ data }: ReviewItemProps) {
   return (
     <Wrapper>
       <Header>
-        <Logo src={data.threadLogo} />
-        <Title>{data.threadTitle}</Title>
-        {data.isVerified && <CheckVerifiedSvg />}
+        <Logo src={data?.link?.image} />
+        <Title>{data?.link?.name}</Title>
+        {data?.link?.status === DappStatus.VERIFIED && <CheckVerifiedSvg />}
       </Header>
       <Divider className="divider" />
       <ScoreRow>

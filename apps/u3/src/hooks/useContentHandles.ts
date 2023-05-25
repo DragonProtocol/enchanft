@@ -8,25 +8,15 @@
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import useLogin from './useLogin';
-import {
-  favorsContent,
-  voteContent,
-  complete,
-  personalFavors,
-  personalVote,
-  personalComplete,
-  delFavors,
-} from '../services/api/contents';
-import { ContentListItem } from '../services/types/contents';
+import { complete, personalComplete } from '../services/api/contents';
 import { getContentShareUrl } from '../utils/share';
 import { tweetShare } from '../utils/twitter';
 import { fetchUserKarma } from '../features/profile/karma';
 import { store } from '../store/store';
 import { messages } from '../utils/message';
+import { ContentListItem } from '../services/types/contents';
 
 // cache content handle pending ids
-const cacheContentVotePendingIds = new Set<number | string>();
-const cacheContentFavorPendingIds = new Set<number | string>();
 const cacheContentHiddenPendingIds = new Set<number | string>();
 const cacheContentHiddenTimer = new Map<number | string, NodeJS.Timeout>();
 
@@ -58,97 +48,6 @@ export default (
       }
     },
     [contents, setContents]
-  );
-
-  // vote
-  const [votePendingIds, setVotePendingIds] = useState([
-    ...cacheContentVotePendingIds,
-  ]);
-  const onVote = useCallback(
-    (data: ContentListItem) => {
-      return new Promise<void>((resolve, reject) => {
-        if (
-          data.upVoted ||
-          cacheContentVotePendingIds.has(data?.uuid || data.id)
-        )
-          return;
-        handleCallbackVerifyLogin(async () => {
-          try {
-            cacheContentVotePendingIds.add(data?.uuid || data.id);
-            setVotePendingIds([...cacheContentVotePendingIds]);
-            if (data?.uuid) {
-              await personalVote(data.uuid, user?.token);
-            } else {
-              await voteContent(data.id, user?.token);
-            }
-            toast.success(messages.content.applause);
-            updateOne(data.uuid || data.id, {
-              upVoted: true,
-              upVoteNum: data.upVoteNum + 1,
-            });
-            store.dispatch(fetchUserKarma({ token: user?.token }));
-            resolve();
-          } catch (error) {
-            toast.error(error?.message || error?.msg || messages.common.error);
-            reject(error);
-          } finally {
-            cacheContentVotePendingIds.delete(data?.uuid || data.id);
-            setVotePendingIds([...cacheContentVotePendingIds]);
-          }
-        });
-      });
-    },
-    [
-      user,
-      votePendingIds,
-      setVotePendingIds,
-      handleCallbackVerifyLogin,
-      updateOne,
-    ]
-  );
-  // favor
-  const [favorPendingIds, setFavorPendingIds] = useState([
-    ...cacheContentFavorPendingIds,
-  ]);
-  const onFavor = useCallback(
-    (data: ContentListItem) => {
-      return new Promise<void>((resolve, reject) => {
-        if (cacheContentFavorPendingIds.has(data?.uuid || data.id)) return;
-        handleCallbackVerifyLogin(async () => {
-          try {
-            cacheContentFavorPendingIds.add(data?.uuid || data.id);
-            setFavorPendingIds([...cacheContentFavorPendingIds]);
-            if (data.favored) {
-              await delFavors(data.id, user?.token);
-            } else {
-              if (data?.uuid) {
-                await personalFavors(data.uuid, user?.token);
-              } else {
-                await favorsContent(data.id, user?.token);
-              }
-              toast.success(messages.content.favor);
-            }
-            updateOne(data.uuid || data.id, {
-              favored: !data.favored,
-            });
-            resolve();
-          } catch (error) {
-            toast.error(error?.message || error?.msg || messages.common.error);
-            reject(error);
-          } finally {
-            cacheContentFavorPendingIds.delete(data?.uuid || data.id);
-            setFavorPendingIds([...cacheContentFavorPendingIds]);
-          }
-        });
-      });
-    },
-    [
-      user,
-      favorPendingIds,
-      setFavorPendingIds,
-      handleCallbackVerifyLogin,
-      updateOne,
-    ]
   );
 
   // hidden
@@ -236,10 +135,6 @@ export default (
   }, []);
 
   return {
-    votePendingIds,
-    onVote,
-    favorPendingIds,
-    onFavor,
     hiddenPendingIds,
     onHiddenAction,
     onHiddenUndoAction,

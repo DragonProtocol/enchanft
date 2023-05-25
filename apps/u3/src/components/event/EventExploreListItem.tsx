@@ -7,13 +7,12 @@
  */
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { Platform } from '../../services/types/common';
-import { EventExploreListItemResponse } from '../../services/types/event';
-import { getChainInfo } from '../../utils/chain';
+// import { getChainInfo } from '../../utils/chain';
 import { defaultFormatFromNow } from '../../utils/time';
 import EllipsisText from '../common/text/EllipsisText';
 import RewardTag from './RewardTag';
+import type { EventExploreListItemData } from './EventExploreList';
 
-export type EventExploreListItemData = EventExploreListItemResponse;
 export type EventExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   data: EventExploreListItemData;
   isActive: boolean;

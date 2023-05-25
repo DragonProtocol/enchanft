@@ -12,13 +12,15 @@ import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { ChainType, Platform, Reward } from '../services/types/common';
 import EventForm from '../components/event/EventForm';
-import useThreadSubmit from '../hooks/useThreadSubmit';
+import useLinkSubmit from '../hooks/useLinkSubmit';
 import { CreateEventData } from '../services/types/event';
 import { createEvent } from '../services/api/event';
 import { messages } from '../utils/message';
+import useConfigsPlatforms from '../hooks/useConfigsPlatforms';
 
 function EventCreate() {
-  const { createEventThread } = useThreadSubmit();
+  const { eventPlatforms } = useConfigsPlatforms();
+  const { createEventLink } = useLinkSubmit();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchParams, setSearchParams] = useSearchParams();
   const initialValues = {
@@ -47,9 +49,37 @@ function EventCreate() {
         const resp = await createEvent(form);
         const { code, msg } = resp.data;
         if (code === 0) {
+          const respData = resp.data.data;
           toast.success(messages.event.admin_submit);
           handleReset();
-          createEventThread(resp.data.data.link ?? form.link);
+          let platform = {};
+          if (respData?.platform) {
+            platform = respData?.platform;
+          } else {
+            const findPlatform = eventPlatforms.find(
+              (item) => item.platform === form.platform
+            );
+            platform = findPlatform
+              ? {
+                  name: findPlatform.platform,
+                  logo: findPlatform.platformLogo,
+                }
+              : {};
+          }
+          const linkData = {
+            name: form.name,
+            description: form.description,
+            image: form.image,
+            chain: form.chain,
+            reward: form.reward,
+            startTime: form.startTime,
+            endTime: form.endTime,
+            supportIframe: form.supportIframe,
+            types: form.types,
+
+            platform,
+          };
+          createEventLink(form.link, linkData);
         } else {
           toast.error(msg || messages.common.error);
         }
@@ -59,7 +89,7 @@ function EventCreate() {
         setPending(false);
       }
     },
-    [pending]
+    [pending, eventPlatforms, createEventLink]
   );
 
   return (

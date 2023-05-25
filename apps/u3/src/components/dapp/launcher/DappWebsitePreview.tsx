@@ -8,10 +8,10 @@ import CannotOpenPlatFormLink from '../../event/CannotOpenPlatFormLink';
 
 export type DappWebsitePreviewProps = StyledComponentPropsWithRef<'div'> & {
   data: {
-    name: string;
-    image: string;
-    url: string;
-    supportIframe: boolean;
+    name?: string;
+    image?: string;
+    url?: string;
+    supportIframe?: boolean;
   };
 };
 export default function DappWebsitePreview({

@@ -5,15 +5,30 @@
  * @LastEditTime: 2023-01-20 14:29:34
  * @Description: file description
  */
-import { useCallback } from 'react';
 import styled from 'styled-components';
-import EventExploreListItem, {
-  EventExploreListItemData,
-  styleMaps,
-} from './EventExploreListItem';
+import EventExploreListItem, { styleMaps } from './EventExploreListItem';
 import AnimatedListItem, {
   useAnimatedListTransition,
 } from '../animation/AnimatedListItem';
+import { ChainType, Reward } from '../../services/types/common';
+
+export type EventExploreListItemData = {
+  id: number | string;
+  name: string;
+  link: string;
+  supportIframe: boolean;
+
+  uuid?: string;
+  reward?: Reward;
+  endTime?: number;
+  platform?: {
+    name: string;
+    logo: string;
+  };
+  chain?: ChainType;
+  linkStreamId?: string;
+  editorScore?: number;
+};
 
 export type EventExploreListProps = {
   data: EventExploreListItemData[];
