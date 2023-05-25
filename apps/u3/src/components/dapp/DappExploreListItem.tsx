@@ -6,7 +6,7 @@
  * @Description: file description
  */
 import styled, { css, StyledComponentPropsWithRef } from 'styled-components';
-import { ScoreMin } from '@us3r-network/authkit';
+import { ScoresAvg } from '@us3r-network/link';
 import {
   DappExploreListItemResponse,
   DappStatus,
@@ -49,9 +49,7 @@ export default function DappExploreListItem({
                 <Badge key={item} text={formatFilterShowName(item)} />
               ))}
             </TagsRow>
-            {data?.threadStreamId && (
-              <ScoreMin threadId={data.threadStreamId} />
-            )}
+            {data?.linkStreamId && <ScoresAvg linkId={data.linkStreamId} />}
           </BottomBox>
         </InnerBody>
       </ListItemInner>

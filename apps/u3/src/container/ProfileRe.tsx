@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import { Profile } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
 import { useState } from 'react';
 import { isMobile } from 'react-device-detect';
 
@@ -9,9 +7,26 @@ import useLogin from '../hooks/useLogin';
 import { LogoutButton } from '../components/layout/LoginButton';
 import Reviews from '../components/profile/review/Reviews';
 import ReviewsMobile from '../components/profile/review/ReviewsMobile';
+import UserInfoStyled from '../components/s3/profile/UserInfoStyled';
+import UserTagsStyled from '../components/s3/profile/UserTagsStyled';
+import UserWalletsStyled from '../components/s3/profile/UserWalletsStyled';
+
+function ProfileInfo() {
+  return (
+    <ProfileInfoWrap>
+      <UserInfoStyled />
+      <UserWalletsStyled />
+      <UserTagsStyled />
+    </ProfileInfoWrap>
+  );
+}
+const ProfileInfoWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
 
 export default function ProfileRe() {
-  const { sessId } = useUs3rProfileContext();
   const { logout } = useLogin();
   const [openLogoutConfirm, setOpenLogoutConfirm] = useState(false);
 
@@ -19,7 +34,7 @@ export default function ProfileRe() {
     <ProfileWrapper>
       {isMobile ? (
         <div className="profile-wrap_mobile">
-          <Profile did={sessId} />
+          <ProfileInfo />
           <ReviewsMobile />
           <LogoutButton
             className="logout-button"
@@ -31,7 +46,7 @@ export default function ProfileRe() {
       ) : (
         <>
           <div className="profile-wrap">
-            <Profile did={sessId} />
+            <ProfileInfo />
             <LogoutButton
               className="logout-button"
               onClick={() => {

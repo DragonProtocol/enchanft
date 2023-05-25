@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 import { toast } from 'react-toastify';
 import { useEffect, useState } from 'react';
-import { UserAvatar, Username } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
+import { UserAvatar, UserName } from '@us3r-network/profile';
 import { sortPubKey } from '../../utils/solana';
 import { Copy } from '../icons/copy';
 
@@ -37,7 +36,6 @@ export default function Info({
   delWallet: (addr: string) => void;
   addWallet: (addr: string) => Promise<boolean>;
 }) {
-  const { sessId } = useUs3rProfileContext();
   const [showAddModal, setShowAddModal] = useState(false);
   const [showKarmaModal, setShowKarmaModal] = useState(false);
   const { totalScore } = useAppSelector(selectKarmaState);
@@ -61,14 +59,14 @@ export default function Info({
           >
             <Edit />
           </div>
-          <UserAvatar className="user-avatar" did={sessId} />
+          <UserAvatar className="user-avatar" />
         </div>
 
         <div className="info">
           <div className="nickname">
             <div>
               <span className="name">
-                <Username did={sessId} />
+                <UserName />
               </span>
               <Karma
                 score={`${totalScore || ''}`}

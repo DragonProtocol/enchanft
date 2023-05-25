@@ -31,7 +31,6 @@ export default function Projects() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { openProjectModal } = useProjectWebsite();
-  const { favorQueueIds, onFavor } = useProjectHandles();
   const { status, moreStatus, noMore } = useAppSelector(selectState);
   const projectExploreList = useAppSelector(selectAll);
   const [filter, setFilter] = useState(defaultProjectExploreListFilterValues);
@@ -78,8 +77,6 @@ export default function Projects() {
           >
             <ProjectExploreList
               data={projectExploreList}
-              installPendingIds={favorQueueIds}
-              onInstall={onFavor}
               onOpen={(item) => openProjectModal(item.id)}
               onItemClick={(item) => navigate(`/projects/${item.id}`)}
             />

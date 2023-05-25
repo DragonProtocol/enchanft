@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react';
 import { isMobile } from 'react-device-detect';
 import styled from 'styled-components';
-import { CommentList } from '@us3r-network/authkit';
+import { Comments } from '@us3r-network/link';
 import { ContentListItem } from '../../services/types/contents';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import { defaultFormatFromNow } from '../../utils/time';
@@ -54,11 +54,11 @@ export default function ContentShower({
           </div>
         </ContentTitle>
         <ContentBody dangerouslySetInnerHTML={{ __html: contentFix }} />
+        <br />
+        {!isMobile && data.linkStreamId && (
+          <Comments linkId={data.linkStreamId} className="comments" />
+        )}
       </div>
-      <br />
-      {!isMobile && data.threadStreamId && (
-        <CommentList threadId={data.threadStreamId} />
-      )}
     </Shower>
   );
 }
@@ -69,6 +69,9 @@ const Shower = styled.div`
 
   .content-container {
     padding: 20px;
+    .comments {
+      margin-top: 20px;
+    }
   }
 `;
 

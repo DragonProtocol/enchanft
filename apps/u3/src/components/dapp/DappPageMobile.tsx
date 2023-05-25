@@ -7,7 +7,7 @@
  */
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { ScoreMin } from '@us3r-network/authkit';
+import { ScoresAvg } from '@us3r-network/link';
 
 import { MainWrapper } from '../layout/Index';
 import Loading from '../common/loading/Loading';
@@ -35,11 +35,11 @@ export default function DappPageMobile({
     <Wrapper>
       <HeaderMobile data={data} />
       <QuotaBox>
-        <ScoreMin threadId={data.threadStreamId} />
+        <ScoresAvg linkId={data.linkStreamId} />
       </QuotaBox>
       <ScreeshotsMobile urls={data?.screenshots ?? []} />
       <IntroductionMobile text={data.description} />
-      <UserScoreMobile streamId={data.threadStreamId} />
+      <UserScoreMobile streamId={data.linkStreamId} />
       <RecommendDappsMobile
         data={recommendDapps}
         loading={recommendDappsLoading}

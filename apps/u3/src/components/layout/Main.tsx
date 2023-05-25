@@ -9,8 +9,8 @@ import { useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCallback, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
-import { WalletChainType, useUs3rProfileContext } from '@us3r-network/profile';
-import { shortPubKey } from '@us3r-network/authkit';
+import { useProfileState } from '@us3r-network/profile';
+import { useSession } from '@us3r-network/auth-with-rainbowkit';
 import { CutomRouteObject, RoutePermission, routes } from '../../route/routes';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import useU3Extension from '../../hooks/useU3Extension';
@@ -19,7 +19,6 @@ import {
   setU3ExtensionInstalled,
 } from '../../features/website/websiteSlice';
 import EventCompleteGuideModal from '../event/EventCompleteGuideModal';
-import useRoute from '../../route/useRoute';
 import useLogin from '../../hooks/useLogin';
 import NoLogin from './NoLogin';
 import usePreference from '../../hooks/usePreference';
@@ -32,19 +31,12 @@ import {
 } from '../../features/profile/karma';
 import { Atom02 } from '../icons/atom';
 import { store } from '../../store/store';
-import useUserFavorites from '../../hooks/useUserFavorites';
 
 function Main() {
   const dispatch = useAppDispatch();
-  const {
-    sessId,
-    profile,
-    connectUs3r,
-    us3rAuth,
-    us3rAuthValid,
-    updateProfile,
-  } = useUs3rProfileContext();
-  const { isLogin, login, user, isAdmin } = useLogin();
+  const session = useSession();
+  const { profile, updateProfile, profileLoading } = useProfileState();
+  const { isLogin, user, isAdmin } = useLogin();
   const { openEventCompleteGuideModal, eventCompleteGuideEndCallback } =
     useAppSelector(selectWebsite);
   const { u3ExtensionInstalled } = useU3Extension();
@@ -52,28 +44,12 @@ function Main() {
     dispatch(setU3ExtensionInstalled(u3ExtensionInstalled));
   }, [u3ExtensionInstalled]);
 
-  // const { lastRouteMeta } = useRoute();
-  // useEffect(() => {
-  //   const { permissions } = lastRouteMeta;
-  //   if (
-  //     permissions &&
-  //     permissions.includes(RoutePermission.login) &&
-  //     !isLogin
-  //   ) {
-  //     login();
-  //   }
-  // }, [lastRouteMeta, isLogin]);
   const { preferenceList } = usePreference(user?.token);
 
   useEffect(() => {
     if (!user?.token) return;
     dispatch(fetchUserKarma({ token: user?.token }));
   }, [user?.token]);
-
-  const { refreshFavorites } = useUserFavorites();
-  useEffect(() => {
-    refreshFavorites();
-  }, [refreshFavorites]);
 
   const renderElement = useCallback(
     ({ element, permissions }: CutomRouteObject) => {
@@ -115,33 +91,15 @@ function Main() {
       {!isMobile && (
         <OnboardModal
           show={
-            (!profile?.tags || profile.tags.length === 0) &&
-            sessId &&
-            us3rAuthValid
+            !!session?.id &&
+            !profileLoading &&
+            !!profile &&
+            (!profile?.tags || profile.tags.length === 0)
           }
           lists={preferenceList}
           finishAction={async (data) => {
-            const exist = profile || {};
-            const currWallet = sessId.split(':').pop() || '';
-            let wallets = [
-              {
-                address: currWallet,
-                primary: true,
-                chain: (sessId.startsWith('did:pkh:eip')
-                  ? 'EVM'
-                  : 'SOLANA') as WalletChainType,
-              },
-            ];
-            if (exist?.wallets && exist?.wallets.length > 0) {
-              wallets = exist?.wallets;
-            }
             await updateProfile({
-              ...exist,
-              name: exist?.name || shortPubKey(sessId),
               tags: data.tags,
-              avatar: exist?.avatar || '',
-              bio: exist?.bio || 'bio',
-              wallets,
             });
           }}
         />

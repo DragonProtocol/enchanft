@@ -7,10 +7,10 @@
  */
 import React, { useCallback } from 'react';
 import { debounce } from 'lodash';
-import styled, { StyledComponentPropsWithRef } from 'styled-components';
+import styled, { StyledComponentPropsWithRef, css } from 'styled-components';
 import ClearSvg from '../icons/svgs/close.svg';
 
-const Input = styled.input`
+export const InputBaseCss = css`
   width: 100%;
   height: 40px;
   font-weight: 400;
@@ -43,6 +43,9 @@ const Input = styled.input`
     background-size: cover;
     background-repeat: no-repeat;
   }
+`;
+const Input = styled.input`
+  ${InputBaseCss}
 `;
 
 export interface Props extends StyledComponentPropsWithRef<'input'> {

@@ -1,11 +1,17 @@
 import styled from 'styled-components';
-import SaveExploreListItem, {
-  SaveExploreListItemData,
-} from './SaveExploreListItem';
 import AnimatedListItem, {
   useAnimatedListTransition,
 } from '../animation/AnimatedListItem';
 import CardBase from '../common/card/CardBase';
+import SaveExploreListItem from './SaveExploreListItem';
+
+export type SaveExploreListItemData = {
+  id: string;
+  url?: string;
+  title?: string;
+  logo?: string;
+  createAt?: string;
+};
 
 export type SaveExploreListProps = {
   data: SaveExploreListItemData[];

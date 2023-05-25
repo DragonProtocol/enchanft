@@ -49,10 +49,6 @@ export type ContentsPageProps = {
   hasNewest?: boolean;
   getMore?: () => void;
   // Mutations
-  votePendingIds?: (string | number)[];
-  onVote?: (data: ContentListItem) => Promise<void>;
-  favorPendingIds?: (string | number)[];
-  onFavor?: (data: ContentListItem) => Promise<void>;
   hiddenPendingIds?: (string | number)[];
   onHiddenAction?: (data: ContentListItem) => void;
   onHiddenUndoAction?: (data: ContentListItem) => void;
@@ -100,16 +96,8 @@ function Contents() {
     })();
   }, []);
 
-  const {
-    votePendingIds,
-    onVote,
-    favorPendingIds,
-    onFavor,
-    hiddenPendingIds,
-    onHiddenAction,
-    onHiddenUndoAction,
-    onShare,
-  } = useContentHandles(contents, setContents);
+  const { hiddenPendingIds, onHiddenAction, onHiddenUndoAction, onShare } =
+    useContentHandles(contents, setContents);
 
   const { onAdminScore, onAdminDelete } = useAdminContentHandles(
     contents,
@@ -194,22 +182,7 @@ function Contents() {
       loadingMore={loadingMore}
       hasMore={hasMore}
       contents={contents}
-      currentSearchParams={currentSearchParams}
-      searchParamsChange={searchParamsChange}
-      hasNewest={hasNewest}
       getMore={getMore}
-      // Mutations
-      votePendingIds={votePendingIds}
-      onVote={onVote}
-      favorPendingIds={favorPendingIds}
-      onFavor={onFavor}
-      hiddenPendingIds={hiddenPendingIds}
-      onHiddenAction={onHiddenAction}
-      onHiddenUndoAction={onHiddenUndoAction}
-      onAdminScore={onAdminScore}
-      onAdminDelete={onAdminDelete}
-      // Others
-      onShare={onShare}
     />
   ) : (
     <ContentsPage
@@ -223,10 +196,6 @@ function Contents() {
       hasNewest={hasNewest}
       getMore={getMore}
       // Mutations
-      votePendingIds={votePendingIds}
-      onVote={onVote}
-      favorPendingIds={favorPendingIds}
-      onFavor={onFavor}
       hiddenPendingIds={hiddenPendingIds}
       onHiddenAction={onHiddenAction}
       onHiddenUndoAction={onHiddenUndoAction}

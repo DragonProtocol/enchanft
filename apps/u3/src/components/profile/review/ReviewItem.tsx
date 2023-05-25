@@ -1,35 +1,36 @@
-import { Score } from '@us3r-network/thread';
+import { Score } from '@us3r-network/link';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { UserAvatar, Username } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
+import { UserAvatar, UserName } from '@us3r-network/profile';
 import CardBase from '../../common/card/CardBase';
 import { ReactComponent as CheckVerifiedSvg } from '../../common/icons/svgs/check-verified.svg';
 import EllipsisText from '../../common/text/EllipsisText';
 import ScoreRateValue from '../../common/score/ScoreRateValue';
 import ImgDefault from '../../common/ImgDefault';
+import { DappStatus } from '../../../services/types/dapp';
 
-export type ReviewItemData = Score & {
-  threadLogo?: string;
-  threadTitle?: string;
-  isVerified?: boolean;
+export type ReviewItemData = Omit<Score, 'link'> & {
+  link?: {
+    name?: string;
+    image?: string;
+    status?: string;
+  };
 };
 
 type ReviewItemProps = StyledComponentPropsWithRef<'div'> & {
   data: ReviewItemData;
 };
 export default function ReviewItem({ data }: ReviewItemProps) {
-  const { sessId } = useUs3rProfileContext();
   return (
     <Wrapper>
       <Header>
-        <Logo src={data.threadLogo} />
-        <Title>{data.threadTitle}</Title>
-        {data.isVerified && <CheckVerifiedSvg />}
+        <Logo src={data?.link?.image} />
+        <Title>{data?.link?.name}</Title>
+        {data?.link?.status === DappStatus.VERIFIED && <CheckVerifiedSvg />}
       </Header>
       <Divider className="divider" />
       <ScoreRow>
-        <Avatar did={sessId} className="avatar-box" />
-        <Name did={sessId} className="name-box" />
+        <Avatar className="avatar-box" />
+        <Name className="name-box" />
         <ScoreValue value={data.value} className="score-box" />
       </ScoreRow>
       <Text className="text-box">{data.text}</Text>
@@ -81,7 +82,7 @@ const Avatar = styled(UserAvatar)`
   width: 48px;
   height: 48px;
 `;
-const Name = styled(Username)`
+const Name = styled(UserName)`
   font-weight: 500;
   font-size: 16px;
   line-height: 19px;

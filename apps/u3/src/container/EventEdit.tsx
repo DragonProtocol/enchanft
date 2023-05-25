@@ -13,7 +13,10 @@ import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import EventForm from '../components/event/EventForm';
 import { fetchOneEvent } from '../services/api/event';
-import { CreateEventData } from '../services/types/event';
+import {
+  CreateEventData,
+  EventExploreListItemResponse,
+} from '../services/types/event';
 import useAdminEventHandles from '../hooks/useAdminEventHandles';
 import { MainWrapper } from '../components/layout/Index';
 import Loading from '../components/common/loading/Loading';
@@ -22,8 +25,28 @@ import { Platform } from '../services/types/common';
 export default function EventEdit() {
   const { id } = useParams();
   const [fetchEventPending, setFetchEventPending] = useState(false);
-  const [initialValues, setInitialValues] = useState<CreateEventData | null>(
-    null
+  const [event, setEvent] = useState<EventExploreListItemResponse | null>(null);
+
+  const initialValues = useMemo<CreateEventData | null>(
+    () =>
+      event
+        ? {
+            name: event.name || '',
+            description: event.description || '',
+            image: event.image || '',
+            platform: (event.platform.name || '') as unknown as Platform,
+            project: (event.project.id || '') as unknown as number,
+            link: event.link || '',
+            chain: event.chain,
+            reward: event.reward,
+            startTime: event.startTime,
+            endTime: event.endTime,
+            supportIframe: event.supportIframe,
+            editorScore: event.editorScore,
+            types: event.types,
+          }
+        : null,
+    [event]
   );
   useEffect(() => {
     if (id) {
@@ -31,21 +54,7 @@ export default function EventEdit() {
       fetchOneEvent(id)
         .then(({ data: { data, code, msg } }) => {
           if (code === 0) {
-            setInitialValues({
-              name: data.name || '',
-              description: data.description || '',
-              image: data.image || '',
-              platform: (data.platform.name || '') as unknown as Platform,
-              project: (data.project.id || '') as unknown as number,
-              link: data.link || '',
-              chain: data.chain,
-              reward: data.reward,
-              startTime: data.startTime,
-              endTime: data.endTime,
-              supportIframe: data.supportIframe,
-              editorScore: data.editorScore,
-              types: data.types,
-            });
+            setEvent(data);
           } else {
             toast.error(msg);
           }
@@ -74,7 +83,7 @@ export default function EventEdit() {
     <EventForm
       initialValues={initialValues}
       loading={adminEditPending}
-      onSubmit={(values) => onAdminEdit(id, values)}
+      onSubmit={(values) => onAdminEdit(id, values, event?.linkStreamId)}
       ref={formHandleRef}
     />
   ) : (

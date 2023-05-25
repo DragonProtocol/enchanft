@@ -6,31 +6,31 @@
  * @Description: file description
  */
 import styled from 'styled-components';
-import { ContentListItem } from '../../services/types/contents';
 import AnimatedListItem, {
   useAnimatedListTransition,
 } from '../animation/AnimatedListItem';
 import ListItem, { ListItemHidden } from './ListItem';
 
+export type ContentExploreListItemData = {
+  id: string | number;
+  uuid?: string;
+  value?: string;
+  link?: string;
+  createdAt?: number;
+  title?: string;
+  hidden?: boolean;
+  linkStreamId?: string;
+};
+
 export type ContentListProps = {
-  data: ContentListItem[];
+  data: ContentExploreListItemData[];
   activeId: string | number;
-  loadingFavorIds?: Array<string | number>;
-  onVote?: (item: ContentListItem) => void;
-  onFavor?: (item: ContentListItem) => void;
-  onShare?: (item: ContentListItem) => void;
-  onHidden?: (item: ContentListItem) => void;
-  onHiddenUndo?: (item: ContentListItem) => void;
-  onItemClick?: (item: ContentListItem) => void;
+  onHiddenUndo?: (item: ContentExploreListItemData) => void;
+  onItemClick?: (item: ContentExploreListItemData) => void;
 };
 export default function ContentList({
   data,
   activeId,
-  loadingFavorIds = [],
-  onVote,
-  onFavor,
-  onShare,
-  onHidden,
   onHiddenUndo,
   onItemClick,
 }: ContentListProps) {
@@ -50,12 +50,7 @@ export default function ContentList({
               <ListItem
                 data={item}
                 isActive={String(item.id || item.uuid) === String(activeId)}
-                favorPendingIds={loadingFavorIds}
                 clickAction={() => onItemClick && onItemClick(item)}
-                voteAction={() => onVote && onVote(item)}
-                favorsAction={() => onFavor && onFavor(item)}
-                shareAction={() => onShare && onShare(item)}
-                hiddenAction={() => onHidden && onHidden(item)}
               />
             )}
           </AnimatedListItem>

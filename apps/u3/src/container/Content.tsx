@@ -10,9 +10,7 @@ import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { getContent } from '../services/api/contents';
 import { ContentListItem } from '../services/types/contents';
-import useAdminContentHandles from '../hooks/useAdminContentHandles';
 import ContentPageMobile from '../components/contents/ContentPageMobile';
-import useContentHandles from '../hooks/useContentHandles';
 
 export type ContentPageProps = {
   // Queries
@@ -37,19 +35,6 @@ export default function Content() {
   const { id } = useParams();
   const [fetchContentPending, setFetchContentPending] = useState(false);
   const [data, setData] = useState<ContentListItem | null>(null);
-  const {
-    votePendingIds,
-    onVote,
-    favorPendingIds,
-    onFavor,
-    hiddenPendingIds,
-    onHiddenAction,
-    onHiddenUndoAction,
-    onHidden,
-    onShare,
-    updateOne,
-    deleteOne,
-  } = useContentHandles();
   useEffect(() => {
     if (id) {
       setFetchContentPending(true);
@@ -69,29 +54,7 @@ export default function Content() {
         });
     }
   }, [id]);
-
-  const handleVote = async () => {
-    if (data.upVoted) return;
-    await onVote(data);
-    setData({ ...data, upVoteNum: data.upVoteNum + 1, upVoted: true });
-  };
-  const handleFavor = async () => {
-    await onFavor(data);
-    setData({
-      ...data,
-      favored: !data.favored,
-      favorNum: data.favored ? data.favorNum - 1 : data.favorNum + 1,
-    });
-  };
   return (
-    <ContentPageMobile
-      id={id}
-      loading={fetchContentPending}
-      data={data}
-      votePendingIds={votePendingIds}
-      onVote={handleVote}
-      favorPendingIds={favorPendingIds}
-      onFavor={handleFavor}
-    />
+    <ContentPageMobile id={id} loading={fetchContentPending} data={data} />
   );
 }

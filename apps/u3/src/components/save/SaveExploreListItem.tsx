@@ -1,13 +1,9 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { Thread } from '@us3r-network/thread';
 import { defaultFormatFromNow } from '../../utils/time';
 import EllipsisText from '../common/text/EllipsisText';
 import LinkBox from '../contents/LinkBox';
+import type { SaveExploreListItemData } from './SaveExploreList';
 
-export type SaveExploreListItemData = Thread & {
-  title?: string;
-  logo?: string;
-};
 export type SaveExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   data: SaveExploreListItemData;
 };
@@ -23,7 +19,7 @@ export default function SaveExploreListItem({
           <TitleText>{data.title}</TitleText>
 
           <TimeText className="timeText">
-            {defaultFormatFromNow(data.date)}
+            {defaultFormatFromNow(data.createAt)}
           </TimeText>
         </TopBox>
         <BottomBox className="bottomBox">
@@ -41,9 +37,7 @@ const Wrapper = styled.div`
   box-sizing: border-box;
   cursor: pointer;
   &:hover {
-    & > * {
-      transform: scale(1.05);
-    }
+    background: rgba(20, 23, 26, 0.3);
   }
 `;
 const ListItemInner = styled.div`

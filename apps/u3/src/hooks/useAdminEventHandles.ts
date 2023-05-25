@@ -20,10 +20,14 @@ import {
 } from '../features/event/eventExploreList';
 import { EVENT_ADMIN_PLUS_SCORE_STEP } from '../utils/event';
 import { messages } from '../utils/message';
+import useLinkSubmit from './useLinkSubmit';
+import useConfigsPlatforms from './useConfigsPlatforms';
 
 const cacheEventAdminThumbUpPendingIds = new Set();
 const cacheEventAdminDeletePendingIds = new Set();
 export default () => {
+  const { eventPlatforms } = useConfigsPlatforms();
+  const { updateEventLinkData } = useLinkSubmit();
   const dispatch = useAppDispatch();
   // thumbUp
   const [adminThumbUpPendingIds, setAdminThumbUpPendingIds] = useState([
@@ -90,7 +94,11 @@ export default () => {
   // edit
   const [adminEditPending, setAdminEditPending] = useState(false);
   const onAdminEdit = useCallback(
-    async (id: string | number, data: CreateEventData) => {
+    async (
+      id: string | number,
+      data: CreateEventData,
+      linkStreamId?: string
+    ) => {
       if (adminEditPending) return;
       try {
         setAdminEditPending(true);
@@ -98,6 +106,24 @@ export default () => {
         const { code, msg } = resp.data;
         if (code === 0) {
           toast.success(messages.event.admin_update);
+          if (linkStreamId) {
+            const respData = resp.data.data;
+            let platform = {};
+            if (respData?.platform) {
+              platform = respData?.platform;
+            } else {
+              const findPlatform = eventPlatforms.find(
+                (item) => item.platform === data.platform
+              );
+              platform = findPlatform
+                ? {
+                    name: findPlatform.platform,
+                    logo: findPlatform.platformLogo,
+                  }
+                : {};
+            }
+            updateEventLinkData(linkStreamId, { ...data, platform });
+          }
         } else {
           toast.error(msg || messages.common.error);
         }
@@ -107,7 +133,7 @@ export default () => {
         setAdminEditPending(false);
       }
     },
-    [adminDeletePendingIds]
+    [adminDeletePendingIds, eventPlatforms, updateEventLinkData]
   );
 
   return {

@@ -5,16 +5,13 @@
  * @LastEditTime: 2023-03-02 12:08:41
  * @Description: file description
  */
-import { useEffect, useCallback, useState } from 'react';
 import styled from 'styled-components';
 
-import { ScoreBox, ReviewScoreCardList } from '@us3r-network/authkit';
+import { ScoreReviews } from '@us3r-network/link';
 
 import Card, { CardTitle } from './Card';
-import ComingSoonImgUrl from './imgs/user_score.png';
 import { SectionTitle } from './SectionTitle';
 
-// type Props = StyledComponentPropsWithRef<'div'>;
 export default function UserScore({
   streamId,
   ...otherProps
@@ -24,18 +21,16 @@ export default function UserScore({
   return (
     <UserScoreWrapper {...otherProps}>
       <CardTitle>User Score</CardTitle>
-      <ScoreBox threadId={streamId} />
-      {/* <ComingSoonImg src={ComingSoonImgUrl} /> */}
+      <ScoreReviews linkId={streamId} className="score-reviews" />
     </UserScoreWrapper>
   );
 }
 
 const UserScoreWrapper = styled(Card)`
   width: 100%;
-`;
-const ComingSoonImg = styled.img`
-  width: 100%;
-  margin-top: 20px;
+  .score-reviews {
+    margin-top: 20px;
+  }
 `;
 
 export function UserScoreMobile({
@@ -47,9 +42,7 @@ export function UserScoreMobile({
   return (
     <UserScoreWrapperMobile {...otherProps}>
       <SectionTitle>Review</SectionTitle>
-      {/* <ComingSoonImg src={ComingSoonImgUrl} /> */}
-      {/* <ScoreBox threadId={streamId} /> */}
-      <ReviewScoreCardListMobile threadId={streamId} />
+      <ReviewScoreCardListMobile linkId={streamId} />
     </UserScoreWrapperMobile>
   );
 }
@@ -57,7 +50,7 @@ export function UserScoreMobile({
 const UserScoreWrapperMobile = styled.div`
   width: 100%;
 `;
-const ReviewScoreCardListMobile = styled(ReviewScoreCardList)`
+const ReviewScoreCardListMobile = styled(ScoreReviews)`
   margin-top: 10px;
   & > div {
     padding: 10px;

@@ -18,7 +18,7 @@ import TimeAgo from 'javascript-time-ago';
 import en from 'javascript-time-ago/locale/en';
 import { toast } from 'react-toastify';
 import dayjs from 'dayjs';
-import { useUs3rProfileContext } from '@us3r-network/profile';
+import { useProfileState } from '@us3r-network/profile';
 
 import {
   getFeed,
@@ -474,7 +474,7 @@ export default function Rss3Content({ address, empty }: Rss3ContentProps) {
     followingMap,
   } = useAppSelector(selectFrensHandlesState);
   const feedRef = useRef(null);
-  const { getProfileWithDid, sessId, profile } = useUs3rProfileContext()!;
+  const { getProfileWithDid, profile } = useProfileState()!;
   console.log(profile, 'profile');
 
   const loading = useMemo(

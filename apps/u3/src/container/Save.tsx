@@ -1,15 +1,22 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import styled from 'styled-components';
-import { Thread, useUs3rThreadContext } from '@us3r-network/thread';
+import { usePersonalFavors } from '@us3r-network/link';
 import { isMobile } from 'react-device-detect';
 
 import { MainWrapper } from '../components/layout/Index';
 import Loading from '../components/common/loading/Loading';
 import PageTitle from '../components/common/PageTitle';
-import { contentParse } from '../services/api/contents';
 import SaveExploreList from '../components/save/SaveExploreList';
 import SaveExploreListMobile from '../components/save/SaveExploreListMobile';
-import { getContentPlatformLogoWithJsonValue } from '../utils/content';
+import {
+  getContentLinkDataWithJsonValue,
+  getContentPlatformLogoWithJsonValue,
+} from '../utils/content';
+import { getDappLinkDataWithJsonValue } from '../utils/dapp';
+import { getEventLinkDataWithJsonValue } from '../utils/event';
+import { DappLinkData } from '../services/types/dapp';
+import { ContentLinkData } from '../services/types/contents';
+import { EventLinkData } from '../services/types/event';
 
 function EmptyList() {
   return (
@@ -43,61 +50,45 @@ const EmptyDesc = styled.span`
 `;
 
 export default function Save() {
-  const { relationsComposeClient, getPersonalFavorList } =
-    useUs3rThreadContext();
-  const [list, setList] = useState<
-    Array<
-      Thread & {
-        title?: string;
-        logo?: string;
-      }
-    >
-  >([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const isEmpty = useMemo(() => list.length === 0, [list]);
-
-  useEffect(() => {
-    if (relationsComposeClient.context.isAuthenticated()) {
-      setIsLoading(true);
-      getPersonalFavorList({ first: 1000 })
-        .then((d) => {
-          // 先显示url列表
-          const threads = d?.edges.map((item) => item.node.thread) || [];
-          setList(threads);
-
-          // 再异步获取url对应的title
-          for (let i = 0; i < threads.length; i++) {
-            const thread = threads[i];
-            contentParse(thread.url).then(({ data }) => {
-              setList((prev) => {
-                const index = prev.findIndex((item) => item.id === thread.id);
-                if (index === -1) {
-                  return prev;
-                }
-                prev[index] = {
-                  ...thread,
-                  title: data?.data?.title,
-                  logo: getContentPlatformLogoWithJsonValue(
-                    data?.data?.content
-                  ),
-                };
-                return [...prev];
-              });
-            });
-          }
-        })
-        .catch(console.error)
-        .finally(() => {
-          setIsLoading(false);
-        });
+  const { isFetching, personalFavors } = usePersonalFavors();
+  const links = personalFavors
+    .map((item) => item?.link)
+    .filter((link) => !!link);
+  const list = links.map((link) => {
+    let linkData;
+    let title = '';
+    let logo = '';
+    switch (link.type) {
+      case 'dapp':
+        linkData = getDappLinkDataWithJsonValue(link?.data);
+        title = linkData?.name || link.title;
+        logo = linkData?.image || '';
+        break;
+      case 'content':
+        linkData = getContentLinkDataWithJsonValue(link?.data);
+        title = linkData?.title || link.title;
+        logo =
+          getContentPlatformLogoWithJsonValue(linkData?.value) ||
+          linkData?.platform?.logo ||
+          '';
+        break;
+      case 'event':
+        linkData = getEventLinkDataWithJsonValue(link?.data);
+        title = linkData?.name || link.title;
+        logo = linkData?.image || linkData?.platform?.logo || '';
+        break;
+      default:
+        break;
     }
-  }, [relationsComposeClient.context, getPersonalFavorList]);
+    return { ...link, id: link.id, title, logo };
+  });
+  const isEmpty = useMemo(() => list.length === 0, [list]);
 
   return (
     <Wrapper>
       {isMobile ? null : <PageTitle>Saves</PageTitle>}
       <ContentWrapper>
-        {isLoading ? (
+        {isFetching ? (
           <Loading />
         ) : isEmpty ? (
           <EmptyList />

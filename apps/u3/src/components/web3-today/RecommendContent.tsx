@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { VoteBtn } from '@us3r-network/authkit';
 import { ContentListItem } from '../../services/types/contents';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import {
@@ -15,6 +14,7 @@ import LinkBox from '../contents/LinkBox';
 
 import Title from './Title';
 import LinkSvgUrl from '../common/icons/svgs/link.svg';
+import { VoteTextButtonStyled } from '../common/VoteButtonStyled';
 
 export default function RecommendContent({
   data,
@@ -56,7 +56,7 @@ const CardsLayout = styled(CardBase)`
   grid-auto-rows: auto;
 `;
 function Card({
-  data: { title, link, tags, recReason, value, threadStreamId },
+  data: { title, link, tags, recReason, value, linkStreamId },
   clickAction,
 }: {
   data: {
@@ -65,7 +65,7 @@ function Card({
     tags: string[];
     recReason?: string;
     value?: string;
-    threadStreamId?: string;
+    linkStreamId?: string;
   };
   clickAction: () => void;
 }) {
@@ -96,7 +96,9 @@ function Card({
           <BottomRow>
             {tags?.length > 0 && <Badge text={tags[0]} />}
             <ContentVote>
-              {threadStreamId && <VoteBtn threadId={threadStreamId} />}
+              {linkStreamId && (
+                <VoteTextButtonStyled linkId={linkStreamId} isDisabled />
+              )}
             </ContentVote>
             {/* <BottomRowLine /> */}
             {/* <ContentLink text={link} /> */}

@@ -59,14 +59,12 @@ export type EventExploreListItemResponse = {
     logo: string;
   };
   supportIframe: boolean;
-  favored?: boolean;
-  completed?: boolean;
   uuid?: string;
   isForU?: boolean;
   editorScore?: number;
   types: string[];
   recReason?: string;
-  threadStreamId?: string;
+  linkStreamId?: string;
 };
 export type FetchOneEventResponse = ApiResp<EventExploreListItemResponse>;
 export type EventExploreListResponse = ApiResp<
@@ -92,3 +90,21 @@ export type CreateEventData = {
   types: string[];
 };
 export type CreateEventResponse = ApiResp<EventExploreListItemResponse>;
+
+export type EventLinkData = {
+  name?: string;
+  description?: string;
+  image?: string;
+  platform?: {
+    name?: string;
+    logo?: string;
+  };
+  chain?: ChainType;
+  reward?: Reward;
+
+  startTime?: number;
+  endTime?: number;
+
+  supportIframe?: boolean;
+  types?: string[];
+};

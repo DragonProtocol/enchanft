@@ -42,9 +42,6 @@ export default function ContentsPage({
   hasNewest,
   getMore,
   // Mutations
-  onVote,
-  favorPendingIds,
-  onFavor,
   onHiddenAction,
   onHiddenUndoAction,
   onAdminScore,
@@ -189,11 +186,6 @@ export default function ContentsPage({
                 <ContentList
                   data={contents}
                   activeId={activeId}
-                  loadingFavorIds={favorPendingIds}
-                  onVote={onVote}
-                  onFavor={onFavor}
-                  onShare={onShare}
-                  onHidden={onHiddenAction}
                   onHiddenUndo={onHiddenUndoAction}
                   onItemClick={(item) => {
                     navigate(
@@ -253,7 +245,6 @@ export default function ContentsPage({
 
       <GridModal
         show={gridModalShow}
-        favorPendingIds={favorPendingIds}
         closeModal={() => {
           resetRouthPath();
         }}
@@ -269,15 +260,6 @@ export default function ContentsPage({
         shareAction={() => {
           if (!selectContent) return;
           onShare(selectContent);
-        }}
-        voteAction={async () => {
-          if (!selectContent) return;
-          if (selectContent.upVoted) return;
-          await onVote(selectContent);
-        }}
-        favorsAction={async () => {
-          if (!selectContent) return;
-          await onFavor(selectContent);
         }}
         hiddenAction={() => {
           if (!selectContent) return;

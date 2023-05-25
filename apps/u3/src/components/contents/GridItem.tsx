@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
-import { VoteBtn } from '@us3r-network/authkit';
 import { MEDIA_BREAK_POINTS } from '../../constants';
 import { defaultFormatFromNow } from '../../utils/time';
 import LinkBox from './LinkBox';
@@ -9,6 +8,7 @@ import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import { ContentListItem } from '../../services/types/contents';
 
 import './griditem.css';
+import { VoteTextButtonStyled } from '../common/VoteButtonStyled';
 
 export function GridItemHidden({
   undoAction,
@@ -85,13 +85,14 @@ export default function GridItem({
           <div className="date">{defaultFormatFromNow(createdAt)}</div>
         </div>
         <div className="authkit-grid">
-          {data.threadStreamId && <VoteBtn threadId={data.threadStreamId} />}
+          {data.linkStreamId && (
+            <VoteTextButtonStyled linkId={data.linkStreamId} isDisabled />
+          )}
         </div>
       </div>
     </Box>
   );
 }
-
 const Box = styled.div<{ isActive?: boolean; width?: string }>`
   .tint {
     padding: 20px;
