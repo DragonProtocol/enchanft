@@ -1,4 +1,5 @@
 import { css } from 'styled-components';
+import { isMobile } from 'react-device-detect';
 import { ButtonPrimaryLineCss } from '../../../components/common/button/ButtonBase';
 
 export default css`
@@ -30,6 +31,7 @@ export default css`
       display: grid;
       grid-gap: 20px;
       grid-template-columns: repeat(auto-fit, minmax(282px, 1fr));
+      ${isMobile && 'grid-template-columns: 1fr;'}
 
       [data-state-element='Item'] {
         display: flex;
@@ -41,6 +43,13 @@ export default css`
         background: #14171a;
         border-radius: 10px;
         color: #718096;
+
+        ${isMobile &&
+        `
+          background: #1B1E23;
+          border: 1px solid #39424C;
+          border-radius: 10px;
+        `}
       }
       [data-layout-element='ScoreValueWrap'] {
         width: 100%;
@@ -72,7 +81,14 @@ export default css`
       [data-layout-element='UserInfo'] {
         display: flex;
         align-items: center;
+        justify-content: flex-start;
         gap: 10px;
+        ${isMobile &&
+        `
+          width: 100%;
+          border-top: 1px solid #39424C;
+          padding-top: 10px;
+        `}
         [data-us3r-component='UserAvatar'] {
           width: 48px;
           height: 48px;

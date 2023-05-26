@@ -18,9 +18,11 @@ export default function SaveExploreListItem({
         <TopBox>
           <TitleText>{data.title}</TitleText>
 
-          <TimeText className="timeText">
-            {defaultFormatFromNow(data.createAt)}
-          </TimeText>
+          {!!data?.createAt && (
+            <TimeText className="timeText">
+              {defaultFormatFromNow(data.createAt)}
+            </TimeText>
+          )}
         </TopBox>
         <BottomBox className="bottomBox">
           <IconLink text={data.url} logo={data?.logo} className="iconLink" />
