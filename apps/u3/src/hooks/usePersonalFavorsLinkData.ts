@@ -6,6 +6,7 @@ import { getEventLinkDataWithJsonValue } from '../utils/event';
 
 export default () => {
   const { isFetching, personalFavors } = usePersonalFavors();
+
   const personalDapps = useMemo(
     () =>
       personalFavors
@@ -33,7 +34,7 @@ export default () => {
           return {
             ...linkData,
             id: linkId,
-            url: item?.link?.url,
+            link: item?.link?.url,
             linkStreamId: linkId,
           };
         }),
@@ -50,7 +51,7 @@ export default () => {
           return {
             ...linkData,
             id: linkId,
-            url: item?.link?.url,
+            link: item?.link?.url,
             linkStreamId: linkId,
           };
         }),
