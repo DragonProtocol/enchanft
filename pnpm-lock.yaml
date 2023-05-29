@@ -599,7 +599,7 @@ importers:
       '@types/three': ^0.146.0
       '@us3r-network/auth-with-rainbowkit': ^0.1.4
       '@us3r-network/link': 0.1.15
-      '@us3r-network/profile': ^0.4.10
+      '@us3r-network/profile': ^0.4.11
       antd: ^5.0.7
       assert: ^2.0.0
       axios: ^0.27.2
@@ -690,8 +690,8 @@ importers:
       '@types/styled-components': registry.npmjs.org/@types/styled-components/5.1.26
       '@types/three': registry.npmjs.org/@types/three/0.146.0
       '@us3r-network/auth-with-rainbowkit': 0.1.4_6h5siosmojpqnyhgjxfmfqmvum
-      '@us3r-network/link': 0.1.15_phoyiyxvnr6ac52hzg63igjtfi
-      '@us3r-network/profile': 0.4.10_apfkgkwopcsyh4fp7ywfdbez5u
+      '@us3r-network/link': 0.1.15_5eylrtox2wgnfp7d3ma4voe5oa
+      '@us3r-network/profile': 0.4.11_apfkgkwopcsyh4fp7ywfdbez5u
       antd: registry.npmjs.org/antd/5.5.1_biqbaboplfbrettd7655fr4n2y
       assert: registry.npmjs.org/assert/2.0.0
       axios: registry.npmjs.org/axios/0.27.2
@@ -1209,7 +1209,7 @@ packages:
       - encoding
     dev: false
 
-  /@us3r-network/link/0.1.15_phoyiyxvnr6ac52hzg63igjtfi:
+  /@us3r-network/link/0.1.15_5eylrtox2wgnfp7d3ma4voe5oa:
     resolution: {integrity: sha512-8zAG3HHU7wjnm+sEDTYH6kYj3UQgJVnul1hpgUG7lDGitVEjRNr7d2oI3azTtiuduaavovbLkLfOXAHAGHRHLw==}
     peerDependencies:
       '@us3r-network/auth-with-rainbowkit': ^0.1.4
@@ -1221,7 +1221,7 @@ packages:
       '@material-design-icons/svg': registry.npmjs.org/@material-design-icons/svg/0.14.8
       '@us3r-network/auth-with-rainbowkit': 0.1.4_6h5siosmojpqnyhgjxfmfqmvum
       '@us3r-network/data-model': 0.1.0
-      '@us3r-network/profile': 0.4.10_apfkgkwopcsyh4fp7ywfdbez5u
+      '@us3r-network/profile': 0.4.11_apfkgkwopcsyh4fp7ywfdbez5u
       dayjs: registry.npmjs.org/dayjs/2.0.0-alpha.4
       did-session: registry.npmjs.org/did-session/2.0.1
       react: registry.npmjs.org/react/18.2.0
@@ -1235,8 +1235,8 @@ packages:
       - react-dom
     dev: false
 
-  /@us3r-network/profile/0.4.10_apfkgkwopcsyh4fp7ywfdbez5u:
-    resolution: {integrity: sha512-I0Ogn7gKO9gXHAx39ZKrCGLxjaVfgtqTNr65cXWjPcULcfj6lvJ1QF1yAc2aYBqNuCwSqrkynzPiT/m7jIhEvw==}
+  /@us3r-network/profile/0.4.11_apfkgkwopcsyh4fp7ywfdbez5u:
+    resolution: {integrity: sha512-Ua/WPDYu+qHCKGBEUCVj5CYLKyypL/cMTzHXwoTThTumyHV0D1DQ+J3G9qDGimrtrHD4ASz+2r62d0tVTrKCrw==}
     peerDependencies:
       '@us3r-network/auth-with-rainbowkit': ^0.1.4
       react: ^18.2.0
