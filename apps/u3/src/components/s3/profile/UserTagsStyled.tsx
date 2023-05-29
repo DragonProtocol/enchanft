@@ -23,11 +23,7 @@ export default function UserTagsStyled() {
         </span>
       </div>
       <UserTags.List>
-        {(item) => (
-          <Item key={item.tag} data-state-element="Item">
-            {item.tag}
-          </Item>
-        )}
+        {(item) => <UserTags.Item key={item.tag} value={item} />}
       </UserTags.List>
       <Modal isDismissable isOpen={isOpenEdit} onOpenChange={setIsOpenEdit}>
         <Dialog>
