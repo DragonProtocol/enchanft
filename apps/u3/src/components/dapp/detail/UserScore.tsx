@@ -49,31 +49,10 @@ export function UserScoreMobile({
 
 const UserScoreWrapperMobile = styled.div`
   width: 100%;
+  [data-us3r-component='ScoreDashboard'] {
+    display: none !important;
+  }
 `;
 const ReviewScoreCardListMobile = styled(ScoreReviews)`
   margin-top: 10px;
-  & > div {
-    padding: 10px;
-    background: #1b1e23;
-    border: 1px solid #39424c;
-    border-radius: 10px;
-    & > div:last-of-type {
-      padding-top: 10px;
-      border-top: 1px solid #39424c;
-      & > div {
-        & > img {
-          width: 24px;
-          height: 24px;
-        }
-        & > div {
-          justify-content: center;
-        }
-      }
-    }
-  }
-  & > div:last-of-type {
-    padding: 0;
-    border: none;
-    background: none;
-  }
 `;
