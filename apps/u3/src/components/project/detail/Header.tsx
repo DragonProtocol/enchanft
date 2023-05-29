@@ -5,10 +5,7 @@ import {
   ProjectExploreListItemResponse,
   UniprojectStatus,
 } from '../../../services/types/project';
-import {
-  ButtonPrimary,
-  ButtonPrimaryLine,
-} from '../../common/button/ButtonBase';
+import { ButtonPrimaryLine } from '../../common/button/ButtonBase';
 import Tag from '../../common/tag/Tag';
 import ImgDefault from '../../common/ImgDefault';
 import Card from './Card';
@@ -101,26 +98,6 @@ export default function Header({
               <LinkIcon src={TelegramSvg} />
             </LinkButton>
           )}
-          {/* {isFavored ? (
-            <UnfavorButton
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onUnfavor) onUnfavor();
-              }}
-            >
-              {loadingFavor ? 'Loading ...' : 'Remove From Favorite'}
-            </UnfavorButton>
-          ) : (
-            <FavorButton
-              disabled={disabledFavor}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onFavor) onFavor();
-              }}
-            >
-              {loadingFavor ? 'Loading ...' : 'Add To Favorite'}
-            </FavorButton>
-          )} */}
         </RightButtons>
       </HeaderRight>
     </HeaderWrapper>
@@ -194,8 +171,6 @@ const LinkIcon = styled.img`
   width: 100%;
   height: 100%;
 `;
-const UnfavorButton = styled(ButtonPrimaryLine)``;
-const FavorButton = styled(ButtonPrimary)``;
 const ChainIcon = styled.img`
   width: 18px;
   height: 18px;

@@ -1,7 +1,6 @@
 import dayjs from 'dayjs';
 import styled from 'styled-components';
-import { UserAvatar } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
+import { UserAvatar } from '@us3r-network/profile';
 import Badge from '../contents/Badge';
 import { Copy } from '../icons/copy';
 import { CurrencyETH } from '../icons/currency-eth';
@@ -45,10 +44,9 @@ export function NoActivities() {
 }
 
 function ActivityItem({ id }: { id: number }) {
-  const { sessId } = useUs3rProfileContext();
   return (
     <ActivityBox className="activity">
-      <ActivityAvatar did={sessId} />
+      <ActivityAvatar />
       <div className="info">
         <div className="header">
           <div>

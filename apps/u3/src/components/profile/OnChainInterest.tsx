@@ -18,6 +18,7 @@ export default function OnChainInterest({
   data,
   wallet,
   ethBalance,
+  ...props
 }: {
   data: NFTData;
   wallet: ERC20Balances;
@@ -29,7 +30,7 @@ export default function OnChainInterest({
   const [collection, setCollection] = useState('');
 
   return (
-    <ContentBox>
+    <ContentBox {...props}>
       <div className="nft">
         <div className="title">
           <span>{`NFT(${data.result.length})`}</span>
@@ -70,7 +71,7 @@ export default function OnChainInterest({
       </div>
       <div className="wallet">
         <h2>Wallet</h2>
-        <div>
+        <div className="wallet-content-box">
           <EthTokenInfo balance={ethBalance} />
           {wallet.map((item) => {
             return (
@@ -354,6 +355,57 @@ const ContentBox = styled.div`
     > div {
       > div {
         padding: 0 20px;
+      }
+    }
+  }
+`;
+
+export const OnChainInterestMobile = styled(OnChainInterest)`
+  flex-direction: column;
+  padding-bottom: 45px;
+  gap: 10px;
+
+  .nft {
+    background: transparent;
+    width: 100%;
+    padding: 0;
+    .title {
+      & > div {
+        width: 133px;
+      }
+    }
+
+    .select-options-box {
+      width: 133px;
+      & > div {
+        padding: 10px;
+        font-size: 12px;
+      }
+    }
+
+    .data {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      & > div {
+        flex-shrink: 0;
+      }
+    }
+  }
+
+  .wallet {
+    background: transparent;
+    h2 {
+      padding-left: 0;
+    }
+    .wallet-content-box {
+      background: #1b1e23;
+      border: 1px solid #39424c;
+      border-radius: 20px;
+      & > div {
+        border-bottom: 1px solid #2a3037;
+      }
+      & > div:last-of-type {
+        border-bottom: none;
       }
     }
   }

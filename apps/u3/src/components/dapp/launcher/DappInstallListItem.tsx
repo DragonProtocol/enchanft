@@ -1,12 +1,15 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import React from 'react';
-import { DappExploreListItemResponse } from '../../../services/types/dapp';
+import { Favor } from '@us3r-network/link';
 import ImgDefault from '../../common/ImgDefault';
 import { ReactComponent as DappHandleIcon } from '../../common/icons/svgs/dots-vertical.svg';
+import { getDappLinkDataWithJsonValue } from '../../../utils/dapp';
 
-type ItemData = DappExploreListItemResponse;
 type Props = StyledComponentPropsWithRef<'div'> & {
-  data: ItemData;
+  data: {
+    image?: string;
+    name?: string;
+  };
   onOpen?: () => void;
   onOpenHandles?: () => void;
   disabled?: boolean;
@@ -24,9 +27,9 @@ export default React.forwardRef(function DappInstallListItem(
       <ItemInner>
         <ItemImg
           draggable={false}
-          src={data.image}
+          src={data?.image}
           onClick={() => !disabled && onOpen && onOpen()}
-          title={data.name}
+          title={data?.name}
         />
         <HandleIconBox
           draggable={false}

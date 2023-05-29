@@ -5,15 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import ScrollBox from '../components/common/box/ScrollBox';
 import Tab from '../components/common/tab/Tab';
 import ContentList from '../components/contents/ContentList';
-import EventExploreList from '../components/event/EventExploreList';
+import EventExploreList, {
+  EventExploreListItemData,
+} from '../components/event/EventExploreList';
 import EventLinkPreview from '../components/event/EventLinkPreview';
 import { MainWrapper } from '../components/layout/Index';
 import {
   ContentsEntityItem,
-  EventsEntityItem,
   selectState,
 } from '../features/favorite/userGroupFavorites';
-import useUserFavorites from '../hooks/useUserFavorites';
 import { useAppSelector } from '../store/hooks';
 import { AsyncRequestStatus } from '../services/types';
 import Loading from '../components/common/loading/Loading';
@@ -24,6 +24,7 @@ import { ButtonPrimaryLine } from '../components/common/button/ButtonBase';
 import ContentPreview from '../components/contents/ContentPreview';
 import PageTitle from '../components/common/PageTitle';
 import ButtonBack from '../components/common/button/ButtonBack';
+import usePersonalFavorsLinkData from '../hooks/usePersonalFavorsLinkData';
 
 function EmptyFavorites() {
   const navigate = useNavigate();
@@ -104,35 +105,31 @@ export const FavoriteSwitchOptions = [
 
 function Favorite() {
   const navigate = useNavigate();
-  const { events, contents, refreshFavorites } = useUserFavorites();
-
-  useEffect(() => {
-    refreshFavorites();
-  }, [refreshFavorites]);
+  const { personalContents, personalEvents } = usePersonalFavorsLinkData();
 
   const [showContentList, setShowContentList] = useState<ContentListItem[]>([]);
   useEffect(() => {
-    setShowContentList(contents);
-  }, [contents]);
-  const {
-    onVote: onContentVote,
-    onFavor: onContentFavor,
-    onShare: onContentShare,
-    onHiddenAction: onContentHiddenAction,
-    onHiddenUndoAction: onContentHiddenUndoAction,
-  } = useContentHandles(showContentList, setShowContentList);
+    setShowContentList(personalContents as unknown as ContentListItem[]);
+  }, [personalContents]);
+  const { onHiddenUndoAction: onContentHiddenUndoAction } = useContentHandles(
+    showContentList,
+    setShowContentList
+  );
   const { status } = useAppSelector(selectState);
   const isLoading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
     [status]
   );
-  const isEmptyEvents = useMemo(() => !events.length, [events]);
-  const isEmptyContents = useMemo(() => !contents.length, [contents]);
+  const isEmptyEvents = useMemo(() => !personalEvents.length, [personalEvents]);
+  const isEmptyContents = useMemo(
+    () => !personalContents.length,
+    [personalContents]
+  );
   const isEmpty = useMemo(
     () => isEmptyEvents && isEmptyContents,
     [isEmptyEvents, isEmptyContents]
   );
-  const [event, setEvent] = useState<EventsEntityItem | null>(null);
+  const [event, setEvent] = useState<EventExploreListItemData | null>(null);
   const [content, setContent] = useState<ContentsEntityItem | null>(null);
   const [switchValue, setSwitchValue] = useState<FavoriteSwitchValue>(
     FavoriteSwitchValue.content
@@ -168,7 +165,9 @@ function Favorite() {
                     ) : (
                       <FavoritesList>
                         <EventExploreList
-                          data={events}
+                          data={
+                            personalEvents as unknown as EventExploreListItemData[]
+                          }
                           activeId={event?.id || 0}
                           onItemClick={setEvent}
                         />
@@ -182,10 +181,6 @@ function Favorite() {
                         <ContentList
                           data={showContentList}
                           activeId={content?.id}
-                          onVote={onContentVote}
-                          onFavor={onContentFavor}
-                          onShare={onContentShare}
-                          onHidden={onContentHiddenAction}
                           onHiddenUndo={onContentHiddenUndoAction}
                           onItemClick={(item) =>
                             setContent(item as unknown as ContentListItem)

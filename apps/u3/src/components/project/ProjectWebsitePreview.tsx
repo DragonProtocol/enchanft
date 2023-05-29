@@ -15,9 +15,9 @@ import CannotOpenPlatFormLink from '../event/CannotOpenPlatFormLink';
 
 export type ProjectWebsitePreviewProps = StyledComponentPropsWithRef<'div'> & {
   data: {
-    name: string;
-    image: string;
-    url: string;
+    name?: string;
+    image?: string;
+    url?: string;
   };
 };
 export default function ProjectWebsitePreview({

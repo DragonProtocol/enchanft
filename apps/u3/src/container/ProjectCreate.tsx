@@ -16,10 +16,10 @@ import { MainWrapper } from '../components/layout/Index';
 import { createProject } from '../services/api/project';
 import { UniprojectStatus, UpdateProjectData } from '../services/types/project';
 import { messages } from '../utils/message';
-import useThreadSubmit from '../hooks/useThreadSubmit';
+import useLinkSubmit from '../hooks/useLinkSubmit';
 
 function ProjectCreate() {
-  const { createProjectThread } = useThreadSubmit();
+  const { createProjectLink } = useLinkSubmit();
   const initialValues = {
     name: '',
     description: '',
@@ -49,7 +49,7 @@ function ProjectCreate() {
         if (code === 0) {
           toast.success(messages.project.admin_submit);
           handleReset();
-          createProjectThread(data.url ?? form.url);
+          createProjectLink(data.url ?? form.url);
         } else {
           toast.error(msg || messages.common.error);
         }

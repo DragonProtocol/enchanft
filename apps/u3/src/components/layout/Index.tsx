@@ -15,12 +15,14 @@ import { useGAPageView } from '../../hooks/useGoogleAnalytics';
 import Menu from './menu';
 import DappMenu from '../dapp/launcher/DappMenu';
 import MobileHeader from './mobile/MobileHeader';
+import MobileNav from './mobile/MobileNav';
 
 function Layout() {
   useGAPageView();
   return (
     <LayoutWrapper id="layout-wrapper">
       {isMobile ? <MobileHeader /> : <Menu />}
+      {isMobile ? <MobileNav /> : null}
       {isMobile ? (
         <MobileContentBox>
           <Main />

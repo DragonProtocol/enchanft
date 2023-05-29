@@ -7,6 +7,8 @@
  */
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { ScoresAvg } from '@us3r-network/link';
+
 import { MainWrapper } from '../layout/Index';
 import Loading from '../common/loading/Loading';
 import type { DappPageProps } from '../../container/Dapp';
@@ -32,9 +34,12 @@ export default function DappPageMobile({
   ) : data ? (
     <Wrapper>
       <HeaderMobile data={data} />
+      <QuotaBox>
+        <ScoresAvg linkId={data.linkStreamId} />
+      </QuotaBox>
       <ScreeshotsMobile urls={data?.screenshots ?? []} />
       <IntroductionMobile text={data.description} />
-      <UserScoreMobile streamId={data.threadStreamId} />
+      <UserScoreMobile streamId={data.linkStreamId} />
       <RecommendDappsMobile
         data={recommendDapps}
         loading={recommendDappsLoading}
@@ -59,4 +64,17 @@ const StatusBox = styled(MainWrapper)`
   font-size: 16px;
   line-height: 19px;
   color: #748094;
+`;
+
+const QuotaBox = styled.div`
+  display: flex;
+  & > * {
+    width: 33%;
+    height: 40px;
+    background: #1b1e23;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
 `;

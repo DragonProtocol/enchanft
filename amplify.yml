@@ -72,20 +72,17 @@ applications:
       phases:
         preBuild:
           commands:
-            - npm i --legacy-peer-deps
+            - yarn
             - cd ../../
-            - npm i
+            - yarn
             - cd apps/u3
         build:
           commands:
-            - npm run build
+            - yarn build
       artifacts:
         baseDirectory: build
         files:
           - '**/*'
-      cache:
-        paths:
-          - node_modules/**/*
   - appRoot: apps/creator-page
     frontend:
       phases:

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-import { VoteBtn } from '@us3r-network/authkit';
+import { VoteButton } from '@us3r-network/link';
 import { ContentListItem } from '../../services/types/contents';
 import { getContentPlatformLogoWithJsonValue } from '../../utils/content';
 import {
@@ -64,7 +64,7 @@ function Card({
     tags,
     recReason,
     value,
-    threadStreamId,
+    linkStreamId,
   },
   clickAction,
 }: {
@@ -76,7 +76,7 @@ function Card({
     tags: string[];
     recReason?: string;
     value?: string;
-    threadStreamId?: string;
+    linkStreamId?: string;
   };
   clickAction: () => void;
 }) {
@@ -107,7 +107,7 @@ function Card({
           <BottomRow>
             {tags?.length > 0 && <Badge text={tags[0]} />}
             <ContentVote>
-              {threadStreamId && <VoteBtn threadId={threadStreamId} />}
+              {linkStreamId && <VoteButton linkId={linkStreamId} />}
             </ContentVote>
             {/* <BottomRowLine /> */}
             {/* <ContentLink text={link} /> */}

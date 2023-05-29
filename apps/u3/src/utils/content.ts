@@ -5,6 +5,7 @@
  * @LastEditTime: 2023-02-07 17:53:41
  * @Description: file description
  */
+import { ContentLinkData } from '../services/types/contents';
 import { platformLogoReplaceMap } from './platform';
 
 export const getContentWithJsonValue = (value: string) => {
@@ -26,3 +27,15 @@ export const getContentPlatformLogoWithJsonValue = (value: string): string => {
   }
 };
 export const CONTENT_ADMIN_PLUS_SCORE_STEP = 10;
+
+export const getContentLinkDataWithJsonValue = (
+  value: string
+): ContentLinkData | null => {
+  if (!value) return null;
+  try {
+    const data = JSON.parse(value);
+    return data;
+  } catch (error) {
+    return null;
+  }
+};

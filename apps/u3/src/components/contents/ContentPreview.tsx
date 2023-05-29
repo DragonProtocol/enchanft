@@ -55,9 +55,6 @@ export default function ContentPreview({
             <HeaderRight>
               <ContentItemActions
                 id={data.id}
-                upVoted={data.upVoted}
-                favored={data.favored}
-                upVoteNum={data.upVoteNum}
                 editorScore={data.editorScore}
                 hiddenAction={onHidden}
                 shareAction={onShare}

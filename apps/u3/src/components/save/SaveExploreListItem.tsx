@@ -1,13 +1,9 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
-import { Thread } from '@us3r-network/thread';
 import { defaultFormatFromNow } from '../../utils/time';
 import EllipsisText from '../common/text/EllipsisText';
 import LinkBox from '../contents/LinkBox';
+import type { SaveExploreListItemData } from './SaveExploreList';
 
-export type SaveExploreListItemData = Thread & {
-  title?: string;
-  logo?: string;
-};
 export type SaveExploreListItemProps = StyledComponentPropsWithRef<'div'> & {
   data: SaveExploreListItemData;
 };
@@ -22,10 +18,14 @@ export default function SaveExploreListItem({
         <TopBox>
           <TitleText>{data.title}</TitleText>
 
-          <TimeText>{defaultFormatFromNow(data.date)}</TimeText>
+          {!!data?.createAt && (
+            <TimeText className="timeText">
+              {defaultFormatFromNow(data.createAt)}
+            </TimeText>
+          )}
         </TopBox>
-        <BottomBox>
-          <IconLink text={data.url} logo={data?.logo} />
+        <BottomBox className="bottomBox">
+          <IconLink text={data.url} logo={data?.logo} className="iconLink" />
         </BottomBox>
       </ListItemInner>
     </Wrapper>
@@ -39,9 +39,7 @@ const Wrapper = styled.div`
   box-sizing: border-box;
   cursor: pointer;
   &:hover {
-    & > * {
-      transform: scale(1.05);
-    }
+    background: rgba(20, 23, 26, 0.3);
   }
 `;
 const ListItemInner = styled.div`
@@ -99,5 +97,28 @@ const IconLink = styled(LinkBox)`
     font-size: 14px;
     line-height: 17px;
     color: #718096;
+  }
+`;
+
+export const SaveExploreListItemMobile = styled(SaveExploreListItem)`
+  padding: 10px;
+  height: auto;
+
+  & > div {
+    position: relative;
+  }
+
+  .timeText {
+    position: absolute;
+    right: 10px;
+    bottom: 2px;
+  }
+
+  .bottomBox {
+    padding-right: 100px;
+    .iconLink {
+      padding: 0;
+      height: auto;
+    }
   }
 `;

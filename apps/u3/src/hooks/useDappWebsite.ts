@@ -5,15 +5,15 @@
  * @LastEditTime: 2023-01-18 13:47:19
  * @Description: file description
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { RouteKey } from '../route/routes';
-import useRoute from '../route/useRoute';
-import useUserFavorites from './useUserFavorites';
+import usePersonalFavorsLinkData from './usePersonalFavorsLinkData';
+// import { RouteKey } from '../route/routes';
+// import useRoute from '../route/useRoute';
 
 const DAPP_MODAL_SEARCH_KEY = 'dappPreviewId';
 export default () => {
-  const { dapps } = useUserFavorites();
+  const { personalDapps } = usePersonalFavorsLinkData();
   const [searchParams, setSearchParams] = useSearchParams();
 
   // 是否是dapp相关路由
@@ -25,10 +25,10 @@ export default () => {
   const dappModalData = useMemo(() => {
     const id = searchParams.get(DAPP_MODAL_SEARCH_KEY);
     if (id) {
-      return dapps.find((item) => Number(item.id) === Number(id));
+      return personalDapps.find((item) => item.id === id);
     }
     return null;
-  }, [searchParams, dapps]);
+  }, [searchParams, personalDapps]);
 
   // 是否打开dapp modal
   const isOpenDappModal = useMemo(() => {
@@ -49,6 +49,7 @@ export default () => {
   }, [searchParams, setSearchParams]);
 
   return {
+    personalDapps,
     isOpenDappModal,
     dappModalData,
     openDappModal,

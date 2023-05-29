@@ -2,8 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { useUs3rProfileContext } from '@us3r-network/profile';
 
+import { useSession } from '@us3r-network/auth-with-rainbowkit';
 import ListTable from './ListTable';
 
 import useListData from '../../hooks/useProfileStreamListData';
@@ -13,7 +13,8 @@ import { Network, Stream } from '../../services/types/activity';
 const network = 'TESTNET' as Network;
 
 export default function StreamPage() {
-  const { sessId: did } = useUs3rProfileContext();
+  const session = useSession();
+  const did = session?.id;
 
   const navigate = useNavigate();
   const { pageNum, data, hasMore, loadData, fetchMoreData } = useListData({

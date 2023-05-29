@@ -19,13 +19,14 @@ import { updateDapp } from '../../services/api/dapp';
 import { messages } from '../../utils/message';
 import Screeshots from './detail/Screeshots';
 import UserScore from './detail/UserScore';
-import Project from './detail/Project';
+// import Project from './detail/Project';
 import RecommendDapps from './detail/RecommendDapps';
 import DappEditModal from './DappEditModal';
-import useUserFavorites from '../../hooks/useUserFavorites';
+import useLinkSubmit from '../../hooks/useLinkSubmit';
 
 export default function DappPage({
   id,
+  isStreamId,
   // Queries
   data,
   loading,
@@ -34,9 +35,9 @@ export default function DappPage({
   // Mutations
   updateData,
 }: DappPageProps) {
+  const { updateDappLinkData } = useLinkSubmit();
   const navigate = useNavigate();
   const { openDappModal } = useDappWebsite();
-  const { addOneToFavoredDapps } = useUserFavorites();
   const [openEdit, setOpenEdit] = useState(false);
   const [adminEditPending, setAdminEditPending] = useState(false);
   const handleEditSubmit = useCallback(
@@ -49,6 +50,21 @@ export default function DappPage({
         if (code === 0) {
           updateData({ ...data, ...form });
           toast.success(messages.dapp.admin_update);
+          // TODO: tags字段暂时没有
+          const linkData = {
+            name: form.name,
+            description: form.description,
+            image: form.image,
+            chains: form.chains,
+            mediaLinks: form.mediaLinks,
+            types: form.types,
+            tags: [],
+            status: form.status,
+            screenshots: form.screenshots,
+            supportIframe: form.supportIframe,
+            headerPhoto: form.headerPhoto,
+          };
+          updateDappLinkData(data.linkStreamId, linkData);
           setOpenEdit(false);
         } else {
           toast.error(msg || messages.common.error);
@@ -59,7 +75,7 @@ export default function DappPage({
         setAdminEditPending(false);
       }
     },
-    [adminEditPending, data]
+    [adminEditPending, data, updateDappLinkData]
   );
   return loading ? (
     <StatusBox>
@@ -69,8 +85,8 @@ export default function DappPage({
     <Wrapper>
       <Header
         data={data}
-        onFavorSuccess={() => addOneToFavoredDapps(data)}
-        onOpen={() => openDappModal(data.id)}
+        hiddenEdit={isStreamId}
+        onOpen={() => openDappModal(data?.linkStreamId || data?.id)}
         onEdit={() => setOpenEdit(true)}
       />
       <ContentLayout>
@@ -78,7 +94,7 @@ export default function DappPage({
           {data?.screenshots?.length > 0 && (
             <Screeshots urls={data?.screenshots ?? []} />
           )}
-          <UserScore streamId={data.threadStreamId} />
+          <UserScore streamId={data.linkStreamId} />
         </ContentLayoutLeft>
         <ContentLayoutRight>
           {/* {data.project && <Project data={data.project} />} */}

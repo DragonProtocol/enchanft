@@ -1,28 +1,31 @@
 import styled from 'styled-components';
-import { UserAvatar, Username } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
+import { LoginButton, UserAvatar, UserName } from '@us3r-network/profile';
 import { useNavigate } from 'react-router-dom';
+import { useSession } from '@us3r-network/auth-with-rainbowkit';
 import CardBase from '../common/card/CardBase';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import { ReactComponent as BookmarkSvg } from '../common/icons/svgs/bookmark.svg';
-import useLogin from '../../hooks/useLogin';
 
 export default function Header() {
-  const { sessId } = useUs3rProfileContext();
   const navigate = useNavigate();
-  const { login } = useLogin();
+  const session = useSession();
   return (
     <Wrapper>
-      <Avatar did={sessId} />
+      <Avatar />
       <Title>
         Welcome to Web 3 Today
-        {!!sessId && (
+        <UserName>
+          {({ username, isLoading }) =>
+            !isLoading && username ? username : null
+          }
+        </UserName>
+        {session && (
           <>
-            , <Username did={sessId} /> !
+            , <UserName /> !
           </>
         )}
       </Title>
-      {!sessId && <ButtonPrimaryLine onClick={login}>Login</ButtonPrimaryLine>}
+      {!session && <LoginButton>Login</LoginButton>}
       <RightBox>
         <BookmarkButton
           onClick={() => {

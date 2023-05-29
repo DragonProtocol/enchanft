@@ -5,15 +5,26 @@
  * @LastEditTime: 2023-02-27 12:13:54
  * @Description: file description
  */
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { usePersonalFavors } from '@us3r-network/link';
 import { RouteKey } from '../route/routes';
 import useRoute from '../route/useRoute';
-import useUserFavorites from './useUserFavorites';
+import { getDappLinkDataWithJsonValue } from '../utils/dapp';
 
 const DAPP_MODAL_SEARCH_KEY = 'id';
 export default () => {
-  const { projects } = useUserFavorites();
+  const { personalFavors } = usePersonalFavors();
+  const projects = personalFavors
+    .filter((item) => item?.link?.type === 'project')
+    .map((item) => {
+      const linkData = getDappLinkDataWithJsonValue(item?.link?.data) || {};
+      const linkId = item?.linkID || item?.link?.id;
+      return {
+        ...linkData,
+        id: linkId,
+      };
+    });
   const [searchParams, setSearchParams] = useSearchParams();
 
   // 是否是project相关路由
@@ -26,7 +37,7 @@ export default () => {
     if (!isProjectRoute) return null;
     const id = searchParams.get(DAPP_MODAL_SEARCH_KEY);
     if (id) {
-      return projects.find((item) => Number(item.id) === Number(id));
+      return projects.find((item) => item.id === id);
     }
     return null;
   }, [isProjectRoute, searchParams, projects]);

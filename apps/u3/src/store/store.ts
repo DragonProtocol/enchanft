@@ -9,7 +9,6 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import websiteReducer from '../features/website/websiteSlice';
 import eventExploreList from '../features/event/eventExploreList';
-import eventHandles from '../features/event/eventHandles';
 // eslint-disable-next-line import/no-named-as-default
 import eventCompletedList from '../features/event/eventCompletedList';
 import projectExploreList from '../features/project/projectExploreList';
@@ -27,7 +26,6 @@ export const store = configureStore({
   reducer: {
     website: websiteReducer,
     eventExploreList,
-    eventHandles,
     eventCompletedList,
     projectExploreList,
     projectHandles,

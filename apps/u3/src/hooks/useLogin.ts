@@ -5,28 +5,29 @@
  * @LastEditTime: 2023-01-10 18:38:14
  * @Description: file description
  */
-import { useUs3rAuth, useUs3rAuthModal } from '@us3r-network/authkit';
-import { useUs3rProfileContext } from '@us3r-network/profile';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
+import {
+  useAuthentication,
+  useSession,
+} from '@us3r-network/auth-with-rainbowkit';
 import { useU3Login } from '../contexts/U3LoginContext';
 import { RoleType } from '../services/api/login';
 
 export default () => {
-  const { sessId } = useUs3rProfileContext();
+  const session = useSession();
   const { user, u3IsLogin, u3logout } = useU3Login();
 
-  const { logout: us3rLogout } = useUs3rAuth();
-  const { openLoginModal } = useUs3rAuthModal();
+  const { signIn, signOut } = useAuthentication();
   const login = useCallback(() => {
-    openLoginModal();
-  }, [openLoginModal]);
+    signIn();
+  }, [signIn]);
 
   const logout = useCallback(() => {
-    us3rLogout();
+    signOut();
     u3logout();
-  }, [us3rLogout, u3logout]);
+  }, [signOut, u3logout]);
 
-  const isLogin = useMemo(() => !!sessId && u3IsLogin, [sessId, u3IsLogin]);
+  const isLogin = useMemo(() => !!session && u3IsLogin, [session, u3IsLogin]);
 
   const handleCallbackVerifyLogin = useCallback(
     (callback?: () => void) => {

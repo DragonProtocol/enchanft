@@ -6,7 +6,7 @@
  * @Description: 全局样式
  */
 import { createGlobalStyle, css } from 'styled-components';
-import { us3rAuthkitCss } from './styles/us3r-authkit';
+import { s3DefaultUiCss } from './styles/s3';
 
 export const ScrollBarCss = css`
   /* 设置滚动条的样式 */
@@ -61,8 +61,8 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
     ${FontFamilyCss}
 
-    /* us3r authkit css */
-    ${us3rAuthkitCss}
+    /* us3r components css */
+    ${s3DefaultUiCss}
   }
 `;
 export default GlobalStyle;

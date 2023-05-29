@@ -41,11 +41,11 @@ import { messages } from '../utils/message';
 import CreatableMultiSelect from '../components/common/select/CreatableMultiSelect';
 import ButtonRefresh from '../components/common/button/ButtonRefresh';
 import useConfigsTopics from '../hooks/useConfigsTopics';
-import useThreadSubmit from '../hooks/useThreadSubmit';
+import useLinkSubmit from '../hooks/useLinkSubmit';
 import useLogin from '../hooks/useLogin';
 
 function ContentCreate() {
-  const { createContentThread } = useThreadSubmit();
+  const { createContentLink, updateContentLinkData } = useLinkSubmit();
   const navigate = useNavigate();
   const { user, isAdmin } = useLogin();
   const [parsing, setParsing] = useState(false);
@@ -146,6 +146,7 @@ function ContentCreate() {
       supportReaderView: boolean;
       supportIframe: boolean;
       editorScore: number | null;
+      linkStreamId?: string;
     }) => {
       if (loading) return;
       setLoading(true);
@@ -165,11 +166,25 @@ function ContentCreate() {
             user?.token
           );
           if (resp.data.code === 0) {
-            navigate(`/contents/${resp.data.data.id}`);
+            const respData = resp.data.data;
+            navigate(`/contents/${respData.id}`);
             toast.success(messages.content.admin_submit);
             store.dispatch(fetchUserKarma({ token: user?.token }));
+            const linkData = {
+              title: data.title,
+              tags: data.tags,
+              lang: data.lang,
+              supportReaderView: data.supportReaderView,
+              supportIframe: data.supportIframe,
 
-            createContentThread(resp.data.data.link ?? data.url);
+              author: respData.author,
+              value: respData.value,
+              description: respData.description,
+              platform: respData.platform,
+              chain: respData.chain,
+              createdAt: respData.createdAt,
+            };
+            createContentLink(data.url, linkData);
           }
         } else {
           await updateContent(
@@ -186,6 +201,14 @@ function ContentCreate() {
             },
             user?.token
           );
+          const linkData = {
+            title: data.title,
+            tags: data.tags,
+            lang: data.lang,
+            supportReaderView: data.supportReaderView,
+            supportIframe: data.supportIframe,
+          };
+          updateContentLinkData(data.linkStreamId, linkData);
           toast.success(messages.content.admin_update);
         }
         reset();
@@ -195,7 +218,7 @@ function ContentCreate() {
         setLoading(false);
       }
     },
-    [user?.token]
+    [user?.token, createContentLink, updateContentLinkData]
   );
 
   const renderFieldError = useCallback(

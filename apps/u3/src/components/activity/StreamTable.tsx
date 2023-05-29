@@ -3,6 +3,7 @@ import multiavatar from '@multiavatar/multiavatar';
 import dayjs from 'dayjs';
 import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import { isMobile } from 'react-device-detect';
 
 import { Network, Stream } from '../../services/types/activity';
 import { FamilyOrAppMapReverse, Types } from '../../constants';
@@ -28,8 +29,8 @@ export default function StreamTable({
   }
 
   return (
-    <TableBox>
-      <TableContainer>
+    <TableBox isMobile={isMobile}>
+      <TableContainer isMobile={isMobile}>
         <div>
           <span className="name">Stream ID:</span>
           <div>
@@ -142,7 +143,7 @@ export default function StreamTable({
   );
 }
 
-const TableContainer = styled.div`
+const TableContainer = styled.div<{ isMobile?: boolean }>`
   margin: 10px;
   color: #fff;
 
@@ -152,6 +153,9 @@ const TableContainer = styled.div`
   }
   > div {
     display: flex;
+    ${({ isMobile: isMobileProps }) =>
+      isMobileProps ? `flex-direction: column;row-gap: 8px;` : ''};
+
     padding: 20px 0;
     border-bottom: 1px solid #39424c;
     &:first-child {
