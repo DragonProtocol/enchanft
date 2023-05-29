@@ -33,7 +33,6 @@ export default function Header() {
           }}
         >
           <BookmarkSvg />
-          <BookmarkNumber>0</BookmarkNumber>
         </BookmarkButton>
       </RightBox>
     </Wrapper>
@@ -76,6 +75,8 @@ const BookmarkButton = styled(ButtonPrimaryLine)`
   align-items: center;
   gap: 0px;
   svg {
+    width: 30px;
+    height: 30px;
     path {
       stroke: #718096;
     }
