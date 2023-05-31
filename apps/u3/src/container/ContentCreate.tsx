@@ -35,8 +35,8 @@ import { useAppSelector } from '../store/hooks';
 import { selectWebsite } from '../features/website/websiteSlice';
 import Loading from '../components/common/loading/Loading';
 import isUrl from '../utils/isUrl';
-import { fetchUserKarma } from '../features/profile/karma';
-import { store } from '../store/store';
+// import { fetchUserKarma } from '../features/profile/karma';
+// import { store } from '../store/store';
 import { messages } from '../utils/message';
 import CreatableMultiSelect from '../components/common/select/CreatableMultiSelect';
 import ButtonRefresh from '../components/common/button/ButtonRefresh';
@@ -169,7 +169,7 @@ function ContentCreate() {
             const respData = resp.data.data;
             navigate(`/contents/${respData.id}`);
             toast.success(messages.content.admin_submit);
-            store.dispatch(fetchUserKarma({ token: user?.token }));
+            // store.dispatch(fetchUserKarma({ token: user?.token }));
             const linkData = {
               title: data.title,
               tags: data.tags,

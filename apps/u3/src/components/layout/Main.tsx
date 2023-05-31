@@ -8,7 +8,7 @@
 import { useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCallback, useEffect } from 'react';
-import { isMobile } from 'react-device-detect';
+// import { isMobile } from 'react-device-detect';
 // import { useProfileState } from '@us3r-network/profile';
 // import { useSession } from '@us3r-network/auth-with-rainbowkit';
 import { CutomRouteObject, RoutePermission, routes } from '../../route/routes';
@@ -24,13 +24,13 @@ import NoLogin from './NoLogin';
 // import usePreference from '../../hooks/usePreference';
 // import OnboardModal from '../onboard/OnboardModal';
 
-import {
-  fetchUserKarma,
-  selectKarmaState,
-  checkIn,
-} from '../../features/profile/karma';
-import { Atom02 } from '../icons/atom';
-import { store } from '../../store/store';
+// import {
+//   fetchUserKarma,
+//   selectKarmaState,
+//   checkIn,
+// } from '../../features/profile/karma';
+// import { Atom02 } from '../icons/atom';
+// import { store } from '../../store/store';
 
 function Main() {
   const dispatch = useAppDispatch();
@@ -46,10 +46,10 @@ function Main() {
 
   // const { preferenceList } = usePreference(user?.token);
 
-  useEffect(() => {
-    if (!user?.token) return;
-    dispatch(fetchUserKarma({ token: user?.token }));
-  }, [user?.token]);
+  // useEffect(() => {
+  //   if (!user?.token) return;
+  //   dispatch(fetchUserKarma({ token: user?.token }));
+  // }, [user?.token]);
 
   const renderElement = useCallback(
     ({ element, permissions }: CutomRouteObject) => {
@@ -79,7 +79,7 @@ function Main() {
     element: renderElement(item),
   }));
   const renderRoutes = useRoutes(routesMap);
-  const { checked } = useAppSelector(selectKarmaState);
+  // const { checked } = useAppSelector(selectKarmaState);
 
   return (
     <MainWrapper id="main-wrapper">
@@ -105,7 +105,7 @@ function Main() {
         />
       )} */}
 
-      {!isMobile && !checked && (
+      {/* {!isMobile && !checked && (
         <KarmaGMBox>
           <KarmaGM
             onClick={() => {
@@ -117,7 +117,7 @@ function Main() {
             GM
           </KarmaGM>
         </KarmaGMBox>
-      )}
+      )} */}
     </MainWrapper>
   );
 }
