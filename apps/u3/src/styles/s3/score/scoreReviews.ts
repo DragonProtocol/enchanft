@@ -58,7 +58,7 @@ export default css`
         justify-content: space-between;
         [data-layout-element='EditButton'] {
           all: unset;
-          display: flex;
+          display: none;
           align-items: center;
           gap: 2px;
           cursor: pointer;
