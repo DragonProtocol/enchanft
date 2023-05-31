@@ -457,7 +457,7 @@ const tagComponentsMap = {
 };
 
 export type Rss3ContentProps = {
-  address: Array<string>;
+  address?: Array<string>;
   empty: JSX.Element;
 };
 
@@ -475,7 +475,6 @@ export default function Rss3Content({ address, empty }: Rss3ContentProps) {
   } = useAppSelector(selectFrensHandlesState);
   const feedRef = useRef(null);
   const { getProfileWithDid, profile } = useProfileState()!;
-  console.log(profile, 'profile');
 
   const loading = useMemo(
     () => status === AsyncRequestStatus.PENDING,
@@ -491,9 +490,11 @@ export default function Rss3Content({ address, empty }: Rss3ContentProps) {
       if (loading) return;
       dispatch(
         getRss3({
-          address: profile?.wallets?.map(
-            ({ address: walletAddress }) => walletAddress
-          ),
+          address:
+            address ||
+            profile?.wallets?.map(
+              ({ address: walletAddress }) => walletAddress
+            ),
           cursor,
           reset,
           pageSize: 20,

@@ -5,6 +5,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { isMobile } from 'react-device-detect';
 
 import { useSession } from '@us3r-network/auth-with-rainbowkit';
+import { useProfileState } from '@us3r-network/profile';
 import Credential, { CredentialMobile } from '../components/profile/Credential';
 import { fetchU3Assets, ProfileDefault } from '../services/api/profile';
 import { ProfileEntity } from '../services/types/profile';
@@ -15,6 +16,7 @@ import PageTitle from '../components/common/PageTitle';
 import MobilePageHeader from '../components/common/mobile/MobilePageHeader';
 
 export default function Gallery() {
+  const { profile } = useProfileState()!;
   const { wallet } = useParams();
   const session = useSession();
   const sessId = session?.id;
@@ -26,10 +28,10 @@ export default function Gallery() {
   const [profileData, setProfileData] = useState<ProfileEntity>();
 
   // eslint-disable-next-line @typescript-eslint/no-shadow
-  const fetchData = useCallback(async (wallet: string) => {
-    if (!wallet) return;
+  const fetchData = useCallback(async (wallets: string[]) => {
+    if (!wallets) return;
     try {
-      const { data } = await fetchU3Assets([wallet], ['poap', 'noox', 'galxe']);
+      const { data } = await fetchU3Assets(wallets, ['poap', 'noox', 'galxe']);
       const r = mergeProfilesData(data.data);
       setProfileData(r);
     } catch (error) {
@@ -41,8 +43,16 @@ export default function Gallery() {
   }, []);
 
   useEffect(() => {
-    fetchData(wallet || sessWallet);
-  }, [fetchData, sessWallet, wallet]);
+    if (wallet) {
+      fetchData([wallet]);
+      return;
+    }
+    const profileWallets = profile?.wallets?.map(
+      ({ address: walletAddress }) => walletAddress
+    );
+    const wallets = [...new Set([sessWallet, ...profileWallets])];
+    fetchData(wallets);
+  }, [fetchData, sessWallet, wallet, profile]);
 
   return (
     <Wrapper>
