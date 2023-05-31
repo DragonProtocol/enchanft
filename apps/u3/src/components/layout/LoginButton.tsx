@@ -5,14 +5,14 @@
  * @LastEditTime: 2023-02-08 16:44:26
  * @Description: file description
  */
-import { useEffect, useRef, useState } from 'react';
+// import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { UserAvatar, UserName } from '@us3r-network/profile';
 import useLogin from '../../hooks/useLogin';
 import { ButtonPrimaryLine } from '../common/button/ButtonBase';
 import LogoutSvg from '../common/icons/svgs/logout.svg';
-import { Atom2 } from '../icons/atom';
+// import { Atom2 } from '../icons/atom';
 
 type Props = {
   onlyIcon?: boolean;
@@ -21,44 +21,44 @@ type Props = {
 };
 export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
   const { user, isLogin, login } = useLogin();
-  const preScore = useRef<number>(karmaScore || 0);
-  const [diffScore, setDiffScore] = useState(0);
+  // const preScore = useRef<number>(karmaScore || 0);
+  // const [diffScore, setDiffScore] = useState(0);
   const navigate = useNavigate();
-  const flowerRef = useRef<HTMLDivElement>();
+  // const flowerRef = useRef<HTMLDivElement>();
 
-  useEffect(() => {
-    if (preScore.current === 0) {
-      preScore.current = karmaScore || 0;
-      return;
-    }
-    const diff = (karmaScore || 0) - preScore.current;
-    if (diff > 0) {
-      setDiffScore(diff);
-      const flowerScore = document.getElementById('flower-score');
-      const flowerScoreNumber = document.getElementById('flower-score-num');
+  // useEffect(() => {
+  //   if (preScore.current === 0) {
+  //     preScore.current = karmaScore || 0;
+  //     return;
+  //   }
+  //   const diff = (karmaScore || 0) - preScore.current;
+  //   if (diff > 0) {
+  //     setDiffScore(diff);
+  //     const flowerScore = document.getElementById('flower-score');
+  //     const flowerScoreNumber = document.getElementById('flower-score-num');
 
-      if (!flowerScore || !flowerScoreNumber) return;
-      flowerScore.style.transition = 'none';
-      flowerScore.style.opacity = '1';
-      flowerScoreNumber.style.transition = 'none';
-      flowerScoreNumber.style.transform = 'translateY(0px)';
-      setTimeout(() => {
-        flowerScore.style.transition = 'all 0.5s ease-out';
-        flowerScore.style.opacity = '0';
-        flowerScoreNumber.style.transition = 'all 0.3s ease-out';
-        flowerScoreNumber.style.transform = 'translateY(-5px)';
-      }, 300);
-    }
-    preScore.current = karmaScore || 0;
-  }, [karmaScore, preScore]);
+  //     if (!flowerScore || !flowerScoreNumber) return;
+  //     flowerScore.style.transition = 'none';
+  //     flowerScore.style.opacity = '1';
+  //     flowerScoreNumber.style.transition = 'none';
+  //     flowerScoreNumber.style.transform = 'translateY(0px)';
+  //     setTimeout(() => {
+  //       flowerScore.style.transition = 'all 0.5s ease-out';
+  //       flowerScore.style.opacity = '0';
+  //       flowerScoreNumber.style.transition = 'all 0.3s ease-out';
+  //       flowerScoreNumber.style.transform = 'translateY(-5px)';
+  //     }, 300);
+  //   }
+  //   preScore.current = karmaScore || 0;
+  // }, [karmaScore, preScore]);
 
-  const showScore = karmaScore > 0 ? `${karmaScore}` : '';
+  // const showScore = karmaScore > 0 ? `${karmaScore}` : '';
 
   return (
     <LoginButtonWrapper>
       {isLogin ? (
         <>
-          {showScore && (
+          {/* {showScore && (
             <ScoreBox onlyIcon>
               <span className="triangle" />
               {!onlyIcon && (
@@ -77,7 +77,7 @@ export default function LoginButton({ onlyIcon, onLogout, karmaScore }: Props) {
                 <span />
               </div>
             </ScoreBox>
-          )}
+          )} */}
           <LoginUser
             onClick={() => {
               navigate('/profile');

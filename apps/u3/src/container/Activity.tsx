@@ -37,10 +37,7 @@ function Activity() {
 
       {tab === 'Feeds' && (
         <ContentWrapper>
-          <Rss3Content
-            address={['0x74667801993b457b8ccf19d03bbbaa52b7fff43b']}
-            empty={<NoActivity />}
-          />
+          <Rss3Content empty={<NoActivity />} />
         </ContentWrapper>
       )}
       {tab === 'Streams' && <Streams />}
