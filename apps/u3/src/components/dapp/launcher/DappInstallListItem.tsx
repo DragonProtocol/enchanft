@@ -1,9 +1,7 @@
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import React from 'react';
-import { Favor } from '@us3r-network/link';
 import ImgDefault from '../../common/ImgDefault';
 import { ReactComponent as DappHandleIcon } from '../../common/icons/svgs/dots-vertical.svg';
-import { getDappLinkDataWithJsonValue } from '../../../utils/dapp';
 
 type Props = StyledComponentPropsWithRef<'div'> & {
   data: {

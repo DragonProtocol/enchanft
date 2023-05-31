@@ -9,8 +9,8 @@ import { useRoutes } from 'react-router-dom';
 import styled from 'styled-components';
 import { useCallback, useEffect } from 'react';
 import { isMobile } from 'react-device-detect';
-import { useProfileState } from '@us3r-network/profile';
-import { useSession } from '@us3r-network/auth-with-rainbowkit';
+// import { useProfileState } from '@us3r-network/profile';
+// import { useSession } from '@us3r-network/auth-with-rainbowkit';
 import { CutomRouteObject, RoutePermission, routes } from '../../route/routes';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import useU3Extension from '../../hooks/useU3Extension';
@@ -21,8 +21,8 @@ import {
 import EventCompleteGuideModal from '../event/EventCompleteGuideModal';
 import useLogin from '../../hooks/useLogin';
 import NoLogin from './NoLogin';
-import usePreference from '../../hooks/usePreference';
-import OnboardModal from '../onboard/OnboardModal';
+// import usePreference from '../../hooks/usePreference';
+// import OnboardModal from '../onboard/OnboardModal';
 
 import {
   fetchUserKarma,
@@ -34,8 +34,8 @@ import { store } from '../../store/store';
 
 function Main() {
   const dispatch = useAppDispatch();
-  const session = useSession();
-  const { profile, updateProfile, profileLoading } = useProfileState();
+  // const session = useSession();
+  // const { profile, updateProfile, profileLoading } = useProfileState();
   const { isLogin, user, isAdmin } = useLogin();
   const { openEventCompleteGuideModal, eventCompleteGuideEndCallback } =
     useAppSelector(selectWebsite);
@@ -44,7 +44,7 @@ function Main() {
     dispatch(setU3ExtensionInstalled(u3ExtensionInstalled));
   }, [u3ExtensionInstalled]);
 
-  const { preferenceList } = usePreference(user?.token);
+  // const { preferenceList } = usePreference(user?.token);
 
   useEffect(() => {
     if (!user?.token) return;
@@ -88,7 +88,7 @@ function Main() {
         isOpen={openEventCompleteGuideModal}
         onGuideEnd={eventCompleteGuideEndCallback}
       />
-      {!isMobile && (
+      {/* {!isMobile && (
         <OnboardModal
           show={
             !!session?.id &&
@@ -103,7 +103,7 @@ function Main() {
             });
           }}
         />
-      )}
+      )} */}
 
       {!isMobile && !checked && (
         <KarmaGMBox>

@@ -1,4 +1,3 @@
-import { Score } from '@us3r-network/link';
 import styled, { StyledComponentPropsWithRef } from 'styled-components';
 import { UserAvatar, UserName } from '@us3r-network/profile';
 import CardBase from '../../common/card/CardBase';
@@ -8,7 +7,9 @@ import ScoreRateValue from '../../common/score/ScoreRateValue';
 import ImgDefault from '../../common/ImgDefault';
 import { DappStatus } from '../../../services/types/dapp';
 
-export type ReviewItemData = Omit<Score, 'link'> & {
+export type ReviewItemData = {
+  value: number;
+  text: string;
   link?: {
     name?: string;
     image?: string;
