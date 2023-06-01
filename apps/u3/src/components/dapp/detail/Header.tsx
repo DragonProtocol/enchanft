@@ -40,10 +40,10 @@ export default function Header({
   const { topics } = useConfigsTopics();
   const { chains } = topics;
   const showChains = chains.filter((item) =>
-    data?.chains.includes(item.chainEnum)
+    data?.chains?.includes(item.chainEnum)
   );
-  const isU3Dapp = data.url.startsWith('https://u3.xyz');
-  const u3DappRoutePath = data.url.replace('https://u3.xyz', '');
+  const isU3Dapp = data?.url?.startsWith('https://u3.xyz');
+  const u3DappRoutePath = data?.url?.replace('https://u3.xyz', '');
 
   return (
     <HeaderWrapper {...otherProps}>
@@ -59,7 +59,7 @@ export default function Header({
           )}
         </Title>
         <TagsRow>
-          {data?.types.map((item) => (
+          {data?.types?.map((item) => (
             <Badge key={item} text={formatFilterShowName(item)} />
           ))}
           {showChains.map((item) => (
@@ -216,7 +216,7 @@ export function HeaderMobile({ data, ...otherProps }: Props) {
   const { topics } = useConfigsTopics();
   const { chains } = topics;
   const showChains = chains.filter((item) =>
-    data?.chains.includes(item.chainEnum)
+    data?.chains?.includes(item.chainEnum)
   );
 
   return (
@@ -228,7 +228,7 @@ export function HeaderMobile({ data, ...otherProps }: Props) {
           {data.status === DappStatus.VERIFIED && <CheckVerifiedSvg />}
         </TitleMobile>
         <TagsRowMobile>
-          {data?.types.map((item) => (
+          {data?.types?.map((item) => (
             <Badge key={item} text={formatFilterShowName(item)} />
           ))}
           {showChains.map((item) => (

@@ -598,8 +598,8 @@ importers:
       '@types/styled-components': ^5.1.25
       '@types/three': ^0.146.0
       '@us3r-network/auth-with-rainbowkit': ^0.1.4
-      '@us3r-network/link': 0.2.0
-      '@us3r-network/profile': ^0.5.0
+      '@us3r-network/link': 0.2.1
+      '@us3r-network/profile': ^0.5.1
       antd: ^5.0.7
       assert: ^2.0.0
       axios: ^0.27.2
@@ -690,8 +690,8 @@ importers:
       '@types/styled-components': registry.npmjs.org/@types/styled-components/5.1.26
       '@types/three': registry.npmjs.org/@types/three/0.146.0
       '@us3r-network/auth-with-rainbowkit': 0.1.4_6h5siosmojpqnyhgjxfmfqmvum
-      '@us3r-network/link': 0.2.0_pkkmzlnadcjyvli2rthalr3a3i
-      '@us3r-network/profile': 0.5.0_cojy5ob6hlqhwylgegchu5kae4
+      '@us3r-network/link': 0.2.1_t3yoqgdtjd3pfthzxzzw7wob54
+      '@us3r-network/profile': 0.5.1_cojy5ob6hlqhwylgegchu5kae4
       antd: registry.npmjs.org/antd/5.5.1_biqbaboplfbrettd7655fr4n2y
       assert: registry.npmjs.org/assert/2.0.0
       axios: registry.npmjs.org/axios/0.27.2
@@ -1206,8 +1206,8 @@ packages:
       - encoding
     dev: false
 
-  /@us3r-network/link/0.2.0_pkkmzlnadcjyvli2rthalr3a3i:
-    resolution: {integrity: sha512-ImFsOflKuIi0OQeutzlkoT58npqox0qWYZcQm4FxUOcEKSjb5KG+bLFR6qf0VGehSq+RnC3WqlrfazAqZmim7Q==}
+  /@us3r-network/link/0.2.1_t3yoqgdtjd3pfthzxzzw7wob54:
+    resolution: {integrity: sha512-F7cH8KTEJytojCZe0UzQU6Of/SifRJlj2xe4PkP+2jkVk+zhUucll+e3/3cKdcTdlTcn6gNydLxB1Fk9Umpt0w==}
     peerDependencies:
       '@us3r-network/auth-with-rainbowkit': ^0.1.4
       '@us3r-network/profile': ^0.4.2
@@ -1216,7 +1216,7 @@ packages:
       '@material-design-icons/svg': registry.npmjs.org/@material-design-icons/svg/0.14.8
       '@us3r-network/auth-with-rainbowkit': 0.1.4_6h5siosmojpqnyhgjxfmfqmvum
       '@us3r-network/data-model': 0.2.1
-      '@us3r-network/profile': 0.5.0_cojy5ob6hlqhwylgegchu5kae4
+      '@us3r-network/profile': 0.5.1_cojy5ob6hlqhwylgegchu5kae4
       dayjs: registry.npmjs.org/dayjs/2.0.0-alpha.4
       react: registry.npmjs.org/react/18.2.0
       react-aria: registry.npmjs.org/react-aria/3.25.0_biqbaboplfbrettd7655fr4n2y
@@ -1228,8 +1228,8 @@ packages:
       - react-dom
     dev: false
 
-  /@us3r-network/profile/0.5.0_cojy5ob6hlqhwylgegchu5kae4:
-    resolution: {integrity: sha512-azpLCEaqvl/lvbpn+SuXYJmwKqCtyK6ElUdg+01g2wMph6QqUTXQRhsiiibNz0oCFtvpr+mPxYsDJZtt7pp7cA==}
+  /@us3r-network/profile/0.5.1_cojy5ob6hlqhwylgegchu5kae4:
+    resolution: {integrity: sha512-7hpQZzYb67l8JpFKYs1BniEeuQ3O+FoGf+oUhgeFedkR2aGYPYKG2/cTwCtwmBXcGTnF+eTR7bewYoxzaS+WLA==}
     peerDependencies:
       '@us3r-network/auth-with-rainbowkit': ^0.1.4
       react: ^18.2.0
