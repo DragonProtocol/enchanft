@@ -9,12 +9,13 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { isMobile } from 'react-device-detect';
+import { useLink } from '@us3r-network/link';
 import { DappExploreListItemResponse } from '../services/types/dapp';
 import { fetchListForDappExplore, fetchOneDapp } from '../services/api/dapp';
 import { ApiRespCode } from '../services/types';
 import DappPageMobile from '../components/dapp/DappPageMobile';
 import DappPage from '../components/dapp/DappPage';
-import usePersonalFavorsLinkData from '../hooks/usePersonalFavorsLinkData';
+import { getDappLinkDataWithJsonValue } from '../utils/dapp';
 
 export type DappPageProps = {
   id: string | number;
@@ -31,7 +32,7 @@ export type DappPageProps = {
 const isLinkStreamId = (id: string | number) => Number.isNaN(Number(id));
 export default function Dapp() {
   const { id } = useParams();
-  const { isFetching, personalDapps } = usePersonalFavorsLinkData();
+  const { isFetching, link } = useLink(isLinkStreamId(id) ? id : '');
   // Queries
   const [isPending, setIsPending] = useState(false);
   const [data, setData] = useState<DappExploreListItemResponse | null>(null);
@@ -86,12 +87,15 @@ export default function Dapp() {
 
   useEffect(() => {
     if (id && isLinkStreamId(id)) {
-      const findDapp = personalDapps.find(
-        (item) => item?.linkStreamId === id || item?.id === id
-      );
-      setData(findDapp as unknown as DappExploreListItemResponse);
+      const linkData = getDappLinkDataWithJsonValue(link?.data);
+      setData({
+        ...linkData,
+        id,
+        url: link?.url,
+        linkStreamId: id,
+      } as unknown as DappExploreListItemResponse);
     }
-  }, [id, personalDapps]);
+  }, [id, link]);
 
   useEffect(() => {
     getRecommendDapps(data?.types || []);

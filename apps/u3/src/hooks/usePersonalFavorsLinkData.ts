@@ -6,7 +6,6 @@ import { getEventLinkDataWithJsonValue } from '../utils/event';
 
 export default () => {
   const { isFetching, personalFavors } = usePersonalFavors();
-
   const personalDapps = useMemo(
     () =>
       personalFavors

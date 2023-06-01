@@ -35,10 +35,10 @@ export default function UserInfoStyled() {
             }}
           >
             <TextField data-state-element="AvatarUploadField">
-              <Label data-state-element="">
+              <Label data-state-element="" htmlFor="AvatarUploadInput">
                 <UserInfoEditForm.AvatarPreview />
               </Label>
-              <UserInfoEditForm.AvatarUploadInput />
+              <UserInfoEditForm.AvatarUploadInput id="AvatarUploadInput" />
             </TextField>
 
             <UserInfoEditForm.NameInput />
