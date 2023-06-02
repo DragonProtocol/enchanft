@@ -34,12 +34,7 @@ export default function UserInfoStyled() {
               setIsOpenEdit(false);
             }}
           >
-            <TextField data-state-element="AvatarUploadField">
-              <Label data-state-element="" htmlFor="AvatarUploadInput">
-                <UserInfoEditForm.AvatarPreview />
-              </Label>
-              <UserInfoEditForm.AvatarUploadInput id="AvatarUploadInput" />
-            </TextField>
+            <UserInfoEditForm.AvatarField />
 
             <UserInfoEditForm.NameInput />
 
@@ -118,17 +113,27 @@ const UserInfoEditFormWrapper = styled(UserInfoEditForm)`
   justify-content: center;
   gap: 10px;
   width: 380px;
-  [data-state-element='AvatarUploadField'] {
+  [data-state-element='AvatarField'] {
     width: 120px;
     height: 120px;
     border-radius: 50%;
     margin: 0 auto;
     overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    svg {
+      width: 50%;
+      height: 50%;
+      path {
+        fill: #ccc;
+      }
+    }
   }
   [data-state-element='AvatarUploadInput'] {
     display: none;
   }
-  [data-state-element='AvatarPreview'] {
+  [data-state-element='AvatarPreviewImg'] {
     width: 100%;
     height: 100%;
     cursor: pointer;
@@ -138,6 +143,7 @@ const UserInfoEditFormWrapper = styled(UserInfoEditForm)`
   }
   [data-state-element='BioTextArea'] {
     ${TextareaBaseCss}
+    resize: vertical;
   }
   [data-state-element='SubmitButton'] {
     ${ButtonPrimaryLineCss}

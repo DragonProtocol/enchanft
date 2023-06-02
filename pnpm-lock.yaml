@@ -599,7 +599,7 @@ importers:
       '@types/three': ^0.146.0
       '@us3r-network/auth-with-rainbowkit': ^0.1.4
       '@us3r-network/link': 0.2.1
-      '@us3r-network/profile': ^0.5.1
+      '@us3r-network/profile': ^0.5.2
       antd: ^5.0.7
       assert: ^2.0.0
       axios: ^0.27.2
@@ -690,8 +690,8 @@ importers:
       '@types/styled-components': registry.npmjs.org/@types/styled-components/5.1.26
       '@types/three': registry.npmjs.org/@types/three/0.146.0
       '@us3r-network/auth-with-rainbowkit': 0.1.4_6h5siosmojpqnyhgjxfmfqmvum
-      '@us3r-network/link': 0.2.1_t3yoqgdtjd3pfthzxzzw7wob54
-      '@us3r-network/profile': 0.5.1_cojy5ob6hlqhwylgegchu5kae4
+      '@us3r-network/link': 0.2.1_ypbyzta5jhp5btwlxcyzdgmlt4
+      '@us3r-network/profile': 0.5.2_cojy5ob6hlqhwylgegchu5kae4
       antd: registry.npmjs.org/antd/5.5.1_biqbaboplfbrettd7655fr4n2y
       assert: registry.npmjs.org/assert/2.0.0
       axios: registry.npmjs.org/axios/0.27.2
@@ -1206,7 +1206,7 @@ packages:
       - encoding
     dev: false
 
-  /@us3r-network/link/0.2.1_t3yoqgdtjd3pfthzxzzw7wob54:
+  /@us3r-network/link/0.2.1_ypbyzta5jhp5btwlxcyzdgmlt4:
     resolution: {integrity: sha512-F7cH8KTEJytojCZe0UzQU6Of/SifRJlj2xe4PkP+2jkVk+zhUucll+e3/3cKdcTdlTcn6gNydLxB1Fk9Umpt0w==}
     peerDependencies:
       '@us3r-network/auth-with-rainbowkit': ^0.1.4
@@ -1216,7 +1216,7 @@ packages:
       '@material-design-icons/svg': registry.npmjs.org/@material-design-icons/svg/0.14.8
       '@us3r-network/auth-with-rainbowkit': 0.1.4_6h5siosmojpqnyhgjxfmfqmvum
       '@us3r-network/data-model': 0.2.1
-      '@us3r-network/profile': 0.5.1_cojy5ob6hlqhwylgegchu5kae4
+      '@us3r-network/profile': 0.5.2_cojy5ob6hlqhwylgegchu5kae4
       dayjs: registry.npmjs.org/dayjs/2.0.0-alpha.4
       react: registry.npmjs.org/react/18.2.0
       react-aria: registry.npmjs.org/react-aria/3.25.0_biqbaboplfbrettd7655fr4n2y
@@ -1228,8 +1228,8 @@ packages:
       - react-dom
     dev: false
 
-  /@us3r-network/profile/0.5.1_cojy5ob6hlqhwylgegchu5kae4:
-    resolution: {integrity: sha512-7hpQZzYb67l8JpFKYs1BniEeuQ3O+FoGf+oUhgeFedkR2aGYPYKG2/cTwCtwmBXcGTnF+eTR7bewYoxzaS+WLA==}
+  /@us3r-network/profile/0.5.2_cojy5ob6hlqhwylgegchu5kae4:
+    resolution: {integrity: sha512-mDFkMIzAR8BNR53LriJofEE6UMDoeqsuWenWmB//eTWO/WgJh8tlH+Hxm4tI+dB4io2s+NK+BfYGZarW2shYnw==}
     peerDependencies:
       '@us3r-network/auth-with-rainbowkit': ^0.1.4
       react: ^18.2.0
@@ -5583,10 +5583,10 @@ packages:
       '@hapi/hoek': registry.npmjs.org/@hapi/hoek/9.3.0
     dev: false
 
-  registry.npmjs.org/@humanwhocodes/config-array/0.11.8:
-    resolution: {integrity: sha512-UybHIJzJnR5Qc/MsD9Kr+RpO2h+/P1GhOwdiLPXK5TWk5sgTdu88bTD9UP+CKbPPh5Rni1u0GjAdYQLemG8g+g==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.11.8.tgz}
+  registry.npmjs.org/@humanwhocodes/config-array/0.11.10:
+    resolution: {integrity: sha512-KVVjQmNUepDVGXNuoRRdmmEjruj0KfiGSbS8LVc12LMsWDQzRXJ0qdhN8L8uUigKpfEHRhlaQFY0ib1tnUbNeQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@humanwhocodes/config-array/-/config-array-0.11.10.tgz}
     name: '@humanwhocodes/config-array'
-    version: 0.11.8
+    version: 0.11.10
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': registry.npmjs.org/@humanwhocodes/object-schema/1.2.1
@@ -19764,7 +19764,7 @@ packages:
       '@eslint-community/regexpp': registry.npmjs.org/@eslint-community/regexpp/4.5.1
       '@eslint/eslintrc': registry.npmjs.org/@eslint/eslintrc/2.0.3
       '@eslint/js': registry.npmjs.org/@eslint/js/8.41.0
-      '@humanwhocodes/config-array': registry.npmjs.org/@humanwhocodes/config-array/0.11.8
+      '@humanwhocodes/config-array': registry.npmjs.org/@humanwhocodes/config-array/0.11.10
       '@humanwhocodes/module-importer': registry.npmjs.org/@humanwhocodes/module-importer/1.0.1
       '@nodelib/fs.walk': registry.npmjs.org/@nodelib/fs.walk/1.2.8
       ajv: registry.npmjs.org/ajv/6.12.6
