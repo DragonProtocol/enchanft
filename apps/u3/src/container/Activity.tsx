@@ -10,9 +10,9 @@ import { CurrencyETH } from '../components/icons/currency-eth';
 import { MainWrapper } from '../components/layout/Index';
 import Streams from '../components/activity/Streams';
 
-const tabs = ['Feeds', 'Streams'];
+const tabs = ['Streams', 'Feeds'];
 function Activity() {
-  const [tab, setTab] = useState<string>('Feeds');
+  const [tab, setTab] = useState<string>('Streams');
   // const [tab, setTab] = useState<'Feeds' | 'Streams'>('Feeds');
   return (
     <Wrapper>
