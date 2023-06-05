@@ -6,19 +6,42 @@
  * @Description: file description
  */
 import styled from 'styled-components';
+import { useAuthentication } from '@us3r-network/auth-with-rainbowkit';
 import { ButtonPrimary } from '../common/button/ButtonBase';
 import WalletSvg from '../common/icons/svgs/wallet.svg';
 import useLogin from '../../hooks/useLogin';
+import Loading from '../common/loading/Loading';
 
 function NoLogin() {
   const { login } = useLogin();
+  const { ready, status } = useAuthentication();
   return (
     <NoLoginWrapper>
       <NoLoginContainer>
-        <Icon src={WalletSvg} />
-        <MainText>No Wallet Connected</MainText>
-        <SecondaryText>Get Started by connecting your wallet</SecondaryText>
-        <LoginButton onClick={() => login()}>Connect Wallet</LoginButton>
+        {(() => {
+          if (!ready) {
+            return <Loading />;
+          }
+          if (status === 'loading') {
+            return <MainText>Authorizing ...</MainText>;
+          }
+
+          if (status === 'unauthenticated') {
+            return (
+              <>
+                <Icon src={WalletSvg} />
+                <MainText>No Wallet Connected</MainText>
+                <SecondaryText>
+                  Get Started by connecting your wallet
+                </SecondaryText>
+                <LoginButton onClick={() => login()}>
+                  Connect Wallet
+                </LoginButton>
+              </>
+            );
+          }
+          return <Loading />;
+        })()}
       </NoLoginContainer>
     </NoLoginWrapper>
   );
